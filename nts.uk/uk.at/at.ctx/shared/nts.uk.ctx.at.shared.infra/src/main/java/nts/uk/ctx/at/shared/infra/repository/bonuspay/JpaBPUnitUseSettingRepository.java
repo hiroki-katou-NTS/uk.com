@@ -13,20 +13,24 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPUnitUseSettingPK;
 
 @Stateless
 public class JpaBPUnitUseSettingRepository extends JpaRepository implements BPUnitUseSettingRepository {
-	private final String SELECT_BY_COMPANYID = "SELECT c FROM KBPSTBPUnitUseSetting c WHERE c.kbpstBPUnitUseSettingPK.companyId = :companyId";
-
-	@Override
-	public Optional<BPUnitUseSetting> getSetting(String companyId) {
-		Optional<KbpstBPUnitUseSetting> kbpstBPUnitUseSetting = this.queryProxy()
-				.query(SELECT_BY_COMPANYID, KbpstBPUnitUseSetting.class).setParameter("companyId", companyId)
-				.getSingle();
-		return Optional.ofNullable(this.toUnitUseSettingDomain(kbpstBPUnitUseSetting.get()));
-	}
+	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpstBPUnitUseSetting c WHERE c.kbpstBPUnitUseSettingPK.companyId = :companyId";
 
 	@Override
 	public void updateSetting(BPUnitUseSetting setting) {
 
 		this.commandProxy().update(this.toUnitUseSettingEntity(setting));
+	}
+	
+	@Override
+	public Optional<BPUnitUseSetting> getSetting(String companyId) {
+		Optional<KbpstBPUnitUseSetting> kbpstBPUnitUseSetting = this.queryProxy()
+				.query(SELECT_BY_COMPANYID, KbpstBPUnitUseSetting.class).setParameter("companyId", companyId)
+				.getSingle();
+		if (kbpstBPUnitUseSetting.isPresent()) {
+			return Optional.ofNullable(this.toUnitUseSettingDomain(kbpstBPUnitUseSetting.get()));
+		}
+		return Optional.empty();
+
 	}
 
 	private KbpstBPUnitUseSetting toUnitUseSettingEntity(BPUnitUseSetting bPUnitUseSetting) {
@@ -46,6 +50,5 @@ public class JpaBPUnitUseSettingRepository extends JpaRepository implements BPUn
 				kbpstBPUnitUseSetting.workplaceUseAtr.intValue(), kbpstBPUnitUseSetting.personalUseAtr.intValue(),
 				kbpstBPUnitUseSetting.workingTimesheetUseAtr.intValue());
 	}
-	
 
 }

@@ -146,9 +146,11 @@ public class FileStereoFactory {
 //in ts file
  var liveviewcontainer = $("#liveview");
  //view image
- liveviewcontainer.append($("<img/>").attr("src",nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/"+FILEID)));
+ liveviewcontainer.append($("<img/>").attr("src",nts.uk.request.liveView(FILEID)));
+ //with webapi
+ liveviewcontainer.append($("<img/>").attr("src",nts.uk.request.liveView("com",FILEID)));
  //view html file
-liveviewcontainer.append($("<iframe/>").attr("src",nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/"+FILEID)));
+liveviewcontainer.append($("<iframe/>").attr("src",nts.uk.request.liveView(FILEID)));
 
 					]]>
 					</pre>

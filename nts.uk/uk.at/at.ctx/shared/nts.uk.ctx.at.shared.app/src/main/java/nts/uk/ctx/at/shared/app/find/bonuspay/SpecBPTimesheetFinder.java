@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.shr.com.context.AppContexts;
@@ -20,7 +21,7 @@ public class SpecBPTimesheetFinder {
 	public List<SpecBPTimesheetDto> getListTimesheet(String bonusPaySettingCode) {
 		String companyId = AppContexts.user().companyId();
 		List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet = specBPTimesheetRepository.getListTimesheet(companyId,
-				bonusPaySettingCode);
+				new BonusPaySettingCode(bonusPaySettingCode));
 		return lstSpecBonusPayTimesheet.stream().map(c -> toSpecBPTimesheetDto(companyId, bonusPaySettingCode, c))
 				.collect(Collectors.toList());
 	}

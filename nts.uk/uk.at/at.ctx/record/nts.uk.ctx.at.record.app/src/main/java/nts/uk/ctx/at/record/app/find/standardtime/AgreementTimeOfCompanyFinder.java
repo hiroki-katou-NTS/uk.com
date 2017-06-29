@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfCompanyDto;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
@@ -16,8 +17,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
- * @author nampt
- * 全社 screen
+ * @author nampt 全社 screen
  *
  */
 @Stateless
@@ -36,12 +36,11 @@ public class AgreementTimeOfCompanyFinder {
 		Optional<AgreementTimeOfCompany> agreementTimeOfCompany = agreementTimeCompanyRepository.find(companyId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
 
-		if (!agreementTimeOfCompany.isPresent()) {
+		if (agreementTimeOfCompany.isPresent()) {
 			String basicSettingId = agreementTimeOfCompany.get().getBasicSettingId();
-			Optional<BasicAgreementSetting> basicAgreementSetting = basicAgreementSettingRepository
-					.find(basicSettingId);
+			return basicAgreementSettingRepository.find(basicSettingId).map(f -> AgreementTimeOfCompanyDto.toDomain(f))
+					.orElse(null);
 
-			return AgreementTimeOfCompanyDto.toDomain(basicAgreementSetting.get());
 		} else {
 			return null;
 		}

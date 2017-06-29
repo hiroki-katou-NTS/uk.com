@@ -12,8 +12,10 @@
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.sample.SampleTimeDuration
 			</com:ValidatorScript>
-
+			
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			
 			<com:stylefile path="kmk008.b.main.css" />
 			<com:scriptfile path="kmk008.b.start.js" />
 			<com:scriptfile path="kmk008.b.vm.js" />
@@ -26,12 +28,13 @@
 			<com:stylefile path="../d/kmk008.d.main.css" />
 			<com:scriptfile path="../d/kmk008.d.vm.js" />
 			<com:scriptfile path="../d/kmk008.d.service.js" />
+			
 		</ui:define>
 
 		<ui:define name="sidebar" tabindex="1">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator" >#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" class="active">#{i18n.getText('Com_Employment')}</a></li>
 				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
 				<li><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Class')}</a></li>
 			</ul>

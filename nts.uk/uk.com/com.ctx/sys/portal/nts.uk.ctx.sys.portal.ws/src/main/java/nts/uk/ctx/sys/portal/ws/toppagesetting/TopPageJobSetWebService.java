@@ -17,25 +17,25 @@ import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageJobSetFinder;
  * @author sonnh1
  *
  */
-@Path("sys/portal/toppagesetting")
+@Path("sys/portal/toppagesetting/jobset")
 @Produces("application/json")
 public class TopPageJobSetWebService {
 
 	@Inject
-	UpdateTopPageJobSetCommandHandler updateTopPageSettingCommandHandler;
+	UpdateTopPageJobSetCommandHandler updateTopPageJobSetCommandHandler;
 
 	@Inject
 	TopPageJobSetFinder topPageJobSetFinder;
 
 	@POST
 	@Path("find")
-	public List<TopPageJobSetDto> find() {
-		return this.topPageJobSetFinder.find();
+	public List<TopPageJobSetDto> find(List<String> listJobId) {
+		return this.topPageJobSetFinder.find(listJobId);
 	}
 
 	@POST
-	@Path("update")
+	@Path("updateTopPageJobSet")
 	public void update(TopPageJobSetBase command) {
-		this.updateTopPageSettingCommandHandler.handle(command);
+		this.updateTopPageJobSetCommandHandler.handle(command);
 	}
 }

@@ -29,7 +29,7 @@ public class CsqmtSequenceMasterPK implements Serializable {
 
 	/** The sequence code. */
 	@Basic(optional = false)
-	@Column(name = "SEQ_CODE")
+	@Column(name = "SEQ_CD")
 	private String sequenceCode;
 
 	/**

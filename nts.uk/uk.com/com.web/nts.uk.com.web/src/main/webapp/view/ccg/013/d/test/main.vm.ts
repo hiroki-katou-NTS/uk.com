@@ -14,7 +14,15 @@
         }
         
         openDialog(){
+            var titleBar = {
+                name: "タイトルバー",
+                backgroundColor: "#70ad47",
+                textColor: "#FFF"    
+            }
+            nts.uk.ui.windows.setShared("titleBar", titleBar);
             nts.uk.ui.windows.sub.modeless("/view/ccg/013/d/index.xhtml", {title: ""});
+            
+            nts.uk.ui.windows.getShared("CCG013D_MENUS");
         }
     }
  }

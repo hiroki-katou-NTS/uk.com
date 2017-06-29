@@ -10,28 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearly
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
-/**
- * The Class RetentionYearlyDto.
- */
-
-/**
- * Gets the leave as work days.
- *
- * @return the leave as work days
- */
 @Getter
-
-/**
- * Sets the upper limit setting dto.
- *
- * @param upperLimitSettingDto the new upper limit setting dto
- */
-
-/**
- * Sets the leave as work days.
- *
- * @param leaveAsWorkDays the new leave as work days
- */
 @Setter
 public class RetentionYearlyDto {
 	

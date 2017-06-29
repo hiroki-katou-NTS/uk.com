@@ -31,8 +31,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.nameTitleBar = ko.observable("");
             //Radio button
             self.itemTitleAtr = ko.observableArray([
-                { value: 1, titleAtrName: resource.getText('CCG013_34') },
-                { value: 2, titleAtrName: resource.getText('CCG013_35') }]);
+                { value: 0, titleAtrName: resource.getText('CCG013_34') },
+                { value: 1, titleAtrName: resource.getText('CCG013_35') }]);
             self.selectedTitleAtr = ko.observable(1);
             //color picker
             self.letterColor = ko.observable('');
@@ -51,7 +51,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.filename = ko.observable(""); //file name
             self.imageName = ko.observable("");
             self.imageSize = ko.observable("");
-            self.accept = ko.observableArray([".png", '.img']); //supported extension
+            self.accept = ko.observableArray([".png", ".img",".jpg",".PNG", ".IMG",".JPG"]); //supported extension
             self.textId = ko.observable(""); // file browser button text id
             self.fileID = ko.observable('');
             self.fileID.subscribe(function(id) {
@@ -103,7 +103,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                 self.imageSize(res[0].originalSize+'KB');
                 self.isDelete(true);
             }).fail(function(err) {
-                nts.uk.ui.dialog.alertError({ messageId: err.messageId });
+                nts.uk.ui.dialog.alertError(err.message);
             });
         }
 

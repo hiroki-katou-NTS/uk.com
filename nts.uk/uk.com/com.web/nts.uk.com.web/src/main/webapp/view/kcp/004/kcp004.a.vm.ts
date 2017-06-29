@@ -3,6 +3,7 @@ module kcp004.a.viewmodel {
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import TreeType = kcp.share.tree.TreeType;
     import SettingType = kcp.share.tree.SettingType;
+    import SelectType = kcp.share.tree.SelectionType;
     import UnitAlreadySettingModel = kcp.share.tree.UnitAlreadySettingModel; 
     
     export class ScreenModel {
@@ -11,19 +12,26 @@ module kcp004.a.viewmodel {
         listTreeType: KnockoutObservableArray<any>;
         selectedTreeType: KnockoutObservable<number>;
         
+        listSelectionType: KnockoutObservableArray<any>;
+        selectedSelectionType: KnockoutObservable<number>;
+        
         isMultipleTreeGrid: KnockoutObservable<boolean>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
         isShowSelectButton: KnockoutObservable<boolean>;
+        enableShowSelectButton: KnockoutObservable<boolean>;
         
         // Control component
         selectedWorkplaceId: KnockoutObservable<string>;
         baseDate: KnockoutObservable<Date>;
-        multiSelectedWorkplaceId: KnockoutObservableArray<string>;
+        multiSelectedWorkplaceId: KnockoutObservable<any>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         treeGrid: TreeComponentOption;
         
         jsonData: KnockoutObservable<string>;
+        rowSelected: KnockoutObservable<RowSelection>;
+        isBindingTreeGrid: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this;
@@ -40,14 +48,26 @@ module kcp004.a.viewmodel {
             self.isDialog = ko.observable(false);
             self.isShowAlreadySet = ko.observable(true);
             self.isShowSelectButton = ko.observable(true);
+            self.enableShowSelectButton = ko.computed(function() {
+                return self.isMultipleTreeGrid();
+            });
             
             // Control component
             self.baseDate = ko.observable(new Date());
-            self.selectedWorkplaceId = ko.observable('wpl1');
-            self.multiSelectedWorkplaceId = ko.observableArray(['wpl1', 'wpl3']);
+            self.selectedWorkplaceId = ko.observable('wpl2');
+            self.multiSelectedWorkplaceId = ko.observableArray(['wpl111111111111111111111111111111111', 'wpl311111111111111111111111111111111']);
+            self.enable = ko.observable(true); 
+            self.listSelectionType = ko.observableArray([
+                {code : 1, name: 'Select by selected code', enable: self.enable},
+                {code : 2, name: 'Select all', enable: self.isMultipleTreeGrid},
+                {code : 3, name: 'Select first item', enable: self.enable},
+                {code : 4, name: 'No select', enable: self.enable}
+            ]);
+            self.selectedSelectionType = ko.observable(1);
+            
             self.alreadySettingList = ko.observableArray([
-                    {workplaceId: 'wpl1', settingType: SettingType.NO_SETTING},
-                    {workplaceId: 'wpl3', settingType: SettingType.ALREADY_SETTING},
+                    {workplaceId: 'wpl111111111111111111111111111111111', settingType: SettingType.NO_SETTING},
+                    {workplaceId: 'wpl311111111111111111111111111111111', settingType: SettingType.ALREADY_SETTING},
             ]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -55,16 +75,23 @@ module kcp004.a.viewmodel {
                 treeType: TreeType.WORK_PLACE,
                 selectedWorkplaceId: self.getSelectedWorkplaceId(),
                 baseDate: self.baseDate,
+                selectType: self.selectedSelectionType(), 
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
             
             self.jsonData = ko.observable('');
+            self.rowSelected = ko.observable(new RowSelection('', ''));
+            self.isBindingTreeGrid = ko.observable(false);
             
             // Subscribe
             self.selectedTreeType.subscribe(function(code) {
-                self.reloadTreeGrid();
+                self.resetSelectedWorkplace();
+                self.reloadTreeGrid().done(() => {
+                    self.getSelectedData();
+                    self.isShowSelectButton(code == 1);
+                });
             });
             self.isDialog.subscribe(function(value) {
                 self.reloadTreeGrid();
@@ -77,6 +104,20 @@ module kcp004.a.viewmodel {
             });
             self.isShowSelectButton.subscribe(function() {
                 self.reloadTreeGrid();
+            });
+            self.selectedSelectionType.subscribe((code) => {
+                if (code == 1) {
+                    self.resetSelectedWorkplace();
+                }
+                self.reloadTreeGrid().done(function() {
+                    self.getSelectedData();
+                });
+            });
+            self.selectedWorkplaceId.subscribe(() => {
+                self.getSelectedData();
+            });
+            self.multiSelectedWorkplaceId.subscribe(() => {
+                self.getSelectedData();
             });
         }
         
@@ -98,7 +139,8 @@ module kcp004.a.viewmodel {
         
         private remove() {
             let self = this;
-            let selecetdWorkplaceId = self.getSelectedData();
+            let data = $('#tree-grid').getRowSelected();
+            let selecetdWorkplaceId = data.map(item => item.workplaceId).join(", ");
             self.alreadySettingList(self.alreadySettingList().filter((item) => {
                 return selecetdWorkplaceId.indexOf(item.workplaceId) < 0;
             }));
@@ -112,12 +154,14 @@ module kcp004.a.viewmodel {
             return self.selectedWorkplaceId;
         }
         
-        private getSelectedData() : string {
+        public getSelectedData() {
             let self = this;
-            if (self.isMultipleTreeGrid()) {
-                return self.multiSelectedWorkplaceId().join(", ");
+            if (!self.isBindingTreeGrid()) {
+                return;
             }
-            return self.selectedWorkplaceId();
+            let data = $('#tree-grid').getRowSelected();
+            self.rowSelected().workplaceId(data.length > 0 ? data.map(item => item.workplaceId).join(", ") : '');
+            self.rowSelected().workplaceCode(data.length > 0 ? data.map(item => item.workplaceCode).join(", ") : '');
         }
         
         private setTreeData() {
@@ -128,18 +172,39 @@ module kcp004.a.viewmodel {
                 treeType: TreeType.WORK_PLACE,
                 selectedWorkplaceId: self.getSelectedWorkplaceId(),
                 baseDate: self.baseDate,
+                selectType: self.selectedSelectionType(),
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
         }
         
-        private reloadTreeGrid() {
+        private reloadTreeGrid() : JQueryPromise<void>  {
             let self = this;
+            let dfd = $.Deferred<void>();
             self.setTreeData();
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                 $('#tree-grid').focusComponent();
+                dfd.resolve();
             });
+            return dfd.promise();
+        }
+        
+        private resetSelectedWorkplace() {
+            let self = this;
+            self.selectedWorkplaceId('wpl211111111111111111111111111111111');
+            self.multiSelectedWorkplaceId(['wpl111111111111111111111111111111111', 'wpl311111111111111111111111111111111']);
+        }
+    }
+    
+    export class RowSelection {
+        workplaceId: KnockoutObservable<string>;
+        workplaceCode: KnockoutObservable<string>;
+        
+        constructor(workplaceId: string, workplaceCode: string) {
+            let self = this;
+            self.workplaceId = ko.observable(workplaceId);
+            self.workplaceCode = ko.observable(workplaceCode);
         }
     }
 }

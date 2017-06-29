@@ -9,18 +9,8 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.dto.RetentionYearlyDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 
-/**
- * Gets the retention yearly.
- *
- * @return the retention yearly
- */
-@Getter
 
-/**
- * Sets the retention yearly.
- *
- * @param retentionYearly the new retention yearly
- */
+@Getter
 @Setter
 public class RetentionYearlySaveCommand {
 

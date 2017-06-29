@@ -11,13 +11,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetti
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingGetMemento;
 
-@Getter
-
 /**
- * Sets the transfer division.
- *
- * @param transferDivision the new transfer division
+ * The Class CompensatoryTransferSettingDto.
  */
+@Getter
 @Setter
 public class CompensatoryTransferSettingDto {
 

@@ -9,8 +9,11 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringCharType(CharType.NUMERIC)
-@StringMaxLength(40)
+/**
+ * The Class HistoryId.
+ */
+@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(36)
 public class HistoryId extends StringPrimitiveValue<HistoryId> {
 
 	/** The Constant serialVersionUID. */

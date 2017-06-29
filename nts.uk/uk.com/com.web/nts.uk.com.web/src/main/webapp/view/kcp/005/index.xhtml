@@ -24,7 +24,7 @@
 						<h2>(Employee List)</h2>
 						<h2>Overview</h2>
 						
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p><b>Single/Multiple Selection</b></p><br></br>
 							<div class="cf" data-bind="ntsSwitchButton: {
 														options: selectionOption,
@@ -33,7 +33,7 @@
 														value: selectedOption,
 														enable: true }"></div>
 						</div>
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<div data-bind="ntsCheckBox:{checked: isAlreadySetting}">Show Already Setting</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Show As Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show NoSelection Item</div>
@@ -41,7 +41,7 @@
 							<div data-bind="ntsCheckBox:{checked: isShowSelectAllButton}">Show SelectAll Button</div>
 						</div><br></br>
 
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p>
 								<b>Selection Type:</b>
 							</p>
@@ -52,14 +52,15 @@
 											optionsText: 'name',
 											value: selectedType,
 											enable: true}"></div>
+											
 						</div>
 
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p>
 								<b>Save/Delete</b>
 							</p>
 							<br></br>
-							<BUTTON id="test-button" data-bind="click: setAlreadyCheck"
+							<BUTTON id="test-button" data-bind="click: settingSavedItem"
 								style="margin-right: 10px">Copy</BUTTON>
 							<BUTTON id="test-button"
 								data-bind="click: settingSavedItem, enable: hasSelectedEmp()"
@@ -72,61 +73,33 @@
 					<br></br>
 					<table style="margin: 30px;">
 						<tr>
-							<td style="width: 640px;">
+							<td style="width: 640px; border: none">
 								<div style="margin-bottom: 30px; padding-left: 20px">
 									<p style="font-size: 30px">社員リスト</p>
 								</div>
 								<div id="component-items-list"></div>
 							</td>
-							<td>
-								<table style="margin-left: 40px; margin-top: 20px;">
+							<td style="border: none; padding-top: 100px">
+								<table>
 									<tr>
-										<td style="width: 200px; padding-left: 40px; height: 60px;">
-											<div>
-												<span>Code</span>
-											</div>
-										</td>
-										<td style="padding-left: 5px;">
-											<div>
-												<input id='code'
-													data-bind="ntsTextEditor: {
-													value: code,
-													option: codeEditorOption,
-													required: true,
-													enable: hasSelectedEmp(),
-													readonly: false}" />
-											</div>
-										</td>
+										<td style="font-size: 20px; font-weight: bold; color: gray;">Selected Codes: </td>
 									</tr>
-									<tr>
-										<td style="width: 200px; padding-left: 40px; height: 60px;">
-											<div>
-												<span>Name</span>
-											</div>
-										</td>
-										<td style="padding-left: 5px;">
-											<div>
-												<input id='name'
-													data-bind="ntsTextEditor: {
-													value: name,
-													option: nameEditorOption,
-													required: true,
-													enable: hasSelectedEmp(),
-													readonly: false}" />
-											</div>
-										</td>
+									<tr >
+										<td style="margin-right: 30px; width: 500px; color: gray;"><div data-bind="text: getSelectedItemCode()"></div></td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 					</table>
+					
 					<!-- BEGIN DESCRIPTION -->
-						<article class="cf" style="margin-top: 10px;">
+						<article class="cf" style="margin-top: 40px;">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 									<li><a href="#tabs-method">Methods</a></li>
+									<li><a href="#tabs-data">Data</a></li>
 								</ol>
 								<!-- BEGIN TAB HTML -->
 								<div id="tabs-html" class="cf">
@@ -152,7 +125,7 @@
 										export class ScreenModel {
 												listComponentOption: any;
 												selectedCode: KnockoutObservable<string>;
-												multiSelectedCode: KnockoutObservableArray<any>;
+												multiSelectedCode: KnockoutObservableArray<string>;
 												isShowAlreadySet: KnockoutObservable<boolean>;
 												alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 												isDialog: KnockoutObservable<boolean>;
@@ -198,7 +171,7 @@
 														isShowSelectAllButton: self.isShowSelectAllButton()
 													};
 												}
-												
+										}
 										export class ListType {
 											static EMPLOYMENT = 1;
 											static Classification = 2;
@@ -250,8 +223,8 @@
 											</td>
 											<td>
 												<b>Type:</b> Array[UnitAlreadySettingModel]<br/>
-												<b>Default:</b><i>empty</i><br/>
-												<pre><![CDATA[UnitAlreadySettingModel {
+												<b>Default:</b><i> empty</i><br/>
+												<pre><![CDATA[ UnitAlreadySettingModel {
     code: string;
     isAlreadySetting: boolean;
 }]]></pre>
@@ -272,7 +245,7 @@
 											<td>
 												<b>Type:</b> number<br/>
 												<b>Default:</b>4<br/>
-												<pre><![CDATA[ListType {
+												<pre><![CDATA[ ListType {
     static EMPLOYMENT = 1;
     static Classification = 2;
     static JOB_TITLE = 3;
@@ -288,8 +261,8 @@
 											</td>
 											<td>
 												<b>Type:</b> number<br/>
-												<b>Default:</b>1<br/>
-												<pre><![CDATA[SelectType {
+												<b>Default:</b> 1<br/>
+												<pre><![CDATA[ SelectType {
     static SELECT_BY_SELECTED_CODE = 1;
     static SELECT_ALL = 2;
     static SELECT_FIRST_ITEM = 3;
@@ -333,11 +306,10 @@
 												<label>Show/Hide SelectAll Button</label>
 											</td>
 										</tr>
-										
 									</table>
 								</div><!-- END VIEWMODEL TAB-->
 								
-								<!-- BEGIN -->
+								<!-- BEGIN METHOD TAB-->
 								<div id="tabs-method" class="cf">
 									<table style="width: 500px">
 										<thead>
@@ -349,7 +321,12 @@
 											<td>Get Employee List</td>
 										</tr>
 									</table>
-								</div><!-- END -->
+								</div><!-- END METHOD TAB -->
+								<!-- BEGIN TABS DATA -->
+								<div id="tabs-data" class="cf">
+									<pre data-bind="text: jsonData"><![CDATA[]]></pre>
+								</div>
+								<!-- END TABS DATA -->
 							</div>
 						</article><!-- END DESCRIPTION -->
 				</div>

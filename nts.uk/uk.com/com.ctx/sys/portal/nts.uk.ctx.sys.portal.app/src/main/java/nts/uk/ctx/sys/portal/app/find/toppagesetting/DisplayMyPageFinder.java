@@ -47,10 +47,13 @@ public class DisplayMyPageFinder {
 	 * @return
 	 */
 	public LayoutAllDto findLayoutTopPage(String topPageCode){
-		if(topPageCode != null){//co top page code
+		if(topPageCode != null && topPageCode != ""){//co top page code
 			TopPageDto topPage = toppageFinder.findByCode(companyId, topPageCode, "0");
+			if(topPage==null){//khong co du lieu
+				return new LayoutAllDto(null,null,true,false);
+			}
 			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(),0);
-			if (layout.isPresent()) {
+			if (layout.isPresent()) {//co du lieu
 				List<Placement> placements = placementRepository.findByLayout(topPage.getLayoutId());
 				LayoutForTopPageDto layoutTopPage = topPageSet.buildLayoutTopPage(layout.get(), placements);
 				LayoutForMyPageDto layoutMyPage = null;
@@ -62,14 +65,17 @@ public class DisplayMyPageFinder {
 		//lay chuc vu
 		JobPositionDto jobPosition = topPageSelfSet.getJobPosition(AppContexts.user().employeeId());
 		List<String> lst = new ArrayList<>();
-		lst.add(jobPosition.getJobId());
 		LayoutAllDto layoutTopPage = null;
-		//lay top page job title set
-		TopPageJobSet tpJobSet = topPageJobSet.findByListJobId(companyId,lst).get(0);
-		if(jobPosition != null && tpJobSet != null){//co chuc vu va duoc setting
+		if(jobPosition != null){//co chuc vu
+			lst.add(jobPosition.getJobId());
+			//lay top page job title set
+			TopPageJobSet tpJobSet = topPageJobSet.findByListJobId(companyId,lst).get(0);
+			if(tpJobSet != null){//co chuc vu va co job setting
 				layoutTopPage = topPageSet.getTopPageForPosition(jobPosition,tpJobSet);
-		}
-		if(jobPosition == null || tpJobSet == null ){//khog co chuc vu hoac khong duoc setting
+			}else{
+				layoutTopPage = topPageSet.getTopPageNotPosition();
+			}
+		}else{//khong co chuc vu
 			layoutTopPage = topPageSet.getTopPageNotPosition();
 		}
 		return layoutTopPage;

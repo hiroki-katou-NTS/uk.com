@@ -28,27 +28,24 @@ public class BonusPaySetting extends AggregateRoot {
 
 	private List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet;
 
-	private BonusPaySetting(CompanyId companyId, BonusPaySettingCode code, BonusPaySettingName name) {
+	private BonusPaySetting(CompanyId companyId, BonusPaySettingCode code, BonusPaySettingName name,
+			List<BonusPayTimesheet> lstBonusPayTimesheet, List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
 		this.name = name;
+		this.lstBonusPayTimesheet = lstBonusPayTimesheet;
+		this.lstSpecBonusPayTimesheet = lstSpecBonusPayTimesheet;
 	}
 
 	private BonusPaySetting() {
 		super();
 	}
 
-	public static BonusPaySetting createFromJavaType(String companyId, String code, String name) {
+	public static BonusPaySetting createFromJavaType(String companyId, String code, String name,
+			List<BonusPayTimesheet> lstBonusPayTimesheet, List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet) {
 		return new BonusPaySetting(new CompanyId(companyId), new BonusPaySettingCode(code),
-				new BonusPaySettingName(name));
+				new BonusPaySettingName(name), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);
 	}
 
-	public void setListTimesheet(List<BonusPayTimesheet> lstBonusPayTimesheet) {
-		this.lstBonusPayTimesheet = lstBonusPayTimesheet;
-	}
-	
-	public void setListSpecialTimesheet(List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet) {
-		this.lstSpecBonusPayTimesheet = lstSpecBonusPayTimesheet;
-	}
 }

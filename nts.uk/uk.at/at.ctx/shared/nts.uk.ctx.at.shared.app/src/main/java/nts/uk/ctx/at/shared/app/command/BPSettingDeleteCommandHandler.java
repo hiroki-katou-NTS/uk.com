@@ -5,17 +5,19 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 
 @Stateless
 public class BPSettingDeleteCommandHandler extends CommandHandler<BPSettingDeleteCommand> {
 	@Inject
-	private BPSettingRepository bpSettingRepository;
+	private BonusPaySettingService bonusPaySettingService;
 
 	@Override
 	protected void handle(CommandHandlerContext<BPSettingDeleteCommand> context) {
 		BPSettingDeleteCommand bpSettingDeleteCommand = context.getCommand();
-		this.bpSettingRepository.removeBonusPaySetting(bpSettingDeleteCommand.companyId, bpSettingDeleteCommand.code);
+		this.bonusPaySettingService.deleteBonusPaySetting(bpSettingDeleteCommand.companyId,
+				bpSettingDeleteCommand.code);
+
 	}
 
 }

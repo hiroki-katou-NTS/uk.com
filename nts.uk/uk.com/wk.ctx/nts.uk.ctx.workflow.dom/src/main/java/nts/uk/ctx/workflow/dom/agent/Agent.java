@@ -2,12 +2,15 @@ package nts.uk.ctx.workflow.dom.agent;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 
 @Getter
 
@@ -155,7 +158,84 @@ public class Agent extends AggregateRoot {
 		if (!(this.endDate.before(rangeDate.getStartDate()) || rangeDate.getEndDate().before(this.startDate))) {
 			return false;
 		}
-		
 		return true;
 	}
+	
+	/**
+	 * check agentSid with RageDate
+	 * @param rangeDateList1
+	 * @param rangeDateList2
+	 * @param rangeDateList3
+	 * @param rangeDateList4
+	 */
+	public void checkAgentSid(List<Agent> agentSidList){
+		
+		this.checkSameAgentRequest();
+		
+		List<RangeDate> rangeDateList1 = agentSidList.stream()
+				.filter(x->x.getAgentSid1().equals(this.agentSid1) && !this.requestId.equals(x.getRequestId().toString()))
+				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
+				.collect(Collectors.toList());
+		
+		List<RangeDate> rangeDateList2 = agentSidList.stream()
+				.filter(x->x.getAgentSid2().equals(this.agentSid2) && !this.requestId.equals(x.getRequestId().toString()))
+				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
+				.collect(Collectors.toList());
+		
+		List<RangeDate> rangeDateList3 = agentSidList.stream()
+				.filter(x->x.getAgentSid3().equals(this.agentSid3) && !this.requestId.equals(x.getRequestId().toString()))
+				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
+				.collect(Collectors.toList());
+		
+		List<RangeDate> rangeDateList4 = agentSidList.stream()
+				.filter(x->x.getAgentSid4().equals(this.agentSid4) && !this.requestId.equals(x.getRequestId().toString()))
+				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
+				.collect(Collectors.toList());
+		
+		if (this.agentAppType1 == AgentAppType.SUBSTITUTE_DESIGNATION ) {
+			validateAgentRequest(this.agentSid1, rangeDateList1);
+		}
+		
+		if (this.agentAppType2 == AgentAppType.SUBSTITUTE_DESIGNATION) {
+			validateAgentRequest(this.agentSid2, rangeDateList2);
+		}
+		
+		if (this.agentAppType3 == AgentAppType.SUBSTITUTE_DESIGNATION) {
+			validateAgentRequest(this.agentSid3, rangeDateList3);
+		}
+		
+		if (this.agentAppType4 == AgentAppType.SUBSTITUTE_DESIGNATION) {
+			validateAgentRequest(this.agentSid4, rangeDateList4);
+		}
+	}
+	
+	/**
+	 * validate agent of approval
+	 * @param sid
+	 * @param rangeDateList
+	 */
+	private void validateAgentRequest(String sid, List<RangeDate> rangeDateList) {
+		if (StringUtil.isNullOrEmpty(sid, true) || CollectionUtil.isEmpty(rangeDateList)) {
+			return;
+		}
+		
+		rangeDateList.stream().forEach(rangeDate -> {
+			if (!checkStartDate(rangeDate)) {
+				throw new BusinessException("Msg_13");
+			}
+		});
+	}
+	
+	/**
+	 * check same agentAppType 
+	 */
+	private void checkSameAgentRequest() {
+		if (this.agentAppType1 == AgentAppType.NO_SETTINGS 
+		&&  this.agentAppType2 == AgentAppType.NO_SETTINGS
+		&&  this.agentAppType3 == AgentAppType.NO_SETTINGS
+		&&  this.agentAppType4 == AgentAppType.NO_SETTINGS) {
+			throw new BusinessException("Msg_225");
+		}
+	}
+	
 }

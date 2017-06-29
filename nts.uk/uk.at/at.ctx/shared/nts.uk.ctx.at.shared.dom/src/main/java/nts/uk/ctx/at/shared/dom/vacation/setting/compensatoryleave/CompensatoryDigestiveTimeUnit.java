@@ -8,6 +8,9 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 
+/**
+ * The Class CompensatoryDigestiveTimeUnit.
+ */
 @Getter
 public class CompensatoryDigestiveTimeUnit {
     

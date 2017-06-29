@@ -21,7 +21,7 @@
 		<div id="A2-1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG018_6')}</div>
 		<div id="A2-2"
 			data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
-		<button id="A2-3" class="caret-bottom">#{i18n.getText('CCG018_7')}</button>
+		<button id="A2-3" class="caret-bottom" data-bind="click : searchByDate">#{i18n.getText('CCG018_7')}</button>
 	</div>
 	<div id="A2-4">
 		<table class="table1">
@@ -29,9 +29,10 @@
 				<tr>
 					<th>#{i18n.getText('CCG018_8')}</th>
 					<th>#{i18n.getText('CCG018_9')}</th>
-					<th>#{i18n.getText('CCG018_10')}</th>
+					<th data-bind="visible: isVisible">#{i18n.getText('CCG018_10')}</th>
 					<th>#{i18n.getText('CCG018_11')}</th>
 					<th>#{i18n.getText('CCG018_12')}</th>
+					<th data-bind="visible: isHeaderScroll"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -39,12 +40,12 @@
 					<tr>
 						<td data-bind="text: $data.code"></td>
 						<td data-bind="text: $data.name"></td>
-						<td>
+						<td data-bind="visible: $parent.isVisible">
 							<div id="combo-box"
 								data-bind="ntsComboBox: {
-												options: $parent.itemList,
+												options: $parent.comboItemsAfterLogin,
 												optionsValue: 'code',
-												value: $parent.selectedCode1,
+												value: $data.loginMenuCd,
 												optionsText: 'name',
 												editable: false,
 												enable: true,
@@ -55,9 +56,9 @@
 						<td>
 							<div id="combo-box"
 								data-bind="ntsComboBox: {
-												options: $parent.itemList,
+												options: $parent.comboItemsAsTopPage,
 												optionsValue: 'code',
-												value: $parent.selectedCode2,
+												value: $data.topMenuCd,
 												optionsText: 'name',
 												editable: false,
 												enable: true,
@@ -71,7 +72,7 @@
 												options: $parent.roundingRules,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: $parent.selectedRuleCode,
+												value: $data.personPermissionSet,
 												enable: true  }"></div>
 						</td>
 					</tr>

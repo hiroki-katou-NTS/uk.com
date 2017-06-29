@@ -9,18 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.dto.EmploymentSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting;
 
-/**
- * Gets the employment setting.
- *
- * @return the employment setting
- */
 @Getter
-
-/**
- * Sets the employment setting.
- *
- * @param employmentSetting the new employment setting
- */
 @Setter
 public class EmploymentSaveCommand {
 	

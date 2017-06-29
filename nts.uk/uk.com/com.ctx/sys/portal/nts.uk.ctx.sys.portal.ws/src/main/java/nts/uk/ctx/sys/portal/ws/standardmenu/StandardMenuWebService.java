@@ -8,14 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.junit.runners.Parameterized.Parameter;
-
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.standardmenu.StandardMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommandHandler;
-import nts.uk.ctx.sys.portal.app.command.titlemenu.UpdateTitleMenuCommand;
-import nts.uk.ctx.sys.portal.app.command.titlemenu.UpdateTitleMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuFinder;
 
@@ -38,20 +34,20 @@ public class StandardMenuWebService extends WebService {
 	}
 
 	@POST
-	@Path("findByAfterLoginDisplay")
-	public List<StandardMenuDto> findByAfterLoginDisplay() {
-		return finder.findByAfterLoginDisplay(0);
+	@Path("findByAfterLoginDisplay/{afterLoginDisplay}")
+	public List<StandardMenuDto> findByAfterLoginDisplay(@PathParam("afterLoginDisplay") int afterLoginDisplay) {
+		return finder.findByAfterLoginDisplay(afterLoginDisplay);
 	}
 
 	@POST
-	@Path("findByAfterLgDisSysMenuCls")
-	public List<StandardMenuDto> findByAfterLgDisSysMenuCls() {
-		return finder.findByAfterLgDisSysMenuCls();
+	@Path("findBySystemMenuCls")
+	public List<StandardMenuDto> findBySystemMenuCls() {
+		return finder.findBySystemMenuCls();
 	}
-	
+
 	@POST
 	@Path("findByAtr")
-	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr  ) {
+	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr) {
 		return finder.findByAtr(webMenuSetting, menuAtr);
 	}
 	

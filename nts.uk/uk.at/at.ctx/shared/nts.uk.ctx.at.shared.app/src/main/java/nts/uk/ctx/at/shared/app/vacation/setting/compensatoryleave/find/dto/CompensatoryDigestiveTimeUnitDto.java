@@ -8,6 +8,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnitSetMemento;
 
+/**
+ * The Class CompensatoryDigestiveTimeUnitDto.
+ */
 public class CompensatoryDigestiveTimeUnitDto implements CompensatoryDigestiveTimeUnitSetMemento {
 
 	/** The is manage by time. */

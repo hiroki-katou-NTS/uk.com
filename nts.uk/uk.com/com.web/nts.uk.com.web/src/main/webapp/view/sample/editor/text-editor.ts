@@ -13,7 +13,7 @@ __viewContext.ready(function () {
                 valueKana: ko.observable(''), 
                 valueUan: ko.observable(''),
                 defaultValue: ko.observable(''),
-                constraint: 'WLAggregateItemCode',
+                constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
                     placeholder: "Placeholder for text editor",

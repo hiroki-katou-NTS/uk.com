@@ -69,8 +69,12 @@
 	width: 204px
 }
 
+.table1 thead tr th:nth-child(5) {
+	width: 180px
+}
+
 .table1 thead tr th:last-child {
-	width: 199px
+	width: 19px
 }
 
 .ui-igcombo-wrapper {

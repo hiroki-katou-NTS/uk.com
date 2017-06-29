@@ -13,7 +13,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
@@ -33,13 +32,12 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	protected KwpmtWorkplacePK kwpmtWorkplacePK;
 	
-	@Size(max = 120)
+	@NotNull
 	@Column(name = "WPL_NAME")
 	private String wplname;
 	
 	@Basic(optional = false)
 	@NotNull
-	@Size(min = 1, max = 120)
 	@Column(name = "WPL_CD")
 	private String wplcd;
 	

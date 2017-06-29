@@ -100,7 +100,6 @@ module nts.uk.at.view.kmk004.a {
                 self.selectedEmploymentCode = ko.observable('');
                 self.setEmploymentComponentOption();
                 self.selectedEmploymentCode.subscribe(code => {
-                    self.isLoading(false);
                     if (code) {
                         self.loadEmploymentSetting(code);
                     }
@@ -111,7 +110,6 @@ module nts.uk.at.view.kmk004.a {
                 self.selectedWorkplaceId = ko.observable('');
                 self.setWorkplaceComponentOption();
                 self.selectedWorkplaceId.subscribe(code => {
-                    self.isLoading(false);
                     if (code) {
                         self.loadWorkplaceSetting(code);
                     }
@@ -165,7 +163,7 @@ module nts.uk.at.view.kmk004.a {
                 self.clearError();
 
                 // Update flag.
-                self.isLoading(true);
+                self.isLoading(false);
                 self.isCompanySelected(true);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
@@ -192,12 +190,9 @@ module nts.uk.at.view.kmk004.a {
 
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
-                    // Select first employment.
-                    let list = $('#list-employment').getDataList();
-                    if (list) {
-                        self.selectedEmploymentCode(list[0].code);
-                        self.setAlreadySettingEmploymentList();
-                    }
+                    self.isLoading(false);
+                    // Set already setting list.
+                    self.setAlreadySettingEmploymentList();
                 });
             }
 
@@ -218,8 +213,8 @@ module nts.uk.at.view.kmk004.a {
 
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
-                    // Select first workplace.
-                    self.selectedWorkplaceId('');
+                    self.isLoading(false);
+                    // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
                 });
             }
@@ -278,7 +273,7 @@ module nts.uk.at.view.kmk004.a {
                 }
                 service.saveWorkplaceSetting(ko.toJS(self.workplaceWTSetting)).done(() => {
                     self.isNewMode(false);
-                    self.addAlreadySettingWorkplace(self.workplaceWTSetting.workplaceCode());
+                    self.addAlreadySettingWorkplace(self.workplaceWTSetting.workplaceId());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
@@ -324,7 +319,7 @@ module nts.uk.at.view.kmk004.a {
                     let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
                     service.removeWorkplaceSetting(command).done(() => {
                         self.isNewMode(true);
-                        self.removeAlreadySettingWorkplace(workplace.workplaceCode());
+                        self.removeAlreadySettingWorkplace(workplace.workplaceId());
                         // Reserve current code + name + year + id.
                         let newSetting = new WorkPlaceWTSetting();
                         newSetting.year(workplace.year());
@@ -394,7 +389,6 @@ module nts.uk.at.view.kmk004.a {
                         }
                         // Sort month.
                         self.companyWTSetting.sortMonth(self.startMonth());
-                        self.isLoading(false);
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -434,15 +428,10 @@ module nts.uk.at.view.kmk004.a {
                             self.employmentWTSetting.updateData(ko.toJS(newSetting));
                         }
                         // Set code + name.
-                        let list = $('#list-employment').getDataList();
-                        if (list) {
-                            let empt = list.filter(item => item.code == request.employmentCode)[0];
-                            self.employmentWTSetting.employmentCode(empt.code);
-                            self.employmentWTSetting.employmentName(empt.name);
-                        }
+                        self.employmentWTSetting.employmentCode(request.employmentCode);
+                        self.setEmploymentName(request.employmentCode);
                         // Sort month.
                         self.employmentWTSetting.sortMonth(self.startMonth());
-                        self.isLoading(false);
                     });
             }
 
@@ -479,14 +468,12 @@ module nts.uk.at.view.kmk004.a {
                             newSetting.year(currentSetting.year());
                             self.workplaceWTSetting.updateData(ko.toJS(newSetting));
                         }
-                        // TODO: fake data.
                         // Set code + name + id.
-                        self.workplaceWTSetting.workplaceCode(request.workplaceId);
+                        let tree = $('#list-workplace').getDataList();
                         self.workplaceWTSetting.workplaceId(request.workplaceId);
-                        self.workplaceWTSetting.workplaceName(request.workplaceId);
+                        self.setWorkplaceCodeName(tree, request.workplaceId);
                         // Sort month.
                         self.workplaceWTSetting.sortMonth(self.startMonth());
-                        self.isLoading(false);
                     });
             }
 
@@ -558,7 +545,9 @@ module nts.uk.at.view.kmk004.a {
                 self.employmentComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
+                    isShowNoSelectRow: false, // selected nothing.
                     listType: 1, // employment list.
+                    selectType: 3, // select first item.
                     selectedCode: this.selectedEmploymentCode,
                     isDialog: false,
                     alreadySettingList: self.alreadySettingEmployments
@@ -573,7 +562,9 @@ module nts.uk.at.view.kmk004.a {
                 self.workplaceComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
+                    isShowSelectButton: false, // Show button select all and selected sub parent
                     treeType: 1, // workplace tree.
+                    selectType: 3, // select first item.
                     selectedWorkplaceId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
                     isDialog: false,
@@ -649,6 +640,36 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 let asw = self.alreadySettingWorkplaces().filter(i => id == i.workplaceId)[0];
                 self.alreadySettingWorkplaces.remove(asw);
+            }
+
+            /**
+             * Set workplace code + name.
+             */
+            private setWorkplaceCodeName(treeData: Array<any>, workPlaceId: string) {
+                let self = this;
+                for (let data of treeData) {
+                    // Found!
+                    if (data.workplaceId == workPlaceId) {
+                        self.workplaceWTSetting.workplaceCode(data.code);
+                        self.workplaceWTSetting.workplaceName(data.name);
+                    }
+                    // Continue to find in childs.
+                    if (data.childs.length > 0) {
+                        this.setWorkplaceCodeName(data.childs, workPlaceId);
+                    }
+                }
+            }
+
+            /**
+             * Set employment name
+             */
+            private setEmploymentName(code: string): void {
+                let self = this;
+                let list = $('#list-employment').getDataList();
+                if (list) {
+                    let empt = list.filter(item => item.code == code)[0];
+                    self.employmentWTSetting.employmentName(empt.name);
+                }
             }
 
         }

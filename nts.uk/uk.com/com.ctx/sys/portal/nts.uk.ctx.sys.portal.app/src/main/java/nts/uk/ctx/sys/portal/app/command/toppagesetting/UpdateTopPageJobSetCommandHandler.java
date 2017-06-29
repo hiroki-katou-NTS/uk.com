@@ -37,16 +37,19 @@ public class UpdateTopPageJobSetCommandHandler extends CommandHandler<TopPageJob
 	@Override
 	protected void handle(CommandHandlerContext<TopPageJobSetBase> context) {
 		String companyId = AppContexts.user().companyId();
-		List<UpdateTopPageJobSetCommand> command = context.getCommand().listTopPageJobSet;
-		
+		TopPageJobSetBase command = context.getCommand();
+
+		List<UpdateTopPageJobSetCommand> updateTopPageJobSetCommand = command.listTopPageJobSet;
+
 		// get list jobId from List UpdateTopPageSettingCommand
-		List<String> listJobId = command.stream().map(x -> x.getJobId()).collect(Collectors.toList());
-		
+		List<String> listJobId = updateTopPageJobSetCommand.stream().map(x -> x.getJobId())
+				.collect(Collectors.toList());
+
 		// find data in TOPPAGE_JOB_SET base on companyId and list jobId
 		List<TopPageJobSet> listTopPageJobSet = topPageJobSetRepo.findByListJobId(companyId, listJobId);
 		Map<String, TopPageJobSet> topPageJobMap = listTopPageJobSet.stream()
 				.collect(Collectors.toMap(TopPageJobSet::getJobId, x -> x));
-		for (UpdateTopPageJobSetCommand updateTopPageSettingCommandObj : command) {
+		for (UpdateTopPageJobSetCommand updateTopPageSettingCommandObj : updateTopPageJobSetCommand) {
 			TopPageJobSet topPageJobSet = topPageJobMap.get(updateTopPageSettingCommandObj.getJobId());
 			TopPageJobSet TopPageJobSetObj = updateTopPageSettingCommandObj.toDomain(companyId);
 			if (topPageJobSet == null) {
@@ -55,13 +58,13 @@ public class UpdateTopPageJobSetCommandHandler extends CommandHandler<TopPageJob
 				topPageJobSetRepo.update(TopPageJobSetObj);
 			}
 		}
-		
+
 		// insert/update category setting in to table TOPPAGE_SET
 		Optional<TopPageSetting> topPageSetting = topPageSettingRepo.findByCId(companyId);
 		if (topPageSetting.isPresent()) {
-			topPageSettingRepo.update(TopPageSetting.createFromJavaType(companyId, context.getCommand().ctgSet));
+			topPageSettingRepo.update(TopPageSetting.createFromJavaType(companyId, command.ctgSet));
 		} else {
-			topPageSettingRepo.insert(TopPageSetting.createFromJavaType(companyId, context.getCommand().ctgSet));
+			topPageSettingRepo.insert(TopPageSetting.createFromJavaType(companyId, command.ctgSet));
 		}
 	}
 }
