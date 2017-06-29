@@ -59,7 +59,7 @@ public class KalmtAnnualPaidLeave extends UkJpaEntity implements Serializable {
     /** The ktvmt time vacation set. */
     @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     @PrimaryKeyJoinColumn
-    public KtvmtTimeVacationSet ktvmtTimeVacationSet;
+    public KtvmtTimeAnnualSet ktvmtTimeVacationSet;
 
     /**
      * Instantiates a new kalmt annual paid leave.
