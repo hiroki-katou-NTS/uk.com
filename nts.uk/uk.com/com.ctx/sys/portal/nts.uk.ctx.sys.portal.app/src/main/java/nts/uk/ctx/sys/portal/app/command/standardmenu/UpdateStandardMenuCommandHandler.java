@@ -7,14 +7,19 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
-
 @Stateless
 @Transactional
+/**
+ * 
+ * @author yennth
+ * The class UpdateStandardMenuCommandHandler 
+ */
 public class UpdateStandardMenuCommandHandler extends CommandHandler<UpdateStandardMenuCommand> {
 
 	@Inject
@@ -27,12 +32,15 @@ public class UpdateStandardMenuCommandHandler extends CommandHandler<UpdateStand
 		String companyId = AppContexts.user().companyId();
 		List<StandardMenuCommand> standardMenus = update.getStandardMenus();
 		for(StandardMenuCommand obj : standardMenus){
-			StandardMenu o = StandardMenu.createFromJavaType(companyId, obj.getCode(), 
-					obj.getTargetItems(), obj.getDisplayName(), 0, 0, 
-					"", obj.getSystem(), obj.getClassification(), 
-					0, 0, 0);
-			lstStandardMenu.add(o);
+			StandardMenu o = StandardMenu.updateName(companyId, obj.getClassification(), obj.getCode(), 
+					obj.getDisplayName(), obj.getSystem());
+			if(o.getDisplayName() == null || o.getDisplayName().v().equals(""))
+			{
+				throw new BusinessException("");
+			}
+			else
+				lstStandardMenu.add(o);
 		}		
-		standardMenuRepository.update(lstStandardMenu);
+		standardMenuRepository.changeName(lstStandardMenu);
 	}
 }
