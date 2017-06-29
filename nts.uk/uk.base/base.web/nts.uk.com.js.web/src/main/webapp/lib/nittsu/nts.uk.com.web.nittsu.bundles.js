@@ -8507,6 +8507,17 @@ var nts;
                                 }
                             }
                         });
+                        // Format on blur
+                        $input.blur(function () {
+                            if (!$input.attr('readonly')) {
+                                var newText = $input.val();
+                                var result = validator.validate(newText);
+                                $input.ntsError('clear');
+                                if (!result.isValid) {
+                                    $input.ntsError('set', result.errorMessage);
+                                }
+                            }
+                        });
                         $input.on("change", function (e) {
                             if (!$input.attr('readonly')) {
                                 var newText = $input.val();
@@ -8539,6 +8550,9 @@ var nts;
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var textmode = this.editorOption.textmode;
+                        if (data.value() !== $input.val()) {
+                            $input.triggerHandler('change');
+                        }
                         $input.attr('type', textmode);
                     };
                     TextEditorProcessor.prototype.getDefaultOption = function () {
