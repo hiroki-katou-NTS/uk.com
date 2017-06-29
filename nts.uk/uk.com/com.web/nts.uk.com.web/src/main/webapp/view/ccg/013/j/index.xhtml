@@ -23,12 +23,9 @@
 			<div id="contents-area">
 				<span>#{i18n.getText('CCG013_30')}</span>
 				<table class="control">
-<!-- 					<tr> -->
-<!-- 						<td colspan="3" id="description"></td> -->
-<!-- 					</tr> -->
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_31')}</div></td>
-						<td colspan="2"><input data-bind="ntsTextEditor: {value: nameTitleBar}" /></td>
+						<td colspan="2"><input data-bind="ntsTextEditor: {value: nameTitleBar, required: true}" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
