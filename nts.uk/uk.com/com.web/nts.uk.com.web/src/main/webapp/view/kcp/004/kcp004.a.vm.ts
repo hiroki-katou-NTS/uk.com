@@ -55,7 +55,7 @@ module kcp004.a.viewmodel {
             // Control component
             self.baseDate = ko.observable(new Date());
             self.selectedWorkplaceId = ko.observable('wpl2');
-            self.multiSelectedWorkplaceId = ko.observableArray(['wpl1', 'wpl3']);
+            self.multiSelectedWorkplaceId = ko.observableArray(['wpl111111111111111111111111111111111', 'wpl311111111111111111111111111111111']);
             self.enable = ko.observable(true); 
             self.listSelectionType = ko.observableArray([
                 {code : 1, name: 'Select by selected code', enable: self.enable},
@@ -66,8 +66,8 @@ module kcp004.a.viewmodel {
             self.selectedSelectionType = ko.observable(1);
             
             self.alreadySettingList = ko.observableArray([
-                    {workplaceId: 'wpl1', settingType: SettingType.NO_SETTING},
-                    {workplaceId: 'wpl3', settingType: SettingType.ALREADY_SETTING},
+                    {workplaceId: 'wpl111111111111111111111111111111111', settingType: SettingType.NO_SETTING},
+                    {workplaceId: 'wpl311111111111111111111111111111111', settingType: SettingType.ALREADY_SETTING},
             ]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -87,8 +87,8 @@ module kcp004.a.viewmodel {
             
             // Subscribe
             self.selectedTreeType.subscribe(function(code) {
-                self.selectedWorkplaceId('wpl2');
-                self.multiSelectedWorkplaceId(['wpl1', 'wpl3']);
+                self.selectedWorkplaceId('wpl211111111111111111111111111111111');
+                self.multiSelectedWorkplaceId(['wpl111111111111111111111111111111111', 'wpl311111111111111111111111111111111']);
                 self.reloadTreeGrid().done(() => {
                     self.getSelectedData();
                     self.isShowSelectButton(code == 1);
