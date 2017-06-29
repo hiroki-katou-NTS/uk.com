@@ -43,7 +43,9 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 
 	@Override
 	public void update(FlowMenu flow) {
-		CcgmtFlowMenu entity = toEntity(flow);
+		CcgmtFlowMenu entity = this.queryProxy()
+				.find(new CcgmtFlowMenuPK(flow.getCompanyID(), flow.getToppagePartID()), CcgmtFlowMenu.class).get();
+		entity.fileID = flow.getFileID();
 		this.commandProxy().update(entity);
 	}
 

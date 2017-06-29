@@ -216,7 +216,7 @@ module ccg030.a.viewmodel {
         open030B_Dialog() {
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared("flowmenu", this.selectedFlowMenu(), false);
-            nts.uk.ui.windows.setShared("fileID", this.tempFileID(), false);
+            nts.uk.ui.windows.setShared("fileID", this.selectedFlowMenu().fileID(), false);
             nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: nts.uk.resource.getText("CCG030_4"), dialogClass: "no-close" }).onClosed(() => {
                 nts.uk.ui.block.clear();
             });
