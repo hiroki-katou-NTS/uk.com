@@ -30,6 +30,7 @@ module kcp004.a.viewmodel {
         
         jsonData: KnockoutObservable<string>;
         rowSelected: KnockoutObservable<RowSelection>;
+        isBindingTreeGrid: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         
         constructor() {
@@ -82,6 +83,7 @@ module kcp004.a.viewmodel {
             
             self.jsonData = ko.observable('');
             self.rowSelected = ko.observable(new RowSelection('', ''));
+            self.isBindingTreeGrid = ko.observable(false);
             
             // Subscribe
             self.selectedTreeType.subscribe(function(code) {
@@ -156,7 +158,7 @@ module kcp004.a.viewmodel {
         
         public getSelectedData() {
             let self = this;
-            if (!$('#tree-grid').getRowSelected || $('#tree-grid').getRowSelected().length <= 0) {
+            if (!self.isBindingTreeGrid()) {
                 return;
             }
             let data = $('#tree-grid').getRowSelected();
