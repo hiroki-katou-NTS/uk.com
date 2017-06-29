@@ -22,8 +22,10 @@ module nts.uk.ui.gridlist {
             addressCode2: string;
             address1: string;
             address2: string;
+            comboCode1: number;
             combo: string;
             header0: string;
+            comboCode2: number;
             header01: string;
             header1: string;
             header2: string;
@@ -41,8 +43,10 @@ module nts.uk.ui.gridlist {
                 this.addressCode2 = "002";
                 this.address1 = "HN";
                 this.address2 = "愛知県日本";
+                this.comboCode1 = index % 3 + 1;
                 this.combo = String(index % 3 + 1);
                 this.header0 = "Out";
+                this.comboCode2 = index % 3 + 4;
                 this.header01 = String(index % 3 + 4);
                 this.header02 = String(index % 3 + 1);
                 this.header1 = "001";
@@ -79,6 +83,60 @@ module nts.uk.ui.gridlist {
                             new ItemModel('2', 'Text2'),
                             new ItemModel('3', 'Text3')];
         
+        class CellState {
+            rowId: number;
+            columnKey: string;
+            state: Array<any>
+            constructor(rowId: string, columnKey: string, state: Array<any>) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.state = state;
+            }
+        }
+        var statesTable = [];
+        statesTable.push(new CellState(0, "address1", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Error, nts.uk.ui.jqueryExtentions.ntsGrid.color.Alarm]));
+        statesTable.push(new CellState(0, "time", [nts.uk.ui.jqueryExtentions.ntsGrid.color.ManualEditTarget, nts.uk.ui.jqueryExtentions.ntsGrid.color.ManualEditOther]));
+        statesTable.push(new CellState(1, "time", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Reflect, nts.uk.ui.jqueryExtentions.ntsGrid.color.Calculation]));
+        statesTable.push(new CellState(5, "time", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+        statesTable.push(new CellState(6, "header0", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+        for (let i = 1; i < 100; i++) {
+            if (i % 2 === 0) {
+                statesTable.push(new CellState(i, "address1", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Alarm, nts.uk.ui.jqueryExtentions.ntsGrid.color.Reflect]));
+                statesTable.push(new CellState(i, "comboCode1", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+                statesTable.push(new CellState(i, "combo", [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]));
+            }
+        }
+        
+        class TextColor {
+            rowId: number;
+            columnKey: string;
+            color: string;
+            constructor(rowId: any, columnKey: string, color: string) {
+                this.rowId = rowId;
+                this.columnKey = columnKey;
+                this.color = color;
+            } 
+        }
+        let colorsTable = [];
+        for (let i = 0; i < 400; i++) {
+            if (i % 7 === 0) {
+                colorsTable.push(new TextColor(i, "id", "text-color1"));
+            }
+        }
+        
+        class RowState {
+            rowId: number;
+            disable: boolean;
+            constructor(rowId: number, disable: boolean) {
+                this.rowId = rowId;
+                this.disable = disable;
+            }
+        }
+        let rowStates = [];
+        for (let i = 9; i < 10; i++) {
+            rowStates.push(new RowState(i, true));
+        }
+        
         $("#grid2").ntsGrid({ 
                             width: '1500px',
                             height: '800px',
@@ -114,10 +172,21 @@ module nts.uk.ui.gridlist {
                                     group: [
                                             { headerText: 'Item<br/>Code', key: 'addressCode1', dataType: 'string', width: '150px' },
                                             { headerText: 'Address1', key: 'address1', dataType: 'string', width: '150px'}
-                                           ]},
-                                { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' },
+                                           ]
+                                },
+                                { headerText: 'Combo1',
+                                    group: [
+                                            { headerText: 'Code', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode'  },
+                                            { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' }
+                                           ]
+                                },
                                 { headerText: 'Header0', key: 'header0', dataType: 'string', width: '150px', ntsControl: 'Label' },
-                                { headerText: 'Header01', key: 'header01', dataType: 'string', width: '500px', ntsControl: 'Combobox2' },
+                                { headerText: 'Combo2',
+                                    group: [
+                                            { headerText: 'Code', key: 'comboCode2', dataType: 'number', width: '60px', ntsType: 'comboCode' },
+                                            { headerText: 'Header01', key: 'header01', dataType: 'string', width: '500px', ntsControl: 'Combobox2' }
+                                        ]
+                                },
                                 { headerText: 'Header02', key: 'header02', dataType: 'string', width: '500px', ntsControl: 'Combobox3' },
                                 { headerText: '住所',
                                     group: [
@@ -177,8 +246,10 @@ module nts.uk.ui.gridlist {
                                                     summaryCalculator: $.proxy(totalNumber, this),
                                                     order: 0  
                                                 }]},
+                                            { columnKey: 'comboCode1', allowSummaries: false },
                                             { columnKey: 'combo', allowSummaries: false },
                                             { columnKey: 'header0', allowSummaries: false },
+                                            { columnKey: 'comboCode2', allowSummaries: false },
                                             { columnKey: 'header01', allowSummaries: false },
                                             { columnKey: 'header02', allowSummaries: false },
                                             { columnKey: 'header1', allowSummaries: false },
@@ -213,16 +284,42 @@ module nts.uk.ui.gridlist {
                                                     } 
                                                   } 
                                                 ]
+                                            }, 
+                                            { name: 'CellState',
+                                                rowId: 'rowId',
+                                                columnKey: 'columnKey',
+                                                state: 'state',
+                                                states: statesTable
+                                            },
+                                            {
+                                                name: 'RowState',
+                                                rows: rowStates
+                                            },
+                                            {
+                                                name: 'TextColor',
+                                                rowId: 'rowId',
+                                                columnKey: 'columnKey',
+                                                color: 'color',
+                                                colorsTable: colorsTable
+                                            },
+                                            {
+                                                name: 'HeaderStyles',
+                                                columns: [
+                                                    { key: 'ruleCode', color: 'header1' },
+                                                    { key: 'combo', color: 'header2' },
+                                                    { key: 'header3', color: 'header2' },
+                                                    { key: 'header0', color: 'header1' }
+                                                ]
                                             },
                                             { name: "Sheet", 
                                               initialDisplay: "sheet1",
                                               sheets: [ 
-                                                        { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "addressCode2", "address1", "address2", "combo", "header0", "header01", "header02"] }, 
+                                                        { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "addressCode2", "address1", "address2", "comboCode1", "combo", "header0", "comboCode2", "header01", "header02"] }, 
                                                         { name: "sheet2", text: "Sheet 2", columns: ["header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                       ]
                                             }
                                          ],
-                            ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                            ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
                                             { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true },
                                             { name: 'Button', controlType: 'Button', text: 'Warn me', enable: true, click: function() { alert("Oops!!"); } },
@@ -236,7 +333,7 @@ module nts.uk.ui.gridlist {
             alert(source[1].flag);
         });
         $("#update-row").on("click", function() {
-            $("#grid2").ntsGrid("updateRow", 0, { flag: false, ruleCode: '2', combo: '3' });
+            $("#grid2").ntsGrid("updateRow", 0, { flag: false, ruleCode: '6', combo: '3' });
         });
         $("#enable-ctrl").on("click", function() {
             $("#grid2").ntsGrid("enableNtsControlAt", 1, "combo", "ComboBox");
@@ -269,7 +366,7 @@ module nts.uk.ui.gridlist {
             let i = 0;
             let result = "Not found";
             while(i < 500) {
-                i++
+                i++;
             }
             if (val === "001") {
                 result = "結果01";
@@ -279,6 +376,17 @@ module nts.uk.ui.gridlist {
             dfd.resolve(result);
             return dfd.promise();
         }
-        this.bind(model);
+        
+        // Grid cell errors
+        let dialogOptions: any = {
+            forGrid: true,
+            headers: [
+                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
+                ]
+        };
+        this.bind(model, dialogOptions);
     });
 }
