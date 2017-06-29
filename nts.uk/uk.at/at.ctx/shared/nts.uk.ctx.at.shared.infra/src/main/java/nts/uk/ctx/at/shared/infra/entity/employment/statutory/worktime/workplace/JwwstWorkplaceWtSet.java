@@ -23,15 +23,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "JWPWTST_WORKPLACE_WT_SET")
-public class JwpwtstWorkplaceWtSet extends UkJpaEntity implements Serializable {
+@Table(name = "JWWST_WORKPLACE_WT_SET")
+public class JwwstWorkplaceWtSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The jwpwtst workplace wt set PK. */
+	/** The jwwst workplace wt set PK. */
 	@EmbeddedId
-	protected JwpwtstWorkplaceWtSetPK jwpwtstWorkplaceWtSetPK;
+	protected JwwstWorkplaceWtSetPK jwwstWorkplaceWtSetPK;
 
 	/** The str week. */
 	@Column(name = "STR_WEEK")
@@ -122,7 +122,7 @@ public class JwpwtstWorkplaceWtSet extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new jwpwtst workplace wt set.
 	 */
-	public JwpwtstWorkplaceWtSet() {
+	public JwwstWorkplaceWtSet() {
 	}
 
 	/*
@@ -132,6 +132,6 @@ public class JwpwtstWorkplaceWtSet extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.jwpwtstWorkplaceWtSetPK;
+		return this.jwwstWorkplaceWtSetPK;
 	}
 }

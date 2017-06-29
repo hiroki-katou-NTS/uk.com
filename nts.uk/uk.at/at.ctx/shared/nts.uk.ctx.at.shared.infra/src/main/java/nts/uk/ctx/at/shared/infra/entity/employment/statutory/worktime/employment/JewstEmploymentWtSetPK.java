@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace;
+package nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment;
 
 import java.io.Serializable;
 
@@ -15,11 +15,11 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * The Class JwpwtstWorkplaceWtSetPK.
+ * The Class JewtstEmploymentWtSetPK.
  */
 @Embeddable
 @Data
-public class JwpwtstWorkplaceWtSetPK implements Serializable {
+public class JewstEmploymentWtSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -49,33 +49,33 @@ public class JwpwtstWorkplaceWtSetPK implements Serializable {
 	@Column(name = "WT_TYPE")
 	private int type;
 
-	/** The wkp id. */
+	/** The empt cd. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "WKPID")
-	private String wkpId;
+	@Column(name = "EMPTCD")
+	private String emptCd;
 
 	/**
-	 * Instantiates a new jwpwtst workplace wt set PK.
+	 * Instantiates a new jewtst employment wt set PK.
 	 */
-	public JwpwtstWorkplaceWtSetPK() {
+	public JewstEmploymentWtSetPK() {
 	}
 
 	/**
-	 * Instantiates a new jwpwtst workplace wt set PK.
+	 * Instantiates a new jewtst employment wt set PK.
 	 *
 	 * @param cid the cid
 	 * @param yK the y K
 	 * @param ctg the ctg
 	 * @param type the type
-	 * @param wkpId the wkp id
+	 * @param emptCd the empt cd
 	 */
-	public JwpwtstWorkplaceWtSetPK(String cid, int yK, int ctg, int type, String wkpId) {
+	public JewstEmploymentWtSetPK(String cid, int yK, int ctg, int type, String emptCd) {
 		this.cid = cid;
 		this.yK = yK;
 		this.ctg = ctg;
 		this.type = type;
-		this.wkpId = wkpId;
+		this.emptCd = emptCd;
 	}
 
 }
