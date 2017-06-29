@@ -16,3 +16,5 @@ button#btnDelete.danger.btnSetting{margin-right: 30px;}
 #btnRegistry{width: 70px;}
 #btnDelete{width: 70px;}
 #btn004{width: 70px;}
+#file_upload{width: 361px; overflow: hidden;}
+.form-label > i {white-space:nowrap;}

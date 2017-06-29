@@ -74,13 +74,13 @@ module ccg030.a.viewmodel {
         /** Click Registry button */
         registryFlowMenu() {
             var self = this;
-            var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
-            var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
             if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
                 $('#file_upload').ntsError('set', '選択されていないファイル');
             if (!errors.hasError()) {
-                 self.selectedFlowMenu().topPageCode(text.padLeft($("#inpCode").val(), '0', 4));
+                self.selectedFlowMenu().topPageCode(text.padLeft($("#inpCode").val(), '0', 4));
+                var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
+                var topPageCode = flowMenu.topPageCode;
                 nts.uk.ui.block.invisible();
                 if (self.isCreate() === true) {
                     service.createFlowMenu(flowMenu).done((data) => {
