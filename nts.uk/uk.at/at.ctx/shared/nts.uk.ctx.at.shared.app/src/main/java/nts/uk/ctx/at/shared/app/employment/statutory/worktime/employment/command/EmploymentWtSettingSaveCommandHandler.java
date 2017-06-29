@@ -44,9 +44,6 @@ public class EmploymentWtSettingSaveCommandHandler extends CommandHandler<Employ
 
 		EmploymentWtSetting companySetting = new EmploymentWtSetting(command);
 
-		// Validate
-		companySetting.validate();
-
 		// Update
 		Optional<EmploymentWtSetting> optCompanySetting = this.repository.find(companyId, command.getYear().v(),
 				command.getEmploymentCode());

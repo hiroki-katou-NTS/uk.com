@@ -24,7 +24,7 @@
 						<h2>(Job Titlle List)</h2>
 						<h2>Overview</h2>
 						
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p><b>Single/Multiple Selection</b></p><br></br>
 							<div class="cf" data-bind="ntsSwitchButton: {
 														options: selectionOption,
@@ -33,13 +33,13 @@
 														value: selectedOption,
 														enable: true }"></div>
 						</div>
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<div data-bind="ntsCheckBox:{checked: isAlreadySetting}">Show Already Setting</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Show As Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show NoSelection Item</div>
 						</div><br></br>
 
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p>
 								<b>Selection Type:</b>
 							</p>
@@ -53,7 +53,7 @@
 											
 						</div>
 
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p>
 								<b>Save/Delete</b>
 							</p>
@@ -72,17 +72,19 @@
 					<br></br>
 					<table style="margin: 30px;">
 						<tr>
-							<td style="width: 640px;">
+							<td style="width: 550px; border: none">
 								<div style="margin-bottom: 30px; padding-left: 20px">
 									<p style="font-size: 30px">職位リスト</p>
 								</div>
 								<div id="component-items-list"></div>
 							</td>
-							<td>
+							<td style="border: none; padding-top: 100px">
 								<table>
 									<tr>
-										<td>Selected Codes: </td>
-										<td style="width: 100px"><div data-bind="text: getSelectedItemCode()"></div></td>
+										<td style="font-size: 20px; font-weight: bold; color: gray;">Selected Codes: </td>
+									</tr>
+									<tr >
+										<td style="margin-right: 30px; width: 500px; color: gray;"><div data-bind="text: getSelectedItemCode()"></div></td>
 									</tr>
 								</table>
 							</td>
@@ -90,7 +92,7 @@
 					</table>
 					
 					<!-- BEGIN DESCRIPTION -->
-						<article class="cf" style="margin-top: 10px;">
+						<article class="cf" style="margin-top: 40px;">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>

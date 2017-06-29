@@ -13,7 +13,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,20 +30,20 @@ public class KwpmtWorkplacePK implements Serializable {
 
 	@Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 17)
     @Column(name = "CID")
     private String cid;
     
 	@Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 5)
     @Column(name = "WPL_ID")
     private String wplid;
 	
+	@NotNull
 	@Column(name = "STR_D")
 	@Temporal(TemporalType.TIMESTAMP)
 	private GeneralDate strD;
 	
+	@NotNull
 	@Column(name = "END_D")
 	@Temporal(TemporalType.TIMESTAMP)
 	private GeneralDate endD;

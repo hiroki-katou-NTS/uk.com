@@ -33,10 +33,11 @@ public class CompanyWtSettingFinder {
 	 */
 	public CompanyWtSettingDto find(int year) {
 		Optional<CompanyWtSetting> optCompanySetting = this.repository.find(companyId, year);
+		// Update mode.
 		if(optCompanySetting.isPresent()) {
 			return CompanyWtSettingDto.fromDomain(optCompanySetting.get());
 		}
-		// TODO ko co du lieu thi vao new mode.
+		// New mode.
 		return null;
 	}
 }

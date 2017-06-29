@@ -4,7 +4,8 @@
 }
 
 .btnMenu {
-	width: 70px;
+	width: 120px;
+	margin: 10px;
 }
 
 #btnSelectedClear {

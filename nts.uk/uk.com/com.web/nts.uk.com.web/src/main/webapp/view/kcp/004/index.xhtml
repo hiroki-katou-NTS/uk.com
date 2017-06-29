@@ -21,6 +21,12 @@
 				h4 {
 					font-size: 17px !important;
 				}
+				.ntsRadioBox {
+					padding: 10px 0px 10px 20px;
+				}
+				.ntsCheckBox {
+					padding-top: 10px !important;
+				}
 			</style>
 		</ui:define>
 
@@ -38,28 +44,29 @@
 							<button data-bind="click: remove">Remove</button>
 						</div>
 						<div>
-							<div style="margin-left: 10px;">
-								<div data-bind="ntsCheckBox:{checked: isDialog}">Dialog</div>
-								<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
-								<div data-bind="ntsCheckBox:{checked: isShowSelectButton, enable: enableShowSelectButton}">Show SelectAll/SelectSubParent button</div>
-							</div>
-							<div style="padding: 0px 10px: margin: 10px 0px;">
-								<h4>Tree grid type</h4>
-								<div style="margin: 5px 10px;" data-bind="ntsRadioBoxGroup: {
+							<div>
+								<h4>Tree grid type:</h4>
+								<div data-bind="ntsRadioBoxGroup: {
 									options: listTreeType,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedTreeType,
 									enable: true}"></div>
 							</div>
-							<div style="padding: 0px 10px">
+							<div>
 								<h4>Selection type:</h4>
-								<div style="margin: 5px 10px;" data-bind="ntsRadioBoxGroup: {
+								<div data-bind="ntsRadioBoxGroup: {
 									options: listSelectionType,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedSelectionType,
 									enable: enable}"></div>
+							</div>
+							<h4>Other option:</h4>
+							<div style="margin-left: 17px;">
+								<div data-bind="ntsCheckBox:{checked: isDialog}">Dialog</div>
+								<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
+								<div data-bind="ntsCheckBox:{checked: isShowSelectButton, enable: enableShowSelectButton}">Show SelectAll/SelectSubParent button</div>
 							</div>
 							<hr></hr>
 						</div>
@@ -68,14 +75,14 @@
 								<tr>
 									<td><div id="tree-grid" style="width: 500px;margin-top: 30px;"></div></td>
 									<td>
-										<div style="margin-left: 50px;">
+										<div>
 											<table class="table-tree-sample" data-bind="with: rowSelected">
 												<tr>
-													<td><label style="margin-right: 10px;font-size: 17px;">Workplace id:</label></td>
+													<td style="width: 125px;"><label style="margin-right: 10px;font-size: 17px;">Workplace id:</label></td>
 													<td><span style="font-size: 20px;" data-bind='text: workplaceId'></span></td>
 												</tr>
 												<tr>
-													<td><label style="margin-right: 10px;font-size: 17px;">Workplace code:</label></td>
+													<td style="width: 125px;"><label style="margin-right: 10px;font-size: 17px;">Workplace code:</label></td>
 													<td><span style="font-size: 20px;" data-bind='text: workplaceCode'></span></td>
 												</tr>
 											</table>
@@ -100,9 +107,9 @@
 									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
 									<pre><![CDATA[<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 </ui:define>]]></pre>
-									<p>Import library to use Component, you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
-<pre><![CDATA[<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>]]></pre>
+									<p>Create a div tag to bind tree grid</p>
 									<pre><![CDATA[<div id="tree-grid" style="width: 500px;"></div>]]></pre>
 								</div><!-- END TAB HTML -->
 								

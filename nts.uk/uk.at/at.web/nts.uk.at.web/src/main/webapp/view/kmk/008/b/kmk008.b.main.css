@@ -55,3 +55,11 @@ button {
 .table-basic-setting-list th {
 	height: 35px;
 }
+
+.lbl-title-employeer-name {
+	margin-bottom: 30px !important;	
+}
+
+.lbl-title-employeer-name > div {
+	margin-right: 20px;
+}
