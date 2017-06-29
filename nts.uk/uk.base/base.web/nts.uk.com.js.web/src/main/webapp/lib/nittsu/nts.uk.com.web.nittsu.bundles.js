@@ -1869,11 +1869,12 @@ var nts;
                     return defaultInputFormat;
                 }
                 var uniqueFormat = _.uniq(format.split(""));
-                return _.filter(defaultInputFormat, function (dfFormat) {
+                var formats = _.filter(defaultInputFormat, function (dfFormat) {
                     return _.find(uniqueFormat, function (opFormat) {
                         return dfFormat.indexOf(opFormat) >= 0;
                     }) !== undefined;
                 });
+                return nts.uk.util.isNullOrEmpty(formats) ? defaultInputFormat : formats;
             }
             function UTCDate(year, month, date, hours, minutes, seconds, milliseconds) {
                 // Return local time in UTC
