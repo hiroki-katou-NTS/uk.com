@@ -7,13 +7,13 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
  * The Class TimeVacationSetting.
  */
 @Getter
-public class TimeVacationSetting extends DomainObject {
+public class TimeAnnualSetting extends DomainObject {
 
     /** The time manage type. */
     // 時間年休管理区分
@@ -21,7 +21,7 @@ public class TimeVacationSetting extends DomainObject {
 
     /** The time unit. */
     // 時間年休消化単位
-    private TimeVacationDigestiveUnit timeUnit;
+    private TimeDigestiveUnit timeUnit;
 
     /** The max day. */
     // 上限日数:時間年休の上限日数
@@ -36,7 +36,7 @@ public class TimeVacationSetting extends DomainObject {
      *
      * @param memento the memento
      */
-    public TimeVacationSetting(TimeVacationSettingGetMemento memento) {
+    public TimeAnnualSetting(TimeAnnualSettingGetMemento memento) {
         this.timeManageType = memento.getTimeManageType();
         this.timeUnit = memento.getTimeUnit();
         this.maxYearDayLeave = memento.getMaxYearDayLeave();
@@ -48,7 +48,7 @@ public class TimeVacationSetting extends DomainObject {
      *
      * @param memento the memento
      */
-    public void saveToMemento(TimeVacationSettingSetMemento memento) {
+    public void saveToMemento(TimeAnnualSettingSetMemento memento) {
         memento.setTimeManageType(this.timeManageType);
         memento.setTimeUnit(this.timeUnit);
         memento.setMaxYearDayLeave(this.maxYearDayLeave);

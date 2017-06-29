@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnitSetMemento;
 
 /**
@@ -25,7 +25,7 @@ public class CompensatoryDigestiveTimeUnitDto implements CompensatoryDigestiveTi
 	}
 
 	@Override
-	public void setDigestiveUnit(TimeVacationDigestiveUnit digestiveUnit) {
+	public void setDigestiveUnit(TimeDigestiveUnit digestiveUnit) {
 		this.digestiveUnit = digestiveUnit.value;
 	}
 

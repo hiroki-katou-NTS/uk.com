@@ -102,32 +102,21 @@
 								<li><a href="#tabs-html">HTML Binding</a></li>
 								<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								<li><a href="#tabs-method">Methods</a></li>
+								<li><a href="#tabs-data">Data</a></li>
 							</ol>
 							<!-- BEGIN TAB HTML -->
 							<div id="tabs-html" class="cf">
 								<h2>HTML</h2>
-								<p>
-									Using Ignite library so you must include following line in <i>&lt;ui:define
-										name="htmlHead"&gt;</i>
-								</p>
-								<pre>
-									<![CDATA[<ui:define name="htmlHead">
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+									<pre><![CDATA[<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
-</ui:define>]]>
-								</pre>
+</ui:define>]]></pre>
 
-								<p>
-									Import library to use Component, you must include following
-									line in <i>&lt;ui:define name="htmlHead"&gt;</i>
-								</p>
-								<pre>
-									<![CDATA[<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>]]>
-								</pre>
-
-								<p>Create a div tag to bind grid list</p>
-								<pre>
-									<![CDATA[<div id="classification-list-setting"></div>]]>
-								</pre>
+									<p>Import library to use Component, you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+									<pre><![CDATA[<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>]]></pre>
+									
+									<p>Create a div tag  to bind grid list</p>
+									<pre><![CDATA[<div id="empt-list-setting"></div>]]></pre>
 							</div>
 							<!-- END TAB HTML -->
 
@@ -135,76 +124,70 @@
 							<div id="tabs-viewmodel" class="cf">
 								<h2>TypeScript</h2>
 								<h3>ViewModel</h3>
-								<pre>
-									<![CDATA[<!---->
-										export class ScreenModel {
-												listComponentOption: any;
-												selectedCode: KnockoutObservable<string>;
-												multiSelectedCode: KnockoutObservableArray<any>;
-												isShowAlreadySet: KnockoutObservable<boolean>;
-												alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-												isDialog: KnockoutObservable<boolean>;
-												isShowNoSelectRow: KnockoutObservable<boolean>;
-												isMultiSelect: KnockoutObservable<boolean>;
-												employmentList: KnockoutObservableArray<UnitModel>;
-												
-												
-												constructor() {
-													let self = this;
-													self.selectedCode = ko.observable('1');
-													self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
-													self.isShowAlreadySet = ko.observable(false);
-													self.alreadySettingList = ko.observableArray([
-														{code: '1', isAlreadySetting: true},
-														{code: '2', isAlreadySetting: true}
-													]);
-													self.isDialog = ko.observable(false);
-													self.isShowNoSelectRow = ko.observable(false);
-													self.isMultiSelect = ko.observable(false);
-													self.listComponentOption = {
-														isShowAlreadySet: self.isShowAlreadySet(),
-														isMultiSelect: self.isMultiSelect(),
-														listType: ListType.Classification,
-														selectType: SelectType.SELECT_BY_SELECTED_CODE,
-														selectedCode: self.selectedCode,
-														isDialog: self.isDialog(),
-														isShowNoSelectRow: self.isShowNoSelectRow(),
-														alreadySettingList: self.alreadySettingList
-													};
-												}
-												self.employmentList = ko.observableArray<UnitModel>([]);
-										}
-										export class ListType {
-											static EMPLOYMENT = 1;
-											static Classification = 2;
-											static JOB_TITLE = 3;
-											static EMPLOYEE = 4;
-										}
-								
-										export interface UnitModel {
-											code: string;
-											name?: string;
-											workplaceName?: string;
-											isAlreadySetting?: boolean;
-										}
-										
-										export class SelectType {
-											static SELECT_BY_SELECTED_CODE = 1;
-											static SELECT_ALL = 2;
-											static SELECT_FIRST_ITEM = 3;
-											static NO_SELECT = 4;
-										}
-										
-										export interface UnitAlreadySettingModel {
-											code: string;
-											isAlreadySetting: boolean;
-										}
+<pre>
+<![CDATA[<!--CLASSIFICATION LIST-->
+export class ScreenModel {
+		selectedCode: KnockoutObservable<string>;
+        bySelectedCode: KnockoutObservable<string>;
+        isAlreadySetting: KnockoutObservable<boolean>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectionItem: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+		
+		constructor() {
+			let self = this;
+			self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+			self.isShowAlreadySet = ko.observable(false);
+			self.alreadySettingList = ko.observableArray([
+				{code: '1', isAlreadySetting: true},
+				{code: '2', isAlreadySetting: true}
+			]);
+			self.isDialog = ko.observable(false);
+			self.isShowNoSelectRow = ko.observable(false);
+			self.isMultiSelect = ko.observable(false);
+			self.listComponentOption = {
+                isShowAlreadySet: self.isAlreadySetting(),
+                isMultiSelect: self.isMultiSelect(),
+                listType: ListType.Classification,
+                selectType: self.selectedType(),
+                selectedCode: self.bySelectedCode,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectionItem(),
+                alreadySettingList: self.alreadySettingList
+            };
+			self.classificationList = ko.observableArray<UnitModel>([]);
+}
+export class ListType {
+	static EMPLOYMENT = 1;
+	static Classification = 2;
+	static JOB_TITLE = 3;
+	static EMPLOYEE = 4;
+}
+
+export interface UnitModel {
+	code: string;
+	name?: string;
+	workplaceName?: string;
+	isAlreadySetting?: boolean;
+}
+
+export class SelectType {
+	static SELECT_BY_SELECTED_CODE = 1;
+	static SELECT_ALL = 2;
+	static SELECT_FIRST_ITEM = 3;
+	static NO_SELECT = 4;
+}
+
+export interface UnitAlreadySettingModel {
+	code: string;
+	isAlreadySetting: boolean;
+}
 								]]>
 								</pre>
 								<pre>
-									<![CDATA[<!--It is called after apply binding done.-->
-										$('#classification-list-setting').ntsListComponent(self.listComponentOption);
-									]]>
+<![CDATA[<!--It is called after apply binding done.-->
+$('#classification-list-setting').ntsListComponent(self.listComponentOption);
+]]>
 								</pre>
 								<h2>API</h2>
 								<table style="width: 700px">
@@ -277,9 +260,9 @@
 									</tr>
 								</table>
 							</div>
-							<!-- END VIEWMODEL TAB-->
+							<!-- END VIEWMODEL TABS-->
 
-							<!-- BEGIN -->
+							<!-- BEGIN METHOD TABS -->
 							<div id="tabs-method" class="cf">
 								<table style="width: 500px">
 									<thead>
@@ -292,7 +275,13 @@
 									</tr>
 								</table>
 							</div>
-							<!-- END -->
+							<!-- END  METHOD TABS-->
+							
+							<!-- BEGIN DATA TABS -->
+							<div id="tabs-data" class="cf">
+								<pre data-bind="text: jsonData"><![CDATA[]]></pre>
+							</div>
+							<!-- BEGIN DATA TAB -->
 						</div>
 					</article>
 					<!-- END DESCRIPTION -->
