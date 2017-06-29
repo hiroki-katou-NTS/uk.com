@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk008.b {
                     { id: 'tab-4', title: 'Tab Title 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selectedTab = ko.observable('tab-2');
-
+                
             }
             startPage(): JQueryPromise<any> {
                 let self = this;
