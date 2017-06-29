@@ -29,7 +29,6 @@ module ccg018.base.viewmodel {
             tab.active(true);
             self.title(tab.name);
             self.tabs().map(t => (t.id != tab.id) && t.active(false));
-
             // call start function on view at here
             switch (tab.id) {
                 case 'A':

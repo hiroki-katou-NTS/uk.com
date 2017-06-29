@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppagesetting;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -8,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSet;
-import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSetPK;
 
 /**
  * 
@@ -17,10 +17,12 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSetPK
  */
 @Stateless
 public class JpaTopPagePersonSetRepository extends JpaRepository implements TopPagePersonSetRepository {
-
-	private final String SELECT_TOPPAGE_PERSON_BYCODE = "SELECT c FROM CcgptTopPagePersonSet c"
-			+ " WHERE c.ccgptTopPagePersonSetPK.companyId = :companyId "
+	private final String SEL = "SELECT c FROM CcgptTopPagePersonSet c ";
+	private final String SELECT_TOPPAGE_PERSON_BYCODE = SEL + "WHERE c.ccgptTopPagePersonSetPK.companyId = :companyId "
 			+ " AND c.ccgptTopPagePersonSetPK.employeeId = :employeeId";
+	private final String SELECT_BY_LIST_SID = SEL + "WHERE c.ccgptTopPagePersonSetPK.companyId = :companyId "
+			+ " AND c.ccgptTopPagePersonSetPK.employeeId IN :employeeId";
+
 	private TopPagePersonSet toDomain(CcgptTopPagePersonSet entity) {
 		TopPagePersonSet domain = TopPagePersonSet.createFromJavaType(entity.ccgptTopPagePersonSetPK.companyId,
 				entity.ccgptTopPagePersonSetPK.employeeId, entity.topMenuNo, entity.loginMenuNo, entity.loginSystem,
@@ -29,18 +31,17 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 	}
 
 	@Override
-	public Optional<TopPagePersonSet> findBySid(String companyId, String sId) {
-		CcgptTopPagePersonSetPK ccgptTopPagePersonSetPK = new CcgptTopPagePersonSetPK(companyId, sId);
-		return this.queryProxy().find(ccgptTopPagePersonSetPK, CcgptTopPagePersonSet.class).map(x -> toDomain(x));
+	public List<TopPagePersonSet> findByListSid(String companyId, List<String> sId) {
+		return this.queryProxy().query(SELECT_BY_LIST_SID, CcgptTopPagePersonSet.class)
+				.setParameter("companyId", companyId).setParameter("employeeId", sId).getList(x -> toDomain(x));
 	}
 
 	@Override
 	public TopPagePersonSet getbyCode(String companyId, String employeeId) {
-		Optional<TopPagePersonSet> obj = this.queryProxy().query(SELECT_TOPPAGE_PERSON_BYCODE, CcgptTopPagePersonSet.class)
-				.setParameter("companyId", companyId)
-				.setParameter("employeeId", employeeId)
-				.getSingle(c->toDomain(c));
-		if(!obj.isPresent()){
+		Optional<TopPagePersonSet> obj = this.queryProxy()
+				.query(SELECT_TOPPAGE_PERSON_BYCODE, CcgptTopPagePersonSet.class).setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId).getSingle(c -> toDomain(c));
+		if (!obj.isPresent()) {
 			return null;
 		}
 		return obj.get();
