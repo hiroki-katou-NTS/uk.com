@@ -41,7 +41,7 @@ public class CcgstTreeMenu extends UkJpaEntity implements Serializable {
         @JoinColumn(name = "TITLE_MENU_ID", referencedColumnName = "CCGST_TITLE_MENU.TITLE_MENU_ID", insertable = false, updatable = false),
         @JoinColumn(name = "MENU_BAR_ID", referencedColumnName = "CCGST_TITLE_MENU.MENU_BAR_ID", insertable = false, updatable = false)
     })
-	public CcgstTitleMenu titleMenu;
+	public CcgstTitleBar titleMenu;
 	
 	@Override
 	protected Object getKey() {

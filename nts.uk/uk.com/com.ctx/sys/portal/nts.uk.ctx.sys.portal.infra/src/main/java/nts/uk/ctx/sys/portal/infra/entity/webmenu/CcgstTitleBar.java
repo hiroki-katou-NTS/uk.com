@@ -25,8 +25,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGST_TITLE_MENU")
-public class CcgstTitleMenu extends UkJpaEntity implements Serializable {
+@Table(name = "CCGST_TITLE_BAR")
+public class CcgstTitleBar extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -71,7 +71,7 @@ public class CcgstTitleMenu extends UkJpaEntity implements Serializable {
 		return ccgstTitleMenuPK;
 	}
 
-	public CcgstTitleMenu(CcgstTitleMenuPK ccgstTitleMenuPK, String titleMenuName, String backgroundColor,
+	public CcgstTitleBar(CcgstTitleMenuPK ccgstTitleMenuPK, String titleMenuName, String backgroundColor,
 			String imageFile, String textColor, int titleMenuAtr, String titleMenuCD, int displayOrder,
 			List<CcgstTreeMenu> treeMenus) {
 		super();
