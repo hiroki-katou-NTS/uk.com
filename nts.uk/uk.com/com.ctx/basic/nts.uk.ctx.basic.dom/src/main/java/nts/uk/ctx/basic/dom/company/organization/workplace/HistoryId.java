@@ -12,8 +12,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class HistoryId.
  */
-@StringCharType(CharType.NUMERIC)
-@StringMaxLength(40)
+@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(36)
 public class HistoryId extends StringPrimitiveValue<HistoryId> {
 
 	/** The Constant serialVersionUID. */

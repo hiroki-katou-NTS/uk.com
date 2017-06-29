@@ -8,7 +8,7 @@ import java.time.Month;
 
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
 
 /**
  * The Class Monthly.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 public class Monthly extends DomainObject {
 
 	/** The time. */
-	private AttendanceTime time;
+	private MonthlyTime time;
 
 	/** The month. */
 	private Month month;

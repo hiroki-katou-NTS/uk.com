@@ -1,6 +1,6 @@
 module kcp002.a {
     __viewContext.ready(function () {
-        var screenModel = new a.viewmodel.ScreenModel();
+        var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
     });
 }

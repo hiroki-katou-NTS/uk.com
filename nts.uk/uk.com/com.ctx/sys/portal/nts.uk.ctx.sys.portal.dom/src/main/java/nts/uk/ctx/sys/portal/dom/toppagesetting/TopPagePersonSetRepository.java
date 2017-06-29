@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 
@@ -23,5 +24,26 @@ public interface TopPagePersonSetRepository {
 	 * @param employeeId
 	 * @return
 	 */
-	TopPagePersonSet getbyCode(String companyId, String employeeId);
+	Optional<TopPagePersonSet> getbyCode(String companyId, String employeeId);
+
+	/**
+	 * Update data in to table TOPPAGE_PERSON_SET
+	 * 
+	 * @param topPagePersonSet
+	 */
+	void update(TopPagePersonSet topPagePersonSet);
+
+	/**
+	 * Add data in to table TOPPAGE_PERSON_SET
+	 * 
+	 * @param topPagePersonSet
+	 */
+	void add(TopPagePersonSet topPagePersonSet);
+
+	/**
+	 * remove data in to table TOPPAGE_PERSON_SET
+	 * 
+	 * @param topPagePersonSet
+	 */
+	void remove(TopPagePersonSet topPagePersonSet);
 }
