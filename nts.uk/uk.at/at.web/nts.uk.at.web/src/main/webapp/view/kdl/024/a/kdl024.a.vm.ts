@@ -156,12 +156,10 @@ module kdl024.a.viewmodel {
                             if (nts.uk.ui.errors.hasError()) {
                                 nts.uk.ui.errors.clearAll();
                             }
-                        }
-                        else {
+                        } else {
                             self.findItemByIndex(_.min([deletedIndex, self.listBudget().length - 1]));
                         }
-                    })；
-                   
+                    })
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                     self.start();
