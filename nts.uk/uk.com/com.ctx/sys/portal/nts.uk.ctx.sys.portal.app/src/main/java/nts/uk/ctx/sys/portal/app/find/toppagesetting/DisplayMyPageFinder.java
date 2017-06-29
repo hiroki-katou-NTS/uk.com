@@ -70,7 +70,7 @@ public class DisplayMyPageFinder {
 			lst.add(jobPosition.getJobId());
 			//lay top page job title set
 			TopPageJobSet tpJobSet = topPageJobSet.findByListJobId(companyId,lst).get(0);
-			if(tpJobSet != null){//co chuc vu va duoc setting
+			if(tpJobSet != null){//co chuc vu va co job setting
 				layoutTopPage = topPageSet.getTopPageForPosition(jobPosition,tpJobSet);
 			}else{
 				layoutTopPage = topPageSet.getTopPageNotPosition();
