@@ -24,9 +24,9 @@ include 'uk.at:at.ctx:record:nts.uk.ctx.at.record.ws'
 
 include 'uk.base:base.web:nts.uk.com.js.web'
 
-include 'uk.base:shr:nts.uk.shr.com'
-include 'uk.base:shr:nts.uk.shr.ws'
-include 'uk.base:shr:nts.uk.shr.find'
+include 'uk.com:shr:nts.uk.shr.com'
+include 'uk.com:shr:nts.uk.shr.ws'
+include 'uk.com:shr:nts.uk.shr.find'
 
 
 include 'uk.com:com.web:nts.uk.com.web'
