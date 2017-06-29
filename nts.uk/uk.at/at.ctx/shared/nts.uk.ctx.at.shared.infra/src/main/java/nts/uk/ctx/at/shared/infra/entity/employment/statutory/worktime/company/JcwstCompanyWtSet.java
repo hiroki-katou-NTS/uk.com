@@ -21,15 +21,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "JCWTST_COMPANY_WT_SET")
-public class JcwtstCompanyWtSet extends UkJpaEntity implements Serializable {
+@Table(name = "JCWST_COMPANY_WT_SET ")
+public class JcwstCompanyWtSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The jcwtst company wt set PK. */
+	/** The jcwst company wt set PK. */
 	@EmbeddedId
-	protected JcwtstCompanyWtSetPK jcwtstCompanyWtSetPK;
+	protected JcwstCompanyWtSetPK jcwstCompanyWtSetPK;
 
 	/** The str week. */
 	@Column(name = "STR_WEEK")
@@ -98,6 +98,6 @@ public class JcwtstCompanyWtSet extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.jcwtstCompanyWtSetPK;
+		return this.jcwstCompanyWtSetPK;
 	}
 }

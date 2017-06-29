@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.AnnualPaid
 import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.dto.AnnualPaidLeaveSettingFindDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
@@ -92,7 +92,7 @@ public class AnnualPaidLeaveWs extends WebService {
     @POST
     @Path("find/timeunit")
     public List<EnumConstant> findTimeVacationDigestiveUnit() {
-        return EnumAdaptor.convertToValueNameList(TimeVacationDigestiveUnit.class);
+        return EnumAdaptor.convertToValueNameList(TimeDigestiveUnit.class);
     }
     
     /**

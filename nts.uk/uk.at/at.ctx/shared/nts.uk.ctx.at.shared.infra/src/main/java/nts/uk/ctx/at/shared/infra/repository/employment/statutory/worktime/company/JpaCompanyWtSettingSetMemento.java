@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Monthly;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwstCompanyWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwstCompanyWtSetPK;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -26,25 +26,25 @@ import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSet
 public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento {
 
 	/** The normal. */
-	private JcwtstCompanyWtSet normal;
+	private JcwstCompanyWtSet normal;
 
 	/** The flex statutory. */
-	private JcwtstCompanyWtSet flexStatutory;
+	private JcwstCompanyWtSet flexStatutory;
 
 	/** The flex specified. */
-	private JcwtstCompanyWtSet flexSpecified;
+	private JcwstCompanyWtSet flexSpecified;
 
 	/** The deformed. */
-	private JcwtstCompanyWtSet deformed;
+	private JcwstCompanyWtSet deformed;
 
 	/**
 	 * Instantiates a new jpa company wt setting set memento.
 	 */
 	public JpaCompanyWtSettingSetMemento() {
-		this.deformed = new JcwtstCompanyWtSet();
-		this.normal = new JcwtstCompanyWtSet();
-		this.flexSpecified = new JcwtstCompanyWtSet();
-		this.flexStatutory = new JcwtstCompanyWtSet();
+		this.deformed = new JcwstCompanyWtSet();
+		this.normal = new JcwstCompanyWtSet();
+		this.flexSpecified = new JcwstCompanyWtSet();
+		this.flexStatutory = new JcwstCompanyWtSet();
 	}
 
 	/*
@@ -57,10 +57,10 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 	@Override
 	public void setFlexSetting(FlexSetting flexSetting) {
 		// Set statutory category & type.
-		JcwtstCompanyWtSetPK staPk = this.flexStatutory.getJcwtstCompanyWtSetPK();
+		JcwstCompanyWtSetPK staPk = this.flexStatutory.getJcwstCompanyWtSetPK();
 		staPk.setCtg(WtSettingConstant.FLEX);
 		staPk.setType(WtSettingConstant.STATUTORY);
-		this.flexStatutory.setJcwtstCompanyWtSetPK(staPk);
+		this.flexStatutory.setJcwstCompanyWtSetPK(staPk);
 
 		// Set statutory work time setting.
 		WorkingTimeSetting statutory = flexSetting.getStatutorySetting();
@@ -69,10 +69,10 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 		this.flexStatutory = this.setMonthly(this.flexStatutory, statutory.getMonthly());
 
 		// Set specified category & type.
-		JcwtstCompanyWtSetPK spePk = this.flexSpecified.getJcwtstCompanyWtSetPK();
+		JcwstCompanyWtSetPK spePk = this.flexSpecified.getJcwstCompanyWtSetPK();
 		spePk.setCtg(WtSettingConstant.FLEX);
 		spePk.setType(WtSettingConstant.SPECIFIED);
-		this.flexSpecified.setJcwtstCompanyWtSetPK(spePk);
+		this.flexSpecified.setJcwstCompanyWtSetPK(spePk);
 
 		// Set specified work time setting.
 		WorkingTimeSetting specified = flexSetting.getSpecifiedSetting();
@@ -92,10 +92,10 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 	@Override
 	public void setDeformationLaborSetting(DeformationLaborSetting deformationLaborSetting) {
 		// Set category & type.
-		JcwtstCompanyWtSetPK pk = this.deformed.getJcwtstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pk = this.deformed.getJcwstCompanyWtSetPK();
 		pk.setCtg(WtSettingConstant.DEFORMED);
 		pk.setType(WtSettingConstant.STATUTORY);
-		this.deformed.setJcwtstCompanyWtSetPK(pk);
+		this.deformed.setJcwstCompanyWtSetPK(pk);
 
 		// Set start week
 		this.deformed.setStrWeek(deformationLaborSetting.getWeekStart().value);
@@ -115,20 +115,20 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 	 */
 	@Override
 	public void setYear(Year year) {
-		JcwtstCompanyWtSetPK pkNo = this.normal.getJcwtstCompanyWtSetPK();
-		JcwtstCompanyWtSetPK pkDe = this.deformed.getJcwtstCompanyWtSetPK();
-		JcwtstCompanyWtSetPK pkSpe = this.flexSpecified.getJcwtstCompanyWtSetPK();
-		JcwtstCompanyWtSetPK pkSta = this.flexStatutory.getJcwtstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pkNo = this.normal.getJcwstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pkDe = this.deformed.getJcwstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pkSpe = this.flexSpecified.getJcwstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pkSta = this.flexStatutory.getJcwstCompanyWtSetPK();
 
 		pkNo.setYK(year.v());
 		pkDe.setYK(year.v());
 		pkSpe.setYK(year.v());
 		pkSta.setYK(year.v());
 
-		this.deformed.setJcwtstCompanyWtSetPK(pkDe);
-		this.normal.setJcwtstCompanyWtSetPK(pkNo);
-		this.flexSpecified.setJcwtstCompanyWtSetPK(pkSpe);
-		this.flexStatutory.setJcwtstCompanyWtSetPK(pkSta);
+		this.deformed.setJcwstCompanyWtSetPK(pkDe);
+		this.normal.setJcwstCompanyWtSetPK(pkNo);
+		this.flexSpecified.setJcwstCompanyWtSetPK(pkSpe);
+		this.flexStatutory.setJcwstCompanyWtSetPK(pkSta);
 	}
 
 	/*
@@ -140,20 +140,20 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		JcwtstCompanyWtSetPK pkNo = new JcwtstCompanyWtSetPK();
-		JcwtstCompanyWtSetPK pkDe = new JcwtstCompanyWtSetPK();
-		JcwtstCompanyWtSetPK pkSpe = new JcwtstCompanyWtSetPK();
-		JcwtstCompanyWtSetPK pkSta = new JcwtstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pkNo = new JcwstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pkDe = new JcwstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pkSpe = new JcwstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pkSta = new JcwstCompanyWtSetPK();
 
 		pkNo.setCid(companyId.v());
 		pkDe.setCid(companyId.v());
 		pkSpe.setCid(companyId.v());
 		pkSta.setCid(companyId.v());
 
-		this.deformed.setJcwtstCompanyWtSetPK(pkDe);
-		this.normal.setJcwtstCompanyWtSetPK(pkNo);
-		this.flexSpecified.setJcwtstCompanyWtSetPK(pkSpe);
-		this.flexStatutory.setJcwtstCompanyWtSetPK(pkSta);
+		this.deformed.setJcwstCompanyWtSetPK(pkDe);
+		this.normal.setJcwstCompanyWtSetPK(pkNo);
+		this.flexSpecified.setJcwstCompanyWtSetPK(pkSpe);
+		this.flexStatutory.setJcwstCompanyWtSetPK(pkSta);
 	}
 
 	/*
@@ -166,10 +166,10 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 	@Override
 	public void setNormalSetting(NormalSetting normalSetting) {
 		// Set category & type.
-		JcwtstCompanyWtSetPK pk = this.normal.getJcwtstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pk = this.normal.getJcwstCompanyWtSetPK();
 		pk.setCtg(WtSettingConstant.NORMAL);
 		pk.setType(WtSettingConstant.STATUTORY);
-		this.normal.setJcwtstCompanyWtSetPK(pk);
+		this.normal.setJcwstCompanyWtSetPK(pk);
 
 		// Set start week.
 		this.normal.setStrWeek(normalSetting.getWeekStart().value);
@@ -188,7 +188,7 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 	 * @param monthly the monthly
 	 * @return the jcwtst company wt set
 	 */
-	private JcwtstCompanyWtSet setMonthly(JcwtstCompanyWtSet entity, List<Monthly> monthly) {
+	private JcwstCompanyWtSet setMonthly(JcwstCompanyWtSet entity, List<Monthly> monthly) {
 		monthly.forEach(month -> {
 			switch (month.getMonth()) {
 			case JANUARY:

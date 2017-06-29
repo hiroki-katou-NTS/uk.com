@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.JuuwtstUsageUnitWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.JuwstUsageUnitWtSet;
 
 /**
  * The Class JpaUsageUnitSettingGetMemento.
@@ -17,14 +17,14 @@ public class JpaUsageUnitSettingGetMemento implements UsageUnitSettingGetMemento
 	public static final int DEFINED_TRUE = 1;
 
 	/** The setting. */
-	private JuuwtstUsageUnitWtSet setting;
+	private JuwstUsageUnitWtSet setting;
 
 	/**
 	 * Instantiates a new jpa usage unit setting get memento.
 	 *
 	 * @param setting the setting
 	 */
-	public JpaUsageUnitSettingGetMemento(JuuwtstUsageUnitWtSet setting) {
+	public JpaUsageUnitSettingGetMemento(JuwstUsageUnitWtSet setting) {
 		this.setting = setting;
 	}
 
