@@ -237,7 +237,7 @@
             this.minus = minus;
             this.hours = hours;
             this.minutes = minutes;
-            this.msg = msg || "invalid time format";
+            this.msg = msg || nts.uk.resource.getMessage("FND_E_DATE_YMD");
         }
 
         static succeeded(minus, hours, minutes) {
@@ -366,7 +366,7 @@
             super(success);
             this.hour = hour;
             this.minute = minute;
-            this.msg = msg || "time of the days must in format hh:mm with hour in range 0-23; minute in range 00-59";
+            this.msg = msg || nts.uk.resource.getMessage("FND_E_DATE_YMD");
         }
         static succeeded(hour, minute) {
             return new ResultParseTimeOfTheDay(true, "", hour, minute);
@@ -399,13 +399,13 @@
         timeOfDay = timeOfDay.replace(":", "");
         var checkNum = timeOfDay.replace(/[0-9]/g, "");
         var stringLength = timeOfDay.length;
-        if (checkNum.length > 0) return ResultParseTimeOfTheDay.failed("time of the day accept digits and ':' only");
-        if (stringLength < 3 || stringLength > 4) return ResultParseTimeOfTheDay.failed("invalid time of the day format");
+        if (checkNum.length > 0) return ResultParseTimeOfTheDay.failed(nts.uk.resource.getMessage("FND_E_DATE_YMD"));
+        if (stringLength < 3 || stringLength > 4) return ResultParseTimeOfTheDay.failed(nts.uk.resource.getMessage("FND_E_DATE_YMD"));
         var hour = parseInt(timeOfDay.substring(0, stringLength - 2));
         var minute = parseInt(timeOfDay.substring(stringLength - 2));
         //console.log(checkNum.substring(0,stringLength-2));
-        if (hour < 0 || hour > 23) return ResultParseTimeOfTheDay.failed("invalid: hour must in range 0-23");
-        if (minute < 0 || minute > 59) return ResultParseTimeOfTheDay.failed("invalid: minute must in range 0-59");
+        if (hour < 0 || hour > 23) return ResultParseTimeOfTheDay.failed(nts.uk.resource.getMessage("FND_E_DATE_YMD"));
+        if (minute < 0 || minute > 59) return ResultParseTimeOfTheDay.failed(nts.uk.resource.getMessage("FND_E_DATE_YMD"));
         return ResultParseTimeOfTheDay.succeeded(hour, minute);
     }
 
@@ -419,7 +419,7 @@
             this.year = year;
             this.month = month;
             this.date = date;
-            this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
+            this.msg = msg || nts.uk.resource.getMessage("FND_E_DATE_YMD");
         }
 
         static succeeded(year, month, date) {
