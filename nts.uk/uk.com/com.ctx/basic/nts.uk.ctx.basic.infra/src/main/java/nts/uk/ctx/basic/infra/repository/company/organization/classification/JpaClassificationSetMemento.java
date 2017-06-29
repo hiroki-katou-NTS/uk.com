@@ -53,7 +53,7 @@ public class JpaClassificationSetMemento implements ClassificationSetMemento{
 	 */
 	@Override
 	public void setManagementCategoryCode(ClassificationCode managementCategoryCode) {
-		this.cclmtClassification.getCclmtClassificationPK().setClassificationCode(managementCategoryCode.v());
+		this.cclmtClassification.getCclmtClassificationPK().setCode(managementCategoryCode.v());
 	}
 
 	/*
@@ -65,7 +65,7 @@ public class JpaClassificationSetMemento implements ClassificationSetMemento{
 	 */
 	@Override
 	public void setManagementCategoryName(ClassificationName managementCategoryName) {
-		this.cclmtClassification.setClassificationName(managementCategoryName.v());
+		this.cclmtClassification.setName(managementCategoryName.v());
 	}
 
 }
