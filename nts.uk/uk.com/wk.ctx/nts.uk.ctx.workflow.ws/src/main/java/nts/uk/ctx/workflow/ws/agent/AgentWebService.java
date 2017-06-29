@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.app.command.agent.AddAgentCommandHandler;
 import nts.uk.ctx.workflow.app.command.agent.AgentCommandBase;
 import nts.uk.ctx.workflow.app.command.agent.DeleteAgentCommand;
@@ -56,8 +56,7 @@ public class AgentWebService extends WebService {
 	}
 	@Path("add")
 	@POST
-	@Produces("text/plain")
-	public String add(AgentCommandBase command) {
+	public JavaTypeResult<String> add(AgentCommandBase command) {
 		return this.addAgentCommandHandler.handle(command);
 	}
 

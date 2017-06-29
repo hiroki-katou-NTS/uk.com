@@ -77,6 +77,7 @@ module cmm044.a.viewmodel {
 
             self.histItems = ko.observableArray([]);
             self.selectedTab = ko.observable('tab-1');
+
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
             self.empSelectedItem.subscribe(function(newValue) {
@@ -84,6 +85,8 @@ module cmm044.a.viewmodel {
                     $.when(self.getAllAgen(newValue.personId)).done(function() {
                         if (self.histItems().length > 0) {
                             self.histSelectedItem(self.histItems()[0].requestId);
+                        
+                            
                         } else {
                             self.initAgent();
                         }
@@ -150,7 +153,7 @@ module cmm044.a.viewmodel {
                     for (var i = 0; i < agent_arr.length; i++) {
                         self.histItems.push(new model.AgentDto(agent_arr[i].companyId, agent_arr[i].employeeId, agent_arr[i].requestId, agent_arr[i].startDate, agent_arr[i].endDate, agent_arr[i].agentSid1, agent_arr[i].agentAppType1, agent_arr[i].agentSid2, agent_arr[i].agentAppType2, agent_arr[i].agentSid3, agent_arr[i].agentAppType3, agent_arr[i].agentSid4, agent_arr[i].agentAppType4));
                     }
-                }
+                }     
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
@@ -214,9 +217,6 @@ module cmm044.a.viewmodel {
          */
         addAgent() {
             var self = this;
-            var dfd = $.Deferred<any>();
-
-
 
             self.currentItem().agentAppType1(self.agentAppType1());
             self.currentItem().agentAppType2(self.agentAppType2());
@@ -234,28 +234,18 @@ module cmm044.a.viewmodel {
                     self.getAllAgen(self.empSelectedItem().personId);
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                 }).fail(function(res) {
-                   nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
-                    dfd.reject(res);
+                   nts.uk.ui.dialog.alertError(res.message);
                 })
             } else {
                 service.addAgent(agent).done(function(res) {
                     var resObj = ko.toJS(res);
-                    if (!self.histSelectedItem) {
-
-                    
-                    self.histSelectedItem("");
-                    } else if (resObj.businessException){
-                        
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
-                    }else {
+                    if (self.histSelectedItem) {
                         self.getAllAgen(self.empSelectedItem().personId);
                         self.histSelectedItem(res);
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
-                       
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));          
                     }
-                }).fail(function(res) {
-                    
-                    dfd.reject(res);
+                }).fail(function(res) {            
+                    nts.uk.ui.dialog.alertError(res.message);
                 })
             }
         }
@@ -283,19 +273,14 @@ module cmm044.a.viewmodel {
                         } else {
                             requestId = self.histItems()[index_of_itemDelete].requestId;
                         }
-
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"));
                         self.histSelectedItem(requestId);
                     });
                 }).fail(function(res) {
-                    dfd.reject(res);
+                    nts.uk.ui.dialog.alertError(res.message);
                 })
-
-
             }).ifNo(function() {
             });
-
-
-
         }
 
         initAgent() {
@@ -312,26 +297,19 @@ module cmm044.a.viewmodel {
             self.agentAppType2(0);
             self.agentAppType3(0);
             self.agentAppType4(0);
-
+            self.selectedTab('tab-1');
+            $("#daterangepicker").find(".ntsStartDatePicker").focus();
             self.histSelectedItem("");
             self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
         }
         openDDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('cmm044StartDate', self.currentItem().startDate());
-            nts.uk.ui.windows.setShared('cmm044EndDate', self.currentItem().endDate());
-            nts.uk.ui.windows.setShared('cmm044Data', self.histItems());
-            nts.uk.ui.windows.setShared('cmm044DataPerson', self.empItems());
-            
+            nts.uk.ui.windows.setShared('cmm044DataPerson', self.empItems());   
             nts.uk.ui.windows.sub.modal('/view/cmm/044/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
         openCDL021() {
-            let slef = this;
-            nts.uk.ui.windows.sub.modal('/view/cmm/044/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
-            });
         }
-
     }
 
     interface IPersonModel {

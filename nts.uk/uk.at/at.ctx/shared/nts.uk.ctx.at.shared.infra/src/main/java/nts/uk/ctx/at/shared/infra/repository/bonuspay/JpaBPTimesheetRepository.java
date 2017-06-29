@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBPTimesheet;
@@ -14,36 +15,36 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBPTimesheetPK;
 
 @Stateless
 public class JpaBPTimesheetRepository extends JpaRepository implements BPTimesheetRepository {
-	private final String SELECT_BY_COMPANYID_AND_BPCODE = "SELECT c FROM KbpmtBPTimesheet JOIN  k KbpstBonusPayTimeItem  ON c.kbpmtBPTimesheetPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId c WHERE c.kbpmtBPTimesheetPK.companyId = :companyId AND c.bonusPaySettingCode = :bonusPaySettingCode AND k.timeItemTypeAtr = 0 AND K.useAtr=0  ORDER BY k.timeItemNo";
+	private final String SELECT_BY_COMPANYID_AND_BPCODE = "SELECT c FROM KbpmtBPTimesheet c WHERE c.kbpmtBPTimesheetPK.companyId = :companyId AND c.kbpstSpecBPTimesheetPK.bonusPaySettingCode = :bonusPaySettingCode  ORDER BY c.kbpstSpecBPTimesheetPK.timeSheetNO";
 
 	@Override
-	public List<BonusPayTimesheet> getListTimesheet(String companyId, String bonusPaySettingCode) {
+	public List<BonusPayTimesheet> getListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode) {
 		return this.queryProxy().query(SELECT_BY_COMPANYID_AND_BPCODE, KbpmtBPTimesheet.class)
-				.setParameter("companyId", companyId).setParameter("bonusPaySettingCode", bonusPaySettingCode)
+				.setParameter("companyId", companyId).setParameter("bonusPaySettingCode", bonusPaySettingCode.v(),BonusPaySettingCode.class)
 				.getList(x -> this.toBonusPayTimesheetDomain(x));
 	}
 
 	@Override
-	public void addListTimesheet(String companyId, String bonusPaySettingCode, List<BonusPayTimesheet> lstTimesheet) {
+	public void addListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode, List<BonusPayTimesheet> lstTimesheet) {
 		List<KbpmtBPTimesheet> lstKbpmtBPTimesheet = lstTimesheet.stream()
-				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode, c)).collect(Collectors.toList());
+				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
 		this.commandProxy().insertAll(lstKbpmtBPTimesheet);
 	}
 
 	@Override
-	public void updateListTimesheet(String companyId, String bonusPaySettingCode,
+	public void updateListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<BonusPayTimesheet> lstTimesheet) {
 		List<KbpmtBPTimesheet> lstKbpmtBPTimesheet = lstTimesheet.stream()
-				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode, c)).collect(Collectors.toList());
+				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
 		this.commandProxy().updateAll(lstKbpmtBPTimesheet);
 
 	}
 
 	@Override
-	public void removeListTimesheet(String companyId, String bonusPaySettingCode,
+	public void removeListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<BonusPayTimesheet> lstTimesheet) {
 		List<KbpmtBPTimesheet> lstKbpmtBPTimesheet = lstTimesheet.stream()
-				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode, c)).collect(Collectors.toList());
+				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
 		this.commandProxy().removeAll(lstKbpmtBPTimesheet);
 	}
 

@@ -58,7 +58,7 @@
 								<b>Save/Delete</b>
 							</p>
 							<br></br>
-							<BUTTON id="test-button" data-bind="click: setAlreadyCheck"
+							<BUTTON id="test-button" data-bind="click: settingSavedItem"
 								style="margin-right: 10px">Copy</BUTTON>
 							<BUTTON id="test-button"
 								data-bind="click: settingSavedItem, enable: hasSelectedEmp()"
@@ -79,52 +79,15 @@
 								<div id="empt-list-setting"></div>
 							</td>
 							<td>
-								<table style="margin: 20px">
+								<table>
 									<tr>
-										<td style="width: 150px; padding-left: 40px; height: 60px;">
-											<div>
-												<span>Code</span>
-											</div>
-										</td>
-										<td style="padding-left: 5px;">
-											<div>
-												<input id='code'
-													data-bind="ntsTextEditor: {
-													value: code,
-													option: codeEditorOption,
-													required: true,
-													enable: hasSelectedEmp,
-													readonly: false}" />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td style="width: 150px; padding-left: 40px; height: 60px;">
-											<div>
-												<span>Name</span>
-											</div>
-										</td>
-										<td style="padding-left: 5px;">
-											<div>
-												<input id='name'
-													data-bind="ntsTextEditor: {
-													value: name,
-													option: nameEditorOption,
-													required: true,
-													enable: hasSelectedEmp,
-													readonly: false}" />
-											</div>
-										</td>
+										<td>Selected Codes: </td>
+										<td style="width: 100px"><div data-bind="text: getSelectedItemCode()"></div></td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 					</table>
-					<!-- <div style="margin-top: 10px;">
-						<label style="margin-left: 10px; font-size: 17px;">Selected
-							code:</label> <span style="font-size: 20px;"
-							data-bind='text: getSelectedItemCode()'></span>
-					</div> -->
 					
 					<!-- BEGIN DESCRIPTION -->
 						<article class="cf" style="margin-top: 10px;">
@@ -158,7 +121,7 @@
 										export class ScreenModel {
 												listComponentOption: any;
 												selectedCode: KnockoutObservable<string>;
-												multiSelectedCode: KnockoutObservableArray<any>;
+												multiSelectedCode: KnockoutObservableArray<string>;
 												isShowAlreadySet: KnockoutObservable<boolean>;
 												alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 												isDialog: KnockoutObservable<boolean>;
@@ -315,7 +278,7 @@
 									</table>
 								</div><!-- END VIEWMODEL TAB-->
 								
-								<!-- BEGIN -->
+								<!-- BEGIN METHOD TAB-->
 								<div id="tabs-method" class="cf">
 									<table style="width: 500px">
 										<thead>
@@ -327,7 +290,7 @@
 											<td>Get Employment List</td>
 										</tr>
 									</table>
-								</div><!-- END -->
+								</div><!-- END METHOD TAB -->
 							</div>
 						</article><!-- END DESCRIPTION -->
 				</div>

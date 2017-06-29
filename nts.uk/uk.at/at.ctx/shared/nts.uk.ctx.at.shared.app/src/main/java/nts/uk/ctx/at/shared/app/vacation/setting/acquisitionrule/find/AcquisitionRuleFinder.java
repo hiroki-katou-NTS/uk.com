@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
@@ -42,7 +43,7 @@ public class AcquisitionRuleFinder {
 	/** The compens leave com set repository. */
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
-	
+
 	/** The nursing repo. */
 	@Inject
 	private NursingLeaveSettingRepository nursingRepo;
@@ -64,60 +65,53 @@ public class AcquisitionRuleFinder {
 	 */
 	public AcquisitionRuleDto find() {
 		String companyId = AppContexts.user().companyId();
+
 		Optional<AcquisitionRule> vaAcRule = repo.findById(companyId);
-		if (vaAcRule.isPresent()) {
-			AcquisitionRuleDto dto = AcquisitionRuleDto.builder().build();
-			vaAcRule.get().saveToMemento(dto);
-			return dto;
-		} else {
+
+		if (!vaAcRule.isPresent()) {
 			return null;
 		}
 
+		AcquisitionRuleDto dto = AcquisitionRuleDto.builder().build();
+		vaAcRule.get().saveToMemento(dto);
+		return dto;
 	}
-	
+
 	/**
 	 * Find by setting.
 	 *
 	 * @return the apply setting dto
 	 */
-	public ApplySettingDto findBySetting(){
+	public ApplySettingDto findBySetting() {
 		String companyId = AppContexts.user().companyId();
 		ApplySettingDto dto = new ApplySettingDto();
-		
-		//check setting annual paid leave
+
+		// check setting annual paid leave
 		AnnualPaidLeaveSetting paidLeave = paidLeaveRepo.findByCompanyId(companyId);
-		if (paidLeave != null) {
-			dto.setPaidLeaveSetting(paidLeave.getYearManageType() == ManageDistinct.YES);
-		}
-		
-		//check setting compensatory leave
+		dto.setPaidLeaveSetting(
+				paidLeave != null && paidLeave.getYearManageType().equals(ManageDistinct.YES));
+
+		// check setting compensatory leave
 		CompensatoryLeaveComSetting compensLeave = compensLeaveComSetRepository.find(companyId);
-		if(compensLeave != null){
-			dto.setCompensLeaveComSetSetting(compensLeave.getIsManaged() == ManageDistinct.YES);
-		}
-		
-		//check setting comSubt
+		dto.setCompensLeaveComSetSetting(
+				compensLeave != null && compensLeave.getIsManaged().equals(ManageDistinct.YES));
+
+		// check setting comSubt
 		Optional<ComSubstVacation> optComSubVacation = comSubtRepo.findById(companyId);
-		if(optComSubVacation.isPresent()){
-			dto.setComSubtSetting(optComSubVacation.get().getSetting().getIsManage() == ManageDistinct.YES);
-		}
-				
-		//check setting com60H
+		dto.setComSubtSetting(optComSubVacation.isPresent()
+				&& optComSubVacation.get().getSetting().getIsManage().equals(ManageDistinct.YES));
+
+		// check setting com60H
 		Optional<Com60HourVacation> optCom60HVacation = com60HRepo.findById(companyId);
-		if (optCom60HVacation.isPresent()){
-			dto.setCom60HSetting(optCom60HVacation.get().getSetting().getIsManage() == ManageDistinct.YES);
-		}
-		
-		//check setting nursing leave
+		dto.setCom60HSetting(optCom60HVacation.isPresent()
+				&& optCom60HVacation.get().getSetting().getIsManage().equals(ManageDistinct.YES));
+
+		// check setting nursing leave
 		List<NursingLeaveSetting> lstNursingLeave = nursingRepo.findByCompanyId(companyId);
-		if (!lstNursingLeave.isEmpty()) {
-			int indexNursing = 0;
-			int indexChildNursing = 1;
-			dto.setNursingSetting(lstNursingLeave.get(indexNursing).getManageType() == ManageDistinct.YES
-					|| lstNursingLeave.get(indexChildNursing).getManageType() == ManageDistinct.YES);
-		}
+		dto.setNursingSetting(!CollectionUtil.isEmpty(lstNursingLeave) && lstNursingLeave.stream()
+				.anyMatch(item -> item.getManageType().equals(ManageDistinct.YES)));
+
 		return dto;
-		
 	}
 
 }

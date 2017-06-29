@@ -5,6 +5,8 @@ module kcp004.a {
         $('#tree-grid').ntsTreeComponent(screenModel.treeGrid).done(() => {
             $('#tree-grid').focusComponent();
             screenModel.jsonData(JSON.stringify($('#tree-grid').getDataList(), undefined, 10));
+            screenModel.isBindingTreeGrid(true);
+            screenModel.getSelectedData();
         });
     });
 }

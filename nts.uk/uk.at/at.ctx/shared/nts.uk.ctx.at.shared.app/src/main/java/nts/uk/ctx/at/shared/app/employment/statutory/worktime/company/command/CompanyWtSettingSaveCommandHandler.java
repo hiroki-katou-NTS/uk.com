@@ -43,9 +43,6 @@ public class CompanyWtSettingSaveCommandHandler extends CommandHandler<CompanyWt
 
 		CompanyWtSetting companySetting = new CompanyWtSetting(command);
 
-		// Validate
-		companySetting.validate();
-
 		// Update
 		Optional<CompanyWtSetting> optCompanySetting = this.repository.find(companyId, command.getYear().v());
 		if(optCompanySetting.isPresent()) {

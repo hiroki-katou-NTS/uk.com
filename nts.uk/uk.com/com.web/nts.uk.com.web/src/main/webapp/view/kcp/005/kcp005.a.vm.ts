@@ -12,25 +12,24 @@ module kcp005.a.viewmodel {
         isAlreadySetting: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
         isShowNoSelectionItem: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        
-        multiSelectionCode: KnockoutObservableArray<string>;
+
         multiSelectedCode: KnockoutObservableArray<string>;
-        
+        multiBySelectedCode: KnockoutObservableArray<string>;
+
         listComponentOption: ComponentOption;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-        
+
         hasSelectedEmp: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel>;
-        code: KnockoutObservable<string>;
-        name: KnockoutObservable<string>;
-        
+
         selectionTypeList: KnockoutObservableArray<any>;
         selectedType: KnockoutObservable<number>;
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
-        
+
         constructor() {
             var self = this;
             self.codeEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -43,63 +42,74 @@ module kcp005.a.viewmodel {
                 textmode: "text",
                 textalign: "left"
             }));
-            self.selectedCode = ko.observable('1');
+            self.selectedCode = ko.observable(null);
             self.bySelectedCode = ko.observable('1');
-            // Selected Item subscribe
-            self.selectedCode.subscribe(function(data: string) {
-                self.bindEmployeeSettingData(self.employeeList().filter((item) => {
-                    return item.code == self.selectedCode();
-                })[0]);
-            });
             self.isAlreadySetting = ko.observable(false);
             self.isAlreadySetting.subscribe(function() {
                 self.reloadComponent();
             });
-            
+
             self.isDialog = ko.observable(false);
             self.isDialog.subscribe(function(value: boolean) {
                 self.reloadComponent();
             });
-            
+
             self.isShowNoSelectionItem = ko.observable(false);
-            self.isShowNoSelectionItem.subscribe(function(value: boolean) {
+            self.isShowNoSelectionItem.subscribe(function(data: boolean) {
                 self.reloadComponent();
             });
-            
-            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
-            self.multiSelectionCode = ko.observableArray([]);
-            
-            self.alreadySettingList = ko.observableArray([{code: '1', isAlreadySetting: true}, {code: '2', isAlreadySetting: true}]);
 
-            self.code = ko.observable(null);
-            self.name = ko.observable(null);
-            this.employeeList = ko.observableArray<UnitModel>([
+            self.multiBySelectedCode = ko.observableArray(['1', '2']);
+            self.multiSelectedCode = ko.observableArray([]);
+
+            self.isMultiSelect = ko.observable(false);
+            self.isMultiSelect.subscribe(function(data: boolean) {
+                if (data) {
+                    if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
+                        self.listComponentOption.selectedCode = self.multiBySelectedCode;
+                    } else {
+                        self.listComponentOption.selectedCode = self.multiSelectedCode;
+                    }
+                } else {
+                    if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
+                        self.listComponentOption.selectedCode = self.bySelectedCode;
+                    } else {
+                        self.listComponentOption.selectedCode = self.selectedCode;
+                    }
+                }
+                self.reloadComponent();
+            });
+
+            self.alreadySettingList = ko.observableArray([{ code: '1', isAlreadySetting: true }, { code: '2', isAlreadySetting: true }]);
+            self.employeeList = ko.observableArray<UnitModel>([
                 { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
                 { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
                 { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
                 { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
             ]);
-            
             self.hasSelectedEmp = ko.computed(function() {
                 return (self.selectedCode != undefined);
             });
+            
             self.isShowWorkPlaceName = ko.observable(false);
             self.isShowWorkPlaceName.subscribe(function() {
                 self.reloadComponent();
             });
+            
             self.isShowSelectAllButton = ko.observable(false);
             self.isShowSelectAllButton.subscribe(function() {
                 self.showSelectAllButton();
                 self.reloadComponent();
             });
             
+            self.selectedType = ko.observable(1);
             self.listComponentOption = {
                 isShowAlreadySet: self.isAlreadySetting(),
-                isMultiSelect: false,
+                isMultiSelect: self.isMultiSelect(),
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                selectedCode: self.selectedCode,
+                selectType: self.selectedType(),
+                selectedCode: self.bySelectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList,
@@ -108,208 +118,153 @@ module kcp005.a.viewmodel {
             };
             // Employee List...
             $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
-                
-                
-                
-                // Selected Item
                 if (($('#component-items-list').getDataList() == undefined) || ($('#component-items-list').getDataList().length <= 0)) {
                     self.hasSelectedEmp(false);
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
                 }
                 else {
-                    // Employee List...
+                    // Job Title List
                     self.employeeList($('#component-items-list').getDataList());
-                    
-                    // Bind Employee Setting Data
-                    self.bindEmployeeSettingData(self.employeeList().filter((item) => {
-                        return item.code == self.selectedCode();
-                    })[0]);
                 }
             });
-            
+
             self.selectionTypeList = ko.observableArray([
-                {code : 0, name: 'By Selected Code'},
-                {code : 1, name: 'Select All Items'},
-                {code : 2, name: 'Select First Item'},
-                {code : 3, name: 'Select None'}
+                { code: 1, name: 'By Selected Code' },
+                { code: 2, name: 'Select All Items' },
+                { code: 3, name: 'Select First Item' },
+                { code: 4, name: 'Select None' }
             ]);
-            self.selectedType = ko.observable(0);
+
             self.selectedType.subscribe(function(data: number) {
-                switch(data) {
-                    case 0:
-                        self.selectBySelectedCode();
-                        break;
+                switch (data) {
                     case 1:
-                        self.selectAllItems();
+                        if (self.isMultiSelect()) {
+                            self.listComponentOption.selectedCode = self.multiBySelectedCode;
+                        }
+                        else {
+                            self.listComponentOption.selectedCode = self.bySelectedCode;
+                        }
                         break;
                     case 2:
-                        self.selectFirstItems();
+                        if (self.isMultiSelect()) {
+                            self.listComponentOption.selectedCode = self.multiSelectedCode;
+                        }
+                        else {
+                            self.selectedType(1);
+                            nts.uk.ui.dialog.alert("SelectAll is not available for Single selection ! ");
+                        }
                         break;
                     case 3:
-                        self.selectNone();
+                        if (self.isMultiSelect()) {
+                            self.listComponentOption.selectedCode = self.multiSelectedCode;
+                        }
+                        else {
+                            self.listComponentOption.selectedCode = self.selectedCode;
+                        }
+                        break;
+                    case 4:
+                        if (!self.isMultiSelect()) {
+                            self.listComponentOption.selectedCode = self.selectedCode;
+                        } else {
+                            self.listComponentOption.selectedCode = self.multiSelectedCode;
+                        }
                         break;
                 }
+                self.reloadComponent();
             });
             self.selectionOption = ko.observableArray([
-                {code : 0, name: 'Single Selection'},
-                {code : 1, name: 'Multiple Selection'},
+                { code: 0, name: 'Single Selection' },
+                { code: 1, name: 'Multiple Selection' },
             ]);
             self.selectedOption = ko.observable(0);
             self.selectedOption.subscribe(function(data: number) {
                 if (data == 0) {
-                    self.showSingleSelect();
+                    self.isMultiSelect(false);
                 }
                 else {
-                    self.showMultiSelect();
-                    
+                    self.isMultiSelect(true);
                 }
             });
         }
-        
-        private setAlreadyCheck(): void {
-            var self = this;
-            self.alreadySettingList.push({"code": self.selectedCode(), "isAlreadySetting": true});
-        }
-        
+
         private settingSavedItem(): void {
             var self = this;
-            // Clear errors
-//            self.clearErrors();
-
-            if (self.listComponentOption.isMultiSelect) {
-                self.listComponentOption.selectedCode().forEach((selected) => {
+            if (self.listComponentOption.selectedCode() != undefined) {
+                if (self.listComponentOption.isMultiSelect) {
+                    self.listComponentOption.selectedCode().forEach((selected) => {
+                        var existItem = self.alreadySettingList().filter((item) => {
+                            return item.code == selected;
+                        })[0];
+                        if (!existItem) {
+                            self.alreadySettingList.push({ "code": selected, "isAlreadySetting": true });
+                        }
+                    });
+                } else {
                     var existItem = self.alreadySettingList().filter((item) => {
-                        return item.code == selected;
+                        return item.code == self.listComponentOption.selectedCode();
                     })[0];
                     if (!existItem) {
-                        self.alreadySettingList.push({"code": selected, "isAlreadySetting": true});
+                        self.alreadySettingList.push({ "code": self.listComponentOption.selectedCode(), "isAlreadySetting": true });
                     }
-                });
-            } else {
-                var existItem = self.alreadySettingList().filter((item) => {
-                    return item.code == self.listComponentOption.selectedCode();
-                })[0];
-                if (!existItem) {
-                    self.alreadySettingList.push({ "code": self.selectedCode(), "isAlreadySetting": true });
                 }
+                self.isAlreadySetting(true);
+                nts.uk.ui.dialog.alert("Saved Successfully ! ");
+            } else {
+                nts.uk.ui.dialog.alert("Select Item to Save ! ");
             }
-            
-            self.isAlreadySetting(true);
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
-        
+
         private settingDeletedItem() {
             let self = this;
-            if (self.listComponentOption.isMultiSelect) {
-                self.listComponentOption.selectedCode().forEach((selected) => {
+            if (self.listComponentOption.selectedCode() != undefined) {
+                if (self.listComponentOption.isMultiSelect) {
+                    self.listComponentOption.selectedCode().forEach((selected) => {
+                        self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
+                            return item.code == selected;
+                        })[0]);
+                    });
+                } else {
                     self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                        return item.code == selected;
+                        return item.code == self.listComponentOption.selectedCode();
                     })[0]);
-                });
+                }
+                self.isAlreadySetting(true);
+                nts.uk.ui.dialog.alert("Deleted Successfully ! ");
             } else {
-                self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                    return item.code == self.listComponentOption.selectedCode();
-                })[0]);
+                nts.uk.ui.dialog.alert("Select Item to Delete ! ");
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
-        
-//        private clearErrors(): void {
-//            // Clear errors
-//            $('#code').ntsError('clear');
-//            $('#name').ntsError('clear');
-//        }
-        
         private showSelectAllButton(): void {
             var self = this;
-            self.selectedOption(1);
-//            self.showMultiSelect();
-        }
-
-        // Show MultiSelection
-        private showMultiSelect(): void {
-            var self = this;
-            self.listComponentOption.isMultiSelect = true;
-            //                self.code(null);
-            //                self.name(null);
-            if (self.listComponentOption.selectType == SelectType.SELECT_BY_SELECTED_CODE) {
-                self.listComponentOption.selectedCode = self.multiSelectedCode;
-            } else {
-                self.listComponentOption.selectedCode = self.multiSelectionCode;
-            }
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
-        }
-        private showSingleSelect(): void {
-            var self = this;
-            self.listComponentOption.isMultiSelect = false;
-            self.listComponentOption.selectedCode = self.selectedCode;
-            // Binding Data to right content
-            //                self.bindEmployeeSettingData(self.employeeList().filter((item) => {
-            //                    return item.code == self.selectedCode();
-            //                })[0]);
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
-        }
-
-        // Selection Type: By Selected code
-        private selectBySelectedCode(): void {
-            var self = this;
-            if (self.listComponentOption.isMultiSelect) {
-                self.listComponentOption.selectedCode = self.multiSelectedCode;
+            //            self.selectedOption(1);
+            if (self.isMultiSelect()) {
+                self.reloadComponent();
             }
             else {
-                self.listComponentOption.selectedCode = self.bySelectedCode;
+                self.isShowSelectAllButton(false);
+                nts.uk.ui.dialog.alert("SelectAll button is not available for Single selection ! ");
             }
-            self.listComponentOption.selectType = SelectType.SELECT_BY_SELECTED_CODE;
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
-        // Selection Type: Select All Items
-        private selectAllItems(): void {
+        private getSelectedItemCode(): string {
             var self = this;
-            self.listComponentOption.isMultiSelect = true;
-            self.listComponentOption.selectType = SelectType.SELECT_ALL;
-            self.listComponentOption.selectedCode = self.multiSelectionCode;
-            self.selectedOption(1);
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
-        }
-
-        // Selection Type: Select First Item
-        private selectFirstItems(): void {
-            var self = this;
-            if (self.listComponentOption.isMultiSelect) {
-                self.listComponentOption.selectedCode = self.multiSelectionCode;
-            }
-            else {
-                self.listComponentOption.selectedCode = self.selectedCode;
-            }
-            self.listComponentOption.selectType = SelectType.SELECT_FIRST_ITEM;
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
-        }
-
-        // Selection Type: Select None
-        private selectNone(): void {
-            var self = this;
-            if (!self.listComponentOption.isMultiSelect) {
-                self.listComponentOption.selectedCode = self.selectedCode;
+            if (self.isMultiSelect()) {
+                if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
+                    return self.multiBySelectedCode().join(', ');
+                } else {
+                    return self.multiSelectedCode().join(', ');
+                }
             } else {
-                self.listComponentOption.selectedCode = self.multiSelectionCode;
-            }
-            self.listComponentOption.selectType = SelectType.NO_SELECT;
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
-        }
-        
-        private bindEmployeeSettingData(data: UnitModel): void {
-            var self = this;
-//            self.clearErrors();
-            if (data == undefined) {
-                self.code(null);
-                self.name(null);
-            } else {
-                self.code(data.code);
-                self.name(data.name);
+                if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
+                    return self.bySelectedCode();
+                } else {
+                    return self.selectedCode();
+                }
             }
         }
-        
+
         private reloadComponent() {
             var self = this;
             self.listComponentOption.isShowAlreadySet = self.isAlreadySetting();
@@ -318,6 +273,8 @@ module kcp005.a.viewmodel {
             self.listComponentOption.isDialog = self.isDialog();
             self.listComponentOption.isShowNoSelectRow = self.isShowNoSelectionItem();
             self.listComponentOption.alreadySettingList = self.alreadySettingList;
+            self.listComponentOption.isMultiSelect = self.isMultiSelect();
+            self.listComponentOption.selectType = self.selectedType();
             self.listComponentOption.isShowWorkPlaceName = self.isShowWorkPlaceName();
             self.listComponentOption.isShowSelectAllButton = self.isShowSelectAllButton();
 

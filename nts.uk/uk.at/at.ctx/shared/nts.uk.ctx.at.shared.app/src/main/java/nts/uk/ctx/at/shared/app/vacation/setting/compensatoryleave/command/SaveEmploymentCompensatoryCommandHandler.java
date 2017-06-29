@@ -13,12 +13,19 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveE
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class SaveEmploymentCompensatoryCommandHandler.
+ */
 @Stateless
 public class SaveEmploymentCompensatoryCommandHandler extends CommandHandler<SaveEmploymentCompensatoryCommand> {
 
+	/** The compens leave em set repository. */
 	@Inject
 	CompensLeaveEmSetRepository compensLeaveEmSetRepository;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<SaveEmploymentCompensatoryCommand> context) {
 		SaveEmploymentCompensatoryCommand command = context.getCommand();

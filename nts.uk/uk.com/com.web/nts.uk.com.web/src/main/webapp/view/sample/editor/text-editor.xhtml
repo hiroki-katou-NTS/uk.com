@@ -17,7 +17,6 @@
 					nts.uk.shr.com.primitive.sample.PersonalWageCode
 					nts.uk.shr.com.primitive.sample.CommonAmount
 					nts.uk.shr.com.primitive.sample.SampleKana
-					nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode
 					nts.arc.time.YearMonth
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
@@ -47,11 +46,14 @@
 							<button data-bind="click: clear">Clear Error</button>
 							<br/>
 							<h3>Kana</h3>
+							<div data-bind="ntsFormLabel: { constraint: 'SampleKana' }">SampleKana</div>
 							<input id="kana-txt" data-bind="ntsTextEditor: { name: '#[FND_N_SPAN_YM_END, FND_L_SEARCH_RELEASE]', value: valueKana, constraint: 'SampleKana', option: option }"/>
 							<h3>Upper case alpha numeric</h3>
+							<div data-bind="ntsFormLabel: { constraint: 'PersonalWageCode' }">PersonalWageCode</div>
 							<input id="an-txt" data-bind="ntsTextEditor: { name: 'Uppercase', value: valueUan, constraint: 'PersonalWageCode', option: option }"/>
 						</div>
 						<h3>Update Immediate</h3>
+						<div data-bind="ntsFormLabel: { constraint: 'ResidenceCode' }">ResidenceCode</div>
 						<input id="text-simple" data-name="text-simple" data-bind="ntsTextEditor: {value: value, constraint: 'ResidenceCode', immediate: true}" />
 						<span data-bind="text: value"></span>
 						<hr/>

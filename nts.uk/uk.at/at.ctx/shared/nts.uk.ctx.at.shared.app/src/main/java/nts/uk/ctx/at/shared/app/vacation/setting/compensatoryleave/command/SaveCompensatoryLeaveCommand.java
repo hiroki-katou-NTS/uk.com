@@ -18,6 +18,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+
+/**
+ * The Class SaveCompensatoryLeaveCommand.
+ */
 @Getter
 @Setter
 public class SaveCompensatoryLeaveCommand {

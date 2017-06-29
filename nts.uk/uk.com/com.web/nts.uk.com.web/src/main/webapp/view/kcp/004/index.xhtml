@@ -18,6 +18,15 @@
 				.table-tree-sample tr td {
 					border: none;
 				}
+				h4 {
+					font-size: 17px !important;
+				}
+				.ntsRadioBox {
+					padding: 10px 0px 10px 20px;
+				}
+				.ntsCheckBox {
+					padding-top: 10px !important;
+				}
 			</style>
 		</ui:define>
 
@@ -29,22 +38,36 @@
 					<div>
 						<h1>KCP004 職場リスト（共通部品）Workplace List</h1>
 						<h2>Overview</h2>
-						<div>
+						<div style="margin: 20px 0px;">
 							<button data-bind="click: copy">Copy</button>
 							<button data-bind="click: register">Register</button>
 							<button data-bind="click: remove">Remove</button>
-							<div style="padding: 0px 10px;display: inline-block;">
-								<label>Tree grid type:</label>
-								<div id="first-list" data-bind="ntsRadioBoxGroup: {
+						</div>
+						<div>
+							<div>
+								<h4>Tree grid type:</h4>
+								<div data-bind="ntsRadioBoxGroup: {
 									options: listTreeType,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedTreeType,
 									enable: true}"></div>
 							</div>
-							<div data-bind="ntsCheckBox:{checked: isDialog}">Dialog</div>
-							<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
-							<div data-bind="ntsCheckBox:{checked: isShowSelectButton}">Show SelectAll/SelectSubParent button</div>
+							<div>
+								<h4>Selection type:</h4>
+								<div data-bind="ntsRadioBoxGroup: {
+									options: listSelectionType,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedSelectionType,
+									enable: enable}"></div>
+							</div>
+							<h4>Other option:</h4>
+							<div style="margin-left: 17px;">
+								<div data-bind="ntsCheckBox:{checked: isDialog}">Dialog</div>
+								<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
+								<div data-bind="ntsCheckBox:{checked: isShowSelectButton, enable: enableShowSelectButton}">Show SelectAll/SelectSubParent button</div>
+							</div>
 							<hr></hr>
 						</div>
 						<div>
@@ -53,18 +76,14 @@
 									<td><div id="tree-grid" style="width: 500px;margin-top: 30px;"></div></td>
 									<td>
 										<div style="margin-left: 50px;">
-											<table class="table-tree-sample">
+											<table class="table-tree-sample" data-bind="with: rowSelected">
 												<tr>
 													<td><label style="margin-right: 10px;font-size: 17px;">Workplace id:</label></td>
-													<td><span style="font-size: 20px;" data-bind='text: getSelectedData()'></span></td>
+													<td><span style="font-size: 20px;" data-bind='text: workplaceId'></span></td>
 												</tr>
 												<tr>
 													<td><label style="margin-right: 10px;font-size: 17px;">Workplace code:</label></td>
-													<td><span style="font-size: 20px;" data-bind='text: getSelectedData()'></span></td>
-												</tr>
-												<tr>
-													<td><label style="margin-right: 10px;font-size: 17px;">Workplace name:</label></td>
-													<td><span style="font-size: 20px;" data-bind='text: getSelectedData()'></span></td>
+													<td><span style="font-size: 20px;" data-bind='text: workplaceCode'></span></td>
 												</tr>
 											</table>
 										</div>
@@ -88,7 +107,9 @@
 									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
 									<pre><![CDATA[<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 </ui:define>]]></pre>
+									<p>Create a div tag to bind tree grid</p>
 									<pre><![CDATA[<div id="tree-grid" style="width: 500px;"></div>]]></pre>
 								</div><!-- END TAB HTML -->
 								
@@ -119,6 +140,7 @@ export class ScreenModel {
 						treeType: TreeType.WORK_PLACE,
 						selectedWorkplaceId: self.multiSelectedWorkplaceId,
 						baseDate: self.baseDate,
+						selectType: SelectionType.SELECT_FIRST_ITEM,
 						isShowSelectButton: true,
 						isDialog: false,
 						alreadySettingList: self.alreadySettingList
@@ -139,14 +161,14 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 											<td>isShowAlreadySet</td>
 											<td>
 												<b>Type:</b> boolean<br/>
-												<label>Show/hide icon flag/tick of column 名称</label>
+												<label><i>Description:</i>Show/hide icon flag/tick of column 名称</label>
 											</td>
 										</tr>
 										<tr>
 											<td>isMultiSelect</td>
 											<td>
 												<b>Type:</b> boolean<br/>
-												<label>Enable/disable multiple selection</label>
+												<label><i>Description:</i>Enable/disable multiple selection</label>
 											</td>
 										</tr>
 										<tr>
@@ -159,36 +181,49 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 												<b>Default:</b>1<br/>
 												<pre><![CDATA[TreeType {
      static WORK_PLACE = 1;
- }
-									]]></pre>
+ }]]></pre>
 											</td>
 										</tr>
 										<tr>
 											<td>selectedWorkplaceId</td>
 											<td>
 												<b>Type:</b> string | Array[string] <br/>
-												<label>Selected code that has workplaceId = selectedWorkplaceId in tree grid</label>
+												<label><i>Description:</i>Selected code that has workplaceId = selectedWorkplaceId in tree grid</label>
 											</td>
 										</tr>
 										<tr>
 											<td>baseDate</td>
 											<td>
 												<b>Type:</b> Date<br/>
-												<label>Base date</label>
+												<label><i>Description:</i>Base date</label>
+											</td>
+										</tr>
+										<tr>
+											<td>selectType</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<b>Default:</b>4 ~ NO_SELECT<br/>
+												<div><i>Description:</i> Selection mode.</div>
+												<pre><![CDATA[SelectionType {
+    static SELECT_BY_SELECTED_CODE = 1;
+    static SELECT_ALL = 2;
+    static SELECT_FIRST_ITEM = 3;
+    static NO_SELECT = 4;
+}]]></pre>
 											</td>
 										</tr>
 										<tr>
 											<td>isShowSelectButton</td>
 											<td>
 												<b>Type:</b> boolean<br/>
-												<label>Show/hide button select all and selected sub parent.</label>
+												<label><i>Description:</i>Show/hide button select all and selected sub parent.</label>
 											</td>
 										</tr>
 										<tr>
 											<td>isDialog</td>
 											<td>
 												<b>Type:</b> boolean<br/>
-												<label>Show/hide icon search</label>
+												<label><i>Description:</i>Show/hide icon search</label>
 											</td>
 										</tr>
 										<tr>
@@ -199,6 +234,7 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 											<td>
 												<b>Type:</b>Array[UnitAlreadySettingModel]<br/>
 												<b>Default:</b><i>empty</i><br/>
+												<div><i>Description:</i> Display icon setting</div>
 												<pre><![CDATA[UnitAlreadySettingModel {
     workplaceId: string;
     settingType: SettingType;
@@ -227,11 +263,35 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 										</thead>
 										<tr>
 											<td>$('#tree-grid').getDataList()</td>
-											<td>Get list data tree.</td>
+											<td>
+												<div><b>Type:</b>Array[UnitModel]</div>
+												<div><i>Description:</i>Get list data tree.</div>
+												<pre><![CDATA[UnitModel {
+    workplaceId: string;
+    code: string;
+    name: string;
+    nodeText: string;
+    level: number;
+    heirarchyCode: string;
+    settingType: SettingType;
+    childs: Array<UnitModel>;
+}]]></pre>
+											</td>
+										</tr>
+										<tr>
+											<td>$('#tree-grid').getRowSelected()</td>
+											<td>
+												<div><b>Type:</b> Array[RowSelection]</div>
+												<div><i>Description:</i>Get selected row data.</div>
+												<pre><![CDATA[RowSelection {
+    workplaceId: string;
+    workplaceCode: string;
+}]]></pre>
+											</td>
 										</tr>
 										<tr>
 											<td>$('#tree-grid').focusComponent()</td>
-											<td>Focus input control in tree grid.</td>
+											<td><i>Description:</i>Focus input control in tree grid.</td>
 										</tr>
 									</table>
 								</div><!-- END TABS METHOD -->

@@ -9,7 +9,8 @@ module nts.uk.com.view.ccg.share.ccg {
             getPersonLogin: "basic/person/getpersonlogin",
             searchModeEmployee: "basic/organization/employee/search/advanced",
             searchOfWorkplace: "basic/organization/employee/search/ofworkplace",
-            searchWorkplaceChild: "basic/organization/employee/search/workplacechild"
+            searchWorkplaceChild: "basic/organization/employee/search/workplacechild",
+            searchWorkplaceOfEmployee: "basic/organization/employee/search/workplaceemp"
         }
 
         /**
@@ -34,6 +35,10 @@ module nts.uk.com.view.ccg.share.ccg {
         export function searchModeEmployee(input: model.EmployeeSearchDto)
             : JQueryPromise<model.PersonModel[]> {
             return nts.uk.request.ajax('com', servicePath.searchModeEmployee, input);
+        }
+
+        export function searchWorkplaceOfEmployee(baseDate: Date): JQueryPromise<string[]> {
+            return nts.uk.request.ajax('com', servicePath.searchWorkplaceOfEmployee, baseDate);
         }
         
         
@@ -61,10 +66,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 //自分だけ
                 isOnlyMe: boolean;
                 //おなじ部門の社員
-                isEmployeeOfDepartment: boolean;
+                isEmployeeOfWorkplace: boolean;
                 //おなじ＋配下部門の社員
-                isEmployeeDepartmentFollow: boolean;
-
+                isEmployeeWorkplaceFollow: boolean;
 
                 // 詳細検索タブ
                 isAdvancedSearchTab: boolean;
@@ -78,6 +82,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
                 
                 onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
+                
+                onApplyEmployee: (data: string[]) => void;
             }
     
         }

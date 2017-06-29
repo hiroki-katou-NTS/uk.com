@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfClassificationDetailDto;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfClassificationListDto;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
@@ -46,10 +48,10 @@ public class AgreementTimeOfClassificationFinder {
 		return agreementTimeOfClassificationListDto;
 	}
 
-	public AgreementTimeOfClassificationDetail findDetail(int laborSystemAtr, String classificationCode) {
+	public AgreementTimeOfClassificationDetailDto findDetail(int laborSystemAtr, String classificationCode) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
-		AgreementTimeOfClassificationDetail agreementTimeOfClassificationDetail = new AgreementTimeOfClassificationDetail();
+		AgreementTimeOfClassificationDetailDto agreementTimeOfClassificationDetail = new AgreementTimeOfClassificationDetailDto();
 
 		// get basicSettingID of Classification selected
 		Optional<String> basicSettingIdOfClass = agreementTimeOfClassificationRepository.findEmploymentBasicSettingID(companyId,

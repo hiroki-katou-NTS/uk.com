@@ -3,6 +3,9 @@ package nts.uk.ctx.basic.dom.company.organization.workplace;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
+/**
+ * The Class WorkplaceName.
+ */
 @StringMaxLength(120)
 public class WorkplaceName extends StringPrimitiveValue<WorkplaceName> {
 	

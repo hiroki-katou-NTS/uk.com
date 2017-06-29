@@ -16,7 +16,6 @@ import nts.uk.ctx.workflow.app.find.agent.AgentFinder;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentAppType;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
-import nts.uk.ctx.workflow.dom.agent.AgentType;
 import nts.uk.ctx.workflow.dom.agent.RangeDate;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -52,18 +51,21 @@ public class AddAgentCommandHandler extends CommandHandlerWithResult<AgentComman
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType3(), AgentAppType.class),
 				agentCommandBase.getAgentSid4(),
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType4(), AgentAppType.class));
-		
-		//Validate Date
+	
+		//validate date
 		List<AgentDto> agents = finder.findAllEmploy(employeeId);
 		List<RangeDate> rangeDateList = agents.stream()
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
-//		List<AgentDto> agent = finder.findByCid();
-//		List<AgentType> agentTypeList = agent.stream()
-//				.map(a -> new AgentType(a.getAgentAppType1(),a.getAgentAppType2(),a.getAgentAppType3(),a.getAgentAppType4()))
-//				.collect(Collectors.toList());
+
 		agentInfor.validateDate(rangeDateList);
-		//agentInfor.agentOfApp(agentTypeList);		
+		
+		//validate agent of approval
+		List<Agent> agentSidList = agentRepository.findByCid(companyId);
+		
+		agentInfor.checkAgentSid(agentSidList);
+		
+		//add agent
 		agentRepository.add(agentInfor);
 		
 		return requestId.toString();

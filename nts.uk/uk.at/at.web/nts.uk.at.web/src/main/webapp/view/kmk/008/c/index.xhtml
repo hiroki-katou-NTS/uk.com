@@ -6,11 +6,11 @@
 	<div class="sidebar-content-header">
 		<span class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
 			'#Com_Company'])}</span> <a tabindex="2"
-			data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-		<button class="proceed" tabindex="3">#{i18n.getText('KMK008_14')}</button>
+			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
+		<button class="proceed" tabindex="3" data-bind="click: addUpdateData">#{i18n.getText('KMK008_14')}</button>
 	</div>
 	<div class="contents-area">
-		<div class="tabpanel-1-contents-area-left">
+		<div class="tabpanel-1-contents-area-right-screen-c">
 			<div class="label">#{i18n.getText('KMK008_6')}</div>
 			<HR />
 			<table class="table-basic-setting-list" data-bind="with: timeOfCompany">

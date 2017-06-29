@@ -11,7 +11,7 @@ public interface AgreementMonthSettingRepository {
 	
 	void add(AgreementMonthSetting agreementMonthSetting);
 	
-	void update(String employeeId, BigDecimal yearMonthValue, BigDecimal errorOneMonth, BigDecimal alarmOneMonth);
+	void update(AgreementMonthSetting agreementMonthSetting);
 	
 	void delete(String employeeId, BigDecimal yearMonthValue);
 	

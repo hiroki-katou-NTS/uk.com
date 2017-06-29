@@ -50,6 +50,7 @@
 											optionsText: 'name',
 											value: selectedType,
 											enable: true}"></div>
+											
 						</div>
 
 						<div style="margin-left: 30px; padding-top: 10px">
@@ -57,7 +58,7 @@
 								<b>Save/Delete</b>
 							</p>
 							<br></br>
-							<BUTTON id="test-button" data-bind="click: setAlreadyCheck"
+							<BUTTON id="test-button" data-bind="click: settingSavedItem"
 								style="margin-right: 10px">Copy</BUTTON>
 							<BUTTON id="test-button"
 								data-bind="click: settingSavedItem, enable: hasSelectedJobTitle()"
@@ -65,8 +66,9 @@
 							<BUTTON id="test-button" data-bind="click: settingDeletedItem"
 								style="margin-right: 10px">Delete</BUTTON>
 						</div>
+						<hr></hr>
 					</div>
-					<hr></hr>
+					
 					<br></br>
 					<table style="margin: 30px;">
 						<tr>
@@ -77,47 +79,16 @@
 								<div id="component-items-list"></div>
 							</td>
 							<td>
-								<table style="margin-left: 40px; margin-top: 20px;">
+								<table>
 									<tr>
-										<td style="width: 200px; padding-left: 40px; height: 60px;">
-											<div>
-												<span>Code</span>
-											</div>
-										</td>
-										<td style="padding-left: 5px;">
-											<div>
-												<input id='code'
-													data-bind="ntsTextEditor: {
-													value: code,
-													option: codeEditorOption,
-													required: true,
-													enable: hasSelectedJobTitle(),
-													readonly: false}" />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td style="width: 200px; padding-left: 40px; height: 60px;">
-											<div>
-												<span>Name</span>
-											</div>
-										</td>
-										<td style="padding-left: 5px;">
-											<div>
-												<input id='name'
-													data-bind="ntsTextEditor: {
-													value: name,
-													option: nameEditorOption,
-													required: true,
-													enable: hasSelectedJobTitle(),
-													readonly: false}" />
-											</div>
-										</td>
+										<td>Selected Codes: </td>
+										<td style="width: 100px"><div data-bind="text: getSelectedItemCode()"></div></td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 					</table>
+					
 					<!-- BEGIN DESCRIPTION -->
 						<article class="cf" style="margin-top: 10px;">
 							<div class="tabs">
@@ -151,7 +122,7 @@
 												baseDate: KnockoutObservable<Date>;
 												listComponentOption: any;
 												selectedCode: KnockoutObservable<string>;
-												multiSelectedCode: KnockoutObservableArray<any>;
+												multiSelectedCode: KnockoutObservableArray<string>;
 												isShowAlreadySet: KnockoutObservable<boolean>;
 												alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 												isDialog: KnockoutObservable<boolean>;
@@ -252,7 +223,7 @@
 											<td>
 												<b>Type:</b> number<br/>
 												<b>Default:</b>1<br/>
-												<pre><![CDATA[ListType {
+												<pre><![CDATA[ ListType {
     static EMPLOYMENT = 1;
     static Classification = 2;
     static JOB_TITLE = 3;
@@ -269,7 +240,7 @@
 											<td>
 												<b>Type:</b> number<br/>
 												<b>Default:</b> 1<br/>
-												<pre><![CDATA[SelectType {
+												<pre><![CDATA[ SelectType {
     static SELECT_BY_SELECTED_CODE = 1;
     static SELECT_ALL = 2;
     static SELECT_FIRST_ITEM = 3;
@@ -308,7 +279,7 @@
 											<td>
 												<b>Type:</b> Array[UnitAlreadySettingModel]<br/>
 												<b>Default:</b><i> empty</i><br/>
-												<pre><![CDATA[UnitAlreadySettingModel {
+												<pre><![CDATA[ UnitAlreadySettingModel {
     code: string;
     isAlreadySetting: boolean;
 }]]></pre>
@@ -317,7 +288,7 @@
 									</table>
 								</div><!-- END VIEWMODEL TAB-->
 								
-								<!-- BEGIN -->
+								<!-- BEGIN METHOD TAB-->
 								<div id="tabs-method" class="cf">
 									<table style="width: 500px">
 										<thead>
@@ -329,7 +300,7 @@
 											<td>Get Job Title List</td>
 										</tr>
 									</table>
-								</div><!-- END -->
+								</div><!-- END METHOD TAB -->
 							</div>
 						</article><!-- END DESCRIPTION -->
 				</div>

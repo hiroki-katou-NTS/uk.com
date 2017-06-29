@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.EmployeeId;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 
@@ -18,8 +19,13 @@ public class PSBonusPaySettingFinder {
 
 	public List<PSBonusPaySettingDto> getListSetting(List<String> lstEmployeeId) {
 		List<PersonalBonusPaySetting> lstPersonalBonusPaySetting = this.psBonusPaySettingRepository
-				.getListSetting(lstEmployeeId);
+				.getListSetting(lstEmployeeId.stream().map(c -> new EmployeeId(c)).collect(Collectors.toList()));
 		return lstPersonalBonusPaySetting.stream().map(c -> toPSBonusPaySettingDto(c)).collect(Collectors.toList());
+	}
+
+	public PSBonusPaySettingDto getPersonalBonusPaySetting(String employeeId) {
+
+		return this.toPSBonusPaySettingDto(psBonusPaySettingRepository.getPersonalBonusPaySetting(new EmployeeId(employeeId)).get());
 	}
 
 	private PSBonusPaySettingDto toPSBonusPaySettingDto(PersonalBonusPaySetting personalBonusPaySetting) {

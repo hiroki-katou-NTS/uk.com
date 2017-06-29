@@ -15,20 +15,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
-// TODO: Auto-generated Javadoc
 /**
- * Gets the compensatory digestive time unit.
- *
- * @return the compensatory digestive time unit
+ * The Class SaveEmploymentCompensatoryCommand.
  */
 @Getter
-
-/**
- * Sets the compensatory digestive time unit.
- *
- * @param compensatoryDigestiveTimeUnit
- *            the new compensatory digestive time unit
- */
 @Setter
 public class SaveEmploymentCompensatoryCommand {
 

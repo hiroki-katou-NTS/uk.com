@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.infra.data.query.DBCharPaddingAs;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkplaceId;
 @Setter
 @Getter
 @Embeddable
@@ -16,6 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class KbpstWPBonusPaySettingPK implements Serializable{
 	private static final long serialVersionUID = 1L;
-	@Column(name = "WORKPLACE_ID")
+	@DBCharPaddingAs(WorkplaceId.class)
+	@Column(name = "WKPID")
 	public String workplaceId;
 }

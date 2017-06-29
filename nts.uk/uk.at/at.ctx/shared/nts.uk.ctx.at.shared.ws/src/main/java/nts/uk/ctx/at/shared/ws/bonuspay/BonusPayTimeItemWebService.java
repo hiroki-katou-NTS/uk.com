@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -28,24 +29,34 @@ public class BonusPayTimeItemWebService extends WebService {
 	@POST
 	@Path("getListBonusPayTimeItem")
 	List<BPTimeItemDto> getListBonusPayTimeItem() {
-		return bpTimeItemFinder.getListBonusPayTimeItem();
+		return this.bpTimeItemFinder.getListBonusPayTimeItem();
 	}
 
 	@POST
 	@Path("getListSpecialBonusPayTimeItem")
 	List<BPTimeItemDto> getListSpecialBonusPayTimeItem() {
-		return bpTimeItemFinder.getListSpecialBonusPayTimeItem();
+		return this.bpTimeItemFinder.getListSpecialBonusPayTimeItem();
 	}
-
+	@POST
+	@Path("getBonusPayTimeItem/{timeItemId}")
+	public BPTimeItemDto getBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){
+		return this.bpTimeItemFinder.getBonusPayTimeItem(timeItemId);
+	}
+	@POST
+	@Path("getSpecialBonusPayTimeItem/{timeItemNo}")
+	public BPTimeItemDto getSpecialBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){
+		return this.bpTimeItemFinder.getSpecialBonusPayTimeItem(timeItemId);
+	}
+	
 	@POST
 	@Path("addListBonusPayTimeItem")
 	void addListBonusPayTimeItem(List<BPTimeItemAddCommand> lstTimeItem) {
-		bpTimeItemAddCommandHandler.handle(lstTimeItem);
+		this.bpTimeItemAddCommandHandler.handle(lstTimeItem);
 	}
 
 	@POST
 	@Path("updateListBonusPayTimeItem")
 	void updateListBonusPayTimeItem(List<BPTimeItemUpdateCommand> lstTimeItem) {
-		bpTimeItemUpdateCommandhandler.handle(lstTimeItem);
+		this.bpTimeItemUpdateCommandhandler.handle(lstTimeItem);
 	}
 }
