@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSet;
+import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSetPK;
 
 /**
  * 
@@ -16,6 +19,7 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSet;
  *
  */
 @Stateless
+@Transactional
 public class JpaTopPagePersonSetRepository extends JpaRepository implements TopPagePersonSetRepository {
 	private final String SEL = "SELECT c FROM CcgptTopPagePersonSet c ";
 	private final String SELECT_TOPPAGE_PERSON_BYCODE = SEL + "WHERE c.ccgptTopPagePersonSetPK.companyId = :companyId "
@@ -25,9 +29,22 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 
 	private TopPagePersonSet toDomain(CcgptTopPagePersonSet entity) {
 		TopPagePersonSet domain = TopPagePersonSet.createFromJavaType(entity.ccgptTopPagePersonSetPK.companyId,
-				entity.ccgptTopPagePersonSetPK.employeeId, entity.topMenuNo, entity.loginMenuNo, entity.loginSystem,
+				entity.ccgptTopPagePersonSetPK.employeeId, entity.topMenuCode, entity.loginMenuCode, entity.loginSystem,
 				entity.loginMenuCls);
 		return domain;
+	}
+
+	private CcgptTopPagePersonSet toEntity(TopPagePersonSet domain) {
+		val entity = new CcgptTopPagePersonSet();
+
+		entity.ccgptTopPagePersonSetPK = new CcgptTopPagePersonSetPK();
+		entity.ccgptTopPagePersonSetPK.companyId = domain.getCompanyId();
+		entity.ccgptTopPagePersonSetPK.employeeId = domain.getEmployeeId();
+		entity.loginMenuCode = domain.getLoginMenuCode().v();
+		entity.topMenuCode = domain.getTopMenuCode().v();
+		entity.loginSystem = domain.getLoginSystem().value;
+		entity.loginMenuCls = domain.getMenuClassification().value;
+		return entity;
 	}
 
 	@Override
@@ -45,6 +62,22 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 			return null;
 		}
 		return obj.get();
+	}
+
+	@Override
+	public void update(TopPagePersonSet topPagePersonSet) {
+		this.commandProxy().update(toEntity(topPagePersonSet));
+	}
+
+	@Override
+	public void remove(TopPagePersonSet topPagePersonSet) {
+		this.commandProxy().remove(toEntity(topPagePersonSet));
+	}
+
+	@Override
+	public void add(TopPagePersonSet topPagePersonSet) {
+		this.commandProxy().insert(toEntity(topPagePersonSet));
+
 	}
 
 }
