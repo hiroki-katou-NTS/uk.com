@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -28,24 +29,35 @@ public class WPBonusPaySettingWebService extends WebService {
 	private WPBonusPaySettingDeleteCommandHandler wpBonusPaySettingDeleteCommandHandler;
 	@Inject
 	private WPBonusPaySettingUpdateCommandHandler wpBonusPaySettingUpdateCommandHandler;
+
 	@POST
 	@Path("getListWPBonusPaySettingSetting")
 	List<WPBonusPaySettingDto> getListWPBonusPaySettingSetting(List<String> lstWorkplace) {
 		return this.wpBonusPaySettingFinder.getListSetting(lstWorkplace);
 	}
+
 	@POST
-	@Path("addListWPBonusPaySettingSetting")
-	void addListWPBonusPaySettingSetting(List<WPBonusPaySettingAddCommand> lstSetting) {
-		this.wpBonusPaySettingAddCommandHandler.handle(lstSetting);
+	@Path("addWPBonusPaySettingSetting")
+	void addWPBonusPaySettingSetting(WPBonusPaySettingAddCommand wpBonusPaySettingAddCommand) {
+		this.wpBonusPaySettingAddCommandHandler.handle(wpBonusPaySettingAddCommand);
 	}
+
 	@POST
-	@Path("updateListWPBonusPaySettingSetting")
-	void updateListWPBonusPaySettingSetting(List<WPBonusPaySettingUpdateCommand> lstSetting) {
-		this.wpBonusPaySettingUpdateCommandHandler.handle(lstSetting);
+	@Path("updateWPBonusPaySettingSetting")
+	void updateWPBonusPaySettingSetting(WPBonusPaySettingUpdateCommand wpBonusPaySettingUpdateCommand) {
+		this.wpBonusPaySettingUpdateCommandHandler.handle(wpBonusPaySettingUpdateCommand);
 	}
+
 	@POST
-	@Path("removeListWPBonusPaySettingSetting")
-	void removeListWPBonusPaySettingSetting(List<WPBonusPaySettingDeleteCommand> lstSetting) {
-		this.wpBonusPaySettingDeleteCommandHandler.handle(lstSetting);
+	@Path("removeWPBonusPaySettingSetting")
+	void removeWPBonusPaySettingSetting(WPBonusPaySettingDeleteCommand wpBonusPaySettingDeleteCommand) {
+		this.wpBonusPaySettingDeleteCommandHandler.handle(wpBonusPaySettingDeleteCommand);
 	}
+
+	@POST
+	@Path("getWPBPSetting/{WorkplaceId}")
+	WPBonusPaySettingDto getWPBPSetting(@PathParam("WorkplaceId") String WorkplaceId) {
+		return this.wpBonusPaySettingFinder.getWPBPSetting(WorkplaceId);
+	}
+
 }

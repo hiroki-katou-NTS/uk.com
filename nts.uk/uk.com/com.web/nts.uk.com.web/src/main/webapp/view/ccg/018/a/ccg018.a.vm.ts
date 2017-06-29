@@ -2,86 +2,51 @@ module ccg018.a.viewmodel {
     export class ScreenModel {
         date: KnockoutObservable<string>;
         items: KnockoutObservableArray<TopPageJobSet>;
-        switchOptions: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        isHidden: KnockoutObservable<boolean>;
+        isVisible: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<number>;
-        comboItemsAfterLogin: KnockoutObservableArray<any>;
-        comboItemsAsTopPage: KnockoutObservableArray<any>;
+        listJobTitle: KnockoutObservableArray<any>;
+        comboItemsAfterLogin: KnockoutObservableArray<ItemModel>;
+        comboItemsAsTopPage: KnockoutObservableArray<ItemModel>;
+        //appear/disappear header of scroll on UI
+        isHeaderScroll: KnockoutObservable<boolean>;
 
-        itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode1: KnockoutObservable<string>;
-        selectedCode2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
 
         constructor() {
-            var self = this;
-            self.date = ko.observable(new Date().toISOString());
+            let self = this;
             self.items = ko.observableArray([]);
+            self.listJobTitle = ko.observableArray([]);
+            self.date = ko.observable(new Date().toISOString());
             self.comboItemsAfterLogin = ko.observableArray([]);
             self.comboItemsAsTopPage = ko.observableArray([]);
-            self.isHidden = ko.observable(false);
             self.categorySet = ko.observable(undefined);
-            self.switchOptions = ko.observableArray([new ItemModel('0', nts.uk.resource.getText("CCG018_13")),
-                new ItemModel('1', nts.uk.resource.getText("CCG018_14"))]);
+            self.isVisible = ko.computed(function() {
+                return !!self.categorySet();
+            });
 
-            self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給')
-            ]);
-            self.selectedCode1 = ko.observable('1');
-            self.selectedCode2 = ko.observable('3');
+            self.isHeaderScroll = ko.computed(function() {
+                return self.items().length > 15 ? true : false;
+            });
 
             self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText("CCG018_13") },
-                { code: '2', name: nts.uk.resource.getText("CCG018_14") }
+                { code: 1, name: nts.uk.resource.getText("CCG018_13") },
+                { code: 0, name: nts.uk.resource.getText("CCG018_14") }
             ]);
-            self.selectedRuleCode = ko.observable(1);
 
-            $.when(self.findByCId()).done(function() {
-                $.when(self.findByAfterLoginDisplay()).done(function() {
-                    $.when(self.findByAfterLgDisSysMenuCls()).done(function() {
-                        $.when(self.findDataOfTopPageJobSet()).done(function() {
-                            //                           self.bindGrid('785px');
-                        }).fail();
-                    }).fail();
-                }).fail();
-            }).fail();
-
-            for (let i = 1; i < 50; i++) {
-                self.items.push(new TopPageJobSet('00' + i, 'アルバイト', 'A001', 'A002', 0, 'A0000000', 1));
-            }
-            self.currentCode = ko.observable();
+            self.start();
         }
 
-        //        bindGrid(widthGrid: string) {
-        //            var self = this;
-        //            var comboColumns = [
-        //                { prop: 'name', length: 8 }];
-        //            $("#grid").ntsGrid({
-        //                width: widthGrid,
-        //                height: '565px',
-        //                dataSource: self.items(),
-        //                autoCommit: true,
-        //                primaryKey: 'code',
-        //                virtualization: true,
-        //                virtualizationMode: 'continuous',
-        //                columns: [
-        //                    { headerText: nts.uk.resource.getText("CCG018_8"), key: 'code', dataType: 'number', width: '50px' },
-        //                    { headerText: nts.uk.resource.getText("CCG018_9"), key: 'name', dataType: 'string', width: '120px' },
-        //                    { headerText: nts.uk.resource.getText("CCG018_10"), key: 'afterLogin', dataType: 'string', width: '205px', ntsControl: 'Combobox1', hidden: self.isHidden() },
-        //                    { headerText: nts.uk.resource.getText("CCG018_11"), key: 'asTopPage', dataType: 'string', width: '205px', ntsControl: 'Combobox2' },
-        //                    { headerText: nts.uk.resource.getText("CCG018_12"), key: 'personPermissionSet', dataType: 'string', width: '185px', ntsControl: 'SwitchButtons' }
-        //                ],
-        //                features: [{ name: 'Sorting', type: 'local' }],
-        //                ntsControls: [
-        //                    { name: 'Combobox1', options: self.comboItemsAfterLogin(), optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-        //                    { name: 'Combobox2', options: self.comboItemsAsTopPage(), optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-        //                    { name: 'SwitchButtons', options: self.switchOptions(), optionsValue: 'code', optionsText: 'name', controlType: 'SwitchButtons', enable: true },
-        //            });
-        //        }
+        start(): any {
+            let self = this;
+            if (self.categorySet() == undefined) {
+                self.findByCId();
+            } else {
+                self.categorySet(__viewContext.viewModel.viewmodelB.categorySet());
+            }
+            $.when(self.findBySystemMenuCls()).done(function() {
+                self.searchByDate();
+            });
+        }
 
         /**
          * Find data in DB TOPPAGE_SET base on companyId
@@ -102,56 +67,70 @@ module ccg018.a.viewmodel {
         }
 
         /**
-         * Find By After Login Display (asTopPage) 
+         * Find data in table STANDARD_MENU base on CompanyId and System = 0(common) and MenuClassification = 8(top page)
+         * Return 2 array comboItemsAsTopPage and comboItemsAfterLogin
          */
-        findByAfterLoginDisplay(): JQueryPromise<any> {
+        findBySystemMenuCls(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            ccg018.a.service.findByAfterLoginDisplay()
+            self.comboItemsAfterLogin.removeAll();
+            self.comboItemsAsTopPage.removeAll();
+            ccg018.a.service.findBySystemMenuCls()
                 .done(function(data) {
-                    if (data.length > 0) {
-                        self.comboItemsAsTopPage().push(new ItemModel('', '未設定'));
-                        for (var i = 0; i < data.length; i++) {
-                            self.comboItemsAsTopPage().push(new ItemModel(data[i].code, data[i].displayName));
-                        }
+                    if (data.length >= 0) {
+                        self.comboItemsAsTopPage.push(new ItemModel('', '未設定'));
+                        self.comboItemsAfterLogin.push(new ItemModel('', '未設定'));
+
+                        _.forEach(_.filter(data, ['afterLoginDisplay', 1]), function(x) {
+                            self.comboItemsAfterLogin.push(new ItemModel(x.code, x.displayName));
+                        });
+
+                        _.forEach(data, function(x) {
+                            self.comboItemsAsTopPage.push(new ItemModel(x.code, x.displayName));
+                        });
                     }
                     dfd.resolve();
                 }).fail();
             return dfd.promise();
         }
 
-        /**
-        * Find By After_Login_Display and System and Menu_Classification (after login display)
-        */
-        findByAfterLgDisSysMenuCls(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            ccg018.a.service.findByAfterLgDisSysMenuCls()
-                .done(function(data) {
-                    if (data.length > 0) {
-                        self.comboItemsAfterLogin().push(new ItemModel('', '未設定'));
-                        for (var i = 0; i < data.length; i++) {
-                            self.comboItemsAfterLogin().push(new ItemModel(data[i].code, data[i].displayName));
-                        }
-                    }
-                    dfd.resolve();
-                }).fail();
-            return dfd.promise();
-        }
 
         /**
          * Find data in DB TOPPAGE_JOB_SET
          */
-        findDataOfTopPageJobSet(): JQueryPromise<any> {
+        findDataOfTopPageJobSet(listJobId: any): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            ccg018.a.service.findDataOfTopPageJobSet()
+            ccg018.a.service.findDataOfTopPageJobSet(listJobId)
                 .done(function(data) {
                     if (data.length > 0) {
+                        _.forEach(data, function(x) {
+                            var jobTitle = _.find(self.listJobTitle(), ['id', x.jobId]);
+                            self.items.push(new TopPageJobSet(jobTitle.code, jobTitle.name, x.loginMenuCode, x.topMenuCode, x.personPermissionSet, x.jobId, x.loginSystem, x.menuClassification));
+                        });
+                        dfd.resolve();
                     }
-                    dfd.resolve();
                 }).fail();
             return dfd.promise();
+        }
+
+        /**
+         * get JobCode and JobName in table CJTMT_JOB_TITLE
+         */
+        searchByDate(): any {
+            var self = this;
+            self.items.removeAll();
+            ccg018.a.service.findDataOfJobTitle(self.date())
+                .done(function(data) {
+                    if (data.length > 0) {
+                        self.listJobTitle(data);
+                        var listJobId = [];
+                        _.forEach(data, function(x) {
+                            listJobId.push(x.id);
+                        });
+                        self.findDataOfTopPageJobSet(listJobId);
+                    }
+                }).fail();
         }
 
 
@@ -161,11 +140,12 @@ module ccg018.a.viewmodel {
         update(): void {
             var self = this;
             var command = {
-                listTopPageJobSet: self.items(),
+                listTopPageJobSet: ko.mapping.toJS(self.items()),
                 ctgSet: self.categorySet()
             };
             ccg018.a.service.update(command)
                 .done(function() {
+                    self.searchByDate();
                 }).fail();
         }
 
@@ -177,14 +157,9 @@ module ccg018.a.viewmodel {
             // the default value of categorySet = undefined
             nts.uk.ui.windows.setShared('categorySet', self.categorySet());
             nts.uk.ui.windows.sub.modal("/view/ccg/018/c/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                if (nts.uk.ui.windows.getShared('divideOrNot') != undefined) {
-                    if (self.categorySet() != nts.uk.ui.windows.getShared('divideOrNot')) {
-                        self.categorySet(nts.uk.ui.windows.getShared('divideOrNot'));
-                        if (self.categorySet() === 1) {
-                            self.isHidden(true);
-                        } else {
-                            self.isHidden(false);
-                        }
+                if (nts.uk.ui.windows.getShared('categorySetC') != undefined) {
+                    if (self.categorySet() != nts.uk.ui.windows.getShared('categorySetC')) {
+                        self.categorySet(nts.uk.ui.windows.getShared('categorySetC'));
                     }
                 }
             });
@@ -192,21 +167,23 @@ module ccg018.a.viewmodel {
     }
 
     class TopPageJobSet {
-        code: string;
-        name: string;
-        afterLogin: string;
-        asTopPage: string;
-        personPermissionSet: number;
-        jobId: string;
-        system: number;
-        constructor(code: string, name: string, afterLogin: string, asTopPage: string, personPermissionSet: number, jobId: string, system: number) {
-            this.code = code;
-            this.name = name;
-            this.afterLogin = afterLogin;
-            this.asTopPage = asTopPage;
-            this.personPermissionSet = personPermissionSet;
-            this.jobId = jobId;
-            this.system = system;
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        loginMenuCd: KnockoutObservable<string>;
+        topMenuCd: KnockoutObservable<string>;
+        personPermissionSet: KnockoutObservable<number>;
+        jobId: KnockoutObservable<string>;
+        system: KnockoutObservable<number>;
+        menuClassification: KnockoutObservable<number>;
+        constructor(code: string, name: string, loginMenuCd: string, topMenuCd: string, personPermissionSet: number, jobId: string, system: number, menuClassification: number) {
+            this.code = ko.observable(code);
+            this.name = ko.observable(name);
+            this.loginMenuCd = ko.observable(loginMenuCd);
+            this.topMenuCd = ko.observable(topMenuCd);
+            this.personPermissionSet = ko.observable(personPermissionSet);
+            this.jobId = ko.observable(jobId);
+            this.system = ko.observable(system);
+            this.menuClassification = ko.observable(menuClassification);
         }
     }
 

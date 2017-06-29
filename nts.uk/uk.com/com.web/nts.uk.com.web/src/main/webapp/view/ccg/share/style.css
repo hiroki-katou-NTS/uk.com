@@ -16,6 +16,9 @@
 .contentkcp {
 	min-height: 550px;
 	max-width: 550px;
+}
+
+.centerkcp {
 	/* Firefox */
 	display: -moz-box;
 	-moz-box-pack: center;
@@ -76,4 +79,22 @@
 	color: #AEEE60;
 	border-width: 18px 52px;
 	margin-top: 4px;
+}
+
+.lableselect {
+	margin-right: 10px;
+	font-size: 17px;
+}
+
+#btn_apply {
+	margin-left: 15px;
+	width: 70px;
+}
+
+#workplaceList{
+	float: left;
+}
+
+#btnDetailWorkplace{
+	margin-top: 30px;
 }

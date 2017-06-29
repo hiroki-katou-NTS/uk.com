@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -34,23 +35,28 @@ public class PSBonusPaySettingWebService extends WebService {
 	List<PSBonusPaySettingDto> getListPSBonusPaySettingSetting(List<String> lstEmployeeId) {
 		return this.psBonusPaySettingFinder.getListSetting(lstEmployeeId);
 	}
-
 	@POST
-	@Path("addListPSBonusPaySettingSetting")
-	void addListPSBonusPaySettingSetting(List<PSBonusPaySettingAddCommand> lstSetting) {
-	this.psBonusPaySettingAddCommandHandler.handle(lstSetting);
+	@Path("getPersonalBonusPaySetting/{employeeId}")
+	PSBonusPaySettingDto getPersonalBonusPaySetting(@PathParam("employeeId") String employeeId){
+		return this.psBonusPaySettingFinder.getPersonalBonusPaySetting(employeeId);
 	}
 
 	@POST
-	@Path("updateListPSBonusPaySettingSetting")
-	void updateListPSBonusPaySettingSetting(List<PSBonusPaySettingUpdateCommand> lstSetting) {
-	this.psBonusPaySettingUpdateCommandHandler.handle(lstSetting);
+	@Path("addPSBonusPaySettingSetting")
+	void addPSBonusPaySettingSetting(PSBonusPaySettingAddCommand psBonusPaySettingAddCommand) {
+	this.psBonusPaySettingAddCommandHandler.handle(psBonusPaySettingAddCommand);
 	}
 
 	@POST
-	@Path("removeListPSBonusPaySettingSetting")
-	void removeListPSBonusPaySettingSetting(List<PSBonusPaySettingDeleteCommand> lstSetting) {
-	this.psBonusPaySettingDeleteCommandHandler.handle(lstSetting);
+	@Path("updatePSBonusPaySettingSetting")
+	void updatePSBonusPaySettingSetting(PSBonusPaySettingUpdateCommand psBonusPaySettingUpdateCommand) {
+	this.psBonusPaySettingUpdateCommandHandler.handle(psBonusPaySettingUpdateCommand);
+	}
+
+	@POST
+	@Path("removePSBonusPaySettingSetting")
+	void removePSBonusPaySettingSetting(PSBonusPaySettingDeleteCommand psBonusPaySettingDeleteCommand) {
+	this.psBonusPaySettingDeleteCommandHandler.handle(psBonusPaySettingDeleteCommand);
 	}
 
 }

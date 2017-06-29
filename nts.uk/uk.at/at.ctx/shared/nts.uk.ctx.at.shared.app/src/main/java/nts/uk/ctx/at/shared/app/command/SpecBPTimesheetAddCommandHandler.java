@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 
@@ -20,7 +21,7 @@ public class SpecBPTimesheetAddCommandHandler extends CommandHandler<List<SpecBP
 	protected void handle(CommandHandlerContext<List<SpecBPTimesheetAddCommand>> context) {
 	 List<SpecBPTimesheetAddCommand> lstSpecBPTimesheetAddCommand = context.getCommand();
 	 specBPTimesheetRepository.addListTimesheet(lstSpecBPTimesheetAddCommand.get(0).companyId,
-				lstSpecBPTimesheetAddCommand.get(0).bonusPaySettingCode,
+			new BonusPaySettingCode(lstSpecBPTimesheetAddCommand.get(0).bonusPaySettingCode),
 				lstSpecBPTimesheetAddCommand.stream().map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList()));
 	}
 

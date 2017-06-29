@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * 
@@ -11,9 +11,17 @@ public interface TopPagePersonSetRepository {
 	/**
 	 * 
 	 * @param companyId
-	 * @param sId
-	 * @return 
+	 * @param List<sId>
+	 * @return list TopPagepersonSet
 	 */
-	Optional<TopPagePersonSet> findBySid(String companyId, String sId);
+	List<TopPagePersonSet> findByListSid(String companyId, List<String> sId);
+
+	/**
+	 * added by Hoant
+	 * 
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
 	TopPagePersonSet getbyCode(String companyId, String employeeId);
 }

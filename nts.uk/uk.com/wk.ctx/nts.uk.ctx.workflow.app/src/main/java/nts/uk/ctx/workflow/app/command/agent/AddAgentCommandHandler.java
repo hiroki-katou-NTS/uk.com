@@ -51,10 +51,8 @@ public class AddAgentCommandHandler extends CommandHandlerWithResult<AgentComman
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType3(), AgentAppType.class),
 				agentCommandBase.getAgentSid4(),
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType4(), AgentAppType.class));
-		
-		/**
-		 * validate date
-		 */
+	
+		//validate date
 		List<AgentDto> agents = finder.findAllEmploy(employeeId);
 		List<RangeDate> rangeDateList = agents.stream()
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
@@ -62,36 +60,12 @@ public class AddAgentCommandHandler extends CommandHandlerWithResult<AgentComman
 
 		agentInfor.validateDate(rangeDateList);
 		
-		/**
-		 * validate agent of approval
-		 */
+		//validate agent of approval
 		List<Agent> agentSidList = agentRepository.findByCid(companyId);
 		
-		List<RangeDate> rangeDateList1 = agentSidList.stream()
-				.filter(x->x.getAgentSid1().equals(agentCommandBase.getAgentSid1()))
-				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
-				.collect(Collectors.toList());
+		agentInfor.checkAgentSid(agentSidList);
 		
-		List<RangeDate> rangeDateList2 = agentSidList.stream()
-				.filter(x->x.getAgentSid2().equals(agentCommandBase.getAgentSid2()))
-				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
-				.collect(Collectors.toList());
-		
-		List<RangeDate> rangeDateList3 = agentSidList.stream()
-				.filter(x->x.getAgentSid3().equals(agentCommandBase.getAgentSid3()))
-				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
-				.collect(Collectors.toList());
-		
-		List<RangeDate> rangeDateList4 = agentSidList.stream()
-				.filter(x->x.getAgentSid4().equals(agentCommandBase.getAgentSid4()))
-				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
-				.collect(Collectors.toList());
-		
-		agentInfor.checkAgentSid(rangeDateList1, rangeDateList2, rangeDateList3, rangeDateList4);
-		
-		/**
-		 * add agent
-		 */
+		//add agent
 		agentRepository.add(agentInfor);
 		
 		return requestId.toString();

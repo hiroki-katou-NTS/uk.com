@@ -19,9 +19,6 @@ module cmm044.b.viewmodel {
 
             self.personList = ko.observableArray([]);
             self.dataPerson = nts.uk.ui.windows.getShared('cmm044DataPerson');
-            //self.findAgentByDate();
-
-
         }
         start() {
             var self = this,
@@ -35,10 +32,9 @@ module cmm044.b.viewmodel {
                         self.personList.push(new AgentData(obj.code, obj.name, '', '', '', x.startDate, x.endDate, '', '', ''));
                     }
                 });
+                dfd.resolve();
             });
 
-
-            dfd.resolve();
             return dfd.promise();
         }
 

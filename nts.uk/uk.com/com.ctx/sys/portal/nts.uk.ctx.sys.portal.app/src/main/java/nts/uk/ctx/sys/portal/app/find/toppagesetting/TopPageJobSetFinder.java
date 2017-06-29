@@ -21,22 +21,17 @@ public class TopPageJobSetFinder {
 	@Inject
 	private TopPageJobSetRepository topPageJobSetRepo;
 
-	public List<TopPageJobSetDto> find() {
+	public List<TopPageJobSetDto> find(List<String> listJobId) {
 		String companyId = AppContexts.user().companyId();
 		List<TopPageJobSetDto> topPageJobSetDto = new ArrayList<>();
-		// create list jobId (Static installation)
-		List<String> jobIdList = new ArrayList<>();
-		for (int i = 1; i < 10; i++) {
-			jobIdList.add("0000" + i);
-		}
 		// find toppagejobset base on companyId and list jobId
-		List<TopPageJobSet> listTopPageJobSet = topPageJobSetRepo.findByListJobId(companyId, jobIdList);
+		List<TopPageJobSet> listTopPageJobSet = topPageJobSetRepo.findByListJobId(companyId, listJobId);
 		if (listTopPageJobSet.size() > 0) {
 			topPageJobSetDto = listTopPageJobSet.stream().map(x -> {
 				return new TopPageJobSetDto(x.getTopMenuCode().v(), x.getLoginMenuCode().v(), x.getJobId(),
 						x.getPersonPermissionSet().value, x.getLoginSystem().value, x.getMenuClassification().value);
 			}).collect(Collectors.toList());
-		} 
+		}
 		return topPageJobSetDto;
 	}
 }
