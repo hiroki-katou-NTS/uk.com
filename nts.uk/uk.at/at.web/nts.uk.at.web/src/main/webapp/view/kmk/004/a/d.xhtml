@@ -15,7 +15,7 @@
 		</div>
 		<div class="contents-area">
 			<div id="list-workplace" class="pull-left"></div>
-			<div class="right-content pull-left">
+			<div class="right-content pull-left" data-bind="ifnot: isLoading">
 			<fieldset data-bind="allowEdit: (selectedWorkplaceId())">
 				<com:ko tag="with" bind="workplaceWTSetting">
 				<div class="control-group">

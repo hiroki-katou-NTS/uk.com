@@ -47,12 +47,11 @@ img {
 }
 
 table tr td {
-	padding-right: 5px;
+	padding: 5px;
 }
 
-#description {
-	height: 20px;
-	padding-bottom: 5px;
+span{
+	height: 30px;
 }
 
 #titleMenu {
@@ -68,3 +67,7 @@ table tr td {
 }
 
 .pull-right {text-align: right;}
+
+.filename{
+	width: 200px;
+}

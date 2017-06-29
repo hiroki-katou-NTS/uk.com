@@ -100,7 +100,6 @@ module nts.uk.at.view.kmk004.a {
                 self.selectedEmploymentCode = ko.observable('');
                 self.setEmploymentComponentOption();
                 self.selectedEmploymentCode.subscribe(code => {
-                    self.isLoading(false);
                     if (code) {
                         self.loadEmploymentSetting(code);
                     }
@@ -111,7 +110,6 @@ module nts.uk.at.view.kmk004.a {
                 self.selectedWorkplaceId = ko.observable('');
                 self.setWorkplaceComponentOption();
                 self.selectedWorkplaceId.subscribe(code => {
-                    self.isLoading(false);
                     if (code) {
                         self.loadWorkplaceSetting(code);
                     }
@@ -165,7 +163,7 @@ module nts.uk.at.view.kmk004.a {
                 self.clearError();
 
                 // Update flag.
-                self.isLoading(true);
+                self.isLoading(false);
                 self.isCompanySelected(true);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
@@ -192,6 +190,7 @@ module nts.uk.at.view.kmk004.a {
 
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
+                    self.isLoading(false);
                     // Set already setting list.
                     self.setAlreadySettingEmploymentList();
                 });
@@ -214,6 +213,7 @@ module nts.uk.at.view.kmk004.a {
 
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
+                    self.isLoading(false);
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
                 });
@@ -389,7 +389,6 @@ module nts.uk.at.view.kmk004.a {
                         }
                         // Sort month.
                         self.companyWTSetting.sortMonth(self.startMonth());
-                        self.isLoading(false);
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -433,7 +432,6 @@ module nts.uk.at.view.kmk004.a {
                         self.setEmploymentName(request.employmentCode);
                         // Sort month.
                         self.employmentWTSetting.sortMonth(self.startMonth());
-                        self.isLoading(false);
                     });
             }
 
@@ -476,7 +474,6 @@ module nts.uk.at.view.kmk004.a {
                         self.setWorkplaceCodeName(tree, request.workplaceId);
                         // Sort month.
                         self.workplaceWTSetting.sortMonth(self.startMonth());
-                        self.isLoading(false);
                     });
             }
 
