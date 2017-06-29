@@ -5,12 +5,12 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
  * The Interface TimeVacationSettingSetMemento.
  */
-public interface TimeVacationSettingSetMemento {
+public interface TimeAnnualSettingSetMemento {
     
     /**
      * Sets the company id.
@@ -31,7 +31,7 @@ public interface TimeVacationSettingSetMemento {
      *
      * @param timeUnit the new time unit
      */
-    void setTimeUnit(TimeVacationDigestiveUnit timeUnit);
+    void setTimeUnit(TimeDigestiveUnit timeUnit);
 
     /**
      * Sets the max year day leave.

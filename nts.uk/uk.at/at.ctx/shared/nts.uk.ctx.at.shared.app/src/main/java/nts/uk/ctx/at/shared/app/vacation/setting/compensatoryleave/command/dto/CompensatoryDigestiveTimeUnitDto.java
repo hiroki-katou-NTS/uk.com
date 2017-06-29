@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnitGetMemento;
 
@@ -62,8 +62,8 @@ public class CompensatoryDigestiveTimeUnitDto {
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.CompensatoryDigestiveTimeUnitGetMemento#getDigestiveUnit()
 		 */
 		@Override
-		public TimeVacationDigestiveUnit getDigestiveUnit() {
-			return TimeVacationDigestiveUnit.valueOf(this.compensatoryDigestiveTimeUnitDto.digestiveUnit);
+		public TimeDigestiveUnit getDigestiveUnit() {
+			return TimeDigestiveUnit.valueOf(this.compensatoryDigestiveTimeUnitDto.digestiveUnit);
 		}
 
 	}
