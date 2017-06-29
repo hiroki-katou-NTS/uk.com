@@ -12,7 +12,7 @@ module kcp001.a {
                     // Employment List
                     screenModel.employmentList($('#empt-list-setting').getDataList());
                 }
-            screenModel.jsonData(JSON.stringify($('#empt-list-setting').getDataList(), undefined, 10));
+            screenModel.jsonData(JSON.stringify($('#empt-list-setting').getDataList(), undefined, 1));
             });
     });
 }

@@ -36,14 +36,14 @@ public class RetentionYearlyFinder {
 
 		// get companycode by user login
 		String companyId = loginUserContext.companyId();
-		
+
 		RetentionYearlyFindDto outputData = new RetentionYearlyFindDto();
-		
+
 		Optional<RetentionYearlySetting> data = this.repository.findByCompanyId(companyId);
-		if(data.isPresent()) {
-			data.get().saveToMemento(outputData);
-			return outputData;
+		if (!data.isPresent()) {
+			return null;
 		}
-		return null;
+		data.get().saveToMemento(outputData);
+		return outputData;
 	}
 }

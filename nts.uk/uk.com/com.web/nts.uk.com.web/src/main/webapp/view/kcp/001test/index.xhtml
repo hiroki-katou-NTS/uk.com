@@ -11,8 +11,8 @@
 			<com:stylefile path="../../sample/catalog/catalog.css" />
 			<com:scriptfile path="../../sample/catalog/catalog.js" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="kcp005.a.vm.js" />
-			<com:scriptfile path="kcp005.a.start.js" />
+			<com:scriptfile path="kcp001test.a.vm.js" />
+			<com:scriptfile path="kcp001test.a.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -20,11 +20,11 @@
 			<div id="side-menu" class="cf"></div>
 				<div id="detail-content">
 					<div id="function-area" style="margin: 40px">
-						<h1>KCP005-社員リスト</h1>
-						<h2>(Employee List)</h2>
+						<h1>KCP001-雇用リスト</h1>
+						<h2>(Employment List)</h2>
 						<h2>Overview</h2>
 						
-						<div style="margin-left: 10px; padding-top: 10px">
+						<div style="margin-left: 30px; padding-top: 10px">
 							<p><b>Single/Multiple Selection</b></p><br></br>
 							<div class="cf" data-bind="ntsSwitchButton: {
 														options: selectionOption,
@@ -33,15 +33,14 @@
 														value: selectedOption,
 														enable: true }"></div>
 						</div>
-						<div style="margin-left: 10px; padding-top: 10px">
+						<div style="margin-left: 30px; padding-top: 10px">
+							<!-- <div data-bind="ntsCheckBox:{checked: isMultiSelect}">Show Multi Selection</div> -->
 							<div data-bind="ntsCheckBox:{checked: isAlreadySetting}">Show Already Setting</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Show As Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show NoSelection Item</div>
-							<div data-bind="ntsCheckBox:{checked: isShowWorkPlaceName}">Show WorkPlace</div>
-							<div data-bind="ntsCheckBox:{checked: isShowSelectAllButton}">Show SelectAll Button</div>
 						</div><br></br>
 
-						<div style="margin-left: 10px; padding-top: 10px">
+						<div style="margin-left: 30px; padding-top: 10px">
 							<p>
 								<b>Selection Type:</b>
 							</p>
@@ -55,7 +54,7 @@
 											
 						</div>
 
-						<div style="margin-left: 10px; padding-top: 10px">
+						<div style="margin-left: 30px; padding-top: 10px">
 							<p>
 								<b>Save/Delete</b>
 							</p>
@@ -68,24 +67,23 @@
 							<BUTTON id="test-button" data-bind="click: settingDeletedItem"
 								style="margin-right: 10px">Delete</BUTTON>
 						</div>
+						<hr></hr>
 					</div>
-					<hr></hr>
+					
 					<br></br>
-					<table style="margin: 30px;">
+					<table style="margin-left: 30px; border: none">
 						<tr>
 							<td style="width: 640px; border: none">
 								<div style="margin-bottom: 30px; padding-left: 20px">
-									<p style="font-size: 30px">社員リスト</p>
+									<p style="font-size: 30px">雇用リスト</p>
 								</div>
-								<div id="component-items-list"></div>
+								<div id="empt-list-setting"></div>
 							</td>
-							<td style="border: none; padding-top: 100px">
+							<td>
 								<table>
 									<tr>
-										<td style="font-size: 20px; font-weight: bold; color: gray;">Selected Codes: </td>
-									</tr>
-									<tr >
-										<td style="margin-right: 30px; width: 500px; color: gray;"><div data-bind="text: getSelectedItemCode()"></div></td>
+										<td>Selected Codes: </td>
+										<td style="width: 100px"><div data-bind="text: getSelectedItemCode()"></div></td>
 									</tr>
 								</table>
 							</td>
@@ -93,13 +91,12 @@
 					</table>
 					
 					<!-- BEGIN DESCRIPTION -->
-						<article class="cf" style="margin-top: 40px;">
+						<article class="cf" style="margin-top: 10px;">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 									<li><a href="#tabs-method">Methods</a></li>
-									<li><a href="#tabs-data">Data</a></li>
 								</ol>
 								<!-- BEGIN TAB HTML -->
 								<div id="tabs-html" class="cf">
@@ -113,7 +110,7 @@
 									<pre><![CDATA[<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>]]></pre>
 									
 									<p>Create a div tag  to bind grid list</p>
-									<pre><![CDATA[<div id="component-items-list"></div>]]></pre>
+									<pre><![CDATA[<div id="empt-list-setting"></div>]]></pre>
 								</div><!-- END TAB HTML -->
 								
 								<!-- BEGIN VIEWMODEL TAB-->
@@ -121,7 +118,7 @@
 									<h2>TypeScript</h2>
 									<h3>ViewModel</h3>
 									<pre>
-									<![CDATA[
+									<![CDATA[<!---->
 										export class ScreenModel {
 												listComponentOption: any;
 												selectedCode: KnockoutObservable<string>;
@@ -131,14 +128,11 @@
 												isDialog: KnockoutObservable<boolean>;
 												isShowNoSelectRow: KnockoutObservable<boolean>;
 												isMultiSelect: KnockoutObservable<boolean>;
-												isShowWorkPlaceName: KnockoutObservable<boolean>;
-												isShowSelectAllButton: KnockoutObservable<boolean>;
-												employeeList: KnockoutObservableArray<UnitModel>;
+												employmentList: KnockoutObservableArray<UnitModel>;
 												
 												
 												constructor() {
 													let self = this;
-													self.baseDate = ko.observable(new Date());
 													self.selectedCode = ko.observable('1');
 													self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
 													self.isShowAlreadySet = ko.observable(false);
@@ -149,28 +143,18 @@
 													self.isDialog = ko.observable(false);
 													self.isShowNoSelectRow = ko.observable(false);
 													self.isMultiSelect = ko.observable(false);
-													self.isShowWorkPlaceName = ko.observable(false);
-													self.isShowSelectAllButton = ko.observable(false);
-													this.employeeList = ko.observableArray<UnitModel>([
-														{ code: '1', name: 'Angela Baby', workplaceName: 'HN' },
-														{ code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
-														{ code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
-														{ code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
-														]);
 													self.listComponentOption = {
 														isShowAlreadySet: self.isShowAlreadySet(),
 														isMultiSelect: self.isMultiSelect(),
-														listType: ListType.EMPLOYEE,
-														employeeInputList: self.employeeList,
+														listType: ListType.EMPLOYMENT,
 														selectType: SelectType.SELECT_BY_SELECTED_CODE,
 														selectedCode: self.selectedCode,
 														isDialog: self.isDialog(),
 														isShowNoSelectRow: self.isShowNoSelectRow(),
-														alreadySettingList: self.alreadySettingList,
-														isShowWorkPlaceName: self.isShowWorkPlaceName(),
-														isShowSelectAllButton: self.isShowSelectAllButton()
+														alreadySettingList: self.alreadySettingList
 													};
 												}
+												self.employmentList = ko.observableArray<UnitModel>([]);
 										}
 										export class ListType {
 											static EMPLOYMENT = 1;
@@ -200,7 +184,7 @@
 								]]>
 								</pre>
 								<pre><![CDATA[<!--It is called after apply binding done.-->
-										$('#component-items-list').ntsListComponent(self.listComponentOption);
+										$('#empt-list-setting').ntsListComponent(self.listComponentOption);
 									]]></pre>
 									<h2>API</h2>
 									<table style="width: 700px">
@@ -208,26 +192,11 @@
 											<td style="text-align: center;"><h4>Binding</h4></td>
 											<td style="text-align: center;"><h4>Description</h4></td>
 										</thead>
-										
 										<tr>
 											<td>isShowAlreadySet</td>
 											<td>
 												<b>Type:</b> boolean<br/>
 												<label>Show/hide column "Already Setting"</label>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<lable>alreadySettingList</lable> <br/>
-												<lable><i>(optional)</i></lable>
-											</td>
-											<td>
-												<b>Type:</b> Array[UnitAlreadySettingModel]<br/>
-												<b>Default:</b><i> empty</i><br/>
-												<pre><![CDATA[ UnitAlreadySettingModel {
-    code: string;
-    isAlreadySetting: boolean;
-}]]></pre>
 											</td>
 										</tr>
 										<tr>
@@ -244,7 +213,7 @@
 											</td>
 											<td>
 												<b>Type:</b> number<br/>
-												<b>Default:</b>4<br/>
+												<b>Default:</b>1<br/>
 												<pre><![CDATA[ ListType {
     static EMPLOYMENT = 1;
     static Classification = 2;
@@ -289,21 +258,22 @@
 											<td>isShowNoSelectRow</td>
 											<td>
 												<b>Type:</b> boolean<br/>
-												<label>Show/Hide NoSelection Item at First in grid list</label>
+												<label>Show NoSelection Item at First in grid list</label>
 											</td>
 										</tr>
+										
 										<tr>
-											<td>isShowWorkPlaceName</td>
 											<td>
-												<b>Type:</b> boolean<br/>
-												<label>Show/Hide Workplace collumn</label>
+												<lable>alreadySettingList</lable> <br/>
+												<lable><i>(optional)</i></lable>
 											</td>
-										</tr>
-										<tr>
-											<td>isShowSelectAllButton</td>
 											<td>
-												<b>Type:</b> boolean<br/>
-												<label>Show/Hide SelectAll Button</label>
+												<b>Type:</b> Array[UnitAlreadySettingModel]<br/>
+												<b>Default:</b><i> empty</i><br/>
+												<pre><![CDATA[ UnitAlreadySettingModel {
+    code: string;
+    isAlreadySetting: boolean;
+}]]></pre>
 											</td>
 										</tr>
 									</table>
@@ -317,16 +287,11 @@
 											<td style="text-align: center;"><h4>Description</h4></td>
 										</thead>
 										<tr>
-											<td>$('#component-items-list').getDataList()</td>
-											<td>Get Employee List</td>
+											<td>$('#empt-list-setting').getDataList()</td>
+											<td>Get Employment List</td>
 										</tr>
 									</table>
 								</div><!-- END METHOD TAB -->
-								<!-- BEGIN TABS DATA -->
-								<div id="tabs-data" class="cf">
-									<pre data-bind="text: jsonData"><![CDATA[]]></pre>
-								</div>
-								<!-- END TABS DATA -->
 							</div>
 						</article><!-- END DESCRIPTION -->
 				</div>
