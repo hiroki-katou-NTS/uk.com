@@ -10,8 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * 
- *階層コード
+ * The Class HierarchyCode.
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(30)
@@ -22,6 +21,11 @@ public class HierarchyCode extends CodePrimitiveValue<HierarchyCode>{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new hierarchy code.
+	 *
+	 * @param rawValue the raw value
+	 */
 	public HierarchyCode(String rawValue) {
 		super(rawValue);
 	}

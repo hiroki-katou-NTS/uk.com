@@ -9,11 +9,11 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class WorkplaceInDto.
+ * The Class WorkplaceCommandDto.
  */
 @Setter
 @Getter
-public class WorkplaceInDto {
+public class WorkplaceCommandDto {
 	
 	/** The base date. */
 	private GeneralDate baseDate;
