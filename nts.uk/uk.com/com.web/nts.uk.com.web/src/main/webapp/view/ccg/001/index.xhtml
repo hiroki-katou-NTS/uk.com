@@ -37,11 +37,20 @@
 					<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show/hide button 自分だけ</div><br/>
 					<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show/hide button おなじ職場の社員</div><br/>
 					<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show/hide button おなじ＋配下の職場の社員</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div>
+					<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div><br/>
+					<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show/Show  全社員タイプ / 社員指定タイプ</div>
 					<div id="ccgcomponent"></div>
 					<div data-bind="if: showinfoSelectedEmployee()">
-						<label class="lableselect">Selected Code Employee</label> <label
-							class="lableselect" data-bind="text: selectedEmployeeCode()"></label>
+						<label class="lableselect">Selected Code Employee</label> 
+						<com:ko-foreach bind="selectedEmployeeCode">
+							<label class="lableselect">{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
+							<label class="lableselect" >,employeeCode:</label> <label class="lableselect" data-bind="text: employeeCode"></label>
+							<label class="lableselect" >,employeeName:</label> <label class="lableselect" data-bind="text: employeeName"></label>
+							<label class="lableselect" >,workplaceId:</label> <label class="lableselect" data-bind="text: workplaceId"></label>
+							<label class="lableselect" >,workplaceCode:</label> <label class="lableselect" data-bind="text: workplaceCode"></label>
+							<label class="lableselect" >,workplaceName:</label> <label class="lableselect" data-bind="text: workplaceName"></label>
+							<label class="lableselect">}</label> <br/>
+						</com:ko-foreach>
 					</div>
 
 
@@ -102,6 +111,7 @@
 								                    isEmployeeOfWorkplace: true,
 								                    isEmployeeWorkplaceFollow: true,
 								                    isMutipleCheck: true,
+								                    isSelectAllEmployee: true,
 								                    onSearchAllClicked: function(dataList: PersonModel[]) {
 								                        self.showinfoSelectedEmployee(true);
 								                        self.selectedEmployeeCode(new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toPersonCodeList(dataList));

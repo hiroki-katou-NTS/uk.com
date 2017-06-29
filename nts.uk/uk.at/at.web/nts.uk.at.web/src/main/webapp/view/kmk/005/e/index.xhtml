@@ -5,8 +5,9 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<body>
-		<ui:composition template="../../../../master/base.xhtml">
+		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 1150, height: 600 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kmk005.e.start.js" />
 				<com:scriptfile path="kmk005.e.vm.js" />
@@ -16,9 +17,160 @@
 			
 			<ui:define name="content">
 				<div id="contents-area">
-					
+					<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+						<div class="tab-content-1">
+							<div id="gridlist-div">
+								<table id="table-panel-1">
+									<thead>
+										<tr>
+											<th>#{i18n.getText('KMK005_43')}</th>
+											<th>#{i18n.getText('KMK005_44')}</th>
+											<th>#{i18n.getText('KMK005_45')}</th>
+											<th>#{i18n.getText('KMK005_46')}</th>
+										</tr>
+										<tr>
+											<th></th>
+											<th>
+												<p>#{i18n.getText('KMK005_47')}</p>	
+												<p class="textBody explanAutoCalculation"></p>
+												<p>#{i18n.getText('KMK005_49')}</p>
+												<p class="textBody explanNotAutoCalculation"></p>
+											</th>
+											<th colspan="2">
+												<p>#{i18n.getText('KMK005_47')}</p>	
+												<p class="textBody explanAutoCalculation"></p>
+												<p>#{i18n.getText('KMK005_49')}</p>
+												<p class="textBody explanNotAutoCalculationSpec"></p>
+												<p>#{i18n.getText('KMK005_52')}</p>
+												<p class="textBody explanAutoSetOvertime"></p>
+											</th>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: [1,2,3,4,5,6,7,8,9,10]">
+										<tr>
+											<td data-bind="text: '加給  '+ ($index()+1)"></td>
+											<td>
+												<div class="cf switch-1" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: '0', name: '#{i18n.getText('KMK005_54')}' },
+												            { code: '1', name: '#{i18n.getText('KMK005_55')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: ko.observable(0),
+														enable: true }"></div>	
+											</td>
+											<td>
+												<div class="cf switch-2" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: '0', name: '#{i18n.getText('KMK005_54')}' },
+												            { code: '1', name: '#{i18n.getText('KMK005_55')}' },
+												            { code: '2', name: '#{i18n.getText('KMK005_56')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: ko.observable(0),
+														enable: true }"></div>			
+											</td>
+											<td>
+												<div class="cf switch-3" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: '0', name: '#{i18n.getText('KMK005_54')}' },
+												            { code: '1', name: '#{i18n.getText('KMK005_55')}' },
+												            { code: '2', name: '#{i18n.getText('KMK005_57')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: ko.observable(0),
+														enable: true }"></div>				
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="tab-content-2">
+							<div id="gridlist-div">
+								<table id="table-panel-2">
+									<thead>
+										<tr>
+											<th>#{i18n.getText('KMK005_43')}</th>
+											<th>#{i18n.getText('KMK005_44')}</th>
+											<th>#{i18n.getText('KMK005_45')}</th>
+											<th>#{i18n.getText('KMK005_46')}</th>
+										</tr>
+										<tr>
+											<th></th>
+											<th>
+												<p>#{i18n.getText('KMK005_47')}</p>	
+												<p class="textBody explanAutoCalculation"></p>
+												<p>#{i18n.getText('KMK005_49')}</p>
+												<p class="textBody explanNotAutoCalculation"></p>
+											</th>
+											<th colspan="2">
+												<p>#{i18n.getText('KMK005_47')}</p>	
+												<p class="textBody explanAutoCalculation"></p>
+												<p>#{i18n.getText('KMK005_49')}</p>
+												<p class="textBody explanNotAutoCalculationSpec"></p>
+												<p>#{i18n.getText('KMK005_52')}</p>
+												<p class="textBody explanAutoSetOvertime"></p>
+											</th>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: [1,2,3,4,5,6,7,8,9,10]">
+										<tr>
+											<td data-bind="text: '特定加給  '+ ($index()+1)"></td>
+											<td>
+												<div class="cf switch-1" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: '0', name: '#{i18n.getText('KMK005_54')}' },
+												            { code: '1', name: '#{i18n.getText('KMK005_55')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: ko.observable(0),
+														enable: true }"></div>	
+											</td>
+											<td>
+												<div class="cf switch-2" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: '0', name: '#{i18n.getText('KMK005_54')}' },
+												            { code: '1', name: '#{i18n.getText('KMK005_55')}' },
+												            { code: '2', name: '#{i18n.getText('KMK005_56')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: ko.observable(0),
+														enable: true }"></div>			
+											</td>
+											<td>
+												<div class="cf switch-3" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: '0', name: '#{i18n.getText('KMK005_54')}' },
+												            { code: '1', name: '#{i18n.getText('KMK005_55')}' },
+												            { code: '2', name: '#{i18n.getText('KMK005_57')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: ko.observable(0),
+														enable: true }"></div>				
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>	
 				</div>
 				<div id="functions-area-bottom">
+					<button class="x-large proceed">#{i18n.getText('KMK005_32')}</button>
+					<button>#{i18n.getText('KMK005_33')}</button>	
 				</div>
 			</ui:define>
 		</ui:composition>
