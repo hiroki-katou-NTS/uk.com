@@ -285,8 +285,15 @@ module nts.uk.ui.koExtentions {
                 var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                 $parent.attr("data-content", format);
             } else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
+                let padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
+                if (padding < 20 ){
+                    padding = 20;        
+                }
                 $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
                 $parent.attr("data-content", this.editorOption.symbolChar);
+                
+                let css = this.editorOption.symbolPosition === 'right' ? {"padding-right": padding + "px"} : {"padding-left": padding + "px"};
+                $input.css(css);
             }
             if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 
                 && nts.uk.util.isNullOrEmpty(data.value())){
