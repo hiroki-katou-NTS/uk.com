@@ -26,6 +26,7 @@ module kcp003.a.viewmodel {
         selectedType: KnockoutObservable<number>;
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
+        jsonData: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -90,18 +91,7 @@ module kcp003.a.viewmodel {
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList
             };
-            // Load listComponent and initial Job Title List
-            $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
-                if (($('#component-items-list').getDataList() == undefined) || ($('#component-items-list').getDataList().length <= 0)) {
-                    self.hasSelectedJobTitle(false);
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
-                }
-                else {
-                    // Job Title List
-                    self.jobTitleList($('#component-items-list').getDataList());
-                }
-            });
-
+            
             self.selectionTypeList = ko.observableArray([
                 { code: 1, name: 'By Selected Code' },
                 { code: 2, name: 'Select All Items' },
@@ -159,6 +149,7 @@ module kcp003.a.viewmodel {
                     self.isMultiSelect(true);
                 }
             });
+            self.jsonData = ko.observable('');
         }
         
         // Setting Item(s) which Registed/Saved from main screen
@@ -188,25 +179,6 @@ module kcp003.a.viewmodel {
                     self.isAlreadySetting(true);
                     nts.uk.ui.dialog.alert("Saved Successfully ! ");
                 }
-                if (self.listComponentOption.isMultiSelect) {
-                    self.listComponentOption.selectedCode().forEach((selected) => {
-                        var existItem = self.alreadySettingList().filter((item) => {
-                            return item.code == selected;
-                        })[0];
-                        if (!existItem) {
-                            self.alreadySettingList.push({ "code": selected, "isAlreadySetting": true });
-                        }
-                    });
-                } else {
-                    var existItem = self.alreadySettingList().filter((item) => {
-                        return item.code == self.listComponentOption.selectedCode();
-                    })[0];
-                    if (!existItem) {
-                        self.alreadySettingList.push({ "code": self.listComponentOption.selectedCode(), "isAlreadySetting": true });
-                    }
-                }
-                self.isAlreadySetting(true);
-                nts.uk.ui.dialog.alert("Saved Successfully ! ");
             } else {
                 nts.uk.ui.dialog.alert("Select Item to Save ! ");
             }
@@ -234,19 +206,6 @@ module kcp003.a.viewmodel {
                     self.isAlreadySetting(true);
                     nts.uk.ui.dialog.alert("Deleted Successfully ! ");
                 }
-                if (self.listComponentOption.isMultiSelect) {
-                    self.listComponentOption.selectedCode().forEach((selected) => {
-                        self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                            return item.code == selected;
-                        })[0]);
-                    });
-                } else {
-                    self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                        return item.code == self.listComponentOption.selectedCode();
-                    })[0]);
-                }
-                self.isAlreadySetting(true);
-                nts.uk.ui.dialog.alert("Deleted Successfully ! ");
             } else {
                 nts.uk.ui.dialog.alert("Select Item to Delete ! ");
             }
