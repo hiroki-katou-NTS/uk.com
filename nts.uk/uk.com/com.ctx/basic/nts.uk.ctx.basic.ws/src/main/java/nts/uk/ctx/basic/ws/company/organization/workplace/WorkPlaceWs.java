@@ -13,8 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.basic.app.find.company.organization.workplace.WorkplaceFinder;
+import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceCommandDto;
 import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceFindDto;
-import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceInDto;
 
 /**
  * The Class WorkPlaceWs.
@@ -30,12 +30,12 @@ public class WorkPlaceWs {
 	/**
 	 * Find.
 	 *
-	 * @param inDto the in dto
+	 * @param dto the dto
 	 * @return the list
 	 */
 	@Path("find")
 	@POST
-	public List<WorkplaceFindDto> find(WorkplaceInDto dto) {
+	public List<WorkplaceFindDto> find(WorkplaceCommandDto dto) {
 		return this.finder.findAll(dto.getBaseDate());
 	}
 }
