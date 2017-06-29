@@ -77,6 +77,7 @@ module cmm044.a.viewmodel {
 
             self.histItems = ko.observableArray([]);
             self.selectedTab = ko.observable('tab-1');
+
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
             self.empSelectedItem.subscribe(function(newValue) {
@@ -296,6 +297,7 @@ module cmm044.a.viewmodel {
             self.agentAppType2(0);
             self.agentAppType3(0);
             self.agentAppType4(0);
+            self.selectedTab('tab-1');
             $("#daterangepicker").find(".ntsStartDatePicker").focus();
             self.histSelectedItem("");
             self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
