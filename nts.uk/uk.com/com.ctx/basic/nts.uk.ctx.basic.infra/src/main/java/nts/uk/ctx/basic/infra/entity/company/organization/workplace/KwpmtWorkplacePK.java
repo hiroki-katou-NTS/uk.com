@@ -38,10 +38,12 @@ public class KwpmtWorkplacePK implements Serializable {
     @Column(name = "WPL_ID")
     private String wplid;
 	
+	@NotNull
 	@Column(name = "STR_D")
 	@Temporal(TemporalType.TIMESTAMP)
 	private GeneralDate strD;
 	
+	@NotNull
 	@Column(name = "END_D")
 	@Temporal(TemporalType.TIMESTAMP)
 	private GeneralDate endD;

@@ -32,6 +32,7 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	protected KwpmtWorkplacePK kwpmtWorkplacePK;
 	
+	@NotNull
 	@Column(name = "WPL_NAME")
 	private String wplname;
 	
