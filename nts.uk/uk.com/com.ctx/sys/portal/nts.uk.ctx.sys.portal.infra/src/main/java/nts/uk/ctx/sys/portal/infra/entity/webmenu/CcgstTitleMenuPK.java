@@ -34,7 +34,7 @@ public class CcgstTitleMenuPK implements Serializable {
 	@Column(name = "MENU_BAR_ID")
 	public String menuBarId;
 	
-	@Column(name = "TITLE_MENU_ID")
+	@Column(name = "TITLE_BAR_ID")
 	public String titleMenuId;
 
 }

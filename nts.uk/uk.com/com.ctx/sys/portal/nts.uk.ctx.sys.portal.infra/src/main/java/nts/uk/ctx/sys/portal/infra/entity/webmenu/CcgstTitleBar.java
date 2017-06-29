@@ -33,7 +33,7 @@ public class CcgstTitleBar extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public CcgstTitleMenuPK ccgstTitleMenuPK;
 	
-	@Column(name = "TITLE_MENU_NAME")
+	@Column(name = "TITLE_BAR_NAME")
 	public String titleMenuName;
 	
 	@Column(name = "BACKGROUND_COLOR")
