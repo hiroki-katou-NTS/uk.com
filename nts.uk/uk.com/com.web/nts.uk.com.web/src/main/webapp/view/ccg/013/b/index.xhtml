@@ -57,21 +57,22 @@
 									value: selectedCodeSystemSelect,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									enable: true,
+									enable: selectedRadioAtcClass()==1,
 									}"></div>
 						<!--  	<div data-bind="text: selectedCode"></div> -->
 					</div>
 					<span class="caret-bottom outline"></span>
 					<div style="width: 290px; margin-bottom: 10px;"
 						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
-								items: listStandardMenu, selected: currentListStandardMenu, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid'}" />
+								items: listStandardMenu, selected: currentListStandardMenu, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid', enable: selectedRadioAtcClass()==1}" />
 					<table id="multi-list"
 						data-bind="ntsGridList: {
 									height: 200,
 									options: listStandardMenu,
 									optionsValue: 'code',
 									columns: columns,
-									value: currentListStandardMenu
+									value: currentListStandardMenu,
+									enable: selectedRadioAtcClass()==1
 								}"></table>
 	
 	
