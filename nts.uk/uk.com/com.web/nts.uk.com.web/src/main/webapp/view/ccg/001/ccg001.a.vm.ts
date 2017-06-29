@@ -101,24 +101,24 @@ module nts.uk.com.view.ccg001.a {
                         self.showinfoSelectedEmployee(true);
                         self.selectedEmployeeCode(dataList);
                     },
-                    onSearchOnlyClicked: function(data: PersonModel) {
+                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         self.showinfoSelectedEmployee(true);
-                        var dataEmployee: string[] = [];
-                        dataEmployee.push(data.personId);
-                        self.selectedEmployeeCode([]);
+                        var dataEmployee: EmployeeSearchDto[] = [];
+                        dataEmployee.push(data);
+                        self.selectedEmployeeCode(dataEmployee);
                     },
-                    onSearchOfWorkplaceClicked: function(dataList: PersonModel[]) {
+                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode([]);
+                        self.selectedEmployeeCode(dataList);
                     },
 
-                    onSearchWorkplaceChildClicked: function(dataList: PersonModel[]) {
+                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode([]);
+                        self.selectedEmployeeCode(dataList);
                     },
-                    onApplyEmployee: function(dataEmployee: string[]) {
+                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode([]);
+                        self.selectedEmployeeCode(dataEmployee);
                     }
 
                 } 
