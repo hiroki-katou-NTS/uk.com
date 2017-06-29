@@ -76,7 +76,7 @@ public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeO
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 		
-		this.basicAgreementSettingRepository.update(basicAgreementSetting);
+		this.basicAgreementSettingRepository.update2(basicAgreementSetting);
 		
 		return errors;
 	}
