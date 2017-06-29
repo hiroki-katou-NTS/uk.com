@@ -37,14 +37,11 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 	}
 
 	@Override
-	public TopPagePersonSet getbyCode(String companyId, String employeeId) {
+	public Optional<TopPagePersonSet> getbyCode(String companyId, String employeeId) {
 		Optional<TopPagePersonSet> obj = this.queryProxy()
 				.query(SELECT_TOPPAGE_PERSON_BYCODE, CcgptTopPagePersonSet.class).setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId).getSingle(c -> toDomain(c));
-		if (!obj.isPresent()) {
-			return null;
-		}
-		return obj.get();
+		return obj;
 	}
 
 }

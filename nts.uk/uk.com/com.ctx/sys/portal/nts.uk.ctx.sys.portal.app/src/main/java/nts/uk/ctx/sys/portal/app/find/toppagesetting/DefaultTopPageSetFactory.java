@@ -220,12 +220,12 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			}
 			return new LayoutAllDto(layoutMypage,layoutTopPage,check,true);
 		}else{//khong duoc setting
-			TopPagePersonSet tpPerson = topPagePerson.getbyCode(companyId, employeeId);
+			Optional<TopPagePersonSet> tpPerson = topPagePerson.getbyCode(companyId, employeeId);
 			String code = topPageJob.getLoginMenuCode().toString();
-			if(tpPerson!=null && !StringUtil.isNullOrEmpty(code,true)){//ktra login menu code co hay khong
+			if(tpPerson.isPresent() && !StringUtil.isNullOrEmpty(code,true)){//ktra login menu code co hay khong
 				//hien thi B
 				check = true;
-				layoutTopPage = getTopPageByCode(companyId,tpPerson.getTopMenuCode().toString(),tpPerson.getLoginSystem().value,tpPerson.getMenuClassification().value,check);
+				layoutTopPage = getTopPageByCode(companyId,tpPerson.get().getTopMenuCode().toString(),tpPerson.get().getLoginSystem().value,tpPerson.get().getMenuClassification().value,check);
 				LayoutForMyPageDto layoutMypage = null;
 				MyPageSettingDto myPage = myPageSetFinder.findByCompanyId(companyId);
 				if (myPage.getUseMyPage().intValue() == 0) {//khong su dung my page
@@ -311,14 +311,14 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	@Override
 	public LayoutAllDto getTopPageNotPosition() {
 		//lay du lieu bang person set
-		TopPagePersonSet tpPerson = topPagePerson.getbyCode(companyId, employeeId);
+		Optional<TopPagePersonSet> tpPerson = topPagePerson.getbyCode(companyId, employeeId);
 		LayoutForTopPageDto layoutToppage = null;
 		LayoutForMyPageDto layoutMypage = null;
-		if(tpPerson != null){//co tpPerson
-			String code = tpPerson.getLoginMenuCode().toString();
+		if(tpPerson.isPresent()){//co tpPerson
+			String code = tpPerson.get().getLoginMenuCode().toString();
 			if(!StringUtil.isNullOrEmpty(code,true)){//co login menu code
 				check = true;//hien thi B
-				layoutToppage = getTopPageByCode(companyId,tpPerson.getTopMenuCode().toString(),tpPerson.getLoginSystem().value,tpPerson.getMenuClassification().value,check);
+				layoutToppage = getTopPageByCode(companyId,tpPerson.get().getTopMenuCode().toString(),tpPerson.get().getLoginSystem().value,tpPerson.get().getMenuClassification().value,check);
 				MyPageSettingDto myPage = myPageSetFinder.findByCompanyId(companyId);
 				if (myPage.getUseMyPage().intValue() == 0) {//khong su dung my page
 					return new LayoutAllDto(null,null,true,false);
