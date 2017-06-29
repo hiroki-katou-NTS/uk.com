@@ -121,6 +121,7 @@ module nts.uk.ui.koExtentions {
             }));
             
             new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+            container.data("init", false);
         }
 
         /**
@@ -140,23 +141,25 @@ module nts.uk.ui.koExtentions {
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
 
-            var container = $(element);
+            var container = $(element); 
             var init = container.data("init");
             var $input: any = container.find(".nts-input");
             var $label: any = container.find(".dayofweek-label");
             
             // Value Binding
-            var dateFormatValue = (value() !== "") ? time.formatPattern(value(), valueFormat, ISOFormat) : "";
-            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                // Check equals to avoid multi datepicker with same value
-                $input.datepicker('setDate', dateFormatValue);
-                $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+            if (value() !== $input.val()){
+                var dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
+                if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                    // Check equals to avoid multi datepicker with same value
+                    $input.datepicker('setDate', dateFormatValue);
+                    $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                }
+                else {
+                    $input.val("");
+                    $label.text("");
+                }        
             }
-            else {
-                $input.val("");
-                $label.text("");
-            }
-            container.data("init", false);
+            
             // Properties Binding
             $input.datepicker('setStartDate', startDate);
             $input.datepicker('setEndDate', endDate);
