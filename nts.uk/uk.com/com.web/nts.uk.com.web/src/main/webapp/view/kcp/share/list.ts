@@ -219,8 +219,6 @@ module kcp.share.list {
         
         private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) {
             var self = this;
-            // Set default value when init component.
-            self.initSelectedValue(data, dataList);
 
             // Map already setting attr to data list.
             if (data.isShowAlreadySet) {
@@ -232,17 +230,20 @@ module kcp.share.list {
                     self.itemList(dataList);
                 })
             }
-            
-            
-            
-            // Init component.
             self.itemList(dataList);
+            
             // Remove No select row.
             self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
+            
+            // Set default value when init component.
+            self.initSelectedValue(data, self.itemList());
+            
             // Check is show no select row.
             if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
+            
+            // Init component.
             self.searchOption = {
                 searchMode: 'filter',
                 targetKey: 'code',
