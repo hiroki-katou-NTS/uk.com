@@ -24,13 +24,24 @@
 					<!-- <button id="btnNew" class="btnMenu" data-bind="click: OpenDialog007" >007</button>
 					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog0072" >007Multiple</button> -->
 				</div>
+				<div>選択可能な勤務種類コード</div>
 				<!-- A1_2 -->
-				<input class="nts-input" id="inpCode"
+				<input class="nts-input" 
 					data-bind="ntsTextEditor: {
-                                   value: Code,
+                                   value: SelectableCode,
+                                   enable: true, 
+                                   required: false}"/>
+                 <div>(Eg:001,002,003,...)</div>
+                 <br></br>
+				<div>選択中の勤務種類コード</div>
+				<!-- A1_2 -->
+				<input class="nts-input"
+					data-bind="ntsTextEditor: {
+                                   value: SelectedCode,
                                    enable: true, 
                                    required: false}"/>
                  <div>(Eg: Single: 001 | Multiple: 001,002,003,...)</div>
+                 <br></br>
 				<div style="float: left; margin-bottom: 20px;">
 					<div>
 						<!-- A1_3 -->
