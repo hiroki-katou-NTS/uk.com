@@ -17,58 +17,56 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * Gets the name.
- *
- * @return the name
+ * The Class CemptEmployment.
  */
 @Getter
-
-/**
- * Sets the name.
- *
- * @param name the new name
- */
 @Setter
 @Entity
 @Table(name = "CEMPT_EMPLOYMENT")
 public class CemptEmployment extends UkJpaEntity implements Serializable {
 
-
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
+	/** The cempt employment PK. */
 	@EmbeddedId
 	protected CemptEmploymentPK cemptEmploymentPK;
-	
+
 	/** The salary closure id. */
-	@Column(name="SALARY_CLOSURE_ID")
+	@Column(name = "SALARY_CLOSURE_ID")
 	private Integer salaryClosureId;
-	
+
 	/** The work closure id. */
-	@Column(name="WORK_CLOSURE_ID")
+	@Column(name = "WORK_CLOSURE_ID")
 	private Integer workClosureId;
-	
+
 	/** The name. */
 	@Basic(optional = false)
-	@Column(name="EMPT_NAME")
+	@Column(name = "EMPT_NAME")
 	private String name;
-	
-	
+
 	/**
 	 * Instantiates a new cempt employment.
 	 */
 	public CemptEmployment() {
 		super();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return null;
+		return this.cemptEmploymentPK;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -80,6 +78,11 @@ public class CemptEmployment extends UkJpaEntity implements Serializable {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -112,5 +115,4 @@ public class CemptEmployment extends UkJpaEntity implements Serializable {
 		return true;
 	}
 
-	
 }

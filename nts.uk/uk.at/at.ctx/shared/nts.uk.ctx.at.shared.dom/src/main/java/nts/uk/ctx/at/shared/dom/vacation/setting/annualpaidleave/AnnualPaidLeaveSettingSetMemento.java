@@ -44,5 +44,5 @@ public interface AnnualPaidLeaveSettingSetMemento {
      *
      * @param timeSetting the new time setting
      */
-    void setTimeSetting(TimeVacationSetting timeSetting);
+    void setTimeSetting(TimeAnnualSetting timeSetting);
 }

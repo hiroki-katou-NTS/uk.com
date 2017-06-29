@@ -43,7 +43,7 @@ module ccg018.a.viewmodel {
             } else {
                 self.categorySet(__viewContext.viewModel.viewmodelB.categorySet());
             }
-            $.when(self.findBySystemMenuCls()).done(function() {
+            $.when(self.findBySystemMenuCls(), self.findDataForAfterLoginDis()).done(function() {
                 self.searchByDate();
             });
         }
@@ -73,22 +73,35 @@ module ccg018.a.viewmodel {
         findBySystemMenuCls(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.comboItemsAfterLogin.removeAll();
             self.comboItemsAsTopPage.removeAll();
             ccg018.a.service.findBySystemMenuCls()
                 .done(function(data) {
                     if (data.length >= 0) {
                         self.comboItemsAsTopPage.push(new ItemModel('', '未設定'));
-                        self.comboItemsAfterLogin.push(new ItemModel('', '未設定'));
-
-                        _.forEach(_.filter(data, ['afterLoginDisplay', 1]), function(x) {
-                            self.comboItemsAfterLogin.push(new ItemModel(x.code, x.displayName));
-                        });
 
                         _.forEach(data, function(x) {
                             self.comboItemsAsTopPage.push(new ItemModel(x.code, x.displayName));
                         });
                     }
+                    dfd.resolve();
+                }).fail();
+            return dfd.promise();
+        }
+
+        /**
+         * find data in talbel STANDARD_MENU with companyId and 
+         * afterLoginDisplay = 1 (display)  or System = 0(common) and MenuClassification = 8(top page)
+         */
+        findDataForAfterLoginDis(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.comboItemsAfterLogin.removeAll();
+            ccg018.a.service.findDataForAfterLoginDis()
+                .done(function(data) {
+                    self.comboItemsAfterLogin.push(new ItemModel('', '未設定'));
+                    _.forEach(data, function(x) {
+                        self.comboItemsAfterLogin.push(new ItemModel(x.code, x.displayName));
+                    });
                     dfd.resolve();
                 }).fail();
             return dfd.promise();

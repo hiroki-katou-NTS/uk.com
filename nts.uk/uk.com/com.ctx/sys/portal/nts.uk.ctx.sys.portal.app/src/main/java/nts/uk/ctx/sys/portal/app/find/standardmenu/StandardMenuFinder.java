@@ -58,6 +58,19 @@ public class StandardMenuFinder {
 	}
 
 	/**
+	 * find by companyId, system = common, menuClassification = top page or
+	 * afterLoginDis = display
+	 * 
+	 * @return
+	 */
+	public List<StandardMenuDto> findDataForAfterLoginDis() {
+		String companyId = AppContexts.user().companyId();
+		return this.standardMenuRepository
+				.findDataForAfterLoginDis(companyId, 1, System.COMMON.value, MenuClassification.TopPage.value).stream()
+				.map(x -> StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
+	}
+
+	/**
 	 * find all StandardMenu by companyID and webMenuSetting = 0 and menuAtr = 0
 	 * 
 	 * @param conpanyID

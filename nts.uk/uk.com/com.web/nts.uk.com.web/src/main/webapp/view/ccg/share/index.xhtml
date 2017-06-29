@@ -10,7 +10,9 @@
 		<div id="tab-panel" data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 			<div class="tab-content-1" data-bind="if: isQuickSearchTab">
 				<div data-bind="if: isAllReferableEmployee">
-					<span class="btn_big" data-bind="click: searchAllEmployee">#{i18n.getText('CCG001_10')}</span> 
+					<span class="btn_big" data-bind="click: searchAllEmployee">
+						<i class="icon icon-28-allemployee"></i>
+						<label class="lableBigButton">#{i18n.getText('CCG001_10')}</label></span> 
 					<span  class="controlSetting caret-right"></span>
 				</div>
 				<div data-bind="if: isOnlyMe">
@@ -51,11 +53,14 @@
 						<button id="btnDetailWorkplace" data-bind="click: detailWorkplace">#{i18n.getText('CCG001_9')}</button>
 					</div>
 				</div>
-				<hr />
-				<span class="caret-background caret-bottom btn_apply" data-bind="click: searchDataEmployee">#{i18n.getText('CCG001_18')}</span>
-				<br />
-				<br />
-				<div class="contentkcp centerkcp" id="employeeinfo"></div>
+				<div data-bind="if: !isSelectAllEmployee">
+					<hr />
+					<span class="caret-background caret-bottom btn_apply" data-bind="click: searchDataEmployee">#{i18n.getText('CCG001_18')}</span>
+					<br />
+					<br />
+					<div class="contentkcp centerkcp" id="employeeinfo"></div>
+				</div>
+				<br/>
 				<span class="btn_apply" data-bind="click: applyEmployee">#{i18n.getText('CCG001_18')}</span>
 			</div>
 		</div>

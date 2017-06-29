@@ -19,8 +19,8 @@ module ccg018.b.viewmodel {
             self.comboItemsAfterLogin = ko.observableArray([]);
             self.comboItemsAsTopPage = ko.observableArray([]);
             self.currentCode = ko.observable();
-            self.employeeCode = ko.observable(0);
-            self.employeeName = ko.observable(0);
+            self.employeeCode = ko.observable('');
+            self.employeeName = ko.observable('');
 
             self.selectedItemAfterLogin = ko.observable('');
             self.selectedItemAsTopPage = ko.observable('');
@@ -43,7 +43,9 @@ module ccg018.b.viewmodel {
             let self = this;
             self.categorySet(__viewContext.viewModel.viewmodelA.categorySet());
             self.findTopPagePersonSet();
-            self.findBySystemMenuCls();
+            $.when(self.findBySystemMenuCls()).done(function() {
+                self.findDataForAfterLoginDis();
+            });
             var listComponentOption = {
                 isShowAlreadySet: true,
                 alreadySettingList: self.items,
@@ -74,9 +76,9 @@ module ccg018.b.viewmodel {
                     for (var i = 0; i < listSid.length; i++) {
                         var topPagePersonSet = _.find(data, ['sid', listSid[i]]);
                         if (!!topPagePersonSet) {
-                            self.items.push(new ItemModel('A00000' + i, '山本' + i, "名古屋市  " + i, listSid[i], topPagePersonSet.loginMenuCode, topPagePersonSet.topMenuCode, true));
+                            self.items.push(new ItemModel('A00000' + i, '山本' + i, '名古屋市' + i, listSid[i], topPagePersonSet.loginMenuCode, topPagePersonSet.topMenuCode, true));
                         } else {
-                            self.items.push(new ItemModel('A00000' + i, '山本' + i, "名古屋市  " + i, listSid[i], '', '', false));
+                            self.items.push(new ItemModel('A00000' + i, '山本' + i, '名古屋市' + i, listSid[i], '', '', false));
                         }
                     }
                     dfd.resolve();
@@ -91,22 +93,34 @@ module ccg018.b.viewmodel {
         findBySystemMenuCls(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.comboItemsAfterLogin.removeAll();
             self.comboItemsAsTopPage.removeAll();
             ccg018.b.service.findBySystemMenuCls()
                 .done(function(data) {
                     if (data.length >= 0) {
                         self.comboItemsAsTopPage.push(new ItemModel1('', '未設定'));
-                        self.comboItemsAfterLogin.push(new ItemModel1('', '未設定'));
-
-                        _.forEach(_.filter(data, ['afterLoginDisplay', 1]), function(x) {
-                            self.comboItemsAfterLogin.push(new ItemModel1(x.code, x.displayName));
-                        });
-
                         _.forEach(data, function(x) {
-                            self.comboItemsAsTopPage.push(new ItemModel1(x.code, x.displayName));
+                            self.comboItemsAsTopPage.push(new ItemModel1(x.code, x.displayName, x.system, x.classification));
                         });
                     }
+                    dfd.resolve();
+                }).fail();
+            return dfd.promise();
+        }
+
+        /**
+         * find data in talbel STANDARD_MENU with companyId and 
+         * afterLoginDisplay = 1 (display)  or System = 0(common) and MenuClassification = 8(top page)
+         */
+        findDataForAfterLoginDis(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.comboItemsAfterLogin.removeAll();
+            ccg018.b.service.findDataForAfterLoginDis()
+                .done(function(data) {
+                    self.comboItemsAfterLogin.push(new ItemModel1('', '未設定'));
+                    _.forEach(data, function(x) {
+                        self.comboItemsAfterLogin.push(new ItemModel1(x.code, x.displayName, x.system, x.classification));
+                    });
                     dfd.resolve();
                 }).fail();
             return dfd.promise();
@@ -174,16 +188,16 @@ module ccg018.b.viewmodel {
         name: string;
         workplaceName: string;
         employeeId: string;
-        topPageCode: string;
-        loginMenuCode: string;
+        topPageCode: KnockoutObservable<string>;
+        loginMenuCode: KnockoutObservable<string>;
         isAlreadySetting: boolean;
         constructor(code: string, name: string, workplaceName: string, employeeId: string, topPageCode: string, loginMenuCode: string, isAlreadySetting: boolean) {
             this.code = code;
             this.name = name;
             this.workplaceName = workplaceName;
             this.employeeId = employeeId;
-            this.topPageCode = topPageCode;
-            this.loginMenuCode = loginMenuCode;
+            this.topPageCode = ko.observable(topPageCode);
+            this.loginMenuCode = ko.observable(loginMenuCode);
             this.isAlreadySetting = isAlreadySetting;
         }
     }
@@ -191,10 +205,14 @@ module ccg018.b.viewmodel {
     class ItemModel1 {
         code: string;
         name: string;
+        system: number;
+        menuCls: number;
 
-        constructor(code: string, name: string) {
+        constructor(code: string, name: string, system?: number, menuCls?: number) {
             this.code = code;
             this.name = name;
+            this.system = system;
+            this.menuCls = menuCls;
         }
     }
 }

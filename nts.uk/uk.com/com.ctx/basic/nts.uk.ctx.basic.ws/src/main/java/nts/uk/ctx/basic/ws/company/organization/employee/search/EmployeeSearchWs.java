@@ -16,6 +16,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchDto;
 import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchFinder;
+import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchInDto;
 import nts.uk.ctx.basic.app.find.person.PersonDto;
 
 /**
@@ -29,6 +30,30 @@ public class EmployeeSearchWs extends WebService {
 	@Inject
 	private EmployeeSearchFinder finder;
 	
+	
+	/**
+	 * Search all employee.
+	 *
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	@POST
+	@Path("allemployee")
+	public List<EmployeeSearchDto> searchAllEmployee(GeneralDate baseDate){
+		return this.finder.searchAllEmployee(baseDate);
+	}
+	
+	/**
+	 * Search employee by login.
+	 *
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	@POST
+	@Path("onlyemployee")
+	public List<EmployeeSearchDto> searchEmployeeByLogin(GeneralDate baseDate){
+		return this.finder.searchEmployeeByLogin(baseDate);
+	}
 	/**
 	 * Search mode employee.
 	 *
@@ -37,13 +62,13 @@ public class EmployeeSearchWs extends WebService {
 	 */
 	@POST
 	@Path("advanced")
-	public List<PersonDto> searchModeEmployee(EmployeeSearchDto input) {
+	public List<PersonDto> searchModeEmployee(EmployeeSearchInDto input) {
 		return this.finder.searchModeEmployee(input);
 	}
 	
 	
 	/**
-	 * Search of workplace.
+	 * Search of work place.
 	 *
 	 * @param baseDate the base date
 	 * @return the list

@@ -357,13 +357,15 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		return workPlaceHierarchieRes;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository#
+	 * convertToWorkplace(java.lang.String, java.util.List)
+	 */
 	@Override
-	public List<Workplace> convertToWorkplace(String companyId, List<String> workplaceCode) {
-		
-		// check exist data
-		if (CollectionUtil.isEmpty(workplaceCode)) {
-			return new ArrayList<>();
-		}
+	public List<Workplace> getAllWorkplaceOfCompany(String companyId, GeneralDate baseDate) {
 		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -385,8 +387,13 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.cid), companyId));
 		
-		// and work place code
-		lstpredicateWhere.add(criteriaBuilder.and(root.get(KwpmtWorkplace_.wplcd).in(workplaceCode)));
+		// start date le base date
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.strD), baseDate));
+		
+		// start date le base date
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
