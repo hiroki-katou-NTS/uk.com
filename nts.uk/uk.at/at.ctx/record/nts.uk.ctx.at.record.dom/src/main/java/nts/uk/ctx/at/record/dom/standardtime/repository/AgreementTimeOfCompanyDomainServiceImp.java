@@ -70,7 +70,7 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 		
-		this.basicAgreementSettingRepository.update(basicAgreementSetting);
+		this.basicAgreementSettingRepository.updateForCompany(basicAgreementSetting);
 		
 		return errors;
 	}
