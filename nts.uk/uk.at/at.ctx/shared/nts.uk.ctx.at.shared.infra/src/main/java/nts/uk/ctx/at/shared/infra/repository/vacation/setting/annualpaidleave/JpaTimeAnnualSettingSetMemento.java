@@ -5,25 +5,25 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeVacationSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
 
 /**
  * The Class JpaTimeVacationSettingSetMemento.
  */
-public class JpaTimeVacationSettingSetMemento implements TimeVacationSettingSetMemento {
+public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemento {
     
     /** The entity. */
-    private KtvmtTimeVacationSet entity;
+    private KtvmtTimeAnnualSet entity;
     
     /**
      * Instantiates a new jpa time vacation setting set memento.
      *
      * @param entity the entity
      */
-    public JpaTimeVacationSettingSetMemento(KtvmtTimeVacationSet entity) {
+    public JpaTimeAnnualSettingSetMemento(KtvmtTimeAnnualSet entity) {
         this.entity = entity;
     }
     
@@ -58,7 +58,7 @@ public class JpaTimeVacationSettingSetMemento implements TimeVacationSettingSetM
      * vacation.setting.TimeVacationDigestiveUnit)
      */
     @Override
-    public void setTimeUnit(TimeVacationDigestiveUnit timeUnit) {
+    public void setTimeUnit(TimeDigestiveUnit timeUnit) {
         this.entity.setTimeUnit(timeUnit.value);
     }
 

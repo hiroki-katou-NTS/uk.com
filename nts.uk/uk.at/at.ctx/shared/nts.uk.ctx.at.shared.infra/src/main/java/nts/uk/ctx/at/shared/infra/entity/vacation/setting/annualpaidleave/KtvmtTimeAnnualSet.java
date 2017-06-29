@@ -22,8 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KTVMT_TIME_VACATION_SET")
-public class KtvmtTimeVacationSet extends UkJpaEntity implements Serializable {
+@Table(name = "KTVMT_TIME_ANNUAL_SET")
+public class KtvmtTimeAnnualSet extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -61,7 +61,7 @@ public class KtvmtTimeVacationSet extends UkJpaEntity implements Serializable {
     /**
      * Instantiates a new ktvmt time vacation set.
      */
-    public KtvmtTimeVacationSet() {
+    public KtvmtTimeAnnualSet() {
     }
 
     /**
@@ -69,7 +69,7 @@ public class KtvmtTimeVacationSet extends UkJpaEntity implements Serializable {
      *
      * @param cid the cid
      */
-    public KtvmtTimeVacationSet(String cid) {
+    public KtvmtTimeAnnualSet(String cid) {
         this.cid = cid;
     }
 
@@ -88,10 +88,10 @@ public class KtvmtTimeVacationSet extends UkJpaEntity implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KtvmtTimeVacationSet)) {
+        if (!(object instanceof KtvmtTimeAnnualSet)) {
             return false;
         }
-        KtvmtTimeVacationSet other = (KtvmtTimeVacationSet) object;
+        KtvmtTimeAnnualSet other = (KtvmtTimeAnnualSet) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

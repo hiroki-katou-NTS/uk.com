@@ -1,6 +1,7 @@
 module ccg018.b.service {
     var paths: any = {
         findBySystemMenuCls: "sys/portal/standardmenu/findBySystemMenuCls",
+        findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",
         findTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySid",
         update: "sys/portal/toppagesetting/personset/update",
         remove: "sys/portal/toppagesetting/personset/remove"
@@ -8,6 +9,10 @@ module ccg018.b.service {
 
     export function findBySystemMenuCls(): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.findBySystemMenuCls);
+    }
+
+    export function findDataForAfterLoginDis(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findDataForAfterLoginDis);
     }
 
     export function findTopPagePersonSet(listSid: any): JQueryPromise<any> {
