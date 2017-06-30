@@ -44,6 +44,12 @@ public class StandardMenuWebService extends WebService {
 	public List<StandardMenuDto> findBySystemMenuCls() {
 		return finder.findBySystemMenuCls();
 	}
+	
+	@POST
+	@Path("findDataForAfterLoginDis")
+	public List<StandardMenuDto> findDataForAfterLoginDis() {
+		return finder.findDataForAfterLoginDis();
+	}
 
 	@POST
 	@Path("findByAtr")

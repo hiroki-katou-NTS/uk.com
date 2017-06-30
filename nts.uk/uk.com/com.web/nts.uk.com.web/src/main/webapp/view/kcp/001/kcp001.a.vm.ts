@@ -25,6 +25,7 @@ module kcp001.a.viewmodel {
         selectedType: KnockoutObservable<number>;
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
+        jsonData: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -87,18 +88,7 @@ module kcp001.a.viewmodel {
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList
             };
-            // Load Component
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
-                if (($('#empt-list-setting').getDataList() == undefined) || ($('#empt-list-setting').getDataList().length <= 0)) {
-                    self.hasSelectedEmp(false);
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
-                }
-                else {
-                    // Employment List
-                    self.employmentList($('#empt-list-setting').getDataList());
-                }
-            });
-            
+
             self.selectionTypeList = ko.observableArray([
                 { code: 1, name: 'By Selected Code' },
                 { code: 2, name: 'Select All Items' },
@@ -156,6 +146,7 @@ module kcp001.a.viewmodel {
                     self.isMultiSelect(true);
                 }
             });
+            self.jsonData = ko.observable('');
         }
         // Setting Item(s) which Registed/Saved from main screen
         private settingSavedItem(): void {

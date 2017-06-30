@@ -37,11 +37,20 @@
 					<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show/hide button 自分だけ</div><br/>
 					<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show/hide button おなじ職場の社員</div><br/>
 					<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show/hide button おなじ＋配下の職場の社員</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div>
+					<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div><br/>
+					<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show/Show  全社員タイプ / 社員指定タイプ</div>
 					<div id="ccgcomponent"></div>
 					<div data-bind="if: showinfoSelectedEmployee()">
-						<label class="lableselect">Selected Code Employee</label> <label
-							class="lableselect" data-bind="text: selectedEmployeeCode()"></label>
+						<label class="lableselect">Select employee</label> 
+						<com:ko-foreach bind="selectedEmployee">
+							<label class="lableselect">{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
+							<label class="lableselect" >,employeeCode:</label> <label class="lableselect" data-bind="text: employeeCode"></label>
+							<label class="lableselect" >,employeeName:</label> <label class="lableselect" data-bind="text: employeeName"></label>
+							<label class="lableselect" >,workplaceId:</label> <label class="lableselect" data-bind="text: workplaceId"></label>
+							<label class="lableselect" >,workplaceCode:</label> <label class="lableselect" data-bind="text: workplaceCode"></label>
+							<label class="lableselect" >,workplaceName:</label> <label class="lableselect" data-bind="text: workplaceName"></label>
+							<label class="lableselect">}</label> <br/>
+						</com:ko-foreach>
 					</div>
 
 
@@ -54,84 +63,100 @@
 							<div id="tabs-html" class="cf">
 								<h2>HTML</h2>
 								<p>To use this component, you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
-								<pre>
-									<![CDATA[<ui:define name="htmlHead">
-										<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-										<com:scriptfile set="IGNITE" />
-										<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-										<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-										<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-										<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-									</ui:define>]]>
-								</pre>
+<pre><![CDATA[<ui:define name="htmlHead">
+	<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+	<com:scriptfile set="IGNITE" />
+	<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+	<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+	<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+	<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+</ui:define>]]>
+</pre>
 								<p>The component.</p>
-								<pre>
-									<![CDATA[<div id="ccgcomponent"></div>]]>
-								</pre>
+								<pre><![CDATA[<div id="ccgcomponent"></div>]]></pre>
 								<p>The data to display.</p>
-								<pre>
-									<![CDATA[
-										<div data-bind="if: showinfoSelectedEmployee()">
-											<label class="lableselect">Selected Code Employee</label> <label
-												class="lableselect" data-bind="text: selectedEmployeeCode()"></label>
-										</div>
-									]]>
-								</pre>
+<pre><![CDATA[<div data-bind="if: showinfoSelectedEmployee()">
+	<label class="lableselect">Select employee</label> 
+	<com:ko-foreach bind="selectedEmployee">
+		<label class="lableselect">{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
+		<label class="lableselect" >,employeeCode:</label> <label class="lableselect" data-bind="text: employeeCode"></label>
+		<label class="lableselect" >,employeeName:</label> <label class="lableselect" data-bind="text: employeeName"></label>
+		<label class="lableselect" >,workplaceId:</label> <label class="lableselect" data-bind="text: workplaceId"></label>
+		<label class="lableselect" >,workplaceCode:</label> <label class="lableselect" data-bind="text: workplaceCode"></label>
+		<label class="lableselect" >,workplaceName:</label> <label class="lableselect" data-bind="text: workplaceName"></label>
+		<label class="lableselect">}</label> <br/>
+	</com:ko-foreach>
+</div>]]>
+</pre>
 							</div>
 							<div id="tabs-viewmodel" class="cf">
 								<h2>TypeScript</h2>
-								<pre>
-									<![CDATA[
-										export class ScreenModel {
-								            ccgcomponent: GroupOption;
-								            selectedCode: KnockoutObservableArray<string>;
-								            showinfoSelectedEmployee: KnockoutObservable<boolean>;
-								            baseDate: KnockoutObservable<Date>;
-	
-	           								constructor() {
-                								var self = this;
-                								self.selectedCode = ko.observableArray([]);
-                								self.showinfoSelectedEmployee = ko.observable(false);
-                								self.baseDate: ko.observable(new Date());
-								                self.ccgcomponent = {
-								                    baseDate: self.baseDate,
-								                    isQuickSearchTab: true,
-								                    isAdvancedSearchTab: true,
-								                    isAllReferableEmployee: true,
-								                    isOnlyMe: true,
-								                    isEmployeeOfWorkplace: true,
-								                    isEmployeeWorkplaceFollow: true,
-								                    isMutipleCheck: true,
-								                    onSearchAllClicked: function(dataList: PersonModel[]) {
-								                        self.showinfoSelectedEmployee(true);
-								                        self.selectedEmployeeCode(new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toPersonCodeList(dataList));
-								                    },
-								                    onSearchOnlyClicked: function(data: PersonModel){
-								                        self.showinfoSelectedEmployee(true);
-								                        var dataEmployee: string[] = [];
-								                        dataEmployee.push(data.personId);
-								                        self.selectedEmployeeCode(dataEmployee);
-								                    },
-								                    onSearchOfWorkplaceClicked: function(dataList: PersonModel[]){
-								                        self.showinfoSelectedEmployee(true);
-								                        self.selectedEmployeeCode(new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toPersonCodeList(dataList));
-								                    },
-								                    
-								                    onSearchWorkplaceChildClicked: function(dataList: PersonModel[]){
-								                        self.showinfoSelectedEmployee(true);
-								                        self.selectedEmployeeCode(new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toPersonCodeList(dataList));
-								                    },
-								                    onApplyEmployee: function(dataEmployee: string[]) {
-								                       self.showinfoSelectedEmployee(true);
-								                       self.selectedEmployeeCode(dataEmployee);
-								                    }
-								                    
-								                }
-               									$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-								             }
-								         }
-								   	]]>
-								</pre>
+<pre><![CDATA[import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    export class ScreenModel {
+        ccgcomponent: GroupOption;
+        selectedCode: KnockoutObservableArray<string>;
+        showinfoSelectedEmployee: KnockoutObservable<boolean>;
+
+        // Options
+        isQuickSearchTab: KnockoutObservable<boolean>;
+        isAdvancedSearchTab: KnockoutObservable<boolean>;
+        isAllReferableEmployee: KnockoutObservable<boolean>;
+        isOnlyMe: KnockoutObservable<boolean>;
+        isEmployeeOfWorkplace: KnockoutObservable<boolean>;
+        isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
+        isMutipleCheck: KnockoutObservable<boolean>;
+        isSelectAllEmployee: KnockoutObservable<boolean>;
+        baseDate: KnockoutObservable<Date>;
+        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        
+		constructor() {
+			var self = this;
+			self.selectedEmployee = ko.observableArray([]);
+			self.showinfoSelectedEmployee = ko.observable(false);
+			self.baseDate: ko.observable(new Date());
+			
+            self.ccgcomponent = {
+               baseDate: self.baseDate,
+               isQuickSearchTab: self.isQuickSearchTab(),
+               isAdvancedSearchTab: self.isAdvancedSearchTab(),
+               isAllReferableEmployee: self.isAllReferableEmployee(),
+               isOnlyMe: self.isOnlyMe(),
+               isEmployeeOfWorkplace: self.isEmployeeOfWorkplace(),
+               isEmployeeWorkplaceFollow: self.isEmployeeWorkplaceFollow(),
+               isMutipleCheck: self.isMutipleCheck(),
+               isSelectAllEmployee: self.isSelectAllEmployee(),
+               onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+                   self.showinfoSelectedEmployee(true);
+                   self.selectedEmployee(dataList);
+               },
+               onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+                   self.showinfoSelectedEmployee(true);
+                   var dataEmployee: EmployeeSearchDto[] = [];
+                   dataEmployee.push(data);
+                   
+                   
+                   self.selectedEmployee(dataEmployee);
+               },
+               onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+                   self.showinfoSelectedEmployee(true);
+                   self.selectedEmployee(dataList);
+               },
+
+               onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+                   self.showinfoSelectedEmployee(true);
+                   self.selectedEmployee(dataList);
+               },
+               onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+                   self.showinfoSelectedEmployee(true);
+                   self.selectedEmployee(dataEmployee);
+               }
+
+           } 
+           
+           $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+      }
+ }]]></pre>
 								<h2>API</h2>
 								<table>
 									<colgroup>
@@ -192,6 +217,11 @@
 											<td>onSearchWorkplaceChildClicked
 											</td>
 											<td><b>Type:</b> function<br /> Event on click button おなじ＋配下の職場の社員</td>
+										</tr>
+										<tr>
+											<td>onApplyEmployee
+											</td>
+											<td><b>Type:</b> function<br /> Event on click button 社員を選択する</td>
 										</tr>
 									</tbody>
 								</table>

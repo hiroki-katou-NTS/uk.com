@@ -50,6 +50,8 @@ module ccg013.a.viewmodel {
 
             var menu1 = new nts.uk.ui.contextmenu.ContextMenu(".context-menu-bar", [
                 new nts.uk.ui.contextmenu.ContextMenuItem("cut", "メニューバーの編集(U)", (ui) => {
+                    let li = $(ui).parent('li');
+                    self.openIdialog(li.attr('id'));
                 }),
                 new nts.uk.ui.contextmenu.ContextMenuItem("copy", "メニューバーの削除(D)", (ui) => {
                     var element = $(ui).parent();
@@ -113,7 +115,6 @@ module ccg013.a.viewmodel {
 
         addWebMenu(): any {
             var self = this;
-            debugger;
             if (self.currentWebMenu().isDefaultMenu()) {
                 self.currentWebMenu().defaultMenu(0);
             } else {
@@ -194,9 +195,9 @@ module ccg013.a.viewmodel {
                         var titleBars = [];
                         var titleMenu = _.orderBy(menuBar.titleMenu, 'displayOrder', 'asc');
                         _.forEach(titleMenu, function(titleBarItem: any) {
-                            let treeMenus = [];          
-                            _.forEach(titleBarItem.treeMenu, function(treeMenuItem: any){
-                                treeMenus.push(new TreeMenu(titleBarItem.titleMenuId, treeMenuItem.code, "Test", treeMenuItem.displayOrder,treeMenuItem.classification,treeMenuItem.system));
+                            let treeMenus = [];
+                            _.forEach(titleBarItem.treeMenu, function(treeMenuItem: any) {
+                                treeMenus.push(new TreeMenu(titleBarItem.titleMenuId, treeMenuItem.code, "Test", treeMenuItem.displayOrder, treeMenuItem.classification, treeMenuItem.system));
                             })
                             titleBars.push(new TitleMenu(menuBar.menuBarId, titleBarItem.titleMenuId, titleBarItem.titleMenuName, titleBarItem.backgroundColor, titleBarItem.imageFile, titleBarItem.textColor, titleBarItem.titleMenuAtr, titleBarItem.titleMenuCode, titleBarItem.displayOrder, titleBarItem.treeMenu));
                         });
@@ -296,6 +297,32 @@ module ccg013.a.viewmodel {
         openKdialog(): any {
             var self = this;
             nts.uk.ui.windows.sub.modal("/view/ccg/013/k/index.xhtml").onClosed(function() {
+            });
+        }
+
+        openIdialog(id): any {
+            let self = this,
+                datas: Array<any> = ko.toJS(self.menuBars),
+                menu = _.find(datas, x => x.menuBarId == id);
+            nts.uk.ui.windows.setShared("CCG013I_MENU_BAR1", menu);
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/i/index.xhtml").onClosed(function() {
+                let data = nts.uk.ui.windows.getShared("CCG013I_MENU_BAR");
+                debugger;
+                if (data) {
+                    let menuBars: Array<MenuBar> = self.menuBars();
+                    self.menuBars([]);
+                    _.forEach(menuBars, function(item: MenuBar) {
+                        if (item.menuBarId() == id) {
+                            item.menuBarName(data.menuBarName);
+                            item.backgroundColor(data.backgroundColor);
+                            item.textColor(data.textColor);
+                        }
+                        self.menuBars.push(item);
+                    });
+                    $("#tabs").tabs("refresh");
+                    $("#tabs li#" + id + " a").click();
+                    initTitleBar();
+                }
             });
         }
     }

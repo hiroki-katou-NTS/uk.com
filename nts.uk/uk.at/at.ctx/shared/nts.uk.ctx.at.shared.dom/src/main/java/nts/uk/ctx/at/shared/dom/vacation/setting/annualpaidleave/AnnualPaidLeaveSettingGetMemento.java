@@ -44,5 +44,5 @@ public interface AnnualPaidLeaveSettingGetMemento {
      *
      * @return the time setting
      */
-    TimeVacationSetting getTimeSetting();
+    TimeAnnualSetting getTimeSetting();
 }

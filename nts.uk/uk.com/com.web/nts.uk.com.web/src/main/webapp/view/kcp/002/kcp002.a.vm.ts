@@ -25,6 +25,7 @@ module kcp002.a.viewmodel {
         selectedType: KnockoutObservable<number>;
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
+        jsonData: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -143,11 +144,7 @@ module kcp002.a.viewmodel {
                 }
                 self.reloadComponent();
             });
-
-            //load Classification list
-            $('#classification-list-setting').ntsListComponent(self.listComponentOption).done(function() {
-                self.classificationList($('#classification-list-setting').getDataList());
-            });
+            self.jsonData = ko.observable('');
         }
         private copy() {
             // issue #84074

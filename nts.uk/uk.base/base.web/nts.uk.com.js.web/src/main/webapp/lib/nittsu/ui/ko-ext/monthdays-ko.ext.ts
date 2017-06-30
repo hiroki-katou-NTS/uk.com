@@ -19,10 +19,14 @@ module nts.uk.ui.koExtentions {
             let dataName = ko.unwrap(data.name);
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             
+            let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+            $container.attr("tabindex", "-1");
+            
             $container.addClass("ntsControl ntsMonthDays_Container");
             $container.append("<div class='ntsMonthDays'/>");
             let $control = $container.find(".ntsMonthDays");
-            $control.append("<div class='ntsMonthPicker ntsComboBox ntsMonthDays_Component'/><div class='ntsMonthLabel ntsLabel ntsMonthDays_Component'/><div class='ntsDayPicker ntsComboBox ntsMonthDays_Component'/><div class='ntsDayLabel ntsLabel ntsMonthDays_Component'/>");
+            $control.append("<div class='ntsMonthPicker ntsComboBox ntsMonthDays_Component' /><div class='ntsMonthLabel ntsLabel ntsMonthDays_Component'/>" + 
+                "<div class='ntsDayPicker ntsComboBox ntsMonthDays_Component' /><div class='ntsDayLabel ntsLabel ntsMonthDays_Component'/>");
             
             let $monthPicker = $control.find(".ntsMonthPicker");
             let $dayPicker = $control.find(".ntsDayPicker");
@@ -63,6 +67,8 @@ module nts.uk.ui.koExtentions {
                         data.value(currentMonth*100 + currentDay);
                     }
               });
+            
+            $control.find("input").attr("tabindex", tabIndex);
         }
 
         /**

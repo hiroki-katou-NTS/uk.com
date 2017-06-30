@@ -4,15 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.ManagementCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 
 /**
  * The Class JpaEmploymentSettingGetMemento.
  */
-public class JpaEmploymentSettingGetMemento implements EmploymentSettingGetMemento{
+public class JpaEmploymentSettingGetMemento implements EmptYearlyRetentionGetMemento {
 	
 	/** The type value. */
 	private KmfmtRetentionEmpCtr typeValue;
@@ -29,7 +29,7 @@ public class JpaEmploymentSettingGetMemento implements EmploymentSettingGetMemen
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingGetMemento#getCompanyId()
+	 * EmptYearlyRetentionGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
@@ -39,7 +39,7 @@ public class JpaEmploymentSettingGetMemento implements EmploymentSettingGetMemen
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingGetMemento#getEmploymentCode()
+	 * EmptYearlyRetentionGetMemento#getEmploymentCode()
 	 */
 	@Override
 	public String getEmploymentCode() {
@@ -49,7 +49,7 @@ public class JpaEmploymentSettingGetMemento implements EmploymentSettingGetMemen
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingGetMemento#getUpperLimitSetting()
+	 * EmptYearlyRetentionGetMemento#getUpperLimitSetting()
 	 */
 	@Override
 	public UpperLimitSetting getUpperLimitSetting() {
@@ -59,11 +59,11 @@ public class JpaEmploymentSettingGetMemento implements EmploymentSettingGetMemen
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingGetMemento#getManagementCategory()
+	 * EmptYearlyRetentionGetMemento#getManagementCategory()
 	 */
 	@Override
-	public ManagementCategory getManagementCategory() {
-		return ManagementCategory.valueOf((int)this.typeValue.getManagementCtrAtr());
+	public ManageDistinct getManagementCategory() {
+		return ManageDistinct.valueOf((int)this.typeValue.getManagementCtrAtr());
 	}
 
 }

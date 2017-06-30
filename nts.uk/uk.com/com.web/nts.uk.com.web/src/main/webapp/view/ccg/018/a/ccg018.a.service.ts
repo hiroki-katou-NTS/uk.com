@@ -4,6 +4,7 @@ module ccg018.a.service {
         findDataOfTopPageJobSet: "sys/portal/toppagesetting/jobset/find",
         findByCId: "sys/portal/toppagesetting/findByCId",
         findBySystemMenuCls: "sys/portal/standardmenu/findBySystemMenuCls",
+        findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",
         findDataOfJobTitle: "basic/company/organization/jobtitle/findall"
     }
 
@@ -21,6 +22,10 @@ module ccg018.a.service {
 
     export function findBySystemMenuCls(): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.findBySystemMenuCls);
+    }
+
+    export function findDataForAfterLoginDis(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findDataForAfterLoginDis);
     }
 
     export function findDataOfJobTitle(baseDate: any): JQueryPromise<any> {

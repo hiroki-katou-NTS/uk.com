@@ -35,13 +35,14 @@ public class CclmtClassificationPK implements Serializable {
 	/** The code. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CODE")
+	@Column(name = "CLSCD")
 	private String code;
 
 	/**
 	 * Instantiates a new cclmt classification PK.
 	 */
 	public CclmtClassificationPK() {
+		super();
 	}
 
 	/**
@@ -52,42 +53,6 @@ public class CclmtClassificationPK implements Serializable {
 	 */
 	public CclmtClassificationPK(String ccid, String code) {
 		this.ccid = ccid;
-		this.code = code;
-	}
-
-	/**
-	 * Gets the ccid.
-	 *
-	 * @return the ccid
-	 */
-	public String getCcid() {
-		return ccid;
-	}
-
-	/**
-	 * Sets the ccid.
-	 *
-	 * @param ccid the new ccid
-	 */
-	public void setCcid(String ccid) {
-		this.ccid = ccid;
-	}
-
-	/**
-	 * Gets the code.
-	 *
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
-
-	/**
-	 * Sets the code.
-	 *
-	 * @param code the new code
-	 */
-	public void setCode(String code) {
 		this.code = code;
 	}
 
@@ -125,16 +90,6 @@ public class CclmtClassificationPK implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.CclmtManagementCategoryPK[ ccid=" + ccid + ", code=" + code + " ]";
 	}
 
 }

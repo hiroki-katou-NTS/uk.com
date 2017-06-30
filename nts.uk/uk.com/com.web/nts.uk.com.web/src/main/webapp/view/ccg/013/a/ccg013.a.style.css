@@ -99,6 +99,7 @@ button.search-btn {
 
 .ui-widget.ui-tabs .ui-tabs-nav li a {
 	background-color: rgb(112, 173, 71);
+	width: 100px !important;
 }
 
 .ui-tabs .ui-tabs-nav {
@@ -115,6 +116,7 @@ button.search-btn {
 	border-radius: 0px !important;
 	border: 1px solid #B1B1B1 !important;
 	background-color: rgb(226, 239, 218) !important;
+	padding: 0px !important;
 }
 
 ul.tree-menu {
@@ -135,6 +137,7 @@ ul.tree-menu li:last-child {
 .title-menu div.title-menu-column {
 	padding-right: 21px !important;
 	float:left;
+	margin-bottom: 15px;
 }
 
 .title-menu div.title-menu-name {

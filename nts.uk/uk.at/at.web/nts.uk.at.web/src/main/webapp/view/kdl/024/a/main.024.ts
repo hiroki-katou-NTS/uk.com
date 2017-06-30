@@ -4,4 +4,4 @@ __viewContext.ready(function(){
           nts.uk.ui.windows.sub.modal('/view/kdl/024/a/index.xhtml', { title: '外部予算実績の設定', });  
         }
     });
-}
+});

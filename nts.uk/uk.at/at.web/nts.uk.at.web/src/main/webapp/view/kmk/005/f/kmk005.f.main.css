@@ -50,5 +50,68 @@
 	text-align: center;
     width: 130px;
 }
+table, tr, th, td {
+	border: 1px solid #999999;
+}
+button.nts-switch-button {
+	width: 85px;
+}
+.combo-box1 {
+	width: 145px;
+}
+.combo-box2 {
+	width: 85px;
+}
+.combo-box3 {
+	width: 125px;
+}
+.combo-box4 {
+	width: 135px;
+}
+#table-panel-1 > thead > tr > th {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 30px;
+	background-color: #C7F391;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(1) {
+	padding: 3px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(2) {
+	padding: 3px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(3) {
+	padding: 3px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(4) {
+	padding: 3px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(5) {
+	padding: 3px;
+}
+#table-panel-2 > thead > tr > th {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 30px;
+	background-color: #C7F391;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(1) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(2) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(3) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(4) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(5) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(6) {
+	padding: 3px;
+}
 
 

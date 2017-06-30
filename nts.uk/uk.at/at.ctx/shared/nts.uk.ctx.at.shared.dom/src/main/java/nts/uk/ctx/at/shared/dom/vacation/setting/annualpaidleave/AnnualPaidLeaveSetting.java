@@ -40,7 +40,7 @@ public class AnnualPaidLeaveSetting extends AggregateRoot {
 
 	/** The time setting. */
 	// 時間年休管理設定
-	private TimeVacationSetting timeSetting;
+	private TimeAnnualSetting timeSetting;
 
 	/**
 	 * Checks if is managed.
