@@ -37,7 +37,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	// hoatt
 	private final String SELECT_STANDARD_MENU_BY_CODE = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId "
 			+ " AND c.ccgmtStandardMenuPK.code = :code" + " AND c.ccgmtStandardMenuPK.system = :system"
-			+ " AND c.ccgmtStandardMenuPK.classification = :menu_classification";
+			+ " AND c.ccgmtStandardMenuPK.classification = :classification";
 
 	private CcgstStandardMenu toEntity(StandardMenu domain) {
 		val entity = new CcgstStandardMenu();

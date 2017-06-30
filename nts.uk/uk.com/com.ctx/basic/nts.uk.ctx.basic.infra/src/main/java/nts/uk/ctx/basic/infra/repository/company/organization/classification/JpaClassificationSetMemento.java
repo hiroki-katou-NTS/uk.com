@@ -41,7 +41,7 @@ public class JpaClassificationSetMemento implements ClassificationSetMemento{
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.cclmtClassification.getCclmtClassificationPK().setCcid(companyId.v());
+		this.cclmtClassification.getCclmtClassificationPK().setCid(companyId.v());
 	}
 
 	/*
