@@ -12,6 +12,7 @@ import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,10 +31,12 @@ public class KwpmtWplHist extends UkJpaEntity implements Serializable {
     @EmbeddedId
     protected KwpmtWplHistPK kwpmtWplHistPK;
     
+    @NotNull
     @Column(name = "STR_D")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate strD;
     
+    @NotNull
     @Column(name = "END_D")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endD;

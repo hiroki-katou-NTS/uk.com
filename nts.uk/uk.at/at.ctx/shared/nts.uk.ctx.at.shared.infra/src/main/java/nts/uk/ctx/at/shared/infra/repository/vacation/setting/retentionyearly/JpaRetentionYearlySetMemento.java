@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 /**
  * The Class JpaRetentionYearlySetMemento.
  */
-public class JpaRetentionYearlySetMemento implements RetentionYearlySettingSetMemento{
+public class JpaRetentionYearlySetMemento implements RetentionYearlySettingSetMemento {
 
 	/** The type value. */
 	private KmfmtRetentionYearly typeValue;

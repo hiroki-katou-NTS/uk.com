@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto.Comp
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
 
@@ -114,7 +114,7 @@ public class CompensatoryLeaveWs extends WebService {
 	@POST
 	@Path("enum/timevacationdigestiveunit")
 	public List<EnumConstant> getTimeVacationDigestiveUnitEnum() {
-		return EnumAdaptor.convertToValueNameList(TimeVacationDigestiveUnit.class);
+		return EnumAdaptor.convertToValueNameList(TimeDigestiveUnit.class);
 	}
 
 	/**

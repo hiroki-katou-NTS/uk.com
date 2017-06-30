@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -43,20 +43,20 @@ public class EmploymentSaveCommandHandler extends CommandHandler<EmploymentSaveC
 		// Get Command
 		EmploymentSaveCommand command = context.getCommand();
 
-		EmploymentSetting employmentSetting = command.toDomain(companyId);
+		EmptYearlyRetentionSetting emptYearlyRetentionSetting = command.toDomain(companyId);
 
 		// Validate
-		employmentSetting.validate();
+		emptYearlyRetentionSetting.validate();
 
 		// Update
 //		this.repository.update(employmentSetting);
 		
-		Optional<EmploymentSetting> data = this.repository.find(companyId, employmentSetting.getEmploymentCode());
+		Optional<EmptYearlyRetentionSetting> data = this.repository.find(companyId, emptYearlyRetentionSetting.getEmploymentCode());
 		if(data.isPresent()) {
-			this.repository.update(employmentSetting);
+			this.repository.update(emptYearlyRetentionSetting);
 		}
 		else {
-			this.repository.insert(employmentSetting);
+			this.repository.insert(emptYearlyRetentionSetting);
 		}
 	}
 

@@ -23,13 +23,13 @@ public class CcgptTopPagePersonSet extends UkJpaEntity {
 	@EmbeddedId
 	public CcgptTopPagePersonSetPK ccgptTopPagePersonSetPK;
 
-	/** The top menu no. */
+	/** The top menu code. */
 	@Column(name = "TOP_MENU_CD")
-	public String topMenuNo;
+	public String topMenuCode;
 
-	/** The login menu no. */
+	/** The login menu code. */
 	@Column(name = "LOGIN_MENU_CD")
-	public String loginMenuNo;
+	public String loginMenuCode;
 
 	@Column(name = "LOGIN_SYSTEM")
 	public int loginSystem;

@@ -1,8 +1,8 @@
 module ccg013.a {
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
+        var viewModel = new viewmodel.ScreenModel();
+        viewModel.startPage().done(function() {
+            __viewContext.bind(viewModel);
             
             $("#tabs").tabs()
             .find(".ui-tabs-nav").sortable({

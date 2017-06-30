@@ -29,6 +29,18 @@ public interface StandardMenuRepository {
 	List<StandardMenu> findBySystemMenuClassification(String companyId, int system, int menu_classification);
 
 	/**
+	 * added by sonnh1
+	 * find by COMPANYID and (SYSTEM and MENU_CLASSIFICATION) or AFTER_LOGIN_DISPLAY
+	 * @param companyId
+	 * @param afterLoginDisplay
+	 * @param system
+	 * @param menu_classification
+	 * @return
+	 */
+	List<StandardMenu> findDataForAfterLoginDis(String companyId, int afterLoginDisplay, int system,
+			int menu_classification);
+
+	/**
 	 * find by COMPANYID and AFTER_LOGIN_DISPLAY
 	 * 
 	 * @param companyId
@@ -49,40 +61,64 @@ public interface StandardMenuRepository {
 	 * @param menu_classification
 	 * @return
 	 */
-//	List<StandardMenu> findByAfterLgDisSysMenuCls(String companyId, int afterLoginDisplay, int system,
-//			int menu_classification);
-	
+	// List<StandardMenu> findByAfterLgDisSysMenuCls(String companyId, int
+	// afterLoginDisplay, int system,
+	// int menu_classification);
+
 	/**
 	 * Find all.
 	 *
-	 * @param companyId the company id
+	 * @param companyId
+	 *            the company id
 	 * @param webMenuSetting
 	 * @param menuAtr
-	 * @return the list 
-	 */ 
+	 * @return the list
+	 */
 	List<StandardMenu> findByAtr(String companyId, int webMenuSetting, int menuAtr);
+
 	/**
-	 * hoatt
-	 * get standard menu
+	 * hoatt get standard menu
+	 * 
 	 * @param companyId
 	 * @param code
 	 * @param system
 	 * @param classification
 	 * @return
 	 */
-	Optional<StandardMenu> getStandardMenubyCode(String companyId,String code, int system,int classification);
-	
+	Optional<StandardMenu> getStandardMenubyCode(String companyId, String code, int system, int classification);
+
 	/**
 	 * yennth
-	 * @param List StandardMenu
+	 * 
+	 * @param List
+	 *            StandardMenu
 	 */
-	void update(List<StandardMenu> StandardMenu);
+	void changeName(List<StandardMenu> StandardMenu);
 
-	/** Find all by system.
+	/**
+	 * Find all by system.
 	 *
-	 * @param companyId the company id
+	 * @param companyId
+	 *            the company id
 	 * @param system
-	 * @return the list 
-	 */ 
+	 * @return the list
+	 */
 	List<StandardMenu> findBySystem(String companyId, int system);
+	/**
+	 * yennth
+	 * @param companyId
+	 * @param code
+	 * @param system
+	 * @param classification
+	 * @param displayName
+	 * @return
+	 */
+	boolean isExistDisplayName(List<StandardMenu> StandardMenu);
+
+	/**
+	 * Find all menu with condition=DISPLAY
+	 * @param companyID
+	 * @return
+	 */
+	List<StandardMenu> findAllDisplay(String companyID);
 }

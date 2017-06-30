@@ -15,7 +15,7 @@
 		</div>
 		<div class="contents-area">
 			<div id="list-employment" class="pull-left"></div>
-			<div class="right-content pull-left" data-bind="visible: !isLoading()" style="display: none">
+			<div class="right-content pull-left" data-bind="ifnot: isLoading">
 			<fieldset data-bind="allowEdit: (selectedEmploymentCode())">
 				<com:ko tag="with" bind="employmentWTSetting">
 				<div class="control-group">
@@ -25,9 +25,11 @@
 													constraint: 'Year',
 													required: true}"/>
 				</div>
-				<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
-				<span id="lblEmploymentCode" data-bind="text: employmentCode"></span>
-				<span id="lblEmploymentName" data-bind="text: employmentName"></span>
+				<div class="control-group">
+					<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
+					<span id="lblEmploymentCode" data-bind="text: employmentCode"></span>
+					<span id="lblEmploymentName" data-bind="text: employmentName"></span>
+				</div>
 				<div id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
 
@@ -57,13 +59,13 @@
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
 											<td><input tabindex="5"
-												data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: daily, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: daily, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
 											<td><input tabindex="6"
-												data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: weekly, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: weekly, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</table>
@@ -81,7 +83,7 @@
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
 												<td><input tabindex="8"
-													data-bind="ntsTimeEditor: {name: normal, value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+													data-bind="ntsTimeEditor: {name: normal, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>
@@ -107,10 +109,10 @@
 									<tr data-bind="with: flexDaily">
 										<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
 										<td><input tabindex="11"
-											data-bind="ntsTimeEditor: {name:'#[KMK004_17]', value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+											data-bind="ntsTimeEditor: {name:'#[KMK004_17]', value: specifiedTime, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 										</td>
 										<td><input tabindex="12"
-											data-bind="ntsTimeEditor: {name:'#[KMK004_18]', value: statutoryTime, constraint:'AttendanceTime',inputFormat: 'time', mode: 'time', required: true}" />
+											data-bind="ntsTimeEditor: {name:'#[KMK004_18]', value: statutoryTime, constraint:'DailyTime',inputFormat: 'time', mode: 'time', required: true}" />
 										</td>
 									</tr>
 								</table>
@@ -129,10 +131,10 @@
 												<div data-bind="text: month()+'月度'"></div>
 											</td>
 											<td><input tabindex="16"
-												data-bind="ntsTimeEditor: {name: speName, value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name: speName, value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 											<td><input tabindex="16"
-												data-bind="ntsTimeEditor: {name: staName,value: statutoryTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name: staName,value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</com:ko>
@@ -169,13 +171,13 @@
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
 											<td><input tabindex="20"
-												data-bind="ntsTimeEditor: {name:'#[KMK004_24]', value: daily, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[KMK004_24]', value: daily, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
 											<td><input tabindex="21"
-												data-bind="ntsTimeEditor: {name:'#[KMK004_25]', value: weekly, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[KMK004_25]', value: weekly, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</table>
@@ -193,7 +195,7 @@
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
 												<td><input tabindex="23"
-													data-bind="ntsTimeEditor: {name: deformed, value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+													data-bind="ntsTimeEditor: {name: deformed, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>

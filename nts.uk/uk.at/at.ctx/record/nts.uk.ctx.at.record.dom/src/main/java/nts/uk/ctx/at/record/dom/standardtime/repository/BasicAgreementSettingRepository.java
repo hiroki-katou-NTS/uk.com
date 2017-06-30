@@ -10,7 +10,11 @@ public interface BasicAgreementSettingRepository {
 	
 	void add(BasicAgreementSetting basicAgreementSetting);
 	
-	void update(BasicAgreementSetting basicAgreementSetting);
+	void add2(BasicAgreementSetting basicAgreementSetting);
+	
+	void updateForCompany(BasicAgreementSetting basicAgreementSetting);
+	
+	void update2(BasicAgreementSetting basicAgreementSetting);
 	
 	void remove(String basicSettingId);
 }

@@ -100,7 +100,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.21'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.6'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.6.1'
 		
 	}
 }
@@ -234,9 +234,7 @@ project (':com.web:nts.uk.com.web') {
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
 		baseName= "nts.uk.com.web"
-		into("view") {
-			from compileTypeScript.outputs
-		}
+		
 	}
 	compileTypeScript {
 		sourcemap = true
@@ -287,6 +285,11 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
 		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp')
 		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws')
+		
+		runtime project (':wk.ctx:nts.uk.ctx.workflow.ws')
+		runtime project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		runtime project (':wk.ctx:nts.uk.ctx.workflow.app')
+		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')
 		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'

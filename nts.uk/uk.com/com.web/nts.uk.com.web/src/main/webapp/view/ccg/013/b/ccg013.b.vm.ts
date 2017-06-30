@@ -20,6 +20,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         selectCodeStandardMenu: KnockoutObservable<string>;
         allPart: KnockoutObservableArray<any>;
         selectedSystemID: KnockoutObservable<string>;
+        textOption:KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
+        
         constructor() {
             var self = this;
             self.nameMenuBar = ko.observable("");
@@ -28,7 +30,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.selectedCodeSystemSelect = ko.observable(0);
             //Radio button
             self.itemRadioAtcClass = ko.observableArray([]);
-            self.selectedRadioAtcClass = ko.observable(1);
+            self.selectedRadioAtcClass = ko.observable(0);
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
@@ -44,7 +46,14 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             //Follow SystemSelect
             self.selectedSystemID = ko.observable(null);
             self.selectedCodeSystemSelect.subscribe((value) => { self.changeSystem(value); });
-                
+            self.selectedRadioAtcClass.subscribe(function(value){
+                 if (value == 0) {
+                    self.currentListStandardMenu('');    
+                 }
+            });
+            self.textOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                width: "160px"
+            })); 
         }
 
         startPage(): JQueryPromise<any> {
@@ -60,12 +69,11 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             }
 
             /** Get EditMenuBar*/
-            service.getEditMenuBar().done(function(editMenuBar: any) {
+            service.getEditMenuBar().done(function(editMenuBar: service.EditMenuBarDto) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 self.listSystemSelect(editMenuBar.listSystem);
-                console.log(editMenuBar);
                 self.allPart(editMenuBar.listStandardMenu);
-                let listStandardMenu: Array<any> = _.orderBy((editMenuBar.listStandardMenu, ["code"], ["asc"]));
+                let listStandardMenu: Array<service.MenuBarDto> = _.orderBy(editMenuBar.listStandardMenu, "code", "asc");
                 self.listStandardMenu(editMenuBar.listStandardMenu);
                 self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
@@ -77,13 +85,19 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         }
 
         cancel_Dialog(): any {
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.close();
         }
 
         submit() {
             var self = this;
-            var menuCls = "";
-            var standMenu = _.find(self.listStandardMenu(), 'code', self.currentListStandardMenu());
+            var menuCls = null;
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
+            var standMenu = _.find(self.listStandardMenu(), function(item: service.MenuBarDto) {
+                return item.code == self.currentListStandardMenu();    
+            });
             if (standMenu) {
                 menuCls = standMenu.classification;
             }            
@@ -121,4 +135,5 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             this.menuCls = menuCls;
         }
     }
+
 }

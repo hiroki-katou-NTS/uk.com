@@ -44,7 +44,7 @@
 }
 
 .link-button {
-	margin-left: 270px;
+	margin-left: 195px;
 }
 
 #A_LBL_002, #A_LBL_003, #A_LBL_005, #A_LBL_006, #A_LBL_010 {
@@ -99,6 +99,7 @@ button.search-btn {
 
 .ui-widget.ui-tabs .ui-tabs-nav li a {
 	background-color: rgb(112, 173, 71);
+	width: 100px !important;
 }
 
 .ui-tabs .ui-tabs-nav {
@@ -115,6 +116,7 @@ button.search-btn {
 	border-radius: 0px !important;
 	border: 1px solid #B1B1B1 !important;
 	background-color: rgb(226, 239, 218) !important;
+	padding: 0px !important;
 }
 
 ul.tree-menu {
@@ -135,6 +137,7 @@ ul.tree-menu li:last-child {
 .title-menu div.title-menu-column {
 	padding-right: 21px !important;
 	float:left;
+	margin-bottom: 15px;
 }
 
 .title-menu div.title-menu-name {
@@ -161,3 +164,5 @@ ul.tree-menu li:last-child {
     margin-bottom: 10px !important;
     color: black !important;
 }
+
+.icon_link {width: 30px; vertical-align: middle; }

@@ -8,39 +8,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.ManagementCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
-/**
- * Gets the management category.
- *
- * @return the management category
- */
 @Getter
-
-/**
- * Sets the management category.
- *
- * @param managementCategory the new management category
- */
 @Setter
-
-/**
- * Instantiates a new employment setting dto.
- */
 @NoArgsConstructor
-
-/**
- * Instantiates a new employment setting dto.
- *
- * @param employmentCode the employment code
- * @param upperLimitSetting the upper limit setting
- * @param managementCategory the management category
- */
 @AllArgsConstructor
-public class EmploymentSettingDto{
+public class EmploymentSettingDto {
 	
 	/** The employment code. */
 	private String employmentCode;
@@ -57,14 +34,14 @@ public class EmploymentSettingDto{
 	 * @param companyId the company id
 	 * @return the employment setting
 	 */
-	public EmploymentSetting toDomain(String companyId) {
-		return new EmploymentSetting(new GetMementoImpl(companyId, this));
+	public EmptYearlyRetentionSetting toDomain(String companyId) {
+		return new EmptYearlyRetentionSetting(new GetMementoImpl(companyId, this));
 	}
 	
 	/**
 	 * The Class GetMementoImpl.
 	 */
-	private class GetMementoImpl implements EmploymentSettingGetMemento{
+	private class GetMementoImpl implements EmptYearlyRetentionGetMemento {
 		
 		/** The dto. */
 		private EmploymentSettingDto dto;
@@ -87,7 +64,7 @@ public class EmploymentSettingDto{
 		/*
 		 * (non-Javadoc)
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-		 * EmploymentSettingGetMemento#getCompanyId()
+		 * EmptYearlyRetentionGetMemento#getCompanyId()
 		 */
 		@Override
 		public String getCompanyId() {
@@ -97,7 +74,7 @@ public class EmploymentSettingDto{
 		/*
 		 * (non-Javadoc)
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-		 * EmploymentSettingGetMemento#getEmploymentCode()
+		 * EmptYearlyRetentionGetMemento#getEmploymentCode()
 		 */
 		@Override
 		public String getEmploymentCode() {
@@ -107,7 +84,7 @@ public class EmploymentSettingDto{
 		/*
 		 * (non-Javadoc)
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-		 * EmploymentSettingGetMemento#getUpperLimitSetting()
+		 * EmptYearlyRetentionGetMemento#getUpperLimitSetting()
 		 */
 		@Override
 		public UpperLimitSetting getUpperLimitSetting() {
@@ -117,11 +94,11 @@ public class EmploymentSettingDto{
 		/*
 		 * (non-Javadoc)
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-		 * EmploymentSettingGetMemento#getManagementCategory()
+		 * EmptYearlyRetentionGetMemento#getManagementCategory()
 		 */
 		@Override
-		public ManagementCategory getManagementCategory() {
-			return ManagementCategory.valueOf(dto.managementCategory);
+		public ManageDistinct getManagementCategory() {
+			return ManageDistinct.valueOf(dto.managementCategory);
 		}
 	}
 	

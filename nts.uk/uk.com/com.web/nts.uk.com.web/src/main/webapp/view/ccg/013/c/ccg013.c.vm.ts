@@ -13,8 +13,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         //GridList
         listTitleMenu: KnockoutObservableArray<TitleMenu>;
         columns: KnockoutObservableArray<any>;
-        currentTitleMenu: KnockoutObservableArray<any>;
-        selectCodeTitleMenu: KnockoutObservable<string>;
+        currentTitleMenu: KnockoutObservable<string>;
+        enableGrid : KnockoutObservable<boolean>;
 
         //file Upload
         filename: KnockoutObservable<string>;
@@ -33,7 +33,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.itemTitleAtr = ko.observableArray([
                 { value: 0, titleAtrName: resource.getText('CCG013_34') },
                 { value: 1, titleAtrName: resource.getText('CCG013_35') }]);
-            self.selectedTitleAtr = ko.observable(1);
+            self.selectedTitleAtr = ko.observable(0);
+            self.enableGrid = ko.observable(false);
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
@@ -43,15 +44,15 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                 { headerText: 'コード', key: 'titleCode', width: 100 },
                 { headerText: '名称', key: 'titleName', width: 230 }
             ]);
-            self.selectCodeTitleMenu = ko.observable('');
-            self.currentTitleMenu = ko.observableArray([]);
+            //self.selectCodeTitleMenu = ko.observable('');
+            self.currentTitleMenu = ko.observable('');
             //delete button 
             self.isDelete = ko.observable(false);
             //image upload
             self.filename = ko.observable(""); //file name
             self.imageName = ko.observable("");
             self.imageSize = ko.observable("");
-            self.accept = ko.observableArray([".png", '.img']); //supported extension
+            self.accept = ko.observableArray([".png", ".img",".jpg",".PNG", ".IMG",".JPG"]); //supported extension
             self.textId = ko.observable(""); // file browser button text id
             self.fileID = ko.observable('');
             self.fileID.subscribe(function(id) {
@@ -60,6 +61,15 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                     liveviewcontainer.html("");
                     liveviewcontainer.append($("<img/>").attr("src", nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/" + id)));
                 }
+            });
+            self.selectedTitleAtr.subscribe(function(atrValue){
+               if(atrValue==0){
+                   //self.selectCodeTitleMenu('');
+                   self.currentTitleMenu('');
+                   self.enableGrid(false);
+               }else{
+                   self.enableGrid(true);
+               }
             });
         }
 
@@ -103,7 +113,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                 self.imageSize(res[0].originalSize+'KB');
                 self.isDelete(true);
             }).fail(function(err) {
-                nts.uk.ui.dialog.alertError({ messageId: err.messageId });
+                nts.uk.ui.dialog.alertError(err.message);
             });
         }
 
@@ -121,12 +131,19 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         submit() {
             var self = this;
-            var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID(),self.currentTitleMenu());
-            windows.setShared("CCG013C_TitleBar", titleBar);
-            console.log(titleBar);
+            if(self.selectedTitleAtr()==1){
+                if(self.currentTitleMenu() !== ''){
+                    var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID(),self.currentTitleMenu()); 
+                    windows.setShared("CCG013C_TitleBar", titleBar);       
+                }else{
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_75" });   
+                    return false;
+                }
+            }
             self.cancel_Dialog();
         }
-
+    }
+    
     class TitleBar {
         nameTitleBar: string;
         letterColor: string;

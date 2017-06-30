@@ -29,19 +29,20 @@ public class CclmtClassificationPK implements Serializable {
 	/** The ccid. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CCID")
-	private String ccid;
+	@Column(name = "CID")
+	private String cid;
 
 	/** The code. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CODE")
+	@Column(name = "CLSCD")
 	private String code;
 
 	/**
 	 * Instantiates a new cclmt classification PK.
 	 */
 	public CclmtClassificationPK() {
+		super();
 	}
 
 	/**
@@ -51,43 +52,7 @@ public class CclmtClassificationPK implements Serializable {
 	 * @param code the code
 	 */
 	public CclmtClassificationPK(String ccid, String code) {
-		this.ccid = ccid;
-		this.code = code;
-	}
-
-	/**
-	 * Gets the ccid.
-	 *
-	 * @return the ccid
-	 */
-	public String getCcid() {
-		return ccid;
-	}
-
-	/**
-	 * Sets the ccid.
-	 *
-	 * @param ccid the new ccid
-	 */
-	public void setCcid(String ccid) {
-		this.ccid = ccid;
-	}
-
-	/**
-	 * Gets the code.
-	 *
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
-
-	/**
-	 * Sets the code.
-	 *
-	 * @param code the new code
-	 */
-	public void setCode(String code) {
+		this.cid = ccid;
 		this.code = code;
 	}
 
@@ -99,7 +64,7 @@ public class CclmtClassificationPK implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (ccid != null ? ccid.hashCode() : 0);
+		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (code != null ? code.hashCode() : 0);
 		return hash;
 	}
@@ -116,8 +81,8 @@ public class CclmtClassificationPK implements Serializable {
 			return false;
 		}
 		CclmtClassificationPK other = (CclmtClassificationPK) object;
-		if ((this.ccid == null && other.ccid != null)
-			|| (this.ccid != null && !this.ccid.equals(other.ccid))) {
+		if ((this.cid == null && other.cid != null)
+			|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if ((this.code == null && other.code != null)
@@ -125,16 +90,6 @@ public class CclmtClassificationPK implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.CclmtManagementCategoryPK[ ccid=" + ccid + ", code=" + code + " ]";
 	}
 
 }

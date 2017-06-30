@@ -58,5 +58,4 @@ public class AddAgreementTimeOfEmploymentCommand {
 	private BigDecimal errorOneYear;
 
 	private BigDecimal limitOneYear;
-
 }

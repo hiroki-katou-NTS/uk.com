@@ -41,7 +41,7 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 
-		this.basicAgreementSettingRepository.add(basicAgreementSetting);
+		this.basicAgreementSettingRepository.add2(basicAgreementSetting);
 
 		this.agreementTimeOfWorkPlaceRepository.add(agreementTimeOfWorkPlace);
 
@@ -68,7 +68,7 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 		
-		this.basicAgreementSettingRepository.update(basicAgreementSetting);
+		this.basicAgreementSettingRepository.update2(basicAgreementSetting);
 		
 		return errors;
 	}

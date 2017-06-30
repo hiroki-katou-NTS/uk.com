@@ -52,7 +52,6 @@ module kdl002.a.viewmodel {
         }
         //event When click to 決定 ボタン
         register() {
-//            var t0 = performance.now(); 
             var self = this;
             if(self.isMulti == true){
                 let lstObj = [];
@@ -78,8 +77,6 @@ module kdl002.a.viewmodel {
                 nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', listnew,true);
             }
             nts.uk.ui.windows.close();
-//            var t1 = performance.now();
-//            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         /**
          * find item is selected
@@ -93,10 +90,7 @@ module kdl002.a.viewmodel {
         }
         //Close Dialog
         close() {
-//            var t0 = performance.now(); 
             nts.uk.ui.windows.close();
-//            var t1 = performance.now();
-//            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
     }
     export module model {

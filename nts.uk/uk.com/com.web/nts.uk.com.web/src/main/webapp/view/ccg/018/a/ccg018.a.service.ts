@@ -1,29 +1,34 @@
 module ccg018.a.service {
     var paths: any = {
-        update: "sys/portal/toppagesetting/update",
-        findDataOfTopPageJobSet: "sys/portal/toppagesetting/find",
+        update: "sys/portal/toppagesetting/jobset/updateTopPageJobSet",
+        findDataOfTopPageJobSet: "sys/portal/toppagesetting/jobset/find",
         findByCId: "sys/portal/toppagesetting/findByCId",
-        findByAfterLoginDisplay: "sys/portal/standardmenu/findByAfterLoginDisplay",
-        findByAfterLgDisSysMenuCls: "sys/portal/standardmenu/findByAfterLgDisSysMenuCls",
+        findBySystemMenuCls: "sys/portal/standardmenu/findBySystemMenuCls",
+        findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",
+        findDataOfJobTitle: "basic/company/organization/jobtitle/findall"
     }
-    
-    export function findDataOfTopPageJobSet(): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.findDataOfTopPageJobSet); 
+
+    export function findDataOfTopPageJobSet(listJobId): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findDataOfTopPageJobSet, listJobId);
     }
 
     export function findByCId(): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.findByCId); 
+        return nts.uk.request.ajax("com", paths.findByCId);
     }
 
     export function update(command: any): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.update, command);
     }
 
-    export function findByAfterLoginDisplay(): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.findByAfterLoginDisplay);
+    export function findBySystemMenuCls(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findBySystemMenuCls);
     }
 
-    export function findByAfterLgDisSysMenuCls(): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.findByAfterLgDisSysMenuCls);
+    export function findDataForAfterLoginDis(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findDataForAfterLoginDis);
+    }
+
+    export function findDataOfJobTitle(baseDate: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findDataOfJobTitle, { baseDate: baseDate });
     }
 }

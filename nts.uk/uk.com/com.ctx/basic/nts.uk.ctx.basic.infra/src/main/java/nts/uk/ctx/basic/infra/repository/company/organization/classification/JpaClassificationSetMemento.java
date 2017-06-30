@@ -27,6 +27,9 @@ public class JpaClassificationSetMemento implements ClassificationSetMemento{
 	 * @param cclmtClassification the cclmt management category
 	 */
 	public JpaClassificationSetMemento(CclmtClassification cclmtClassification) {
+		if(cclmtClassification.getCclmtClassificationPK() == null){
+			cclmtClassification.setCclmtClassificationPK(new CclmtClassificationPK());
+		}
 		this.cclmtClassification = cclmtClassification;
 	}
 
@@ -38,9 +41,7 @@ public class JpaClassificationSetMemento implements ClassificationSetMemento{
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		CclmtClassificationPK pk = new CclmtClassificationPK();
-		pk.setCcid(companyId.v());
-		this.cclmtClassification.setCclmtClassificationPK(pk);
+		this.cclmtClassification.getCclmtClassificationPK().setCid(companyId.v());
 	}
 
 	/*
@@ -52,9 +53,7 @@ public class JpaClassificationSetMemento implements ClassificationSetMemento{
 	 */
 	@Override
 	public void setManagementCategoryCode(ClassificationCode managementCategoryCode) {
-		CclmtClassificationPK pk = this.cclmtClassification.getCclmtClassificationPK();
-		pk.setCode(managementCategoryCode.v());
-		this.cclmtClassification.setCclmtClassificationPK(pk);
+		this.cclmtClassification.getCclmtClassificationPK().setCode(managementCategoryCode.v());
 	}
 
 	/*

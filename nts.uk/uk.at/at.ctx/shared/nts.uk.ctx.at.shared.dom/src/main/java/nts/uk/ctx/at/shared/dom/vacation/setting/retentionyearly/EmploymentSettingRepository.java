@@ -15,16 +15,16 @@ public interface EmploymentSettingRepository {
 	/**
 	 * Insert.
 	 *
-	 * @param employmentSetting the employment setting
+	 * @param emptYearlyRetentionSetting the employment setting
 	 */
-	void insert(EmploymentSetting employmentSetting);
+	void insert(EmptYearlyRetentionSetting emptYearlyRetentionSetting);
 	
 	/**
 	 * Update.
 	 *
-	 * @param employmentSetting the employment setting
+	 * @param emptYearlyRetentionSetting the employment setting
 	 */
-	void update(EmploymentSetting employmentSetting);
+	void update(EmptYearlyRetentionSetting emptYearlyRetentionSetting);
 	
 	/**
 	 * Removes the.
@@ -41,7 +41,7 @@ public interface EmploymentSettingRepository {
 	 * @param employmentCode the employment code
 	 * @return the employment setting
 	 */
-	Optional<EmploymentSetting> find(String companyId, String employmentCode);
+	Optional<EmptYearlyRetentionSetting> find(String companyId, String employmentCode);
 	
 	/**
 	 * Find all.
@@ -49,5 +49,5 @@ public interface EmploymentSettingRepository {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<EmploymentSetting> findAll(String companyId);
+	List<EmptYearlyRetentionSetting> findAll(String companyId);
 }

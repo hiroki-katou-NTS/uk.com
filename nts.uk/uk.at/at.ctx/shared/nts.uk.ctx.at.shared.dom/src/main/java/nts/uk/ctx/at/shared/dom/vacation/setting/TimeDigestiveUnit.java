@@ -1,29 +1,28 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting;
 
 /**
- * The Enum SixtyHourExtra.
+ * The Enum YearVacationTimeUnit.
  */
-// 時間休暇消化単位
 public enum TimeDigestiveUnit {
 
-	// 1分
-	ONE_MINUTE(0, "1分", "1分"),
+	/** The One minute. */
+	OneMinute(0, "1分","1分"),
 
-	// 15分
-	FIFTEEN_MINUTE(1, "15分", "15分"),
+	/** The Fifteen minute. */
+	FifteenMinute(1, "15分","15分"),
 
-	// 30分
-	THIRTY_MINUTE(2, "30分", "30分"),
+	/** The Thirty minute. */
+	ThirtyMinute(2, "30分","30分"),
 
-	// 1時間
-	ONE_HOUR(3, "1時間", "1時間"),
+	/** The One hour. */
+	OneHour(3, "1時間","1時間"),
 
-	// 2時間
-	TWO_HOUR(4, "2時間", "2時間");
+	/** The Two hour. */
+	TwoHour(4, "2時間","2時間");
 
 	/** The value. */
 	public int value;
@@ -38,12 +37,10 @@ public enum TimeDigestiveUnit {
 	private final static TimeDigestiveUnit[] values = TimeDigestiveUnit.values();
 
 	/**
-	 * Instantiates a new sixty hour extra.
+	 * Instantiates a new manage distinct.
 	 *
 	 * @param value
 	 *            the value
-	 * @param nameId
-	 *            the name id
 	 * @param description
 	 *            the description
 	 */
@@ -58,7 +55,7 @@ public enum TimeDigestiveUnit {
 	 *
 	 * @param value
 	 *            the value
-	 * @return the sixty hour extra
+	 * @return the manage distinct
 	 */
 	public static TimeDigestiveUnit valueOf(Integer value) {
 		// Invalid object.

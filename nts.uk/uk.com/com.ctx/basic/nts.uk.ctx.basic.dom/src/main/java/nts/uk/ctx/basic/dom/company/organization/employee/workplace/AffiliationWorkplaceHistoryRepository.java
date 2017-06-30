@@ -42,4 +42,15 @@ public interface AffiliationWorkplaceHistoryRepository {
 	 */
 	public List<AffiliationWorkplaceHistory> searchWorkplaceHistoryByEmployee(String employeeId, 
 			GeneralDate baseDate);
+	
+	
+	/**
+	 * Search workplace of company id.
+	 *
+	 * @param employeeIds the employee ids
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	public List<AffiliationWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
+			GeneralDate baseDate);
 }

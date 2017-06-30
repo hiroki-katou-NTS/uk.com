@@ -3,26 +3,39 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div id="contents-area">
-		<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
-		<div data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate}"></div> 
-		<button id="btn_apply" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
+		<div class="control-group">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
+			<div data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate}"></div> 
+			<button id="btn_apply" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
+		</div>
 		<div id="tab-panel" data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 			<div class="tab-content-1" data-bind="if: isQuickSearchTab">
 				<div data-bind="if: isAllReferableEmployee">
-					<span class="btn_big" data-bind="click: searchAllEmployee">#{i18n.getText('CCG001_10')}</span> 
-					<span  class="controlSetting caret-right"></span>
+					<div class="flex valign-center btn_big" data-bind="click: searchAllEmployee">
+						<i class="icon icon-28-allemployee"></i>
+						<label class="labelBigButton">#{i18n.getText('CCG001_10')}</label> 
+					</div>
+					<span  class="controlSettingBg caret-right"></span>
 				</div>
 				<div data-bind="if: isOnlyMe">
-					<span class="btn_big" data-bind="click: getEmployeeLogin">#{i18n.getText('CCG001_11')}</span> 
-					<span class="controlSetting caret-right"></span>
+					<div class="flex valign-center btn_big" data-bind="click: getEmployeeLogin">
+						<i class="icon icon-26-onlyemployee"></i>
+						<label class="labelBigButton">#{i18n.getText('CCG001_11')}</label> 
+					</div>
+					<span class="controlSettingBg caret-right"></span>
 				</div>
 				<div data-bind="if: isEmployeeOfWorkplace">
-					<span class="btn_small" data-bind="click: searchOfWorkplace">#{i18n.getText('CCG001_12')}</span> 
+					<div class="flex valign-center btn_small" data-bind="click: searchOfWorkplace">
+						<i class="icon icon-48-ofworkplace"></i>
+						<label class="labelSmallButton">#{i18n.getText('CCG001_12')}</label> 
+					</div>
 					<span class="controlSetting caret-right"></span>
 				</div>
 				<div data-bind="if: isEmployeeWorkplaceFollow">
-					<span class="btn_small" data-bind="click: searchWorkplaceChild">#{i18n.getText('CCG001_13')}</span> 
+					<div class="flex valign-center btn_small" data-bind="click: searchWorkplaceChild">
+						<i class="icon icon-49-workplacechild"></i>
+						<label class="labelSmallButton">#{i18n.getText('CCG001_13')}</label> 
+					</div>
 					<span class="controlSetting caret-right"></span>
 				</div>
 			</div>
@@ -51,13 +64,15 @@
 						<button id="btnDetailWorkplace" data-bind="click: detailWorkplace">#{i18n.getText('CCG001_9')}</button>
 					</div>
 				</div>
-				<hr />
-				<span class="caret-background caret-bottom btn_apply" data-bind="click: searchDataEmployee">#{i18n.getText('CCG001_18')}</span>
-				<br />
-				<br />
-				<div class="contentkcp centerkcp" id="employeeinfo"></div>
-				<span class="btn_apply" data-bind="click: applyEmployee">#{i18n.getText('CCG001_18')}</span>
+				<div data-bind="if: !isSelectAllEmployee">
+					<hr />
+					<span class="caret-background caret-bottom btn_apply" data-bind="click: searchDataEmployee">#{i18n.getText('CCG001_18')}</span>
+					<br />
+					<br />
+					<div class="contentkcp centerkcp" id="employeeinfo"></div>
+				</div>
+				<br/>
+				<span class="btn_apply" data-bind="click: applyEmployee">#{i18n.getText('CCG001_19')}</span>
 			</div>
 		</div>
-	</div>
 </ui:composition>

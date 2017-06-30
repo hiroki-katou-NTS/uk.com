@@ -59,18 +59,13 @@ public class UpdateAgreementTimeOfWorkPlaceCommandHandler
 		
 		if (basicSettingId.isPresent()) {
 			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId.get(),
-					new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()),
-					new LimitWeek(command.getLimitWeek()), new AlarmTwoWeeks(command.getAlarmTwoWeeks()),
-					new ErrorTwoWeeks(command.getErrorTwoWeeks()), new LimitTwoWeeks(command.getLimitTwoWeeks()),
-					new AlarmFourWeeks(command.getAlarmFourWeeks()), new ErrorFourWeeks(command.getErrorFourWeeks()),
-					new LimitFourWeeks(command.getLimitFourWeeks()), new AlarmOneMonth(command.getAlarmOneMonth()),
-					new ErrorOneMonth(command.getErrorOneMonth()), new LimitOneMonth(command.getLimitOneMonth()),
-					new AlarmTwoMonths(command.getAlarmTwoMonths()), new ErrorTwoMonths(command.getErrorTwoMonths()),
-					new LimitTwoMonths(command.getLimitTwoMonths()),
-					new AlarmThreeMonths(command.getAlarmThreeMonths()),
-					new ErrorThreeMonths(command.getErrorThreeMonths()),
-					new LimitThreeMonths(command.getErrorThreeMonths()), new AlarmOneYear(command.getAlarmOneYear()),
-					new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
+					new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()), 
+					new AlarmTwoWeeks(command.getAlarmTwoWeeks()), new ErrorTwoWeeks(command.getErrorTwoWeeks()), new LimitTwoWeeks(command.getLimitTwoWeeks()),
+					new AlarmFourWeeks(command.getAlarmFourWeeks()), new ErrorFourWeeks(command.getErrorFourWeeks()), new LimitFourWeeks(command.getLimitFourWeeks()),
+					new AlarmOneMonth(command.getAlarmOneMonth()), new ErrorOneMonth(command.getErrorOneMonth()), new LimitOneMonth(command.getLimitOneMonth()),
+					new AlarmTwoMonths(command.getAlarmTwoMonths()), new ErrorTwoMonths(command.getErrorTwoMonths()), new LimitTwoMonths(command.getLimitTwoMonths()),
+					new AlarmThreeMonths(command.getAlarmThreeMonths()), new ErrorThreeMonths(command.getErrorThreeMonths()), new LimitThreeMonths(command.getLimitThreeMonths()),
+					new AlarmOneYear(command.getAlarmOneYear()), new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
 
 			return this.agreementTimeOfWorkPlaceDomainService.update(basicAgreementSetting);
 		} else {

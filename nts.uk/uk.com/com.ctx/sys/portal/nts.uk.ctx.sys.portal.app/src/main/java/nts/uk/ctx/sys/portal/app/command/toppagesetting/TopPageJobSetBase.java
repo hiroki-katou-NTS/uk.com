@@ -11,6 +11,6 @@ import lombok.Data;
  */
 @Data
 public class TopPageJobSetBase {
-	List<UpdateTopPageJobSetCommand> listTopPageJobSet;
 	int ctgSet;
+	List<UpdateTopPageJobSetCommand> listTopPageJobSet;
 }

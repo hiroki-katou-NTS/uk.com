@@ -7,8 +7,10 @@ package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.empl
 import java.util.ArrayList;
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.DailyTime;
+import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
+import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentWtSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
@@ -17,8 +19,8 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Monthly;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewtstEmploymentWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewtstEmploymentWtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewstEmploymentWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewstEmploymentWtSetPK;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -49,9 +51,9 @@ public class JpaEmploymentWtSettingGetMemento implements EmploymentWtSettingGetM
 	 *
 	 * @param typeValues the type values
 	 */
-	public JpaEmploymentWtSettingGetMemento(List<JewtstEmploymentWtSet> typeValues) {
+	public JpaEmploymentWtSettingGetMemento(List<JewstEmploymentWtSet> typeValues) {
 		// Get pk
-		JewtstEmploymentWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJewtstEmploymentWtSetPK();
+		JewstEmploymentWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJewstEmploymentWtSetPK();
 		this.companyId = new CompanyId(pk.getCid());
 		this.year = new Year(pk.getYK());
 		this.employmentCode = pk.getEmptCd();
@@ -64,16 +66,16 @@ public class JpaEmploymentWtSettingGetMemento implements EmploymentWtSettingGetM
 	 *
 	 * @param entities the new to domain
 	 */
-	private void setToDomain(List<JewtstEmploymentWtSet> entities) {
+	private void setToDomain(List<JewstEmploymentWtSet> entities) {
 		this.flexSetting = new FlexSetting();
 		entities.forEach(item -> {
-			switch (item.getJewtstEmploymentWtSetPK().getCtg()) {
+			switch (item.getJewstEmploymentWtSetPK().getCtg()) {
 			case WtSettingConstant.NORMAL:
 				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getStrWeek()));
 				break;
 			case WtSettingConstant.FLEX:
-				if (item.getJewtstEmploymentWtSetPK().getType() == WtSettingConstant.SPECIFIED) {
+				if (item.getJewstEmploymentWtSetPK().getType() == WtSettingConstant.SPECIFIED) {
 					this.flexSetting.setSpecifiedSetting(this.getWorkTimeSetting(item));
 					break;
 				}
@@ -95,10 +97,10 @@ public class JpaEmploymentWtSettingGetMemento implements EmploymentWtSettingGetM
 	 * @param item the item
 	 * @return the work time setting
 	 */
-	private WorkingTimeSetting getWorkTimeSetting(JewtstEmploymentWtSet item) {
+	private WorkingTimeSetting getWorkTimeSetting(JewstEmploymentWtSet item) {
 		WorkingTimeSetting wts = new WorkingTimeSetting();
-		wts.setDaily(new AttendanceTime(item.getDailyTime()));
-		wts.setWeekly(new AttendanceTime(item.getWeeklyTime()));
+		wts.setDaily(new DailyTime(item.getDailyTime()));
+		wts.setWeekly(new WeeklyTime(item.getWeeklyTime()));
 		wts.setMonthly(this.getMonthly(item));
 		return wts;
 	}
@@ -109,20 +111,20 @@ public class JpaEmploymentWtSettingGetMemento implements EmploymentWtSettingGetM
 	 * @param item the item
 	 * @return the monthly
 	 */
-	private List<Monthly> getMonthly(JewtstEmploymentWtSet item) {
+	private List<Monthly> getMonthly(JewstEmploymentWtSet item) {
 		List<Monthly> monthly = new ArrayList<Monthly>();
-		monthly.add(new Monthly(new AttendanceTime(item.getJanTime()), java.time.Month.JANUARY));
-		monthly.add(new Monthly(new AttendanceTime(item.getFebTime()), java.time.Month.FEBRUARY));
-		monthly.add(new Monthly(new AttendanceTime(item.getMarTime()), java.time.Month.MARCH));
-		monthly.add(new Monthly(new AttendanceTime(item.getAprTime()), java.time.Month.APRIL));
-		monthly.add(new Monthly(new AttendanceTime(item.getMayTime()), java.time.Month.MAY));
-		monthly.add(new Monthly(new AttendanceTime(item.getJunTime()), java.time.Month.JUNE));
-		monthly.add(new Monthly(new AttendanceTime(item.getJulTime()), java.time.Month.JULY));
-		monthly.add(new Monthly(new AttendanceTime(item.getAugTime()), java.time.Month.AUGUST));
-		monthly.add(new Monthly(new AttendanceTime(item.getSepTime()), java.time.Month.SEPTEMBER));
-		monthly.add(new Monthly(new AttendanceTime(item.getOctTime()), java.time.Month.OCTOBER));
-		monthly.add(new Monthly(new AttendanceTime(item.getNovTime()), java.time.Month.NOVEMBER));
-		monthly.add(new Monthly(new AttendanceTime(item.getDecTime()), java.time.Month.DECEMBER));
+		monthly.add(new Monthly(new MonthlyTime(item.getJanTime()), java.time.Month.JANUARY));
+		monthly.add(new Monthly(new MonthlyTime(item.getFebTime()), java.time.Month.FEBRUARY));
+		monthly.add(new Monthly(new MonthlyTime(item.getMarTime()), java.time.Month.MARCH));
+		monthly.add(new Monthly(new MonthlyTime(item.getAprTime()), java.time.Month.APRIL));
+		monthly.add(new Monthly(new MonthlyTime(item.getMayTime()), java.time.Month.MAY));
+		monthly.add(new Monthly(new MonthlyTime(item.getJunTime()), java.time.Month.JUNE));
+		monthly.add(new Monthly(new MonthlyTime(item.getJulTime()), java.time.Month.JULY));
+		monthly.add(new Monthly(new MonthlyTime(item.getAugTime()), java.time.Month.AUGUST));
+		monthly.add(new Monthly(new MonthlyTime(item.getSepTime()), java.time.Month.SEPTEMBER));
+		monthly.add(new Monthly(new MonthlyTime(item.getOctTime()), java.time.Month.OCTOBER));
+		monthly.add(new Monthly(new MonthlyTime(item.getNovTime()), java.time.Month.NOVEMBER));
+		monthly.add(new Monthly(new MonthlyTime(item.getDecTime()), java.time.Month.DECEMBER));
 		return monthly;
 	}
 

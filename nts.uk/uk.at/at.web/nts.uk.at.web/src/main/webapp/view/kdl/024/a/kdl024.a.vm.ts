@@ -156,8 +156,7 @@ module kdl024.a.viewmodel {
                         else {
                             self.findItemByIndex(_.min([deletedIndex, self.listBudget().length - 1]));
                         }
-                    })；
-                   
+                    })
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                     self.start();

@@ -178,6 +178,7 @@ module nts.uk.pr.view.kmf001.f {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
+                //load all enum and employment setting list
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadExpirationTimeEnums(), self.loadTimeVacationDigestiveUnitEnums(),
                     self.loadCompensatoryOccurrenceDivisionEnums(), self.loadTransferSettingDivisionEnums(), self.loadEmploymentList()).done(function() {
                         self.loadSetting().done(function() {
@@ -200,17 +201,21 @@ module nts.uk.pr.view.kmf001.f {
                 });
                 return dfd.promise();
             }
+            
             //switch to com tab
             private switchToCompanyTab() {
                 var self = this;
                 self.loadSetting();
             }
+            
             //switch to em tab
             private switchToEmploymentTab() {
                 let self = this;
                 let dfd = $.Deferred<any>();
+                //include list employment
                 $.when($('#list-employ-component').ntsListComponent(this.listComponentOption),self.loadEmploymentList()).done(() => {
                     self.employmentList($('#sample-component').getDataList());
+                    //list employment is empty
                     if (!$('#sample-component').getDataList() || $('#sample-component').getDataList().length <= 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_146", messageParams: [] });
                         self.isEmptyEmployment(true);
@@ -222,6 +227,7 @@ module nts.uk.pr.view.kmf001.f {
                 return dfd.promise();
             }
 
+            //==== LOAD ENUM ====
             private loadManageDistinctEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -297,6 +303,7 @@ module nts.uk.pr.view.kmf001.f {
                 return dfd.promise();
             }
 
+            //load data to screen(company)
             private loadSetting(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -314,6 +321,7 @@ module nts.uk.pr.view.kmf001.f {
                 return dfd.promise();
             }
 
+            //load data to screen(employment)
             private loadEmploymentSetting(employmentCode: string): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -332,7 +340,7 @@ module nts.uk.pr.view.kmf001.f {
                 return dfd.promise();
             }
 
-            //bind em 
+            //bind employment 
             private loadEmploymentToScreen(data: any) {
                 var self = this;
                 if (data) {
@@ -350,7 +358,8 @@ module nts.uk.pr.view.kmf001.f {
                     self.emTimeUnit(self.timeVacationDigestiveUnitEnums()[0].value);
                 }
             }
-            //bind com
+            
+            //bind company
             private loadToScreen(data: any) {
                 let self = this;
                 self.compenManage(data.isManaged);
@@ -371,6 +380,7 @@ module nts.uk.pr.view.kmf001.f {
                 }
             }
 
+            //load data for over time
             private loadOverTime(data: any) {
                 let self = this;
                 self.checkOverTime(data.useDivision);
@@ -380,6 +390,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.overAll(self.convertTimeToString(data.certainTime));
             }
 
+            //load data for work time
             private loadWorkTime(data: any) {
                 let self = this;
                 self.checkWorkTime(data.useDivision);
@@ -389,7 +400,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.workAll(self.convertTimeToString(data.certainTime));
             }
 
-            //save com
+            //save company
             private saveData() {
                 let self = this;
                 self.reCallValidate().done(function() {
@@ -400,7 +411,8 @@ module nts.uk.pr.view.kmf001.f {
                         });
                 });
             }
-
+            
+            //recall validate for company
             private reCallValidate(): JQueryPromise<void> {
                 var self = this;
                 let dfd = $.Deferred<void>();
@@ -423,6 +435,7 @@ module nts.uk.pr.view.kmf001.f {
                 return dfd.promise();
             }
 
+            //default data company
             private defaultData() {
                 var self = this;
                 return {
@@ -461,6 +474,7 @@ module nts.uk.pr.view.kmf001.f {
                 };
             }
 
+            //collect data company
             private collectData() {
                 var self = this;
                 var data = self.backUpData();
@@ -501,6 +515,8 @@ module nts.uk.pr.view.kmf001.f {
                     ]
                 };
             }
+            
+            //convert time string -> int
             private convertTime(time: string) {
                 return nts.uk.time.parseTime(time).hours * 100 + nts.uk.time.parseTime(time).minutes;
             }
@@ -512,7 +528,7 @@ module nts.uk.pr.view.kmf001.f {
                 return timeString;
             }
 
-            //Employment
+            //save employment
             private saveEmployment() {
                 var self = this;
                 service.updateEmploymentSetting(self.collectEmploymentData()).done(function() {
@@ -526,6 +542,7 @@ module nts.uk.pr.view.kmf001.f {
                 });
             }
 
+            //default data for employment
             private employmentDefaultData() {
                 var self = this;
                 return {
@@ -543,6 +560,7 @@ module nts.uk.pr.view.kmf001.f {
                 };
             }
             
+            //collect data for employment
             private collectEmploymentData() {
                 var self = this;
                 var data = self.employmentBackUpData();
@@ -562,7 +580,7 @@ module nts.uk.pr.view.kmf001.f {
             }
 
             private gotoVacationSetting() {
-                alert();
+                //TODO
             }
 
             private gotoParent() {

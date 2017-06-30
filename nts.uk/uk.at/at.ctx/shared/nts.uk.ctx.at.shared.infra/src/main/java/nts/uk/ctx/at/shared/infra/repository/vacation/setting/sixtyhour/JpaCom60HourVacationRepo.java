@@ -28,18 +28,24 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60h
 @Stateless
 public class JpaCom60HourVacationRepo extends JpaRepository implements Com60HourVacationRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation)
+	 */
 	@Override
 	public void update(Com60HourVacation setting) {
-		EntityManager em = this.getEntityManager();
-		Optional<KshstCom60hVacation> optional = this.queryProxy().find(setting.getCompanyId(),
+		Optional<KshstCom60hVacation> optEntity = this.queryProxy().find(setting.getCompanyId(),
 				KshstCom60hVacation.class);
-		if (optional.isPresent()) {
-			KshstCom60hVacation entity = optional.get();
-			setting.saveToMemento(new JpaCom60HourVacationSetMemento(entity));
-			em.merge(entity);
-		}
+
+		KshstCom60hVacation entity = optEntity.get();
+
+		setting.saveToMemento(new JpaCom60HourVacationSetMemento(entity));
+
+		this.commandProxy().update(entity);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository#findById(java.lang.String)
+	 */
 	@Override
 	public Optional<Com60HourVacation> findById(String companyId) {
 		EntityManager em = this.getEntityManager();
@@ -61,5 +67,17 @@ public class JpaCom60HourVacationRepo extends JpaRepository implements Com60Hour
 		}
 
 		return Optional.of(new Com60HourVacation(new JpaCom60HourVacationGetMemento(results.get(0))));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository#insert(nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation)
+	 */
+	@Override
+	public void insert(Com60HourVacation setting) {
+		KshstCom60hVacation entity = new KshstCom60hVacation();
+
+		setting.saveToMemento(new JpaCom60HourVacationSetMemento(entity));
+
+		this.commandProxy().insert(entity);		
 	}
 }

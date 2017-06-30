@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  */
 @IntegerMaxValue(999)
 @IntegerMinValue(0)
-public class MaxDaysRetention extends IntegerPrimitiveValue<MaxDaysRetention>{
+public class MaxDaysRetention extends IntegerPrimitiveValue<MaxDaysRetention> {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
