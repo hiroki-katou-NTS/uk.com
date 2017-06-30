@@ -25,9 +25,11 @@
 													constraint: 'Year',
 													required: true}"/>
 				</div>
-				<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
-				<span id="lblEmploymentCode" data-bind="text: employmentCode"></span>
-				<span id="lblEmploymentName" data-bind="text: employmentName"></span>
+				<div class="control-group">
+					<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
+					<span id="lblEmploymentCode" data-bind="text: employmentCode"></span>
+					<span id="lblEmploymentName" data-bind="text: employmentName"></span>
+				</div>
 				<div id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
 
