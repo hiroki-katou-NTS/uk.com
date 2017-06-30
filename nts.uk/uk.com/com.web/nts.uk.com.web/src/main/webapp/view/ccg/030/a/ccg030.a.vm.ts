@@ -68,7 +68,7 @@ module ccg030.a.viewmodel {
             self.isCreate(true);
             self.isDelete(false);
             self.selectedFlowMenuCD(null);
-            self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 4, 4));
+            self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
         }
 
         /** Click Registry button */
@@ -159,7 +159,7 @@ module ccg030.a.viewmodel {
             $("#file_upload").ntsFileUpload(option).done(function(res) {
                 self.tempFileID(res[0].id);
                 self.selectedFlowMenu().fileID(res[0].id);
-                self.selectedFlowMenu().fileName(res[0].originalName);
+                self.selectedFlowMenu().fileName(res[0].originalName.length === 0 ? '未設定' : res[0].originalName);
                 self.isDelete(true);
                 errors.clearAll();
             }).fail(function(err) {
@@ -178,14 +178,14 @@ module ccg030.a.viewmodel {
                     else {
                         self.tempFileID(self.selectedFlowMenu().fileID());
                         self.selectedFlowMenu().fileID('');
-                        self.selectedFlowMenu().fileName('');
+                        self.selectedFlowMenu().fileName('未設定');
                         self.isDelete(false);
                     }
                 })
             } else {
                 self.tempFileID(self.selectedFlowMenu().fileID());
                 self.selectedFlowMenu().fileID('');
-                self.selectedFlowMenu().fileName('');
+                self.selectedFlowMenu().fileName('未設定');
                 self.isDelete(false);
             }
         }
@@ -195,7 +195,7 @@ module ccg030.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.deleteFile(self.tempFileID()).done((data) => {
                 self.selectedFlowMenu().fileID('');
-                self.selectedFlowMenu().fileName('');
+                self.selectedFlowMenu().fileName('未設定');
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError(error.message);
             }).always(() => {
@@ -231,7 +231,9 @@ module ccg030.a.viewmodel {
             if (selectedFlowmenu !== undefined) {
                 self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
                     selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
-                    selectedFlowmenu.fileID, selectedFlowmenu.fileName, selectedFlowmenu.defClassAtr,
+                    selectedFlowmenu.fileID, 
+                    selectedFlowmenu.fileName.lenght === 0 ? '未設定' : selectedFlowmenu.fileName, 
+                    selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
                 self.isCreate(false);
                 if (!util.isNullOrEmpty(selectedFlowmenu.fileID))
@@ -240,7 +242,7 @@ module ccg030.a.viewmodel {
                     self.isDelete(false);
             }
             else {
-                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 4, 4));
+                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
                 self.isCreate(true);
                 self.isDelete(false);
             }
