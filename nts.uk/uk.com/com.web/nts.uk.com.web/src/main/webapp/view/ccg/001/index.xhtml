@@ -31,14 +31,19 @@
 				<div id="content" class="cf">
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
 					<h2>Overview</h2>
-					<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show/hide tab クイック検索</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show/hide tab 詳細検索タブ</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isAllReferableEmployee}">Show/hide button 参照可能な社員すべて</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show/hide button 自分だけ</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show/hide button おなじ職場の社員</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show/hide button おなじ＋配下の職場の社員</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div><br/>
-					<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show/Show  全社員タイプ / 社員指定タイプ</div>
+					<div class="pull-left left-options" style="margin-right: 100px">
+						<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show/hide tab クイック検索</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show/hide tab 詳細検索タブ</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isAllReferableEmployee}">Show/hide button 参照可能な社員すべて</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show/hide button 自分だけ</div><br/>
+					</div>
+					<div class="right-options">
+						<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show/hide button おなじ職場の社員</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show/hide button おなじ＋配下の職場の社員</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show/Show  全社員タイプ / 社員指定タイプ</div>
+					</div>
+					<hr/>
 					<div id="ccgcomponent"></div>
 					<div data-bind="if: showinfoSelectedEmployee()">
 						<label class="lableselect">Select employee</label> 

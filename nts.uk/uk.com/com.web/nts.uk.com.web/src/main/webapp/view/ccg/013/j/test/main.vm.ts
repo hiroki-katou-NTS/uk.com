@@ -33,9 +33,6 @@ module nts.uk.sys.view.ccg013.j.test.viewmodel {
                     self.backgroundColor(returnTitleMenu.backgroundColor);
                     self.imageId(returnTitleMenu.imageId);
                 }
-                else {
-                    nts.uk.ui.block.clear();
-                }
             });
         }
     }
