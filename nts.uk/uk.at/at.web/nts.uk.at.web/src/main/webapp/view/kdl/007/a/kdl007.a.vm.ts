@@ -1,125 +1,80 @@
 module kdl007.a.viewmodel {
+    import close = nts.uk.ui.windows.close;
+    import getText = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
-    import getText = nts.uk.resource.getText;
+    import alertError = nts.uk.ui.dialog.alertError;
+
     export class ScreenModel {
-        isMulti: boolean;
-        items: KnockoutObservableArray<model.ItemModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCodeList: KnockoutObservableArray<string>;
-        posibleItems: Array<string>;
-        dataSoure: Array<model.ItemModel>;
+        isMulti: boolean = true;
+        posibleItems: KnockoutObservableArray<string> = ko.observableArray([]);
+        currentCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
+        dataSources: KnockoutObservableArray<ItemModel> = ko.observableArray([new ItemModel({ code: "", name: getText("KDL007_6") })]);
 
         constructor() {
-            var self = this;
-            self.isMulti = true;
-            self.isMulti = nts.uk.ui.windows.getShared('Multiple');
-            self.items = ko.observableArray([]);
-            //header
-            self.columns = ko.observableArray([
-                { headerText: getText("KDL007_2"), prop: 'code', width: 50 },
-                { headerText: getText("KDL007_3"), prop: 'name', width: 200, formatter: _.escape },
-            ]);
-            self.currentCodeList = ko.observableArray([]);
-            self.posibleItems = [];
-            self.dataSoure = [];
+            let self = this;
+
             self.start();
         }
+
         //load data
         start() {
             let self = this,
-            let param: IData = getShared('KDL007_PARAM');
+                param: IData = getShared('KDL007_PARAM') || { isMulti: false, posibles: [], selecteds: [] };
+
+            self.isMulti = param.isMulti || false;
+
             //all possible attendance items
-            self.posibleItems = param.posibles || [];
+            self.posibleItems(param.posibles || []);
+
             //selected items
             self.currentCodeList(param.selecteds || []);
-            //            if(self.isMulti == false){
-            //                self.currentCodeList.push(selectCode);
-            //            }else{
-            //                selfList(selectCode);
-            //            }
 
-            //get all item 
-            //            service.getAllItem().done(function(lstItem: Array<model.ItemModel>){
-            //                if(lstItem==null || lstItem === undefined || lstItem.length ==0){
-            //                    self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
-            //                }else{
-            //                    self.dataSoure = _.map(lstItem , item => {
-            //                        return new model.ItemModel(item.code, item.name);
-            //                    });
-            //                }
-            //            });
-            self.dataSoure.push(new model.ItemModel("", getText("KDL007_6")));
-            if (self.posibleItems == null || self.posibleItems === undefined) {
-                //                self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
-            } else {
-                self.dataSoure.push(new model.ItemModel("001", "勤怠項目1"));
-                self.dataSoure.push(new model.ItemModel("002", "勤怠項目2"));
-                self.dataSoure.push(new model.ItemModel("003", "勤怠項目3"));
-            }
+            // remove all items when started, except first item
+            self.dataSources.remove(x => x.code != '');
 
-            //勤怠項目の指定が0件の場合
-            //set source
-            self.items(self.dataSoure);
-            var selectItem = [];
-            for (let i = 0, length = self.currentCodeList().length; i < length; i++) {
-                let objectNew = self.findItem(self.currentCodeList()[i]);
-                if (objectNew != undefined && objectNew != null) {
-                    selectItem.push(objectNew.code);
+            // get all item 
+            service.getAllItem().done(function(resp: Array<ItemModel>) {
+                if (resp && resp.length) {
+                    _.map(resp, x => self.dataSources.push(new ItemModel({ code: x.code, name: x.name })));
                 }
-            }
-            if (selectItem.length == 0) self.currentCodeList(['']);
+            });
         }
-        //event When click to 設定 ボタン
+
+        // push data to parent screen
         register() {
-            var self = this;
+            let self = this,
+                items: Array<ItemModel> = ko.toJS(self.dataSources),
+                codeList: Array<string> = ko.toJS(self.currentCodeList);
 
-            var lstObj = [];
-
-            if (self.isMulti == true) {
-                for (let i = 0, length = self.currentCodeList().length; i < length; i++) {
-                    let objectNew = self.findItem(self.currentCodeList()[i]);
-                    if (objectNew != undefined && objectNew != null) {
-                        lstObj.push(objectNew.code);
-                    }
-                }
-                if (lstObj.length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_30" });
-                    return;
-                }
-
-                setShared('SelectedNewItem', lstObj, true);
-            } else {
-                let objectNew = self.findItem(self.currentCodeList().toString());
-                setShared('KDL007_VALUES', { selecteds: [objectNew.code] }, true);
+            if (typeof codeList == 'object' && !codeList.length) {
+                alertError({ messageId: "Msg_30" });
+                return;
             }
-            nts.uk.ui.windows.close();
+
+            setShared('KDL007_VALUES', { selecteds: self.isMulti ? codeList : [codeList] }, true);
+
+            self.close();
         }
-        /**
-         * find item is selected
-         */
-        findItem(value: string): model.ItemModel {
-            var self = this;
-            var itemModel = null;
-            return _.find(self.items(), function(obj: model.ItemModel) {
-                return obj.code == value;
-            })
-        }
-        //Close Dialog when click キャンセル ボタン
+
         close() {
-            nts.uk.ui.windows.close();
+            close();
         }
     }
-    export module model {
-        export class ItemModel {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
 
+    interface IItemModel {
+        code: string;
+        name: string;
+    }
+
+    class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(param: IItemModel) {
+            this.code = param.code;
+            this.name = param.name;
+        }
     }
 
     interface IData {
