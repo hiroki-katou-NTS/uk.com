@@ -27,7 +27,7 @@
 						<td><input class="menu-bar-name" data-bind="ntsTextEditor: {value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption }, hasFocus: true" /></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
 						<td><div id="colorpicker"
-								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}" /></td>
+								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50, required: true}" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_20')}</div></td>
@@ -44,7 +44,7 @@
 						</td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_23')}</div></td>
 						<td><div id="colorpicker"
-								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50}" /></td>
+								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50, required: true}" /></td>
 					</tr>
 				</table>
 				
