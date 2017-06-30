@@ -120,7 +120,7 @@ module ccg014.a.viewmodel {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert();
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }).always(() => {
                         block.clear();
                     });

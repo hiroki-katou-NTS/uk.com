@@ -2,7 +2,6 @@ module ccg030.b.viewmodel {
     import flowmenuModel = ccg030.a.viewmodel.model;
 
     export class ScreenModel {
-        e
         flowmenu: KnockoutObsrvable<flowmenuModel.FlowMenu>;
 
         constructor() {
@@ -20,7 +19,7 @@ module ccg030.b.viewmodel {
                 self.flowmenu(flowmenu);
             _.defer(() => { self.setupPositionAndSize(self.flowmenu()); });
             //view image
-            liveviewcontainer.html($("<img/>").attr("src", nts.uk.request.liveView(fileID)));
+            liveviewcontainer.html($("<img width = '100%' height = '100%' />").attr("src", nts.uk.request.liveView(fileID)));
         }
 
 
