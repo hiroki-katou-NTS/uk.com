@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddAgreementTimeOfClassificationCommand {
 	
-	private String employmentCategoryCode;
+	private String classificationCode;
 	
 	private int laborSystemAtr;
 
