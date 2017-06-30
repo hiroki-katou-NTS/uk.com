@@ -2,17 +2,17 @@
     export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
-        topPageName: KnockoutObservable<string>;
         flowmenu: KnockoutObservable<model.Placement>;
         placements: KnockoutObservableArray<model.Placement>;
         visibleMyPage: KnockoutObservable<boolean>;
         dataSource: KnockoutObservable<model.LayoutAllDto>;
+        displayButton: boolean;
         constructor() {
             var self = this;
+            self.displayButton = true;
             self.dataSource = ko.observable(null);
             self.visibleMyPage = ko.observable(true);
             self.flowmenu = ko.observable(null);
-            self.topPageName = ko.observable("");
             var title1 = nts.uk.resource.getText("CCG008_1");
             var title2 = nts.uk.resource.getText("CCG008_4");
             self.placements = ko.observableArray([]);
@@ -35,7 +35,7 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var code = '';
+            var code = '1';
             service.getTopPageByCode(code).done((data: model.LayoutAllDto) => {
                 console.log(data);
                 self.dataSource(data);
@@ -50,8 +50,9 @@
                 }else{
                     self.selectedTab('tab-2');
                 }
-                
-                self.topPageName('flow-menu');
+                if(data.checkMyPage == false && data.checkTopPage == false){
+                    self.displayButton = false;    
+                }
                 dfd.resolve();
             });
             return dfd.promise();
@@ -118,7 +119,11 @@
             
         //for setting dialog
         openDialog(){
+            var self = this;
             let dialogTitle = nts.uk.resource.getText("CCG008_2");
+            nts.uk.ui.windows.setShared('checkTopPage', self.dataSource().checkTopPage, true);
+            nts.uk.ui.windows.setShared('checkMyPage', self.dataSource().checkMyPage, true);
+//            nts.uk.ui.windows.setShared('layoutId', self.dataSource().checkMyPage, true);
             nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", {title: dialogTitle});
         }
         /** Setup position and size for all Placements */

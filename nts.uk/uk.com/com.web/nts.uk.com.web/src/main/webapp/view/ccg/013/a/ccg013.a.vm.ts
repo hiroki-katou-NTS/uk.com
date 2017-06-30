@@ -122,13 +122,7 @@ module ccg013.a.viewmodel {
 
         addWebMenu(): any {
             var self = this;
-            if (self.currentWebMenu().isDefaultMenu()) {
-                self.currentWebMenu().defaultMenu(0);
-            } else {
-                self.currentWebMenu().defaultMenu(1);
-            }
-            self.sortMenuBar();
-            self.currentWebMenu().menuBars(self.menuBars());
+            self.convertWebMenu();
             var webMenu = ko.toJSON(self.currentWebMenu);
             service.addWebMenu(self.isCreated(), webMenu).done(function() {
                 self.getWebMenu();
@@ -136,6 +130,17 @@ module ccg013.a.viewmodel {
                 initTitleBar();
             });
         }
+        
+        convertWebMenu(): void {
+            var self = this;   
+            if (self.currentWebMenu().isDefaultMenu()) {
+                self.currentWebMenu().defaultMenu(0);
+            } else {
+                self.currentWebMenu().defaultMenu(1);
+            }
+            self.sortMenuBar();
+            self.currentWebMenu().menuBars(self.menuBars());
+        } 
 
         sortMenuBar() {
             var self = this;
@@ -319,7 +324,9 @@ module ccg013.a.viewmodel {
         
         optionEDialog(): void {
             var self = this;
+            nts.uk.ui.windows.setShared("CCG013E_COPY", self.currentWebMenu());
             nts.uk.ui.windows.sub.modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
+                self.getWebMenu();
             });    
         }
         
