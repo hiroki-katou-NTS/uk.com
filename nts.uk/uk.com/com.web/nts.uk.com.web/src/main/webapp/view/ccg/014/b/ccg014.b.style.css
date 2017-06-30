@@ -4,7 +4,7 @@
 #copyname {display: inline;}
 .row1{ margin : 30px 0px 20px 30px; }
 .row2 {margin-left: 30px;}
-#functions-area-bottom{height: 100px;}
+#functions-area-bottom{height: 120px;}
 .container {width: 750px;}
-#checkOverwritting {width:90%;}
+#checkOverwritting {width:50%; background-color: #F7EFD4; padding: 10px 5px;}
 .proceed.x-large{margin-top: 10px;}
