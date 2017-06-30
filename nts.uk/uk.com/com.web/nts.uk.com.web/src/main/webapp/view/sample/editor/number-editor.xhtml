@@ -36,7 +36,7 @@
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<h3>Half integer</h3>
-						<input id="half-int" data-bind="ntsNumberEditor: { name: 'HalfInt', value: valueHalfInt, constraint: 'SampleHalfInt', option: { decimallength: 1 } }"/>
+						<input id="half-int" data-bind="ntsNumberEditor: { name: 'HalfInt', value: valueHalfInt, constraint: 'SampleHalfInt', option: { decimallength: 1, symbolChar: '%', symbolPosition: 'left' } }"/>
 						<br/>
 						<div data-bind="with: numbereditor2">
 							<input id="number-2" data-bind="ntsNumberEditor: { name:'Deci', value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />

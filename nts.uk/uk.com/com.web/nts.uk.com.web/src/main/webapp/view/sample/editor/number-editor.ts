@@ -29,7 +29,7 @@ __viewContext.ready(function () {
                 option: ko.mapping.fromJS({
                     grouplength: 3,
                     decimallength: 2,
-                    symbolChar: '$',
+                    symbolChar: 'ヶ月',
                     symbolPosition: 'right'}),
                 required: ko.observable(true),
                 enable: ko.observable(true),
