@@ -23,6 +23,9 @@ module nts.uk.ui.koExtentions {
                 throw new Error('The element must be a div');
             }
             var data = valueAccessor();
+            
+            let tabIndex = nts.uk.util.isNullOrEmpty($upDown.attr("tabindex")) ? "0" : $upDown.attr("tabindex");
+            $upDown.attr("tabindex", "-1");
 
             var elementId = $upDown.attr('id');
             var comId = ko.unwrap(data.comId);
@@ -235,6 +238,7 @@ module nts.uk.ui.koExtentions {
                 }
             });
 
+            $upDown.find(".ntsUpDownButton").attr("tabindex", tabIndex);
 
         }
 

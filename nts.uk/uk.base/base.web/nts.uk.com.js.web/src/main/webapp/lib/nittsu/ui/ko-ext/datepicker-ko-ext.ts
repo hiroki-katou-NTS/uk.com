@@ -52,11 +52,15 @@ module nts.uk.ui.koExtentions {
                 idString = container.attr("id");
                 container.removeAttr("id");    
             }
+            
+            let tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
+            container.attr("tabindex", "-1");
+            
             let containerClass = container.attr('class');
             container.removeClass(containerClass);
             container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
             var inputClass: string = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-            var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' />").addClass(inputClass);
+            var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
             $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
             container.append($input);
             if (hasDayofWeek) {
@@ -121,6 +125,7 @@ module nts.uk.ui.koExtentions {
             }));
             
             new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+            container.data("init", false);
         }
 
         /**
@@ -140,23 +145,25 @@ module nts.uk.ui.koExtentions {
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
 
-            var container = $(element);
+            var container = $(element); 
             var init = container.data("init");
             var $input: any = container.find(".nts-input");
             var $label: any = container.find(".dayofweek-label");
             
             // Value Binding
-            var dateFormatValue = (value() !== "") ? time.formatPattern(value(), valueFormat, ISOFormat) : "";
-            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                // Check equals to avoid multi datepicker with same value
-                $input.datepicker('setDate', dateFormatValue);
-                $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+            if (value() !== $input.val()){
+                var dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
+                if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                    // Check equals to avoid multi datepicker with same value
+                    $input.datepicker('setDate', new Date(dateFormatValue));
+                    $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                }
+                else {
+                    $input.val("");
+                    $label.text("");
+                }        
             }
-            else {
-                $input.val("");
-                $label.text("");
-            }
-            container.data("init", false);
+            
             // Properties Binding
             $input.datepicker('setStartDate', startDate);
             $input.datepicker('setEndDate', endDate);
@@ -217,7 +224,7 @@ module nts.uk.ui.koExtentions {
         MONTH: string = "month";
         DAY: string = "day";
         YEAR_TEXT: string = "年";
-        MONTH_TEXT: string = "月";
+        MONTH_TEXT: string = "�?";
         PERIOD_TEXT: string = "度";
         structure = { 0: this.YEARS, 1: this.MONTHS, 2: this.DAYS };
         EVENT_SHOW: string = "show." + this.NAMESPACE; 

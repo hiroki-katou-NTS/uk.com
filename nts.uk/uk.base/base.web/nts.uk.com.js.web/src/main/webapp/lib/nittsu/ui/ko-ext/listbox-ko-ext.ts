@@ -176,6 +176,7 @@ module nts.uk.ui.koExtentions {
                 
             });
             container.setupSearchScroll("igGrid", true); 
+            container.ntsGridList("setupScrollWhenBinding");  
             container.data("multiple", isMultiSelect);
             $("#" + gridId + "_container").find("#" + gridId + "_headers").closest("tr").hide();
             $("#" + gridId + "_container").height($("#" + gridId + "_container").height() - gridHeaderHeight);

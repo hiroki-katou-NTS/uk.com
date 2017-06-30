@@ -17,9 +17,9 @@ module nts.uk.ui {
         title: KnockoutObservable<string>;
         errorDialogViewModel: errors.ErrorsViewModel;
         
-        constructor(){
+        constructor(dialogOptions?: any){
             this.title = ko.observable('');
-            this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel();
+            this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
         }
     }
     
@@ -31,8 +31,8 @@ module nts.uk.ui {
             _start = callback;
         };
         
-        __viewContext.bind = function (contentViewModel: any) {
-            var kiban = new KibanViewModel();
+        __viewContext.bind = function (contentViewModel: any, dialogOptions?: any) {
+            var kiban = new KibanViewModel(dialogOptions);
             
             _viewModel = {
                 content: contentViewModel,
