@@ -18,6 +18,11 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var container = $(element);
             
+            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
+                container.attr("tabindex", "0");    
+            }
+            
+            container.data("tabindex", container.attr("tabindex"));
             container.keypress(function (evt, ui){
                 let code = evt.which || evt.keyCode;
                 if (code === 32) {
@@ -123,6 +128,7 @@ module nts.uk.ui.koExtentions {
                     mode: comboMode,
                     disabled: !enable,
                     placeHolder: '',
+                    tabIndex : -1,
                     enableClearButton: false,
                     initialSelectedItems: [
                         { value: selectedValue }
@@ -137,7 +143,12 @@ module nts.uk.ui.koExtentions {
             } else {
                 container.igCombo("option", "disabled", !enable);
             }
-            if (!enable) defVal.applyReset(container, data.value);
+            if (!enable) { 
+                defVal.applyReset(container, data.value);
+                container.attr("tabindex", "-1");
+            } else {
+                container.attr("tabindex", container.data("tabindex"));    
+            }
             if (isChangeOptions && !isInitCombo) {
                 container.igCombo("option", "dataSource", options);
                 container.igCombo("dataBind");

@@ -5,17 +5,23 @@ module nts.uk.ui.errors {
     export class ErrorsViewModel {
         title: string;
         errors: KnockoutObservableArray<ErrorListItem>;
+        gridErrors: KnockoutObservableArray<GridCellError>;
+        displayErrors: KnockoutObservableArray<any>;
         option: any;
         occurs: KnockoutComputed<boolean>;
         allResolved: JQueryCallback;
+        allCellsResolved: JQueryCallback;
 
-        constructor() {
+        constructor(dialogOptions?: any) {
             this.title = "エラー一覧"; 
             this.errors = ko.observableArray([]);
             this.errors.extend({ rateLimit: 1 });
-            this.option = ko.mapping.fromJS(new option.ErrorDialogOption());
-            this.occurs = ko.computed(() => this.errors().length !== 0);
+            this.gridErrors = ko.observableArray([]);
+            this.displayErrors = !util.isNullOrUndefined(dialogOptions) && dialogOptions.forGrid ? this.gridErrors : this.errors;
+            this.option = ko.mapping.fromJS(new option.ErrorDialogOption(dialogOptions));
+            this.occurs = ko.computed(() => this.errors().length !== 0 || this.gridErrors().length !== 0);
             this.allResolved = $.Callbacks();
+            this.allCellsResolved = $.Callbacks();
 
             this.errors.subscribe(() => {
                 if (this.errors().length === 0) {
@@ -24,6 +30,17 @@ module nts.uk.ui.errors {
             });
 
             this.allResolved.add(() => {
+                this.hide();
+            });
+            
+            // Grid
+            this.gridErrors.subscribe(() => {
+                if (this.gridErrors().length === 0) {
+                    this.allCellsResolved.fire();
+                }
+            });
+            
+            this.allCellsResolved.add(() => {
                 this.hide();
             });
         }
@@ -96,6 +113,33 @@ module nts.uk.ui.errors {
                 return e.$control.is($element)
             });
         }
+        
+        // Grid errors
+        addCellError(error: GridCellError) {
+            let self = this;
+            let exists = _.filter(this.gridErrors(), function(err: GridCellError) {
+                return self.sameCells(error, err);
+            });
+            if (exists.length > 0) return;
+            this.gridErrors.push(error);
+        }
+        
+        removeCellError($grid: JQuery, rowId: any, columnKey: string) {
+            this.gridErrors.remove(function(err: GridCellError) {
+                return err.grid.is($grid) && err.rowId === rowId && err.columnKey === columnKey;
+            });
+        }
+        
+        gridHasError() {
+            return this.gridErrors().length > 0;
+        }
+        
+        sameCells(one: GridCellError, other: GridCellError) {
+            if (!one.grid.is(other.grid)) return false;
+            if (one.rowId !== other.rowId) return false;
+            if (one.columnKey !== other.columnKey) return false;
+            return true;
+        }
     }
 
     export interface ErrorListItem {
@@ -104,6 +148,13 @@ module nts.uk.ui.errors {
         messageText: string;
         message: any;
         $control?: JQuery;
+    }
+    
+    export interface GridCellError {
+        grid: JQuery;
+        rowId: any;
+        columnKey: string;
+        message: string;
     }
 
     export class ErrorHeader {
@@ -153,5 +204,18 @@ module nts.uk.ui.errors {
     
     export function getErrorByElement($element: JQuery): ErrorListItem{
         return errorsViewModel().getErrorByElement($element);    
+    }
+    
+    // Grid errors
+    export function addCell(error: GridCellError): void {
+        errorsViewModel().addCellError(error);
+    }
+    
+    export function removeCell($grid: JQuery, rowId: any, columnKey: string): void {
+        errorsViewModel().removeCellError($grid, rowId, columnKey);
+    }
+    
+    export function gridHasError(): boolean {
+        return errorsViewModel().gridHasError();
     }
 }

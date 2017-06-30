@@ -5,4 +5,13 @@
 	@include iggridrowselector();
 	
 	cursor: default;
+	 
+	table {
+		.tr {
+		  	background-color: #FFFFFF;
+		} 
+		.ui-ig-altrecord {
+		  	background-color: #FFFFFF;
+		} 
+	}
 }
