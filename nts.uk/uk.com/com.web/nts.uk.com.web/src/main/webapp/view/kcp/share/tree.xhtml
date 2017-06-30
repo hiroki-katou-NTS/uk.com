@@ -12,7 +12,7 @@
 		<div data-bind="visible: !isMultiple">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP004_2')}</div>
 			<div class="base-date-editor" style="margin-left: 20px; margin-right: 5px;" tabindex="1"
-				data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]'}"></div>
+				data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]', required: true}"></div>
 			<button data-bind="click: reload" style="width: 100px" tabindex="2">#{i18n.getText('KCP004_3')}</button>
 		</div>
 		

@@ -330,6 +330,9 @@ module kcp.share.tree {
          */
         private reload() {
             let self = this;
+            if (!self.baseDate()) {
+                return;
+            }
             service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
                 if (self.alreadySettingList) {
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
