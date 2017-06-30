@@ -28,16 +28,30 @@ module kdl007.a.viewmodel {
             //all possible attendance items
             self.posibleItems(param.posibles || []);
 
-            //selected items
+            // approved selected code from param
             self.currentCodeList(param.selecteds || []);
 
             // remove all items when started, except first item
             self.dataSources.remove(x => x.code != '');
 
             // get all item 
-            service.getAllItem().done(function(resp: Array<ItemModel>) {
+            //service.getAllItem().done(function(resp: Array<ItemModel>) {
+            // demo data    
+            $.Deferred().resolve([]).promise().done((resp: Array<ItemModel>) => {
                 if (resp && resp.length) {
+                    let posibleItems: Array<string> = self.posibleItems(),
+                        selectedItems: Array<string> = self.currentCodeList();
+
+                    // filter posible item
+                    //if (posibleItems.length > 0) {
+                    //    resp = _.filter(resp, x => posibleItems.indexOf(x.code));
+                    //}
+
+                    // push item to datasource
                     _.each(resp, x => self.dataSources.push(x));
+
+                    //filter real selected code from source
+                    self.currentCodeList(_.filter(resp, x => selectedItems.indexOf(x.code) > -1).map(x => x.code));
                 }
             });
         }
