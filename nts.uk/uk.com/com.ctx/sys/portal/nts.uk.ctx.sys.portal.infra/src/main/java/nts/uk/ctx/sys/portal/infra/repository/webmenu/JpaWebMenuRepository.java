@@ -168,7 +168,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	private static List<CcgstTreeMenu> toEntityTreeMenu(WebMenu domain, TitleMenu tm) {
 		List<CcgstTreeMenu> treeMenus = tm.getTreeMenu().stream()
 				.map(trm -> {
-					CcgstTreeMenuPK ccgstTreeMenuPK = new CcgstTreeMenuPK(domain.getCompanyId(), domain.getWebMenuCode().v(), tm.getTitleMenuId().toString(), trm.getTitleMenuId().toString(), trm.getDisplayOrder());
+					CcgstTreeMenuPK ccgstTreeMenuPK = new CcgstTreeMenuPK(domain.getCompanyId(), domain.getWebMenuCode().v(), tm.getTitleMenuId().toString(), tm.getMenuBarId().toString(), trm.getDisplayOrder());
 					return new CcgstTreeMenu(ccgstTreeMenuPK, trm.getCode().v(), trm.getClassification().value, trm.getSystem().value);
 				}).collect(Collectors.toList());
 		return treeMenus;
