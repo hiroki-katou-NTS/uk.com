@@ -42,11 +42,13 @@ module nts.uk.ui.gridlist {
             flag: boolean;
             ruleCode: string;
             combo: string;
+            text1: string;
             constructor(index: number) {
                 this.id = index;
                 this.flag = index % 2 == 0;
                 this.ruleCode = String(index % 3 + 1);
                 this.combo = String(index % 3 + 1);
+                this.text1 = "TEXT";
             }
         }
         
@@ -75,14 +77,16 @@ module nts.uk.ui.gridlist {
                             virtualization: true,
                             virtualizationMode: 'continuous',
                             columns: [
-                                { headerText: 'ID', key: 'id', dataType: 'number', width: '50px' },
+                                { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                                 { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', ntsControl: 'Checkbox' },
                                 { headerText: 'RULECODE', key: 'ruleCode', dataType: 'string', width: '290px', ntsControl: 'SwitchButtons' },
                                 { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' },
+                                { headerText: 'Text', key: 'text1', dataType: 'string', width: '120px' },
                                 { headerText: 'Button', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
                                 { headerText: 'Delete', key: 'delete', dataType: 'string', width: '80px', unbound: true, ntsControl: 'DeleteButton' }
                             ], 
-                            features: [{ name: 'Sorting', type: 'local' }],
+                            features: [{ name: 'Resizing' }],
+                            ntsFeatures: [{ name: 'CopyPaste' }],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
                                                 optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true },

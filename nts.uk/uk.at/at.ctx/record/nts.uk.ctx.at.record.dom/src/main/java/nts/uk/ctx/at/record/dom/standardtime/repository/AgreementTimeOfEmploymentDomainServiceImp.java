@@ -42,7 +42,7 @@ public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeO
 
 		this.agreementTimeOfEmploymentRepostitory.add(agreementTimeOfEmployment);
 
-		this.basicAgreementSettingRepository.add(basicAgreementSetting);
+		this.basicAgreementSettingRepository.add2(basicAgreementSetting);
 
 		return errors;
 	}

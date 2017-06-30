@@ -34,11 +34,11 @@ public class MenuBar {
 	
 	private Integer displayOrder;
 
-	private List<TitleMenu> titleMenu;
+	private List<TitleBar> titleMenu;
 	
 	public static MenuBar createFromJavaType(String menuBarId, String menuBarName, int selectedAtr,
 			int system, int menuCls, String code, String backgroundColor, String textColor,
-			Integer displayOrder, List<TitleMenu> titleMenu) {
+			Integer displayOrder, List<TitleBar> titleMenu) {
 		return new MenuBar(
 				UUID.fromString(menuBarId),
 				new MenuCode(code),

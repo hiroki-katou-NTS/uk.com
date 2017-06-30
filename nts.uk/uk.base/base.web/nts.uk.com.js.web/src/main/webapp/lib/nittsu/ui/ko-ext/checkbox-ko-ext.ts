@@ -27,9 +27,11 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
 	            container.attr("tabindex", "0");
-            container.addClass("ntsControl ntsCheckBox").on("click", (e) => {
+                container.addClass("ntsControl ntsCheckBox").on("click", (e) => {
                 if (container.data("readonly") === true) e.preventDefault();
             });
+            
+            container.data("tabindex", container.attr("tabindex"));
 
             if (textId) {
                 checkBoxText = textId;
@@ -86,7 +88,13 @@ module nts.uk.ui.koExtentions {
             // Checked
             $checkBox.prop("checked", checked);
             // Enable
-            (enable === true) ? $checkBox.removeAttr("disabled") : $checkBox.attr("disabled", "disabled");
+            if (enable === true) { 
+                $checkBox.removeAttr("disabled") 
+                container.attr("tabindex", container.data("tabindex"));
+            } else if (enable === false) {
+                $checkBox.attr("disabled", "disabled");
+                container.attr("tabindex", "-1");
+            }
         }
     }
 
@@ -178,6 +186,7 @@ module nts.uk.ui.koExtentions {
                     });
                     if(!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)){
                         checkBox.attr("disabled", "disabled");    
+                        checkBox.attr("tabindex", "-1");
                     }
                     checkBox.appendTo(checkBoxLabel);
                     var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
