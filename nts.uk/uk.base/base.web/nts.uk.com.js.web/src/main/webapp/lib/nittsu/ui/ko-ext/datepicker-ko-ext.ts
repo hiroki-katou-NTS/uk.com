@@ -52,11 +52,15 @@ module nts.uk.ui.koExtentions {
                 idString = container.attr("id");
                 container.removeAttr("id");    
             }
+            
+            let tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
+            container.attr("tabindex", "-1");
+            
             let containerClass = container.attr('class');
             container.removeClass(containerClass);
             container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
             var inputClass: string = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-            var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' />").addClass(inputClass);
+            var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
             $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
             container.append($input);
             if (hasDayofWeek) {
