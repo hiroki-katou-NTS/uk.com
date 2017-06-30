@@ -114,4 +114,11 @@ public interface StandardMenuRepository {
 	 * @return
 	 */
 	boolean isExistDisplayName(List<StandardMenu> StandardMenu);
+
+	/**
+	 * Find all menu with condition=DISPLAY
+	 * @param companyID
+	 * @return
+	 */
+	List<StandardMenu> findAllDisplay(String companyID);
 }
