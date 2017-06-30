@@ -215,26 +215,6 @@ module nts.uk.ui.jqueryExtentions {
             MAX: 30
         };
 
-        $.fn.ntsGridList = function(action: string, param?: any): any {
-
-            var $grid = $(this);
-
-            switch (action) {
-                case 'setupSelecting':
-                    return setupSelecting($grid);
-                case 'unsetupSelecting':
-                    return unsetupSelecting($grid);
-                case 'getSelected':
-                    return getSelected($grid);
-                case 'setSelected':
-                    return setSelected($grid, param);
-                case 'deselectAll':
-                    return deselectAll($grid);
-                case 'setupDeleteButton':
-                    return setupDeleteButton($grid, param);
-            }
-        };
-
         $.fn.ntsGridListFeature = function(feature: string, action: string, ...params: any[]): any {
 
             var $grid = $(this);
@@ -280,6 +260,55 @@ module nts.uk.ui.jqueryExtentions {
                     }
                 }
             }
+        }
+        
+        $.fn.ntsGridList = function(action: string, param?: any): any {
+
+            var $grid = $(this);
+
+            switch (action) {
+                case 'setupSelecting':
+                    return setupSelecting($grid);
+                case 'unsetupSelecting':
+                    return unsetupSelecting($grid);
+                case 'getSelected':
+                    return getSelected($grid);
+                case 'setSelected':
+                    return setSelected($grid, param);
+                case 'deselectAll':
+                    return deselectAll($grid);
+                case 'setupDeleteButton':
+                    return setupDeleteButton($grid, param);
+                case 'setupScrollWhenBinding':
+                    return setupScrollWhenBinding($grid);
+            }
+        };
+        
+        function setupScrollWhenBinding($grid: JQuery): any {
+            let gridId = "#" + $grid.attr("id");
+            $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
+                let scrollTop = $grid.data("scrollTop");
+                if(scrollTop > 0){
+                    _.defer(() => {
+                        if ($grid.igGrid("scrollContainer").length > 0){
+                            $grid.igGrid("scrollContainer").scrollTop(scrollTop);    
+                        } else {
+                            $(gridId + "_scrollContainer").scrollTop(scrollTop);    
+                        }    
+                    });    
+                }
+            });
+             
+            //Delegate
+            $(document).delegate(gridId, "iggriddatabinding", function (evt, ui) {
+                let scrollTop;
+                if ($grid.igGrid("scrollContainer").length > 0){
+                    scrollTop = $grid.igGrid("scrollContainer").scrollTop();    
+                } else {
+                    scrollTop = $(gridId + "_scrollContainer").scrollTop();    
+                }
+                $grid.data("scrollTop", scrollTop);
+            });
         }
 
         function getSelected($grid: JQuery): any {
