@@ -142,7 +142,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             }
             self.cancel_Dialog();
         }
-
+    }
+    
     class TitleBar {
         nameTitleBar: string;
         letterColor: string;

@@ -18,7 +18,6 @@ import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSe
 import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchFinder;
 import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchGetDto;
 import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchInDto;
-import nts.uk.ctx.basic.app.find.person.PersonDto;
 
 /**
  * The Class EmployeeSearchWs.
@@ -63,7 +62,7 @@ public class EmployeeSearchWs extends WebService {
 	 */
 	@POST
 	@Path("advanced")
-	public List<PersonDto> searchModeEmployee(EmployeeSearchInDto input) {
+	public List<EmployeeSearchDto> searchModeEmployee(EmployeeSearchInDto input) {
 		return this.finder.searchModeEmployee(input);
 	}
 	
