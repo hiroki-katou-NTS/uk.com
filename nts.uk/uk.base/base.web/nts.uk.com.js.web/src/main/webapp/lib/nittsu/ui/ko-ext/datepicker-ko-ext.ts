@@ -155,7 +155,7 @@ module nts.uk.ui.koExtentions {
                 var dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                 if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                     // Check equals to avoid multi datepicker with same value
-                    $input.datepicker('setDate', dateFormatValue);
+                    $input.datepicker('setDate', new Date(dateFormatValue));
                     $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                 }
                 else {
@@ -224,7 +224,7 @@ module nts.uk.ui.koExtentions {
         MONTH: string = "month";
         DAY: string = "day";
         YEAR_TEXT: string = "年";
-        MONTH_TEXT: string = "月";
+        MONTH_TEXT: string = "�?";
         PERIOD_TEXT: string = "度";
         structure = { 0: this.YEARS, 1: this.MONTHS, 2: this.DAYS };
         EVENT_SHOW: string = "show." + this.NAMESPACE; 
