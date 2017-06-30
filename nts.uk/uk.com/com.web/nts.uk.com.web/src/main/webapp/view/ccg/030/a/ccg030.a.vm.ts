@@ -106,7 +106,7 @@ module ccg030.a.viewmodel {
             }
         }
 
-        //蜑企勁繝懊ち繝ｳ繧呈款縺呎凾
+        //削除ボタン
         deleteNewFlowMenu() {
             var self = this;
             if (self.selectedFlowMenuCD() !== null) {
@@ -114,7 +114,7 @@ module ccg030.a.viewmodel {
                     nts.uk.ui.block.invisible();
                     service.deleteFlowMenu(self.selectedFlowMenu().toppagePartID())
                         .done(() => {
-                            var index = _.findIndex(self.listFlowMenu(), ['titleMenuCD', self.selectedFlowMenu().topPageCode()]);
+                            var index = _.findIndex(self.listFlowMenu(), ['topPageCode', self.selectedFlowMenu().topPageCode()]);
                             index = _.min([self.listFlowMenu().length - 2, index]);
                             self.reloadData().done(() => {
                                 self.selectFlowMenuByIndex(index);
