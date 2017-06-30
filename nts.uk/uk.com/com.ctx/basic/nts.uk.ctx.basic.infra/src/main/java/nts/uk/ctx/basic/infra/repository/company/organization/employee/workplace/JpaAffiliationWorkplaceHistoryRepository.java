@@ -69,7 +69,7 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 		// work place in data work place
 		lstpredicateWhere.add(
 				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.wplId).in(workplaces)));
+						.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaces)));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
@@ -130,12 +130,12 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 		// employee id in data employee id
 		lstpredicateWhere.add(
 				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.sid).in(employeeIds)));
+						.get(KmnmtAffiliWorkplaceHistPK_.empId).in(employeeIds)));
 
 		// work place in data work place
 		lstpredicateWhere.add(
 				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.wplId).in(workplaces)));
+						.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaces)));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
@@ -187,7 +187,7 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 		// employee id equal employee id
 		lstpredicateWhere.add(
 				criteriaBuilder.equal(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.sid), employeeId));
+						.get(KmnmtAffiliWorkplaceHistPK_.empId), employeeId));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
@@ -237,7 +237,7 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 		// employee id in employee id 
 		lstpredicateWhere.add(
 				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.sid).in(employeeIds)));
+						.get(KmnmtAffiliWorkplaceHistPK_.empId).in(employeeIds)));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder

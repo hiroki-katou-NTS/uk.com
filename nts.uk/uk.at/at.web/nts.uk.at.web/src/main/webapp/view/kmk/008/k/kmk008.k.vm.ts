@@ -1,7 +1,7 @@
 module nts.uk.at.view.kmk008.k {
     export module viewmodel {
         export class ScreenModel {
-            date: KnockoutObservable<string>;
+            date: KnockoutObservable<number>;
             items: KnockoutObservableArray<ItemModel>;
             columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
@@ -9,7 +9,7 @@ module nts.uk.at.view.kmk008.k {
             
             constructor() {
                 let self = this;
-                self.date = ko.observable('20000101');
+                self.date = ko.observable(20000101);
                 this.items = ko.observableArray([]);
                 
                 for(let i = 1; i < 4; i++) {
@@ -33,12 +33,23 @@ module nts.uk.at.view.kmk008.k {
         }
 
         export class ItemModel {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+            yearValue: number;
+    
+            errorOneYear: string;
+    
+            alarmOneYear: string;
+//            code: string;
+//            name: string;
+//            constructor(code: string, name: string) {
+//                this.code = code;
+//                this.name = name;
+//            }
+            constructor(yearValue: number, errorOneYear: string, alarmOneYear: string) {
+                this.yearValue = yearValue;
+                this.errorOneYear = errorOneYear;
+                this.alarmOneYear = alarmOneYear;
             }
+                
         }
     }
 }

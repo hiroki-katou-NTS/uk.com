@@ -35,3 +35,17 @@
 .action-bar {
 	margin-left: 30px;
 }
+
+#lblEmploymentCode {
+	margin-left: 50px;
+}
+
+#lblEmploymentName {
+	margin-left: 40px;
+}
+#lblWorkplaceCode {
+	margin-left: 50px;
+}
+#lblWorkplaceName {
+	margin-left: 40px;
+}

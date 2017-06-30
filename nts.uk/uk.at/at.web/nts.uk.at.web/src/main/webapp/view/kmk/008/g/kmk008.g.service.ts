@@ -1,28 +1,47 @@
 module nts.uk.at.view.kmk008.g {
     export module service {
-        export class Service {
-            paths = {
-                getMonth: "at/record/agreementMonthSetting/getAgreementMonthSetting/{0}",
-                getYear: "at/record/agreementYearSetting/getAgreementYearSetting/{0}",
+        var paths: any = {
+            getMonth: "at/record/agreementMonthSetting/getAgreementMonthSetting",
+            getYear: "at/record/agreementYearSetting/getAgreementYearSetting",
 
-            };
-            constructor() { }
-            
-            getMonth(laborSystemAtr: number): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getMonth, laborSystemAtr);
-                return nts.uk.request.ajax("at", _path);
-            };
+        };
 
-            getYear(laborSystemAtr: number): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getYear, laborSystemAtr);
-                return nts.uk.request.ajax("at", _path);
-            };
+        export function getMonth(employeeId: string): JQueryPromise<Array<model.MonthDto>> {
+            var dfd = $.Deferred<Array<model.MonthDto>>();
+            nts.uk.request.ajax("at", paths.getMonth + "/" + employeeId)
+                .done(function(res: Array<model.MonthDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
 
+        export function getYear(employeeId: string): JQueryPromise<Array<model.YearDto>> {
+            var dfd = $.Deferred<Array<model.YearDto>>();
+            nts.uk.request.ajax("at", paths.getYear + "/" + employeeId)
+                .done(function(res: Array<model.YearDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+    }
 
-            public functionDemo(printType: number): JQueryPromise<any> {
-                return null;
-            };
+    export module model {
+        export class MonthDto {
+            yearMonthValue: string;
+            errorOneMonth: string;
+            alarmOneMonth: string;
+        }
 
+        export class YearDto {
+            yearValue: string;
+            errorOneYear: string;
+            alarmOneYear: string;
         }
     }
 }

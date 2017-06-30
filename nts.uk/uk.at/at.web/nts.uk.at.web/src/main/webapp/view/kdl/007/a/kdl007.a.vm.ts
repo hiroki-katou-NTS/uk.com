@@ -1,8 +1,6 @@
 module kdl007.a.viewmodel {
-    import getShared = nts.uk.ui.windows.getShared;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getText = nts.uk.resource.getText;
     export class ScreenModel {
+
         isMulti: boolean;
         items: KnockoutObservableArray<model.ItemModel>;
         columns: KnockoutObservableArray<any>;
@@ -17,8 +15,8 @@ module kdl007.a.viewmodel {
             self.items = ko.observableArray([]);
             //header
             self.columns = ko.observableArray([
-                { headerText: getText("KDL007_2"), prop: 'code', width: 50 },
-                { headerText: getText("KDL007_3"), prop: 'name', width: 200, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("KDL007_2"), prop: 'code', width: 50 },
+                { headerText: nts.uk.resource.getText("KDL007_3"), prop: 'name', width: 200 ,formatter: _.escape},
             ]);
             self.currentCodeList = ko.observableArray([]);
             self.posibleItems = [];
@@ -27,48 +25,52 @@ module kdl007.a.viewmodel {
         }
         //load data
         start() {
-            let self = this,
-            let param: IData = getShared('KDL007_PARAM');
+            var self = this;
+            self.isMulti = nts.uk.ui.windows.getShared('KDL007_Multiple');
             //all possible attendance items
-            self.posibleItems = param.posibles || [];
+            self.posibleItems = nts.uk.ui.windows.getShared('KDL007_AllItemObj');
             //selected items
-            self.currentCodeList(param.selecteds || []);
-            //            if(self.isMulti == false){
-            //                self.currentCodeList.push(selectCode);
-            //            }else{
-            //                selfList(selectCode);
-            //            }
-
+            var selectCode = nts.uk.ui.windows.getShared('KDL007_SelectedItemId');
+            if(selectCode==null || selectCode === undefined){
+                selectCode = "";
+            }
+            self.currentCodeList(selectCode);
+//            if(self.isMulti == false){
+//                self.currentCodeList.push(selectCode);
+//            }else{
+//                self.currentCodeList(selectCode);
+//            }
+            
             //get all item 
-            //            service.getAllItem().done(function(lstItem: Array<model.ItemModel>){
-            //                if(lstItem==null || lstItem === undefined || lstItem.length ==0){
-            //                    self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
-            //                }else{
-            //                    self.dataSoure = _.map(lstItem , item => {
-            //                        return new model.ItemModel(item.code, item.name);
-            //                    });
-            //                }
-            //            });
-            self.dataSoure.push(new model.ItemModel("", getText("KDL007_6")));
-            if (self.posibleItems == null || self.posibleItems === undefined) {
-                //                self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
-            } else {
+//            service.getAllItem().done(function(lstItem: Array<model.ItemModel>){
+//                if(lstItem==null || lstItem === undefined || lstItem.length ==0){
+//                    self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
+//                }else{
+//                    self.dataSoure = _.map(lstItem , item => {
+//                        return new model.ItemModel(item.code, item.name);
+//                    });
+//                }
+//            });
+            self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
+            if(self.posibleItems == null || self.posibleItems === undefined){
+//                self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
+            }else{
                 self.dataSoure.push(new model.ItemModel("001", "勤怠項目1"));
                 self.dataSoure.push(new model.ItemModel("002", "勤怠項目2"));
                 self.dataSoure.push(new model.ItemModel("003", "勤怠項目3"));
             }
-
+            
             //勤怠項目の指定が0件の場合
             //set source
             self.items(self.dataSoure);
             var selectItem = [];
-            for (let i = 0, length = self.currentCodeList().length; i < length; i++) {
-                let objectNew = self.findItem(self.currentCodeList()[i]);
-                if (objectNew != undefined && objectNew != null) {
-                    selectItem.push(objectNew.code);
+                for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
+                    let objectNew = self.findItem(self.currentCodeList()[i]);
+                    if(objectNew != undefined && objectNew != null){
+                        selectItem.push(objectNew.code);
+                    }
                 }
-            }
-            if (selectItem.length == 0) self.currentCodeList(['']);
+            if(selectItem.length == 0) self.currentCodeList(['']);
         }
         //event When click to 設定 ボタン
         register() {
@@ -76,22 +78,24 @@ module kdl007.a.viewmodel {
 
             var lstObj = [];
 
-            if (self.isMulti == true) {
-                for (let i = 0, length = self.currentCodeList().length; i < length; i++) {
+            if(self.isMulti == true){
+                for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
                     let objectNew = self.findItem(self.currentCodeList()[i]);
-                    if (objectNew != undefined && objectNew != null) {
+                    if(objectNew != undefined && objectNew != null){
                         lstObj.push(objectNew.code);
                     }
                 }
                 if (lstObj.length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_30" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_30"});
                     return;
-                }
+                } 
 
-                setShared('SelectedNewItem', lstObj, true);
-            } else {
+                nts.uk.ui.windows.setShared('SelectedNewItem', lstObj,true);
+            }else{
                 let objectNew = self.findItem(self.currentCodeList().toString());
-                setShared('KDL007_VALUES', { selecteds: [objectNew.code] }, true);
+                let listnew =[];
+                listnew.push(objectNew.code);
+                nts.uk.ui.windows.setShared('SelectedNewItem', listnew,true);
             }
             nts.uk.ui.windows.close();
         }
@@ -119,12 +123,7 @@ module kdl007.a.viewmodel {
                 this.name = name;
             }
         }
-
+    
     }
 
-    interface IData {
-        isMulti: boolean;
-        posibles?: Array<any>;
-        selecteds?: Array<any>;
-    }
 }
