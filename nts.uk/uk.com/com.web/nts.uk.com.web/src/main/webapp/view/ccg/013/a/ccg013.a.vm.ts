@@ -234,6 +234,13 @@ module ccg013.a.viewmodel {
                 return item.menuBarId() == menuBarId;
             });
         }
+        
+        /**
+         * Remove web menu
+         */
+        removeWebMenu(): void {
+            var self = this;
+        }
 
         /**
          * Clean all control in form
@@ -306,6 +313,26 @@ module ccg013.a.viewmodel {
                     });
                 }
             });
+        }
+        
+        optionEDialog(): void {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
+            });    
+        }
+        
+        optionFDialog(): void {
+            var self = this;
+            var dataTranfer = self.items();
+            nts.uk.ui.windows.setShared("CCG013F_JOB_TITLE", dataTranfer);
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/f/index.xhtml").onClosed(function() {
+            });    
+        }
+        
+        optionGDialog(): void {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/g/index.xhtml").onClosed(function() {
+            });    
         }
 
         openKdialog(): any {
