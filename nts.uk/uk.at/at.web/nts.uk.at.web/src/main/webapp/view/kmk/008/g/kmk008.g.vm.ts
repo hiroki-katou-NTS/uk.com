@@ -3,51 +3,70 @@ module nts.uk.at.view.kmk008.g {
         export class ScreenModel {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
-            
+
             items: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
-            
+
+            selectedCode: KnockoutObservable<string>
+
             items2: KnockoutObservableArray<ItemModel>;
-            currentCode: KnockoutObservable<any>;
-            
-            printType: number;
+            currentCode2: KnockoutObservable<any>;
+
+            isNewMode: KnockoutObservable<boolean>;
+            isUpdateMode: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
+                self.isNewMode = ko.observable(true);
+                self.isUpdateMode = ko.observable(false);
+                self.isNewMode.subscribe(function(val) {
+                    self.isUpdateMode(!val);
+                });
+                
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: '年度', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: '年月', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
-                
-                this.items = ko.observableArray([]);
-                for(let i = 1; i < 3; i++) {
-                    this.items.push(new ItemModel("2010" , "1", "2"));
-                }
-                
-                this.items2 = ko.observableArray([]);
-                for(let i = 1; i < 3; i++) {
-                    this.items2.push(new ItemModel("2010/6" , "a", "b"));
-                }
-                
-                this.columns = ko.observableArray([
-                    { headerText: '年度', key: 'year', width: 100  },
-                    { headerText: 'エラー', key: 'error', width: 150 }, 
-                    { headerText: 'アラーム', key: 'alarm', width: 150 } 
-                ]); 
-                this.currentCode = ko.observable();
-                
+
+                self.items = ko.observableArray([]);
+                self.items2 = ko.observableArray([]);
+
+                self.columns = ko.observableArray([
+                    { headerText: '年度', key: 'year', width: 100 },
+                    { headerText: 'エラー', key: 'error', width: 150 },
+                    { headerText: 'アラーム', key: 'alarm', width: 150 }
+                ]);
+                self.currentCode = ko.observable();
+                self.currentCode2 = ko.observable();
+
+                self.selectedCode = ko.observable("0000000001");
+
             }
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+
+                service.getMonth(self.selectedCode()).done(function(monthData: model.MonthDto) {
+                    self.items2.push(new ItemModel(monthData.yearMonthValue, monthData.errorOneMonth, monthData.alarmOneMonth));
+                });
+
+                service.getYear(self.selectedCode()).done(function(yearData: model.YearDto) {
+                    self.item.push(new ItemModel(yearData.yearValue, yearData.errorOneYear, yearData.alarmOneYear));
+                });
+
                 dfd.resolve();
                 return dfd.promise();
             }
+            
+            setNewMode() {
+            var self = this;
+            self.isNewMode(true);
         }
-        
-        class ItemModel {
+        }
+
+        export class ItemModel {
             year: string;
             error: string;
             alarm: string;
@@ -57,6 +76,6 @@ module nts.uk.at.view.kmk008.g {
                 this.alarm = alarm;
             }
         }
-        
+
     }
 }

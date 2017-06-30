@@ -104,6 +104,7 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
         // Options
+        baseDate: KnockoutObservable<Date>;
         isQuickSearchTab: KnockoutObservable<boolean>;
         isAdvancedSearchTab: KnockoutObservable<boolean>;
         isAllReferableEmployee: KnockoutObservable<boolean>;
@@ -112,7 +113,6 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
         isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
         isMutipleCheck: KnockoutObservable<boolean>;
         isSelectAllEmployee: KnockoutObservable<boolean>;
-        baseDate: KnockoutObservable<Date>;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
         
 		constructor() {
@@ -123,6 +123,7 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 			
             self.ccgcomponent = {
                baseDate: self.baseDate,
+               <!-- Show/hide options -->
                isQuickSearchTab: self.isQuickSearchTab(),
                isAdvancedSearchTab: self.isAdvancedSearchTab(),
                isAllReferableEmployee: self.isAllReferableEmployee(),
@@ -131,6 +132,12 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
                isEmployeeWorkplaceFollow: self.isEmployeeWorkplaceFollow(),
                isMutipleCheck: self.isMutipleCheck(),
                isSelectAllEmployee: self.isSelectAllEmployee(),
+
+               <!-- Event options -->
+               /**
+               * @param dataList: list employee returned from component.
+               * Define how to use this list employee by yourself in the function's body.
+               */
                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
                    self.showinfoSelectedEmployee(true);
                    self.selectedEmployee(dataList);
@@ -139,15 +146,12 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
                    self.showinfoSelectedEmployee(true);
                    var dataEmployee: EmployeeSearchDto[] = [];
                    dataEmployee.push(data);
-                   
-                   
                    self.selectedEmployee(dataEmployee);
                },
                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                    self.showinfoSelectedEmployee(true);
                    self.selectedEmployee(dataList);
                },
-
                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                    self.showinfoSelectedEmployee(true);
                    self.selectedEmployee(dataList);
@@ -174,6 +178,10 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 										</tr>
 									</thead>
 									<tbody>
+										<tr>
+											<td>baseDate</td>
+											<td><b>Type:</b>  KnockoutObservable&lt;Date&gt;<br />Current selected date </td>
+										</tr>
 										<tr>
 											<td>isQuickSearchTab</td>
 											<td><b>Type:</b> boolean<br /> Show/hide tab クイック検索 </td>

@@ -29,8 +29,8 @@ public class CclmtClassificationPK implements Serializable {
 	/** The ccid. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CCID")
-	private String ccid;
+	@Column(name = "CID")
+	private String cid;
 
 	/** The code. */
 	@Basic(optional = false)
@@ -52,7 +52,7 @@ public class CclmtClassificationPK implements Serializable {
 	 * @param code the code
 	 */
 	public CclmtClassificationPK(String ccid, String code) {
-		this.ccid = ccid;
+		this.cid = ccid;
 		this.code = code;
 	}
 
@@ -64,7 +64,7 @@ public class CclmtClassificationPK implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (ccid != null ? ccid.hashCode() : 0);
+		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (code != null ? code.hashCode() : 0);
 		return hash;
 	}
@@ -81,8 +81,8 @@ public class CclmtClassificationPK implements Serializable {
 			return false;
 		}
 		CclmtClassificationPK other = (CclmtClassificationPK) object;
-		if ((this.ccid == null && other.ccid != null)
-			|| (this.ccid != null && !this.ccid.equals(other.ccid))) {
+		if ((this.cid == null && other.cid != null)
+			|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if ((this.code == null && other.code != null)
