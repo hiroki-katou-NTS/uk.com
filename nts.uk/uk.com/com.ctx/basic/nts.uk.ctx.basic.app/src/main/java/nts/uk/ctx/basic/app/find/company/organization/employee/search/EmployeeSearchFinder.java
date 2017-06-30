@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.app.find.person.PersonDto;
 import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistory;
@@ -201,7 +200,7 @@ public class EmployeeSearchFinder {
 	 * @param input the input
 	 * @return the list
 	 */
-	public List<PersonDto> searchModeEmployee(EmployeeSearchInDto input){
+	public List<EmployeeSearchDto> searchModeEmployee(EmployeeSearchInDto input) {
 
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -240,13 +239,8 @@ public class EmployeeSearchFinder {
 						.collect(Collectors.toList()));
 
 		// to person info
-		return this.repositoryPerson.getPersonByPersonId(
-				employees.stream().map(employee -> employee.getPId()).collect(Collectors.toList()))
-				.stream().map(person -> {
-					PersonDto dto = new PersonDto();
-					person.saveToMemento(dto);
-					return dto;
-				}).collect(Collectors.toList());
+		return this.toEmployee(input.getBaseDate(), employees.stream()
+				.map(employee -> employee.getSId().v()).collect(Collectors.toList()), companyId);
 	}
 	
 	
@@ -256,7 +250,7 @@ public class EmployeeSearchFinder {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	public List<PersonDto> searchOfWorkplace(GeneralDate baseDate) {
+	public List<EmployeeSearchDto> searchOfWorkplace(GeneralDate baseDate) {
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -275,31 +269,10 @@ public class EmployeeSearchFinder {
 			throw new BusinessException("Msg_177");
 		}
 
-		// get employee list
-		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployeeId(companyId,
-				workplaceHistory.stream().map(workplace -> workplace.getEmployeeId().v())
-						.collect(Collectors.toList()));
-		
-		// check exist data
-		if(CollectionUtil.isEmpty(employees)){
-			throw new BusinessException("Msg_176");
-		}
-		
-		// to person info
-		List<PersonDto> persons=  this.repositoryPerson.getPersonByPersonId(
-				employees.stream().map(employee -> employee.getPId()).collect(Collectors.toList()))
-				.stream().map(person -> {
-					PersonDto dto = new PersonDto();
-					person.saveToMemento(dto);
-					return dto;
-				}).collect(Collectors.toList());
-		
-		// check exist data
-		if(CollectionUtil.isEmpty(persons)){
-			throw new BusinessException("Msg_176");
-		}
-		
-		return persons;
+		// return data
+		return this.toEmployee(baseDate, workplaceHistory.stream()
+				.map(workplace -> workplace.getEmployeeId().v()).collect(Collectors.toList()),
+				companyId);
 	}
 
 	/**
@@ -308,7 +281,7 @@ public class EmployeeSearchFinder {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	public List<PersonDto> searchWorkplaceChild(GeneralDate baseDate) {
+	public List<EmployeeSearchDto> searchWorkplaceChild(GeneralDate baseDate) {
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -333,42 +306,14 @@ public class EmployeeSearchFinder {
 			workPlaceHierarchies.addAll(this.repositoryWorkplace.findAllHierarchyChild(companyId,
 					work.getWorkplaceId().v()));
 		});
-
-		// get data work place history
-		List<AffiliationWorkplaceHistory> workplaceHistoryChild = this.repositoryWorkplaceHistory
-				.searchWorkplaceHistory(baseDate, workPlaceHierarchies.stream()
-						.map(work -> work.getWorkplaceId().v()).collect(Collectors.toList()));
-
-		// check exist data
-		if (CollectionUtil.isEmpty(workplaceHistoryChild)) {
-			throw new BusinessException("Msg_176");
-		}
-
-		// get employee list
-		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployeeId(companyId,
-				workplaceHistoryChild.stream().map(workplace -> workplace.getEmployeeId().v())
+		
+		workplaceHistory = this.repositoryWorkplaceHistory.searchWorkplaceHistory(baseDate,
+				workPlaceHierarchies.stream().map(workplace -> workplace.getWorkplaceId().v())
 						.collect(Collectors.toList()));
-
-		// check exist data
-		if (CollectionUtil.isEmpty(employees)) {
-			throw new BusinessException("Msg_176");
-		}
-
-		// to person info
-		List<PersonDto> persons = this.repositoryPerson.getPersonByPersonId(
-				employees.stream().map(employee -> employee.getPId()).collect(Collectors.toList()))
-				.stream().map(person -> {
-					PersonDto dto = new PersonDto();
-					person.saveToMemento(dto);
-					return dto;
-				}).collect(Collectors.toList());
-
-		// check exist data
-		if (CollectionUtil.isEmpty(persons)) {
-			throw new BusinessException("Msg_176");
-		}
-
-		return persons;
+		// return data
+		return this.toEmployee(baseDate, workplaceHistory.stream()
+				.map(workplace -> workplace.getEmployeeId().v()).collect(Collectors.toList()),
+				companyId);
 	}
 	
 	/**
@@ -391,5 +336,21 @@ public class EmployeeSearchFinder {
 		// return data
 		return workplaceHistory.stream().map(workplace -> workplace.getWorkplaceId().v())
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Gets the of selected employee.
+	 *
+	 * @param input the input
+	 * @return the of selected employee
+	 */
+	public List<EmployeeSearchDto> getOfSelectedEmployee(EmployeeSearchGetDto input){
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		// get company id
+		String companyId = loginUserContext.companyId();
+		
+		return this.toEmployee(input.getBaseDate(), input.getEmployeeIds(), companyId);
 	}
 }

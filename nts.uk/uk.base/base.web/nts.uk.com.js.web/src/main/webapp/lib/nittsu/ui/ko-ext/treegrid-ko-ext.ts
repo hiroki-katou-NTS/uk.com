@@ -44,10 +44,13 @@ module nts.uk.ui.koExtentions {
                     { headerText: "コード／名称", key: optionsText, dataType: "string" }
                 ];
             }
+            
+            var $treegrid = $(element);
+            let tabIndex = nts.uk.util.isNullOrEmpty($treegrid.attr("tabindex")) ? "0" : $treegrid.attr("tabindex");
+            $treegrid.attr("tabindex", "-1");
 
             // Init ig grid.
-            var $treegrid = $(element);
-            $(element).igTreeGrid({
+            $treegrid.igTreeGrid({
                 width: width,
                 height: height,
                 dataSource: _.cloneDeep(options),
@@ -83,7 +86,7 @@ module nts.uk.ui.koExtentions {
                     }]
             });
             var treeGridId = $treegrid.attr('id');
-            $(element).closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", "0");
+            $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
             $treegrid.setupSearchScroll("igTreeGrid");
         }
 

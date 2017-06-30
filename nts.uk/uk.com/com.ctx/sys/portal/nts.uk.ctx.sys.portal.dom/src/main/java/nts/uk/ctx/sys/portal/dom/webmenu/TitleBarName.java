@@ -9,14 +9,14 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringMaxLength(30)
-public class TitleMenuName extends StringPrimitiveValue<TitleMenuName> {
+public class TitleBarName extends StringPrimitiveValue<TitleBarName> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public TitleMenuName(String rawValue) {
+	public TitleBarName(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

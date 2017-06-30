@@ -18,31 +18,30 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="total">
-				<!-- A1_1 -->
 				<div id="label">
-					<label style= "margin-left: 25px">#{i18n.getText('KDL007_1')}</label>
+					<label style="margin-left: 25px">#{i18n.getText('KDL007_1')}</label>
 				</div>
 				<div style="margin-bottom: 20px">
 					<div style="margin-left: 25px">
-						<!-- A1_2 -->
 						<table id="multi-list" tabindex="2"
 							data-bind="ntsGridList: {
 										height: 390,
 										width: 305,
-										options: items,
+										options: dataSources,
 										optionsValue: 'code',
-										columns: columns,
+										columns: [
+							                { headerText: '#{i18n.getText('KDL007_2')}', prop: 'code', width: 50 },
+							                { headerText: '#{i18n.getText('KDL007_3')}', prop: 'name', width: 200, formatter: _.escape }
+							            ],
 										multiple: isMulti,
 										value: currentCodeList}">
 						</table>
 					</div>
 				</div>
-				<div id="functions-area-bottom" >
+				<div id="functions-area-bottom">
 					<div id="process">
-						<!-- A1_8 -->
 						<button id="btnSetting" class="x-large proceed"
 							data-bind="click: register" tabindex="3">#{i18n.getText('KDL007_4')}</button>
-						<!-- A1_9 -->
 						<button id="btnCancel" class="large" data-bind="click: close"
 							tabindex="4">#{i18n.getText('KDL007_5')}</button>
 					</div>

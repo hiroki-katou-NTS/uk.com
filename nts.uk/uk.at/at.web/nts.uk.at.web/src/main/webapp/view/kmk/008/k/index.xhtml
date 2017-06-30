@@ -34,7 +34,7 @@
 			
 			<div id="contents-area">
 					<div id="label">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Person')}#{i18n.getText('KMK008_17')}</div>
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17', ['#Com_Person'])}</div>
 						<span id="label2">社員コード</span>
 						<span id="label3">社員名</span>
 					</div>
@@ -52,12 +52,21 @@
 					
 					<div id="label4">
 						<div id="ntsFormLabel2" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_29')}</div>
-						<div id="ntsDatePicker" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div><br></br>
+						<div id="ntsDatePicker" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM'}"></div><br></br>
 						<div id="ntsFormLabel3" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_19')}</div>
-						<input id="ntsTimeEditor1" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+						<input id="ntsTimeEditor1" 
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_19]',
+						constraint: 'SampleTimeDuration',
+						value: date,
+						inputFormat: 'time',
+						mode: 'time',
+						enable: true,
+						readonly: false,
+						required: false }" />
 						<br></br>
 						<div id="ntsFormLabel4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_20')}</div>
-						<input id="ntsTimeEditor2" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+						<input id="ntsTimeEditor2" data-bind="ntsTimeEditor: {value: date, inputFormat: 'time'}" />
 					</div>
 			</div>
 		</ui:define>

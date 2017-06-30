@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.JobPosition;
@@ -24,8 +23,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class TopPageSelfSettingFinder {
 	@Inject
 	private TopPageRepository topPageRepository;
-//	@Inject
-//	private StandardMenuRepository standardMenuRepository;
 	@Inject
 	private TopPageSelfSetRepository repository;
 	

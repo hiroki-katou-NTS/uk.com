@@ -2,7 +2,7 @@ module nts.uk.sys.view.ccg013.b.test.viewmodel {
     export class ScreenModel {
         nameMenuBar: KnockoutObservable<string>;
         pickerLetter: KnockoutObservable<string>;
-        radioActlass: KnockoutObservable<string>;
+        radioActlass: KnockoutObservable<number>;
         pickerBackground: KnockoutObservable<string>;
         selectSetting: KnockoutObservable<string>;
         codeStandardMenu: KnockoutObservable<string>;
@@ -12,7 +12,7 @@ module nts.uk.sys.view.ccg013.b.test.viewmodel {
             var self = this;
             self.nameMenuBar = ko.observable("");
             self.pickerLetter = ko.observable("");
-            self.radioActlass = ko.observable("");
+            self.radioActlass = ko.observable(0);
             self.pickerBackground = ko.observable("");
             self.selectSetting = ko.observable("");
             self.codeStandardMenu = ko.observable("");
@@ -42,8 +42,6 @@ module nts.uk.sys.view.ccg013.b.test.viewmodel {
                     self.codeStandardMenu(returnItem.codeStandardMenu);
                     self.nameStandardMenu(returnItem.nameStandardMenu);
                 }
-                else{
-                    nts.uk.ui.block.clear();}
             });
         }
     }
@@ -51,7 +49,7 @@ module nts.uk.sys.view.ccg013.b.test.viewmodel {
        nameMenuBar : string;
        pickerLetter : string;
        pickerBackground :string; 
-       radioActlass : string 
+       radioActlass : number; 
        constructor(nameMenuBar: string, pickerLetter: string, pickerBackground: string, radioActlass: number) {
             this.nameMenuBar = nameMenuBar;
             this.pickerLetter = pickerLetter;

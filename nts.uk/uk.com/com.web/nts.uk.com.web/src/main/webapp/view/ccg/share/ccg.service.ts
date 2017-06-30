@@ -10,7 +10,9 @@ module nts.uk.com.view.ccg.share.ccg {
             searchModeEmployee: "basic/organization/employee/search/advanced",
             searchOfWorkplace: "basic/organization/employee/search/ofworkplace",
             searchWorkplaceChild: "basic/organization/employee/search/workplacechild",
-            searchWorkplaceOfEmployee: "basic/organization/employee/search/workplaceemp"
+            searchWorkplaceOfEmployee: "basic/organization/employee/search/workplaceemp",
+            getOfSelectedEmployee: "basic/organization/employee/search/getoffselect",
+            
         }
 
         /**
@@ -25,15 +27,15 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, baseDate);
         }
 
-        export function searchOfWorkplace(baseDate: Date): JQueryPromise<model.PersonModel[]> {
+        export function searchOfWorkplace(baseDate: Date): JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchOfWorkplace, baseDate);
         }
-        export function searchWorkplaceChild(baseDate: Date): JQueryPromise<model.PersonModel[]> {
+        export function searchWorkplaceChild(baseDate: Date): JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchWorkplaceChild, baseDate);
         }
 
         export function searchModeEmployee(input: model.EmployeeSearchInDto)
-            : JQueryPromise<model.PersonModel[]> {
+            : JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchModeEmployee, input);
         }
 
@@ -41,13 +43,12 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('com', servicePath.searchWorkplaceOfEmployee, baseDate);
         }
         
+        export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]){
+              return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, {baseDate: baseDate, employeeIds: employeeIds});  
+        }
+        
         
         export module model{
-            
-            export class PersonModel {
-                personId: string;
-                personName: string;
-            }
 
             export class EmployeeSearchDto {
                 employeeId: string;
@@ -95,13 +96,13 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
 
-                onSearchOnlyClicked: (data: PersonModel) => void;
+                onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
                 
-                onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
+                onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
                 
-                onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
+                onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
                 
-                onApplyEmployee: (data: string[]) => void;
+                onApplyEmployee: (data: EmployeeSearchDto[]) => void;
             }
     
         }
