@@ -19,6 +19,6 @@ public class KmnmtAffiliJobTitleHistPK_ {
 	/** The emp id. */
 	public static volatile SingularAttribute<KmnmtAffiliJobTitleHistPK, String> empId;
 
-	/** The pos id. */
-	public static volatile SingularAttribute<KmnmtAffiliJobTitleHistPK, String> posId;
+	/** The job id. */
+	public static volatile SingularAttribute<KmnmtAffiliJobTitleHistPK, String> jobId;
 }

@@ -67,7 +67,7 @@ public class JpaAffiliationWorkplaceHistorySetMemento
 	 */
 	@Override
 	public void setWorkplaceId(WorkplaceId workplaceId) {
-		this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().setWplId(workplaceId.v());
+		this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().setWkpId(workplaceId.v());
 	}
 
 }

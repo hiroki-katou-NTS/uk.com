@@ -69,7 +69,7 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 		// work place in data work place
 		lstpredicateWhere.add(
 				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.wplId).in(workplaces)));
+						.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaces)));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
@@ -135,7 +135,7 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 		// work place in data work place
 		lstpredicateWhere.add(
 				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.wplId).in(workplaces)));
+						.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaces)));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder

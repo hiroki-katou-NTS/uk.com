@@ -41,8 +41,8 @@ public class KmnmtAffiliWorkplaceHistPK implements Serializable {
     /** The wpl id. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "WPL_ID")
-    private String wplId;
+    @Column(name = "WKP_ID")
+    private String wkpId;
 
     /**
      * Instantiates a new kmnmt affili workplace hist PK.

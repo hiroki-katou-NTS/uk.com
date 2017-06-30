@@ -19,7 +19,7 @@ public class KmnmtAffiliWorkplaceHistPK_ {
 	/** The emp id. */
 	public static volatile SingularAttribute<KmnmtAffiliWorkplaceHistPK, String> empId;
 	
-	/** The wpl id. */
-	public static volatile SingularAttribute<KmnmtAffiliWorkplaceHistPK, String> wplId;
+	/** The wkp id. */
+	public static volatile SingularAttribute<KmnmtAffiliWorkplaceHistPK, String> wkpId;
 
 }
