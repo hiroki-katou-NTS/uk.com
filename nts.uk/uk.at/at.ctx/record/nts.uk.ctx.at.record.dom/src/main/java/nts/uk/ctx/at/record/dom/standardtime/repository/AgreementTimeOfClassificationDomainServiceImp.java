@@ -48,7 +48,7 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 
 		this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
 
-		this.basicAgreementSettingRepository.add(basicAgreementSetting);
+		this.basicAgreementSettingRepository.add2(basicAgreementSetting);
 
 		return errors;
 	}

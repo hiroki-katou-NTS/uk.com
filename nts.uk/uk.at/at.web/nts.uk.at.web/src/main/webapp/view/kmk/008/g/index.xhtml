@@ -23,12 +23,50 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div id = "functions-area-content">
-					
-				</div>
+				<div id="functions-area-content"></div>
 			</div>
 			<div id="contents-area">
-				
+				<div >
+					<div class="lbl-title-employeer-name">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Person'])}</div>
+						<span class="label" data-bind="text: "></span>
+					</div>
+					<div class="label">#{i18n.getText('KMK008_10')}</div>
+					<HR style="width: 24%; float: left;"/>
+					<div style="width: 24%; margin-top: 20px;">
+						<div id="tab-panel"
+							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+							<div class="tab-content-1">
+								<button id="settingButton">#{i18n.getText('KMK008_31')}</button>
+								<div>
+									<table id="single-list"
+										data-bind="ntsGridList: {								
+									height: 350,
+									dataSource: items,
+									primaryKey: 'code',
+									columns: columns,
+									multiple: false,
+									value: currentCode
+								}"></table>
+								</div>
+							</div>
+							<div class="tab-content-2">
+								<div>
+									<button id="settingButton">設定</button>
+									<table id="single-list"
+										data-bind="ntsGridList: {								
+									height: 350,
+									dataSource: items2,
+									primaryKey: 'code',
+									columns: columns,
+									multiple: false,
+									value: currentCode
+								}"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
