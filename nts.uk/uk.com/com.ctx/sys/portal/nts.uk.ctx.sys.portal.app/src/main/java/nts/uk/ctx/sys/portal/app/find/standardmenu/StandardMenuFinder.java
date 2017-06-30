@@ -89,12 +89,11 @@ public class StandardMenuFinder {
 	 * find all StandardMenu by companyID and system
 	 * 
 	 * @param conpanyID
-	 * @param system
 	 * @return List
 	 */
-	public List<StandardMenuDto> findBySystem(int system) {
+	public List<StandardMenuDto> findAllDisplay() {
 		String companyID = AppContexts.user().companyId();
-		return this.standardMenuRepository.findBySystem(companyID, system).stream()
+		return this.standardMenuRepository.findAllDisplay(companyID).stream()
 				.map(item -> StandardMenuDto.fromDomain(item)).collect(Collectors.toList());
 	}
 }

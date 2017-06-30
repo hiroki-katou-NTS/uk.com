@@ -213,7 +213,7 @@ module ccg013.a.viewmodel {
                                 }
                                 treeMenus.push(new TreeMenu(titleBarItem.titleMenuId, treeMenuItem.code, treeMenuName, treeMenuItem.displayOrder, treeMenuItem.classification, treeMenuItem.system));
                             })
-                            titleBars.push(new TitleMenu(menuBar.menuBarId, titleBarItem.titleMenuId, titleBarItem.titleMenuName, titleBarItem.backgroundColor, titleBarItem.imageFile, titleBarItem.textColor, titleBarItem.titleMenuAtr, titleBarItem.titleMenuCode, titleBarItem.displayOrder, titleBarItem.treeMenu));
+                            titleBars.push(new TitleMenu(menuBar.menuBarId, titleBarItem.titleMenuId, titleBarItem.titleMenuName, titleBarItem.backgroundColor, titleBarItem.imageFile, titleBarItem.textColor, titleBarItem.titleMenuAtr, titleBarItem.titleMenuCode, titleBarItem.displayOrder, treeMenus));
                         });
                         self.menuBars.push(new MenuBar(menuBar.menuBarId, menuBar.code, menuBar.menuBarName, menuBar.selectedAtr, menuBar.system, menuBar.menuCls, menuBar.backgroundColor, menuBar.textColor, menuBar.displayOrder, titleBars));
                     });
@@ -295,11 +295,13 @@ module ccg013.a.viewmodel {
                 titleBar = {
                     name: titleMenu.titleMenuName(),
                     backgroundColor: titleMenu.backgroundColor(),
-                    textColor: titleMenu.textColor()
+                    textColor: titleMenu.textColor(),
+                    treeMenus: titleMenu.treeMenu()
                 };
 
             nts.uk.ui.windows.setShared("titleBar", titleBar);
             nts.uk.ui.windows.sub.modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
+                titleMenu.treeMenu([]);
                 let data = nts.uk.ui.windows.getShared("CCG013D_MENUS");
                 if (data && data.length > 0) {
                     _.forEach(data, x => {
@@ -308,7 +310,7 @@ module ccg013.a.viewmodel {
                             x.code,
                             x.name,
                             x.order,
-                            0,
+                            x.menu_cls,
                             x.system));
                     });
                 }
