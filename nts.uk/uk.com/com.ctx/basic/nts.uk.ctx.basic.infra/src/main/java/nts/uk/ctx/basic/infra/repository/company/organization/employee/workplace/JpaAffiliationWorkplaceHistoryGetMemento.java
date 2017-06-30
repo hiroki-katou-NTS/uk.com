@@ -47,7 +47,7 @@ public class JpaAffiliationWorkplaceHistoryGetMemento
 	 */
 	@Override
 	public EmployeeId getEmployeeId() {
-		return new EmployeeId(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getSid());
+		return new EmployeeId(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getEmpId());
 	}
 
 	/*
@@ -58,7 +58,7 @@ public class JpaAffiliationWorkplaceHistoryGetMemento
 	 */
 	@Override
 	public WorkplaceId getWorkplaceId() {
-		return new WorkplaceId(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getWplId());
+		return new WorkplaceId(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getWkpId());
 	}
 
 }
