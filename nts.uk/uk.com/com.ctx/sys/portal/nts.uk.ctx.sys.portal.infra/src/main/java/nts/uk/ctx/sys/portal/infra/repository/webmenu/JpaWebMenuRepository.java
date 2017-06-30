@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
-import nts.uk.ctx.sys.portal.dom.webmenu.TitleMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
@@ -85,7 +85,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	 * @return
 	 */
 	private MenuBar toDomainMenuBar(CcgstMenuBar mb) {
-		List<TitleMenu> titleMenus = mb.titleMenus.stream().map(tm -> {
+		List<TitleBar> titleMenus = mb.titleMenus.stream().map(tm -> {
 			return toDomainTitleMenu(tm);
 		}).collect(Collectors.toList());
 
@@ -99,13 +99,13 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	 * @param tm
 	 * @return
 	 */
-	private TitleMenu toDomainTitleMenu(CcgstTitleBar tm) {
+	private TitleBar toDomainTitleMenu(CcgstTitleBar tm) {
 		List<TreeMenu> treeMenus = tm.treeMenus.stream().map(trm -> {
 			return TreeMenu.createFromJavaType(trm.ccgstTreeMenuPK.titleMenuId, trm.code,
 					trm.ccgstTreeMenuPK.displayOrder, trm.classification, trm.system);
 		}).collect(Collectors.toList());
 
-		return TitleMenu.createFromJavaType(tm.ccgstTitleMenuPK.menuBarId, tm.ccgstTitleMenuPK.titleMenuId,
+		return TitleBar.createFromJavaType(tm.ccgstTitleMenuPK.menuBarId, tm.ccgstTitleMenuPK.titleMenuId,
 				tm.titleMenuName, tm.backgroundColor, tm.imageFile, tm.textColor, tm.titleMenuAtr, tm.titleMenuCD,
 				tm.displayOrder, treeMenus);
 	}
@@ -165,7 +165,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	 * @param tm
 	 * @return
 	 */
-	private static List<CcgstTreeMenu> toEntityTreeMenu(WebMenu domain, TitleMenu tm) {
+	private static List<CcgstTreeMenu> toEntityTreeMenu(WebMenu domain, TitleBar tm) {
 		List<CcgstTreeMenu> treeMenus = tm.getTreeMenu().stream()
 				.map(trm -> {
 					CcgstTreeMenuPK ccgstTreeMenuPK = new CcgstTreeMenuPK(domain.getCompanyId(), domain.getWebMenuCode().v(), tm.getTitleMenuId().toString(), trm.getTitleMenuId().toString(), trm.getDisplayOrder());
