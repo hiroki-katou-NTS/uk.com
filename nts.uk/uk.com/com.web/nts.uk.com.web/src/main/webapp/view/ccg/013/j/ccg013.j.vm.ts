@@ -95,8 +95,9 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
             windows.setShared("CCG013J_ToMain_TitleBar", titleBar);
             self.cancel_Dialog();
         }
+    }
 
-        class TitleBar {
+    class TitleBar {
         nameTitleBar: string;
         letterColor: string;
         backgroundColor: string;
@@ -107,6 +108,6 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
             this.backgroundColor = backgroundColor;
             this.imageId = imageId;
             }
-        }
     }
+    
 }

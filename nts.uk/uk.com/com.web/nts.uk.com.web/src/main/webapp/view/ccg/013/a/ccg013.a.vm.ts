@@ -15,6 +15,7 @@ module ccg013.a.viewmodel {
         menuBars: KnockoutObservableArray<MenuBar>;
         titleMenus: KnockoutObservableArray<any>;
         treeMenus: KnockoutObservableArray<TreeMenu>;
+        standardMenus: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -79,6 +80,7 @@ module ccg013.a.viewmodel {
             self.menuBars = ko.observableArray([]);
             self.titleMenus = ko.observableArray([]);
             self.treeMenus = ko.observableArray([]);
+            self.standardMenus = ko.observableArray([]);
         }
 
         startPage(): JQueryPromise<void> {
@@ -106,9 +108,14 @@ module ccg013.a.viewmodel {
                     list001.push(new ItemModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
                 });
                 self.items(list001);
+                
+                service.findStandardMenuList().done(function(res: Array<service.StandardMenuDto>){
+                    self.standardMenus(res);
+                });
+                
                 dfd.resolve(data);
             }).fail(function(res) {
-            });
+            })
             return dfd.promise();
         }
 
@@ -182,7 +189,7 @@ module ccg013.a.viewmodel {
          */
         findWebMenu(webMenuCode: string): any {
             var self = this;
-            service.findWebMenu(webMenuCode).done(function(res) {
+            service.findWebMenu(webMenuCode).done(function(res: service.WebMenuDto) {
                 var defaultMenu = true;
                 if (res.defaultMenu == 1) {
                     defaultMenu = false;
@@ -190,14 +197,21 @@ module ccg013.a.viewmodel {
                 self.currentWebMenu(new WebMenu(res.webMenuCode, res.webMenuName, defaultMenu, res.menuBars));
 
                 if (res.menuBars && res.menuBars.length > 0) {
-                    var menuBars: Array<MenuBar> = _.orderBy(res.menuBars, 'displayOrder', 'asc');
+                    var menuBars: Array<any> = _.orderBy(res.menuBars, 'displayOrder', 'asc');
                     _.forEach(menuBars, function(menuBar: any) {
                         var titleBars = [];
                         var titleMenu = _.orderBy(menuBar.titleMenu, 'displayOrder', 'asc');
                         _.forEach(titleMenu, function(titleBarItem: any) {
                             let treeMenus = [];
                             _.forEach(titleBarItem.treeMenu, function(treeMenuItem: any) {
-                                treeMenus.push(new TreeMenu(titleBarItem.titleMenuId, treeMenuItem.code, "Test", treeMenuItem.displayOrder, treeMenuItem.classification, treeMenuItem.system));
+                                var standardMenu: service.StandardMenuDto = _.find(self.standardMenus(), function(standardMenuItem: service.StandardMenuDto){
+                                      return standardMenuItem.code == treeMenuItem.code && standardMenuItem.system == treeMenuItem.system && standardMenuItem.classification == treeMenuItem.classification;  
+                                });
+                                var treeMenuName = "";
+                                if (standardMenu) {
+                                    treeMenuName = standardMenu.displayName;
+                                }
+                                treeMenus.push(new TreeMenu(titleBarItem.titleMenuId, treeMenuItem.code, treeMenuName, treeMenuItem.displayOrder, treeMenuItem.classification, treeMenuItem.system));
                             })
                             titleBars.push(new TitleMenu(menuBar.menuBarId, titleBarItem.titleMenuId, titleBarItem.titleMenuName, titleBarItem.backgroundColor, titleBarItem.imageFile, titleBarItem.textColor, titleBarItem.titleMenuAtr, titleBarItem.titleMenuCode, titleBarItem.displayOrder, titleBarItem.treeMenu));
                         });
@@ -219,6 +233,13 @@ module ccg013.a.viewmodel {
             _.remove(self.menuBars(), function(item: MenuBar) {
                 return item.menuBarId() == menuBarId;
             });
+        }
+        
+        /**
+         * Remove web menu
+         */
+        removeWebMenu(): void {
+            var self = this;
         }
 
         /**
@@ -292,6 +313,26 @@ module ccg013.a.viewmodel {
                     });
                 }
             });
+        }
+        
+        optionEDialog(): void {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
+            });    
+        }
+        
+        optionFDialog(): void {
+            var self = this;
+            var dataTranfer = self.items();
+            nts.uk.ui.windows.setShared("CCG013F_JOB_TITLE", dataTranfer);
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/f/index.xhtml").onClosed(function() {
+            });    
+        }
+        
+        optionGDialog(): void {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/g/index.xhtml").onClosed(function() {
+            });    
         }
 
         openKdialog(): any {
