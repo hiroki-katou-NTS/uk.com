@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk008.g {
                 self.isNewMode.subscribe(function(val) {
                     self.isUpdateMode(!val);
                 });
-                
+
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: '年度', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: '年月', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -48,22 +48,30 @@ module nts.uk.at.view.kmk008.g {
                 let self = this;
                 let dfd = $.Deferred();
 
-                service.getMonth(self.selectedCode()).done(function(monthData: model.MonthDto) {
-                    self.items2.push(new ItemModel(monthData.yearMonthValue, monthData.errorOneMonth, monthData.alarmOneMonth));
+                service.getMonth(self.selectedCode()).done(function(monthData: Array<model.MonthDto>) {
+                    if (monthData.length > 0) {
+                        self.items2.push(new ItemModel(monthData.yearMonthValue, monthData.errorOneMonth, monthData.alarmOneMonth));
+                    } else {
+                        self.items2.push(new ItemModel("", "", ""));
+                    }
                 });
 
-                service.getYear(self.selectedCode()).done(function(yearData: model.YearDto) {
-                    self.item.push(new ItemModel(yearData.yearValue, yearData.errorOneYear, yearData.alarmOneYear));
+                service.getYear(self.selectedCode()).done(function(yearData: Array<model.YearDto>) {
+                    if (yearData.length > 0) {
+                        self.item.push(new ItemModel(yearData.yearValue, yearData.errorOneYear, yearData.alarmOneYear));
+                    } else {
+                        self.items.push(new ItemModel("", "", ""));
+                    }
                 });
 
                 dfd.resolve();
                 return dfd.promise();
             }
-            
+
             setNewMode() {
-            var self = this;
-            self.isNewMode(true);
-        }
+                var self = this;
+                self.isNewMode(true);
+            }
         }
 
         export class ItemModel {
