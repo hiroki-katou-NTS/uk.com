@@ -32,7 +32,7 @@ public class KmnmtAffiliWorkplaceHistPK implements Serializable {
     @Column(name = "HIST_ID")
     private String histId;
     
-    /** The sid. */
+    /** The empId. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EMP_ID")
@@ -41,14 +41,25 @@ public class KmnmtAffiliWorkplaceHistPK implements Serializable {
     /** The wpl id. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "WKP_ID")
-    private String wkpId;
+    @Column(name = "WPL_ID")
+    private String wplId;
 
     /**
      * Instantiates a new kmnmt affili workplace hist PK.
      */
     public KmnmtAffiliWorkplaceHistPK() {
     }
-    
-    
+
+    /**
+     * Instantiates a new kmnmt affili workplace hist PK.
+     *
+     * @param histId the hist id
+     * @param empId the empId
+     * @param wplId the wpl id
+     */
+    public KmnmtAffiliWorkplaceHistPK(String histId, String empId, String wplId) {
+        this.histId = histId;
+        this.empId = empId;
+        this.wplId = wplId;
+    }    
 }
