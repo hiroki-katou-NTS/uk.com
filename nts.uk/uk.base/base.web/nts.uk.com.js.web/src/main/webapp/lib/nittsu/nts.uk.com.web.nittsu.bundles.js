@@ -9073,10 +9073,10 @@ var nts;
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var textmode = this.editorOption.textmode;
-                        if (data.value() !== $input.val()) {
-                            $input.triggerHandler('change');
-                        }
                         $input.attr('type', textmode);
+                        if (!$input.ntsError('hasError') && data.value() !== $input.val()) {
+                            data.value($input.val());
+                        }
                     };
                     TextEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TextEditorOption();
