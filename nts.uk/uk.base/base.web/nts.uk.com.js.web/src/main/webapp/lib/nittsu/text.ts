@@ -603,5 +603,34 @@
                 return source;
             }
         }
+        
+        export class NumberUnit {
+            unitID: string;
+            unitText: string;
+            language: string;
+            position: string;
+            
+            constructor(unitID: string, unitText: string, position: string, language?: string) {
+                this.unitID = unitID;
+                this.unitText = unitText;
+                this.position = position;
+                this.language = language;
+            }
+        }
+        
+        var units = {
+            "JPY":　new NumberUnit("JPY", "円", "right", "ja-JP"),        
+            "PERCENT":　new NumberUnit("PERCENT", "%", "right", "ja-JP"),
+            "DAYS":　new NumberUnit("DAYS", "日", "right", "ja-JP"),
+            "MONTHS":　new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
+            "YEARS":　new NumberUnit("YEARS", "年", "right", "ja-JP"),
+            "FIS_MONTH":　new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
+            "TIMES":　new NumberUnit("TIMES", "回", "right", "ja-JP")
+        };
+        
+        export function getNumberUnit(unitId: string): NumberUnit{
+            //TODO: get system language. Default: japanese
+            return units[unitId];
+        }
     }
 }

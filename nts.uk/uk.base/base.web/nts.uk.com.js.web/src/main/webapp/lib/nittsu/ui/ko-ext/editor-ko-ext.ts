@@ -284,21 +284,31 @@ module nts.uk.ui.koExtentions {
                 $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                 var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                 $parent.attr("data-content", format);
-            } else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
-                let padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
-                if (padding < 20 ){
-                    padding = 20;        
-                }
-                $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
-                $parent.attr("data-content", this.editorOption.symbolChar);
-                
-                let css = this.editorOption.symbolPosition === 'right' ? {"padding-right": padding + "px"} : {"padding-left": padding + "px"};
-                $input.css(css);
+            } else if (!nts.uk.util.isNullOrEmpty(this.editorOption.unitID)) {
+                let unit = text.getNumberUnit(this.editorOption.unitID);
+                this.editorOption.symbolChar = unit.unitText;
+                this.editorOption.symbolPosition = unit.position;
+                this.setupUnit($input);
+            } else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
+                this.setupUnit($input);
             }
             if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 
                 && nts.uk.util.isNullOrEmpty(data.value())){
                 data.value(this.editorOption.defaultValue);        
             }
+        }
+        
+        setupUnit ($input: JQuery) {
+            let $parent = $input.parent();
+            let padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
+            if (padding < 20 ){
+                padding = 20;        
+            }
+            $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+            $parent.attr("data-content", this.editorOption.symbolChar);
+            
+            let css = this.editorOption.symbolPosition === 'right' ? {"padding-right": padding + "px"} : {"padding-left": padding + "px"};
+            $input.css(css);        
         }
 
         getDefaultOption(): any {
