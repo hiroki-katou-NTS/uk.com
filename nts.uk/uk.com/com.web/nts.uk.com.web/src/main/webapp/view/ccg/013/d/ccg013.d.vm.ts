@@ -14,13 +14,13 @@
         currentCodeList: KnockoutObservableArray<any>;
         newCurrentCodeList: KnockoutObservableArray<any>;
         titleBar: KnockoutObservable<any>;
-        dataItems: KnockoutObservableArray<DataModel>;
+        dataItems: KnockoutObservableArray<ItemModel>;
         
         //Dropdownlist contain System data
         systemList: KnockoutObservableArray<SystemModel>;
         systemName: KnockoutObservable<string>;
         currentSystemCode: KnockoutObservable<number>
-        selectedSystemCode: KnockoutObservable<string>;
+        selectedSystemCode: KnockoutObservable<number>;
         
         constructor() {
             var self = this;         
@@ -64,7 +64,7 @@
             
             self.systemName = ko.observable('');
             self.currentSystemCode = ko.observable(0);
-            self.selectedSystemCode = ko.observable('0')
+            self.selectedSystemCode = ko.observable(0);
             
             //Get data by system
             self.selectedSystemCode.subscribe(function(newValue) {
