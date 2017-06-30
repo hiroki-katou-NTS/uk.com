@@ -1,5 +1,5 @@
 module ccg018.b.service {
-    var paths: any = {
+    let paths: any = {
         findBySystemMenuCls: "sys/portal/standardmenu/findBySystemMenuCls",
         findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",
         findTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySid",

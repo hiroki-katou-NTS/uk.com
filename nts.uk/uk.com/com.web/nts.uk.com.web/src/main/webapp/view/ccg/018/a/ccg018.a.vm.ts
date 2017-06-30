@@ -33,19 +33,15 @@ module ccg018.a.viewmodel {
                 { code: 0, name: nts.uk.resource.getText("CCG018_14") }
             ]);
 
-            self.start();
+            $.when(self.findBySystemMenuCls(), self.findDataForAfterLoginDis()).done(function() {
+                self.searchByDate();
+            });
+            self.findByCId();
         }
 
         start(): any {
             let self = this;
-            if (self.categorySet() == undefined) {
-                self.findByCId();
-            } else {
-                self.categorySet(__viewContext.viewModel.viewmodelB.categorySet());
-            }
-            $.when(self.findBySystemMenuCls(), self.findDataForAfterLoginDis()).done(function() {
-                self.searchByDate();
-            });
+            self.categorySet(__viewContext.viewModel.viewmodelB.categorySet());
         }
 
         /**
@@ -159,6 +155,7 @@ module ccg018.a.viewmodel {
             ccg018.a.service.update(command)
                 .done(function() {
                     self.searchByDate();
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                 }).fail();
         }
 
