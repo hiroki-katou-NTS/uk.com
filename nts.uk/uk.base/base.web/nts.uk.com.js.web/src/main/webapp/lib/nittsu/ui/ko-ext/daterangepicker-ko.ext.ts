@@ -23,6 +23,8 @@ module nts.uk.ui.koExtentions {
             let required = ko.unwrap(data.required);
             
             let id = nts.uk.util.randomId();
+            let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+            $container.attr("tabindex", "-1");
             
             $container.append("<div class='ntsDateRange_Container' id='"+ id +"' />");
             
@@ -39,8 +41,10 @@ module nts.uk.ui.koExtentions {
             ISOFormat = ISOFormat.replace(/d/g,"").trim();
             
             if (showNextPrevious === true) {
-                $datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'><button class = 'ntsDateNextButton ntsButton ntsDateRangeButton auto-height'/></div>");        
-                $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'><button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton auto-height'/></div>"); 
+                $datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'>" + 
+                    "<button class = 'ntsDateNextButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");        
+                $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" + 
+                    "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>"); 
                 
                 let $nextButton = $container.find(".ntsDateNextButton");
                 let $prevButton = $container.find(".ntsDatePrevButton");
@@ -115,8 +119,8 @@ module nts.uk.ui.koExtentions {
             let $startDateArea = $datePickerArea.find(".ntsStartDate");
             let $endDateArea = $datePickerArea.find(".ntsEndDate");
             
-            $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker' />");
-            $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker' />");
+            $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
+            $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
             
             let $input = $container.find(".ntsDatepicker");
             // Init Datepicker
@@ -202,6 +206,8 @@ module nts.uk.ui.koExtentions {
                     }  
                 }
             }));
+            
+            $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
         }
 
         /**

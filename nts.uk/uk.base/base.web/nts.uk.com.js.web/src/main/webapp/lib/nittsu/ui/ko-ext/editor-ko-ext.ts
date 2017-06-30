@@ -149,6 +149,18 @@ module nts.uk.ui.koExtentions {
                     }
                 }
             });
+            
+            // Format on blur
+            $input.blur(() => {
+                if (!$input.attr('readonly')) {
+                    var newText = $input.val();
+                    var result = validator.validate(newText);
+                    $input.ntsError('clear');
+                    if (!result.isValid) {
+                        $input.ntsError('set', result.errorMessage);
+                    }
+                }
+            });
 
             $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
@@ -183,6 +195,9 @@ module nts.uk.ui.koExtentions {
         update($input: JQuery, data: any) {
             super.update($input, data);
             var textmode: string = this.editorOption.textmode;
+            if(data.value() !== $input.val()){
+                $input.triggerHandler('change');        
+            }
             $input.attr('type', textmode);
         }
 
@@ -270,8 +285,15 @@ module nts.uk.ui.koExtentions {
                 var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                 $parent.attr("data-content", format);
             } else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
+                let padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
+                if (padding < 20 ){
+                    padding = 20;        
+                }
                 $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
                 $parent.attr("data-content", this.editorOption.symbolChar);
+                
+                let css = this.editorOption.symbolPosition === 'right' ? {"padding-right": padding + "px"} : {"padding-left": padding + "px"};
+                $input.css(css);
             }
             if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 
                 && nts.uk.util.isNullOrEmpty(data.value())){
