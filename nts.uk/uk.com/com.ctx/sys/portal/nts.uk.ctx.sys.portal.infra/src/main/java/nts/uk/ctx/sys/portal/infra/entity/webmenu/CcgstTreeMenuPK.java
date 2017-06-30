@@ -28,7 +28,7 @@ public class CcgstTreeMenuPK implements Serializable {
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
 	
-	@Column(name = "TITLE_MENU_ID")
+	@Column(name = "TITLE_BAR_ID")
 	public String titleMenuId;
 		
 	@Column(name = "MENU_BAR_ID")

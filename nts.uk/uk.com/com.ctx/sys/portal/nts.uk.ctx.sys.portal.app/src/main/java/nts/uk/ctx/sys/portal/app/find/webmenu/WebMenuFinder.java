@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.SelectedAtr;
-import nts.uk.ctx.sys.portal.dom.webmenu.TitleMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -132,7 +132,7 @@ public class WebMenuFinder {
 	 * @param tm
 	 * @return
 	 */
-	private static List<TreeMenuDto> toTreeMenu(WebMenu domain, TitleMenu tm) {
+	private static List<TreeMenuDto> toTreeMenu(WebMenu domain, TitleBar tm) {
 		List<TreeMenuDto> treeMenus = tm.getTreeMenu().stream().map(trm -> {
 			return new TreeMenuDto(trm.getCode().v(), trm.getDisplayOrder(), trm.getClassification().value,
 					trm.getSystem().value);

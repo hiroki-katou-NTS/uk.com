@@ -9,6 +9,9 @@ import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchyGet
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHierarchy;
 
+/**
+ * The Class JpaWorkplaceHierarchyGetMemento.
+ */
 public class JpaWorkplaceHierarchyGetMemento implements WorkPlaceHierarchyGetMemento {
 
 	/** The kwpmt wpl hierarchy. */
@@ -22,11 +25,21 @@ public class JpaWorkplaceHierarchyGetMemento implements WorkPlaceHierarchyGetMem
 		this.kwpmtWplHierarchy = kwpmtWplHierarchy;
 	}
 
+	/**
+	 * Gets the workplace id.
+	 *
+	 * @return the workplace id
+	 */
 	@Override
 	public WorkplaceId getWorkplaceId() {
 		return new WorkplaceId(this.kwpmtWplHierarchy.getKwpmtWplHierarchyPK().getWplid());
 	}
 
+	/**
+	 * Gets the hierarchy code.
+	 *
+	 * @return the hierarchy code
+	 */
 	@Override
 	public HierarchyCode getHierarchyCode() {
 		return new HierarchyCode(this.kwpmtWplHierarchy.getHierarchyCd());

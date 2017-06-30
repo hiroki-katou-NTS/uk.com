@@ -4,10 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+
 /**
- * The Interface EmploymentSettingSetMemento.
+ * The Interface EmptYearlyRetentionSetMemento.
  */
-public interface EmploymentSettingSetMemento {
+public interface EmptYearlyRetentionSetMemento {
 	
 	/**
 	 * Sets the company id.
@@ -35,5 +37,5 @@ public interface EmploymentSettingSetMemento {
 	 *
 	 * @param managementCategory the new management category
 	 */
-	void setManagementCategory(ManagementCategory managementCategory);
+	void setManagementCategory(ManageDistinct managementCategory);
 }

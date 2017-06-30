@@ -62,7 +62,7 @@ public class Emp60HourVacationSaveCommandHandler extends CommandHandler<Emp60Hou
 		} else {
 			if (command.getIsManage() == ManageDistinct.NO.value) {
 				command.setSixtyHourExtra(SixtyHourExtra.ALLWAYS.value);
-				command.setDigestiveUnit(TimeDigestiveUnit.ONE_MINUTE.value);
+				command.setDigestiveUnit(TimeDigestiveUnit.OneMinute.value);
 			}
 		}
 

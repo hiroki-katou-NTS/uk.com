@@ -40,9 +40,9 @@ module nts.uk.com.view.ccg.share.ccg {
             employeeinfo: ComponentOption;
             onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
             onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-            onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
-            onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
-            onApplyEmployee: (data: string[]) => void;
+            onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
+            onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
+            onApplyEmployee: (data: EmployeeSearchDto[]) => void;
 
 
             constructor() {
@@ -217,7 +217,12 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmployeeLogin(): void {
                 var self = this;
                 service.searchEmployeeByLogin(self.baseDate()).done(data => {
-                    self.onSearchOnlyClicked(data);
+                    console.log(data);
+                    if (data.length > 0) {
+                        self.onSearchOnlyClicked(data[0]);
+                    }
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
                 });
             }
             
@@ -246,7 +251,12 @@ module nts.uk.com.view.ccg.share.ccg {
                         self.onApplyEmployee(self.toPersonCodeList(data));
                     });
                 } else {
-                    self.onApplyEmployee(self.selectedCodeEmployee());
+                    service.getOfSelectedEmployee(self.baseDate(), self.selectedCodeEmployee()).done(data=>{
+                        self.onApplyEmployee(self.selectedCodeEmployee());  
+                    }).fail(function(error){
+                         nts.uk.ui.dialog.alertError(error);
+                    });
+                    
                 }
             }
 

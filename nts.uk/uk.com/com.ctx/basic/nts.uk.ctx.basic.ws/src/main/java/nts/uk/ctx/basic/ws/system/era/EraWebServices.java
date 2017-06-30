@@ -11,6 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.app.command.system.era.AddEraCommand;
@@ -58,7 +59,7 @@ public class EraWebServices extends WebService {
 	}
 	@POST
 	@Path("addData")
-	public EraDto addData(AddEraCommand command){
+	public JavaTypeResult<EraDto>  addData(AddEraCommand command){
 		return this.addEra.handle(command);
 	}
 	

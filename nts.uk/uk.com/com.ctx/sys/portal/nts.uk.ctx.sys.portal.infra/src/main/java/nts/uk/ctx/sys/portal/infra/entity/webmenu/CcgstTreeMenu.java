@@ -36,12 +36,12 @@ public class CcgstTreeMenu extends UkJpaEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumns( {
-        @JoinColumn(name = "CID", referencedColumnName = "CCGST_TITLE_MENU.CID", insertable = false, updatable = false),
-        @JoinColumn(name = "WEB_MENU_CD", referencedColumnName = "CCGST_TITLE_MENU.WEB_MENU_CD", insertable = false, updatable = false),
-        @JoinColumn(name = "TITLE_MENU_ID", referencedColumnName = "CCGST_TITLE_MENU.TITLE_MENU_ID", insertable = false, updatable = false),
-        @JoinColumn(name = "MENU_BAR_ID", referencedColumnName = "CCGST_TITLE_MENU.MENU_BAR_ID", insertable = false, updatable = false)
+        @JoinColumn(name = "CID", referencedColumnName = "CCGST_TITLE_BAR.CID", insertable = false, updatable = false),
+        @JoinColumn(name = "WEB_MENU_CD", referencedColumnName = "CCGST_TITLE_BAR.WEB_MENU_CD", insertable = false, updatable = false),
+        @JoinColumn(name = "TITLE_BAR_ID", referencedColumnName = "CCGST_TITLE_BAR.TITLE_BAR_ID", insertable = false, updatable = false),
+        @JoinColumn(name = "MENU_BAR_ID", referencedColumnName = "CCGST_TITLE_BAR.MENU_BAR_ID", insertable = false, updatable = false)
     })
-	public CcgstTitleMenu titleMenu;
+	public CcgstTitleBar titleMenu;
 	
 	@Override
 	protected Object getKey() {

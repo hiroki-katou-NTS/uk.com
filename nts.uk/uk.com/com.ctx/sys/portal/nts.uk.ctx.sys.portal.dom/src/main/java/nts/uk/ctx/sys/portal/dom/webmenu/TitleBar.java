@@ -7,13 +7,13 @@ import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 
 @Value
-public class TitleMenu {
+public class TitleBar {
 
 	private UUID menuBarId;
 
 	private UUID titleMenuId;
 
-	private TitleMenuName titleMenuName;
+	private TitleBarName titleMenuName;
 
 	private ColorCode backgroundColor;
 
@@ -29,16 +29,16 @@ public class TitleMenu {
 
 	private List<TreeMenu> treeMenu;
 
-	public static TitleMenu createFromJavaType(String menuBarId, String titleMenuId, String titleMenuName,
+	public static TitleBar createFromJavaType(String menuBarId, String titleMenuId, String titleMenuName,
 			String backgroundColor, String imageFile, String textColor, int titleMenuAtr, String titleMenuCode,
 			Integer displayOrder, List<TreeMenu> treeMenu) {
-		return new TitleMenu(UUID.fromString(menuBarId), UUID.fromString(titleMenuId), new TitleMenuName(titleMenuName),
+		return new TitleBar(UUID.fromString(menuBarId), UUID.fromString(titleMenuId), new TitleBarName(titleMenuName),
 				new ColorCode(backgroundColor), imageFile, new ColorCode(textColor),
 				EnumAdaptor.valueOf(titleMenuAtr, TitleMenuAtr.class), new TitleMenuCode(titleMenuCode), displayOrder,
 				treeMenu);
 	}
 
-	public static TitleMenu newTitleMenu(String menuBarId, String titleMenuName, String backgroundColor,
+	public static TitleBar newTitleMenu(String menuBarId, String titleMenuName, String backgroundColor,
 			String imageFile, String textColor, int titleMenuAtr, String titleMenuCode, Integer displayOrder,
 			List<TreeMenu> treeMenu) {	
 		UUID titleMenuId = UUID.randomUUID();
