@@ -68,9 +68,9 @@ public class StandardMenuWebService extends WebService {
 	}
 
 	@POST
-	@Path("findBySystem/{system}")
-	public List<StandardMenuDto> findBySystem(@PathParam("system") int system) {
-		return finder.findBySystem(system);
+	@Path("findAllDisplay")
+	public List<StandardMenuDto> findAllDisplay() {
+		return finder.findAllDisplay();
 
 	}
 }

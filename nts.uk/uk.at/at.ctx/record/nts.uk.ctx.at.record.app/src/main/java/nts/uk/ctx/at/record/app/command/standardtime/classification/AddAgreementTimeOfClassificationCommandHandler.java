@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.standardtime.classification;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -60,7 +59,7 @@ public class AddAgreementTimeOfClassificationCommandHandler
 
 		AgreementTimeOfClassification agreementTimeOfClassification = new AgreementTimeOfClassification(companyId,
 				basicSettingId, EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
-				command.getEmploymentCategoryCode());
+				command.getClassificationCode());
 		
 		BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId,
 				new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()), 

@@ -51,45 +51,10 @@ public class CclmtClassificationPK implements Serializable {
 	 * @param ccid the ccid
 	 * @param code the code
 	 */
-	public CclmtClassificationPK(String ccid, String code) {
-		this.cid = ccid;
+	public CclmtClassificationPK(String cid, String code) {
+		this.cid = cid;
 		this.code = code;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (code != null ? code.hashCode() : 0);
-		return hash;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		// not set
-		if (!(object instanceof CclmtClassificationPK)) {
-			return false;
-		}
-		CclmtClassificationPK other = (CclmtClassificationPK) object;
-		if ((this.cid == null && other.cid != null)
-			|| (this.cid != null && !this.cid.equals(other.cid))) {
-			return false;
-		}
-		if ((this.code == null && other.code != null)
-			|| (this.code != null && !this.code.equals(other.code))) {
-			return false;
-		}
-		return true;
-	}
 
 }

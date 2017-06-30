@@ -14,6 +14,7 @@ module kdl007.a.viewmodel {
         constructor() {
             let self = this;
 
+
             self.start();
         }
 
@@ -51,7 +52,7 @@ module kdl007.a.viewmodel {
                 alertError({ messageId: "Msg_30" });
                 return;
             }
-
+            
             setShared('KDL007_VALUES', { selecteds: self.isMulti ? codeList : [codeList] }, true);
 
             self.close();
@@ -78,8 +79,8 @@ module kdl007.a.viewmodel {
     }
 
     interface IData {
-        isMulti: boolean;
-        posibles?: Array<any>;
-        selecteds?: Array<any>;
+        isMulti: boolean,
+        posibles: Array<any>,
+        selecteds: Array<any>
     }
 }

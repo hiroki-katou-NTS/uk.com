@@ -56,17 +56,12 @@ public class TopPageSelfWebService extends WebService {
 		return topPageSelfSettingFinder.getTopPageSelfSet();
 	}
 	/**
-	 * get my page
-	 * @param layoutID
+	 * get top page
+	 * @param topPageCode
 	 * @return
 	 */
-//	@POST
-//	@Path("getmypage")
-//	public DefaultTopPageSetFactory.java activeLayoutSetting(String layoutID) {
-//		return myPage.findLayout(layoutID);
-//	}
 	@POST
-	@Path("gettoppage")
+	@Path("/gettoppage")
 	public LayoutAllDto activeLayoutTopPage(String topPageCode){
 		return topPage.findLayoutTopPage(topPageCode);
 	}

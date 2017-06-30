@@ -23,7 +23,11 @@ module nts.uk.at.view.kmk008.d {
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
-                self.alreadySettingList = ko.observableArray([]);
+                self.alreadySettingList = ko.observableArray([
+                    { code: '1', isAlreadySetting: true },
+                    { code: '10', isAlreadySetting: true },
+                    { code: '11', isAlreadySetting: true },
+                ]);
 
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
@@ -55,25 +59,20 @@ module nts.uk.at.view.kmk008.d {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                self.getalreadySettingList();
-                $('#empt-list-setting-screen-d').ntsListComponent(self.listComponentOption).done(function() {
-                    self.employmentList($('#empt-list-setting-screen-d').getDataList());
-                    if (self.employmentList().length > 0) {
-                        self.selectedCode(self.employmentList()[0].code);
-                    }
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-
-            getalreadySettingList() {
-                let self = this;
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.employmentCategoryCodes.length > 0) {
                         self.alreadySettingList(_.map(data.employmentCategoryCodes, item => { return { code: item, isAlreadySetting: true } }));
                     }
                 })
+                $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
+                    self.employmentList($('#empt-list-setting').getDataList());
+                    if (self.employmentList().length > 0) {
+                        self.selectedCode(self.employmentList()[0].code);
+                    }
+                    dfd.resolve();
+                });
+                return dfd.promise();
             }
 
             addUpdateData() {
@@ -96,7 +95,6 @@ module nts.uk.at.view.kmk008.d {
                         alert("Error");
                         return;
                     }
-                    self.getalreadySettingList();
                     self.getDetail(self.selectedCode());
                 });
             }
@@ -105,9 +103,15 @@ module nts.uk.at.view.kmk008.d {
                 let self = this;
                 let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
                 new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                    self.getalreadySettingList();
-                    self.setSelectCodeAfterRemove(self.selectedCode());
+                    new service.Service().getList(self.laborSystemAtr).done(data => {
+                        if (data.employmentCategoryCodes.length > 0) {
+                            self.alreadySettingList(_.map(data.employmentCategoryCodes, item => { return { code: item, isAlreadySetting: true } }));
+                        }
+                    })
+                   
+                    self.getDetail(self.selectedCode());
                 });
+
             }
 
             getDetail(employmentCategoryCode: string) {
@@ -118,38 +122,9 @@ module nts.uk.at.view.kmk008.d {
 
                 });
             }
-
-            setSelectCodeAfterRemove(currentSelectCode: string) {
-                let self = this;
-                let empLength = self.employmentList().length;
-                if (empLength == 0) {
-                    self.selectedCode("");
-                    return;
-                }
-                let empSelectIndex = _.findIndex(self.employmentList(), emp => {
-                    return emp.code == self.selectedCode();
-                });
-                if (empSelectIndex == -1) {
-                    self.selectedCode("");
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength == 1) {
-                    self.getDetail(currentSelectCode);
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength > 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex + 1].code);
-                    return;
-                }
-
-                if (empSelectIndex < empLength - 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex + 1].code);
-                    return;
-                }
-                if (empSelectIndex == empLength - 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex - 1].code);
-                    return;
-                }
+            
+            setSelectCodeAfterRemove(currentSelectCode: string){
+                
             }
         }
 

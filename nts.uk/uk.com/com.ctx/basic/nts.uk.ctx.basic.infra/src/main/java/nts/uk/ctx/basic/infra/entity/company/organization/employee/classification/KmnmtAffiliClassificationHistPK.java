@@ -31,11 +31,11 @@ public class KmnmtAffiliClassificationHistPK implements Serializable {
     @Column(name = "HIST_ID")
     private String histId;
     
-    /** The sid. */
+    /** The empId. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "SID")
-    private String sid;
+    @Column(name = "EMP_ID")
+    private String empId;
     
     /** The clscd. */
     @Basic(optional = false)
@@ -53,69 +53,16 @@ public class KmnmtAffiliClassificationHistPK implements Serializable {
      * Instantiates a new kmnmt affili classification hist PK.
      *
      * @param histId the hist id
-     * @param sid the sid
+     * @param empId the empId
      * @param clscd the clscd
      */
-    public KmnmtAffiliClassificationHistPK(String histId, String sid, String clscd) {
+    public KmnmtAffiliClassificationHistPK(String histId, String empId, String clscd) {
         this.histId = histId;
-        this.sid = sid;
+        this.empId = empId;
         this.clscd = clscd;
     }
 
-    /**
-     * Gets the hist id.
-     *
-     * @return the hist id
-     */
-    public String getHistId() {
-        return histId;
-    }
-
-    /**
-     * Sets the hist id.
-     *
-     * @param histId the new hist id
-     */
-    public void setHistId(String histId) {
-        this.histId = histId;
-    }
-
-    /**
-     * Gets the sid.
-     *
-     * @return the sid
-     */
-    public String getSid() {
-        return sid;
-    }
-
-    /**
-     * Sets the sid.
-     *
-     * @param sid the new sid
-     */
-    public void setSid(String sid) {
-        this.sid = sid;
-    }
-
-    /**
-     * Gets the clscd.
-     *
-     * @return the clscd
-     */
-    public String getClscd() {
-        return clscd;
-    }
-
-    /**
-     * Sets the clscd.
-     *
-     * @param clscd the new clscd
-     */
-    public void setClscd(String clscd) {
-        this.clscd = clscd;
-    }
-
+    
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -123,7 +70,7 @@ public class KmnmtAffiliClassificationHistPK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (histId != null ? histId.hashCode() : 0);
-        hash += (sid != null ? sid.hashCode() : 0);
+        hash += (empId != null ? empId.hashCode() : 0);
         hash += (clscd != null ? clscd.hashCode() : 0);
         return hash;
     }
@@ -145,8 +92,8 @@ public class KmnmtAffiliClassificationHistPK implements Serializable {
 				|| (this.histId != null && !this.histId.equals(other.histId))) {
 			return false;
 		}
-		if ((this.sid == null && other.sid != null)
-				|| (this.sid != null && !this.sid.equals(other.sid))) {
+		if ((this.empId == null && other.empId != null)
+				|| (this.empId != null && !this.empId.equals(other.empId))) {
 			return false;
 		}
 		if ((this.clscd == null && other.clscd != null)
@@ -163,7 +110,7 @@ public class KmnmtAffiliClassificationHistPK implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.KmnmtClassificationHistPK[ histId=" + histId + ", sid=" + sid + ", clscd="
+		return "entity.KmnmtClassificationHistPK[ histId=" + histId + ", empId=" + empId + ", clscd="
 				+ clscd + " ]";
 	}
     

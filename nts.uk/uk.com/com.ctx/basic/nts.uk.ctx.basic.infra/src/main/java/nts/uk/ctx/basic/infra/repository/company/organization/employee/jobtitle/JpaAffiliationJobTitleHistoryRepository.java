@@ -78,7 +78,7 @@ public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 		// position id in data position id
 		lstpredicateWhere
 				.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
-						.get(KmnmtAffiliJobTitleHistPK_.posId).in(positionIds)));
+						.get(KmnmtAffiliJobTitleHistPK_.jobId).in(positionIds)));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
@@ -134,12 +134,12 @@ public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 		// position id in data position id
 		lstpredicateWhere
 				.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
-						.get(KmnmtAffiliJobTitleHistPK_.posId).in(positionIds)));
+						.get(KmnmtAffiliJobTitleHistPK_.jobId).in(positionIds)));
 
 		// employee id in data employee id
 		lstpredicateWhere
 				.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
-						.get(KmnmtAffiliJobTitleHistPK_.sid).in(employeeIds)));
+						.get(KmnmtAffiliJobTitleHistPK_.empId).in(employeeIds)));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
