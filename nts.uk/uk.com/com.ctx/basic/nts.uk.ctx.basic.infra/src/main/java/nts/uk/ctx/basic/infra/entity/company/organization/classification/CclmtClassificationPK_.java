@@ -14,7 +14,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class CclmtClassificationPK_ {
 
 	/** The ccid. */
-	public static volatile SingularAttribute<CclmtClassificationPK, String> ccid;
+	public static volatile SingularAttribute<CclmtClassificationPK, String> cid;
 
 	/** The code. */
 	public static volatile SingularAttribute<CclmtClassificationPK, String> code;
