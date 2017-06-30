@@ -54,33 +54,40 @@ public class AgreementTimeOfClassificationFinder {
 		AgreementTimeOfClassificationDetailDto agreementTimeOfClassificationDetail = new AgreementTimeOfClassificationDetailDto();
 
 		// get basicSettingID of Classification selected
-		Optional<String> basicSettingIdOfClass = agreementTimeOfClassificationRepository.findEmploymentBasicSettingID(companyId,
-				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);
-		
-		// get basicSetting detail of Employment selected
-		Optional<BasicAgreementSetting> basicSettingOfClass = basicAgreementSettingRepository
-				.find(basicSettingIdOfClass.get());
-		
-		// set error time + alarm time
-		if(basicSettingOfClass.isPresent()){
-			agreementTimeOfClassificationDetail.setErrorWeek(basicSettingOfClass.get().getErrorWeek().v());
-			agreementTimeOfClassificationDetail.setAlarmWeek(basicSettingOfClass.get().getAlarmWeek().v());
-			agreementTimeOfClassificationDetail.setErrorTwoWeeks(basicSettingOfClass.get().getErrorTwoWeeks().v());
-			agreementTimeOfClassificationDetail.setAlarmTwoWeeks(basicSettingOfClass.get().getAlarmTwoWeeks().v());
-			agreementTimeOfClassificationDetail.setErrorFourWeeks(basicSettingOfClass.get().getErrorFourWeeks().v());
-			agreementTimeOfClassificationDetail.setAlarmFourWeeks(basicSettingOfClass.get().getAlarmFourWeeks().v());
-			agreementTimeOfClassificationDetail.setErrorOneMonth(basicSettingOfClass.get().getErrorOneMonth().v());
-			agreementTimeOfClassificationDetail.setAlarmOneMonth(basicSettingOfClass.get().getAlarmOneMonth().v());
-			agreementTimeOfClassificationDetail.setErrorTwoMonths(basicSettingOfClass.get().getErrorTwoMonths().v());
-			agreementTimeOfClassificationDetail.setAlarmTwoMonths(basicSettingOfClass.get().getAlarmTwoMonths().v());
-			agreementTimeOfClassificationDetail.setErrorThreeMonths(basicSettingOfClass.get().getErrorThreeMonths().v());
-			agreementTimeOfClassificationDetail.setAlarmThreeMonths(basicSettingOfClass.get().getAlarmThreeMonths().v());
-			agreementTimeOfClassificationDetail.setErrorOneYear(basicSettingOfClass.get().getErrorOneYear().v());
-			agreementTimeOfClassificationDetail.setAlarmOneYear(basicSettingOfClass.get().getAlarmOneYear().v());			
-		} else {
-			return null;
+		Optional<String> basicSettingIdOfClass = agreementTimeOfClassificationRepository.findEmploymentBasicSettingID(
+				companyId, EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);
+		if (basicSettingIdOfClass.isPresent()) {
+			// get basicSetting detail of Employment selected
+			Optional<BasicAgreementSetting> basicSettingOfClass = basicAgreementSettingRepository
+					.find(basicSettingIdOfClass.get());
+
+			// set error time + alarm time
+			if (basicSettingOfClass.isPresent()) {
+				agreementTimeOfClassificationDetail.setErrorWeek(basicSettingOfClass.get().getErrorWeek().v());
+				agreementTimeOfClassificationDetail.setAlarmWeek(basicSettingOfClass.get().getAlarmWeek().v());
+				agreementTimeOfClassificationDetail.setErrorTwoWeeks(basicSettingOfClass.get().getErrorTwoWeeks().v());
+				agreementTimeOfClassificationDetail.setAlarmTwoWeeks(basicSettingOfClass.get().getAlarmTwoWeeks().v());
+				agreementTimeOfClassificationDetail
+						.setErrorFourWeeks(basicSettingOfClass.get().getErrorFourWeeks().v());
+				agreementTimeOfClassificationDetail
+						.setAlarmFourWeeks(basicSettingOfClass.get().getAlarmFourWeeks().v());
+				agreementTimeOfClassificationDetail.setErrorOneMonth(basicSettingOfClass.get().getErrorOneMonth().v());
+				agreementTimeOfClassificationDetail.setAlarmOneMonth(basicSettingOfClass.get().getAlarmOneMonth().v());
+				agreementTimeOfClassificationDetail
+						.setErrorTwoMonths(basicSettingOfClass.get().getErrorTwoMonths().v());
+				agreementTimeOfClassificationDetail
+						.setAlarmTwoMonths(basicSettingOfClass.get().getAlarmTwoMonths().v());
+				agreementTimeOfClassificationDetail
+						.setErrorThreeMonths(basicSettingOfClass.get().getErrorThreeMonths().v());
+				agreementTimeOfClassificationDetail
+						.setAlarmThreeMonths(basicSettingOfClass.get().getAlarmThreeMonths().v());
+				agreementTimeOfClassificationDetail.setErrorOneYear(basicSettingOfClass.get().getErrorOneYear().v());
+				agreementTimeOfClassificationDetail.setAlarmOneYear(basicSettingOfClass.get().getAlarmOneYear().v());
+			} else {
+				return null;
+			}
 		}
-		
+
 		// get basicSettingId of Company
 		Optional<AgreementTimeOfCompany> agreementTimeOfCompany = agreementTimeCompanyRepository.find(companyId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
@@ -95,7 +102,7 @@ public class AgreementTimeOfClassificationFinder {
 		agreementTimeOfClassificationDetail.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
 		agreementTimeOfClassificationDetail.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
 		agreementTimeOfClassificationDetail.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
-		
+
 		return agreementTimeOfClassificationDetail;
 	}
 }

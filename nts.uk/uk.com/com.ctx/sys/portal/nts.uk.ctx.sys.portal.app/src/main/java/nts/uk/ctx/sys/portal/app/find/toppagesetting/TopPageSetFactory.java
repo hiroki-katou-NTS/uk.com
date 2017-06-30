@@ -47,4 +47,14 @@ public interface TopPageSetFactory {
 	 * @return
 	 */
 	LayoutForTopPageDto getTopPageByCode(String companyId, String code, int system, int classification, boolean check);
+	/**
+	 * check my page co duoc su dung khong
+	 * @return
+	 */
+	Boolean checkMyPageSet();
+	/**
+	 * check top page co duoc su dung hay khong
+	 * @return
+	 */
+	Boolean checkTopPageSet();
 }

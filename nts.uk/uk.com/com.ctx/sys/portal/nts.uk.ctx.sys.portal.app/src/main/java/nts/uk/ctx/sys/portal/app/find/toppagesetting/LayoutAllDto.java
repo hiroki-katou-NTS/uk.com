@@ -13,5 +13,6 @@ public class LayoutAllDto {
 	private Boolean check;
 	/**check my page co duoc hien khong*/
 	private Boolean checkMyPage;
-	
+	/**check top page co duoc setting khong*/
+	private Boolean checkTopPage;
 }
