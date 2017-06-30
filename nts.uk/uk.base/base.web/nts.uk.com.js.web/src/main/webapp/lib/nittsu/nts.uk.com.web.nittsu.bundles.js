@@ -12186,7 +12186,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_16) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -12205,11 +12205,13 @@ var nts;
                         var color = ko.unwrap(data.value);
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+                        var required = data.required === undefined ? false : ko.unwrap(data.required);
                         var tag = $container.prop("tagName").toLowerCase();
                         var $picker;
                         if (tag === "input") {
                             $picker = $container;
                             $picker.appendTo("<div class='ntsControl ntsColorPicker_Container'/>");
+                            $picker.addClass("ntsColorPicker");
                         }
                         else if (tag === 'div') {
                             $container.addClass("ntsControl ntsColorPicker_Container");
@@ -12222,6 +12224,10 @@ var nts;
                             $container = $container.parent();
                             $container.append("<input class='ntsColorPicker'/");
                             $picker = $container.find(".ntsColorPicker");
+                        }
+                        $picker.data("required", required);
+                        if (nts.uk.util.isNullOrEmpty($container.attr("tabindex"))) {
+                            $container.attr("tabindex", "0");
                         }
                         $picker.addClass("ntsColorPicker").attr("data-name", dataName);
                         $picker.spectrum({
@@ -12250,9 +12256,27 @@ var nts;
                                 ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
                             ],
                             change: function (color) {
+                                var required = $picker.data("required");
+                                $picker.ntsError('clear');
                                 if (!nts.uk.util.isNullOrUndefined(color) && !nts.uk.util.isNullOrUndefined(data.value)) {
                                     data.value(color.toHexString()); // #ff0000    
                                 }
+                                else if (required === true) {
+                                    _.defer(function () { $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName])); });
+                                }
+                            }
+                        });
+                        $container.keydown(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code.toString() === "9") {
+                                if (required === true) {
+                                    $picker.ntsError('clear');
+                                    var value = $picker.spectrum("get");
+                                    if (!nts.uk.util.isNullOrUndefined(color)) {
+                                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
+                                    }
+                                }
+                                $picker.spectrum("hide");
                             }
                         });
                         if (!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)) {
@@ -12280,6 +12304,8 @@ var nts;
                         }
                         var colorCode = ko.unwrap(data.value);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+                        var required = data.required === undefined ? false : ko.unwrap(data.required);
+                        $picker.data("required", required);
                         $picker.spectrum("set", colorCode);
                         if (enable !== false) {
                             $picker.spectrum("enable");
@@ -12291,7 +12317,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12476,7 +12502,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_16) {
+        (function (ui_17) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -12566,7 +12592,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
+            })(koExtentions = ui_17.koExtentions || (ui_17.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
