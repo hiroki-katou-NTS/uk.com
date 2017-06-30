@@ -1,0 +1,15 @@
+button {
+	margin-left: 85%;
+	margin-bottom: 10px;
+}
+
+.lbl-title-employeer-name{
+	margin-bottom: 30px !important;
+}
+
+.tabpanel-1-contents-area-right {
+	width: 400px;
+	margin-top: 20px;
+	float: left;
+	clean: right;
+}

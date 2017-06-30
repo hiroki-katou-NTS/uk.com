@@ -4,8 +4,8 @@ module nts.uk.at.view.kmk008.d {
             timeOfCompany: KnockoutObservable<TimeOfEmploymentModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
-            currentEmpName:  KnockoutObservable<string>;
-            
+            currentEmpName: KnockoutObservable<string>;
+
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
@@ -20,7 +20,7 @@ module nts.uk.at.view.kmk008.d {
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfEmploymentModel(null));
                 self.currentEmpName = ko.observable("");
-                
+
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
                 self.alreadySettingList = ko.observableArray([
@@ -28,15 +28,15 @@ module nts.uk.at.view.kmk008.d {
                     { code: '10', isAlreadySetting: true },
                     { code: '11', isAlreadySetting: true },
                 ]);
-                
+
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
-                    listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    listType: 1,
+                    selectType: 1,
                     selectedCode: self.selectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
@@ -49,10 +49,10 @@ module nts.uk.at.view.kmk008.d {
                     let empSelect = _.find(self.employmentList(), emp => {
                         return emp.code == newValue;
                     });
-                    if(empSelect){ self.currentEmpName(empSelect.name);}
-                   
+                    if (empSelect) { self.currentEmpName(empSelect.name); }
+
                 });
-                
+
                 self.startPage();
             }
 
@@ -61,37 +61,56 @@ module nts.uk.at.view.kmk008.d {
                 let dfd = $.Deferred();
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
-                    if (data.length > 0) {
-                        self.alreadySettingList(_.map(data, item => { return { code: item, isAlreadySetting: true } }));
+                    if (data.employmentCategoryCodes.length > 0) {
+                        self.alreadySettingList(_.map(data.employmentCategoryCodes, item => { return { code: item, isAlreadySetting: true } }));
                     }
-                })       
-                $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function(){
+                })
+                $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
                     self.employmentList($('#empt-list-setting').getDataList());
-                    if(self.employmentList().length > 0){
-                         self.selectedCode(self.employmentList()[0].code);
+                    if (self.employmentList().length > 0) {
+                        self.selectedCode(self.employmentList()[0].code);
                     }
                     dfd.resolve();
-                });             
+                });
                 return dfd.promise();
             }
 
             addUpdateData() {
                 let self = this;
-                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), code => { return code == self.selectedCode() });
+                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfCompanyNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfCompany(), self.laborSystemAtr, self.selectedCode());
 
                 if (indexCodealreadySetting != -1) {
-                    new service.Service().updateAgreementTimeOfEmployment(timeOfCompanyNew).done(function() {
-                        self.getDetail();
+                    new service.Service().updateAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
+                        if (listError.length > 0) {
+                            alert("Error");
+                            return;
+                        }
+                        self.getDetail(self.selectedCode());
                     });
                     return;
                 }
-                new service.Service().addAgreementTimeOfEmployment(timeOfCompanyNew).done(function() {
-                    self.getDetail();
+                new service.Service().addAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
+                    if (listError.length > 0) {
+                        alert("Error");
+                        return;
+                    }
+                    self.getDetail(self.selectedCode());
                 });
             }
 
             removeData() {
+                let self = this;
+                let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
+                new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+                    new service.Service().getList(self.laborSystemAtr).done(data => {
+                        if (data.employmentCategoryCodes.length > 0) {
+                            self.alreadySettingList(_.map(data.employmentCategoryCodes, item => { return { code: item, isAlreadySetting: true } }));
+                        }
+                    })
+                   
+                    self.getDetail(self.selectedCode());
+                });
 
             }
 
@@ -102,6 +121,10 @@ module nts.uk.at.view.kmk008.d {
                 }).fail(error => {
 
                 });
+            }
+            
+            setSelectCodeAfterRemove(currentSelectCode: string){
+                
             }
         }
 
@@ -217,13 +240,6 @@ module nts.uk.at.view.kmk008.d {
             }
         }
 
-        export class ListType {
-            static EMPLOYMENT = 1;
-            static Classification = 2;
-            static JOB_TITLE = 3;
-            static EMPLOYEE = 4;
-        }
-
         export interface UnitModel {
             code: string;
             name?: string;
@@ -231,12 +247,6 @@ module nts.uk.at.view.kmk008.d {
             isAlreadySetting?: boolean;
         }
 
-        export class SelectType {
-            static SELECT_BY_SELECTED_CODE = 1;
-            static SELECT_ALL = 2;
-            static SELECT_FIRST_ITEM = 3;
-            static NO_SELECT = 4;
-        }
 
         export interface UnitAlreadySettingModel {
             code: string;
