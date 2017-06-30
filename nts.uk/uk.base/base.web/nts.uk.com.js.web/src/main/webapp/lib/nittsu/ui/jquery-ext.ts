@@ -288,27 +288,20 @@ module nts.uk.ui.jqueryExtentions {
         function setupScrollWhenBinding($grid: JQuery): any {
             let gridId = "#" + $grid.attr("id");
             $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                let scrollTop = $grid.data("scrollTop");
-                if(scrollTop > 0){
+                let isMulti = $grid.igGridSelection('option', 'multipleSelection');
+                let selected = $grid.ntsGridList("getSelected");
+                if(!nts.uk.util.isNullOrEmpty(selected)){
                     _.defer(() => {
+                        let index = isMulti ? selected[0].index : selected.index;
                         if ($grid.igGrid("scrollContainer").length > 0){
-                            $grid.igGrid("scrollContainer").scrollTop(scrollTop);    
-                        } else {
-                            $(gridId + "_scrollContainer").scrollTop(scrollTop);    
+                            let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                            let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                            $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);    
+                        } else { 
+                            $grid.igGrid("virtualScrollTo", index); //.scrollTop(scrollTop);    
                         }    
                     });    
                 }
-            });
-             
-            //Delegate
-            $(document).delegate(gridId, "iggriddatabinding", function (evt, ui) {
-                let scrollTop;
-                if ($grid.igGrid("scrollContainer").length > 0){
-                    scrollTop = $grid.igGrid("scrollContainer").scrollTop();    
-                } else {
-                    scrollTop = $(gridId + "_scrollContainer").scrollTop();    
-                }
-                $grid.data("scrollTop", scrollTop);
             });
         }
 

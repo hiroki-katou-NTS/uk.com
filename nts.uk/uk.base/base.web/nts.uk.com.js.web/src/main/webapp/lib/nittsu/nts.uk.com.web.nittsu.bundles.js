@@ -4135,28 +4135,21 @@ var nts;
                     function setupScrollWhenBinding($grid) {
                         var gridId = "#" + $grid.attr("id");
                         $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                            var scrollTop = $grid.data("scrollTop");
-                            if (scrollTop > 0) {
+                            var isMulti = $grid.igGridSelection('option', 'multipleSelection');
+                            var selected = $grid.ntsGridList("getSelected");
+                            if (!nts.uk.util.isNullOrEmpty(selected)) {
                                 _.defer(function () {
+                                    var index = isMulti ? selected[0].index : selected.index;
                                     if ($grid.igGrid("scrollContainer").length > 0) {
-                                        $grid.igGrid("scrollContainer").scrollTop(scrollTop);
+                                        var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                        var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                        $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
                                     }
                                     else {
-                                        $(gridId + "_scrollContainer").scrollTop(scrollTop);
+                                        $grid.igGrid("virtualScrollTo", index); //.scrollTop(scrollTop);    
                                     }
                                 });
                             }
-                        });
-                        //Delegate
-                        $(document).delegate(gridId, "iggriddatabinding", function (evt, ui) {
-                            var scrollTop;
-                            if ($grid.igGrid("scrollContainer").length > 0) {
-                                scrollTop = $grid.igGrid("scrollContainer").scrollTop();
-                            }
-                            else {
-                                scrollTop = $(gridId + "_scrollContainer").scrollTop();
-                            }
-                            $grid.data("scrollTop", scrollTop);
                         });
                     }
                     function getSelected($grid) {
@@ -12752,7 +12745,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_16) {
+        (function (ui) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -12771,13 +12764,11 @@ var nts;
                         var color = ko.unwrap(data.value);
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var required = data.required === undefined ? false : ko.unwrap(data.required);
                         var tag = $container.prop("tagName").toLowerCase();
                         var $picker;
                         if (tag === "input") {
                             $picker = $container;
                             $picker.appendTo("<div class='ntsControl ntsColorPicker_Container'/>");
-                            $picker.addClass("ntsColorPicker");
                         }
                         else if (tag === 'div') {
                             $container.addClass("ntsControl ntsColorPicker_Container");
@@ -12790,10 +12781,6 @@ var nts;
                             $container = $container.parent();
                             $container.append("<input class='ntsColorPicker'/");
                             $picker = $container.find(".ntsColorPicker");
-                        }
-                        $picker.data("required", required);
-                        if (nts.uk.util.isNullOrEmpty($container.attr("tabindex"))) {
-                            $container.attr("tabindex", "0");
                         }
                         $picker.addClass("ntsColorPicker").attr("data-name", dataName);
                         $picker.spectrum({
@@ -12822,27 +12809,9 @@ var nts;
                                 ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
                             ],
                             change: function (color) {
-                                var required = $picker.data("required");
-                                $picker.ntsError('clear');
                                 if (!nts.uk.util.isNullOrUndefined(color) && !nts.uk.util.isNullOrUndefined(data.value)) {
                                     data.value(color.toHexString()); // #ff0000    
                                 }
-                                else if (required === true) {
-                                    _.defer(function () { $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName])); });
-                                }
-                            }
-                        });
-                        $container.keydown(function (evt, ui) {
-                            var code = evt.which || evt.keyCode;
-                            if (code.toString() === "9") {
-                                if (required === true) {
-                                    $picker.ntsError('clear');
-                                    var value = $picker.spectrum("get");
-                                    if (!nts.uk.util.isNullOrUndefined(color)) {
-                                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
-                                    }
-                                }
-                                $picker.spectrum("hide");
                             }
                         });
                         if (!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)) {
@@ -12870,8 +12839,6 @@ var nts;
                         }
                         var colorCode = ko.unwrap(data.value);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var required = data.required === undefined ? false : ko.unwrap(data.required);
-                        $picker.data("required", required);
                         $picker.spectrum("set", colorCode);
                         if (enable !== false) {
                             $picker.spectrum("enable");
@@ -12883,7 +12850,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13068,7 +13035,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_17) {
+        (function (ui_16) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13158,7 +13125,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_17.koExtentions || (ui_17.koExtentions = {}));
+            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
