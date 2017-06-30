@@ -15,6 +15,7 @@ module ccg013.a.viewmodel {
         menuBars: KnockoutObservableArray<MenuBar>;
         titleMenus: KnockoutObservableArray<any>;
         treeMenus: KnockoutObservableArray<TreeMenu>;
+        standardMenus: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -50,6 +51,8 @@ module ccg013.a.viewmodel {
 
             var menu1 = new nts.uk.ui.contextmenu.ContextMenu(".context-menu-bar", [
                 new nts.uk.ui.contextmenu.ContextMenuItem("cut", "メニューバーの編集(U)", (ui) => {
+                    let li = $(ui).parent('li');
+                    self.openIdialog(li.attr('id'));
                 }),
                 new nts.uk.ui.contextmenu.ContextMenuItem("copy", "メニューバーの削除(D)", (ui) => {
                     var element = $(ui).parent();
@@ -77,6 +80,7 @@ module ccg013.a.viewmodel {
             self.menuBars = ko.observableArray([]);
             self.titleMenus = ko.observableArray([]);
             self.treeMenus = ko.observableArray([]);
+            self.standardMenus = ko.observableArray([]);
         }
 
         startPage(): JQueryPromise<void> {
@@ -104,23 +108,21 @@ module ccg013.a.viewmodel {
                     list001.push(new ItemModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
                 });
                 self.items(list001);
+                
+                service.findStandardMenuList().done(function(res: Array<service.StandardMenuDto>){
+                    self.standardMenus(res);
+                });
+                
                 dfd.resolve(data);
             }).fail(function(res) {
-            });
+            })
             return dfd.promise();
         }
 
 
         addWebMenu(): any {
             var self = this;
-            debugger;
-            if (self.currentWebMenu().isDefaultMenu()) {
-                self.currentWebMenu().defaultMenu(0);
-            } else {
-                self.currentWebMenu().defaultMenu(1);
-            }
-            self.sortMenuBar();
-            self.currentWebMenu().menuBars(self.menuBars());
+            self.convertWebMenu();
             var webMenu = ko.toJSON(self.currentWebMenu);
             service.addWebMenu(self.isCreated(), webMenu).done(function() {
                 self.getWebMenu();
@@ -128,6 +130,17 @@ module ccg013.a.viewmodel {
                 initTitleBar();
             });
         }
+        
+        convertWebMenu(): void {
+            var self = this;   
+            if (self.currentWebMenu().isDefaultMenu()) {
+                self.currentWebMenu().defaultMenu(0);
+            } else {
+                self.currentWebMenu().defaultMenu(1);
+            }
+            self.sortMenuBar();
+            self.currentWebMenu().menuBars(self.menuBars());
+        } 
 
         sortMenuBar() {
             var self = this;
@@ -181,7 +194,7 @@ module ccg013.a.viewmodel {
          */
         findWebMenu(webMenuCode: string): any {
             var self = this;
-            service.findWebMenu(webMenuCode).done(function(res) {
+            service.findWebMenu(webMenuCode).done(function(res: service.WebMenuDto) {
                 var defaultMenu = true;
                 if (res.defaultMenu == 1) {
                     defaultMenu = false;
@@ -189,16 +202,23 @@ module ccg013.a.viewmodel {
                 self.currentWebMenu(new WebMenu(res.webMenuCode, res.webMenuName, defaultMenu, res.menuBars));
 
                 if (res.menuBars && res.menuBars.length > 0) {
-                    var menuBars: Array<MenuBar> = _.orderBy(res.menuBars, 'displayOrder', 'asc');
+                    var menuBars: Array<any> = _.orderBy(res.menuBars, 'displayOrder', 'asc');
                     _.forEach(menuBars, function(menuBar: any) {
                         var titleBars = [];
                         var titleMenu = _.orderBy(menuBar.titleMenu, 'displayOrder', 'asc');
                         _.forEach(titleMenu, function(titleBarItem: any) {
-                            let treeMenus = [];          
-                            _.forEach(titleBarItem.treeMenu, function(treeMenuItem: any){
-                                treeMenus.push(new TreeMenu(titleBarItem.titleMenuId, treeMenuItem.code, "Test", treeMenuItem.displayOrder,treeMenuItem.classification,treeMenuItem.system));
+                            let treeMenus = [];
+                            _.forEach(titleBarItem.treeMenu, function(treeMenuItem: any) {
+                                var standardMenu: service.StandardMenuDto = _.find(self.standardMenus(), function(standardMenuItem: service.StandardMenuDto){
+                                      return standardMenuItem.code == treeMenuItem.code && standardMenuItem.system == treeMenuItem.system && standardMenuItem.classification == treeMenuItem.classification;  
+                                });
+                                var treeMenuName = "";
+                                if (standardMenu) {
+                                    treeMenuName = standardMenu.displayName;
+                                }
+                                treeMenus.push(new TreeMenu(titleBarItem.titleMenuId, treeMenuItem.code, treeMenuName, treeMenuItem.displayOrder, treeMenuItem.classification, treeMenuItem.system));
                             })
-                            titleBars.push(new TitleMenu(menuBar.menuBarId, titleBarItem.titleMenuId, titleBarItem.titleMenuName, titleBarItem.backgroundColor, titleBarItem.imageFile, titleBarItem.textColor, titleBarItem.titleMenuAtr, titleBarItem.titleMenuCode, titleBarItem.displayOrder, titleBarItem.treeMenu));
+                            titleBars.push(new TitleMenu(menuBar.menuBarId, titleBarItem.titleMenuId, titleBarItem.titleMenuName, titleBarItem.backgroundColor, titleBarItem.imageFile, titleBarItem.textColor, titleBarItem.titleMenuAtr, titleBarItem.titleMenuCode, titleBarItem.displayOrder, treeMenus));
                         });
                         self.menuBars.push(new MenuBar(menuBar.menuBarId, menuBar.code, menuBar.menuBarName, menuBar.selectedAtr, menuBar.system, menuBar.menuCls, menuBar.backgroundColor, menuBar.textColor, menuBar.displayOrder, titleBars));
                     });
@@ -218,6 +238,13 @@ module ccg013.a.viewmodel {
             _.remove(self.menuBars(), function(item: MenuBar) {
                 return item.menuBarId() == menuBarId;
             });
+        }
+        
+        /**
+         * Remove web menu
+         */
+        removeWebMenu(): void {
+            var self = this;
         }
 
         /**
@@ -273,11 +300,13 @@ module ccg013.a.viewmodel {
                 titleBar = {
                     name: titleMenu.titleMenuName(),
                     backgroundColor: titleMenu.backgroundColor(),
-                    textColor: titleMenu.textColor()
+                    textColor: titleMenu.textColor(),
+                    treeMenus: titleMenu.treeMenu()
                 };
 
             nts.uk.ui.windows.setShared("titleBar", titleBar);
             nts.uk.ui.windows.sub.modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
+                titleMenu.treeMenu([]);
                 let data = nts.uk.ui.windows.getShared("CCG013D_MENUS");
                 if (data && data.length > 0) {
                     _.forEach(data, x => {
@@ -286,16 +315,64 @@ module ccg013.a.viewmodel {
                             x.code,
                             x.name,
                             x.order,
-                            0,
+                            x.menu_cls,
                             x.system));
                     });
                 }
             });
         }
+        
+        optionEDialog(): void {
+            var self = this;
+            nts.uk.ui.windows.setShared("CCG013E_COPY", self.currentWebMenu());
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
+                self.getWebMenu();
+            });    
+        }
+        
+        optionFDialog(): void {
+            var self = this;
+            var dataTranfer = self.items();
+            nts.uk.ui.windows.setShared("CCG013F_JOB_TITLE", dataTranfer);
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/f/index.xhtml").onClosed(function() {
+            });    
+        }
+        
+        optionGDialog(): void {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/g/index.xhtml").onClosed(function() {
+            });    
+        }
 
         openKdialog(): any {
             var self = this;
             nts.uk.ui.windows.sub.modal("/view/ccg/013/k/index.xhtml").onClosed(function() {
+            });
+        }
+
+        openIdialog(id): any {
+            let self = this,
+                datas: Array<any> = ko.toJS(self.menuBars),
+                menu = _.find(datas, x => x.menuBarId == id);
+            nts.uk.ui.windows.setShared("CCG013I_MENU_BAR1", menu);
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/i/index.xhtml").onClosed(function() {
+                let data = nts.uk.ui.windows.getShared("CCG013I_MENU_BAR");
+                debugger;
+                if (data) {
+                    let menuBars: Array<MenuBar> = self.menuBars();
+                    self.menuBars([]);
+                    _.forEach(menuBars, function(item: MenuBar) {
+                        if (item.menuBarId() == id) {
+                            item.menuBarName(data.menuBarName);
+                            item.backgroundColor(data.backgroundColor);
+                            item.textColor(data.textColor);
+                        }
+                        self.menuBars.push(item);
+                    });
+                    $("#tabs").tabs("refresh");
+                    $("#tabs li#" + id + " a").click();
+                    initTitleBar();
+                }
             });
         }
     }

@@ -25,7 +25,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class DisplayMyPageFinder {
 	@Inject
 	private TopPageSelfSetRepository toppageRepository;
-
 	@Inject
 	private PlacementRepository placementRepository;
 	@Inject
@@ -36,30 +35,31 @@ public class DisplayMyPageFinder {
 	private TopPageJobSetRepository topPageJobSet;
 	@Inject
 	private TopPageSelfSettingFinder topPageSelfSet;
-	//companyId
-	String companyId = AppContexts.user().companyId();
-	//employeeId
-	String employeeId = AppContexts.user().employeeId();
-
 	/**
 	 * find layout (top page)
 	 * @param topPageCode
 	 * @return
 	 */
 	public LayoutAllDto findLayoutTopPage(String topPageCode){
+		//companyId
+		String companyId = AppContexts.user().companyId();
 		if(topPageCode != null && topPageCode != ""){//co top page code
+			//check my page co duoc su dung hay khong
+			Boolean checkMyPage = topPageSet.checkMyPageSet();
+			//check top page co duoc setting khong
+			Boolean checkTopPage = topPageSet.checkTopPageSet();
 			TopPageDto topPage = toppageFinder.findByCode(companyId, topPageCode, "0");
 			if(topPage==null){//khong co du lieu
-				return new LayoutAllDto(null,null,true,false);
+				return new LayoutAllDto(null,null,true,checkMyPage,checkTopPage);
 			}
 			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(),0);
 			if (layout.isPresent()) {//co du lieu
 				List<Placement> placements = placementRepository.findByLayout(topPage.getLayoutId());
 				LayoutForTopPageDto layoutTopPage = topPageSet.buildLayoutTopPage(layout.get(), placements);
 				LayoutForMyPageDto layoutMyPage = null;
-				return new LayoutAllDto(layoutMyPage,layoutTopPage,true,false);
+				return new LayoutAllDto(layoutMyPage,layoutTopPage,true,checkMyPage,checkTopPage);
 			}
-			return new LayoutAllDto(null,null,true,false);
+			return new LayoutAllDto(null,null,true,checkMyPage,checkTopPage);
 		}
 		//khong co top page code
 		//lay chuc vu
@@ -80,4 +80,5 @@ public class DisplayMyPageFinder {
 		}
 		return layoutTopPage;
 	}
+	
 }

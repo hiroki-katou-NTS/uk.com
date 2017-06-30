@@ -3,11 +3,10 @@ module nts.uk.com.view.ccg013.d.service {
 
     // Service paths.
     var servicePath = {
-        findBySystem: "sys/portal/standardmenu/findBySystem/{0}",
+        findBySystem: "sys/portal/standardmenu/findAllDisplay",
     }
     
-    export function findBySystem(system: number): JQueryPromise<Array<any>> {
-        var path = nts.uk.text.format(servicePath.findBySystem, system);
-        return nts.uk.request.ajax(path);
+    export function findBySystem(): JQueryPromise<Array<any>> {
+        return nts.uk.request.ajax(servicePath.findBySystem);
     }
 }

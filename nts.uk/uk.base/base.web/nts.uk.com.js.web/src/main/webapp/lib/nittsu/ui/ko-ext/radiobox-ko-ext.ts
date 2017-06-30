@@ -26,6 +26,9 @@ module nts.uk.ui.koExtentions {
             if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
                 container.attr("tabindex", "0");    
             }
+            
+            container.data("tabindex", container.attr("tabindex"));
+            
             container.keydown(function (evt, ui) {
                 let code = evt.which || evt.keyCode;
                 if (code === 32) {
@@ -86,9 +89,14 @@ module nts.uk.ui.koExtentions {
             // Enable
             if(enable === true) {
                 container.find("input[type='radio']").removeAttr("disabled");   
+                container.attr("tabindex", container.data("tabindex"));
             } else if (enable === false){
                 container.find("input[type='radio']").attr("disabled", "disabled");
-                new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                if (!nts.uk.util.isNullOrUndefined(data.value)){
+                    new nts.uk.util.value.DefaultValue().applyReset(container, data.value);        
+                }
+                
+                container.attr("tabindex", "-1");
             }    
 //            }
         }
@@ -116,6 +124,8 @@ module nts.uk.ui.koExtentions {
             if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
                 container.attr("tabindex", "0");
             }
+            
+            container.data("tabindex", container.attr("tabindex"));
             
             container.keydown(function (evt, ui) {
                 let code = evt.which || evt.keyCode;
@@ -208,9 +218,11 @@ module nts.uk.ui.koExtentions {
                         $(radio).removeAttr("disabled");        
                     }        
                 });  
+                container.attr("tabindex", container.data("tabindex"));
             } else if (enable === false){
                 container.find("input[type='radio']").attr("disabled", "disabled");
                 new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                container.attr("tabindex", "-1");
             }    
 //            }
         }

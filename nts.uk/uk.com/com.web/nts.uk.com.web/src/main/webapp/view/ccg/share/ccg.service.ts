@@ -49,11 +49,6 @@ module nts.uk.com.view.ccg.share.ccg {
         
         
         export module model{
-            
-            export class PersonModel {
-                personId: string;
-                personName: string;
-            }
 
             export class EmployeeSearchDto {
                 employeeId: string;

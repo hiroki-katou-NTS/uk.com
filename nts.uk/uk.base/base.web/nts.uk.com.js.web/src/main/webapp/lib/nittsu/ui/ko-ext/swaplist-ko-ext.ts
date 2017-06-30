@@ -30,6 +30,10 @@ module nts.uk.ui.koExtentions {
                 throw new Error('the element NtsSwapList must have id attribute.');
             }
 
+            let tabIndex = nts.uk.util.isNullOrEmpty($swap.attr("tabindex")) ? "0" : $swap.attr("tabindex");
+            $swap.data("tabindex", tabIndex);
+            $swap.attr("tabindex", "-1");
+            
             var data = valueAccessor();
             var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
             //            var selectedValues = ko.unwrap(data.value);
@@ -39,7 +43,7 @@ module nts.uk.ui.koExtentions {
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var columns: KnockoutObservableArray<any> = data.columns;
 
-            $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container'/>");
+            $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
             if (totalWidth !== undefined) {
                 $swap.parent().width(totalWidth);
             }
@@ -66,13 +70,13 @@ module nts.uk.ui.koExtentions {
                     if(searchMode === "filter"){
                         $SearchArea.append("<div class='ntsClearButtonContainer'/>");
                         $SearchArea.find(".ntsClearButtonContainer")
-                            .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn'/>");  
-                        $SearchArea.find(".clear-btn").text("検索");        
+                            .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
+                        $SearchArea.find(".clear-btn").text("解除");        
                     }
                     $SearchArea.find(".ntsSearchTextContainer")
-                        .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
+                        .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox ntsSwap_Component'/>");
                     $SearchArea.find(".ntsSearchButtonContainer")
-                        .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
+                        .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
                     $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
                     $SearchArea.find(".search-btn").text("検索");  
                 }
@@ -154,12 +158,14 @@ module nts.uk.ui.koExtentions {
                 columns: iggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                features: features
+                features: features,
+                tabIndex: -1
             });
 
             $grid1.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
-                .height(gridHeight);
+                .height(gridHeight)
+                .attr("tabindex", tabIndex);
 
             $grid1.ntsGridList('setupSelecting');
 
@@ -170,7 +176,8 @@ module nts.uk.ui.koExtentions {
                 columns: iggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                features: features
+                features: features,
+                tabIndex: -1
             });
             if (data.draggable === true) {
                 this.swapper.enableDragDrop(data.value);
@@ -184,13 +191,14 @@ module nts.uk.ui.koExtentions {
             
             $grid2.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
-                .height(gridHeight); 
+                .height(gridHeight)
+                .attr("tabindex", tabIndex);
 
             $grid2.ntsGridList('setupSelecting');
 
             var $moveArea = $swap.find("#" + elementId + "-move-data")
-                .append("<button class = 'move-button move-forward'><i class='icon icon-button-arrow-right'></i></button>")
-                .append("<button class = 'move-button move-back'><i class='icon icon-button-arrow-left'></i></button>");
+                .append("<button class = 'move-button move-forward ntsSwap_Component'><i class='icon icon-button-arrow-right'></i></button>")
+                .append("<button class = 'move-button move-back ntsSwap_Component'><i class='icon icon-button-arrow-left'></i></button>");
             var $moveForward = $moveArea.find(".move-forward");
             var $moveBack = $moveArea.find(".move-back");
 
@@ -201,6 +209,8 @@ module nts.uk.ui.koExtentions {
             $moveBack.click(function() {
                 swapper.Model.move(false, data.value);
             });
+            
+            $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
         }
 
         /**

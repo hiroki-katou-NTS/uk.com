@@ -8,6 +8,9 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 		<script>var dialogSize = { width: 400, height: 340 };</script>
+		<com:ValidatorScript>
+			nts.uk.ctx.sys.portal.dom.webmenu.MenuBarName
+		</com:ValidatorScript>
 		<com:stylefile path="ccg013.i.style.css" />
 		<com:scriptfile set="IGNITE" />
 		<com:scriptfile path="ccg013.i.start.js" />
@@ -33,17 +36,17 @@
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_87')}</div></td>
-							<td><input data-bind="ntsTextEditor: {value: nameMenuBar}" /></td>
+							<td><input data-bind="ntsTextEditor: {value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption}" /></td>
 						</tr>
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_88')}</div></td>
-							<td><div id="textColorpicker" data-bind="ntsColorPicker: {value: textColor, enable: true, width: 60}"/></td>
+							<td><div id="textColorpicker" data-bind="ntsColorPicker: {value: textColor, enable: true, width: 60, required: true}"/></td>
 						</tr>
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_89')}</div></td>
-							<td><div id="bgColorpicker" data-bind="ntsColorPicker: {value: bgColor, enable: true, width: 60}"/></td>
+							<td><div id="bgColorpicker" data-bind="ntsColorPicker: {value: bgColor, enable: true, width: 60, required: true}"/></td>
 						</tr>
 					</table>
 				</div>

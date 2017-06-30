@@ -251,7 +251,7 @@ module kcp.share.list {
                 items: self.itemList,
                 selected: self.selectedCodes,
                 selectedKey: 'code',
-                fields: ['name', 'code'],
+                fields: ['name', 'code', 'workplaceName'],
                 mode: 'igGrid'
             }
             var webserviceLocator = nts.uk.request.location.siteRoot
@@ -409,6 +409,10 @@ module kcp.share.list {
          */
         public reload() {
             var self = this;
+            // Check if is has base date.
+            if (self.hasBaseDate && (!self.baseDate() || self.baseDate().toString() == '')) {
+                return;
+            }
             self.findDataList(self.listType).done((data: UnitModel[]) => {
                 if (self.alreadySettingList) {
                     self.addAreadySettingAttr(data, self.alreadySettingList());

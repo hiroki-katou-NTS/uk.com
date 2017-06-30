@@ -6,7 +6,6 @@ module nts.uk.com.view.ccg.share.ccg {
     import TreeType = kcp.share.tree.TreeType;
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
-    import PersonModel = service.model.PersonModel;
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
     import GroupOption = service.model.GroupOption;
     import EmployeeSearchInDto = service.model.EmployeeSearchInDto;
@@ -72,8 +71,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedTab = ko.observable('tab-1');
                 self.reloadDataSearch();
             }
-            
-            public updateTabs(): NtsTabPanelModel[]{
+
+            public updateTabs(): NtsTabPanelModel[] {
                 var self = this;
                 var arrTabs: NtsTabPanelModel[] = [];
                 if (self.isQuickSearchTab) {
@@ -94,9 +93,9 @@ module nts.uk.com.view.ccg.share.ccg {
                         visible: ko.observable(true)
                     });
                 }
-                return arrTabs;     
+                return arrTabs;
             }
-            
+
             public updateSelectedTab(): string {
                 var selectedTab: string = '';
                 var self = this;
@@ -138,9 +137,9 @@ module nts.uk.com.view.ccg.share.ccg {
                     ko.applyBindings(self, $input[0]);
                     self.applyDataSearch();
                     $(".accordion").accordion({
-                    active: false,
-                    collapsible: true
-                });   
+                        active: false,
+                        collapsible: true
+                    });
                     dfd.resolve();
                 });
 
@@ -153,7 +152,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.onSearchAllClicked(data);
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
-                });  
+                });
             }
 
             toEmployeeDto(): EmployeeSearchInDto {
@@ -166,10 +165,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 dto.workplaceCodes = self.selectedCodeWorkplace();
                 return dto;
             }
-            
-            applyDataSearch(): void{
+
+            applyDataSearch(): void {
                 var self = this;
-                service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data){
+                service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data) {
                     self.selectedCodeWorkplace(data);
                     self.reloadDataSearch();
                     if (self.isAdvancedSearchTab) {
@@ -177,12 +176,12 @@ module nts.uk.com.view.ccg.share.ccg {
                         $('#classificationList').ntsListComponent(self.classifications);
                         $('#jobtitleList').ntsListComponent(self.jobtitles);
                         $('#workplaceList').ntsTreeComponent(self.workplaces);
-                    }    
+                    }
                 });
-                
+
             }
-            
-            detailWorkplace(): void{
+
+            detailWorkplace(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('baseDate', self.baseDate());
                 nts.uk.ui.windows.setShared('selectedCodeWorkplace', self.selectedCodeWorkplace());
@@ -190,13 +189,17 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('selectedCodeWorkplace'));
                     self.reloadDataSearch();
                     $('#workplaceList').ntsTreeComponent(self.workplaces);
-                });    
+                });
             }
-            
+
             searchDataEmployee(): void {
                 var self = this;
 
+
+                console.log('yes');
                 service.searchModeEmployee(self.toEmployeeDto()).done(data => {
+                    console.log('yes');
+                    console.log(data);
                     self.employeeinfo = {
                         isShowAlreadySet: false,
                         isMultiSelect: self.isMultiple,
@@ -225,67 +228,55 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError(error);
                 });
             }
-            
-            searchOfWorkplace(): void{
+
+            searchOfWorkplace(): void {
                 var self = this;
-                service.searchOfWorkplace(self.baseDate()).done(data=>{
-                   self.onSearchOfWorkplaceClicked(data); 
-                }).fail(function(error){
+                service.searchOfWorkplace(self.baseDate()).done(data => {
+                    self.onSearchOfWorkplaceClicked(data);
+                }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
-                });    
+                });
             }
-            
-            searchWorkplaceChild(): void{
+
+            searchWorkplaceChild(): void {
                 var self = this;
-                service.searchWorkplaceChild(self.baseDate()).done(data=>{
-                   self.onSearchOfWorkplaceClicked(data); 
-                }).fail(function(error){
+                service.searchWorkplaceChild(self.baseDate()).done(data => {
+                    self.onSearchOfWorkplaceClicked(data);
+                }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
-                });    
+                });
             }
-            
+
             applyEmployee(): void {
                 var self = this;
                 if (self.isSelectAllEmployee) {
                     service.searchModeEmployee(self.toEmployeeDto()).done(data => {
-                        self.onApplyEmployee(self.toPersonCodeList(data));
+                        self.onApplyEmployee(data);
                     });
                 } else {
-                    service.getOfSelectedEmployee(self.baseDate(), self.selectedCodeEmployee()).done(data=>{
-                        self.onApplyEmployee(self.selectedCodeEmployee());  
-                    }).fail(function(error){
-                         nts.uk.ui.dialog.alertError(error);
+                    service.getOfSelectedEmployee(self.baseDate(), self.selectedCodeEmployee()).done(data => {
+                        self.onApplyEmployee(data);
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
                     });
-                    
+
                 }
             }
 
-            public toUnitModelList(dataList: PersonModel[]): KnockoutObservableArray<UnitModel> {
+            public toUnitModelList(dataList: EmployeeSearchDto[]): KnockoutObservableArray<UnitModel> {
                 var dataRes: UnitModel[] = [];
 
-                for (var item: PersonModel of dataList) {
+                for (var item: EmployeeSearchDto of dataList) {
                     dataRes.push({
-                        code: item.personId,
-                        name: item.personName
+                        code: item.employeeId,
+                        name: item.employeeName
                     });
                 }
                 return ko.observableArray(dataRes);
             }
-            
-            public toPersonCodeList(dataList: PersonModel[]): string[] {
-                var dataRes: string[] = [];
-                for (var item: PersonModel of dataList) {
-                    dataRes.push(item.personId);
-                }
-                return dataRes;
-            }
 
-            public toUnitModel(data: PersonModel): KnockoutObservable<UnitModel> {
-                var dataRes: UnitModel = { code: data.personId, name: data.personName };
-                return ko.observable(dataRes);
-            }
 
-            reloadDataSearch(){
+            reloadDataSearch() {
                 var self = this;
                 if (self.isAdvancedSearchTab) {
                     self.employments = {
@@ -329,33 +320,21 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 }
             }
-
         }
-
-
-
-
-
-        /**
-         * Defined Jquery interface.
-        */
-        interface JQuery {
-
-            /**
-             * Nts list component.
-             * This Function used after apply binding only.
-             */
-            ntsGroupComponent(option: nts.uk.com.view.ccg.share.ccg.service.model.GroupOption): JQueryPromise<void>;
-        }
-
-        (function($: any) {
-            $.fn.ntsGroupComponent = function(option: nts.uk.com.view.ccg.share.ccg.service.model.GroupOption): JQueryPromise<void> {
-
-                // Return.
-                return new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().init(this, option);
-            }
-
-        } (jQuery));
     }
 }
-    
+/**
+ * Defined Jquery interface.
+ */
+interface JQuery {
+
+   ntsGroupComponent(option: nts.uk.com.view.ccg.share.ccg.service.model.GroupOption): JQueryPromise<void>;
+}
+
+(function($: any) {
+    $.fn.ntsGroupComponent = function(option: nts.uk.com.view.ccg.share.ccg.service.model.GroupOption): JQueryPromise<void> {
+
+        // Return.
+        return new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().init(this, option);
+    }
+} (jQuery));
