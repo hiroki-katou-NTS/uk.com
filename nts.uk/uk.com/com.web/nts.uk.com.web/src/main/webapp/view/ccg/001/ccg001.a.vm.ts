@@ -105,6 +105,8 @@ module nts.uk.com.view.ccg001.a {
                         self.showinfoSelectedEmployee(true);
                         var dataEmployee: EmployeeSearchDto[] = [];
                         dataEmployee.push(data);
+                        
+                        
                         self.selectedEmployeeCode(dataEmployee);
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
