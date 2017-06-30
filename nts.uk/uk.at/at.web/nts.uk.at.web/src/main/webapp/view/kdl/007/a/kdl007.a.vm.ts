@@ -37,7 +37,7 @@ module kdl007.a.viewmodel {
             // get all item 
             service.getAllItem().done(function(resp: Array<ItemModel>) {
                 if (resp && resp.length) {
-                    _.map(resp, x => self.dataSources.push(new ItemModel({ code: x.code, name: x.name })));
+                    _.each(resp, x => self.dataSources.push(x));
                 }
             });
         }
@@ -52,7 +52,7 @@ module kdl007.a.viewmodel {
                 alertError({ messageId: "Msg_30" });
                 return;
             }
-            
+
             setShared('KDL007_VALUES', { selecteds: self.isMulti ? codeList : [codeList] }, true);
 
             self.close();
