@@ -138,7 +138,7 @@ public class JpaAffiliationEmploymentHistoryRepository extends JpaRepository
 		// employee id in data employee id
 		lstpredicateWhere
 		.add(criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
-				.get(KmnmtAffiliEmploymentHistPK_.sid).in(employeeIds)));
+				.get(KmnmtAffiliEmploymentHistPK_.empId).in(employeeIds)));
 
 		// start date <= base date
 		lstpredicateWhere.add(

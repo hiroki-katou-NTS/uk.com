@@ -47,7 +47,7 @@ public class JpaAffiliationWorkplaceHistoryGetMemento
 	 */
 	@Override
 	public EmployeeId getEmployeeId() {
-		return new EmployeeId(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getSid());
+		return new EmployeeId(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getEmpId());
 	}
 
 	/*
