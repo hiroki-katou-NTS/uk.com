@@ -24,7 +24,7 @@
 				<table class="control">
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_18')}</div></td>
-						<td><input class="menu-bar-name" data-bind="ntsTextEditor: {value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption }" /></td>
+						<td><input class="menu-bar-name" data-bind="ntsTextEditor: {value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption }, hasFocus: true" /></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
 						<td><div id="colorpicker"
 								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}" /></td>
