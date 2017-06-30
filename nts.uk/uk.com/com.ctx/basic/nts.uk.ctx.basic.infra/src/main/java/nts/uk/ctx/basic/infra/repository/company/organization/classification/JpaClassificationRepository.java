@@ -83,7 +83,7 @@ public class JpaClassificationRepository extends JpaRepository
 		// eq company id
 		lstpredicateWhere
 			.add(criteriaBuilder.equal(root.get(CclmtClassification_.cclmtClassificationPK)
-				.get(CclmtClassificationPK_.cid), companyId));
+				.get(CclmtClassificationPK_.ccid), companyId));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

@@ -7,14 +7,12 @@ module nts.uk.at.view.kmk008.b {
             selectedTab: KnockoutObservable<string>;
             viewmodelC: any;
             viewmodelD: any;
-            viewmodelF: any;
             laborSystemAtr: number = 0;
             constructor() {
                 let self = this;
                 self.show = ko.observable(true);
                 self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
-                self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.show.subscribe(function(newVal) {
                     if (newVal)
                         $("#sidebar").ntsSideBar("show", 1);

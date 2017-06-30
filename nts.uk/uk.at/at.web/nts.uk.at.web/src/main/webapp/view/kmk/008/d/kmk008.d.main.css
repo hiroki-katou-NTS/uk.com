@@ -1,0 +1,16 @@
+button {
+	padding: 0px 15px;
+}
+
+.danger {
+	margin-left: 50px;
+}
+
+.proceed {
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+.title {
+	margin-right: 15px;
+}
