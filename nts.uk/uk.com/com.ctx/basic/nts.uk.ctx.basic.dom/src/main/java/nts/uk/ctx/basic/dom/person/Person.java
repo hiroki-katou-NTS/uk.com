@@ -15,9 +15,11 @@ import nts.arc.layer.dom.AggregateRoot;
 public class Person extends AggregateRoot {
 
 	/** The person id. */
+	//個人ID
 	private PersonId personId;
 	
 	/** The person name. */
+	//個人旧名
 	private PersonName personName;
 	
 	
