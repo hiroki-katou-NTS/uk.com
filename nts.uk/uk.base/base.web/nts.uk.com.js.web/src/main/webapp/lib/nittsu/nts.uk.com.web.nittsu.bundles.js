@@ -3766,6 +3766,30 @@ var nts;
                     })(header = grid.header || (grid.header = {}));
                 })(grid = ig.grid || (ig.grid = {}));
             })(ig = ui_1.ig || (ui_1.ig = {}));
+            var smallExtensions;
+            (function (smallExtensions) {
+                $(function () {
+                    $('.limited-label').on('mouseenter', function (e) {
+                        var $label = $(e.target);
+                        // Check if contents is overflow
+                        if ($label.outerWidth() < $label[0].scrollWidth) {
+                            var $view_1 = $('<div />').addClass('limited-label-view')
+                                .text($label.text())
+                                .appendTo('body')
+                                .position({
+                                my: 'left top',
+                                at: 'left bottom',
+                                of: $label,
+                                collision: 'flip'
+                            });
+                            $label.bind('mouseleave.limitedlabel', function () {
+                                $label.unbind('mouseleave.limitedlabel');
+                                $view_1.remove();
+                            });
+                        }
+                    });
+                });
+            })(smallExtensions || (smallExtensions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

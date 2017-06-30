@@ -892,4 +892,31 @@ module nts.uk.ui {
             }
         }
     }
+    
+    module smallExtensions {
+        
+        $(() => {
+            $('.limited-label').on('mouseenter', e => {
+                let $label = $(e.target);
+                
+                // Check if contents is overflow
+                if ($label.outerWidth() < $label[0].scrollWidth) {
+                    let $view = $('<div />').addClass('limited-label-view')
+                        .text($label.text())
+                        .appendTo('body')
+                        .position({
+                            my: 'left top',
+                            at: 'left bottom',
+                            of: $label,
+                            collision: 'flip'
+                        });
+                    
+                    $label.bind('mouseleave.limitedlabel', () => {
+                        $label.unbind('mouseleave.limitedlabel');
+                        $view.remove();
+                    });
+                }
+            });
+        });
+    }
 }
