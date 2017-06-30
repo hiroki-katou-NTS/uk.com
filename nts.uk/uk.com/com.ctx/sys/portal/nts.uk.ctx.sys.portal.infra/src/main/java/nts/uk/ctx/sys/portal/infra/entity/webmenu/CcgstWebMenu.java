@@ -38,5 +38,4 @@ public class CcgstWebMenu extends UkJpaEntity implements Serializable {
 	protected Object getKey() {		
 		return ccgstWebMenuPK;
 	}
-
 }

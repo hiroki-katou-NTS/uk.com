@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk005.a {
+module nts.uk.at.view.kmk005.e {
     export module service {
         var paths: any = {
             findByCodeList: "at/shared/worktime/findByCodeList",

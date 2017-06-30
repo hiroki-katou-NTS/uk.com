@@ -19,12 +19,12 @@
 			<div id="contents-area">
 			<div id="side-menu" class="cf"></div>
 				<div id="detail-content">
-					<div id="function-area" style="margin: 40px">
+					<div id="function-area" style="margin: 40px; margin-bottom: 10px">
 						<h1>KCP001-雇用リスト</h1>
 						<h2>(Employment List)</h2>
 						<h2>Overview</h2>
 						
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p><b>Single/Multiple Selection</b></p><br></br>
 							<div class="cf" data-bind="ntsSwitchButton: {
 														options: selectionOption,
@@ -33,13 +33,13 @@
 														value: selectedOption,
 														enable: true }"></div>
 						</div>
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<div data-bind="ntsCheckBox:{checked: isAlreadySetting}">Show Already Setting</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Show As Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show NoSelection Item</div>
 						</div><br></br>
 
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p>
 								<b>Selection Type:</b>
 							</p>
@@ -53,7 +53,7 @@
 											
 						</div>
 
-						<div style="margin-left: 30px; padding-top: 10px">
+						<div style="margin-left: 10px; padding-top: 10px">
 							<p>
 								<b>Save/Delete</b>
 							</p>
@@ -70,19 +70,23 @@
 					</div>
 					
 					<br></br>
-					<table style="margin-left: 30px;">
+					<table style="margin-left: 30px; border: none">
 						<tr>
-							<td style="width: 640px;">
+							<td style="width: 550px; border: none">
 								<div style="margin-bottom: 30px; padding-left: 20px">
 									<p style="font-size: 30px">雇用リスト</p>
 								</div>
 								<div id="empt-list-setting"></div>
 							</td>
-							<td>
+							<td style="border: none; padding-top: 100px">
 								<table>
 									<tr>
-										<td>Selected Codes: </td>
-										<td style="width: 100px"><div data-bind="text: getSelectedItemCode()"></div></td>
+										<td style="font-size: 20px; font-weight: bold; color: gray;">Selected Codes: </td>
+										<!-- <td style="width: 100px"><div data-bind="text: getSelectedItemCode()"></div></td> -->
+									</tr>
+									<tr >
+										<!-- <td>Selected Codes: </td> -->
+										<td style="margin-right: 30px; width: 500px; color: gray;"><div data-bind="text: getSelectedItemCode()"></div></td>
 									</tr>
 								</table>
 							</td>
@@ -90,12 +94,13 @@
 					</table>
 					
 					<!-- BEGIN DESCRIPTION -->
-						<article class="cf" style="margin-top: 10px;">
+						<article class="cf" style="margin-top: 30px;">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 									<li><a href="#tabs-method">Methods</a></li>
+									<li><a href="#tabs-data">Data</a></li>
 								</ol>
 								<!-- BEGIN TAB HTML -->
 								<div id="tabs-html" class="cf">
@@ -277,6 +282,12 @@
 										</tr>
 									</table>
 								</div><!-- END VIEWMODEL TAB-->
+								
+								<!-- BEGIN TABS DATA -->
+								<div id="tabs-data" class="cf">
+									<pre data-bind="text: jsonData"><![CDATA[]]></pre>
+								</div>
+								<!-- END TABS DATA -->
 								
 								<!-- BEGIN METHOD TAB-->
 								<div id="tabs-method" class="cf">

@@ -4,6 +4,7 @@ module nts.uk.com.view.ccg001.a {
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import PersonModel = nts.uk.com.view.ccg.share.ccg.service.model.PersonModel;
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     export module viewmodel {
         export class ScreenModel {
@@ -20,8 +21,9 @@ module nts.uk.com.view.ccg001.a {
             isEmployeeOfWorkplace: KnockoutObservable<boolean>;
             isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
             isMutipleCheck: KnockoutObservable<boolean>;
+            isSelectAllEmployee: KnockoutObservable<boolean>;
             baseDate: KnockoutObservable<Date>;
-            selectedEmployeeCode: KnockoutObservableArray<string>;
+            selectedEmployeeCode: KnockoutObservableArray<EmployeeSearchDto>;
 
             constructor() {
                 var self = this;
@@ -37,6 +39,7 @@ module nts.uk.com.view.ccg001.a {
                 self.isEmployeeOfWorkplace = ko.observable(true);
                 self.isEmployeeWorkplaceFollow = ko.observable(true);
                 self.isMutipleCheck = ko.observable(true);
+                self.isSelectAllEmployee = ko.observable(true);
                 self.baseDate = ko.observable(new Date());
                 
                 // Init component.
@@ -70,6 +73,10 @@ module nts.uk.com.view.ccg001.a {
                 self.isMutipleCheck.subscribe(function(){
                     self.applyView();
                 });
+                
+                self.isSelectAllEmployee.subscribe(function(){
+                   self.applyView(); 
+                });
             }
 
             public startPage(): JQueryPromise<any> {
@@ -89,26 +96,27 @@ module nts.uk.com.view.ccg001.a {
                     isEmployeeOfWorkplace: self.isEmployeeOfWorkplace(),
                     isEmployeeWorkplaceFollow: self.isEmployeeWorkplaceFollow(),
                     isMutipleCheck: self.isMutipleCheck(),
-                    onSearchAllClicked: function(dataList: PersonModel[]) {
+                    isSelectAllEmployee: self.isSelectAllEmployee(),
+                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode(new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toPersonCodeList(dataList));
+                        self.selectedEmployeeCode(dataList);
                     },
-                    onSearchOnlyClicked: function(data: PersonModel) {
+                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         self.showinfoSelectedEmployee(true);
-                        var dataEmployee: string[] = [];
-                        dataEmployee.push(data.personId);
+                        var dataEmployee: EmployeeSearchDto[] = [];
+                        dataEmployee.push(data);
                         self.selectedEmployeeCode(dataEmployee);
                     },
-                    onSearchOfWorkplaceClicked: function(dataList: PersonModel[]) {
+                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode(new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toPersonCodeList(dataList));
+                        self.selectedEmployeeCode(dataList);
                     },
 
-                    onSearchWorkplaceChildClicked: function(dataList: PersonModel[]) {
+                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode(new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toPersonCodeList(dataList));
+                        self.selectedEmployeeCode(dataList);
                     },
-                    onApplyEmployee: function(dataEmployee: string[]) {
+                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
                         self.selectedEmployeeCode(dataEmployee);
                     }

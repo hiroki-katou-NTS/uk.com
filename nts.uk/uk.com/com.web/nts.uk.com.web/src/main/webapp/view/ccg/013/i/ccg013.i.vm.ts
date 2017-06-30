@@ -12,10 +12,9 @@
             self.nameMenuBar = ko.observable('');
             
             //Get data and fill to popup
-            var menuBar = nts.uk.ui.windows.getShared("CCG013I_MENU_BAR");
-            
+            var menuBar = nts.uk.ui.windows.getShared("CCG013I_MENU_BAR1");           
             if(menuBar != undefined){
-                self.nameMenuBar(menuBar.menuText);
+                self.nameMenuBar(menuBar.menuBarName);
                 self.textColor(menuBar.textColor);
                 self.bgColor(menuBar.backgroundColor);                
             }
@@ -24,7 +23,6 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            
             dfd.resolve();   
             return dfd.promise();
         }
@@ -38,7 +36,7 @@
             
             //Set data
             var menuBar = {
-                menuText: self.nameMenuBar(),
+                menuBarName: self.nameMenuBar(),
                 textColor: self.textColor(),
                 backgroundColor: self.bgColor()    
             }

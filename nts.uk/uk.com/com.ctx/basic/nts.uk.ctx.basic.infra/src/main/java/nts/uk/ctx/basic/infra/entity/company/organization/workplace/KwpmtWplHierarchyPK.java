@@ -23,14 +23,17 @@ public class KwpmtWplHierarchyPK implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	@Basic(optional = false)
     @NotNull
     @Column(name = "CID")
     private String cid;
+	
     @Basic(optional = false)
     @NotNull
     @Column(name = "WPL_ID")
     private String wplid;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "HIST_ID")

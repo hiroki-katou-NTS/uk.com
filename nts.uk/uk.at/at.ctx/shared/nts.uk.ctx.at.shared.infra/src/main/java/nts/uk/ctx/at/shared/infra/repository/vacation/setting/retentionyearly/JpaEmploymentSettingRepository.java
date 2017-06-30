@@ -18,7 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
@@ -36,12 +36,12 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
 	 * EmploymentSettingRepository#insert(nts.uk.ctx.at.shared.dom.vacation.
-	 * setting.retentionyearly.EmploymentSetting)
+	 * setting.retentionyearly.EmptYearlyRetentionSetting)
 	 */
 	@Override
-	public void insert(EmploymentSetting employmentSetting) {
+	public void insert(EmptYearlyRetentionSetting emptYearlyRetentionSetting) {
 		KmfmtRetentionEmpCtr entity = new KmfmtRetentionEmpCtr();
-		employmentSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
+		emptYearlyRetentionSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
 		this.commandProxy().insert(entity);
 		
 	}
@@ -50,13 +50,13 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
 	 * EmploymentSettingRepository#update(nts.uk.ctx.at.shared.dom.vacation.
-	 * setting.retentionyearly.EmploymentSetting)
+	 * setting.retentionyearly.EmptYearlyRetentionSetting)
 	 */
 	@Override
-	public void update(EmploymentSetting employmentSetting) {
+	public void update(EmptYearlyRetentionSetting emptYearlyRetentionSetting) {
 		Optional<KmfmtRetentionEmpCtr> optional = this.queryProxy()
-				.find(new KmfmtRetentionEmpCtrPK(employmentSetting.getCompanyId(),
-						employmentSetting.getEmploymentCode()), KmfmtRetentionEmpCtr.class);
+				.find(new KmfmtRetentionEmpCtrPK(emptYearlyRetentionSetting.getCompanyId(),
+						emptYearlyRetentionSetting.getEmploymentCode()), KmfmtRetentionEmpCtr.class);
 		KmfmtRetentionEmpCtr entity = null;
 		if(optional.isPresent()) {
 			entity = optional.get();
@@ -64,7 +64,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		else {
 			entity = new KmfmtRetentionEmpCtr();
 		}
-		employmentSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
+		emptYearlyRetentionSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
 
@@ -85,7 +85,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 * EmploymentSettingRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<EmploymentSetting> find(String companyId, String employmentCode) {
+	public Optional<EmptYearlyRetentionSetting> find(String companyId, String employmentCode) {
 		return this.queryProxy()
 				.find(new KmfmtRetentionEmpCtrPK(companyId, employmentCode), KmfmtRetentionEmpCtr.class)
 				.map(c -> this.toDomain(c));
@@ -97,8 +97,8 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 * @param entity the entity
 	 * @return the employment setting
 	 */
-	private EmploymentSetting toDomain(KmfmtRetentionEmpCtr entity) {
-		return new EmploymentSetting(new JpaEmploymentSettingGetMemento(entity));
+	private EmptYearlyRetentionSetting toDomain(KmfmtRetentionEmpCtr entity) {
+		return new EmptYearlyRetentionSetting(new JpaEmploymentSettingGetMemento(entity));
 		
 	}
 
@@ -108,7 +108,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 * EmploymentSettingRepository#findAll(java.lang.String)
 	 */
 	@Override
-	public List<EmploymentSetting> findAll(String companyId) {
+	public List<EmptYearlyRetentionSetting> findAll(String companyId) {
 		// Get entity manager
 				EntityManager em = this.getEntityManager();
 				CriteriaBuilder bd = em.getCriteriaBuilder();

@@ -10,6 +10,13 @@ import java.util.Optional;
  * The Interface ComSubstVacationRepository.
  */
 public interface Com60HourVacationRepository {
+	
+	/**
+	 * Insert.
+	 *
+	 * @param setting the setting
+	 */
+	void insert(Com60HourVacation setting);
 
 	/**
 	 * Update.

@@ -89,19 +89,30 @@ module nts.uk.at.view.kdl001.a {
             }
                 
             returnData(){
+                nts.uk.ui.block.invisible();
                 var self = this;
                 self.startTimeOption(1);
                 self.startTime('');
                 self.endTimeOption(1); 
                 self.endTime(''); 
-                self.selectAbleItemList(_.clone(self.rootList));   
-                if(self.selectAbleItemList().length!=0) {
-                    self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
-                    self.selectedCode(_.first(self.selectAbleItemList()).code);   
-                } else {
-                    self.selectedCodeList([]);
-                    self.selectedCode(null);    
-                }
+                kdl001.a.service.findByCodeList(self.selectAbleCodeList())
+                    .done(function(data) {
+                        self.rootList = data;
+                        self.selectAbleItemList(_.clone(self.rootList));
+                        if(!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())){
+                            if(nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
+                                self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
+                            }
+                            self.selectedCode(_.first(self.selectAbleItemList()).code); 
+                        } else {
+                            self.selectedCodeList([]);
+                            self.selectedCode(null);  
+                        }
+                        nts.uk.ui.block.clear();
+                    })
+                    .fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});
+                    });
                 $("#inputStartTime").focus();
             }
             

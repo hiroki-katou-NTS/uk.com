@@ -8,10 +8,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeVacationSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
 
 /**
  * The Class JpaAnnualPaidLeaveSettingSetMemento.
@@ -93,9 +93,9 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
      * vacation.setting.annualpaidleave.TimeVacationSetting)
      */
     @Override
-    public void setTimeSetting(TimeVacationSetting timeSetting) {
-        KtvmtTimeVacationSet entityTime = new KtvmtTimeVacationSet();
-        JpaTimeVacationSettingSetMemento memento = new JpaTimeVacationSettingSetMemento(entityTime);
+    public void setTimeSetting(TimeAnnualSetting timeSetting) {
+        KtvmtTimeAnnualSet entityTime = new KtvmtTimeAnnualSet();
+        JpaTimeAnnualSettingSetMemento memento = new JpaTimeAnnualSettingSetMemento(entityTime);
         timeSetting.saveToMemento(memento);
         
         entityTime.setCid(this.entity.getCid());

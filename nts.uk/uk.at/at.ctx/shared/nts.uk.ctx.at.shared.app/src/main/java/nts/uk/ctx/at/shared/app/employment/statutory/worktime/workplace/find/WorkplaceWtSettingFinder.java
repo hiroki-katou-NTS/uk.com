@@ -36,10 +36,11 @@ public class WorkplaceWtSettingFinder {
 	public WorkplaceWtSettingDto find(WorkplaceWtSettingRequest request) {
 		Optional<WorkPlaceWtSetting> optWorkplaceWtSetting = this.repository.find(companyId, request.getYear(),
 				request.getWorkplaceId());
+		// Update mode.
 		if (optWorkplaceWtSetting.isPresent()) {
 			return WorkplaceWtSettingDto.fromDomain(optWorkplaceWtSetting.get());
 		}
-		// TODO ko co du lieu thi vao new mode.
+		// New mode.
 		return null;
 	}
 

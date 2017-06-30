@@ -18,7 +18,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class CsqmtSequenceMaster.
  */
-
 @Setter
 @Entity
 @Getter

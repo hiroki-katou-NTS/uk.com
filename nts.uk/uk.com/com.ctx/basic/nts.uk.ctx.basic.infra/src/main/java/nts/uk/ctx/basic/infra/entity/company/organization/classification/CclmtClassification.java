@@ -32,19 +32,21 @@ public class CclmtClassification extends UkJpaEntity implements Serializable {
 	protected CclmtClassificationPK cclmtClassificationPK;
 
 	/** The name. */
-	@Column(name = "NAME")
+	@Column(name = "CLSNAME")
 	private String name;
 
 	/**
 	 * Instantiates a new cclmt classification.
 	 */
 	public CclmtClassification() {
+		super();
 	}
 
 	/**
 	 * Instantiates a new cclmt classification.
 	 *
-	 * @param cclmtClassificationPK the cclmt classification PK
+	 * @param cclmtClassificationPK
+	 *            the cclmt classification PK
 	 */
 	public CclmtClassification(CclmtClassificationPK cclmtClassificationPK) {
 		this.cclmtClassificationPK = cclmtClassificationPK;
@@ -53,8 +55,10 @@ public class CclmtClassification extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new cclmt classification.
 	 *
-	 * @param ccid the ccid
-	 * @param code the code
+	 * @param ccid
+	 *            the ccid
+	 * @param code
+	 *            the code
 	 */
 	public CclmtClassification(String ccid, String code) {
 		this.cclmtClassificationPK = new CclmtClassificationPK(ccid, code);
@@ -79,28 +83,16 @@ public class CclmtClassification extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// not set
 		if (!(object instanceof CclmtClassification)) {
 			return false;
 		}
 		CclmtClassification other = (CclmtClassification) object;
 		if ((this.cclmtClassificationPK == null && other.cclmtClassificationPK != null)
-			|| (this.cclmtClassificationPK != null
-				&& !this.cclmtClassificationPK.equals(other.cclmtClassificationPK))) {
+				|| (this.cclmtClassificationPK != null
+						&& !this.cclmtClassificationPK.equals(other.cclmtClassificationPK))) {
 			return false;
 		}
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.CclmtManagementCategory[ cclmtClassificationPK="
-			+ cclmtClassificationPK + " ]";
 	}
 
 	/*
