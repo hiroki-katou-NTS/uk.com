@@ -43,7 +43,7 @@ public class JpaClassificationGetMemento implements ClassificationGetMemento{
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.cclmtClassification.getCclmtClassificationPK().getCid());
+		return new CompanyId(this.cclmtClassification.getCclmtClassificationPK().getCcid());
 	}
 
 	/*

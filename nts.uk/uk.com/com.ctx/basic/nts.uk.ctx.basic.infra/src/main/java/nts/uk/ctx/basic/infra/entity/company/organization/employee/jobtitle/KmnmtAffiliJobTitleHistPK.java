@@ -31,11 +31,11 @@ public class KmnmtAffiliJobTitleHistPK implements Serializable {
 	@Column(name = "HIST_ID")
 	private String histId;
 
-	/** The empId. */
+	/** The sid. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "EMP_ID")
-	private String empId;
+	@Column(name = "SID")
+	private String sid;
 
 	/** The pos id. */
 	@Basic(optional = false)
@@ -46,9 +46,34 @@ public class KmnmtAffiliJobTitleHistPK implements Serializable {
 	public KmnmtAffiliJobTitleHistPK() {
 	}
 
-	public KmnmtAffiliJobTitleHistPK(String histId, String empId, String posId) {
+	public KmnmtAffiliJobTitleHistPK(String histId, String sid, String posId) {
 		this.histId = histId;
-		this.empId = empId;
+		this.sid = sid;
 		this.posId = posId;
 	}
+
+	public String getHistId() {
+		return histId;
+	}
+
+	public void setHistId(String histId) {
+		this.histId = histId;
+	}
+
+	public String getSid() {
+		return sid;
+	}
+
+	public void setSid(String sid) {
+		this.sid = sid;
+	}
+
+	public String getPosId() {
+		return posId;
+	}
+
+	public void setPosId(String posId) {
+		this.posId = posId;
+	}
+
 }

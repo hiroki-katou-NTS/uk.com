@@ -66,7 +66,7 @@ public class JpaAffiliationEmploymentHistorySetMemento
 	 */
 	@Override
 	public void setEmployeeId(EmployeeId employeeId) {
-		this.employmentHistory.getKmnmtEmploymentHistPK().setEmpId(employeeId.v());
+		this.employmentHistory.getKmnmtEmploymentHistPK().setEmptcd(employeeId.v());
 	}
 
 }

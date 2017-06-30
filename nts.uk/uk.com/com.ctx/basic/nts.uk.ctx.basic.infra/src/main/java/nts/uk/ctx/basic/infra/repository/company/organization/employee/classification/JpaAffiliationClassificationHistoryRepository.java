@@ -134,7 +134,7 @@ public class JpaAffiliationClassificationHistoryRepository extends JpaRepository
 		// employee id in data employee id
 		lstpredicateWhere.add(
 				criteriaBuilder.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
-						.get(KmnmtAffiliClassificationHistPK_.empId).in(employeeIds)));
+						.get(KmnmtAffiliClassificationHistPK_.sid).in(employeeIds)));
 		
 		// classification in data classification
 		lstpredicateWhere.add(

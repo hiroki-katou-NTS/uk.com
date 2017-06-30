@@ -62,7 +62,7 @@ public class JpaAffiliationEmploymentHistoryGetMemento
 	 */
 	@Override
 	public EmployeeId getEmployeeId() {
-		return new EmployeeId(this.employmentHistory.getKmnmtEmploymentHistPK().getEmpId());
+		return new EmployeeId(this.employmentHistory.getKmnmtEmploymentHistPK().getSid());
 	}
 
 }
