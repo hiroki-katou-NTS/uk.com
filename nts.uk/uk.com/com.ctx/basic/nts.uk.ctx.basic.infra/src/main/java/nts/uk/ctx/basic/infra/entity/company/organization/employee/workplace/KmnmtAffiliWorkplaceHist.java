@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KMNMT_AFFILI_WORKPLACE_HIST")
+@Table(name = "KMNMT_AFFI_WORKPLACE_HIST")
 @XmlRootElement
 public class KmnmtAffiliWorkplaceHist extends UkJpaEntity implements Serializable {
 
