@@ -195,10 +195,11 @@ module nts.uk.ui.koExtentions {
         update($input: JQuery, data: any) {
             super.update($input, data);
             var textmode: string = this.editorOption.textmode;
-            if(data.value() !== $input.val()){
-                $input.triggerHandler('change');        
-            }
             $input.attr('type', textmode);
+            
+            if (!$input.ntsError('hasError') && data.value() !== $input.val()) { 
+                data.value($input.val());
+            }
         }
 
         getDefaultOption(): any {
