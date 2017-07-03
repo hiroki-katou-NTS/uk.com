@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemFinder;
 @Path("at/share/bonusPayTimeItem")
 @Produces("application/json")
 public class BonusPayTimeItemWebService extends WebService {
+	
 	@Inject
 	private BPTimeItemAddCommandHandler bpTimeItemAddCommandHandler;
 	@Inject
