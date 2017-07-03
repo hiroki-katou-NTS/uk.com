@@ -86,8 +86,7 @@
 											accept: ['.jpg,.gif,.bmp,.jpeg,.png'], 
 											text: '',
 											onchange: uploadFile.bind($data),
-											onfilenameclick: open030B_Dialog.bind($data) }"
-										tabindex="7"></div>
+											onfilenameclick: open030B_Dialog.bind($data) }"></div>
 								</td>
 								<td><button class="danger"
 										data-bind="click: deleteButtonClick, enable: isDelete()"
@@ -98,7 +97,7 @@
 								<td>
 									<button class="btn-download"
 										data-bind="click: downloadFile, enable: isDelete()"
-										tabindex="">#{i18n.getText('CCG030_14')}</button>
+										tabindex="10">#{i18n.getText('CCG030_14')}</button>
 								</td>
 								<td></td>
 							</tr>
