@@ -128,9 +128,6 @@ module nts.uk.at.view.kcp006.a {
                     }
                 });
                 fullCalendarRender.eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, eventUpdatable);
-                $(".fc-day-top").on("click", "button", function() {
-                    alert($(this).attr("data-date"));
-                });
             });
         }
 
@@ -397,6 +394,10 @@ module nts.uk.at.view.kcp006.a {
             }, function() {
                 $(".event-note").hide();
             });
+
+            $(".fc-day-top").on("click", "button", function() {
+                nts.uk.at.view.kcp006.a.CellClickEvent($(this).attr("data-date"));
+            });
         }
 
         viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {
@@ -491,5 +492,9 @@ module nts.uk.at.view.kcp006.a {
                 }
             }
         }
+    }
+
+    export function CellClickEvent(paramDate) {
+
     }
 }
