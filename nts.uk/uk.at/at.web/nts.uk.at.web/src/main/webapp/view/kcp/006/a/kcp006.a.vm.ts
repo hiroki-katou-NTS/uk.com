@@ -79,6 +79,9 @@ module nts.uk.at.view.kcp006.a.viewmodel {
             self.eventUpdatable = ko.observable(true);
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(true);
+            nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
+                alert(date);
+            };
         }
 
     }
