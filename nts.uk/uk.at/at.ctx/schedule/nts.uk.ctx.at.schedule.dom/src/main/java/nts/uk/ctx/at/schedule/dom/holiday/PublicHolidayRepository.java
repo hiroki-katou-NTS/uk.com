@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.schedule.dom.holiday;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
@@ -13,6 +14,6 @@ import nts.arc.time.GeneralDate;
  */
 public interface PublicHolidayRepository {
 
-	List<PublicHoliday> getListHoliday(String companyId, List<GeneralDate> lstDate);
+	List<PublicHoliday> getHolidaysByListDate(String companyId, List<BigDecimal> lstDate);
 	
 }
