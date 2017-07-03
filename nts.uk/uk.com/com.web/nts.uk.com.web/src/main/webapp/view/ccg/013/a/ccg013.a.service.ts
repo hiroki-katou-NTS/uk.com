@@ -6,7 +6,8 @@ module ccg013.a.service {
         findAllWebMenu: "sys/portal/webmenu/find",
         addWebMenu: "sys/portal/webmenu/add",
         updateWebMenu: "sys/portal/webmenu/update",
-        findStandardMenuList: "sys/portal/standardmenu/findAll"
+        findStandardMenuList: "sys/portal/standardmenu/findAll",
+        deleteWebMenu: "sys/portal/webmenu/remove"
     }
     
     export function findWebMenu(webMenuCode: string): JQueryPromise<WebMenuDto> {
@@ -23,6 +24,15 @@ module ccg013.a.service {
         var path = isCreated ? servicePath.addWebMenu : servicePath.updateWebMenu;
         return nts.uk.request.ajax("com",path, webMenu);
     }  
+    
+    export function deleteWebMenu(webMenuCd): JQueryPromise<any> {
+        var path = servicePath.deleteWebMenu;
+        debugger;
+        var obj = {
+                webMenuCd: webMenuCd 
+            };
+        return nts.uk.request.ajax("com",path, obj);
+    } 
     
     export function findStandardMenuList(): JQueryPromise<Array<StandardMenuDto>> {
         return nts.uk.request.ajax(servicePath.findStandardMenuList);
