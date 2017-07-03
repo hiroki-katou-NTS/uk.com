@@ -36,7 +36,7 @@
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<h3>Half integer</h3>
-						<input id="half-int" data-bind="ntsNumberEditor: { name: 'HalfInt', value: valueHalfInt, constraint: 'SampleHalfInt', option: { decimallength: 1, symbolChar: '%', symbolPosition: 'left' } }"/>
+						<input id="half-int" data-bind="ntsNumberEditor: { name: 'HalfInt', value: valueHalfInt, constraint: 'SampleHalfInt', option: { decimallength: 1, unitID: 'PERCENT' } }"/>
 						<br/>
 						<div data-bind="with: numbereditor2">
 							<input id="number-2" data-bind="ntsNumberEditor: { name:'Deci', value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
@@ -279,6 +279,14 @@
 																		Set default value when textbox is empty
 																	</td>
 																</tr>
+																<tr>
+																	<td>unitID<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> string<br/>
+																		<b>Default:</b> ""<br/>
+																		Set unit for number editor. This is unit's ID.
+																	</td>
+																</tr>
 															</tbody>
 														</table>
 													</div>
@@ -366,6 +374,14 @@
 																		<b>Type:</b> string/ number<br/>
 																		<b>Default:</b> empty<br/>
 																		Set default value when textbox is empty
+																	</td>
+																</tr>
+																<tr>
+																	<td>unitID<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> string<br/>
+																		<b>Default:</b> ""<br/>
+																		Set unit for number editor. This is unit's ID.
 																	</td>
 																</tr>
 															</tbody>
