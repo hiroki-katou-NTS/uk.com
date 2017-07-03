@@ -31,7 +31,7 @@
 						<td><input id ="nameTittleBar" data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName'}" /></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
 						<td><div id="colorpicker"
-								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}" /></td>
+								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50, required: true}" /></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -51,7 +51,7 @@
 						</td>
 						<td>
 							<div id="colorpicker"
-								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50}" />
+								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50,required: true}" />
 						</td>
 						<td></td>
 					</tr>
