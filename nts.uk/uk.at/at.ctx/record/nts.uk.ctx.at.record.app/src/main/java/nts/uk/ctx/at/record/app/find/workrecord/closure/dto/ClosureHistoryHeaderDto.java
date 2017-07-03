@@ -15,11 +15,11 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 
 /**
- * The Class ClosureHistoryDDto.
+ * The Class ClosureHistoryHeaderDto.
  */
 @Getter
 @Setter
-public class ClosureHistoryDDto implements ClosureHistorySetMemento {
+public class ClosureHistoryHeaderDto implements ClosureHistorySetMemento {
 
 	/** The Constant LAST_DATE. */
 	public static final int LAST_DATE = 0;
