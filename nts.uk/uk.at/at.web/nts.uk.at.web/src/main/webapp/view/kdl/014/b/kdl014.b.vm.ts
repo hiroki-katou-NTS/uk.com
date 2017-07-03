@@ -41,7 +41,7 @@ module kdl014.b.viewmodel {
             // Get list stamp
             let startTemp: string = nts.uk.ui.windows.getShared("kdl014startDateB");
             let endTemp: string = nts.uk.ui.windows.getShared("kdl014endDateB");
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ~';
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
             let lstEmployeeCode: Array<string> = nts.uk.ui.windows.getShared("kdl014lstEmployeeB");
             let lstCardNumber: Array<string> = [];

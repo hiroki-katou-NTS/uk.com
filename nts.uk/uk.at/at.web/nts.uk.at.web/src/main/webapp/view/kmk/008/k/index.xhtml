@@ -22,52 +22,95 @@
 		</ui:define>
 
 		<ui:define name="content">
-		
+
 			<div id="functions-area">
-				<div id = "functions-area-content">
-					<button id="button1" class="large">#{i18n.getText('KMK008_40')}</button>
-					<button id="button2" class="large proceed">#{i18n.getText('KMK008_14')}</button>
-					<button id="button3" class="large danger">#{i18n.getText('KMK008_16')}</button>
-					<button id="button4" class="large">#{i18n.getText('KMK008_41')}</button>
+				<div id="functions-area-content">
+					<button class="large">#{i18n.getText('KMK008_40')}</button>
+					<button class="large proceed button-margin-left">#{i18n.getText('KMK008_14')}</button>
+					<button class="large danger">#{i18n.getText('KMK008_16')}</button>
+					<button class="large">#{i18n.getText('KMK008_41')}</button>
 				</div>
 			</div>
-			
+
 			<div id="contents-area">
-					<div id="label">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17', ['#Com_Person'])}</div>
-						<span id="label2">社員コード</span>
-						<span id="label3">社員名</span>
-					</div>
-					
-					<div id="panel" data-bind="ntsPanel:{width: '156px', height: '280px', direction: 'right', showIcon: false, visible: true}">
-						<table id="single-list" data-bind="ntsGridList: {
-						width: 142,								
-						height: 265,
-						dataSource: items,
-						primaryKey: 'code',
-						columns: columns2,
-						value: currentCode
+				<div id="contents-area-label">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',
+						['#Com_Person'])}</div>
+					<span class="label" data-bind="text: employeeCode"></span> <span
+						class="label" data-bind="text: employeeName"></span>
+				</div>
+				<div class="contents-area-show-data">
+					<div id="contents-area-show-data-left"
+						data-bind="ntsPanel:{width: '210px', height: '320px', direction: 'right', showIcon: false, visible: true}">
+						<table id="single-list"
+							data-bind="ntsGridList: {								
+							height: 300,
+							width: 200,
+							dataSource: listItemDataGrid,
+							primaryKey: 'yearOrYearMonthValue',
+							columns: [
+								{ headerText: '', key: 'yearOrYearMonthValue',	 hidden: true },
+                    			{ headerText: '#{i18n.getText('KMK008_29')}', key: 'yearOrYearMonthValue', width: 150 }
+							],
+							multiple: false,
+							value: currentCodeSelect,
 						}"></table>
 					</div>
-					
-					<div id="label4">
-						<div id="ntsFormLabel2" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_29')}</div>
-						<div id="ntsDatePicker" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM'}"></div><br></br>
-						<div id="ntsFormLabel3" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_19')}</div>
-						<input id="ntsTimeEditor1" 
-						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_19]',
-						constraint: 'SampleTimeDuration',
-						value: date,
-						inputFormat: 'time',
-						mode: 'time',
-						enable: true,
-						readonly: false,
-						required: false }" />
-						<br></br>
-						<div id="ntsFormLabel4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_20')}</div>
-						<input id="ntsTimeEditor2" data-bind="ntsTimeEditor: {value: date, inputFormat: 'time'}" />
+
+					<div id="contents-area-show-data-right"
+						data-bind="with: currentSelectItem">
+
+						<div class="valign-center control-group">
+							<div id="year-label" data-bind="ntsFormLabel: { required: true }">
+								<span data-bind="text: $parent.yearLabel"></span>
+							</div>
+							<input id="txt-year"
+								data-bind="ntsTimeEditor: {
+								name: '#[KMK008_29]',
+								constraint: 'SampleTimeDuration',
+								value: yearOrYearMonthValue,
+								inputFormat: 'YYYY',
+								enable: false,
+								readonly: false,
+								required: false }" />
+						</div>
+
+
+						<div class="valign-center control-group">
+							<div id="year-error-time-label"
+								data-bind="ntsFormLabel: { required: true }">
+								<span data-bind="text: $parent.yearErrorTimeLabel"></span>
+							</div>
+							<input id="txt-year-error-time"
+								data-bind="ntsTimeEditor: {
+								name: '#[KMK008_42]',
+								constraint: 'SampleTimeDuration',
+								value: errorOneYearOrYearMonth,
+								inputFormat: 'time',
+								mode: 'time',
+								enable: true,
+								readonly: false,
+								required: false }" />
+						</div>
+
+						<div class="valign-center control-group">
+							<div id="year-alarm-time-label"
+								data-bind="ntsFormLabel: { required: true }">
+								<span data-bind="text: $parent.yearAlarmTimeLabel"></span>
+							</div>
+							<input id="txt-year-error-time"
+								data-bind="ntsTimeEditor: {
+								name: '#[KMK008_43]',
+								constraint: 'SampleTimeDuration',
+								value:alarmOneYearOrYearMonth,
+								inputFormat: 'time',
+								mode: 'time',
+								enable: true,
+								readonly: false,
+								required: false }" />
+						</div>
 					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

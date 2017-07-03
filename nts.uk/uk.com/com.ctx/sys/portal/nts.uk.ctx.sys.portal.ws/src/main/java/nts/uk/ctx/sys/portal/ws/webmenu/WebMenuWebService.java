@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommandHander;
 import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommand;
@@ -34,6 +36,9 @@ public class WebMenuWebService extends WebService {
 
 	@Inject
 	private RemoveWebMenuCommandHander removeWebMenuCommandHander;
+	
+	@Inject
+	private CopyWebMenuCommandHandler copyWebMenuCommandHander;
 
 	@POST
 	@Path("add")
@@ -71,4 +76,9 @@ public class WebMenuWebService extends WebService {
 		return this.webMenuFinder.getEditMenuBarDto();
 	}
 	
+	@POST
+	@Path("copy")
+	public void copyWebMenu(CopyWebMenuCommand command) {
+		this.copyWebMenuCommandHander.handle(command);
+	}
 }

@@ -40,6 +40,7 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 	 * nts.uk.ctx.at.shared.app.vacation.setting.subst.find.60HourVacationFinder#
 	 * findComSetting(java.lang.String)
 	 */
+	@Override
 	public SixtyHourVacationSettingDto findComSetting() {
 		String companyId = AppContexts.user().companyId();
 		Optional<Com60HourVacation> optCom60HVacation = this.comSvRepository.findById(companyId);
@@ -62,6 +63,7 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 	 * nts.uk.ctx.at.shared.app.vacation.setting.subst.find.60HourVacationFinder#
 	 * findEmpSetting(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public Emp60HourVacationDto findEmpSetting(String companyId, String contractTypeCode) {
 		// Find setting
 		Optional<Emp60HourVacation> optEmpSubVacation = this.empSvRepository.findById(companyId,

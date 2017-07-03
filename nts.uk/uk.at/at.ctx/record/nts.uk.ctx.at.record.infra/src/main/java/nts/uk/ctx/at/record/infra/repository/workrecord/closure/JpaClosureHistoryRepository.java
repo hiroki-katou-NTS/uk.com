@@ -60,7 +60,6 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 	@Override
 	public void update(ClosureHistory closureHistory) {
 		this.commandProxy().update(this.toEntityUpdate(closureHistory));
-
 	}
 
 	/*

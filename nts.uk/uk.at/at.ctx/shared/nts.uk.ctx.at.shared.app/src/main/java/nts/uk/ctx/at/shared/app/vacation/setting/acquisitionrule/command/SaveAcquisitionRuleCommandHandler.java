@@ -44,18 +44,19 @@ public class SaveAcquisitionRuleCommandHandler extends CommandHandler<Acquisitio
 		// Update VacationAcquisitionRule
 		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(companyId);
 
+		//check VacationAcquisitionRule exits
 		if (optVaAcRule.isPresent()) {
+			//Check is managed, keep old values when is not managed
 			if (acquisitionRuleCommand.getCategory().equals(ManageDistinct.NO)) {
 				AcquisitionRule acquisitionRuleDB = optVaAcRule.get();
 				acquisitionRuleDB.setCategory(acquisitionRuleCommand.getCategory());
 				this.vaRepo.update(acquisitionRuleDB);
-			} else {
-				this.vaRepo.update(acquisitionRuleCommand);
-			}
-
-		} else {
-			this.vaRepo.create(acquisitionRuleCommand);
+				return;
+			} 
+			this.vaRepo.update(acquisitionRuleCommand);
+			return;
 		}
+		this.vaRepo.create(acquisitionRuleCommand);
 	}
 
 }
