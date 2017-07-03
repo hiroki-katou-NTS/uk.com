@@ -34,10 +34,14 @@ public class UsageUnitSettingSaveCommand {
 	 * @param companyId the company id
 	 * @return the usage unit setting
 	 */
-	
-	public UsageUnitSetting toDomain(String companyId){
+
+	public UsageUnitSetting toDomain(String companyId) {
 		return new UsageUnitSetting(new UsageUnitSettingGetMementoImpl(this, companyId));
 	}
+
+	/**
+	 * The Class UsageUnitSettingGetMementoImpl.
+	 */
 	class UsageUnitSettingGetMementoImpl implements UsageUnitSettingGetMemento {
 
 		/** The company id. */
@@ -49,10 +53,8 @@ public class UsageUnitSettingSaveCommand {
 		/**
 		 * Instantiates a new usage unit setting get memento impl.
 		 *
-		 * @param command
-		 *            the command
-		 * @param companyId
-		 *            the company id
+		 * @param command the command
+		 * @param companyId the company id
 		 */
 		public UsageUnitSettingGetMementoImpl(UsageUnitSettingSaveCommand command,
 				String companyId) {

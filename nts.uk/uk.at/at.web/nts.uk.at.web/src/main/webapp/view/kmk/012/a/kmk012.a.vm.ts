@@ -3,8 +3,8 @@ module nts.uk.at.view.kmk012.a {
     import ClosureHistoryFindDto = service.model.ClosureHistoryFindDto;
     import DayofMonth = service.model.DayofMonth;
     import ClosureDto = service.model.ClosureDto;
-    import ClosureHistoryMDto = service.model.ClosureHistoryMDto;
-    import ClosureHistoryDDto = service.model.ClosureHistoryDDto;
+    import ClosureHistoryMDto = service.model.ClosureHistoryMasterDto;
+    import ClosureHistoryDDto = service.model.ClosureHistoryHeaderDto;
     import ClosureSaveDto = service.model.ClosureSaveDto;
     import ClosureHistoryDto = service.model.ClosureHistoryDto;
     

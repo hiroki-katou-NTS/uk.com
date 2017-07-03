@@ -27,9 +27,6 @@ public class EmploymentWtSettingSaveCommandHandler extends CommandHandler<Employ
 	@Inject
 	private EmploymentWtSettingRepository repository;
 
-	/** The company id. */
-	String companyId = AppContexts.user().companyId();
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -44,14 +41,16 @@ public class EmploymentWtSettingSaveCommandHandler extends CommandHandler<Employ
 
 		EmploymentWtSetting companySetting = new EmploymentWtSetting(command);
 
+		Optional<EmploymentWtSetting> optCompanySetting = this.repository.find(AppContexts.user().companyId(),
+				command.getYear().v(), command.getEmploymentCode());
 		// Update
-		Optional<EmploymentWtSetting> optCompanySetting = this.repository.find(companyId, command.getYear().v(),
-				command.getEmploymentCode());
 		if (optCompanySetting.isPresent()) {
 			this.repository.update(companySetting);
-		} else {
-			this.repository.create(companySetting);
+			return;
 		}
+		// Create
+		this.repository.create(companySetting);
+
 	}
 
 }
