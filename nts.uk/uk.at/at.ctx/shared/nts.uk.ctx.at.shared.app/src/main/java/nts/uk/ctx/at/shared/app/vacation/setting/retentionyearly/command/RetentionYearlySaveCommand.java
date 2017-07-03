@@ -10,6 +10,9 @@ import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.dto.Ret
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 
 
+/**
+ * The Class RetentionYearlySaveCommand.
+ */
 @Getter
 @Setter
 public class RetentionYearlySaveCommand {

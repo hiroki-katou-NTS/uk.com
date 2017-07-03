@@ -748,17 +748,6 @@ module nts.uk.at.view.kmk004.a {
                 self.flexSetting.sortMonth(startMonth);
             }
         }
-        export class EmployeeWTSetting {
-            workingTimeSetting: WorkingTimeSetting;
-            yearMonth: KnockoutObservable<number>;
-            employeeId: string;
-
-            constructor() {
-                let self = this;
-                self.yearMonth = ko.observable();
-                self.employeeId = '';
-            }
-        }
         export class EmploymentWTSetting {
             deformationLaborSetting: DeformationLaborSetting;
             flexSetting: FlexSetting;
@@ -837,17 +826,15 @@ module nts.uk.at.view.kmk004.a {
             }
             public sortMonth(startMonth: number): void {
                 let self = this;
-                let self = this;
-                let month = startMonth;
                 let sortedList: Array<any> = new Array<any>();
                 for (let i = 0; i < 12; i++) {
-                    if (month > 12) {
+                    if (startMonth > 12) {
                         // reset month.
-                        month = 1;
+                        startMonth = 1;
                     }
-                    let value = self.flexMonthly().filter(m => month == m.month())[0];
+                    let value = self.flexMonthly().filter(m => startMonth == m.month())[0];
                     sortedList.push(value);
-                    month++;
+                    startMonth++;
                 }
                 self.flexMonthly(sortedList);
             }
@@ -931,16 +918,15 @@ module nts.uk.at.view.kmk004.a {
             }
             public sortMonth(startMonth: number): void {
                 let self = this;
-                let month = startMonth;
                 let sortedList: Array<any> = new Array<any>();
                 for (let i = 0; i < 12; i++) {
-                    if (month > 12) {
+                    if (startMonth > 12) {
                         // reset month.
-                        month = 1;
+                        startMonth = 1;
                     }
-                    let value = self.monthly().filter(m => month == m.month())[0];
+                    let value = self.monthly().filter(m => startMonth == m.month())[0];
                     sortedList.push(value);
-                    month++;
+                    startMonth++;
                 }
                 self.monthly(sortedList);
             }

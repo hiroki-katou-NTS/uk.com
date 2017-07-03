@@ -53,27 +53,30 @@ public class AgreementTimeOfWorkPlaceFinder {
 		Optional<String> basicSettingIdOfWorkplace = agreementTimeOfWorkPlaceRepository.find(workplaceId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
 		
-		// get basicSetting detail of workplace selected
-		Optional<BasicAgreementSetting> basicSettingOfWorkplace = basicAgreementSettingRepository
-				.find(basicSettingIdOfWorkplace.get());
-		// set error time + alarm time
-		if(basicSettingOfWorkplace.isPresent()){
-			agreementTimeOfWorkPlaceDto.setErrorWeek(basicSettingOfWorkplace.get().getErrorWeek().v());
-			agreementTimeOfWorkPlaceDto.setAlarmWeek(basicSettingOfWorkplace.get().getAlarmWeek().v());
-			agreementTimeOfWorkPlaceDto.setErrorTwoWeeks(basicSettingOfWorkplace.get().getErrorTwoWeeks().v());
-			agreementTimeOfWorkPlaceDto.setAlarmTwoWeeks(basicSettingOfWorkplace.get().getAlarmTwoWeeks().v());
-			agreementTimeOfWorkPlaceDto.setErrorFourWeeks(basicSettingOfWorkplace.get().getErrorFourWeeks().v());
-			agreementTimeOfWorkPlaceDto.setAlarmFourWeeks(basicSettingOfWorkplace.get().getAlarmFourWeeks().v());
-			agreementTimeOfWorkPlaceDto.setErrorOneMonth(basicSettingOfWorkplace.get().getErrorOneMonth().v());
-			agreementTimeOfWorkPlaceDto.setAlarmOneMonth(basicSettingOfWorkplace.get().getAlarmOneMonth().v());
-			agreementTimeOfWorkPlaceDto.setErrorTwoMonths(basicSettingOfWorkplace.get().getErrorTwoMonths().v());
-			agreementTimeOfWorkPlaceDto.setAlarmTwoMonths(basicSettingOfWorkplace.get().getAlarmTwoMonths().v());
-			agreementTimeOfWorkPlaceDto.setErrorThreeMonths(basicSettingOfWorkplace.get().getErrorThreeMonths().v());
-			agreementTimeOfWorkPlaceDto.setAlarmThreeMonths(basicSettingOfWorkplace.get().getAlarmThreeMonths().v());
-			agreementTimeOfWorkPlaceDto.setErrorOneYear(basicSettingOfWorkplace.get().getErrorOneYear().v());
-			agreementTimeOfWorkPlaceDto.setAlarmOneYear(basicSettingOfWorkplace.get().getAlarmOneYear().v());			
-		} else {
-			return null;
+		if(basicSettingIdOfWorkplace.isPresent()){
+			// get basicSetting detail of workplace selected
+			Optional<BasicAgreementSetting> basicSettingOfWorkplace = basicAgreementSettingRepository
+					.find(basicSettingIdOfWorkplace.get());
+			// set error time + alarm time
+			if(basicSettingOfWorkplace.isPresent()){
+				agreementTimeOfWorkPlaceDto.setErrorWeek(basicSettingOfWorkplace.get().getErrorWeek().v());
+				agreementTimeOfWorkPlaceDto.setAlarmWeek(basicSettingOfWorkplace.get().getAlarmWeek().v());
+				agreementTimeOfWorkPlaceDto.setErrorTwoWeeks(basicSettingOfWorkplace.get().getErrorTwoWeeks().v());
+				agreementTimeOfWorkPlaceDto.setAlarmTwoWeeks(basicSettingOfWorkplace.get().getAlarmTwoWeeks().v());
+				agreementTimeOfWorkPlaceDto.setErrorFourWeeks(basicSettingOfWorkplace.get().getErrorFourWeeks().v());
+				agreementTimeOfWorkPlaceDto.setAlarmFourWeeks(basicSettingOfWorkplace.get().getAlarmFourWeeks().v());
+				agreementTimeOfWorkPlaceDto.setErrorOneMonth(basicSettingOfWorkplace.get().getErrorOneMonth().v());
+				agreementTimeOfWorkPlaceDto.setAlarmOneMonth(basicSettingOfWorkplace.get().getAlarmOneMonth().v());
+				agreementTimeOfWorkPlaceDto.setErrorTwoMonths(basicSettingOfWorkplace.get().getErrorTwoMonths().v());
+				agreementTimeOfWorkPlaceDto.setAlarmTwoMonths(basicSettingOfWorkplace.get().getAlarmTwoMonths().v());
+				agreementTimeOfWorkPlaceDto.setErrorThreeMonths(basicSettingOfWorkplace.get().getErrorThreeMonths().v());
+				agreementTimeOfWorkPlaceDto.setAlarmThreeMonths(basicSettingOfWorkplace.get().getAlarmThreeMonths().v());
+				agreementTimeOfWorkPlaceDto.setErrorOneYear(basicSettingOfWorkplace.get().getErrorOneYear().v());
+				agreementTimeOfWorkPlaceDto.setAlarmOneYear(basicSettingOfWorkplace.get().getAlarmOneYear().v());			
+			} else {
+				return null;
+			}
+			
 		}
 		
 		// get basicSettingId of Company

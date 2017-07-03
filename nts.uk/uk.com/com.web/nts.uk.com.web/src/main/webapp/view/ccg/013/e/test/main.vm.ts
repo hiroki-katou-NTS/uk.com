@@ -16,10 +16,13 @@
         }
         
         openDialog(){
+            var menuData = {
+                webMenuId: "940",
+                menuName: "の編集"
+            }
+            nts.uk.ui.windows.setShared("menuData", menuData);
             
-            nts.uk.ui.windows.sub.modeless("/view/ccg/013/i/index.xhtml", {title: "メニューバーの編集"});
-            
-            nts.uk.ui.windows.getShared("CCG013I_MENU_BAR");
+            nts.uk.ui.windows.sub.modeless("/view/ccg/013/e/index.xhtml", {title: "他のWebメニューへコピー"});
         }
     }
  }

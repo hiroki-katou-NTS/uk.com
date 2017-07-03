@@ -1,0 +1,18 @@
+/*****************************
+  Limited label
+*****************************/
+.limited-label {
+	width: 100%;
+	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.limited-label-view {
+	position: absolute;
+	display: inline-block;
+	background: #ffc;
+	border: solid 1px #b85;
+	padding: 5px;
+}

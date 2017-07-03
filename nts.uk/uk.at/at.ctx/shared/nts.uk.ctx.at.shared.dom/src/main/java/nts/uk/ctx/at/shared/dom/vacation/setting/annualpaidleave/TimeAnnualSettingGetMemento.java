@@ -38,7 +38,7 @@ public interface TimeAnnualSettingGetMemento {
      *
      * @return the max year day leave
      */
-    YearVacationTimeMaxDay getMaxYearDayLeave();
+    TimeAnnualMaxDay getMaxYearDayLeave();
 
     /**
      * Checks if is enough time one day.

@@ -100,14 +100,10 @@ module nts.uk.pr.view.kmf001.d {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findIsManaged().done(function(data: any) {
-                    
-                    if (data) {
-                        if (data == undefined) {
-                            self.annualManage(0);
-                        }
-                        else {
-                            self.annualManage(data.annualManage);
-                        }
+                    if (data != undefined) {
+                        self.annualManage(data.annualManage);
+                    } else {
+                        self.annualManage(0);
                     }
                     dfd.resolve();
                 }).fail(function(res) {
@@ -123,23 +119,22 @@ module nts.uk.pr.view.kmf001.d {
             private findRetentionYearly(): void {
                 var self = this;
                 service.findRetentionYearly().done(function(data: RetentionYearlyFindDto) {
-                        if (data == null) {
-                            self.retentionYearsAmount(null);
-                            self.maxDaysCumulation(null);
-                            self.leaveAsWorkDays(false);
-                        }
-                        else {
-                            self.initializeWholeCompanyData(data);
-                        }
-                        
-                         $('#year-amount-company').focus();
-                    });
+                    if (data == null) {
+                        self.retentionYearsAmount(null);
+                        self.maxDaysCumulation(null);
+                        self.leaveAsWorkDays(false);
+                    }
+                    else {
+                        self.initializeWholeCompanyData(data);
+                    }
+                    $('#year-amount-company').focus();
+                });
             }
             
             private bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
                 var self = this;
                 self.clearErrors();
-                if(data == undefined) {
+                if (data == undefined) {
                     self.yearsAmountByEmp(null);
                     self.maxDaysCumulationByEmp(null);
                     self.selectedManagement(0);
@@ -162,7 +157,7 @@ module nts.uk.pr.view.kmf001.d {
             private collectWholeCompanyData(): RetentionYearlyDto {
                 var self = this;
                 var dto: RetentionYearlyDto = new RetentionYearlyDto();
-                var upperDto: UpperLimitSettingDto = new  UpperLimitSettingDto();
+                var upperDto: UpperLimitSettingDto = new UpperLimitSettingDto();
                 upperDto.retentionYearsAmount = self.retentionYearsAmount();
                 upperDto.maxDaysCumulation = self.maxDaysCumulation();
                 dto.upperLimitSettingDto = upperDto;
@@ -180,8 +175,8 @@ module nts.uk.pr.view.kmf001.d {
                 });
                 // Selected Item subscribe
                 self.selectedItem.subscribe(function(data: string) {
-                    
-                    if(data) {
+
+                    if (data) {
                         service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
                             //                        self.hasSelectedEmp(true);
                             $('#switch-btn').focus();
@@ -193,11 +188,11 @@ module nts.uk.pr.view.kmf001.d {
                         self.hasSelectedEmp(false);
                     }
                 });
-                
+
                 // employmentList...
                 $('#left-content').ntsListComponent(self.listComponentOption).done(function() {
                     if (($('#left-content').getDataList() == undefined) || ($('#left-content').getDataList().length <= 0)) {
-//                        self.hasSelectedEmp(false);
+                        //                        self.hasSelectedEmp(false);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
                     }
                     else {
@@ -213,7 +208,7 @@ module nts.uk.pr.view.kmf001.d {
             
             private switchToCompanyTab(): void {
                 var self = this;
-//                self.startPage();
+                //                self.startPage();
                 self.findRetentionYearly();
             }
             private registerWholeCompany(): void {
@@ -224,11 +219,11 @@ module nts.uk.pr.view.kmf001.d {
                 // Validate. 
                 $('#year-amount-company').ntsEditor('validate');
                 $('#max-days-company').ntsEditor('validate');
-//                $('.nts-input').ntsEditor('validate');
+                //                $('.nts-input').ntsEditor('validate');
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
-                
+
                 service.saveRetentionYearly(self.collectWholeCompanyData()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 })
@@ -240,7 +235,7 @@ module nts.uk.pr.view.kmf001.d {
             private collectDataByEmployment(): EmploymentSettingDto {
                 var self = this;
                 var dto: EmploymentSettingDto = new EmploymentSettingDto();
-                var upperLimitDto: UpperLimitSettingDto = new  UpperLimitSettingDto();
+                var upperLimitDto: UpperLimitSettingDto = new UpperLimitSettingDto();
                 upperLimitDto.retentionYearsAmount = self.yearsAmountByEmp();
                 upperLimitDto.maxDaysCumulation = self.maxDaysCumulationByEmp();
                 dto.upperLimitSetting = upperLimitDto;
@@ -254,17 +249,17 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 // Clear errors
                 self.clearErrors();
-                
+
                 // Validate. 
                 $('#year-amount-emp').ntsEditor('validate');
                 $('#max-days-emp').ntsEditor('validate');
-//                $('.nts-input').ntsEditor('validate');
+                //                $('.nts-input').ntsEditor('validate');
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
-                
+
                 service.saveByEmployment(self.collectDataByEmployment()).done(function() {
-                    self.alreadySettingList.push({"code": self.selectedItem(), "isAlreadySetting": true});
+                    self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 })
                     .fail((res) => {
@@ -286,14 +281,14 @@ module nts.uk.pr.view.kmf001.d {
             static JOB_TITLE = 3;
             static EMPLOYEE = 4;
         }
-        
+
         export interface UnitModel {
             code: string;
             name?: string;
             workplaceName?: string;
             isAlreadySetting?: boolean;
         }
-        
+
         class ItemModel {
 
             code: string;
@@ -303,7 +298,7 @@ module nts.uk.pr.view.kmf001.d {
                 this.name = name;
             }
         }
-        
+
         class ManagementModel {
             code: number;
             name: string;
@@ -312,7 +307,7 @@ module nts.uk.pr.view.kmf001.d {
                 this.name = name;
             }
         }
-        
+
         class LeaveAsWorkDaysModel {
             value: boolean;
             name: string;

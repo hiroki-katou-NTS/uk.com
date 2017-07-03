@@ -62,7 +62,7 @@ public class AgreementTimeOfClassificationWebservice {
 	
 	@POST
 	@Path("getAgreementTimeOfClassification/{laborSystemAtr}/{classificationCode}")
-	public AgreementTimeOfClassificationDetailDto getDetail(@PathParam("laborSystemAtr") int laborSystemAtr, @PathParam("employmentCategoryCode") String classificationCode) {
+	public AgreementTimeOfClassificationDetailDto getDetail(@PathParam("laborSystemAtr") int laborSystemAtr, @PathParam("classificationCode") String classificationCode) {
 		return this.agreementTimeOfClassificationFinder.findDetail(laborSystemAtr, classificationCode);
 	}
 
