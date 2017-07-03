@@ -25,7 +25,12 @@ module kdl014.b.viewmodel {
                 width: '1010px',
                 height: '395px',
                 dataSource: self.items(),
-                columns: self.columns()
+                columns: self.columns(),
+                features: [{
+                    name: 'Paging',
+                    type: "local",
+                    pageSize: 6 
+                    }]
             });
         }
 
@@ -36,7 +41,7 @@ module kdl014.b.viewmodel {
             // Get list stamp
             let startTemp: string = nts.uk.ui.windows.getShared("kdl014startDateB");
             let endTemp: string = nts.uk.ui.windows.getShared("kdl014endDateB");
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ~';
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
             let lstEmployeeCode: Array<string> = nts.uk.ui.windows.getShared("kdl014lstEmployeeB");
             let lstCardNumber: Array<string> = [];

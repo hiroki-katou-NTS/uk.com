@@ -9,8 +9,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -18,6 +20,15 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaidLeaveSaveCommand> {
+
+    /** The Constant TRUE. */
+    private static final boolean TRUE = true;
+
+    /** The bit true. */
+    private static int BIT_TRUE = 1;
+
+    /** The bit false. */
+    private static int BIT_FALSE = 0;
 
     /** The annual repo. */
     @Inject
@@ -35,13 +46,76 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         AnnualPaidLeaveSaveCommand command = context.getCommand();
 
         String companyId = AppContexts.user().companyId();
-        AnnualPaidLeaveSetting setting = command.toDomain(companyId);
-
         AnnualPaidLeaveSetting domain = this.annualRepo.findByCompanyId(companyId);
+
+        // Check field enable/disable
+        this.validateField(command, domain);
+
+        AnnualPaidLeaveSetting setting = command.toDomain(companyId);
         if (domain != null) {
             this.annualRepo.update(setting);
         } else {
             this.annualRepo.add(setting);
+        }
+    }
+
+    /**
+     * Validate field.
+     *
+     * @param command the command
+     * @param setttingDB the settting DB
+     */
+    private void validateField(AnnualPaidLeaveSaveCommand command, AnnualPaidLeaveSetting setttingDB) {
+        boolean isAnnualManage = command.getAnnualManage() == ManageDistinct.YES.value;
+
+        // ========= NOT MANAGE =========
+        if (!isAnnualManage) {
+            // Manage Annual Setting
+            command.setAddAttendanceDay(
+                    setttingDB.getManageAnnualSetting().isWorkDayCalculate() == TRUE ? BIT_TRUE : BIT_FALSE);
+            command.setMaxManageSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().manageType.value);
+            command.setMaxNumberSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().reference.value);
+            command.setMaxNumberCompany(
+                    setttingDB.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());
+            command.setMaxGrantDay(setttingDB.getManageAnnualSetting().getMaxGrantDay().v());
+            command.setMaxRemainingDay(
+                    setttingDB.getManageAnnualSetting().getRemainingNumberSetting().remainingDayMaxNumber.v());
+            command.setNumberYearRetain(
+                    setttingDB.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
+            command.setPreemptionAnnualVacation(setttingDB.getAcquisitionSetting().annualPriority.value);
+            command.setPreemptionYearLeave(setttingDB.getAcquisitionSetting().permitType.value);
+            command.setRemainingNumberDisplay(
+                    setttingDB.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
+            command.setNextGrantDayDisplay(
+                    setttingDB.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);
+
+            // Time Leave Setting
+            command.setTimeManageType(setttingDB.getTimeSetting().getTimeManageType().value);
+            command.setTimeUnit(setttingDB.getTimeSetting().getTimeUnit().value);
+            command.setManageMaxDayVacation(setttingDB.getTimeSetting().getMaxYearDayLeave().manageType.value);
+            command.setReference(setttingDB.getTimeSetting().getMaxYearDayLeave().reference.value);
+            command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
+            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
+            
+            return;
+        }
+        
+        // ========= MANAGE =========
+        // Manage Annual Setting
+        if (command.getMaxNumberSemiVacation() == MaxDayReference.ReferAnnualGrantTable.value) {
+            command.setMaxNumberCompany(
+                    setttingDB.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());
+        }
+        // Time Leave Setting
+        boolean isTimeManage = command.getTimeManageType() == ManageDistinct.YES.value;
+        if (!isTimeManage) {
+            command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
+            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
+            return;
+        }
+        if (command.getReference() == MaxDayReference.ReferAnnualGrantTable.value) {
+            command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
+            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
         }
     }
 }

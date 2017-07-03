@@ -240,7 +240,10 @@ module kcp003.a.viewmodel {
             self.listComponentOption.alreadySettingList = self.alreadySettingList;
             self.listComponentOption.isMultiSelect = self.isMultiSelect();
             self.listComponentOption.selectType = self.selectedType();
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
+                $('#component-items-list').focusComponent();
+            });
+            
         }
     }
 }

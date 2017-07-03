@@ -60,7 +60,6 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 	@Override
 	public void update(ClosureHistory closureHistory) {
 		this.commandProxy().update(this.toEntityUpdate(closureHistory));
-
 	}
 
 	/*
@@ -120,7 +119,7 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 	 * findByHistoryId(java.lang.String, int, java.lang.String)
 	 */
 	@Override
-	public Optional<ClosureHistory> findByHistoryId(String companyId, int closureId,
+	public Optional<ClosureHistory> findById(String companyId, int closureId,
 			String historyId) {
 		return this.queryProxy().find(new KclmtClosureHistPK(companyId, closureId, historyId),
 				KclmtClosureHist.class).map(c -> this.toDomain(c));

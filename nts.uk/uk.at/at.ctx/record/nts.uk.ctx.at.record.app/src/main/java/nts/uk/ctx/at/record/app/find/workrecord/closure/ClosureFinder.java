@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryInDto;
-import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryMDto;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryMasterDto;
 import nts.uk.ctx.at.record.dom.workrecord.closure.Closure;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistory;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository;
@@ -50,7 +50,7 @@ public class ClosureFinder {
 		//get company id
 		String companyId = loginUserContext.companyId();
 		
-		return this.repository.getAllClosure(companyId).stream().map(closure->{
+		return this.repository.findAll(companyId).stream().map(closure->{
 			ClosureFindDto dto = new ClosureFindDto();
 			closure.saveToMemento(dto);
 			return dto;
@@ -58,12 +58,12 @@ public class ClosureFinder {
 	}
 
 	/**
-	 * Gets the by closure.
+	 * Find by id.
 	 *
 	 * @param closureId the closure id
-	 * @return the by closure
+	 * @return the closure find dto
 	 */
-	public ClosureFindDto getByClosure(int closureId){
+	public ClosureFindDto findById(int closureId){
 		
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -91,7 +91,7 @@ public class ClosureFinder {
 							closure.get().getMonth().getProcessingDate().v());
 			
 			if(closureHisory.isPresent()){
-				ClosureHistoryMDto closureSelected = new ClosureHistoryMDto();
+				ClosureHistoryMasterDto closureSelected = new ClosureHistoryMasterDto();
 				closureHisory.get().saveToMemento(closureSelected);
 				dto.setClosureSelected(closureSelected);
 			}
@@ -106,7 +106,7 @@ public class ClosureFinder {
 	 * @param master the master
 	 * @return the closure detail dto
 	 */
-	public ClosureDetailDto detailMaster(ClosureHistoryInDto master){
+	public ClosureDetailDto findByMaster(ClosureHistoryInDto master){
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -118,7 +118,7 @@ public class ClosureFinder {
 
 		ClosureDetailDto dto = new ClosureDetailDto();
 
-		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findByHistoryId(companyId,
+		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
 				master.getClosureId(), master.getHistoryId());
 
 		// exist data

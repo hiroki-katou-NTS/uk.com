@@ -1,5 +1,11 @@
 module nts.uk.at.view.kmk005 {
     import getText = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     let __viewContext: any = window["__viewContext"] || {};
 
     export module viewmodel {
@@ -11,6 +17,7 @@ module nts.uk.at.view.kmk005 {
                 new TabModel({ id: 'I', name: getText('Com_Person') }),
                 new TabModel({ id: 'K', name: getText('KMK005_44') }),
             ]);
+
             constructor() {
                 let self = this;
 
@@ -18,13 +25,14 @@ module nts.uk.at.view.kmk005 {
                     // set title for tab
                     if (t.active() == true) {
                         self.title(t.name);
+                        self.changeTab(t);
                     }
                 });
             }
 
-
             changeTab(tab: TabModel) {
-                let self = this, view: any = __viewContext.viewModel,
+                let self = this,
+                    view: any = __viewContext.viewModel,
                     oldtab: TabModel = _.find(self.tabs(), t => t.active());
 
                 // cancel action if tab self click
@@ -60,6 +68,7 @@ module nts.uk.at.view.kmk005 {
                         break;
                 }
             }
+
         }
 
 
@@ -89,15 +98,57 @@ module nts.uk.at.view.kmk005 {
 
     export module g.viewmodel {
         export class ScreenModel {
+            model: KnockoutObservable<TimeZoneModel> = ko.observable(new TimeZoneModel({ id: '', name: '' }));
             constructor() {
                 let self = this;
+
+                self.start();
             }
 
             start() {
-                let self = this,
-                    dfd = $.Deferred();
+                service.get().done(resp => {
+                    debugger;
+                }).fail(x => alert(x));
+            }
 
-                return dfd.promise();
+            openTimeZoneDialog() {
+                let self = this,
+                    model: TimeZoneModel = self.model();
+
+                setShared("KDL007_PARAM", { isMulti: false, posibles: [], selecteds: ['005'] });
+
+                modal('../../../kdl/007/a/index.xhtml').onClosed(() => {
+                    let data: any = getShared('KDL007_VALUES');
+                    if (data && data.selecteds) {
+                        let code: string = data.selecteds[0];
+                        if (code) {
+                            model.id(code);
+                            service.get().done(resp => {
+                                debugger;
+                            });
+                        } else {
+                            model.id('000');
+                            model.name(getText("KDL007_6"));
+                        }
+                    }
+                });
+            }
+        }
+
+        interface ITimeZoneModel {
+            id: string;
+            name: string;
+        }
+
+        class TimeZoneModel {
+            id: KnockoutObservable<string> = ko.observable('');
+            name: KnockoutObservable<string> = ko.observable('');
+
+            constructor(param: ITimeZoneModel) {
+                let self = this;
+
+                self.id(param.id);
+                self.name(param.name);
             }
         }
     }

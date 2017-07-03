@@ -52,21 +52,11 @@
 					
 					<div id="label4">
 						<div id="ntsFormLabel2" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_29')}</div>
-						<div id="ntsDatePicker" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM'}"></div><br></br>
+						<div id="ntsDatePicker" data-bind="ntsFormLabel: {value: yearValue, dateFormat: 'YYYY/MM'}"></div><br></br>
 						<div id="ntsFormLabel3" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_19')}</div>
-						<input id="ntsTimeEditor1" 
-						data-bind="ntsTimeEditor: {
-						name: '#[KMK008_19]',
-						constraint: 'SampleTimeDuration',
-						value: date,
-						inputFormat: 'time',
-						mode: 'time',
-						enable: true,
-						readonly: false,
-						required: false }" />
-						<br></br>
+						<input id="ntsTimeEditor1" 	data-bind="ntsTimeEditor: {value: errorOneYear, inputFormat: 'time'}" /><br></br>
 						<div id="ntsFormLabel4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_20')}</div>
-						<input id="ntsTimeEditor2" data-bind="ntsTimeEditor: {value: date, inputFormat: 'time'}" />
+						<input id="ntsTimeEditor2" data-bind="ntsTimeEditor: {value: alarmOneYear, inputFormat: 'time'}" />
 					</div>
 			</div>
 		</ui:define>

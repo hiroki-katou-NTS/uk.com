@@ -1,16 +1,12 @@
-#b1_003{
-	margin-top: 7px;
+#btn_close{
+	margin-top: 15px;
 }
 
-#b1_001, #b1_002{
-	padding: 15px 20px 30px 20px;
-	width: 180px;
+.btn{
+	margin-left: 50px;
+	margin-top: 15px;
+	width: 150px !important;
+	height: 50px;
 }
 
-#b1_002{
-	margin-top: 20px;
-}
 
-.functions-area-content{
-	padding: 10px 36px;
-}

@@ -19,7 +19,11 @@ public class CompanyBPSettingFinder {
 	public CompanyBPSettingDto getSetting() {
 		String companyId = AppContexts.user().companyId();
 		Optional<CompanyBonusPaySetting> companyBonusPaySetting = cpBonusPaySettingRepository.getSetting(companyId);
-		return this.toCompanyBPSettingDto(companyBonusPaySetting.get());
+		if(companyBonusPaySetting.isPresent()){
+			return this.toCompanyBPSettingDto(companyBonusPaySetting.get());
+		}
+		return null;
+		
 
 	}
 

@@ -32,10 +32,5 @@ public class BPUnitUseSettingWebService extends WebService {
 		this.bpUnitUseSettingCommandHandler.handle(bpUnitUseSettingUpdateCommand);
 	}
 	
-	@POST
-	@Path("getABC")
-	public void getABC() {
-		String a="";
-	}
 
 }
