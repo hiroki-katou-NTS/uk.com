@@ -29,7 +29,7 @@ public class TopPageSelfWebService extends WebService {
 	@Inject
 	private DisplayMyPageFinder topPage;
 	/**
-	 * Lay du lieu tu domain トップページ 
+	 * get data from domain トップページ 
 	 * @return
 	 */
 	@POST
@@ -38,7 +38,7 @@ public class TopPageSelfWebService extends WebService {
 		return topPageSelfSettingFinder.findSelectMyPage();
 	}
 	/**
-	 * Xu ly dang ky top page self set
+	 * add top page self set
 	 * @param comamnd
 	 */
 	@POST
@@ -47,7 +47,7 @@ public class TopPageSelfWebService extends WebService {
 		this.saveCommandHandler.handle(comamnd);
 	}
 	/**
-	 * Lay du lieu tu domain 本人トップページ設定 
+	 * get data from domain 本人トップページ設定 
 	 * @return
 	 */
 	@POST

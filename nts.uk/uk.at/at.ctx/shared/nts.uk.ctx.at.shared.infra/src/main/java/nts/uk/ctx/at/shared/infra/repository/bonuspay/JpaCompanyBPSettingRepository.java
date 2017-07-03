@@ -14,13 +14,15 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstCompanyBPSettingPK;
 public class JpaCompanyBPSettingRepository extends JpaRepository implements CPBonusPaySettingRepository {
 
 	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpstCompanyBPSetting c WHERE c.kbpstCompanyBPSettingPK.companyId = :companyId";
-
 	@Override
 	public Optional<CompanyBonusPaySetting> getSetting(String companyId) {
 		Optional<KbpstCompanyBPSetting> kbpstCompanyBPSetting = this.queryProxy()
 				.query(SELECT_BY_COMPANYID, KbpstCompanyBPSetting.class).setParameter("companyId", companyId)
 				.getSingle();
-		return Optional.ofNullable(this.toCompanyBonusPaySettingDomain(kbpstCompanyBPSetting.get()));
+		if(kbpstCompanyBPSetting.isPresent()){
+			return Optional.ofNullable(this.toCompanyBonusPaySettingDomain(kbpstCompanyBPSetting.get()));
+		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -48,5 +50,6 @@ public class JpaCompanyBPSettingRepository extends JpaRepository implements CPBo
 		return CompanyBonusPaySetting.createFromJavaType(kbpstCompanyBPSetting.kbpstCompanyBPSettingPK.companyId,
 				kbpstCompanyBPSetting.bonusPaySettingCode);
 	}
+
 
 }

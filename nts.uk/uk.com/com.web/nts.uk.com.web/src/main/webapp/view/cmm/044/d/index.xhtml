@@ -7,14 +7,13 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="cmm044.b.main.css" />
-			<com:scriptfile path="cmm044.b.start.js" />
-			<com:scriptfile path="cmm044.b.vm.js" />
-			<com:scriptfile path="cmm044.b.service.js" />
+			<com:stylefile path="cmm044.d.main.css" />
+			<com:scriptfile path="cmm044.d.start.js" />
+			<com:scriptfile path="cmm044.d.vm.js" />
+			<com:scriptfile path="cmm044.d.service.js" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
 		<ui:define name="content">
-
 			<div id="functions-area">
 				<button class="proceed" id="D_BTN_001">#{i18n.getText('CMM044_4')}</button>
 				<button id="D_BTN_002" data-bind="click: closeDialog">#{i18n.getText('CMM044_23')}</button>
@@ -29,7 +28,7 @@
 					data-bind="ntsDateRangePicker: { 
 																	enable: true, 
 																	value: dateValue, 
-																	maxRange: 'oneMonth'}" />
+																	maxRange: 'none'}" />
 				<button class="caret-bottom" data-bind="click : findAgentByDate">#{i18n.getText('CMM044_30')}</button>
 				<table class="table1">
 					<thead>
