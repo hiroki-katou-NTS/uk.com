@@ -4159,28 +4159,21 @@ var nts;
                     function setupScrollWhenBinding($grid) {
                         var gridId = "#" + $grid.attr("id");
                         $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                            var scrollTop = $grid.data("scrollTop");
-                            if (scrollTop > 0) {
+                            var isMulti = $grid.igGridSelection('option', 'multipleSelection');
+                            var selected = $grid.ntsGridList("getSelected");
+                            if (!nts.uk.util.isNullOrEmpty(selected)) {
                                 _.defer(function () {
+                                    var index = isMulti ? selected[0].index : selected.index;
                                     if ($grid.igGrid("scrollContainer").length > 0) {
-                                        $grid.igGrid("scrollContainer").scrollTop(scrollTop);
+                                        var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                        var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                        $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
                                     }
                                     else {
-                                        $(gridId + "_scrollContainer").scrollTop(scrollTop);
+                                        $grid.igGrid("virtualScrollTo", index); //.scrollTop(scrollTop);    
                                     }
                                 });
                             }
-                        });
-                        //Delegate
-                        $(document).delegate(gridId, "iggriddatabinding", function (evt, ui) {
-                            var scrollTop;
-                            if ($grid.igGrid("scrollContainer").length > 0) {
-                                scrollTop = $grid.igGrid("scrollContainer").scrollTop();
-                            }
-                            else {
-                                scrollTop = $(gridId + "_scrollContainer").scrollTop();
-                            }
-                            $grid.data("scrollTop", scrollTop);
                         });
                     }
                     function getSelected($grid) {
