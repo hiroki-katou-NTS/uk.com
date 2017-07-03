@@ -269,7 +269,10 @@ module kcp005.a.viewmodel {
             self.listComponentOption.isShowWorkPlaceName = self.isShowWorkPlaceName();
             self.listComponentOption.isShowSelectAllButton = self.isShowSelectAllButton();
 
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
+                $('#component-items-list').focusComponent();
+            });
+            
         }
     }
 }

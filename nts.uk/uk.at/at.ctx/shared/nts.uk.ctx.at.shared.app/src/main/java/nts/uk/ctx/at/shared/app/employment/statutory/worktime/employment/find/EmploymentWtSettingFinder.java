@@ -24,18 +24,15 @@ public class EmploymentWtSettingFinder {
 	@Inject
 	private EmploymentWtSettingRepository repository;
 
-	/** The company id. */
-	String companyId = AppContexts.user().companyId();
-
 	/**
 	 * Find.
 	 *
 	 * @param request the request
 	 * @return the employment wt setting dto
 	 */
-	public EmploymentWtSettingDto find(EmploymentWtSettingRequest request) {
-		Optional<EmploymentWtSetting> optEmploymentSetting = this.repository.find(companyId, request.getYear(),
-				request.getEmploymentCode());
+	public EmploymentWtSettingDto find(int year, String employmentCode) {
+		Optional<EmploymentWtSetting> optEmploymentSetting = this.repository.find(AppContexts.user().companyId(), year,
+				employmentCode);
 		// Update mode.
 		if (optEmploymentSetting.isPresent()) {
 			return EmploymentWtSettingDto.fromDomain(optEmploymentSetting.get());
@@ -51,6 +48,6 @@ public class EmploymentWtSettingFinder {
 	 * @return the list
 	 */
 	public List<String> findall(int year) {
-		return this.repository.findAll(companyId, year);
+		return this.repository.findAll(AppContexts.user().companyId(), year);
 	}
 }

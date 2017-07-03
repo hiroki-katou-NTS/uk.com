@@ -1,4 +1,4 @@
-module cmm044.b.service {
+module cmm044.d.service {
     var paths: any = {
         findAgentByDate: "workflow/agent/findByDate",
         findAgent: "workflow/agent/findByCid"

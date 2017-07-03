@@ -26,7 +26,10 @@ public class WPBonusPaySettingFinder {
 	public WPBonusPaySettingDto getWPBPSetting(String WorkplaceId) {
 		Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wpBonusPaySettingRepository
 				.getWPBPSetting(new WorkplaceId(WorkplaceId));
-		return this.toWPBonusPaySettingDto(workplaceBonusPaySetting.get());
+		if(workplaceBonusPaySetting.isPresent()){
+			return this.toWPBonusPaySettingDto(workplaceBonusPaySetting.get());
+		}
+		return null;
 	}
 
 	private WPBonusPaySettingDto toWPBonusPaySettingDto(WorkplaceBonusPaySetting workplaceBonusPaySetting) {

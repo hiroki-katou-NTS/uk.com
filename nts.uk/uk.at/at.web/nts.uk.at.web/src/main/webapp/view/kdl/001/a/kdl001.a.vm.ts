@@ -46,8 +46,10 @@ module nts.uk.at.view.kdl001.a {
                         if(!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())){
                             if(nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
                                 self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
+                                self.selectedCode(_.first(self.selectAbleItemList()).code); 
+                            } else {
+                                self.selectedCode(_.first(self.selectedCodeList()));       
                             }
-                            self.selectedCode(_.first(self.selectAbleItemList()).code); 
                         } else {
                             self.selectedCodeList([]);
                             self.selectedCode(null);  

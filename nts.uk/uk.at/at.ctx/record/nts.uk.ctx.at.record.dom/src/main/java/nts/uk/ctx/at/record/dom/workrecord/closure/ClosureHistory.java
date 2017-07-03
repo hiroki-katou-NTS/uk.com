@@ -14,7 +14,6 @@ import nts.arc.time.YearMonth;
  */
 // 締め変更履歴
 @Getter
-@Setter
 public class ClosureHistory extends DomainObject{
 	
 	/** The close name. */
@@ -34,6 +33,7 @@ public class ClosureHistory extends DomainObject{
 	
 	/** The closure year. */
 	// 終了年月: 年月
+	@Setter
 	private YearMonth endDate;
 	
 	/** The closure date. */

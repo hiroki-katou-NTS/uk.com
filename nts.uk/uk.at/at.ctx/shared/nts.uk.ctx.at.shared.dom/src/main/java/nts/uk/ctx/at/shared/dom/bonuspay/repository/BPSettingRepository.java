@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -15,7 +16,9 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 public interface BPSettingRepository {
 
 	List<BonusPaySetting> getAllBonusPaySetting(String companyId);
-
+	
+	Optional<BonusPaySetting> getBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode);
+	
 	void addBonusPaySetting(BonusPaySetting domain);
 
 	void updateBonusPaySetting(BonusPaySetting domain);
