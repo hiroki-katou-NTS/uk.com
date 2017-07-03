@@ -31,7 +31,10 @@ public class WTBonusPaySettingFinder {
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wtBonusPaySettingRepository
 				.getWTBPSetting(companyId, new WorkingTimesheetCode(workingTimesheetCode));
-		return this.toWTBonusPaySettingDto(workingTimesheetBonusPaySetting.get());
+		if(workingTimesheetBonusPaySetting.isPresent()){
+			return this.toWTBonusPaySettingDto(workingTimesheetBonusPaySetting.get());
+		}
+		return null;
 	}
 
 	private WTBonusPaySettingDto toWTBonusPaySettingDto(

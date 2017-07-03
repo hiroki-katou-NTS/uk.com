@@ -27,26 +27,26 @@ public class BPTimeItemSettingWebService extends WebService {
 
 	@POST
 	@Path("getListSetting")
-	List<BPTimeItemSettingDto> getListSetting() {
+	public List<BPTimeItemSettingDto> getListSetting() {
 		return bpTimeItemSettingFinder.getListSetting();
 
 	}
 
 	@POST
 	@Path("getListSpecialSetting")
-	List<BPTimeItemSettingDto> getListSpecialSetting() {
+	public List<BPTimeItemSettingDto> getListSpecialSetting() {
 		return bpTimeItemSettingFinder.getListSpecialSetting();
 	}
 
 	@POST
 	@Path("addListSetting")
-	void addListSetting(List<BPTimeItemSettingAddCommand> lstSetting) {
+	public void addListSetting(List<BPTimeItemSettingAddCommand> lstSetting) {
 		bpTimeItemSettingAddCommandHandler.handle(lstSetting);
 	}
 
 	@POST
 	@Path("updateListSetting")
-	void updateListSetting(List<BPTimeItemSettingUpdateCommand> lstSetting) {
+	public void updateListSetting(List<BPTimeItemSettingUpdateCommand> lstSetting) {
 		bpTimeItemSettingUpdateCommandHandler.handle(lstSetting);
 	}
 

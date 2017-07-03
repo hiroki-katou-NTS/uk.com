@@ -28,13 +28,13 @@ public class BonusPayTimeItemWebService extends WebService {
 
 	@POST
 	@Path("getListBonusPayTimeItem")
-	List<BPTimeItemDto> getListBonusPayTimeItem() {
+	public List<BPTimeItemDto> getListBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItem();
 	}
 
 	@POST
 	@Path("getListSpecialBonusPayTimeItem")
-	List<BPTimeItemDto> getListSpecialBonusPayTimeItem() {
+	public List<BPTimeItemDto> getListSpecialBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListSpecialBonusPayTimeItem();
 	}
 	@POST
@@ -50,13 +50,13 @@ public class BonusPayTimeItemWebService extends WebService {
 	
 	@POST
 	@Path("addListBonusPayTimeItem")
-	void addListBonusPayTimeItem(List<BPTimeItemAddCommand> lstTimeItem) {
+	public void addListBonusPayTimeItem(List<BPTimeItemAddCommand> lstTimeItem) {
 		this.bpTimeItemAddCommandHandler.handle(lstTimeItem);
 	}
 
 	@POST
 	@Path("updateListBonusPayTimeItem")
-	void updateListBonusPayTimeItem(List<BPTimeItemUpdateCommand> lstTimeItem) {
+	public void updateListBonusPayTimeItem(List<BPTimeItemUpdateCommand> lstTimeItem) {
 		this.bpTimeItemUpdateCommandhandler.handle(lstTimeItem);
 	}
 }

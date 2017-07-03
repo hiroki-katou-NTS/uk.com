@@ -32,26 +32,26 @@ public class SpecBonusPayTimesheetWebService extends WebService {
 
 	@POST
 	@Path("getListTimesheet/{bonusPaySettingCode}")
-	List<SpecBPTimesheetDto> getListTimesheet(
+	public List<SpecBPTimesheetDto> getListTimesheet(
 			@PathParam("bonusPaySettingCode") String bonusPaySettingCode) {
 		return this.specBPTimesheetFinder.getListTimesheet(bonusPaySettingCode);
 	}
 
 	@POST
 	@Path("addListTimesheet")
-	void addListTimesheet(List<SpecBPTimesheetAddCommand> lstSpecTimesheet) {
+	public void addListTimesheet(List<SpecBPTimesheetAddCommand> lstSpecTimesheet) {
 		this.specBPTimesheetAddCommandHandler.handle(lstSpecTimesheet);
 	}
 
 	@POST
 	@Path("updateListTimesheet")
-	void updateListTimesheet(List<SpecBPTimesheetUpdateCommand> lstSpecTimesheet) {
+	public void updateListTimesheet(List<SpecBPTimesheetUpdateCommand> lstSpecTimesheet) {
 		this.specBPTimesheetUpdateCommandHandler.handle(lstSpecTimesheet);
 
 	}
 	@POST
 	@Path("removeListTimesheet")
-	void removeListTimesheet(List<SpecBPTimesheetDeleteCommand> lstSpecTimesheet) {
+	public void removeListTimesheet(List<SpecBPTimesheetDeleteCommand> lstSpecTimesheet) {
 		this.specBPTimesheetDeleteCommandHandler.handle(lstSpecTimesheet);
 	}
 
