@@ -122,15 +122,9 @@ module nts.uk.at.view.kcp006.a {
                     editable: false,
                     eventLimit: true, // allow "more" link when too many events
                     events: events,
-                    eventAfterAllRender: function(view) {
-                        //change background color each option day
-                        for (let i = 0; i < optionDates.length; i++) {
-                            $("td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
-                        }
-                    },
                     viewRender: function(view, element) {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-                        fullCalendarRender.viewRender(firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                        fullCalendarRender.viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     }
                 });
                 fullCalendarRender.eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, eventUpdatable);
@@ -154,7 +148,7 @@ module nts.uk.at.view.kcp006.a {
 
             //get params
             let data = valueAccessor();
-            let optionDates = data.optionDates;
+            let optionDates = ko.unwrap(data.optionDates());
             if (data.yearMonth()) { yearMonth = ko.unwrap(data.yearMonth()) };
             eventDisplay = ko.unwrap(data.eventDisplay());
             eventUpdatable = ko.unwrap(data.eventUpdatable());
@@ -231,16 +225,10 @@ module nts.uk.at.view.kcp006.a {
                     events: events,
                     viewRender: function(view, element) {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-                        fullCalendarRender.viewRender(firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                        fullCalendarRender.viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     }
                 });
                 fullCalendarRender.eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, eventUpdatable);
-                $(container).fullCalendar('eventAfterAllRender', function(view) {
-                    //change background color each option day
-                    for (let i = 0; i < optionDates.length; i++) {
-                        $("td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
-                    }
-                });
             });
         }
     }
@@ -412,7 +400,7 @@ module nts.uk.at.view.kcp006.a {
             });
         }
 
-        viewRender(firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {
+        viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {
             //customize style: add class for header
             let dateRows = $(".fc-content-skeleton thead tr");
             let mappingFirstDay = [
@@ -498,6 +486,10 @@ module nts.uk.at.view.kcp006.a {
                 for (let i = 0; i < currentHeaders.length; i++) {
                     $(currentHeaders[i]).append("<button class='button-cell' data-date='" + $(currentHeaders[i]).attr("data-date") + "'>。。。</button>");
                 }
+            }
+            //change background color each option day
+            for (let i = 0; i < optionDates.length; i++) {
+                $("td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
             }
         }
     }
