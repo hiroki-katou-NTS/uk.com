@@ -25,7 +25,12 @@ module kdl014.b.viewmodel {
                 width: '1010px',
                 height: '395px',
                 dataSource: self.items(),
-                columns: self.columns()
+                columns: self.columns(),
+                features: [{
+                    name: 'Paging',
+                    type: "local",
+                    pageSize: 6 
+                    }]
             });
         }
 
