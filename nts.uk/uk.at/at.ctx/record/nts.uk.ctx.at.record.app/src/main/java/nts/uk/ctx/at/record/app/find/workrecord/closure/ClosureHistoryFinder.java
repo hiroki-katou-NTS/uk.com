@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDDto;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryHeaderDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.record.dom.workrecord.closure.Closure;
@@ -75,7 +75,7 @@ public class ClosureHistoryFinder {
 	 * @param master the master
 	 * @return the closure history D dto
 	 */
-	public ClosureHistoryDDto detail(ClosureHistoryInDto master){
+	public ClosureHistoryHeaderDto detail(ClosureHistoryInDto master){
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -85,7 +85,7 @@ public class ClosureHistoryFinder {
 		Optional<ClosureHistory> historyHistory = this.repositoryHistory.findByHistoryId(companyId,
 				master.getClosureId(), master.getHistoryId());
 		
-		ClosureHistoryDDto dto = new ClosureHistoryDDto();
+		ClosureHistoryHeaderDto dto = new ClosureHistoryHeaderDto();
 		if(historyHistory.isPresent()){
 			historyHistory.get().saveToMemento(dto);
 		}

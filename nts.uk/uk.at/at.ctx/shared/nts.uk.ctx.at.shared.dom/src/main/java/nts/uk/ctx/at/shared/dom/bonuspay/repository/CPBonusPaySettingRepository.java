@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 
 /**

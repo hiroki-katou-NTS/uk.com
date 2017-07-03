@@ -174,12 +174,11 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	 */
 	@Override
 	public void setClosureDate(ClosureDate closureDate) {
-		if(closureDate.getLastDayOfMonth()){
+		if (closureDate.getLastDayOfMonth()) {
 			this.closureDate = 0;
+			return;
 		}
-		else {
-			this.closureDate = closureDate.getDay();
-		}
+		this.closureDate = closureDate.getDay();
 	}
 
 	/*
