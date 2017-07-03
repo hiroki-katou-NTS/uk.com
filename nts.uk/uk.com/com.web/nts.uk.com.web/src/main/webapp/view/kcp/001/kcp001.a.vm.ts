@@ -235,7 +235,10 @@ module kcp001.a.viewmodel {
             self.listComponentOption.alreadySettingList = self.alreadySettingList;
             self.listComponentOption.isMultiSelect = self.isMultiSelect();
             self.listComponentOption.selectType = self.selectedType();
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function () {
+                $('#empt-list-setting').focusComponent();
+            });
+            
         }
     }
 }
