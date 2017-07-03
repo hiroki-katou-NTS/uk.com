@@ -4,6 +4,7 @@
         name: KnockoutObservable<string>;  
         allowOverwrite: KnockoutObservable<boolean>;  
         currentWebMenu: KnockoutObservable<any>;
+        currentWebMenuCode: KnockoutObservable<string>;
         
         constructor() {
             var self = this;
@@ -12,16 +13,14 @@
             self.name = ko.observable('');
             self.allowOverwrite = ko.observable(false);
             self.currentWebMenu = ko.observable(null);
+            self.currentWebMenuCode = ko.observable('');
         }
         
-        start(): JQueryPromise<any> {
+        start() {
             var self = this;
-            var dfd = $.Deferred();
              
             self.currentWebMenu(nts.uk.ui.windows.getShared("CCG013E_COPY"));
-            
-            dfd.resolve();   
-            return dfd.promise();
+            self.currentWebMenuCode(self.currentWebMenu().webMenuCode());
         }
         
         /**
@@ -33,9 +32,18 @@
             var code = self.code();
             var name = self.name();
             var allowOverwrite = self.allowOverwrite();
-            
-            //Get data by code
-            
+                        
+            var data = {
+                currentWebMenuCode: self.currentWebMenuCode(),
+                allowOverwrite: allowOverwrite,
+                webMenuCode: code,
+                webMenuName: name    
+            }
+            service.copy(data).done(function() {
+                //    
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
+            });
             
             self.closeDialog();
         }
