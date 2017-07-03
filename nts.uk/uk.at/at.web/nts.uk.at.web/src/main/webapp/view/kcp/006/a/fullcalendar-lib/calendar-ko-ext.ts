@@ -28,10 +28,10 @@ module nts.uk.at.view.kcp006.a {
             let data = valueAccessor();
             let optionDates = ko.unwrap(data.optionDates());
             if (data.yearMonth()) { yearMonth = ko.unwrap(data.yearMonth()) };
-            if (data.eventDisplay()) { eventDisplay = ko.unwrap(data.eventDisplay()) };
-            if (data.eventUpdatable()) { eventUpdatable = ko.unwrap(data.eventUpdatable()) };
-            if (data.holidayDisplay()) { holidayDisplay = ko.unwrap(data.holidayDisplay()) };
-            if (data.cellButtonDisplay()) { cellButtonDisplay = ko.unwrap(data.cellButtonDisplay()) };
+            eventDisplay = ko.unwrap(data.eventDisplay());
+            eventUpdatable = ko.unwrap(data.eventUpdatable());
+            holidayDisplay = ko.unwrap(data.holidayDisplay());
+            cellButtonDisplay = ko.unwrap(data.cellButtonDisplay());
             if (data.firstDay) { firstDay = data.firstDay };
             if (data.startDate) {
                 if (moment(yearMonth * 100 + data.startDate, "YYYYMMDD")._isValid) {
@@ -153,6 +153,10 @@ module nts.uk.at.view.kcp006.a {
             let data = valueAccessor();
             let optionDates = data.optionDates;
             if (data.yearMonth()) { yearMonth = ko.unwrap(data.yearMonth()) };
+            eventDisplay = ko.unwrap(data.eventDisplay());
+            eventUpdatable = ko.unwrap(data.eventUpdatable());
+            holidayDisplay = ko.unwrap(data.holidayDisplay());
+            cellButtonDisplay = ko.unwrap(data.cellButtonDisplay());
             if (data.firstDay) { firstDay = data.firstDay };
             if (data.startDate) {
                 if (moment(yearMonth * 100 + data.startDate, "YYYYMMDD")._isValid) {
