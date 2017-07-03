@@ -194,111 +194,51 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	public LayoutAllDto getTopPageForPosition(JobPositionDto jobPosition,TopPageJobSet topPageJob) {
 		TopPageSelfSettingDto tpSelfSet = topPageSelfSet.getTopPageSelfSet();
 		LayoutForTopPageDto layoutTopPage = null;
-		//check my page co duoc su dung hay khong
+		//check my page: use or not use
 		Boolean checkMyPage = checkMyPageSet();
-		//check top page co duoc setting khong
+		//check top page: setting or not setting
 		Boolean checkTopPage = checkTopPageSet();
-		if(topPageJob.getPersonPermissionSet().value ==1 && tpSelfSet !=null){//check co duoc setting khong
-			//hien thi C
+		if(topPageJob.getPersonPermissionSet().value ==1 && tpSelfSet !=null){//check topPageJob: setting or not setting
+			//display top page self set (本人トップページ設定)-C
 			check = true;
 			layoutTopPage = getTopPageByCode(companyId,tpSelfSet.getCode(),0,8,check);
-			LayoutForMyPageDto layoutMypage = null;
-			if (!checkMyPage) {//khong su dung my page
+			if (!checkMyPage) {//not use my page
 				return new LayoutAllDto(null,layoutTopPage,check,checkMyPage,checkTopPage);
 			}
-			MyPage mPage = mypage.getMyPage(employeeId);
-			if(mPage == null){//dang ky my page
-				String layoutId = UUID.randomUUID().toString();
-				MyPage mypageNew = new MyPage(employeeId,layoutId);
-				mypage.addMyPage(mypageNew);
-				layoutMypage = null;
-			}else{
-				Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),0);
-				if(layout.isPresent()){
-					List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
-					if(!placements.isEmpty()){
-						layoutMypage =buildLayoutDto(layout.get(),placements) ;
-					}
-				}
-			}
+			LayoutForMyPageDto layoutMypage = findLayoutMyPage();
 			return new LayoutAllDto(layoutMypage,layoutTopPage,check,checkMyPage,checkTopPage);
 		}else{//khong duoc setting
 			Optional<TopPagePersonSet> tpPerson = topPagePerson.getbyCode(companyId, employeeId);
 			String code = topPageJob.getLoginMenuCode().toString();
-			if(tpPerson.isPresent() && !StringUtil.isNullOrEmpty(code,true)){//ktra login menu code co hay khong
-				//hien thi B
+			if(tpPerson.isPresent() && !StringUtil.isNullOrEmpty(code,true)){//check login menu code
+				//display top page person set (個人別トップページ設定)-B
 				check = true;
 				layoutTopPage = getTopPageByCode(companyId,tpPerson.get().getTopMenuCode().toString(),tpPerson.get().getLoginSystem().value,tpPerson.get().getMenuClassification().value,check);
-				LayoutForMyPageDto layoutMypage = null;
 				MyPageSettingDto myPage = myPageSetFinder.findByCompanyId(companyId);
 				if (myPage.getUseMyPage().intValue() == 0) {//khong su dung my page
 					return new LayoutAllDto(null,layoutTopPage,check,false,checkTopPage);
 				}
-				MyPage mPage = mypage.getMyPage(employeeId);
-				if(mPage == null){//dang ky my page
-					String layoutId = UUID.randomUUID().toString();
-					MyPage mypageNew = new MyPage(employeeId,layoutId);
-					mypage.addMyPage(mypageNew);
-					layoutMypage = null;
-				}else{
-					Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),0);
-					if(layout.isPresent()){
-						List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
-						if(!placements.isEmpty()){
-							layoutMypage =buildLayoutDto(layout.get(),placements) ;
-						}
-					}
-				}
+				LayoutForMyPageDto layoutMypage = findLayoutMyPage();
 				return new LayoutAllDto(layoutMypage,layoutTopPage,check,true,checkTopPage);
 			}else{
-				if(StringUtil.isNullOrEmpty(code,true)){//khong co login menu code
-					//chi hien thi my page
+				if(StringUtil.isNullOrEmpty(code,true)){//login menu code: empty
+					//display my page
 					check = false;
 					layoutTopPage = null;
-					LayoutForMyPageDto layoutMypage = null;
-					if (!checkMyPage) {//khong su dung my page
+					if (!checkMyPage) {//not use my page
 						return new LayoutAllDto(null,layoutTopPage,check,checkMyPage,checkTopPage);
 					}
-					//duoc du dung my page
-					MyPage mPage = mypage.getMyPage(employeeId);
-					if(mPage == null){//dang ky my page
-						String layoutId = UUID.randomUUID().toString();
-						MyPage mypageNew = new MyPage(employeeId,layoutId);
-						mypage.addMyPage(mypageNew);
-						layoutMypage = null;
-					}else{
-						Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),0);
-						if(layout.isPresent()){
-							List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
-							if(!placements.isEmpty()){
-								layoutMypage =buildLayoutDto(layout.get(),placements) ;
-							}
-						}
-					}
+					//use my page
+					LayoutForMyPageDto layoutMypage = findLayoutMyPage();
 					return new LayoutAllDto(layoutMypage,layoutTopPage,check,checkMyPage,checkTopPage);
 				}else{
-					//hien thi A
+					////display top page job title set (職位別トップページ設定)-A
 					check = true;
 					layoutTopPage = getTopPageByCode(companyId,topPageJob.getTopMenuCode().toString(),topPageJob.getLoginSystem().value,topPageJob.getMenuClassification().value,check);
-					LayoutForMyPageDto layoutMypage = null;
-					if (!checkMyPage) {//khong su dung my page
+					if (!checkMyPage) {//not use my page
 						return new LayoutAllDto(null,layoutTopPage,check,checkMyPage,checkTopPage);
 					}
-					MyPage mPage = mypage.getMyPage(employeeId);
-					if(mPage == null){//dang ky my page
-						String layoutId = UUID.randomUUID().toString();
-						MyPage mypageNew = new MyPage(employeeId,layoutId);
-						mypage.addMyPage(mypageNew);
-						layoutMypage = null;
-					} else {
-						Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),0);
-						if(layout.isPresent()){
-							List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
-							if(!placements.isEmpty()){
-								layoutMypage =buildLayoutDto(layout.get(),placements) ;
-							}
-						}
-					}
+					LayoutForMyPageDto layoutMypage = findLayoutMyPage();
 					return new LayoutAllDto(layoutMypage,layoutTopPage,check,checkMyPage,checkTopPage);
 				}
 			}
@@ -311,61 +251,37 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 */
 	@Override
 	public LayoutAllDto getTopPageNotPosition() {
-		//lay du lieu bang person set
+		//get data from domain person set (個人別トップページ設定)
 		Optional<TopPagePersonSet> tpPerson = topPagePerson.getbyCode(companyId, employeeId);
 		LayoutForTopPageDto layoutToppage = null;
-		LayoutForMyPageDto layoutMypage = null;
-		//check my page co duoc su dung hay khong
+		//check my page: use or not use
 		Boolean checkMyPage = checkMyPageSet();
-		//check top page co duoc setting khong
+		//check top page: setting or not setting
 		Boolean checkTopPage = checkTopPageSet();
 		if(tpPerson.isPresent()){//co tpPerson
 			String code = tpPerson.get().getLoginMenuCode().toString();
 			if(!StringUtil.isNullOrEmpty(code,true)){//co login menu code
-				check = true;//hien thi B
+				//display top page person set (個人別トップページ設定)-B
+				check = true;
 				layoutToppage = getTopPageByCode(companyId,tpPerson.get().getTopMenuCode().toString(),tpPerson.get().getLoginSystem().value,tpPerson.get().getMenuClassification().value,check);
 				if (!checkMyPage) {//khong su dung my page
 					return new LayoutAllDto(null,null,true,checkMyPage,checkTopPage);
 				}
-				MyPage mPage = mypage.getMyPage(employeeId);
-				if(mPage == null){//dang ky my page
-					String layoutId = UUID.randomUUID().toString();
-					MyPage mypageNew = new MyPage(employeeId,layoutId);
-					mypage.addMyPage(mypageNew);
-					layoutMypage = null;
-				} else {
-					Optional<Layout> layout2 = toppageRepository.find(mPage.getLayoutId(),0);
-					List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
-					layoutMypage =buildLayoutDto(layout2.get(),placements) ;
-				}
+				LayoutForMyPageDto layoutMypage = findLayoutMyPage();
 				return new LayoutAllDto(layoutMypage,layoutToppage,check,checkMyPage,checkTopPage);
 			}
 		}
 		check = false;
-		//chi hien thi my page
+		//display only my page
 		if (!checkMyPage) {//khong su dung my page
 			return new LayoutAllDto(null,null,true,checkMyPage,checkTopPage);
 		}
-		MyPage mPage = mypage.getMyPage(employeeId);
-		if(mPage == null){//dang ky my page
-			String layoutId = UUID.randomUUID().toString();
-			MyPage mypageNew = new MyPage(employeeId,layoutId);
-			mypage.addMyPage(mypageNew);
-			layoutMypage = null;
-		} else {//co my page
-			Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),2);
-			if(layout.isPresent()){
-				List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
-				if(!placements.isEmpty()){
-					layoutMypage =buildLayoutDto(layout.get(),placements);
-				}
-			}
-		}
+		LayoutForMyPageDto layoutMypage = findLayoutMyPage();
 		return new LayoutAllDto(layoutMypage,null,false,checkMyPage,checkTopPage);
 	}
 
 	/**
-	 * ktra xem la top page hay standard menu
+	 * check is top page or standard menu
 	 */
 	@Override
 	public LayoutForTopPageDto getTopPageByCode(String companyId, String code, int system, int classification,boolean check) {
@@ -387,6 +303,9 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			return null;
 		}
 	}
+	/**
+	 * check my page: setting or not setting
+	 */
 	@Override
 	public Boolean checkMyPageSet(){
 		MyPageSettingDto myPage = myPageSetFinder.findByCompanyId(companyId);
@@ -410,6 +329,30 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			}
 		}
 		return false;
+	}
+	/**
+	 * find lay out my page
+	 * @return
+	 */
+	@Override
+	public LayoutForMyPageDto findLayoutMyPage() {
+		LayoutForMyPageDto layoutMypage = null;
+		MyPage mPage = mypage.getMyPage(employeeId);
+		if(mPage == null){//register my page
+			String layoutId = UUID.randomUUID().toString();
+			MyPage mypageNew = new MyPage(employeeId,layoutId);
+			mypage.addMyPage(mypageNew);
+			layoutMypage = new LayoutForMyPageDto(companyId,layoutId,2,null,null);
+		} else {
+			Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),0);
+			if(layout.isPresent()){
+				List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
+				if(!placements.isEmpty()){
+					layoutMypage =buildLayoutDto(layout.get(),placements) ;
+				}
+			}
+		}
+		return layoutMypage;
 	}
 
 }

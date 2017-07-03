@@ -16,15 +16,16 @@ module nts.uk.com.view.ccg008.c {
                 self.selectedCode = ko.observable(null);
             }
             /**
-             * Khi khoi dong dialog
-             * Lay du lieu tu domain トップページ va 標準メニュー
-             * Lay du lieu tu domain 本人トップページ設定 
+             * When 起動 
+             * Get data from domain トップページ va 標準メニュー
+             * Get data from domain 本人トップページ設定 
              */
             start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                //Lay du lieu tu domain トップページ
+                //Get data from domain トップページ
                 service.getSelectMyTopPage().done(function(lst: Array<model.Node>) {
+                    $("#btnSave").focus();
                     if (lst === null || lst === undefined || lst.length == 0) {
                         self.dataItems([]);
                         self.selectedCode();
@@ -34,10 +35,10 @@ module nts.uk.com.view.ccg008.c {
                             items.push({"code":item.code , "name": item.name});
                         });
                         self.dataItems(items);
-                        //Lay du lieu tu domain 本人トップページ設定 
+                        //Get data from domain 本人トップページ設定 
                         service.getTopPageSelfSet().done(function(topPageSelfSet: model.TopPageSelfSet) {
                             if(topPageSelfSet===null|| topPageSelfSet===undefined){
-                                //Truong hop khong co du lieu
+                                //data is empty
                                 self.selectedCode();
                             }else{
                                 self.selectedCode(topPageSelfSet.code);
@@ -52,7 +53,7 @@ module nts.uk.com.view.ccg008.c {
                 return dfd.promise();
             }
             /**
-             * tim item dang duoc lua chon
+             * Find item is selected
              */
             find(code: string): any {
                 let self = this;
@@ -62,8 +63,8 @@ module nts.uk.com.view.ccg008.c {
                 })
             }
             /**
-             * Khi click button 決定
-             * Xu ly dang ky top page self set
+             * When click button 決定
+             * Regidter top page self set
              */
             register(): void {
                 var self = this;
@@ -82,8 +83,8 @@ module nts.uk.com.view.ccg008.c {
                 }
             }
             /**
-             * Khi click button キャンセル
-             * Dong man hinh
+             * When click button キャンセル
+             * Close dialof
              */
             closeDialog() {
                 nts.uk.ui.windows.close();
