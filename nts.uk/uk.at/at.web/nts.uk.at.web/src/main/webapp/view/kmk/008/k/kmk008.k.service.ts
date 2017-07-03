@@ -1,38 +1,55 @@
 module nts.uk.at.view.kmk008.k {
     export module service {
-        var paths: any = {
-            getYear: "at/record/agreementYearSetting/getAgreementYearSetting",
-            addYear: "at/record/agreementYearSetting/addAgreementYearSetting",
-            updateYear: "at/record/agreementYearSetting/updateAgreementYearSetting",
-            removeYear: "at/record/agreementYearSetting/removeAgreementYearSetting",
-        }
-        export function getYear(employeeId: string): JQueryPromise<Array<model.YearDto>> {
-            var dfd = $.Deferred<Array<model.YearDto>>();
-            nts.uk.request.ajax("at", paths.getYear + "/" + employeeId)
-                .done(function(res: Array<model.YearDto>) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
-        }
-        
-        export function addYear(command): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
-            nts.uk.request.ajax(paths.addYear, command).done(function() {
-                dfd.resolve();
-            }).fail(function(res) {
-                dfd.reject(res);
-            });
-            return dfd.promise();
-        }
+        export class Service {
+            paths = {
+                getDetailYearMonth: "at/record/agreementMonthSetting/getAgreementMonthSetting/{0}",
+                addAgreementMonthSetting: "at/record/agreementMonthSetting/addAgreementMonthSetting",
+                removeAgreementMonthSetting: "at/record/agreementMonthSetting/removeAgreementMonthSetting",
+                updateAgreementMonthSetting: "at/record/agreementMonthSetting/updateAgreementMonthSetting",
 
-        export module model {
-            export class YearDto {
-                yearValue: string;
-                errorOneYear: string;
-                alarmOneYear: string;
+                getDetailYear: "at/record/agreementYearSetting/getAgreementYearSetting/{0}",
+                addAgreementYearSetting: "at/record/agreementYearSetting/addAgreementYearSetting",
+                removeAgreementYearSetting: "at/record/agreementYearSetting/removeAgreementYearSetting",
+                updateAgreementYearSetting: "at/record/agreementYearSetting/updateAgreementYearSetting",
+            }
+
+            constructor() {
+
+            }
+
+            getDetailYearMonth(employeeId: string): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.getDetailYearMonth, employeeId);
+                return nts.uk.request.ajax("at", _path);
+            };
+
+            addAgreementMonthSetting(AddUpdateMonthSettingModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.addAgreementMonthSetting, AddUpdateMonthSettingModel);
+            };
+
+            updateAgreementMonthSetting(AddUpdateMonthSettingModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.updateAgreementMonthSetting, AddUpdateMonthSettingModel);
+            };
+
+            removeAgreementMonthSetting(DeleteMonthSettingModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.removeAgreementMonthSetting, DeleteMonthSettingModel);
+            }
+
+
+            getDetailYear(employeeId: string): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.getDetailYear, employeeId);
+                return nts.uk.request.ajax("at", _path);
+            };
+
+            addAgreementYearSetting(AddUpdateYearSettingModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.addAgreementYearSetting, AddUpdateYearSettingModel);
+            };
+
+            updateAgreementYearSetting(AddUpdateYearSettingModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.updateAgreementYearSetting, AddUpdateYearSettingModel);
+            };
+
+            removeAgreementYearSetting(DeleteYearSettingModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.removeAgreementYearSetting, DeleteYearSettingModel);
             }
         }
     }
