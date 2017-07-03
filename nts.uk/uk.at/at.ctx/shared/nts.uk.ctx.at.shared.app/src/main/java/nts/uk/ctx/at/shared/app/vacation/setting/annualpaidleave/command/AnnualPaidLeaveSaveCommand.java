@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumber
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 
 /**
  * The Class AnnualPaidLeaveSaveCommand.
@@ -347,8 +347,8 @@ public class AnnualPaidLeaveSaveCommand {
          * TimeVacationSettingGetMemento#getMaxYearDayLeave()
          */
         @Override
-        public YearVacationTimeMaxDay getMaxYearDayLeave() {
-            YearVacationTimeMaxDay timeMaxDay = YearVacationTimeMaxDay.builder()
+        public TimeAnnualMaxDay getMaxYearDayLeave() {
+            TimeAnnualMaxDay timeMaxDay = TimeAnnualMaxDay.builder()
                     .manageType(ManageDistinct.valueOf(this.command.manageMaxDayVacation))
                     .reference(MaxDayReference.valueOf(this.command.reference))
                     .maxNumberUniformCompany(new MaxTimeDay(this.command.maxTimeDay))

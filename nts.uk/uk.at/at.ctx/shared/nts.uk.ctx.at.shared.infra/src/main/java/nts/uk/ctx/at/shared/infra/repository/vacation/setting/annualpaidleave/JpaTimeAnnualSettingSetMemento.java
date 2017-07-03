@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
 
 /**
@@ -70,7 +70,7 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
      * .vacation.setting.annualpaidleave.YearVacationTimeMaxDay)
      */
     @Override
-    public void setMaxYearDayLeave(YearVacationTimeMaxDay maxYearDayLeave) {
+    public void setMaxYearDayLeave(TimeAnnualMaxDay maxYearDayLeave) {
         this.entity.setTimeMaxDayManageAtr(maxYearDayLeave.manageType.value);
         this.entity.setTimeMaxDayReference(maxYearDayLeave.reference.value);
         this.entity.setTimeMaxDayUnifComp(maxYearDayLeave.maxNumberUniformCompany.v());

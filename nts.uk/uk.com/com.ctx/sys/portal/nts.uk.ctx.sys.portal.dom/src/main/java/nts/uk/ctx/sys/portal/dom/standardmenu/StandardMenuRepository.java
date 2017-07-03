@@ -50,22 +50,6 @@ public interface StandardMenuRepository {
 	List<StandardMenu> findByAfterLoginDisplay(String companyId, int afterLoginDisplay);
 
 	/**
-	 * added by sonnh1
-	 * 
-	 * find by COMPANYID and AFTER_LOGIN_DISPLAY and SYSTEM and
-	 * MENU_CLASSIFICATION
-	 * 
-	 * @param companyId
-	 * @param afterLoginDisplay
-	 * @param system
-	 * @param menu_classification
-	 * @return
-	 */
-	// List<StandardMenu> findByAfterLgDisSysMenuCls(String companyId, int
-	// afterLoginDisplay, int system,
-	// int menu_classification);
-
-	/**
 	 * Find all.
 	 *
 	 * @param companyId

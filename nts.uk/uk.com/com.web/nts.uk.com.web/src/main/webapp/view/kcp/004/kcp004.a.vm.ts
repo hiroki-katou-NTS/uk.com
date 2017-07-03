@@ -87,6 +87,10 @@ module kcp004.a.viewmodel {
             
             // Subscribe
             self.selectedTreeType.subscribe(function(code) {
+                // single tree grid
+                if (code == 0 && self.selectedSelectionType() == 2) {
+                    self.selectedSelectionType(1);
+                }
                 self.resetSelectedWorkplace();
                 self.reloadTreeGrid().done(() => {
                     self.getSelectedData();
