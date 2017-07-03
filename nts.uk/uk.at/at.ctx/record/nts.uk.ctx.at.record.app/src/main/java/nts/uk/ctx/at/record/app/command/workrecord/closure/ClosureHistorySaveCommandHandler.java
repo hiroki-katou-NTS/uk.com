@@ -47,7 +47,7 @@ public class ClosureHistorySaveCommandHandler extends CommandHandler<ClosureHist
 		// get command
 		ClosureHistorySaveCommand command = context.getCommand();
 		
-		Optional<ClosureHistory> closureHistory = this.repository.findByHistoryId(companyId,
+		Optional<ClosureHistory> closureHistory = this.repository.findById(companyId,
 				command.getClosureHistory().getClosureId(),
 				command.getClosureHistory().getClosureHistoryId());
 		

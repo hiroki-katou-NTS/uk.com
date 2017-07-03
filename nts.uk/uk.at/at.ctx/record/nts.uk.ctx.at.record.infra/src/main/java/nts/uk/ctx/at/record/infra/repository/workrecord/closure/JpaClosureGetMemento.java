@@ -69,7 +69,6 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public List<ClosureHistory> getClosureHistories() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

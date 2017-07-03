@@ -50,7 +50,7 @@ public class ClosureFinder {
 		//get company id
 		String companyId = loginUserContext.companyId();
 		
-		return this.repository.getAllClosure(companyId).stream().map(closure->{
+		return this.repository.findAll(companyId).stream().map(closure->{
 			ClosureFindDto dto = new ClosureFindDto();
 			closure.saveToMemento(dto);
 			return dto;
@@ -58,12 +58,12 @@ public class ClosureFinder {
 	}
 
 	/**
-	 * Gets the by closure.
+	 * Find by id.
 	 *
 	 * @param closureId the closure id
-	 * @return the by closure
+	 * @return the closure find dto
 	 */
-	public ClosureFindDto getByClosure(int closureId){
+	public ClosureFindDto findById(int closureId){
 		
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -106,7 +106,7 @@ public class ClosureFinder {
 	 * @param master the master
 	 * @return the closure detail dto
 	 */
-	public ClosureDetailDto detailMaster(ClosureHistoryInDto master){
+	public ClosureDetailDto findByMaster(ClosureHistoryInDto master){
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -118,7 +118,7 @@ public class ClosureFinder {
 
 		ClosureDetailDto dto = new ClosureDetailDto();
 
-		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findByHistoryId(companyId,
+		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
 				master.getClosureId(), master.getHistoryId());
 
 		// exist data

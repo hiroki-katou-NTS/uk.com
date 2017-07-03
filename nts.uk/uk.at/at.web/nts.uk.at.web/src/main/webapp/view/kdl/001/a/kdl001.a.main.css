@@ -14,11 +14,11 @@ body {
 	margin-left: 20px;
 }
 #search-div {
-	padding-left: 120px;
+	padding-left: 99px;
 	margin-bottom: 10px;
 }
 #search-div span:NTH-CHILD(3) {
-	font-size: x-large;
+/* 	font-size: x-large; */
 	margin-left: 10px;
 	margin-right: 10px;
 }

@@ -10,6 +10,10 @@ module nts.uk.at.view.kcp006.a.viewmodel {
         startDate: number;
         endDate: number;
         workplaceId: KnockoutObservable<string>;
+        eventDisplay: KnockoutObservable<boolean>;
+        eventUpdatable: KnockoutObservable<boolean>;
+        holidayDisplay: KnockoutObservable<boolean>;
+        cellButtonDisplay: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -71,17 +75,13 @@ module nts.uk.at.view.kcp006.a.viewmodel {
             self.startDate = 1;
             self.endDate = 31;
             self.workplaceId = ko.observable("1");
-            self.calendarData = ko.observable({
-
-                eventDisplay: true,
-                eventUpdatable: true,
-                holidayDisplay: true,
-                headerDisplay: true,
-                buttonDisplay: true,
-                yearMonth: self.yearMonthPicked,
-                workplaceId: "0",
-                fiscalMonths: []
-            });
+            self.eventDisplay = ko.observable(true);
+            self.eventUpdatable = ko.observable(true);
+            self.holidayDisplay = ko.observable(true);
+            self.cellButtonDisplay = ko.observable(true);
+            nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
+                alert(date);
+            };
         }
 
     }
