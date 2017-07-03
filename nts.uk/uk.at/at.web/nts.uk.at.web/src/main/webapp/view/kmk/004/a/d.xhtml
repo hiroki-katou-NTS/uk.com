@@ -25,9 +25,11 @@
 													constraint: 'Year',
 													required: true}"/>
 				</div>
-				<div id="lblWorkplace" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Workplace')}</div>
-				<span id="lblWorkplaceCode" data-bind="text: workplaceCode"></span>
-				<span id="lblWorkplaceName" data-bind="text: workplaceName"></span>
+				<div class="control-group">
+					<div id="lblWorkplace" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Workplace')}</div>
+					<span id="lblWorkplaceCode" data-bind="text: workplaceCode"></span>
+					<span id="lblWorkplaceName" data-bind="text: workplaceName"></span>
+				</div>
 				<div id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
 

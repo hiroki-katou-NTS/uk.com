@@ -62,7 +62,7 @@ public class CcgstMenuBar extends UkJpaEntity implements Serializable {
 	public CcgstWebMenu webMenu;
 
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="menuBar", orphanRemoval = true)
-	public List<CcgstTitleMenu> titleMenus;
+	public List<CcgstTitleBar> titleMenus;
 	
 	@Override
 	protected Object getKey() {
@@ -71,7 +71,7 @@ public class CcgstMenuBar extends UkJpaEntity implements Serializable {
 
 	public CcgstMenuBar(CcgstMenuBarPK ccgstMenuBarPK, String menuBarName, int selectedAtr,
 			int system, int menuCls, String code, String backgroundColor, String textColor, int displayOrder,
-			List<CcgstTitleMenu> titleMenus) {
+			List<CcgstTitleBar> titleMenus) {
 		super();
 		this.ccgstMenuBarPK = ccgstMenuBarPK;
 		this.menuBarName = menuBarName;

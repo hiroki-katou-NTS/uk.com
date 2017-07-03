@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnitGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeEmp;
@@ -69,8 +69,8 @@ public class JpaCompensDigestiveTimeUnitGetMemento implements CompensatoryDigest
      * CompensatoryDigestiveTimeUnitGetMemento#getDigestiveUnit()
      */
     @Override
-    public TimeVacationDigestiveUnit getDigestiveUnit() {
-        return TimeVacationDigestiveUnit.valueOf(
+    public TimeDigestiveUnit getDigestiveUnit() {
+        return TimeDigestiveUnit.valueOf(
                 this.entityCom == null ? this.entityEmp.getDigestiveUnit() : this.entityCom.getDigestiveUnit());
     }
 

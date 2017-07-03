@@ -43,13 +43,17 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 	}
 	/**
 	 * Convert entity to domain
-	 * 
 	 * @param entity CcgmtLayout
 	 * @return Layout instance
 	 */
 	private Layout toDomainLayout(CcgmtLayout entity) {
 		return Layout.createFromJavaType(entity.ccgmtLayoutPK.companyID, entity.ccgmtLayoutPK.layoutID, entity.pgType);
 	}
+	/**
+	 * Convert entity to domain
+	 * @param entity CjpmtJobPosition
+	 * @return JobPosition instance
+	 */
 	private JobPosition toDomainJobPosition(CjpmtJobPosition entity){
 		return JobPosition.createSimpleFromJavaType(entity.getCjpmtJobPositionPK().id,
 				entity.getEmployeeId(), 
@@ -84,7 +88,11 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 	public void updateTopPageSelfSet(TopPageSelfSet topPageSelfSet) {
 		this.commandProxy().update(toEntity(topPageSelfSet));
 	}
-	
+	/**
+	 * Find a Layout
+	 * @param layoutID
+	 * @return Optional Layout
+	 */
 	@Override
 	public Optional<Layout> find(String layoutID, int pgType) {
 		return this.queryProxy().query(SELECT_SINGLE, CcgmtLayout.class)
@@ -92,6 +100,12 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 				.setParameter("pgType", pgType)
 				.getSingle(c -> toDomainLayout(c));
 	}
+	/**
+	 * get job position
+	 * @param employeeId
+	 * @param date
+	 * @return
+	 */
 	@Override
 	public Optional<JobPosition> getJobPosition(String employeeId, GeneralDate date) {
 		List<JobPosition> lst = this.queryProxy().query(SELECT_JOB_POSITION, CjpmtJobPosition.class)

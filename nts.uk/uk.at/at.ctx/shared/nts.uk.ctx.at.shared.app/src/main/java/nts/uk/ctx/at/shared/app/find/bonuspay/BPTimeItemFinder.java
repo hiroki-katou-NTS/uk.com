@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.bonuspay;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,14 +33,25 @@ public class BPTimeItemFinder {
 
 	public BPTimeItemDto getBonusPayTimeItem(String timeItemId) {
 		String companyId = AppContexts.user().companyId();
-		return this.toBPTimeItemDto(
-				this.bpTimeItemRepository.getBonusPayTimeItem(companyId, new TimeItemId(timeItemId)).get());
+		
+		Optional<BonusPayTimeItem> bonusPayTimeItem = this.bpTimeItemRepository.getBonusPayTimeItem(companyId, new TimeItemId(timeItemId));
+		if(bonusPayTimeItem.isPresent()){
+			return this.toBPTimeItemDto(
+					bonusPayTimeItem.get());
+		}
+		return null;
+		
 	}
 
 	public BPTimeItemDto getSpecialBonusPayTimeItem(String timeItemId) {
 		String companyId = AppContexts.user().companyId();
-		return this.toBPTimeItemDto(
-				this.bpTimeItemRepository.getSpecialBonusPayTimeItem(companyId, new TimeItemId(timeItemId)).get());
+		Optional<BonusPayTimeItem> bonusPayTimeItem = this.bpTimeItemRepository.getSpecialBonusPayTimeItem(companyId, new TimeItemId(timeItemId));
+		if(bonusPayTimeItem.isPresent()){
+			return  this.toBPTimeItemDto(
+					bonusPayTimeItem.get());
+		}
+		return null;
+		
 	}
 
 	private BPTimeItemDto toBPTimeItemDto(BonusPayTimeItem bonusPayTimeItem) {

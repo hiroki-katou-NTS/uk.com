@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
-import nts.uk.ctx.sys.portal.dom.webmenu.TitleMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
@@ -35,15 +35,15 @@ public class AddWebMenuCommandHandler extends CommandHandler<AddWebMenuCommand> 
 					.map(mn -> { 
 						String menuBarId = MenuBar.createMenuBarId().toString();
 						
-						List<TitleMenu> titleMenu = mn.getTitleMenu().stream()
+						List<TitleBar> titleMenu = mn.getTitleMenu().stream()
 								.map(ti -> {
-									String titleMenuId = TitleMenu.createTitleMenuId().toString();
+									String titleMenuId = TitleBar.createTitleMenuId().toString();
 									List<TreeMenu> treeMenu = ti.getTreeMenu().stream()
 											.map(tr -> {									
 												TreeMenu domainTreeMenu = TreeMenu.createFromJavaType(titleMenuId,tr.getCode(), tr.getDisplayOrder(), tr.getClassification(), tr.getSystem());
 												return domainTreeMenu;
 											}).collect(Collectors.toList());							
-									TitleMenu domainTitleMenu = TitleMenu.createFromJavaType(menuBarId,titleMenuId, ti.getTitleMenuName(), ti.getBackgroundColor(),ti.getImageFile(),ti.getTextColor(),ti.getTitleMenuAtr(),ti.getTitleMenuCode(),ti.getDisplayOrder(), treeMenu);
+									TitleBar domainTitleMenu = TitleBar.createFromJavaType(menuBarId,titleMenuId, ti.getTitleMenuName(), ti.getBackgroundColor(),ti.getImageFile(),ti.getTextColor(),ti.getTitleMenuAtr(),ti.getTitleMenuCode(),ti.getDisplayOrder(), treeMenu);
 									return domainTitleMenu;
 								}).collect(Collectors.toList());
 								

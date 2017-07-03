@@ -68,6 +68,13 @@ public class WorkplaceFinder {
 		return lstReturn;
 	}
 
+	/**
+	 * Convert to tree.
+	 *
+	 * @param workplaces the workplaces
+	 * @param lstHierarchy the lst hierarchy
+	 * @return the list
+	 */
 	private List<WorkplaceFindDto> convertToTree(List<Workplace> workplaces, List<WorkPlaceHierarchy> lstHierarchy) {
 		//define convert tree function
 		Function<Workplace, WorkplaceFindDto> convertFunction = e -> {
@@ -79,6 +86,15 @@ public class WorkplaceFinder {
 		return createTree(workplaces, convertFunction, lstHierarchy, lstReturn);
 	}
 
+	/**
+	 * Creates the tree.
+	 *
+	 * @param workplaces the workplaces
+	 * @param convertFunction the convert function
+	 * @param lstHierarchy the lst hierarchy
+	 * @param lstReturn the lst return
+	 * @return the list
+	 */
 	private List<WorkplaceFindDto> createTree(List<Workplace> workplaces,
 			Function<Workplace, WorkplaceFindDto> convertFunction, List<WorkPlaceHierarchy> lstHierarchy,
 			List<WorkplaceFindDto> lstReturn) {
@@ -97,6 +113,14 @@ public class WorkplaceFinder {
 		return lstReturn;
 	}
 
+	/**
+	 * Push to list.
+	 *
+	 * @param lstReturn the lst return
+	 * @param dto the dto
+	 * @param hierarchyCode the hierarchy code
+	 * @param preCode the pre code
+	 */
 	private void pushToList(List<WorkplaceFindDto> lstReturn, WorkplaceFindDto dto, String hierarchyCode,String preCode) {
 		String searchCode = preCode+hierarchyCode.substring(0,3);
 		dto.setChilds(new ArrayList<>());

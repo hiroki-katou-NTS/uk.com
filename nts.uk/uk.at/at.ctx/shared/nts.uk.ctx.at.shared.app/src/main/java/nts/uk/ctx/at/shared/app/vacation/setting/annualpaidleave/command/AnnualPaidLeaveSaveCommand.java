@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
@@ -25,9 +25,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 
 /**
  * The Class AnnualPaidLeaveSaveCommand.
@@ -177,8 +177,8 @@ public class AnnualPaidLeaveSaveCommand {
          * AnnualPaidLeaveSettingGetMemento#getTimeSetting()
          */
         @Override
-        public TimeVacationSetting getTimeSetting() {
-            return new TimeVacationSetting(new TimeVacationSettingGetMementoIpml(this.companyId, this.command));
+        public TimeAnnualSetting getTimeSetting() {
+            return new TimeAnnualSetting(new TimeVacationSettingGetMementoIpml(this.companyId, this.command));
         }
     }
 
@@ -288,7 +288,7 @@ public class AnnualPaidLeaveSaveCommand {
     /**
      * The Class TimeVacationSettingGetMementoIpml.
      */
-    private class TimeVacationSettingGetMementoIpml implements TimeVacationSettingGetMemento {
+    private class TimeVacationSettingGetMementoIpml implements TimeAnnualSettingGetMemento {
         
         /** The company id. */
         private String companyId;
@@ -336,8 +336,8 @@ public class AnnualPaidLeaveSaveCommand {
          * TimeVacationSettingGetMemento#getTimeUnit()
          */
         @Override
-        public TimeVacationDigestiveUnit getTimeUnit() {
-            return TimeVacationDigestiveUnit.valueOf(this.command.timeUnit);
+        public TimeDigestiveUnit getTimeUnit() {
+            return TimeDigestiveUnit.valueOf(this.command.timeUnit);
         }
 
         /*
@@ -347,8 +347,8 @@ public class AnnualPaidLeaveSaveCommand {
          * TimeVacationSettingGetMemento#getMaxYearDayLeave()
          */
         @Override
-        public YearVacationTimeMaxDay getMaxYearDayLeave() {
-            YearVacationTimeMaxDay timeMaxDay = YearVacationTimeMaxDay.builder()
+        public TimeAnnualMaxDay getMaxYearDayLeave() {
+            TimeAnnualMaxDay timeMaxDay = TimeAnnualMaxDay.builder()
                     .manageType(ManageDistinct.valueOf(this.command.manageMaxDayVacation))
                     .reference(MaxDayReference.valueOf(this.command.reference))
                     .maxNumberUniformCompany(new MaxTimeDay(this.command.maxTimeDay))

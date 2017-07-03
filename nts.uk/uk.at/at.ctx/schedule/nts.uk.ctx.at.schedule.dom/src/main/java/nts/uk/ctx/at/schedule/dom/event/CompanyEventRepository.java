@@ -3,9 +3,9 @@
  */
 package nts.uk.ctx.at.schedule.dom.event;
 
+import java.math.BigDecimal;
 import java.util.List;
-
-import nts.arc.time.GeneralDate;
+import java.util.Optional;
 
 /**
  * @author hungnm
@@ -13,7 +13,9 @@ import nts.arc.time.GeneralDate;
  */
 public interface CompanyEventRepository {
 	
-	List<CompanyEvent> getListCompanyEvent(String companyId, List<GeneralDate> lstDate);
+	Optional<CompanyEvent> findByPK(String companyId, BigDecimal date);
+	
+	List<CompanyEvent> getCompanyEventsByListDate(String companyId, List<BigDecimal> lstDate);
 	
 	void addEvent(CompanyEvent event);
 	

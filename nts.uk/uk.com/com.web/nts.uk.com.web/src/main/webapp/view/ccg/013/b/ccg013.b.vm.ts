@@ -69,11 +69,11 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             }
 
             /** Get EditMenuBar*/
-            service.getEditMenuBar().done(function(editMenuBar: any) {
+            service.getEditMenuBar().done(function(editMenuBar: service.EditMenuBarDto) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 self.listSystemSelect(editMenuBar.listSystem);
                 self.allPart(editMenuBar.listStandardMenu);
-                let listStandardMenu: Array<any> = _.orderBy(editMenuBar.listStandardMenu, "code", "asc");
+                let listStandardMenu: Array<service.MenuBarDto> = _.orderBy(editMenuBar.listStandardMenu, "code", "asc");
                 self.listStandardMenu(editMenuBar.listStandardMenu);
                 self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
@@ -91,11 +91,13 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         submit() {
             var self = this;
-            var menuCls = "";
+            var menuCls = null;
             if (nts.uk.ui.errors.hasError()) {
                 return;    
             }
-            var standMenu = _.find(self.listStandardMenu(), 'code', self.currentListStandardMenu());
+            var standMenu = _.find(self.listStandardMenu(), function(item: service.MenuBarDto) {
+                return item.code == self.currentListStandardMenu();    
+            });
             if (standMenu) {
                 menuCls = standMenu.classification;
             }            
@@ -133,4 +135,5 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             this.menuCls = menuCls;
         }
     }
+
 }

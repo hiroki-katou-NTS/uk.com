@@ -51,7 +51,7 @@ public class JpaAffiliationJobTitleHistoryGetMemento
 	 */
 	@Override
 	public EmployeeId getEmployeeId() {
-		return new EmployeeId(this.jobTitleHistory.getKmnmtJobTitleHistPK().getSid());
+		return new EmployeeId(this.jobTitleHistory.getKmnmtJobTitleHistPK().getEmpId());
 	}
 
 	/*
@@ -62,7 +62,7 @@ public class JpaAffiliationJobTitleHistoryGetMemento
 	 */
 	@Override
 	public PositionId getPositionId() {
-		return new PositionId(this.jobTitleHistory.getKmnmtJobTitleHistPK().getPosId());
+		return new PositionId(this.jobTitleHistory.getKmnmtJobTitleHistPK().getJobId());
 	}
 
 }

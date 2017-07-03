@@ -16,8 +16,8 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchDto;
 import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchFinder;
+import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchGetDto;
 import nts.uk.ctx.basic.app.find.company.organization.employee.search.EmployeeSearchInDto;
-import nts.uk.ctx.basic.app.find.person.PersonDto;
 
 /**
  * The Class EmployeeSearchWs.
@@ -62,7 +62,7 @@ public class EmployeeSearchWs extends WebService {
 	 */
 	@POST
 	@Path("advanced")
-	public List<PersonDto> searchModeEmployee(EmployeeSearchInDto input) {
+	public List<EmployeeSearchDto> searchModeEmployee(EmployeeSearchInDto input) {
 		return this.finder.searchModeEmployee(input);
 	}
 	
@@ -75,7 +75,7 @@ public class EmployeeSearchWs extends WebService {
 	 */
 	@POST
 	@Path("ofworkplace")
-	public List<PersonDto> searchOfWorkplace(GeneralDate baseDate){
+	public List<EmployeeSearchDto> searchOfWorkplace(GeneralDate baseDate){
 		return this.finder.searchOfWorkplace(baseDate);
 	}
 	
@@ -87,7 +87,7 @@ public class EmployeeSearchWs extends WebService {
 	 */
 	@POST
 	@Path("workplacechild")
-	public List<PersonDto> searchWorkplaceChild(GeneralDate baseDate){
+	public List<EmployeeSearchDto> searchWorkplaceChild(GeneralDate baseDate){
 		return this.finder.searchWorkplaceChild(baseDate);
 	}
 	
@@ -101,5 +101,18 @@ public class EmployeeSearchWs extends WebService {
 	@Path("workplaceemp")
 	public List<String> searchWorkplaceOfEmployee(GeneralDate baseDate){
 		return this.finder.searchWorkplaceOfEmployee(baseDate);
+	}
+	
+	
+	/**
+	 * Gets the of selected employee.
+	 *
+	 * @param input the input
+	 * @return the of selected employee
+	 */
+	@POST
+	@Path("getoffselect")
+	public List<EmployeeSearchDto> getOfSelectedEmployee(EmployeeSearchGetDto input){
+		return this.finder.getOfSelectedEmployee(input);
 	}
 }

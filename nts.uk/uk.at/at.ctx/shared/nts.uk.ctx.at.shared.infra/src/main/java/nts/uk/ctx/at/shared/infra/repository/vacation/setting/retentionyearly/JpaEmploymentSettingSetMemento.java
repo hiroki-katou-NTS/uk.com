@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.ManagementCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK
 /**
  * The Class JpaEmploymentSettingSetMemento.
  */
-public class JpaEmploymentSettingSetMemento implements EmploymentSettingSetMemento{
+public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMemento {
 
 	/** The type value. */
 	private KmfmtRetentionEmpCtr typeValue;
@@ -34,7 +34,7 @@ public class JpaEmploymentSettingSetMemento implements EmploymentSettingSetMemen
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingSetMemento#setCompanyId(java.lang.String)
+	 * EmptYearlyRetentionSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
@@ -44,7 +44,7 @@ public class JpaEmploymentSettingSetMemento implements EmploymentSettingSetMemen
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingSetMemento#setEmploymentCode(java.lang.String)
+	 * EmptYearlyRetentionSetMemento#setEmploymentCode(java.lang.String)
 	 */
 	@Override
 	public void setEmploymentCode(String employmentCode) {
@@ -54,7 +54,7 @@ public class JpaEmploymentSettingSetMemento implements EmploymentSettingSetMemen
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingSetMemento#setUpperLimitSetting(nts.uk.ctx.at.shared.dom
+	 * EmptYearlyRetentionSetMemento#setUpperLimitSetting(nts.uk.ctx.at.shared.dom
 	 * .vacation.setting.retentionyearly.UpperLimitSetting)
 	 */
 	@Override
@@ -66,11 +66,11 @@ public class JpaEmploymentSettingSetMemento implements EmploymentSettingSetMemen
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingSetMemento#setManagementCategory(nts.uk.ctx.at.shared.
+	 * EmptYearlyRetentionSetMemento#setManagementCategory(nts.uk.ctx.at.shared.
 	 * dom.vacation.setting.retentionyearly.ManagementCategory)
 	 */
 	@Override
-	public void setManagementCategory(ManagementCategory managementCategory) {
+	public void setManagementCategory(ManageDistinct managementCategory) {
 		this.typeValue.setManagementCtrAtr((short) managementCategory.value);
 	}
 

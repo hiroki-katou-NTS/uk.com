@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.ManagementCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetti
  */
 @Getter
 @Setter
-public class EmploymentSettingFindDto implements EmploymentSettingSetMemento{
+public class EmploymentSettingFindDto implements EmptYearlyRetentionSetMemento {
 	
 	/** The company id. */
 	private String companyId;
@@ -34,7 +34,7 @@ public class EmploymentSettingFindDto implements EmploymentSettingSetMemento{
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingSetMemento#setCompanyId(java.lang.String)
+	 * EmptYearlyRetentionSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
@@ -44,7 +44,7 @@ public class EmploymentSettingFindDto implements EmploymentSettingSetMemento{
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingSetMemento#setEmploymentCode(java.lang.String)
+	 * EmptYearlyRetentionSetMemento#setEmploymentCode(java.lang.String)
 	 */
 	@Override
 	public void setEmploymentCode(String employmentCode) {
@@ -54,24 +54,25 @@ public class EmploymentSettingFindDto implements EmploymentSettingSetMemento{
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingSetMemento#setUpperLimitSetting(nts.uk.ctx.at.shared.dom
+	 * EmptYearlyRetentionSetMemento#setUpperLimitSetting(nts.uk.ctx.at.shared.dom
 	 * .vacation.setting.retentionyearly.UpperLimitSetting)
 	 */
 	@Override
 	public void setUpperLimitSetting(UpperLimitSetting upperLimitSetting) {
 		this.upperLimitSetting = new UpperLimitSettingFindDto();
 		this.upperLimitSetting.setMaxDaysCumulation(upperLimitSetting.getMaxDaysCumulation().v());
-		this.upperLimitSetting.setRetentionYearsAmount(upperLimitSetting.getRetentionYearsAmount().v());
+		this.upperLimitSetting
+				.setRetentionYearsAmount(upperLimitSetting.getRetentionYearsAmount().v());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmploymentSettingSetMemento#setManagementCategory(nts.uk.ctx.at.shared.
+	 * EmptYearlyRetentionSetMemento#setManagementCategory(nts.uk.ctx.at.shared.
 	 * dom.vacation.setting.retentionyearly.ManagementCategory)
 	 */
 	@Override
-	public void setManagementCategory(ManagementCategory managementCategory) {
+	public void setManagementCategory(ManageDistinct managementCategory) {
 		this.managementCategory = managementCategory.value;
 	}
 	

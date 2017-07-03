@@ -99,6 +99,7 @@ button.search-btn {
 
 .ui-widget.ui-tabs .ui-tabs-nav li a {
 	background-color: rgb(112, 173, 71);
+	width: 100px !important;
 }
 
 .ui-tabs .ui-tabs-nav {
@@ -115,17 +116,19 @@ button.search-btn {
 	border-radius: 0px !important;
 	border: 1px solid #B1B1B1 !important;
 	background-color: rgb(226, 239, 218) !important;
+	padding: 0px !important;
 }
 
 ul.tree-menu {
 	width: 135px !important;
+	margin-left: 3px;
 }
 
 ul.tree-menu li {
 	height: 35px;
-	width: 135px;
+	width: 125px;
 	border: 1px solid rgb(128, 164, 104) !important;
-	margin-top:-1px;
+	margin-top: -1px;
 }
 
 ul.tree-menu li:last-child {
@@ -134,7 +137,8 @@ ul.tree-menu li:last-child {
 
 .title-menu div.title-menu-column {
 	padding-right: 21px !important;
-	float:left;
+	float: left;
+	margin-bottom: 15px;
 }
 
 .title-menu div.title-menu-name {
@@ -142,6 +146,8 @@ ul.tree-menu li:last-child {
 	margin-bottom: 25px !important;
 	padding: 15px !important;
 	border-radius: 10px !important;
+	margin-left: 2px;
+	margin-top: 3px;
 }
 
 .button-add {
@@ -154,12 +160,24 @@ ul.tree-menu li:last-child {
 	height: 40px !important;
 	margin-top: 4px !important;
 	width: 137px;
+	margin-left: 3px;
 }
 
 .label.warning {
-    padding: 5px 10px !important;
-    margin-bottom: 10px !important;
-    color: black !important;
+	padding: 5px 10px !important;
+	margin-bottom: 10px !important;
+	color: black !important;
 }
 
-.icon_link {width: 30px; vertical-align: middle; }
+.icon_link {
+	width: 30px;
+	vertical-align: middle;
+}
+
+.unsortable {
+	margin-top: 3px;
+}
+
+.button-add-treemenu {
+	width: 128px;
+}

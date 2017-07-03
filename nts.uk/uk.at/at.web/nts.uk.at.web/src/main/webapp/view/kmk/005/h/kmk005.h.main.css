@@ -1,67 +1,22 @@
-.control-group.valign-center > * { vertical-align: middle; }
-.control-group.valign-top > * { vertical-align: top; }
-.control-group.valign-bottom > * { vertical-align: bottom; }
-
-#sidebar {
-	height: 768px;
-}
-.sidebar-content-header > .title { width: 150px; }
-.sidebar-content-header > button { width: 80px; }
-.sidebar-content-header > button:NTH-CHILD(3) { margin-left: 20px; }
-.sidebar-content-header > button:NTH-CHILD(4) { margin-left: 80px; }
-.myLinkButton { display: inline-block; }
-.myLinkButtonIcon { float: left; }
-.myLinkButtonText {
-	background-color: #E2F79F;
-	width: 125px;
-	margin: 1px 0px 0px 15px;
-	padding: 6px 0px;
-	border: 2px solid #E2F79F;
-	border-radius: 5px;
-}
-.myLinkButtonText > a { 
-	text-decoration: none;
-	margin-left: 5px;
-	color: black;
-}
-.extendPanel {
-	display: inline-block; 
-	padding-left: 25px; 
-	padding-top: 20px; 
-}
-.divInformation {
-	display: inline-block; 
-	vertical-align: top; 
-	padding-top: 25px;
-}
-.hrDivision { width: 350px; }
-.labelRootSetup { margin-bottom: 10px; }
-.labelInformation {
-	margin-left: 20px; 
-	margin-bottom: 10px; 
-	margin-top: 5px;
-}
-.column1 { width: 130px; }
-.column2 { width: 60px; }
-.column3 { width: 50px; }
-#labelRootSetup1 { 
-	margin-left: 20px;
-	margin-top: 5px;
-	margin-bottom: 15px; 
-}
-#extendPanel2 { width: 650px; }
-#extendPanel3 { width: 550px; }
-#extendPanel4 { width: 750px; }
-.extendPanel4Combo-box.ui-igcombo-wrapper { width: 90px; }
-.extendPanel4Combo-box input.ui-igcombo-field { padding-left: 10px; }
-div.nts-column { padding-left: 10px; }
-#extendPanel4label {
-	font-size: large;
-	margin-left: 5px;
-	margin-right: 5px;
-}
-#gridlist-div {
-	margin-left: 10px; 
-	margin-top: 15px;
+div[class^=screen-h] {
+	padding-top: 30px;
+	padding-left: 30px;
 }
 
+.screen-h .panel.ntsPanel {
+	margin-right: 35px;
+}
+
+.screen-h .infomation,
+.screen-h .panel.ntsPanel {
+	float: left;
+	display: block;
+}
+
+.screen-h .controls-group {
+	padding-left: 30px;
+}
+
+.screen-h .form-group {
+	margin-bottom: 10px;
+}

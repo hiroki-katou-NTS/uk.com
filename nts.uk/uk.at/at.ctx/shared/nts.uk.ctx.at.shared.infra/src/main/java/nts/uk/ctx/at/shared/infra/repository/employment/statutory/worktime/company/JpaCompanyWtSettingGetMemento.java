@@ -19,8 +19,8 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Monthly;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwstCompanyWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwstCompanyWtSetPK;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -48,9 +48,9 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaCompanyWtSettingGetMemento(List<JcwtstCompanyWtSet> typeValues) {
+	public JpaCompanyWtSettingGetMemento(List<JcwstCompanyWtSet> typeValues) {
 		// Get pk.
-		JcwtstCompanyWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJcwtstCompanyWtSetPK();
+		JcwstCompanyWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJcwstCompanyWtSetPK();
 		this.companyId = new CompanyId(pk.getCid());
 		this.year = new Year(pk.getYK());
 
@@ -62,16 +62,16 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 	 *
 	 * @param entities the new to domain
 	 */
-	private void setToDomain(List<JcwtstCompanyWtSet> entities) {
+	private void setToDomain(List<JcwstCompanyWtSet> entities) {
 		this.flexSetting = new FlexSetting();
 		entities.forEach(item -> {
-			switch (item.getJcwtstCompanyWtSetPK().getCtg()) {
+			switch (item.getJcwstCompanyWtSetPK().getCtg()) {
 			case WtSettingConstant.NORMAL:
 				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getStrWeek()));
 				break;
 			case WtSettingConstant.FLEX:
-				if (item.getJcwtstCompanyWtSetPK().getType() == WtSettingConstant.SPECIFIED) {
+				if (item.getJcwstCompanyWtSetPK().getType() == WtSettingConstant.SPECIFIED) {
 					this.flexSetting.setSpecifiedSetting(this.getWorkTimeSetting(item));
 					break;
 				}
@@ -93,7 +93,7 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 	 * @param item the item
 	 * @return the work time setting
 	 */
-	private WorkingTimeSetting getWorkTimeSetting(JcwtstCompanyWtSet item) {
+	private WorkingTimeSetting getWorkTimeSetting(JcwstCompanyWtSet item) {
 		WorkingTimeSetting wts = new WorkingTimeSetting();
 		wts.setDaily(new DailyTime(item.getDailyTime()));
 		wts.setWeekly(new WeeklyTime(item.getWeeklyTime()));
@@ -107,7 +107,7 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 	 * @param item the item
 	 * @return the monthly
 	 */
-	private List<Monthly> getMonthly(JcwtstCompanyWtSet item) {
+	private List<Monthly> getMonthly(JcwstCompanyWtSet item) {
 		List<Monthly> monthly = new ArrayList<Monthly>();
 		monthly.add(new Monthly(new MonthlyTime(item.getJanTime()), java.time.Month.JANUARY));
 		monthly.add(new Monthly(new MonthlyTime(item.getFebTime()), java.time.Month.FEBRUARY));

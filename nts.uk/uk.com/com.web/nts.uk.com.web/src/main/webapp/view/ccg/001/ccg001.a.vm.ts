@@ -1,9 +1,5 @@
 module nts.uk.com.view.ccg001.a {  
 
-    import ListType = kcp.share.list.ListType;
-    import SelectType = kcp.share.list.SelectType;
-    import UnitModel = kcp.share.list.UnitModel;
-    import PersonModel = nts.uk.com.view.ccg.share.ccg.service.model.PersonModel;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     export module viewmodel {
@@ -23,12 +19,12 @@ module nts.uk.com.view.ccg001.a {
             isMutipleCheck: KnockoutObservable<boolean>;
             isSelectAllEmployee: KnockoutObservable<boolean>;
             baseDate: KnockoutObservable<Date>;
-            selectedEmployeeCode: KnockoutObservableArray<EmployeeSearchDto>;
+            selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
             constructor() {
                 var self = this;
                 self.selectedCode = ko.observableArray([]);
-                self.selectedEmployeeCode = ko.observableArray([]);
+                self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 
                 // Options
@@ -79,11 +75,6 @@ module nts.uk.com.view.ccg001.a {
                 });
             }
 
-            public startPage(): JQueryPromise<any> {
-                let dfd = $.Deferred<any>();
-                dfd.resolve();
-                return dfd.promise();
-            }
             
             public applyView(): void {
                 var self = this;
@@ -99,26 +90,28 @@ module nts.uk.com.view.ccg001.a {
                     isSelectAllEmployee: self.isSelectAllEmployee(),
                     onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode(dataList);
+                        self.selectedEmployee(dataList);
                     },
-                    onSearchOnlyClicked: function(data: PersonModel) {
+                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         self.showinfoSelectedEmployee(true);
-                        var dataEmployee: string[] = [];
-                        dataEmployee.push(data.personId);
-                        self.selectedEmployeeCode([]);
+                        var dataEmployee: EmployeeSearchDto[] = [];
+                        dataEmployee.push(data);
+                        
+                        
+                        self.selectedEmployee(dataEmployee);
                     },
-                    onSearchOfWorkplaceClicked: function(dataList: PersonModel[]) {
+                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode([]);
+                        self.selectedEmployee(dataList);
                     },
 
-                    onSearchWorkplaceChildClicked: function(dataList: PersonModel[]) {
+                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode([]);
+                        self.selectedEmployee(dataList);
                     },
-                    onApplyEmployee: function(dataEmployee: string[]) {
+                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployeeCode([]);
+                        self.selectedEmployee(dataEmployee);
                     }
 
                 } 

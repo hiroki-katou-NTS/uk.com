@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
  * The Interface CompensatoryDigestiveTimeUnitGetMemento.
@@ -24,5 +24,5 @@ public interface CompensatoryDigestiveTimeUnitGetMemento {
 	 *
 	 * @return the digestive unit
 	 */
-	TimeVacationDigestiveUnit getDigestiveUnit();
+	TimeDigestiveUnit getDigestiveUnit();
 }

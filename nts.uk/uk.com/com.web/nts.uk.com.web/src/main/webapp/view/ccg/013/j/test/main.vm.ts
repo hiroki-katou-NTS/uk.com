@@ -1,22 +1,16 @@
 module nts.uk.sys.view.ccg013.j.test.viewmodel {
     export class ScreenModel {
-        nameMenuBar: KnockoutObservable<string>;
-        pickerLetter: KnockoutObservable<string>;
-        radioActlass: KnockoutObservable<string>;
-        pickerBackground: KnockoutObservable<string>;
-        selectSetting: KnockoutObservable<string>;
-        codeStandardMenu: KnockoutObservable<string>;
-        nameStandardMenu: KnockoutObservable<string>;
+        nameTitleBar: KnockoutObservable<string>;
+        letterColor: KnockoutObservable<string>;
+        backgroundColor: KnockoutObservable<string>;
+        imageId: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
-            self.nameMenuBar = ko.observable("");
-            self.pickerLetter = ko.observable("");
-            self.radioActlass = ko.observable("");
-            self.pickerBackground = ko.observable("");
-            self.selectSetting = ko.observable("");
-            self.codeStandardMenu = ko.observable("");
-            self.nameStandardMenu = ko.observable("");
+            self.nameTitleBar = ko.observable("");
+            self.letterColor = ko.observable("");
+            self.backgroundColor = ko.observable("");
+            self.imageId = ko.observable("");
         }
 
         startPage(): JQueryPromise<any> {
@@ -28,36 +22,30 @@ module nts.uk.sys.view.ccg013.j.test.viewmodel {
         }
         openDialog() {
             var self = this;
-            var menuBar = new MenuBar(self.nameMenuBar(), self.pickerLetter() ,self.pickerBackground() , self.radioActlass())
-            //nts.uk.ui.windows.setShared('CCG013A_StandardMeNu', menuBar);
+            var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.imageId());
+            nts.uk.ui.windows.setShared('CCG013A_ToChild_TitleBar', titleBar);
             nts.uk.ui.windows.sub.modal("/view/ccg/013/j/index.xhtml").onClosed(() => {
                 var self = this;
-                //var returnItem = nts.uk.ui.windows.getShared("CCG013J_MenuBar");
-                if (returnItem !== undefined) {
-                    self.nameMenuBar(returnItem.nameMenuBar);
-                    self.pickerLetter(returnItem.letterColor);
-                    self.radioActlass(returnItem.selectedRadioAtcClass);
-                    self.pickerBackground(returnItem.backgroundColor);
-                    self.selectSetting(returnItem.selectSetting);
-                    self.codeStandardMenu(returnItem.codeStandardMenu);
-                    self.nameStandardMenu(returnItem.nameStandardMenu);
+                var returnTitleMenu = nts.uk.ui.windows.getShared("CCG013J_ToMain_TitleBar");
+                if (returnTitleMenu !== undefined) {
+                    self.nameTitleBar(returnTitleMenu.nameTitleBar);
+                    self.letterColor(returnTitleMenu.letterColor);
+                    self.backgroundColor(returnTitleMenu.backgroundColor);
+                    self.imageId(returnTitleMenu.imageId);
                 }
-                else{
-                    nts.uk.ui.block.clear();}
             });
         }
     }
-    class MenuBar{
-       nameMenuBar : string;
-       pickerLetter : string;
-       pickerBackground :string; 
-       radioActlass : string 
-       constructor(nameMenuBar: string, pickerLetter: string, pickerBackground: string, radioActlass: number) {
-            this.nameMenuBar = nameMenuBar;
-            this.pickerLetter = pickerLetter;
-            this.pickerBackground = pickerBackground;
-            this.radioActlass = radioActlass;
+    class TitleBar {
+        nameTitleBar: string;
+        letterColor: string;
+        backgroundColor: string;
+        imageId: string;
+        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, imageId: string) {
+            this.nameTitleBar = nameTitleBar;
+            this.letterColor = letterColor;
+            this.backgroundColor = backgroundColor;
+            this.imageId = imageId;
         }
-        
-     }
+    }
 }

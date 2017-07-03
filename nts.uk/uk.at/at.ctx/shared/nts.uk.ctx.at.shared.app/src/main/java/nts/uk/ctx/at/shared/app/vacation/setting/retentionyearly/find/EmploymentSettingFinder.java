@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.dto.EmploymentSettingFindDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -22,11 +22,11 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class EmploymentSettingFinder {
-	
+
 	/** The repository. */
 	@Inject
 	private EmploymentSettingRepository repository;
-	
+
 	/**
 	 * Find.
 	 *
@@ -39,18 +39,19 @@ public class EmploymentSettingFinder {
 
 		// get companyId by user login
 		String companyId = loginUserContext.companyId();
-		
+
 		EmploymentSettingFindDto outputData = new EmploymentSettingFindDto();
-		
-		Optional<EmploymentSetting> employmentSetting = this.repository.find(companyId, employmentCode);
-		
-		if(employmentSetting.isPresent()) {
-			employmentSetting.get().saveToMemento(outputData);
-			return outputData;
+
+		Optional<EmptYearlyRetentionSetting> emptYearlyRetentionSetting = this.repository.find(companyId,
+				employmentCode);
+
+		if (!emptYearlyRetentionSetting.isPresent()) {
+			return null;
 		}
-		return null;
+		emptYearlyRetentionSetting.get().saveToMemento(outputData);
+		return outputData;
 	}
-	
+
 	/**
 	 * Find all.
 	 *
@@ -62,13 +63,13 @@ public class EmploymentSettingFinder {
 
 		// Get Company Id
 		String companyId = loginUserContext.companyId();
-		
-		List<EmploymentSetting> empSettingList = this.repository.findAll(companyId);
+
+		List<EmptYearlyRetentionSetting> empSettingList = this.repository.findAll(companyId);
 		return empSettingList.stream().map(empoyment -> {
 			EmploymentSettingFindDto dto = new EmploymentSettingFindDto();
 			empoyment.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
-		
+
 	}
 }

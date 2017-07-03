@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 /**
  * The Class JpaUpperLimitSettingSetMemento.
  */
-public class JpaUpperLimitSettingSetMemento implements UpperLimitSettingSetMemento{
+public class JpaUpperLimitSettingSetMemento implements UpperLimitSettingSetMemento {
 
 	/** The type value. */
 	private KmfmtRetentionYearly typeValue;
