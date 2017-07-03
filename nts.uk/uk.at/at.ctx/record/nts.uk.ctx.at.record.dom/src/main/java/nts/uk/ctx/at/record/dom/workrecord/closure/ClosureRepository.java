@@ -34,7 +34,7 @@ public interface ClosureRepository {
 	 * @param companyId the company id
 	 * @return the all closure
 	 */
-	List<Closure> getAllClosure(String companyId);
+	List<Closure> findAll(String companyId);
 	
 	
 	/**

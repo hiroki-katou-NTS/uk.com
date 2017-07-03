@@ -42,26 +42,26 @@ public class ClosureHistoryWs {
 	
 	
 	/**
-	 * Gets the all.
+	 * Find all.
 	 *
-	 * @return the all
+	 * @return the list
 	 */
 	@POST
-	@Path("getall")
-	public List<ClosureHistoryFindDto> getAll(){
-		return this.finder.getAllClosureHistory();
+	@Path("findAll")
+	public List<ClosureHistoryFindDto> findAll(){
+		return this.finder.findAll();
 	}
 	
 	/**
-	 * Gets the all.
+	 * Find by id.
 	 *
 	 * @param master the master
-	 * @return the all
+	 * @return the closure history header dto
 	 */
 	@POST
-	@Path("detail")
-	public ClosureHistoryHeaderDto detail(ClosureHistoryInDto master){
-		return this.finder.detail(master);
+	@Path("findById")
+	public ClosureHistoryHeaderDto findById(ClosureHistoryInDto master){
+		return this.finder.findById(master);
 	}
 	
 	/**

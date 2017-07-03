@@ -80,11 +80,13 @@ module nts.uk.at.view.kmk012.a {
                 });
             }
 
-            // start page
+            /**
+             * start page data 
+             */
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                service.getAllClosureHistory().done(function(data) {
+                service.findAllClosureHistory().done(function(data) {
                     var dataRes: ClosureHistoryFindDto[] = [];
                     for (var item: ClosureHistoryFindDto of data) {
                         var dataI: ClosureHistoryFindDto = new ClosureHistoryFindDto();
@@ -101,24 +103,32 @@ module nts.uk.at.view.kmk012.a {
                 return dfd.promise();
             }
             
-            
+            /**
+             * detail closure by call service find by id => update view model
+             */
             detailClosure(closureId: number): void{
                 var self = this;
-                service.detailClosure(closureId).done(function(data: ClosureDto) {
+                service.findByIdClosure(closureId).done(function(data: ClosureDto) {
                     self.closureModel.updateData(data);
                     self.selectCodeLstClosureHistory(data.closureSelected);
                     self.detailClosureHistory(data.closureSelected);
                 });
            }
             
+            /**
+             * detail closure history by call service find by id => update view model
+             */
             detailClosureHistory(master: ClosureHistoryMDto){
                 var self = this;
-                service.detailClosureHistory(master).done(function(data){
+                service.findByIdClosureHistory(master).done(function(data){
                     self.closureHistoryModel.updateData(data);
                     self.clearValiate();
                 });
             }
             
+            /**
+             * ini data closure day
+             */
             intDataMonth(): DayofMonth[]{
                 var data: DayofMonth[] = [];
                 var i: number = 1 ;
@@ -139,7 +149,9 @@ module nts.uk.at.view.kmk012.a {
             
             
             
-            
+            /**
+             * collect data  
+             */
             collectData(): ClosureSaveDto {
                 var self = this;
                 var dto: ClosureSaveDto;
@@ -154,11 +166,17 @@ module nts.uk.at.view.kmk012.a {
                 return dto;
             }
             
+            /**
+             * clear validate client
+             */
             clearValiate() {
                 $('#inpMonth').ntsError('clear')
                 $('#inpname').ntsError('clear')
             }
             
+            /**
+             * validate client by action click
+             */
             validateClient(): boolean {
                 var self = this;
                 self.clearValiate();
@@ -172,6 +190,9 @@ module nts.uk.at.view.kmk012.a {
                 return false;
             }
             
+            /**
+             * save closure history by call service
+             */
             saveClosureHistory(): void {
                 var self = this;
                 if (self.closureModel.useClassification() == 1 && self.validateClient()) {
@@ -205,9 +226,12 @@ module nts.uk.at.view.kmk012.a {
                 });
             }
             
+            /**
+             * reload page 
+             */
             reloadPage(closureId: number, historyId: string): void{
                 var self = this;
-                 service.getAllClosureHistory().done(function(data) {
+                 service.findAllClosureHistory().done(function(data) {
                     var dataRes: ClosureHistoryFindDto[] = [];
                     for (var item: ClosureHistoryFindDto of data) {
                         var dataI: ClosureHistoryFindDto = new ClosureHistoryFindDto();
@@ -228,7 +252,9 @@ module nts.uk.at.view.kmk012.a {
                 });
             }
             
-            
+            /**
+             * collect data closure history 
+             */
             collectDataHistory(): ClosureHistoryDto{
                 var self = this;
                 var dto: ClosureHistoryDto;
@@ -241,6 +267,9 @@ module nts.uk.at.view.kmk012.a {
             }
             
              // 締め期間確認 
+            /**
+             * open dialog D
+             */
             public openConfirmClosingPeriodDialog(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('closureId', self.closureModel.closureId());
@@ -291,6 +320,9 @@ module nts.uk.at.view.kmk012.a {
                 this.closureHistories = ko.observableArray<ClosureHistoryMDto>([]);
             }
 
+            /**
+             * update data 
+             */
             updateData(dto: ClosureDto):void {
                 this.closureId(dto.closureId);
                 this.useClassification(dto.useClassification);
@@ -336,6 +368,9 @@ module nts.uk.at.view.kmk012.a {
             }
                 
                 
+            /**
+             * update data
+             */
             updateData(dto: ClosureHistoryDDto): void{
                 this.historyId(dto.historyId);
                 this.closureId(dto.closureId);
