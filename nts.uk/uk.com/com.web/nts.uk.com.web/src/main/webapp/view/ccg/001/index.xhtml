@@ -41,14 +41,14 @@
 						<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show/hide button おなじ職場の社員</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show/hide button おなじ＋配下の職場の社員</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div><br/>
-						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show/Show  全社員タイプ / 社員指定タイプ</div>
+						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show  全社員タイプ / 社員指定タイプ</div>
 					</div>
 					<hr/>
 					<div id="ccgcomponent"></div>
 					<div data-bind="if: showinfoSelectedEmployee()">
 						<label class="lableselect">Select employee</label> 
 						<com:ko-foreach bind="selectedEmployee">
-							<label class="lableselect">{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
+							<label class="lableselect"><br/>{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
 							<label class="lableselect" >,employeeCode:</label> <label class="lableselect" data-bind="text: employeeCode"></label>
 							<label class="lableselect" >,employeeName:</label> <label class="lableselect" data-bind="text: employeeName"></label>
 							<label class="lableselect" >,workplaceId:</label> <label class="lableselect" data-bind="text: workplaceId"></label>
@@ -218,8 +218,17 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 											<td><b>Type:</b> boolean<br /> Enable/disable multiple selection</td>
 										</tr>
 										<tr>
+											<td>isSelectAllEmployee
+											</td>
+											<td><b>Type:</b> boolean<br /> true => 全社員タイプ <br/> false => 社員指定タイプ</td>
+										</tr>
+										<tr>
 											<td>onSearchAllClicked</td>
 											<td><b>Type:</b> function<br /> Event on click button 参照可能な社員すべて </td>
+										</tr>
+										<tr>
+											<td>onSearchOnlyClicked</td>
+											<td><b>Type:</b> function<br /> Event on click button 自分だけ</td>
 										</tr>
 										<tr>
 											<td>onSearchOfWorkplaceClicked
