@@ -8,6 +8,7 @@ module nts.uk.at.view.kmk008.e {
             currentWorkplaceName: KnockoutObservable<string>;
 
             selectedWorkplaceId: KnockoutObservable<string>;
+            selectedRowWorkplace: RowSelection;
             baseDate: KnockoutObservable<Date>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             treeGrid: any;
@@ -36,17 +37,18 @@ module nts.uk.at.view.kmk008.e {
                     isDialog: false,
                     alreadySettingList: self.alreadySettingList
                 };
-                //                self.selectedWorkplaceId.subscribe(newValue => {
-                //                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                //                    self.getDetail(newValue);
-                //                    let empSelect = _.find(self.employmentList(), emp => {
-                //                        return emp.code == newValue;
-                //                    });
-                //                    if (empSelect) { self.currentWorkplaceName(empSelect.name); }
-                //
-                //                });
+                self.selectedWorkplaceId.subscribe(newValue => {
+                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
+                    //self.getDetail(newValue);
+                    let empSelect = _.find(self.employmentList(), emp => {
+                        return emp.code == newValue;
+                    });
+                    if (empSelect) { self.currentWorkplaceName(empSelect.name); }
+
+                });
 
                 //self.startPage();
+                $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid);
             }
 
             startPage(): JQueryPromise<any> {
@@ -63,6 +65,7 @@ module nts.uk.at.view.kmk008.e {
                 return dfd.promise();
             }
 
+
             getalreadySettingList() {
                 let self = this;
                 self.alreadySettingList([]);
@@ -73,7 +76,7 @@ module nts.uk.at.view.kmk008.e {
                 })
             }
 
-            addUpdateData() {
+            addUpdateWorkPlace() {
                 let self = this;
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfWorkPlaceNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfWorkPlace(), self.laborSystemAtr, self.selectedCode());
@@ -98,7 +101,7 @@ module nts.uk.at.view.kmk008.e {
                 });
             }
 
-            removeData() {
+            removeDataWorkPlace() {
                 let self = this;
                 let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
                 new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
@@ -273,11 +276,17 @@ module nts.uk.at.view.kmk008.e {
             childs: Array<UnitModel>;
         }
 
-        export interface RowSelection {
-            workplaceId: string;
-            workplaceCode: string;
+        export class RowSelection {
+            workplaceId: KnockoutObservable<string>;
+            workplaceCode: KnockoutObservable<string>;
+
+            constructor(workplaceId: string, workplaceCode: string) {
+                let self = this;
+                self.workplaceId = ko.observable(workplaceId);
+                self.workplaceCode = ko.observable(workplaceCode);
+            }
         }
-        
+
         export class UnitAlreadySettingModel {
             workplaceId: string;
             settingType: number = 2;
