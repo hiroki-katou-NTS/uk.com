@@ -93,7 +93,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	 */
 	@Override
 	public void setClosureHistories(List<ClosureHistory> closureHistories) {
-		// TODO Auto-generated method stub
+		// No thing code
 	}
 
 }
