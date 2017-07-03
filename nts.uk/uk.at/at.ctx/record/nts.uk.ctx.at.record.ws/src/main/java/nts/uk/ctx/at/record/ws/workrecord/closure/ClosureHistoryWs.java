@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureHistoryAddComm
 import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureHistorySaveCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureHistorySaveCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.ClosureHistoryFinder;
-import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDDto;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryHeaderDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryInDto;
 
@@ -60,7 +60,7 @@ public class ClosureHistoryWs {
 	 */
 	@POST
 	@Path("detail")
-	public ClosureHistoryDDto detail(ClosureHistoryInDto master){
+	public ClosureHistoryHeaderDto detail(ClosureHistoryInDto master){
 		return this.finder.detail(master);
 	}
 	

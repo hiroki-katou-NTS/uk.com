@@ -32,10 +32,10 @@ public class ClosureFindDto implements ClosureSetMemento{
 	private int month;
 	
 	/** The closure selected. */
-	private ClosureHistoryMDto closureSelected;
+	private ClosureHistoryMasterDto closureSelected;
 	
 	/** The closure histories. */
-	private List<ClosureHistoryMDto> closureHistories;
+	private List<ClosureHistoryMasterDto> closureHistories;
 
 	/*
 	 * (non-Javadoc)
@@ -92,7 +92,7 @@ public class ClosureFindDto implements ClosureSetMemento{
 	@Override
 	public void setClosureHistories(List<ClosureHistory> closureHistories) {
 		this.closureHistories = closureHistories.stream().map(history->{
-			ClosureHistoryMDto dto = new ClosureHistoryMDto();
+			ClosureHistoryMasterDto dto = new ClosureHistoryMasterDto();
 			history.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());

@@ -97,9 +97,9 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 		this.kclmtClosureHist.setCloseDay(closureDate.getDay());
 		if (closureDate.getLastDayOfMonth()) {
 			this.kclmtClosureHist.setIsLastDay(1);
-		} else {
-			this.kclmtClosureHist.setIsLastDay(0);
+			return;
 		}
+		this.kclmtClosureHist.setIsLastDay(0);
 	}
 
 	/*

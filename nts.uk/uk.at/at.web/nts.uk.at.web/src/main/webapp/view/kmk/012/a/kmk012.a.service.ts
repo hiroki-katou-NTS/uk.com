@@ -25,7 +25,7 @@ module nts.uk.at.view.kmk012.a {
 
 
         // detail data
-        export function detailClosureHistory(master: model.ClosureHistoryMDto): JQueryPromise<model.ClosureHistoryDDto> {
+        export function detailClosureHistory(master: model.ClosureHistoryMasterDto): JQueryPromise<model.ClosureHistoryHeaderDto> {
             return nts.uk.request.ajax(paths.detailClosureHistory, master);
         }
 
@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk012.a {
 
         export module model {
             
-            export class ClosureHistoryMDto {
+            export class ClosureHistoryMasterDto {
 
                 /** The history id. */
                 historyId: string;
@@ -64,7 +64,7 @@ module nts.uk.at.view.kmk012.a {
                 }
             }
             
-            export class ClosureHistoryDDto {
+            export class ClosureHistoryHeaderDto {
 
                 /** The history id. */
                 historyId: string;
@@ -117,10 +117,10 @@ module nts.uk.at.view.kmk012.a {
                 month: number;
                 
                 // selected
-                closureSelected: ClosureHistoryMDto;
+                closureSelected: ClosureHistoryMasterDto;
                 
                 // data history
-                closureHistories: ClosureHistoryMDto[];
+                closureHistories: ClosureHistoryMasterDto[];
             }
             
             export class ClosureSaveDto{
