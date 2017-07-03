@@ -1,4 +1,4 @@
-module cmm044.b.viewmodel {
+module cmm044.d.viewmodel {
     export class ScreenModel {
         date: KnockoutObservable<string>;
         yearMonth: KnockoutObservable<number>;
@@ -8,6 +8,7 @@ module cmm044.b.viewmodel {
         histItems: KnockoutObservableArray<model.AgentDto>;
         personList: KnockoutObservableArray<AgentData>;
         dataPerson: any;
+        
 
         constructor() {
             var self = this;
@@ -18,7 +19,8 @@ module cmm044.b.viewmodel {
             self.histItems = ko.observableArray([]);
 
             self.personList = ko.observableArray([]);
-            self.dataPerson = nts.uk.ui.windows.getShared('cmm044DataPerson');
+            self.dataPerson = nts.uk.ui.windows.getShared('cmm044_DataPerson');
+            
         }
         start() {
             var self = this,
@@ -26,12 +28,6 @@ module cmm044.b.viewmodel {
 
             self.personList.removeAll();
             $.when(self.findAgent()).done(function() {
-                _.each(ko.toJS(self.histItems), x => {
-                    let obj = _.find(self.dataPerson, (p: any) => p.personId == x.employeeId);
-                    if (obj) {
-                        self.personList.push(new AgentData(obj.code, obj.name, '', '', '', x.startDate, x.endDate, '', '', ''));
-                    }
-                });
                 dfd.resolve();
             });
 
@@ -47,10 +43,12 @@ module cmm044.b.viewmodel {
             var self = this,
                 dfd = $.Deferred();
             service.findAgent().done(function(agent_arr: Array<model.AgentDto>) {
+           
                 for (var i = 0; i < agent_arr.length; i++) {
                     self.histItems.push(new model.AgentDto(agent_arr[i].companyId, agent_arr[i].employeeId, agent_arr[i].requestId, agent_arr[i].startDate, agent_arr[i].endDate));
                 }
                 dfd.resolve();
+                    
             }).fail(function(error) {
                 alert(error.message);
                 dfd.reject(error);
@@ -63,16 +61,18 @@ module cmm044.b.viewmodel {
             var dfd = $.Deferred();
             self.personList.removeAll();
             service.findAgentByDate(self.dateValue().startDate, self.dateValue().endDate).done(function(agent_arr: Array<model.AgentDto>) {
-                
+                if(agent_arr.length == 0){
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7"));
+                }else{
                 _.each(agent_arr, x => {
                     let obj = _.find(self.dataPerson, (p: any) => p.personId == x.employeeId);
                     if (obj) {
-                        
                         self.personList.push(new AgentData(obj.code, obj.name, '', '', '', x.startDate, x.endDate, '', '', ''));
                     }
                 });
                                 
                 dfd.resolve();
+                    }
             }).fail(function(error) {
                 alert(error.message);
                 dfd.reject(error);

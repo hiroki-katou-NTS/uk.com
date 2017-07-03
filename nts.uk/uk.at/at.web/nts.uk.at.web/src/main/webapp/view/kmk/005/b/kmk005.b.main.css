@@ -57,3 +57,30 @@ div.nts-column{
 
 
 
+#premium-set-tbl-b {
+	margin-top: 10px;
+	margin-left: 15px;
+}
+#premium-set-tbl-b tr, th, td{ 
+	border: 1px solid #999999
+}
+#premium-set-tbl-b td, th { 
+	padding: 2px;
+	vertical-align: middle;
+	height: 36px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+#premium-set-tbl-b th { 
+	background-color: #C7F391;
+}
+#premium-set-tbl-b tbody tr td:FIRST-CHILD { 
+	background-color: #EDFAC2;
+}
+#premium-set-tbl-b tbody tr td:NTH-CHILD(2) {
+	padding-bottom: 0px;
+}
+
+
+
+

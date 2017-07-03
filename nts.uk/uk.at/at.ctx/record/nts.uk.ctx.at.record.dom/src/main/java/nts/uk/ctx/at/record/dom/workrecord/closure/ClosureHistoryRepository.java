@@ -53,7 +53,7 @@ public interface ClosureHistoryRepository {
 	 * @param historyId the history id
 	 * @return the list
 	 */
-	Optional<ClosureHistory> findByHistoryId(String companyId, int closureId, 
+	Optional<ClosureHistory> findById(String companyId, int closureId, 
 			String historyId);
 	
 	

@@ -29,25 +29,25 @@ public class CPBonusPaySettingWebService extends WebService {
 
 	@POST
 	@Path("getCBPSettingSetting")
-	CompanyBPSettingDto getCBPSettingSetting() {
+	public CompanyBPSettingDto getCBPSettingSetting() {
 		return this.companyBPSettingFinder.getSetting();
 	}
 
 	@POST
 	@Path("addCBPSettingSetting")
-	void addCBPSettingSetting(CBPSettingAddCommand setting) {
+	public void addCBPSettingSetting(CBPSettingAddCommand setting) {
 		this.cbPSettingAddCommandHandler.handle(setting);
 	}
 
 	@POST
 	@Path("updateCBPSettingSetting")
-	void updateCBPSettingSetting(CBPSettingUpdateCommand setting) {
+	public void updateCBPSettingSetting(CBPSettingUpdateCommand setting) {
 		this.cbPSettingUpdateCommandHandler.handle(setting);
 	}
 
 	@POST
 	@Path("removeCBPSettingSetting")
-	void removeCBPSettingSetting(CBPSettingDeleteCommand setting) {
+	public void removeCBPSettingSetting(CBPSettingDeleteCommand setting) {
 		this.cbPSettingDeleteCommandHandler.handle(setting);
 	}
 }

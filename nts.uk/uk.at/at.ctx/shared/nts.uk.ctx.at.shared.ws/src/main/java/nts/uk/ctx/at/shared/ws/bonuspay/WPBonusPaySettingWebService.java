@@ -32,31 +32,31 @@ public class WPBonusPaySettingWebService extends WebService {
 
 	@POST
 	@Path("getListWPBonusPaySettingSetting")
-	List<WPBonusPaySettingDto> getListWPBonusPaySettingSetting(List<String> lstWorkplace) {
+	public List<WPBonusPaySettingDto> getListWPBonusPaySettingSetting(List<String> lstWorkplace) {
 		return this.wpBonusPaySettingFinder.getListSetting(lstWorkplace);
 	}
 
 	@POST
 	@Path("addWPBonusPaySettingSetting")
-	void addWPBonusPaySettingSetting(WPBonusPaySettingAddCommand wpBonusPaySettingAddCommand) {
+	public void addWPBonusPaySettingSetting(WPBonusPaySettingAddCommand wpBonusPaySettingAddCommand) {
 		this.wpBonusPaySettingAddCommandHandler.handle(wpBonusPaySettingAddCommand);
 	}
 
 	@POST
 	@Path("updateWPBonusPaySettingSetting")
-	void updateWPBonusPaySettingSetting(WPBonusPaySettingUpdateCommand wpBonusPaySettingUpdateCommand) {
+	public void updateWPBonusPaySettingSetting(WPBonusPaySettingUpdateCommand wpBonusPaySettingUpdateCommand) {
 		this.wpBonusPaySettingUpdateCommandHandler.handle(wpBonusPaySettingUpdateCommand);
 	}
 
 	@POST
 	@Path("removeWPBonusPaySettingSetting")
-	void removeWPBonusPaySettingSetting(WPBonusPaySettingDeleteCommand wpBonusPaySettingDeleteCommand) {
+	public void removeWPBonusPaySettingSetting(WPBonusPaySettingDeleteCommand wpBonusPaySettingDeleteCommand) {
 		this.wpBonusPaySettingDeleteCommandHandler.handle(wpBonusPaySettingDeleteCommand);
 	}
 
 	@POST
 	@Path("getWPBPSetting/{WorkplaceId}")
-	WPBonusPaySettingDto getWPBPSetting(@PathParam("WorkplaceId") String WorkplaceId) {
+	public WPBonusPaySettingDto getWPBPSetting(@PathParam("WorkplaceId") String WorkplaceId) {
 		return this.wpBonusPaySettingFinder.getWPBPSetting(WorkplaceId);
 	}
 

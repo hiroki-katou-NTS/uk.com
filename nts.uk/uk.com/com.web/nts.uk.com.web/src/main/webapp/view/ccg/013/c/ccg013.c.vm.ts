@@ -133,15 +133,12 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             var self = this;
             if(self.selectedTitleAtr()==1){
                 if(self.currentTitleMenu() !== ''){
-                    var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID(),self.currentTitleMenu()); 
-                    windows.setShared("CCG013C_TitleBar", titleBar1);       
+                    var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID(),self.currentTitleMenu()); 
+                    windows.setShared("CCG013C_TitleBar", titleBar);       
                 }else{
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_75" });   
                     return false;
                 }
-            }else{
-                var titleBar0 = new TitleBar(self.nameTitleBar(),self.letterColor(),self.backgroundColor(),self.selectedTitleAtr(),self.fileID(),'');
-                windows.setShared("CCG013C_TitleBar", titleBar0);
             }
             self.cancel_Dialog();
         }

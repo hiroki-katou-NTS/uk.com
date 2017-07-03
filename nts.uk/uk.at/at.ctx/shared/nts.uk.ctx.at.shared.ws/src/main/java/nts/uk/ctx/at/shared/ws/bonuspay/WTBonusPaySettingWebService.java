@@ -32,30 +32,30 @@ public class WTBonusPaySettingWebService extends WebService {
 
 	@POST
 	@Path("getListWTBonusPaySettingSetting")
-	List<WTBonusPaySettingDto> getListWTBonusPaySettingSetting() {
+	public List<WTBonusPaySettingDto> getListWTBonusPaySettingSetting() {
 		return this.wtBonusPaySettingFinder.getListSetting();
 	}
 	@POST
 	@Path("getWTBPSetting/{workingTimesheetCode}")
-	WTBonusPaySettingDto getWTBPSetting(@PathParam("workingTimesheetCode") String workingTimesheetCode){
+	public WTBonusPaySettingDto getWTBPSetting(@PathParam("workingTimesheetCode") String workingTimesheetCode){
 		return this.wtBonusPaySettingFinder.getWTBPSetting(workingTimesheetCode);
 	}
 
 	@POST
 	@Path("addWTBonusPaySettingSetting")
-	void addWTBonusPaySettingSetting(WTBonusPaySettingAddCommand wtBonusPaySettingAddCommand) {
+	public void addWTBonusPaySettingSetting(WTBonusPaySettingAddCommand wtBonusPaySettingAddCommand) {
 		this.wtBonusPaySettingAddCommandHandler.handle(wtBonusPaySettingAddCommand);
 	}
 
 	@POST
 	@Path("updateWTBonusPaySettingSetting")
-	void updateWTBonusPaySettingSetting(WTBonusPaySettingUpdateCommand wtBonusPaySettingUpdateCommand) {
+	public void updateWTBonusPaySettingSetting(WTBonusPaySettingUpdateCommand wtBonusPaySettingUpdateCommand) {
 		this.wtBonusPaySettingUpdateCommandHandler.handle(wtBonusPaySettingUpdateCommand);
 	}
 
 	@POST
 	@Path("removeWTBonusPaySettingSetting")
-	void removeWTBonusPaySettingSetting(WTBonusPaySettingDeleteCommand wtBonusPaySettingDeleteCommand) {
+	public void removeWTBonusPaySettingSetting(WTBonusPaySettingDeleteCommand wtBonusPaySettingDeleteCommand) {
 		this.wtBonusPaySettingDeleteCommandHandler.handle(wtBonusPaySettingDeleteCommand);
 	}
 }

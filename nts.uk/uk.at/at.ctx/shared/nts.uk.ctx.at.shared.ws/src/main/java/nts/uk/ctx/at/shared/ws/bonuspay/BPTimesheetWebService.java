@@ -32,23 +32,23 @@ public class BPTimesheetWebService extends WebService {
 
 	@POST
 	@Path("getListTimesheet/{bonusPaySettingCode}")
-	List<BPTimesheetDto> getListTimesheet(
+	public List<BPTimesheetDto> getListTimesheet(
 			@PathParam("bonusPaySettingCode") String bonusPaySettingCode) {
 		return this.bpTimesheetFinder.getListTimesheet( bonusPaySettingCode);
 	}
 	@POST
 	@Path("addListTimesheet")
-	void addListTimesheet(List<BPTimesheetAddCommand> lstTimesheet) {
+	public void addListTimesheet(List<BPTimesheetAddCommand> lstTimesheet) {
 		this.bpTimesheetAddCommandHandler.handle(lstTimesheet);
 	}
 	@POST
 	@Path("updateListTimesheet")
-	void updateListTimesheet(List<BPTimesheetUpdateCommand> lstTimesheet) {
+	public void updateListTimesheet(List<BPTimesheetUpdateCommand> lstTimesheet) {
 		this.cpTimesheetUpdateCommandHandler.handle(lstTimesheet);
 	}
 	@POST
 	@Path("removeListTimesheet")
-	void removeListTimesheet(List<BPTimesheetDeleteCommand> lstTimesheet) {
+	public void removeListTimesheet(List<BPTimesheetDeleteCommand> lstTimesheet) {
 		this.cpTimesheetDeleteCommandHandler.handle(lstTimesheet);
 	}
 
