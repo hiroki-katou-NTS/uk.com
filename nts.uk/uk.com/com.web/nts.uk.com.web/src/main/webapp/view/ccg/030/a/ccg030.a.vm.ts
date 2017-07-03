@@ -52,7 +52,6 @@ module ccg030.a.viewmodel {
             var self = this;
             nts.uk.ui.block.invisible();
             var dfd = self.reloadData();
-            console.log()
             dfd.done(() => {
                 nts.uk.ui.block.clear();
                 self.selectFlowMenuByIndex(0);
@@ -65,14 +64,12 @@ module ccg030.a.viewmodel {
         createNewFlowMenu() {
             var self = this;
             $(".nts-input").ntsError("clear");
-            _.defer(() => { $("#inpCode").focus(); });
+            _.defer(() => {$("#inpCode").focus();});
             self.isCreate(true);
             self.isDelete(false);
             self.selectedFlowMenuCD(null);
             self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
         }
-        /** Tab index file*/
-        $(".filename").attr("tabindex", 8);
 
         /** Click Registry button */
         registryFlowMenu() {
@@ -229,13 +226,13 @@ module ccg030.a.viewmodel {
         private findFlowMenu(flowmenuCD: string): void {
             var self = this;
             $(".nts-input").ntsError("clear");
-            _.defer(() => { $("#inpName").focus(); });
+            _.defer(()=>{$("#inpName").focus();});
             var selectedFlowmenu = _.find(self.listFlowMenu(), ['topPageCode', flowmenuCD]);
             if (selectedFlowmenu !== undefined) {
                 self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
                     selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
-                    selectedFlowmenu.fileID,
-                    selectedFlowmenu.fileName.lenght === 0 ? '未設定' : selectedFlowmenu.fileName,
+                    selectedFlowmenu.fileID, 
+                    selectedFlowmenu.fileName.lenght === 0 ? '未設定' : selectedFlowmenu.fileName, 
                     selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
                 self.isCreate(false);
@@ -280,11 +277,11 @@ module ccg030.a.viewmodel {
             $(".nts-input").ntsError("clear");
             if (isCreate === true) {
                 self.selectedFlowMenuCD(null);
-                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
-                _.defer(() => { $("#inpCode").focus(); });
+                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 4, 4));
+                _.defer(() => {$("#inpCode").focus();});
             }
             else {
-                _.defer(() => { $("#inpName").focus(); });
+                _.defer(() => {$("#inpName").focus();});
             }
         }
 
