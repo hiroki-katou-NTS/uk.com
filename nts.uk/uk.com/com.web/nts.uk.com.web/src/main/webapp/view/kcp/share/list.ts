@@ -201,7 +201,9 @@ module kcp.share.list {
             
             // With list type is employee list, use employee input.
             if (self.listType == ListType.EMPLOYEE) {
-                self.initComponent(data, data.employeeInputList(), $input);
+                self.initComponent(data, data.employeeInputList(), $input).done(function() {
+                    dfd.resolve();
+                });
                 data.employeeInputList.subscribe(dataList => {
                     self.initComponent(data, data.employeeInputList(), $input).done(function() {
                         dfd.resolve();
