@@ -406,8 +406,9 @@
                 if (validateResult === true || validateResult.probe) {
                     result.isValid = true;
                     result.errorMessage = validateResult.messageId;
+                    result.errorCode = validateResult.messageId;
                 } else {
-                    result.fail(validateResult.messageId);
+                    result.fail(validateResult.messageId, validateResult.messageId);
                 }
                 return result;
             }
