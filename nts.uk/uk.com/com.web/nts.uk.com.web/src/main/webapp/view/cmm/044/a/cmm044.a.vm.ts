@@ -5,39 +5,59 @@ module cmm044.a.viewmodel {
     import DirtyChecker = nts.uk.ui.DirtyChecker;
     import modal = nts.uk.ui.windows.sub.modal;
     import formatym = nts.uk.time.parseYearMonthDate;
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 
     export class ScreenModel {
+
         empItems: KnockoutObservableArray<PersonModel>;
         empSelectedItem: KnockoutObservable<any>;
-        
+
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         itemList: KnockoutObservableArray<any>;
         index_of_itemDelete: any;
         isEnableDelete: KnockoutObservable<boolean>;
-        
+
         displayEmployeeInfo1: KnockoutObservable<boolean>;
         displayEmployeeInfo2: KnockoutObservable<boolean>;
         displayEmployeeInfo3: KnockoutObservable<boolean>;
         displayEmployeeInfo4: KnockoutObservable<boolean>;
-
+        
         histItems: KnockoutObservableArray<model.AgentDto>;
-        currentAgent: KnockoutObservable<model.AgentDto>;
         histSelectedItem: KnockoutObservable<any>;
         currentItem: KnockoutObservable<model.AgentAppDto>;
-        
+
         agentAppType1: KnockoutObservable<number>;
         agentAppType2: KnockoutObservable<number>;
         agentAppType3: KnockoutObservable<number>;
         agentAppType4: KnockoutObservable<number>;
+        
+        agentSid1: KnockoutObservable<string>;
+        agentSid2: KnockoutObservable<string>;
+        agentSid3: KnockoutObservable<string>;
+        agentSid4: KnockoutObservable<string>;
+        
 
+        employeeList : KnockoutObservable<any>;
+        employeeNameScreen1: KnockoutObservable<any>;
+        employeeNameScreen2: KnockoutObservable<any>;
+        employeeNameScreen3: KnockoutObservable<any>;
+        employeeNameScreen4: KnockoutObservable<any>;
+
+        //Date Range Picker
         dateValue: KnockoutObservable<any>;
 
+        selectedTab: KnockoutObservable<string>;
+
+        ccgcomponent: GroupOption;
+        selectedCode: KnockoutObservableArray<string>;
+        showinfoSelectedEmployee: KnockoutObservable<boolean>;
+        selectedEmployee: KnockoutObservableArray<any>;
 
         constructor() {
             let self = this;
             self.index_of_itemDelete = ko.observable(-1);
             self.currentItem = ko.observable(null);
-            self.currentAgent = ko.observable(null);
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText("CMM044_11"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: nts.uk.resource.getText("CMM044_12"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -51,16 +71,23 @@ module cmm044.a.viewmodel {
             self.displayEmployeeInfo2 = ko.observable(true);
             self.displayEmployeeInfo3 = ko.observable(true);
             self.displayEmployeeInfo4 = ko.observable(true);
-            
+
             self.isEnableDelete = ko.observable(true);
 
             self.agentAppType1 = ko.observable(0);
             self.agentAppType2 = ko.observable(0);
             self.agentAppType3 = ko.observable(0);
             self.agentAppType4 = ko.observable(0);
+            
+            self.agentSid1 = ko.observable('');
+            self.agentSid2 = ko.observable('');
+            self.agentSid3 = ko.observable('');
+            self.agentSid4 = ko.observable('');
+            
             self.agentAppType1.subscribe(function(newValue) {
                 self.displayEmployeeInfo1(newValue == 0);
                 self.currentItem().agentAppType1(newValue);
+ 
             });
             self.agentAppType2.subscribe(function(newValue) {
                 self.displayEmployeeInfo2(newValue == 0);
@@ -77,7 +104,9 @@ module cmm044.a.viewmodel {
 
             self.histItems = ko.observableArray([]);
             self.selectedTab = ko.observable('tab-1');
-
+            self.selectedTab.subscribe(function(newValue){
+                
+            })
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
             self.empSelectedItem.subscribe(function(newValue) {
@@ -85,8 +114,6 @@ module cmm044.a.viewmodel {
                     $.when(self.getAllAgen(newValue.personId)).done(function() {
                         if (self.histItems().length > 0) {
                             self.histSelectedItem(self.histItems()[0].requestId);
-                        
-                            
                         } else {
                             self.initAgent();
                         }
@@ -98,18 +125,28 @@ module cmm044.a.viewmodel {
             self.histSelectedItem.subscribe(function(requestId) {
                 if (requestId) {
                     self.getAgen(self.empSelectedItem().personId, requestId);
+                    $("#daterangepicker").find(".ntsStartDatePicker").blur();
+                    nts.uk.ui.errors.clearAll();
                     self.isEnableDelete(true);
                 }
             });
-            
+
             self.itemList = ko.observableArray([
                 new BoxModel(0, nts.uk.resource.getText("CMM044_16")),
                 new BoxModel(1, nts.uk.resource.getText("CMM044_17")),
                 new BoxModel(2, nts.uk.resource.getText("CMM044_18"))
             ]);
-            self.dateValue = ko.observable({startDate: '', endDate: ''});
-            self.start();
-
+            self.dateValue = ko.observable({ startDate: '', endDate: '' });
+            self.employeeList  = ko.observable('');
+            self.employeeNameScreen1 = ko.observable('');
+            self.employeeNameScreen2 = ko.observable('');
+            self.employeeNameScreen3 = ko.observable('');
+            self.employeeNameScreen4 = ko.observable('');
+            
+            self.ccgcomponent = ko.observable();
+            self.selectedCode = ko.observableArray('');
+            self.showinfoSelectedEmployee = ko.observable(true);
+            self.selectedEmployee = ko.observableArray([]);
         }
         start() {
             let self = this;
@@ -119,8 +156,7 @@ module cmm044.a.viewmodel {
             /**
              * Demo EmployeeCode & EmployeeId
              */
-             
-            _.range(3).map(i => {
+            _.range(30).map(i => {
                 i++;
                 if (i < 10) {
                     self.empItems.push(new PersonModel({
@@ -136,6 +172,7 @@ module cmm044.a.viewmodel {
                     }));
                 }
             });
+            self.initCCG001();
             dfd.resolve();
             return dfd.promise();
         }
@@ -151,9 +188,22 @@ module cmm044.a.viewmodel {
                 if (agent_arr && agent_arr.length) {
                     self.histItems.removeAll();
                     for (var i = 0; i < agent_arr.length; i++) {
-                        self.histItems.push(new model.AgentDto(agent_arr[i].companyId, agent_arr[i].employeeId, agent_arr[i].requestId, agent_arr[i].startDate, agent_arr[i].endDate, agent_arr[i].agentSid1, agent_arr[i].agentAppType1, agent_arr[i].agentSid2, agent_arr[i].agentAppType2, agent_arr[i].agentSid3, agent_arr[i].agentAppType3, agent_arr[i].agentSid4, agent_arr[i].agentAppType4));
+                        self.histItems.push(new model.AgentDto(
+                            agent_arr[i].companyId,
+                            agent_arr[i].employeeId,
+                            agent_arr[i].requestId,
+                            agent_arr[i].startDate,
+                            agent_arr[i].endDate,
+                            agent_arr[i].agentSid1,
+                            agent_arr[i].agentAppType1,
+                            agent_arr[i].agentSid2,
+                            agent_arr[i].agentAppType2,
+                            agent_arr[i].agentSid3,
+                            agent_arr[i].agentAppType3,
+                            agent_arr[i].agentSid4,
+                            agent_arr[i].agentAppType4));
                     }
-                }     
+                }
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
@@ -188,9 +238,9 @@ module cmm044.a.viewmodel {
                 self.agentAppType2(agent.agentAppType2);
                 self.agentAppType3(agent.agentAppType3);
                 self.agentAppType4(agent.agentAppType4);
-                
-                self.dateValue({startDate: agent.startDate, endDate: agent.endDate});
-                
+
+                self.dateValue({ startDate: agent.startDate, endDate: agent.endDate });
+                $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
@@ -224,6 +274,10 @@ module cmm044.a.viewmodel {
             self.currentItem().agentAppType4(self.agentAppType4());
             self.currentItem().startDate(new Date(self.dateValue().startDate));
             self.currentItem().endDate(new Date(self.dateValue().endDate));
+            self.currentItem().agentSid1(self.agentSid1());
+            self.currentItem().agentSid2(self.agentSid2());
+            self.currentItem().agentSid3(self.agentSid3());
+            self.currentItem().agentSid4(self.agentSid4());
 
             var agent = ko.toJSON(self.currentItem());
             agent["employeeId"] = self.empSelectedItem().personId;
@@ -233,8 +287,9 @@ module cmm044.a.viewmodel {
                 service.updateAgent(agent).done(function() {
                     self.getAllAgen(self.empSelectedItem().personId);
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                    $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 }).fail(function(res) {
-                   nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 })
             } else {
                 service.addAgent(agent).done(function(res) {
@@ -242,9 +297,10 @@ module cmm044.a.viewmodel {
                     if (self.histSelectedItem) {
                         self.getAllAgen(self.empSelectedItem().personId);
                         self.histSelectedItem(res);
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));          
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                        $("#daterangepicker").find(".ntsStartDatePicker").focus();
                     }
-                }).fail(function(res) {            
+                }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 })
             }
@@ -252,10 +308,7 @@ module cmm044.a.viewmodel {
 
         deleteAgent() {
             let self = this;
-
-            let dfd = $.Deferred<any>();
             var index_of_itemDelete = _.findIndex(self.histItems(), ['requestId', self.histSelectedItem()]);
-
             nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 var agent = {
                     employeeId: self.empSelectedItem().personId,
@@ -275,6 +328,7 @@ module cmm044.a.viewmodel {
                         }
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"));
                         self.histSelectedItem(requestId);
+                        $("#daterangepicker").find(".ntsStartDatePicker").focus();
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -286,29 +340,104 @@ module cmm044.a.viewmodel {
         initAgent() {
             let self = this;
             self.dateValue = ko.observable({});
-            
             self.displayEmployeeInfo1(true);
             self.displayEmployeeInfo2(true);
             self.displayEmployeeInfo3(true);
             self.displayEmployeeInfo4(true);
             self.isEnableDelete(false);
-
+            nts.uk.ui.errors.clearAll();
             self.agentAppType1(0);
             self.agentAppType2(0);
             self.agentAppType3(0);
             self.agentAppType4(0);
             self.selectedTab('tab-1');
-            $("#daterangepicker").find(".ntsStartDatePicker").focus();
             self.histSelectedItem("");
             self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
+            $("#daterangepicker").find(".ntsStartDatePicker").focus();
         }
         openDDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('cmm044DataPerson', self.empItems());   
-            nts.uk.ui.windows.sub.modal('/view/cmm/044/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.setShared('cmm044_DataPerson', self.empItems());
+            nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
+            });
+
+        }
+        openCDL021(tab: number, employeeId: string) {
+            let self = this;
+            nts.uk.ui.windows.setShared('cmm044_Name', employeeId);
+            nts.uk.ui.windows.setShared('cmm044_DataPerson', self.empItems());
+            nts.uk.ui.windows.setShared('cmm044_Tab', tab);
+            nts.uk.ui.windows.sub.modal('/view/cmm/044/e/index.xhtml', { title: '代行リスト', height: 650, width: 550, dialogClass: 'no-close' }).onClosed(function(): any {
+                if (!!nts.uk.ui.windows.getShared('cmm044_Employee')) {
+                    var employee = nts.uk.ui.windows.getShared('cmm044_Employee');
+                    var tabNumber = nts.uk.ui.windows.getShared('cmm044_TabNumber');
+                    if (tabNumber == 1) {
+                        self.agentSid1(employee.employeId);
+                        self.employeeNameScreen1(employee.employeeName);
+                    }else if (tabNumber == 2) {      
+                        self.agentSid2(employee.employeId);
+                        self.employeeNameScreen2(employee.employeeName);
+                    }else if (tabNumber == 3) {      
+                        self.agentSid3(employee.employeId);
+                        self.employeeNameScreen3(employee.employeeName);
+                    }else {
+                        self.agentSid4(employee.employeId);
+                        self.employeeNameScreen4(employee.employeeName);
+                    }
+                }
             });
         }
-        openCDL021() {
+        
+        openCCG001() {
+            let self = this;
+            $("#ccgcomponent, #ccgcomponent_contents").toggleClass("show");    
+        }
+        
+        initCCG001() {
+            let self = this;
+            self.ccgcomponent = {
+               baseDate: ko.observable(new Date()),
+               // Show/hide options 
+               isQuickSearchTab: ko.observable(true),
+               isAdvancedSearchTab: ko.observable(true),
+               isAllReferableEmployee: ko.observable(true),
+               isOnlyMe: ko.observable(true),
+               isEmployeeOfWorkplace: ko.observable(true),
+               isEmployeeWorkplaceFollow: ko.observable(true),
+               isMutipleCheck: ko.observable(true),
+               isSelectAllEmployee: ko.observable(true),
+               
+               //Event options
+               /**
+               * @param dataList: list employee returned from component.
+               * Define how to use this list employee by yourself in the function's body.
+               */
+               onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+                   self.showinfoSelectedEmployee(true);
+                   self.selectedEmployee(dataList);
+               },
+               onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+                   self.showinfoSelectedEmployee(true);
+                   var dataEmployee: EmployeeSearchDto[] = [];
+                   dataEmployee.push(data);
+                   self.selectedEmployee(dataEmployee);
+               },
+               onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+                   self.showinfoSelectedEmployee(true);
+                   self.selectedEmployee(dataList);
+               },
+               onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+                   self.showinfoSelectedEmployee(true);
+                   self.selectedEmployee(dataList);
+               },
+               onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+                   self.showinfoSelectedEmployee(true);
+                   self.selectedEmployee(dataEmployee);
+               }
+           }
+
+           $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+        
         }
     }
 
@@ -332,7 +461,6 @@ module cmm044.a.viewmodel {
             this.baseDate = param.baseDate || 20170104;
         }
     }
-
 
     class BoxModel {
         id: number;
@@ -407,7 +535,6 @@ module cmm044.a.viewmodel {
             }
         }
 
-
         export class DeleteAgent {
             companyId: string;
             employeeId: string;
@@ -418,10 +545,5 @@ module cmm044.a.viewmodel {
                 this.requestId = requestId;
             }
         }
-
-
-
     }
-
-
 }
