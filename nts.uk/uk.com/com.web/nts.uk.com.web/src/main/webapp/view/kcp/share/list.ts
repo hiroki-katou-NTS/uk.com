@@ -134,6 +134,7 @@ module kcp.share.list {
             this.listComponentColumn = [];
             this.isMultiple = false;
             this.componentGridId = (Date.now()).toString();
+            this.alreadySettingList = ko.observableArray([]);
         }
         /**
          * Init component.
@@ -205,9 +206,8 @@ module kcp.share.list {
                     dfd.resolve();
                 });
                 data.employeeInputList.subscribe(dataList => {
-                    self.initComponent(data, data.employeeInputList(), $input).done(function() {
-                        dfd.resolve();
-                    });
+                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
+                    self.itemList(dataList);
                 })
                 return dfd.promise();
             }
