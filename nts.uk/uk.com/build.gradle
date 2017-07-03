@@ -288,6 +288,11 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp')
 		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws')
 		
+		compile project (':wk.ctx:nts.uk.ctx.workflow.ws')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':wk.ctx:nts.uk.ctx.workflow.infra')
+		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.1'
