@@ -38,7 +38,7 @@ public interface TimeAnnualSettingSetMemento {
      *
      * @param maxYearDayLeave the new max year day leave
      */
-    void setMaxYearDayLeave(YearVacationTimeMaxDay maxYearDayLeave);
+    void setMaxYearDayLeave(TimeAnnualMaxDay maxYearDayLeave);
 
     /**
      * Sets the enough time one day.
