@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  * The Class YearVacationTimeMaxDay.
  */
 @Builder
-public class YearVacationTimeMaxDay {
+public class TimeAnnualMaxDay {
 
 	/** The manage max day vacation. */
     // 管理区分

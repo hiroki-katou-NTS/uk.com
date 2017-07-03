@@ -232,7 +232,7 @@ module ccg013.a.viewmodel {
                         });
                         self.menuBars.push(new MenuBar(menuBar.menuBarId, menuBar.code, menuBar.menuBarName, menuBar.selectedAtr, menuBar.system, menuBar.menuCls, menuBar.backgroundColor, menuBar.textColor, menuBar.displayOrder, titleBars));
                     });
-                    $("#tabs").tabs("refresh");
+                    //$("#tabs").tabs("refresh");  
                     $("#tabs li#" + menuBars[0].menuBarId + " a").click();
                 }
 
