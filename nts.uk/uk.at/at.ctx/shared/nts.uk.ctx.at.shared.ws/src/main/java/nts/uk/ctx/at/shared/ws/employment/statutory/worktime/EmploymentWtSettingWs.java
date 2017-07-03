@@ -49,7 +49,7 @@ public class EmploymentWtSettingWs extends WebService {
 	@POST
 	@Path("find")
 	public EmploymentWtSettingDto find(EmploymentWtSettingRequest request) {
-		return this.finder.find(request);
+		return this.finder.find(request.getYear(), request.getEmploymentCode());
 	}
 
 	/**

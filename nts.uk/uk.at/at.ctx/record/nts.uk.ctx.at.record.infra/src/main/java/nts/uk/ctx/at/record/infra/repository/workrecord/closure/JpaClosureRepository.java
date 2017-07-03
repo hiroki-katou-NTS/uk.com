@@ -64,7 +64,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * getAllClosure(java.lang.String)
 	 */
 	@Override
-	public List<Closure> getAllClosure(String companyId) {
+	public List<Closure> findAll(String companyId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

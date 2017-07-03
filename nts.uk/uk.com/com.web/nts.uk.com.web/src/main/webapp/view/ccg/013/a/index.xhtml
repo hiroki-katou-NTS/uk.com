@@ -54,7 +54,7 @@
 							<div class="control-group" data-bind="with: currentWebMenu">
 								<div data-bind="ntsFormLabel: {required: true}">コード/名称</div>
 								<span><input style="width: 40px"
-									data-bind="ntsTextEditor: {value: webMenuCode,enable: false}" /></span>
+									data-bind="ntsTextEditor: {value: webMenuCode}" /></span>
 								<span><input style="width: 180px"
 									data-bind="ntsTextEditor: {value: webMenuName}" /></span>
 								<div class="bg-yellow">
@@ -83,8 +83,8 @@
 														<div class="title-menu-name context-menu-title"
 															data-bind="style: {color: textColor, 'background-color': backgroundColor}, text: titleMenuName"></div>
 														<ul class="tree-menu" data-bind="foreach: treeMenu">
-															<li>
-															   <span data-bind="text: name"></span>
+															<li class="context-menu-tree" data-bind="attr:{id: treeMenuId}">
+															   <div data-bind="text: name"></div>
 															</li>
 														</ul>
 														<button class="button-add-treemenu"

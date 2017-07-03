@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDDto;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryHeaderDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.record.dom.workrecord.closure.Closure;
@@ -38,7 +38,12 @@ public class ClosureHistoryFinder {
 	
 	
 
-	public List<ClosureHistoryFindDto> getAllClosureHistory() {
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<ClosureHistoryFindDto> findAll() {
 
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -47,14 +52,15 @@ public class ClosureHistoryFinder {
 		String companyId = loginUserContext.companyId();
 
 		// get all closure
-		List<Closure> closures = this.repository.getAllClosure(companyId);
+		List<Closure> closures = this.repository.findAll(companyId);
 		
 		// get data
 		List<ClosureHistory> closureHistories = new ArrayList<>();
 		
-		closures.forEach(closure->{
-			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory.findBySelectedYearMonth(
-					companyId, closure.getClosureId(), closure.getMonth().getProcessingDate().v());
+		closures.forEach(closure -> {
+			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory
+					.findBySelectedYearMonth(companyId, closure.getClosureId(),
+							closure.getMonth().getProcessingDate().v());
 			
 			if(closureHistoryLast.isPresent()){
 				closureHistories.add(closureHistoryLast.get());
@@ -73,21 +79,23 @@ public class ClosureHistoryFinder {
 	 * Detail.
 	 *
 	 * @param master the master
-	 * @return the closure history D dto
+	 * @return the closure history header dto
 	 */
-	public ClosureHistoryDDto detail(ClosureHistoryInDto master){
+	public ClosureHistoryHeaderDto findById(ClosureHistoryInDto master){
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
 		String companyId = loginUserContext.companyId();
 
-		Optional<ClosureHistory> historyHistory = this.repositoryHistory.findByHistoryId(companyId,
+		// call repository find closure history
+		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
 				master.getClosureId(), master.getHistoryId());
 		
-		ClosureHistoryDDto dto = new ClosureHistoryDDto();
-		if(historyHistory.isPresent()){
-			historyHistory.get().saveToMemento(dto);
+		// return data
+		ClosureHistoryHeaderDto dto = new ClosureHistoryHeaderDto();
+		if(closureHistory.isPresent()){
+			closureHistory.get().saveToMemento(dto);
 		}
 		return dto;
 	}

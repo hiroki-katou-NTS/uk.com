@@ -11,8 +11,10 @@ module nts.uk.at.view.kdl001.test {
             singleSelect(){
                 var self = this;
                 nts.uk.ui.windows.setShared('kml001multiSelectMode', false);
-                nts.uk.ui.windows.setShared('kml001selectAbleCodeList', _.split(self.selectedCodeAbleList(), ','));
-                nts.uk.ui.windows.setShared('kml001selectedCodeList', _.split(self.selectedCodeList(), ','));
+                let ableCodeList = _.split(self.selectedCodeAbleList(), ',');
+                let codeList = _.split(self.selectedCodeList(), ','); 
+                nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(ableCodeList[0])?[]:ableCodeList);
+                nts.uk.ui.windows.setShared('kml001selectedCodeList', nts.uk.util.isNullOrEmpty(codeList[0])?[]:codeList);
                 nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     if(nts.uk.ui.windows.getShared("kml001selectedCodeList")!=null){
                         self.selectedCodeList((<Array<string>>nts.uk.ui.windows.getShared("kml001selectedCodeList")[0]).toString());    
@@ -23,8 +25,10 @@ module nts.uk.at.view.kdl001.test {
             multiSelect(){
                 var self = this;
                 nts.uk.ui.windows.setShared('kml001multiSelectMode', true);
-                nts.uk.ui.windows.setShared('kml001selectAbleCodeList', _.split(self.selectedCodeAbleList(), ','));
-                nts.uk.ui.windows.setShared('kml001selectedCodeList', _.split(self.selectedCodeList(), ','));
+                let ableCodeList = _.split(self.selectedCodeAbleList(), ',');
+                let codeList = _.split(self.selectedCodeList(), ','); 
+                nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(ableCodeList[0])?[]:ableCodeList);
+                nts.uk.ui.windows.setShared('kml001selectedCodeList', nts.uk.util.isNullOrEmpty(codeList[0])?[]:codeList);
                 nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     if(nts.uk.ui.windows.getShared("kml001selectedCodeList")!=null){
                         self.selectedCodeList((<Array<string>>nts.uk.ui.windows.getShared("kml001selectedCodeList")).toString()); 

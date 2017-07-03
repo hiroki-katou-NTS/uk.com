@@ -9,7 +9,7 @@ public class BPTimeItemUpdateCommand {
 	private String timeItemId;
 	public int useAtr;
 	public String timeItemName;
-	public int id;
+	public int timeItemNo;
 	public int timeItemTypeAtr;
 
 }

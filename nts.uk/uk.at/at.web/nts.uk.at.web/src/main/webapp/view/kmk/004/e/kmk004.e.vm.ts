@@ -14,7 +14,7 @@ module nts.uk.at.view.kmk004.e {
                 self.usageUnitSettingModel = new UsageUnitSettingModel();
                 self.companySetting = ko.observable(true);
                 self.checkValueCompanySetting = ko.observable(1);
-                
+
                 self.companySetting.subscribe(function(val: boolean){
                    if(val){
                         self.usageUnitSettingModel.employment(val);    
@@ -37,6 +37,9 @@ module nts.uk.at.view.kmk004.e {
                 });
             }
 
+            /**
+             * Update viewmodel.
+             */
             private updateView() {
                 var self = this;
                 self.companySetting(self.usageUnitSettingModel.employment() || self.usageUnitSettingModel.workPlace());
@@ -48,6 +51,9 @@ module nts.uk.at.view.kmk004.e {
                 }
             }
 
+            /**
+             * Event on start page.
+             */
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
@@ -59,6 +65,9 @@ module nts.uk.at.view.kmk004.e {
                 return dfd.promise();
             }
 
+            /**
+             * Collect data from viewmodel.
+             */
             private collectData(): UsageUnitSettingDto{
                 var self = this;
                 var dto: UsageUnitSettingDto = new UsageUnitSettingDto();
@@ -67,7 +76,10 @@ module nts.uk.at.view.kmk004.e {
                 dto.employment = self.usageUnitSettingModel.employment();
                 return dto; 
             }
-            
+
+            /**
+             * Save usage unit setting.
+             */
             public save(): void {
                 var self = this;
                 service.saveUsageUnitSetting(self.collectData()).done(function() {
@@ -80,11 +92,18 @@ module nts.uk.at.view.kmk004.e {
                     });
                 });
             }
+
+            /**
+             * Event on click cancel button.
+             */
             public cancel(): void {
                 nts.uk.ui.windows.close();
             }
         }
 
+        /**
+         * The class UsageUnitSettingModel
+         */
         export class UsageUnitSettingModel {
 
             /** The employee. */
@@ -102,6 +121,9 @@ module nts.uk.at.view.kmk004.e {
                 this.employment = ko.observable(true);
             }
 
+            /**
+             * Update viewmodel data from dto.
+             */
             updateData(dto: UsageUnitSettingDto) {
                 this.employee(dto.employee);
                 this.workPlace(dto.workPlace);

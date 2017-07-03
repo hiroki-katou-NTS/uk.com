@@ -15,12 +15,12 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 
 /**
- * The Class ClosureHistoryMDto.
+ * The Class ClosureHistoryMasterDto.
  */
 
 @Getter
 @Setter
-public class ClosureHistoryMDto implements ClosureHistorySetMemento {
+public class ClosureHistoryMasterDto implements ClosureHistorySetMemento {
 
 
 	/** The history id. */

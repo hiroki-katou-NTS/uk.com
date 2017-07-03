@@ -47,9 +47,6 @@ public class UsageUnitSettingSaveCommandHandler
 		//to domain
 		UsageUnitSetting domain = command.toDomain(companyId);
 		
-		// validate domain
-		domain.validate();
-		
 		// update
 		this.repository.update(domain);
 	}
