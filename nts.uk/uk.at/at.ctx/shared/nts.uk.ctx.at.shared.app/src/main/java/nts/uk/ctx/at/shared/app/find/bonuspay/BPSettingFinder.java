@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.shared.app.find.bonuspay;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,6 +29,19 @@ public class BPSettingFinder {
 		return new BPSettingDto(bonusPaySetting.getCompanyId().toString(), bonusPaySetting.getCode().toString(),
 				bonusPaySetting.getName().toString());
 	}
+	public BPSettingDto getBonusPaySetting(String bonusPaySettingCode){
+		String companyId = AppContexts.user().companyId();
+		Optional<BonusPaySetting> bonusPaySetting = this.bpSettingRepository.getBonusPaySetting(companyId, new BonusPaySettingCode(bonusPaySettingCode));
+		if(bonusPaySetting.isPresent()){
+			BonusPaySetting bPaySetting = bonusPaySetting.get();
+			
+			return new BPSettingDto(companyId, bPaySetting.getCode().v(), bPaySetting.getName().v());
+			
+		}
+		return null;
+	}
+	
+	
 
 	// public List<BPSettingDto> getAllBonusPaySetting() {
 	// String companyId = AppContexts.user().companyId();

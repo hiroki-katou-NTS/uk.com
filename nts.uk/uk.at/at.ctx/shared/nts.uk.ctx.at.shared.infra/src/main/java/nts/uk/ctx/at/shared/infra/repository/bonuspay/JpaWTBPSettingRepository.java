@@ -54,9 +54,15 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 	}
 
 	@Override
-	public Optional<WorkingTimesheetBonusPaySetting> getWTBPSetting(String companyId, WorkingTimesheetCode workingTimesheetCode) {
-		return Optional.ofNullable(this.toWTBPSettingDomain(this.queryProxy()
-		.find(new KbpstWTBonusPaySettingPK(companyId, workingTimesheetCode.v()), KbpstWTBonusPaySetting.class).get()));
+	public Optional<WorkingTimesheetBonusPaySetting> getWTBPSetting(String companyId,
+			WorkingTimesheetCode workingTimesheetCode) {
+		Optional<KbpstWTBonusPaySetting> kbpstWTBonusPaySetting = this.queryProxy()
+				.find(new KbpstWTBonusPaySettingPK(companyId, workingTimesheetCode.v()), KbpstWTBonusPaySetting.class);
+		if (kbpstWTBonusPaySetting.isPresent()) {
+			return Optional.ofNullable(this.toWTBPSettingDomain(kbpstWTBonusPaySetting.get()));
+		}
+		return Optional.empty();
+
 	}
 
 }

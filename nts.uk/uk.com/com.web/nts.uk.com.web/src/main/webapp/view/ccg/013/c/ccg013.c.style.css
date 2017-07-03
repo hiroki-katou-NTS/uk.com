@@ -68,3 +68,7 @@ table tr td {
 }
 
 .pull-right {text-align: right;}
+
+#nameTitleBar{
+	width: 220px !important;
+}

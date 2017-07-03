@@ -5,13 +5,13 @@ module kdl002.b.viewmodel {
         columns: KnockoutObservableArray<any>;
         currentCodeList: KnockoutObservable<any>;
         posibleItems: Array<string>;
-        SelectedCode: KnockoutObservableArray<string>;
-        SelectableCode: KnockoutObservableArray<string>;
+        SelectedCode: KnockoutObservable<string>;
+        SelectableCode: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.isMulti = true;
-            self.SelectedCode = ko.observableArray(null);
-            self.SelectableCode = ko.observableArray(null);
+            self.SelectedCode = ko.observable('');
+            self.SelectableCode = ko.observable('');
             self.items = ko.observableArray([]);
             //header
             self.columns = ko.observableArray([
@@ -29,11 +29,9 @@ module kdl002.b.viewmodel {
             let lstSelectedCode = self.list(self.SelectedCode());
             let lstSelectableCode = self.list(self.SelectableCode());
             nts.uk.ui.windows.setShared('KDL002_Multiple',true,true);
-            let arr = ['001','002','003','004','005','006','007','008','009','010','011','012','013','014','015','016','017','018','019','020','021','022','023','024','015','026','027','028','029','030','031','032','033','034','035','036','037','038','039','040','041','042','043','044','045','046','047','048','049','050'];
             //all possible items
             nts.uk.ui.windows.setShared('KDL002_AllItemObj',lstSelectableCode,true);
             //selected items
-//            nts.uk.ui.windows.setShared('KDL002_SelectedItemId',['001','003','008'],true);
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId',lstSelectedCode,true);
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                 self.items();

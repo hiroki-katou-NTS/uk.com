@@ -3,10 +3,10 @@
  */
 package nts.uk.ctx.at.schedule.dom.holiday;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author hungnm
@@ -15,13 +15,13 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 public class PublicHoliday extends AggregateRoot {
 
-	CompanyId companyId;
+	private String companyId;
 
-	GeneralDate date;
+	private BigDecimal date;
 
-	HolidayName holidayName;
+	private HolidayName holidayName;
 
-	private PublicHoliday(CompanyId companyId, GeneralDate date, HolidayName holidayName) {
+	private PublicHoliday(String companyId, BigDecimal date, HolidayName holidayName) {
 		super();
 		this.companyId = companyId;
 		this.date = date;
@@ -32,7 +32,7 @@ public class PublicHoliday extends AggregateRoot {
 		super();
 	}
 
-	public static PublicHoliday createFromJavaType(String companyId, GeneralDate date, String holidayName) {
-		return new PublicHoliday(new CompanyId(companyId), date, new HolidayName(holidayName));
+	public static PublicHoliday createFromJavaType(String companyId, BigDecimal date, String holidayName) {
+		return new PublicHoliday(companyId, date, new HolidayName(holidayName));
 	}
 }

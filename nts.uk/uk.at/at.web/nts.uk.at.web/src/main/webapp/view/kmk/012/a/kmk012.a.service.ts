@@ -1,35 +1,46 @@
 module nts.uk.at.view.kmk012.a {
     export module service {
         var paths = {
-            getAllClosureHistory: "ctx/at/record/workrecord/closure/history/getall",
-            detailClosure: "ctx/at/record/workrecord/closure/detail",
+            findAllClosureHistory: "ctx/at/record/workrecord/closure/history/findAll",
+            findByIdClosure: "ctx/at/record/workrecord/closure/findById",
             saveClosure: "ctx/at/record/workrecord/closure/save",
-            detailClosureHistory: "ctx/at/record/workrecord/closure/history/detail",
+            findByIdClosureHistory: "ctx/at/record/workrecord/closure/history/findById",
             saveClosureHistory: "ctx/at/record/workrecord/closure/history/save"
         }
         
-        // get all data        
-        export function getAllClosureHistory(): JQueryPromise<model.ClosureHistoryFindDto[]> {
-            return nts.uk.request.ajax(paths.getAllClosureHistory);
+        /**
+         * find all data closure history call service
+         */
+        export function findAllClosureHistory(): JQueryPromise<model.ClosureHistoryFindDto[]> {
+            return nts.uk.request.ajax(paths.findAllClosureHistory);
         }
 
-        // detail data
-        export function detailClosure(closureId: number): JQueryPromise<model.ClosureDto> {
-            return nts.uk.request.ajax(paths.detailClosure + "/" + closureId);
+        /**
+         * find by id data closure call service
+         */
+        export function findByIdClosure(closureId: number): JQueryPromise<model.ClosureDto> {
+            return nts.uk.request.ajax(paths.findByIdClosure + "/" + closureId);
         }
 
-        // save data
+        /**
+         * save closure call service
+         */
         export function saveClosure(dto: model.ClosureSaveDto): JQueryPromise<void> {
             return nts.uk.request.ajax(paths.saveClosure, dto);
         }
 
 
-        // detail data
-        export function detailClosureHistory(master: model.ClosureHistoryMDto): JQueryPromise<model.ClosureHistoryDDto> {
-            return nts.uk.request.ajax(paths.detailClosureHistory, master);
+        /**
+         * find by id data closure history call service
+         */
+        export function findByIdClosureHistory(master: model.ClosureHistoryMasterDto)
+            : JQueryPromise<model.ClosureHistoryHeaderDto> {
+            return nts.uk.request.ajax(paths.findByIdClosureHistory, master);
         }
 
-        // save data
+        /**
+         * save closure history call service
+         */
         export function saveClosureHistory(dto: model.ClosureHistoryDto): JQueryPromise<void> {
             var data = { closureHistory: dto };
             return nts.uk.request.ajax(paths.saveClosureHistory, data);
@@ -39,7 +50,7 @@ module nts.uk.at.view.kmk012.a {
 
         export module model {
             
-            export class ClosureHistoryMDto {
+            export class ClosureHistoryMasterDto {
 
                 /** The history id. */
                 historyId: string;
@@ -64,7 +75,7 @@ module nts.uk.at.view.kmk012.a {
                 }
             }
             
-            export class ClosureHistoryDDto {
+            export class ClosureHistoryHeaderDto {
 
                 /** The history id. */
                 historyId: string;
@@ -117,10 +128,10 @@ module nts.uk.at.view.kmk012.a {
                 month: number;
                 
                 // selected
-                closureSelected: ClosureHistoryMDto;
+                closureSelected: ClosureHistoryMasterDto;
                 
                 // data history
-                closureHistories: ClosureHistoryMDto[];
+                closureHistories: ClosureHistoryMasterDto[];
             }
             
             export class ClosureSaveDto{

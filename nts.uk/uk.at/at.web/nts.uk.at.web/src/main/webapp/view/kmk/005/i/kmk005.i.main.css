@@ -1,0 +1,23 @@
+div[class^=screen-i] {
+	padding-top: 30px;
+	padding-left: 30px;
+}
+
+.screen-i .panel.ntsPanel {
+	margin-right: 35px;
+}
+
+
+.screen-i .infomation,
+.screen-i .panel.ntsPanel {
+	float: left;
+	display: block;
+}
+
+.screen-i .controls-group {
+	padding-left: 30px;
+}
+
+.screen-i .form-group {
+	margin-bottom: 10px;
+}
