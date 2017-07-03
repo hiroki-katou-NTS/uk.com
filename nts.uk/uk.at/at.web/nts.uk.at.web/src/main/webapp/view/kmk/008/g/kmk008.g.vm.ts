@@ -49,7 +49,7 @@ module nts.uk.at.view.kmk008.g {
                 let dfd = $.Deferred();
 
                 service.getMonth(self.selectedCode()).done(function(monthData: Array<model.MonthDto>) {
-                    if (monthData.length > 0) {
+                    if (monthData) {
                         self.items2.push(new ItemModel(monthData.yearMonthValue, monthData.errorOneMonth, monthData.alarmOneMonth));
                     } else {
                         self.items2.push(new ItemModel("", "", ""));
@@ -57,7 +57,7 @@ module nts.uk.at.view.kmk008.g {
                 });
 
                 service.getYear(self.selectedCode()).done(function(yearData: Array<model.YearDto>) {
-                    if (yearData.length > 0) {
+                    if (yearData) {
                         self.item.push(new ItemModel(yearData.yearValue, yearData.errorOneYear, yearData.alarmOneYear));
                     } else {
                         self.items.push(new ItemModel("", "", ""));
