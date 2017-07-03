@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 820, height: 650 };</script>
 			<com:ValidatorScript>
-				nts.uk.shr.com.primitive.PersonId
+				nts.uk.ctx.sys.portal.dom.webmenu.TitleBarName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg013.c.style.css" />
@@ -27,7 +27,7 @@
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_31')}</div></td>
-						<td><input data-bind="ntsTextEditor: {value: nameTitleBar}" /></td>
+						<td><input id="nameTitleBar" data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName'}" /></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
 						<td><div id="colorpicker"
 								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50, required: true}" /></td>
