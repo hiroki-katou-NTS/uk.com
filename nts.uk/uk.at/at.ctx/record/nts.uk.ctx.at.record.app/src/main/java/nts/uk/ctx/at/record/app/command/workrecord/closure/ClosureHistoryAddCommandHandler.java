@@ -58,7 +58,7 @@ public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHisto
 				.findByHistoryLast(companyId, command.getClosureHistoryAdd().getClosureId());
 
 		// get closure
-		Optional<Closure> closure = this.repository.getClosureById(companyId,
+		Optional<Closure> closure = this.repository.findById(companyId,
 				command.getClosureHistoryAdd().getClosureId());
 
 		// check exist closure and closure history

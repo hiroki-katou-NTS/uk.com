@@ -198,6 +198,13 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 	}
 
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository#
+	 * findBySelectedYearMonth(java.lang.String, int, int)
+	 */
 	@Override
 	public Optional<ClosureHistory> findBySelectedYearMonth(String companyId, int closureId,
 			int yearMonth) {
@@ -254,6 +261,13 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 		return Optional.ofNullable(this.toDomain(resData.get(FIRST_DATA)));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository#
+	 * findByHistoryLast(java.lang.String, int)
+	 */
 	@Override
 	public Optional<ClosureHistory> findByHistoryLast(String companyId, int closureId) {
 		// get entity manager
@@ -289,6 +303,60 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 		// order by end date desc
 		cq.orderBy(criteriaBuilder.desc(root.get(KclmtClosureHist_.endD)));
 		
+		// create query
+		TypedQuery<KclmtClosureHist> query = em.createQuery(cq).setMaxResults(FIRST_LENGTH);
+
+		// exclude select
+		List<KclmtClosureHist> resData = query.getResultList();
+
+		if (CollectionUtil.isEmpty(resData)) {
+			return Optional.empty();
+		}
+
+		return Optional.ofNullable(this.toDomain(resData.get(FIRST_DATA)));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository#
+	 * findByHistoryBegin(java.lang.String, int)
+	 */
+	@Override
+	public Optional<ClosureHistory> findByHistoryBegin(String companyId, int closureId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE_HIST (KclmtClosureHist SQL)
+		CriteriaQuery<KclmtClosureHist> cq = criteriaBuilder.createQuery(KclmtClosureHist.class);
+
+		// root data
+		Root<KclmtClosureHist> root = cq.from(KclmtClosureHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.cid),
+				companyId));
+
+		// equal closure id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.closureId),
+				closureId));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// order by end date asc
+		cq.orderBy(criteriaBuilder.asc(root.get(KclmtClosureHist_.strD)));
+
 		// create query
 		TypedQuery<KclmtClosureHist> query = em.createQuery(cq).setMaxResults(FIRST_LENGTH);
 
