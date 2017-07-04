@@ -4,7 +4,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<div id="nts-component-tree"
-		class="caret-right caret-background bg-green" 
+		data-bind="css: {'caret-right caret-background bg-green' : !isDialog}"
 		style="padding: 20px; border-radius: 5px;width: 450px;">
 		<com:ko tag="if" bind="!isDialog">
 			<i class="icon icon-searchbox"></i>
