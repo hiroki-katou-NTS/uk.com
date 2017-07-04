@@ -63,12 +63,11 @@ module nts.uk.ui.errors {
             if (duplicate.length == 0) {
                 if (typeof error.message === "string") {
                     error.messageText = error.message;
-                    error.message = "";
                 } else {
                     //business exception
                     if (error.message.message) {
                         error.messageText = error.message.message;
-                        error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
+                        error.errorCode = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                     } else {
                         if (error.$control.length > 0) {
                             let controlNameId = error.$control.eq(0).attr("data-name");
@@ -81,7 +80,7 @@ module nts.uk.ui.errors {
                             error.messageText = nts.uk.resource.getMessage(error.message.messageId);
 
                         }
-                        error.message = error.message.messageId;
+                        error.errorCode = error.message.messageId;
                     }
 
                 }
@@ -147,6 +146,7 @@ module nts.uk.ui.errors {
         location: string;
         messageText: string;
         message: any;
+        errorCode: string;
         $control?: JQuery;
     }
     
