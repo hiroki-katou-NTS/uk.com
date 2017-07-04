@@ -22,7 +22,7 @@ module nts.uk.at.view.kmk012.d {
                 var self = this;
                 var input: ClosureHistoryInDto;
                 input = new ClosureHistoryInDto();
-                input.historyId = nts.uk.ui.windows.getShared("historyId");
+                input.startDate = nts.uk.ui.windows.getShared("startDate");
                 input.closureId = nts.uk.ui.windows.getShared("closureId");
                 self.closureDetailModel = new ClosureDetailModel();
                 self.lstDayOfMonth = ko.observableArray<DayofMonth>(self.intDataMonth());

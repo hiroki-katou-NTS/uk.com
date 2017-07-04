@@ -32,12 +32,12 @@ public class KclmtClosure extends UkJpaEntity implements Serializable {
     protected KclmtClosurePK kclmtClosurePK;
     
     /** The use class. */
-    @Column(name = "USE_CLASS")
+    @Column(name = "USE_ATR")
     private Integer useClass;
     
-    /** The month. */
-    @Column(name = "MONTH")
-    private Integer month;
+    /** The closure month. */
+    @Column(name = "CLOSURE_MONTH")
+    private Integer closureMonth;
 
     /**
      * Instantiates a new kclmt closure.

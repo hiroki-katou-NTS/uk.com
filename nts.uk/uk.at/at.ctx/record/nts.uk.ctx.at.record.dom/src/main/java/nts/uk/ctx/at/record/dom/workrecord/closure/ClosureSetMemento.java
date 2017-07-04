@@ -36,11 +36,11 @@ public interface ClosureSetMemento {
 	
 	
 	/**
-	 * Sets the month.
+	 * Sets the closure month.
 	 *
-	 * @param month the new month
+	 * @param closureMonth the new closure month
 	 */
-	void setMonth(ClosureMonth month);
+	void setClosureMonth(ClosureMonth closureMonth);
 	
 	
 	/**

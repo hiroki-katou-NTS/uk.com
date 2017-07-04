@@ -18,17 +18,17 @@
 					<!-- B1_001: Button トップページの設定 -->
 					<br />
 					<div data-bind="if: checkTopPage">
-						<button id = "btn_toppage" class = "btn" data-bind="click: openTopPageSet">#{i18n.getText('CCG008_2')}</button>					
+						<button tabindex = "1" id = "btn_toppage" class = "btn" data-bind="click: openTopPageSet">#{i18n.getText('CCG008_2')}</button>					
 					</div>
 					<br />
 					<!-- B1_002: Button マイページの設定 -->
 					<div data-bind="if: checkMyPage">
-						<button id = "btn_mypage" class = "btn" data-bind="if: checkMyPage, click: openMyPageSet">#{i18n.getText('CCG008_5')}</button>
+						<button tabindex = "2" id = "btn_mypage" class = "btn" data-bind="if: checkMyPage, click: openMyPageSet">#{i18n.getText('CCG008_5')}</button>
 					</div>
 				</div>
 				<div id="functions-area-bottom">
 					<!-- B1_003: Button 閉じる -->
-					<button id = "btn_close" class="large" data-bind="click: closeDialog" >#{i18n.getText('CCG008_6')}</button>
+					<button tabindex = "3" id = "btn_close" class="large" data-bind="click: closeDialog" >#{i18n.getText('CCG008_6')}</button>
 				</div>
 			</div>
 		</ui:define>

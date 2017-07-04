@@ -103,7 +103,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 				placementNew.add(placementDto);
 			}
 		}
-		return new LayoutForMyPageDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, flowmenuNew, placementNew);
+		return new LayoutForMyPageDto(employeeId, layout.getLayoutID(), layout.getPgType().value, flowmenuNew, placementNew);
 	}
 	//build placement my page
 	private List<PlacementDto> buildPlacementDto(Layout layout, List<Placement> placements, MyPageSettingDto myPage) {
@@ -345,7 +345,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			String layoutId = UUID.randomUUID().toString();
 			MyPage mypageNew = new MyPage(employeeId,layoutId);
 			mypage.addMyPage(mypageNew);
-			layoutMypage = new LayoutForMyPageDto(companyId,layoutId, 2, null, null);
+			layoutMypage = new LayoutForMyPageDto(employeeId,layoutId, 2, null, null);
 			return layoutMypage;
 		}
 		Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),0);
@@ -354,6 +354,8 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			if(!placements.isEmpty()){
 				layoutMypage =buildLayoutDto(layout.get(),placements) ;
 			}
+		}else{
+			layoutMypage = new LayoutForMyPageDto(employeeId,mPage.getLayoutId(),2,null,null);
 		}
 		return layoutMypage;
 	}

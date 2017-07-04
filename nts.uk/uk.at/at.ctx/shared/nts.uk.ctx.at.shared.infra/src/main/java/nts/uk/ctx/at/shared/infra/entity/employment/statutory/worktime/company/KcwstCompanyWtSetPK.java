@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @Embeddable
 @Data
-public class JcwstCompanyWtSetPK implements Serializable {
+public class KcwstCompanyWtSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -40,7 +40,7 @@ public class JcwstCompanyWtSetPK implements Serializable {
 	/**
 	 * Instantiates a new jcwtst company wt set PK.
 	 */
-	public JcwstCompanyWtSetPK() {
+	public KcwstCompanyWtSetPK() {
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class JcwstCompanyWtSetPK implements Serializable {
 	 * @param type
 	 *            the type
 	 */
-	public JcwstCompanyWtSetPK(String cid, int yK, int ctg, int type) {
+	public KcwstCompanyWtSetPK(String cid, int yK, int ctg, int type) {
 		this.cid = cid;
 		this.yK = yK;
 		this.ctg = ctg;

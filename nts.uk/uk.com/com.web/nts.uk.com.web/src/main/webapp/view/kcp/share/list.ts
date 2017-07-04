@@ -208,6 +208,7 @@ module kcp.share.list {
                 data.employeeInputList.subscribe(dataList => {
                     self.addAreadySettingAttr(dataList, self.alreadySettingList());
                     self.itemList(dataList);
+                    self.createGlobalVarDataList(dataList, $input);
                 })
                 return dfd.promise();
             }
@@ -279,12 +280,7 @@ module kcp.share.list {
             });
             
             // defined function get data list.
-            $('#script-for-' + $input.attr('id')).remove();
-            var s = document.createElement("script");
-            s.type = "text/javascript";
-            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataList);
-            s.id = 'script-for-' + $input.attr('id');
-            $("head").append(s);
+            self.createGlobalVarDataList(dataList, $input);
             $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                 return window['dataList' + this.attr('id').replace(/-/gi, '')];
             }
@@ -298,6 +294,18 @@ module kcp.share.list {
                 }
             }
             return dfd.promise();
+        }
+        
+        /**
+         * create Global Data List.
+         */
+        private createGlobalVarDataList(dataList: Array<UnitModel>, $input: JQuery) {
+            $('#script-for-' + $input.attr('id')).remove();
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataList);
+            s.id = 'script-for-' + $input.attr('id');
+            $("head").append(s);
         }
         
         private addIconToAlreadyCol() {

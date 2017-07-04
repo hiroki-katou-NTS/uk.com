@@ -51,10 +51,7 @@ module nts.uk.at.view.kmk012.a {
         export module model {
             
             export class ClosureHistoryMasterDto {
-
-                /** The history id. */
-                historyId: string;
-
+                
                 /** The closure id. */
                 closureId: number;
 
@@ -77,9 +74,6 @@ module nts.uk.at.view.kmk012.a {
             
             export class ClosureHistoryHeaderDto {
 
-                /** The history id. */
-                historyId: string;
-
                 /** The closure id. */
                 closureId: number;
 
@@ -91,6 +85,8 @@ module nts.uk.at.view.kmk012.a {
                 // 開始年月: 年月
                 closureDate: number;
                 
+                
+                startDate: number;
             }
             
             export class ClosureHistoryFindDto{
@@ -154,9 +150,6 @@ module nts.uk.at.view.kmk012.a {
                 /** The closure id. */
                 // 締めＩＤ
                 closureId: number;
-    
-                /** The closure history id. */
-                closureHistoryId: string;
 
                 /** The closure year. */
                 // 終了年月: 年月

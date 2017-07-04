@@ -8,20 +8,20 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class ClosureHistoryId.
+ * The Class CloseName.
  */
-@StringMaxLength(36)
-public class ClosureHistoryId extends StringPrimitiveValue<ClosureHistoryId> {
+@StringMaxLength(10)
+public class ClosureName extends StringPrimitiveValue<ClosureName> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4042037564670742671L;
 
 	/**
-	 * Instantiates a new closure history id.
+	 * Instantiates a new close name.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public ClosureHistoryId(String rawValue) {
+	public ClosureName(String rawValue) {
 		super(rawValue);
 	}
 

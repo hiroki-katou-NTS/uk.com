@@ -8,17 +8,21 @@ module nts.uk.com.view.ccg013.f.viewmodel {
         items: KnockoutObservableArray<TitleMenu>;
         //        isVisible: KnockoutObservable<boolean>;
         listJobTitle: KnockoutObservableArray<any>;
-        comboItemsAfterLogin: KnockoutObservableArray<WebMenu>;
+        comboWebMenuCode: KnockoutObservableArray<WebMenu>;
 
         //appear/disappear header of scroll on UI
         //        isHeaderScroll: KnockoutObservable<boolean>;
         selectedCode: KnockoutObservable<string> = ko.observable("");
+        listJobId: KnockoutObservableArray<String>;
+        listTitleTying: KnockoutObservableArray<JobTitleTying>;  
         constructor() {
             let self = this;
             self.items = ko.observableArray([]);
             self.listJobTitle = ko.observableArray([]);
             self.date = ko.observable(new Date().toISOString());
-            self.comboItemsAfterLogin = ko.observableArray([]);
+            self.comboWebMenuCode = ko.observableArray([]);
+            self.listJobId = ko.observableArray([]);
+            self.listTitleTying = ko.observableArray([]);
             //            self.comboItemsAsTopPage = ko.observableArray([]);
 
             //            self.isHeaderScroll = ko.computed(function() {
@@ -51,14 +55,25 @@ module nts.uk.com.view.ccg013.f.viewmodel {
             var data = windows.getShared("CCG013F_JOB_TITLE");
             if (data.length > 0) {
                 _.each(data, function(obj) {
-                    self.comboItemsAfterLogin.push(new WebMenu(obj.webMenuCode, obj.webMenuName));
+                    self.comboWebMenuCode.push(new WebMenu(obj.webMenuCode, obj.webMenuName));
                 });
             }
+            
+            
+            
+            
             // Get List jobtitle
             service.getAllJobTitle(self.date()).done(function(listJobTitle: Array<viewmodel.TitleMenu>) {
                 _.each(listJobTitle, function(obj: viewmodel.TitleMenu) {
                     self.listJobTitle.push(new TitleMenu(obj.code, obj.name, obj.id, obj.startDate, obj.endDate));
+                    self.listJobId.push(obj.id);
                 });
+                
+                // get list for combobox
+                service.findWebMenuCode(self.listJobId()).done(function(listTitleTying: Array<viewmodel.JobTitleTying>){
+                     console.log(listTitleTying);
+                });
+                
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -113,12 +128,15 @@ module nts.uk.com.view.ccg013.f.viewmodel {
             this.webMenuCode = webMenuCode;
             this.webMenuName = webMenuName;
         }
+        getWebMenuName( webMenuCode: string){
+            
+        }
     }
 
     export class JobTitleTying {
         jobId: string;
         webMenuCode: string;
-
+        
         constructor(jobId: string, webMenuCode: string) {
             this.jobId = jobId;
             this.webMenuCode = webMenuCode;

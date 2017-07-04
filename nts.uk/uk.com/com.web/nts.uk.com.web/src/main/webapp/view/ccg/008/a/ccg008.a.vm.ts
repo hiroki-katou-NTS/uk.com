@@ -204,7 +204,7 @@
             externalUrl?: string;
         }
          export interface LayoutForMyPageDto{
-            companyID: string;
+            employeeID: string;
             layoutID: string;
             pgType: number;
             flowMenu: Array<FlowMenuPlusDto>;
