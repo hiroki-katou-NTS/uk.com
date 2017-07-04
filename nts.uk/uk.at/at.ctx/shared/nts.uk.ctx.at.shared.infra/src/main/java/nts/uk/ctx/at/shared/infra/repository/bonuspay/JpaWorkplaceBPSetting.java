@@ -33,7 +33,12 @@ public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySe
 
 	@Override
 	public void updateWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting) {
-		this.commandProxy().update(this.toWorkPlaceSettingEntity(workplaceBonusPaySetting));
+		 Optional<KbpstWPBonusPaySetting> kbpstWPBonusPaySettingOptional = this.queryProxy().find(new KbpstWPBonusPaySettingPK(workplaceBonusPaySetting.getWorkplaceId().v()), KbpstWPBonusPaySetting.class);
+		if(kbpstWPBonusPaySettingOptional.isPresent()){
+			KbpstWPBonusPaySetting kbpstWPBonusPaySetting = kbpstWPBonusPaySettingOptional.get();
+			kbpstWPBonusPaySetting.bonusPaySettingCode= workplaceBonusPaySetting.getBonusPaySettingCode().v();
+			this.commandProxy().update(kbpstWPBonusPaySetting);
+		}
 	}
 
 	@Override

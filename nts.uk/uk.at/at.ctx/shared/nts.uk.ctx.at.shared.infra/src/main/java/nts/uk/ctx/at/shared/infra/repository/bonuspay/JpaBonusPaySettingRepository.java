@@ -14,6 +14,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySettingPK;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBonusPayTimeItem;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBonusPayTimeItemPK;
 
 @Stateless
 public class JpaBonusPaySettingRepository extends JpaRepository implements BPSettingRepository {
@@ -23,7 +25,6 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 		return this.queryProxy().query(SELECT_BY_COMPANYID, KbpmtBonusPaySetting.class)
 				.setParameter("companyId", companyId).getList(x -> this.toBonusPaySettingDomain(x));
 	}
-
 	@Override
 	public void addBonusPaySetting(BonusPaySetting domain) {
 		this.commandProxy().insert(this.toBonusPaySettingEntity(domain));
@@ -31,8 +32,12 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 
 	@Override
 	public void updateBonusPaySetting(BonusPaySetting domain) {
-		this.commandProxy().update(this.toBonusPaySettingEntity(domain));
-
+		Optional<KbpmtBonusPaySetting> kbpmtBonusPaySettingOptional = this.queryProxy().find(new KbpmtBonusPaySettingPK(domain.getCompanyId().toString(), domain.getCode().v()),KbpmtBonusPaySetting.class);
+		if(kbpmtBonusPaySettingOptional.isPresent()){
+			KbpmtBonusPaySetting kbpmtBonusPaySetting = kbpmtBonusPaySettingOptional.get();
+			kbpmtBonusPaySetting.name=domain.getName().v();
+			this.commandProxy().update(kbpmtBonusPaySettingOptional);
+		}
 	}
 
 	@Override

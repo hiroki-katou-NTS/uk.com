@@ -43,7 +43,7 @@ public class BonusPaySettingDomainService implements BonusPaySettingService {
 				new BonusPaySettingCode(domain.getCode().toString()), domain.getLstSpecBonusPayTimesheet());
 		bpSettingRepository.addBonusPaySetting(domain);
 	}
-
+	
 	@Override
 	public void updateBonusPaySetting(BonusPaySetting domain) {
 		bpTimesheetRepository.updateListTimesheet(domain.getCompanyId().toString(),

@@ -43,7 +43,12 @@ public class JpaPSBPSettingRepository extends JpaRepository implements PSBonusPa
 
 	@Override
 	public void updatePBPSetting(PersonalBonusPaySetting personalBonusPaySetting) {
-		this.commandProxy().update(this.toPersonalBPSettingEntity(personalBonusPaySetting));
+		Optional<KbpstPersonalBPSetting> kbpstPersonalBPSettingOptional = this.queryProxy().find(new KbpstPersonalBPSettingPK(personalBonusPaySetting.getEmployeeId().v()), KbpstPersonalBPSetting.class);
+		if (kbpstPersonalBPSettingOptional.isPresent()) {
+			KbpstPersonalBPSetting kbpstPersonalBPSetting = kbpstPersonalBPSettingOptional.get();
+			kbpstPersonalBPSetting.bonusPaySettingCode=personalBonusPaySetting.getBonusPaySettingCode().v();
+			this.commandProxy().update(kbpstPersonalBPSetting);
+		}
 	}
 
 	@Override

@@ -30,8 +30,6 @@ public class BPTimeItemSetting extends AggregateRoot {
 
 	private WTCalSettingAtr worktimeCalSettingAtr;
 
-	// private TimeItemTypeAtr timeItemTypeAtr;
-
 	private BPTimeItemSetting() {
 
 	}
