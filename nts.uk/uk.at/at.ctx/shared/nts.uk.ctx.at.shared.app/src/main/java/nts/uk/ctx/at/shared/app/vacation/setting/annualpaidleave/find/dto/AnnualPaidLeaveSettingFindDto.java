@@ -36,11 +36,11 @@ public class AnnualPaidLeaveSettingFindDto {
     /** The number year retain. */
     public Integer numberYearRetain;
 
-    /** The preemption annual vacation. */
-    public Integer preemptionAnnualVacation;
+    /** The permit type. */
+    public Integer permitType;
 
-    /** The preemption year leave. */
-    public Integer preemptionYearLeave;
+    /** The annual priority. */
+    public Integer annualPriority;
 
     /** The remaining number display. */
     public Integer remainingNumberDisplay;

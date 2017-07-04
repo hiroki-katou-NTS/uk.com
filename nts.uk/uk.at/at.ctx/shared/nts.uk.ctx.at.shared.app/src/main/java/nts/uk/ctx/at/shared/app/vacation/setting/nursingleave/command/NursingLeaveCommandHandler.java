@@ -20,6 +20,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class NursingLeaveCommandHandler.
+ */
 @Stateless
 public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveCommand> {
     

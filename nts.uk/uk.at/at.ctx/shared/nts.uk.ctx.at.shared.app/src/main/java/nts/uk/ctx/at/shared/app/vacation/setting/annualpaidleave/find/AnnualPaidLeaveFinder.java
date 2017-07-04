@@ -48,8 +48,8 @@ public class AnnualPaidLeaveFinder {
         dto.setAnnualManage(setting.getYearManageType().value);
         
         // AcquisitionSetting
-        dto.setPreemptionAnnualVacation(setting.getAcquisitionSetting().annualPriority.value);
-        dto.setPreemptionYearLeave(setting.getAcquisitionSetting().permitType.value);
+        dto.setPermitType(setting.getAcquisitionSetting().permitType.value);
+        dto.setAnnualPriority(setting.getAcquisitionSetting().annualPriority.value);
         
         // Manage Annual
         dto.setAddAttendanceDay(setting.getManageAnnualSetting().isWorkDayCalculate() == true ? 1 : 0);
@@ -61,7 +61,6 @@ public class AnnualPaidLeaveFinder {
         dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
         dto.setRemainingNumberDisplay(setting.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
         dto.setNextGrantDayDisplay(setting.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);
-        
         
         // Time Manage
         dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);

@@ -165,10 +165,10 @@
 							<td><label class="content-label">#{i18n.getText('KMF001_40')}</label></td>
 							<td><div tabindex="12"
 									data-bind="ntsSwitchButton: {
-										options: permissionList,
+										options: applyPermissionList,
 										optionsValue: 'value',
 										optionsText: 'localizedName',
-										value: selectedPermission,
+										value: selectedApplyPermission,
 										enable: enableAnnualVacation }"></div></td>
 
 							<td><div></div></td>
@@ -179,9 +179,9 @@
 							<td><div tabindex="13"
 									id="combo-box-preem-permit"
 									data-bind="ntsComboBox: {
-										options: preemptionPermitList,
+										options: annualPriorityList,
 										optionsValue: 'value',
-										value: selectedPreemptionPermit,
+										value: selectedAnnualPriority,
 										optionsText: 'localizedName',
 										editable: false,
 										enable: enableAnnualVacation,
