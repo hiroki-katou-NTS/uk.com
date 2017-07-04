@@ -42,6 +42,9 @@ module nts.uk.ui.koExtentions {
             fileuploadContainer.append(fileNameLable);
             fileuploadContainer.append(fileInput);
             fileuploadContainer.appendTo(control);
+            fileBrowserButton.click(function(){
+                    fileInput.val(null);
+            });
             fileInput.change(function() {
                 if (fileName != undefined) {
                     data.filename($(this).val());
