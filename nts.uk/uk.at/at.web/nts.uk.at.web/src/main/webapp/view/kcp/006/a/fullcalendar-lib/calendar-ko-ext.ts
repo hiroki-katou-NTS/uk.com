@@ -101,10 +101,9 @@ module nts.uk.at.view.kcp006.a {
                 views: {
                     customMonth: {
                         type: 'month',
-                        duration: { months: durationMonth }
+                        duration: { months: 3 }
                     }
                 },
-                dateAlignment: "20",
                 defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
                 firstDay: firstDay,
                 height: 500,
@@ -217,7 +216,7 @@ module nts.uk.at.view.kcp006.a {
                         fullCalendarRender.viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     }
                 });
-                $(container).fullCalendar( 'gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD") );
+                $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
                 fullCalendarRender.eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
             });
         }
