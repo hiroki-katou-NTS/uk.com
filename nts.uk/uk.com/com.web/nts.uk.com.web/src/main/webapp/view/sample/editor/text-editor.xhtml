@@ -63,6 +63,8 @@
 							<input id="employee-code-input" data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly, valueUpdate: 'afterkeydown'}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+							<br/>
+                            <span>Value: </span><SPAN data-bind="text: value"></SPAN>
 						</div>
 						<article class="cf">
 							<div class="tabs">

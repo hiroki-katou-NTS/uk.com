@@ -1327,6 +1327,30 @@ var nts;
                 return TimeFormatter;
             }());
             text_3.TimeFormatter = TimeFormatter;
+            var NumberUnit = (function () {
+                function NumberUnit(unitID, unitText, position, language) {
+                    this.unitID = unitID;
+                    this.unitText = unitText;
+                    this.position = position;
+                    this.language = language;
+                }
+                return NumberUnit;
+            }());
+            text_3.NumberUnit = NumberUnit;
+            var units = {
+                "JPY": new NumberUnit("JPY", "円", "right", "ja-JP"),
+                "PERCENT": new NumberUnit("PERCENT", "%", "right", "ja-JP"),
+                "DAYS": new NumberUnit("DAYS", "日", "right", "ja-JP"),
+                "MONTHS": new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
+                "YEARS": new NumberUnit("YEARS", "年", "right", "ja-JP"),
+                "FIS_MONTH": new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
+                "TIMES": new NumberUnit("TIMES", "回", "right", "ja-JP")
+            };
+            function getNumberUnit(unitId) {
+                //TODO: get system language. Default: japanese
+                return units[unitId];
+            }
+            text_3.getNumberUnit = getNumberUnit;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -3851,6 +3875,7 @@ var nts;
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         this.symbolChar = (option !== undefined && option.symbolChar !== undefined) ? option.symbolChar : "";
                         this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
+                        this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
                         this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
                     }
                     return NumberEditorOption;
@@ -3872,6 +3897,7 @@ var nts;
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
+                        this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
                     }
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
@@ -4159,28 +4185,21 @@ var nts;
                     function setupScrollWhenBinding($grid) {
                         var gridId = "#" + $grid.attr("id");
                         $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                            var scrollTop = $grid.data("scrollTop");
-                            if (scrollTop > 0) {
+                            var isMulti = $grid.igGridSelection('option', 'multipleSelection');
+                            var selected = $grid.ntsGridList("getSelected");
+                            if (!nts.uk.util.isNullOrEmpty(selected)) {
                                 _.defer(function () {
+                                    var index = isMulti ? selected[0].index : selected.index;
                                     if ($grid.igGrid("scrollContainer").length > 0) {
-                                        $grid.igGrid("scrollContainer").scrollTop(scrollTop);
+                                        var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                        var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                        $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
                                     }
                                     else {
-                                        $(gridId + "_scrollContainer").scrollTop(scrollTop);
+                                        $grid.igGrid("virtualScrollTo", index); //.scrollTop(scrollTop);    
                                     }
                                 });
                             }
-                        });
-                        //Delegate
-                        $(document).delegate(gridId, "iggriddatabinding", function (evt, ui) {
-                            var scrollTop;
-                            if ($grid.igGrid("scrollContainer").length > 0) {
-                                scrollTop = $grid.igGrid("scrollContainer").scrollTop();
-                            }
-                            else {
-                                scrollTop = $(gridId + "_scrollContainer").scrollTop();
-                            }
-                            $grid.data("scrollTop", scrollTop);
                         });
                     }
                     function getSelected($grid) {
@@ -9097,10 +9116,10 @@ var nts;
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var textmode = this.editorOption.textmode;
-                        if (data.value() !== $input.val()) {
-                            $input.triggerHandler('change');
-                        }
                         $input.attr('type', textmode);
+                        if (!$input.ntsError('hasError') && data.value() !== $input.val()) {
+                            data.value($input.val());
+                        }
                     };
                     TextEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TextEditorOption();
@@ -9186,20 +9205,30 @@ var nts;
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                             $parent.attr("data-content", format);
                         }
-                        else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
-                            var padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
-                            if (padding < 20) {
-                                padding = 20;
-                            }
-                            $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
-                            $parent.attr("data-content", this.editorOption.symbolChar);
-                            var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
-                            $input.css(css);
+                        else if (!nts.uk.util.isNullOrEmpty(this.editorOption.unitID)) {
+                            var unit = uk.text.getNumberUnit(this.editorOption.unitID);
+                            this.editorOption.symbolChar = unit.unitText;
+                            this.editorOption.symbolPosition = unit.position;
+                            this.setupUnit($input);
+                        }
+                        else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
+                            this.setupUnit($input);
                         }
                         if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
                             && nts.uk.util.isNullOrEmpty(data.value())) {
                             data.value(this.editorOption.defaultValue);
                         }
+                    };
+                    NumberEditorProcessor.prototype.setupUnit = function ($input) {
+                        var $parent = $input.parent();
+                        var padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
+                        if (padding < 20) {
+                            padding = 20;
+                        }
+                        $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+                        $parent.attr("data-content", this.editorOption.symbolChar);
+                        var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
+                        $input.css(css);
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
