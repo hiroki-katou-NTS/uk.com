@@ -5,7 +5,6 @@ package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 
 /**
@@ -13,13 +12,11 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
  *
  */
 public interface CPBonusPaySettingRepository {
-	
+
 	Optional<CompanyBonusPaySetting> getSetting(String companyId);
-	
-	void addSetting(CompanyBonusPaySetting setting);
-	
-	void updateSetting(CompanyBonusPaySetting setting);
-	
+
+	void saveSetting(CompanyBonusPaySetting setting);
+
 	void removeSetting(CompanyBonusPaySetting setting);
-	
+
 }
