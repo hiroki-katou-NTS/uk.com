@@ -52,7 +52,7 @@ public class KewstEmploymentWtSetPK implements Serializable {
 	/** The empt cd. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "EMPTCD")
+	@Column(name = "EMPCD")
 	private String emptCd;
 
 	/**
