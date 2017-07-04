@@ -19,8 +19,8 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetti
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace.WorkPlaceWtSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwwstWorkplaceWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwwstWorkplaceWtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.KwwstWorkplaceWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.KwwstWorkplaceWtSetPK;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -51,9 +51,9 @@ public class JpaWorkplaceWtSettingGetMemento implements WorkPlaceWtSettingGetMem
 	 *
 	 * @param typeValues the type values
 	 */
-	public JpaWorkplaceWtSettingGetMemento(List<JwwstWorkplaceWtSet> typeValues) {
+	public JpaWorkplaceWtSettingGetMemento(List<KwwstWorkplaceWtSet> typeValues) {
 		// Get pk.
-		JwwstWorkplaceWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJwwstWorkplaceWtSetPK();
+		KwwstWorkplaceWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJwwstWorkplaceWtSetPK();
 		this.companyId = new CompanyId(pk.getCid());
 		this.year = new Year(pk.getYK());
 		this.workplaceId = pk.getWkpId();
@@ -66,7 +66,7 @@ public class JpaWorkplaceWtSettingGetMemento implements WorkPlaceWtSettingGetMem
 	 *
 	 * @param entities the new to domain
 	 */
-	private void setToDomain(List<JwwstWorkplaceWtSet> entities) {
+	private void setToDomain(List<KwwstWorkplaceWtSet> entities) {
 		this.flexSetting = new FlexSetting();
 		entities.forEach(item -> {
 			switch (item.getJwwstWorkplaceWtSetPK().getCtg()) {
@@ -97,7 +97,7 @@ public class JpaWorkplaceWtSettingGetMemento implements WorkPlaceWtSettingGetMem
 	 * @param item the item
 	 * @return the work time setting
 	 */
-	private WorkingTimeSetting getWorkTimeSetting(JwwstWorkplaceWtSet item) {
+	private WorkingTimeSetting getWorkTimeSetting(KwwstWorkplaceWtSet item) {
 		WorkingTimeSetting wts = new WorkingTimeSetting();
 		wts.setDaily(new DailyTime(item.getDailyTime()));
 		wts.setWeekly(new WeeklyTime(item.getWeeklyTime()));
@@ -111,7 +111,7 @@ public class JpaWorkplaceWtSettingGetMemento implements WorkPlaceWtSettingGetMem
 	 * @param item the item
 	 * @return the monthly
 	 */
-	private List<Monthly> getMonthly(JwwstWorkplaceWtSet item) {
+	private List<Monthly> getMonthly(KwwstWorkplaceWtSet item) {
 		List<Monthly> monthly = new ArrayList<Monthly>();
 		monthly.add(new Monthly(new MonthlyTime(item.getJanTime()), java.time.Month.JANUARY));
 		monthly.add(new Monthly(new MonthlyTime(item.getFebTime()), java.time.Month.FEBRUARY));
