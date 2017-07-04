@@ -25,7 +25,7 @@ public class TimeAnnualSetting extends DomainObject {
 
     /** The max day. */
     // 上限日数:時間年休の上限日数
-    private YearVacationTimeMaxDay maxYearDayLeave;
+    private TimeAnnualMaxDay maxYearDayLeave;
 
     /** The is enough time one day. */
     // 1日の時間未満の時間年休を積立年休とする

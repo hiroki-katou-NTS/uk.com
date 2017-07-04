@@ -27,9 +27,6 @@ public class CompanyWtSettingSaveCommandHandler extends CommandHandler<CompanyWt
 	@Inject
 	private CompanyWtSettingRepository repository;
 
-	/** The company id. */
-	String companyId = AppContexts.user().companyId();
-
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -43,14 +40,15 @@ public class CompanyWtSettingSaveCommandHandler extends CommandHandler<CompanyWt
 
 		CompanyWtSetting companySetting = new CompanyWtSetting(command);
 
+		Optional<CompanyWtSetting> optCompanySetting = this.repository.find(AppContexts.user().companyId(),
+				command.getYear().v());
 		// Update
-		Optional<CompanyWtSetting> optCompanySetting = this.repository.find(companyId, command.getYear().v());
-		if(optCompanySetting.isPresent()) {
+		if (optCompanySetting.isPresent()) {
 			this.repository.update(companySetting);
+			return;
 		}
-		else {
-			this.repository.create(companySetting);
-		}
+		// Create
+		this.repository.create(companySetting);
 	}
 
 }

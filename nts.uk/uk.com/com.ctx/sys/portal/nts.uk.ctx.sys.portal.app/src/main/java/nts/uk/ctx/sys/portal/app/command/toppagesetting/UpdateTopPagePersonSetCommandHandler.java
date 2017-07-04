@@ -6,8 +6,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSetting;
@@ -36,6 +38,11 @@ public class UpdateTopPagePersonSetCommandHandler extends CommandHandler<TopPage
 		TopPagePersonSetCommandBase command = context.getCommand();
 		TopPagePersonSet topPagePersonSet = command.toDomain(companyId);
 		topPagePersonSet.validate();
+		if (command.getCtgSet() == 1) {
+			if (StringUtil.isNullOrEmpty(command.getLoginMenuCode(), true)) {
+				throw new BusinessException("Msg_86");
+			}
+		}
 		// Check for existing data in the TOPPAGE_PERSON_SET table
 		if (topPagePersonSetRepo.getbyCode(companyId, command.getSId()).isPresent()) {
 			topPagePersonSetRepo.update(topPagePersonSet);

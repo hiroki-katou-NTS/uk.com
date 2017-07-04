@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumber
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 
 /**
  * The Class AnnualPaidLeaveSaveCommand.
@@ -60,11 +60,11 @@ public class AnnualPaidLeaveSaveCommand {
     /** The number year retain. */
     private Integer numberYearRetain;
 
-    /** The preemption annual vacation. */
-    private Integer preemptionAnnualVacation;
+    /** The permit type. */
+    private Integer permitType;
 
-    /** The preemption year leave. */
-    private Integer preemptionYearLeave;
+    /** The annual priority. */
+    private Integer annualPriority;
 
     /** The remaining number display. */
     private Integer remainingNumberDisplay;
@@ -153,8 +153,8 @@ public class AnnualPaidLeaveSaveCommand {
         @Override
         public AcquisitionSetting getAcquisitionSetting() {
             AcquisitionSetting setting = AcquisitionSetting.builder()
-                    .permitType(ApplyPermission.valueOf(this.command.preemptionYearLeave))
-                    .annualPriority(AnnualPriority.valueOf(this.command.preemptionAnnualVacation))
+                    .permitType(ApplyPermission.valueOf(this.command.permitType))
+                    .annualPriority(AnnualPriority.valueOf(this.command.annualPriority))
                     .build();
             return setting;
         }
@@ -347,8 +347,8 @@ public class AnnualPaidLeaveSaveCommand {
          * TimeVacationSettingGetMemento#getMaxYearDayLeave()
          */
         @Override
-        public YearVacationTimeMaxDay getMaxYearDayLeave() {
-            YearVacationTimeMaxDay timeMaxDay = YearVacationTimeMaxDay.builder()
+        public TimeAnnualMaxDay getMaxYearDayLeave() {
+            TimeAnnualMaxDay timeMaxDay = TimeAnnualMaxDay.builder()
                     .manageType(ManageDistinct.valueOf(this.command.manageMaxDayVacation))
                     .reference(MaxDayReference.valueOf(this.command.reference))
                     .maxNumberUniformCompany(new MaxTimeDay(this.command.maxTimeDay))

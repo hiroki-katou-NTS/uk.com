@@ -12,6 +12,7 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
+ * Find TopPageSet in table TOPPAGE_SET
  * 
  * @author sonnh1
  *

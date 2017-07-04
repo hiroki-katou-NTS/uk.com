@@ -134,6 +134,7 @@ module kcp.share.list {
             this.listComponentColumn = [];
             this.isMultiple = false;
             this.componentGridId = (Date.now()).toString();
+            this.alreadySettingList = ko.observableArray([]);
         }
         /**
          * Init component.
@@ -201,23 +202,27 @@ module kcp.share.list {
             
             // With list type is employee list, use employee input.
             if (self.listType == ListType.EMPLOYEE) {
-                self.initComponent(data, data.employeeInputList(), $input);
+                self.initComponent(data, data.employeeInputList(), $input).done(function() {
+                    dfd.resolve();
+                });
                 data.employeeInputList.subscribe(dataList => {
-                    self.initComponent(data, data.employeeInputList(), $input);
+                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
+                    self.itemList(dataList);
                 })
-                dfd.resolve();
                 return dfd.promise();
             }
             
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
-                self.initComponent(data, dataList, $input);
-                dfd.resolve();
+                self.initComponent(data, dataList, $input).done(function() {
+                    dfd.resolve();
+                });
             });
             return dfd.promise();
         }
         
-        private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) {
+        private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) :JQueryPromise<void>{
+            var dfd = $.Deferred<void>();
             var self = this;
 
             // Map already setting attr to data list.
@@ -244,6 +249,10 @@ module kcp.share.list {
             }
             
             // Init component.
+            var fields: Array<string> = ['name', 'code'];
+            if (data.isShowWorkPlaceName) {
+                fields.push('workplaceName');
+            }
             self.searchOption = {
                 searchMode: 'filter',
                 targetKey: 'code',
@@ -251,7 +260,7 @@ module kcp.share.list {
                 items: self.itemList,
                 selected: self.selectedCodes,
                 selectedKey: 'code',
-                fields: ['name', 'code', 'workplaceName'],
+                fields: fields,
                 mode: 'igGrid'
             }
             var webserviceLocator = nts.uk.request.location.siteRoot
@@ -262,7 +271,7 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
-                
+                dfd.resolve();
             });
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
@@ -283,11 +292,12 @@ module kcp.share.list {
             // defined function focus
             $.fn.focusComponent = function() {
                 if (self.hasBaseDate) {
-                    $('.base-date-editor').find('.nts-input').first().focus();
+                    $('.base-date-editor').first().focus();
                 } else {
                     $(".ntsSearchBox").focus();
                 }
             }
+            return dfd.promise();
         }
         
         private addIconToAlreadyCol() {

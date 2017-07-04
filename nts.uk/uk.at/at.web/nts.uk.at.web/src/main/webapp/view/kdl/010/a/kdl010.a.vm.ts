@@ -18,6 +18,7 @@ module kdl010.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             /** Get list WorkLocation*/
+            $(".ntsSearchBox.nts-editor.ntsSearchBox_Component").focus();
             service.getAllWorkLocation().done(function(workLocationList: Array<viewmodel.WorkLocation>) {
                  workLocationList = _.orderBy(workLocationList, ["workLocationCD"], ["asc"]);
                 self.workLocationList(workLocationList);

@@ -56,16 +56,24 @@
 						<h1>Colored DatePicker with fiscal months</h1>
 						<h2>Overview</h2>
 						<h3>Datepicker</h3>
-						<div data-bind="ntsDatePicker: {value: dateString, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, cssRanger: cssRangerYMD, defaultClass: 'round-orange' }"></div>
+						<div data-bind="ntsDatePicker: {value: dateString, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, cssRanger: cssRangerYMD, defaultClass: 'round-orange', showJumpButtons: true }"></div>
 						<input data-bind="ntsTimeEditor: {value: dateString}"/>
 						<br/>
 						<b>Return ISO String:</b> <span data-bind="text: dateString"/>
 						<br/>						
 						<hr/>
 						<h3>YearMonth picker</h3>
-						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM', cssRanger: cssRangerYM, fiscalMonthsMode: true, defaultClass: 'round-orange' }"></div>
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM', cssRanger: cssRangerYM, fiscalMonthsMode: true, defaultClass: 'round-orange', showJumpButtons: true }"></div>
 						<br/>
 						<b>Return Number:</b> <span data-bind="text: yearMonth"/>
+						<hr/>
+						<h3>Year</h3>
+						<div data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY', valueFormat: 'YYYY', cssRanger: cssRangerY, showJumpButtons: true}"></div>
+						<br/>
+						<hr/>
+						<h3>Fiscal year</h3>
+						<div data-bind="ntsDatePicker: {value: fiscalYear, dateFormat: 'YYYY', valueFormat: 'YYYY', fiscalYear: true, cssRanger: cssRangerY, showJumpButtons: true}"></div>
+						<br/>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
