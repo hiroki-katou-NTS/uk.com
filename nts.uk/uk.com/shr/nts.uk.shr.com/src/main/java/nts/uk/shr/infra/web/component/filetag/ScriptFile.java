@@ -32,6 +32,7 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/knockoutjs/knockout-3.4.1.js",
             "/lib/generic/knockoutjs/knockout.mapping-2.4.1.js",
             "/lib/generic/jquery/datepicker.js",
+            "/lib/generic/jquery/datepicker.ja-JP.js",
             "/lib/nittsu/iefix.js",
             "/lib/nittsu/nts.uk.com.web.nittsu.bundles.js"
     }));
