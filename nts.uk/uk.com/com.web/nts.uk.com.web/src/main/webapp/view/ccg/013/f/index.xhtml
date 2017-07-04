@@ -7,10 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 480, height: 600 };</script>
-			<com:ValidatorScript>
-				nts.uk.ctx.sys.portal.dom.standardmenu.MenuDisplayName
-			</com:ValidatorScript>
+			<script>var dialogSize = { width: 690, height: 600 };</script>
 			<com:stylefile path="ccg013.f.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg013.f.start.js" />
@@ -19,7 +16,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
+			<div>
 				<div id="process">
 					<!-- K1_11: Button Registration-->
 					<button id="btnSave" class="x-large proceed"
@@ -30,32 +27,55 @@
 				</div>
 			</div>
 
-			<div >
+			<div class="contents-area">
 				<table id="table">
-				<tr>
-					<td><div data-bind="ntsFormLabel: {required: true, enable: true}">#{i18n.getText('CCG013_62')}</div></td>
-					<td><div>
-							<input id="date" data-bind="ntsTimeEditor: {
-								value: date,
-								required: true,
-								enable: enable,
-								readonly: readonly,
-								immediate: false}" />
-						</div>
-					</td>
-					<td><div> <button class="search-btn caret-bottom">#{i18n.getText('CCG013_63')}</button>
-					</div></td>
-				</tr>
+					<tr>
+						<td><div
+								data-bind="ntsFormLabel: {required: true, enable: true}">#{i18n.getText('CCG013_62')}</div></td>
+						<td><div tabindex="1"
+								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+						</td>
+						<td><div tabindex="2">
+								<button class="search-btn caret-bottom">#{i18n.getText('CCG013_63')}</button>
+							</div></td>
+					</tr>
 				</table>
 			</div>
 			<div id="label" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_64')}</div>
-			<div><table id="multi-list" data-bind="ntsGridList: {
-											height: 320,
-											options: list,
-											optionsValue: 'code',
-											columns: columns,
-											value: currentCode,
-										}"></table></div>
+			<div>
+				<table class="table1">
+					<thead>
+						<tr>
+							<th>#{i18n.getText('CCG013_65')}</th>
+							<th>#{i18n.getText('CCG013_66')}</th>
+							<th data-bind="visible: true">#{i18n.getText('CCG013_67')}</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<com:ko-foreach bind="listJobTitle">
+							<tr>
+								<td data-bind="text: $data.code"></td>
+								<td data-bind="text: $data.name"></td>
+								<td>
+									<div id="combo-box"
+										data-bind="ntsComboBox: {
+ 													options: $parent.comboItemsAfterLogin, 
+ 													optionsValue: 'webMenuCode', 
+ 													value: $parent.selectedCode, 
+													optionsText: 'webMenuName', 
+ 													editable: false, 
+ 													enable: true, 
+ 													columns: [ 
+														{ prop: 'webMenuCode', length: 4 },
+ 														{ prop: 'webMenuName', length: 10 }, 
+ 													]}"></div>
+								</td>
+							</tr>
+						</com:ko-foreach>
+					</tbody>
+				</table>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
