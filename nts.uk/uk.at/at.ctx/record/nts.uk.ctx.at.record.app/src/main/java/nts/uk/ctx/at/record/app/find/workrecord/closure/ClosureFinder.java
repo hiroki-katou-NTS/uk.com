@@ -88,7 +88,7 @@ public class ClosureFinder {
 			
 			Optional<ClosureHistory> closureHisory = this.repositoryHistory.
 					findBySelectedYearMonth(companyId, closureId,
-							closure.get().getMonth().getProcessingDate().v());
+							closure.get().getClosureMonth().getProcessingDate().v());
 			
 			if(closureHisory.isPresent()){
 				ClosureHistoryMasterDto closureSelected = new ClosureHistoryMasterDto();
@@ -119,7 +119,7 @@ public class ClosureFinder {
 		ClosureDetailDto dto = new ClosureDetailDto();
 
 		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
-				master.getClosureId(), master.getHistoryId());
+				master.getClosureId(), master.getStartDate());
 
 		// exist data
 		if (closure.isPresent()) {

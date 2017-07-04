@@ -9,13 +9,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistory;
-import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureMonth;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureSetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.UseClassification;
@@ -27,9 +26,6 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.UseClassification;
 @Getter
 @Setter
 public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMemento {
-	
-	/** The history id. */
-	private String historyId;
 	
 	/** The closure id. */
 	private int closureId;
@@ -85,7 +81,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureMonth)
 	 */
 	@Override
-	public void setMonth(ClosureMonth month) {
+	public void setClosureMonth(ClosureMonth month) {
 		this.month = month.getProcessingDate().v();
 	}
 
@@ -109,7 +105,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	 * setCloseName(nts.uk.ctx.at.record.dom.workrecord.closure.CloseName)
 	 */
 	@Override
-	public void setCloseName(CloseName closeName) {
+	public void setClosureName(ClosureName closeName) {
 		this.closureName = closeName.v();
 	}
 
@@ -135,21 +131,6 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		// Do no thing code
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
-	 * setClosureHistoryId(nts.uk.ctx.at.record.dom.workrecord.closure.
-	 * ClosureHistoryId)
-	 */
-	@Override
-	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
-		this.historyId = closureHistoryId.v();
-
 	}
 
 	/*
@@ -178,7 +159,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 			this.closureDate = 0;
 			return;
 		}
-		this.closureDate = closureDate.getDay();
+		this.closureDate = closureDate.getClosureDay();
 	}
 
 	/*

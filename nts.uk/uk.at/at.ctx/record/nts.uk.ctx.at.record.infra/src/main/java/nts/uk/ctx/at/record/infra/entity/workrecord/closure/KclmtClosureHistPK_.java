@@ -19,7 +19,7 @@ public class KclmtClosureHistPK_ {
 	/** The closure id. */
 	public static volatile SingularAttribute<KclmtClosureHistPK, String> closureId;
 	
-	/** The hist id. */
-	public static volatile SingularAttribute<KclmtClosureHistPK, String> histId;
+	/** The str YM. */
+	public static volatile SingularAttribute<KclmtClosureHistPK, Integer> strYM;
 
 }
