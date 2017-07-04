@@ -9,9 +9,13 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -70,24 +74,29 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
 
         // ========= NOT MANAGE =========
         if (!isAnnualManage) {
+            // Setting not existed
+            if(setttingDB == null) {
+                this.initValue(command);
+                return;
+            }
             // Manage Annual Setting
             command.setAddAttendanceDay(
                     setttingDB.getManageAnnualSetting().isWorkDayCalculate() == TRUE ? BIT_TRUE : BIT_FALSE);
             command.setMaxManageSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().manageType.value);
             command.setMaxNumberSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().reference.value);
-            command.setMaxNumberCompany(
-                    setttingDB.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());
+            command.setMaxNumberCompany(setttingDB.getManageAnnualSetting().getHalfDayManage()
+                    .maxNumberUniformCompany.v());
             command.setMaxGrantDay(setttingDB.getManageAnnualSetting().getMaxGrantDay().v());
-            command.setMaxRemainingDay(
-                    setttingDB.getManageAnnualSetting().getRemainingNumberSetting().remainingDayMaxNumber.v());
-            command.setNumberYearRetain(
-                    setttingDB.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
-            command.setPreemptionAnnualVacation(setttingDB.getAcquisitionSetting().annualPriority.value);
-            command.setPreemptionYearLeave(setttingDB.getAcquisitionSetting().permitType.value);
-            command.setRemainingNumberDisplay(
-                    setttingDB.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
-            command.setNextGrantDayDisplay(
-                    setttingDB.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);
+            command.setMaxRemainingDay(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
+                    .remainingDayMaxNumber.v());
+            command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
+                    .retentionYear.v());
+            command.setPermitType(setttingDB.getAcquisitionSetting().permitType.value);
+            command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);
+            command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
+                    .remainingNumberDisplay.value);
+            command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
+                    .nextGrantDayDisplay.value);
 
             // Time Leave Setting
             command.setTimeManageType(setttingDB.getTimeSetting().getTimeManageType().value);
@@ -103,8 +112,8 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         // ========= MANAGE =========
         // Manage Annual Setting
         if (command.getMaxNumberSemiVacation() == MaxDayReference.ReferAnnualGrantTable.value) {
-            command.setMaxNumberCompany(
-                    setttingDB.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());
+            command.setMaxNumberCompany(setttingDB.getManageAnnualSetting().getHalfDayManage()
+                    .maxNumberUniformCompany.v());
         }
         // Time Leave Setting
         boolean isTimeManage = command.getTimeManageType() == ManageDistinct.YES.value;
@@ -117,5 +126,36 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
             command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
         }
+    }
+    
+    /**
+     * Inits the value.
+     *
+     * @param command the command
+     */
+    private void initValue(AnnualPaidLeaveSaveCommand command) {
+        command.setAddAttendanceDay(ManageDistinct.YES.value);
+        
+        // Manage Annual Setting
+        command.setMaxManageSemiVacation(ManageDistinct.YES.value);
+        command.setMaxNumberSemiVacation(MaxDayReference.CompanyUniform.value);
+        command.setMaxNumberCompany(null);
+        // TODO: Check value default
+        command.setMaxGrantDay(0d);
+        command.setMaxRemainingDay(0d);
+        command.setNumberYearRetain(0);
+        // =======
+        command.setPermitType(ApplyPermission.ALLOW.value);
+        command.setAnnualPriority(AnnualPriority.FIFO.value);
+        command.setRemainingNumberDisplay(DisplayDivision.Indicate.value);
+        command.setNextGrantDayDisplay(DisplayDivision.Indicate.value);
+
+        // Time Leave Setting
+        command.setTimeManageType(ManageDistinct.YES.value);
+        command.setTimeUnit(TimeDigestiveUnit.OneMinute.value);
+        command.setManageMaxDayVacation(ManageDistinct.YES.value);
+        command.setReference(MaxDayReference.CompanyUniform.value);
+        command.setMaxTimeDay(null);
+        command.setIsEnoughTimeOneDay(false);
     }
 }

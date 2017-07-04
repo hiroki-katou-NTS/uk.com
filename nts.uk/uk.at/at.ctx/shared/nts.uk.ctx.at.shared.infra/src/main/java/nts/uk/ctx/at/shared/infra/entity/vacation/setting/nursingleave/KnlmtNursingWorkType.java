@@ -40,6 +40,21 @@ public class KnlmtNursingWorkType extends UkJpaEntity implements Serializable {
     public KnlmtNursingWorkType() {
     }
     
+    /**
+     * Instantiates a new knlmt nursing work type.
+     *
+     * @param knlmtNursingWorkTypePK the knlmt nursing work type PK
+     */
+    public KnlmtNursingWorkType(KnlmtNursingWorkTypePK knlmtNursingWorkTypePK) {
+        this.knlmtNursingWorkTypePK = knlmtNursingWorkTypePK;
+    }
+    
+    /**
+     * Instantiates a new knlmt nursing work type.
+     *
+     * @param knlmtNursingWorkTypePK the knlmt nursing work type PK
+     * @param workTypeCode the work type code
+     */
     public KnlmtNursingWorkType(KnlmtNursingWorkTypePK knlmtNursingWorkTypePK, String workTypeCode) {
         this.knlmtNursingWorkTypePK = knlmtNursingWorkTypePK;
         this.workTypeCode = workTypeCode;
@@ -65,8 +80,9 @@ public class KnlmtNursingWorkType extends UkJpaEntity implements Serializable {
             return false;
         }
         KnlmtNursingWorkType other = (KnlmtNursingWorkType) object;
-        if ((this.knlmtNursingWorkTypePK == null && other.knlmtNursingWorkTypePK != null) || (this.knlmtNursingWorkTypePK != null
-                && !this.knlmtNursingWorkTypePK.equals(other.knlmtNursingWorkTypePK))) {
+        if ((this.knlmtNursingWorkTypePK == null && other.knlmtNursingWorkTypePK != null)
+                || (this.knlmtNursingWorkTypePK != null
+                        && !this.knlmtNursingWorkTypePK.equals(other.knlmtNursingWorkTypePK))) {
             return false;
         }
         return true;

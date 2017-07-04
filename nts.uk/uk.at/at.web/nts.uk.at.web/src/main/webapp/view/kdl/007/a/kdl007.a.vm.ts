@@ -35,9 +35,9 @@ module kdl007.a.viewmodel {
             self.dataSources.remove(x => x.code != '');
 
             // get all item 
-            //service.getAllItem().done(function(resp: Array<ItemModel>) {
+            service.getAllItem().done(function(resp: Array<ItemModel>) {
             // demo data    
-            $.Deferred().resolve([]).promise().done((resp: Array<ItemModel>) => {
+//            $.Deferred().resolve([]).promise().done((resp: Array<ItemModel>) => {
                 if (resp && resp.length) {
                     let posibleItems: Array<string> = self.posibleItems(),
                         selectedItems: Array<string> = self.currentCodeList();

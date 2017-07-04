@@ -15,11 +15,13 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.command.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class NursingLeaveCommandHandler.
+ */
 @Stateless
 public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveCommand> {
     
@@ -61,13 +63,9 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
      * @param result the result
      */
     private void validateField(NursingLeaveCommand command, List<NursingLeaveSetting> result) {
-        if (CollectionUtil.isEmpty(result)) {
-            this.initValue(NursingCategory.Nursing.value, command.getNursingSetting());
-            this.initValue(NursingCategory.ChildNursing.value, command.getChildNursingSetting());
-        } else {
-            this.checkField(command.getNursingSetting(), result.get(INDEX_NURSING));
-            this.checkField(command.getChildNursingSetting(), result.get(INDEX_CHILD_NURSING));
-        }
+        boolean isNoSetting = CollectionUtil.isEmpty(result);
+        this.checkField(command.getNursingSetting(), isNoSetting ? null : result.get(INDEX_NURSING));
+        this.checkField(command.getChildNursingSetting(), isNoSetting ? null : result.get(INDEX_CHILD_NURSING));
     }
     
     /**
@@ -77,21 +75,26 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
      * @param settingDb the setting db
      */
     private void checkField(NursingLeaveSettingDto command, NursingLeaveSetting settingDb) {
-        if (command.getManageType() == ManageDistinct.NO.value) {
-            command.setStartMonthDay(settingDb.getStartMonthDay());
-            command.setNursingNumberLeaveDay(settingDb.getMaxPersonSetting().getNursingNumberLeaveDay().v());
-            command.setNursingNumberPerson(settingDb.getMaxPersonSetting().getNursingNumberPerson().v());
+        // Manage
+        if (command.getManageType() == ManageDistinct.YES.value) {
+            return;
         }
+        // No setting existed
+        if (settingDb == null) {
+            this.initValue(command);
+            return;
+        }
+        command.setStartMonthDay(settingDb.getStartMonthDay());
+        command.setNursingNumberLeaveDay(settingDb.getMaxPersonSetting().getNursingNumberLeaveDay().v());
+        command.setNursingNumberPerson(settingDb.getMaxPersonSetting().getNursingNumberPerson().v());
     }
     
     /**
      * Inits the value.
      *
-     * @param nursingCtr the nursing ctr
      * @param setting the setting
      */
-    private void initValue(int nursingCtr, NursingLeaveSettingDto setting) {
-        setting.setNursingCategory(nursingCtr);
+    private void initValue(NursingLeaveSettingDto setting) {
         setting.setStartMonthDay(null);
         setting.setNursingNumberLeaveDay(null);
         setting.setNursingNumberPerson(null);

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.worktype;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 
 @Getter
 public class WorkType {
@@ -21,11 +20,11 @@ public class WorkType {
 	/*勤務種類備考*/
 	private WorkTypeMemo memo;
 	/*使用区分*/
-	private UseSetting useAtr;
+	private DisplayAtr displayAtr;
 	
 	public WorkType(String companyId, WorkTypeCode workTypeCode, int sortOrder,
 			WorkTypeSymbolicName symbolicName, WorkTypeName name, WorkTypeAbbreviationName abbreviationName,
-			WorkTypeMemo memo, UseSetting useAtr) {
+			WorkTypeMemo memo, DisplayAtr displayAtr) {
 		super();
 		this.companyId = companyId;
 		this.workTypeCode = workTypeCode;
@@ -34,7 +33,7 @@ public class WorkType {
 		this.name = name;
 		this.abbreviationName = abbreviationName;
 		this.memo = memo;
-		this.useAtr = useAtr;
+		this.displayAtr = displayAtr;
 	}
 	
 	public static WorkType createSimpleFromJavaType(String companyId,
@@ -44,7 +43,7 @@ public class WorkType {
 										String name,
 										String abbreviationName,
 										String memo,
-										int useAtr){
+										int displayAtr){
 		return new WorkType(companyId, 
 				new WorkTypeCode(workTypeCode),
 				sortOrder,
@@ -52,6 +51,6 @@ public class WorkType {
 				new WorkTypeName(name),
 				new WorkTypeAbbreviationName(abbreviationName),
 				new WorkTypeMemo(memo),
-				EnumAdaptor.valueOf(useAtr, UseSetting.class));
+				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class));
 	}
 }

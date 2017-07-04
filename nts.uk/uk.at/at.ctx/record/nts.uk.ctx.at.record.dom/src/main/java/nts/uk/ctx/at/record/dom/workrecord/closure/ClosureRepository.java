@@ -38,12 +38,12 @@ public interface ClosureRepository {
 	
 	
 	/**
-	 * Gets the closure by id.
+	 * Find by id.
 	 *
 	 * @param companyId the company id
 	 * @param closureId the closure id
-	 * @return the closure by id
+	 * @return the optional
 	 */
-	Optional<Closure> getClosureById(String companyId, int closureId);
+	Optional<Closure> findById(String companyId, int closureId);
 
 }
