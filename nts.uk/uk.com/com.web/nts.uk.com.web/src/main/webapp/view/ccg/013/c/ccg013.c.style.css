@@ -44,6 +44,9 @@ img {
 	cursor: pointer;
 	color: blue;
 	text-decoration: underline;
+	width: 200px;
+	overflow: hidden !important;
+	display: inline-block;
 }
 
 table tr td {
