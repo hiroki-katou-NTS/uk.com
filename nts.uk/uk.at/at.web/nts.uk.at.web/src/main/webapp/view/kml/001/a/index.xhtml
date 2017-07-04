@@ -144,11 +144,7 @@
 												<div class="cell">
 													<input class="premiumInput premiumItems" data-bind="ntsTextEditor: {
 													name: '#[KML001_14]',
-													value: ko.pureComputed(function () {
-														let s;
-														ko.utils.arrayForEach($parent.currentPersonCost().premiumSets()[$index()].attendanceItems(), function(item) { if (!s) { s = item.name; } else {s+=' + '+item.name; } });
-														return s;
-													}),
+													value: $parent.viewAttendanceItems()[$index()],
 													constraint: 'Memo',
 													option: { width: '400px' },
 													enable: true,

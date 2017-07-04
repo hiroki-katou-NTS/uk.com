@@ -11,6 +11,7 @@ module nts.uk.at.view.kml001.a {
             lastStartDate: string;
             isInsert: KnockoutObservable<Boolean>;
             newStartDate: KnockoutObservable<string>;
+            viewAttendanceItems: KnockoutObservableArray<KnockoutObservable<string>>;
             constructor() {
                 $('#formula-child-1').html(nts.uk.resource.getText('KML001_7').replace(/\n/g,'<br/>'));
                 var self = this;
@@ -22,6 +23,18 @@ module nts.uk.at.view.kml001.a {
                 self.premiumItems = ko.observableArray([]);
                 self.isInsert = ko.observable(true);
                 self.lastStartDate = "1900/01/01";
+                self.viewAttendanceItems = ko.observableArray([
+                    ko.observable(''),
+                    ko.observable(''),
+                    ko.observable(''),
+                    ko.observable(''),
+                    ko.observable(''),
+                    ko.observable(''),
+                    ko.observable(''),
+                    ko.observable(''),
+                    ko.observable(''),
+                    ko.observable('')
+                ]);
             }
             
             /**
@@ -106,7 +119,9 @@ module nts.uk.at.view.kml001.a {
                 self.newStartDate(self.currentPersonCost().startDate());
                 
                 // set data to grid list
-                self.personCostList().forEach(function(item) { self.gridPersonCostList.push(new vmbase.GridPersonCostCalculation(item.startDate() + " ~ " + item.endDate())) });
+                let a = [];
+                self.personCostList().forEach(function(item) { a.push(new vmbase.GridPersonCostCalculation(item.startDate() + " ~ " + item.endDate())) });
+                self.gridPersonCostList(a);
                 self.currentGridPersonCost(self.currentPersonCost().startDate() + " ~ " + self.currentPersonCost().endDate());
                 ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, i) {
                     let iDList = [];
@@ -137,10 +152,13 @@ module nts.uk.at.view.kml001.a {
                                 newList.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
                             });
                             self.currentPersonCost().premiumSets()[index].attendanceItems(newList);
+                            self.createViewAttendanceItems(newList,index);
                         })
                         .fail(function(res) {
                             nts.uk.ui.dialog.alertError(res.message);
                         });
+                } else {
+                    self.createViewAttendanceItems([],index);        
                 }
             }
             
@@ -338,6 +356,18 @@ module nts.uk.at.view.kml001.a {
                                     }
                                 });
                                 self.currentPersonCost().premiumSets(newPremiumSets);
+                                self.viewAttendanceItems([
+                                    ko.observable(''),
+                                    ko.observable(''),
+                                    ko.observable(''),
+                                    ko.observable(''),
+                                    ko.observable(''),
+                                    ko.observable(''),
+                                    ko.observable(''),
+                                    ko.observable(''),
+                                    ko.observable(''),
+                                    ko.observable('')
+                                ]);
                                 self.newStartDate(self.currentPersonCost().startDate());
                             }
                             self.isInsert(true);
@@ -369,6 +399,18 @@ module nts.uk.at.view.kml001.a {
                                 }
                             });
                             self.currentPersonCost().premiumSets(newPremiumSets);
+                            self.viewAttendanceItems([
+                                ko.observable(''),
+                                ko.observable(''),
+                                ko.observable(''),
+                                ko.observable(''),
+                                ko.observable(''),
+                                ko.observable(''),
+                                ko.observable(''),
+                                ko.observable(''),
+                                ko.observable(''),
+                                ko.observable('')
+                            ]);
                             self.newStartDate(self.currentPersonCost().startDate());
                         }
                         self.currentGridPersonCost(null);
@@ -469,7 +511,18 @@ module nts.uk.at.view.kml001.a {
                 return result;
             }
             
-            setTabindex(): void {
+            private createViewAttendanceItems(attendances: Array<vmbase.AttendanceItem>, index: number): void {
+                var self = this;
+                let a = [];
+                let s = '';
+                ko.utils.arrayForEach(attendances, (attendanceItem) => { 
+                    if (nts.uk.util.isNullOrEmpty(s)) { s = attendanceItem.name; } else {s+=' + '+attendanceItem.name; } 
+                });
+                a.push(s);
+                self.viewAttendanceItems()[index](a);
+            }
+            
+            private setTabindex(): void {
                 $("* input").attr('tabindex', -1);
                 $("* button").attr('tabindex', -1);
                 $("#dateRange-list-container").attr('tabindex', -1);
