@@ -77,4 +77,13 @@ public interface ClosureHistoryRepository {
 	 * @return the optional
 	 */
 	Optional<ClosureHistory> findByHistoryLast(String companyId, int closureId);
+	
+	/**
+	 * Find by history begin.
+	 *
+	 * @param companyId the company id
+	 * @param closureId the closure id
+	 * @return the optional
+	 */
+	Optional<ClosureHistory> findByHistoryBegin(String companyId, int closureId);
 }

@@ -72,7 +72,7 @@ public class ClosureFinder {
 		String companyId = loginUserContext.companyId();
 		
 		// call service
-		Optional<Closure> closure = this.repository.getClosureById(companyId, closureId); 
+		Optional<Closure> closure = this.repository.findById(companyId, closureId); 
 		
 		ClosureFindDto dto = new ClosureFindDto();
 		
@@ -114,7 +114,7 @@ public class ClosureFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call service
-		Optional<Closure> closure = this.repository.getClosureById(companyId, master.getClosureId());
+		Optional<Closure> closure = this.repository.findById(companyId, master.getClosureId());
 
 		ClosureDetailDto dto = new ClosureDetailDto();
 

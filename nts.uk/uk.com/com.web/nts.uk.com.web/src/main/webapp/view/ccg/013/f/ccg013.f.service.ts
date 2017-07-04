@@ -1,14 +1,15 @@
 module nts.uk.com.view.ccg013.f.service {
     let paths: any = {
-        getAllStandardMenu: "sys/portal/standardmenu/findAll",
-        updateStandardMenu: "sys/portal/standardmenu/update",
+        getAllJobTitle: "basic/company/organization/jobtitle/findall"
     }
     
-    export function getAllStandardMenu(): JQueryPromise<Array<viewmodel.StandardMenu>>{
-        return nts.uk.request.ajax("com", paths.getAllStandardMenu); 
+    
+    
+     export function getAllJobTitle(baseDate): JQueryPromise<Array<any>>{
+        var Kcp003Dto = {
+          baseDate: baseDate 
+        }
+        return nts.uk.request.ajax("com", paths.getAllJobTitle, Kcp003Dto); 
     }
     
-    export function updateStandardMenu(standardMenu: Array<viewmodel.StandardMenu>): JQueryPromise<void> {
-        return nts.uk.request.ajax("com", paths.updateStandardMenu, standardMenu);
-    }
 }
