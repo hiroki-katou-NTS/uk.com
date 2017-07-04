@@ -28,7 +28,7 @@ module nts.uk.ui.koExtentions {
             
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
-            features.push({ name: 'Sorting', type: 'local' });
+//            features.push({ name: 'Sorting', type: 'local' });
             if(data.multiple || showNumbering){ 
                 features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });    
             }

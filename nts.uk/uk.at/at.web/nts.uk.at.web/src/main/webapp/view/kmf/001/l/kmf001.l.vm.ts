@@ -198,6 +198,9 @@ module nts.uk.pr.view.kmf001.l {
                 if (object.startMonthDay) {
                     ob().nursingMonth(parseInt(object.startMonthDay/100));
                     ob().nursingDay(object.startMonthDay - ob().nursingMonth() * 100);
+                } else {
+                    ob().nursingMonth(null);
+                    ob().nursingDay(null);
                 }
                 ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
                 ob().nursingNumberPerson(object.nursingNumberPerson);
@@ -225,7 +228,7 @@ module nts.uk.pr.view.kmf001.l {
             
             constructor() {
                 let self = this;
-                self.selectedManageNursing = ko.observable(0);
+                self.selectedManageNursing = ko.observable(1);
                 self.enableNursing = ko.computed(function() {
                     return self.selectedManageNursing() == 1;
                 }, self);

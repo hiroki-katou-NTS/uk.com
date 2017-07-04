@@ -38,9 +38,6 @@ module nts.uk.at.view.kmk012.d {
         export module model {
 
             export class ClosureDetailDto {
-
-                /** The history id. */
-                historyId: string;
     
                 /** The closure id. */
                 closureId: number;
@@ -69,7 +66,7 @@ module nts.uk.at.view.kmk012.d {
             export class ClosureHistoryInDto{
                 
                 /** The history id. */
-                historyId: string;
+                startDate: number;
 
                 /** The closure id. */
                 // 締めＩＤ

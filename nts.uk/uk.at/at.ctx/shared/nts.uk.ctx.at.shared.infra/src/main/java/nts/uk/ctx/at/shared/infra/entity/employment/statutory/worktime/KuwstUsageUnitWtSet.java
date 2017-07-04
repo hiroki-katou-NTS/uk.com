@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KUWST_USAGE_UNIT_WT_SET")
-public class JuwstUsageUnitWtSet extends UkJpaEntity implements Serializable {
+public class KuwstUsageUnitWtSet extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -58,7 +58,7 @@ public class JuwstUsageUnitWtSet extends UkJpaEntity implements Serializable {
     /**
      * Instantiates a new juuwtst usage unit wt set.
      */
-    public JuwstUsageUnitWtSet() {
+    public KuwstUsageUnitWtSet() {
     }
 
     /**
@@ -66,7 +66,7 @@ public class JuwstUsageUnitWtSet extends UkJpaEntity implements Serializable {
      *
      * @param cid the cid
      */
-    public JuwstUsageUnitWtSet(String cid) {
+    public KuwstUsageUnitWtSet(String cid) {
         this.cid = cid;
     }
 
@@ -86,10 +86,10 @@ public class JuwstUsageUnitWtSet extends UkJpaEntity implements Serializable {
      */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof JuwstUsageUnitWtSet)) {
+		if (!(object instanceof KuwstUsageUnitWtSet)) {
 			return false;
 		}
-		JuwstUsageUnitWtSet other = (JuwstUsageUnitWtSet) object;
+		KuwstUsageUnitWtSet other = (KuwstUsageUnitWtSet) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

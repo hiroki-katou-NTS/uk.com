@@ -27,5 +27,5 @@ public interface JobTitleTyingRepository {
 	 * @param jobId
 	 * @return
 	 */
-	List<JobTitleTying> findWebMenuCode(String companyId, String jobId);
+	List<JobTitleTying> findWebMenuCode(String companyId, List<String> jobId);
 }

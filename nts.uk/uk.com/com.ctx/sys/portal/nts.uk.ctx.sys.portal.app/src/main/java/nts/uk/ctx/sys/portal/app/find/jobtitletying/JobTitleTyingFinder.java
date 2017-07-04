@@ -15,7 +15,7 @@ public class JobTitleTyingFinder {
 	@Inject
 	private JobTitleTyingRepository jobTitleTyingRepository;
 	
-	public List<JobTitleTyingDto> findWebMenuCode(String jobId){
+	public List<JobTitleTyingDto> findWebMenuCode(List<String> jobId){
 		String companyID = AppContexts.user().companyId();
 		return this.jobTitleTyingRepository.findWebMenuCode(companyID, jobId).stream()
 				.map(item -> JobTitleTyingDto.fromDomain(item)).collect(Collectors.toList());

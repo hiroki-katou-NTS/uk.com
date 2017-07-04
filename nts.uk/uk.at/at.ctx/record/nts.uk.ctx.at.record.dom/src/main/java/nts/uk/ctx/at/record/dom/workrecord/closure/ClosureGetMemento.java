@@ -37,11 +37,11 @@ public interface ClosureGetMemento {
 	
 	
 	/**
-	 * Gets the month.
+	 * Gets the closure month.
 	 *
-	 * @return the month
+	 * @return the closure month
 	 */
-	ClosureMonth getMonth();
+	ClosureMonth getClosureMonth();
 	
 	
 	/**

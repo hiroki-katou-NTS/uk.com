@@ -16,9 +16,6 @@ public class ClosureHistoryInDto implements Serializable{
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The history id. */
-	private String historyId;
-
 	/** The closure id. */
 	// 締めＩＤ
 	private int closureId;

@@ -59,8 +59,8 @@ public class ClosureSaveCommandHandler extends CommandHandler<ClosureSaveCommand
 				.findByHistoryLast(companyId, command.getClosureId());
 		// check (min start month) <= closure month <= (max end month) 
 		if (beginClosureHistory.isPresent() && endClosureHistory.isPresent()
-				&& (command.getMonth() > endClosureHistory.get().getEndDate().v()
-						|| command.getMonth() < beginClosureHistory.get().getStartDate().v())) {
+				&& (command.getMonth() > endClosureHistory.get().getEndYearMonth().v()
+						|| command.getMonth() < beginClosureHistory.get().getStartYearMonth().v())) {
 
 			throw new BusinessException("Msg_241");
 		}
