@@ -19,10 +19,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentWtSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentWtSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewstEmploymentWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewstEmploymentWtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewstEmploymentWtSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewstEmploymentWtSet_;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.KewstEmploymentWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.KewstEmploymentWtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.KewstEmploymentWtSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.KewstEmploymentWtSet_;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -40,7 +40,7 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	 */
 	@Override
 	public void create(EmploymentWtSetting setting) {
-		List<JewstEmploymentWtSet> entities = this.toEntity(setting);
+		List<KewstEmploymentWtSet> entities = this.toEntity(setting);
 		commandProxy().insertAll(entities);
 	}
 
@@ -53,7 +53,7 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	 */
 	@Override
 	public void update(EmploymentWtSetting setting) {
-		List<JewstEmploymentWtSet> entities = this.toEntity(setting);
+		List<KewstEmploymentWtSet> entities = this.toEntity(setting);
 		commandProxy()
 				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
@@ -66,14 +66,14 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	 */
 	@Override
 	public void remove(String companyId, int year, String employmentCode) {
-		this.commandProxy().remove(JewstEmploymentWtSet.class,
-				new JewstEmploymentWtSetPK(companyId, year, WtSettingConstant.NORMAL, WtSettingConstant.STATUTORY, employmentCode));
-		this.commandProxy().remove(JewstEmploymentWtSet.class,
-				new JewstEmploymentWtSetPK(companyId, year, WtSettingConstant.FLEX, WtSettingConstant.STATUTORY, employmentCode));
-		this.commandProxy().remove(JewstEmploymentWtSet.class,
-				new JewstEmploymentWtSetPK(companyId, year, WtSettingConstant.FLEX, WtSettingConstant.SPECIFIED, employmentCode));
-		this.commandProxy().remove(JewstEmploymentWtSet.class,
-				new JewstEmploymentWtSetPK(companyId, year, WtSettingConstant.DEFORMED, WtSettingConstant.STATUTORY, employmentCode));
+		this.commandProxy().remove(KewstEmploymentWtSet.class,
+				new KewstEmploymentWtSetPK(companyId, year, WtSettingConstant.NORMAL, WtSettingConstant.STATUTORY, employmentCode));
+		this.commandProxy().remove(KewstEmploymentWtSet.class,
+				new KewstEmploymentWtSetPK(companyId, year, WtSettingConstant.FLEX, WtSettingConstant.STATUTORY, employmentCode));
+		this.commandProxy().remove(KewstEmploymentWtSet.class,
+				new KewstEmploymentWtSetPK(companyId, year, WtSettingConstant.FLEX, WtSettingConstant.SPECIFIED, employmentCode));
+		this.commandProxy().remove(KewstEmploymentWtSet.class,
+				new KewstEmploymentWtSetPK(companyId, year, WtSettingConstant.DEFORMED, WtSettingConstant.STATUTORY, employmentCode));
 	}
 
 	/* (non-Javadoc)
@@ -85,17 +85,17 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<JewstEmploymentWtSet> cq = cb.createQuery(JewstEmploymentWtSet.class);
-		Root<JewstEmploymentWtSet> root = cq.from(JewstEmploymentWtSet.class);
+		CriteriaQuery<KewstEmploymentWtSet> cq = cb.createQuery(KewstEmploymentWtSet.class);
+		Root<KewstEmploymentWtSet> root = cq.from(KewstEmploymentWtSet.class);
 
 		// Constructing condition.
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		predicateList.add(cb.equal(
-				root.get(JewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(JewstEmploymentWtSetPK_.cid), companyId));
+				root.get(KewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(KewstEmploymentWtSetPK_.cid), companyId));
 		predicateList.add(cb.equal(
-				root.get(JewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(JewstEmploymentWtSetPK_.yK), year));
+				root.get(KewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(KewstEmploymentWtSetPK_.yK), year));
 		predicateList.add(
-				cb.equal(root.get(JewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(JewstEmploymentWtSetPK_.emptCd),
+				cb.equal(root.get(KewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(KewstEmploymentWtSetPK_.emptCd),
 						employmentCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
@@ -111,18 +111,18 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<JewstEmploymentWtSet> cq = cb.createQuery(JewstEmploymentWtSet.class);
-		Root<JewstEmploymentWtSet> root = cq.from(JewstEmploymentWtSet.class);
+		CriteriaQuery<KewstEmploymentWtSet> cq = cb.createQuery(KewstEmploymentWtSet.class);
+		Root<KewstEmploymentWtSet> root = cq.from(KewstEmploymentWtSet.class);
 
 		// Constructing condition.
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		predicateList.add(cb.equal(
-				root.get(JewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(JewstEmploymentWtSetPK_.cid), companyId));
+				root.get(KewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(KewstEmploymentWtSetPK_.cid), companyId));
 		predicateList.add(cb.equal(
-				root.get(JewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(JewstEmploymentWtSetPK_.yK), year));
+				root.get(KewstEmploymentWtSet_.jewstEmploymentWtSetPK).get(KewstEmploymentWtSetPK_.yK), year));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		List<JewstEmploymentWtSet> resultList = em.createQuery(cq).getResultList();
+		List<KewstEmploymentWtSet> resultList = em.createQuery(cq).getResultList();
 
 		return resultList.stream().map(item -> item.getJewstEmploymentWtSetPK().getEmptCd()).distinct()
 				.collect(Collectors.toList());
@@ -134,8 +134,8 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	 * @param domain the domain
 	 * @return the list
 	 */
-	private List<JewstEmploymentWtSet> toEntity(EmploymentWtSetting domain) {
-		List<JewstEmploymentWtSet> entities = new ArrayList<JewstEmploymentWtSet>();
+	private List<KewstEmploymentWtSet> toEntity(EmploymentWtSetting domain) {
+		List<KewstEmploymentWtSet> entities = new ArrayList<KewstEmploymentWtSet>();
 		JpaEmploymentWtSettingSetMemento memento = new JpaEmploymentWtSettingSetMemento();
 		domain.saveToMemento(memento);
 		entities.add(memento.getDeformed());
@@ -151,7 +151,7 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	 * @param entities the entities
 	 * @return the employment wt setting
 	 */
-	private EmploymentWtSetting toDomain(List<JewstEmploymentWtSet> entities) {
+	private EmploymentWtSetting toDomain(List<KewstEmploymentWtSet> entities) {
 		if (entities.isEmpty()) {
 			return null;
 		}
@@ -164,8 +164,8 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	 * @param entity the entity
 	 * @return the jewtst employment wt set
 	 */
-	private JewstEmploymentWtSet updateEntity(JewstEmploymentWtSet entity) {
-		JewstEmploymentWtSet updatedEntity = this.queryProxy().find(entity.getJewstEmploymentWtSetPK(), JewstEmploymentWtSet.class).get();
+	private KewstEmploymentWtSet updateEntity(KewstEmploymentWtSet entity) {
+		KewstEmploymentWtSet updatedEntity = this.queryProxy().find(entity.getJewstEmploymentWtSetPK(), KewstEmploymentWtSet.class).get();
 		updatedEntity.setDailyTime(entity.getDailyTime());
 		updatedEntity.setWeeklyTime(entity.getWeeklyTime());
 		updatedEntity.setStrWeek(entity.getStrWeek());

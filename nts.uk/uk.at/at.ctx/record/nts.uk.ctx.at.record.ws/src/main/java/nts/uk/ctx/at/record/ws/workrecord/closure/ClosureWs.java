@@ -43,40 +43,40 @@ public class ClosureWs {
 	
 	
 	/**
-	 * Gets the all.
+	 * Find all.
 	 *
-	 * @return the all
+	 * @return the list
 	 */
 	@POST
-	@Path("getall")
-	public List<ClosureFindDto> getAll(){
+	@Path("findAll")
+	public List<ClosureFindDto> findAll(){
 		return this.finder.findAll();
 	}
 	
 	
 	/**
-	 * Detail.
+	 * Find by id.
 	 *
 	 * @param closureId the closure id
 	 * @return the closure find dto
 	 */
 	@POST
-	@Path("detail/{closureId}")
-	public ClosureFindDto detail(@PathParam("closureId") int closureId){
-		return this.finder.getByClosure(closureId);
+	@Path("findById/{closureId}")
+	public ClosureFindDto findById(@PathParam("closureId") int closureId){
+		return this.finder.findById(closureId);
 	}
 	
 	
 	/**
-	 * Detail.
+	 * Find by master.
 	 *
 	 * @param master the master
-	 * @return the closure find dto
+	 * @return the closure detail dto
 	 */
 	@POST
-	@Path("detailhistory")
-	public ClosureDetailDto detailHistory(ClosureHistoryInDto master){
-		return this.finder.detailMaster(master);
+	@Path("findByMaster")
+	public ClosureDetailDto findByMaster(ClosureHistoryInDto master){
+		return this.finder.findByMaster(master);
 	}
 	
 	

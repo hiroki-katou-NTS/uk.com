@@ -29,8 +29,7 @@ __viewContext.ready(function () {
                 option: ko.mapping.fromJS({
                     grouplength: 3,
                     decimallength: 2,
-                    symbolChar: 'ヶ月',
-                    symbolPosition: 'right'}),
+                    unitID: 'FIS_MONTH'}),
                 required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)

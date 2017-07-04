@@ -57,4 +57,9 @@ public interface TopPageSetFactory {
 	 * @return
 	 */
 	Boolean checkTopPageSet();
+	/**
+	 * find lay out my page
+	 * @return
+	 */
+	LayoutForMyPageDto findLayoutMyPage();
 }

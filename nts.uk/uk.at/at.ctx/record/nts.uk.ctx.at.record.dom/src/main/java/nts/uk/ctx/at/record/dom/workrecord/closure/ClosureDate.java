@@ -5,18 +5,16 @@
 package nts.uk.ctx.at.record.dom.workrecord.closure;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class ClosureDate.
  */
 @Getter
-@Setter
 public class ClosureDate extends DomainObject{
 	
-	/** The day. */
-	private Integer day;
+	/** The closure day. */
+	private Integer closureDay;
 	
 	/** The last day of month. */
 	private Boolean lastDayOfMonth;
@@ -24,11 +22,11 @@ public class ClosureDate extends DomainObject{
 	/**
 	 * Instantiates a new closure date.
 	 *
-	 * @param day the day
+	 * @param closureDay the closure day
 	 * @param lastDayOfMonth the last day of month
 	 */
-	public ClosureDate(Integer day, Boolean lastDayOfMonth) {
-		this.day = day;
+	public ClosureDate(Integer closureDay, Boolean lastDayOfMonth) {
+		this.closureDay = closureDay;
 		this.lastDayOfMonth = lastDayOfMonth;
 	}
 }

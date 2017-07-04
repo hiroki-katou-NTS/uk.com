@@ -24,8 +24,6 @@ public class ClosureHistoryDto implements Serializable{
 	// 締めＩＤ
 	private int closureId;
 	
-	/** The closure history id. */
-	private String closureHistoryId;
 	
 	/** The closure year. */
 	// 終了年月: 年月

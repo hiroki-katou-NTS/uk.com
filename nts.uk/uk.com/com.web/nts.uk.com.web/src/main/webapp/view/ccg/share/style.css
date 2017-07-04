@@ -1,27 +1,18 @@
 @CHARSET "UTF-8";
 
-#tab-panel {
-	max-width: 600px;
-}
-
 .ntsSearchBox {
 	width: 230px !important;
 }
 
-.controlSetting {
-	color: #2ECC71;
-}
-
-.controlSettingBg {
-	color: #2ECC71;
-}
-
 .controlSetting.caret-right:after {
+	cursor: pointer;
+	color: #2ECC71;
 	border-width: 19px 10px;
 	margin-top: -10px;
 }
-
 .controlSettingBg.caret-right:after {
+	cursor: pointer;
+	color: #2ECC71;
 	border-width: 30px 14px;
 	margin-top: -10px;
 }
@@ -49,7 +40,9 @@
 .accordion {
 	max-width: 550px;
 }
-
+.btn-quick-search {
+	cursor: pointer;
+}
 .btn_big {
 	width: 255px;
 	background-color: #2ECC71;
@@ -62,7 +55,9 @@
 	border-radius: 5px;
 	display: inline-block;
 }
-
+.btn_big:hover {
+	background-color: #2BBF6A;
+}
 .btn_small {
 	width: 255px;
 	background-color: #2ECC71;
@@ -74,7 +69,9 @@
 	border-radius: 5px;
 	display: inline-block;
 }
-
+.btn_small:hover {
+	background-color: #2BBF6A;
+}
 .btn_apply {
 	width: 550px;
 	height: 25px;
@@ -86,6 +83,10 @@
 	margin-bottom: 5px;
 	color: white;
 	display: inline-block;
+	cursor: pointer;
+}
+.btn_apply:hover {
+	background-color: #2BBF6A;
 }
 
 .caret-background.caret-bottom:after {
@@ -93,11 +94,6 @@
 	color: #AEEE60;
 	border-width: 18px 52px;
 	margin-top: 4px;
-}
-
-.lableselect {
-	margin-right: 10px;
-	font-size: 17px;
 }
 
 #btn_apply {
@@ -144,12 +140,24 @@
 }
 
 .labelBigButton {
+	cursor: pointer;
 	font-size: 14pt;
 	vertical-align: super;
 }
 
 .labelSmallButton {
+	cursor: pointer;
 	font-size: 10pt;
 	vertical-align: super;
 	margin-left: 20px;
+}
+
+#ccgcomponent {
+	height: 500px;
+}
+#ccg-component {
+	width: 340px;
+    height: 500px;
+    float: left;
+    position: absolute;
 }

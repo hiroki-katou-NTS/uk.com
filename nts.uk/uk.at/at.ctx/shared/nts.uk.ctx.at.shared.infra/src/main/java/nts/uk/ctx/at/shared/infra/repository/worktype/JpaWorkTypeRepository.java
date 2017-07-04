@@ -25,7 +25,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				entity.name,
 				entity.abbreviationName,
 				entity.memo,
-				entity.useAtr);
+				entity.displayAtr);
 		return domain;
 	}
 	@Override

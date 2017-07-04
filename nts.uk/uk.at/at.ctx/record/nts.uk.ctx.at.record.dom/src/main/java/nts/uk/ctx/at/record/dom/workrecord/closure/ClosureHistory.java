@@ -14,13 +14,11 @@ import nts.arc.time.YearMonth;
  */
 // 締め変更履歴
 @Getter
-@Setter
 public class ClosureHistory extends DomainObject{
 	
-	/** The close name. */
+	/** The closure name. */
 	// 名称: 締め名称
-	private CloseName closeName;
-	
+	private ClosureName closureName;
 	
 	/** The company id. */
 	private CompanyId companyId;
@@ -29,20 +27,18 @@ public class ClosureHistory extends DomainObject{
 	// 締めＩＤ
 	private ClosureId closureId;
 	
-	/** The closure history id. */
-	private ClosureHistoryId closureHistoryId;
-	
-	/** The closure year. */
+	/** The end year month. */
 	// 終了年月: 年月
-	private YearMonth endDate;
+	@Setter
+	private YearMonth endYearMonth;
 	
 	/** The closure date. */
 	// 締め日: 日付
 	private ClosureDate closureDate;
 	
-	/** The start date. */
+	/** The start year month. */
 	// 開始年月: 年月
-	private YearMonth startDate;
+	private YearMonth startYearMonth;
 
 	
 	/**
@@ -51,13 +47,12 @@ public class ClosureHistory extends DomainObject{
 	 * @param memento the memento
 	 */
 	public ClosureHistory(ClosureHistoryGetMemento memento){
-		this.closeName = memento.getCloseName();
+		this.closureName = memento.getClosureName();
 		this.closureId = memento.getClosureId();
 		this.companyId = memento.getCompanyId();
-		this.closureHistoryId = memento.getClosureHistoryId();
-		this.endDate = memento.getEndDate();
+		this.endYearMonth = memento.getEndDate();
 		this.closureDate = memento.getClosureDate();
-		this.startDate = memento.getStartDate();
+		this.startYearMonth = memento.getStartDate();
 	}
 	
 	
@@ -67,13 +62,12 @@ public class ClosureHistory extends DomainObject{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(ClosureHistorySetMemento memento){
-		memento.setCloseName(this.closeName);
+		memento.setClosureName(this.closureName);
 		memento.setClosureId(this.closureId);
 		memento.setCompanyId(this.companyId);
-		memento.setClosureHistoryId(this.closureHistoryId);
-		memento.setEndDate(this.endDate);
+		memento.setEndDate(this.endYearMonth);
 		memento.setClosureDate(this.closureDate);
-		memento.setStartDate(this.startDate);
+		memento.setStartDate(this.startYearMonth);
 	}
 	
 	/**
@@ -85,6 +79,6 @@ public class ClosureHistory extends DomainObject{
 		if(this.getClosureDate().getLastDayOfMonth()){
 			return 0;
 		}
-		return this.getClosureDate().getDay();
+		return this.getClosureDate().getClosureDay();
 	}
 }

@@ -1,6 +1,6 @@
 module kdl007.a.service {
     var paths = {
-        getPayRiseItem: ""
+        getPayRiseItem: "at/share/bonusPaySetting/getAllBonusPaySetting"
     }
     /**
     * get all item pay rise

@@ -8,12 +8,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDto;
-import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistory;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento;
-import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 
 /**
@@ -72,8 +71,8 @@ public class ClosureHistorySaveCommand {
 		 * @see nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento#getCloseName()
 		 */
 		@Override
-		public CloseName getCloseName() {
-			return new CloseName(command.getClosureHistory().getCloseName());
+		public ClosureName getClosureName() {
+			return new ClosureName(command.getClosureHistory().getCloseName());
 		}
 
 		/* (non-Javadoc)
@@ -84,13 +83,6 @@ public class ClosureHistorySaveCommand {
 			return ClosureId.valueOf(command.getClosureHistory().getClosureId());
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento#getClosureHistoryId()
-		 */
-		@Override
-		public ClosureHistoryId getClosureHistoryId() {
-			return new ClosureHistoryId(command.getClosureHistory().getClosureHistoryId());
-		}
 
 		/* (non-Javadoc)
 		 * @see nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento#getEndDate()

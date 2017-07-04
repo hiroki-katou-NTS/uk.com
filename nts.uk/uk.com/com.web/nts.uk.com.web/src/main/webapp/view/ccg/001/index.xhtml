@@ -15,6 +15,7 @@
 			</script>
 			<com:stylefile path="../../sample/catalog/catalog.css" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -41,20 +42,26 @@
 						<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show/hide button おなじ職場の社員</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show/hide button おなじ＋配下の職場の社員</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div><br/>
-						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show/Show  全社員タイプ / 社員指定タイプ</div>
+						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show  全社員タイプ / 社員指定タイプ</div>
 					</div>
 					<hr/>
+					<div>
+						<p>Test</p>
+						<p>Test</p>
+						<p>Test</p>
+						<p>Test</p>
+					</div>
 					<div id="ccgcomponent"></div>
 					<div data-bind="if: showinfoSelectedEmployee()">
-						<label class="lableselect">Select employee</label> 
+						<label class="labelselect">Select employee</label> 
 						<com:ko-foreach bind="selectedEmployee">
-							<label class="lableselect">{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
-							<label class="lableselect" >,employeeCode:</label> <label class="lableselect" data-bind="text: employeeCode"></label>
-							<label class="lableselect" >,employeeName:</label> <label class="lableselect" data-bind="text: employeeName"></label>
-							<label class="lableselect" >,workplaceId:</label> <label class="lableselect" data-bind="text: workplaceId"></label>
-							<label class="lableselect" >,workplaceCode:</label> <label class="lableselect" data-bind="text: workplaceCode"></label>
-							<label class="lableselect" >,workplaceName:</label> <label class="lableselect" data-bind="text: workplaceName"></label>
-							<label class="lableselect">}</label> <br/>
+							<label class="labelselect">{employeeId:</label> <label class="labelselect" data-bind="text: employeeId"></label> 
+							<label class="labelselect" >,employeeCode:</label> <label class="labelselect" data-bind="text: employeeCode"></label>
+							<label class="labelselect" >,employeeName:</label> <label class="labelselect" data-bind="text: employeeName"></label>
+							<label class="labelselect" >,workplaceId:</label> <label class="labelselect" data-bind="text: workplaceId"></label>
+							<label class="labelselect" >,workplaceCode:</label> <label class="labelselect" data-bind="text: workplaceCode"></label>
+							<label class="labelselect" >,workplaceName:</label> <label class="labelselect" data-bind="text: workplaceName"></label>
+							<label class="labelselect">}</label> <br/>
 						</com:ko-foreach>
 					</div>
 
@@ -81,15 +88,15 @@
 								<pre><![CDATA[<div id="ccgcomponent"></div>]]></pre>
 								<p>The data to display.</p>
 <pre><![CDATA[<div data-bind="if: showinfoSelectedEmployee()">
-	<label class="lableselect">Select employee</label> 
+	<label class="labelselect">Select employee</label> 
 	<com:ko-foreach bind="selectedEmployee">
-		<label class="lableselect">{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
-		<label class="lableselect" >,employeeCode:</label> <label class="lableselect" data-bind="text: employeeCode"></label>
-		<label class="lableselect" >,employeeName:</label> <label class="lableselect" data-bind="text: employeeName"></label>
-		<label class="lableselect" >,workplaceId:</label> <label class="lableselect" data-bind="text: workplaceId"></label>
-		<label class="lableselect" >,workplaceCode:</label> <label class="lableselect" data-bind="text: workplaceCode"></label>
-		<label class="lableselect" >,workplaceName:</label> <label class="lableselect" data-bind="text: workplaceName"></label>
-		<label class="lableselect">}</label> <br/>
+		<label class="labelselect">{employeeId:</label> <label class="labelselect" data-bind="text: employeeId"></label> 
+		<label class="labelselect" >,employeeCode:</label> <label class="labelselect" data-bind="text: employeeCode"></label>
+		<label class="labelselect" >,employeeName:</label> <label class="labelselect" data-bind="text: employeeName"></label>
+		<label class="labelselect" >,workplaceId:</label> <label class="labelselect" data-bind="text: workplaceId"></label>
+		<label class="labelselect" >,workplaceCode:</label> <label class="labelselect" data-bind="text: workplaceCode"></label>
+		<label class="labelselect" >,workplaceName:</label> <label class="labelselect" data-bind="text: workplaceName"></label>
+		<label class="labelselect">}</label> <br/>
 	</com:ko-foreach>
 </div>]]>
 </pre>
@@ -218,8 +225,17 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 											<td><b>Type:</b> boolean<br /> Enable/disable multiple selection</td>
 										</tr>
 										<tr>
+											<td>isSelectAllEmployee
+											</td>
+											<td><b>Type:</b> boolean<br /> true => 全社員タイプ <br/> false => 社員指定タイプ</td>
+										</tr>
+										<tr>
 											<td>onSearchAllClicked</td>
 											<td><b>Type:</b> function<br /> Event on click button 参照可能な社員すべて </td>
+										</tr>
+										<tr>
+											<td>onSearchOnlyClicked</td>
+											<td><b>Type:</b> function<br /> Event on click button 自分だけ</td>
 										</tr>
 										<tr>
 											<td>onSearchOfWorkplaceClicked

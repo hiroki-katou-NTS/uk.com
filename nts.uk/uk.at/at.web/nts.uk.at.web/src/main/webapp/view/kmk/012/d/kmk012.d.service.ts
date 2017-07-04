@@ -1,28 +1,35 @@
 module nts.uk.at.view.kmk012.d {
     export module service {
         var paths = {
-            detailClosureHistory: "ctx/at/record/workrecord/closure/detailhistory",
+            findByMasterClosureHistory: "ctx/at/record/workrecord/closure/findByMaster",
             getDayMonth: "ctx/at/record/workrecord/closure/getday",
             getDayMonthChange: "ctx/at/record/workrecord/closure/getdaychange",
             addClosureHistory: "ctx/at/record/workrecord/closure/history/add"
         }
-        
-        // detail data
-        export function detailClosureHistory(dto: model.ClosureHistoryInDto):JQueryPromise<model.ClosureDetailDto> {
-            return nts.uk.request.ajax(paths.detailClosureHistory,dto);
+        /**
+         * find by master data closure history call service
+         */
+        export function findByMasterClosureHistory(dto: model.ClosureHistoryInDto):JQueryPromise<model.ClosureDetailDto> {
+            return nts.uk.request.ajax(paths.findByMasterClosureHistory,dto);
         }
         
-        // detail data
+        /**
+         * get date month by select call service
+         */
         export function getDayMonth(dto: model.DayMonthInDto):JQueryPromise<model.DayMonthDto> {
             return nts.uk.request.ajax(paths.getDayMonth,dto);
         }
         
-        // detail data
+        /**
+         * get date month change select call service
+         */
         export function getDayMonthChange(dto: model.DayMonthChangeInDto):JQueryPromise<model.DayMonthChangeDto> {
             return nts.uk.request.ajax(paths.getDayMonthChange,dto);
         }
        
-            // save data
+        /**
+         * add closure history call service
+         */
         export function addClosureHistory(dto: model.ClosureHistoryAddDto): JQueryPromise<void> {
             var data = { closureHistoryAdd: dto };
             return nts.uk.request.ajax(paths.addClosureHistory, data);
@@ -31,9 +38,6 @@ module nts.uk.at.view.kmk012.d {
         export module model {
 
             export class ClosureDetailDto {
-
-                /** The history id. */
-                historyId: string;
     
                 /** The closure id. */
                 closureId: number;
@@ -62,7 +66,7 @@ module nts.uk.at.view.kmk012.d {
             export class ClosureHistoryInDto{
                 
                 /** The history id. */
-                historyId: string;
+                startDate: number;
 
                 /** The closure id. */
                 // 締めＩＤ
