@@ -18,6 +18,7 @@ public interface BPSettingRepository {
 	List<BonusPaySetting> getAllBonusPaySetting(String companyId);
 	
 	Optional<BonusPaySetting> getBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode);
+	
 	void addBonusPaySetting(BonusPaySetting domain);
 
 	void updateBonusPaySetting(BonusPaySetting domain);

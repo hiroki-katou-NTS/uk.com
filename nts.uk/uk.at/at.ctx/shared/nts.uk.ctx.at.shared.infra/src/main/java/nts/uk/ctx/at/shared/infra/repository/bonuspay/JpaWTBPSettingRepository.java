@@ -29,12 +29,7 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 
 	@Override
 	public void updateWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
-		Optional<KbpstWTBonusPaySetting> kbpstWTBonusPaySettingOptional = this.queryProxy().find(new KbpstWTBonusPaySettingPK(workingTimesheetBonusPaySetting.getCompanyId().toString(), workingTimesheetBonusPaySetting.getWorkingTimesheetCode().v()) , KbpstWTBonusPaySetting.class);
-		if (kbpstWTBonusPaySettingOptional.isPresent()) {
-			KbpstWTBonusPaySetting kbpstWTBonusPaySetting = kbpstWTBonusPaySettingOptional.get();
-			kbpstWTBonusPaySetting.bonusPaySettingCode = workingTimesheetBonusPaySetting.getBonusPaySettingCode().v();
-			this.commandProxy().update(kbpstWTBonusPaySetting);
-		}
+		this.commandProxy().update(this.toWTBPSettingEntity(workingTimesheetBonusPaySetting));
 	}
 
 	@Override

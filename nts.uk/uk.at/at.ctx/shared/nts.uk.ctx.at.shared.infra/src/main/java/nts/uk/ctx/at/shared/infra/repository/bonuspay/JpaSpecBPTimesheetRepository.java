@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -36,20 +35,9 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 	@Override
 	public void updateListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<SpecBonusPayTimesheet> lstTimesheet) {
-		lstTimesheet.forEach(c->{
-			Optional<KbpmtSpecBPTimesheet> kbpmtSpecBPTimesheetOptinal = this.queryProxy().find(new KbpmtSpecBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()), KbpmtSpecBPTimesheet.class);
-			if (kbpmtSpecBPTimesheetOptinal.isPresent()) {
-				KbpmtSpecBPTimesheet kbpmtSpecBPTimesheet = kbpmtSpecBPTimesheetOptinal.get();
-				kbpmtSpecBPTimesheet.endTime= new BigDecimal(c.getEndTime().minute());
-				kbpmtSpecBPTimesheet.roundingAtr= new BigDecimal(c.getRoundingAtr().value);
-				kbpmtSpecBPTimesheet.roundingTimeAtr= new BigDecimal(c.getRoundingTimeAtr().value);
-				kbpmtSpecBPTimesheet.specialDateItemNO= new BigDecimal(c.getDateCode());
-				kbpmtSpecBPTimesheet.startTime= new BigDecimal(c.getStartTime().minute());
-				kbpmtSpecBPTimesheet.timeItemId = c.getTimeItemId().v();
-				kbpmtSpecBPTimesheet.useAtr= new BigDecimal(c.getUseAtr().value);
-				this.commandProxy().update(kbpmtSpecBPTimesheet);
-			}
-		});
+		List<KbpmtSpecBPTimesheet> lstKbpmtSpecBPTimesheet = lstTimesheet.stream()
+				.map(c -> toSpecBPTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
+		this.commandProxy().updateAll(lstKbpmtSpecBPTimesheet);
 	}
 
 	@Override

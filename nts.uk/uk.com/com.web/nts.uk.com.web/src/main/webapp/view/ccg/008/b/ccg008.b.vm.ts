@@ -18,15 +18,15 @@
             self.checkTopPage = nts.uk.ui.windows.getShared('checkTopPage');
             self.checkMyPage = nts.uk.ui.windows.getShared('checkMyPage');
         }
+        //close dialog
         closeDialog() {
              nts.uk.ui.windows.close();   
         }        
-        positionHis() {
-             nts.uk.ui.windows.close();   
-        }
+        //open dialog top page setting (トップページの選択)
         openTopPageSet(): void{
             nts.uk.ui.windows.sub.modal("/view/ccg/008/c/index.xhtml");
         }
+        //open dialog my page setting (マイページ設定)
         openMyPageSet(): void{
             var self = this;
             nts.uk.ui.windows.setShared('layout', self.transferData());

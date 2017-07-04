@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 
 @Stateless
 public class BonusPaySettingDomainService implements BonusPaySettingService {
-	
 	@Inject
 	private BPTimesheetRepository bpTimesheetRepository;
 	@Inject
@@ -44,7 +43,7 @@ public class BonusPaySettingDomainService implements BonusPaySettingService {
 				new BonusPaySettingCode(domain.getCode().toString()), domain.getLstSpecBonusPayTimesheet());
 		bpSettingRepository.addBonusPaySetting(domain);
 	}
-	
+
 	@Override
 	public void updateBonusPaySetting(BonusPaySetting domain) {
 		bpTimesheetRepository.updateListTimesheet(domain.getCompanyId().toString(),

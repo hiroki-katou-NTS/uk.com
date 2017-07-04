@@ -32,12 +32,7 @@ public class JpaCompanyBPSettingRepository extends JpaRepository implements CPBo
 
 	@Override
 	public void updateSetting(CompanyBonusPaySetting setting) {
-		Optional<KbpstCompanyBPSetting> kbpstCompanyBPSettingOptional = this.queryProxy().find(new KbpstCompanyBPSettingPK(setting.getCompanyId().toString()), KbpstCompanyBPSetting.class);
-		if(kbpstCompanyBPSettingOptional.isPresent()){
-			KbpstCompanyBPSetting kbpstCompanyBPSetting = kbpstCompanyBPSettingOptional.get();
-			kbpstCompanyBPSetting.bonusPaySettingCode = setting.getBonusPaySettingCode().v();
-			this.commandProxy().update(kbpstCompanyBPSetting);
-		}
+		this.commandProxy().update(this.toCompanyBonusPaySettingEntity(setting));
 	}
 
 	@Override

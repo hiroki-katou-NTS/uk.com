@@ -71,9 +71,9 @@ public class DisplayMyPageFinder {
 		if(jobPosition != null){//co chuc vu
 			lst.add(jobPosition.getJobId());
 			//lay top page job title set
-			TopPageJobSet tpJobSet = topPageJobSet.findByListJobId(companyId,lst).get(0);
+			TopPageJobSet tpJobSet = topPageJobSet.findByListJobId(companyId, lst).get(0);
 			if(tpJobSet != null){//position and job setting
-				layoutTopPage = topPageSet.getTopPageForPosition(jobPosition,tpJobSet);
+				layoutTopPage = topPageSet.getTopPageForPosition(jobPosition, tpJobSet);
 			}else{
 				layoutTopPage = topPageSet.getTopPageNotPosition();
 			}
@@ -82,5 +82,4 @@ public class DisplayMyPageFinder {
 		}
 		return layoutTopPage;
 	}
-	
 }

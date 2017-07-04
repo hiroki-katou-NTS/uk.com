@@ -20,7 +20,6 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 1 ORDER BY c.timeItemNo  ASC";
 	private final String SELECT_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId  AND c.kbpstBonusPayTimeItemPK.timeItemId = :timeItemId   AND  c.timeItemTypeAtr = 0 ORDER BY c.timeItemNo  ASC";
 	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND c.kbpstBonusPayTimeItemPK.timeItemId = :timeItemId AND  c.timeItemTypeAtr = 1 ORDER BY c.timeItemNo  ASC";
-
 	@Override
 	public List<BonusPayTimeItem> getListBonusPayTimeItem(String companyId) {
 		return this.queryProxy().query(SELECT_BPTIMEITEM_BY_COMPANYID, KbpstBonusPayTimeItem.class)
@@ -42,17 +41,9 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 
 	@Override
 	public void updateListBonusPayTimeItem(List<BonusPayTimeItem> lstTimeItem) {
-		lstTimeItem.forEach(c->{
-			Optional<KbpstBonusPayTimeItem> kbpstBonusPayTimeItemOptional  = this.queryProxy().find(new KbpstBonusPayTimeItemPK(c.getCompanyId().toString(), c.getTimeItemId().v()), KbpstBonusPayTimeItem.class);
-			if(kbpstBonusPayTimeItemOptional.isPresent()){
-				KbpstBonusPayTimeItem kbpstBonusPayTimeItem = kbpstBonusPayTimeItemOptional.get();
-				kbpstBonusPayTimeItem.timeItemName=c.getTimeItemName().v();
-				kbpstBonusPayTimeItem.timeItemNo= new BigDecimal(c.getId());
-				kbpstBonusPayTimeItem.timeItemTypeAtr= new BigDecimal(c.getTimeItemTypeAtr().value);
-				kbpstBonusPayTimeItem.useAtr= new BigDecimal(c.getUseAtr().value);
-				this.commandProxy().update(kbpstBonusPayTimeItem);
-			}
-		});
+		List<KbpstBonusPayTimeItem> lstKbpstBonusPayTimeItem = lstTimeItem.stream()
+				.map(c -> toBonusPayTimeItemEntity(c)).collect(Collectors.toList());
+		this.commandProxy().updateAll(lstKbpstBonusPayTimeItem);
 		
 	}
 
@@ -74,36 +65,35 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 
 	@Override
 	public Optional<BonusPayTimeItem> getBonusPayTimeItem(String companyId, TimeItemId timeItemId) {
-
-		Optional<KbpstBonusPayTimeItem> kbpstBonusPayTimeItem = this.queryProxy()
-				.query(SELECT_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
-				.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
-				.getSingle();
-		if (kbpstBonusPayTimeItem.isPresent()) {
+		
+		Optional<KbpstBonusPayTimeItem> kbpstBonusPayTimeItem = this.queryProxy().query(SELECT_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
+		.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
+		.getSingle();
+		if(kbpstBonusPayTimeItem.isPresent()){
 			return Optional.ofNullable(this.toBonusPayTimeItemDomain(
 					this.queryProxy().query(SELECT_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
-							.setParameter("companyId", companyId)
-							.setParameter("timeItemId", timeItemId, TimeItemId.class).getSingle().get()));
+							.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
+							.getSingle().get()));
 		}
 		return Optional.empty();
-
+		
 	}
 
 	@Override
 	public Optional<BonusPayTimeItem> getSpecialBonusPayTimeItem(String companyId, TimeItemId timeItemId) {
-
-		Optional<KbpstBonusPayTimeItem> KbpstBonusPayTimeItem = this.queryProxy()
-				.query(SELECT_SPEC_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
-				.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
-				.getSingle();
-		if (KbpstBonusPayTimeItem.isPresent()) {
-			return Optional.ofNullable(this.toBonusPayTimeItemDomain(this.queryProxy()
-					.query(SELECT_SPEC_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
-					.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
-					.getSingle().get()));
+	
+		Optional<KbpstBonusPayTimeItem> KbpstBonusPayTimeItem = this.queryProxy().query(SELECT_SPEC_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
+		.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
+		.getSingle();
+		if(KbpstBonusPayTimeItem.isPresent()){
+			return Optional.ofNullable(this.toBonusPayTimeItemDomain(
+					this.queryProxy().query(SELECT_SPEC_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
+							.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
+							.getSingle().get()));
 		}
 		return Optional.empty();
-
+		
+		
 	}
 
 }

@@ -148,7 +148,7 @@ module nts.uk.at.view.kcp006.a {
 
             //get params
             let data = valueAccessor();
-            let optionDates = data.optionDates;
+            let optionDates = ko.unwrap(data.optionDates());
             if (data.yearMonth()) { yearMonth = ko.unwrap(data.yearMonth()) };
             eventDisplay = ko.unwrap(data.eventDisplay());
             eventUpdatable = ko.unwrap(data.eventUpdatable());
@@ -394,7 +394,7 @@ module nts.uk.at.view.kcp006.a {
             }, function() {
                 $(".event-note").hide();
             });
-
+            // pass chosen date to delegate click cell function
             $(".fc-day-top").on("click", "button", function() {
                 nts.uk.at.view.kcp006.a.CellClickEvent($(this).attr("data-date"));
             });
@@ -441,10 +441,6 @@ module nts.uk.at.view.kcp006.a {
                     $(".holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
                 }
             }
-            //change background color each option day
-            for (let i = 0; i < optionDates.length; i++) {
-                $(".fc-day.fc-widget-content[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
-            }
             let currentHeaders = [];
             if (eventDisplay) {
                 //create event button
@@ -490,6 +486,10 @@ module nts.uk.at.view.kcp006.a {
                 for (let i = 0; i < currentHeaders.length; i++) {
                     $(currentHeaders[i]).append("<button class='button-cell' data-date='" + $(currentHeaders[i]).attr("data-date") + "'>。。。</button>");
                 }
+            }
+            //change background color each option day
+            for (let i = 0; i < optionDates.length; i++) {
+                $("td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
             }
         }
     }

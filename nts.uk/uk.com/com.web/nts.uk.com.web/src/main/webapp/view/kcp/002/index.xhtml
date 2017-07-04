@@ -116,7 +116,7 @@
 									<pre><![CDATA[<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>]]></pre>
 									
 									<p>Create a div tag  to bind grid list</p>
-									<pre><![CDATA[<div id="empt-list-setting"></div>]]></pre>
+									<pre><![CDATA[<div id="classification-list-setting"></div>]]></pre>
 							</div>
 							<!-- END TAB HTML -->
 
@@ -270,9 +270,23 @@ $('#classification-list-setting').ntsListComponent(self.listComponentOption);
 										<td style="text-align: center;"><h4>Description</h4></td>
 									</thead>
 									<tr>
-										<td>$('#classification-list-setting').getDataList()</td>
-										<td>Get Classification List</td>
-									</tr>
+											<td>$('#classification-list-setting').getDataList()</td>
+											<td>
+												<div><b>Type:</b>Array[UnitModel]</div>
+												<div><i>Description:</i>Get Classification List.</div>
+												<pre><![CDATA[
+UnitModel {
+        code: string;
+        name?: string;
+        isAlreadySetting?: boolean;
+    }
+]]></pre>
+											</td>
+										</tr>
+										<tr>
+											<td>$('#classification-list-setting').focusComponent()</td>
+											<td>Focus on Search box</td>
+										</tr>
 								</table>
 							</div>
 							<!-- END  METHOD TABS-->

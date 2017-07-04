@@ -15,6 +15,7 @@
 			</script>
 			<com:stylefile path="../../sample/catalog/catalog.css" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -46,15 +47,15 @@
 					<hr/>
 					<div id="ccgcomponent"></div>
 					<div data-bind="if: showinfoSelectedEmployee()">
-						<label class="lableselect">Select employee</label> 
+						<label class="labelselect">Select employee</label> 
 						<com:ko-foreach bind="selectedEmployee">
-							<label class="lableselect"><br/>{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
-							<label class="lableselect" >,employeeCode:</label> <label class="lableselect" data-bind="text: employeeCode"></label>
-							<label class="lableselect" >,employeeName:</label> <label class="lableselect" data-bind="text: employeeName"></label>
-							<label class="lableselect" >,workplaceId:</label> <label class="lableselect" data-bind="text: workplaceId"></label>
-							<label class="lableselect" >,workplaceCode:</label> <label class="lableselect" data-bind="text: workplaceCode"></label>
-							<label class="lableselect" >,workplaceName:</label> <label class="lableselect" data-bind="text: workplaceName"></label>
-							<label class="lableselect">}</label> <br/>
+							<label class="labelselect">{employeeId:</label> <label class="labelselect" data-bind="text: employeeId"></label> 
+							<label class="labelselect" >,employeeCode:</label> <label class="labelselect" data-bind="text: employeeCode"></label>
+							<label class="labelselect" >,employeeName:</label> <label class="labelselect" data-bind="text: employeeName"></label>
+							<label class="labelselect" >,workplaceId:</label> <label class="labelselect" data-bind="text: workplaceId"></label>
+							<label class="labelselect" >,workplaceCode:</label> <label class="labelselect" data-bind="text: workplaceCode"></label>
+							<label class="labelselect" >,workplaceName:</label> <label class="labelselect" data-bind="text: workplaceName"></label>
+							<label class="labelselect">}</label> <br/>
 						</com:ko-foreach>
 					</div>
 
@@ -81,15 +82,15 @@
 								<pre><![CDATA[<div id="ccgcomponent"></div>]]></pre>
 								<p>The data to display.</p>
 <pre><![CDATA[<div data-bind="if: showinfoSelectedEmployee()">
-	<label class="lableselect">Select employee</label> 
+	<label class="labelselect">Select employee</label> 
 	<com:ko-foreach bind="selectedEmployee">
-		<label class="lableselect">{employeeId:</label> <label class="lableselect" data-bind="text: employeeId"></label> 
-		<label class="lableselect" >,employeeCode:</label> <label class="lableselect" data-bind="text: employeeCode"></label>
-		<label class="lableselect" >,employeeName:</label> <label class="lableselect" data-bind="text: employeeName"></label>
-		<label class="lableselect" >,workplaceId:</label> <label class="lableselect" data-bind="text: workplaceId"></label>
-		<label class="lableselect" >,workplaceCode:</label> <label class="lableselect" data-bind="text: workplaceCode"></label>
-		<label class="lableselect" >,workplaceName:</label> <label class="lableselect" data-bind="text: workplaceName"></label>
-		<label class="lableselect">}</label> <br/>
+		<label class="labelselect">{employeeId:</label> <label class="labelselect" data-bind="text: employeeId"></label> 
+		<label class="labelselect" >,employeeCode:</label> <label class="labelselect" data-bind="text: employeeCode"></label>
+		<label class="labelselect" >,employeeName:</label> <label class="labelselect" data-bind="text: employeeName"></label>
+		<label class="labelselect" >,workplaceId:</label> <label class="labelselect" data-bind="text: workplaceId"></label>
+		<label class="labelselect" >,workplaceCode:</label> <label class="labelselect" data-bind="text: workplaceCode"></label>
+		<label class="labelselect" >,workplaceName:</label> <label class="labelselect" data-bind="text: workplaceName"></label>
+		<label class="labelselect">}</label> <br/>
 	</com:ko-foreach>
 </div>]]>
 </pre>
