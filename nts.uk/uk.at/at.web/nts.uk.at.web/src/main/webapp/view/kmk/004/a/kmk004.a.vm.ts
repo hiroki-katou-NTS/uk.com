@@ -526,7 +526,7 @@ module nts.uk.at.view.kmk004.a {
             private setStartMonth(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.getCompany().done(res => {
+                service.getStartMonth().done(res => {
                     self.startMonth = ko.observable(res.startMonth);
                     dfd.resolve();
                 }).fail(() => {
