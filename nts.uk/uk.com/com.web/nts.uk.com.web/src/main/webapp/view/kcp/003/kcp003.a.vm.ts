@@ -32,7 +32,7 @@ module kcp003.a.viewmodel {
             var self = this;
             self.baseDate = ko.observable(new Date());
             self.selectedCode = ko.observable(null);
-            self.bySelectedCode = ko.observable('1');
+            self.bySelectedCode = ko.observable(null);
             self.isAlreadySetting = ko.observable(false);
             self.isAlreadySetting.subscribe(function() {
                 self.reloadComponent();
@@ -48,7 +48,7 @@ module kcp003.a.viewmodel {
                 self.reloadComponent();
             });
 
-            self.multiBySelectedCode = ko.observableArray(['1', '2']);
+            self.multiBySelectedCode = ko.observableArray([]);
             self.multiSelectedCode = ko.observableArray([]);
 
             self.isMultiSelect = ko.observable(false);
@@ -72,12 +72,12 @@ module kcp003.a.viewmodel {
                 self.reloadComponent();
             });
 
-            self.alreadySettingList = ko.observableArray([{ code: '1', isAlreadySetting: true }, { code: '2', isAlreadySetting: true }]);
+            self.alreadySettingList = ko.observableArray([]);
             self.jobTitleList = ko.observableArray<UnitModel>([]);
             self.hasSelectedJobTitle = ko.computed(function() {
                 return (self.selectedCode != undefined);
             });
-            self.selectedType = ko.observable(1);
+            self.selectedType = ko.observable(3);
             
             // Initial listComponentOption
             self.listComponentOption = {
