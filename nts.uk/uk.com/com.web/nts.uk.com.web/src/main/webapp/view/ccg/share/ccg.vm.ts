@@ -144,6 +144,20 @@ module nts.uk.com.view.ccg.share.ccg {
                     });
                     dfd.resolve();
                 });
+                
+                $(window).click(function() {
+                    if (!self.isShow()) {
+                        return;
+                    }
+                    $('#ccg-component').toggle("slide", function() {
+                        $('#hor-scroll-button-hide').show();
+                        self.isShow(false);
+                    });
+                });
+
+                $('#ccg-component').on('click', function(event) {
+                    event.stopPropagation();
+                });
 
                 return dfd.promise();
             }
@@ -151,15 +165,12 @@ module nts.uk.com.view.ccg.share.ccg {
             showHide() {
                 var self = this;
                 if (self.isShow()) {
-                    $('#ccg-component').toggle("slide", function() {
-                        $('#hor-scroll-button-hide').show();
-                        self.isShow(false);
-                    });
-                } else {
-                    $('#hor-scroll-button-hide').hide();
-                    $('#ccg-component').toggle("slide");
-                    self.isShow(true);
+                    return;
                 }
+                $('#hor-scroll-button-hide').hide();
+                $('#ccg-component').toggle("slide", function() {
+                    self.isShow(true);
+                });
             }
 
             searchAllEmployee(): void {
