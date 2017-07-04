@@ -86,7 +86,7 @@ module kcp003.a.viewmodel {
                 isMultiSelect: self.isMultiSelect(),
                 listType: ListType.JOB_TITLE,
                 selectType: self.selectedType(),
-                selectedCode: self.bySelectedCode,
+                selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList
