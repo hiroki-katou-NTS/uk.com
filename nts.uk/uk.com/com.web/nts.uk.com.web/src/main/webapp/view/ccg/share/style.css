@@ -151,3 +151,13 @@
 	vertical-align: super;
 	margin-left: 20px;
 }
+
+#ccgcomponent {
+	height: 500px;
+}
+#ccg-component {
+	width: 340px;
+    height: 500px;
+    float: left;
+    position: absolute;
+}
