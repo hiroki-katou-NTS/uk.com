@@ -10,22 +10,22 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class JewtstEmploymentWtSetPK_.
  */
-@StaticMetamodel(JewstEmploymentWtSetPK.class)
-public class JewstEmploymentWtSetPK_ {
+@StaticMetamodel(KewstEmploymentWtSetPK.class)
+public class KewstEmploymentWtSetPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<JewstEmploymentWtSetPK, String> cid;
+	public static volatile SingularAttribute<KewstEmploymentWtSetPK, String> cid;
 
 	/** The y K. */
-	public static volatile SingularAttribute<JewstEmploymentWtSetPK, Integer> yK;
+	public static volatile SingularAttribute<KewstEmploymentWtSetPK, Integer> yK;
 
 	/** The ctg. */
-	public static volatile SingularAttribute<JewstEmploymentWtSetPK, Integer> ctg;
+	public static volatile SingularAttribute<KewstEmploymentWtSetPK, Integer> ctg;
 
 	/** The type. */
-	public static volatile SingularAttribute<JewstEmploymentWtSetPK, Integer> type;
+	public static volatile SingularAttribute<KewstEmploymentWtSetPK, Integer> type;
 
 	/** The empt cd. */
-	public static volatile SingularAttribute<JewstEmploymentWtSetPK, String> emptCd;
+	public static volatile SingularAttribute<KewstEmploymentWtSetPK, String> emptCd;
 
 }

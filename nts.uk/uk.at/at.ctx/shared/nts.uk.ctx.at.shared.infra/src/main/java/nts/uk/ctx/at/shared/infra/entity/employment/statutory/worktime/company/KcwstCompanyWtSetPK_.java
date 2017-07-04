@@ -10,19 +10,19 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class JcwtstCompanyWtSetPK_.
  */
-@StaticMetamodel(JcwstCompanyWtSetPK.class)
-public class JcwstCompanyWtSetPK_ {
+@StaticMetamodel(KcwstCompanyWtSetPK.class)
+public class KcwstCompanyWtSetPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<JcwstCompanyWtSetPK, String> cid;
+	public static volatile SingularAttribute<KcwstCompanyWtSetPK, String> cid;
 
 	/** The y K. */
-	public static volatile SingularAttribute<JcwstCompanyWtSetPK, Integer> yK;
+	public static volatile SingularAttribute<KcwstCompanyWtSetPK, Integer> yK;
 
 	/** The ctg. */
-	public static volatile SingularAttribute<JcwstCompanyWtSetPK, Integer> ctg;
+	public static volatile SingularAttribute<KcwstCompanyWtSetPK, Integer> ctg;
 
 	/** The type. */
-	public static volatile SingularAttribute<JcwstCompanyWtSetPK, Integer> type;
+	public static volatile SingularAttribute<KcwstCompanyWtSetPK, Integer> type;
 
 }

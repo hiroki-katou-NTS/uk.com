@@ -19,10 +19,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace.WorkPlaceWtSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace.WorkPlaceWtSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwwstWorkplaceWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwwstWorkplaceWtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwwstWorkplaceWtSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwwstWorkplaceWtSet_;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.KwwstWorkplaceWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.KwwstWorkplaceWtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.KwwstWorkplaceWtSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.KwwstWorkplaceWtSet_;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -40,7 +40,7 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public void create(WorkPlaceWtSetting setting) {
-		List<JwwstWorkplaceWtSet> entities = this.toEntity(setting);
+		List<KwwstWorkplaceWtSet> entities = this.toEntity(setting);
 		commandProxy().insertAll(entities);
 	}
 
@@ -53,7 +53,7 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public void update(WorkPlaceWtSetting setting) {
-		List<JwwstWorkplaceWtSet> entities = this.toEntity(setting);
+		List<KwwstWorkplaceWtSet> entities = this.toEntity(setting);
 		commandProxy()
 				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
@@ -66,13 +66,13 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public void remove(String companyId, int year, String workPlaceId) {
-		this.commandProxy().remove(JwwstWorkplaceWtSet.class, new JwwstWorkplaceWtSetPK(companyId, year,
+		this.commandProxy().remove(KwwstWorkplaceWtSet.class, new KwwstWorkplaceWtSetPK(companyId, year,
 				WtSettingConstant.NORMAL, WtSettingConstant.STATUTORY, workPlaceId));
-		this.commandProxy().remove(JwwstWorkplaceWtSet.class, new JwwstWorkplaceWtSetPK(companyId, year,
+		this.commandProxy().remove(KwwstWorkplaceWtSet.class, new KwwstWorkplaceWtSetPK(companyId, year,
 				WtSettingConstant.FLEX, WtSettingConstant.STATUTORY, workPlaceId));
-		this.commandProxy().remove(JwwstWorkplaceWtSet.class, new JwwstWorkplaceWtSetPK(companyId, year,
+		this.commandProxy().remove(KwwstWorkplaceWtSet.class, new KwwstWorkplaceWtSetPK(companyId, year,
 				WtSettingConstant.FLEX, WtSettingConstant.SPECIFIED, workPlaceId));
-		this.commandProxy().remove(JwwstWorkplaceWtSet.class, new JwwstWorkplaceWtSetPK(companyId, year,
+		this.commandProxy().remove(KwwstWorkplaceWtSet.class, new KwwstWorkplaceWtSetPK(companyId, year,
 				WtSettingConstant.DEFORMED, WtSettingConstant.STATUTORY, workPlaceId));
 	}
 
@@ -88,17 +88,17 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<JwwstWorkplaceWtSet> cq = cb.createQuery(JwwstWorkplaceWtSet.class);
-		Root<JwwstWorkplaceWtSet> root = cq.from(JwwstWorkplaceWtSet.class);
+		CriteriaQuery<KwwstWorkplaceWtSet> cq = cb.createQuery(KwwstWorkplaceWtSet.class);
+		Root<KwwstWorkplaceWtSet> root = cq.from(KwwstWorkplaceWtSet.class);
 
 		// Constructing condition.
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		predicateList.add(cb.equal(
-				root.get(JwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(JwwstWorkplaceWtSetPK_.cid), companyId));
+				root.get(KwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(KwwstWorkplaceWtSetPK_.cid), companyId));
 		predicateList.add(cb.equal(
-				root.get(JwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(JwwstWorkplaceWtSetPK_.yK), year));
+				root.get(KwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(KwwstWorkplaceWtSetPK_.yK), year));
 		predicateList.add(
-				cb.equal(root.get(JwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(JwwstWorkplaceWtSetPK_.wkpId),
+				cb.equal(root.get(KwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(KwwstWorkplaceWtSetPK_.wkpId),
 						workPlaceId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
@@ -117,18 +117,18 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<JwwstWorkplaceWtSet> cq = cb.createQuery(JwwstWorkplaceWtSet.class);
-		Root<JwwstWorkplaceWtSet> root = cq.from(JwwstWorkplaceWtSet.class);
+		CriteriaQuery<KwwstWorkplaceWtSet> cq = cb.createQuery(KwwstWorkplaceWtSet.class);
+		Root<KwwstWorkplaceWtSet> root = cq.from(KwwstWorkplaceWtSet.class);
 
 		// Constructing condition.
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		predicateList.add(cb.equal(
-				root.get(JwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(JwwstWorkplaceWtSetPK_.cid), companyId));
+				root.get(KwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(KwwstWorkplaceWtSetPK_.cid), companyId));
 		predicateList.add(cb.equal(
-				root.get(JwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(JwwstWorkplaceWtSetPK_.yK), year));
+				root.get(KwwstWorkplaceWtSet_.jwwstWorkplaceWtSetPK).get(KwwstWorkplaceWtSetPK_.yK), year));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		List<JwwstWorkplaceWtSet> resultList = em.createQuery(cq).getResultList();
+		List<KwwstWorkplaceWtSet> resultList = em.createQuery(cq).getResultList();
 
 		return resultList.stream().map(item -> item.getJwwstWorkplaceWtSetPK().getWkpId()).distinct()
 				.collect(Collectors.toList());
@@ -140,7 +140,7 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 * @param entities the entities
 	 * @return the work place wt setting
 	 */
-	private WorkPlaceWtSetting toDomain(List<JwwstWorkplaceWtSet> entities) {
+	private WorkPlaceWtSetting toDomain(List<KwwstWorkplaceWtSet> entities) {
 		if (entities.isEmpty()) {
 			return null;
 		}
@@ -154,8 +154,8 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 * @param domain the domain
 	 * @return the list
 	 */
-	private List<JwwstWorkplaceWtSet> toEntity(WorkPlaceWtSetting domain) {
-		List<JwwstWorkplaceWtSet> entities = new ArrayList<JwwstWorkplaceWtSet>();
+	private List<KwwstWorkplaceWtSet> toEntity(WorkPlaceWtSetting domain) {
+		List<KwwstWorkplaceWtSet> entities = new ArrayList<KwwstWorkplaceWtSet>();
 		JpaWorkplaceWtSettingSetMemento memento = new JpaWorkplaceWtSettingSetMemento();
 		domain.saveToMemento(memento);
 		entities.add(memento.getDeformed());
@@ -171,8 +171,8 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 * @param entity the entity
 	 * @return the jwpwtst workplace wt set
 	 */
-	private JwwstWorkplaceWtSet updateEntity(JwwstWorkplaceWtSet entity) {
-		JwwstWorkplaceWtSet updatedEntity = this.queryProxy().find(entity.getJwwstWorkplaceWtSetPK(), JwwstWorkplaceWtSet.class).get();
+	private KwwstWorkplaceWtSet updateEntity(KwwstWorkplaceWtSet entity) {
+		KwwstWorkplaceWtSet updatedEntity = this.queryProxy().find(entity.getJwwstWorkplaceWtSetPK(), KwwstWorkplaceWtSet.class).get();
 		updatedEntity.setDailyTime(entity.getDailyTime());
 		updatedEntity.setWeeklyTime(entity.getWeeklyTime());
 		updatedEntity.setStrWeek(entity.getStrWeek());
