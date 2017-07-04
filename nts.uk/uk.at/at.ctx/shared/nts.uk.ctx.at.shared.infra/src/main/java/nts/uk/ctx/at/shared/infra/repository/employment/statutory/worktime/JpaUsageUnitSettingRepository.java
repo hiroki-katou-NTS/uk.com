@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.JuwstUsageUnitWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.KuwstUsageUnitWtSet;
 
 /**
  * The Class JpaUsageUnitSettingRepository.
@@ -39,7 +39,7 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 */
 	@Override
 	public Optional<UsageUnitSetting> findByCompany(String companyId) {
-		return this.queryProxy().find(companyId, JuwstUsageUnitWtSet.class).map(setting -> this.toDomain(setting));
+		return this.queryProxy().find(companyId, KuwstUsageUnitWtSet.class).map(setting -> this.toDomain(setting));
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * @param entity the entity
 	 * @return the usage unit setting
 	 */
-	private UsageUnitSetting toDomain(JuwstUsageUnitWtSet entity) {
+	private UsageUnitSetting toDomain(KuwstUsageUnitWtSet entity) {
 		return new UsageUnitSetting(new JpaUsageUnitSettingGetMemento(entity));
 	}
 
@@ -58,8 +58,8 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * @param domain the domain
 	 * @return the juuwtst usage unit wt set
 	 */
-	private JuwstUsageUnitWtSet toEntitỵ̣̣(UsageUnitSetting domain) {
-		JuwstUsageUnitWtSet entity = new JuwstUsageUnitWtSet();
+	private KuwstUsageUnitWtSet toEntitỵ̣̣(UsageUnitSetting domain) {
+		KuwstUsageUnitWtSet entity = new KuwstUsageUnitWtSet();
 		domain.saveToMemento(new JpaUsageUnitSettingSetMemento(entity));
 		return entity;
 	}
@@ -70,8 +70,8 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * @param entity the entity
 	 * @return the juuwtst usage unit wt set
 	 */
-	private JuwstUsageUnitWtSet updateEntity(JuwstUsageUnitWtSet entity) {
-		JuwstUsageUnitWtSet updatedEntity = this.queryProxy().find(entity.getCid(), JuwstUsageUnitWtSet.class)
+	private KuwstUsageUnitWtSet updateEntity(KuwstUsageUnitWtSet entity) {
+		KuwstUsageUnitWtSet updatedEntity = this.queryProxy().find(entity.getCid(), KuwstUsageUnitWtSet.class)
 				.get();
 		updatedEntity.setIsEmp(entity.getIsEmp());
 		updatedEntity.setIsEmpt(entity.getIsEmpt());

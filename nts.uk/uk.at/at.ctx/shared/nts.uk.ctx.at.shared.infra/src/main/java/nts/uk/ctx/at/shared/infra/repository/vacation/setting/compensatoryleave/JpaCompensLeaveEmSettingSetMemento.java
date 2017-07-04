@@ -83,7 +83,10 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
      */
     @Override
     public void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse) {
-        KclmtAcquisitionEmp entityAcquisition = new KclmtAcquisitionEmp();
+        KclmtAcquisitionEmp entityAcquisition = this.entity.getKclmtAcquisitionEmp();
+        if (entityAcquisition == null) {
+            entityAcquisition = new KclmtAcquisitionEmp();
+        }
         JpaCompensAcquisitionUseSetMemento memento = new JpaCompensAcquisitionUseSetMemento(entityAcquisition);
         compensatoryAcquisitionUse.saveToMemento(memento);
         
@@ -106,7 +109,10 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
      */
     @Override
     public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
-        KctmtDigestTimeEmp entityDigestTime = new KctmtDigestTimeEmp();
+        KctmtDigestTimeEmp entityDigestTime = this.entity.getKctmtDigestTimeEmp();
+        if (entityDigestTime == null) {
+            entityDigestTime = new KctmtDigestTimeEmp();
+        }
         JpaCompensDigestiveTimeUnitSetMemento memento = new JpaCompensDigestiveTimeUnitSetMemento(entityDigestTime);
         compensatoryDigestiveTimeUnit.saveToMemento(memento);
         

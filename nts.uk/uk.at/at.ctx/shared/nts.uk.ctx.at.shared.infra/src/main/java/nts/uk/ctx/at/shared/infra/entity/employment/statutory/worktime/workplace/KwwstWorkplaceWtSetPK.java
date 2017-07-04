@@ -19,7 +19,7 @@ import lombok.Data;
  */
 @Embeddable
 @Data
-public class JwwstWorkplaceWtSetPK implements Serializable {
+public class KwwstWorkplaceWtSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -58,7 +58,7 @@ public class JwwstWorkplaceWtSetPK implements Serializable {
 	/**
 	 * Instantiates a new jwpwtst workplace wt set PK.
 	 */
-	public JwwstWorkplaceWtSetPK() {
+	public KwwstWorkplaceWtSetPK() {
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class JwwstWorkplaceWtSetPK implements Serializable {
 	 * @param type the type
 	 * @param wkpId the wkp id
 	 */
-	public JwwstWorkplaceWtSetPK(String cid, int yK, int ctg, int type, String wkpId) {
+	public KwwstWorkplaceWtSetPK(String cid, int yK, int ctg, int type, String wkpId) {
 		this.cid = cid;
 		this.yK = yK;
 		this.ctg = ctg;
