@@ -31,4 +31,12 @@ public interface TopPageJobSetRepository {
 	 * @param topPageJobSet
 	 */
 	void update(TopPageJobSet topPageJobSet);
+
+	/**
+	 * update several property in table TOPPAGE_JOB_SET
+	 * 
+	 * @param topPageJobSet
+	 */
+	void updateProperty(TopPageJobSet topPageJobSet);
+
 }

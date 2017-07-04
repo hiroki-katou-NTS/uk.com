@@ -8,6 +8,7 @@ module ccg018.b.viewmodel {
         employeeCode: KnockoutObservable<string>;
         employeeName: KnockoutObservable<string>;
         isVisible: KnockoutObservable<boolean>;
+        isEnable: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<any>;
 
         comboItemsAfterLogin: KnockoutObservableArray<ItemModel1>;
@@ -37,6 +38,7 @@ module ccg018.b.viewmodel {
             self.isVisible = ko.computed(function() {
                 return !!self.categorySet();
             });
+            self.isEnable = ko.observable(true);
             self.currentCode.subscribe(function(codeChange: any) {
                 if (!!self.currentCode()) {
                     self.employeeCode(codeChange);
@@ -44,11 +46,13 @@ module ccg018.b.viewmodel {
                     self.employeeName(self.selectedItem().name);
                     self.selectedItemAfterLogin(self.selectedItem().loginMenuCode());
                     self.selectedItemAsTopPage(self.selectedItem().topPageCode());
+                    self.isEnable(_.find(self.items(), ['code', self.currentCode()]).isAlreadySetting);
                 } else {
                     self.employeeCode('');
                     self.employeeName('');
                     self.selectedItemAfterLogin('');
                     self.selectedItemAsTopPage('');
+                    self.isEnable(false);
                 }
             });
 
@@ -59,7 +63,7 @@ module ccg018.b.viewmodel {
 
         start(): void {
             let self = this;
-            self.categorySet(__viewContext.viewModel.viewmodelA.categorySet());
+            self.categorySet(__viewContext.viewModel.viewmodelA1.categorySet());
             self.bindGrid();
         }
 

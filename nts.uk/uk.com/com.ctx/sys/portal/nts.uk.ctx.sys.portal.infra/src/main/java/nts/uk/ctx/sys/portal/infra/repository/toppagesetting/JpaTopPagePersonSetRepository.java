@@ -33,7 +33,12 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 				entity.loginMenuCls);
 		return domain;
 	}
-
+	
+	/**
+	 * Convert to type of database
+	 * @param domain
+	 * @return
+	 */
 	private CcgptTopPagePersonSet toEntity(TopPagePersonSet domain) {
 		val entity = new CcgptTopPagePersonSet();
 
@@ -46,13 +51,19 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 		entity.loginMenuCls = domain.getMenuClassification().value;
 		return entity;
 	}
-
+	
+	/**
+	 * Find TopPagePersonSet by companyId and list employeeId
+	 */
 	@Override
 	public List<TopPagePersonSet> findByListSid(String companyId, List<String> sId) {
 		return this.queryProxy().query(SELECT_BY_LIST_SID, CcgptTopPagePersonSet.class)
 				.setParameter("companyId", companyId).setParameter("employeeId", sId).getList(x -> toDomain(x));
 	}
 
+	/**
+	 * Find TopPagePersonSet by companyId and employeeId
+	 */
 	@Override
 	public Optional<TopPagePersonSet> getbyCode(String companyId, String employeeId) {
 		Optional<TopPagePersonSet> obj = this.queryProxy()
@@ -61,11 +72,25 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 		return obj;
 	}
 
+	/**
+	 * Update TopPagePersonSet
+	 */
 	@Override
-	public void update(TopPagePersonSet topPagePersonSet) {
-		this.commandProxy().update(toEntity(topPagePersonSet));
+	public void update(TopPagePersonSet tpPersonSet) {
+		CcgptTopPagePersonSetPK pk = new CcgptTopPagePersonSetPK(tpPersonSet.getCompanyId(),
+				tpPersonSet.getEmployeeId());
+		CcgptTopPagePersonSet entity = this.queryProxy().find(pk, CcgptTopPagePersonSet.class).get();
+		entity.ccgptTopPagePersonSetPK = pk;
+		entity.loginMenuCls = tpPersonSet.getMenuClassification().value;
+		entity.loginMenuCode = tpPersonSet.getLoginMenuCode().v();
+		entity.loginSystem = tpPersonSet.getLoginSystem().value;
+		entity.topMenuCode = tpPersonSet.getTopMenuCode().v();
+		this.commandProxy().update(entity);
 	}
 
+	/**
+	 * Remove TopPagePersonSet
+	 */
 	@Override
 	public void remove(String companyId, String Sid) {
 		CcgptTopPagePersonSetPK pk = new CcgptTopPagePersonSetPK(companyId, Sid);
@@ -73,10 +98,11 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 		;
 	}
 
+	/**
+	 * Insert TopPagePersonSet
+	 */
 	@Override
 	public void add(TopPagePersonSet topPagePersonSet) {
 		this.commandProxy().insert(toEntity(topPagePersonSet));
-
 	}
-
 }
