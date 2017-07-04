@@ -23,11 +23,7 @@ module nts.uk.at.view.kmk008.d {
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
-                self.alreadySettingList = ko.observableArray([
-                    { code: '1', isAlreadySetting: true },
-                    { code: '10', isAlreadySetting: true },
-                    { code: '11', isAlreadySetting: true },
-                ]);
+                self.alreadySettingList = ko.observableArray([]);
 
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);

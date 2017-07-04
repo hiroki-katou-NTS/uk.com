@@ -116,7 +116,7 @@ module nts.uk.ui.option {
             this.headers = (option && option.headers) ? option.headers : [
                 
                  new nts.uk.ui.errors.ErrorHeader("messageText", "エラー内容", "auto", true),
-                new nts.uk.ui.errors.ErrorHeader("message", "エラーコード", 150, true)
+                new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", 150, true)
 
 
             ];
