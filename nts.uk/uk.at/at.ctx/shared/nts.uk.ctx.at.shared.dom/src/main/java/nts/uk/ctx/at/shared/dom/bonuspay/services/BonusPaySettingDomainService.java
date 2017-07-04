@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 
 @Stateless
 public class BonusPaySettingDomainService implements BonusPaySettingService {
+	
 	@Inject
 	private BPTimesheetRepository bpTimesheetRepository;
 	@Inject
