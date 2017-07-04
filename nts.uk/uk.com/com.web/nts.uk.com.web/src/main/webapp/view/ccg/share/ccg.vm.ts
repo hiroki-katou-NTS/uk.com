@@ -145,20 +145,16 @@ module nts.uk.com.view.ccg.share.ccg {
                     dfd.resolve();
                 });
                 
-                $(window).click(function() {
-                    if (!self.isShow()) {
+                $(window).on('click', function(e) {
+                    if (e.target.id == "ccg-component" || $(e.target).parents("#ccg-component")[0]) {
                         return;
                     }
-                    $('#ccg-component').toggle("slide", function() {
-                        $('#hor-scroll-button-hide').show();
-                        self.isShow(false);
-                    });
+                    if (self.isShow()) {
+                        $('#ccg-component').toggle("slide", function() {
+                            self.isShow(false);
+                        });
+                    }
                 });
-
-                $('#ccg-component').on('click', function(event) {
-                    event.stopPropagation();
-                });
-
                 return dfd.promise();
             }
             
