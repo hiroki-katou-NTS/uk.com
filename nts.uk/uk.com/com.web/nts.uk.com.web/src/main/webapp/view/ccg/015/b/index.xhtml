@@ -31,16 +31,16 @@
 					<div>
 						<div tabindex ="2" id="tab-panel" class="cf"
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
-							<div id="widget" data-bind="if: $parent.selectedTab() == 'tab_widget'">
+							<div id="widget" >
 								<com:ko tag="template" bind="{name: 'widget-template', data: topPagePartSettingItems()[0]}"></com:ko>
 							</div>
-							<div id="dash_board" data-bind="if: $parent.selectedTab() == 'tab_dash_board'">
+							<div id="dash_board" >
 								<com:ko tag="template" bind="{name: 'dashboard-template', data: topPagePartSettingItems()[1]}"></com:ko>
 							</div>
-							<div id="flow_menu" data-bind="if: $parent.selectedTab() == 'tab_flow_menu'">
+							<div id="flow_menu">
 								<com:ko tag="template" bind="{name: 'flow-template', data: topPagePartSettingItems()[2]}"></com:ko>
 							</div>	
-							<div id="url" data-bind="if: $parent.selectedTab() == 'tab_url'">
+							<div id="url" >
 								<com:ko tag="template" bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[3]}"></com:ko>
 							</div>
 						</div>
