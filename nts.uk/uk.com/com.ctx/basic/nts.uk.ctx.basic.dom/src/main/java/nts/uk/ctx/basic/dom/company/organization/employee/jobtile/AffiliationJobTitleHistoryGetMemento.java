@@ -31,9 +31,9 @@ public interface AffiliationJobTitleHistoryGetMemento {
 	
 	
 	/**
-	 * Gets the position id.
+	 * Gets the job title id.
 	 *
-	 * @return the position id
+	 * @return the job title id
 	 */
-	PositionId getPositionId();
+	PositionId getJobTitleId();
 }
