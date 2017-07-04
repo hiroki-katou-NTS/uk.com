@@ -40,9 +40,14 @@ public class FlowMenuFinder {
 	
 	public FlowMenuDto getFlowMenu(String toppagePartID) {
 		String companyID = AppContexts.user().companyId();
-		FlowMenu flowMenu = repository.findByCode(companyID, toppagePartID).get();
-		StoredFileInfo fileInfo = fileStorage.getInfo(flowMenu.getFileID()).get();
-		return FlowMenuDto.fromDomain(flowMenu, fileInfo);
+//		FlowMenu flowMenu = repository.findByCode(companyID, toppagePartID).get();
+		//hoatt
+		Optional<FlowMenu> flowMenu = repository.findByCode(companyID, toppagePartID);
+		if(!flowMenu.isPresent()){
+			return null;
+		}
+		StoredFileInfo fileInfo = fileStorage.getInfo(flowMenu.get().getFileID()).get();
+		return FlowMenuDto.fromDomain(flowMenu.get(), fileInfo);
 	}
 	
 }
