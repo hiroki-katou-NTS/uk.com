@@ -7,6 +7,7 @@ __viewContext.ready(function () {
         selectedCodes: any;
         selectedCodes2: any;
         headers: any;
+        enable: KnockoutObservable<boolean>;
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
@@ -14,6 +15,7 @@ __viewContext.ready(function () {
         
         constructor() {
             var self = this;
+            self.enable = ko.observable(true);
             self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
                 new Node('0003', 'Bangkok Thailand', []),
                 new Node('0004', 'Tokyo Japan', []),
