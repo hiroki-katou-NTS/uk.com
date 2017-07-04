@@ -3,7 +3,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div class="cf">
+	<div class="cf" id="ccg-component" data-bind="visible: isShow()">
 		<div class="control-group">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
 			<div data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate}"></div> 
@@ -76,5 +76,11 @@
 				<span class="btn_apply" data-bind="click: applyEmployee">#{i18n.getText('CCG001_19')}</span>
 			</div>
 		</div>
+		<div id="hor-scroll-button-show">
+			<button data-bind="click: showHide">Show/Hide</button>
+		</div>
 	</div>
+		<div id="hor-scroll-button-hide" data-bind="visible: !isShow()">
+			<button data-bind="click: showHide">Show/Hide</button>
+		</div>
 </ui:composition>

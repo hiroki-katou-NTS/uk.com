@@ -42,6 +42,7 @@ module nts.uk.com.view.ccg.share.ccg {
             onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
             onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
             onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+            isShow:  KnockoutObservable<boolean>;
 
 
             constructor() {
@@ -70,6 +71,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 ]);
                 self.selectedTab = ko.observable('tab-1');
                 self.reloadDataSearch();
+                this.isShow = ko.observable(false);
             }
 
             public updateTabs(): NtsTabPanelModel[] {
@@ -144,6 +146,20 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
 
                 return dfd.promise();
+            }
+            
+            showHide() {
+                var self = this;
+                if (self.isShow()) {
+                    $('#ccg-component').toggle("slide", function() {
+                        $('#hor-scroll-button-hide').show();
+                        self.isShow(false);
+                    });
+                } else {
+                    $('#hor-scroll-button-hide').hide();
+                    $('#ccg-component').toggle("slide");
+                    self.isShow(true);
+                }
             }
 
             searchAllEmployee(): void {
