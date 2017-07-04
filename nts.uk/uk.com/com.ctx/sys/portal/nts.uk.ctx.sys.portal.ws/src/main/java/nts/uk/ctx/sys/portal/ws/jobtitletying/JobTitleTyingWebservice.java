@@ -34,8 +34,9 @@ public class JobTitleTyingWebservice extends WebService {
 	
 	@POST
 	@Path("findWebMenuCode")
-	public List<JobTitleTyingDto> findAllDisplay(String jobId) {
-		return finder.findWebMenuCode(jobId);
+	public List<JobTitleTyingDto> findAllDisplay(List<String> jobId) {
+		List<JobTitleTyingDto> lst = finder.findWebMenuCode(jobId);
+		return lst;
 	}
 	
 }
