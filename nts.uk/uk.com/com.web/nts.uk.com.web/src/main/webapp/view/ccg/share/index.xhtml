@@ -4,7 +4,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<div class="cf" id="ccg-component" data-bind="visible: isShow()">
-		<div class="control-group">
+		<div class="content-left pull-left" style="background-color: #FFFFFF; border-radius: 5px;">
+			<div class="control-group">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
 			<div data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate}"></div> 
 			<button id="btn_apply" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
@@ -41,6 +42,7 @@
 				</div>
 			</div>
 			<div class="tab-content-2" data-bind="if: isAdvancedSearchTab">
+				<div style="padding-right: 10px">
 				<div>
 					<label>#{i18n.getText('CCG001_20')}</label>
 				</div>
@@ -48,15 +50,15 @@
 					<h3>
 						<label>#{i18n.getText('CCG001_5')}</label>
 					</h3>
-					<div class="contentkcp centerkcp" id="employmentList"></div>
+					<div class="contentkcp" id="employmentList"></div>
 					<h3>
 						<label>#{i18n.getText('CCG001_6')}</label>
 					</h3>
-					<div class="contentkcp centerkcp"  id="classificationList"></div>
+					<div class="contentkcp"  id="classificationList"></div>
 					<h3>
 						<label>#{i18n.getText('CCG001_7')}</label>
 					</h3>
-					<div class="contentkcp centerkcp" id="jobtitleList"></div>
+					<div class="contentkcp" id="jobtitleList"></div>
 					<h3>
 						<label>#{i18n.getText('CCG001_8')}</label>
 					</h3>
@@ -67,20 +69,39 @@
 				</div>
 				<div data-bind="if: !isSelectAllEmployee">
 					<hr />
-					<span class="caret-background caret-bottom btn_apply" data-bind="click: searchDataEmployee">#{i18n.getText('CCG001_18')}</span>
-					<br />
-					<br />
-					<div class="contentkcp centerkcp" id="employeeinfo"></div>
+					<span class="caret-background caret-bottom btn_apply" data-bind="click: searchDataEmployee">
+						<i class="icon icon-01-searchmode"></i>
+						<label class="lbl-apply" style="">#{i18n.getText('CCG001_18')}</label>
+					</span>
+					<div class="contentkcp" id="employeeinfo"></div>
 				</div>
 				<br/>
-				<span class="btn_apply" data-bind="click: applyEmployee">#{i18n.getText('CCG001_19')}</span>
+				<span class="btn_apply" data-bind="click: applyEmployee">
+					<i class="icon icon-01-searchmode"></i>
+					<label class="lbl-apply">#{i18n.getText('CCG001_19')}</label>
+				</span>
+				</div>
 			</div>
 		</div>
-		<div id="hor-scroll-button-show">
-			<button data-bind="click: showHide">Show/Hide</button>
+		</div>
+		<div id="hor-scroll-button-show" class="pull-left"
+			data-bind="click: showHide">
+			<div class="flex valign-center btn_showhide">
+				<i class="icon icon-01-searchmode"></i> <label
+					class="labelShowHideButton">#{i18n.getText('CCG001_21')}</label>
+			</div>
+			<span class="controlSettingShowHide caret-right"></span>
 		</div>
 	</div>
-		<div id="hor-scroll-button-hide" data-bind="visible: !isShow()">
-			<button data-bind="click: showHide">Show/Hide</button>
+		<div id="hor-scroll-button-hide"
+			data-bind="visible: !isShow(), click: showHide">
+			<div class="flex valign-center btn_showhide">
+				<i class="icon icon-01-searchmode"></i> <label
+					class="labelShowHideButton">#{i18n.getText('CCG001_21')}</label>
+			</div>
+			<span class="controlSettingShowHide caret-right"></span>
 		</div>
+		<!-- <div id="hor-scroll-button-hide" data-bind="visible: !isShow()">
+			<button data-bind="click: showHide">Show/Hide</button>
+		</div> -->
 </ui:composition>

@@ -25,8 +25,8 @@
 
 			<div id="functions-area">
 				<div id="functions-area-content">
-					<button class="large">#{i18n.getText('KMK008_40')}</button>
-					<button class="large proceed button-margin-left">#{i18n.getText('KMK008_14')}</button>
+					<button class="large" data-bind="click : setNewMode">#{i18n.getText('KMK008_40')}</button>
+					<button class="large proceed button-margin-left" data-bind="click : register">#{i18n.getText('KMK008_14')}</button>
 					<button class="large danger">#{i18n.getText('KMK008_16')}</button>
 					<button class="large">#{i18n.getText('KMK008_41')}</button>
 				</div>
@@ -36,7 +36,7 @@
 				<div id="contents-area-label">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',
 						['#Com_Person'])}</div>
-					<span class="label" data-bind="text: employeeCode"></span> <span
+					<span class="label" data-bind="text: employeeId"></span> <span
 						class="label" data-bind="text: employeeName"></span>
 				</div>
 				<div class="contents-area-show-data">
@@ -70,7 +70,7 @@
 								constraint: 'SampleTimeDuration',
 								value: yearOrYearMonthValue,
 								inputFormat: 'YYYY',
-								enable: false,
+								enable: $parent.newMode,
 								readonly: false,
 								required: false }" />
 						</div>

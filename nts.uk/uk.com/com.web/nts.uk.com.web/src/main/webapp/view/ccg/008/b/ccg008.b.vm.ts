@@ -24,7 +24,8 @@
         }        
         //open dialog top page setting (トップページの選択)
         openTopPageSet(): void{
-            nts.uk.ui.windows.sub.modal("/view/ccg/008/c/index.xhtml");
+            let dialogTitle = nts.uk.resource.getText("CCG008_3");
+            nts.uk.ui.windows.sub.modal("/view/ccg/008/c/index.xhtml",{title: dialogTitle});
         }
         //open dialog my page setting (マイページ設定)
         openMyPageSet(): void{

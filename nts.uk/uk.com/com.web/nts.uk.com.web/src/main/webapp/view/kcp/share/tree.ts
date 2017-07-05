@@ -29,7 +29,7 @@ module kcp.share.tree {
         /**
          * is Multi select.
          */
-        isMultiSelect: boolean;
+        isMultiSelect: boolean;   
         
         /**
          * Tree type, if not set, default is work place.

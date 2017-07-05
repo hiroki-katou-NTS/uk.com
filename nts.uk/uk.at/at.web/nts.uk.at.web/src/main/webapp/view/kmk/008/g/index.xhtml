@@ -39,14 +39,14 @@
 					<div style="width: 24%; margin-left: 30px; float: left;">
 						<div class="lbl-title-employeer-name">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Person'])}</div>
-							<span class="label" data-bind="text: "></span>
+							<span class="label" data-bind="text: employeeName"></span>
 						</div>
 						<div class="label">#{i18n.getText('KMK008_10')}</div>
 						<HR />
 						<div id="tab-panel"
 							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }" style="margin-top: 30px;">
 							<div class="tab-content-1">
-								<button id="settingButton">#{i18n.getText('KMK008_31')}</button>
+								<button id="settingButton" data-bind="click: openDiaglog">#{i18n.getText('KMK008_31')}</button>
 								<div>
 									<table id="single-list"
 										data-bind="ntsGridList: {								
@@ -61,7 +61,7 @@
 							</div>
 							<div class="tab-content-2">
 								<div>
-									<button id="settingButton">設定</button>
+									<button id="settingButton" data-bind="click: openDiaglog">設定</button>
 									<table id="single-list"
 										data-bind="ntsGridList: {								
 									height: 350,

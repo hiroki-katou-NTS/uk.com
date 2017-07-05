@@ -144,22 +144,29 @@ module nts.uk.com.view.ccg.share.ccg {
                     });
                     dfd.resolve();
                 });
-
+                
+                $(window).on('click', function(e) {
+                    if (e.target.id == "ccg-component" || $(e.target).parents("#ccg-component")[0]) {
+                        return;
+                    }
+                    if (self.isShow()) {
+                        $('#ccg-component').toggle("slide", function() {
+                            self.isShow(false);
+                        });
+                    }
+                });
                 return dfd.promise();
             }
             
             showHide() {
                 var self = this;
                 if (self.isShow()) {
-                    $('#ccg-component').toggle("slide", function() {
-                        $('#hor-scroll-button-hide').show();
-                        self.isShow(false);
-                    });
-                } else {
-                    $('#hor-scroll-button-hide').hide();
-                    $('#ccg-component').toggle("slide");
-                    self.isShow(true);
+                    return;
                 }
+                $('#hor-scroll-button-hide').hide();
+                $('#ccg-component').toggle("slide", function() {
+                    self.isShow(true);
+                });
             }
 
             searchAllEmployee(): void {

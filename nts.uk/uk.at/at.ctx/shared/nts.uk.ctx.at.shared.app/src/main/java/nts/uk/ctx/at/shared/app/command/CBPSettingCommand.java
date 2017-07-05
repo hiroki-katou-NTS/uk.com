@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.shared.app.command;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @AllArgsConstructor
-@Value
-public class CBPSettingDeleteCommand {
-	public String companyId;
+public class CBPSettingCommand {
+	public int action;
+	
 	public String bonusPaySettingCode;
 }
