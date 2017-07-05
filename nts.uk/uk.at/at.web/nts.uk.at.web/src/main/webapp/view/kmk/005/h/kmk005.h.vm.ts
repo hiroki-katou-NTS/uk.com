@@ -1,4 +1,5 @@
 module nts.uk.at.view.kmk005.h {
+    import flat = nts.uk.util.flatArray;
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
@@ -8,36 +9,83 @@ module nts.uk.at.view.kmk005.h {
 
     export module viewmodel {
         export class ScreenModel {
-            tree: any = {
+            //search
+            baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+
+            treeGrid: ITreeGrid = {
+                treeType: 1,
+                selectType: 1,
+                isDialog: false,
+                isMultiSelect: false,
                 isShowAlreadySet: true,
-                isMultiSelect: true,
-                treeType: '',
-                selectedWorkplaceId: undefined,
+                isShowSelectButton: false,
                 baseDate: undefined,
-                selectType: '',
-                isShowSelectButton: true,
-                isDialog: false
+                selectedWorkplaceId: undefined,
+                alreadySettingList: ko.observableArray([])
             };
-            
+
             model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ id: '', name: '' }));
             constructor() {
-                let self = this;
+                let self = this,
+                    tree = self.treeGrid,
+                    model = self.model();
 
-                self.start();
+                $.extend(tree, {
+                    baseDate: self.baseDate,
+                    selectedWorkplaceId: model.wid
+                });
+
+                tree.alreadySettingList.removeAll();
+
+                model.wid.subscribe(x => {
+                    let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs'),
+                        item = _.find(data, m => m.workplaceId == x);
+
+                    if (item) {
+                        model.wname(item.name);
+                    } else {
+                        model.wname(getText("KDL007_6"));
+                    }
+
+                    service.getSetting(x).done(x => {
+                        if (x) {
+                            model.id(x.bonusPaySettingCode);
+                            service.getName(x.bonusPaySettingCode).done(m => {
+                                if (m) {
+                                    model.name(m.name)
+                                } else {
+                                    model.id('000');
+                                    model.name(getText("KDL007_6"));
+                                }
+                            }).fail(x => alert(x));
+                        } else {
+                            model.id('000');
+                            model.name(getText("KDL007_6"));
+                        }
+
+                    }).fail(x => alert(x));
+
+                });
+                
+                // call start after tree-grid initial
+                $('#tree-grid')['ntsTreeComponent'](self.treeGrid).done(() => { self.start(); });
             }
 
             start() {
                 let self = this,
-                    model = self.model();
+                    tree = self.treeGrid,
+                    model = self.model(),
+                    wids: Array<string> = flat($('#tree-grid')['getDataList'](), 'childs').map(x => x.workplaceId);
 
-                service.getData().done(resp => {
-                    if (resp) {
-                        model.id(resp.bonusPaySettingCode);
-                        service.getName(resp.bonusPaySettingCode).done(x => model.name(x.name)).fail(x => alert(x));
-                    } else {
-                        model.id('000');
-                        model.name(getText("KDL007_6"));
+                // get ready setting list
+                tree.alreadySettingList.removeAll();
+                service.getData(wids).done((resp: Array<any>) => {
+                    if (resp && resp.length) {
+                        _.each(resp, x => tree.alreadySettingList.push({ workplaceId: x.workplaceId, settingType: 1 }));
                     }
+                    
+                    // call subscribe function of wid
+                    model.wid.valueHasMutated();
                 }).fail(x => alert(x));
             }
 
@@ -71,11 +119,29 @@ module nts.uk.at.view.kmk005.h {
             }
 
             saveData() {
+                let self = this,
+                    model: IBonusPaySetting = ko.toJS(self.model),
+                    command: any = {
+                        workplaceId: model.wid,
+                        bonusPaySettingCode: model.id,
+                        action: 0
+                    };
 
+                // call service to save setting
+                service.saveData(command).done(() => { self.start(); });
             }
 
             removeData() {
+                let self = this,
+                    model: IBonusPaySetting = ko.toJS(self.model),
+                    command: any = {
+                        workplaceId: model.wid,
+                        bonusPaySettingCode: model.id,
+                        action: 1
+                    };
 
+                // call service to delete setting
+                service.saveData(command).done(() => { self.start(); });
             }
         }
 
@@ -83,18 +149,36 @@ module nts.uk.at.view.kmk005.h {
         interface IBonusPaySetting {
             id: string;
             name: string;
+            wid?: string; // workplace id
+            wname?: string; // workplace name
         }
 
         class BonusPaySetting {
             id: KnockoutObservable<string> = ko.observable('');
             name: KnockoutObservable<string> = ko.observable('');
+            wid: KnockoutObservable<string> = ko.observable('');
+            wname: KnockoutObservable<string> = ko.observable('');
 
             constructor(param: IBonusPaySetting) {
                 let self = this;
 
                 self.id(param.id);
                 self.name(param.name);
+                self.wid(param.wid || '');
+                self.wname(param.wname || '');
             }
+        }
+
+        interface ITreeGrid {
+            treeType: number;
+            selectType: number;
+            isDialog: boolean;
+            isMultiSelect: boolean;
+            isShowAlreadySet: boolean;
+            isShowSelectButton: boolean;
+            baseDate: KnockoutObservable<any>;
+            selectedWorkplaceId: KnockoutObservable<any>;
+            alreadySettingList: KnockoutObservableArray<any>;
         }
     }
 }

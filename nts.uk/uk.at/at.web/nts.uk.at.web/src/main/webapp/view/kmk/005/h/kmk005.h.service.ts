@@ -3,14 +3,18 @@ module nts.uk.at.view.kmk005.h.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'get': 'at/share/cpBonusPaySetting/getSetting',
-        'save': 'at/share/cpBonusPaySetting/saveSetting',
-        'remove': 'at/share/cpBonusPaySetting/removeCBPSettingSetting',
+        'gets': 'at/share/wpBonusPaySetting/getListWPBonusPaySetting',
+        'get': 'at/share/wpBonusPaySetting/getWPBPSetting/{0}',
+        'save': 'at/share/wpBonusPaySetting/saveWpBonsPaySetting',
         getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}'
     }
 
-    export function getData() {
-        return ajax(paths.get);
+    export function getData(data: Array<string>) {
+        return ajax(paths.gets, data);
+    }
+
+    export function getSetting(wid: string) {
+        return ajax(format(paths.get, wid));
     }
 
     export function getName(bonusPaySettingCode) {
@@ -18,10 +22,13 @@ module nts.uk.at.view.kmk005.h.service {
     }
 
     export function saveData(command) {
-        return ajax(paths.add, command);
-    }
 
-    export function removeData(command) {
-        return ajax(paths.remove, command);
+        // if remove action
+        if (!command.bonusPaySettingCode || command.bonusPaySettingCode == '000') {
+            command.action = 1;
+        }
+        
+        // push to webservice
+        return ajax(paths.save, command);
     }
 }
