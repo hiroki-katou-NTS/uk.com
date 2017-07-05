@@ -32,7 +32,7 @@ public class UpdateJobTitleTyingCommandHandler extends CommandHandler<UpdateJobT
 		List<JobTitleTyingCommand> jobTitleTyings = update.getJobTitleTyings();
 		for(JobTitleTyingCommand obj: jobTitleTyings){
 			JobTitleTying o = JobTitleTying.updateWebMenuCode(companyId, obj.getJobId(), obj.getWebMenuCode());
-			if(o.getWebMenuCode() == null || o.getWebMenuCode().equals(""))
+			if(o.getWebMenuCode() == null)
 			{
 				throw new BusinessException("");
 			}
