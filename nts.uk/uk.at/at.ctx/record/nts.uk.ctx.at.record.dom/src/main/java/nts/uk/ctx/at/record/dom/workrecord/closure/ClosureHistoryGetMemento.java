@@ -12,11 +12,11 @@ import nts.arc.time.YearMonth;
 public interface ClosureHistoryGetMemento {
 	
 	/**
-	 * Gets the close name.
+	 * Gets the closure name.
 	 *
-	 * @return the close name
+	 * @return the closure name
 	 */
-	CloseName getCloseName();
+	ClosureName getClosureName();
 
 	/**
 	 * Gets the closure id.
@@ -32,14 +32,7 @@ public interface ClosureHistoryGetMemento {
 	 * @return the company id
 	 */
 	CompanyId getCompanyId();
-	
-	/**
-	 * Gets the closure history id.
-	 *
-	 * @return the closure history id
-	 */
-	ClosureHistoryId getClosureHistoryId();
-	
+		
 	
 	/**
 	 * Gets the end date.

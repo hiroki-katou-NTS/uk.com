@@ -31,7 +31,7 @@ public class Closure extends AggregateRoot {
 
 	/** The month. */
 	// 当月
-	private ClosureMonth month;
+	private ClosureMonth closureMonth;
 
 	/** The closure histories. */
 	// 締め変更履歴
@@ -47,7 +47,7 @@ public class Closure extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.closureId = memento.getClosureId();
 		this.useClassification = memento.getUseClassification();
-		this.month = memento.getMonth();
+		this.closureMonth = memento.getClosureMonth();
 		this.closureHistories = memento.getClosureHistories();
 	}
 	
@@ -61,7 +61,7 @@ public class Closure extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setClosureId(this.closureId);
 		memento.setUseClassification(this.useClassification);
-		memento.setMonth(this.month);
+		memento.setClosureMonth(this.closureMonth);
 		memento.setClosureHistories(this.closureHistories);
 	}
 }

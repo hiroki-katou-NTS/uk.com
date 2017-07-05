@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.record.dom.standardtime.enums;
 
-import lombok.AllArgsConstructor;
-
 /**
  * 
  * @author nampt
  *
  */
-@AllArgsConstructor
 public enum StartingMonthType {
 
 	/*
@@ -39,5 +36,9 @@ public enum StartingMonthType {
 	DECEMBER(11);
 
 	public final int value;
+	
+	private StartingMonthType(int type) {
+		this.value = type;
+	}
 
 }

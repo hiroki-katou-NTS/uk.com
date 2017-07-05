@@ -8,12 +8,6 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:stylefile path="cmm044.a.main.css" />
 			<com:scriptfile path="ko-profile-ext.js" />
 			<com:scriptfile path="cmm044.a.start.js" />
@@ -114,7 +108,8 @@
 												<button id="BTN_A4_003"
 													data-bind="enable: displayEmployeeInfo1,click: openCDL021.bind($data, 1, agentSid1())"
 													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
-												<span id="A4-004" data-bind="text: employeeNameScreen1 "></span>
+												<span id="A4-004"
+													data-bind="text: employeeNameScreen1,visible: agentAppType1() == 0 "></span>
 											</div>
 										</td>
 									</tr>
@@ -149,7 +144,7 @@
 													data-bind="enable: displayEmployeeInfo2,click: openCDL021.bind($data, 2, agentSid2())"
 													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
 												<label id="A5-004" style="display: inline-block"
-													data-bind="text: employeeNameScreen2"></label>
+													data-bind="text: employeeNameScreen2,visible: agentAppType2() == 0 "></label>
 											</div>
 										</td>
 									</tr>
@@ -184,7 +179,7 @@
 													data-bind="enable: displayEmployeeInfo3,click: openCDL021.bind($data, 3, agentSid3())"
 													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
 												<label id="A4-006" style="display: inline-block"
-													data-bind="text: employeeNameScreen3">代行者</label>
+													data-bind="text: employeeNameScreen3,visible: agentAppType3() == 0 ">代行者</label>
 											</div>
 										</td>
 									</tr>
@@ -219,7 +214,7 @@
 													data-bind="enable: displayEmployeeInfo4,click: openCDL021.bind($data, 4, agentSid4())"
 													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
 												<label id="A4-007" style="display: inline-block"
-													data-bind="text: employeeNameScreen4">代行者</label>
+													data-bind="text: employeeNameScreen4,visible: agentAppType4() == 0 ">代行者</label>
 											</div>
 										</td>
 									</tr>

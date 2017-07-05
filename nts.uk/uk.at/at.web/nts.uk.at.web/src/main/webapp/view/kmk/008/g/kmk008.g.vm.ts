@@ -1,14 +1,23 @@
 module nts.uk.at.view.kmk008.g {
+    import getText = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     export module viewmodel {
         export class ScreenModel {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
+            employeeName: KnockoutObservable<string>;
+
             items: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
 
-            selectedCode: KnockoutObservable<string>
+            selectedId: KnockoutObservable<string>;
 
             items2: KnockoutObservableArray<ItemModel>;
             currentCode2: KnockoutObservable<any>;
@@ -48,6 +57,8 @@ module nts.uk.at.view.kmk008.g {
                 self.isNewMode.subscribe(function(val) {
                     self.isUpdateMode(!val);
                 });
+                self.selectedId = ko.observable("");
+                self.employeeName = ko.observable("");
 
                 //list
                 self.isShowWorkPlaceName = ko.observable(false);
@@ -90,22 +101,10 @@ module nts.uk.at.view.kmk008.g {
                     onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(dataList);
-                        //self.employeeList([]);
+                        self.employeeList([]);
                         self.employeeList(_.map(dataList, item => {
-                            return new UnitModel(item.employeeCode,item.employeeName, item.workplaceName);    
+                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
-                       
-//                        let listComponentOption = {
-//                            isMultiSelect: false,
-//                            listType: 4,
-//                            selectType: 1,
-//                            selectedCode: self.selectedCode,
-//                            isDialog: self.isDialog(),
-//                            isShowNoSelectRow: self.isShowNoSelectRow(),
-//                            isShowWorkPlaceName: true,
-//                            employeeInputList:  self.employeeList,
-//                        };
-                        //$('#component-items-list').ntsListComponent(listComponentOption);
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         self.showinfoSelectedEmployee(true);
@@ -113,38 +112,15 @@ module nts.uk.at.view.kmk008.g {
                         dataEmployee.push(data);
                         self.selectedEmployee(dataEmployee);
                         self.employeeList([]);
-                        self.employeeList.push(new UnitModel(data.employeeCode,data.employeeName, data.workplaceName));
-                        let listComponentOption = {
-                            isMultiSelect: false,
-                            listType: 4,
-                            selectType: 1,
-                            selectedCode: self.selectedCode,
-                            isDialog: self.isDialog(),
-                            isShowNoSelectRow: self.isShowNoSelectRow(),
-                            isShowWorkPlaceName: true,
-                            employeeInputList:  self.employeeList,
-                        };
-                       // $('#component-items-list').ntsListComponent(listComponentOption);
+                        self.employeeList.push(new UnitModel(data.employeeCode, data.employeeName, data.workplaceName, data.employeeId));
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(dataList);
                         self.employeeList([]);
                         self.employeeList(_.map(dataList, item => {
-                            return new UnitModel(item.employeeCode,item.employeeName, item.workplaceName);    
+                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
-                       
-                        let listComponentOption = {
-                            isMultiSelect: false,
-                            listType: 4,
-                            selectType: 1,
-                            selectedCode: self.selectedCode,
-                            isDialog: self.isDialog(),
-                            isShowNoSelectRow: self.isShowNoSelectRow(),
-                            isShowWorkPlaceName: true,
-                            employeeInputList:  self.employeeList,
-                        };
-                       // $('#component-items-list').ntsListComponent(listComponentOption);
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -152,20 +128,8 @@ module nts.uk.at.view.kmk008.g {
                         $('#component-items-list').ntsListComponent(self.dataList);
                         self.employeeList([]);
                         self.employeeList(_.map(dataList, item => {
-                            return new UnitModel(item.employeeCode,item.employeeName, item.workplaceName);    
+                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
-                       
-                        let listComponentOption = {
-                            isMultiSelect: false,
-                            listType: 4,
-                            selectType: 1,
-                            selectedCode: self.selectedCode,
-                            isDialog: self.isDialog(),
-                            isShowNoSelectRow: self.isShowNoSelectRow(),
-                            isShowWorkPlaceName: true,
-                            employeeInputList:  self.employeeList,
-                        };
-                        //$('#component-items-list').ntsListComponent(listComponentOption);
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -173,24 +137,10 @@ module nts.uk.at.view.kmk008.g {
                         $('#component-items-list').ntsListComponent(self.dataEmployee);
                         self.employeeList([]);
                         self.employeeList(_.map(dataList, item => {
-                            return new UnitModel(item.employeeCode,item.employeeName, item.workplaceName);    
+                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
-                       
-                        let listComponentOption = {
-                            isMultiSelect: false,
-                            listType: 4,
-                            selectType: 1,
-                            selectedCode: self.selectedCode,
-                            isDialog: self.isDialog(),
-                            isShowNoSelectRow: self.isShowNoSelectRow(),
-                            isShowWorkPlaceName: true,
-                            employeeInputList:  self.employeeList,
-                        };
-                        //$('#component-items-list').ntsListComponent(listComponentOption);
                     }
-
                 }
-
 
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: '年度', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -211,7 +161,13 @@ module nts.uk.at.view.kmk008.g {
 
                 self.selectedCode.subscribe(newValue => {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                    self.getDetail(newValue);
+                    let data = $('#component-items-list').getDataList();
+                    let employee = _.find(data, function(o) {
+                        return o.code == self.selectedCode();
+                    });
+                    self.getDetail(employee.employeeId);
+                    self.selectedId(employee.employeeId);
+                    self.employeeName(employee.name);
                     let empSelect = _.find(self.items(), emp => {
                         return emp.code == newValue;
                     });
@@ -219,39 +175,59 @@ module nts.uk.at.view.kmk008.g {
 
                 });
 
+                self.selectedTab.subscribe(self.selectedCode => {
+                    return self.getDetail(self.selectedCode);    
+                });
+
             }
+
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-
-
-//                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-//                .done(function(){
-//                    self.ccgcomponent.onSearchAllClicked();   
-//                });
-//                $('#component-items-list').ntsListComponent(listComponentOption);
-//                $('#component-items-list').ntsListComponent(self.listComponentOption);
 
                 dfd.resolve();
                 return dfd.promise();
             }
 
+            openDiaglog() {
+                let self = this;
+                let isYearMonth = true;
+                if(self.selectedTab() == "tab-1" ){
+                    isYearMonth = false;
+                }
+                setShared("KMK_008_PARAMS", { employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth : isYearMonth });
+                modal('../../../kmk/008/k/index.xhtml').onClosed(() => {
+                    let data: string = getShared('KDL007_VALUES');
+                    self.getDetail(data);
+                });
+            }
+
             getDetail(employmentCategoryCode: string) {
                 var self = this;
-                if (self.selectedTab() == "tab-2") {
+                if (self.selectedTab() == "tab-1") {
                     service.getMonth(employmentCategoryCode).done(function(monthData: Array<model.MonthDto>) {
                         if (monthData) {
-                            self.items2.push(new ItemModel(monthData.yearMonthValue, monthData.errorOneMonth, monthData.alarmOneMonth));
+                            _.forEach(monthData, function(value) {
+                                self.items([]);
+                                self.items.push(new ItemModel(value.yearMonthValue, value.errorOneMonth, value.alarmOneMonth));
+                            });
+
                         } else {
-                            self.items2.push(new ItemModel("", "", ""));
+                            self.items([]);
+                            self.items.push(new ItemModel("", "", ""));
                         }
                     });
                 } else {
                     service.getYear(employmentCategoryCode).done(function(yearData: Array<model.YearDto>) {
                         if (yearData) {
-                            self.item.push(new ItemModel(yearData.yearValue, yearData.errorOneYear, yearData.alarmOneYear));
+                            _.forEach(yearData, function(value) {
+                                self.items2([]);
+                                self.item2.push(new ItemModel(value.yearValue, value.errorOneYear, value.alarmOneYear));
+                            });
+
                         } else {
-                            self.items.push(new ItemModel("", "", ""));
+                            self.items2([]);
+                            self.items2.push(new ItemModel("", "", ""));
                         }
                     });
                 }
@@ -278,10 +254,12 @@ module nts.uk.at.view.kmk008.g {
             code: string;
             name: string;
             workplaceName: string;
-            constructor(code: string, name: string, workplaceName: string) {
+            employeeId: string;
+            constructor(code: string, name: string, workplaceName: string, employeeId: string) {
                 this.code = code;
                 this.name = name;
                 this.workplaceName = workplaceName;
+                this.employeeId = employeeId;
             }
         }
 

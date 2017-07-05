@@ -289,21 +289,34 @@ module nts.uk.ui.jqueryExtentions {
         function setupScrollWhenBinding($grid: JQuery): any {
             let gridId = "#" + $grid.attr("id");
             $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                let isMulti = $grid.igGridSelection('option', 'multipleSelection');
-                let selected = $grid.ntsGridList("getSelected");
-                if(!nts.uk.util.isNullOrEmpty(selected)){
-                    _.defer(() => {
-                        let index = isMulti ? selected[0].index : selected.index;
-                        if ($grid.igGrid("scrollContainer").length > 0){
-                            let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
-                            let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                            $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);    
-                        } else { 
-                            $grid.igGrid("virtualScrollTo", index); //.scrollTop(scrollTop);    
-                        }    
+                let oldSelected = getSelectRow($grid);
+                if(!nts.uk.util.isNullOrEmpty(oldSelected)){
+                    _.defer(() => { 
+                        let selected = getSelectRow($grid);
+                        if(!nts.uk.util.isNullOrEmpty(selected)){
+                            if ($grid.igGrid("scrollContainer").length > 0){
+                                let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);    
+                            } else { 
+                                let index = parseInt($(selected["element"]).attr("data-row-idx"));
+                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : index); //.scrollTop(scrollTop);    
+                            }     
+                        }   
                     });    
                 }
             });
+        }
+        
+        function getSelectRow($grid: JQuery) {
+            var row = null;
+            var selectedRows = $grid.igGrid("selectedRows");
+            if (selectedRows) {
+                row = selectedRows[0];
+            } else {
+                row = $grid.igGrid("selectedRow");
+            }    
+            return row;
         }
 
         function getSelected($grid: JQuery): any {

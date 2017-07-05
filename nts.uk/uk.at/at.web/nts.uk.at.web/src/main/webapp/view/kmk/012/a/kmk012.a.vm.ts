@@ -204,24 +204,24 @@ module nts.uk.at.view.kmk012.a {
                         service.saveClosureHistory(self.collectDataHistory()).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 self.reloadPage(self.selectCodeLstClosure().id,
-                                    self.selectCodeLstClosureHistory().historyId);
+                                    self.selectCodeLstClosureHistory().startDate);
                             });
                         }).fail(function(error) {
                             nts.uk.ui.dialog.alertError(error).then(function() {
                                 self.reloadPage(self.selectCodeLstClosure().id,
-                                    self.selectCodeLstClosureHistory().historyId);
+                                    self.selectCodeLstClosureHistory().startDate);
                             });
                         });
                     } else {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             self.reloadPage(self.selectCodeLstClosure().id,
-                                self.selectCodeLstClosureHistory().historyId);
+                                self.selectCodeLstClosureHistory().startDate);
                         });
                     }
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error).then(function() {
                         self.reloadPage(self.selectCodeLstClosure().id,
-                            self.selectCodeLstClosureHistory().historyId);
+                            self.selectCodeLstClosureHistory().startDate);
                     });
                 });
             }
@@ -229,7 +229,7 @@ module nts.uk.at.view.kmk012.a {
             /**
              * reload page 
              */
-            reloadPage(closureId: number, historyId: string): void{
+            reloadPage(closureId: number, startDate: number): void{
                 var self = this;
                  service.findAllClosureHistory().done(function(data) {
                     var dataRes: ClosureHistoryFindDto[] = [];
@@ -261,8 +261,9 @@ module nts.uk.at.view.kmk012.a {
                 dto = new ClosureHistoryDto();
                 dto.closeName = self.closureHistoryModel.closureName();
                 dto.closureId = self.closureHistoryModel.closureId();
-                dto.closureHistoryId = self.closureHistoryModel.historyId();
                 dto.closureDate = self.closureHistoryModel.closureDate();
+                dto.startDate = self.closureHistoryModel.startDate();
+                dto.endDate = self.closureHistoryModel.e;
                 return dto;    
             }
             
@@ -273,10 +274,10 @@ module nts.uk.at.view.kmk012.a {
             public openConfirmClosingPeriodDialog(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('closureId', self.closureModel.closureId());
-                nts.uk.ui.windows.setShared('historyId', self.closureHistoryModel.historyId());
+                nts.uk.ui.windows.setShared('startDate', self.closureHistoryModel.startDate());
                 nts.uk.ui.windows.sub.modal('/view/kmk/012/d/index.xhtml', 
                 { title: '締め期間確認 ', dialogClass: 'no-close' }).onClosed(function(){
-                    self.reloadPage(self.closureModel.closureId(), self.closureHistoryModel.historyId());    
+                    self.reloadPage(self.closureModel.closureId(), self.closureHistoryModel.startDate());    
                 });
             }
     
@@ -331,7 +332,6 @@ module nts.uk.at.view.kmk012.a {
                 var dataRes : ClosureHistoryMDto[] = [];
                 for(var history :ClosureHistoryMDto of dto.closureHistories){
                      var dataI: ClosureHistoryMDto = new ClosureHistoryMDto();
-                    dataI.historyId = history.historyId; 
                     dataI.closureId = history.closureId;
                     dataI.endDate = history.endDate;
                     dataI.startDate = history.startDate;
@@ -346,9 +346,6 @@ module nts.uk.at.view.kmk012.a {
 
         export class ClosureHistoryDetailModel {
 
-            /** The history id. */
-            historyId: KnockoutObservable<string>;
-
             /** The closure id. */
             closureId: KnockoutObservable<number>;
 
@@ -359,12 +356,16 @@ module nts.uk.at.view.kmk012.a {
             /** The start date. */
             // 開始年月: 年月
             closureDate: KnockoutObservable<number>;
+            
+            
+             startDate: KnockoutObservable<number>;
+            
 
             constructor(){
-                this.historyId = ko.observable('')
                 this.closureId = ko.observable(0);
                 this.closureName = ko.observable('');
                 this.closureDate = ko.observable(0);
+                this.startDate = ko.observable(0);
             }
                 
                 
@@ -372,10 +373,10 @@ module nts.uk.at.view.kmk012.a {
              * update data
              */
             updateData(dto: ClosureHistoryDDto): void{
-                this.historyId(dto.historyId);
                 this.closureId(dto.closureId);
                 this.closureName(dto.closureName);
                 this.closureDate(dto.closureDate);
+                this.startDate(dto.startDate);
             }
             
         }

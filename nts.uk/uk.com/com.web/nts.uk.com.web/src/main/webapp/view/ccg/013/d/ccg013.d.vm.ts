@@ -134,7 +134,7 @@
             var list001: Array<ItemModel> = [];
             var index = 0;
             _.forEach(self.allItems(), function(item: ItemModel) {
-                if (item.system == self.selectedSystemCode()) {
+                if ((item.system == self.selectedSystemCode() && item.menu_cls != 8) || (item.system == 0 && item.menu_cls == 8)) {
                     var id = nts.uk.util.randomId();
                     list001.push(new ItemModel(id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                     index++;

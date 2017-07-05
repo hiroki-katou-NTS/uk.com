@@ -13,8 +13,8 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class ClosureDate extends DomainObject{
 	
-	/** The day. */
-	private Integer day;
+	/** The closure day. */
+	private Integer closureDay;
 	
 	/** The last day of month. */
 	private Boolean lastDayOfMonth;
@@ -22,11 +22,11 @@ public class ClosureDate extends DomainObject{
 	/**
 	 * Instantiates a new closure date.
 	 *
-	 * @param day the day
+	 * @param closureDay the closure day
 	 * @param lastDayOfMonth the last day of month
 	 */
-	public ClosureDate(Integer day, Boolean lastDayOfMonth) {
-		this.day = day;
+	public ClosureDate(Integer closureDay, Boolean lastDayOfMonth) {
+		this.closureDay = closureDay;
 		this.lastDayOfMonth = lastDayOfMonth;
 	}
 }

@@ -1,38 +1,60 @@
 module nts.uk.at.view.kmk008.k {
+    import getText = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
         export class ScreenModel {
-            currentCodeSelect: KnockoutObservable<string>;
+            currentCodeSelect: KnockoutObservable<number>;
             currentSelectItem: KnockoutObservable<SettingModel>;
-            count: number = 4;
+            isUpdate: boolean;
 
-            isYearMonth: boolean = false;
-            employeeCode: string = "A0000001";
-            employeeName: string = "test cho vui";
+            newMode: KnockoutObservable<boolean>;
+            isYearMonth: boolean;
+            employeeId: string;
+            employeeName: string;
             yearLabel: string;
             yearErrorTimeLabel: string;
             yearAlarmTimeLabel: string;
+            inputFormatYearOrYearMonth: string;
             listItemDataGrid: KnockoutObservableArray<ShowListModel>;
 
-            constructor() {
-                let self = this;
-                self.date = ko.observable(200001);
-                self.listItemDataGrid = ko.observableArray([]);
-                self.currentCodeSelect = ko.observable("");
-                self.currentSelectItem = ko.observable(new SettingModel(null, self.employeeCode));
+            deleteEnable: KnockoutObservable<boolean>;
 
-                self.isYearMonth = false;
+            constructor() {
+                let self = this,
+                    dto: IData = nts.uk.ui.windows.getShared("KMK_008_PARAMS") || { employeeId: '', employeeName: '', isYearMonth: false };
+
+                self.newMode = ko.observable(false);
+                self.deleteEnable = ko.observable(false);
+
+                self.isYearMonth = dto.isYearMonth;
+                self.employeeId = dto.employeeId;
+                self.employeeName = dto.employeeName;
+                self.isUpdate = true;
+
+                self.listItemDataGrid = ko.observableArray([]);
+                self.currentCodeSelect = ko.observable(null);
+                self.currentSelectItem = ko.observable(new SettingModel(null, self.employeeId));
                 self.yearErrorTimeLabel = nts.uk.resource.getText("KMK008_19");
                 self.yearAlarmTimeLabel = nts.uk.resource.getText("KMK008_20");
                 if (self.isYearMonth) {
                     self.yearLabel = nts.uk.resource.getText("KMK008_29");
+                    self.inputFormatYearOrYearMonth = "YYYY/MM";
                 } else {
                     self.yearLabel = nts.uk.resource.getText("KMK008_30");
+                    self.inputFormatYearOrYearMonth = "YYYY";
                 }
 
                 self.currentCodeSelect.subscribe(newValue => {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                   let itemSelect = _.find(self.listItemDataGrid(), item => { return item.yearOrYearMonthValue == Number(newValue);});
-                    self.currentSelectItem(new SettingModel(itemSelect, self.employeeCode));
+                    let newValueNum = Number(newValue.toString().replace("/", ""));
+                    let itemSelect = _.find(self.listItemDataGrid(), item => { return item.yearOrYearMonthValue == newValueNum; });
+                    self.currentSelectItem(new SettingModel(itemSelect, self.employeeId));
+                    self.newMode(false);
+                    self.deleteEnable(true);
                 });
 
             }
@@ -40,21 +62,30 @@ module nts.uk.at.view.kmk008.k {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                self.listItemDataGrid([]);
                 if (self.isYearMonth) {
-                    new service.Service().getDetailYearMonth(self.employeeCode).done(data => {
+                    new service.Service().getDetailYearMonth(self.employeeId).done(data => {
                         if (data && data.length > 0) {
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearMonthValue, item.errorOneMonth, item.alarmOneMonth));
                             });
+                            self.isUpdate = true;
+                            self.currentCodeSelect(self.listItemDataGrid()[0].yearOrYearMonthValue);
+                        } else {
+                            self.setNewMode();
                         }
                         dfd.resolve();
                     });
                 } else {
-                    new service.Service().getDetailYear(self.employeeCode).done(data => {
+                    new service.Service().getDetailYear(self.employeeId).done(data => {
                         if (data && data.length) {
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearValue, item.errorOneYear, item.alarmOneYear));
                             });
+                            self.isUpdate = true;
+                            self.currentCodeSelect(self.listItemDataGrid()[0].yearOrYearMonthValue);
+                        } else {
+                            self.setNewMode();
                         }
                         dfd.resolve();
                     });
@@ -62,86 +93,235 @@ module nts.uk.at.view.kmk008.k {
 
                 return dfd.promise();
             }
-        }
 
-        export class ItemModel {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+            setNewMode() {
+                let self = this;
+                //                if (nts.uk.ui.errors.hasError()) {
+                //                    nts.uk.ui.errors.clearAll();
+                //                }
+                self.newMode(true);
+                self.isUpdate = false;
+                self.deleteEnable(false);
+                self.currentSelectItem(new SettingModel(null, self.employeeId));
+                self.currentCodeSelect(null);
             }
 
-        }
+            addOrUpdateClick() {
+                let self = this;
+                if (self.isUpdate) {
+                    self.updateData();
+                    return;
+                }
+                self.register();
+            }
 
-        export class ShowListModel {
-            yearOrYearMonthValue: number;
-            errorOneYearOrYearMonth: number;
-            alarmOneYearOrYearMonth: number;
-            constructor(yearOrYearMonthValue: number, errorOneYearOrYearMonth: number, alarmOneYearOrYearMonth: number) {
-                this.yearOrYearMonthValue = yearOrYearMonthValue;
-                this.errorOneYearOrYearMonth = errorOneYearOrYearMonth;
-                this.alarmOneYearOrYearMonth = alarmOneYearOrYearMonth;
+            register() {
+                let self = this;
+                let yearOrYearMonth = self.currentSelectItem().yearOrYearMonthValue().toString().length == 4 ?
+                    self.currentSelectItem().yearOrYearMonthValue() : Number(self.currentSelectItem().yearOrYearMonthValue().toString().replace("/", ""));
+                if (yearOrYearMonth == 0 || nts.uk.text.isNullOrEmpty(self.currentSelectItem().employeeId())) {
+                    return;
+                }
+                if (self.isYearMonth) {
+                    new service.Service().addAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done(() => {
+                        self.reloadData(yearOrYearMonth);
+                    });
+                } else {
+                    new service.Service().addAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done(() => {
+                        self.reloadData(yearOrYearMonth);
+                    });
+                }
             }
-        }
 
-        export class SettingModel {
-            employeeId: KnockoutObservable<string> = ko.observable("");
-            yearOrYearMonthValue: KnockoutObservable<number> = ko.observable(0);
-            errorOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(0);
-            alarmOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(0);
-            constructor(data: ShowListModel, employeeId: string) {
-                this.employeeId(employeeId);
-                if (!data) return;
-                this.yearOrYearMonthValue(data.yearOrYearMonthValue);
-                this.errorOneYearOrYearMonth(data.errorOneYearOrYearMonth);
-                this.alarmOneYearOrYearMonth(data.alarmOneYearOrYearMonth);
+            updateData() {
+                let self = this;
+                if (self.currentSelectItem().yearOrYearMonthValue() == 0 || nts.uk.text.isNullOrEmpty(self.currentSelectItem().employeeId())) {
+                    return;
+                }
+                if (self.isYearMonth) {
+                    new service.Service().updateAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done(() => {
+                        self.reloadData(self.currentCodeSelect());
+                    });
+                } else {
+                    new service.Service().updateAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done(() => {
+                        self.reloadData(self.currentCodeSelect());
+                    });
+                }
             }
-        }
-        export class AddUpdateMonthSettingModel {
-            employeeId: string = "";
-            yearMonthValue: number = 0;
-            errorOneMonth: number = 0;
-            alarmOneMonth: number = 0;
-            constructor(data: SettingModel) {
-                if (!data) return;
-                this.employeeId = data.employeeId();
-                this.yearMonthValue = data.yearOrYearMonthValue();
-                this.errorOneMonth = data.errorOneYearOrYearMonth();
-                this.alarmOneMonth = data.alarmOneYearOrYearMonth();
-            }
-        }
 
-        export class AddUpdateYearSettingModel {
-            employeeId: string = "";
-            yearValue: number = 0;
-            errorOneYear: number = 0;
-            alarmOneYear: number = 0;
-            constructor(data: SettingModel) {
-                if (!data) return;
-                this.employeeId = data.employeeId();
-                this.yearValue = data.yearOrYearMonthValue();
-                this.errorOneYear = data.errorOneYearOrYearMonth();
-                this.alarmOneYear = data.alarmOneYearOrYearMonth();
-            }
-        }
+            removeData() {
+                let self = this;
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        if (self.isYearMonth) {
+                            new service.Service().removeAgreementMonthSetting(new DeleteMonthSettingModel(self.employeeId, self.currentSelectItem().yearOrYearMonthValue()))
+                                .done(function() {
+                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", []));
+                                    self.reloadData(Number(self.currentSelectItem().yearOrYearMonthValue().toString().replace("/", "")), true);
+                                });
+                        } else {
+                            new service.Service().removeAgreementYearSetting(new DeleteYearSettingModel(self.employeeId, self.currentSelectItem().yearOrYearMonthValue()))
+                                .done(function() {
+                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", []));
+                                    self.reloadData(self.currentSelectItem().yearOrYearMonthValue(), true);
+                                });
+                        }
 
-        export class DeleteMonthSettingModel {
-            employeeId: string;
-            yearMonthValue: number;
-            constructor(employeeId: string, yearMonthValue: number) {
-                this.employeeId = employeeId;
-                this.yearMonthValue = yearMonthValue;
+                    });
             }
-        }
 
-        export class DeleteYearSettingModel {
-            employeeId: string;
-            yearValue: number;
-            constructor(employeeId: string, yearValue: number) {
-                this.employeeId = employeeId;
-                this.yearValue = yearValue;
+            closeDialogK() {
+                nts.uk.ui.windows.close();
             }
+
+            reloadData(oldSelectCode: number, isRemove?: boolean) {
+                let self = this;
+                let dfd = $.Deferred();
+                let oldSelectIndex = _.findIndex(self.listItemDataGrid(), item => { return item.yearOrYearMonthValue == oldSelectCode; });
+                self.listItemDataGrid([]);
+                if (self.isYearMonth) {
+                    new service.Service().getDetailYearMonth(self.employeeId).done(data => {
+                        if (data && data.length > 0) {
+                            _.forEach(data, item => {
+                                self.listItemDataGrid.push(new ShowListModel(item.yearMonthValue, item.errorOneMonth, item.alarmOneMonth));
+                            });
+                            self.isUpdate = true;
+                            if (isRemove && isRemove == true) {
+                                self.currentCodeSelect(self.getNewSelectRemove(oldSelectIndex));
+                            } else {
+                                self.currentCodeSelect(oldSelectCode);
+                            }
+
+                        } else {
+                            self.setNewMode();
+                        }
+                        dfd.resolve();
+                    });
+                } else {
+                    new service.Service().getDetailYear(self.employeeId).done(data => {
+                        if (data && data.length) {
+                            _.forEach(data, item => {
+                                self.listItemDataGrid.push(new ShowListModel(item.yearValue, item.errorOneYear, item.alarmOneYear));
+                            });
+                            self.isUpdate = true;
+                            if (isRemove && isRemove == true) {
+                                self.currentCodeSelect(self.getNewSelectRemove(oldSelectIndex));
+                            } else {
+                                self.currentCodeSelect(oldSelectCode);
+                            }
+                        } else {
+                            self.setNewMode();
+                        }
+                        dfd.resolve();
+                    });
+                }
+
+                return dfd.promise();
+            }
+
+            getNewSelectRemove(oldSelectIndex: number): number {
+                let self = this;
+                let dataLength = self.listItemDataGrid().length;
+                if (dataLength == 1 || oldSelectIndex > dataLength) {
+                    return self.listItemDataGrid()[0].yearOrYearMonthValue;
+                }
+                if (oldSelectIndex <= dataLength - 1) {
+                    return self.listItemDataGrid()[oldSelectIndex].yearOrYearMonthValue;
+                }
+                if (oldSelectIndex == dataLength) {
+                    return self.listItemDataGrid()[oldSelectIndex - 1].yearOrYearMonthValue;
+                }
+                return null;
+            }
+
         }
     }
+
+    export class ItemModel {
+        code: string;
+        name: string;
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    export class ShowListModel {
+        yearOrYearMonthValue: number;
+        errorOneYearOrYearMonth: number;
+        alarmOneYearOrYearMonth: number;
+        yearOrYearMonthFormat: string;
+        constructor(yearOrYearMonthValue: number, errorOneYearOrYearMonth: number, alarmOneYearOrYearMonth: number) {
+            this.yearOrYearMonthValue = yearOrYearMonthValue;
+            this.errorOneYearOrYearMonth = errorOneYearOrYearMonth;
+            this.alarmOneYearOrYearMonth = alarmOneYearOrYearMonth;
+            this.yearOrYearMonthFormat = yearOrYearMonthValue.toString().length > 4 ? nts.uk.time.parseYearMonth(yearOrYearMonthValue).format() : yearOrYearMonthValue.toString();
+        }
+    }
+
+    export class SettingModel {
+        employeeId: KnockoutObservable<string> = ko.observable("");
+        yearOrYearMonthValue: KnockoutObservable<number> = ko.observable(0);
+        errorOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(0);
+        alarmOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(0);
+        constructor(data: ShowListModel, employeeId: string) {
+            this.employeeId(employeeId);
+            if (!data) return;
+            this.yearOrYearMonthValue(data.yearOrYearMonthValue);
+            this.errorOneYearOrYearMonth(data.errorOneYearOrYearMonth);
+            this.alarmOneYearOrYearMonth(data.alarmOneYearOrYearMonth);
+        }
+    }
+    export class AddUpdateMonthSettingModel {
+        employeeId: string = "";
+        yearMonthValue: number = 0;
+        errorOneMonth: number = 0;
+        alarmOneMonth: number = 0;
+        constructor(data: SettingModel) {
+            if (!data) return;
+            this.employeeId = data.employeeId();
+            this.yearMonthValue = Number(data.yearOrYearMonthValue().toString().replace("/", ""));
+            this.errorOneMonth = data.errorOneYearOrYearMonth() || 0;
+            this.alarmOneMonth = data.alarmOneYearOrYearMonth() || 0;
+        }
+    }
+
+    export class AddUpdateYearSettingModel {
+        employeeId: string = "";
+        yearValue: number = 0;
+        errorOneYear: number = 0;
+        alarmOneYear: number = 0;
+        constructor(data: SettingModel) {
+            if (!data) return;
+            this.employeeId = data.employeeId();
+            this.yearValue = Number(data.yearOrYearMonthValue());
+            this.errorOneYear = data.errorOneYearOrYearMonth() || 0;
+            this.alarmOneYear = data.alarmOneYearOrYearMonth() || 0;
+        }
+    }
+
+    export class DeleteMonthSettingModel {
+        employeeId: string;
+        yearMonthValue: number;
+        constructor(employeeId: string, yearMonthValue: number) {
+            this.employeeId = employeeId;
+            this.yearMonthValue = Number(yearMonthValue.toString().replace("/", ""));
+        }
+    }
+
+    export class DeleteYearSettingModel {
+        employeeId: string;
+        yearValue: number;
+        constructor(employeeId: string, yearValue: number) {
+            this.employeeId = employeeId;
+            this.yearValue = yearValue;
+        }
+    }
+
+    interface IData {
+        employeeId?: string;
+        employeeName: string;
+        isYearMonth: boolean;
+    }
 }
+
