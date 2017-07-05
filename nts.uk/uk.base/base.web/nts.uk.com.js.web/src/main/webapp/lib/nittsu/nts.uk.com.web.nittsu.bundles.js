@@ -10493,6 +10493,7 @@ var nts;
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var selected = data.selected;
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+                        var enable = ko.unwrap(data.enable);
                         var selectedKey = null;
                         if (data.selectedKey) {
                             selectedKey = ko.unwrap(data.selectedKey);
@@ -10618,6 +10619,9 @@ var nts;
                             nextSearch();
                         });
                         $container.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
+                        if (enable === false) {
+                            $container.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
+                        }
                     };
                     NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $searchBox = $(element);
@@ -10626,6 +10630,7 @@ var nts;
                         var searchMode = ko.unwrap(data.searchMode);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var selectedValue = ko.unwrap(data.selected);
+                        var enable = ko.unwrap(data.enable);
                         var targetMode = data.mode;
                         var component;
                         if (targetMode === "listbox") {
@@ -10652,6 +10657,12 @@ var nts;
                             }
                         }
                         srhX.setDataSource(arr);
+                        if (enable === false) {
+                            $searchBox.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
+                        }
+                        else {
+                            $searchBox.find(".ntsSearchBox_Component").removeAttr('disabled');
+                        }
                     };
                     return NtsSearchBoxBindingHandler;
                 }());
