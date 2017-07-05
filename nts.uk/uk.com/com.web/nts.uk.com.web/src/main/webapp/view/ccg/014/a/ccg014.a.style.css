@@ -12,6 +12,6 @@ button.x-large { margin: 30px 0px 10px 0px;}
 .preview-container {padding:10px; border:1px solid #a0a0a0; margin-top:25px; border-radius: 3px;}
 #preview-iframe {width:630px; height:300px;}
 #registration{margin-left: 5px; margin-right: 5px; width:70px;}
-#flow_setting{margin-left: 5px; margin-right: 5px; width:150px;}
+#flow_setting{margin-left: 5px; margin-right: 25px; width:150px;}
 #copy{width:70px;}
 #delete{width:70px;}
