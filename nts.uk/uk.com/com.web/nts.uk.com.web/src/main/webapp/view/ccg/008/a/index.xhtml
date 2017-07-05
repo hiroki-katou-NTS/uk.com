@@ -16,7 +16,7 @@
 			<com:scriptfile path="ccg008.a.start.js" />
 			<com:scriptfile path="ccg008.a.service.js" />
 			<com:scriptfile path="ccg008.a.vm.js" />
-			<!-- <com:scriptfile path="../d/ccg008.d.main.js" /> -->
+			<com:scriptfile path="../d/ccg008.d.main.js" />
 			<com:stylefile path="../../common/common.css" />
 		</ui:define>
 
@@ -31,12 +31,11 @@
 						<div class="placement-wraper">
 								<div class="widget-container">
 									<com:ko-foreach bind="placements">
-										<div class="widget-panel preview" data-bind="attr: {id: placementID}">
+										<div class="widget-panel preview" data-bind="attr: {id: 'toppage_' + placementID}">
 											<div class="panel-header">
 												<span class="title" data-bind="text: name"></span>
 											</div>
-											<div class="panel-content placeholder" data-bind="html: html">												
-											</div>
+											<div class="panel-content placeholder" data-bind="html: html"/>												
 										</div>
 									</com:ko-foreach>
 								</div>
@@ -45,17 +44,17 @@
 					<div class="tab-content-2">
 						<!-- マイページ(my page) -->
 						<div class="placement-wraper">
-								<div class="widget-container">
-									<com:ko-foreach bind="placements">
-										<div class="widget-panel preview" data-bind="attr: {id: placementID}">
-											<div class="panel-header">
-												<span class="title" data-bind="text: name"></span>
-											</div>
-											<div class="panel-content placeholder" data-bind="html: html">
-											</div>
+							<div class="widget-container">
+								<com:ko-foreach bind="placements">
+									<div class="widget-panel preview" data-bind="attr: {id: 'mypage_' + placementID}">
+										<div class="panel-header">
+											<span class="title" data-bind="text: name"></span>
 										</div>
-									</com:ko-foreach>
-								</div>
+										<div class="panel-content placeholder" data-bind="html: html">
+										</div>
+									</div>
+								</com:ko-foreach>
+							</div>
 						</div>
 					</div>
 					</div>

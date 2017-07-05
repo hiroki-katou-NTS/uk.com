@@ -262,6 +262,8 @@ module nts.uk.at.view.kmk012.a {
                 dto.closeName = self.closureHistoryModel.closureName();
                 dto.closureId = self.closureHistoryModel.closureId();
                 dto.closureDate = self.closureHistoryModel.closureDate();
+                dto.startDate = self.closureHistoryModel.startDate();
+                dto.endDate = self.closureHistoryModel.e;
                 return dto;    
             }
             
@@ -357,6 +359,7 @@ module nts.uk.at.view.kmk012.a {
             
             
              startDate: KnockoutObservable<number>;
+            
 
             constructor(){
                 this.closureId = ko.observable(0);

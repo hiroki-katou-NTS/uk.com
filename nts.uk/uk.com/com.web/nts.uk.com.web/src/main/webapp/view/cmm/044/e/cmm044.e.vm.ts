@@ -15,7 +15,7 @@ module cmm044.e.viewmodel {
             self.employeeList = ko.observable("");
             self.personId = ko.observable("");
             self.personSelectedItem.subscribe(function(personId) {
-                var currentPerson = self.findEmpoyee(personId);
+                var currentPerson = self.findEmployee(personId);
                 self.employeeList(currentPerson);
             });
             self.tab = ko.observable(nts.uk.ui.windows.getShared('cmm044_Tab'));
@@ -59,7 +59,7 @@ module cmm044.e.viewmodel {
 
         }
 
-        findEmpoyee(value: string): any {
+        findEmployee(value: string): any {
             let self = this;
             return _.find(self.personList(), function(obj: AgentData) {
                 return obj.personId === value;
