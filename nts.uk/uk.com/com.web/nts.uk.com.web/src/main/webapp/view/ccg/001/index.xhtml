@@ -122,21 +122,14 @@
 							</div>
 							<div id="tabs-viewmodel" class="cf">
 								<h2>TypeScript</h2>
-<pre><![CDATA[export class ScreenModel {
+<pre><![CDATA[import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    export class ScreenModel {
         ccgcomponent: GroupOption;
-        selectedCode: KnockoutObservableArray<string>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
         // Options
         baseDate: KnockoutObservable<Date>;
-        isQuickSearchTab: boolean;
-        isAdvancedSearchTab: boolean;
-        isAllReferableEmployee: boolean;
-        isOnlyMe: boolean;
-        isEmployeeOfWorkplace: boolean;
-        isEmployeeWorkplaceFollow: boolean;
-        isMutipleCheck: boolean;
-        isSelectAllEmployee: boolean;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
         
 		constructor() {
