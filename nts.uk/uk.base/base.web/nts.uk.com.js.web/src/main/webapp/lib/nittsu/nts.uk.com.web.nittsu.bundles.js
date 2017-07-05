@@ -4210,8 +4210,8 @@ var nts;
                                             $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
                                         }
                                         else {
-                                            var index = parseInt($(selected["element"]).attr("data-row-idx"));
-                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : index); //.scrollTop(scrollTop);    
+                                            var index = $(selected["element"]).attr("data-row-idx");
+                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                                         }
                                     }
                                 });
