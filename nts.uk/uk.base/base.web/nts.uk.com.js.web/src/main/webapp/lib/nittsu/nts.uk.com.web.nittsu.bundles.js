@@ -4198,8 +4198,8 @@ var nts;
                                             $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
                                         }
                                         else {
-                                            var index = parseInt($(selected["element"]).attr("data-row-idx"));
-                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : index); //.scrollTop(scrollTop);    
+                                            var index = $(selected["element"]).attr("data-row-idx");
+                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                                         }
                                     }
                                 });
@@ -8224,7 +8224,7 @@ var nts;
                             var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 // Check equals to avoid multi datepicker with same value
-                                $input.datepicker('setDate', new Date(dateFormatValue));
+                                $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
                             else {
