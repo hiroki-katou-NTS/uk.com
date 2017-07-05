@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 690, height: 600 };</script>
+			<script>var dialogSize = { width: 510, height: 600 };</script>
 			<com:stylefile path="ccg013.f.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg013.f.start.js" />
@@ -30,13 +30,13 @@
 			<div class="contents-area">
 				<table id="table">
 					<tr>
-						<td><div
+						<td><div 
 								data-bind="ntsFormLabel: {required: true, enable: true}">#{i18n.getText('CCG013_62')}</div></td>
 						<td><div tabindex="1"
 								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 						<td><div tabindex="2">
-								<button class="search-btn caret-bottom">#{i18n.getText('CCG013_63')}</button>
+								<button id="btnSearch" data-bind="click: search" class="search-btn caret-bottom">#{i18n.getText('CCG013_63')}</button>
 							</div></td>
 					</tr>
 				</table>
@@ -49,11 +49,11 @@
 							<th>#{i18n.getText('CCG013_65')}</th>
 							<th>#{i18n.getText('CCG013_66')}</th>
 							<th data-bind="visible: true">#{i18n.getText('CCG013_67')}</th>
-							<th></th>
+							<th data-bind="visible: isHeaderScroll"></th>
 						</tr>
 					</thead>
 					<tbody>
-						<com:ko-foreach bind="listJobTitle">
+						<com:ko-foreach bind="listEntity">
 							<tr>
 								<td data-bind="text: $data.code"></td>
 								<td data-bind="text: $data.name"></td>
@@ -62,8 +62,8 @@
 										data-bind="ntsComboBox: {
  													options: $parent.comboWebMenuCode, 
  													optionsValue: 'webMenuCode', 
- 													value: $parent.selectedCode, 
 													optionsText: 'webMenuName', 
+													value: $data.selectedCode,
  													editable: false, 
  													enable: true, 
  													columns: [ 

@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.record.dom.standardtime.enums;
 
-import lombok.AllArgsConstructor;
-
 /**
  * 
  * @author nampt
  *
  */
-@AllArgsConstructor
 public enum TargetSettingAtr {
 	
 	/*
@@ -19,4 +16,8 @@ public enum TargetSettingAtr {
 	AUXILIARY_MONTH_DATA(1);
 
 	public final int value;
+	
+	private TargetSettingAtr(int type) {
+		this.value = type;
+	}
 }

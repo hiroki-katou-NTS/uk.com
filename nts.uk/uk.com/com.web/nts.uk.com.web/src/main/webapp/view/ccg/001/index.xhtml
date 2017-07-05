@@ -32,6 +32,7 @@
 				<div id="content" class="cf">
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
 					<h2>Overview</h2>
+					<div id="ccgcomponent"></div>
 					<div class="pull-left left-options" style="margin-right: 100px">
 						<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show/hide tab クイック検索</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show/hide tab 詳細検索タブ</div><br/>
@@ -45,26 +46,31 @@
 						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show  全社員タイプ / 社員指定タイプ</div>
 					</div>
 					<hr/>
-					<div>
-						<p>Test</p>
-						<p>Test</p>
-						<p>Test</p>
-						<p>Test</p>
+					<div style="margin-left: 100px;">
+						<div class="labelselect">List data returned:</div>
+						<div style="min-height: 370px">
+							<table>
+								<tr>
+									<td><b>EmployeeId</b></td>
+									<td><b>EmployeeCode</b></td>
+									<td><b>EmployeeName</b></td>
+									<td><b>WorkplaceId</b></td>
+									<td><b>WorkplaceCode</b></td>
+									<td><b>WorkplaceName</b></td>
+								</tr>
+								<com:ko-foreach bind="selectedEmployee">
+									<tr>
+										<td data-bind="text: employeeId"></td>
+										<td data-bind="text: employeeCode"></td>
+										<td data-bind="text: employeeName"></td>
+										<td data-bind="text: workplaceId"></td>
+										<td data-bind="text: workplaceCode"></td>
+										<td data-bind="text: workplaceName"></td>
+									</tr>
+								</com:ko-foreach>
+							</table>
+						</div>
 					</div>
-					<div id="ccgcomponent"></div>
-					<div data-bind="if: showinfoSelectedEmployee()">
-						<label class="labelselect">Select employee</label> 
-						<com:ko-foreach bind="selectedEmployee">
-							<label class="labelselect">{employeeId:</label> <label class="labelselect" data-bind="text: employeeId"></label> 
-							<label class="labelselect" >,employeeCode:</label> <label class="labelselect" data-bind="text: employeeCode"></label>
-							<label class="labelselect" >,employeeName:</label> <label class="labelselect" data-bind="text: employeeName"></label>
-							<label class="labelselect" >,workplaceId:</label> <label class="labelselect" data-bind="text: workplaceId"></label>
-							<label class="labelselect" >,workplaceCode:</label> <label class="labelselect" data-bind="text: workplaceCode"></label>
-							<label class="labelselect" >,workplaceName:</label> <label class="labelselect" data-bind="text: workplaceName"></label>
-							<label class="labelselect">}</label> <br/>
-						</com:ko-foreach>
-					</div>
-
 
 					<article class="cf">
 						<div class="tabs">
@@ -88,16 +94,29 @@
 								<pre><![CDATA[<div id="ccgcomponent"></div>]]></pre>
 								<p>The data to display.</p>
 <pre><![CDATA[<div data-bind="if: showinfoSelectedEmployee()">
-	<label class="labelselect">Select employee</label> 
-	<com:ko-foreach bind="selectedEmployee">
-		<label class="labelselect">{employeeId:</label> <label class="labelselect" data-bind="text: employeeId"></label> 
-		<label class="labelselect" >,employeeCode:</label> <label class="labelselect" data-bind="text: employeeCode"></label>
-		<label class="labelselect" >,employeeName:</label> <label class="labelselect" data-bind="text: employeeName"></label>
-		<label class="labelselect" >,workplaceId:</label> <label class="labelselect" data-bind="text: workplaceId"></label>
-		<label class="labelselect" >,workplaceCode:</label> <label class="labelselect" data-bind="text: workplaceCode"></label>
-		<label class="labelselect" >,workplaceName:</label> <label class="labelselect" data-bind="text: workplaceName"></label>
-		<label class="labelselect">}</label> <br/>
-	</com:ko-foreach>
+	<br/>
+	<div class="labelselect">List data returned:</div>
+	<br/> 
+	<table>
+		<tr>
+			<td><b>EmployeeId</b></td>
+			<td><b>EmployeeCode</b></td>
+			<td><b>EmployeeName</b></td>
+			<td><b>WorkplaceId</b></td>
+			<td><b>WorkplaceCode</b></td>
+			<td><b>WorkplaceName</b></td>
+		</tr>
+		<com:ko-foreach bind="selectedEmployee">
+			<tr>
+				<td data-bind="text: employeeId"></td>
+				<td data-bind="text: employeeCode"></td>
+				<td data-bind="text: employeeName"></td>
+				<td data-bind="text: workplaceId"></td>
+				<td data-bind="text: workplaceCode"></td>
+				<td data-bind="text: workplaceName"></td>
+			</tr>
+		</com:ko-foreach>
+	</table>
 </div>]]>
 </pre>
 							</div>
@@ -107,19 +126,10 @@
 import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     export class ScreenModel {
         ccgcomponent: GroupOption;
-        selectedCode: KnockoutObservableArray<string>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
         // Options
         baseDate: KnockoutObservable<Date>;
-        isQuickSearchTab: KnockoutObservable<boolean>;
-        isAdvancedSearchTab: KnockoutObservable<boolean>;
-        isAllReferableEmployee: KnockoutObservable<boolean>;
-        isOnlyMe: KnockoutObservable<boolean>;
-        isEmployeeOfWorkplace: KnockoutObservable<boolean>;
-        isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
-        isMutipleCheck: KnockoutObservable<boolean>;
-        isSelectAllEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
         
 		constructor() {
@@ -131,14 +141,14 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
             self.ccgcomponent = {
                baseDate: self.baseDate,
                <!-- Show/hide options -->
-               isQuickSearchTab: self.isQuickSearchTab(),
-               isAdvancedSearchTab: self.isAdvancedSearchTab(),
-               isAllReferableEmployee: self.isAllReferableEmployee(),
-               isOnlyMe: self.isOnlyMe(),
-               isEmployeeOfWorkplace: self.isEmployeeOfWorkplace(),
-               isEmployeeWorkplaceFollow: self.isEmployeeWorkplaceFollow(),
-               isMutipleCheck: self.isMutipleCheck(),
-               isSelectAllEmployee: self.isSelectAllEmployee(),
+               isQuickSearchTab: true,
+               isAdvancedSearchTab: true,
+               isAllReferableEmployee: true,
+               isOnlyMe: true,
+               isEmployeeOfWorkplace: true,
+               isEmployeeWorkplaceFollow: true,
+               isMutipleCheck: true,
+               isSelectAllEmployee: true,
 
                <!-- Event options -->
                /**

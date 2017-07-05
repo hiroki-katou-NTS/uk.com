@@ -34,7 +34,7 @@ public class KmnmtAffiliClassificationHistPK implements Serializable {
     /** The empId. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "EMP_ID")
+    @Column(name = "SID")
     private String empId;
     
     /** The clscd. */

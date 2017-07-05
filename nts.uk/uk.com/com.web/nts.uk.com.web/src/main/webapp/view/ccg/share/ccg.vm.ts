@@ -144,22 +144,29 @@ module nts.uk.com.view.ccg.share.ccg {
                     });
                     dfd.resolve();
                 });
-
+                
+                $(window).on('click', function(e) {
+                    if (e.target.id == "ccg-component" || $(e.target).parents("#ccg-component")[0]) {
+                        return;
+                    }
+                    if (self.isShow()) {
+                        $('#ccg-component').toggle("slide", function() {
+                            self.isShow(false);
+                        });
+                    }
+                });
                 return dfd.promise();
             }
             
             showHide() {
                 var self = this;
                 if (self.isShow()) {
-                    $('#ccg-component').toggle("slide", function() {
-                        $('#hor-scroll-button-hide').show();
-                        self.isShow(false);
-                    });
-                } else {
-                    $('#hor-scroll-button-hide').hide();
-                    $('#ccg-component').toggle("slide");
-                    self.isShow(true);
+                    return;
                 }
+                $('#hor-scroll-button-hide').hide();
+                $('#ccg-component').toggle("slide", function() {
+                    self.isShow(true);
+                });
             }
 
             searchAllEmployee(): void {
@@ -193,6 +200,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         $('#jobtitleList').ntsListComponent(self.jobtitles);
                         $('#workplaceList').ntsTreeComponent(self.workplaces);
                     }
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError(error);
                 });
 
             }
@@ -222,6 +231,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         isShowNoSelectRow: false,
                     }
                     $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                }).fail(function(error){
+                   nts.uk.ui.dialog.alertError(error); 
                 });
 
             }
@@ -262,6 +273,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.isSelectAllEmployee) {
                     service.searchModeEmployee(self.toEmployeeDto()).done(data => {
                         self.onApplyEmployee(data);
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 } else {
                     

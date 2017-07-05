@@ -9,12 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingAddCommand;
-import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingAddCommandHandler;
-import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingDeleteCommand;
-import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingDeleteCommandHandler;
-import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingCommand;
+import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.WPBonusPaySettingDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.WPBonusPaySettingFinder;
 
@@ -22,42 +18,26 @@ import nts.uk.ctx.at.shared.app.find.bonuspay.WPBonusPaySettingFinder;
 @Produces("application/json")
 public class WPBonusPaySettingWebService extends WebService {
 	@Inject
-	private WPBonusPaySettingFinder wpBonusPaySettingFinder;
+	private WPBonusPaySettingFinder finder;
+
 	@Inject
-	private WPBonusPaySettingAddCommandHandler wpBonusPaySettingAddCommandHandler;
-	@Inject
-	private WPBonusPaySettingDeleteCommandHandler wpBonusPaySettingDeleteCommandHandler;
-	@Inject
-	private WPBonusPaySettingUpdateCommandHandler wpBonusPaySettingUpdateCommandHandler;
+	private WPBonusPaySettingCommandHandler commandHandler;
 
 	@POST
-	@Path("getListWPBonusPaySettingSetting")
+	@Path("getListWPBonusPaySetting")
 	public List<WPBonusPaySettingDto> getListWPBonusPaySettingSetting(List<String> lstWorkplace) {
-		return this.wpBonusPaySettingFinder.getListSetting(lstWorkplace);
-	}
-
-	@POST
-	@Path("addWPBonusPaySettingSetting")
-	public void addWPBonusPaySettingSetting(WPBonusPaySettingAddCommand wpBonusPaySettingAddCommand) {
-		this.wpBonusPaySettingAddCommandHandler.handle(wpBonusPaySettingAddCommand);
-	}
-
-	@POST
-	@Path("updateWPBonusPaySettingSetting")
-	public void updateWPBonusPaySettingSetting(WPBonusPaySettingUpdateCommand wpBonusPaySettingUpdateCommand) {
-		this.wpBonusPaySettingUpdateCommandHandler.handle(wpBonusPaySettingUpdateCommand);
-	}
-
-	@POST
-	@Path("removeWPBonusPaySettingSetting")
-	public void removeWPBonusPaySettingSetting(WPBonusPaySettingDeleteCommand wpBonusPaySettingDeleteCommand) {
-		this.wpBonusPaySettingDeleteCommandHandler.handle(wpBonusPaySettingDeleteCommand);
+		return this.finder.getListSetting(lstWorkplace);
 	}
 
 	@POST
 	@Path("getWPBPSetting/{WorkplaceId}")
 	public WPBonusPaySettingDto getWPBPSetting(@PathParam("WorkplaceId") String WorkplaceId) {
-		return this.wpBonusPaySettingFinder.getWPBPSetting(WorkplaceId);
+		return this.finder.getWPBPSetting(WorkplaceId);
 	}
 
+	@POST
+	@Path("saveWpBonsPaySetting")
+	public void addWPBonusPaySettingSetting(WPBonusPaySettingCommand command) {
+		this.commandHandler.handle(command);
+	}
 }

@@ -14,17 +14,18 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class CompanyBPSettingFinder {
 	@Inject
-	private CPBonusPaySettingRepository cpBonusPaySettingRepository;
+	private CPBonusPaySettingRepository repo;
 
 	public CompanyBPSettingDto getSetting() {
 		String companyId = AppContexts.user().companyId();
-		Optional<CompanyBonusPaySetting> companyBonusPaySetting = cpBonusPaySettingRepository.getSetting(companyId);
-		if(companyBonusPaySetting.isPresent()){
-			return this.toCompanyBPSettingDto(companyBonusPaySetting.get());
-		}
-		return null;
-		
 
+		Optional<CompanyBonusPaySetting> domain = repo.getSetting(companyId);
+
+		if (domain.isPresent()) {
+			return this.toCompanyBPSettingDto(domain.get());
+		}
+
+		return null;
 	}
 
 	private CompanyBPSettingDto toCompanyBPSettingDto(CompanyBonusPaySetting companyBonusPaySetting) {
