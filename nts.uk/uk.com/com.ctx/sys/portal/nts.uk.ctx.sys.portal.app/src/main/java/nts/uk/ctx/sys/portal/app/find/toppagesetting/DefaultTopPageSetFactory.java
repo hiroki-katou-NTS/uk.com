@@ -87,18 +87,21 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		for (PlacementDto placementDto : placementDtos) {
 			if(placementDto.getPlacementPartDto().getExternalUrl() == null && placementDto.getPlacementPartDto().getType().intValue() == 2){
 				FlowMenuDto flowMenu = flowmenu.getFlowMenu(placementDto.getPlacementPartDto().getTopPagePartID());
-				FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
-						flowMenu.getTopPageCode(),
-						flowMenu.getTopPageName(),
-						flowMenu.getType(),
-						flowMenu.getWidthSize(),
-						flowMenu.getHeightSize(),
-						flowMenu.getFileID(),
-						flowMenu.getFileName(),
-						flowMenu.getDefClassAtr(),
-						placementDto.getRow(),
-						placementDto.getColumn());
-				if(flowMenu != null) flowmenuNew.add(fMenu);
+				if(flowMenu != null){
+					FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
+							flowMenu.getTopPageCode(),
+							flowMenu.getTopPageName(),
+							flowMenu.getType(),
+							flowMenu.getWidthSize(),
+							flowMenu.getHeightSize(),
+							flowMenu.getFileID(),
+							flowMenu.getFileName(),
+							flowMenu.getDefClassAtr(),
+							placementDto.getRow(),
+							placementDto.getColumn());
+					flowmenuNew.add(fMenu);
+				}
+				continue;
 			}else{
 				placementNew.add(placementDto);
 			}
@@ -150,18 +153,21 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		for (PlacementDto placementDto : placementDtos) {
 			if(placementDto.getPlacementPartDto().getExternalUrl()== null && placementDto.getPlacementPartDto().getType().intValue() == 2){
 					FlowMenuDto flowMenu = flowmenu.getFlowMenu(placementDto.getPlacementPartDto().getTopPagePartID());
-					FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
-							flowMenu.getTopPageCode(),
-							flowMenu.getTopPageName(),
-							flowMenu.getType(),
-							flowMenu.getWidthSize(),
-							flowMenu.getHeightSize(),
-							flowMenu.getFileID(),
-							flowMenu.getFileName(),
-							flowMenu.getDefClassAtr(),
-							placementDto.getRow(),
-							placementDto.getColumn());
-					if(flowMenu != null) flowmenuNew.add(fMenu);
+					if(flowMenu != null){
+						FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
+								flowMenu.getTopPageCode(),
+								flowMenu.getTopPageName(),
+								flowMenu.getType(),
+								flowMenu.getWidthSize(),
+								flowMenu.getHeightSize(),
+								flowMenu.getFileID(),
+								flowMenu.getFileName(),
+								flowMenu.getDefClassAtr(),
+								placementDto.getRow(),
+								placementDto.getColumn());
+						flowmenuNew.add(fMenu);
+					}
+					continue;
 			}else{
 				placementNew.add(placementDto);
 			}

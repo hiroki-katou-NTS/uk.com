@@ -61,7 +61,7 @@ public class JpaAffiliationJobTitleHistoryGetMemento
 	 * JobTitleHistoryGetMemento#getPositionId()
 	 */
 	@Override
-	public PositionId getPositionId() {
+	public PositionId getJobTitleId() {
 		return new PositionId(this.jobTitleHistory.getKmnmtJobTitleHistPK().getJobId());
 	}
 

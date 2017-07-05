@@ -26,9 +26,9 @@ public class AffiliationJobTitleHistory extends AggregateRoot{
 	private EmployeeId employeeId;
 	
 	
-	/** The position id. */
+	/** The job title id. */
 	// 職位ID
-	private PositionId positionId;
+	private PositionId jobTitleId;
 	
 	
 	/**
@@ -39,7 +39,7 @@ public class AffiliationJobTitleHistory extends AggregateRoot{
 	public AffiliationJobTitleHistory(AffiliationJobTitleHistoryGetMemento memento) {
 		this.period = memento.getPeriod();
 		this.employeeId = memento.getEmployeeId();
-		this.positionId = memento.getPositionId();
+		this.jobTitleId = memento.getJobTitleId();
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class AffiliationJobTitleHistory extends AggregateRoot{
 	public void saveToMemento(AffiliationJobTitleHistorySetMemento memento){
 		memento.setPeriod(this.period);
 		memento.setEmployeeId(this.employeeId);
-		memento.setPositionId(this.positionId);
+		memento.setJobTitleId(this.jobTitleId);
 	}
 	
 }

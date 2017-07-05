@@ -1,24 +1,38 @@
 module nts.uk.at.view.kmk008.k {
+    import getText = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
         export class ScreenModel {
             currentCodeSelect: KnockoutObservable<string>;
             currentSelectItem: KnockoutObservable<SettingModel>;
             count: number = 4;
 
+            newMode: KnockoutObservable<boolean>;
             isYearMonth: boolean = false;
-            employeeCode: string = "A0000001";
-            employeeName: string = "test cho vui";
-            yearLabel: string;
-            yearErrorTimeLabel: string;
-            yearAlarmTimeLabel: string;
+            employeeId: KnockoutObservable<string>;
+            employeeName: KnockoutObservable<string>;
+            yearLabel: KnockoutObservable<string>;
+            yearErrorTimeLabel: KnockoutObservable<string>;
+            yearAlarmTimeLabel: KnockoutObservable<string>;
             listItemDataGrid: KnockoutObservableArray<ShowListModel>;
 
             constructor() {
-                let self = this;
+                let self = this,
+                    dto: IData = nts.uk.ui.windows.getShared("KMK_008_PARAMS") || { employeeId: '', employeeName: '', isYearMonth : false };
+
+                self.newMode = ko.observable(false);
+                
+                self.isYearMonth = dto.isYearMonth;
+                self.employeeId = dto.employeeId;
+                self.employeeName = dto.employeeName;
                 self.date = ko.observable(200001);
                 self.listItemDataGrid = ko.observableArray([]);
-                self.currentCodeSelect = ko.observable("");
-                self.currentSelectItem = ko.observable(new SettingModel(null, self.employeeCode));
+                self.currentCodeSelect = ko.observable(dto.employeeId);
+                self.currentSelectItem = ko.observable(new SettingModel(null, self.employeeId));
 
                 self.isYearMonth = false;
                 self.yearErrorTimeLabel = nts.uk.resource.getText("KMK008_19");
@@ -31,8 +45,8 @@ module nts.uk.at.view.kmk008.k {
 
                 self.currentCodeSelect.subscribe(newValue => {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                   let itemSelect = _.find(self.listItemDataGrid(), item => { return item.yearOrYearMonthValue == Number(newValue);});
-                    self.currentSelectItem(new SettingModel(itemSelect, self.employeeCode));
+                    let itemSelect = _.find(self.listItemDataGrid(), item => { return item.yearOrYearMonthValue == Number(newValue); });
+                    self.currentSelectItem(new SettingModel(itemSelect, self.employeeId));
                 });
 
             }
@@ -41,26 +55,46 @@ module nts.uk.at.view.kmk008.k {
                 let self = this;
                 let dfd = $.Deferred();
                 if (self.isYearMonth) {
-                    new service.Service().getDetailYearMonth(self.employeeCode).done(data => {
+                    new service.Service().getDetailYearMonth(self.employeeId).done(data => {
                         if (data && data.length > 0) {
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearMonthValue, item.errorOneMonth, item.alarmOneMonth));
                             });
+                        } else {
+                            self.setNewMode();    
                         }
                         dfd.resolve();
                     });
                 } else {
-                    new service.Service().getDetailYear(self.employeeCode).done(data => {
+                    new service.Service().getDetailYear(self.employeeId).done(data => {
                         if (data && data.length) {
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearValue, item.errorOneYear, item.alarmOneYear));
                             });
+                        } else {
+                            self.setNewMode();    
                         }
                         dfd.resolve();
                     });
                 }
 
                 return dfd.promise();
+            }
+
+            setNewMode() {
+                let self = this;
+                self.newMode(true);
+                self.currentSelectItem(new SettingModel([], self.employeeId);
+            }
+            
+            register(){
+                let self = this; 
+                if(self.isYearMonth){
+                    new service.Service().addAgreementYearSetting(self.currentSelectItem())    
+                } else {
+                    new service.Service().addAgreementMonthSetting(self.currentSelectItem());    
+                }
+                
             }
         }
 
@@ -143,5 +177,12 @@ module nts.uk.at.view.kmk008.k {
                 this.yearValue = yearValue;
             }
         }
+
+        interface IData {
+            employeeId?: string;
+            employeeName: string;
+            isYearMonth : boolean;
+        }
     }
+
 }

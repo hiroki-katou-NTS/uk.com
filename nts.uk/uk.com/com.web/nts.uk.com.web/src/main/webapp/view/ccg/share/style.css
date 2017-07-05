@@ -18,8 +18,8 @@
 }
 
 .contentkcp {
-	min-height: 550px;
-	max-width: 550px;
+	min-height: 500px;
+	padding: 0 !important;
 }
 
 .centerkcp {
@@ -38,13 +38,13 @@
 }
 
 .accordion {
-	max-width: 550px;
+	width: 420px;
 }
 .btn-quick-search {
 	cursor: pointer;
 }
 .btn_big {
-	width: 255px;
+	width: 370px;
 	background-color: #2ECC71;
 	padding-top: 9px;
 	padding-bottom: 19px;
@@ -59,7 +59,7 @@
 	background-color: #2BBF6A;
 }
 .btn_small {
-	width: 255px;
+	width: 370px;
 	background-color: #2ECC71;
 	padding-bottom: 10px;
 	margin-top: 5px;
@@ -73,7 +73,7 @@
 	background-color: #2BBF6A;
 }
 .btn_apply {
-	width: 550px;
+	width: 100%;
 	height: 25px;
 	text-align: center;
 	background-color: #2ECC71;
@@ -90,7 +90,7 @@
 }
 
 .caret-background.caret-bottom:after {
-	left: 39%;
+	left: 36%;
 	color: #AEEE60;
 	border-width: 18px 52px;
 	margin-top: 4px;
@@ -151,13 +151,15 @@
 	vertical-align: super;
 	margin-left: 20px;
 }
-
-#ccgcomponent {
+.tab-content-2 {
+	overflow-y: scroll;
 	height: 500px;
 }
+#ccgcomponent {
+	height: 800px;
+}
 #ccg-component {
-	width: 340px;
-    height: 500px;
-    float: left;
-    position: absolute;
+	height: 500px;
+	float: left;
+	position: absolute;
 }

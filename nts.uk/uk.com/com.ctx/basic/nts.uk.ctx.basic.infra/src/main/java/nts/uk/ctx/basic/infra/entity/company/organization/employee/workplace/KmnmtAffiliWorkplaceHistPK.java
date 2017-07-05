@@ -35,7 +35,7 @@ public class KmnmtAffiliWorkplaceHistPK implements Serializable {
     /** The empId. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "EMP_ID")
+    @Column(name = "SID")
     private String empId;
     
     /** The wpl id. */
