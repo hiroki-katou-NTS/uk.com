@@ -130,6 +130,7 @@ module ccg014.a.viewmodel {
 
         /** Open Copy TitleMenu (CCG 014B Dialog) */
         openBDialog() {
+            block.invisible();
             var self = this;
             var selectTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
             windows.setShared("copyData", selectTitleMenu);
@@ -141,6 +142,7 @@ module ccg014.a.viewmodel {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_20" });
                     });
                 }
+                block.clear();
             });
         }
 
@@ -163,7 +165,10 @@ module ccg014.a.viewmodel {
 
         /** Open FlowMenu Setting(030A Dialog) */
         open030A_Dialog() {
-            windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: nts.uk.resource.getText("CCG030_1"), dialogClass: "no-close" });
+            block.invisible();
+            windows.sub.modal("/view/ccg/030/a/index.xhtml").onClosed(() => {
+                block.clear();
+            });
         }
 
         /** Get Selected TitleMenu */

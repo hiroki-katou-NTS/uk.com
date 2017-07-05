@@ -157,7 +157,7 @@ module ccg030.a.viewmodel {
                 onSuccess: function() { },
                 onFail: function() { }
             }
-
+            nts.uk.ui.block.invisible();
             $("#file_upload").ntsFileUpload(option).done(function(res) {
                 self.tempFileID(res[0].id);
                 self.selectedFlowMenu().fileID(res[0].id);
