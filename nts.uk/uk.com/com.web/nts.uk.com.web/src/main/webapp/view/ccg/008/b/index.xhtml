@@ -14,17 +14,21 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="content-area" class="body">
-				<div id="functions-area-bottom">
-					<button id="b1_003" class="large" data-bind="click: closeDialog" >#{i18n.getText('CCG008_6')}</button>
-				</div>
-				<br/>
 				<div class="functions-area-content">
+					<!-- B1_001: Button トップページの設定 -->
+					<br />
 					<div data-bind="if: checkTopPage">
-						<button id="b1_001" data-bind="click: openTopPageSet">#{i18n.getText('CCG008_2')}</button>					
+						<button tabindex = "1" id = "btn_toppage" class = "btn" data-bind="click: openTopPageSet">#{i18n.getText('CCG008_2')}</button>					
 					</div>
+					<br />
+					<!-- B1_002: Button マイページの設定 -->
 					<div data-bind="if: checkMyPage">
-						<button id="b1_002" data-bind="if: checkMyPage, click: openMyPageSet">#{i18n.getText('CCG008_5')}</button>
+						<button tabindex = "2" id = "btn_mypage" class = "btn" data-bind="if: checkMyPage, click: openMyPageSet">#{i18n.getText('CCG008_5')}</button>
 					</div>
+				</div>
+				<div id="functions-area-bottom">
+					<!-- B1_003: Button 閉じる -->
+					<button tabindex = "3" id = "btn_close" class="large" data-bind="click: closeDialog" >#{i18n.getText('CCG008_6')}</button>
 				</div>
 			</div>
 		</ui:define>

@@ -42,6 +42,7 @@ module nts.uk.com.view.ccg.share.ccg {
             onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
             onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
             onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+            isShow:  KnockoutObservable<boolean>;
 
 
             constructor() {
@@ -70,6 +71,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 ]);
                 self.selectedTab = ko.observable('tab-1');
                 self.reloadDataSearch();
+                this.isShow = ko.observable(false);
             }
 
             public updateTabs(): NtsTabPanelModel[] {
@@ -142,8 +144,29 @@ module nts.uk.com.view.ccg.share.ccg {
                     });
                     dfd.resolve();
                 });
-
+                
+                $(window).on('click', function(e) {
+                    if (e.target.id == "ccg-component" || $(e.target).parents("#ccg-component")[0]) {
+                        return;
+                    }
+                    if (self.isShow()) {
+                        $('#ccg-component').toggle("slide", function() {
+                            self.isShow(false);
+                        });
+                    }
+                });
                 return dfd.promise();
+            }
+            
+            showHide() {
+                var self = this;
+                if (self.isShow()) {
+                    return;
+                }
+                $('#hor-scroll-button-hide').hide();
+                $('#ccg-component').toggle("slide", function() {
+                    self.isShow(true);
+                });
             }
 
             searchAllEmployee(): void {
@@ -194,12 +217,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             searchDataEmployee(): void {
                 var self = this;
-
-
-                console.log('yes');
                 service.searchModeEmployee(self.toEmployeeDto()).done(data => {
-                    console.log('yes');
-                    console.log(data);
                     self.employeeinfo = {
                         isShowAlreadySet: false,
                         isMultiSelect: self.isMultiple,
@@ -220,7 +238,6 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmployeeLogin(): void {
                 var self = this;
                 service.searchEmployeeByLogin(self.baseDate()).done(data => {
-                    console.log(data);
                     if (data.length > 0) {
                         self.onSearchOnlyClicked(data[0]);
                     }
@@ -254,7 +271,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         self.onApplyEmployee(data);
                     });
                 } else {
-                    service.getOfSelectedEmployee(self.baseDate(), self.selectedCodeEmployee()).done(data => {
+                    
+                    service.getOfSelectedEmployee(self.baseDate(), self.getSelectedCodeEmployee()).done(data => {
                         self.onApplyEmployee(data);
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -263,6 +281,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }
 
+            public getSelectedCodeEmployee(): string[]{
+                var self = this;
+                if(self.isMultiple){
+                    return self.selectedCodeEmployee();    
+                }
+                var employeeIds: string[] = [];
+                employeeIds.push(self.selectedCodeEmployee() + "");
+                return employeeIds;
+            }            
             public toUnitModelList(dataList: EmployeeSearchDto[]): KnockoutObservableArray<UnitModel> {
                 var dataRes: UnitModel[] = [];
 

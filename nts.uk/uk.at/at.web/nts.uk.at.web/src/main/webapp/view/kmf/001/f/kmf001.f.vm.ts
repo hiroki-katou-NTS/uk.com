@@ -214,9 +214,9 @@ module nts.uk.pr.view.kmf001.f {
                 let dfd = $.Deferred<any>();
                 //include list employment
                 $.when($('#list-employ-component').ntsListComponent(this.listComponentOption),self.loadEmploymentList()).done(() => {
-                    self.employmentList($('#sample-component').getDataList());
+                    self.employmentList($('#list-employ-component').getDataList());
                     //list employment is empty
-                    if (!$('#sample-component').getDataList() || $('#sample-component').getDataList().length <= 0) {
+                    if (!$('#list-employ-component').getDataList() || $('#list-employ-component').getDataList().length <= 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_146", messageParams: [] });
                         self.isEmptyEmployment(true);
                         dfd.resolve();

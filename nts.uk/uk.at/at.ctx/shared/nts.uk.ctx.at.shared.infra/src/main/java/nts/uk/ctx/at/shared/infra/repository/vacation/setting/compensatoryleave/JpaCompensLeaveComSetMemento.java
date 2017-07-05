@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 import java.util.ArrayList;
 import java.util.List;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
@@ -67,7 +68,10 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      */
     @Override
     public void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse) {
-        KclmtAcquisitionCom entityAcquisition = new KclmtAcquisitionCom();
+        KclmtAcquisitionCom entityAcquisition = this.entity.getKclmtAcquisitionCom();
+        if (entityAcquisition == null) {
+            entityAcquisition = new KclmtAcquisitionCom();
+        }
         JpaCompensAcquisitionUseSetMemento memento = new JpaCompensAcquisitionUseSetMemento(entityAcquisition);
         compensatoryAcquisitionUse.saveToMemento(memento);
         
@@ -86,7 +90,10 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      */
     @Override
     public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
-        KctmtDigestTimeCom entityDigestTime = new KctmtDigestTimeCom();
+        KctmtDigestTimeCom entityDigestTime = this.entity.getKctmtDigestTimeCom();
+        if (entityDigestTime == null) {
+            entityDigestTime = new KctmtDigestTimeCom();
+        }
         JpaCompensDigestiveTimeUnitSetMemento memento = new JpaCompensDigestiveTimeUnitSetMemento(entityDigestTime);
         compensatoryDigestiveTimeUnit.saveToMemento(memento);
         
@@ -104,14 +111,21 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      */
     @Override
     public void setCompensatoryOccurrenceSetting(List<CompensatoryOccurrenceSetting> occurrenceSetting) {
-        List<KocmtOccurrenceSet> listEntity = new ArrayList<>();
+        List<KocmtOccurrenceSet> listEntity = this.entity.getListOccurrence();
+        if (CollectionUtil.isEmpty(listEntity)) {
+            listEntity = new ArrayList<>();
+        }
         for (CompensatoryOccurrenceSetting setting : occurrenceSetting) {
-            KocmtOccurrenceSet entity = new KocmtOccurrenceSet();
+            KocmtOccurrenceSet entityOccurrence = listEntity.stream()
+                    .filter(entity -> entity.getKocmtOccurrenceSetPK().getOccurrType() == setting.getOccurrenceType()
+                        .value)
+                    .findFirst()
+                    .orElse(new KocmtOccurrenceSet());
             JpaCompensOccurrenceSettingSetMemento memento = new JpaCompensOccurrenceSettingSetMemento(
-                    this.entity.getCid(), entity);
+                    this.entity.getCid(), entityOccurrence);
             setting.saveToMemento(memento);
             
-            listEntity.add(entity);
+            listEntity.add(entityOccurrence);
         }
         this.entity.setListOccurrence(listEntity);
     }

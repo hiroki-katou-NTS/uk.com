@@ -30,6 +30,12 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		return domain;
 	}
 
+	/**
+	 * Convert to type of database
+	 * 
+	 * @param domain
+	 * @return CcgptTopPageJobSet
+	 */
 	private CcgptTopPageJobSet toEntity(TopPageJobSet domain) {
 		val entity = new CcgptTopPageJobSet();
 
@@ -44,19 +50,49 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		return entity;
 	}
 
+	/**
+	 * find TopPageJobSet by companyId and list JobId
+	 */
 	@Override
 	public List<TopPageJobSet> findByListJobId(String companyId, List<String> jobId) {
 		return this.queryProxy().query(SEL_BY_LIST_JOB_ID, CcgptTopPageJobSet.class)
 				.setParameter("companyId", companyId).setParameter("jobId", jobId).getList(x -> toDomain(x));
 	}
 
+	/**
+	 * Insert TopPageJobSet
+	 */
 	@Override
 	public void add(TopPageJobSet topPageJobSet) {
 		this.commandProxy().insert(toEntity(topPageJobSet));
 	}
 
+	/**
+	 * Update TopPageJobSet
+	 */
 	@Override
 	public void update(TopPageJobSet topPageJobSet) {
-		this.commandProxy().update(toEntity(topPageJobSet));
+		CcgptTopPageJobSetPK pk = new CcgptTopPageJobSetPK(topPageJobSet.getCompanyId(), topPageJobSet.getJobId());
+		CcgptTopPageJobSet entity = this.queryProxy().find(pk, CcgptTopPageJobSet.class).get();
+		entity.ccgptTopPageJobSetPK = pk;
+		entity.loginMenuCd = topPageJobSet.getLoginMenuCode().v();
+		entity.loginMenuCls = topPageJobSet.getMenuClassification().value;
+		entity.personPermissionSet = topPageJobSet.getPersonPermissionSet().value;
+		entity.system = topPageJobSet.getLoginSystem().value;
+		entity.topMenuCd = topPageJobSet.getTopMenuCode().v();
+		this.commandProxy().update(entity);
+	}
+
+	/**
+	 * Update several property of TopPageJobSet
+	 */
+	@Override
+	public void updateProperty(TopPageJobSet topPageJobSet) {
+		CcgptTopPageJobSetPK pk = new CcgptTopPageJobSetPK(topPageJobSet.getCompanyId(), topPageJobSet.getJobId());
+		CcgptTopPageJobSet entity = this.queryProxy().find(pk, CcgptTopPageJobSet.class).get();
+		entity.ccgptTopPageJobSetPK = pk;
+		entity.personPermissionSet = topPageJobSet.getPersonPermissionSet().value;
+		entity.topMenuCd = topPageJobSet.getTopMenuCode().v();
+		this.commandProxy().update(entity);
 	}
 }

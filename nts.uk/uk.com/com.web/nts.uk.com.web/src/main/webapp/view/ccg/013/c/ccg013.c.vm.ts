@@ -131,6 +131,9 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         submit() {
             var self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
             if(self.selectedTitleAtr()==1){
                 if(self.currentTitleMenu() !== ''){
                     var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID(),self.currentTitleMenu()); 
@@ -140,7 +143,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                     return false;
                 }
             }else{
-                var titleBar0 = new TitleBar(self.nameTitleBar(),self.letterColor(),self.backgroundColor(),self.selectedTitleAtr(),self.fileID(),'');
+                var titleBar0 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID(),''); 
                 windows.setShared("CCG013C_TitleBar", titleBar0);
             }
             self.cancel_Dialog();

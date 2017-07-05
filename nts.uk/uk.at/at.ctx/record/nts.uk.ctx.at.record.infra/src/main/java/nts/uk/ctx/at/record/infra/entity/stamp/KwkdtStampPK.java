@@ -27,6 +27,6 @@ public class KwkdtStampPK implements Serializable {
 
 	/* 年月日 */
 	@Column(name = "STAMP_DATE")
-	public GeneralDate date;
+	public GeneralDate stampDate;
 
 }

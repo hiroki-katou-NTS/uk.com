@@ -40,6 +40,7 @@ public class SubstVacationFinderDefault implements SubstVacationFinder {
 	 * nts.uk.ctx.at.shared.app.vacation.setting.subst.find.SubstVacationFinder#
 	 * findComSetting(java.lang.String)
 	 */
+	@Override
 	public SubstVacationSettingDto findComSetting(String companyId) {
 
 		Optional<ComSubstVacation> optComSubVacation = this.comSvRepository.findById(companyId);
@@ -62,6 +63,7 @@ public class SubstVacationFinderDefault implements SubstVacationFinder {
 	 * nts.uk.ctx.at.shared.app.vacation.setting.subst.find.SubstVacationFinder#
 	 * findEmpSetting(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public EmpSubstVacationDto findEmpSetting(String companyId, String contractTypeCode) {
 		// Find setting
 		Optional<EmpSubstVacation> optEmpSubVacation = this.empSvRepository.findById(companyId,

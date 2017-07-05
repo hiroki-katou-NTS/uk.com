@@ -22,13 +22,13 @@ module nts.uk.at.view.kmk012.d {
                 var self = this;
                 var input: ClosureHistoryInDto;
                 input = new ClosureHistoryInDto();
-                input.historyId = nts.uk.ui.windows.getShared("historyId");
+                input.startDate = nts.uk.ui.windows.getShared("startDate");
                 input.closureId = nts.uk.ui.windows.getShared("closureId");
                 self.closureDetailModel = new ClosureDetailModel();
                 self.lstDayOfMonth = ko.observableArray<DayofMonth>(self.intDataMonth());
                 self.dayMonthModel = new DayMonthModel();
                 self.dayMonthChangeModel = new DayMonthChangeModel();
-                service.detailClosureHistory(input).done(function(data) {
+                service.findByMasterClosureHistory(input).done(function(data) {
                     self.closureDetailModel.updateData(data);
                     self.updateDayMonthModel();
                     self.updateDayMonthChangeModel();
@@ -43,6 +43,9 @@ module nts.uk.at.view.kmk012.d {
                 });
             }
             
+            /**
+             * update day month to call service => update view model
+             */
             updateDayMonthModel(): void{
                 var self = this;
                 service.getDayMonth(self.convertDayIn()).done(function(res) {
@@ -50,6 +53,9 @@ module nts.uk.at.view.kmk012.d {
                 });
             }
             
+            /**
+             * update day month change to call service => update view model
+             */
             updateDayMonthChangeModel(): void{
                 var self = this;
                 service.getDayMonthChange(self.convertDayChangeIn()).done(function(res) {
@@ -57,6 +63,9 @@ module nts.uk.at.view.kmk012.d {
                 });  
             }
 
+            /**
+             * init data month
+             */
             intDataMonth(): DayofMonth[] {
                 var data: DayofMonth[] = [];
                 var i: number = 1;
@@ -74,7 +83,9 @@ module nts.uk.at.view.kmk012.d {
                 data.push(dayLast);
                 return data;
             }
-            
+            /**
+             * collect date closure day
+             */
             convertDayIn(): DayMonthInDto{
                 var self = this;
                 var dto: DayMonthInDto = new DayMonthInDto();
@@ -83,6 +94,9 @@ module nts.uk.at.view.kmk012.d {
                 return dto;
             }
             
+            /**
+             * collect date closure change day
+             */
             convertDayChangeIn(): DayMonthChangeInDto{
                 var self = this;
                 var dto: DayMonthChangeInDto = new DayMonthChangeInDto();
@@ -92,6 +106,9 @@ module nts.uk.at.view.kmk012.d {
                 return dto;
             }
             
+            /**
+             * collect data closure history add 
+             */
             collectClosureHistoryAddDto(): ClosureHistoryAddDto {
                 var self = this;
                 var dto: ClosureHistoryAddDto = new ClosureHistoryAddDto();
@@ -102,15 +119,24 @@ module nts.uk.at.view.kmk012.d {
                 return dto;
             }
             
+            /**
+             * close dialog
+             */
             closeWindowns(): void {
                 nts.uk.ui.windows.close();
             }
             
+            /**
+             * clear validate client
+             */
              clearValiate(){
                 $('#inpMonth').ntsError('clear');
                  
             }
             
+            /**
+             * validate client
+             */
             validateClient(): boolean {
                 $("#valueProcessingDate").ntsEditor("validate");
                 
@@ -120,6 +146,9 @@ module nts.uk.at.view.kmk012.d {
                 return false;
             }
 
+            /**
+             * save closure date change call service => reload page 
+             */
             saveChangeClosureDate(): void {
                 var self = this;
                 if(self.validateClient()){

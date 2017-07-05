@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:stylefile path="fullcalendar-lib/nts-calendar.css" />
+				<com:scriptfile path="kcp006.a.vm.js" />
+				<com:scriptfile path="kcp006.a.start.js" />
+				<com:scriptfile path="kcp006.a.service.js" />
+				<com:stylefile path="fullcalendar-lib/fullcalendar.min.css" />
+				<com:scriptfile path="fullcalendar-lib/fullcalendar.min.js" />
+				<com:scriptfile path="fullcalendar-lib/calendar-ko-ext.js" />
+				<com:scriptfile path="fullcalendar-lib/locale-all.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<div class="nts-calendar-container">
+						<div class="nts-calendar-header">
+							<div data-bind="ntsDatePicker: {
+							value: yearMonthPicked, 
+							dateFormat: 'yearmonth', 
+							valueFormat: 'YYYYMM', 
+							cssRanger: cssRangerYM,
+							defaultClass: 'round-orange',
+							showJumpButtons: true}"></div>
+						</div>
+						<div id="calendar" data-bind="ntsCalendar: {
+							optionDates: optionDates, 
+							yearMonth: yearMonthPicked, 
+							firstDay: firstDay, 
+							startDate: startDate, 
+							endDate: endDate,
+							workplaceId: workplaceId,
+							workplaceName: workplaceName,
+							eventDisplay: eventDisplay,
+							eventUpdatable: eventUpdatable,
+							holidayDisplay: holidayDisplay,
+							cellButtonDisplay: cellButtonDisplay}"></div>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

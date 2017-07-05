@@ -47,9 +47,9 @@ public class ClosureHistorySaveCommandHandler extends CommandHandler<ClosureHist
 		// get command
 		ClosureHistorySaveCommand command = context.getCommand();
 		
-		Optional<ClosureHistory> closureHistory = this.repository.findByHistoryId(companyId,
+		Optional<ClosureHistory> closureHistory = this.repository.findById(companyId,
 				command.getClosureHistory().getClosureId(),
-				command.getClosureHistory().getClosureHistoryId());
+				command.getClosureHistory().getStartDate());
 		
 		if(closureHistory.isPresent()){
 			Optional<ClosureHistory> closureHistoryLast = this.repository
@@ -57,15 +57,15 @@ public class ClosureHistorySaveCommandHandler extends CommandHandler<ClosureHist
 			
 			// edit history not last 
 			if (closureHistoryLast.isPresent()
-					&& closureHistoryLast.get().getClosureHistoryId()
-							.equals(command.getClosureHistory().getClosureHistoryId())
+					&& closureHistoryLast.get().getStartYearMonth().v()
+							.equals(command.getClosureHistory().getStartDate())
 					&& command.getClosureHistory().getClosureDate() != closureHistoryLast.get()
 							.toClosureDate()) {
 				throw new BusinessException("Msg_154");
 			}
 			ClosureHistoryDto dto = command.getClosureHistory();
-			dto.setStartDate(closureHistory.get().getStartDate().v());
-			dto.setEndDate(closureHistory.get().getEndDate().v());
+			dto.setStartDate(closureHistory.get().getStartYearMonth().v());
+			dto.setEndDate(closureHistory.get().getEndYearMonth().v());
 			command.setClosureHistory(dto);
 		}
 		

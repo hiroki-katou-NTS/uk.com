@@ -1,34 +1,25 @@
 @CHARSET "UTF-8";
 
-#tab-panel {
-	max-width: 600px;
-}
-
 .ntsSearchBox {
 	width: 230px !important;
 }
 
-.controlSetting {
-	color: #2ECC71;
-}
-
-.controlSettingBg {
-	color: #2ECC71;
-}
-
 .controlSetting.caret-right:after {
+	cursor: pointer;
+	color: #2ECC71;
 	border-width: 19px 10px;
 	margin-top: -10px;
 }
-
 .controlSettingBg.caret-right:after {
+	cursor: pointer;
+	color: #2ECC71;
 	border-width: 30px 14px;
 	margin-top: -10px;
 }
 
 .contentkcp {
-	min-height: 550px;
-	max-width: 550px;
+	min-height: 500px;
+	padding: 0 !important;
 }
 
 .centerkcp {
@@ -47,11 +38,13 @@
 }
 
 .accordion {
-	max-width: 550px;
+	width: 420px;
 }
-
+.btn-quick-search {
+	cursor: pointer;
+}
 .btn_big {
-	width: 255px;
+	width: 370px;
 	background-color: #2ECC71;
 	padding-top: 9px;
 	padding-bottom: 19px;
@@ -62,9 +55,11 @@
 	border-radius: 5px;
 	display: inline-block;
 }
-
+.btn_big:hover {
+	background-color: #2BBF6A;
+}
 .btn_small {
-	width: 255px;
+	width: 370px;
 	background-color: #2ECC71;
 	padding-bottom: 10px;
 	margin-top: 5px;
@@ -74,9 +69,11 @@
 	border-radius: 5px;
 	display: inline-block;
 }
-
+.btn_small:hover {
+	background-color: #2BBF6A;
+}
 .btn_apply {
-	width: 550px;
+	width: 100%;
 	height: 25px;
 	text-align: center;
 	background-color: #2ECC71;
@@ -86,18 +83,17 @@
 	margin-bottom: 5px;
 	color: white;
 	display: inline-block;
+	cursor: pointer;
+}
+.btn_apply:hover {
+	background-color: #2BBF6A;
 }
 
 .caret-background.caret-bottom:after {
-	left: 39%;
+	left: 36%;
 	color: #AEEE60;
 	border-width: 18px 52px;
 	margin-top: 4px;
-}
-
-.lableselect {
-	margin-right: 10px;
-	font-size: 17px;
 }
 
 #btn_apply {
@@ -144,12 +140,26 @@
 }
 
 .labelBigButton {
+	cursor: pointer;
 	font-size: 14pt;
 	vertical-align: super;
 }
 
 .labelSmallButton {
+	cursor: pointer;
 	font-size: 10pt;
 	vertical-align: super;
 	margin-left: 20px;
+}
+.tab-content-2 {
+	overflow-y: scroll;
+	height: 500px;
+}
+#ccgcomponent {
+	height: 800px;
+}
+#ccg-component {
+	height: 500px;
+	float: left;
+	position: absolute;
 }

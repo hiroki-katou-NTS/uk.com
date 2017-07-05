@@ -29,7 +29,7 @@ module kcp002.a.viewmodel {
 
         constructor() {
             var self = this;
-            
+
             // Control component
             self.isAlreadySetting = ko.observable(false);
             self.isDialog = ko.observable(false);
@@ -46,14 +46,14 @@ module kcp002.a.viewmodel {
                 { code: 1, name: 'Multiple Selection' },
             ]);
             self.selectedType = ko.observable(1);
-            
+
             // Control common
             self.selectedOption = ko.observable(0);
             self.selectedCode = ko.observable(null);
-            self.bySelectedCode = ko.observable('0000000002');
+            self.bySelectedCode = ko.observable('');
             self.multiSelectionCode = ko.observableArray([]);
-            self.multiSelectedCode = ko.observableArray(['0000000002', '0000000004']);
-            self.alreadySettingList = ko.observableArray([{ code: '0000000001', isAlreadySetting: true }, { code: '0000000002', isAlreadySetting: true }]);
+            self.multiSelectedCode = ko.observableArray(['']);
+            self.alreadySettingList = ko.observableArray([{ code: '', isAlreadySetting: true }]);
 
             self.classificationList = ko.observableArray<UnitModel>([]);
             self.hasSelectedClass = ko.computed(function() {
@@ -153,26 +153,30 @@ module kcp002.a.viewmodel {
         private save(): void {
             var self = this;
             if (self.listComponentOption.selectedCode() != undefined) {
-                if (self.listComponentOption.isMultiSelect) {
-                    self.listComponentOption.selectedCode().forEach((selected) => {
-                        var existItem = self.alreadySettingList().filter((item) => {
-                            return item.code == selected;
-                        })[0];
-                        
-                        if (!existItem) {
-                            self.alreadySettingList.push({ "code": selected, "isAlreadySetting": true });
-                        }
-                    });
+                if (self.listComponentOption.selectedCode().length < 1) {
+                    nts.uk.ui.dialog.alert("保存する項目を選択してください!!! ");
                 } else {
-                    var existItem = self.alreadySettingList().filter((item) => {
-                        return item.code == self.listComponentOption.selectedCode();
-                    })[0];
-                    if (!existItem) {
-                        self.alreadySettingList.push({ "code": self.listComponentOption.selectedCode(), "isAlreadySetting": true });
+                    if (self.listComponentOption.isMultiSelect) {
+                        self.listComponentOption.selectedCode().forEach((selected) => {
+                            var existItem = self.alreadySettingList().filter((item) => {
+                                return item.code == selected;
+                            })[0];
+
+                            if (!existItem) {
+                                self.alreadySettingList.push({ "code": selected, "isAlreadySetting": true });
+                            }
+                        });
+                    } else {
+                        var existItem = self.alreadySettingList().filter((item) => {
+                            return item.code == self.listComponentOption.selectedCode();
+                        })[0];
+                        if (!existItem) {
+                            self.alreadySettingList.push({ "code": self.listComponentOption.selectedCode(), "isAlreadySetting": true });
+                        }
                     }
+                    self.isAlreadySetting(true);
+                    nts.uk.ui.dialog.alert("完了しました! ");
                 }
-                self.isAlreadySetting(true);
-                nts.uk.ui.dialog.alert("完了しました! ");
             } else {
                 nts.uk.ui.dialog.alert("保存する項目を選択してください! ");
             }
@@ -182,19 +186,23 @@ module kcp002.a.viewmodel {
         private remove() {
             let self = this;
             if (self.listComponentOption.selectedCode() != undefined) {
-                if (self.listComponentOption.isMultiSelect) {
-                    self.listComponentOption.selectedCode().forEach((selected) => {
-                        self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                            return item.code == selected;
-                        })[0]);
-                    });
+                if (self.listComponentOption.selectedCode().length < 1) {
+                    nts.uk.ui.dialog.alert("削除する項目を選択してください !!! ");
                 } else {
-                    self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                        return item.code == self.listComponentOption.selectedCode();
-                    })[0]);
+                    if (self.listComponentOption.isMultiSelect) {
+                        self.listComponentOption.selectedCode().forEach((selected) => {
+                            self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
+                                return item.code == selected;
+                            })[0]);
+                        });
+                    } else {
+                        self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
+                            return item.code == self.listComponentOption.selectedCode();
+                        })[0]);
+                    }
+                    self.isAlreadySetting(true);
+                    nts.uk.ui.dialog.alert("削除しました ! ");
                 }
-                self.isAlreadySetting(true);
-                nts.uk.ui.dialog.alert("削除しました ! ");
             } else {
                 nts.uk.ui.dialog.alert("削除する項目を選択してください ! ");
             }
