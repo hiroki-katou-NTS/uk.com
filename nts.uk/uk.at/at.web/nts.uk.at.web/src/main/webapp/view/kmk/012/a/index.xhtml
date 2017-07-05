@@ -28,7 +28,6 @@
 						<tr>
 							<td id="contents-left"
 								class="bg-green caret-right caret-background">
-								<i class="icon icon-searchbox"></i>
 								<div
 									id="lstClosureHistory" 
 										data-bind="ntsListBox: {
@@ -38,7 +37,7 @@
 										multiple: false,
 										value: selectCodeLstClosure,
 										enable: true,
-										rows: 10  }" >
+										rows: 5  }" >
 								</div>
 						</td>
 							<td id="contents-right">
@@ -75,7 +74,7 @@
 											id="inpMonth"
 											tabindex="2"  
 											data-bind="ntsDatePicker: 
-											{	value: closureModel.month, name:'#[KMK012_5]', 
+											{value: closureModel.month, name:'#[KMK012_5]', 
 												required: true, 
 												enable: enableUseClassification, 
 												dateFormat: 'yearmonth'}">
