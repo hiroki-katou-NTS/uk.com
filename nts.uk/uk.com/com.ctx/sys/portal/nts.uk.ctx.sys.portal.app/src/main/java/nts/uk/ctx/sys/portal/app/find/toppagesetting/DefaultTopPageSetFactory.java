@@ -293,7 +293,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	public LayoutForTopPageDto getTopPageByCode(String companyId, String code, int system, int classification, boolean check) {
 		if(classification == 8){//topPage
 			TopPageDto topPage = toppageFinder.findByCode(companyId, code, "0");
-			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(), 2);
+			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(), 0);
 			if (layout.isPresent()) {
 				List<Placement> placements = placementRepository.findByLayout(topPage.getLayoutId());
 				return buildLayoutTopPage(layout.get(), placements);
@@ -354,7 +354,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			layoutMypage = new LayoutForMyPageDto(employeeId,layoutId, 2, null, null);
 			return layoutMypage;
 		}
-		Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),0);
+		Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),2);
 		if(layout.isPresent()){
 			List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
 			if(!placements.isEmpty()){
