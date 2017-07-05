@@ -173,7 +173,7 @@ module nts.uk.ui.koExtentions {
                 var dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                 if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                     // Check equals to avoid multi datepicker with same value
-                    $input.datepicker('setDate', new Date(dateFormatValue));
+                    $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                     $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                 }
                 else {

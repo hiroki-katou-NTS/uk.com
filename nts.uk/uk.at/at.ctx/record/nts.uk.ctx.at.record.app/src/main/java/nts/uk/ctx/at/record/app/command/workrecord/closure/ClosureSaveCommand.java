@@ -88,7 +88,7 @@ public class ClosureSaveCommand {
 		 * @see nts.uk.ctx.at.record.dom.workrecord.closure.ClosureGetMemento#getMonth()
 		 */
 		@Override
-		public ClosureMonth getMonth() {
+		public ClosureMonth getClosureMonth() {
 			if (command.getUseClassification() == 1) {
 				return new ClosureMonth(command.getMonth());
 			}

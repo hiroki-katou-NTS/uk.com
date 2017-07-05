@@ -87,23 +87,26 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		for (PlacementDto placementDto : placementDtos) {
 			if(placementDto.getPlacementPartDto().getExternalUrl() == null && placementDto.getPlacementPartDto().getType().intValue() == 2){
 				FlowMenuDto flowMenu = flowmenu.getFlowMenu(placementDto.getPlacementPartDto().getTopPagePartID());
-				FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
-						flowMenu.getTopPageCode(),
-						flowMenu.getTopPageName(),
-						flowMenu.getType(),
-						flowMenu.getWidthSize(),
-						flowMenu.getHeightSize(),
-						flowMenu.getFileID(),
-						flowMenu.getFileName(),
-						flowMenu.getDefClassAtr(),
-						placementDto.getRow(),
-						placementDto.getColumn());
-				if(flowMenu != null) flowmenuNew.add(fMenu);
+				if(flowMenu != null){
+					FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
+							flowMenu.getTopPageCode(),
+							flowMenu.getTopPageName(),
+							flowMenu.getType(),
+							flowMenu.getWidthSize(),
+							flowMenu.getHeightSize(),
+							flowMenu.getFileID(),
+							flowMenu.getFileName(),
+							flowMenu.getDefClassAtr(),
+							placementDto.getRow(),
+							placementDto.getColumn());
+					flowmenuNew.add(fMenu);
+				}
+				continue;
 			}else{
 				placementNew.add(placementDto);
 			}
 		}
-		return new LayoutForMyPageDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, flowmenuNew, placementNew);
+		return new LayoutForMyPageDto(employeeId, layout.getLayoutID(), layout.getPgType().value, flowmenuNew, placementNew);
 	}
 	//build placement my page
 	private List<PlacementDto> buildPlacementDto(Layout layout, List<Placement> placements, MyPageSettingDto myPage) {
@@ -150,18 +153,21 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		for (PlacementDto placementDto : placementDtos) {
 			if(placementDto.getPlacementPartDto().getExternalUrl()== null && placementDto.getPlacementPartDto().getType().intValue() == 2){
 					FlowMenuDto flowMenu = flowmenu.getFlowMenu(placementDto.getPlacementPartDto().getTopPagePartID());
-					FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
-							flowMenu.getTopPageCode(),
-							flowMenu.getTopPageName(),
-							flowMenu.getType(),
-							flowMenu.getWidthSize(),
-							flowMenu.getHeightSize(),
-							flowMenu.getFileID(),
-							flowMenu.getFileName(),
-							flowMenu.getDefClassAtr(),
-							placementDto.getRow(),
-							placementDto.getColumn());
-					if(flowMenu != null) flowmenuNew.add(fMenu);
+					if(flowMenu != null){
+						FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
+								flowMenu.getTopPageCode(),
+								flowMenu.getTopPageName(),
+								flowMenu.getType(),
+								flowMenu.getWidthSize(),
+								flowMenu.getHeightSize(),
+								flowMenu.getFileID(),
+								flowMenu.getFileName(),
+								flowMenu.getDefClassAtr(),
+								placementDto.getRow(),
+								placementDto.getColumn());
+						flowmenuNew.add(fMenu);
+					}
+					continue;
 			}else{
 				placementNew.add(placementDto);
 			}
@@ -345,7 +351,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			String layoutId = UUID.randomUUID().toString();
 			MyPage mypageNew = new MyPage(employeeId,layoutId);
 			mypage.addMyPage(mypageNew);
-			layoutMypage = new LayoutForMyPageDto(companyId,layoutId, 2, null, null);
+			layoutMypage = new LayoutForMyPageDto(employeeId,layoutId, 2, null, null);
 			return layoutMypage;
 		}
 		Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(),0);
@@ -354,6 +360,8 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			if(!placements.isEmpty()){
 				layoutMypage =buildLayoutDto(layout.get(),placements) ;
 			}
+		}else{
+			layoutMypage = new LayoutForMyPageDto(employeeId,mPage.getLayoutId(),2,null,null);
 		}
 		return layoutMypage;
 	}

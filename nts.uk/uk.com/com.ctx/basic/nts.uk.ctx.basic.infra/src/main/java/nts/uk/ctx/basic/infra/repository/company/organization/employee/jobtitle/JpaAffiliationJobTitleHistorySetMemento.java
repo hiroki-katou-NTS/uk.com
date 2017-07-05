@@ -65,7 +65,7 @@ public class JpaAffiliationJobTitleHistorySetMemento
 	 * organization.jobtitle.PositionId)
 	 */
 	@Override
-	public void setPositionId(PositionId positionId) {
+	public void setJobTitleId(PositionId positionId) {
 		this.jobTitleHistory.getKmnmtJobTitleHistPK().setJobId(positionId.v());
 	}
 

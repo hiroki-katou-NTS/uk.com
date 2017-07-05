@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.dom.workrecord.closure;
 /**
  * The Enum UseClassification.
  */
+// 使用区分
 public enum UseClassification {
 	
 	/** The Use class not use. */

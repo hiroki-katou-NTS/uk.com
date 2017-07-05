@@ -116,12 +116,12 @@
         }
             
         //for setting dialog
-        openDialog(){
+        openDialogB(){
             var self = this;
             let dialogTitle = nts.uk.resource.getText("CCG008_2");
             nts.uk.ui.windows.setShared('checkTopPage', self.dataSource().checkTopPage, true);
             nts.uk.ui.windows.setShared('checkMyPage', self.dataSource().checkMyPage, true);
-            var transferData: commonModel.TransferLayoutInfo = {parentCode: self.topPageCode(), layoutID: self.dataSource().myPage.layoutID, pgType: 0};
+            var transferData: commonModel.TransferLayoutInfo = {parentCode: self.dataSource().myPage.employeeID, layoutID: self.dataSource().myPage.layoutID, pgType: 0};
             nts.uk.ui.windows.setShared('CCG008_layout', transferData);
             nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", {title: 'トップページの設定'});
         }
@@ -204,7 +204,7 @@
             externalUrl?: string;
         }
          export interface LayoutForMyPageDto{
-            companyID: string;
+            employeeID: string;
             layoutID: string;
             pgType: number;
             flowMenu: Array<FlowMenuPlusDto>;

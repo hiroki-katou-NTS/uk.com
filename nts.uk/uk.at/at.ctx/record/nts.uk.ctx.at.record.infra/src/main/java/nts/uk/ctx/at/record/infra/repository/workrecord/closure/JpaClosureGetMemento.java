@@ -60,8 +60,8 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 * @see nts.uk.ctx.at.record.dom.workrecord.closure.ClosureGetMemento#getMonth()
 	 */
 	@Override
-	public ClosureMonth getMonth() {
-		return new ClosureMonth(this.kclmtClosure.getMonth());
+	public ClosureMonth getClosureMonth() {
+		return new ClosureMonth(this.kclmtClosure.getClosureMonth());
 	}
 
 	/* (non-Javadoc)

@@ -34,6 +34,6 @@ a.fc-more {vertical-align: top; font-size: 8px !IMPORTANT;}
 .fc-view-container {font-size: 10px;}
 
 .nts-calendar-container {display: inline-block;}
-.nts-calendar-header .nts-datepicker-wrapper {width: 100%;background-color: #C7F391;padding: 5px 0;}
-.nts-calendar-container input {margin-left: 43%;}
-.nts-calendar-header { border-top: 1px solid gray; border-right: 1px solid gray; border-left: 1px solid gray;}
+.nts-calendar-header .nts-datepicker-wrapper {padding: 5px 0;}
+.nts-calendar-header div {margin-left: 37%;}
+.nts-calendar-header { background-color: #C7F391; border-top: 1px solid gray; border-right: 1px solid gray; border-left: 1px solid gray;}

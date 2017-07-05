@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.portal.infra.entity.jobtitletying.CcgstJobTitleTyingPK;
 public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitleTyingRepository{
 	private final String SEL = "SELECT s FROM CcgstJobTitleTying s ";
 	private final String FIND_WEB_MENU_CODE = SEL + "WHERE s.ccgstJobTitleTyingPK.companyId = :companyId "
-			+ "AND s.ccgstJobTitleTyingPK.jobId = :jobId ";
+			+ "AND s.ccgstJobTitleTyingPK.jobId in :jobId ";
 	
 	private CcgstJobTitleTying toEntity(JobTitleTying domain) {
 		val entity = new CcgstJobTitleTying();
@@ -58,7 +58,7 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 	}
 	
 	@Override
-	public List<JobTitleTying> findWebMenuCode(String companyId, String jobId){
+	public List<JobTitleTying> findWebMenuCode(String companyId, List<String> jobId){
 		return this.queryProxy().query(FIND_WEB_MENU_CODE, CcgstJobTitleTying.class)
 				.setParameter("companyId", companyId)
 				.setParameter("jobId", jobId)

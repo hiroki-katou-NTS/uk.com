@@ -50,10 +50,10 @@ module kcp002.a.viewmodel {
             // Control common
             self.selectedOption = ko.observable(0);
             self.selectedCode = ko.observable(null);
-            self.bySelectedCode = ko.observable('0000000002');
+            self.bySelectedCode = ko.observable('');
             self.multiSelectionCode = ko.observableArray([]);
-            self.multiSelectedCode = ko.observableArray(['0000000002', '0000000004']);
-            self.alreadySettingList = ko.observableArray([{ code: '0000000001', isAlreadySetting: true }, { code: '0000000002', isAlreadySetting: true }]);
+            self.multiSelectedCode = ko.observableArray(['']);
+            self.alreadySettingList = ko.observableArray([{ code: '', isAlreadySetting: true }]);
 
             self.classificationList = ko.observableArray<UnitModel>([]);
             self.hasSelectedClass = ko.computed(function() {

@@ -79,7 +79,7 @@ public class ClosureFindDto implements ClosureSetMemento{
 	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureMonth)
 	 */
 	@Override
-	public void setMonth(ClosureMonth month) {
+	public void setClosureMonth(ClosureMonth month) {
 		this.month = month.getProcessingDate().v();
 	}
 
