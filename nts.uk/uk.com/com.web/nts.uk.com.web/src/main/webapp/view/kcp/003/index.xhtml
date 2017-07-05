@@ -112,7 +112,11 @@
 									<pre><![CDATA[<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>]]></pre>
 									
 									<p>Create a div tag  to bind grid list</p>
-									<pre><![CDATA[<div id="component-items-list"></div>]]></pre>
+									<pre><![CDATA[
+									<div id="sample-component"></div>
+									
+									Example:
+									<div id="component-items-list"></div>]]></pre>
 								</div><!-- END TAB HTML -->
 								
 								<!-- BEGIN VIEWMODEL TAB-->
@@ -187,10 +191,17 @@
 											isAlreadySetting: boolean;
 										}
 								]]>
+								<div><b>Note:</b> which property contains '?' is not compulsory</div>
 								</pre>
-								<pre><![CDATA[<!--It is called after apply binding done.-->
-										$('#component-items-list').ntsListComponent(self.listComponentOption);
-									]]></pre>
+								<pre><![CDATA[
+						<!--It is just called after apply binding done to initialize Component.-->
+						<!--This return JQueryPromise<void>-->
+							 $('#sample-component').ntsListComponent(listComponentOption);
+							  
+							 Example:
+							 $('#component-items-list').ntsListComponent(self.listComponentOption);
+								]]></pre>
+									
 									<h2>API</h2>
 									<table style="width: 700px">
 										<thead>
@@ -293,16 +304,31 @@
 								
 								<!-- BEGIN METHOD TAB-->
 								<div id="tabs-method" class="cf">
-									<table style="width: 500px">
+									<table>
 										<thead>
 											<td style="text-align: center;"><h4>Method</h4></td>
 											<td style="text-align: center;"><h4>Description</h4></td>
 										</thead>
 										<tr>
-											<td>$('#component-items-list').getDataList()</td>
+											<td>$('#sample-component').ntsListComponent(listComponentOption);
+											<br></br><br></br>
+											<b>Example:</b><br></br>
+											$('#component-items-list').ntsListComponent(listComponentOption);
+											</td>
 											<td>
-												<div><b>Type:</b>Array[UnitModel]</div>
-												<div><i>Description:</i>Get Job Title List.</div>
+												<div><b>Reload Component</b></div>
+												<div><i>Description:</i> listComponentOption is initialized.</div>
+											</td>
+										</tr>
+										<tr>
+											<td>$('#sample-component').getDataList();
+											<br></br><br></br>
+											<b>Example:</b><br></br>
+											$('#component-items-list').getDataList();
+											</td>
+											<td>
+												<div><b>Type:</b> Array[UnitModel]</div>
+												<div><b>Description:</b> Get Job Title List.</div>
 												<pre><![CDATA[
 UnitModel {
         code: string;
@@ -313,8 +339,12 @@ UnitModel {
 											</td>
 										</tr>
 										<tr>
-											<td>$('#component-items-list').focusComponent()</td>
-											<td>Focus on</td>
+											<td>$('#sample-component').focusComponent();
+											<br></br><br></br>
+											<b>Example:</b><br></br>
+											$('#component-items-list').focusComponent();
+											</td>
+											<td><b>Focus on</b></td>
 										</tr>
 									</table>
 								</div><!-- END METHOD TAB -->
