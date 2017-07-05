@@ -7947,6 +7947,7 @@ var nts;
                         var editable = ko.unwrap(data.editable);
                         var enable = ko.unwrap(data.enable);
                         var columns = ko.unwrap(data.columns);
+                        var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
                         // Container.
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
@@ -8011,6 +8012,7 @@ var nts;
                             container.igCombo({
                                 dataSource: options,
                                 valueKey: data.optionsValue,
+                                visibleItemsCount: visibleItemsCount,
                                 textKey: 'nts-combo-label',
                                 mode: comboMode,
                                 disabled: !enable,
