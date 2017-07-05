@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddAgreementOperationSettingCommand {	
 	
-	private String companyId;
-	
 	private int startingMonth;
 
 	private int numberTimesOverLimitType;

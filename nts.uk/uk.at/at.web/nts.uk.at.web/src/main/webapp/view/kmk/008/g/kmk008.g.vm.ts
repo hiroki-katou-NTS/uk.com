@@ -192,7 +192,7 @@ module nts.uk.at.view.kmk008.g {
             openDiaglog() {
                 let self = this;
                 let isYearMonth = true;
-                if(self.selectedTab == "tab-1" ){
+                if(self.selectedTab() == "tab-1" ){
                     isYearMonth = false;
                 }
                 setShared("KMK_008_PARAMS", { employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth : isYearMonth });

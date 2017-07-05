@@ -146,10 +146,8 @@ module nts.uk.at.view.kmk004.a {
                 $.when(self.loadUsageUnitSetting(),
                     self.setStartMonth())
                     .done(() => {
-                        self.loadCompanySetting()
-                            .done(() => {
-                                dfd.resolve();
-                            });
+                        self.onSelectCompany();
+                        dfd.resolve();
                     });
                 return dfd.promise();
             }
@@ -163,14 +161,14 @@ module nts.uk.at.view.kmk004.a {
                 self.clearError();
 
                 // Update flag.
-                self.isLoading(false);
+                self.isLoading(true);
                 self.isCompanySelected(true);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
 
                 // Load data.
-                self.loadCompanySetting();
+                self.loadCompanySetting().done(() => self.isLoading(false));
             }
 
             /**
