@@ -9,8 +9,8 @@
 .ntsControl {display: inline;}
 button.search-btn.caret-bottom {padding-left:10px; padding-right:10px ; margin-left : 15px;}
 button.clear-btn {padding-left:10px; padding-right:10px ; margin-left : 10px;}
-button#btnRegistry.proceed.btnSetting{margin-left: 20px; margin-right: 35px;}
-button#btnDelete.danger.btnSetting{margin-right: 30px;}
+button#btnRegistry.proceed.btnSetting{margin-left: 5px; margin-right: 5px;}
+button#btnDelete.danger.btnSetting{margin-right: 5px;}
 #btn_new{margin-left: 25px; }
 #btn_new{width: 70px;}
 #btnRegistry{width: 70px;}

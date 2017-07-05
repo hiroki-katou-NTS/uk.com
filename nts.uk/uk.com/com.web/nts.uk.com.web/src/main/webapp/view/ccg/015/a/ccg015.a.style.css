@@ -1,5 +1,5 @@
 .divHeader {
-	margin: 5px;
+	padding-left : 30px !important;
 	min-width: 1200px;
 }
 
@@ -56,6 +56,7 @@
 
 #btn_delete {
 	margin-right: 5px;
+	margin-left: 20px;
 }
 
 #lbl_registrationOfLaborInsurancePlant {
@@ -115,7 +116,8 @@ button.nts-switch-button {
 }
 
 #contents-area {
-	padding: 20px !important;
+	padding-left: 30px !important;
+	padding-top: 22px !important;
 	min-width: 1200px !important;
 }
 .btn_margin_top{

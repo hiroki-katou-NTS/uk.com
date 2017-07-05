@@ -132,6 +132,7 @@ module ccg030.a.viewmodel {
         /** Upload File */
         uploadFile(): void {
             var self = this;
+            nts.uk.ui.block.invisible();
             if (self.isCreate() === true) {
                 self.uploadFileProcess();
             }
@@ -139,10 +140,12 @@ module ccg030.a.viewmodel {
                 service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
                     if (res.defClassAtr === 1) {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_84" });
+                        nts.uk.ui.block.clear();
                     }
                     else {
                         self.uploadFileProcess();
                     }
+                    
                 });
             }
         }
@@ -163,7 +166,8 @@ module ccg030.a.viewmodel {
                 errors.clearAll();
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err.message);
-            });
+            }).always(() =>{
+                nts.uk.ui.block.clear();});
         }
 
         deleteButtonClick(): void {
