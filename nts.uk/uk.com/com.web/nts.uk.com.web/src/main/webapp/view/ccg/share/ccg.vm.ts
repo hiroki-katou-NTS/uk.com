@@ -146,7 +146,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
                 
                 $(window).on('click', function(e) {
+                    // Check is click to outter component.
                     if (e.target.id == "ccg-component" || $(e.target).parents("#ccg-component")[0]) {
+                        return;
+                    }
+                    // Check is click to dialog.
+                    if ($(e.target).parents("[role='dialog']")[0]) {
+                        return;
+                    }
+                    // Check is click to ignite combo-box.
+                    if ($(e.target).parents().hasClass('ui-igcombo-dropdown')) {
                         return;
                     }
                     if (self.isShow()) {
