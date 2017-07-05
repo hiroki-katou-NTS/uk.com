@@ -50,36 +50,6 @@ module nts.uk.ui {
             
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");
-//            if (nts.uk.ui.windows.getSelf().isRoot){
-//                let windowSize = {
-//                    width: $(window).width(), 
-//                    height: $(window).height()
-//                };
-//                $( window ).resize(function() {
-//                    let container = nts.uk.ui.windows.container;
-//                    let windows = Object.keys(container.windows); 
-//                    let mainWindow = container.windows['MAIN_WINDOW']; 
-//                    let currentWidth = $(mainWindow.globalContext).width();
-//                    let currentHeight = $(mainWindow.globalContext).height(); 
-//                    if (windows.length > 1){ 
-//                        let diffWidth = currentWidth / windowSize.width;              
-//                        let diffHeight = currentHeight / windowSize.height;
-//                        _.forEach(windows, function (id){
-//                            if (id !== 'MAIN_WINDOW'){
-//                                let $dialog = $(container.windows[id].$dialog);
-//                                let dialogWidth = $dialog.dialog( "option", "width") * diffWidth;        
-//                                let dialogHeight = $dialog.dialog( "option", "height") * diffHeight;
-//                                 $dialog.dialog( "option", "width", dialogWidth);
-//                                $dialog.dialog( "option", "height", dialogHeight);
-//                            }        
-//                        });
-//                    }
-//                    windowSize = { 
-//                        width: currentWidth, 
-//                        height: currentHeight
-//                    };
-//                });        
-//            }
         }
         
         $(function () {
