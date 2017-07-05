@@ -45,7 +45,7 @@ img {
 	color: blue;
 	text-decoration: underline;
 	width: 200px;
-	overflow: hidden !important;
+	overflow: hidden;
 	display: inline-block;
 }
 
@@ -74,4 +74,8 @@ table tr td {
 
 #nameTitleBar{
 	width: 220px !important;
+}
+#file_upload{
+	width: 200px;
+	overflow: hidden;
 }
