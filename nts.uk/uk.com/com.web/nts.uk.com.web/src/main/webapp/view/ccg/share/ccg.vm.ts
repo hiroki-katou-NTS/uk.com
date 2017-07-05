@@ -200,6 +200,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         $('#jobtitleList').ntsListComponent(self.jobtitles);
                         $('#workplaceList').ntsTreeComponent(self.workplaces);
                     }
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError(error);
                 });
 
             }
@@ -229,6 +231,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         isShowNoSelectRow: false,
                     }
                     $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                }).fail(function(error){
+                   nts.uk.ui.dialog.alertError(error); 
                 });
 
             }
@@ -269,6 +273,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.isSelectAllEmployee) {
                     service.searchModeEmployee(self.toEmployeeDto()).done(data => {
                         self.onApplyEmployee(data);
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 } else {
                     
