@@ -150,7 +150,7 @@ module nts.uk.ui.koExtentions {
             var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             var selected = data.selected;
             var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
-            var enable = ko.unwrap(data.enable;
+            var enable = ko.unwrap(data.enable);
             var selectedKey = null;
             if (data.selectedKey) {
                 selectedKey = ko.unwrap(data.selectedKey);
