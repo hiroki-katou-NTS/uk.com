@@ -36,13 +36,6 @@ $button-disabled-base-color: #888888;
         color: $button-disabled-base-color;
     }
 
-    &:active {
-		
-        &[disabled] {
-			
-        }
-    }
-
     &.proceed {
         background-color: $button-proceed-base-color;
 
@@ -146,7 +139,7 @@ button {
 		}
 	}
 	
-    &:active {
+    &:active:enabled {
         top: $_base_border_bottom_width;
         border-color: $button-boxshadow-base-color;
 		box-shadow: 0 0 #999;
@@ -168,7 +161,7 @@ button {
     	height: $_height;
     	box-shadow: 0 $_border_bottom_width $button-boxshadow-base-color;
     	
-    	&:active {
+    	&:active:enabled {
     		top: $_border_bottom_width;
     		border-color: $button-boxshadow-base-color;
 			box-shadow: 0 0 $button-boxshadow-base-color;
@@ -192,7 +185,7 @@ button {
     	height: $_height;
  	    box-shadow: 0 $_border_bottom_width $button-boxshadow-base-color;
     	
-    	&:active {
+    	&:active:enabled {
     		top: $_border_bottom_width;
     		border-color: $button-boxshadow-base-color;
 			box-shadow: 0 0 $button-boxshadow-base-color !important;
@@ -216,7 +209,7 @@ button {
     	height: $_height;
   	 	box-shadow: 0 $_border_bottom_width #999;
     	
-    	&:active {
+    	&:active:enabled {
     		top: $_border_bottom_width;
     		border-color: $button-boxshadow-base-color;
 			box-shadow: 0 0 $button-boxshadow-base-color !important;
