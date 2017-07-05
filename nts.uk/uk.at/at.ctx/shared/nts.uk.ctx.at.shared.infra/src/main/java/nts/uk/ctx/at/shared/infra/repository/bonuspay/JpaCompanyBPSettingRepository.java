@@ -12,44 +12,49 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstCompanyBPSettingPK;
 
 @Stateless
 public class JpaCompanyBPSettingRepository extends JpaRepository implements CPBonusPaySettingRepository {
-
 	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpstCompanyBPSetting c WHERE c.kbpstCompanyBPSettingPK.companyId = :companyId";
+
 	@Override
 	public Optional<CompanyBonusPaySetting> getSetting(String companyId) {
 		Optional<KbpstCompanyBPSetting> kbpstCompanyBPSetting = this.queryProxy()
 				.query(SELECT_BY_COMPANYID, KbpstCompanyBPSetting.class).setParameter("companyId", companyId)
 				.getSingle();
-		if(kbpstCompanyBPSetting.isPresent()){
-			return Optional.ofNullable(this.toCompanyBonusPaySettingDomain(kbpstCompanyBPSetting.get()));
+
+		if (kbpstCompanyBPSetting.isPresent()) {
+			return Optional.ofNullable(toDomain(kbpstCompanyBPSetting.get()));
 		}
+
 		return Optional.empty();
 	}
 
 	@Override
-	public void addSetting(CompanyBonusPaySetting setting) {
-		this.commandProxy().insert(this.toCompanyBonusPaySettingEntity(setting));
-	}
-
-	@Override
-	public void updateSetting(CompanyBonusPaySetting setting) {
-		this.commandProxy().update(this.toCompanyBonusPaySettingEntity(setting));
+	public void saveSetting(CompanyBonusPaySetting setting) {
+		Optional<CompanyBonusPaySetting> domain = this.getSetting(setting.getCompanyId().v());
+		if (domain.isPresent()) {
+			this.commandProxy().update(toEntity(setting));
+		} else {
+			this.commandProxy().insert(toEntity(setting));
+		}
 	}
 
 	@Override
 	public void removeSetting(CompanyBonusPaySetting setting) {
-		this.commandProxy().remove(this.toCompanyBonusPaySettingEntity(setting));
+		Optional<CompanyBonusPaySetting> domain = this.getSetting(setting.getCompanyId().v());
+		if (domain.isPresent()) {
+
+			this.commandProxy().remove(KbpstCompanyBPSetting.class,
+					new KbpstCompanyBPSettingPK(setting.getCompanyId().v()));
+		}
 	}
 
-	private KbpstCompanyBPSetting toCompanyBonusPaySettingEntity(CompanyBonusPaySetting companyBonusPaySetting) {
-
-		return new KbpstCompanyBPSetting(new KbpstCompanyBPSettingPK(companyBonusPaySetting.getCompanyId().toString()),
-				companyBonusPaySetting.getBonusPaySettingCode().toString());
+	private KbpstCompanyBPSetting toEntity(CompanyBonusPaySetting domain) {
+		return new KbpstCompanyBPSetting(new KbpstCompanyBPSettingPK(domain.getCompanyId().v()),
+				domain.getBonusPaySettingCode().v());
 	}
 
-	private CompanyBonusPaySetting toCompanyBonusPaySettingDomain(KbpstCompanyBPSetting kbpstCompanyBPSetting) {
-		return CompanyBonusPaySetting.createFromJavaType(kbpstCompanyBPSetting.kbpstCompanyBPSettingPK.companyId,
-				kbpstCompanyBPSetting.bonusPaySettingCode);
+	private CompanyBonusPaySetting toDomain(KbpstCompanyBPSetting entity) {
+		return CompanyBonusPaySetting.createFromJavaType(entity.kbpstCompanyBPSettingPK.companyId,
+				entity.bonusPaySettingCode);
 	}
-
 
 }
