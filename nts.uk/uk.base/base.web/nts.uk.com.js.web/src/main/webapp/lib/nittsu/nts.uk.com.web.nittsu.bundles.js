@@ -1345,6 +1345,7 @@ var nts;
                 "MONTHS": new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
                 "YEARS": new NumberUnit("YEARS", "年", "right", "ja-JP"),
                 "FIS_MONTH": new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
+                "FIS_YEAR": new NumberUnit("FIS_YEAR", "年度", "right", "ja-JP"),
                 "TIMES": new NumberUnit("TIMES", "回", "right", "ja-JP")
             };
             function getNumberUnit(unitId) {
@@ -1892,6 +1893,9 @@ var nts;
             function findFormat(format) {
                 if (nts.uk.util.isNullOrEmpty(format)) {
                     return defaultInputFormat;
+                }
+                if (format === "yearmonth") {
+                    format = "YM";
                 }
                 var uniqueFormat = _.uniq(format.split(""));
                 var formats = _.filter(defaultInputFormat, function (dfFormat) {
@@ -8224,7 +8228,7 @@ var nts;
                             var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 // Check equals to avoid multi datepicker with same value
-                                $input.datepicker('setDate', new Date(dateFormatValue));
+                                $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
                             else {
@@ -9379,10 +9383,17 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var width = option.width;
-                        var parent = $input.parent();
-                        var parentTag = parent.parent().prop("tagName").toLowerCase();
+                        var $parent = $input.parent();
+                        var parentTag = $parent.parent().prop("tagName").toLowerCase();
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
-                            parent.css({ 'width': '100%' });
+                            $parent.css({ 'width': '100%' });
+                        }
+                        if (!nts.uk.util.isNullOrEmpty(data.mode) && (data.mode === "year" || data.mode === "fiscal")) {
+                            var symbolText = data.mode === "year" ? nts.uk.text.getNumberUnit("YEARS") : nts.uk.text.getNumberUnit("FIS_YEAR");
+                            $parent.addClass("symbol").addClass('symbol-right');
+                            $parent.attr("data-content", symbolText.unitText);
+                            var css = data.mode === "year" ? { "padding-right": "20px" } : { "padding-right": "35px" };
+                            $input.css(css);
                         }
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
