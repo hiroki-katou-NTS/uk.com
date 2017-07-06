@@ -87,6 +87,7 @@ module kcp004.a.viewmodel {
                 if (code == 0 && self.selectedSelectionType() == 2) {
                     self.selectedSelectionType(1);
                 }
+                self.resetSelectedWorkplace();
                 self.isShowSelectButton(code == 1);
                 self.reloadTreeGrid().done(() => {
                     self.getSelectedData();
@@ -105,6 +106,10 @@ module kcp004.a.viewmodel {
                 self.reloadTreeGrid();
             });
             self.selectedSelectionType.subscribe((code) => {
+                if (code == 1) {
+                    self.resetSelectedWorkplace();
+                }
+
                 self.reloadTreeGrid().done(function() {
                     self.getSelectedData();
                 });
@@ -186,6 +191,11 @@ module kcp004.a.viewmodel {
             return dfd.promise();
         }
         
+        private resetSelectedWorkplace() {
+            let self = this;
+            self.selectedWorkplaceId('');
+            self.multiSelectedWorkplaceId([]);
+        }
     }
     
     /**
