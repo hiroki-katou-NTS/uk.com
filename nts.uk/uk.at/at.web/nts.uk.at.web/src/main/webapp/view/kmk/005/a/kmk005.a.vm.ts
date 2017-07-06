@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk005.a {
             }
             openBonusPay(): void
             {
-                nts.uk.ui.windows.sub.modeless("/view/kmk/005/g/index.xhtml", {title: "加給時間帯の設定（会社）"});
+                nts.uk.request.jump("/view/kmk/005/g/index.xhtml");
             }
         }      
     }
