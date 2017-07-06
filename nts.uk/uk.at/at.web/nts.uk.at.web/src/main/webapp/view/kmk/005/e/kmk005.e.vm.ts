@@ -23,7 +23,13 @@ module nts.uk.at.view.kmk005.e {
             
             startPage(): JQueryPromise<any> {
                 var self = this;
-                return self.getData();
+                var dfd = $.Deferred();
+                self.getData().done(()=>{
+                    dfd.resolve();        
+                }).fail(()=>{
+                    dfd.reject();    
+                });
+                return dfd.promise();
             }
             
             getData(): JQueryPromise<any> {
