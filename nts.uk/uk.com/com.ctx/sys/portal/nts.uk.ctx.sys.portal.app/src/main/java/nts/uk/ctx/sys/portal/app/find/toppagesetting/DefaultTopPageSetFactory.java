@@ -2,11 +2,15 @@ package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.file.storage.FileStorage;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuDto;
 import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuFinder;
@@ -17,7 +21,11 @@ import nts.uk.ctx.sys.portal.app.find.placement.PlacementPartDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
+import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.mypage.MyPage;
@@ -67,57 +75,94 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	private MyPageRepository mypage;
 	@Inject
 	private TopPageJobSetRepository topPageJobSet;
-	//companyId
-	String companyId = AppContexts.user().companyId();
-	//employeeId
-	String employeeId = AppContexts.user().employeeId();
-	
 	/**
 	 * check = true (hien thi top page truoc)
 	 * check = false (hien thi my page truoc)
 	 */
 	Boolean check = false;
 	
+	@Inject
+	private FlowMenuRepository repository;
+	
+	@Inject
+	private FileStorage fileStorage;
+	
 	/**
 	 * hien thi my page
 	 */
 	@Override
 	public LayoutForMyPageDto buildLayoutDto(Layout layout, List<Placement> placements) {
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		
+		// get my page setting
 		MyPageSettingDto myPage = myPageSetFinder.findByCompanyId(companyId);
+		// get placement
 		List<PlacementDto> placementDtos = buildPlacementDto(layout, placements, myPage);
+		
+		// get top page part id by flow menu
+		List<String> listTopPagePartIdTypeFlow = placementDtos.stream()
+				.filter(placementDto-> placementDto.getPlacementPartDto().getExternalUrl() == null 
+						&& placementDto.getPlacementPartDto().getType().intValue() == TopPagePartType.FlowMenu.value)
+				.map(x->x.getPlacementPartDto().getTopPagePartID())
+				.distinct()
+				.collect(Collectors.toList());
+		
+		// get placement by flow menu
+		List<PlacementDto> placementFlows = placementDtos.stream()
+				.filter(placementDto-> placementDto.getPlacementPartDto().getExternalUrl() == null
+						&& placementDto.getPlacementPartDto().getType().intValue() == TopPagePartType.FlowMenu.value)
+				.collect(Collectors.toList());
+				
+		// process data with flow menu
 		List<FlowMenuPlusDto> flowmenuNew = new ArrayList<FlowMenuPlusDto>();
-		List<PlacementDto> placementNew = new ArrayList<PlacementDto>();
-		for (PlacementDto placementDto : placementDtos) {
-			if(placementDto.getPlacementPartDto().getExternalUrl() == null && placementDto.getPlacementPartDto().getType().intValue() == 2){
-				FlowMenuDto flowMenu = flowmenu.getFlowMenu(placementDto.getPlacementPartDto().getTopPagePartID());
-				if(flowMenu != null){
-					FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
-							flowMenu.getTopPageCode(),
-							flowMenu.getTopPageName(),
-							flowMenu.getType(),
-							flowMenu.getWidthSize(),
-							flowMenu.getHeightSize(),
-							flowMenu.getFileID(),
-							flowMenu.getFileName(),
-							flowMenu.getDefClassAtr(),
-							placementDto.getRow(),
-							placementDto.getColumn());
-					flowmenuNew.add(fMenu);
-				}
-				continue;
-			}else{
-				placementNew.add(placementDto);
-			}
+		if (!listTopPagePartIdTypeFlow.isEmpty()) {
+			// get all flow menu by top page part id
+			List<FlowMenu> flowmenus = repository.findByCodes(companyId, listTopPagePartIdTypeFlow);
+			Map<String, FlowMenu> flowMenuMap = flowmenus.stream().collect(Collectors.toMap(FlowMenu::getToppagePartID, x->x));
+			
+			for (PlacementDto placementDto : placementFlows) {
+                FlowMenu flowMenu = flowMenuMap.get(placementDto.getPlacementPartDto().getTopPagePartID());
+                if (flowMenu == null) {
+                	continue;
+                }
+                
+                // get file infe
+            	Optional<StoredFileInfo> fileInfo = fileStorage.getInfo(flowMenu.getFileID());
+            	
+                FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
+                        flowMenu.getCode().v(),
+                        flowMenu.getName().v(),
+                        flowMenu.getType().value,
+                        flowMenu.getWidth().v(),
+                        flowMenu.getHeight().v(),
+                        flowMenu.getFileID(),
+                        fileInfo != null ? fileInfo.get().getOriginalName() : "",
+                        flowMenu.getDefClassAtr().value,
+                        placementDto.getRow(),
+                        placementDto.getColumn());
+                
+                flowmenuNew.add(fMenu);
+	        }
 		}
+		
+		// process data with not flow menu
+		List<PlacementDto> placementNew = placementDtos.stream()
+				.filter(placementDto-> !(placementDto.getPlacementPartDto().getExternalUrl() == null 
+						&& placementDto.getPlacementPartDto().getType().intValue() == TopPagePartType.FlowMenu.value))
+				.collect(Collectors.toList());
+		
+		// return
 		return new LayoutForMyPageDto(employeeId, layout.getLayoutID(), PGType.MYPAGE.value, flowmenuNew, placementNew);
 	}
+	
 	//build placement my page
 	private List<PlacementDto> buildPlacementDto(Layout layout, List<Placement> placements, MyPageSettingDto myPage) {
 		List<TopPagePart> activeTopPageParts = topPagePartService.getAllActiveTopPagePart(layout.getCompanyID(), layout.getPgType());
 		List<PlacementDto> placementDtos = new ArrayList<PlacementDto>();
 		for (Placement placement : placements) {
 			if (placement.isExternalUrl()) {
-				if (myPage.getExternalUrlPermission().intValue() == 1) {
+				if (myPage.getExternalUrlPermission().intValue() == UseDivision.Use.value) {
 					ExternalUrl externalUrl = placement.getExternalUrl().get();
 					placementDtos.add(new PlacementDto(placement.getPlacementID(), placement.getLayoutID(),
 							placement.getColumn().v(), placement.getRow().v(), fromExternalUrl(externalUrl)));
@@ -154,7 +199,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		List<FlowMenuPlusDto> flowmenuNew = new ArrayList<FlowMenuPlusDto>();
 		List<PlacementDto> placementNew = new ArrayList<PlacementDto>();
 		for (PlacementDto placementDto : placementDtos) {
-			if(placementDto.getPlacementPartDto().getExternalUrl()== null && placementDto.getPlacementPartDto().getType().intValue() == 2){
+			if( StringUtil.isNullOrEmpty(placementDto.getPlacementPartDto().getExternalUrl(), true) && placementDto.getPlacementPartDto().getType().intValue() == TopPagePartType.FlowMenu.value){
 					FlowMenuDto flowMenu = flowmenu.getFlowMenu(placementDto.getPlacementPartDto().getTopPagePartID());
 					if(flowMenu != null){
 						FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
@@ -177,7 +222,12 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		}
 		return new LayoutForTopPageDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, flowmenuNew,placementNew,null);
 	}
-	//build placement my page
+	/**
+	 * build placement my page
+	 * @param layout
+	 * @param placements
+	 * @return
+	 */
 	private List<PlacementDto> buildPlacementTopPage(Layout layout, List<Placement> placements) {
 		List<TopPagePart> activeTopPageParts = topPagePartService.getAllActiveTopPagePart(layout.getCompanyID(), layout.getPgType());
 		List<PlacementDto> placementDtos = new ArrayList<PlacementDto>();
@@ -203,16 +253,20 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 */
 	@Override
 	public LayoutAllDto getTopPageForPosition(JobPositionDto jobPosition, TopPageJobSet topPageJob) {
+		//companyId
+		String companyId = AppContexts.user().companyId();
+		//employeeId
+		String employeeId = AppContexts.user().employeeId();
 		TopPageSelfSettingDto tpSelfSet = topPageSelfSet.getTopPageSelfSet();
 		LayoutForTopPageDto layoutTopPage = null;
 		//check my page: use or not use
-		Boolean checkMyPage = checkMyPageSet();
+		boolean checkMyPage = checkMyPageSet();
 		//check top page: setting or not setting
-		Boolean checkTopPage = checkTopPageSet();
-		if(topPageJob.getPersonPermissionSet().value == 1 && tpSelfSet != null){//check topPageJob: setting or not setting
+		boolean checkTopPage = checkTopPageSet();
+		if(topPageJob.getPersonPermissionSet() == PersonPermissionSetting.SET && tpSelfSet != null){//check topPageJob: setting or not setting
 			//display top page self set (本人トップページ設定)-C
 			check = true;
-			layoutTopPage = getTopPageByCode(companyId,tpSelfSet.getCode(), 0, 8, check);
+			layoutTopPage = getTopPageByCode(companyId,tpSelfSet.getCode(), System.COMMON.value, MenuClassification.TopPage.value, check);
 			if (!checkMyPage) {//not use my page
 				return new LayoutAllDto(null, layoutTopPage, check, checkMyPage, checkTopPage);
 			}
@@ -220,12 +274,13 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			return new LayoutAllDto(layoutMypage, layoutTopPage, check, checkMyPage, checkTopPage);
 		}
 		//topPageJob: setting
-		Optional<TopPagePersonSet> tpPerson = topPagePerson.getbyCode(companyId, employeeId);
+		Optional<TopPagePersonSet> topPPerson = topPagePerson.getbyCode(companyId, employeeId);
 		String code = topPageJob.getLoginMenuCode().toString();
-		if(tpPerson.isPresent() && !StringUtil.isNullOrEmpty(code, true)){//login menu code & top page person
+		if(topPPerson.isPresent() && !StringUtil.isNullOrEmpty(code, true)){//login menu code & top page person
 			//display top page person set (個人別トップページ設定)-B
+			TopPagePersonSet tpPerson = topPPerson.get();
 			check = true;
-			layoutTopPage = getTopPageByCode(companyId, tpPerson.get().getTopMenuCode().toString(), tpPerson.get().getLoginSystem().value, tpPerson.get().getMenuClassification().value, check);
+			layoutTopPage = getTopPageByCode(companyId, tpPerson.getTopMenuCode().toString(), tpPerson.getLoginSystem().value, tpPerson.getMenuClassification().value, check);
 			MyPageSettingDto myPage = myPageSetFinder.findByCompanyId(companyId);
 			if (myPage.getUseMyPage().intValue() == UseDivision.NotUse.value) {//khong su dung my page
 				return new LayoutAllDto(null, layoutTopPage, check, false, checkTopPage);
@@ -260,19 +315,24 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 */
 	@Override
 	public LayoutAllDto getTopPageNotPosition() {
+		//companyId
+		String companyId = AppContexts.user().companyId();
+		//employeeId
+		String employeeId = AppContexts.user().employeeId();
 		//get data from domain person set (個人別トップページ設定)
-		Optional<TopPagePersonSet> tpPerson = topPagePerson.getbyCode(companyId, employeeId);
+		Optional<TopPagePersonSet> topPPerson = topPagePerson.getbyCode(companyId, employeeId);
 		LayoutForTopPageDto layoutToppage = null;
 		//check my page: use or not use
-		Boolean checkMyPage = checkMyPageSet();
+		boolean checkMyPage = checkMyPageSet();
 		//check top page: setting or not setting
-		Boolean checkTopPage = checkTopPageSet();
-		if(tpPerson.isPresent()){//co tpPerson
-			String code = tpPerson.get().getLoginMenuCode().toString();
+		boolean checkTopPage = checkTopPageSet();
+		if(topPPerson.isPresent()){//co tpPerson
+			TopPagePersonSet tpPerson = topPPerson.get();
+			String code = tpPerson.getLoginMenuCode().toString();
 			if(!StringUtil.isNullOrEmpty(code,true)){//co login menu code
 				//display top page person set (個人別トップページ設定)-B
 				check = true;
-				layoutToppage = getTopPageByCode(companyId,tpPerson.get().getTopMenuCode().toString(),tpPerson.get().getLoginSystem().value,tpPerson.get().getMenuClassification().value,check);
+				layoutToppage = getTopPageByCode(companyId,tpPerson.getTopMenuCode().toString(),tpPerson.getLoginSystem().value,tpPerson.getMenuClassification().value,check);
 				if (!checkMyPage) {//not use my page
 					return new LayoutAllDto(null, layoutToppage, true, checkMyPage, checkTopPage);
 				}
@@ -316,7 +376,9 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 * check my page: setting or not setting
 	 */
 	@Override
-	public Boolean checkMyPageSet(){
+	public boolean checkMyPageSet(){
+		//companyId
+		String companyId = AppContexts.user().companyId();
 		MyPageSettingDto myPage = myPageSetFinder.findByCompanyId(companyId);
 		if (myPage!=null && myPage.getUseMyPage().intValue() == UseDivision.Use.value) {//co su dung my page
 			return true;
@@ -328,7 +390,9 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 * @return
 	 */
 	@Override
-	public Boolean checkTopPageSet() {
+	public boolean checkTopPageSet() {
+		//companyId
+		String companyId = AppContexts.user().companyId();
 		List<String> lst = new ArrayList<>();
 		//lay job position
 		JobPositionDto jobPosition = topPageSelfSet.getJobPosition(AppContexts.user().employeeId());
@@ -351,22 +415,24 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 */
 	@Override
 	public LayoutForMyPageDto findLayoutMyPage() {
+		//employeeId
+		String employeeId = AppContexts.user().employeeId();
 		LayoutForMyPageDto layoutMypage = null;
-		MyPage mPage = mypage.getMyPage(employeeId);
-		if(mPage == null){//register my page
+		Optional<MyPage> mPage = mypage.getMyPage(employeeId);
+		if(!mPage.isPresent()){//register my page
 			MyPage mypageNew = MyPage.createNew(employeeId);
 			mypage.addMyPage(mypageNew);
 			layoutMypage = new LayoutForMyPageDto(employeeId, mypageNew.getLayoutId(), PGType.MYPAGE.value, null, null);
 			return layoutMypage;
 		}
-		Optional<Layout> layout = toppageRepository.find(mPage.getLayoutId(), PGType.MYPAGE.value);
+		Optional<Layout> layout = toppageRepository.find(mPage.get().getLayoutId(), PGType.MYPAGE.value);
 		if(layout.isPresent()){
-			List<Placement> placements = placementRepository.findByLayout(mPage.getLayoutId());
+			List<Placement> placements = placementRepository.findByLayout(mPage.get().getLayoutId());
 			if(!placements.isEmpty()){
 				layoutMypage =buildLayoutDto(layout.get(), placements) ;
 			}
 		}else{
-			layoutMypage = new LayoutForMyPageDto(employeeId, mPage.getLayoutId(), PGType.MYPAGE.value, null, null);
+			layoutMypage = new LayoutForMyPageDto(employeeId, mPage.get().getLayoutId(), PGType.MYPAGE.value, null, null);
 		}
 		return layoutMypage;
 	}

@@ -40,8 +40,8 @@
 											]}"></span>
 				<input
 					data-bind="ntsTimeEditor: {name: '#[KMK005_89]', value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
-				<button class="caret-bottom">#{i18n.getText('KMK005_79')}</button>
-				<button>#{i18n.getText('KMK005_93')}</button>
+				<button class="caret-bottom" data-bind="click: search">#{i18n.getText('KMK005_79')}</button>
+				<button data-bind="click: returnData">#{i18n.getText('KMK005_93')}</button>
 			</div>
 			<div id="k_gridlist-div">
 				<table id="k_gridlist-tbl"
@@ -73,7 +73,7 @@
 				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_73')}</div>
 			</div>
 			<div class="cell column2">
-				<button>#{i18n.getText('KMK005_74')}</button>
+				<button data-bind="click: openDialog">#{i18n.getText('KMK005_74')}</button>
 			</div>
 			<div class="cell column3">
 				<label data-bind="text: currentWorkingTimesheetBonusPaySet().bonusPaySettingCode"></label>

@@ -9,7 +9,7 @@ public class TitleBarStereoType implements FileStereo {
 
 	@Override
 	public long getLimitedSize() {
-		return 500000;
+		return 5242880;
 	}
 
 	@Override

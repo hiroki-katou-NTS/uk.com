@@ -142,9 +142,19 @@ module kcp004.a.viewmodel {
             let self = this;
             let data = $('#tree-grid').getRowSelected();
             let selecetdWorkplaceId = data.map(item => item.workplaceId).join(", ");
+            
+            // remove setting by delete element in list.
             self.alreadySettingList(self.alreadySettingList().filter((item) => {
                 return selecetdWorkplaceId.indexOf(item.workplaceId) < 0;
             }));
+            
+            // remove setting by update alreadySetting = false;
+//            self.alreadySettingList().forEach((item) => {
+//                if (selecetdWorkplaceId.indexOf(item.workplaceId) > -1) {
+//                    item.isAlreadySetting = false;
+//                }
+//            });
+//            self.alreadySettingList.valueHasMutated();
         }
         
         private getSelectedWorkplaceId() : any {
