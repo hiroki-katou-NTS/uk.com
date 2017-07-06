@@ -158,7 +158,11 @@ module nts.uk.com.view.ccg.share.ccg {
                     if ($(e.target).parents().hasClass('ui-igcombo-dropdown')) {
                         return;
                     }
+                    if (e.target.id == "hor-scroll-button-hide" || $(e.target).parents("#hor-scroll-button-hide")[0]) {
+                        return;
+                    }
                     if (self.isShow()) {
+                        self.isShow(false);
                         $('#ccg-component').toggle("slide", function() {
                             self.isShow(false);
                         });
@@ -173,6 +177,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return;
                 }
                 $('#hor-scroll-button-hide').hide();
+                self.isShow(true);
                 $('#ccg-component').toggle("slide", function() {
                     self.isShow(true);
                 });
