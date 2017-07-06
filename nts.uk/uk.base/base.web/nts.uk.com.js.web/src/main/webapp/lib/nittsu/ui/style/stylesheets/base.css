@@ -1025,25 +1025,26 @@ button:focus {
 }
 /* line 121, ../sass/components/_button.scss */
 button:focus.small {
+  box-shadow: 0 2px 2px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 125, ../sass/components/_button.scss */
+/* line 126, ../sass/components/_button.scss */
 button:focus.large {
-  box-shadow: 0 4px #0096f2;
+  box-shadow: 0 4px 2px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 133, ../sass/components/_button.scss */
+/* line 134, ../sass/components/_button.scss */
 button:focus.x-large {
-  box-shadow: 0 5px #0096f2;
+  box-shadow: 0 5px 3px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 142, ../sass/components/_button.scss */
+/* line 143, ../sass/components/_button.scss */
 button:active:enabled {
   top: 3px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 #999;
 }
-/* line 148, ../sass/components/_button.scss */
+/* line 149, ../sass/components/_button.scss */
 button.small {
   /* START: SAME ALL SIZES */
   font-size: 12px;
@@ -1053,13 +1054,13 @@ button.small {
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 164, ../sass/components/_button.scss */
+/* line 165, ../sass/components/_button.scss */
 button.small:active:enabled {
   top: 3px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 172, ../sass/components/_button.scss */
+/* line 173, ../sass/components/_button.scss */
 button.large {
   /* START: SAME ALL SIZES */
   font-size: 15px;
@@ -1069,13 +1070,13 @@ button.large {
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 188, ../sass/components/_button.scss */
+/* line 189, ../sass/components/_button.scss */
 button.large:active:enabled {
   top: 4px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
 }
-/* line 196, ../sass/components/_button.scss */
+/* line 197, ../sass/components/_button.scss */
 button.x-large {
   /* START: SAME ALL SIZES */
   font-size: 22px;
@@ -1085,13 +1086,13 @@ button.x-large {
   box-shadow: 0 5px #999;
   /* END: SAME ALL SIZES */
 }
-/* line 212, ../sass/components/_button.scss */
+/* line 213, ../sass/components/_button.scss */
 button.x-large:active:enabled {
   top: 5px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
 }
-/* line 220, ../sass/components/_button.scss */
+/* line 221, ../sass/components/_button.scss */
 button.auto-height {
   height: auto;
 }
