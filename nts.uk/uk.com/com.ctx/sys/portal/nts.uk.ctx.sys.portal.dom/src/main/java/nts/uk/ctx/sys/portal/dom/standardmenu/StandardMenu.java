@@ -5,6 +5,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 
@@ -40,8 +41,8 @@ public class StandardMenu extends AggregateRoot {
 	/** The system. */
 	private System system;
 	
-	/** The classification. */
-	private int classification;
+	/** The Menu classification. */
+	private MenuClassification classification;
 	
 	/** The webMenuSetting. */
 	private WebMenuSetting webMenuSetting;
@@ -69,7 +70,7 @@ public class StandardMenu extends AggregateRoot {
 	 * @param logSettingDisplay the logSettingDisplay
 	 */
 	public StandardMenu(String companyId, MenuCode code, String targetItems, MenuDisplayName displayName, int displayOrder,
-			MenuAtr menuAtr, String url, System system, int classification, WebMenuSetting webMenuSetting,
+			MenuAtr menuAtr, String url, System system, MenuClassification classification, WebMenuSetting webMenuSetting,
 			int afterLoginDisplay, int logSettingDisplay) {
 		
 		this.companyId = companyId;
@@ -88,7 +89,7 @@ public class StandardMenu extends AggregateRoot {
 	
 	
 	
-	public StandardMenu(String companyId, int classification, MenuCode code, MenuDisplayName displayName,
+	public StandardMenu(String companyId, MenuClassification classification, MenuCode code, MenuDisplayName displayName,
 			System system) {
 		this.companyId = companyId;
 		this.classification = classification;
@@ -109,7 +110,7 @@ public class StandardMenu extends AggregateRoot {
 	 */
 	public static StandardMenu updateName(String companyId, int classification, String code, String displayName, int system)
 	{
-		return new StandardMenu(companyId, classification, new MenuCode(code), new MenuDisplayName(displayName), EnumAdaptor.valueOf(system, System.class));
+		return new StandardMenu(companyId, EnumAdaptor.valueOf(classification, MenuClassification.class), new MenuCode(code), new MenuDisplayName(displayName), EnumAdaptor.valueOf(system, System.class));
 	}
 
 
@@ -133,7 +134,7 @@ public class StandardMenu extends AggregateRoot {
 			int displayOrder, int menuAtr, String url, int system, int classification, int webMenuSetting,
 			int afterLoginDisplay, int logSettingDisplay) {
 		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName), displayOrder, EnumAdaptor.valueOf(menuAtr, MenuAtr.class), url,
-				EnumAdaptor.valueOf(system, System.class), classification, 
+				EnumAdaptor.valueOf(system, System.class),EnumAdaptor.valueOf(classification, MenuClassification.class) , 
 				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, logSettingDisplay);
 	}	
 	

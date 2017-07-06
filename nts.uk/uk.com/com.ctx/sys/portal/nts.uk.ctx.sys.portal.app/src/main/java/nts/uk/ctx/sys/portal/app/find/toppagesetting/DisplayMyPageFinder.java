@@ -35,8 +35,6 @@ public class DisplayMyPageFinder {
 	private TopPageJobSetRepository topPageJobSet;
 	@Inject
 	private TopPageSelfSettingFinder topPageSelfSet;
-	//employeeId
-	String employeeId = AppContexts.user().employeeId();
 	/**
 	 * find layout (top page)
 	 * @param topPageCode
@@ -67,19 +65,20 @@ public class DisplayMyPageFinder {
 		//get position(所属職位履歴)
 		JobPositionDto jobPosition = topPageSelfSet.getJobPosition(AppContexts.user().employeeId());
 		List<String> lst = new ArrayList<>();
-		LayoutAllDto layoutTopPage = null;
-		if(jobPosition != null){//co chuc vu
-			lst.add(jobPosition.getJobId());
-			//lay top page job title set
-			TopPageJobSet tpJobSet = topPageJobSet.findByListJobId(companyId, lst).get(0);
-			if(tpJobSet != null){//position and job setting
-				layoutTopPage = topPageSet.getTopPageForPosition(jobPosition, tpJobSet);
-			}else{
-				layoutTopPage = topPageSet.getTopPageNotPosition();
-			}
-		}else{//not position
-			layoutTopPage = topPageSet.getTopPageNotPosition();
+		if (jobPosition == null) {
+			return topPageSet.getTopPageNotPosition();
 		}
-		return layoutTopPage;
+			  
+		lst.add(jobPosition.getJobId());
+			  
+		//lay top page job title set
+		List<TopPageJobSet>lstTpJobSet = topPageJobSet.findByListJobId(companyId, lst);
+		if(lstTpJobSet.isEmpty()){//position and job setting
+			return topPageSet.getTopPageNotPosition();
+		}
+		TopPageJobSet tpJobSet = lstTpJobSet.get(0);
+			  
+		return topPageSet.getTopPageForPosition(jobPosition, tpJobSet);
+		
 	}
 }

@@ -8,6 +8,7 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
@@ -25,6 +26,20 @@ public class BPTimesheetFinder {
 				new BonusPaySettingCode(bonusPaySettingCode) );
 		return lstBonusPayTimesheet.stream().map(c -> toBPTimesheetDto(companyId, bonusPaySettingCode, c))
 				.collect(Collectors.toList());
+	}
+	
+	public void checkUseArt(List<Boolean> lstuseArt){
+		boolean checkUseExist = false;
+		
+		for (Boolean useArt : lstuseArt) {
+			if(useArt){
+				checkUseExist=useArt;
+			}
+		}
+		if(!checkUseExist){
+			throw new BusinessException("Msg_34");
+		}
+		
 	}
 
 	private BPTimesheetDto toBPTimesheetDto(String companyId, String bonusPaySettingCode,

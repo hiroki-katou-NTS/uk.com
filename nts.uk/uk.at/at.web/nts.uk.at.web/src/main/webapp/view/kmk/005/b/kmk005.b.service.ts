@@ -4,8 +4,12 @@ module nts.uk.at.view.kmk005.b {
             getListBonusPayTimeItem: "at/share/bonusPayTimeItem/getListBonusPayTimeItem",
             getListSpecialBonusPayTimeItem: "at/share/bonusPayTimeItem/getListSpecialBonusPayTimeItem",
             addListBonusPayTimeItem:"at/share/bonusPayTimeItem/addListBonusPayTimeItem",
-            updateListBonusPayTimeItem:"at/share/bonusPayTimeItem/updateListBonusPayTimeItem"
+            updateListBonusPayTimeItem:"at/share/bonusPayTimeItem/updateListBonusPayTimeItem",
+            checkUseArt:"at/share/bonusPayTimeItem/checkUseArt"
             
+        }
+          export function checkUseArt(lstUseArt) {
+             return nts.uk.request.ajax(paths.checkUseArt,lstUseArt);
         }
         
         export function getListSpecialBonusPayTimeItem(): JQueryPromise<any> {
