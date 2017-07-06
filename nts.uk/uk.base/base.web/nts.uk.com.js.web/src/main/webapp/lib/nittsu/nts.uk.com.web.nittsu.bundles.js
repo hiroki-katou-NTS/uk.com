@@ -1836,6 +1836,8 @@ var nts;
                 __extends(MomentResult, _super);
                 function MomentResult(momentObject, outputFormat) {
                     _super.call(this, true);
+                    this.min = moment.utc("1900/01/01", "YYYY/MM/DD", true);
+                    this.max = moment.utc("9999/12/31", "YYYY/MM/DD", true);
                     this.momentObject = momentObject;
                     this.outputFormat = uk.text.getISOFormat(outputFormat);
                 }
@@ -1844,6 +1846,11 @@ var nts;
                 };
                 MomentResult.prototype.failed = function (msg) {
                     this.msg = (msg) ? msg : "Invalid format";
+                    this.success = false;
+                };
+                MomentResult.prototype.failedWithMessegeId = function (msgID, params) {
+                    this.msgID = msgID;
+                    this.params = params;
                     this.success = false;
                 };
                 MomentResult.prototype.format = function () {
@@ -1855,6 +1862,12 @@ var nts;
                     if (!this.success)
                         return null;
                     return this.momentObject;
+                };
+                MomentResult.prototype.systemMin = function () {
+                    return this.min;
+                };
+                MomentResult.prototype.systemMax = function () {
+                    return this.max;
                 };
                 MomentResult.prototype.toNumber = function (outputFormat) {
                     var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
@@ -1875,6 +1888,18 @@ var nts;
                     }
                 };
                 MomentResult.prototype.getMsg = function () { return this.msg; };
+                MomentResult.prototype.getEmsg = function (name) {
+                    if (this.msgID === undefined) {
+                        return this.msg;
+                    }
+                    else {
+                        if (name !== undefined) {
+                            this.params.unshift(name);
+                        }
+                        return nts.uk.resource.getMessage(this.msgID, this.params);
+                    }
+                };
+                MomentResult.prototype.getMsgID = function () { return this.msgID === undefined ? "" : this.msgID; };
                 return MomentResult;
             }(ParseResult));
             time_1.MomentResult = MomentResult;
@@ -1882,16 +1907,35 @@ var nts;
                 var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
                 var momentObject = moment.utc(datetime, inputFormats, true);
                 var result = new MomentResult(momentObject, outputFormat);
-                if (momentObject.isValid())
-                    result.succeeded();
-                else
+                if (momentObject.isValid()) {
+                    if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())) {
+                        var parsedFormat = momentObject.creationData().format;
+                        if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0) {
+                            result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
+                        }
+                        else if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") < 0 && parsedFormat.indexOf("Y") >= 0) {
+                            result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
+                        }
+                        else {
+                            result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
+                        }
+                    }
+                    else {
+                        result.succeeded();
+                    }
+                }
+                else {
                     result.failed();
+                }
                 return result;
             }
             time_1.parseMoment = parseMoment;
             function findFormat(format) {
                 if (nts.uk.util.isNullOrEmpty(format)) {
                     return defaultInputFormat;
+                }
+                if (format === "yearmonth") {
+                    format = "YM";
                 }
                 var uniqueFormat = _.uniq(format.split(""));
                 var formats = _.filter(defaultInputFormat, function (dfFormat) {
@@ -2732,7 +2776,7 @@ var nts;
                             }
                         }
                         else {
-                            result.fail(parseResult.getMsg(), "");
+                            result.fail(parseResult.getEmsg(this.name), parseResult.getMsgID());
                             return result;
                         }
                         // Time clock
@@ -8177,7 +8221,7 @@ var nts;
                                 value(result.parsedValue);
                             }
                             else {
-                                $input.ntsError('set', result.errorMessage);
+                                $input.ntsError('set', result.errorMessage, result.errorCode);
                                 value(newText);
                             }
                         });
@@ -8185,7 +8229,7 @@ var nts;
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage);
+                                $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
                         });
                         $input.on('validate', (function (e) {
@@ -8193,7 +8237,7 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage);
+                                $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
@@ -8224,7 +8268,7 @@ var nts;
                             var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 // Check equals to avoid multi datepicker with same value
-                                $input.datepicker('setDate', new Date(dateFormatValue));
+                                $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
                             else {

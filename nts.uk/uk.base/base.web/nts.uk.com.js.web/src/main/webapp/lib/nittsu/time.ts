@@ -495,8 +495,12 @@
 
     export class MomentResult extends ParseResult {
         momentObject: moment.Moment;
+        min: moment.Moment = moment.utc("1900/01/01", "YYYY/MM/DD", true);
+        max: moment.Moment = moment.utc("9999/12/31", "YYYY/MM/DD", true);
         outputFormat: string;
         msg: string;
+        msgID: string;
+        params: Array<string>;
         constructor(momentObject: moment.Moment, outputFormat?: string) {
             super(true);
             this.momentObject = momentObject;
@@ -511,6 +515,12 @@
             this.msg = (msg) ? msg : "Invalid format";
             this.success = false;
         }
+        
+        failedWithMessegeId(msgID?: string, params?: Array<string>) {
+            this.msgID = msgID;
+            this.params = params;
+            this.success = false;
+        }
 
         format() {
             if (!this.success)
@@ -523,7 +533,15 @@
                 return null;
             return this.momentObject;
         }
+        
+        systemMin() {
+            return this.min;    
+        }
 
+        systemMax() {
+            return this.max;    
+        }
+        
         toNumber(outputFormat?: string) {
             var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
             var yearMonthFormats = ["YYYY/MM", "YYYY-MM", "YYYYMM", "yearmonth"];
@@ -543,6 +561,19 @@
         }
 
         getMsg() { return this.msg; }
+        
+        getEmsg(name?: string) {
+            if(this.msgID === undefined){
+                return this.msg;        
+            } else {
+                if (name !== undefined){
+                    this.params.unshift(name);        
+                }    
+                return nts.uk.resource.getMessage(this.msgID, this.params);
+            }
+        }
+        
+        getMsgID() { return this.msgID === undefined ? "" : this.msgID; }
     }
 
 
@@ -550,16 +581,31 @@
         var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
         var momentObject = moment.utc(datetime, inputFormats, true);  
         var result = new MomentResult(momentObject, outputFormat);
-        if (momentObject.isValid())
-            result.succeeded();
-        else
+        if (momentObject.isValid()) {
+            if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())){
+                let parsedFormat = momentObject.creationData().format;
+                if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0){
+                    result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")] );        
+                } else if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") < 0 && parsedFormat.indexOf("Y") >= 0) {
+                    result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
+                } else {
+                    result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
+                }            
+            } else {
+                result.succeeded();    
+            }
+        } else {
             result.failed();
+        }
         return result;
     } 
      
     function findFormat (format: string): Array<string>{
         if(nts.uk.util.isNullOrEmpty(format)){
             return defaultInputFormat;        
+        }
+        if (format === "yearmonth"){
+            format = "YM";
         }
         let uniqueFormat = _.uniq(format.split(""));
         let formats =  _.filter(defaultInputFormat, function (dfFormat: string){
