@@ -32,9 +32,17 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KwtmtWorkTime;
 @Stateless
 public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepository{
 
+	private final String findWorkTimeByCompanyID = "SELECT a FROM KwtmtWorkTime a "
+			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID";
+	
 	private final String findWorkTimeByList = "SELECT a FROM KwtmtWorkTime a "
 			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID "
 			+ "AND a.kwtmpWorkTimePK.siftCD IN :siftCDs";
+
+	@Override
+	public List<WorkTime> findByCompanyID(String companyID) {
+		return this.queryProxy().query(findWorkTimeByCompanyID, KwtmtWorkTime.class).setParameter("companyID", companyID).getList(x -> convertToDomainWorkTime(x));
+	}
 	
 	@Override
 	public Optional<WorkTime> findByCode(String companyID, String siftCD) {
@@ -82,5 +90,4 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 			)
 		);
 	}
-
 }

@@ -23,15 +23,15 @@ import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchy;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkplace;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkplacePK_;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkplace_;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHierarchy;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHierarchyPK_;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHierarchy_;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHist;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHistPK_;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHist_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplacePK_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHierarchy;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHierarchyPK_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHierarchy_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHist;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHistPK_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHist_;
 
 /**
  * The Class JpaWorkplaceRepository.
@@ -77,8 +77,8 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KwpmtWplHist> cq = criteriaBuilder.createQuery(KwpmtWplHist.class);
-		Root<KwpmtWplHist> root = cq.from(KwpmtWplHist.class);
+		CriteriaQuery<CwpmtWkpHist> cq = criteriaBuilder.createQuery(CwpmtWkpHist.class);
+		Root<CwpmtWkpHist> root = cq.from(CwpmtWkpHist.class);
 
 		// select root
 		cq.select(root);
@@ -86,13 +86,13 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KwpmtWplHist_.kwpmtWplHistPK).get(KwpmtWplHistPK_.cid), companyId));
+				.equal(root.get(CwpmtWkpHist_.cwpmtWkpHistPK).get(CwpmtWkpHistPK_.cid), companyId));
 		// >= general date
 		lstpredicateWhere
-				.add(criteriaBuilder.lessThanOrEqualTo(root.get(KwpmtWplHist_.strD), generalDate));
+				.add(criteriaBuilder.lessThanOrEqualTo(root.get(CwpmtWkpHist_.strD), generalDate));
 		 // <= general date
 		lstpredicateWhere.add(
-				criteriaBuilder.greaterThanOrEqualTo(root.get(KwpmtWplHist_.endD), generalDate));
+				criteriaBuilder.greaterThanOrEqualTo(root.get(CwpmtWkpHist_.endD), generalDate));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -114,11 +114,11 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KWPMT_WORK_PLACE (KwpmtWorkPlace SQL)
-		CriteriaQuery<KwpmtWplHierarchy> cq = criteriaBuilder.createQuery(KwpmtWplHierarchy.class);
+		// call CWPMT_WORK_PLACE (CwpmtWorkPlace SQL)
+		CriteriaQuery<CwpmtWkpHierarchy> cq = criteriaBuilder.createQuery(CwpmtWkpHierarchy.class);
 
 		// root data
-		Root<KwpmtWplHierarchy> root = cq.from(KwpmtWplHierarchy.class);
+		Root<CwpmtWkpHierarchy> root = cq.from(CwpmtWkpHierarchy.class);
 
 		// select root
 		cq.select(root);
@@ -128,17 +128,17 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 
 		// equals companyId
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwpmtWplHierarchy_.kwpmtWplHierarchyPK).get(KwpmtWplHierarchyPK_.hisId),
+				root.get(CwpmtWkpHierarchy_.cwpmtWkpHierarchyPK).get(CwpmtWkpHierarchyPK_.hisId),
 				historyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		cq.orderBy(criteriaBuilder.asc(root.get(KwpmtWplHierarchy_.hierarchyCd)));
+		cq.orderBy(criteriaBuilder.asc(root.get(CwpmtWkpHierarchy_.hierarchyCd)));
 		// create query
-		TypedQuery<KwpmtWplHierarchy> query = em.createQuery(cq);
+		TypedQuery<CwpmtWkpHierarchy> query = em.createQuery(cq);
 
-		List<KwpmtWplHierarchy> lst = query.getResultList();
+		List<CwpmtWkpHierarchy> lst = query.getResultList();
 		// exclude select
 		return lst.stream().map(item -> this.hierarchyToDomain(item)).collect(Collectors.toList());
 	}
@@ -155,11 +155,11 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KWPMT_WORK_PLACE (KwpmtWorkPlace SQL)
-		CriteriaQuery<KwpmtWorkplace> cq = criteriaBuilder.createQuery(KwpmtWorkplace.class);
+		// call CWPMT_WORK_PLACE (CwpmtWorkPlace SQL)
+		CriteriaQuery<CwpmtWorkplace> cq = criteriaBuilder.createQuery(CwpmtWorkplace.class);
 
 		// root data
-		Root<KwpmtWorkplace> root = cq.from(KwpmtWorkplace.class);
+		Root<CwpmtWorkplace> root = cq.from(CwpmtWorkplace.class);
 
 		// select root
 		cq.select(root);
@@ -169,14 +169,14 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 
 		// equals workplaceId
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.wplid),
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.wkpid),
 				workplaceId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KwpmtWorkplace> query = em.createQuery(cq);
+		TypedQuery<CwpmtWorkplace> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(item -> this.toDomain(item))
@@ -189,7 +189,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * @param entity the entity
 	 * @return the work place history
 	 */
-	private WorkPlaceHistory histToDomain(KwpmtWplHist entity){
+	private WorkPlaceHistory histToDomain(CwpmtWkpHist entity){
 		return new WorkPlaceHistory(new JpaWorkplaceHistoryGetMemento(entity));
 	}
 	
@@ -199,7 +199,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * @param entity the entity
 	 * @return the work place hierarchy
 	 */
-	private WorkPlaceHierarchy hierarchyToDomain(KwpmtWplHierarchy entity) {
+	private WorkPlaceHierarchy hierarchyToDomain(CwpmtWkpHierarchy entity) {
 		return new WorkPlaceHierarchy(new JpaWorkplaceHierarchyGetMemento(entity));
 	}
 	
@@ -209,7 +209,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * @param entity the entity
 	 * @return the workplace
 	 */
-	private Workplace toDomain(KwpmtWorkplace entity){
+	private Workplace toDomain(CwpmtWorkplace entity){
 		return new Workplace(new JpaWorkplaceGetMemento(entity));
 	}
 	
@@ -218,10 +218,10 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * To entity.
 	 *
 	 * @param domain the domain
-	 * @return the kwpmt workplace
+	 * @return the cwpmt workplace
 	 */
-	private KwpmtWorkplace toEntity(Workplace domain){
-		KwpmtWorkplace entity = new KwpmtWorkplace();
+	private CwpmtWorkplace toEntity(Workplace domain){
+		CwpmtWorkplace entity = new CwpmtWorkplace();
 		domain.saveToMemento(new JpaWorkplaceSetMemento(entity));
 		return entity;
 	}
@@ -240,11 +240,11 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KWPMT_WORK_PLACE (KwpmtWorkPlace SQL)
-		CriteriaQuery<KwpmtWplHierarchy> cq = criteriaBuilder.createQuery(KwpmtWplHierarchy.class);
+		// call CWPMT_WORK_PLACE (CwpmtWorkPlace SQL)
+		CriteriaQuery<CwpmtWkpHierarchy> cq = criteriaBuilder.createQuery(CwpmtWkpHierarchy.class);
 
 		// root data
-		Root<KwpmtWplHierarchy> root = cq.from(KwpmtWplHierarchy.class);
+		Root<CwpmtWkpHierarchy> root = cq.from(CwpmtWkpHierarchy.class);
 
 		// select root
 		cq.select(root);
@@ -254,22 +254,22 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 
 		// equals companyId
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwpmtWplHierarchy_.kwpmtWplHierarchyPK).get(KwpmtWplHierarchyPK_.cid),
+				root.get(CwpmtWkpHierarchy_.cwpmtWkpHierarchyPK).get(CwpmtWkpHierarchyPK_.cid),
 				companyId));
 		
 		// equal work place id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwpmtWplHierarchy_.kwpmtWplHierarchyPK).get(KwpmtWplHierarchyPK_.wplid),
+				root.get(CwpmtWkpHierarchy_.cwpmtWkpHierarchyPK).get(CwpmtWkpHierarchyPK_.wkpid),
 				workplaceId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		cq.orderBy(criteriaBuilder.asc(root.get(KwpmtWplHierarchy_.hierarchyCd)));
+		cq.orderBy(criteriaBuilder.asc(root.get(CwpmtWkpHierarchy_.hierarchyCd)));
 		// create query
-		TypedQuery<KwpmtWplHierarchy> query = em.createQuery(cq);
+		TypedQuery<CwpmtWkpHierarchy> query = em.createQuery(cq);
 
-		List<KwpmtWplHierarchy> lst = query.getResultList();
+		List<CwpmtWkpHierarchy> lst = query.getResultList();
 		
 		// exclude select
 		return lst.stream().map(item -> this.hierarchyToDomain(item)).collect(Collectors.toList());
@@ -297,11 +297,11 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KWPMT_WORK_PLACE (KwpmtWorkPlace SQL)
-		CriteriaQuery<KwpmtWplHierarchy> cq = criteriaBuilder.createQuery(KwpmtWplHierarchy.class);
+		// call CWPMT_WORK_PLACE (CwpmtWorkPlace SQL)
+		CriteriaQuery<CwpmtWkpHierarchy> cq = criteriaBuilder.createQuery(CwpmtWkpHierarchy.class);
 
 		// root data
-		Root<KwpmtWplHierarchy> root = cq.from(KwpmtWplHierarchy.class);
+		Root<CwpmtWkpHierarchy> root = cq.from(CwpmtWkpHierarchy.class);
 
 		// select root
 		cq.select(root);
@@ -311,21 +311,21 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 
 		// equals companyId
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwpmtWplHierarchy_.kwpmtWplHierarchyPK).get(KwpmtWplHierarchyPK_.cid),
+				root.get(CwpmtWkpHierarchy_.cwpmtWkpHierarchyPK).get(CwpmtWkpHierarchyPK_.cid),
 				companyId));
 		
 		// like hierarchy code
-		lstpredicateWhere.add(criteriaBuilder.like(root.get(KwpmtWplHierarchy_.hierarchyCd),
+		lstpredicateWhere.add(criteriaBuilder.like(root.get(CwpmtWkpHierarchy_.hierarchyCd),
 				hierarchyCode + "%"));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		cq.orderBy(criteriaBuilder.asc(root.get(KwpmtWplHierarchy_.hierarchyCd)));
+		cq.orderBy(criteriaBuilder.asc(root.get(CwpmtWkpHierarchy_.hierarchyCd)));
 		// create query
-		TypedQuery<KwpmtWplHierarchy> query = em.createQuery(cq);
+		TypedQuery<CwpmtWkpHierarchy> query = em.createQuery(cq);
 
-		List<KwpmtWplHierarchy> lst = query.getResultList();
+		List<CwpmtWkpHierarchy> lst = query.getResultList();
 		
 		// exclude select
 		return lst.stream().map(item -> this.hierarchyToDomain(item)).collect(Collectors.toList());
@@ -371,11 +371,11 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KWPMT_WORK_PLACE (KwpmtWorkPlace SQL)
-		CriteriaQuery<KwpmtWorkplace> cq = criteriaBuilder.createQuery(KwpmtWorkplace.class);
+		// call CWPMT_WORK_PLACE (CwpmtWorkPlace SQL)
+		CriteriaQuery<CwpmtWorkplace> cq = criteriaBuilder.createQuery(CwpmtWorkplace.class);
 
 		// root data
-		Root<KwpmtWorkplace> root = cq.from(KwpmtWorkplace.class);
+		Root<CwpmtWorkplace> root = cq.from(CwpmtWorkplace.class);
 
 		// select root
 		cq.select(root);
@@ -385,21 +385,21 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 
 		// equals workplaceId
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.cid), companyId));
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.cid), companyId));
 		
 		// start date le base date
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.strD), baseDate));
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.strD), baseDate));
 		
 		// start date le base date
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.endD), baseDate));
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KwpmtWorkplace> query = em.createQuery(cq);
+		TypedQuery<CwpmtWorkplace> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(item -> this.toDomain(item))

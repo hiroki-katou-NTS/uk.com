@@ -208,6 +208,9 @@ module nts.uk.com.view.ccg.share.ccg {
                         $('#classificationList').ntsListComponent(self.classifications);
                         $('#jobtitleList').ntsListComponent(self.jobtitles);
                         $('#workplaceList').ntsTreeComponent(self.workplaces);
+                        if(!self.isSelectAllEmployee) {
+                            $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                        }
                     }
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError(error);
@@ -229,17 +232,7 @@ module nts.uk.com.view.ccg.share.ccg {
             searchDataEmployee(): void {
                 var self = this;
                 service.searchModeEmployee(self.toEmployeeDto()).done(data => {
-                    self.employeeinfo = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: self.isMultiple,
-                        listType: ListType.EMPLOYEE,
-                        employeeInputList: self.toUnitModelList(data),
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        selectedCode: self.selectedCodeEmployee,
-                        isDialog: true,
-                        isShowNoSelectRow: false,
-                    }
-                    $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                    self.employeeinfo.employeeInputList(self.toUnitModelList(data));
                 }).fail(function(error){
                    nts.uk.ui.dialog.alertError(error); 
                 });
@@ -305,7 +298,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 employeeIds.push(self.selectedCodeEmployee() + "");
                 return employeeIds;
             }            
-            public toUnitModelList(dataList: EmployeeSearchDto[]): KnockoutObservableArray<UnitModel> {
+            public toUnitModelList(dataList: EmployeeSearchDto[]): Array<UnitModel> {
                 var dataRes: UnitModel[] = [];
 
                 for (var item: EmployeeSearchDto of dataList) {
@@ -314,7 +307,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         name: item.employeeName
                     });
                 }
-                return ko.observableArray(dataRes);
+                return dataRes;
             }
 
 
@@ -339,7 +332,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         isDialog: true
                     }
 
-
                     self.jobtitles = {
                         isShowAlreadySet: false,
                         isMultiSelect: true,
@@ -359,6 +351,17 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedWorkplaceId: self.selectedCodeWorkplace,
                         baseDate: self.baseDate,
                         isDialog: true
+                    }
+
+                    self.employeeinfo = {
+                        isShowAlreadySet: false,
+                        isMultiSelect: self.isMultiple,
+                        listType: ListType.EMPLOYEE,
+                        employeeInputList: ko.observableArray([]),
+                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                        selectedCode: self.selectedCodeEmployee,
+                        isDialog: true,
+                        isShowNoSelectRow: false,
                     }
                 }
             }
