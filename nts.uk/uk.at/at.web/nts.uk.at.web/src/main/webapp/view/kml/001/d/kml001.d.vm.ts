@@ -37,7 +37,7 @@ module nts.uk.at.view.kml001.d {
                 var self = this;
                 if(self.isUpdate()) {
                     if(!vmbase.ProcessHandler.validateDateRange(self.newStartDate(),vmbase.ProcessHandler.getOneDayAfter(self.beforeStartDate()),self.currentEndDate())) {
-                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"}); 
+                        $("#startDateInput").ntsError('set', {messageId:"Msg_65"}); 
                         nts.uk.ui.block.clear();
                     } else {
                         self.currentPersonCost().startDate(self.newStartDate());
@@ -68,7 +68,7 @@ module nts.uk.at.view.kml001.d {
                             nts.uk.ui.block.clear();        
                         });
                     } else{ 
-                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_128"});
+                        $("#startDateInput").ntsError('set', {messageId:"Msg_128"});
                         nts.uk.ui.block.clear();
                     }
                 }
@@ -78,7 +78,7 @@ module nts.uk.at.view.kml001.d {
              * close dialog and do nothing
              */
             closeDialog(): void {
-                $("#startDateInput-input").ntsError('clear');
+                $("#startDateInput").ntsError('clear');
                 nts.uk.ui.windows.close();   
             }
         }

@@ -25,7 +25,7 @@ module nts.uk.at.view.kml001.c {
             submitAndCloseDialog(): void {
                 var self = this;
                 if(!vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.beginStartDate())){
-                    $("#startDateInput-input").ntsError('set', {messageId:"Msg_102"});
+                    $("#startDateInput").ntsError('set', {messageId:"Msg_102"});
                 } else {
                     nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
                     nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
@@ -37,7 +37,7 @@ module nts.uk.at.view.kml001.c {
              * close dialog and do nothing
              */
             closeDialog(): void {
-                $("#startDateInput-input").ntsError('clear');
+                $("#startDateInput").ntsError('clear');
                 nts.uk.ui.windows.close();   
             }
         }

@@ -12,12 +12,16 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name = "CCGMT_TOP_PAGE")
 public class CcgmtTopPage extends UkJpaEntity implements Serializable {
 
@@ -42,5 +46,4 @@ public class CcgmtTopPage extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return ccgmtTopPagePK;
 	}
-
 }

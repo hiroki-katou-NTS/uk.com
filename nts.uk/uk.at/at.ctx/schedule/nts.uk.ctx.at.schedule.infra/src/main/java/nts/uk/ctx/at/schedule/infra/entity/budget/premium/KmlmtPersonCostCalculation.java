@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -23,6 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Entity
 @Table(name="KMLMT_COST_CALC_SET")
 public class KmlmtPersonCostCalculation extends UkJpaEntity{
@@ -41,7 +43,7 @@ public class KmlmtPersonCostCalculation extends UkJpaEntity{
 	@Column(name="MEMO")
 	public String memo;
 	
-	@OneToMany(targetEntity=KmlstPremiumSet.class, cascade = CascadeType.ALL, mappedBy = "kmlmtPersonCostCalculation")
+	@OneToMany(targetEntity=KmlstPremiumSet.class, cascade = CascadeType.ALL, mappedBy = "kmlmtPersonCostCalculation", orphanRemoval = true)
 	@JoinTable(name = "KMLST_PREMIUM_SET")
 	public List<KmlstPremiumSet> kmlstPremiumSets;
 
