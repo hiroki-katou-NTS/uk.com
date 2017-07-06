@@ -419,7 +419,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		String employeeId = AppContexts.user().employeeId();
 		LayoutForMyPageDto layoutMypage = null;
 		Optional<MyPage> mPage = mypage.getMyPage(employeeId);
-		if(mPage.isPresent()){//register my page
+		if(!mPage.isPresent()){//register my page
 			MyPage mypageNew = MyPage.createNew(employeeId);
 			mypage.addMyPage(mypageNew);
 			layoutMypage = new LayoutForMyPageDto(employeeId, mypageNew.getLayoutId(), PGType.MYPAGE.value, null, null);
