@@ -158,9 +158,15 @@ module nts.uk.com.view.ccg.share.ccg {
                     if ($(e.target).parents().hasClass('ui-igcombo-dropdown')) {
                         return;
                     }
+                    if (e.target.id == "hor-scroll-button-hide" || $(e.target).parents("#hor-scroll-button-hide")[0]) {
+                        return;
+                    }
                     if (self.isShow()) {
+                        // Hide component.
+                        self.isShow(false);
+                        $('#hor-scroll-button-hide').hide();
                         $('#ccg-component').toggle("slide", function() {
-                            self.isShow(false);
+                            $('#hor-scroll-button-hide').show();
                         });
                     }
                 });
@@ -168,14 +174,14 @@ module nts.uk.com.view.ccg.share.ccg {
             }
             
             showHide() {
+                // Show component.
                 var self = this;
                 if (self.isShow()) {
                     return;
                 }
                 $('#hor-scroll-button-hide').hide();
-                $('#ccg-component').toggle("slide", function() {
-                    self.isShow(true);
-                });
+                self.isShow(true);
+                $('#ccg-component').toggle("slide");
             }
 
             searchAllEmployee(): void {

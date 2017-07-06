@@ -5,13 +5,14 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kmk005.b.start.js" />
 			<com:scriptfile path="kmk005.b.vm.js" />
 			<com:scriptfile path="kmk005.b.service.js" />
 			<com:stylefile path="kmk005.b.main.css" />
+				<script>var dialogSize = { width: 600, height: 800 };</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -54,7 +55,7 @@
 										option: { width: '220px' }, 
 										required: true, 
 										enable: Boolean(useAtr()==1) }" />
-										 <input type="hidden" data-bind="value: cid" />
+										 <input type="hidden" data-bind="value: companyId" />
 										 <input type="hidden" data-bind="value: timeItemId" />
 									</td>
 									 
@@ -98,7 +99,7 @@
 										option: { width: '220px' }, 
 										required: true, 
 										enable: Boolean(useAtr()==1) }" />
-										 <input type="hidden" data-bind="value: cid" />
+										 <input type="hidden" data-bind="value: companyId" />
 										 <input type="hidden" data-bind="value: timeItemId" />
 									</td>
 									 

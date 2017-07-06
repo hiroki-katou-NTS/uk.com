@@ -153,17 +153,16 @@
 	background-color: white;
 	padding-right: 5px;
 }
-#ccgcomponent {
-	z-index: 9999;
-	position: absolute;
-}
 #ccg-component {
-	
+	z-index: 999;
+	position: absolute;
 }
 #hor-scroll-button-show {
 	margin-top: 180px;
 }
 #hor-scroll-button-hide {
+	z-index: 998;
+	position: absolute;
 	margin-top: 180px;
 }
 .icon-01-searchmode {
