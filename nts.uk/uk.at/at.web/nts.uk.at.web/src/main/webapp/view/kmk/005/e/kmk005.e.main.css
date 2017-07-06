@@ -107,5 +107,7 @@ table, tr, th, td {
 #table-panel-2 > tbody > tr > td:NTH-CHILD(5) {
 	padding: 3px;
 }
-
+#functions-area-bottom > button {
+	margin-right: 10px;
+}
 

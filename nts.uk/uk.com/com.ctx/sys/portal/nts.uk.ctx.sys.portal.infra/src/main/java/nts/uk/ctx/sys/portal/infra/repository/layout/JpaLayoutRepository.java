@@ -56,7 +56,10 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 
 	@Override
 	public void update(Layout layout) {
-		this.commandProxy().update(toEntity(layout));
+		CcgmtLayout newEntity = toEntity(layout);
+		CcgmtLayout updatedEntity = this.queryProxy().find(newEntity.ccgmtLayoutPK, CcgmtLayout.class).get();
+		updatedEntity.pgType = newEntity.pgType;
+		this.commandProxy().update(updatedEntity);
 	}
 
 	/**

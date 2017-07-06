@@ -3,6 +3,8 @@ module ccg030.a.start {
         var screenModel = new ccg030.a.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $(".browser-button").attr("tabindex", 7);
+            $(".filename").attr("tabindex", 8);
         });
     });
 }

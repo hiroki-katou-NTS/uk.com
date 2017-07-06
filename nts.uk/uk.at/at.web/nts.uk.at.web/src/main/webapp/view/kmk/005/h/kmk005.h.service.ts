@@ -14,6 +14,9 @@ module nts.uk.at.view.kmk005.h.service {
     }
 
     export function getSetting(wid: string) {
+        if (!wid) {
+            return $.Deferred().resolve(undefined).promise();
+        }
         return ajax(format(paths.get, wid));
     }
 
@@ -27,7 +30,7 @@ module nts.uk.at.view.kmk005.h.service {
         if (!command.bonusPaySettingCode || command.bonusPaySettingCode == '000') {
             command.action = 1;
         }
-        
+
         // push to webservice
         return ajax(paths.save, command);
     }

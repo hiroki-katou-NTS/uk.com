@@ -33,8 +33,8 @@ module nts.uk.ui.koExtentions {
                 browserButtonText = "ファイルアップロード";
             }
             fileBrowserButton.text(browserButtonText);
-            let fileNameLable = $("<span class='filename'></span> ");
-            let fileInput = $("<input style ='display:none' type='file' class='fileinput'/>");
+            let fileNameLable = $("<span class='filename' style='margin-left: 5px;'></span> ");
+            let fileInput = $("<input style ='display:none;' type='file' class='fileinput'/>");
             if (suportedExtension) {
                 fileInput.attr("accept", suportedExtension.toString());
             }
@@ -42,11 +42,16 @@ module nts.uk.ui.koExtentions {
             fileuploadContainer.append(fileNameLable);
             fileuploadContainer.append(fileInput);
             fileuploadContainer.appendTo(control);
+            fileBrowserButton.click(function(){
+                    fileInput.val(null);
+            });
             fileInput.change(function() {
+                var selectedFilePath = $(this).val();
+               var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
                 if (fileName != undefined) {
-                    data.filename($(this).val());
+                    data.filename(getSelectedFileName);
                 } else {
-                    fileNameLable.text($(this).val());
+                    fileNameLable.text(getSelectedFileName);
                 }
                 if (typeof onchange == 'function') {
                     onchange($(this).val());

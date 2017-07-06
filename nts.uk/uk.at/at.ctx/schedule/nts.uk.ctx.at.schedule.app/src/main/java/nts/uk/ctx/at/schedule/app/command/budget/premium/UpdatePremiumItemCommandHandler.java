@@ -46,6 +46,7 @@ public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdateP
 		
 		//update PremiumItem
 		for(UpdatePremiumItemCommand command : commands) {
+			if(command.isChange()) {
 				this.premiumItemRepository.update(
 						new PremiumItem(
 								companyID, 
@@ -56,6 +57,7 @@ public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdateP
 								EnumAdaptor.valueOf(command.getUseAtr(), UseAttribute.class) 
 						)
 				);					
+			}
 		}
 	}
 

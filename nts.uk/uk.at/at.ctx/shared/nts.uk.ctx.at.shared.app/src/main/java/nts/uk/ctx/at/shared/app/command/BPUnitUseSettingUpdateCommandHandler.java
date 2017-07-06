@@ -18,7 +18,7 @@ public class BPUnitUseSettingUpdateCommandHandler extends CommandHandler<BPUnitU
 		String companyID = AppContexts.user().companyId();
 		BPUnitUseSettingUpdateCommand bpUnitUseSettingUpdateCommand = context.getCommand();
 		bpUnitUseSettingDomainService.updateSetting(BPUnitUseSetting.createFromJavaType(companyID,
-				bpUnitUseSettingUpdateCommand.getPersonalUseAtr(), bpUnitUseSettingUpdateCommand.getPersonalUseAtr(),
+				bpUnitUseSettingUpdateCommand.getWorkplaceUseAtr(), bpUnitUseSettingUpdateCommand.getPersonalUseAtr(),
 				bpUnitUseSettingUpdateCommand.getWorkingTimesheetUseAtr()));
 	}
 }

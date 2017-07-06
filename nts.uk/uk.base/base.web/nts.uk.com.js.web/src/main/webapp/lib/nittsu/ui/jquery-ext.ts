@@ -299,8 +299,8 @@ module nts.uk.ui.jqueryExtentions {
                                 let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
                                 $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);    
                             } else { 
-                                let index = parseInt($(selected["element"]).attr("data-row-idx"));
-                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : index); //.scrollTop(scrollTop);    
+                                let index = $(selected["element"]).attr("data-row-idx");
+                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                             }     
                         }   
                     });    

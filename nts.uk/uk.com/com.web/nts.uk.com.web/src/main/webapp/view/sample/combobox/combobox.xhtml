@@ -36,6 +36,7 @@
 						<div class="control-group valign-center">
 							<div id="combo-box" data-bind="ntsComboBox: {options: itemListCbb1,
 												optionsValue: 'codeCbb1',
+												visibleItemsCount: 5,
 												value: selectedCode,
 												optionsText: 'nameCbb1',
 												editable: isEditable,
@@ -134,6 +135,7 @@
 <pre><![CDATA[<div id="combo-box" data-bind="ntsComboBox: {
 	options: itemListCbb1,
 	optionsValue: 'code',
+	visibleItemsCount: 5,
 	value: selectedCode,
 	optionsText: 'name',
 	editable: isEditable,
@@ -206,6 +208,13 @@
 													Array of column object will be displayed in drop down part.<br/>
 													<i>prop:</i> field name of data<br/>
 													<i>length:</i> length of character for this field 
+												</td>
+											</tr>
+											<tr>
+												<td>visibleItemsCount<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> number<br/>
+													Max visible item. If over, scroll is displayed. Default: 5 
 												</td>
 											</tr>
 										</tbody>

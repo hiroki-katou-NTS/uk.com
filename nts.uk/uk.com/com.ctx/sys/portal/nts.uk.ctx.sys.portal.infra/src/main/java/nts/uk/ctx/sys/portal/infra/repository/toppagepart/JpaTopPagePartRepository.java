@@ -94,7 +94,12 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 
 	@Override
 	public void update(TopPagePart topPagePart) {
-		this.commandProxy().update(toEntity(topPagePart));
+		CcgmtTopPagePart newEntity = toEntity(topPagePart);
+		CcgmtTopPagePart updateEntity = this.queryProxy().find(newEntity.ccgmtTopPagePartPK, CcgmtTopPagePart.class).get();
+		updateEntity.name = newEntity.name;
+		updateEntity.width = newEntity.width;
+		updateEntity.height = newEntity.height;
+		this.commandProxy().update(updateEntity);
 	}
 
 	/**

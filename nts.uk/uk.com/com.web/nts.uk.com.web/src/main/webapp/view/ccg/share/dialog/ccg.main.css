@@ -1,17 +1,12 @@
 @CHARSET "UTF-8";
 
-.kcpccg {
-	margin-top: 15px;
-	width: 550px;
-	margin-left: 15px;
-}
-
 .endAction{
 	margin-top: 20px;
 }
 
 .btnAction{
 	width: 100px;
+	margin-left: 15px;
 }
 
 .beginAction{

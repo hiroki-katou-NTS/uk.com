@@ -1,29 +1,41 @@
 module nts.uk.at.view.kmk005.k {
     export module service {
-        import ajax = nts.uk.request.ajax;
-        import format = nts.uk.text.format;
-
-        let paths: any = {
-            'get': 'at/share/cpBonusPaySetting/getSetting',
-            'save': 'at/share/cpBonusPaySetting/saveSetting',
-            'remove': 'at/share/cpBonusPaySetting/removeCBPSettingSetting',
-            getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}'
+        var paths: any = {
+            getWorkTime: "at/shared/worktime/findByCompanyID",
+            getWorkingTimesheetBonusPaySet: "at/share/wtBonusPaySetting/getListWTBonusPaySettingSetting",
+            getWorkingTimesheetBonusPaySetByCode: "at/share/wtBonusPaySetting/getWTBPSetting/{0}",
+            getBonusPaySettingByCode: "at/share/bonusPaySetting/getBonusPaySetting/{0}",
+            updateWorkingTimesheetBonusPaySet: "at/share/wtBonusPaySetting/updateWTBonusPaySettingSetting",
+            insertWorkingTimesheetBonusPaySet: "at/share/wtBonusPaySetting/insertWTBonusPaySettingSetting",
+            deleteWorkingTimesheetBonusPaySet: "at/share/wtBonusPaySetting/deleteWTBonusPaySettingSetting"
         }
 
-        export function getData() {
-            return ajax(paths.get);
+        export function getWorkTime(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getWorkTime);
         }
 
-        export function getName(bonusPaySettingCode) {
-            return ajax(format(paths.getName, bonusPaySettingCode));
+        export function getWorkingTimesheetBonusPaySet(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getWorkingTimesheetBonusPaySet);
         }
 
-        export function saveData(command) {
-            return ajax(paths.add, command);
+        export function getWorkingTimesheetBonusPaySetByCode(workingTimesheetCode): JQueryPromise<any> {
+            return nts.uk.request.ajax(nts.uk.text.format(paths.getWorkingTimesheetBonusPaySetByCode, workingTimesheetCode));
         }
 
-        export function removeData(command) {
-            return ajax(paths.remove, command);
+        export function getBonusPaySettingByCode(bonusPaySettingCode): JQueryPromise<any> {
+            return nts.uk.request.ajax(nts.uk.text.format(paths.getBonusPaySettingByCode, bonusPaySettingCode));
+        }
+
+        export function updateWorkingTimesheetBonusPaySet(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateWorkingTimesheetBonusPaySet, command);
+        }
+
+        export function insertWorkingTimesheetBonusPaySet(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.insertWorkingTimesheetBonusPaySet, command);
+        }
+
+        export function deleteWorkingTimesheetBonusPaySet(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.deleteWorkingTimesheetBonusPaySet, command);
         }
     }
 }

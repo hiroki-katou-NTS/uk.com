@@ -8,15 +8,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KwpmtWplHistPK_.
+ * The Class CwpmtWkpHistPK_.
  */
-@StaticMetamodel(KwpmtWplHistPK.class)
-public class KwpmtWplHistPK_ {
+@StaticMetamodel(CwpmtWkpHistPK.class)
+public class CwpmtWkpHistPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KwpmtWplHistPK, String> cid;
+	public static volatile SingularAttribute<CwpmtWkpHistPK, String> cid;
 	
 	/** The hist id. */
-	public static volatile SingularAttribute<KwpmtWplHistPK, String> histId;
+	public static volatile SingularAttribute<CwpmtWkpHistPK, String> histId;
 
 }
