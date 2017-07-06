@@ -32,6 +32,11 @@ public class BonusPayTimeItemWebService extends WebService {
 	public List<BPTimeItemDto> getListBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItem();
 	}
+	@POST
+	@Path("checkUseArt")
+	public void checkUseArt(List<Boolean> lstuseArt){
+		this.bpTimeItemFinder.checkUseArt(lstuseArt);
+	}
 
 	@POST
 	@Path("getListSpecialBonusPayTimeItem")

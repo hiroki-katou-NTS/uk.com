@@ -3,6 +3,7 @@ module nts.uk.at.view.kml001.b {
         import servicebase = kml001.shr.servicebase;
         import vmbase = kml001.shr.vmbase;
         export class ScreenModel {
+            rootList: Array<vmbase.PremiumItem>;
             premiumItemList: KnockoutObservableArray<vmbase.PremiumItem>;
             isInsert: Boolean;
             allUse: KnockoutObservable<number>;
@@ -34,9 +35,11 @@ module nts.uk.at.view.kml001.b {
                                     item.attendanceID,
                                     item.name,
                                     item.displayNumber,
-                                    item.useAtr
+                                    item.useAtr,
+                                    false
                                 ));
                         });
+                        self.rootList = _.clone(ko.mapping.toJS(self.premiumItemList()));
                         self.allUse = ko.pureComputed(function(){
                             let x: number = 0;
                             self.premiumItemList().forEach(function(item) { 
@@ -44,13 +47,6 @@ module nts.uk.at.view.kml001.b {
                             });        
                             return x;
                         });
-//                        self.allUse.subscribe(function(value){
-//                            if(value==0) {
-//                                $("#premium-set-tbl-b").ntsError('set', {messageId:"Msg_66"});     
-//                            } else {
-//                                $("#premium-set-tbl-b").ntsError('clear');  
-//                            }    
-//                        });
                         nts.uk.ui.block.clear();
                         dfd.resolve(); 
                     })
@@ -68,9 +64,15 @@ module nts.uk.at.view.kml001.b {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let premiumItemListCommand = [];
-                ko.utils.arrayForEach(self.premiumItemList(), function(item) { 
+                let rootLists = self.rootList;
+                $(".premiumName").trigger("validate");
+                ko.utils.arrayForEach(self.premiumItemList(), function(item, index) { 
+                    if(ko.mapping.toJSON(item)!=ko.mapping.toJSON(rootLists[index])){
+                        item.isChange(true);        
+                    }
                     premiumItemListCommand.push(ko.mapping.toJS(item));
                 });
+                if (!nts.uk.ui.errors.hasError()){
                 servicebase.premiumItemUpdate(premiumItemListCommand)
                     .done(function(res: Array<any>) {
                         if(self.isInsert){
@@ -82,6 +84,7 @@ module nts.uk.at.view.kml001.b {
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});
                     });
+                } else nts.uk.ui.block.clear();
             }
             
             /**
