@@ -186,6 +186,9 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
 
+                // Force to reload.
+                self.selectedEmploymentCode.valueHasMutated();
+
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
                     self.isLoading(false);
@@ -208,6 +211,9 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(true);
+
+                // Force to reload.
+                self.selectedWorkplaceId.valueHasMutated();
 
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
