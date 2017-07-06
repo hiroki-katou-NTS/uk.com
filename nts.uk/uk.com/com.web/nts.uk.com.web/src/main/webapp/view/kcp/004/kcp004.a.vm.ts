@@ -87,6 +87,7 @@ module kcp004.a.viewmodel {
                 if (code == 0 && self.selectedSelectionType() == 2) {
                     self.selectedSelectionType(1);
                 }
+                self.resetSelectedWorkplace();
                 self.isShowSelectButton(code == 1);
                 self.reloadTreeGrid().done(() => {
                     self.getSelectedData();
@@ -105,6 +106,10 @@ module kcp004.a.viewmodel {
                 self.reloadTreeGrid();
             });
             self.selectedSelectionType.subscribe((code) => {
+                if (code == 1) {
+                    self.resetSelectedWorkplace();
+                }
+
                 self.reloadTreeGrid().done(function() {
                     self.getSelectedData();
                 });
@@ -137,9 +142,19 @@ module kcp004.a.viewmodel {
             let self = this;
             let data = $('#tree-grid').getRowSelected();
             let selecetdWorkplaceId = data.map(item => item.workplaceId).join(", ");
+            
+            // remove setting by delete element in list.
             self.alreadySettingList(self.alreadySettingList().filter((item) => {
                 return selecetdWorkplaceId.indexOf(item.workplaceId) < 0;
             }));
+            
+            // remove setting by update alreadySetting = false;
+//            self.alreadySettingList().forEach((item) => {
+//                if (selecetdWorkplaceId.indexOf(item.workplaceId) > -1) {
+//                    item.isAlreadySetting = false;
+//                }
+//            });
+//            self.alreadySettingList.valueHasMutated();
         }
         
         private getSelectedWorkplaceId() : any {
@@ -186,6 +201,11 @@ module kcp004.a.viewmodel {
             return dfd.promise();
         }
         
+        private resetSelectedWorkplace() {
+            let self = this;
+            self.selectedWorkplaceId('');
+            self.multiSelectedWorkplaceId([]);
+        }
     }
     
     /**

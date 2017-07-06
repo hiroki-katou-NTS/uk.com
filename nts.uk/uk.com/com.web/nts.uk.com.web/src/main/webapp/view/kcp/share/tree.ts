@@ -291,7 +291,7 @@ module kcp.share.tree {
         private addAlreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitAlreadySettingModel>) {
             let mapAlreadySetting = _.reduce(alreadySettingList, function(hash, value) {
                 let key = value['workplaceId'];
-                hash[key] = value['isAlreadySetting'];
+                hash[key] = value['isAlreadySetting'] == false ? null : value['isAlreadySetting'];
                 return hash;
             }, {});
             this.updateTreeData(dataList, mapAlreadySetting);
