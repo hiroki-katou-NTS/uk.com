@@ -13,7 +13,7 @@
 				<com:scriptfile path="kmk012.a.service.js" />
 				<com:scriptfile path="kmk012.a.vm.js" />
 				<com:ValidatorScript>
-					nts.uk.ctx.at.record.dom.workrecord.closure.CloseName
+					nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName
 				</com:ValidatorScript>
 			</ui:define>
 	
@@ -28,7 +28,6 @@
 						<tr>
 							<td id="contents-left"
 								class="bg-green caret-right caret-background">
-								<i class="icon icon-searchbox"></i>
 								<div
 									id="lstClosureHistory" 
 										data-bind="ntsListBox: {
@@ -38,7 +37,7 @@
 										multiple: false,
 										value: selectCodeLstClosure,
 										enable: true,
-										rows: 10  }" >
+										rows: 5  }" >
 								</div>
 						</td>
 							<td id="contents-right">
@@ -75,7 +74,7 @@
 											id="inpMonth"
 											tabindex="2"  
 											data-bind="ntsDatePicker: 
-											{	value: closureModel.month, name:'#[KMK012_5]', 
+											{value: closureModel.month, name:'#[KMK012_5]', 
 												required: true, 
 												enable: enableUseClassification, 
 												dateFormat: 'yearmonth'}">
@@ -102,7 +101,7 @@
 										id="lstClosureHistoryHistory" 
 										data-bind="ntsListBox: {
 										options: closureModel.closureHistories,
-										optionsValue: 'historyId',
+										optionsValue: 'startDate',
 										optionsText: 'view',
 										multiple: false,
 										value: selectCodeLstClosureHistory,
@@ -112,7 +111,7 @@
 										<div class="contents">
 											<div class="lableDataEnd" 
 												data-bind="ntsFormLabel: {required: true, 
-												constraint: 'CloseName'}">
+												constraint: 'ClosureName'}">
 												<label>#{i18n.getText('KMK012_9')}</label>
 											</div>
 											<div class="valueData">
@@ -125,7 +124,7 @@
 			                                        name:'#[KMK012_9]', 
 			                                        enable: enableUseClassification,
 			                                       	option: textEditorOption,
-			                                        constraint: 'CloseName'}" />
+			                                        constraint: 'ClosureName'}" />
 											</div>
 										</div>
 										<br />

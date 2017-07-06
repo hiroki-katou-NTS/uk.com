@@ -58,30 +58,30 @@ public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHisto
 				.findByHistoryLast(companyId, command.getClosureHistoryAdd().getClosureId());
 
 		// get closure
-		Optional<Closure> closure = this.repository.getClosureById(companyId,
+		Optional<Closure> closure = this.repository.findById(companyId,
 				command.getClosureHistoryAdd().getClosureId());
 
 		// check exist closure and closure history
 		if (closure.isPresent() && closureHistoryLast.isPresent()
-				&& closure.get().getMonth().getProcessingDate().v() >= closureHistoryLast.get()
-						.getStartDate().v()
-				&& command.getClosureHistoryAdd().getStartDate() < closure.get().getMonth()
+				&& closure.get().getClosureMonth().getProcessingDate().v() >= closureHistoryLast.get()
+						.getStartYearMonth().v()
+				&& command.getClosureHistoryAdd().getStartDate() < closure.get().getClosureMonth()
 						.getProcessingDate().v()) {
 			throw new BusinessException("Msg_180");
 		}
 
 		if (closure.isPresent() && closureHistoryLast.isPresent()
-				&& closure.get().getMonth().getProcessingDate().v() < closureHistoryLast.get()
-						.getStartDate().v()
+				&& closure.get().getClosureMonth().getProcessingDate().v() < closureHistoryLast.get()
+						.getStartYearMonth().v()
 				&& command.getClosureHistoryAdd().getStartDate() <= closureHistoryLast.get()
-						.getStartDate().v()) {
+						.getStartYearMonth().v()) {
 			throw new BusinessException("Msg_102");
 		}
 		
 		// to domain
 		ClosureHistory domain = command.toDomain(companyId);
 
-		closureHistoryLast.get().setEndDate(
+		closureHistoryLast.get().setEndYearMonth(
 				YearMonth.of(command.getClosureHistoryAdd().getStartDate()).previousMonth());
 		
 		// update domain

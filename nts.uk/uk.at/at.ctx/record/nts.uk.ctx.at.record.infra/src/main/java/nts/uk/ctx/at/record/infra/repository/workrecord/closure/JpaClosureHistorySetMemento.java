@@ -6,11 +6,10 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.closure;
 
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
-import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHistPK;
@@ -44,7 +43,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 	 * setCloseName(nts.uk.ctx.at.record.dom.workrecord.closure.CloseName)
 	 */
 	@Override
-	public void setCloseName(CloseName closeName) {
+	public void setClosureName(ClosureName closeName) {
 		this.kclmtClosureHist.setName(closeName.v());
 	}
 
@@ -65,24 +64,11 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
-	 * setClosureHistoryId(nts.uk.ctx.at.record.dom.workrecord.closure.
-	 * ClosureHistoryId)
-	 */
-	@Override
-	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
-		this.kclmtClosureHist.getKclmtClosureHistPK().setHistId(closureHistoryId.v());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
 	 * setEndDate(nts.uk.ctx.at.record.dom.workrecord.closure.ClosureYearMonth)
 	 */
 	@Override
 	public void setEndDate(YearMonth endDate) {
-		this.kclmtClosureHist.setEndD(endDate.v());
+		this.kclmtClosureHist.setEndYM(endDate.v());
 	}
 
 	/*
@@ -94,7 +80,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 	 */
 	@Override
 	public void setClosureDate(ClosureDate closureDate) {
-		this.kclmtClosureHist.setCloseDay(closureDate.getDay());
+		this.kclmtClosureHist.setCloseDay(closureDate.getClosureDay());
 		if (closureDate.getLastDayOfMonth()) {
 			this.kclmtClosureHist.setIsLastDay(1);
 			return;
@@ -112,7 +98,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 	 */
 	@Override
 	public void setStartDate(YearMonth startDate) {
-		this.kclmtClosureHist.setStrD(startDate.v());
+		this.kclmtClosureHist.getKclmtClosureHistPK().setStrYM(startDate.v());
 	}
 
 	/*

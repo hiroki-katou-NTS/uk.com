@@ -63,6 +63,24 @@ module nts.uk.ui.koExtentions {
             var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
             $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
             container.append($input);
+            
+            let jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false; 
+            let fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
+            let $prevButton, $nextButton;
+            if (jumpButtonsDisplay) {
+                $prevButton = $("<button/>").text("◀").css("margin-right", "3px");
+                $nextButton = $("<button/>").text("▶").css("margin-left", "3px");
+                $input.before($prevButton).after($nextButton);
+            }
+            if (data.dateFormat === "YYYY") {
+                let $yearType = $("<label/>").css({ "position": "absolute",
+                                                      "line-height": "30px",
+                                                      "right": "42px"});
+                let labelText = fiscalYear ? "年度" : "年"; 
+                $yearType.text(labelText);
+                container.append($yearType);
+            }
+            
             if (hasDayofWeek) {
                 var lengthClass: string = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
                 var $label: any = $("<label id='" + idString + "-label' for='" + idString + "' class='dayofweek-label' />");
@@ -79,7 +97,7 @@ module nts.uk.ui.koExtentions {
                 autoHide: autoHide,
             });
             
-            DatePickerNormalizer.getInstance($input).setCssRanger(data.cssRanger)
+            DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
                                 .fiscalMonthsMode(data.fiscalMonthsMode)
                                 .setDefaultCss(data.defaultClass || "");
 
@@ -155,7 +173,7 @@ module nts.uk.ui.koExtentions {
                 var dateFormatValue = (value() !== "") ? text.removeFromStart(time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                 if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                     // Check equals to avoid multi datepicker with same value
-                    $input.datepicker('setDate', new Date(dateFormatValue));
+                    $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                     $label.text("(" + time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                 }
                 else {
@@ -189,6 +207,8 @@ module nts.uk.ui.koExtentions {
     
     class DatePickerNormalizer {
         private $input: JQuery;
+        private $prev: JQuery;
+        private $next: JQuery;
         // Body contents of picker
         private $view: JQuery;
         // Header part contains current year or month
@@ -224,21 +244,25 @@ module nts.uk.ui.koExtentions {
         MONTH: string = "month";
         DAY: string = "day";
         YEAR_TEXT: string = "年";
-        MONTH_TEXT: string = "�?";
+        MONTH_TEXT: string = "月";
         PERIOD_TEXT: string = "度";
         structure = { 0: this.YEARS, 1: this.MONTHS, 2: this.DAYS };
         EVENT_SHOW: string = "show." + this.NAMESPACE; 
         EVENT_KEYUP: string = "keyup." + this.NAMESPACE;
         EVENT_PICK: string = "pick." + this.NAMESPACE;
+        EVENT_CLICK: string = "click";
+        Y_FORMAT: string = "YYYY";
         YM_FORMAT: string = "YYYY/MM";
         YMD_FORMAT: string = "YYYY/MM/DD";
         DATE_SPLITTER: string = "/";
         
         // Use this method to get an instance.
-        static getInstance($input: JQuery): DatePickerNormalizer {
+        static getInstance($input: JQuery, $prev?: JQuery, $next?: JQuery): DatePickerNormalizer {
             var instance = new DatePickerNormalizer();
             instance.$input = $input;
-            return instance.onShow().onKeyup().onPick();
+            instance.$prev = $prev;
+            instance.$next = $next;
+            return instance.onShow().onKeyup().onPick().onJump();
         }
         setCssRanger(range: any) {
             this.cssRanger = range;
@@ -316,7 +340,8 @@ module nts.uk.ui.koExtentions {
         }
         
         private setColorLevel(): void {
-            if (this.options.format === this.YM_FORMAT) this.colorLevel = this.MONTHS;
+            if (this.options.format === this.Y_FORMAT) this.colorLevel = this.YEARS;
+            else if (this.options.format === this.YM_FORMAT) this.colorLevel = this.MONTHS;
             else if (this.options.format === this.YMD_FORMAT) this.colorLevel = this.DAYS;
             // Only set to colorLevel in initialization.
             if (this.selectedView === undefined) this.selectedView = this.colorLevel;
@@ -324,6 +349,11 @@ module nts.uk.ui.koExtentions {
         
         color(): void {
             if (this.cssRanger === undefined) return;
+            // Year only picker
+            if (this.cssRanger.constructor === Array) {
+                _.each(this.cssRanger, (cell) => this.colorCell(cell, ViewLocation.CURRENT, -1));
+                return;
+            }
             this.colorNode(this.cssRanger, ViewLocation.CURRENT, 0);
             this.colorNode(this.cssRanger, ViewLocation.NEXT, 0);
             this.colorNode(this.cssRanger, ViewLocation.PREV, 0);
@@ -395,6 +425,8 @@ module nts.uk.ui.koExtentions {
                         || (location === ViewLocation.NEXT && $(elm).data("view").indexOf("next") !== -1)
                         || location === ViewLocation.CURRENT && $(elm).data("view").indexOf("prev") === -1 
                             && $(elm).data("view").indexOf("next") === -1);
+                } else if (layer === -1) {
+                    return $(elm).text() === data.toString();
                 }
             });
             if ($target.length > 0) {
@@ -416,11 +448,8 @@ module nts.uk.ui.koExtentions {
                            .data("view", "fiscalMonth next").css("font-size", "inherit");
             });
             
-            if (this.viewMonth < this.fiscalMonth) {
-                var self = this;
-                var $currentYear = this.getCurrentYear();
-                if ($currentYear.length > 0) $currentYear.text(this.viewYear + this.yearText());
-            }   
+            var $currentYear = this.getCurrentYear();
+            if ($currentYear.length > 0) $currentYear.text(this.viewYear + this.yearText());
         }
         
         allowPickMonth(): boolean {
@@ -492,6 +521,10 @@ module nts.uk.ui.koExtentions {
             var $target = $(evt.target);
             var view = $target.data("view");
             switch (view) {
+                case "years prev":
+                case "years next":
+                    this.updateYearsView();
+                    break;
                 case "year prev":
                     this.viewYear--;
                     this.updateMonthsView();
@@ -540,6 +573,10 @@ module nts.uk.ui.koExtentions {
             }
         }
         
+        updateYearsView(): void {
+            this.color();
+        }
+        
         updateMonthsView(): void {
             if (this.fiscalMonth !== 1) {
                 this.fillFiscalMonthsInYear();
@@ -562,22 +599,35 @@ module nts.uk.ui.koExtentions {
         _beforeShow(): void {
             this.options = this.$input.data(this.NAMESPACE).options;
             this.setColorLevel();
-            var initValue = this.$input.datepicker("getDate", true);
-            var viewTime = this.$input.data(this.NAMESPACE).viewDate;
-            this.viewYear = viewTime.getFullYear();
-            this.viewMonth = viewTime.getMonth() + 1;
-            this.defaultMonths = this.options.months;
-            var parsedTime;
-            if (this.options.format === this.YMD_FORMAT) parsedTime = this.parseDate(initValue);
-            else if (this.options.format === this.YM_FORMAT) parsedTime = this.parseDate(initValue); 
-            if (parsedTime !== undefined) {
-                this.year = parsedTime.year;
-                this.month = parsedTime.month;
-                this.date = parsedTime.date;
-            } else return;
+            this.defaultMonths = this.options.monthsShort;
+            var text = this.$input.val();
+            var parsedTextTime = this.parseDate(text);
+            if (parsedTextTime !== undefined && parsedTextTime.month === 2) {
+                this.viewYear = this.year = parsedTextTime.year;
+                this.viewMonth = this.month = parsedTextTime.month;
+                this.date = parsedTextTime.date;
+            } else {
+                var initValue = this.$input.datepicker("getDate", true);
+                var viewTime = this.$input.data(this.NAMESPACE).viewDate;
+                this.viewYear = viewTime.getFullYear();
+                this.viewMonth = viewTime.getMonth() + 1;
+                var parsedTime = this.parseDate(initValue);
+                if (parsedTime !== undefined) {
+                    this.year = parsedTime.year;
+                    this.month = parsedTime.month;
+                    this.date = parsedTime.date;
+                } else return;
+            }
             
             var colorLevel = this.colorLevel;
-            var layer = colorLevel === this.MONTHS ? 1 : 2;
+            var layer;
+            if (colorLevel === this.YEARS) {
+                layer = 0;
+            } else if (colorLevel === this.MONTHS) {
+                 layer = 1;
+            } else if (colorLevel === this.DAYS) {
+                layer = 2;
+            }
             this.$view = this.getView(layer);
             this.$currentView = this.getView(layer, true);
             // Body contents of picker is showing months
@@ -596,7 +646,7 @@ module nts.uk.ui.koExtentions {
         }
         
         parseDate(date: string): any {
-            var exp = new RegExp(/\d+\/\d+(\/\d+)?/);
+            var exp = new RegExp(/\d+(\/\d+)?(\/\d+)?/);
             if (exp.test(date) === false) return;
             var dateParts = date.split(this.DATE_SPLITTER);
             return {
@@ -660,6 +710,58 @@ module nts.uk.ui.koExtentions {
                 self.viewYear = self.year;
                 self.$input.datepicker("setDate", new Date(self.year, self.month - 1, self.date || 1));
             }  
+        }
+        
+        onJump(): DatePickerNormalizer {
+            var self = this;
+            if (util.isNullOrUndefined(self.$prev) || util.isNullOrUndefined(self.$next)) return self; 
+            this.$prev.on(this.EVENT_CLICK, function(evt: any) {
+                self.addTime(-1);
+            });
+            
+            this.$next.on(this.EVENT_CLICK, function(evt: any) {
+                self.addTime(1);
+            });
+            return self;
+        }
+        
+        addTime(value: number) {
+            let self = this;
+            let year, month, date;
+            if (self.options === undefined) self.options = self.$input.data(self.NAMESPACE).options;
+            
+            let time = self.$input.datepicker("getDate", true);
+            let parsedTime = self.parseDate(time);
+            if (parsedTime !== undefined) {
+                if (self.options.format === self.YMD_FORMAT) {
+                    year = parsedTime.year;
+                    month = parsedTime.month - 1;
+                    date = parsedTime.date + value;
+                } else if (self.options.format === self.YM_FORMAT) {
+                    let postCalcVal = parsedTime.month + value;
+                    date = 1;
+                    if (postCalcVal < 1) {
+                        year = parsedTime.year - 1;
+                        month = 11;
+                    } else if (postCalcVal > 12) {
+                        year = parsedTime.year + 1;
+                        month = postCalcVal - 13;
+                    } else {
+                        year = parsedTime.year;
+                        month = postCalcVal - 1;
+                    }
+                } else if (self.options.format === self.Y_FORMAT) {
+                    let postCalcVal = parsedTime.year + value;
+                    if (postCalcVal < 1899) {
+                        year = 9999;
+                    } else if (postCalcVal > 9999) {
+                        year = 1900;
+                    } else year = postCalcVal;
+                    month = 1;
+                    date = 1;
+                }
+            }
+            self.$input.datepicker("setDate", new Date(year, month, date));
         }
     }
 }

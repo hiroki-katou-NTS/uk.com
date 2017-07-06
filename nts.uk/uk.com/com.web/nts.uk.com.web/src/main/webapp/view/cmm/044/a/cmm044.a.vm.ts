@@ -50,10 +50,12 @@ module cmm044.a.viewmodel {
         selectedTab: KnockoutObservable<string>;
 
         ccgcomponent: GroupOption;
-        selectedCode: KnockoutObservableArray<string>;
+        selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
-
+        
+        isShow: KnockoutObservable<boolean>;
+        
         constructor() {
             let self = this;
             self.index_of_itemDelete = ko.observable(-1);
@@ -105,7 +107,21 @@ module cmm044.a.viewmodel {
             self.histItems = ko.observableArray([]);
             self.selectedTab = ko.observable('tab-1');
             self.selectedTab.subscribe(function(newValue){
+            var currentName1 = _.find(self.empItems(),['personId',self.currentItem().agentSid1()])
+            var currentName2 = _.find(self.empItems(),['personId',self.currentItem().agentSid2()])
+            var currentName3 = _.find(self.empItems(),['personId',self.currentItem().agentSid3()])
+            var currentName4 = _.find(self.empItems(),['personId',self.currentItem().agentSid4()])            
+                if (newValue == 'tab-1' && currentName1) {
+                        self.employeeNameScreen1(currentName1.name);
+                    }else if (newValue == ('tab-2') && currentName2) {
+                        self.employeeNameScreen2(currentName2.name);        
+                    }else if (newValue == ('tab-3') && currentName3) {      
+                        self.employeeNameScreen3(currentName3.name);
+                    }else if (newValue == ('tab-3') && currentName3){
+                        self.employeeNameScreen4(currentName4.name);
+                    } 
                 
+            
             })
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
@@ -117,7 +133,7 @@ module cmm044.a.viewmodel {
                         } else {
                             self.initAgent();
                         }
-                    });
+                    });             
                 }
             });
 
@@ -129,6 +145,7 @@ module cmm044.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                     self.isEnableDelete(true);
                 }
+         
             });
 
             self.itemList = ko.observableArray([
@@ -144,38 +161,23 @@ module cmm044.a.viewmodel {
             self.employeeNameScreen4 = ko.observable('');
             
             self.ccgcomponent = ko.observable();
-            self.selectedCode = ko.observableArray('');
+            self.selectedCode = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(true);
             self.selectedEmployee = ko.observableArray([]);
+            
+            self.isShow = ko.observable(false);
         }
         start() {
             let self = this;
             var dfd = $.Deferred();
-            self.empItems.removeAll();
-
-            /**
-             * Demo EmployeeCode & EmployeeId
-             */
-            _.range(30).map(i => {
-                i++;
-                if (i < 10) {
-                    self.empItems.push(new PersonModel({
-                        personId: '99900000-0000-0000-0000-00000000000' + i,
-                        code: 'A00000000' + i,
-                        name: '日通　社員' + i,
-                    }));
-                } else {
-                    self.empItems.push(new PersonModel({
-                        personId: '99900000-0000-0000-0000-00000000000' + i,
-                        code: 'A0000000' + i,
-                        name: '日通　社員' + i,
-                    }));
-                }
-            });
+            self.currentItem(new model.AgentAppDto(null, "", "", "", "", null, "", null, "", null, "", null));
             self.initCCG001();
             dfd.resolve();
             return dfd.promise();
+            
+
         }
+
 
         /**
          * find agen by employee
@@ -234,10 +236,10 @@ module cmm044.a.viewmodel {
                     agent.agentSid3, agent.agentAppType3,
                     agent.agentSid4, agent.agentAppType4));
 
-                self.agentAppType1(agent.agentAppType1);
-                self.agentAppType2(agent.agentAppType2);
-                self.agentAppType3(agent.agentAppType3);
-                self.agentAppType4(agent.agentAppType4);
+                    self.agentAppType1(agent.agentAppType1);
+                    self.agentAppType2(agent.agentAppType2);
+                    self.agentAppType3(agent.agentAppType3);
+                    self.agentAppType4(agent.agentAppType4);
 
                 self.dateValue({ startDate: agent.startDate, endDate: agent.endDate });
                 $("#daterangepicker").find(".ntsStartDatePicker").focus();
@@ -390,7 +392,9 @@ module cmm044.a.viewmodel {
         
         openCCG001() {
             let self = this;
-            $("#ccgcomponent, #ccgcomponent_contents").toggleClass("show");    
+            $("#ccgcomponent, #ccgcomponent_contents").toggleClass("show");
+            
+            isOnlyMe: ko.observable(false);
         }
         
         initCCG001() {
@@ -398,14 +402,14 @@ module cmm044.a.viewmodel {
             self.ccgcomponent = {
                baseDate: ko.observable(new Date()),
                // Show/hide options 
-               isQuickSearchTab: ko.observable(true),
-               isAdvancedSearchTab: ko.observable(true),
-               isAllReferableEmployee: ko.observable(true),
-               isOnlyMe: ko.observable(true),
-               isEmployeeOfWorkplace: ko.observable(true),
-               isEmployeeWorkplaceFollow: ko.observable(true),
-               isMutipleCheck: ko.observable(true),
-               isSelectAllEmployee: ko.observable(true),
+               isQuickSearchTab: true,
+               isAdvancedSearchTab:true,
+               isAllReferableEmployee: true,
+               isOnlyMe: true,
+               isEmployeeOfWorkplace: true,
+               isEmployeeWorkplaceFollow: true,
+               isMutipleCheck: true,
+               isSelectAllEmployee:true,
                
                //Event options
                /**
@@ -413,31 +417,39 @@ module cmm044.a.viewmodel {
                * Define how to use this list employee by yourself in the function's body.
                */
                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
+                   self.searchEmployee(dataList);
                },
                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                    self.showinfoSelectedEmployee(true);
                    var dataEmployee: EmployeeSearchDto[] = [];
                    dataEmployee.push(data);
-                   self.selectedEmployee(dataEmployee);
+                   self.searchEmployee(dataEmployee);
                },
                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
+                   self.searchEmployee(dataList);
                },
                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
+                   self.searchEmployee(dataList);
                },
                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataEmployee);
+                   self.searchEmployee(dataEmployee);
                }
            }
 
            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         
+        }
+        
+        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
+            var self = this;
+            self.empItems.removeAll();
+            _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
+                self.empItems.push(new PersonModel({
+                        personId: item.employeeId,
+                        code: item.employeeCode,
+                        name: item.employeeName,
+                    }));    
+            });    
         }
     }
 

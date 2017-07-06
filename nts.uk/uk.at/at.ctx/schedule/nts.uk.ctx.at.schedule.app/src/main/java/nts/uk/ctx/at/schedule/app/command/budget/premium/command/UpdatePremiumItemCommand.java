@@ -19,4 +19,6 @@ public class UpdatePremiumItemCommand {
 	private Integer displayNumber;
 
 	private int useAtr;
+	
+	private boolean isChange;
 }

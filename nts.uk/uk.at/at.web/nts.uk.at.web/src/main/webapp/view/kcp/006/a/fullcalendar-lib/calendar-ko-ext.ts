@@ -21,6 +21,7 @@ module nts.uk.at.view.kcp006.a {
             let cellButtonDisplay = true;
             let firstDay = 0;
             let workplaceId = "0";
+            let workplaceName = "";
             let yearMonth = moment().format("YYYYMM");
             let startDate = moment(yearMonth, "YYYYMM").startOf('month').date();
             let endDate = moment(yearMonth, "YYYYMM").endOf('month').date();
@@ -48,6 +49,7 @@ module nts.uk.at.view.kcp006.a {
                 }
             };
             if (data.workplaceId()) { workplaceId = ko.unwrap(data.workplaceId()); }
+            if (data.workplaceName()) { workplaceName = ko.unwrap(data.workplaceName()); }
             // Container
             let container = $(element);
             //set width
@@ -92,48 +94,27 @@ module nts.uk.at.view.kcp006.a {
             if (startDate >= endDate) {
                 durationMonth = 2;
             };
-            //render view after load db
-            let lstHoliday = [];
-            let lstEvent = [];
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-            fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
-                $(container).fullCalendar({
-                    header: false,
-                    defaultView: 'customMonth',
-                    views: {
-                        customMonth: {
-                            type: 'month',
-                            duration: { months: durationMonth },
-                            start: $.fullCalendar.moment(yearMonth * 100 + startDate, "YYYYMMDD"),
-                            end: $.fullCalendar.moment(yearMonth * 100 + endDate, "YYYYMMDD"),
-                            intervalStart: $.fullCalendar.moment(yearMonth * 100 + startDate, "YYYYMMDD"),
-                            intervalEnd: $.fullCalendar.moment(yearMonth * 100 + endDate, "YYYYMMDD")
-                        }
-                    },
-                    defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
-                    validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
-                    firstDay: firstDay,
-                    height: 500,
-                    showNonCurrentDates: false,
-                    handleWindowResize: false,
-                    dragable: false,
-                    locale: "ja",
-                    navLinks: false, // can't click day/week names to navigate views
-                    editable: false,
-                    eventLimit: true, // allow "more" link when too many events
-                    events: events,
-                    eventAfterAllRender: function(view) {
-                        //change background color each option day
-                        for (let i = 0; i < optionDates.length; i++) {
-                            $("td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
-                        }
-                    },
-                    viewRender: function(view, element) {
-                        let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-                        fullCalendarRender.viewRender(firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+            $(container).fullCalendar({
+                header: false,
+                defaultView: 'customMonth',
+                views: {
+                    customMonth: {
+                        type: 'month',
+                        duration: { months: 3 }
                     }
-                });
-                fullCalendarRender.eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, eventUpdatable);
+                },
+                defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
+                firstDay: firstDay,
+                height: 500,
+                showNonCurrentDates: false,
+                handleWindowResize: false,
+                dragable: false,
+                locale: "ja",
+                navLinks: false, // can't click day/week names to navigate views
+                editable: false,
+                eventLimit: true, // allow "more" link when too many events
+                events: events
             });
         }
 
@@ -148,13 +129,14 @@ module nts.uk.at.view.kcp006.a {
             let cellButtonDisplay = true;
             let firstDay = 0;
             let workplaceId = "0";
+            let workplaceName = "";
             let yearMonth = moment().format("YYYYMM");
             let startDate = moment(yearMonth, "YYYYMM").startOf('month').date();
             let endDate = moment(yearMonth, "YYYYMM").endOf('month').date();
 
             //get params
             let data = valueAccessor();
-            let optionDates = data.optionDates;
+            let optionDates = ko.unwrap(data.optionDates());
             if (data.yearMonth()) { yearMonth = ko.unwrap(data.yearMonth()) };
             eventDisplay = ko.unwrap(data.eventDisplay());
             eventUpdatable = ko.unwrap(data.eventUpdatable());
@@ -176,6 +158,7 @@ module nts.uk.at.view.kcp006.a {
                 }
             };
             if (data.workplaceId()) { workplaceId = ko.unwrap(data.workplaceId()); }
+            if (data.workplaceName()) { workplaceName = ko.unwrap(data.workplaceName()); }
             // Container
             let container = $(element);
             //set width
@@ -226,21 +209,15 @@ module nts.uk.at.view.kcp006.a {
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
             fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
                 $(container).fullCalendar('option', {
-                    defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
                     validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
                     events: events,
                     viewRender: function(view, element) {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-                        fullCalendarRender.viewRender(firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                        fullCalendarRender.viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     }
                 });
-                fullCalendarRender.eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, eventUpdatable);
-                $(container).fullCalendar('eventAfterAllRender', function(view) {
-                    //change background color each option day
-                    for (let i = 0; i < optionDates.length; i++) {
-                        $("td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
-                    }
-                });
+                $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
+                fullCalendarRender.eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
             });
         }
     }
@@ -369,7 +346,7 @@ module nts.uk.at.view.kcp006.a {
             }
         }
 
-        eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, eventUpdatable): void {
+        eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable): void {
             // no display more event
             $('.fc-more').prop('onclick', null).off('click');
             $('.fc-more').html("。。。");
@@ -384,7 +361,7 @@ module nts.uk.at.view.kcp006.a {
             if (eventUpdatable) {
                 // click button event
                 $(".td-container").delegate("img", "click", function() {
-                    nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId });
+                    nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId, workplaceName: workplaceName });
                     nts.uk.ui.windows.sub.modal('../b/index.xhtml', { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
                         lstHoliday = [];
@@ -412,7 +389,7 @@ module nts.uk.at.view.kcp006.a {
             });
         }
 
-        viewRender(firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {
+        viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {
             //customize style: add class for header
             let dateRows = $(".fc-content-skeleton thead tr");
             let mappingFirstDay = [
@@ -498,6 +475,10 @@ module nts.uk.at.view.kcp006.a {
                 for (let i = 0; i < currentHeaders.length; i++) {
                     $(currentHeaders[i]).append("<button class='button-cell' data-date='" + $(currentHeaders[i]).attr("data-date") + "'>。。。</button>");
                 }
+            }
+            //change background color each option day
+            for (let i = 0; i < optionDates.length; i++) {
+                $("td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
             }
         }
     }

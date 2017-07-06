@@ -5,15 +5,15 @@ module nts.uk.at.view.kcp006.b.viewmodel {
         companyEvent: KnockoutObservable<string>;
         workplaceEvent: KnockoutObservable<string>;
         workplaceId: string;
-        workplaceName: KnockoutObservable<string>;
+        workplaceName: string;
 
         constructor(data) {
             let self = this;
             self.date = moment(data.date, "YYYY-MM-DD").format("YYYY/MM/DD");
             self.workplaceId = data.workplaceId;
+            self.workplaceName = data.workplaceName;
             self.companyEvent = ko.observable("");
             self.workplaceEvent = ko.observable("");
-            self.workplaceName = ko.observable("");
         }
 
         start() {

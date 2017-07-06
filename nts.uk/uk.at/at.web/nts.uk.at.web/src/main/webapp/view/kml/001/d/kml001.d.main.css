@@ -3,7 +3,7 @@ body {
 }
 
 .column1 {
-	width: 140px;
+	width: 150px;
 }
 .ntsControl {
 	margin-top: 10px;
@@ -56,5 +56,5 @@ body {
 }
 .datepicker-container.datepicker-dropdown {
 	margin-top: -163px;
-    margin-left: 120px;
+    margin-left: 115px;
 }

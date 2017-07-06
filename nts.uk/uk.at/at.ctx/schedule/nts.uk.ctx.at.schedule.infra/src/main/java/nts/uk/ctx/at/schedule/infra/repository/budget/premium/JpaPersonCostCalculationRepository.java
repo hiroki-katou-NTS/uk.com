@@ -45,6 +45,12 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	
 	private final String SEL_ITEM_AFTER = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.startDate > :startDate";
 	
+	private final String SEL_PRE_ATTEND = "SELECT a FROM KmldtPremiumAttendance a "
+			+ "WHERE a.kmldpPremiumAttendancePK.companyID = :companyID "
+			+ "AND a.kmldpPremiumAttendancePK.historyID = :historyID "
+			+ "AND a.kmldpPremiumAttendancePK.premiumID = :premiumID "
+			+ "AND a.kmldpPremiumAttendancePK.attendanceID = :attendanceID ";
+	
 	@Override
 	public void add(PersonCostCalculation personCostCalculation) {
 		this.commandProxy().insert(toPersonCostCalculationEntity(personCostCalculation));
@@ -86,7 +92,45 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
 	@Override
 	public void update(PersonCostCalculation personCostCalculation) {
-		this.commandProxy().update(toPersonCostCalculationEntity(personCostCalculation));
+		KmlmtPersonCostCalculation currentEntity = this.queryProxy()
+				.find(new KmlmpPersonCostCalculationPK(personCostCalculation.getCompanyID(), personCostCalculation.getHistoryID()), KmlmtPersonCostCalculation.class)
+				.get();
+		currentEntity.setStartDate(personCostCalculation.getStartDate());
+		currentEntity.setEndDate(personCostCalculation.getEndDate());
+		currentEntity.setUnitPrice(personCostCalculation.getUnitPrice().value);
+		currentEntity.setMemo(personCostCalculation.getMemo().v());
+		if(personCostCalculation.getPremiumSettings()!=null){
+			for(int i=0; i < personCostCalculation.getPremiumSettings().size(); i++){
+				int id = personCostCalculation.getPremiumSettings().get(i).getPremiumID();
+				Optional<KmlstPremiumSet> premiumSet = currentEntity.kmlstPremiumSets.stream().filter(x -> x.kmlspPremiumSet.premiumID == id).findFirst();
+				if(premiumSet.isPresent()){
+					premiumSet.get().setPremiumRate(personCostCalculation.getPremiumSettings().get(i).getRate().v());
+					premiumSet.get().setKmldtPremiumAttendances( 
+							personCostCalculation.getPremiumSettings().get(i).getAttendanceItems()
+							.stream()
+							.map(x -> toPremiumAttendanceEntity(
+									personCostCalculation.getCompanyID(), 
+									personCostCalculation.getHistoryID(), 
+									id, 
+									x))
+							.collect(Collectors.toList())
+					);
+				} else {
+					PremiumSetting premiumSetting = new PremiumSetting(
+							currentEntity.kmlmpPersonCostCalculationPK.companyID, 
+							currentEntity.kmlmpPersonCostCalculationPK.historyID, 
+							personCostCalculation.getPremiumSettings().get(i).getPremiumID(), 
+							personCostCalculation.getPremiumSettings().get(i).getRate(), 
+							personCostCalculation.getPremiumSettings().get(i).getAttendanceID(), 
+							personCostCalculation.getPremiumSettings().get(i).getName(), 
+							personCostCalculation.getPremiumSettings().get(i).getDisplayNumber(), 
+							personCostCalculation.getPremiumSettings().get(i).getUseAtr(), 
+							personCostCalculation.getPremiumSettings().get(i).getAttendanceItems());
+					currentEntity.kmlstPremiumSets.add(toPremiumSetEntity(premiumSetting)); 
+				}
+			}
+		}
+		this.commandProxy().update(currentEntity);
 	}
 
 	@Override
@@ -180,9 +224,23 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	 * @return PremiumAttendance Entity Object
 	 */
 	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, Integer premiumID, Integer attendanceID){
-		return new KmldtPremiumAttendance(
-				new KmldpPremiumAttendancePK(companyID, historyID, premiumID, attendanceID),
-				null);
+		Optional<KmldtPremiumAttendance> kmldtPremiumAttendance = this.queryProxy().query(SEL_PRE_ATTEND, KmldtPremiumAttendance.class)
+				.setParameter("companyID", companyID)
+				.setParameter("historyID", historyID)
+				.setParameter("premiumID", premiumID)
+				.setParameter("attendanceID", attendanceID)
+				.getSingle();
+		if(kmldtPremiumAttendance.isPresent()){
+			return kmldtPremiumAttendance.get();
+		} else {
+			return new KmldtPremiumAttendance(
+					new KmldpPremiumAttendancePK(
+							companyID, 
+							historyID, 
+							premiumID, 
+							attendanceID), 
+					null);
+		}
 	}
 	
 	/**

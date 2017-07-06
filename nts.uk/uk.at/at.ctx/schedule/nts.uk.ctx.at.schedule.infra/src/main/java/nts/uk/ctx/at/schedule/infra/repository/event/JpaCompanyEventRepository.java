@@ -45,12 +45,18 @@ public class JpaCompanyEventRepository extends JpaRepository implements CompanyE
 
 	@Override
 	public void updateEvent(CompanyEvent domain) {
-		this.commandProxy().update(fromDomain(domain));
+		Optional<KsmmtCompanyEvent> entity = this.queryProxy()
+				.find(new KsmmtCompanyEventPK(domain.getCompanyId(), domain.getDate()), KsmmtCompanyEvent.class);
+		if (entity.isPresent()) {
+			entity.get().eventName = domain.getEventName().v();
+			this.commandProxy().update(entity.get());
+		}
 	}
 
 	@Override
 	public void removeEvent(CompanyEvent domain) {
-		this.commandProxy().remove(KsmmtCompanyEvent.class, new KsmmtCompanyEventPK(domain.getCompanyId(), domain.getDate()));
+		this.commandProxy().remove(KsmmtCompanyEvent.class,
+				new KsmmtCompanyEventPK(domain.getCompanyId(), domain.getDate()));
 	}
 
 	private CompanyEvent toDomain(KsmmtCompanyEvent entity) {

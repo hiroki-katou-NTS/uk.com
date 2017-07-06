@@ -7,11 +7,10 @@ package nts.uk.ctx.at.record.app.find.workrecord.closure.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
-import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 
 /**
@@ -24,8 +23,8 @@ public class ClosureHistoryHeaderDto implements ClosureHistorySetMemento {
 	/** The Constant LAST_DATE. */
 	public static final int LAST_DATE = 0;
 
-	/** The history id. */
-	private String historyId;
+	/** The start date. */
+	private int startDate;
 	
 	/** The closure id. */
 	private int closureId;
@@ -44,7 +43,7 @@ public class ClosureHistoryHeaderDto implements ClosureHistorySetMemento {
 	 * setCloseName(nts.uk.ctx.at.record.dom.workrecord.closure.CloseName)
 	 */
 	@Override
-	public void setCloseName(CloseName closeName) {
+	public void setClosureName(ClosureName closeName) {
 		this.closureName = closeName.v();
 	}
 
@@ -58,19 +57,6 @@ public class ClosureHistoryHeaderDto implements ClosureHistorySetMemento {
 	@Override
 	public void setClosureId(ClosureId closureId) {
 		this.closureId = closureId.value;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
-	 * setClosureHistoryId(nts.uk.ctx.at.record.dom.workrecord.closure.
-	 * ClosureHistoryId)
-	 */
-	@Override
-	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
-		this.historyId = closureHistoryId.v();
 	}
 
 	/*
@@ -98,7 +84,7 @@ public class ClosureHistoryHeaderDto implements ClosureHistorySetMemento {
 			this.closureDate = LAST_DATE;
 		}
 		else {
-			this.closureDate = closureDate.getDay();
+			this.closureDate = closureDate.getClosureDay();
 		}
 	}
 
@@ -111,7 +97,7 @@ public class ClosureHistoryHeaderDto implements ClosureHistorySetMemento {
 	 */
 	@Override
 	public void setStartDate(YearMonth startDate) {
-		// No thing code
+		this.startDate = startDate.v();
 	}
 
 	/*

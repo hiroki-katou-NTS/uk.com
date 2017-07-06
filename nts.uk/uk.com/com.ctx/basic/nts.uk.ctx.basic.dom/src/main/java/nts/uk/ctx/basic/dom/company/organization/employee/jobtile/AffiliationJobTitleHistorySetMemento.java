@@ -31,10 +31,10 @@ public interface AffiliationJobTitleHistorySetMemento {
 	
 	
 	/**
-	 * Sets the position id.
+	 * Sets the job title id.
 	 *
-	 * @param positionId the new position id
+	 * @param jobTitleId the new job title id
 	 */
-	void setPositionId(PositionId positionId);
+	void setJobTitleId(PositionId jobTitleId);
 
 }

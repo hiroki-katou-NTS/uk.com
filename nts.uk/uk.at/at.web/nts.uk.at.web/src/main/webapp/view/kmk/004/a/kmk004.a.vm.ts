@@ -146,10 +146,8 @@ module nts.uk.at.view.kmk004.a {
                 $.when(self.loadUsageUnitSetting(),
                     self.setStartMonth())
                     .done(() => {
-                        self.loadCompanySetting()
-                            .done(() => {
-                                dfd.resolve();
-                            });
+                        self.onSelectCompany();
+                        dfd.resolve();
                     });
                 return dfd.promise();
             }
@@ -163,14 +161,14 @@ module nts.uk.at.view.kmk004.a {
                 self.clearError();
 
                 // Update flag.
-                self.isLoading(false);
+                self.isLoading(true);
                 self.isCompanySelected(true);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
 
                 // Load data.
-                self.loadCompanySetting();
+                self.loadCompanySetting().done(() => self.isLoading(false));
             }
 
             /**
@@ -187,6 +185,9 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(true);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
+
+                // Force to reload.
+                self.selectedEmploymentCode.valueHasMutated();
 
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
@@ -210,6 +211,9 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(true);
+
+                // Force to reload.
+                self.selectedWorkplaceId.valueHasMutated();
 
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
@@ -526,7 +530,7 @@ module nts.uk.at.view.kmk004.a {
             private setStartMonth(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.getCompany().done(res => {
+                service.getStartMonth().done(res => {
                     self.startMonth = ko.observable(res.startMonth);
                     dfd.resolve();
                 }).fail(() => {

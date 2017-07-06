@@ -34,14 +34,14 @@ public class KmnmtAffiliEmploymentHistPK implements Serializable {
     /** The empId. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "EMP_ID")
+    @Column(name = "SID")
     private String empId;
     
     
     /** The emptcd. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "EMPT_CD")
+    @Column(name = "EMPCD")
     private String emptcd;
 
     public KmnmtAffiliEmploymentHistPK() {

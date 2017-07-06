@@ -2,7 +2,6 @@ module kcp004.a.viewmodel {
     import UnitModel = kcp.share.tree.UnitModel;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import TreeType = kcp.share.tree.TreeType;
-    import SettingType = kcp.share.tree.SettingType;
     import SelectType = kcp.share.tree.SelectionType;
     import UnitAlreadySettingModel = kcp.share.tree.UnitAlreadySettingModel; 
     
@@ -54,8 +53,8 @@ module kcp004.a.viewmodel {
             
             // Control component
             self.baseDate = ko.observable(new Date());
-            self.selectedWorkplaceId = ko.observable('wpl2');
-            self.multiSelectedWorkplaceId = ko.observableArray(['wpl111111111111111111111111111111111', 'wpl311111111111111111111111111111111']);
+            self.selectedWorkplaceId = ko.observable('');
+            self.multiSelectedWorkplaceId = ko.observableArray([]);
             self.enable = ko.observable(true); 
             self.listSelectionType = ko.observableArray([
                 {code : 1, name: 'Select by selected code', enable: self.enable},
@@ -63,12 +62,9 @@ module kcp004.a.viewmodel {
                 {code : 3, name: 'Select first item', enable: self.enable},
                 {code : 4, name: 'No select', enable: self.enable}
             ]);
-            self.selectedSelectionType = ko.observable(1);
+            self.selectedSelectionType = ko.observable(3);
             
-            self.alreadySettingList = ko.observableArray([
-                    {workplaceId: 'wpl111111111111111111111111111111111', settingType: SettingType.NO_SETTING},
-                    {workplaceId: 'wpl311111111111111111111111111111111', settingType: SettingType.ALREADY_SETTING},
-            ]);
+            self.alreadySettingList = ko.observableArray([]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultiSelect: self.isMultipleTreeGrid(),
@@ -92,9 +88,9 @@ module kcp004.a.viewmodel {
                     self.selectedSelectionType(1);
                 }
                 self.resetSelectedWorkplace();
+                self.isShowSelectButton(code == 1);
                 self.reloadTreeGrid().done(() => {
                     self.getSelectedData();
-                    self.isShowSelectButton(code == 1);
                 });
             });
             self.isDialog.subscribe(function(value) {
@@ -103,9 +99,9 @@ module kcp004.a.viewmodel {
             self.isShowAlreadySet.subscribe(function() {
                 self.reloadTreeGrid();
             });
-            self.alreadySettingList.subscribe(function() {
-                self.reloadTreeGrid();
-            });
+//            self.alreadySettingList.subscribe(function() {
+//                self.reloadTreeGrid();
+//            });
             self.isShowSelectButton.subscribe(function() {
                 self.reloadTreeGrid();
             });
@@ -113,6 +109,7 @@ module kcp004.a.viewmodel {
                 if (code == 1) {
                     self.resetSelectedWorkplace();
                 }
+
                 self.reloadTreeGrid().done(function() {
                     self.getSelectedData();
                 });
@@ -134,10 +131,10 @@ module kcp004.a.viewmodel {
             let self = this;
             if (self.isMultipleTreeGrid()) {
                 for (let workplaceId of self.multiSelectedWorkplaceId()) {
-                    self.alreadySettingList.push({workplaceId: workplaceId, settingType: SettingType.USE_PARRENT_SETTING});
+                    self.alreadySettingList.push({ workplaceId: workplaceId, isAlreadySetting: true});
                 }
             } else {
-                self.alreadySettingList.push({workplaceId: self.selectedWorkplaceId(), settingType: SettingType.USE_PARRENT_SETTING});
+                self.alreadySettingList.push({ workplaceId: self.selectedWorkplaceId(), isAlreadySetting: true});
             }
         }
         
@@ -145,9 +142,19 @@ module kcp004.a.viewmodel {
             let self = this;
             let data = $('#tree-grid').getRowSelected();
             let selecetdWorkplaceId = data.map(item => item.workplaceId).join(", ");
+            
+            // remove setting by delete element in list.
             self.alreadySettingList(self.alreadySettingList().filter((item) => {
                 return selecetdWorkplaceId.indexOf(item.workplaceId) < 0;
             }));
+            
+            // remove setting by update alreadySetting = false;
+//            self.alreadySettingList().forEach((item) => {
+//                if (selecetdWorkplaceId.indexOf(item.workplaceId) > -1) {
+//                    item.isAlreadySetting = false;
+//                }
+//            });
+//            self.alreadySettingList.valueHasMutated();
         }
         
         private getSelectedWorkplaceId() : any {
@@ -188,7 +195,7 @@ module kcp004.a.viewmodel {
             let dfd = $.Deferred<void>();
             self.setTreeData();
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                $('#tree-grid').focusComponent();
+                $('#tree-grid').focusTreeGridComponent();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -196,11 +203,14 @@ module kcp004.a.viewmodel {
         
         private resetSelectedWorkplace() {
             let self = this;
-            self.selectedWorkplaceId('wpl211111111111111111111111111111111');
-            self.multiSelectedWorkplaceId(['wpl111111111111111111111111111111111', 'wpl311111111111111111111111111111111']);
+            self.selectedWorkplaceId('');
+            self.multiSelectedWorkplaceId([]);
         }
     }
     
+    /**
+     * Class Row Selection
+     */
     export class RowSelection {
         workplaceId: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
@@ -211,4 +221,4 @@ module kcp004.a.viewmodel {
             self.workplaceCode = ko.observable(workplaceCode);
         }
     }
-}
+}   

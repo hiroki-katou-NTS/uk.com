@@ -60,11 +60,11 @@ public class AnnualPaidLeaveSaveCommand {
     /** The number year retain. */
     private Integer numberYearRetain;
 
-    /** The preemption annual vacation. */
-    private Integer preemptionAnnualVacation;
+    /** The permit type. */
+    private Integer permitType;
 
-    /** The preemption year leave. */
-    private Integer preemptionYearLeave;
+    /** The annual priority. */
+    private Integer annualPriority;
 
     /** The remaining number display. */
     private Integer remainingNumberDisplay;
@@ -153,8 +153,8 @@ public class AnnualPaidLeaveSaveCommand {
         @Override
         public AcquisitionSetting getAcquisitionSetting() {
             AcquisitionSetting setting = AcquisitionSetting.builder()
-                    .permitType(ApplyPermission.valueOf(this.command.preemptionYearLeave))
-                    .annualPriority(AnnualPriority.valueOf(this.command.preemptionAnnualVacation))
+                    .permitType(ApplyPermission.valueOf(this.command.permitType))
+                    .annualPriority(AnnualPriority.valueOf(this.command.annualPriority))
                     .build();
             return setting;
         }

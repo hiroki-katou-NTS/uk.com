@@ -16,8 +16,6 @@
             self.dataSource = ko.observable(null);
             self.visibleMyPage = ko.observable(true);
             self.flowmenu = ko.observable(null);
-            var title1 = nts.uk.resource.getText("CCG008_1");
-            var title2 = nts.uk.resource.getText("CCG008_4");
             self.placements = ko.observableArray([]);
             self.tabs = ko.observableArray([
                 {id: 'tab-1', title: nts.uk.resource.getText("CCG008_1"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
@@ -38,9 +36,9 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var code = '6';
+            var code = '1';
             self.topPageCode(code);
-            service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
+                  service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
                 console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
@@ -61,7 +59,7 @@
             });
             return dfd.promise();
         }
-
+ 
         //display top page
         showToppage(data: model.LayoutForTopPageDto){
             var self = this;
@@ -85,7 +83,7 @@
                 listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                 if (listPlacement !== undefined)
                     self.placements(listPlacement);
-                _.defer(() => { self.setupPositionAndSizeAll(); });
+                _.defer(() => { self.setupPositionAndSizeAll('toppage'); });
             }
         }
         //display my page
@@ -102,7 +100,7 @@
                 if(data.flowMenu != null){
                     _.map(data.flowMenu, (items) => {
                         var html = '<img style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
-                        listPlacement.push( new model.Placement(items.placementID, items.fileName,
+                        listPlacement.push( new model.Placement(items.fileID, items.fileName,
                         items.row, items.column,
                         items.widthSize, items.heightSize, null,
                         items.toppagePartID, 2, html));
@@ -110,32 +108,33 @@
                 }
                 listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                 if (listPlacement !== undefined)
+                self.placements(listPlacement); 
                     self.placements(listPlacement);
-                _.defer(() => { self.setupPositionAndSizeAll(); });
+                _.defer(() => { self.setupPositionAndSizeAll('mypage'); });
             }
         }
             
         //for setting dialog
-        openDialog(){
+        openDialogB(){
             var self = this;
             let dialogTitle = nts.uk.resource.getText("CCG008_2");
             nts.uk.ui.windows.setShared('checkTopPage', self.dataSource().checkTopPage, true);
             nts.uk.ui.windows.setShared('checkMyPage', self.dataSource().checkMyPage, true);
-            var transferData: commonModel.TransferLayoutInfo = {parentCode: self.topPageCode(), layoutID: self.dataSource().myPage.layoutID, pgType: 0};
+            var transferData: commonModel.TransferLayoutInfo = {parentCode: self.dataSource().myPage.employeeID, layoutID: self.dataSource().myPage.layoutID, pgType: 2};
             nts.uk.ui.windows.setShared('CCG008_layout', transferData);
-            nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", {title: 'トップページの設定'});
+            nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", {title: dialogTitle});
         }
         /** Setup position and size for all Placements */
-        private setupPositionAndSizeAll(): void {
+        private setupPositionAndSizeAll(name: string): void {
             var self = this;
-            _.forEach(self.placements(), (placement) => {
-                self.setupPositionAndSize(placement);
+            _.forEach(self.placements(), (placement, index) => {
+                self.setupPositionAndSize(name, placement, index);
             });
         }
-
+ 
         /** Setup position and size for a Placement */
-        private setupPositionAndSize(placement: model.Placement): void {
-            var $placement = $("#" + placement.placementID);
+        private setupPositionAndSize(name: string, placement: model.Placement, index: number): void {
+            var $placement = $("#" + name + "_" + placement.placementID + "_" + index);
             $placement.css({
                 top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
                 left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
@@ -143,7 +142,7 @@
                 height: (placement.height * 150) + ((placement.height - 1) * 10)
             });
         }
-    }
+    } 
      export module model {
          /** Client Placement class */
         export class Placement {
@@ -204,7 +203,7 @@
             externalUrl?: string;
         }
          export interface LayoutForMyPageDto{
-            companyID: string;
+            employeeID: string;
             layoutID: string;
             pgType: number;
             flowMenu: Array<FlowMenuPlusDto>;

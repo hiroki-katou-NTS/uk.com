@@ -54,8 +54,8 @@ public class Emp60HourVacationSaveCommandHandler extends CommandHandler<Emp60Hou
 
 		// Check is managed, keep old values when is not managed
 		if (optEmp60HVacation.isPresent()) {
+			SixtyHourVacationSetting setting = optEmp60HVacation.get().getSetting();
 			if (command.getIsManage() == ManageDistinct.NO.value) {
-				SixtyHourVacationSetting setting = optEmp60HVacation.get().getSetting();
 				command.setSixtyHourExtra(setting.getSixtyHourExtra().value);
 				command.setDigestiveUnit(setting.getDigestiveUnit().value);
 			}
@@ -65,7 +65,6 @@ public class Emp60HourVacationSaveCommandHandler extends CommandHandler<Emp60Hou
 				command.setDigestiveUnit(TimeDigestiveUnit.OneMinute.value);
 			}
 		}
-
 		// Convert data
 		Emp60HourVacation emp60HVacation = command.toDomain(companyId);
 

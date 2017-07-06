@@ -1,0 +1,83 @@
+@CHARSET "UTF-8";
+
+#link-icon {
+	width: 30px;
+	vertical-align: middle;
+}
+
+#A1-6 {
+	margin-left: 2px;
+	vertical-align: middle;
+}
+
+.sidebar-content-header button {
+	width: 90px;
+}
+
+#A1-4 {
+	margin: 0 20px 0 50px;
+}
+
+#A1-6 {
+	margin-left: 420px;
+}
+
+#A2-1 {
+	margin: 25px 60px 0px 50px;
+}
+
+#A2-2 {
+	margin-right: 30px;
+}
+
+#A2-3 {
+	width: 90px;
+}
+
+#A2-4 {
+	margin: 15px 0 0 50px !important;
+}
+
+.nts-switch-button {
+	width: 90px
+}
+
+.ui-igcombo-button {
+	background-color: white;
+	border: none !important;
+}
+
+.table1 thead tr, .table1 tbody {
+	display: block;
+}
+
+.table1 tbody {
+	height: 482px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.table1 thead tr th:first-child, .table1 tbody tr td:first-child {
+	width: 50px
+}
+
+.table1 thead tr th:nth-child(2), .table1 tbody tr td:nth-child(2) {
+	width: 180px
+}
+
+.table1 thead tr th {
+	width: 204px
+}
+
+.table1 thead tr th:nth-child(5) {
+	width: 180px
+}
+
+.table1 thead tr th:last-child {
+	width: 19px
+}
+
+.ui-igcombo-wrapper {
+	height: 27px;
+	padding: 2px;
+}

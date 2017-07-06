@@ -73,6 +73,7 @@ module nts.uk.ui.option {
         symbolChar?: string;
         symbolPosition?: string;
         defaultValue?: string;
+        unitID: string;
     }
 
     export class NumberEditorOption extends EditorOptionBase {
@@ -83,6 +84,7 @@ module nts.uk.ui.option {
         symbolChar: string;
         symbolPosition: string;
         defaultValue: string;
+        unitID: string;
         
         constructor(option?: INumberEditorOption) {
             super();
@@ -96,6 +98,7 @@ module nts.uk.ui.option {
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
             this.symbolChar = (option !== undefined && option.symbolChar !== undefined) ? option.symbolChar : "";
             this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
+            this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
             this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
         }
     }
@@ -118,6 +121,7 @@ module nts.uk.ui.option {
             this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
             this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
+            this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
         }
     }
     

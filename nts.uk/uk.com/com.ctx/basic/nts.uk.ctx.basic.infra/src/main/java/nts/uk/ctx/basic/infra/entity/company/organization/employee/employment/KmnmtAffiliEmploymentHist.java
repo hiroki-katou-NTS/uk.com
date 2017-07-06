@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KMNMT_AFFI_EMPT_HIST")
+@Table(name = "KMNMT_AFFI_EMP_HIST")
 public class KmnmtAffiliEmploymentHist extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */

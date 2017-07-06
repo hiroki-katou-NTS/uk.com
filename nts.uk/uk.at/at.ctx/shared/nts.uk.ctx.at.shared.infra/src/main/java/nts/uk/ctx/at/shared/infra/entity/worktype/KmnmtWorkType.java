@@ -37,8 +37,8 @@ public class KmnmtWorkType extends UkJpaEntity implements Serializable{
 	@Column(name = "MEMO")
 	public String memo;
 	/*使用区分*/
-	@Column(name = "USE_ATR")
-	public int useAtr;
+	@Column(name = "DISPLAY_ATR")
+	public int displayAtr;
 	
 	@Override
 	protected Object getKey() {

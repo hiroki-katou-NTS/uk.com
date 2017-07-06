@@ -30,7 +30,7 @@
 		</ui:define>
 
 		<ui:define name="sidebar-content">
-			<div id="whole-company-tab" role="tabpanel">
+			<div id="whole-company-tab" role="tabpanel" data-bind="if: !isShowEmployment()">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button  data-bind="click: backToHistorySelection" tabindex="2">#{i18n.getText('KMF001_27')}</button>
@@ -92,7 +92,7 @@
 										</div>
 									</td>
 									<td>
-										<div id="switch-btn" class="cf"
+										<div id="company-switch-btn" class="cf"
 											data-bind="ntsSwitchButton: {
 												options: leaveAsWorkDaysOpt,
 												optionsValue: 'value',
@@ -111,7 +111,7 @@
 			
 			
 			
-			<div id="by-employment-tab" role="tabpanel">
+			<div id="by-employment-tab" role="tabpanel" data-bind="if: isShowEmployment()">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 					<button data-bind="click: backToHistorySelection" tabindex="2">#{i18n.getText('KMF001_27')}</button>

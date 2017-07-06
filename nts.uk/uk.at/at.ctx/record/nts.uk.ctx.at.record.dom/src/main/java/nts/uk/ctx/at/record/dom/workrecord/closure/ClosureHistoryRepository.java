@@ -53,8 +53,7 @@ public interface ClosureHistoryRepository {
 	 * @param historyId the history id
 	 * @return the list
 	 */
-	Optional<ClosureHistory> findById(String companyId, int closureId, 
-			String historyId);
+	Optional<ClosureHistory> findById(String companyId, int closureId, int startYM);
 	
 	
 	/**
@@ -65,8 +64,7 @@ public interface ClosureHistoryRepository {
 	 * @param yearMonth the year month
 	 * @return the optional
 	 */
-	Optional<ClosureHistory> findBySelectedYearMonth(String companyId, int closureId, 
-			int yearMonth);
+	Optional<ClosureHistory> findBySelectedYearMonth(String companyId, int closureId, int yearMonth);
 	
 	
 	/**
@@ -77,4 +75,13 @@ public interface ClosureHistoryRepository {
 	 * @return the optional
 	 */
 	Optional<ClosureHistory> findByHistoryLast(String companyId, int closureId);
+	
+	/**
+	 * Find by history begin.
+	 *
+	 * @param companyId the company id
+	 * @param closureId the closure id
+	 * @return the optional
+	 */
+	Optional<ClosureHistory> findByHistoryBegin(String companyId, int closureId);
 }

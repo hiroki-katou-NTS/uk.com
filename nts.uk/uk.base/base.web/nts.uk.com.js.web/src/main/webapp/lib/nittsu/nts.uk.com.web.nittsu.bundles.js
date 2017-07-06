@@ -1157,9 +1157,10 @@ var nts;
                     if (validateResult === true || validateResult.probe) {
                         result.isValid = true;
                         result.errorMessage = validateResult.messageId;
+                        result.errorCode = validateResult.messageId;
                     }
                     else {
-                        result.fail(validateResult.messageId);
+                        result.fail(validateResult.messageId, validateResult.messageId);
                     }
                     return result;
                 };
@@ -1327,6 +1328,31 @@ var nts;
                 return TimeFormatter;
             }());
             text_3.TimeFormatter = TimeFormatter;
+            var NumberUnit = (function () {
+                function NumberUnit(unitID, unitText, position, language) {
+                    this.unitID = unitID;
+                    this.unitText = unitText;
+                    this.position = position;
+                    this.language = language;
+                }
+                return NumberUnit;
+            }());
+            text_3.NumberUnit = NumberUnit;
+            var units = {
+                "JPY": new NumberUnit("JPY", "円", "right", "ja-JP"),
+                "PERCENT": new NumberUnit("PERCENT", "%", "right", "ja-JP"),
+                "DAYS": new NumberUnit("DAYS", "日", "right", "ja-JP"),
+                "MONTHS": new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
+                "YEARS": new NumberUnit("YEARS", "年", "right", "ja-JP"),
+                "FIS_MONTH": new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
+                "FIS_YEAR": new NumberUnit("FIS_YEAR", "年度", "right", "ja-JP"),
+                "TIMES": new NumberUnit("TIMES", "回", "right", "ja-JP")
+            };
+            function getNumberUnit(unitId) {
+                //TODO: get system language. Default: japanese
+                return units[unitId];
+            }
+            text_3.getNumberUnit = getNumberUnit;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -1867,6 +1893,9 @@ var nts;
             function findFormat(format) {
                 if (nts.uk.util.isNullOrEmpty(format)) {
                     return defaultInputFormat;
+                }
+                if (format === "yearmonth") {
+                    format = "YM";
                 }
                 var uniqueFormat = _.uniq(format.split(""));
                 var formats = _.filter(defaultInputFormat, function (dfFormat) {
@@ -2485,7 +2514,8 @@ var nts;
                     function ValidationResult() {
                         this.errorMessage = 'error message';
                     }
-                    ValidationResult.prototype.fail = function (errorMessage) {
+                    ValidationResult.prototype.fail = function (errorMessage, errorCode) {
+                        this.errorCode = errorCode;
                         this.errorMessage = errorMessage;
                         this.isValid = false;
                     };
@@ -2508,7 +2538,7 @@ var nts;
                         // Check Required
                         if (this.required !== undefined && this.required !== false) {
                             if (util.isNullOrEmpty(inputText)) {
-                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]));
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
                             }
                         }
@@ -2528,7 +2558,7 @@ var nts;
                             if (!validateResult.isValid) {
                                 result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !util.isNullOrUndefined(this.constraint)
                                         ? (!util.isNullOrUndefined(this.constraint.maxLength)
-                                            ? this.constraint.maxLength : 9999) : 9999]));
+                                            ? this.constraint.maxLength : 9999) : 9999]), validateResult.errorCode);
                                 return result;
                             }
                         }
@@ -2538,12 +2568,12 @@ var nts;
                                 var maxLength = this.constraint.maxLength;
                                 if (this.constraint.charType == "Any")
                                     maxLength = maxLength / 2;
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]));
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
                                 return result;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                    result.fail('This field is not valid with pattern!');
+                                    result.fail('This field is not valid with pattern!', '');
                                     return result;
                                 }
                             }
@@ -2566,7 +2596,7 @@ var nts;
                         if (this.option !== undefined) {
                             if (nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0) {
                                 if (this.option['required'] === true && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])) {
-                                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]));
+                                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                     return result;
                                 }
                                 else {
@@ -2607,7 +2637,7 @@ var nts;
                             }
                         }
                         if (validateFail) {
-                            result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]));
+                            result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
                         }
                         else {
                             var formated = value.toString() === "0" ? inputText : uk.text.removeFromStart(inputText, "0");
@@ -2641,7 +2671,7 @@ var nts;
                         // Check required
                         if (util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
-                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]));
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                 return result;
                             }
                             else {
@@ -2657,7 +2687,7 @@ var nts;
                                 result.success(timeParse.toValue());
                             }
                             else {
-                                result.fail(timeParse.getMsg());
+                                result.fail(timeParse.getMsg(), "FND_E_DATE_YMD");
                                 return result;
                             }
                             if (!util.isNullOrUndefined(this.constraint)) {
@@ -2665,7 +2695,7 @@ var nts;
                                     maxStr = this.constraint.max;
                                     var max = uk.time.parseTime(this.constraint.max);
                                     if (timeParse.success && (max.toValue() < timeParse.toValue())) {
-                                        result.fail("");
+                                        result.fail("", "");
                                         return result;
                                     }
                                 }
@@ -2673,12 +2703,12 @@ var nts;
                                     minStr = this.constraint.min;
                                     var min = uk.time.parseTime(this.constraint.min);
                                     if (timeParse.success && (min.toValue() > timeParse.toValue())) {
-                                        result.fail("");
+                                        result.fail("", "");
                                         return result;
                                     }
                                 }
                                 if (!result.isValid && this.constraint.valueType === "Time") {
-                                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]));
+                                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
                                 }
                             }
                             return result;
@@ -2706,7 +2736,7 @@ var nts;
                             }
                         }
                         else {
-                            result.fail(parseResult.getMsg());
+                            result.fail(parseResult.getMsg(), "");
                             return result;
                         }
                         // Time clock
@@ -2717,7 +2747,7 @@ var nts;
                                     maxStr = this.constraint.max;
                                     var maxMoment = moment.duration(maxStr);
                                     if (parseResult.success && (maxMoment.hours() * 60 + maxMoment.minutes()) < inputMoment) {
-                                        result.fail("");
+                                        result.fail("", "");
                                         return result;
                                     }
                                 }
@@ -2725,12 +2755,12 @@ var nts;
                                     minStr = this.constraint.min;
                                     var minMoment = moment.duration(minStr);
                                     if (parseResult.success && (minMoment.hours() * 60 + minMoment.minutes()) > inputMoment) {
-                                        result.fail("");
+                                        result.fail("", "");
                                         return result;
                                     }
                                 }
                                 if (!result.isValid && this.constraint.valueType === "Clock") {
-                                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
+                                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
                                 }
                             }
                         }
@@ -2804,13 +2834,12 @@ var nts;
                         if (duplicate.length == 0) {
                             if (typeof error.message === "string") {
                                 error.messageText = error.message;
-                                error.message = "";
                             }
                             else {
                                 //business exception
                                 if (error.message.message) {
                                     error.messageText = error.message.message;
-                                    error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
+                                    error.errorCode = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                                 }
                                 else {
                                     if (error.$control.length > 0) {
@@ -2825,7 +2854,7 @@ var nts;
                                     else {
                                         error.messageText = nts.uk.resource.getMessage(error.message.messageId);
                                     }
-                                    error.message = error.message.messageId;
+                                    error.errorCode = error.message.messageId;
                                 }
                             }
                             this.errors.push(error);
@@ -3032,10 +3061,18 @@ var nts;
                                 height: options.height || _this.globalContext.dialogSize.height,
                                 title: options.title || "dialog",
                                 resizable: options.resizable,
+                                position: {
+                                    my: "center",
+                                    at: "center",
+                                    of: "body",
+                                    collision: "none"
+                                },
                                 beforeClose: function () {
                                     //return dialogWindow.__viewContext.dialog.beforeClose();
                                 }
                             }).dialog('open');
+                            //                    var widget= this.$dialog.dialog("widget");
+                            //                    widget.draggable("option","containment",false);
                         });
                         this.globalContext.location.href = uk.request.resolvePath(path);
                     };
@@ -3851,6 +3888,7 @@ var nts;
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         this.symbolChar = (option !== undefined && option.symbolChar !== undefined) ? option.symbolChar : "";
                         this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
+                        this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
                         this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
                     }
                     return NumberEditorOption;
@@ -3872,6 +3910,7 @@ var nts;
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
+                        this.unitID = (option !== undefined && option.unitID !== undefined) ? option.unitID : "";
                     }
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
@@ -3944,7 +3983,7 @@ var nts;
                 (function (ntsError) {
                     var DATA_HAS_ERROR = 'hasError';
                     var DATA_GET_ERROR = 'getError';
-                    $.fn.ntsError = function (action, message) {
+                    $.fn.ntsError = function (action, message, errorCode) {
                         var $control = $(this);
                         if (action === DATA_HAS_ERROR) {
                             return _.some($control, function (c) { return hasError($(c)); });
@@ -3955,16 +3994,16 @@ var nts;
                         else {
                             $control.each(function (index) {
                                 var $item = $(this);
-                                $item = processErrorOnItem($item, message, action);
+                                $item = processErrorOnItem($item, message, action, errorCode);
                             });
                             return $control;
                         }
                     };
                     //function for set and clear error
-                    function processErrorOnItem($control, message, action) {
+                    function processErrorOnItem($control, message, action, errorCode) {
                         switch (action) {
                             case 'set':
-                                return setError($control, message);
+                                return setError($control, message, errorCode);
                             case 'clear':
                                 return clearErrors($control);
                         }
@@ -3972,11 +4011,12 @@ var nts;
                     function getErrorByElement($control) {
                         return ui.errors.getErrorByElement($control);
                     }
-                    function setError($control, message) {
+                    function setError($control, message, errorCode) {
                         $control.data(DATA_HAS_ERROR, true);
                         ui.errors.add({
                             location: $control.data('name') || "",
                             message: message,
+                            errorCode: errorCode,
                             $control: $control
                         });
                         $control.parent().addClass('error');
@@ -4159,29 +4199,35 @@ var nts;
                     function setupScrollWhenBinding($grid) {
                         var gridId = "#" + $grid.attr("id");
                         $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                            var scrollTop = $grid.data("scrollTop");
-                            if (scrollTop > 0) {
+                            var oldSelected = getSelectRow($grid);
+                            if (!nts.uk.util.isNullOrEmpty(oldSelected)) {
                                 _.defer(function () {
-                                    if ($grid.igGrid("scrollContainer").length > 0) {
-                                        $grid.igGrid("scrollContainer").scrollTop(scrollTop);
-                                    }
-                                    else {
-                                        $(gridId + "_scrollContainer").scrollTop(scrollTop);
+                                    var selected = getSelectRow($grid);
+                                    if (!nts.uk.util.isNullOrEmpty(selected)) {
+                                        if ($grid.igGrid("scrollContainer").length > 0) {
+                                            var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                            var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                            $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
+                                        }
+                                        else {
+                                            var index = $(selected["element"]).attr("data-row-idx");
+                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
+                                        }
                                     }
                                 });
                             }
                         });
-                        //Delegate
-                        $(document).delegate(gridId, "iggriddatabinding", function (evt, ui) {
-                            var scrollTop;
-                            if ($grid.igGrid("scrollContainer").length > 0) {
-                                scrollTop = $grid.igGrid("scrollContainer").scrollTop();
-                            }
-                            else {
-                                scrollTop = $(gridId + "_scrollContainer").scrollTop();
-                            }
-                            $grid.data("scrollTop", scrollTop);
-                        });
+                    }
+                    function getSelectRow($grid) {
+                        var row = null;
+                        var selectedRows = $grid.igGrid("selectedRows");
+                        if (selectedRows) {
+                            row = selectedRows[0];
+                        }
+                        else {
+                            row = $grid.igGrid("selectedRow");
+                        }
+                        return row;
                     }
                     function getSelected($grid) {
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
@@ -7901,6 +7947,7 @@ var nts;
                         var editable = ko.unwrap(data.editable);
                         var enable = ko.unwrap(data.enable);
                         var columns = ko.unwrap(data.columns);
+                        var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
                         // Container.
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
@@ -7965,6 +8012,7 @@ var nts;
                             container.igCombo({
                                 dataSource: options,
                                 valueKey: data.optionsValue,
+                                visibleItemsCount: visibleItemsCount,
                                 textKey: 'nts-combo-label',
                                 mode: comboMode,
                                 disabled: !enable,
@@ -8092,6 +8140,22 @@ var nts;
                         var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
                         $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
                         container.append($input);
+                        var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false;
+                        var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
+                        var $prevButton, $nextButton;
+                        if (jumpButtonsDisplay) {
+                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px");
+                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px");
+                            $input.before($prevButton).after($nextButton);
+                        }
+                        if (data.dateFormat === "YYYY") {
+                            var $yearType = $("<label/>").css({ "position": "absolute",
+                                "line-height": "30px",
+                                "right": "42px" });
+                            var labelText = fiscalYear ? "年度" : "年";
+                            $yearType.text(labelText);
+                            container.append($yearType);
+                        }
                         if (hasDayofWeek) {
                             var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
                             var $label = $("<label id='" + idString + "-label' for='" + idString + "' class='dayofweek-label' />");
@@ -8106,7 +8170,7 @@ var nts;
                             endDate: endDate,
                             autoHide: autoHide,
                         });
-                        DatePickerNormalizer.getInstance($input).setCssRanger(data.cssRanger)
+                        DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
                             .fiscalMonthsMode(data.fiscalMonthsMode)
                             .setDefaultCss(data.defaultClass || "");
                         name = nts.uk.resource.getControlName(name);
@@ -8174,7 +8238,7 @@ var nts;
                             var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 // Check equals to avoid multi datepicker with same value
-                                $input.datepicker('setDate', new Date(dateFormatValue));
+                                $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
                             else {
@@ -8218,21 +8282,25 @@ var nts;
                         this.MONTH = "month";
                         this.DAY = "day";
                         this.YEAR_TEXT = "年";
-                        this.MONTH_TEXT = "��?";
+                        this.MONTH_TEXT = "月";
                         this.PERIOD_TEXT = "度";
                         this.structure = { 0: this.YEARS, 1: this.MONTHS, 2: this.DAYS };
                         this.EVENT_SHOW = "show." + this.NAMESPACE;
                         this.EVENT_KEYUP = "keyup." + this.NAMESPACE;
                         this.EVENT_PICK = "pick." + this.NAMESPACE;
+                        this.EVENT_CLICK = "click";
+                        this.Y_FORMAT = "YYYY";
                         this.YM_FORMAT = "YYYY/MM";
                         this.YMD_FORMAT = "YYYY/MM/DD";
                         this.DATE_SPLITTER = "/";
                     }
                     // Use this method to get an instance.
-                    DatePickerNormalizer.getInstance = function ($input) {
+                    DatePickerNormalizer.getInstance = function ($input, $prev, $next) {
                         var instance = new DatePickerNormalizer();
                         instance.$input = $input;
-                        return instance.onShow().onKeyup().onPick();
+                        instance.$prev = $prev;
+                        instance.$next = $next;
+                        return instance.onShow().onKeyup().onPick().onJump();
                     };
                     DatePickerNormalizer.prototype.setCssRanger = function (range) {
                         this.cssRanger = range;
@@ -8308,7 +8376,9 @@ var nts;
                         return this.options !== undefined ? this.options.pickedClass : "";
                     };
                     DatePickerNormalizer.prototype.setColorLevel = function () {
-                        if (this.options.format === this.YM_FORMAT)
+                        if (this.options.format === this.Y_FORMAT)
+                            this.colorLevel = this.YEARS;
+                        else if (this.options.format === this.YM_FORMAT)
                             this.colorLevel = this.MONTHS;
                         else if (this.options.format === this.YMD_FORMAT)
                             this.colorLevel = this.DAYS;
@@ -8317,8 +8387,14 @@ var nts;
                             this.selectedView = this.colorLevel;
                     };
                     DatePickerNormalizer.prototype.color = function () {
+                        var _this = this;
                         if (this.cssRanger === undefined)
                             return;
+                        // Year only picker
+                        if (this.cssRanger.constructor === Array) {
+                            _.each(this.cssRanger, function (cell) { return _this.colorCell(cell, ViewLocation.CURRENT, -1); });
+                            return;
+                        }
                         this.colorNode(this.cssRanger, ViewLocation.CURRENT, 0);
                         this.colorNode(this.cssRanger, ViewLocation.NEXT, 0);
                         this.colorNode(this.cssRanger, ViewLocation.PREV, 0);
@@ -8394,6 +8470,9 @@ var nts;
                                         || location === ViewLocation.CURRENT && $(elm).data("view").indexOf("prev") === -1
                                             && $(elm).data("view").indexOf("next") === -1);
                             }
+                            else if (layer === -1) {
+                                return $(elm).text() === data.toString();
+                            }
                         });
                         if ($target.length > 0) {
                             $target.addClass((typeof cell === "object" && cell[data] !== undefined) ? cell[data] : this.defaultCss);
@@ -8413,12 +8492,9 @@ var nts;
                                 $(elm).addClass(self.getMutedClass()).attr("data-view", "fiscalMonth next")
                                     .data("view", "fiscalMonth next").css("font-size", "inherit");
                         });
-                        if (this.viewMonth < this.fiscalMonth) {
-                            var self = this;
-                            var $currentYear = this.getCurrentYear();
-                            if ($currentYear.length > 0)
-                                $currentYear.text(this.viewYear + this.yearText());
-                        }
+                        var $currentYear = this.getCurrentYear();
+                        if ($currentYear.length > 0)
+                            $currentYear.text(this.viewYear + this.yearText());
                     };
                     DatePickerNormalizer.prototype.allowPickMonth = function () {
                         return (this.viewMonth < this.fiscalMonth && this.viewYear === this.year - 1)
@@ -8488,6 +8564,10 @@ var nts;
                         var $target = $(evt.target);
                         var view = $target.data("view");
                         switch (view) {
+                            case "years prev":
+                            case "years next":
+                                this.updateYearsView();
+                                break;
                             case "year prev":
                                 this.viewYear--;
                                 this.updateMonthsView();
@@ -8541,6 +8621,9 @@ var nts;
                                 break;
                         }
                     };
+                    DatePickerNormalizer.prototype.updateYearsView = function () {
+                        this.color();
+                    };
                     DatePickerNormalizer.prototype.updateMonthsView = function () {
                         if (this.fiscalMonth !== 1) {
                             this.fillFiscalMonthsInYear();
@@ -8563,25 +8646,39 @@ var nts;
                     DatePickerNormalizer.prototype._beforeShow = function () {
                         this.options = this.$input.data(this.NAMESPACE).options;
                         this.setColorLevel();
-                        var initValue = this.$input.datepicker("getDate", true);
-                        var viewTime = this.$input.data(this.NAMESPACE).viewDate;
-                        this.viewYear = viewTime.getFullYear();
-                        this.viewMonth = viewTime.getMonth() + 1;
-                        this.defaultMonths = this.options.months;
-                        var parsedTime;
-                        if (this.options.format === this.YMD_FORMAT)
-                            parsedTime = this.parseDate(initValue);
-                        else if (this.options.format === this.YM_FORMAT)
-                            parsedTime = this.parseDate(initValue);
-                        if (parsedTime !== undefined) {
-                            this.year = parsedTime.year;
-                            this.month = parsedTime.month;
-                            this.date = parsedTime.date;
+                        this.defaultMonths = this.options.monthsShort;
+                        var text = this.$input.val();
+                        var parsedTextTime = this.parseDate(text);
+                        if (parsedTextTime !== undefined && parsedTextTime.month === 2) {
+                            this.viewYear = this.year = parsedTextTime.year;
+                            this.viewMonth = this.month = parsedTextTime.month;
+                            this.date = parsedTextTime.date;
                         }
-                        else
-                            return;
+                        else {
+                            var initValue = this.$input.datepicker("getDate", true);
+                            var viewTime = this.$input.data(this.NAMESPACE).viewDate;
+                            this.viewYear = viewTime.getFullYear();
+                            this.viewMonth = viewTime.getMonth() + 1;
+                            var parsedTime = this.parseDate(initValue);
+                            if (parsedTime !== undefined) {
+                                this.year = parsedTime.year;
+                                this.month = parsedTime.month;
+                                this.date = parsedTime.date;
+                            }
+                            else
+                                return;
+                        }
                         var colorLevel = this.colorLevel;
-                        var layer = colorLevel === this.MONTHS ? 1 : 2;
+                        var layer;
+                        if (colorLevel === this.YEARS) {
+                            layer = 0;
+                        }
+                        else if (colorLevel === this.MONTHS) {
+                            layer = 1;
+                        }
+                        else if (colorLevel === this.DAYS) {
+                            layer = 2;
+                        }
                         this.$view = this.getView(layer);
                         this.$currentView = this.getView(layer, true);
                         // Body contents of picker is showing months
@@ -8602,7 +8699,7 @@ var nts;
                         }
                     };
                     DatePickerNormalizer.prototype.parseDate = function (date) {
-                        var exp = new RegExp(/\d+\/\d+(\/\d+)?/);
+                        var exp = new RegExp(/\d+(\/\d+)?(\/\d+)?/);
                         if (exp.test(date) === false)
                             return;
                         var dateParts = date.split(this.DATE_SPLITTER);
@@ -8666,6 +8763,63 @@ var nts;
                             self.viewYear = self.year;
                             self.$input.datepicker("setDate", new Date(self.year, self.month - 1, self.date || 1));
                         }
+                    };
+                    DatePickerNormalizer.prototype.onJump = function () {
+                        var self = this;
+                        if (uk.util.isNullOrUndefined(self.$prev) || uk.util.isNullOrUndefined(self.$next))
+                            return self;
+                        this.$prev.on(this.EVENT_CLICK, function (evt) {
+                            self.addTime(-1);
+                        });
+                        this.$next.on(this.EVENT_CLICK, function (evt) {
+                            self.addTime(1);
+                        });
+                        return self;
+                    };
+                    DatePickerNormalizer.prototype.addTime = function (value) {
+                        var self = this;
+                        var year, month, date;
+                        if (self.options === undefined)
+                            self.options = self.$input.data(self.NAMESPACE).options;
+                        var time = self.$input.datepicker("getDate", true);
+                        var parsedTime = self.parseDate(time);
+                        if (parsedTime !== undefined) {
+                            if (self.options.format === self.YMD_FORMAT) {
+                                year = parsedTime.year;
+                                month = parsedTime.month - 1;
+                                date = parsedTime.date + value;
+                            }
+                            else if (self.options.format === self.YM_FORMAT) {
+                                var postCalcVal = parsedTime.month + value;
+                                date = 1;
+                                if (postCalcVal < 1) {
+                                    year = parsedTime.year - 1;
+                                    month = 11;
+                                }
+                                else if (postCalcVal > 12) {
+                                    year = parsedTime.year + 1;
+                                    month = postCalcVal - 13;
+                                }
+                                else {
+                                    year = parsedTime.year;
+                                    month = postCalcVal - 1;
+                                }
+                            }
+                            else if (self.options.format === self.Y_FORMAT) {
+                                var postCalcVal = parsedTime.year + value;
+                                if (postCalcVal < 1899) {
+                                    year = 9999;
+                                }
+                                else if (postCalcVal > 9999) {
+                                    year = 1900;
+                                }
+                                else
+                                    year = postCalcVal;
+                                month = 1;
+                                date = 1;
+                            }
+                        }
+                        self.$input.datepicker("setDate", new Date(year, month, date));
                     };
                     return DatePickerNormalizer;
                 }());
@@ -8947,7 +9101,7 @@ var nts;
                                 var error = $input.ntsError('getError');
                                 if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
                                     $input.ntsError('clear');
-                                    $input.ntsError('set', result.errorMessage);
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
                                 }
                                 value(newText);
                             }
@@ -8967,7 +9121,7 @@ var nts;
                                     var error = $input.ntsError('getError');
                                     if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
                                         $input.ntsError('clear');
-                                        $input.ntsError('set', result.errorMessage);
+                                        $input.ntsError('set', result.errorMessage, result.errorCode);
                                     }
                                     value(newText);
                                 }
@@ -8979,7 +9133,7 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage);
+                                $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
@@ -9050,7 +9204,7 @@ var nts;
                                 var result = validator.validate(newText);
                                 $input.ntsError('clear');
                                 if (!result.isValid) {
-                                    $input.ntsError('set', result.errorMessage);
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
                                 }
                             }
                         });
@@ -9061,7 +9215,7 @@ var nts;
                                 var result = validator.validate(newText);
                                 $input.ntsError('clear');
                                 if (!result.isValid) {
-                                    $input.ntsError('set', result.errorMessage);
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
                                 }
                             }
                         });
@@ -9079,7 +9233,7 @@ var nts;
                                     }
                                 }
                                 else {
-                                    $input.ntsError('set', result.errorMessage);
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
                                     value(newText);
                                 }
                             }
@@ -9089,7 +9243,7 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage);
+                                $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
@@ -9097,10 +9251,10 @@ var nts;
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var textmode = this.editorOption.textmode;
-                        if (data.value() !== $input.val()) {
-                            $input.triggerHandler('change');
-                        }
                         $input.attr('type', textmode);
+                        if (!$input.ntsError('hasError') && data.value() !== $input.val()) {
+                            data.value($input.val());
+                        }
                     };
                     TextEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TextEditorOption();
@@ -9186,20 +9340,30 @@ var nts;
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                             $parent.attr("data-content", format);
                         }
-                        else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
-                            var padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
-                            if (padding < 20) {
-                                padding = 20;
-                            }
-                            $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
-                            $parent.attr("data-content", this.editorOption.symbolChar);
-                            var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
-                            $input.css(css);
+                        else if (!nts.uk.util.isNullOrEmpty(this.editorOption.unitID)) {
+                            var unit = uk.text.getNumberUnit(this.editorOption.unitID);
+                            this.editorOption.symbolChar = unit.unitText;
+                            this.editorOption.symbolPosition = unit.position;
+                            this.setupUnit($input);
+                        }
+                        else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
+                            this.setupUnit($input);
                         }
                         if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
                             && nts.uk.util.isNullOrEmpty(data.value())) {
                             data.value(this.editorOption.defaultValue);
                         }
+                    };
+                    NumberEditorProcessor.prototype.setupUnit = function ($input) {
+                        var $parent = $input.parent();
+                        var padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
+                        if (padding < 20) {
+                            padding = 20;
+                        }
+                        $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+                        $parent.attr("data-content", this.editorOption.symbolChar);
+                        var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
+                        $input.css(css);
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
@@ -9229,10 +9393,17 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var width = option.width;
-                        var parent = $input.parent();
-                        var parentTag = parent.parent().prop("tagName").toLowerCase();
+                        var $parent = $input.parent();
+                        var parentTag = $parent.parent().prop("tagName").toLowerCase();
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
-                            parent.css({ 'width': '100%' });
+                            $parent.css({ 'width': '100%' });
+                        }
+                        if (!nts.uk.util.isNullOrEmpty(data.mode) && (data.mode === "year" || data.mode === "fiscal")) {
+                            var symbolText = data.mode === "year" ? nts.uk.text.getNumberUnit("YEARS") : nts.uk.text.getNumberUnit("FIS_YEAR");
+                            $parent.addClass("symbol").addClass('symbol-right');
+                            $parent.attr("data-content", symbolText.unitText);
+                            var css = data.mode === "year" ? { "padding-right": "20px" } : { "padding-right": "35px" };
+                            $input.css(css);
                         }
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
@@ -9480,7 +9651,7 @@ var nts;
                         $grid.data("init", true);
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
-                        features.push({ name: 'Sorting', type: 'local' });
+                        //            features.push({ name: 'Sorting', type: 'local' });
                         if (data.multiple || showNumbering) {
                             features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
                         }
@@ -10322,6 +10493,7 @@ var nts;
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var selected = data.selected;
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+                        var enable = ko.unwrap(data.enable);
                         var selectedKey = null;
                         if (data.selectedKey) {
                             selectedKey = ko.unwrap(data.selectedKey);
@@ -10447,6 +10619,9 @@ var nts;
                             nextSearch();
                         });
                         $container.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
+                        if (enable === false) {
+                            $container.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
+                        }
                     };
                     NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $searchBox = $(element);
@@ -10455,6 +10630,7 @@ var nts;
                         var searchMode = ko.unwrap(data.searchMode);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var selectedValue = ko.unwrap(data.selected);
+                        var enable = ko.unwrap(data.enable);
                         var targetMode = data.mode;
                         var component;
                         if (targetMode === "listbox") {
@@ -10481,6 +10657,12 @@ var nts;
                             }
                         }
                         srhX.setDataSource(arr);
+                        if (enable === false) {
+                            $searchBox.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
+                        }
+                        else {
+                            $searchBox.find(".ntsSearchBox_Component").removeAttr('disabled');
+                        }
                     };
                     return NtsSearchBoxBindingHandler;
                 }());
@@ -12221,7 +12403,7 @@ var nts;
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
                             new nts.uk.ui.errors.ErrorHeader("messageText", "エラー内容", "auto", true),
-                            new nts.uk.ui.errors.ErrorHeader("message", "エラーコード", 150, true)
+                            new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", 150, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -12951,8 +13133,8 @@ var nts;
                             browserButtonText = "ファイルアップロード";
                         }
                         fileBrowserButton.text(browserButtonText);
-                        var fileNameLable = $("<span class='filename'></span> ");
-                        var fileInput = $("<input style ='display:none' type='file' class='fileinput'/>");
+                        var fileNameLable = $("<span class='filename' style='margin-left: 5px;'></span> ");
+                        var fileInput = $("<input style ='display:none;' type='file' class='fileinput'/>");
                         if (suportedExtension) {
                             fileInput.attr("accept", suportedExtension.toString());
                         }
@@ -12960,12 +13142,17 @@ var nts;
                         fileuploadContainer.append(fileNameLable);
                         fileuploadContainer.append(fileInput);
                         fileuploadContainer.appendTo(control);
+                        fileBrowserButton.click(function () {
+                            fileInput.val(null);
+                        });
                         fileInput.change(function () {
+                            var selectedFilePath = $(this).val();
+                            var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
                             if (fileName != undefined) {
-                                data.filename($(this).val());
+                                data.filename(getSelectedFileName);
                             }
                             else {
-                                fileNameLable.text($(this).val());
+                                fileNameLable.text(getSelectedFileName);
                             }
                             if (typeof onchange == 'function') {
                                 onchange($(this).val());

@@ -17,8 +17,14 @@ public class JpaBPUnitUseSettingRepository extends JpaRepository implements BPUn
 
 	@Override
 	public void updateSetting(BPUnitUseSetting setting) {
-
-		this.commandProxy().update(this.toUnitUseSettingEntity(setting));
+		Optional<KbpstBPUnitUseSetting> kbpstBPUnitUseSettingOptional = this.queryProxy().find(new KbpstBPUnitUseSettingPK(setting.getCompanyId().toString()), KbpstBPUnitUseSetting.class);
+		if(kbpstBPUnitUseSettingOptional.isPresent()){
+			KbpstBPUnitUseSetting kbpstBPUnitUseSetting = kbpstBPUnitUseSettingOptional.get();
+			kbpstBPUnitUseSetting.personalUseAtr=new BigDecimal(setting.getPersonalUseAtr().value);
+			kbpstBPUnitUseSetting.workingTimesheetUseAtr=new BigDecimal(setting.getWorkingTimesheetUseAtr().value);
+			kbpstBPUnitUseSetting.workplaceUseAtr=new BigDecimal(setting.getWorkplaceUseAtr().value);
+			this.commandProxy().update(kbpstBPUnitUseSetting);
+		}
 	}
 	
 	@Override

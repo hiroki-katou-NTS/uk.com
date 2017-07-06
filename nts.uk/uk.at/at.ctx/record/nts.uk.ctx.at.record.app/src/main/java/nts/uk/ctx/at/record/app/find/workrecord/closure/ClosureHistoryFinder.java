@@ -60,7 +60,7 @@ public class ClosureHistoryFinder {
 		closures.forEach(closure -> {
 			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory
 					.findBySelectedYearMonth(companyId, closure.getClosureId(),
-							closure.getMonth().getProcessingDate().v());
+							closure.getClosureMonth().getProcessingDate().v());
 			
 			if(closureHistoryLast.isPresent()){
 				closureHistories.add(closureHistoryLast.get());
@@ -90,7 +90,7 @@ public class ClosureHistoryFinder {
 
 		// call repository find closure history
 		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
-				master.getClosureId(), master.getHistoryId());
+				master.getClosureId(), master.getStartDate());
 		
 		// return data
 		ClosureHistoryHeaderDto dto = new ClosureHistoryHeaderDto();

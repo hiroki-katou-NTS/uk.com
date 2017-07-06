@@ -79,9 +79,9 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureMonth)
 	 */
 	@Override
-	public void setMonth(ClosureMonth month) {
+	public void setClosureMonth(ClosureMonth month) {
 		if (this.kclmtClosure.getUseClass() == 1) {
-			this.kclmtClosure.setMonth(month.getProcessingDate().v());
+			this.kclmtClosure.setClosureMonth(month.getProcessingDate().v());
 		}
 	}
 

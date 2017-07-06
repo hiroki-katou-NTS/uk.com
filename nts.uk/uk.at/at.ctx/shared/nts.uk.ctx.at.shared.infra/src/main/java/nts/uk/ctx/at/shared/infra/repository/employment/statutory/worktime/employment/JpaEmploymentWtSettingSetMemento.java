@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Monthly;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewstEmploymentWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewstEmploymentWtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.KewstEmploymentWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.KewstEmploymentWtSetPK;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -26,25 +26,25 @@ import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSet
 public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetMemento {
 
 	/** The normal. */
-	private JewstEmploymentWtSet normal;
+	private KewstEmploymentWtSet normal;
 
 	/** The flex statutory. */
-	private JewstEmploymentWtSet flexStatutory;
+	private KewstEmploymentWtSet flexStatutory;
 
 	/** The flex specified. */
-	private JewstEmploymentWtSet flexSpecified;
+	private KewstEmploymentWtSet flexSpecified;
 
 	/** The deformed. */
-	private JewstEmploymentWtSet deformed;
+	private KewstEmploymentWtSet deformed;
 
 	/**
 	 * Instantiates a new jpa employment wt setting set memento.
 	 */
 	public JpaEmploymentWtSettingSetMemento() {
-		this.deformed = new JewstEmploymentWtSet();
-		this.normal = new JewstEmploymentWtSet();
-		this.flexSpecified = new JewstEmploymentWtSet();
-		this.flexStatutory = new JewstEmploymentWtSet();
+		this.deformed = new KewstEmploymentWtSet();
+		this.normal = new KewstEmploymentWtSet();
+		this.flexSpecified = new KewstEmploymentWtSet();
+		this.flexStatutory = new KewstEmploymentWtSet();
 	}
 
 	/*
@@ -57,7 +57,7 @@ public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetM
 	@Override
 	public void setFlexSetting(FlexSetting flexSetting) {
 		// Set statutory category & type.
-		JewstEmploymentWtSetPK staPk = this.flexStatutory.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK staPk = this.flexStatutory.getJewstEmploymentWtSetPK();
 		staPk.setCtg(WtSettingConstant.FLEX);
 		staPk.setType(WtSettingConstant.STATUTORY);
 		this.flexStatutory.setJewstEmploymentWtSetPK(staPk);
@@ -69,7 +69,7 @@ public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetM
 		this.flexStatutory = this.setMonthly(this.flexStatutory, statutory.getMonthly());
 
 		// Set specified category & type.
-		JewstEmploymentWtSetPK spePk = this.flexSpecified.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK spePk = this.flexSpecified.getJewstEmploymentWtSetPK();
 		spePk.setCtg(WtSettingConstant.FLEX);
 		spePk.setType(WtSettingConstant.SPECIFIED);
 		this.flexSpecified.setJewstEmploymentWtSetPK(spePk);
@@ -92,7 +92,7 @@ public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetM
 	@Override
 	public void setDeformationLaborSetting(DeformationLaborSetting deformationLaborSetting) {
 		// Set category & type.
-		JewstEmploymentWtSetPK pk = this.deformed.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pk = this.deformed.getJewstEmploymentWtSetPK();
 		pk.setCtg(WtSettingConstant.DEFORMED);
 		pk.setType(WtSettingConstant.STATUTORY);
 		this.deformed.setJewstEmploymentWtSetPK(pk);
@@ -115,10 +115,10 @@ public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetM
 	 */
 	@Override
 	public void setYear(Year year) {
-		JewstEmploymentWtSetPK pkNo = this.normal.getJewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkDe = this.deformed.getJewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkSpe = this.flexSpecified.getJewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkSta = this.flexStatutory.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkNo = this.normal.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkDe = this.deformed.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkSpe = this.flexSpecified.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkSta = this.flexStatutory.getJewstEmploymentWtSetPK();
 
 		pkNo.setYK(year.v());
 		pkDe.setYK(year.v());
@@ -140,10 +140,10 @@ public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetM
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		JewstEmploymentWtSetPK pkNo = new JewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkDe = new JewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkSpe = new JewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkSta = new JewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkNo = new KewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkDe = new KewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkSpe = new KewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkSta = new KewstEmploymentWtSetPK();
 
 		pkNo.setCid(companyId.v());
 		pkDe.setCid(companyId.v());
@@ -166,7 +166,7 @@ public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetM
 	@Override
 	public void setNormalSetting(NormalSetting normalSetting) {
 		// Set category & type.
-		JewstEmploymentWtSetPK pk = this.normal.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pk = this.normal.getJewstEmploymentWtSetPK();
 		pk.setCtg(WtSettingConstant.NORMAL);
 		pk.setType(WtSettingConstant.STATUTORY);
 		this.normal.setJewstEmploymentWtSetPK(pk);
@@ -190,7 +190,7 @@ public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetM
 	 *            the monthly
 	 * @return the jewtst employment wt set
 	 */
-	private JewstEmploymentWtSet setMonthly(JewstEmploymentWtSet entity, List<Monthly> monthly) {
+	private KewstEmploymentWtSet setMonthly(KewstEmploymentWtSet entity, List<Monthly> monthly) {
 		monthly.forEach(month -> {
 			switch (month.getMonth()) {
 			case JANUARY:
@@ -244,10 +244,10 @@ public class JpaEmploymentWtSettingSetMemento implements EmploymentWtSettingSetM
 	 */
 	@Override
 	public void setEmploymentCode(String employmentCode) {
-		JewstEmploymentWtSetPK pkNo = this.normal.getJewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkDe = this.deformed.getJewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkSpe = this.flexSpecified.getJewstEmploymentWtSetPK();
-		JewstEmploymentWtSetPK pkSta = this.flexStatutory.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkNo = this.normal.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkDe = this.deformed.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkSpe = this.flexSpecified.getJewstEmploymentWtSetPK();
+		KewstEmploymentWtSetPK pkSta = this.flexStatutory.getJewstEmploymentWtSetPK();
 
 		pkNo.setEmptCd(employmentCode);
 		pkDe.setEmptCd(employmentCode);

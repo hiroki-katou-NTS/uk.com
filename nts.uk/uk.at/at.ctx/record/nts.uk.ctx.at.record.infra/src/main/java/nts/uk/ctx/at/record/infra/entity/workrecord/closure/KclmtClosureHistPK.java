@@ -38,12 +38,11 @@ public class KclmtClosureHistPK implements Serializable {
 	private Integer closureId;
 	
 	
-	/** The history id. */
+	/** The str YM. */
 	@Basic(optional = false)
+	@Column(name = "STR_YM")
 	@NotNull
-	@Column(name = "HIST_ID")
-	private String histId;
-
+	private Integer strYM;
 	/**
 	 * Instantiates a new kclmt closure hist PK.
 	 */
@@ -56,10 +55,10 @@ public class KclmtClosureHistPK implements Serializable {
 	 * @param ccid the ccid
 	 * @param closureId the closure id
 	 */
-	public KclmtClosureHistPK(String cid, Integer closureId, String histId) {
+	public KclmtClosureHistPK(String cid, Integer closureId, Integer startYM) {
 		this.cid = cid;
 		this.closureId = closureId;
-		this.histId = histId;
+		this.strYM = startYM;
 	}
 
 

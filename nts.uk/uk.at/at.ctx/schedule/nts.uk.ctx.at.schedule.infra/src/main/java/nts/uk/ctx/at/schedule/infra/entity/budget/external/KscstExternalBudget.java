@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -21,14 +23,20 @@ public class KscstExternalBudget extends UkJpaEntity{
 
 	@Basic(optional = false)
 	@Column(name = "EXTERNAL_BUDGET_NAME")
+	@Getter
+	@Setter
 	public String externalBudgetName;
 
 	@Basic(optional = false)
 	@Column(name = "BUDGET_ATR")
+	@Getter
+	@Setter
 	public int budgetAtr;
 
 	@Basic(optional = false)
 	@Column(name = "UNIT_ATR")
+	@Getter
+	@Setter
 	public int unitAtr;
 
 	@Override

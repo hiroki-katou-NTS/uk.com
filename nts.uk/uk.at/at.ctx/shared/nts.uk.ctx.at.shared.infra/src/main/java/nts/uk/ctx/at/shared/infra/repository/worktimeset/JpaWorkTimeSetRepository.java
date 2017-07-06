@@ -27,7 +27,10 @@ import nts.uk.ctx.at.shared.infra.entity.worktimeset.KwtstWorkTimeSet;
 
 @Stateless
 public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeSetRepository{
-
+	
+	private final String findWorkTimeSetByCompanyID = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
+			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID";
+	
 	private final String findWorkTimeSetByList = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs";
@@ -57,6 +60,11 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 			+ "AND b.p_m_EndAtr = :p_m_EndAtr "
 			+ "AND b.p_m_EndClock = :p_m_EndClock "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs ";
+	
+	@Override
+	public List<WorkTimeSet> findByCompanyID(String companyID) {
+		return this.queryProxy().query(findWorkTimeSetByCompanyID, KwtstWorkTimeSet.class).setParameter("companyID", companyID).getList(x -> convertToDomainWorkTimeSet(x));
+	}
 	
 	@Override
 	public Optional<WorkTimeSet> findByCode(String companyID, String siftCD) {
@@ -197,5 +205,4 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 			EnumAdaptor.valueOf(kwtdtWorkTimeDay.p_m_EndAtr, TimeDayAtr.class)
 		);
 	}
-
 }

@@ -12,11 +12,11 @@ import nts.arc.time.YearMonth;
 public interface ClosureHistorySetMemento {
 
 	/**
-	 * Sets the close name.
+	 * Sets the closure name.
 	 *
-	 * @param closeName the new close name
+	 * @param closureName the new closure name
 	 */
-	void setCloseName(CloseName closeName);
+	void setClosureName(ClosureName closureName);
 
 	/**
 	 * Sets the closure id.
@@ -32,13 +32,6 @@ public interface ClosureHistorySetMemento {
 	 */
 	void setCompanyId(CompanyId companyId);
 	
-	/**
-	 * Sets the closure history id.
-	 *
-	 * @param closureHistoryId the new closure history id
-	 */
-	void setClosureHistoryId(ClosureHistoryId closureHistoryId);
-
 	/**
 	 * Sets the end date.
 	 *

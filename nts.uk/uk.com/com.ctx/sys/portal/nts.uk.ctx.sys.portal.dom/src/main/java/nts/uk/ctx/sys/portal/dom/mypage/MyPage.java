@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.mypage;
 
+import java.util.UUID;
+
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
@@ -36,5 +38,14 @@ public class MyPage extends AggregateRoot {
 	 */
 	public static MyPage createFromJavaType(String employeeId, String LayoutId) {
 		return new MyPage(employeeId, LayoutId);
+	}
+	/**
+	 * hoatt
+	 * create new my page
+	 * @param employeeId
+	 * @return
+	 */
+	public static MyPage createNew(String employeeId) {	
+		return new MyPage(employeeId, UUID.randomUUID().toString());
 	}
 }

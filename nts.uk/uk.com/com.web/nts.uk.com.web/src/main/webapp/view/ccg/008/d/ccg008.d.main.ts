@@ -35,11 +35,4 @@ module nts.uk.com.view.ccg008.d.alertmessage {
         }
 
     }
-
-
-    __viewContext.ready(function() {
-        var screenModel = new ScreenModel();
-        screenModel.start();
-        __viewContext.bind(screenModel);
-    });
 }
