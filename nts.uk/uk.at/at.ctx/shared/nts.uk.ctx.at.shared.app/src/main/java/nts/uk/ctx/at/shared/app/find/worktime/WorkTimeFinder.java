@@ -59,6 +59,13 @@ public class WorkTimeFinder {
 	}
 	
 	
+	public List<WorkTimeDto> findByCompanyID(){
+		String companyID = AppContexts.user().companyId();
+		List<WorkTime> workTimeItems = this.workTimeRepository.findByCompanyID(companyID);
+		List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCompanyID(companyID);
+		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+	}
+	
 	/**
 	 * find list Work Time Dto by code list 
 	 * @param codeList code list 

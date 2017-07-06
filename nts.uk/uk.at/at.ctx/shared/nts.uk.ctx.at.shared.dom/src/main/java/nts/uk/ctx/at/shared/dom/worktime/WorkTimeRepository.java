@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface WorkTimeRepository {
 	
+	public List<WorkTime> findByCompanyID(String companyID);
+	
 	/**
 	 * get Work Time by Work Time Code and Company ID
 	 * @param companyID Company ID
