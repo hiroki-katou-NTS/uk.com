@@ -187,7 +187,6 @@ module nts.uk.pr.view.kmf001.d {
                 });
                 // Selected Item subscribe
                 self.selectedItem.subscribe(function(data: string) {
-
                     if (data) {
                         // Find EmploymentSetting By employment
                         service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
