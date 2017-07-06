@@ -18,6 +18,8 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.base.Strings;
+
 import nts.arc.i18n.custom.ICompanyResourceBundle;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.i18n.custom.ISessionLocale;
@@ -45,7 +47,8 @@ public class MultiLanguageResource implements IInternationalization {
 	private ISessionLocale currentLanguage;
 	// Map<programId, Map<String, String>>
 	private Map<String, Map<String, String>> codeNameResource;
-	private Map<String, String> messageResource;
+	// Map<programid,Map<messageId,message>
+	private Map<String, Map<String, String>> messageResource;
 
 	private Map<String, String> companyCustomizedResource;
 
@@ -73,14 +76,7 @@ public class MultiLanguageResource implements IInternationalization {
 			tempMessageResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.MESSAGE);
 		}
-		messageResource = groupResource(tempMessageResource);
-	}
-
-	private Map<String, String> groupResource(Map<String, Map<String, String>> currentLanguageResource) {
-		Map<String, String> result = new HashMap<>();
-		currentLanguageResource.values().stream().forEach(p -> result.putAll(p));
-		return result;
-
+		messageResource = tempMessageResource;
 	}
 
 	private void loadCustomizedResource() {
@@ -92,7 +88,7 @@ public class MultiLanguageResource implements IInternationalization {
 
 	@Override
 	public Optional<String> getItemName(String id, String... params) {
-
+		// because company customised resource has higher priority
 		String text = companyCustomizedResource.get(id);
 		if (text != null)
 			return Optional.of(text);
@@ -105,6 +101,13 @@ public class MultiLanguageResource implements IInternationalization {
 				text = formatWithParameters(text, Arrays.asList(params));
 		}
 		return text == null ? Optional.empty() : Optional.of(text);
+	}
+
+	private Map<String, String> groupResource(Map<String, Map<String, String>> currentLanguageResource) {
+		Map<String, String> result = new HashMap<>();
+		currentLanguageResource.values().stream().forEach(p -> result.putAll(p));
+		return result;
+
 	}
 
 	@Override
@@ -123,7 +126,8 @@ public class MultiLanguageResource implements IInternationalization {
 
 	@Override
 	public Optional<String> getRawMessage(String messageId) {
-		String message = companyCustomizedResource.getOrDefault(messageId, messageResource.get(messageId));
+		Map<String, String> allMessage = groupResource(messageResource);
+		String message = companyCustomizedResource.getOrDefault(messageId, allMessage.get(messageId));
 		return message == null ? Optional.empty() : Optional.of(message);
 	}
 
@@ -158,7 +162,8 @@ public class MultiLanguageResource implements IInternationalization {
 				}
 				String param;
 				if (format != null) {
-					DateTimeTranscoder transcoder = DateTimeFormatProvider.LocaleTranscoderMap.get(currentLanguage.getSessionLocale());
+					DateTimeTranscoder transcoder = DateTimeFormatProvider.LocaleTranscoderMap
+							.get(currentLanguage.getSessionLocale());
 					param = transcoder.create().get(format.substring(1)).apply(params.get(paramIndex));
 				} else {
 					param = getArgument(params.get(paramIndex));
@@ -190,20 +195,22 @@ public class MultiLanguageResource implements IInternationalization {
 	public Map<ResourceType, Map<String, String>> getResourceOfCompany() {
 		Map<ResourceType, Map<String, String>> result = new HashMap<>();
 		result.put(ResourceType.MESSAGE, getAllMessage());
+		// company customised resource will overwrite system default if
+		// duplicate
 		result.put(ResourceType.CODE_NAME, getCodeNameResourceOfProgram(getCompanyCode()));
 		return result;
 	}
 
 	@Override
 	public Map<String, String> getAllMessage() {
-		return messageResource;
+		return groupResource(messageResource);
 	}
 
 	private Map<String, String> getCodeNameResourceOfProgram(String programId) {
 		Map<String, String> codeName = new HashMap<>();
 		codeName.putAll(codeNameResource.getOrDefault(SystemProperties.SYSTEM_ID, new HashMap<>()));
 		codeName.putAll(codeNameResource.getOrDefault(programId, new HashMap<>()));
-		// company customized will override system default 
+		// company customized will override system default
 		codeName.putAll(companyCustomizedResource);
 		return codeName;
 
@@ -211,12 +218,22 @@ public class MultiLanguageResource implements IInternationalization {
 
 	@Override
 	public Map<ResourceType, Map<String, String>> getResourceForProgram(String programId) {
-
 		Map<ResourceType, Map<String, String>> result = new HashMap<>();
+
+		/**
+		 * TODO: because program has not defined yet, then get all resource
+		 * Map<String, String> messages = new HashMap<String, String>();
+		 * messages.putAll(messageResource.getOrDefault(SystemProperties.SYSTEM_ID,
+		 * new HashMap<String, String>()));
+		 * messages.putAll(messageResource.getOrDefault(programId, new
+		 * HashMap<String, String>())); result.put(ResourceType.MESSAGE,
+		 * messages);
+		 */
 		result.put(ResourceType.MESSAGE, getAllMessage());
+
 		// result.put(ResourceType.CODE_NAME,
 		// getCodeNameResourceOfProgram(programId));
-		// TODO: temporaty fix for test, get all of company
+		// TODO: temporary fix for test, get all of company
 		Map<String, String> fixedForTest = new HashMap<>();
 		codeNameResource.entrySet().stream().map(x -> x.getValue()).forEach(x -> fixedForTest.putAll(x));
 		result.put(ResourceType.CODE_NAME, fixedForTest);
@@ -227,7 +244,8 @@ public class MultiLanguageResource implements IInternationalization {
 	@Override
 	public Map<ResourceType, Map<String, String>> getSystemDefaultResource() {
 		Map<ResourceType, Map<String, String>> result = new HashMap<>();
-		result.put(ResourceType.MESSAGE, getAllMessage());
+		result.put(ResourceType.MESSAGE,
+				messageResource.getOrDefault(SystemProperties.SYSTEM_ID, new HashMap<String, String>()));
 		result.put(ResourceType.CODE_NAME, groupResource(codeNameResource));
 		return result;
 	}
@@ -236,7 +254,7 @@ public class MultiLanguageResource implements IInternationalization {
 	public Map<String, String> getCustomizeResource() {
 		return companyCustomizedResource;
 	}
-	
+
 	@Override
 	public Map<String, Object> getReportItems(String reportId) {
 		Map<String, Object> items = new HashMap<>();
@@ -245,9 +263,10 @@ public class MultiLanguageResource implements IInternationalization {
 		});
 		return items;
 	}
-	
+
 	private String getKey(String key) {
-		if (key.indexOf(SEPARATOR) == -1) return key;
+		if (key.indexOf(SEPARATOR) == -1)
+			return key;
 		return key.split(SEPARATOR)[1];
 	}
 }
