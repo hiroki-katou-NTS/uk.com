@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.record.dom.standardtime.enums;
 
-import lombok.AllArgsConstructor;
-
 /**
  * 
  * @author nampt
  *
  */
-@AllArgsConstructor
+
 public enum ClosingDateType {
 	
 	/*
@@ -77,5 +75,10 @@ public enum ClosingDateType {
 	LASTDAY(30);
 
 	public final int value;
+	
+	private ClosingDateType(int type) {
+		this.value = type;
+	}
+
 
 }

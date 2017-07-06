@@ -146,7 +146,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
                 
                 $(window).on('click', function(e) {
+                    // Check is click to outter component.
                     if (e.target.id == "ccg-component" || $(e.target).parents("#ccg-component")[0]) {
+                        return;
+                    }
+                    // Check is click to dialog.
+                    if ($(e.target).parents("[role='dialog']")[0]) {
+                        return;
+                    }
+                    // Check is click to ignite combo-box.
+                    if ($(e.target).parents().hasClass('ui-igcombo-dropdown')) {
                         return;
                     }
                     if (self.isShow()) {
@@ -200,6 +209,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         $('#jobtitleList').ntsListComponent(self.jobtitles);
                         $('#workplaceList').ntsTreeComponent(self.workplaces);
                     }
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError(error);
                 });
 
             }
@@ -229,6 +240,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         isShowNoSelectRow: false,
                     }
                     $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                }).fail(function(error){
+                   nts.uk.ui.dialog.alertError(error); 
                 });
 
             }
@@ -269,6 +282,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.isSelectAllEmployee) {
                     service.searchModeEmployee(self.toEmployeeDto()).done(data => {
                         self.onApplyEmployee(data);
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 } else {
                     

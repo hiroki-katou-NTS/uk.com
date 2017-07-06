@@ -16,4 +16,8 @@ module nts.uk.com.view.ccg013.f.service {
         return nts.uk.request.ajax("com", paths.findWebMenuCode, jobId);
     }
     
+    export function updateWebMenuCode(data: Array<viewmodel.JobTitleTying>) {
+        return nts.uk.request.ajax("com", paths.updateWebMenuCode, data);
+    }
+    
 }
