@@ -96,10 +96,19 @@ module nts.uk.ui {
                         height: options.height || this.globalContext.dialogSize.height,
                         title: options.title || "dialog",
                         resizable: options.resizable,
+                        position: {
+                            my: "center",
+                            at: "center",
+                            of: "body",
+                            collision: "none"
+                        },
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
                         }
                     }).dialog('open');
+                     
+//                    var widget= this.$dialog.dialog("widget");
+//                    widget.draggable("option","containment",false);
                 });
 
                 this.globalContext.location.href = request.resolvePath(path);

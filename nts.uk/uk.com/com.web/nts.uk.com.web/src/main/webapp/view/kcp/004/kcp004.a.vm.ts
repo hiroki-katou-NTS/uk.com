@@ -40,7 +40,7 @@ module kcp004.a.viewmodel {
                 {code : 0, name: 'Single tree grid'},
                 {code : 1, name: 'Multiple tree grid'}
             ]);
-            self.selectedTreeType = ko.observable(0);
+            self.selectedTreeType = ko.observable(1);
             self.isMultipleTreeGrid = ko.computed(function () {
                 return self.selectedTreeType() == 1;
             });
@@ -87,9 +87,9 @@ module kcp004.a.viewmodel {
                 if (code == 0 && self.selectedSelectionType() == 2) {
                     self.selectedSelectionType(1);
                 }
+                self.isShowSelectButton(code == 1);
                 self.reloadTreeGrid().done(() => {
                     self.getSelectedData();
-                    self.isShowSelectButton(code == 1);
                 });
             });
             self.isDialog.subscribe(function(value) {
