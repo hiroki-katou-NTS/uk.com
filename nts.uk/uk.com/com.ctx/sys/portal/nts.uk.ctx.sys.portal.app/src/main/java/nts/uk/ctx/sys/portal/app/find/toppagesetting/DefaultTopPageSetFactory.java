@@ -12,8 +12,6 @@ import javax.inject.Inject;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuDto;
-import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuFinder;
 import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingDto;
 import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingFinder;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementDto;
@@ -56,8 +54,6 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	@Inject
 	private TopPagePartService topPagePartService;
 	@Inject
-	private FlowMenuFinder flowmenu;
-	@Inject
 	private TopPageSelfSettingFinder topPageSelfSet;
 	@Inject
 	private TopPagePersonSetRepository topPagePerson;
@@ -76,8 +72,8 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	@Inject
 	private TopPageJobSetRepository topPageJobSet;
 	/**
-	 * check = true (hien thi top page truoc)
-	 * check = false (hien thi my page truoc)
+	 * check = true (When start: display top page)
+	 * check = false (When start: display my page)
 	 */
 	Boolean check = false;
 	
@@ -88,7 +84,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	private FileStorage fileStorage;
 	
 	/**
-	 * hien thi my page
+	 * display my page
 	 */
 	@Override
 	public LayoutForMyPageDto buildLayoutDto(Layout layout, List<Placement> placements) {
@@ -191,35 +187,66 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	}
 	
 	/**
-	 * hien thi top page
+	 * display top page
 	 */
 	@Override
 	public LayoutForTopPageDto buildLayoutTopPage(Layout layout, List<Placement> placements) {
+		String companyId = AppContexts.user().companyId();
+		// get placement
 		List<PlacementDto> placementDtos = buildPlacementTopPage(layout, placements);
-		List<FlowMenuPlusDto> flowmenuNew = new ArrayList<FlowMenuPlusDto>();
-		List<PlacementDto> placementNew = new ArrayList<PlacementDto>();
-		for (PlacementDto placementDto : placementDtos) {
-			if( StringUtil.isNullOrEmpty(placementDto.getPlacementPartDto().getExternalUrl(), true) && placementDto.getPlacementPartDto().getType().intValue() == TopPagePartType.FlowMenu.value){
-					FlowMenuDto flowMenu = flowmenu.getFlowMenu(placementDto.getPlacementPartDto().getTopPagePartID());
-					if(flowMenu != null){
-						FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
-								flowMenu.getTopPageCode(),
-								flowMenu.getTopPageName(),
-								flowMenu.getType(),
-								flowMenu.getWidthSize(),
-								flowMenu.getHeightSize(),
-								flowMenu.getFileID(),
-								flowMenu.getFileName(),
-								flowMenu.getDefClassAtr(),
-								placementDto.getRow(),
-								placementDto.getColumn());
-						flowmenuNew.add(fMenu);
-					}
-					continue;
-			}else{
-				placementNew.add(placementDto);
-			}
-		}
+		
+		// get top page part id by flow menu
+				List<String> listTopPagePartIdTypeFlow = placementDtos.stream()
+						.filter(placementDto-> placementDto.getPlacementPartDto().getExternalUrl() == null 
+								&& placementDto.getPlacementPartDto().getType().intValue() == TopPagePartType.FlowMenu.value)
+						.map(x->x.getPlacementPartDto().getTopPagePartID())
+						.distinct()
+						.collect(Collectors.toList());
+				
+				// get placement by flow menu
+				List<PlacementDto> placementFlows = placementDtos.stream()
+						.filter(placementDto-> placementDto.getPlacementPartDto().getExternalUrl() == null
+								&& placementDto.getPlacementPartDto().getType().intValue() == TopPagePartType.FlowMenu.value)
+						.collect(Collectors.toList());
+						
+				// process data with flow menu
+				List<FlowMenuPlusDto> flowmenuNew = new ArrayList<FlowMenuPlusDto>();
+				if (!listTopPagePartIdTypeFlow.isEmpty()) {
+					// get all flow menu by top page part id
+					List<FlowMenu> flowmenus = repository.findByCodes(companyId, listTopPagePartIdTypeFlow);
+					Map<String, FlowMenu> flowMenuMap = flowmenus.stream().collect(Collectors.toMap(FlowMenu::getToppagePartID, x->x));
+					
+					for (PlacementDto placementDto : placementFlows) {
+		                FlowMenu flowMenu = flowMenuMap.get(placementDto.getPlacementPartDto().getTopPagePartID());
+		                if (flowMenu == null) {
+		                	continue;
+		                }
+		                
+		                // get file infe
+		            	Optional<StoredFileInfo> fileInfo = fileStorage.getInfo(flowMenu.getFileID());
+		            	
+		                FlowMenuPlusDto fMenu = new FlowMenuPlusDto(flowMenu.getToppagePartID(),
+		                        flowMenu.getCode().v(),
+		                        flowMenu.getName().v(),
+		                        flowMenu.getType().value,
+		                        flowMenu.getWidth().v(),
+		                        flowMenu.getHeight().v(),
+		                        flowMenu.getFileID(),
+		                        fileInfo != null ? fileInfo.get().getOriginalName() : "",
+		                        flowMenu.getDefClassAtr().value,
+		                        placementDto.getRow(),
+		                        placementDto.getColumn());
+		                
+		                flowmenuNew.add(fMenu);
+			        }
+				}
+				
+				// process data with not flow menu
+				List<PlacementDto> placementNew = placementDtos.stream()
+						.filter(placementDto-> !(placementDto.getPlacementPartDto().getExternalUrl() == null 
+								&& placementDto.getPlacementPartDto().getType().intValue() == TopPagePartType.FlowMenu.value))
+						.collect(Collectors.toList());
+				
 		return new LayoutForTopPageDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, flowmenuNew,placementNew,null);
 	}
 	/**
@@ -249,7 +276,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		return placementDtos;
 	}
 	/**
-	 * Lay theo chuc vu
+	 * get by position
 	 */
 	@Override
 	public LayoutAllDto getTopPageForPosition(JobPositionDto jobPosition, TopPageJobSet topPageJob) {
@@ -311,7 +338,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	}
 
 	/**
-	 * Lay khong theo chuc vu
+	 * get by not position
 	 */
 	@Override
 	public LayoutAllDto getTopPageNotPosition() {

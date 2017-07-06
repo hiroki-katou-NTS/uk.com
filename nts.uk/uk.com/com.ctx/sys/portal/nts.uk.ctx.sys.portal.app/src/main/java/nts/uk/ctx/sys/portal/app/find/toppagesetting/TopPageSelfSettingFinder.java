@@ -56,9 +56,8 @@ public class TopPageSelfSettingFinder {
 				.map(c->TopPageSelfSettingDto.fromDomain(c));
 		if(!lst.isPresent()){
 			return null;
-		}else{
-			return lst.get();
 		}
+		return lst.get();
 		
 	}
 	/**
