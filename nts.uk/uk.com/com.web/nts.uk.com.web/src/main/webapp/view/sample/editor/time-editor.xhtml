@@ -50,6 +50,8 @@
 							<br/><br/>
 							<input data-name="YearMonth Editor" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 						</div>
+						<input id="yearEditor" data-name="Year Editor" data-bind="ntsTimeEditor: {inputFormat: 'YYYY', value: year, required: true, mode: 'year'}" />
+						<input id="fiscalYearEditor" data-name="Fiscal Year Editor" data-bind="ntsTimeEditor: {inputFormat: 'YYYY', value: year, required: true, mode: 'fiscal'}" />
 						<article class="cf">
 							<div class="tabs">
 								<ol>

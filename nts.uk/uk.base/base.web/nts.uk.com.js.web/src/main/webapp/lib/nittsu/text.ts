@@ -626,6 +626,7 @@
             "MONTHS":　new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
             "YEARS":　new NumberUnit("YEARS", "年", "right", "ja-JP"),
             "FIS_MONTH":　new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
+            "FIS_YEAR":　new NumberUnit("FIS_YEAR", "年度", "right", "ja-JP"),
             "TIMES":　new NumberUnit("TIMES", "回", "right", "ja-JP")
         };
         

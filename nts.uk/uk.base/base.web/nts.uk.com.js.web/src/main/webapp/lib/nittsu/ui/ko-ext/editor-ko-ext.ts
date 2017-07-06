@@ -340,10 +340,19 @@ module nts.uk.ui.koExtentions {
             super.update($input, data);
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var width: string = option.width;
-            var parent = $input.parent();
-            var parentTag = parent.parent().prop("tagName").toLowerCase();
+            var $parent = $input.parent();
+            var parentTag = $parent.parent().prop("tagName").toLowerCase();
             if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
-                parent.css({ 'width': '100%' });
+                $parent.css({ 'width': '100%' });
+            }
+            
+            if (!nts.uk.util.isNullOrEmpty(data.mode) && (data.mode === "year" || data.mode === "fiscal")) {
+                let symbolText = data.mode === "year" ? nts.uk.text.getNumberUnit("YEARS") : nts.uk.text.getNumberUnit("FIS_YEAR"); 
+                $parent.addClass("symbol").addClass('symbol-right');
+                $parent.attr("data-content", symbolText.unitText); 
+                
+                let css = data.mode === "year" ? {"padding-right": "20px"} : {"padding-right": "35px"};
+                $input.css(css);
             }
         }
 
