@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.specificdate.item;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.specificdate.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.specificdate.primitives.SpecificName;
@@ -23,7 +24,7 @@ public class SpecificDateItem extends AggregateRoot {
 
 	public static SpecificDateItem createFromJavaType(String companyId, String timeItemId, BigDecimal useAtr, BigDecimal specificDateItemNo, String specificName) {
 		return new SpecificDateItem(companyId, timeItemId,
-				UseAtr.valueOf(useAtr.toString()), new SpecificDateItemNo(specificDateItemNo), new SpecificName(specificName));
+				EnumAdaptor.valueOf(useAtr.intValue(), UseAtr.class), new SpecificDateItemNo(specificDateItemNo), new SpecificName(specificName));
 	}
 	
 	public SpecificDateItem(String companyId, String timeItemId, UseAtr useAtr, SpecificDateItemNo specificDateItemNo,
