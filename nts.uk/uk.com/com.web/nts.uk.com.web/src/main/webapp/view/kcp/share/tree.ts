@@ -201,7 +201,8 @@ module kcp.share.tree {
                     $('#script-for-' + $input.attr('id')).remove();
                     var s = document.createElement("script");
                     s.type = "text/javascript";
-                    s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(self.backupItemList());
+                    s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = '
+                        + JSON.stringify(self.backupItemList());
                     s.id = 'script-for-' + $input.attr('id');
                     $("head").append(s);
                     $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
@@ -274,12 +275,14 @@ module kcp.share.tree {
             var icon84Link = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/icon/icon84.png').serialize();
-            $('.icon-84').attr('style', "background: url('"+ icon84Link +"');width: 20px;height: 20px;background-size: 20px 20px;")
+            $('.icon-84').attr('style', "background: url('"+ icon84Link
+                +"');width: 20px;height: 20px;background-size: 20px 20px;")
             
             var icon78Link = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
-            $('.icon-78').attr('style', "background: url('"+ icon78Link +"');width: 20px;height: 20px;background-size: 20px 20px;")
+            $('.icon-78').attr('style', "background: url('"+ icon78Link
+                +"');width: 20px;height: 20px;background-size: 20px 20px;")
         }
         
         /**
@@ -291,13 +294,14 @@ module kcp.share.tree {
                 hash[key] = value['isAlreadySetting'];
                 return hash;
             }, {});
-            this.mapAlreadySetting(dataList, mapAlreadySetting);
+            this.updateTreeData(dataList, mapAlreadySetting);
         }
         
         /**
          * Update setting type for dataList
          */
-        private mapAlreadySetting(dataList: Array<UnitModel>, mapAlreadySetting: any, isAlreadySettingParent?: boolean, heirarchyCodeParent?: string) {
+        private updateTreeData(dataList: Array<UnitModel>, mapAlreadySetting: any, isAlreadySettingParent?: boolean,
+            heirarchyCodeParent?: string) {
             let self = this;
             for (let unitModel of dataList) {
                 
@@ -333,7 +337,9 @@ module kcp.share.tree {
                     }
                 }
                 if (unitModel.childs.length > 0) {
-                    this.mapAlreadySetting(unitModel.childs, mapAlreadySetting, isAlreadySetting ? isAlreadySetting : isAlreadySettingParent, heirarchyCode ? heirarchyCode : heirarchyCodeParent);
+                    this.updateTreeData(unitModel.childs, mapAlreadySetting,
+                        isAlreadySetting ? isAlreadySetting : isAlreadySettingParent,
+                        heirarchyCode ? heirarchyCode : heirarchyCodeParent);
                 }
             }
         }
