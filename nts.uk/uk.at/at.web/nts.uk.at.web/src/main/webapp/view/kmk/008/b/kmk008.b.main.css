@@ -1,7 +1,8 @@
-.contents-area{
+.contents-area {
 	width: 1200px !important;
 }
-button {
+
+.sidebar-content-header > button {
 	padding: 0px 15px;
 }
 
@@ -19,7 +20,11 @@ button {
 }
 
 #nts-component-list {
-	height: 490px !important;
+	height: 475px !important;
+}
+
+#nts-component-tree {
+	height: 475px !important;
 }
 
 .tabpanel-1-contents-area-left {
@@ -60,9 +65,9 @@ button {
 }
 
 .lbl-title-employeer-name {
-	margin-bottom: 30px !important;	
+	margin-bottom: 30px !important;
 }
 
-.lbl-title-employeer-name > div {
+.lbl-title-employeer-name>div {
 	margin-right: 20px;
 }
