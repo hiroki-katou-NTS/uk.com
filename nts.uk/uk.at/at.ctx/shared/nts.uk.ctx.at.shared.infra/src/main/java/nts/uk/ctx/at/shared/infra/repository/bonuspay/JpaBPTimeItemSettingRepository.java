@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,8 +33,16 @@ public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPT
 
 	@Override
 	public void addListSetting(List<BPTimeItemSetting> lstSetting) {
-		List<KbpstBPTimeItemSetting> lstKbpstBPTimeItemSetting = lstSetting.stream().map(c -> toBPTimeItemSettingEntity(c)).collect(Collectors.toList());
-		this.commandProxy().insertAll(lstKbpstBPTimeItemSetting);
+		lstSetting.forEach(c->{
+			Optional<KbpstBPTimeItemSetting> kbpstBPTimeItemSettingOptional = this.queryProxy().find(new KbpstBPTimeItemSettingPK(c.getCompanyId().toString(), c.getTiemItemId().v()), KbpstBPTimeItemSetting.class);
+			if (kbpstBPTimeItemSettingOptional.isPresent()) {
+				KbpstBPTimeItemSetting kbpstBPTimeItemSetting = kbpstBPTimeItemSettingOptional.get();
+				kbpstBPTimeItemSetting.holidayCalSettingAtr= new BigDecimal(c.getHolidayCalSettingAtr().value);
+				kbpstBPTimeItemSetting.overtimeCalSettingAtr= new BigDecimal(c.getOvertimeCalSettingAtr().value);
+				kbpstBPTimeItemSetting.worktimeCalSettingAtr= new BigDecimal(c.getOvertimeCalSettingAtr().value);
+				this.commandProxy().update(kbpstBPTimeItemSetting);
+			}
+		});
 	}
 
 	@Override
