@@ -625,7 +625,7 @@ module nts.uk.at.view.kmk004.a {
                 if (l[0]) {
                     return;
                 }
-                self.alreadySettingWorkplaces.push({ workplaceId: id, settingType: 2 });
+                self.alreadySettingWorkplaces.push({ workplaceId: id, isAlreadySetting: true });
             }
 
             /**
