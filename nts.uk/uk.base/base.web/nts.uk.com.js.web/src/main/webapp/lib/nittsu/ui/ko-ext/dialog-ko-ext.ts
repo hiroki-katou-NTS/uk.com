@@ -85,7 +85,7 @@ module nts.uk.ui.koExtentions {
 
             var $dialog = $("<div id='ntsErrorDialog'></div>");
 
-            $('body').append($dialog);
+            parent.$('body').append($dialog);
             // Create Buttons
             var dialogbuttons = [];
             for (let button of buttons) {
@@ -111,7 +111,7 @@ module nts.uk.ui.koExtentions {
             $dialog.dialog({
                 title: title,
                 modal: modal,
-
+                autoOpen:false,
                 closeOnEscape: false,
                 width: dialogWidth,
                 maxHeight: 500,
@@ -148,7 +148,7 @@ module nts.uk.ui.koExtentions {
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
 
-            var $dialog = $("#ntsErrorDialog");
+            var $dialog = parent.$("#ntsErrorDialog");
 
             if (show == true) {
                 
