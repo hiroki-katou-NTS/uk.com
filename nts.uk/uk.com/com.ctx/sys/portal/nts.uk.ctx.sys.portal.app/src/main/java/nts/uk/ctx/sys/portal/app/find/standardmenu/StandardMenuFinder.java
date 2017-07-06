@@ -53,7 +53,7 @@ public class StandardMenuFinder {
 	public List<StandardMenuDto> findBySystemMenuCls() {
 		String companyId = AppContexts.user().companyId();
 		return this.standardMenuRepository
-				.findBySystemMenuClassification(companyId, System.COMMON.value, MenuClassification.TopPage.value)
+				.findBySystemMenuClassification(companyId, System.Common.value, MenuClassification.TopPage.value)
 				.stream().map(x -> StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
 	}
 
@@ -66,7 +66,7 @@ public class StandardMenuFinder {
 	public List<StandardMenuDto> findDataForAfterLoginDis() {
 		String companyId = AppContexts.user().companyId();
 		return this.standardMenuRepository
-				.findDataForAfterLoginDis(companyId, 1, System.COMMON.value, MenuClassification.TopPage.value).stream()
+				.findDataForAfterLoginDis(companyId, 1, System.Common.value, MenuClassification.TopPage.value).stream()
 				.map(x -> StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
 	}
 

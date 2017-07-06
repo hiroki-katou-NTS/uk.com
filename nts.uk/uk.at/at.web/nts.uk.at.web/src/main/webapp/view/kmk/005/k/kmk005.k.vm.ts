@@ -126,6 +126,37 @@ module nts.uk.at.view.kmk005.k {
                     bonusPaySettingCode: self.currentBonusPaySetting().code()
                 }
             }
+            
+            search(){
+                var self = this;
+                let inputString = self.startTimeOption().toString()+self.startTime().toString()+' ~ '+self.endTimeOption().toString()+self.endTime().toString();
+                $('#day-list-tbl > tbody > tr').css('display','none');
+                let allRow = $('#day-list-tbl > tbody > tr');
+                for(let i=1;i<=allRow.length;i++){
+                    let tr = $('#day-list-tbl > tbody > tr:nth-child('+i+')');
+                    let col1=3; let col2=4;
+                    if(self.multiSelectMode) { col1=4; col2=5; }
+                    for(let j=col1;j<=col2;j++){
+                        if(tr.find(":nth-child("+j+")").text().indexOf(inputString) > -1) {
+                            tr.css('display','');
+                            break;
+                        }   
+                    }    
+                }        
+            }
+            
+            returnData(){
+                $('#day-list-tbl > tbody > tr').css('display','');        
+            }
+            
+            openDialog(){
+                var self = this;
+                nts.uk.ui.windows.setShared('isMulti', false);
+                nts.uk.ui.windows.setShared('selecteds', self.currentBonusPaySetting().code);
+                nts.uk.ui.windows.sub.modal("/view/kdl/007/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                    
+                });      
+            }
         }
 
         class WorkTime {

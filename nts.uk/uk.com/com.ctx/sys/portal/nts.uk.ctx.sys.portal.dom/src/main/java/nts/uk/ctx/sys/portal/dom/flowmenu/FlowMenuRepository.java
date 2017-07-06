@@ -24,6 +24,14 @@ public interface FlowMenuRepository {
 	 * @return
 	 */
 	Optional<FlowMenu> findByCode(String companyID, String toppagePartID);
+	
+	/**
+	 * Find all flow menu by list top page part id
+	 * @param companyID
+	 * @param toppagePartID
+	 * @return
+	 */
+	List<FlowMenu> findByCodes(String companyID, List<String> toppagePartID);
 
 	/**
 	 * Add

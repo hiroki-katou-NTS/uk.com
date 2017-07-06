@@ -25,6 +25,7 @@ module nts.uk.at.view.kmk008.e {
                 self.baseDate = ko.observable(new Date());
                 self.selectedWorkplaceId = ko.observable("");
                 self.alreadySettingList = ko.observableArray([]);
+
                 self.treeGrid = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
@@ -36,14 +37,12 @@ module nts.uk.at.view.kmk008.e {
                     isDialog: false,
                     alreadySettingList: self.alreadySettingList
                 };
+                
                 self.selectedWorkplaceId.subscribe(newValue => {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                    //self.getDetail(newValue);
-                    let workplaceSelect = _.find(self.workplaceGridList(), emp => {
-                        return emp.workplaceId == newValue;
-                    });
-                    if (workplaceSelect) { self.currentWorkplaceName(workplaceSelect.name); }
-
+                    let WorkplaceSelect = self.findUnitModelByWorkplaceId(self.workplaceGridList(), newValue);
+                    if (WorkplaceSelect) { self.currentWorkplaceName(WorkplaceSelect.name); }
+                    self.getDetail(newValue);                   
                 });
                 self.startPage();
             }
@@ -62,7 +61,6 @@ module nts.uk.at.view.kmk008.e {
                 return dfd.promise();
             }
 
-
             getalreadySettingList() {
                 let self = this;
                 let dfd = $.Deferred();
@@ -76,9 +74,25 @@ module nts.uk.at.view.kmk008.e {
                 return dfd.promise();
             }
 
+            findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
+                let self = this;
+                for (let item of workplaceGridList) {
+                    if (item.workplaceId == workplaceId) {
+                        return item;
+                    }
+                    if (item.childs.length > 0) {
+                        let WorkplaceChild = this.findUnitModelByWorkplaceId(item.childs, workplaceId);
+                        if (WorkplaceChild != null) {
+                            return WorkplaceChild;
+                        }
+                    }
+                }
+                return null;
+            }
+
             addUpdateWorkPlace() {
                 let self = this;
-                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedWorkplaceId() });
+                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.workplaceId == self.selectedWorkplaceId() });
                 let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(self.timeOfWorkPlace(), self.laborSystemAtr, self.selectedWorkplaceId());
 
                 if (indexCodealreadySetting != -1) {
@@ -106,7 +120,7 @@ module nts.uk.at.view.kmk008.e {
                 let deleteModel = new DeleteTimeOfWorkPlaceModel(self.laborSystemAtr, self.selectedWorkplaceId());
                 new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
                     self.getalreadySettingList();
-                    self.setSelectCodeAfterRemove(self.selectedWorkplaceId());
+                    self.getDetail(self.selectedWorkplaceId());
                 });
             }
 
@@ -119,38 +133,6 @@ module nts.uk.at.view.kmk008.e {
                 });
             }
 
-            setSelectCodeAfterRemove(currentSelectCode: string) {
-                let self = this;
-                let empLength = self.workplaceGridList().length;
-                if (empLength == 0) {
-                    self.selectedWorkplaceId("");
-                    return;
-                }
-                let empSelectIndex = _.findIndex(self.workplaceGridList(), emp => {
-                    return emp.code == self.selectedWorkplaceId();
-                });
-                if (empSelectIndex == -1) {
-                    self.selectedWorkplaceId("");
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength == 1) {
-                    self.getDetail(currentSelectCode);
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength > 1) {
-                    self.selectedWorkplaceId(self.workplaceGridList()[empSelectIndex + 1].code);
-                    return;
-                }
-
-                if (empSelectIndex < empLength - 1) {
-                    self.selectedWorkplaceId(self.workplaceGridList()[empSelectIndex + 1].code);
-                    return;
-                }
-                if (empSelectIndex == empLength - 1) {
-                    self.selectedWorkplaceId(self.workplaceGridList()[empSelectIndex - 1].code);
-                    return;
-                }
-            }
         }
 
         export class TimeOfWorkPlaceModel {
