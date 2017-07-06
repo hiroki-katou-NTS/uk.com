@@ -53,7 +53,9 @@ module cmm044.a.viewmodel {
         selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
-
+        
+        isShow: KnockoutObservable<boolean>;
+        
         constructor() {
             let self = this;
             self.index_of_itemDelete = ko.observable(-1);
@@ -163,35 +165,17 @@ module cmm044.a.viewmodel {
             self.showinfoSelectedEmployee = ko.observable(true);
             self.selectedEmployee = ko.observableArray([]);
             
-
+            self.isShow = ko.observable(false);
         }
         start() {
             let self = this;
             var dfd = $.Deferred();
-            self.empItems.removeAll();
-
-            /**
-             * Demo EmployeeCode & EmployeeId
-             */
-            _.range(30).map(i => {
-                i++;
-                if (i < 10) {
-                    self.empItems.push(new PersonModel({
-                        personId: '99900000-0000-0000-0000-00000000000' + i,
-                        code: 'A00000000' + i,
-                        name: '日通　社員' + i,
-                    }));
-                } else {
-                    self.empItems.push(new PersonModel({
-                        personId: '99900000-0000-0000-0000-00000000000' + i,
-                        code: 'A0000000' + i,
-                        name: '日通　社員' + i,
-                    }));
-                }
-            });
+            self.currentItem(new model.AgentAppDto(null, "", "", "", "", null, "", null, "", null, "", null));
             self.initCCG001();
             dfd.resolve();
             return dfd.promise();
+            
+
         }
 
 
@@ -408,7 +392,9 @@ module cmm044.a.viewmodel {
         
         openCCG001() {
             let self = this;
-            $("#ccgcomponent, #ccgcomponent_contents").toggleClass("show");    
+            $("#ccgcomponent, #ccgcomponent_contents").toggleClass("show");
+            
+            isOnlyMe: ko.observable(false);
         }
         
         initCCG001() {
@@ -416,14 +402,14 @@ module cmm044.a.viewmodel {
             self.ccgcomponent = {
                baseDate: ko.observable(new Date()),
                // Show/hide options 
-               isQuickSearchTab: ko.observable(true),
-               isAdvancedSearchTab: ko.observable(true),
-               isAllReferableEmployee: ko.observable(true),
-               isOnlyMe: ko.observable(true),
-               isEmployeeOfWorkplace: ko.observable(true),
-               isEmployeeWorkplaceFollow: ko.observable(true),
-               isMutipleCheck: ko.observable(true),
-               isSelectAllEmployee: ko.observable(true),
+               isQuickSearchTab: true,
+               isAdvancedSearchTab:true,
+               isAllReferableEmployee: true,
+               isOnlyMe: true,
+               isEmployeeOfWorkplace: true,
+               isEmployeeWorkplaceFollow: true,
+               isMutipleCheck: true,
+               isSelectAllEmployee:true,
                
                //Event options
                /**
@@ -431,31 +417,39 @@ module cmm044.a.viewmodel {
                * Define how to use this list employee by yourself in the function's body.
                */
                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
+                   self.searchEmployee(dataList);
                },
                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                    self.showinfoSelectedEmployee(true);
                    var dataEmployee: EmployeeSearchDto[] = [];
                    dataEmployee.push(data);
-                   self.selectedEmployee(dataEmployee);
+                   self.searchEmployee(dataEmployee);
                },
                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
+                   self.searchEmployee(dataList);
                },
                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
+                   self.searchEmployee(dataList);
                },
                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataEmployee);
+                   self.searchEmployee(dataEmployee);
                }
            }
 
            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         
+        }
+        
+        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
+            var self = this;
+            self.empItems.removeAll();
+            _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
+                self.empItems.push(new PersonModel({
+                        personId: item.employeeId,
+                        code: item.employeeCode,
+                        name: item.employeeName,
+                    }));    
+            });    
         }
     }
 

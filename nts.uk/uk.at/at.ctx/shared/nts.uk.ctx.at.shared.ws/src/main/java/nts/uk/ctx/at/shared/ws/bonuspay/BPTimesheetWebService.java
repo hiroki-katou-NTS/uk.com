@@ -37,6 +37,11 @@ public class BPTimesheetWebService extends WebService {
 		return this.bpTimesheetFinder.getListTimesheet( bonusPaySettingCode);
 	}
 	@POST
+	@Path("checkUseArt")
+	public void checkUseArt(List<Boolean> lstuseArt){
+		this.bpTimesheetFinder.checkUseArt(lstuseArt);
+	}
+	@POST
 	@Path("addListTimesheet")
 	public void addListTimesheet(List<BPTimesheetAddCommand> lstTimesheet) {
 		this.bpTimesheetAddCommandHandler.handle(lstTimesheet);

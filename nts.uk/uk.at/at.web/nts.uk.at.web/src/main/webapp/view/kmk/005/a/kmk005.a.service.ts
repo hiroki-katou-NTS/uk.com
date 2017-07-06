@@ -1,16 +1,10 @@
 module nts.uk.at.view.kmk005.a {
     export module service {
         var paths: any = {
-            findByCodeList: "at/shared/worktime/findByCodeList",
-            findByTime: "at/shared/worktime/findByTime",
+            getListBonusPayTimeItem: "at/share/bonusPayTimeItem/getListBonusPayTimeItem"
         }
-        
-        export function findByCodeList(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findByCodeList, command);
-        }
-        
-        export function findByTime(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findByTime, command);
+        export function getListBonusPTimeItem(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getListBonusPayTimeItem);
         }
     }
 }

@@ -3,7 +3,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div class="cf" id="ccg-component" data-bind="visible: isShow()">
+	<div class="cf" id="ccg-component" style="display: none;">
 		<div class="pull-left" style="background-color: #F2F2F2; border-radius: 5px;">
 			<div class="control-group" style="margin-left: 5px; margin-top: 20px;">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
@@ -93,15 +93,12 @@
 			<span class="controlSettingShowHide caret-right"></span>
 		</div>
 	</div>
-		<div id="hor-scroll-button-hide"
-			data-bind="visible: !isShow(), click: showHide">
-			<div class="flex valign-center btn_showhide">
-				<i class="icon icon-01-searchmode"></i> <label
-					class="labelShowHideButton">#{i18n.getText('CCG001_21')}</label>
-			</div>
-			<span class="controlSettingShowHide caret-right"></span>
+	<div id="hor-scroll-button-hide"
+		data-bind="visible: !isShow(), click: showHide">
+		<div class="flex valign-center btn_showhide">
+			<i class="icon icon-01-searchmode"></i> <label
+				class="labelShowHideButton">#{i18n.getText('CCG001_21')}</label>
 		</div>
-		<!-- <div id="hor-scroll-button-hide" data-bind="visible: !isShow()">
-			<button data-bind="click: showHide">Show/Hide</button>
-		</div> -->
+		<span class="controlSettingShowHide caret-right"></span>
+	</div>
 </ui:composition>

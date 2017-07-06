@@ -14,9 +14,9 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSettingPK;
 @Stateless
 public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPTimeItemSettingRepository {
 	private final String SELECT_BPTIMEITEMSET_BY_COMPANYID = "SELECT c FROM KbpstBPTimeItemSetting c  JOIN  KbpstBonusPayTimeItem k  ON c.kbpstBPTimeItemSettingPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId"
-			+ "WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 0 AND K.useAtr = 0 ORDER BY k.timeItemNo";
-	private final String SELECT_SPEC_BPTIMEITEMSET_BY_COMPANYID = "SELECT FROM KbpstBPTimeItemSetting c JOIN  KbpstBonusPayTimeItem k ON c.kbpstBPTimeItemSettingPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId"
-			+ "WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 1 AND K.useAtr = 0 ORDER BY k.timeItemNo";
+			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 0 AND K.useAtr = 0 ORDER BY k.timeItemNo";
+	private final String SELECT_SPEC_BPTIMEITEMSET_BY_COMPANYID = "SELECT c FROM KbpstBPTimeItemSetting c JOIN  KbpstBonusPayTimeItem k ON c.kbpstBPTimeItemSettingPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId"
+			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 1 AND K.useAtr = 0 ORDER BY k.timeItemNo";
 
 	@Override
 	public List<BPTimeItemSetting> getListSetting(String companyId) {

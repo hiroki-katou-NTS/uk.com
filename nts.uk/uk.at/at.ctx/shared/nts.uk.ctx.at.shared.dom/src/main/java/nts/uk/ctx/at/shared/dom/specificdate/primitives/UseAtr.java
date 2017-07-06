@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specificdate.primitives;
 
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public enum UseAtr {
 	
 	UNUSE(0),
@@ -10,5 +8,9 @@ public enum UseAtr {
 	USE(1);
 
 	public final int value;
+	
+	private UseAtr(int type) {
+		this.value = type;
+	}
 
 }

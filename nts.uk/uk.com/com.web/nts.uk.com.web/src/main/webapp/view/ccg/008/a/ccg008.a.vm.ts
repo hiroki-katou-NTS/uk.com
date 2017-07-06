@@ -38,7 +38,7 @@
             var dfd = $.Deferred();
             var code = '1';
             self.topPageCode(code);
-            service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
+                  service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
                 console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
@@ -82,7 +82,7 @@
                 }
                 listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                 if (listPlacement !== undefined)
-                console.log(listPlacement);
+                    self.placements(listPlacement);
                 _.defer(() => { self.setupPositionAndSizeAll('toppage'); });
             }
         }
@@ -109,7 +109,6 @@
                 listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                 if (listPlacement !== undefined)
                 self.placements(listPlacement); 
-                console.log(listPlacement);
                     self.placements(listPlacement);
                 _.defer(() => { self.setupPositionAndSizeAll('mypage'); });
             }
@@ -128,14 +127,14 @@
         /** Setup position and size for all Placements */
         private setupPositionAndSizeAll(name: string): void {
             var self = this;
-            _.forEach(self.placements(), (placement) => {
-                self.setupPositionAndSize(name, placement);
+            _.forEach(self.placements(), (placement, index) => {
+                self.setupPositionAndSize(name, placement, index);
             });
         }
  
         /** Setup position and size for a Placement */
-        private setupPositionAndSize(name: string, placement: model.Placement): void {
-            var $placement = $("#" + name + "_" + placement.placementID);
+        private setupPositionAndSize(name: string, placement: model.Placement, index: number): void {
+            var $placement = $("#" + name + "_" + placement.placementID + "_" + index);
             $placement.css({
                 top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
                 left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
@@ -143,7 +142,7 @@
                 height: (placement.height * 150) + ((placement.height - 1) * 10)
             });
         }
-    }
+    } 
      export module model {
          /** Client Placement class */
         export class Placement {
