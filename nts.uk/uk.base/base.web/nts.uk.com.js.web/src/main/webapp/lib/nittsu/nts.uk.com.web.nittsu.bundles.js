@@ -1345,6 +1345,7 @@ var nts;
                 "MONTHS": new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
                 "YEARS": new NumberUnit("YEARS", "年", "right", "ja-JP"),
                 "FIS_MONTH": new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
+                "FIS_YEAR": new NumberUnit("FIS_YEAR", "年度", "right", "ja-JP"),
                 "TIMES": new NumberUnit("TIMES", "回", "right", "ja-JP")
             };
             function getNumberUnit(unitId) {
@@ -1892,6 +1893,9 @@ var nts;
             function findFormat(format) {
                 if (nts.uk.util.isNullOrEmpty(format)) {
                     return defaultInputFormat;
+                }
+                if (format === "yearmonth") {
+                    format = "YM";
                 }
                 var uniqueFormat = _.uniq(format.split(""));
                 var formats = _.filter(defaultInputFormat, function (dfFormat) {
@@ -3057,10 +3061,18 @@ var nts;
                                 height: options.height || _this.globalContext.dialogSize.height,
                                 title: options.title || "dialog",
                                 resizable: options.resizable,
+                                position: {
+                                    my: "center",
+                                    at: "center",
+                                    of: "body",
+                                    collision: "none"
+                                },
                                 beforeClose: function () {
                                     //return dialogWindow.__viewContext.dialog.beforeClose();
                                 }
                             }).dialog('open');
+                            //                    var widget= this.$dialog.dialog("widget");
+                            //                    widget.draggable("option","containment",false);
                         });
                         this.globalContext.location.href = uk.request.resolvePath(path);
                     };
@@ -4198,8 +4210,8 @@ var nts;
                                             $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
                                         }
                                         else {
-                                            var index = parseInt($(selected["element"]).attr("data-row-idx"));
-                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : index); //.scrollTop(scrollTop);    
+                                            var index = $(selected["element"]).attr("data-row-idx");
+                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
                                         }
                                     }
                                 });
@@ -7935,6 +7947,7 @@ var nts;
                         var editable = ko.unwrap(data.editable);
                         var enable = ko.unwrap(data.enable);
                         var columns = ko.unwrap(data.columns);
+                        var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
                         // Container.
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
@@ -7999,6 +8012,7 @@ var nts;
                             container.igCombo({
                                 dataSource: options,
                                 valueKey: data.optionsValue,
+                                visibleItemsCount: visibleItemsCount,
                                 textKey: 'nts-combo-label',
                                 mode: comboMode,
                                 disabled: !enable,
@@ -8224,7 +8238,7 @@ var nts;
                             var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
                             if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
                                 // Check equals to avoid multi datepicker with same value
-                                $input.datepicker('setDate', new Date(dateFormatValue));
+                                $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                             }
                             else {
@@ -9379,10 +9393,17 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var width = option.width;
-                        var parent = $input.parent();
-                        var parentTag = parent.parent().prop("tagName").toLowerCase();
+                        var $parent = $input.parent();
+                        var parentTag = $parent.parent().prop("tagName").toLowerCase();
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
-                            parent.css({ 'width': '100%' });
+                            $parent.css({ 'width': '100%' });
+                        }
+                        if (!nts.uk.util.isNullOrEmpty(data.mode) && (data.mode === "year" || data.mode === "fiscal")) {
+                            var symbolText = data.mode === "year" ? nts.uk.text.getNumberUnit("YEARS") : nts.uk.text.getNumberUnit("FIS_YEAR");
+                            $parent.addClass("symbol").addClass('symbol-right');
+                            $parent.attr("data-content", symbolText.unitText);
+                            var css = data.mode === "year" ? { "padding-right": "20px" } : { "padding-right": "35px" };
+                            $input.css(css);
                         }
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
@@ -10472,6 +10493,7 @@ var nts;
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var selected = data.selected;
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+                        var enable = ko.unwrap(data.enable);
                         var selectedKey = null;
                         if (data.selectedKey) {
                             selectedKey = ko.unwrap(data.selectedKey);
@@ -10597,6 +10619,9 @@ var nts;
                             nextSearch();
                         });
                         $container.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
+                        if (enable === false) {
+                            $container.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
+                        }
                     };
                     NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $searchBox = $(element);
@@ -10605,6 +10630,7 @@ var nts;
                         var searchMode = ko.unwrap(data.searchMode);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var selectedValue = ko.unwrap(data.selected);
+                        var enable = ko.unwrap(data.enable);
                         var targetMode = data.mode;
                         var component;
                         if (targetMode === "listbox") {
@@ -10631,6 +10657,12 @@ var nts;
                             }
                         }
                         srhX.setDataSource(arr);
+                        if (enable === false) {
+                            $searchBox.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
+                        }
+                        else {
+                            $searchBox.find(".ntsSearchBox_Component").removeAttr('disabled');
+                        }
                     };
                     return NtsSearchBoxBindingHandler;
                 }());

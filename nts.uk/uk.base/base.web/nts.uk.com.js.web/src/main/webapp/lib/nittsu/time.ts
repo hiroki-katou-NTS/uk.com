@@ -561,6 +561,9 @@
         if(nts.uk.util.isNullOrEmpty(format)){
             return defaultInputFormat;        
         }
+        if (format === "yearmonth"){
+            format = "YM";        
+        }
         let uniqueFormat = _.uniq(format.split(""));
         let formats =  _.filter(defaultInputFormat, function (dfFormat: string){
             return _.find(uniqueFormat, function (opFormat: string){
