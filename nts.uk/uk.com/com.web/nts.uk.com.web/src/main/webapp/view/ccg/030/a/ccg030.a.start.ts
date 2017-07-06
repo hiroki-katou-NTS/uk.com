@@ -5,6 +5,7 @@ module ccg030.a.start {
             __viewContext.bind(screenModel);
             $(".browser-button").attr("tabindex", 7);
             $(".filename").attr("tabindex", 8);
+            screenModel.focusToInput();
         });
     });
 }

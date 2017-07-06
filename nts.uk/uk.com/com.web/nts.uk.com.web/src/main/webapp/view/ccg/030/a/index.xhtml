@@ -29,7 +29,7 @@
 					data-bind="click: registryFlowMenu, enable: $root.errors.isEmpty"
 					tabindex="2">#{i18n.getText('CCG030_3')}</button>
 				<button class="danger btnSetting" id="btnDelete"
-					data-bind="click: deleteNewFlowMenu, enable: !isCreate()"
+					data-bind="click: deleteFlowMenu, enable: !isCreate()"
 					tabindex="3">#{i18n.getText('CCG030_5')}</button>
 				<button class="btnSetting" id="btn004"
 					data-bind="click : closeDialog" tabindex="4">#{i18n.getText('CCG030_6')}</button>

@@ -40,14 +40,6 @@ module ccg014.a.viewmodel {
             self.enableCopy = ko.computed(() => {
                 return (!self.isCreate() && !util.isNullOrEmpty(self.selectedTitleMenuCD()));
             });
-            $("iframe").on("load", () => {
-                _.delay(() => {
-                    if (self.isCreate() == true)
-                        $("#titleMenuCD").focus();
-                    else
-                        $("#titleMenuName").focus();
-                }, 100);
-            });
         }
 
         /** Start Page */
@@ -68,9 +60,7 @@ module ccg014.a.viewmodel {
             self.isCreate(true);
             self.selectedTitleMenuCD(null);
             self.selectedTitleMenu(new model.TitleMenu("", "", ""));
-            $("#titleMenuCD").focus();
             errors.clearAll();
-            $(".nts-input").ntsError("clear");
          }
 
         /** Registry Button Click */
