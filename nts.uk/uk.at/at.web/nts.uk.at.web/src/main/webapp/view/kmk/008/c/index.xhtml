@@ -7,7 +7,7 @@
 		<span class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
 			'#Com_Company'])}</span> <a tabindex="2"
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-		<button class="proceed" tabindex="3" data-bind="click: addUpdateData">#{i18n.getText('KMK008_14')}</button>
+		<button class="proceed" tabindex="3" data-bind="click: addUpdateData, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 	</div>
 	<div class="contents-area">
 		<div class="tabpanel-1-contents-area-right-screen-c">

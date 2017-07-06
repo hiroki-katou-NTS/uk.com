@@ -31,7 +31,12 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 
 	@Override
 	public void updateBonusPaySetting(BonusPaySetting domain) {
-		this.commandProxy().update(this.toBonusPaySettingEntity(domain));
+		Optional<KbpmtBonusPaySetting> kbpmtBonusPaySettingOptional = this.queryProxy().find(new KbpmtBonusPaySettingPK(domain.getCompanyId().toString(), domain.getCode().v()),KbpmtBonusPaySetting.class);
+		if(kbpmtBonusPaySettingOptional.isPresent()){
+			KbpmtBonusPaySetting kbpmtBonusPaySetting = kbpmtBonusPaySettingOptional.get();
+			kbpmtBonusPaySetting.name=domain.getName().v();
+			this.commandProxy().update(kbpmtBonusPaySettingOptional);
+		}
 
 	}
 

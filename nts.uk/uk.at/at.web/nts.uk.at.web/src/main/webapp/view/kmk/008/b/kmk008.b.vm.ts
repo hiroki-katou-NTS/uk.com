@@ -4,7 +4,7 @@ module nts.uk.at.view.kmk008.b {
             show: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-            selectedTab: KnockoutObservable<string>;
+           // selectedTab: KnockoutObservable<string>;
             viewmodelC: any;
             viewmodelD: any;
             viewmodelE: any;
@@ -17,6 +17,7 @@ module nts.uk.at.view.kmk008.b {
                 self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
+               
                 self.show.subscribe(function(newVal) {
                     if (newVal)
                         $("#sidebar").ntsSideBar("show", 1);
@@ -41,7 +42,7 @@ module nts.uk.at.view.kmk008.b {
                     { id: 'tab-3', title: 'Tab Title 3', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-4', title: 'Tab Title 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.selectedTab = ko.observable('tab-2');
+                //self.selectedTab = ko.observable('tab-2');
 
             }
             startPage(): JQueryPromise<any> {
@@ -51,16 +52,6 @@ module nts.uk.at.view.kmk008.b {
                 return dfd.promise();
             }
 
-        }
-
-        export class ItemModel {
-            code: number;
-            name: string;
-            constructor(code: number, name: string) {
-                let self = this;
-                self.code = code;
-                self.name = name;
-            }
         }
     }
 }
