@@ -222,6 +222,7 @@ module nts.uk.pr.view.kmf001.f {
                         dfd.resolve();
                     } else {
                         self.emSelectedCode(self.employmentList()[0].code);
+                        $('#emCompenManage').focus();
                     }
                 });
                 return dfd.promise();
@@ -314,6 +315,7 @@ module nts.uk.pr.view.kmf001.f {
                     } else {
                         self.backUpData(self.defaultData());
                     }
+                    $('#compenManage').focus();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -333,6 +335,7 @@ module nts.uk.pr.view.kmf001.f {
                         self.loadEmploymentToScreen(self.employmentDefaultData());
                         self.employmentBackUpData(self.employmentDefaultData());
                     }
+                    $('#emCompenManage').focus();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
