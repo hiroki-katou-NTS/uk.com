@@ -10,7 +10,7 @@
 				<div data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate}"></div> 
 				<button id="btn_apply" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
 			</div>
-		<div id="tab-panel" class="pull-left" data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+		<div id="tab-panel" class="ccg-tabpanel pull-left" data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 			<div class="tab-content-1" data-bind="if: isQuickSearchTab">
 				<div class="btn-quick-search" data-bind="if: isAllReferableEmployee, click: searchAllEmployee">
 					<div class="flex valign-center btn_big">
