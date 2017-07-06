@@ -70,7 +70,7 @@ public class StandardMenuDto {
 		standardMenuDto.menuAtr = standardMenu.getMenuAtr().value;
 		standardMenuDto.url = standardMenu.getUrl();
 		standardMenuDto.system = standardMenu.getSystem().value;
-		standardMenuDto.classification = standardMenu.getClassification();
+		standardMenuDto.classification = standardMenu.getClassification().value;
 		standardMenuDto.webMenuSetting = standardMenu.getWebMenuSetting().value;
 		standardMenuDto.afterLoginDisplay = standardMenu.getAfterLoginDisplay();
 		standardMenuDto.logSettingDisplay = standardMenu.getLogSettingDisplay();
