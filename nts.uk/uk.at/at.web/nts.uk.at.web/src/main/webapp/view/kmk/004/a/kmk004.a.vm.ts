@@ -519,7 +519,7 @@ module nts.uk.at.view.kmk004.a {
                 service.findAllWorkplaceSetting(self.workplaceWTSetting.year()).done(listId => {
                     self.alreadySettingWorkplaces.removeAll();
                     listId.forEach(id => {
-                        self.alreadySettingWorkplaces.push({ workplaceId: id, settingType: 2 })
+                        self.alreadySettingWorkplaces.push({ workplaceId: id, isAlreadySetting: true })
                     });
                 });
             }
@@ -625,7 +625,7 @@ module nts.uk.at.view.kmk004.a {
                 if (l[0]) {
                     return;
                 }
-                self.alreadySettingWorkplaces.push({ workplaceId: id, settingType: 2 });
+                self.alreadySettingWorkplaces.push({ workplaceId: id, isAlreadySetting: true });
             }
 
             /**

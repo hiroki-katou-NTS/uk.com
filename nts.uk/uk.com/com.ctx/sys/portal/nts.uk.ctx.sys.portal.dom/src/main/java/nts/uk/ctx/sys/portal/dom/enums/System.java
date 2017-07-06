@@ -9,23 +9,23 @@ public enum System {
 	/**
 	 * 0:共通
 	 */
-	COMMON(0),
+	Common(0),
 	/**
 	 * 1:勤次郎
 	 */
-	TIME_SHEET(1),
+	TimeSheet(1),
 	/**
 	 * 2:オフィスヘルパー
 	 */
-	OFFICE_HELPER(2),
+	OfficeHelper(2),
 	/**
 	 * 3:Ｑ太郎
 	 */
-	KYUYOU(3),
+	Kyuyou(3),
 	/**
 	 * 4:人事郎
 	 */
-	JINJIROU(4);
+	Jinjirou(4);
 
 	public final int value;
 
