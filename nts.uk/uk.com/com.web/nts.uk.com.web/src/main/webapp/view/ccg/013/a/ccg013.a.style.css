@@ -1,5 +1,5 @@
 @CHARSET "UTF-8";
-
+html, body {height: 100%;}
 #functions-area {
 	margin-top: 10px;
 }
