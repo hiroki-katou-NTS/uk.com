@@ -23,7 +23,7 @@
 }
 
 .accordion {
-	width: 370px;
+	width: 380px;
 }
 .accordion label {
 	cursor: pointer;
@@ -141,10 +141,17 @@
 }
 .tab-content-2 {
 	overflow-y: scroll;
-	height: 500px;
+	height: 600px;
 }
 .tab-content-1 {
-	height: 500px;
+	height: 600px;
+}
+#tab-1 {
+	background-color: white;
+}
+#tab-2 {
+	background-color: white;
+	padding-right: 5px;
 }
 #ccgcomponent {
 	z-index: 9999;
@@ -154,10 +161,10 @@
 	
 }
 #hor-scroll-button-show {
-	margin-top: 150px;
+	margin-top: 160px;
 }
 #hor-scroll-button-hide {
-	margin-top: 150px;
+	margin-top: 160px;
 }
 .icon-01-searchmode {
     margin-left: 8px;
@@ -219,5 +226,6 @@
 	margin-top: 30px;
 }
 #tab-panel {
+	background-color: #F2F2F2;
 	border-radius: 5px;
 }
