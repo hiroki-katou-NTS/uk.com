@@ -18,21 +18,39 @@
 				<div id="functions-area">
 				</div>
 				<div id="contents-area" class="table">
-					<div class="cell" style="width: 300px; height: 500px;">
-						<div></div>
-						<div></div>
+					<div>
+					<div class="panel panel-frame contents-area-left boder-style">
+						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK005_1')}</div>
+						<div class="label lbl-unit-setting-explanation">#{i18n.getText('KMK005_4')}</div>
+						<button class="btn-time-item" data-bind="click: openTimeItem" >#{i18n.getText('KMK005_5')}</button>
+						<div class="contents-area-right-caret">
+							<span class="caret-bottom outline" style="font-size: 3.5em;"></span>
+						</div>
+						<div class="label" id="lbl-operation-setting-explanation">#{i18n.getText('KMK005_8')}</div>
+						<button class="btn-unit-setting"  data-bind="click: openUnitSetting">#{i18n.getText('KMK005_7')}</button>
+						<div class="contents-area-right-caret">
+							<span class="caret-bottom outline" style="font-size: 3.5em;"></span>
+						</div>
+						<div class="label" id="lbl-operation-setting-explanation">#{i18n.getText('KMK005_10')}</div>
+						<button class="btn-time-item-setting"  data-bind="click: openTimeItemSetting">#{i18n.getText('KMK005_11')}</button>
 					</div>
-					<div class="cell">
-						<span class="caret-right" style="    border-left: 3em solid;
-														    border-top: 5em solid transparent;
-														    border-bottom: 5em solid transparent;
-														    color: red;"></span>
+					<div class="contents-area-caret-right">
+						<span class="caret-right outline" style="font-size: 4.5em;"></span>
 					</div>
-					<div class="cell" style="width: 300px; height: 500px;"></div>
-					<div class="cell">
-						<span class="caret-right"></span>
+					<div class="panel panel-frame contents-area-middle boder-style">
+						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK005_2')}</div>
+						<div class="label lbl-general-labor-explanation">#{i18n.getText('KMK005_12',['#KMK005_12'])}</div>
+						<button class="btn-time-sheet-item" data-bind="click: openTimeSheetItem">#{i18n.getText('KMK005_13')}</button><span class="caret-right caret-inline"></span>
 					</div>
-					<div class="cell" style="width: 300px; height: 500px;"></div>
+					<div class="contents-area-caret-right">
+						<span class="caret-right outline" style="font-size: 4.5em;"></span>
+					</div>
+					<div class="panel panel-frame contents-area-right boder-style">
+						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK005_3')}</div>
+						<div class="label lbl-general-labor-explanation">#{i18n.getText('KMK005_14')}</div>
+						<button class="btn-bonus-pay"  data-bind="click: openBonusPay">#{i18n.getText('KMK005_15')}</button><span class="caret-right caret-inline"></span>
+					</div>
+				</div>
 				</div>
 			</ui:define>
 		</ui:composition>
