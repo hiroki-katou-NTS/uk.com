@@ -48,7 +48,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		entity.ccgmtStandardMenuPK.companyId = domain.getCompanyId();
 		entity.ccgmtStandardMenuPK.code = domain.getCode().v();
 		entity.ccgmtStandardMenuPK.system = domain.getSystem().value;
-		entity.ccgmtStandardMenuPK.classification = domain.getClassification();
+		entity.ccgmtStandardMenuPK.classification = domain.getClassification().value;
 		entity.afterLoginDisplay = domain.getAfterLoginDisplay();
 		entity.displayName = domain.getDisplayName().v();
 		entity.displayOrder = domain.getDisplayOrder();
@@ -154,7 +154,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		CcgstStandardMenuPK pk;
 		for (StandardMenu obj : StandardMenu) {
 			pk = new CcgstStandardMenuPK(obj.getCompanyId(), obj.getCode().v(), obj.getSystem().value,
-					obj.getClassification());
+					obj.getClassification().value);
 			CcgstStandardMenu o = manager.find(CcgstStandardMenu.class, pk);
 			o.setDisplayName(obj.getDisplayName().v());
 		}
