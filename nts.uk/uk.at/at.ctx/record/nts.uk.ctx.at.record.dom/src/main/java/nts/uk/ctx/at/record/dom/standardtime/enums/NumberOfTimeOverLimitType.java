@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.record.dom.standardtime.enums;
 
-import lombok.AllArgsConstructor;
-
 /**
  * 
  * @author nampt
  *
  */
-@AllArgsConstructor
 public enum NumberOfTimeOverLimitType {
 	
 	/*
@@ -41,5 +38,9 @@ public enum NumberOfTimeOverLimitType {
 	TWELVE_TIMES(12);
 
 	public final int value;
+	
+	private NumberOfTimeOverLimitType(int type) {
+		this.value = type;
+	}
 
 }

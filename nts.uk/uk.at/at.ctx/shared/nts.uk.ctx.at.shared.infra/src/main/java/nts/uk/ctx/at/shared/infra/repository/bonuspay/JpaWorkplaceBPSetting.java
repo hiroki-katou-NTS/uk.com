@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,50 +15,60 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWPBonusPaySettingPK;
 @Stateless
 public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySettingRepository {
 
-	@Override
-	public List<WorkplaceBonusPaySetting> getListSetting(List<WorkplaceId> lstWorkplace) {
-		ArrayList<WorkplaceBonusPaySetting> lstWorkplaceBonusPaySetting = new ArrayList<WorkplaceBonusPaySetting>();
-		lstWorkplace.forEach(a -> lstWorkplaceBonusPaySetting
-				.add(this.queryProxy().find(new KbpstWPBonusPaySettingPK(a.v()), KbpstWPBonusPaySetting.class)
-						.map(c -> this.toWorkPlaceSettingDomain(c)).get()));
-		return lstWorkplaceBonusPaySetting;
-	}
+	private final String SELECT_BY_LIST_ID = "SELECT c FROM KbpstWPBonusPaySetting c WHERE c.kbpstWPBonusPaySettingPK.workplaceId IN :workplaceIds";
 
 	@Override
-	public void addWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting) {
-		this.commandProxy().insert(this.toWorkPlaceSettingEntity(workplaceBonusPaySetting));
-
+	public List<WorkplaceBonusPaySetting> getListSetting(List<WorkplaceId> ids) {
+		return queryProxy().query(SELECT_BY_LIST_ID, KbpstWPBonusPaySetting.class).setParameter("workplaceIds", ids)
+				.getList(m -> toDomain(m));
 	}
 
 	@Override
-	public void updateWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting) {
-		this.commandProxy().update(this.toWorkPlaceSettingEntity(workplaceBonusPaySetting));
-	}
+	public void addWPBPSetting(WorkplaceBonusPaySetting domain) {
+		Optional<WorkplaceBonusPaySetting> update = getWPBPSetting(new WorkplaceId(domain.getWorkplaceId().v()));
 
-	@Override
-	public void removeWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting) {
-		this.commandProxy().remove(this.toWorkPlaceSettingEntity(workplaceBonusPaySetting));
-	}
-
-	private KbpstWPBonusPaySetting toWorkPlaceSettingEntity(WorkplaceBonusPaySetting workplaceBonusPaySetting) {
-		return new KbpstWPBonusPaySetting(
-				new KbpstWPBonusPaySettingPK(workplaceBonusPaySetting.getWorkplaceId().toString()),
-				workplaceBonusPaySetting.getBonusPaySettingCode().toString());
-	}
-
-	private WorkplaceBonusPaySetting toWorkPlaceSettingDomain(KbpstWPBonusPaySetting kbpstWPBonusPaySetting) {
-		return WorkplaceBonusPaySetting.createFromJavaType(kbpstWPBonusPaySetting.kbpstWPBonusPaySettingPK.workplaceId,
-				kbpstWPBonusPaySetting.bonusPaySettingCode);
-
-	}
-
-	@Override
-	public Optional<WorkplaceBonusPaySetting> getWPBPSetting(WorkplaceId WorkplaceId) {
-		Optional<KbpstWPBonusPaySetting> kbpstWPBonusPaySetting = this.queryProxy().find(new KbpstWPBonusPaySettingPK(WorkplaceId.v()), KbpstWPBonusPaySetting.class);
-		if(kbpstWPBonusPaySetting.isPresent()){
-			return Optional.ofNullable(this.toWorkPlaceSettingDomain(kbpstWPBonusPaySetting
-					.get()));
+		if (!update.isPresent()) {
+			this.commandProxy().insert(toEntity(domain));
+		} else {
+			this.commandProxy().update(toEntity(domain));
 		}
-		return null;
+	}
+
+	@Override
+	public void updateWPBPSetting(WorkplaceBonusPaySetting domain) {
+		addWPBPSetting(domain);
+	}
+
+	@Override
+	public void removeWPBPSetting(WorkplaceBonusPaySetting domain) {
+		Optional<WorkplaceBonusPaySetting> deleteable = getWPBPSetting(new WorkplaceId(domain.getWorkplaceId().v()));
+
+		if (deleteable.isPresent()) {
+			this.commandProxy().remove(KbpstWPBonusPaySetting.class,
+					new KbpstWPBonusPaySettingPK(domain.getWorkplaceId().v()));
+		}
+	}
+
+	@Override
+	public Optional<WorkplaceBonusPaySetting> getWPBPSetting(WorkplaceId id) {
+		Optional<KbpstWPBonusPaySetting> entity = queryProxy().find(new KbpstWPBonusPaySettingPK(id.v()),
+				KbpstWPBonusPaySetting.class);
+
+		if (entity.isPresent()) {
+			return Optional.ofNullable(toDomain(entity.get()));
+		}
+
+		return Optional.empty();
+	}
+
+	private KbpstWPBonusPaySetting toEntity(WorkplaceBonusPaySetting domain) {
+		return new KbpstWPBonusPaySetting(new KbpstWPBonusPaySettingPK(domain.getWorkplaceId().toString()),
+				domain.getBonusPaySettingCode().toString());
+	}
+
+	private WorkplaceBonusPaySetting toDomain(KbpstWPBonusPaySetting entity) {
+		return WorkplaceBonusPaySetting.createFromJavaType(entity.kbpstWPBonusPaySettingPK.workplaceId,
+				entity.bonusPaySettingCode);
+
 	}
 }

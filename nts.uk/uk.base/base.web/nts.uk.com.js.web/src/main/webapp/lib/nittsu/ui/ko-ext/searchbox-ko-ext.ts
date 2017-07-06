@@ -150,6 +150,7 @@ module nts.uk.ui.koExtentions {
             var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             var selected = data.selected;
             var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+            var enable = ko.unwrap(data.enable);
             var selectedKey = null;
             if (data.selectedKey) {
                 selectedKey = ko.unwrap(data.selectedKey);
@@ -281,6 +282,10 @@ module nts.uk.ui.koExtentions {
             });
             
             $container.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
+            
+            if(enable === false){
+                $container.find(".ntsSearchBox_Component").attr('disabled', 'disabled');        
+            }
         }
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var $searchBox = $(element);
@@ -291,6 +296,7 @@ module nts.uk.ui.koExtentions {
             var searchMode = ko.unwrap(data.searchMode);
             let primaryKey = ko.unwrap(data.targetKey);
             let selectedValue = ko.unwrap(data.selected);
+            let enable = ko.unwrap(data.enable);
             let targetMode = data.mode;
             let component;
             if (targetMode === "listbox") {
@@ -318,6 +324,12 @@ module nts.uk.ui.koExtentions {
                 } 
             }
             srhX.setDataSource(arr);
+            
+            if(enable === false){
+                $searchBox.find(".ntsSearchBox_Component").attr('disabled', 'disabled');        
+            } else {
+                $searchBox.find(".ntsSearchBox_Component").removeAttr('disabled');           
+            }
         }
     }
     

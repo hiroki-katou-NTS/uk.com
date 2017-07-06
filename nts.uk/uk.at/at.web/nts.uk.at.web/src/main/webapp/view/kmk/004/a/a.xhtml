@@ -15,6 +15,7 @@
 			</span>
 		</div>
 		<div class="contents-area">
+		<div class="wrapper" data-bind="ifnot: isLoading">
 			<com:ko tag="with" bind="companyWTSetting">
 				<div class="control-group">
 					<input tabindex="1" id="companyYearPicker"
@@ -200,6 +201,7 @@
 					<!-- DEFORMATION LABOR WORK TIME SETTING END -->
 				</div>
 			</com:ko>
+		</div>
 		</div>
 	</ui:composition>
 </body>

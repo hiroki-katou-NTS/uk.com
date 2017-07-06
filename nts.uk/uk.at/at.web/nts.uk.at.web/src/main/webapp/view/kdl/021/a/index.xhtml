@@ -30,9 +30,11 @@
 									selectedKey: 'code', 
 									fields: ['name', 'code'],
 									mode: 'igGrid'}" />
+<!-- 							Fix Bug #83874	 -->
 						<table id="multi-list" tabindex="2"
 							data-bind="ntsGridList: {
 										height: 390,
+										width: 440,
 										options: items,
 										optionsValue: 'code',
 										columns: columns,
@@ -40,13 +42,10 @@
 										value: currentCodeList
 									}">
 						</table>
-					
 				</div>
 				<div id="functions-area-bottom">
-					<button id="btnSetting" class="x-large proceed"
-						data-bind="click: register" tabindex="3">#{i18n.getText('KDL021_5')}</button>
-					<button id="btnCancel" class="large" data-bind="click: close"
-						tabindex="4">#{i18n.getText('KDL021_6')}</button>
+					<button id="btnSetting" class="x-large proceed" data-bind="click: register" tabindex="3">#{i18n.getText('KDL021_5')}</button>
+					<button id="btnCancel" class="large" data-bind="click: close" tabindex="4">#{i18n.getText('KDL021_6')}</button>
 				</div>
 
 			</div>

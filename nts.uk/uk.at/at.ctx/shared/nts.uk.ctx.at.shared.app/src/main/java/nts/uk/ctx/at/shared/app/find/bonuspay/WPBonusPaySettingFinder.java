@@ -15,20 +15,23 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 @Transactional
 public class WPBonusPaySettingFinder {
 	@Inject
-	private WPBonusPaySettingRepository wpBonusPaySettingRepository;
+	private WPBonusPaySettingRepository repo;
 
 	public List<WPBonusPaySettingDto> getListSetting(List<String> lstWorkplace) {
-		List<WorkplaceBonusPaySetting> lstWorkplaceBonusPaySetting = this.wpBonusPaySettingRepository
+		List<WorkplaceBonusPaySetting> domains = this.repo
 				.getListSetting(lstWorkplace.stream().map(c -> new WorkplaceId(c)).collect(Collectors.toList()));
-		return lstWorkplaceBonusPaySetting.stream().map(c -> toWPBonusPaySettingDto(c)).collect(Collectors.toList());
+
+		return domains.stream().map(c -> toWPBonusPaySettingDto(c)).collect(Collectors.toList());
 	}
 
 	public WPBonusPaySettingDto getWPBPSetting(String WorkplaceId) {
-		Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wpBonusPaySettingRepository
-				.getWPBPSetting(new WorkplaceId(WorkplaceId));
-		if(workplaceBonusPaySetting.isPresent()){
-			return this.toWPBonusPaySettingDto(workplaceBonusPaySetting.get());
+
+		Optional<WorkplaceBonusPaySetting> domain = this.repo.getWPBPSetting(new WorkplaceId(WorkplaceId));
+
+		if (domain.isPresent()) {
+			return this.toWPBonusPaySettingDto(domain.get());
 		}
+
 		return null;
 	}
 

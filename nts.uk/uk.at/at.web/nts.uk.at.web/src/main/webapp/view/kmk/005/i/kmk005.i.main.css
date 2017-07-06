@@ -21,3 +21,7 @@ div[class^=screen-i] {
 .screen-i .form-group {
 	margin-bottom: 10px;
 }
+
+.screen-i ##ccgcomponent {
+	z-index: 9999;	
+}

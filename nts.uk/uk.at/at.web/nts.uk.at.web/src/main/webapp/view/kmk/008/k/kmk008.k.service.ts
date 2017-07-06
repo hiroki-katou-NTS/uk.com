@@ -23,11 +23,7 @@ module nts.uk.at.view.kmk008.k {
             };
 
             addAgreementMonthSetting(AddUpdateMonthSettingModel: any): JQueryPromise<any> {
-                let paras = { employeeId: AddUpdateMonthSettingModel.employeeId(), 
-                yearMonthValue: AddUpdateMonthSettingModel.yearOrYearMonthValue(), 
-                errorOneMonth: AddUpdateMonthSettingModel.errorOneYearOrYearMonth(),   
-                alarmOneMonth: AddUpdateMonthSettingModel.alarmOneYearOrYearMonth()};
-                return nts.uk.request.ajax("at", this.paths.addAgreementMonthSetting, paras);
+                return nts.uk.request.ajax("at", this.paths.addAgreementMonthSetting, AddUpdateMonthSettingModel);
             };
 
             updateAgreementMonthSetting(AddUpdateMonthSettingModel: any): JQueryPromise<any> {

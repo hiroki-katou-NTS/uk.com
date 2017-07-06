@@ -66,7 +66,7 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 	public void update(AgreementMonthSetting agreementMonthSetting) {
 		this.getEntityManager().createQuery(UPDATE_BY_KEY)
 				.setParameter("employeeId", agreementMonthSetting.getEmployeeId())
-				.setParameter("yearMonthValue", agreementMonthSetting.getYearMonthValue().v())
+				.setParameter("yearmonthValue", agreementMonthSetting.getYearMonthValue().v())
 				.setParameter("errorOneMonth", agreementMonthSetting.getErrorOneMonth().v())
 				.setParameter("alarmOneMonth", agreementMonthSetting.getAlarmOneMonth().v()).executeUpdate();
 	}
