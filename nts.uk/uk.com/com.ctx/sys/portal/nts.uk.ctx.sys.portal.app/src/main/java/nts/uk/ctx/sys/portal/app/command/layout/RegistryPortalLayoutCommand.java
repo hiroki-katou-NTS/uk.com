@@ -17,10 +17,10 @@ import nts.uk.ctx.sys.portal.app.command.placement.PortalPlacementCommand;
 @AllArgsConstructor
 public class RegistryPortalLayoutCommand {
 
-	/** Enum PG Type */
+	/** PortalLayoutCommand */
 	private PortalLayoutCommand portalLayoutCommand;
 
-	/** Layout GUID */
+	/** List PortalPlacementCommand */
 	private List<PortalPlacementCommand> listPortalPlacementCommand;
 	
 }

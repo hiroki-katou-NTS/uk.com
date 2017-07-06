@@ -161,10 +161,10 @@
 	
 }
 #hor-scroll-button-show {
-	margin-top: 160px;
+	margin-top: 180px;
 }
 #hor-scroll-button-hide {
-	margin-top: 160px;
+	margin-top: 180px;
 }
 .icon-01-searchmode {
     margin-left: 8px;
@@ -172,7 +172,7 @@
     width: 25px;
     height: 25px;
     background-size: 25px 25px;
-    margin-top: 60px;
+    margin-top: 110px;
     cursor: pointer;
 }
 .btn_apply .icon-01-searchmode {
@@ -197,18 +197,15 @@
     cursor: pointer;
     color: #AEEE60;
     border-width: 50px 15px;
-    margin-bottom: 200px;
+    margin-bottom: 90px;
 }
 .btn_showhide {
     width: 50px;
     background-color: #2ECC71 ;
-    padding-top: 9px;
-    padding-bottom: 19px;
-    margin-top: 5px;
     padding-left: 8px;
-    margin-bottom: 10px;
     color: white;
-    border-radius: 5px;
+    border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
     display: inline-block;
     height: 370px;
     cursor: pointer;

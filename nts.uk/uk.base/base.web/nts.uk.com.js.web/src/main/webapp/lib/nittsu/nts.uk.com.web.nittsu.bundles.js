@@ -13133,8 +13133,8 @@ var nts;
                             browserButtonText = "ファイルアップロード";
                         }
                         fileBrowserButton.text(browserButtonText);
-                        var fileNameLable = $("<span class='filename'></span> ");
-                        var fileInput = $("<input style ='display:none' type='file' class='fileinput'/>");
+                        var fileNameLable = $("<span class='filename' style='margin-left: 5px;'></span> ");
+                        var fileInput = $("<input style ='display:none;' type='file' class='fileinput'/>");
                         if (suportedExtension) {
                             fileInput.attr("accept", suportedExtension.toString());
                         }
@@ -13142,12 +13142,17 @@ var nts;
                         fileuploadContainer.append(fileNameLable);
                         fileuploadContainer.append(fileInput);
                         fileuploadContainer.appendTo(control);
+                        fileBrowserButton.click(function () {
+                            fileInput.val(null);
+                        });
                         fileInput.change(function () {
+                            var selectedFilePath = $(this).val();
+                            var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
                             if (fileName != undefined) {
-                                data.filename($(this).val());
+                                data.filename(getSelectedFileName);
                             }
                             else {
-                                fileNameLable.text($(this).val());
+                                fileNameLable.text(getSelectedFileName);
                             }
                             if (typeof onchange == 'function') {
                                 onchange($(this).val());

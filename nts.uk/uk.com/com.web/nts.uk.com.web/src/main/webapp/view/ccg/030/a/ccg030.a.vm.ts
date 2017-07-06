@@ -15,6 +15,7 @@ module ccg030.a.viewmodel {
         isCreate: KnockoutObservable<boolean>;
         isDelete: KnockoutObservable<boolean>;
         enableDownload: KnockoutObservable<boolean>;
+        enablePreview: KnockoutObservable<boolean>;
         // Message
         listMessage: KnockoutObservableArray<ItemMessage>;
 
@@ -41,6 +42,7 @@ module ccg030.a.viewmodel {
             });
             // Enable
             self.enableDownload = ko.observable(true);
+            self.enablePreview = ko.observable(true);
             // Message
             self.listMessage = ko.observableArray([]);
         }
@@ -54,7 +56,6 @@ module ccg030.a.viewmodel {
                 nts.uk.ui.block.clear();
                 self.selectFlowMenuByIndex(0);
             });
-
             return dfd;
         }
 
@@ -62,21 +63,23 @@ module ccg030.a.viewmodel {
         createNewFlowMenu() {
             var self = this;
             $(".nts-input").ntsError("clear");
+            _.defer(() => { $("#inpCode").focus(); });
             self.isCreate(true);
+            self.isDelete(false);
             self.selectedFlowMenuCD(null);
-            self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 1, 1));
+            self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
         }
 
         /** Click Registry button */
         registryFlowMenu() {
             var self = this;
-            self.selectedFlowMenu().topPageCode(text.padLeft($("#inpCode").val(), '0', 4));
-            var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
-            var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
             if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
                 $('#file_upload').ntsError('set', '選択されていないファイル');
             if (!errors.hasError()) {
+                self.selectedFlowMenu().topPageCode(text.padLeft($("#inpCode").val(), '0', 4));
+                var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
+                var topPageCode = flowMenu.topPageCode;
                 nts.uk.ui.block.invisible();
                 if (self.isCreate() === true) {
                     service.createFlowMenu(flowMenu).done((data) => {
@@ -102,7 +105,7 @@ module ccg030.a.viewmodel {
             }
         }
 
-        //蜑企勁繝懊ち繝ｳ繧呈款縺呎凾
+        //削除ボタン
         deleteNewFlowMenu() {
             var self = this;
             if (self.selectedFlowMenuCD() !== null) {
@@ -110,7 +113,7 @@ module ccg030.a.viewmodel {
                     nts.uk.ui.block.invisible();
                     service.deleteFlowMenu(self.selectedFlowMenu().toppagePartID())
                         .done(() => {
-                            var index = _.findIndex(self.listFlowMenu(), ['titleMenuCD', self.selectedFlowMenu().topPageCode()]);
+                            var index = _.findIndex(self.listFlowMenu(), ['topPageCode', self.selectedFlowMenu().topPageCode()]);
                             index = _.min([self.listFlowMenu().length - 2, index]);
                             self.reloadData().done(() => {
                                 self.selectFlowMenuByIndex(index);
@@ -129,6 +132,7 @@ module ccg030.a.viewmodel {
         /** Upload File */
         uploadFile(): void {
             var self = this;
+            nts.uk.ui.block.invisible();
             if (self.isCreate() === true) {
                 self.uploadFileProcess();
             }
@@ -136,10 +140,12 @@ module ccg030.a.viewmodel {
                 service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
                     if (res.defClassAtr === 1) {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_84" });
+                        nts.uk.ui.block.clear();
                     }
                     else {
                         self.uploadFileProcess();
                     }
+                    
                 });
             }
         }
@@ -151,18 +157,17 @@ module ccg030.a.viewmodel {
                 onSuccess: function() { },
                 onFail: function() { }
             }
-            /*if (!util.isNullOrEmpty(self.selectedFlowMenu().toppagePartID())) {
-                self.deleteFile();
-            }*/
+            nts.uk.ui.block.invisible();
             $("#file_upload").ntsFileUpload(option).done(function(res) {
                 self.tempFileID(res[0].id);
                 self.selectedFlowMenu().fileID(res[0].id);
-                self.selectedFlowMenu().fileName(res[0].originalName);
+                self.selectedFlowMenu().fileName(res[0].originalName.length === 0 ? '未設定' : res[0].originalName);
                 self.isDelete(true);
                 errors.clearAll();
             }).fail(function(err) {
-                nts.uk.ui.dialog.alertError({ messageId: err.messageId });
-            });
+                nts.uk.ui.dialog.alertError(err.message);
+            }).always(() =>{
+                nts.uk.ui.block.clear();});
         }
 
         deleteButtonClick(): void {
@@ -176,14 +181,14 @@ module ccg030.a.viewmodel {
                     else {
                         self.tempFileID(self.selectedFlowMenu().fileID());
                         self.selectedFlowMenu().fileID('');
-                        self.selectedFlowMenu().fileName('');
+                        self.selectedFlowMenu().fileName('未設定');
                         self.isDelete(false);
                     }
                 })
             } else {
                 self.tempFileID(self.selectedFlowMenu().fileID());
                 self.selectedFlowMenu().fileID('');
-                self.selectedFlowMenu().fileName('');
+                self.selectedFlowMenu().fileName('未設定');
                 self.isDelete(false);
             }
         }
@@ -193,9 +198,9 @@ module ccg030.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.deleteFile(self.tempFileID()).done((data) => {
                 self.selectedFlowMenu().fileID('');
-                self.selectedFlowMenu().fileName('');
+                self.selectedFlowMenu().fileName('未設定');
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                nts.uk.ui.dialog.alertError(error.message);
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
@@ -214,8 +219,9 @@ module ccg030.a.viewmodel {
         open030B_Dialog() {
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared("flowmenu", this.selectedFlowMenu(), false);
+            nts.uk.ui.windows.setShared("fileID", this.selectedFlowMenu().fileID(), false);
             nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: nts.uk.resource.getText("CCG030_4"), dialogClass: "no-close" }).onClosed(() => {
-                nts.uk.ui.block.clear();    
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -223,11 +229,14 @@ module ccg030.a.viewmodel {
         private findFlowMenu(flowmenuCD: string): void {
             var self = this;
             $(".nts-input").ntsError("clear");
+            _.defer(() => { $("#inpName").focus(); });
             var selectedFlowmenu = _.find(self.listFlowMenu(), ['topPageCode', flowmenuCD]);
             if (selectedFlowmenu !== undefined) {
                 self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
                     selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
-                    selectedFlowmenu.fileID, selectedFlowmenu.fileName, selectedFlowmenu.defClassAtr,
+                    selectedFlowmenu.fileID,
+                    selectedFlowmenu.fileName.lenght === 0 ? '未設定' : selectedFlowmenu.fileName,
+                    selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
                 self.isCreate(false);
                 if (!util.isNullOrEmpty(selectedFlowmenu.fileID))
@@ -236,7 +245,7 @@ module ccg030.a.viewmodel {
                     self.isDelete(false);
             }
             else {
-                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 1, 1));
+                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
                 self.isCreate(true);
                 self.isDelete(false);
             }
@@ -252,7 +261,6 @@ module ccg030.a.viewmodel {
                 self.listFlowMenu(listFlowMenu);
                 if (listFlowMenu.length > 0) {
                     self.isCreate(false);
-                    _.defer(() => { $("#inpName").focus(); });
                 }
                 else {
                     self.findFlowMenu(null);
@@ -272,8 +280,11 @@ module ccg030.a.viewmodel {
             $(".nts-input").ntsError("clear");
             if (isCreate === true) {
                 self.selectedFlowMenuCD(null);
-                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 1, 1));
+                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 4, 4));
                 _.defer(() => { $("#inpCode").focus(); });
+            }
+            else {
+                _.defer(() => { $("#inpName").focus(); });
             }
         }
 

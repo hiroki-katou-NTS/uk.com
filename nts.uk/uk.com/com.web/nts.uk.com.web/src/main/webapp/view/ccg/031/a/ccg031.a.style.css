@@ -6,7 +6,7 @@
 
 .ui-draggable-dragging {cursor: move;}
 
-.btn-register, .btn-preview, .btn-close {min-width: 75px;}
+.btn-register, .btn-preview, .btn-close {min-width: 70px;}
 .btn-register {margin-left: 10px;}
 .btn-close {margin-left: 50px;}
 

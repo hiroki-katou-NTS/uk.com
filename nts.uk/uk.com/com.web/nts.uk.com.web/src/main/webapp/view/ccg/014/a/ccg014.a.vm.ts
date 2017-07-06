@@ -40,11 +40,20 @@ module ccg014.a.viewmodel {
             self.enableCopy = ko.computed(() => {
                 return (!self.isCreate() && !util.isNullOrEmpty(self.selectedTitleMenuCD()));
             });
+            $("iframe").on("load", () => {
+                _.delay(() => {
+                    if (self.isCreate() == true)
+                        $("#titleMenuCD").focus();
+                    else
+                        $("#titleMenuName").focus();
+                }, 100);
+            });
         }
 
         /** Start Page */
         startPage(): JQueryPromise<any> {
             var dfd = this.reloadData();
+            var self = this;
             block.invisible();
             dfd.done(() => {
                 block.clear();
@@ -59,24 +68,25 @@ module ccg014.a.viewmodel {
             self.isCreate(true);
             self.selectedTitleMenuCD(null);
             self.selectedTitleMenu(new model.TitleMenu("", "", ""));
+            $("#titleMenuCD").focus();
             errors.clearAll();
             $(".nts-input").ntsError("clear");
-        }
+         }
 
         /** Registry Button Click */
         registryButtonClick() {
             var self = this;
-            self.selectedTitleMenu().titleMenuCD(nts.uk.text.padLeft(self.selectedTitleMenu().titleMenuCD(), '0', 4));
-            var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
-            var titleMenuCD = titleMenu.titleMenuCD;
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
-                block.invisible();
+                self.selectedTitleMenu().titleMenuCD(nts.uk.text.padLeft(self.selectedTitleMenu().titleMenuCD(), '0', 4));
+                var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
+                var titleMenuCD = titleMenu.titleMenuCD;
+                 block.invisible();
                 if (self.isCreate() === true) {
                     service.createTitleMenu(titleMenu).done((data) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData().done(() => {
-                            self.selectTitleMenuByIndexByCode(titleMenuCD);
+                            self.selectTitleMenuByCode(titleMenuCD);
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
@@ -86,8 +96,9 @@ module ccg014.a.viewmodel {
                 }
                 else {
                     service.updateTitleMenu(titleMenu).done((data) => {
-                        self.reloadData();
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        console.log(data);
+                        self.reloadData();
                     }).always(() => {
                         block.clear();
                     });
@@ -109,7 +120,7 @@ module ccg014.a.viewmodel {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert();
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }).always(() => {
                         block.clear();
                     });
@@ -119,6 +130,7 @@ module ccg014.a.viewmodel {
 
         /** Open Copy TitleMenu (CCG 014B Dialog) */
         openBDialog() {
+            block.invisible();
             var self = this;
             var selectTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
             windows.setShared("copyData", selectTitleMenu);
@@ -126,10 +138,11 @@ module ccg014.a.viewmodel {
                 var copiedTitleMenuCD = windows.getShared("copyTitleMenuCD");
                 if (copiedTitleMenuCD) {
                     self.reloadData().done(() => {
-                        self.selectTitleMenuByIndexByCode(copiedTitleMenuCD);
+                        self.selectTitleMenuByCode(copiedTitleMenuCD);
                         nts.uk.ui.dialog.alert({ messageId: "Msg_20" });
                     });
                 }
+                block.clear();
             });
         }
 
@@ -152,7 +165,10 @@ module ccg014.a.viewmodel {
 
         /** Open FlowMenu Setting(030A Dialog) */
         open030A_Dialog() {
-            windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: nts.uk.resource.getText("CCG030_1"), dialogClass: "no-close" });
+            block.invisible();
+            windows.sub.modal("/view/ccg/030/a/index.xhtml").onClosed(() => {
+                block.clear();
+            });
         }
 
         /** Get Selected TitleMenu */
@@ -163,10 +179,10 @@ module ccg014.a.viewmodel {
             if (selectedTitleMenu !== undefined) {
                 self.isCreate(false);
                 self.selectedTitleMenu(new model.TitleMenu(selectedTitleMenu.titleMenuCD, selectedTitleMenu.name, selectedTitleMenu.layoutID));
-            }
+             }
             else {
                 self.isCreate(true);
-                self.selectedTitleMenu(new model.TitleMenu("","",""));
+                self.selectedTitleMenu(new model.TitleMenu("" ,"" ,""));
             }
         }
 
@@ -178,11 +194,11 @@ module ccg014.a.viewmodel {
             }
         }
 
-        clearError(): any {
+     /*   clearError(): any {
             var self = this;
             if (self.selectedTitleMenu().titleMenuCD !== null) { errors.clearAll(); }
             if (self.selectedTitleMenu().name !== null) { errors.clearAll(); }
-        }
+        } */
 
         /** Reload data from server */
         private reloadData(): JQueryPromise<any> {
@@ -193,9 +209,10 @@ module ccg014.a.viewmodel {
                 self.listTitleMenu(listTitleMenu);
                 if (listTitleMenu.length > 0) {
                     self.isCreate(false);
-                }
+                 }
                 else {
                     self.findSelectedTitleMenu(null);
+                    self.changePreviewIframe(null);
                     self.isCreate(true);
                 }
                 dfd.resolve();
@@ -207,9 +224,8 @@ module ccg014.a.viewmodel {
         }
 
         /** Select TitleMenu by Code: Create & Update case*/
-        private selectTitleMenuByIndexByCode(code: string) {
+        private selectTitleMenuByCode(code: string) {
             this.selectedTitleMenuCD(code);
-            
         }
 
         /** Select TitleMenu by Index: Start & Delete case */
