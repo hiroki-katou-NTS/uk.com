@@ -1,8 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.basic.infra.entity.company.organization.workplace;
 
 import java.io.Serializable;
@@ -18,14 +17,14 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
+/**
+ * The Class CwpmtWorkplacePK.
+ */
 @Getter
 @Setter
 @Embeddable
-public class KwpmtWorkplacePK implements Serializable {
+public class CwpmtWorkplacePK implements Serializable {
     
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)
@@ -35,8 +34,8 @@ public class KwpmtWorkplacePK implements Serializable {
     
 	@Basic(optional = false)
     @NotNull
-    @Column(name = "WPL_ID")
-    private String wplid;
+    @Column(name = "WKPID")
+    private String wkpid;
 	
 	@NotNull
 	@Column(name = "STR_D")
@@ -48,12 +47,12 @@ public class KwpmtWorkplacePK implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private GeneralDate endD;
 
-    public KwpmtWorkplacePK() {
+    public CwpmtWorkplacePK() {
     }
 
-    public KwpmtWorkplacePK(String cid, String wplid,GeneralDate strD,GeneralDate endD) {
+    public CwpmtWorkplacePK(String cid, String wkpid,GeneralDate strD,GeneralDate endD) {
         this.cid = cid;
-        this.wplid = wplid;
+        this.wkpid = wkpid;
         this.strD = strD;
         this.endD = endD;
     }
@@ -68,7 +67,7 @@ public class KwpmtWorkplacePK implements Serializable {
 		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
 		result = prime * result + ((endD == null) ? 0 : endD.hashCode());
 		result = prime * result + ((strD == null) ? 0 : strD.hashCode());
-		result = prime * result + ((wplid == null) ? 0 : wplid.hashCode());
+		result = prime * result + ((wkpid == null) ? 0 : wkpid.hashCode());
 		return result;
 	}
 
@@ -81,9 +80,9 @@ public class KwpmtWorkplacePK implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof KwpmtWorkplacePK))
+		if (!(obj instanceof CwpmtWorkplacePK))
 			return false;
-		KwpmtWorkplacePK other = (KwpmtWorkplacePK) obj;
+		CwpmtWorkplacePK other = (CwpmtWorkplacePK) obj;
 		if (cid == null) {
 			if (other.cid != null)
 				return false;
@@ -99,10 +98,10 @@ public class KwpmtWorkplacePK implements Serializable {
 				return false;
 		} else if (!strD.equals(other.strD))
 			return false;
-		if (wplid == null) {
-			if (other.wplid != null)
+		if (wkpid == null) {
+			if (other.wkpid != null)
 				return false;
-		} else if (!wplid.equals(other.wplid))
+		} else if (!wkpid.equals(other.wkpid))
 			return false;
 		return true;
 	}

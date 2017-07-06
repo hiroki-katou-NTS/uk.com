@@ -8,11 +8,63 @@ module nts.uk.at.view.kmk005.i {
 
     export module viewmodel {
         export class ScreenModel {
+            ccgcomponent: any;
+            showinfoSelectedEmployee: KnockoutObservable<boolean>;
+
+            // Options
+            baseDate: KnockoutObservable<Date>;
+            selectedEmployee: KnockoutObservableArray<any>;
+
             model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ id: '', name: '' }));
             constructor() {
                 let self = this;
 
-                self.start();
+                self.selectedEmployee = ko.observableArray([]);
+                self.showinfoSelectedEmployee = ko.observable(false);
+                self.baseDate = ko.observable(new Date());
+
+                self.ccgcomponent = {
+                    baseDate: self.baseDate,
+                    isQuickSearchTab: true,
+                    isAdvancedSearchTab: true,
+                    isAllReferableEmployee: true,
+                    isOnlyMe: true,
+                    isEmployeeOfWorkplace: true,
+                    isEmployeeWorkplaceFollow: true,
+                    isMutipleCheck: true,
+                    isSelectAllEmployee: true,
+
+                    /**
+                    * @param dataList: list employee returned from component.
+                    * Define how to use this list employee by yourself in the function's body.
+                    */
+                    onSearchAllClicked: function(dataList: Array<any>) {
+                        self.showinfoSelectedEmployee(true);
+                        self.selectedEmployee(dataList);
+                    },
+                    onSearchOnlyClicked: function(data: any) {
+                        self.showinfoSelectedEmployee(true);
+                        var dataEmployee: Array<any> = [];
+                        dataEmployee.push(data);
+                        self.selectedEmployee(dataEmployee);
+                    },
+                    onSearchOfWorkplaceClicked: function(dataList: Array<any>) {
+                        self.showinfoSelectedEmployee(true);
+                        self.selectedEmployee(dataList);
+                    },
+                    onSearchWorkplaceChildClicked: function(dataList: Array<any>) {
+                        self.showinfoSelectedEmployee(true);
+                        self.selectedEmployee(dataList);
+                    },
+                    onApplyEmployee: function(dataEmployee: Array<any>) {
+                        self.showinfoSelectedEmployee(true);
+                        self.selectedEmployee(dataEmployee);
+                    }
+                }
+
+                $('#ccgcomponent')['ntsGroupComponent'](self.ccgcomponent).done(() => {
+                    self.start();
+                });
             }
 
             start() {

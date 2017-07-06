@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 700, height: 500 };</script>
+			<script>var dialogSize = { width: 800, height: 600 };</script>
 
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../../common/common.css" />
@@ -19,17 +19,17 @@
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
 				<div class="preview">
-					<div id="preview-flowmenu" class="widget-panel preview" data-bind="with: flowmenu">
+					<div id="preview-flowmenu" class="widget-panel preview"
+						data-bind="with: flowmenu">
 						<div class="panel-header">
 							<span class="title" data-bind="text: topPageName()"></span>
 						</div>
-						<div class="panel-content">
-						</div>
+						<div class="panel-content"></div>
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button id="btnclose" class="x-large" data-bind="click : closeDialog">閉じる</button>
+				<button id="btnclose" class="large" data-bind="click : closeDialog">#{i18n.getText('CCG030_6')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

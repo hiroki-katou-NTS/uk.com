@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 600, height: 650 };</script>
+				<script>var dialogSize = { width: 500, height: 650 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="ccg.main.css" />
 				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -19,7 +19,7 @@
 				<div class="labelccg">
 					<label>#{i18n.getText('CCG001_15')}</label>
 				</div>
-				<div id="workplaceList" class="kcpccg"></div>
+				<div id="workplaceList"></div>
 				<center>
 					<div class="endAction">
 						<hr/>

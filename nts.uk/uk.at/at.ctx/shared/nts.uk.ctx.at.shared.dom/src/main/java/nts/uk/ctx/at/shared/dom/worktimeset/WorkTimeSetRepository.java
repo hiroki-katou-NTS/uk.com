@@ -5,6 +5,8 @@ import java.util.Optional;
 
 public interface WorkTimeSetRepository {
 	
+	public List<WorkTimeSet> findByCompanyID(String companyID);
+	
 	/**
 	 * get Work Time Set by company ID and work time set code
 	 * @param companyID company ID

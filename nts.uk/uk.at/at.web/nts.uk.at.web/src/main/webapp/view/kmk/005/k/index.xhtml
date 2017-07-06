@@ -14,14 +14,14 @@
 								                { code: 3, name: '翌々日' }
 								            ]),
 											optionsValue: 'code',
-											value: 1,
+											value: startTimeOption,
 											optionsText: 'name',
 											enable: true,
 											columns: [
 												{ prop: 'name', length: 3 },
 											]}"></span>
 				<input id="inputStartTime"
-					data-bind="ntsTimeEditor: {name: '#[KMK005_88]', value: ko.observable(''), inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+					data-bind="ntsTimeEditor: {name: '#[KMK005_88]', value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
 				<span id="extendPanel4label">#{i18n.getText('KMK005_70')}</span> <span
 					class="extendPanel4Combo-box"
 					data-bind="ntsComboBox: {
@@ -32,27 +32,27 @@
 								                { code: 3, name: '翌々日' }
 								            ]),
 											optionsValue: 'code',
-											value: 1,
+											value: endTimeOption,
 											optionsText: 'name',
 											enable: true,
 											columns: [
 												{ prop: 'name', length: 3 },
 											]}"></span>
 				<input
-					data-bind="ntsTimeEditor: {name: '#[KMK005_89]', value: ko.observable(''), inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+					data-bind="ntsTimeEditor: {name: '#[KMK005_89]', value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
 				<button class="caret-bottom">#{i18n.getText('KMK005_79')}</button>
 				<button>#{i18n.getText('KMK005_93')}</button>
 			</div>
-			<div id="gridlist-div">
-				<table id="gridlist-tbl"
+			<div id="k_gridlist-div">
+				<table id="k_gridlist-tbl"
 					data-bind="ntsGridList: {
 											width: 680,
 											height: 520,
-											options: ko.observableArray([]),
+											options: workTimeList,
 											optionsValue: 'code',
-											columns: ko.observableArray([]),
+											columns: columns,
 											multiple: false,
-											value: ko.observable()
+											value: selectedWorkTimeCode
 										}"></table>
 			</div>
 		</div>
@@ -65,7 +65,7 @@
 				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_76',['KMK005_44'])}</div>
 			</div>
 			<div class="cell column2">
-				<label>K3_4</label>
+				<label data-bind="text: selectedWorkTime().name"></label>
 			</div>
 		</div>
 		<div class="table labelInformation">
@@ -76,10 +76,10 @@
 				<button>#{i18n.getText('KMK005_74')}</button>
 			</div>
 			<div class="cell column3">
-				<label>K3_7</label>
+				<label data-bind="text: currentWorkingTimesheetBonusPaySet().bonusPaySettingCode"></label>
 			</div>
 			<div class="cell column4">
-				<label>K3_8</label>
+				<label data-bind="text: currentBonusPaySetting().name"></label>
 			</div>
 		</div>
 	</div>

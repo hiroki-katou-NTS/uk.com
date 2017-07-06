@@ -36,7 +36,12 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 		for(JobTitleTying obj: JobTitleTying){
 			pk = new CcgstJobTitleTyingPK(obj.getCompanyId(), obj.getJobId()); 
 			CcgstJobTitleTying jtt = manager.find(CcgstJobTitleTying.class, pk);
-			jtt.setWebMenuCode(obj.getWebMenuCode());
+			if(jtt != null)
+				jtt.setWebMenuCode(obj.getWebMenuCode());
+			else{
+				CcgstJobTitleTying jttYen = new CcgstJobTitleTying(pk, obj.getWebMenuCode());
+				manager.persist(jttYen);
+			}
 		}
 	}
 	
