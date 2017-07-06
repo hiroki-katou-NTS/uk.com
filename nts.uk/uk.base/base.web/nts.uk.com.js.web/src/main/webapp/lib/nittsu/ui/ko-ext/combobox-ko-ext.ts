@@ -51,6 +51,7 @@ module nts.uk.ui.koExtentions {
             var editable = ko.unwrap(data.editable);
             var enable: boolean = ko.unwrap(data.enable);
             var columns: Array<any> = ko.unwrap(data.columns);
+            var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
 
             // Container.
             var container = $(element);
@@ -124,6 +125,7 @@ module nts.uk.ui.koExtentions {
                 container.igCombo({
                     dataSource: options,
                     valueKey: data.optionsValue,
+                    visibleItemsCount: visibleItemsCount,
                     textKey: 'nts-combo-label',
                     mode: comboMode,
                     disabled: !enable,

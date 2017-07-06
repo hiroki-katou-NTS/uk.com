@@ -27,9 +27,10 @@
 						<h2>Overview</h2>						
 						<div class="cf">
 							<div style="float:left">	
-								<h3>Search mode: highlight</h3>																				
+								<h3>Search mode: highlight</h3>				
+								<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>																
 								<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
-										searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
+										searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code'], enable: enable} " />																																														
 								<h3>Single Selection TreeGrid</h3>
 								<table id="treegrid1"
 									data-bind="ntsTreeGridView:{
@@ -268,6 +269,13 @@
 													<b>Type:</b> array of attribute to search on<br/>													
 													Required. searchbox used this array to compare string on each field.
 													This array is priority descending order						
+												</td>
+											</tr>	
+											<tr>
+												<td>enable</td>
+												<td>
+													<b>Type:</b> boolean<br/>													
+													Set enable/ disable for searchbox						
 												</td>
 											</tr>													
 										</tbody>
