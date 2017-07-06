@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 820, height: 650 };</script>
+			<script>var dialogSize = { width: 850, height: 650 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.sys.portal.dom.webmenu.TitleBarName
 			</com:ValidatorScript>
@@ -27,16 +27,16 @@
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_31')}</div></td>
-						<td><input id="nameTitleBar" data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName'}" /></td>
-						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
-						<td><div id="colorpicker"
+						<td><input id="nameTitleBar" tabindex="1" data-name="#{i18n.getText('CCG013_50')}" data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName'}" /></td>
+						<td><div class="labelRight" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
+						<td><div id="colorpicker" tabindex="2" data-name="#{i18n.getText('CCG013_19')}"
 								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50, required: true}" /></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_33')}</div></td>
 						<td>
-							<div
+							<div tabindex="3"
 								data-bind="ntsRadioBoxGroup: {
 										options: itemTitleAtr,
 										optionsValue: 'value',
@@ -46,10 +46,10 @@
 							</div>
 						</td>
 						<td>
-							<div data-bind="ntsFormLabel: { requiselectedRadioAtcClassred: true }">#{i18n.getText('CCG013_23')}</div>
+							<div class="labelRight" data-bind="ntsFormLabel: { requiselectedRadioAtcClassred: true }">#{i18n.getText('CCG013_23')}</div>
 						</td>
 						<td>
-							<div id="colorpicker"
+							<div id="colorpicker" tabindex="4" data-name="#{i18n.getText('CCG013_19')}"
 								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50,required: true}" />
 						</td>
 						<td></td>
@@ -58,7 +58,7 @@
 						<td colspan="2" rowspan="10">
 							<div id="listTitle">
 								<div id="titleMenu" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_37')}</div>
-								<div id="titleSeach" style="width: 340px; margin-bottom: 10px; "
+								<div id="titleSeach" tabindex="5" style="width: 340px; margin-bottom: 10px; "
 									data-bind="ntsSearchBox: {
 											searchMode: 'filter',
 											targetKey: 'titleCode', 
@@ -80,10 +80,10 @@
 							</div>
 						</td>
 						<td>
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div>
+							<div class="labelRight" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div>
 						</td>
 						<td colspan="2">
-							<div id="file_upload"
+							<div id="file_upload" tabindex="6"
 								data-bind="ntsFileUpload:{
 								filename: filename,
 								accept: accept,
@@ -94,24 +94,23 @@
 					</tr>
 					<tr>
 						<td></td>
-						<td class="col2"><span id="imageName" data-bind="text:imageName"></span></td>
-						<td class="pull-right"><button id="delBtn" class="danger"
-												data-bind="click: deleteFile, enable: isDelete()"
-												tabindex="9">#{i18n.getText('CCG030_5')}</button></td>
+						<td class="col2"><span id="imageName" tabindex="7" data-bind="text:imageName"></span></td>
+						<td class="pull-right"><button id="delBtn" tabindex="8" class="danger" 
+												data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG030_5')}</button></td>
 					</tr>
 					<tr>
 						<td></td>
-						<td colspan="2"><label>サイズ:</label> <label data-bind="text: imageSize"></label></td>
+						<td colspan="2"><label data-bind="text: imageSize"></label></td>
 					</tr>
 					<tr>
 						<td></td>
-						<td id="liveview" colspan="2"></td>
+						<td id="liveview" tabindex="9" colspan="2"></td>
 					</tr>
 				</table>
 			</div>
 			<div id="functions-area-bottom">
-				<button class=" x-large proceed" data-bind="click : submit">#{i18n.getText('CCG013_28')}</button>
-				<button data-bind="click : cancel_Dialog">#{i18n.getText('CCG013_29')}</button>
+				<button class=" x-large proceed" tabindex="10" data-bind="click : submit">#{i18n.getText('CCG013_28')}</button>
+				<button tabindex="11" data-bind="click : cancel_Dialog">#{i18n.getText('CCG013_29')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

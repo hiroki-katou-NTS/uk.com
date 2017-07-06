@@ -49,9 +49,6 @@ img {
 	display: inline-block;
 }
 
-table tr td {
-	padding-right: 5px;
-}
 
 #description {
 	height: 20px;
@@ -78,4 +75,7 @@ table tr td {
 #file_upload{
 	width: 200px;
 	overflow: hidden;
+}
+.labelRight{
+	margin-left: 10px;	
 }
