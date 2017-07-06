@@ -27,7 +27,7 @@ public class TopPageSelfSettingFinder {
 	private TopPageSelfSetRepository repository;
 	
 	/**
-	 * Find all top page and stand menu
+	 * Find all top page
 	 * @return
 	 */
 	public List<SelectMyPageDto> findSelectMyPage() {

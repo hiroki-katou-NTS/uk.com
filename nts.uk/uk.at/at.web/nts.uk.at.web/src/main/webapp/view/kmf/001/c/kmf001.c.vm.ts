@@ -23,10 +23,10 @@ module nts.uk.pr.view.kmf001.c {
             numberYearRetain: KnockoutObservable<string>;
             enableMaxNumberCompany: KnockoutObservable<boolean>;
             
-            permissionList: KnockoutObservableArray<EnumertionModel>;
-            selectedPermission: KnockoutObservable<number>;
-            preemptionPermitList: KnockoutObservableArray<EnumertionModel>;
-            selectedPreemptionPermit: KnockoutObservable<number>;
+            applyPermissionList: KnockoutObservableArray<EnumertionModel>;
+            selectedApplyPermission: KnockoutObservable<number>;
+            annualPriorityList: KnockoutObservableArray<EnumertionModel>;
+            selectedAnnualPriority: KnockoutObservable<number>;
             
             displayDivisionList: KnockoutObservableArray<EnumertionModel>;
             selectedNumberRemainingYearly: KnockoutObservable<number>;
@@ -59,14 +59,14 @@ module nts.uk.pr.view.kmf001.c {
                 }));
                 // 年休の管理
                 self.manageDistinctList = ko.observableArray([]);
-                self.selectedAnnualManage = ko.observable(0);
+                self.selectedAnnualManage = ko.observable(1);
                 self.enableAnnualVacation = ko.computed(function() {
                     return self.selectedAnnualManage() == 1;
                 }, self);
                 
                 // 年次有給休暇の扱い
-                self.selectedAddAttendanceDay = ko.observable(0);
-                self.selectedMaxManageSemiVacation = ko.observable(0);
+                self.selectedAddAttendanceDay = ko.observable(1);
+                self.selectedMaxManageSemiVacation = ko.observable(1);
                 self.maxDayReferenceList = ko.observableArray([]);
                 self.selectedMaxNumberSemiVacation = ko.observable(0);
                 self.maxNumberCompany = ko.observable("");
@@ -81,25 +81,25 @@ module nts.uk.pr.view.kmf001.c {
                 self.numberYearRetain = ko.observable("");
                 
                 // 年休取得の設定
-                self.permissionList = ko.observableArray([]);
-                self.selectedPermission = ko.observable(0);
-                self.preemptionPermitList = ko.observableArray([]);
-                self.selectedPreemptionPermit = ko.observable(0);
+                self.applyPermissionList = ko.observableArray([]);
+                self.selectedApplyPermission = ko.observable(1);
+                self.annualPriorityList = ko.observableArray([]);
+                self.selectedAnnualPriority = ko.observable(0);
                 
                 // 表示設定
                 self.displayDivisionList = ko.observableArray([]);
-                self.selectedNumberRemainingYearly = ko.observable(0);
-                self.selectedNextAnunalVacation = ko.observable(0);
+                self.selectedNumberRemainingYearly = ko.observable(1);
+                self.selectedNextAnunalVacation = ko.observable(1);
                 
                 // 時間年休
-                self.selectedTimeManagement = ko.observable(0);
+                self.selectedTimeManagement = ko.observable(1);
                 self.vacationTimeUnitList = ko.observableArray([]);
                 self.enableTimeSetting = ko.computed(function() {
                     return self.selectedTimeManagement() == 1 && self.enableAnnualVacation();
                 }, self);
                 self.selectedVacationTimeUnit = ko.observable(0);
                 self.selectedMaxDayVacation = ko.observable(0);
-                self.selectedManageUpperLimitDayVacation = ko.observable(0);
+                self.selectedManageUpperLimitDayVacation = ko.observable(1);
                 self.timeMaxNumberCompany = ko.observable("");
                 self.requiredTimeMaxNumberCompany = ko.computed(function() {
                     return self.enableTimeSetting() && self.selectedManageUpperLimitDayVacation() == 1;
@@ -177,8 +177,8 @@ module nts.uk.pr.view.kmf001.c {
                 command.maxGrantDay = self.enableAnnualVacation() ? self.maxGrantDay() : dataBackup.maxGrantDay;
                 command.maxRemainingDay = self.enableAnnualVacation() ? self.maxRemainingDay() : dataBackup.maxRemainingDay;
                 command.numberYearRetain = self.enableAnnualVacation() ? self.numberYearRetain() : dataBackup.numberYearRetain;
-                command.preemptionAnnualVacation = self.enableAnnualVacation() ? self.selectedPermission() : dataBackup.preemptionAnnualVacation;
-                command.preemptionYearLeave = self.enableAnnualVacation() ? self.selectedPreemptionPermit() : dataBackup.preemptionYearLeave;
+                command.permitType = self.enableAnnualVacation() ? self.selectedApplyPermission() : dataBackup.permitType;
+                command.annualPriority = self.enableAnnualVacation() ? self.selectedAnnualPriority() : dataBackup.annualPriority;
                 command.remainingNumberDisplay = self.enableAnnualVacation() ? self.selectedNumberRemainingYearly() : dataBackup.remainingNumberDisplay;
                 command.nextGrantDayDisplay = self.enableAnnualVacation() ? self.selectedNextAnunalVacation() : dataBackup.nextGrantDayDisplay;
                 
@@ -210,8 +210,8 @@ module nts.uk.pr.view.kmf001.c {
                 self.maxGrantDay(res.maxGrantDay);
                 self.maxRemainingDay(res.maxRemainingDay);
                 self.numberYearRetain(res.numberYearRetain);
-                self.selectedPermission(res.preemptionAnnualVacation);
-                self.selectedPreemptionPermit(res.preemptionYearLeave);
+                self.selectedApplyPermission(res.permitType);
+                self.selectedAnnualPriority(res.annualPriority);
                 self.selectedNumberRemainingYearly(res.remainingNumberDisplay);
                 self.selectedNextAnunalVacation(res.nextGrantDayDisplay);
                 
@@ -226,24 +226,24 @@ module nts.uk.pr.view.kmf001.c {
             
             private defaultValue(): any {
                 let backup: any = {};
-                backup.annualManage = 0;
+                backup.annualManage = 1;
                 // Annual Setting
-                backup.addAttendanceDay = 0;
-                backup.maxManageSemiVacation = 0;
+                backup.addAttendanceDay = 1;
+                backup.maxManageSemiVacation = 1;
                 backup.maxNumberSemiVacation = 0;
                 backup.maxNumberCompany = '';
                 backup.maxGrantDay = '';
                 backup.maxRemainingDay = '';
                 backup.numberYearRetain = '';
-                backup.preemptionAnnualVacation = 0;
-                backup.preemptionYearLeave = 0;
-                backup.remainingNumberDisplay = 0;
-                backup.nextGrantDayDisplay = 0;
+                backup.permitType = 1;
+                backup.annualPriority = 0;
+                backup.remainingNumberDisplay = 1;
+                backup.nextGrantDayDisplay = 1;
                 
                 // Time Leave Setting
-                backup.timeManageType = 0;
+                backup.timeManageType = 1;
                 backup.timeUnit = 0;
-                backup.manageMaxDayVacation = 0;
+                backup.manageMaxDayVacation = 1;
                 backup.reference = 0;
                 backup.maxTimeDay = '';
                 backup.isEnoughTimeOneDay = true;
@@ -299,7 +299,7 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findApplyPermission().done(function(res: Array<EnumertionModel>) {
-                    self.permissionList(res);
+                    self.applyPermissionList(res);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -312,7 +312,7 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findPreemptionPermit().done(function(res: Array<EnumertionModel>) {
-                    self.preemptionPermitList(res);
+                    self.annualPriorityList(res);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);

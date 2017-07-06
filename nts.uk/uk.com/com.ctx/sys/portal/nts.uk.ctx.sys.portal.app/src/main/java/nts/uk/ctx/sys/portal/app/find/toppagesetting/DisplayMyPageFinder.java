@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
+import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
@@ -44,41 +45,41 @@ public class DisplayMyPageFinder {
 		//companyId
 		String companyId = AppContexts.user().companyId();
 		if(topPageCode != null && topPageCode != ""){//co top page code
-			//check my page co duoc su dung hay khong
+			LayoutForMyPageDto layoutMypage = topPageSet.findLayoutMyPage();
+			//check my page: use or not use
 			Boolean checkMyPage = topPageSet.checkMyPageSet();
-			//check top page co duoc setting khong
+			//check top page: setting or not setting
 			Boolean checkTopPage = topPageSet.checkTopPageSet();
 			TopPageDto topPage = toppageFinder.findByCode(companyId, topPageCode, "0");
-			if(topPage==null){//khong co du lieu
-				return new LayoutAllDto(null,null,true,checkMyPage,checkTopPage);
+			if(topPage==null){//data is empty
+				return new LayoutAllDto(layoutMypage,null,true,checkMyPage,checkTopPage);
 			}
-			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(),0);
+			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(),PGType.TOPPAGE.value);
 			if (layout.isPresent()) {//co du lieu
 				List<Placement> placements = placementRepository.findByLayout(topPage.getLayoutId());
 				LayoutForTopPageDto layoutTopPage = topPageSet.buildLayoutTopPage(layout.get(), placements);
-				LayoutForMyPageDto layoutMyPage = null;
-				return new LayoutAllDto(layoutMyPage,layoutTopPage,true,checkMyPage,checkTopPage);
+				return new LayoutAllDto(layoutMypage,layoutTopPage,true,checkMyPage,checkTopPage);
 			}
-			return new LayoutAllDto(null,null,true,checkMyPage,checkTopPage);
+			return new LayoutAllDto(layoutMypage,null,true,checkMyPage,checkTopPage);
 		}
-		//khong co top page code
-		//lay chuc vu
+		//top page code is empty
+		//get position(所属職位履歴)
 		JobPositionDto jobPosition = topPageSelfSet.getJobPosition(AppContexts.user().employeeId());
-		List<String> lst = new ArrayList<>();
-		LayoutAllDto layoutTopPage = null;
-		if(jobPosition != null){//co chuc vu
-			lst.add(jobPosition.getJobId());
-			//lay top page job title set
-			TopPageJobSet tpJobSet = topPageJobSet.findByListJobId(companyId,lst).get(0);
-			if(tpJobSet != null){//co chuc vu va co job setting
-				layoutTopPage = topPageSet.getTopPageForPosition(jobPosition,tpJobSet);
-			}else{
-				layoutTopPage = topPageSet.getTopPageNotPosition();
-			}
-		}else{//khong co chuc vu
-			layoutTopPage = topPageSet.getTopPageNotPosition();
+		List<String> lstJobId = new ArrayList<>();
+		if (jobPosition == null) {
+			return topPageSet.getTopPageNotPosition();
 		}
-		return layoutTopPage;
+			  
+		lstJobId.add(jobPosition.getJobId());
+			  
+		//lay top page job title set
+		List<TopPageJobSet>lstTpJobSet = topPageJobSet.findByListJobId(companyId, lstJobId);
+		if(lstTpJobSet.isEmpty()){//position and job setting
+			return topPageSet.getTopPageNotPosition();
+		}
+		TopPageJobSet tpJobSet = lstTpJobSet.get(0);
+			  
+		return topPageSet.getTopPageForPosition(jobPosition, tpJobSet);
+		
 	}
-	
 }

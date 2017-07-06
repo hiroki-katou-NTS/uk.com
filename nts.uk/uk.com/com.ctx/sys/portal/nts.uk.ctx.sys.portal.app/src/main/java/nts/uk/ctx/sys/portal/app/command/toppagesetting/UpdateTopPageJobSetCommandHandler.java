@@ -38,6 +38,7 @@ public class UpdateTopPageJobSetCommandHandler extends CommandHandler<TopPageJob
 	protected void handle(CommandHandlerContext<TopPageJobSetBase> context) {
 		String companyId = AppContexts.user().companyId();
 		TopPageJobSetBase command = context.getCommand();
+		int categorySet = command.ctgSet;
 
 		List<UpdateTopPageJobSetCommand> updateTopPageJobSetCommand = command.listTopPageJobSet;
 
@@ -54,17 +55,19 @@ public class UpdateTopPageJobSetCommandHandler extends CommandHandler<TopPageJob
 			TopPageJobSet TopPageJobSetObj = updateTopPageSettingCommandObj.toDomain(companyId);
 			if (topPageJobSet == null) {
 				topPageJobSetRepo.add(TopPageJobSetObj);
-			} else {
+			} else if (categorySet == 1) {
 				topPageJobSetRepo.update(TopPageJobSetObj);
+			} else {
+				topPageJobSetRepo.updateProperty(TopPageJobSetObj);
 			}
 		}
 
 		// insert/update category setting in to table TOPPAGE_SET
 		Optional<TopPageSetting> topPageSetting = topPageSettingRepo.findByCId(companyId);
 		if (topPageSetting.isPresent()) {
-			topPageSettingRepo.update(TopPageSetting.createFromJavaType(companyId, command.ctgSet));
+			topPageSettingRepo.update(TopPageSetting.createFromJavaType(companyId, categorySet));
 		} else {
-			topPageSettingRepo.insert(TopPageSetting.createFromJavaType(companyId, command.ctgSet));
+			topPageSettingRepo.insert(TopPageSetting.createFromJavaType(companyId, categorySet));
 		}
 	}
 }

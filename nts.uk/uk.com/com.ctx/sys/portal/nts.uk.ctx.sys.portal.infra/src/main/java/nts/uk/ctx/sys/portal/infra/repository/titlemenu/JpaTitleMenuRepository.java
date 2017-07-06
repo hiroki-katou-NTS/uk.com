@@ -8,6 +8,7 @@ import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenu;
 import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenu;
 import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenuPK;
+import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 
 @Stateless
 /**
@@ -61,6 +62,11 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 	 */	
 	@Override
 	public void update(TitleMenu title) {
+		CcgmtTitleMenu newEntity = toEntity(title);
+		CcgmtTitleMenu updateEntity = this.queryProxy().find(newEntity.ccgmtTitleMenuPK, CcgmtTitleMenu.class).get();
+		updateEntity.name = newEntity.name;
+		updateEntity.layoutID = newEntity.layoutID;
+		this.commandProxy().update(updateEntity);
 				this.commandProxy().update(toEntity(title));
 	}
 	/**

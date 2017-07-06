@@ -8,6 +8,12 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:stylefile path="kmk005.g.main.css" />
 			<com:stylefile path="../h/kmk005.h.main.css" />
 			<com:stylefile path="../i/kmk005.i.main.css" />
@@ -19,9 +25,10 @@
 			<com:scriptfile path="../h/kmk005.h.service.js" />
 			<com:scriptfile path="../i/kmk005.i.vm.js" />
 			<com:scriptfile path="../i/kmk005.i.service.js" />
-			<com:scriptfile path="../k/kmk005.k.vm.js" />
 			<com:scriptfile path="../k/kmk005.k.service.js" />
+			<com:scriptfile path="../k/kmk005.k.vm.js" />
 			<com:scriptfile path="kmk005.g.start.js" />
+			<script>var dialogSize = { width: 1300, height: 800 };</script>
 		</ui:define>
 
 		<ui:define name="sidebar">
@@ -36,10 +43,11 @@
 		<ui:define name="sidebar-content">
 			<div class="sidebar-content-header" data-bind="with: tabView">
 				<span class="title" data-bind="text: title"></span> <a
-					class="myLinkButton" href=""> <span class="myLinkButtonText">#{i18n.getText('KMK005_58')}</span>
+					class="myLinkButton" data-bind="click: navigateView"> <span
+					class="myLinkButtonText">#{i18n.getText('KMK005_58')}</span>
 				</a>
-				<button class="proceed">#{i18n.getText('KMK005_60')}</button>
-				<button class="danger">#{i18n.getText('KMK005_62')}</button>
+				<button class="proceed" data-bind="click: saveData">#{i18n.getText('KMK005_60')}</button>
+				<button class="danger" data-bind="click: removeData">#{i18n.getText('KMK005_62')}</button>
 			</div>
 			<div id="tabpanel-g" role="tabpanel" class="screen-g"
 				data-bind="with: viewmodelG" style="display: none">
@@ -47,7 +55,8 @@
 					<div class="g3_1">#{i18n.getText('KMK005_72',['Com_Company'])}</div>
 					<div data-bind="with: model">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_73')}</div>
-						<button data-bind="click: $parent.openTimeZoneDialog.bind($parent)">#{i18n.getText('KMK005_74')}</button>
+						<button
+							data-bind="click: $parent.openBonusPaySettingDialog.bind($parent)">#{i18n.getText('KMK005_74')}</button>
 						<label data-bind="text: id">G3_4</label> <label
 							data-bind="text: name">G3_5</label>
 					</div>

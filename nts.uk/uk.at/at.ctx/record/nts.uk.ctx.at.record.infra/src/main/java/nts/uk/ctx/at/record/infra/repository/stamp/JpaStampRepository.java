@@ -17,8 +17,8 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
 			+ " INNER JOIN KwkdtStampCard e ON e.kwkdtStampCardPK.cardNumber = c.kwkdtStampPK.cardNumber"
-			+ " WHERE c.kwkdtStampPK.date >= :startDate"
-			+ " AND c.kwkdtStampPK.date <= :endDate" 
+			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate"
+			+ " AND c.kwkdtStampPK.stampDate <= :endDate" 
 			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber";
 
 	private static StampItem toDomain(Object[] object) {
@@ -35,7 +35,7 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 				entity.workLocationCd, 
 				workLocationName, 
 				entity.stampReason,
-				entity.kwkdtStampPK.date,
+				entity.kwkdtStampPK.stampDate,
 				personId);
 		return domain;
 	}

@@ -8,8 +8,8 @@ import nts.uk.ctx.sys.portal.app.find.placement.PlacementDto;
 @Value
 public class LayoutForMyPageDto {
 
-	/** Company ID */
-	private String companyID;
+	/** Employee ID */
+	private String employeeID;
 
 	/** Layout GUID */
 	private String layoutID;

@@ -38,7 +38,7 @@ module nts.uk.ui.koExtentions {
                     let error = $input.ntsError('getError');
                     if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
                         $input.ntsError('clear');
-                        $input.ntsError('set', result.errorMessage);
+                        $input.ntsError('set', result.errorMessage, result.errorCode);
                     }
                     value(newText);
                 }
@@ -59,7 +59,7 @@ module nts.uk.ui.koExtentions {
                         let error = $input.ntsError('getError');
                         if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
                             $input.ntsError('clear');
-                            $input.ntsError('set', result.errorMessage);
+                            $input.ntsError('set', result.errorMessage, result.errorCode);
                         }
                         value(newText);
                     }
@@ -72,7 +72,7 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage);
+                    $input.ntsError('set', result.errorMessage, result.errorCode);
                 }
             }));
                
@@ -145,7 +145,7 @@ module nts.uk.ui.koExtentions {
                     var result = validator.validate(newText);
                     $input.ntsError('clear');
                     if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage);
+                        $input.ntsError('set', result.errorMessage, result.errorCode);
                     }
                 }
             });
@@ -157,7 +157,7 @@ module nts.uk.ui.koExtentions {
                     var result = validator.validate(newText);
                     $input.ntsError('clear');
                     if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage);
+                        $input.ntsError('set', result.errorMessage, result.errorCode);
                     }
                 }
             });
@@ -174,7 +174,7 @@ module nts.uk.ui.koExtentions {
                             value(result.parsedValue);
                         }
                     } else {
-                        $input.ntsError('set', result.errorMessage);
+                        $input.ntsError('set', result.errorMessage, result.errorCode);
                         value(newText);
                     }
                 }
@@ -185,7 +185,7 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage);
+                    $input.ntsError('set', result.errorMessage, result.errorCode);
                 }
             }));
                 
@@ -195,10 +195,11 @@ module nts.uk.ui.koExtentions {
         update($input: JQuery, data: any) {
             super.update($input, data);
             var textmode: string = this.editorOption.textmode;
-            if(data.value() !== $input.val()){
-                $input.triggerHandler('change');        
-            }
             $input.attr('type', textmode);
+            
+            if (!$input.ntsError('hasError') && data.value() !== $input.val()) { 
+                data.value($input.val());
+            }
         }
 
         getDefaultOption(): any {
@@ -284,21 +285,31 @@ module nts.uk.ui.koExtentions {
                 $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                 var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                 $parent.attr("data-content", format);
-            } else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
-                let padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
-                if (padding < 20 ){
-                    padding = 20;        
-                }
-                $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
-                $parent.attr("data-content", this.editorOption.symbolChar);
-                
-                let css = this.editorOption.symbolPosition === 'right' ? {"padding-right": padding + "px"} : {"padding-left": padding + "px"};
-                $input.css(css);
+            } else if (!nts.uk.util.isNullOrEmpty(this.editorOption.unitID)) {
+                let unit = text.getNumberUnit(this.editorOption.unitID);
+                this.editorOption.symbolChar = unit.unitText;
+                this.editorOption.symbolPosition = unit.position;
+                this.setupUnit($input);
+            } else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
+                this.setupUnit($input);
             }
             if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 
                 && nts.uk.util.isNullOrEmpty(data.value())){
                 data.value(this.editorOption.defaultValue);        
             }
+        }
+        
+        setupUnit ($input: JQuery) {
+            let $parent = $input.parent();
+            let padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
+            if (padding < 20 ){
+                padding = 20;        
+            }
+            $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+            $parent.attr("data-content", this.editorOption.symbolChar);
+            
+            let css = this.editorOption.symbolPosition === 'right' ? {"padding-right": padding + "px"} : {"padding-left": padding + "px"};
+            $input.css(css);        
         }
 
         getDefaultOption(): any {
@@ -329,10 +340,19 @@ module nts.uk.ui.koExtentions {
             super.update($input, data);
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var width: string = option.width;
-            var parent = $input.parent();
-            var parentTag = parent.parent().prop("tagName").toLowerCase();
+            var $parent = $input.parent();
+            var parentTag = $parent.parent().prop("tagName").toLowerCase();
             if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
-                parent.css({ 'width': '100%' });
+                $parent.css({ 'width': '100%' });
+            }
+            
+            if (!nts.uk.util.isNullOrEmpty(data.mode) && (data.mode === "year" || data.mode === "fiscal")) {
+                let symbolText = data.mode === "year" ? nts.uk.text.getNumberUnit("YEARS") : nts.uk.text.getNumberUnit("FIS_YEAR"); 
+                $parent.addClass("symbol").addClass('symbol-right');
+                $parent.attr("data-content", symbolText.unitText); 
+                
+                let css = data.mode === "year" ? {"padding-right": "20px"} : {"padding-right": "35px"};
+                $input.css(css);
             }
         }
 

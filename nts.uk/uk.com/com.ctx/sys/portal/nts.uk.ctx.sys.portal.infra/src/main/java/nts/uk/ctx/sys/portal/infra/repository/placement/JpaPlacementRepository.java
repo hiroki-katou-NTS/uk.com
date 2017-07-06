@@ -72,7 +72,15 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	
 	@Override
 	public void update(Placement placement) {
-		this.commandProxy().update(toEntity(placement));
+		CcgmtPlacement newEntity = toEntity(placement);
+		CcgmtPlacement updatedEntity = this.queryProxy().find(newEntity.ccgmtPlacementPK, CcgmtPlacement.class).get();
+		updatedEntity.column = newEntity.column;
+		updatedEntity.row = newEntity.row;
+		updatedEntity.width = newEntity.width;
+		updatedEntity.height = newEntity.height;
+		updatedEntity.externalUrl = newEntity.externalUrl;
+		updatedEntity.topPagePartID = newEntity.topPagePartID;
+		this.commandProxy().update(updatedEntity);
 	}
 
 	/**

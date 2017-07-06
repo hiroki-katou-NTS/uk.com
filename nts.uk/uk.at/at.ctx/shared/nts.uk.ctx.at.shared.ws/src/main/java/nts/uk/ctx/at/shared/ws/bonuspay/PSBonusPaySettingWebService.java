@@ -32,30 +32,30 @@ public class PSBonusPaySettingWebService extends WebService {
 
 	@POST
 	@Path("getListPSBonusPaySettingSetting")
-	List<PSBonusPaySettingDto> getListPSBonusPaySettingSetting(List<String> lstEmployeeId) {
+	public List<PSBonusPaySettingDto> getListPSBonusPaySettingSetting(List<String> lstEmployeeId) {
 		return this.psBonusPaySettingFinder.getListSetting(lstEmployeeId);
 	}
 	@POST
 	@Path("getPersonalBonusPaySetting/{employeeId}")
-	PSBonusPaySettingDto getPersonalBonusPaySetting(@PathParam("employeeId") String employeeId){
+	public PSBonusPaySettingDto getPersonalBonusPaySetting(@PathParam("employeeId") String employeeId){
 		return this.psBonusPaySettingFinder.getPersonalBonusPaySetting(employeeId);
 	}
 
 	@POST
 	@Path("addPSBonusPaySettingSetting")
-	void addPSBonusPaySettingSetting(PSBonusPaySettingAddCommand psBonusPaySettingAddCommand) {
+	public void addPSBonusPaySettingSetting(PSBonusPaySettingAddCommand psBonusPaySettingAddCommand) {
 	this.psBonusPaySettingAddCommandHandler.handle(psBonusPaySettingAddCommand);
 	}
 
 	@POST
 	@Path("updatePSBonusPaySettingSetting")
-	void updatePSBonusPaySettingSetting(PSBonusPaySettingUpdateCommand psBonusPaySettingUpdateCommand) {
+	public void updatePSBonusPaySettingSetting(PSBonusPaySettingUpdateCommand psBonusPaySettingUpdateCommand) {
 	this.psBonusPaySettingUpdateCommandHandler.handle(psBonusPaySettingUpdateCommand);
 	}
 
 	@POST
 	@Path("removePSBonusPaySettingSetting")
-	void removePSBonusPaySettingSetting(PSBonusPaySettingDeleteCommand psBonusPaySettingDeleteCommand) {
+	public void removePSBonusPaySettingSetting(PSBonusPaySettingDeleteCommand psBonusPaySettingDeleteCommand) {
 	this.psBonusPaySettingDeleteCommandHandler.handle(psBonusPaySettingDeleteCommand);
 	}
 

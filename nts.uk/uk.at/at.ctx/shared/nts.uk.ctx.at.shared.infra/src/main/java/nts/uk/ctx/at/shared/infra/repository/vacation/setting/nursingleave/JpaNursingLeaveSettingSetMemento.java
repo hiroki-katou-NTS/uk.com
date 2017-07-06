@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 import java.util.ArrayList;
 import java.util.List;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -104,7 +105,10 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setWorkTypeCodes(List<String> workTypeCodes) {
-        List<KnlmtNursingWorkType> listWorkType = new ArrayList<>();
+        List<KnlmtNursingWorkType> listWorkType = this.entityNursing.getListWorkType();
+        if (CollectionUtil.isEmpty(listWorkType)) {
+            listWorkType = new ArrayList<>();
+        }
         for (int i = 0; i < workTypeCodes.size(); i++) {
             String workTypeCode = workTypeCodes.get(i);
             
@@ -113,7 +117,14 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
             pk.setNursingCtr(this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr());
             pk.setOrderNumber(i);
             
-            listWorkType.add(new KnlmtNursingWorkType(pk, workTypeCode));
+            KnlmtNursingWorkType entityWorkType = listWorkType.stream()
+                    .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == pk.getNursingCtr()
+                            && entity.getKnlmtNursingWorkTypePK().getOrderNumber() == pk.getOrderNumber())
+                    .findFirst()
+                    .orElse(new KnlmtNursingWorkType(pk));
+            
+            entityWorkType.setWorkTypeCode(workTypeCode);
+            listWorkType.add(entityWorkType);
         }
         this.entityNursing.setListWorkType(listWorkType);
     }

@@ -2,7 +2,7 @@
 
 interface JQuery {
     ntsPopup(args: any): JQuery;
-    ntsError(action: string, param?: any): any;
+    ntsError(action: string, param?: any, errorCode?: string): any;
     ntsListBox(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
     ntsTreeView(action: string, param?: any): any;
@@ -54,7 +54,7 @@ module nts.uk.ui.jqueryExtentions {
         var DATA_HAS_ERROR = 'hasError';
         var DATA_GET_ERROR = 'getError';
 
-        $.fn.ntsError = function(action: string, message: any): any {
+        $.fn.ntsError = function(action: string, message: any, errorCode?: string): any {
             var $control = $(this);
             if (action === DATA_HAS_ERROR) {
                 return _.some($control, c => hasError($(c)));
@@ -63,7 +63,7 @@ module nts.uk.ui.jqueryExtentions {
             }else {
                 $control.each(function(index) {
                     var $item = $(this);
-                    $item = processErrorOnItem($item, message, action);
+                    $item = processErrorOnItem($item, message, action, errorCode);
                 });
                 return $control;
             }
@@ -71,10 +71,10 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         //function for set and clear error
-        function processErrorOnItem($control: JQuery, message: any, action: string) {
+        function processErrorOnItem($control: JQuery, message: any, action: string, errorCode: string) {
             switch (action) {
                 case 'set':
-                    return setError($control, message);
+                    return setError($control, message, errorCode);
                 case 'clear':
                     return clearErrors($control);
             }
@@ -84,11 +84,12 @@ module nts.uk.ui.jqueryExtentions {
             return ui.errors.getErrorByElement($control);
         }
 
-        function setError($control: JQuery, message: any) {
+        function setError($control: JQuery, message: any, errorCode: string) {
             $control.data(DATA_HAS_ERROR, true);
             ui.errors.add({
                 location: $control.data('name') || "",
                 message: message,
+                errorCode: errorCode,
                 $control: $control
             });
             $control.parent().addClass('error');
@@ -288,28 +289,34 @@ module nts.uk.ui.jqueryExtentions {
         function setupScrollWhenBinding($grid: JQuery): any {
             let gridId = "#" + $grid.attr("id");
             $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
-                let scrollTop = $grid.data("scrollTop");
-                if(scrollTop > 0){
-                    _.defer(() => {
-                        if ($grid.igGrid("scrollContainer").length > 0){
-                            $grid.igGrid("scrollContainer").scrollTop(scrollTop);    
-                        } else {
-                            $(gridId + "_scrollContainer").scrollTop(scrollTop);    
-                        }    
+                let oldSelected = getSelectRow($grid);
+                if(!nts.uk.util.isNullOrEmpty(oldSelected)){
+                    _.defer(() => { 
+                        let selected = getSelectRow($grid);
+                        if(!nts.uk.util.isNullOrEmpty(selected)){
+                            if ($grid.igGrid("scrollContainer").length > 0){
+                                let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);    
+                            } else { 
+                                let index = $(selected["element"]).attr("data-row-idx");
+                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
+                            }     
+                        }   
                     });    
                 }
             });
-             
-            //Delegate
-            $(document).delegate(gridId, "iggriddatabinding", function (evt, ui) {
-                let scrollTop;
-                if ($grid.igGrid("scrollContainer").length > 0){
-                    scrollTop = $grid.igGrid("scrollContainer").scrollTop();    
-                } else {
-                    scrollTop = $(gridId + "_scrollContainer").scrollTop();    
-                }
-                $grid.data("scrollTop", scrollTop);
-            });
+        }
+        
+        function getSelectRow($grid: JQuery) {
+            var row = null;
+            var selectedRows = $grid.igGrid("selectedRows");
+            if (selectedRows) {
+                row = selectedRows[0];
+            } else {
+                row = $grid.igGrid("selectedRow");
+            }    
+            return row;
         }
 
         function getSelected($grid: JQuery): any {

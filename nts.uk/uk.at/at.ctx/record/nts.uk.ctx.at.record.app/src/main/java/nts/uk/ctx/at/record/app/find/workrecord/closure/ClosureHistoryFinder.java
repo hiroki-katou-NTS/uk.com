@@ -38,7 +38,12 @@ public class ClosureHistoryFinder {
 	
 	
 
-	public List<ClosureHistoryFindDto> getAllClosureHistory() {
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<ClosureHistoryFindDto> findAll() {
 
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -47,14 +52,15 @@ public class ClosureHistoryFinder {
 		String companyId = loginUserContext.companyId();
 
 		// get all closure
-		List<Closure> closures = this.repository.getAllClosure(companyId);
+		List<Closure> closures = this.repository.findAll(companyId);
 		
 		// get data
 		List<ClosureHistory> closureHistories = new ArrayList<>();
 		
-		closures.forEach(closure->{
-			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory.findBySelectedYearMonth(
-					companyId, closure.getClosureId(), closure.getMonth().getProcessingDate().v());
+		closures.forEach(closure -> {
+			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory
+					.findBySelectedYearMonth(companyId, closure.getClosureId(),
+							closure.getClosureMonth().getProcessingDate().v());
 			
 			if(closureHistoryLast.isPresent()){
 				closureHistories.add(closureHistoryLast.get());
@@ -73,21 +79,23 @@ public class ClosureHistoryFinder {
 	 * Detail.
 	 *
 	 * @param master the master
-	 * @return the closure history D dto
+	 * @return the closure history header dto
 	 */
-	public ClosureHistoryHeaderDto detail(ClosureHistoryInDto master){
+	public ClosureHistoryHeaderDto findById(ClosureHistoryInDto master){
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
 		String companyId = loginUserContext.companyId();
 
-		Optional<ClosureHistory> historyHistory = this.repositoryHistory.findByHistoryId(companyId,
-				master.getClosureId(), master.getHistoryId());
+		// call repository find closure history
+		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
+				master.getClosureId(), master.getStartDate());
 		
+		// return data
 		ClosureHistoryHeaderDto dto = new ClosureHistoryHeaderDto();
-		if(historyHistory.isPresent()){
-			historyHistory.get().saveToMemento(dto);
+		if(closureHistory.isPresent()){
+			closureHistory.get().saveToMemento(dto);
 		}
 		return dto;
 	}

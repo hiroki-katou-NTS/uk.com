@@ -27,6 +27,12 @@ public class WorkTimeWebService extends WebService{
 	private WorkTimeFinder workTimeFinder;
 	
 	@POST
+	@Path("findByCompanyID")
+	public List<WorkTimeDto> findByCompanyID(){
+		return this.workTimeFinder.findByCompanyID();
+	}
+	
+	@POST
 	@Path("findByCodeList")
 	public List<WorkTimeDto> findByCodeList(List<String> codelist){
 		return this.workTimeFinder.findByCodeList(codelist);

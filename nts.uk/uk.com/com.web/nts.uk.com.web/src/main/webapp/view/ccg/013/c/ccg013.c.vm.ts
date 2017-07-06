@@ -14,7 +14,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         listTitleMenu: KnockoutObservableArray<TitleMenu>;
         columns: KnockoutObservableArray<any>;
         currentTitleMenu: KnockoutObservable<string>;
-        enableGrid : KnockoutObservable<boolean>;
+        enableGrid: KnockoutObservable<boolean>;
 
         //file Upload
         filename: KnockoutObservable<string>;
@@ -35,6 +35,11 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                 { value: 1, titleAtrName: resource.getText('CCG013_35') }]);
             self.selectedTitleAtr = ko.observable(0);
             self.enableGrid = ko.observable(false);
+            $("#titleSeach").prop("disabled", true);
+            _.defer(function(){
+                $(".ntsSearchBox").prop('disabled',true);    
+            });
+            
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
@@ -51,8 +56,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             //image upload
             self.filename = ko.observable(""); //file name
             self.imageName = ko.observable("");
-            self.imageSize = ko.observable("");
-            self.accept = ko.observableArray([".png", ".img",".jpg",".PNG", ".IMG",".JPG"]); //supported extension
+            self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'),0));
+            self.accept = ko.observableArray([".png", ".PNG"]); //supported extension
             self.textId = ko.observable(""); // file browser button text id
             self.fileID = ko.observable('');
             self.fileID.subscribe(function(id) {
@@ -62,14 +67,14 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                     liveviewcontainer.append($("<img/>").attr("src", nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/" + id)));
                 }
             });
-            self.selectedTitleAtr.subscribe(function(atrValue){
-               if(atrValue==0){
-                   //self.selectCodeTitleMenu('');
-                   self.currentTitleMenu('');
-                   self.enableGrid(false);
-               }else{
-                   self.enableGrid(true);
-               }
+            self.selectedTitleAtr.subscribe(function(atrValue) {
+                if (atrValue == 0) {
+                    //self.selectCodeTitleMenu('');
+                    self.currentTitleMenu('');
+                    self.enableGrid(false);
+                } else {
+                    self.enableGrid(true);
+                }
             });
         }
 
@@ -104,23 +109,26 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             var option = {
                 stereoType: "titleBar",
                 onSuccess: function() { alert('upload Success'); },
-                onFail: function() { alert('upload Fails')}
+                onFail: function() { alert('upload Fails') }
             }
+            nts.uk.ui.block.invisible();
             $("#file_upload").ntsFileUpload({ stereoType: "titleBar" }).done(function(res) {
                 self.fileID(res[0].id);
                 self.filename('');
                 self.imageName(res[0].originalName);
-                self.imageSize(res[0].originalSize+'KB');
+                self.imageSize(res[0].originalSize + 'KB');
                 self.isDelete(true);
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();
             });
         }
 
         private deleteFile(): void {
             var self = this;
             self.imageName('');
-            self.imageSize('');
+            self.imageSize('0KB');
             $("#liveview").html('');
             self.isDelete(false);
         }
@@ -131,31 +139,34 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         submit() {
             var self = this;
-            if(self.selectedTitleAtr()==1){
-                if(self.currentTitleMenu() !== ''){
-                    var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID(),self.currentTitleMenu()); 
-                    windows.setShared("CCG013C_TitleBar", titleBar1);       
-                }else{
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_75" });   
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            if (self.selectedTitleAtr() == 1) {
+                if (self.currentTitleMenu() !== '') {
+                    var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), self.currentTitleMenu());
+                    windows.setShared("CCG013C_TitleBar", titleBar1);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_75" });
                     return false;
                 }
-            }else{
-                var titleBar0 = new TitleBar(self.nameTitleBar(),self.letterColor(),self.backgroundColor(),self.selectedTitleAtr(),self.fileID(),'');
+            } else {
+                var titleBar0 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), '');
                 windows.setShared("CCG013C_TitleBar", titleBar0);
             }
             self.cancel_Dialog();
         }
     }
-    
+
     class TitleBar {
         nameTitleBar: string;
         letterColor: string;
         backgroundColor: string;
         selectedTitleAtr: number;
-        imageId:string;
-        titleMenuCode:string;
+        imageId: string;
+        titleMenuCode: string;
 
-        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number,imageId:string,titleMenuCode:string) {
+        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number, imageId: string, titleMenuCode: string) {
             this.nameTitleBar = nameTitleBar;
             this.letterColor = letterColor;
             this.backgroundColor = backgroundColor;
@@ -164,7 +175,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             this.titleMenuCode = titleMenuCode;
         }
     }
-    
+
     class TitleMenu {
         titleCode: string;
         titleName: string;

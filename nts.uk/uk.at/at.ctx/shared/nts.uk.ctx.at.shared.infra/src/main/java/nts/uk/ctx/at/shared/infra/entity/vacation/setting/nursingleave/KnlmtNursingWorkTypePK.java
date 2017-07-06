@@ -66,6 +66,7 @@ public class KnlmtNursingWorkTypePK implements Serializable {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
         hash += (nursingCtr != null ? nursingCtr.hashCode() : 0);
+        hash += (orderNumber != null ? orderNumber.hashCode() : 0);
         return hash;
     }
 
@@ -83,6 +84,10 @@ public class KnlmtNursingWorkTypePK implements Serializable {
         }
         if ((this.nursingCtr == null && other.nursingCtr != null) || (this.nursingCtr != null
                 && !this.nursingCtr.equals(other.nursingCtr))) {
+            return false;
+        }
+        if ((this.orderNumber == null && other.orderNumber != null) || (this.orderNumber != null
+                && !this.orderNumber.equals(other.orderNumber))) {
             return false;
         }
         return true;

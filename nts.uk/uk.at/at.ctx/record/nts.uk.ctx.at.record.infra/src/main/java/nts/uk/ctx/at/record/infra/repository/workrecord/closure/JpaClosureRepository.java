@@ -64,7 +64,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * getAllClosure(java.lang.String)
 	 */
 	@Override
-	public List<Closure> getAllClosure(String companyId) {
+	public List<Closure> findAll(String companyId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -107,7 +107,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * getClosureById(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<Closure> getClosureById(String companyId, int closureId) {
+	public Optional<Closure> findById(String companyId, int closureId) {
 		return this.queryProxy().find(new KclmtClosurePK(companyId, closureId), KclmtClosure.class)
 			.map(c -> this.toDomain(c));
 	}

@@ -12,13 +12,11 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
  *
  */
 public interface CPBonusPaySettingRepository {
-	
+
 	Optional<CompanyBonusPaySetting> getSetting(String companyId);
-	
-	void addSetting(CompanyBonusPaySetting setting);
-	
-	void updateSetting(CompanyBonusPaySetting setting);
-	
+
+	void saveSetting(CompanyBonusPaySetting setting);
+
 	void removeSetting(CompanyBonusPaySetting setting);
-	
+
 }

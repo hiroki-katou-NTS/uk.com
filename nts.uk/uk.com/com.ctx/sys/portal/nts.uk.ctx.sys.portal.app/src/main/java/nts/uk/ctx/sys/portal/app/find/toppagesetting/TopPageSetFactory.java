@@ -51,10 +51,15 @@ public interface TopPageSetFactory {
 	 * check my page co duoc su dung khong
 	 * @return
 	 */
-	Boolean checkMyPageSet();
+	boolean checkMyPageSet();
 	/**
 	 * check top page co duoc su dung hay khong
 	 * @return
 	 */
-	Boolean checkTopPageSet();
+	boolean checkTopPageSet();
+	/**
+	 * find lay out my page
+	 * @return
+	 */
+	LayoutForMyPageDto findLayoutMyPage();
 }

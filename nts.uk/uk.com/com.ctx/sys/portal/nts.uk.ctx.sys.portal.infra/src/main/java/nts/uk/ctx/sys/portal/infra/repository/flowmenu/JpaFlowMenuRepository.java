@@ -21,6 +21,7 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 									+ " ON m.ccgmtFlowMenuPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID";
 	private final String SELECT_SINGLE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID = :topPagePartID";
 	private final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID";
+	private final String SELECT_IN = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID IN :topPagePartID";
 
 	@Override
 	public List<FlowMenu> findAll(String companyID) {
@@ -43,7 +44,9 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 
 	@Override
 	public void update(FlowMenu flow) {
-		CcgmtFlowMenu entity = toEntity(flow);
+		CcgmtFlowMenu newEntity = toEntity(flow);
+		CcgmtFlowMenu entity = this.queryProxy().find(newEntity.ccgmtFlowMenuPK, CcgmtFlowMenu.class).get();
+		entity.fileID = newEntity.fileID;
 		this.commandProxy().update(entity);
 	}
 
@@ -79,5 +82,12 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 				topPagePart.topPagePartType, topPagePart.width, topPagePart.height,
 				flowMenu.fileID, 
 				flowMenu.defClassAtr);
+	}
+
+	@Override
+	public List<FlowMenu> findByCodes(String companyID, List<String> toppagePartID) {
+		return this.queryProxy().query(SELECT_IN, Object[].class)
+				.setParameter("topPagePartID", toppagePartID)
+				.getList(c -> joinObjectToDomain(c));
 	}
 }

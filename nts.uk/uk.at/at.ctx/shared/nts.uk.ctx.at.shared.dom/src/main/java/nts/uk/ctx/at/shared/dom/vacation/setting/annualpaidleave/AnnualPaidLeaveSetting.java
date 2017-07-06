@@ -13,12 +13,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  * The Class AnnualVacationSetting.
  */
 @Getter
-
-/*
- * (non-Javadoc)
- * 
- * @see java.lang.Object#hashCode()
- */
 @EqualsAndHashCode(callSuper = true, of = { "companyId" })
 public class AnnualPaidLeaveSetting extends AggregateRoot {
 

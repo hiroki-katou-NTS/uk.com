@@ -7,11 +7,10 @@ package nts.uk.ctx.at.record.app.find.workrecord.closure.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
-import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 
 /**
@@ -36,7 +35,7 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	 * setCloseName(nts.uk.ctx.at.record.dom.workrecord.closure.CloseName)
 	 */
 	@Override
-	public void setCloseName(CloseName closeName) {
+	public void setClosureName(ClosureName closeName) {
 		this.name = closeName.v();
 	}
 
@@ -92,15 +91,17 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 
 	}
 
-	@Override
-	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
-		// Do nothing code
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setCompanyId(nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId)
+	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		// Do nothing code
-		
+
 	}
 
 }

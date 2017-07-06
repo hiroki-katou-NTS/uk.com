@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -34,21 +35,26 @@ public class BonusPaySettingWebService extends WebService {
 	public List<BPSettingDto> getAllBonusPaySetting() {
 		return this.bpSettingFinder.getAllBonusPaySetting();
 	}
+	@POST
+	@Path("getBonusPaySetting/{bonusPaySettingCode}")
+	public BPSettingDto getBonusPaySetting(@PathParam("bonusPaySettingCode")  String bonusPaySettingCode){
+		return this.bpSettingFinder.getBonusPaySetting(bonusPaySettingCode);
+	}
 
 	@POST
 	@Path("addBonusPaySetting")
-	void addBonusPaySetting(BPSettingAddCommand bpSettingAddCommand) {
+	public void addBonusPaySetting(BPSettingAddCommand bpSettingAddCommand) {
 		this.bpSettingAddCommandHandler.handle(bpSettingAddCommand);
 	}
 
 	@POST
 	@Path("updateBonusPaySetting")
-	void updateBonusPaySetting(BPSettingUpdateCommand bpSettingUpdateCommand) {
+	public void updateBonusPaySetting(BPSettingUpdateCommand bpSettingUpdateCommand) {
 		this.bpSettingUpdateCommandHandler.handle(bpSettingUpdateCommand);
 	}
 	@POST
 	@Path("removeBonusPaySetting")
-	void removeBonusPaySetting(BPSettingDeleteCommand bpSettingDeleteCommand) {
+	public void removeBonusPaySetting(BPSettingDeleteCommand bpSettingDeleteCommand) {
 		this.bpSettingDeleteCommandHandler.handle(bpSettingDeleteCommand);
 	}
 }

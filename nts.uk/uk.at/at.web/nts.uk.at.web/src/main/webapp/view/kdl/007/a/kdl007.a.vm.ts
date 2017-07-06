@@ -13,20 +13,15 @@ module kdl007.a.viewmodel {
 
         constructor() {
             let self = this;
-
-
             self.start();
         }
 
         //load data
         start() {
             let self = this,
-                param: IData = getShared('KDL007_PARAM') || { isMulti: false, posibles: [], selecteds: [] };
+                param: IData = getShared('KDL007_PARAM') || { isMulti: false, workplaceCode: null,standardDate: null, selecteds: [] };
 
             self.isMulti = param.isMulti || false;
-
-            //all possible attendance items
-            self.posibleItems(param.posibles || []);
 
             // approved selected code from param
             self.currentCodeList(param.selecteds || []);
@@ -35,23 +30,21 @@ module kdl007.a.viewmodel {
             self.dataSources.remove(x => x.code != '');
 
             // get all item 
-            //service.getAllItem().done(function(resp: Array<ItemModel>) {
+            service.getAllItem().done(function(resp: Array<ItemModel>) {
             // demo data    
-            $.Deferred().resolve([]).promise().done((resp: Array<ItemModel>) => {
+//            $.Deferred().resolve([]).promise().done((resp: Array<ItemModel>) => {
                 if (resp && resp.length) {
                     let posibleItems: Array<string> = self.posibleItems(),
                         selectedItems: Array<string> = self.currentCodeList();
-
-                    // filter posible item
-                    //if (posibleItems.length > 0) {
-                    //    resp = _.filter(resp, x => posibleItems.indexOf(x.code));
-                    //}
 
                     // push item to datasource
                     _.each(resp, x => self.dataSources.push(x));
 
                     //filter real selected code from source
                     self.currentCodeList(_.filter(resp, x => selectedItems.indexOf(x.code) > -1).map(x => x.code));
+                    if(self.currentCodeList().length == 0 ){
+                        self.currentCodeList([''])
+                        }
                 }
             });
         }
@@ -94,7 +87,8 @@ module kdl007.a.viewmodel {
 
     interface IData {
         isMulti: boolean,
-        posibles: Array<any>,
+        workplaceCode?: any,
+        standardDate?: any,
         selecteds: Array<any>
     }
 }

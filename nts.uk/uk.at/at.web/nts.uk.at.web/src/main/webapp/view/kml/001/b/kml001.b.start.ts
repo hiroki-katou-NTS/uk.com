@@ -11,8 +11,11 @@ module nts.uk.at.view.kml001.b {
                     }
                 }    
             }
-            $("#premium-set-tbl-b > tbody > tr > td:NTH-CHILD(2) button").each(function (i) { $(this).attr('tabindex', i + 1); });
-            $("#premium-set-tbl-b > tbody > tr > td:NTH-CHILD(3) input").each(function (i) { $(this).attr('tabindex', 3*i); });
+            $("* input").attr('tabindex', -1);
+            $("#premium-set-tbl-b > tbody > tr > td:NTH-CHILD(2) > div").each(function (i) { $(this).attr('tabindex', i*2+1); });
+            $("#premium-set-tbl-b > tbody > tr > td:NTH-CHILD(3) > span").each(function (i) { $(this).attr('tabindex', i*2+2); });
+            $("#functions-area-bottom > button:NTH-CHILD(1)").attr('tabindex', 23);
+            $("#functions-area-bottom > button:NTH-CHILD(2)").attr('tabindex', 24);
         });
     });
 }

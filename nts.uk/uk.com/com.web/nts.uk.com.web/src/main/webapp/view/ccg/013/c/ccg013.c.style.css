@@ -44,11 +44,11 @@ img {
 	cursor: pointer;
 	color: blue;
 	text-decoration: underline;
+	width: 200px;
+	overflow: hidden;
+	display: inline-block;
 }
 
-table tr td {
-	padding-right: 5px;
-}
 
 #description {
 	height: 20px;
@@ -69,6 +69,13 @@ table tr td {
 
 .pull-right {text-align: right;}
 
-#nameTittleBar{
-	width: 220px !important; 
+#nameTitleBar{
+	width: 220px !important;
+}
+#file_upload{
+	width: 200px;
+	overflow: hidden;
+}
+.labelRight{
+	margin-left: 10px;	
 }

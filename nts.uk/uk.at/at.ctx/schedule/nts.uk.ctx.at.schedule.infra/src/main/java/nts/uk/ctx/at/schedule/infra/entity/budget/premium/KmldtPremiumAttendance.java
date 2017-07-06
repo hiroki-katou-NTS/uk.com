@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -17,6 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Entity
 @Table(name="KMLDT_PREMIUM_ATTENDANCE")
 public class KmldtPremiumAttendance extends UkJpaEntity{
@@ -29,7 +31,7 @@ public class KmldtPremiumAttendance extends UkJpaEntity{
 		@PrimaryKeyJoinColumn(name="HIS_ID",referencedColumnName="HIS_ID"),
 		@PrimaryKeyJoinColumn(name="PREMIUM_ID",referencedColumnName="PREMIUM_ID")
 	})
-	private KmlstPremiumSet kmlstPremiumSet;
+	public KmlstPremiumSet kmlstPremiumSet;
 	
 	@Override
 	protected Object getKey() {

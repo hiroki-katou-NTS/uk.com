@@ -110,7 +110,23 @@ public class JpaTopPageRepository extends JpaRepository implements TopPageReposi
 	 * @return the ccgmt top page
 	 */
 	public CcgmtTopPage toEntity(TopPage domain) {
-		CcgmtTopPagePK key = new CcgmtTopPagePK(domain.getCompanyId(), domain.getTopPageCode().v());
-		return new CcgmtTopPage(key, domain.getTopPageName().v(), domain.getLanguageNumber(), domain.getLayoutId());
+		CcgmtTopPage entity = this.findEntity(domain.getCompanyId(), domain.getTopPageCode().v());
+		if (entity != null) {
+			entity.setLanguageNumber(domain.getLanguageNumber());
+			entity.setLayoutId(domain.getLayoutId());
+			entity.setTopPageName(domain.getTopPageName().v());
+			return entity;
+		} else {
+			CcgmtTopPagePK key = new CcgmtTopPagePK(domain.getCompanyId(), domain.getTopPageCode().v());
+			return new CcgmtTopPage(key, domain.getTopPageName().v(), domain.getLanguageNumber(), domain.getLayoutId());
+		}
 	}
+	
+	public CcgmtTopPage findEntity(String companyId, String topPageCode) {
+		 return this.queryProxy().query(GET_BY_CODE, CcgmtTopPage.class)
+		 .setParameter("companyId", companyId)
+		 .setParameter("topPageCode", topPageCode)
+		 .getSingleOrNull();
+	}
+
 }

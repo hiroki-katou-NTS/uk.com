@@ -4,23 +4,120 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="kmk005.b.start.js" />
-				<com:scriptfile path="kmk005.b.vm.js" />
-				<com:scriptfile path="kmk005.b.service.js" />
-				<com:stylefile path="kmk005.b.main.css" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div id="contents-area">
-					
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk005.b.start.js" />
+			<com:scriptfile path="kmk005.b.vm.js" />
+			<com:scriptfile path="kmk005.b.service.js" />
+			<com:stylefile path="kmk005.b.main.css" />
+				<script>var dialogSize = { width: 600, height: 800 };</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<div class="label">#{i18n.getText('KMK005_8')}</div>
 				</div>
-				<div id="functions-area-bottom">
+				<div id="tab-panel"
+					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+					<div class="tab-content-1">
+						<table id="premium-set-tbl-b">
+							<thead>
+								<tr>
+									<th>#{i18n.getText('KMK005_19')}</th>
+									<th>#{i18n.getText('KMK005_20')}</th>
+									<th>#{i18n.getText('KMK005_21')}</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: timeItemList">
+								 
+								<tr>
+									<td data-bind="text: timeItemNo"></td>
+									<td>
+										<div class="cf"
+											data-bind="ntsSwitchButton: {
+										name: '#[KML005_30]',
+										options:ko.observableArray([
+											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
+								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
+								        ]),
+										optionsValue: 'code',
+										optionsText: 'name',
+										value:useAtr,
+										enable: true }"></div>
+									</td>
+									<td><input class="premiumName"
+										data-bind="ntsTextEditor: {
+										name: '#[KML005_31]', 
+										value: timeItemName, 
+										option: { width: '220px' }, 
+										required: true, 
+										enable: Boolean(useAtr()==1) }" />
+										 <input type="hidden" data-bind="value: companyId" />
+										 <input type="hidden" data-bind="value: timeItemId" />
+									</td>
+									 
+								</tr> 
+
+							</tbody>
+						</table>
+
+
+					</div>
+					<div class="tab-content-2">
+						<table id="premium-set-tbl-b">
+							<thead>
+								<tr>
+									<th>#{i18n.getText('KMK005_19')}</th>
+									<th>#{i18n.getText('KMK005_20')}</th>
+									<th>#{i18n.getText('KMK005_21')}</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: timeItemSpecList">
+								 
+								<tr>
+									<td data-bind="text: timeItemNo"></td>
+									<td>
+										<div class="cf"
+											data-bind="ntsSwitchButton: {
+										name: '#[KML005_27]',
+										options:ko.observableArray([
+											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
+								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
+								        ]),
+										optionsValue: 'code',
+										optionsText: 'name',
+										value:useAtr,
+										enable: true }"></div>
+									</td>
+									<td><input class="premiumName"
+										data-bind="ntsTextEditor: {
+										name: '#[KML005_28]', 
+										value: timeItemName, 
+										option: { width: '220px' }, 
+										required: true, 
+										enable: Boolean(useAtr()==1) }" />
+										 <input type="hidden" data-bind="value: companyId" />
+										 <input type="hidden" data-bind="value: timeItemId" />
+									</td>
+									 
+								</tr> 
+
+							</tbody>
+						</table>
+					</div>
 				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="300" class="x-large proceed center-e"
+					data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KMK005_32')}</button>
+				<button tabindex="400" class="ui-dialog-titlebar-close"
+					data-bind="click: closeDialog">#{i18n.getText('KMK005_33')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
 </html>

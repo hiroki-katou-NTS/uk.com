@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 300, height: 210 };</script>
+			<script>var dialogSize = { width: 300, height: 310 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuCD
 					nts.uk.ctx.sys.portal.dom.titlemenu.Name
@@ -47,6 +47,7 @@
 				<div class="container">
 					<div id="left-content" 
 						class="bg-green caret-right caret-background">
+						<i class="icon icon-searchbox"></i>
 						<div class="container" style="float: left ; width: 320px; margin-bottom: 10px;"
 							data-bind="ntsSearchBox: {
 								searchMode: 'filter',
@@ -73,13 +74,13 @@
 							<div class="pull-left"
 								data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">#{i18n.getText('CCG014_13')}</div>
 							<input id="titleMenuCD"
-								data-bind="ntsTextEditor: {value: titleMenuCD, constraint: 'TitleMenuCD', enable: $parent.isCreate , immediate: true , required: true ,name: '#[CCG014_21]' }"
+								data-bind="ntsTextEditor: {value: titleMenuCD, constraint: 'TitleMenuCD', enable: $parent.isCreate , immediate: true ,option: {autofill:true, filldirection:'left'}, required: true ,name: '#[CCG014_21]' }"
 								tabindex="6" /> <input id="titleMenuName"
 								data-bind="ntsTextEditor: {value: name, constraint: 'Name' , required: true , immediate: true ,name: '#[CCG014_22]'}"
 								tabindex="7" />
 						</div>
 						<div class="row2">
-							<button class="x-large fixbtn"
+							<button class="x-large"
 								data-bind="click : open031_1Dialog,enable: !isCreate()"
 								tabindex="8">#{i18n.getText('CCG014_14')}</button>
 						</div>

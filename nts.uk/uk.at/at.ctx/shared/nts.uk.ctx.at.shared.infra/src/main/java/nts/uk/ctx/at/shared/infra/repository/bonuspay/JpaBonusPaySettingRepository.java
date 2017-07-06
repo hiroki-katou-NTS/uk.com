@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySettingPK;
 @Stateless
 public class JpaBonusPaySettingRepository extends JpaRepository implements BPSettingRepository {
 	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId";
-
 	@Override
 	public List<BonusPaySetting> getAllBonusPaySetting(String companyId) {
 		return this.queryProxy().query(SELECT_BY_COMPANYID, KbpmtBonusPaySetting.class)
@@ -53,6 +52,17 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 				new KbpmtBonusPaySettingPK(bonusPaySetting.getCompanyId().toString(),
 						bonusPaySetting.getCode().toString()),
 				bonusPaySetting.getName().toString());
+	}
+
+	@Override
+	public Optional<BonusPaySetting> getBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode) {
+		Optional<KbpmtBonusPaySetting> kbpmtBonusPaySetting = this.queryProxy()
+				.find(new KbpmtBonusPaySettingPK(companyId, bonusPaySettingCode.v()), KbpmtBonusPaySetting.class);
+		
+		if(kbpmtBonusPaySetting.isPresent()){
+			return  Optional.ofNullable(this.toBonusPaySettingDomain(kbpmtBonusPaySetting.get()));
+		}
+		return Optional.empty();
 	}
 
 }

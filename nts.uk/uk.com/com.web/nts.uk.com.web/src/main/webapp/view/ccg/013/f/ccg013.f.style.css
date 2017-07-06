@@ -1,42 +1,81 @@
 #functions-area {
 	height: 70px !important;
 }
-#btnSave{
+
+#btnSave {
 	font-size: 15px;
 	height: 30px;
 	margin-left: 10px;
 }
 
-#btnCancel{
+#btnCancel {
 	font-size: 15px;
 	height: 30px;
 	margin-left: 15px;
 }
 
-#process{
+#process {
 	padding-bottom: 20px;
 	padding-top: 15px;
 }
 
-#table{
-	margin-top:20px;
-	margin-left:50px;
-}
-
-#gridlist{
-	margin-left:30px;
-	margin-top: 10px;
-}
-
-#row2{
-	margin-top: 10px;
-}
-
-#label{
+#table {
 	margin-top: 20px;
-	margin-left: 50px;
+	margin-left: 40px;
 }
 
-#date{
+#gridlist {
+	margin-left: 30px;
+	margin-top: 10px;
+}
+
+#row2 {
+	margin-top: 10px;
+}
+
+#label {
+	margin-top: 20px;
+	margin-left: 40px;
+}
+
+#date {
 	width: 100px;
+}
+
+.table1 tbody {
+	height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.table1 thead tr th, .table1 tbody td {
+	border: 1px solid #999999;
+}
+
+.table1 {
+	margin: 20px 0 0 40px
+}
+
+.table1 thead tr th:first-child, .table1 tbody tr td:first-child {
+	width: 70px
+}
+
+.table1 thead tr th:nth-child(2), .table1 tbody tr td:nth-child(2) {
+	width: 100px
+}
+
+.table1 thead tr th:nth-child(3), .table1 tbody tr td:nth-child(3) {
+	width: 250px
+}
+
+.table1 thead tr th:last-child{
+	width: 16px
+}
+
+.table1 thead tr {
+	background-color: #E0F59E
+}
+
+.table1 thead tr, .table1 tbody {
+	display: block;
 }

@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author Doan Duy Hung
  *
  */
-@IntegerRange(max=100,min=0)
+@IntegerRange(max=999,min=1)
 public class PremiumRate extends IntegerPrimitiveValue<PremiumRate>{
 
 	/**

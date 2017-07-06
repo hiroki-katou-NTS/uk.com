@@ -32,19 +32,15 @@ public class KclmtClosureHist extends UkJpaEntity implements Serializable {
 	protected KclmtClosureHistPK kclmtClosureHistPK;
 	
 	/** The name. */
-	@Column(name = "NAME")
+	@Column(name = "CLOSURE_NAME")
 	private String name;
 	
-	/** The str D. */
-	@Column(name = "STR_D")
-	private Integer strD;
-	
-	/** The end D. */
-	@Column(name = "END_D")
-	private Integer endD;
+	/** The end YM. */
+	@Column(name = "END_YM")
+	private Integer endYM;
 	
 	/** The close day. */
-	@Column(name = "CLOSE_DAY")
+	@Column(name = "CLOSURE_DAY")
 	private Integer closeDay;
 	
 	/** The is last day. */
@@ -64,17 +60,6 @@ public class KclmtClosureHist extends UkJpaEntity implements Serializable {
 	 */
 	public KclmtClosureHist(KclmtClosureHistPK kclmtClosureHistPK) {
 		this.kclmtClosureHistPK = kclmtClosureHistPK;
-	}
-
-	/**
-	 * Instantiates a new kclmt closure hist.
-	 *
-	 * @param ccid the ccid
-	 * @param closureId the closure id
-	 * @param hisId the his id
-	 */
-	public KclmtClosureHist(String ccid, Integer closureId, String hisId) {
-		this.kclmtClosureHistPK = new KclmtClosureHistPK(ccid, closureId, hisId);
 	}
 
 	/**
