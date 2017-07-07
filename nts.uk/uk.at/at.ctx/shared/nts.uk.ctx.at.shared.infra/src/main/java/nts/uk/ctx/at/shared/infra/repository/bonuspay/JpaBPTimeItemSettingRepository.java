@@ -15,9 +15,9 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSettingPK;
 @Stateless
 public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPTimeItemSettingRepository {
 	private final String SELECT_BPTIMEITEMSET_BY_COMPANYID = "SELECT c FROM KbpstBPTimeItemSetting c  JOIN  KbpstBonusPayTimeItem k  ON c.kbpstBPTimeItemSettingPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId"
-			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 0 AND K.useAtr = 0 ORDER BY k.timeItemNo";
+			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 0 AND k.useAtr = 1 ORDER BY k.timeItemNo";
 	private final String SELECT_SPEC_BPTIMEITEMSET_BY_COMPANYID = "SELECT c FROM KbpstBPTimeItemSetting c JOIN  KbpstBonusPayTimeItem k ON c.kbpstBPTimeItemSettingPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId"
-			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 1 AND K.useAtr = 0 ORDER BY k.timeItemNo";
+			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId  AND  k.timeItemTypeAtr = 1 AND k.useAtr = 1 ORDER BY k.timeItemNo";
 
 	@Override
 	public List<BPTimeItemSetting> getListSetting(String companyId) {
@@ -33,22 +33,22 @@ public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPT
 
 	@Override
 	public void addListSetting(List<BPTimeItemSetting> lstSetting) {
-		lstSetting.forEach(c->{
-			Optional<KbpstBPTimeItemSetting> kbpstBPTimeItemSettingOptional = this.queryProxy().find(new KbpstBPTimeItemSettingPK(c.getCompanyId().toString(), c.getTiemItemId().v()), KbpstBPTimeItemSetting.class);
-			if (kbpstBPTimeItemSettingOptional.isPresent()) {
-				KbpstBPTimeItemSetting kbpstBPTimeItemSetting = kbpstBPTimeItemSettingOptional.get();
-				kbpstBPTimeItemSetting.holidayCalSettingAtr= new BigDecimal(c.getHolidayCalSettingAtr().value);
-				kbpstBPTimeItemSetting.overtimeCalSettingAtr= new BigDecimal(c.getOvertimeCalSettingAtr().value);
-				kbpstBPTimeItemSetting.worktimeCalSettingAtr= new BigDecimal(c.getOvertimeCalSettingAtr().value);
-				this.commandProxy().update(kbpstBPTimeItemSetting);
-			}
-		});
+		List<KbpstBPTimeItemSetting> lstKbpstBPTimeItemSetting = lstSetting.stream().map(c -> toBPTimeItemSettingEntity(c)).collect(Collectors.toList());
+		this.commandProxy().insertAll(lstKbpstBPTimeItemSetting);
 	}
 
 	@Override
 	public void updateListSetting(List<BPTimeItemSetting> lstSetting) {
-		List<KbpstBPTimeItemSetting> lstKbpstBPTimeItemSetting = lstSetting.stream().map(c -> toBPTimeItemSettingEntity(c)).collect(Collectors.toList());
-		this.commandProxy().updateAll(lstKbpstBPTimeItemSetting);
+		lstSetting.forEach(c->{
+			Optional<KbpstBPTimeItemSetting> kbpstBPTimeItemSettingOptional = this.queryProxy().find(new KbpstBPTimeItemSettingPK(c.getCompanyId().toString(), c.getTiemItemId()), KbpstBPTimeItemSetting.class);
+			if (kbpstBPTimeItemSettingOptional.isPresent()) {
+				KbpstBPTimeItemSetting kbpstBPTimeItemSetting = kbpstBPTimeItemSettingOptional.get();
+				kbpstBPTimeItemSetting.holidayCalSettingAtr= new BigDecimal(c.getHolidayCalSettingAtr().value);
+				kbpstBPTimeItemSetting.overtimeCalSettingAtr= new BigDecimal(c.getOvertimeCalSettingAtr().value);
+				kbpstBPTimeItemSetting.worktimeCalSettingAtr= new BigDecimal(c.getWorktimeCalSettingAtr().value);
+				this.commandProxy().update(kbpstBPTimeItemSetting);
+			}
+		});
 	}
 
 	private BPTimeItemSetting toBPTimeItemSettingDomain(KbpstBPTimeItemSetting kbpstBPTimeItemSetting) {

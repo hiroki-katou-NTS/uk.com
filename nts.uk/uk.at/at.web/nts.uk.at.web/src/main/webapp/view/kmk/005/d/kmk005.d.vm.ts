@@ -16,9 +16,9 @@ module nts.uk.at.view.kmk005.d {
                 var dfd = $.Deferred();
               service.getSetting().done(function(item){
                   if (item !== undefined || item.length != 0){
-                      self.useWorkPlace(!item.workplaceUseAtr);
-                      self.usePerson(!item.personalUseAtr);
-                      self.useWorkTimeSheet(!item.workingTimesheetUseAtr); 
+                      self.useWorkPlace(item.workplaceUseAtr);
+                      self.usePerson(item.personalUseAtr);
+                      self.useWorkTimeSheet(item.workingTimesheetUseAtr); 
                   }
               });
              
@@ -30,12 +30,10 @@ module nts.uk.at.view.kmk005.d {
                 var self = this;
                 
                 service.updateSetting({
-                    workplaceUseAtr: self.useWorkPlace()?0:1,
-                    personalUseAtr: self.usePerson()?0:1,
-                    workingTimesheetUseAtr: self.useWorkTimeSheet()?0:1
+                    workplaceUseAtr: self.useWorkPlace()?1:0,
+                    personalUseAtr: self.usePerson()?1:0,
+                    workingTimesheetUseAtr: self.useWorkTimeSheet()?1:0
                 });
-                
-                
                 
                 self.closeDialog();
                 }

@@ -88,7 +88,7 @@
                         }); 
                         if (standardMenu) {
                             var order = self.newItems().length + 1;
-                            var primaryKey = item.code() + item.displayOrder();
+                            var primaryKey = standardMenu.primaryKey;
                             self.newItems.push(new ItemModel(primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system));
                         }       
                     });
@@ -211,7 +211,7 @@
         system: number;
         
         constructor(id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number) {
-            this.primaryKey = code + order;
+            this.primaryKey = id;
             this.code = code;
             this.targetItem = targetItem;
             this.name = name;

@@ -27,6 +27,7 @@ module nts.uk.at.view.kmk005.f {
                 self.currentBonusPaySetting = ko.observable(new BonusPaySetting('','',''));
                 self.currentBonusPayTimesheets = ko.observableArray([]);
                 self.currentSpecBonusPayTimesheets = ko.observableArray([]);
+                self.specDateItem = ko.observableArray([]);
                 self.isUpdate = true;
                 self.currentBonusPaySetting.subscribe(function(value){
                     if(value.code()!=""){
@@ -48,13 +49,18 @@ module nts.uk.at.view.kmk005.f {
                 let dfdSpecDateItem = fService.getSpecDateItem();
                 $.when(dfdBonusPaySetting, dfdBonusPayTimeItem, dfdSpecBonusPayTimeItem, dfdSpecDateItem)
                 .done((dfdBonusPaySettingData, dfdBonusPayTimeItemData, dfdSpecBonusPayTimeItemData, dfdSpecDateItemData) =>{
-                    if(dfdBonusPaySettingData.length!=0) self.isUpdate = true;
-                    else self.isUpdate = false;
-                    self.bonusPaySettingList(dfdBonusPaySettingData);
                     self.bonusPayTimeItemList(dfdBonusPayTimeItemData);
                     self.specBonusPayTimeItemList(dfdSpecBonusPayTimeItemData);
                     self.specDateItem(dfdSpecDateItemData);            
-                    self.currentBonusPaySetting(_.first(self.bonusPaySettingList()));
+                    if(dfdBonusPaySettingData.length!=0) { 
+                        self.bonusPaySettingList(dfdBonusPaySettingData);
+                        self.currentBonusPaySetting(ko.mapping.fromJS(_.first(self.bonusPaySettingList())));
+                        self.isUpdate = true;
+                    } else {
+                        self.isUpdate = false;
+                        self.createData();
+                    }
+                        
                     nts.uk.ui.block.clear();
                 }).fail((res1,res2,res3,res4) =>{
                     nts.uk.ui.dialog.alertError(res1.message+'\n'+res2.message+'\n'+res3.message+'\n'+res4.message).then(function(){nts.uk.ui.block.clear();});
@@ -69,10 +75,14 @@ module nts.uk.at.view.kmk005.f {
                 var dfd = $.Deferred();
                 fService.getBonusPaySetting()
                 .done((data) =>{
-                    if(data.length!=0) self.isUpdate = true;
-                    else self.isUpdate = false;
-                    self.bonusPaySettingList(data);     
-                    self.currentBonusPaySetting(_.first(self.bonusPaySettingList()));
+                    if(data.length!=0) {
+                        self.isUpdate = true;
+                        self.bonusPaySettingList(data);     
+                        self.currentBonusPaySetting(ko.mapping.fromJS(_.first(self.bonusPaySettingList())));
+                    } else {
+                        self.isUpdate = false;
+                        self.createData();
+                    }
                     nts.uk.ui.block.clear();
                 }).fail((res) =>{
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
@@ -144,7 +154,7 @@ module nts.uk.at.view.kmk005.f {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 if(isUpdate){
-                    fService.insertBonusPaySetting(
+                    fService.updateBonusPaySetting(
                         self.createCommand(self.currentBonusPaySetting(),self.currentBonusPayTimesheets(),self.currentSpecBonusPayTimesheets())
                     ).done((data)=>{
                         self.getBonusPaySetting();   
@@ -153,7 +163,7 @@ module nts.uk.at.view.kmk005.f {
                         nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });        
                 } else {
-                    fService.updateBonusPaySetting(
+                    fService.insertBonusPaySetting(
                         self.createCommand(self.currentBonusPaySetting(),self.currentBonusPayTimesheets(),self.currentSpecBonusPayTimesheets())
                     ).done((data)=>{
                         self.getBonusPaySetting(); 

@@ -51,4 +51,9 @@ public interface WebMenuRepository {
 	 */
 	void add(PersonalTying personalTying);
 	
+	/**
+	 * Change all web menu to not default
+	 * @param companyId
+	 */
+	void changeNotDefault(String companyId);
 }

@@ -8,6 +8,9 @@ module nts.uk.at.view.kmk008.g {
 
     export module viewmodel {
         export class ScreenModel {
+            
+            isShowButton : KnockoutObservable<boolean>;
+            
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
@@ -53,6 +56,9 @@ module nts.uk.at.view.kmk008.g {
 
             constructor() {
                 let self = this;
+                
+                self.isShowButton = ko.observable(true);
+                
                 self.isNewMode = ko.observable(true);
                 self.isUpdateMode = ko.observable(false);
                 self.isNewMode.subscribe(function(val) {
@@ -161,6 +167,7 @@ module nts.uk.at.view.kmk008.g {
                 self.currentCode2 = ko.observable();
 
                 self.selectedCode.subscribe(newValue => {
+                    
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     let data = $('#component-items-list').getDataList();
                     let employee = _.find(data, function(o) {
@@ -193,6 +200,10 @@ module nts.uk.at.view.kmk008.g {
                 let self = this;
                 let dfd = $.Deferred();
 
+                if(!self.selectedCode()){
+                    self.isShowButton(false);    
+                }
+                
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -214,6 +225,7 @@ module nts.uk.at.view.kmk008.g {
 
             getDetail(employmentCategoryCode: string) {
                 var self = this;
+                self.isShowButton(true);
                 if (self.selectedTab() == "tab-2") {
                     service.getMonth(employmentCategoryCode).done(function(monthData: Array<model.MonthDto>) {
                         if (monthData) {

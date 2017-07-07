@@ -18,3 +18,7 @@
 	float: left; 
 	margin-left: 90px;
 }
+
+.ui-tabs-panel > div {
+    height: 350px;
+}

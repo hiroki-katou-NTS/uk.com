@@ -9,7 +9,6 @@ module nts.uk.at.view.kmk008.c {
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
@@ -33,12 +32,22 @@ module nts.uk.at.view.kmk008.c {
                 let self = this;
                 let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
                 if (self.isUpdate) {
-                    new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function() {
+                    new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
+                        if (listError.length > 0) {
+                            let errorCode = _.split(listError[0], ',');
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
+                            return;
+                        }
                         self.startPage();
                     });
                     return;
                 }
-                new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function() {
+                new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
+                    if (listError.length > 0) {
+                        let errorCode = _.split(listError[0], ',');
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
+                        return;
+                    }
                     self.startPage();
                 });
             }

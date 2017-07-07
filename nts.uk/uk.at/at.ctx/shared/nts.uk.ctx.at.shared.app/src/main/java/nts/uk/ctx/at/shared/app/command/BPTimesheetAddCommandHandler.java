@@ -25,17 +25,17 @@ public class BPTimesheetAddCommandHandler extends CommandHandler<List<BPTimeshee
 		String companyId = AppContexts.user().companyId();
 		List<BonusPayTimesheet> listTimesheet = bpTimesheetRepository.getListTimesheet(companyId, new BonusPaySettingCode(lstBPTimesheetAddCommand.get(0).bonusPaySettingCode));
 		if(listTimesheet!=null &&!listTimesheet.isEmpty()){
-			throw new BusinessException("msg_3");
+			throw new BusinessException("Msg_3");
 		}
 		listTimesheet.forEach(c->{
 			if(c.getStartTime().minute()>c.getEndTime().minute()){
-				throw new BusinessException("msg_28");
+				throw new BusinessException("Msg_28");
 			}
 			if(c.getStartTime().minute()==c.getEndTime().minute()){
-				throw new BusinessException("msg_33");
+				throw new BusinessException("Msg_33");
 			}
 		});
-		bpTimesheetRepository.addListTimesheet(lstBPTimesheetAddCommand.get(0).companyId,
+		bpTimesheetRepository.addListTimesheet(companyId,
 			 new BonusPaySettingCode(lstBPTimesheetAddCommand.get(0).bonusPaySettingCode),
 				lstBPTimesheetAddCommand.stream().map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList()));
 	}

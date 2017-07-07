@@ -5,8 +5,6 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class BPUnitUseSettingUpdateCommand {
-	
-		public String companyId;
 		public int workplaceUseAtr;
 		public int personalUseAtr;
 		public int workingTimesheetUseAtr;

@@ -46,10 +46,7 @@ module nts.uk.at.view.kmk008.d {
                         return emp.code == newValue;
                     });
                     if (empSelect) { self.currentEmpName(empSelect.name); }
-
                 });
-
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
@@ -74,7 +71,8 @@ module nts.uk.at.view.kmk008.d {
                 if (indexCodealreadySetting != -1) {
                     new service.Service().updateAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
                         if (listError.length > 0) {
-                            alert("Error");
+                            let errorCode = _.split(listError[0], ',');
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
                         self.getDetail(self.selectedCode());
@@ -83,7 +81,8 @@ module nts.uk.at.view.kmk008.d {
                 }
                 new service.Service().addAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
                     if (listError.length > 0) {
-                        alert("Error");
+                        let errorCode = _.split(listError[0], ',');
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
                     self.getalreadySettingList();
@@ -93,12 +92,15 @@ module nts.uk.at.view.kmk008.d {
 
             removeData() {
                 let self = this;
-                let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
-                new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                    self.getalreadySettingList();
-                    self.setSelectCodeAfterRemove(self.selectedCode());
-                });
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
+                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+                            self.getalreadySettingList();
+                            self.setSelectCodeAfterRemove(self.selectedCode());
+                        });
 
+                    });
             }
 
             getalreadySettingList() {

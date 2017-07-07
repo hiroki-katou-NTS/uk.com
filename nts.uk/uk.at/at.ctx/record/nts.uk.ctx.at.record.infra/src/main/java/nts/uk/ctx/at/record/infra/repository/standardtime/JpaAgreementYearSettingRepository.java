@@ -73,7 +73,7 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		AgreementYearSetting agreementYearSetting = AgreementYearSetting.createFromJavaType(
 				kmkmtAgeementYearSetting.kmkmtAgeementYearSettingPK.employeeId,
 				kmkmtAgeementYearSetting.kmkmtAgeementYearSettingPK.yearValue.intValue(),
-				kmkmtAgeementYearSetting.errorOneYear, kmkmtAgeementYearSetting.alarmOneYear);
+				kmkmtAgeementYearSetting.errorOneYear.longValue(), kmkmtAgeementYearSetting.alarmOneYear.longValue());
 		return agreementYearSetting;
 	}
 
@@ -83,8 +83,8 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		entity.kmkmtAgeementYearSettingPK = new KmkmtAgeementYearSettingPK();
 		entity.kmkmtAgeementYearSettingPK.employeeId = agreementYearSetting.getEmployeeId();
 		entity.kmkmtAgeementYearSettingPK.yearValue = new BigDecimal(agreementYearSetting.getYearValue());
-		entity.alarmOneYear = agreementYearSetting.getAlarmOneYear().v();
-		entity.errorOneYear = agreementYearSetting.getErrorOneYear().v();
+		entity.alarmOneYear = new BigDecimal(agreementYearSetting.getAlarmOneYear().v());
+		entity.errorOneYear = new BigDecimal(agreementYearSetting.getErrorOneYear().v());
 
 		return entity;
 	}

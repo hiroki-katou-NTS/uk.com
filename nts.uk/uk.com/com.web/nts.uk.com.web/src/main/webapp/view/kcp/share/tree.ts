@@ -166,6 +166,14 @@ module kcp.share.tree {
                 self.filterData();
             });
             
+            // subscribe change item list origin
+            self.backupItemList.subscribe((newData) => {
+                // data is empty, set selected work place id empty
+                if (!newData || newData.length <= 0) {
+                    self.selectedWorkplaceIds(self.isMultiple ? [] : '');
+                }
+            });
+            
             // Find data.
             service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
                 if (res != null) {

@@ -41,16 +41,17 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 
-		this.basicAgreementSettingRepository.add2(basicAgreementSetting);
-
-		this.agreementTimeOfWorkPlaceRepository.add(agreementTimeOfWorkPlace);
+		if (errors.isEmpty()) {
+			this.basicAgreementSettingRepository.add2(basicAgreementSetting);
+			this.agreementTimeOfWorkPlaceRepository.add(agreementTimeOfWorkPlace);
+		}
 
 		return errors;
 	}
 
 	@Override
 	public List<String> update(BasicAgreementSetting basicAgreementSetting) {
-		
+
 		List<String> errors = new ArrayList<>();
 		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
 			/**
@@ -67,16 +68,17 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			 */
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
-		
-		this.basicAgreementSettingRepository.update2(basicAgreementSetting);
-		
+		if (errors.isEmpty()) {
+			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
+		}
+
 		return errors;
 	}
 
 	@Override
 	public void remove(String basicSettingId, String workPlaceId, int laborSystemAtr) {
 		this.basicAgreementSettingRepository.remove(basicSettingId);
-		
+
 		this.agreementTimeOfWorkPlaceRepository.remove(workPlaceId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
 	}
