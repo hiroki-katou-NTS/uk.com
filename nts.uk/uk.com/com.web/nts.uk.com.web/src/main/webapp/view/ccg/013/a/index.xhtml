@@ -8,7 +8,8 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode
+					nts.uk.ctx.sys.portal.dom.webmenu.WebMenuName
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg013.a.style.css" />
@@ -56,9 +57,9 @@
 							<div class="control-group" data-bind="with: currentWebMenu">
 								<div data-bind="ntsFormLabel: {required: true}">コード/名称</div>
 								<span><input style="width: 40px"
-									data-bind="ntsTextEditor: {value: webMenuCode}" /></span> <span><input
+									data-bind="ntsTextEditor: {value: webMenuCode,constraint: 'WebMenuCode', required: true}" /></span> <span><input
 									style="width: 180px"
-									data-bind="ntsTextEditor: {value: webMenuName}" /></span>
+									data-bind="ntsTextEditor: {value: webMenuName,constraint: 'WebMenuName', required: true}" /></span>
 								<div class="bg-yellow">
 									<div style="margin-left: 5px;"
 										data-bind="ntsCheckBox: {checked: $parent.isDefaultMenu, text: '概定のメニューに設定する' }"

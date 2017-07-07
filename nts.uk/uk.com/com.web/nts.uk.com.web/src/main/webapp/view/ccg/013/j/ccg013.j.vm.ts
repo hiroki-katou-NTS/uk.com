@@ -38,9 +38,9 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
             var liveviewcontainer = $("#liveview");
             var setShareTitleMenu = nts.uk.ui.windows.getShared("CCG013A_ToChild_TitleBar");
             if(setShareTitleMenu !== undefined){
-                self.fileID(setShareTitleMenu.imageId);
-                self.nameTitleBar(setShareTitleMenu.nameTitleBar);
-                self.letterColor(setShareTitleMenu.letterColor);
+                self.fileID(setShareTitleMenu.imageFile);
+                self.nameTitleBar(setShareTitleMenu.titleMenuName);
+                self.letterColor(setShareTitleMenu.textColor);
                 self.backgroundColor(setShareTitleMenu.backgroundColor);
                 liveviewcontainer.html("");
                 liveviewcontainer.append($("<img/>").attr("src", nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/" + setShareTitleMenu.imageId)));
