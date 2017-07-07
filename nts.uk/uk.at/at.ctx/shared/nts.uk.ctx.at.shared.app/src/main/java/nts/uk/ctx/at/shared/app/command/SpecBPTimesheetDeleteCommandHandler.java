@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SpecBPTimesheetDeleteCommandHandler extends CommandHandler<List<SpecBPTimesheetDeleteCommand>>  {
@@ -18,8 +19,9 @@ public class SpecBPTimesheetDeleteCommandHandler extends CommandHandler<List<Spe
 	private SpecBPTimesheetRepository specBPTimesheetRepository;
 	@Override
 	protected void handle(CommandHandlerContext<List<SpecBPTimesheetDeleteCommand>> context) {
+		String companyId = AppContexts.user().companyId();
 		List<SpecBPTimesheetDeleteCommand> lstSpecBPTimesheetDeleteCommand = context.getCommand();
-		 specBPTimesheetRepository.removeListTimesheet(lstSpecBPTimesheetDeleteCommand.get(0).companyId,
+		 specBPTimesheetRepository.removeListTimesheet(companyId,
 				new BonusPaySettingCode(lstSpecBPTimesheetDeleteCommand.get(0).bonusPaySettingCode),
 					lstSpecBPTimesheetDeleteCommand.stream().map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList()));
 	}

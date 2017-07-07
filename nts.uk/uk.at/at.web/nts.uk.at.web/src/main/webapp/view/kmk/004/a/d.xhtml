@@ -10,7 +10,7 @@
 			<span class="title">#{i18n.getText('Com_Workplace')}</span>
 			<span class="action-bar">
 			<button tabindex="1" data-bind="click: saveWorkplace, enable: (selectedWorkplaceId())" class="proceed">#{i18n.getText('KMK004_27')}</button>
-			<button tabindex="3" class="danger" data-bind="click: removeWorkplace, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
+			<button tabindex="3" class="danger" data-bind="click: removeWorkplace, disable: isNewMode || !selectedWorkplaceId()">#{i18n.getText('KMK004_29')}</button>
 			</span>
 		</div>
 		<div class="contents-area">

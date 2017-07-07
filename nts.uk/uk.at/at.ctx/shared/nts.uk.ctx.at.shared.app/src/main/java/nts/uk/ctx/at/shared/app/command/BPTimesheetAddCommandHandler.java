@@ -35,7 +35,7 @@ public class BPTimesheetAddCommandHandler extends CommandHandler<List<BPTimeshee
 				throw new BusinessException("Msg_33");
 			}
 		});
-		bpTimesheetRepository.addListTimesheet(lstBPTimesheetAddCommand.get(0).companyId,
+		bpTimesheetRepository.addListTimesheet(companyId,
 			 new BonusPaySettingCode(lstBPTimesheetAddCommand.get(0).bonusPaySettingCode),
 				lstBPTimesheetAddCommand.stream().map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList()));
 	}
