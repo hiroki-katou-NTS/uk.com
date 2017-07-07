@@ -7,9 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 650 };</script>
+			<script>var dialogSize = { width: 485, height: 560 };</script>
 			<com:ValidatorScript>
-				nts.uk.shr.com.primitive.PersonId
+				nts.uk.ctx.sys.portal.dom.webmenu.TitleBarName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg013.j.style.css" />
@@ -21,25 +21,30 @@
 		<ui:define name="content">
 
 			<div id="contents-area">
-				<span>#{i18n.getText('CCG013_30')}</span>
+				<span>#{i18n.getText('CCG013_92')}</span>
 				<table class="control">
 					<tr>
-						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_31')}</div></td>
-						<td colspan="2"><input data-bind="ntsTextEditor: {value: nameTitleBar, required: true}" /></td>
+						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_93')}</div></td>
+						<td colspan="2"><input tabindex="1"
+							data-name="#{i18n.getText('CCG013_50')}"
+							data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName', required: true}" /></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
-						<td colspan="2"><div id="colorpicker" data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}" /></td>
+						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_94')}</div></td>
+						<td colspan="2"><div id="colorpicker" tabindex="2"
+								data-name="#{i18n.getText('CCG013_19')} "
+								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}" /></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_23')}</div></td>
-						<td colspan="2"><div id="colorpicker"
+						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_95')}</div></td>
+						<td colspan="2"><div id="colorpicker" tabindex="4"
+								data-name="#{i18n.getText('CCG013_23')}"
 								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50}" /></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div></td>
+						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_96')}</div></td>
 						<td colspan="2">
-							<div id="file_upload"
+							<div id="file_upload" tabindex="6"
 								data-bind="ntsFileUpload:{
 		 								filename: filename, 
 										accept: accept, 
@@ -50,25 +55,28 @@
 					</tr>
 					<tr>
 						<td></td>
-						<td class="col2"><span id="imageName" data-bind="text:imageName"></span></td>
-						<td class="pull-right">
-							<button id="delBtn" class="danger" data-bind="click: deleteFile, enable: isDelete()" tabindex="9">#{i18n.getText('CCG030_5')}</button>
+						<td tabindex="7" class="col2"><span id="imageName"
+							data-bind="text:imageName"></span></td>
+						<td tabindex="8" class="pull-right">
+							<button id="delBtn" class="danger" 
+								data-bind="click: deleteFile, enable: isDelete()"
+								>#{i18n.getText('CCG013_98')}</button>
 						</td>
 					</tr>
 					<tr>
 						<td></td>
-						<td colspan="2"><label>サイズ:</label> 
-						<label data-bind="text: imageSize"></label></td>
+						<td colspan="2"><label data-bind="text: imageSize"></label></td>
 					</tr>
 					<tr>
 						<td></td>
-						<td id="liveview" colspan="2"></td>
+						<td id="liveview" tabindex="9" colspan="2"></td>
 					</tr>
 				</table>
 			</div>
 			<div id="functions-area-bottom">
-				<button class=" x-large proceed" data-bind="click : submit">#{i18n.getText('CCG013_28')}</button>
-				<button data-bind="click : cancel_Dialog">#{i18n.getText('CCG013_29')}</button>
+				<button tabindex="10" class=" x-large proceed"
+					data-bind="click : submit">#{i18n.getText('CCG013_100')}</button>
+				<button tabindex="11" data-bind="click : cancel_Dialog">#{i18n.getText('CCG013_101')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

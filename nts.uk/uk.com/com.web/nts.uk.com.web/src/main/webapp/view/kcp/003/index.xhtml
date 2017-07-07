@@ -17,8 +17,15 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			<div id="side-menu" class="cf"></div>
+				<div id="side-menu" class="cf"></div>
 				<div id="content">
+					<div class="cf">
+						<note class="pull-left" style="width:500px;">
+						<b>Update 2017/07/07</b>
+						<br />
+						- selectedCodes: change from jobCode to jobId.<br />
+						- alreadySettingList: structure: {id: string, isAlreadySetting: boolean}. </note>
+					</div>
 					<div id="function-area" style="margin: 40px">
 						<h1>KCP003-職位リスト</h1>
 						<h2>(Job Titlle List)</h2>
@@ -266,7 +273,7 @@
 											<td>selectedCode</td>
 											<td>
 												<b>Type:</b> string | Array[string] <br/>
-												<label>Selected code in grid list</label>
+												<label>Selected job title id in grid list</label>
 											</td>
 										</tr>
 										
@@ -294,7 +301,7 @@
 												<b>Type:</b> Array[UnitAlreadySettingModel]<br/>
 												<b>Default:</b><i> empty</i><br/>
 												<pre><![CDATA[ UnitAlreadySettingModel {
-    code: string;
+    id: string;
     isAlreadySetting: boolean;
 }]]></pre>
 											</td>

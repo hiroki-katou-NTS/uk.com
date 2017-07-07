@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class BPSettingAddCommandHandler extends CommandHandler<BPSettingAddCommand> {
@@ -20,11 +21,12 @@ public class BPSettingAddCommandHandler extends CommandHandler<BPSettingAddComma
 
 	@Override
 	protected void handle(CommandHandlerContext<BPSettingAddCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		BPSettingAddCommand bpSettingAddCommand = context.getCommand();
-		bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand));
+		bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand,companyId));
 	}
 
-	private BonusPaySetting ToBonusPaySettingDomain(BPSettingAddCommand bpSettingAddCommand) {
+	private BonusPaySetting ToBonusPaySettingDomain(BPSettingAddCommand bpSettingAddCommand,String companyId) {
 		List<BPTimesheetAddCommand> lstBPTimesheetAddCommand = bpSettingAddCommand.getLstBonusPayTimesheet();
 		List<BonusPayTimesheet> lstBonusPayTimesheet = lstBPTimesheetAddCommand.stream()
 				.map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList());
@@ -32,7 +34,7 @@ public class BPSettingAddCommandHandler extends CommandHandler<BPSettingAddComma
 				.getLstSpecBonusPayTimesheet();
 		List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet = lstSpecBPTimesheetAddCommand.stream()
 				.map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList());
-		return BonusPaySetting.createFromJavaType(bpSettingAddCommand.getCompanyId(), bpSettingAddCommand.getCode(),
+		return BonusPaySetting.createFromJavaType(companyId, bpSettingAddCommand.getCode(),
 				bpSettingAddCommand.getName(), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);
 		// bonusPaySetting.setListTimesheet(lstBonusPayTimesheet);
 		// bonusPaySetting.setListSpecialTimesheet(lstSpecBonusPayTimesheet);

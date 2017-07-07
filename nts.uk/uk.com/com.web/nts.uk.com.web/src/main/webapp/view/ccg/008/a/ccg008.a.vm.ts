@@ -142,7 +142,7 @@
                 height: (placement.height * 150) + ((placement.height - 1) * 10)
             });
         }
-    } 
+    }  
      export module model {
          /** Client Placement class */
         export class Placement {

@@ -56,6 +56,10 @@ public class AddWebMenuCommandHandler extends CommandHandler<AddWebMenuCommand> 
 			domain =  WebMenu.createFromJavaType(companyId, command.getWebMenuCode(), command.getWebMenuName(), command.getDefaultMenu(), null);
 		}
 		
+		if (domain.isDefault()) {
+			webMenuRepository.changeNotDefault(companyId);
+		}
+		
 		webMenuRepository.add(domain);
 		
 	}

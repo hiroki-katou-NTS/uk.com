@@ -1,5 +1,6 @@
 module kcp.share.list {
     export interface UnitModel {
+        id?: string;
         code: string;
         name?: string;
         workplaceName?: string;
@@ -36,7 +37,8 @@ module kcp.share.list {
         
         /**
          * selected value.
-         * May be string or Array<string>
+         * May be string or Array<string>.
+         * Note: With job title list (KCP003), this is selected job title id.
          */
         selectedCode: KnockoutObservable<any>;
         
@@ -77,6 +79,7 @@ module kcp.share.list {
         /**
          * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
+         * Note: With job title list (KCP003), structure: {id: string, isAlreadySetting: boolean}.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
         
@@ -85,6 +88,11 @@ module kcp.share.list {
          * structure: {code: string, name: string, workplaceName: string}.
          */
         employeeInputList?: KnockoutObservableArray<UnitModel>;
+        
+        /**
+         * Max rows to visible in list component.
+         */
+        maxRows?: number;
     }
     
     export class SelectType {
@@ -109,6 +117,7 @@ module kcp.share.list {
         totalColumnSize: number;
         totalComponentSize: number;
         totalHeight: number;
+        rowHeight: number;
     }
     
     /**
@@ -143,10 +152,13 @@ module kcp.share.list {
             var dfd = $.Deferred<void>();
             var self = this;
             self.isMultiple = data.isMultiSelect;
+            if (!data.maxRows) {
+                data.maxRows = 15;
+            }
             if (data.isMultiSelect) {
                 self.selectedCodes = ko.observableArray([]);
             } else {
-                self.selectedCodes = data.selectedCode;
+                self.selectedCodes = ko.observable(null);
             }
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
@@ -164,22 +176,38 @@ module kcp.share.list {
                 if (!seletedVal) {
                     return;
                 }
-                if (data.isMultiSelect) {
-                    // With multi-select => remove no select item.
-                    var noSeletectIndex = (<Array<string>>seletedVal).indexOf('');
-                    if (noSeletectIndex > -1) {
-                        var dataSelected = seletedVal.slice();
-                        (<Array<string>>dataSelected).splice(noSeletectIndex);
-                        data.selectedCode(dataSelected);
+                var selectedValue = seletedVal;
+                // With job title list -> return id.
+                if (self.listType == ListType.JOB_TITLE) {
+                    if (data.isMultiSelect) {
+                        selectedValue = _.map(seletedVal, function(code) {
+                            var id = _.filter(self.itemList(), function(item) {
+                                return item.code === code;
+                            })[0].id;
+                            return id ? id : '';
+                        })
                     } else {
-                        data.selectedCode(seletedVal);
+                        selectedValue = _.filter(self.itemList(), function(item) {
+                            return item.code === seletedVal;
+                        })[0].id;
                     }
                 }
+                if (data.isMultiSelect) {
+                    // With multi-select => remove no select item.
+                    var noSeletectIndex = (<Array<string>>selectedValue).indexOf('');
+                    if (noSeletectIndex > -1) {
+                        var dataSelected = selectedValue.slice();
+                        (<Array<string>>dataSelected).splice(noSeletectIndex, 1);
+                        data.selectedCode(dataSelected);
+                        return;
+                    }
+                }
+                data.selectedCode(selectedValue);
             })
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 100});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
                 self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
@@ -273,6 +301,14 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
+                
+                $('#' + self.componentGridId).igGrid({
+                    features: [
+                        {
+                            name: "Tooltips"
+                        }
+                    ]
+                })
                 dfd.resolve();
             });
             
@@ -346,6 +382,14 @@ module kcp.share.list {
          * Add Aready Setting Attr into data list.
          */
         private addAreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitModel>) {
+            if (this.listType == ListType.JOB_TITLE) {
+                // Use id to set already  setting list.
+                var alreadyListCode = alreadySettingList.filter(item => item.isAlreadySetting).map(item => item.id);
+                dataList.map((item => {
+                    item.isAlreadySetting = alreadyListCode.indexOf(item.id) > -1;
+                }))
+                return;
+            }
             var alreadyListCode = alreadySettingList.filter(item => item.isAlreadySetting).map(item => item.code);
             dataList.map((item => {
                 item.isAlreadySetting = alreadyListCode.indexOf(item.code) > -1;
@@ -365,6 +409,7 @@ module kcp.share.list {
         private initGridStyle(data: ComponentOption) {
             var codeColumnSize: number = 50;
             var companyColumnSize: number = 0;
+            var heightOfRow : number = 21;
             switch(data.listType) {
                 case ListType.EMPLOYMENT:
                     break;
@@ -387,12 +432,14 @@ module kcp.share.list {
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
-            var totalHeight: number = this.hasBaseDate ? 500 : 452;
+            var totalRowsHeight = heightOfRow * data.maxRows;
+            var totalHeight: number = this.hasBaseDate ? 123 : 55;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),
                 totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2,
-                totalHeight: totalHeight
+                totalHeight: totalHeight + totalRowsHeight,
+                rowHeight: totalRowsHeight
             };
         }
         

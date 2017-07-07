@@ -7,7 +7,6 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author hungnm
@@ -16,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 public class BPUnitUseSetting extends AggregateRoot {
 
-	private CompanyId companyId;
+	private String companyId;
 
 	private UseAtr workplaceUseAtr;
 
@@ -24,7 +23,7 @@ public class BPUnitUseSetting extends AggregateRoot {
 
 	private UseAtr workingTimesheetUseAtr;
 
-	public BPUnitUseSetting(CompanyId companyId, UseAtr workplaceUseAtr, UseAtr personalUseAtr,
+	public BPUnitUseSetting(String companyId, UseAtr workplaceUseAtr, UseAtr personalUseAtr,
 			UseAtr workingTimesheetUseAtr) {
 		super();
 		this.companyId = companyId;
@@ -35,7 +34,7 @@ public class BPUnitUseSetting extends AggregateRoot {
 
 	public static BPUnitUseSetting createFromJavaType(String companyId, int workplaceUseAtr, int personalUseAtr,
 			int workingTimesheetUseAtr) {
-		return new BPUnitUseSetting(new CompanyId(companyId), EnumAdaptor.valueOf(workplaceUseAtr, UseAtr.class),
+		return new BPUnitUseSetting(companyId, EnumAdaptor.valueOf(workplaceUseAtr, UseAtr.class),
 				EnumAdaptor.valueOf(personalUseAtr, UseAtr.class),
 				EnumAdaptor.valueOf(workingTimesheetUseAtr, UseAtr.class));
 	}

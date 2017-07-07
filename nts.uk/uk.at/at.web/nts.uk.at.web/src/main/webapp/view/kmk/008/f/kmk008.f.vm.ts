@@ -48,8 +48,6 @@ module nts.uk.at.view.kmk008.f {
                     if (empSelect) { self.currentClassificationName(empSelect.name); }
 
                 });
-
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
@@ -84,7 +82,8 @@ module nts.uk.at.view.kmk008.f {
                 if (indexCodealreadySetting != -1) {
                     new service.Service().updateAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
                         if (listError.length > 0) {
-                            alert("Error");
+                            let errorCode = _.split(listError[0], ',');
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
                         self.getDetail(self.selectedCode());
@@ -93,7 +92,8 @@ module nts.uk.at.view.kmk008.f {
                 }
                 new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
                     if (listError.length > 0) {
-                        alert("Error");
+                        let errorCode = _.split(listError[0], ',');
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
                     self.getalreadySettingList();
@@ -103,11 +103,15 @@ module nts.uk.at.view.kmk008.f {
 
             removeDataClassification() {
                 let self = this;
-                let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
-                new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                    self.getalreadySettingList();
-                    self.setSelectCodeAfterRemove(self.selectedCode());
-                });
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
+                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+                            self.getalreadySettingList();
+                            self.setSelectCodeAfterRemove(self.selectedCode());
+                        });
+                    });
+
             }
 
             getDetail(classificationCode: string) {
@@ -273,7 +277,7 @@ module nts.uk.at.view.kmk008.f {
         }
 
 
-         export class UnitAlreadySettingModel {
+        export class UnitAlreadySettingModel {
             code: string;
             isAlreadySetting: boolean;
             constructor(code: string, isAlreadySetting: boolean) {

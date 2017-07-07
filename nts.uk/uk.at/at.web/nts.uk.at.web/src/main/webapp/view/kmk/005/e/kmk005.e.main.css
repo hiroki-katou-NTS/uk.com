@@ -48,6 +48,18 @@ table, tr, th, td {
 .textBody {
 	margin-left: 15px;
 }
+#table-panel-1 > thead > tr > th:NTH-CHILD(1) {
+	width: 87px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(2) {
+	width: 216px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(3) {
+	width: 416px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(4) {
+	width: 416px;
+}
 #table-panel-1 > thead > tr:NTH-CHILD(1) > th {
 	padding-left: 10px;
 	padding-right: 10px;
@@ -75,6 +87,18 @@ table, tr, th, td {
 }
 #table-panel-1 > tbody > tr > td:NTH-CHILD(4) {
 	padding: 3px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(1) {
+	width: 87px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(2) {
+	width: 216px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(3) {
+	width: 416px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(4) {
+	width: 416px;
 }
 #table-panel-2 > thead > tr:NTH-CHILD(1) > th {
 	padding-left: 10px;
