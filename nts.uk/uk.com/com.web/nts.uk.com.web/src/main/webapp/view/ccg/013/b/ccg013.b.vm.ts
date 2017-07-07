@@ -103,24 +103,22 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         submit() {
             var self = this;
-            var menuCls = null;
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             var standMenu = _.find(self.listStandardMenu(), function(item: service.MenuBarDto) {
                 return item.uniqueKey == self.selectedStandardMenuKey();
             });
-            if (standMenu) {
-                menuCls = standMenu.classification;
-            }
-            var menuBar = new MenuBar(standMenu.code,
+            
+            var menuBar = new MenuBar(standMenu ? standMenu.code : null,
                                       self.nameMenuBar(),
-                                      standMenu.nameStandard,
+                                      standMenu ? standMenu.nameStandard : null,
                                       self.letterColor(), 
                                       self.backgroundColor(),
                                       self.selectedRadioAtcClass(),
                                       self.selectedCodeSystem(), 
-                                      standMenu.classification
+                                      standMenu ? standMenu.classification : null
                                       );
             windows.setShared("CCG013B_MenuBar", menuBar);
             

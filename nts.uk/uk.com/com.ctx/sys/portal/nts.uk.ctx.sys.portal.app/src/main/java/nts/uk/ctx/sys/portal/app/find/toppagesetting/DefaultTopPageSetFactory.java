@@ -147,7 +147,13 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		return new LayoutForMyPageDto(employeeId, layout.getLayoutID(), PGType.MYPAGE.value, flowmenuNew, placementNew);
 	}
 	
-	//build placement my page
+	/**
+	 * build placement my page
+	 * @param layout
+	 * @param placements
+	 * @param myPage
+	 * @return
+	 */
 	private List<PlacementDto> buildPlacementDto(Layout layout, List<Placement> placements, MyPageSettingDto myPage) {
 		List<TopPagePart> activeTopPageParts = topPagePartService.getAllActiveTopPagePart(layout.getCompanyID(), layout.getPgType());
 		List<PlacementDto> placementDtos = new ArrayList<PlacementDto>();
@@ -171,12 +177,22 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		return placementDtos;
 	}
 
+	/**
+	 * convert TopPagePart to PlacementPartDto
+	 * @param topPagePart
+	 * @return
+	 */
 	private PlacementPartDto fromTopPagePart(TopPagePart topPagePart) {
 		return new PlacementPartDto(topPagePart.getWidth().v(), topPagePart.getHeight().v(),
 				topPagePart.getToppagePartID(), topPagePart.getCode().v(), topPagePart.getName().v(),
 				topPagePart.getType().value, null);
 	}
 
+	/**
+	 * convert ExternalUrl to PlacementPartDto
+	 * @param externalUrl
+	 * @return
+	 */
 	private PlacementPartDto fromExternalUrl(ExternalUrl externalUrl) {
 		return new PlacementPartDto(externalUrl.getWidth().v(), externalUrl.getHeight().v(), null, null, null, null,externalUrl.getUrl().v());
 	}
@@ -293,7 +309,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		if(topPageJob.getPersonPermissionSet() == PersonPermissionSetting.SET && tpSelfSet != null){//check topPageJob: setting or not setting
 			//display top page self set (本人トップページ設定)-C
 			check = true;
-			layoutTopPage = getTopPageByCode(companyId,tpSelfSet.getCode(), System.Common.value, MenuClassification.TopPage.value, check);
+			layoutTopPage = getTopPageByCode(companyId,tpSelfSet.getCode(), System.COMMON.value, MenuClassification.TopPage.value, check);
 			if (!checkMyPage) {//not use my page
 				return new LayoutAllDto(null, layoutTopPage, check, checkMyPage, checkTopPage);
 			}
@@ -428,18 +444,19 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		List<String> lst = new ArrayList<>();
 		//lay job position
 		JobPositionDto jobPosition = topPageSelfSet.getJobPosition(AppContexts.user().employeeId());
-		if(jobPosition != null){
-			lst.add(jobPosition.getJobId());
-			//lay top page job title set
-			List<TopPageJobSet> lstTpJobSet = topPageJobSet.findByListJobId(companyId, lst);
-			if(!lstTpJobSet.isEmpty()){
-				TopPageJobSet tpJobSet = lstTpJobSet.get(0);
-				if(tpJobSet != null && tpJobSet.getPersonPermissionSet().value == PersonPermissionSetting.SET.value){//co job title va duoc setting
-					return true;
-				}
-			}
+		if(jobPosition == null){
+			return false;
 		}
-		return false;
+		
+		lst.add(jobPosition.getJobId());
+		//lay top page job title set
+		List<TopPageJobSet> lstTpJobSet = topPageJobSet.findByListJobId(companyId, lst);
+		if(lstTpJobSet.isEmpty()){
+			return false;
+		}
+		
+		TopPageJobSet tpJobSet = lstTpJobSet.get(0);
+		return (tpJobSet != null && tpJobSet.getPersonPermissionSet().value == PersonPermissionSetting.SET.value);//co job title va duoc setting	
 	}
 	/**
 	 * find lay out my page
