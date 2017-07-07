@@ -48,8 +48,6 @@ module nts.uk.at.view.kmk008.f {
                     if (empSelect) { self.currentClassificationName(empSelect.name); }
 
                 });
-
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
@@ -103,11 +101,15 @@ module nts.uk.at.view.kmk008.f {
 
             removeDataClassification() {
                 let self = this;
-                let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
-                new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                    self.getalreadySettingList();
-                    self.setSelectCodeAfterRemove(self.selectedCode());
-                });
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
+                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+                            self.getalreadySettingList();
+                            self.setSelectCodeAfterRemove(self.selectedCode());
+                        });
+                    });
+
             }
 
             getDetail(classificationCode: string) {
@@ -273,7 +275,7 @@ module nts.uk.at.view.kmk008.f {
         }
 
 
-         export class UnitAlreadySettingModel {
+        export class UnitAlreadySettingModel {
             code: string;
             isAlreadySetting: boolean;
             constructor(code: string, isAlreadySetting: boolean) {

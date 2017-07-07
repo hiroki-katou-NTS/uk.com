@@ -5,7 +5,6 @@
 package nts.uk.ctx.basic.infra.repository.company.organization.employee.workplace;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistorySetMemento;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.workplace.KmnmtAffiliWorkplaceHist;
@@ -54,8 +53,8 @@ public class JpaAffiliationWorkplaceHistorySetMemento
 	 * organization.employee.EmployeeId)
 	 */
 	@Override
-	public void setEmployeeId(EmployeeId employeeId) {
-		this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().setEmpId(employeeId.v());
+	public void setEmployeeId(String employeeId) {
+		this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().setEmpId(employeeId);
 	}
 
 	/*

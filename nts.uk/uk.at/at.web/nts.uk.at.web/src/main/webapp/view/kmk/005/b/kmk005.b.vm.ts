@@ -81,7 +81,7 @@ module nts.uk.at.view.kmk005.b {
                             checkUseExist = true;
                         }
                         */
-                    lstUseArt.push(item.useAtr() == 0 ? true : false);
+                    lstUseArt.push(item.useAtr() == 1 ? true : false);
                     bonusPayTimeItemListCommand.push(ko.mapping.toJS(item));
                 });
 
@@ -92,7 +92,7 @@ module nts.uk.at.view.kmk005.b {
                             checkUseExist = true;
                         }
                         */
-                    lstUseArt.push(item.useAtr() == 0 ? true : false);
+                    lstUseArt.push(item.useAtr() == 1 ? true : false);
                     bonusPayTimeItemSpecListCommand.push(ko.mapping.toJS(item));
                 });
 
