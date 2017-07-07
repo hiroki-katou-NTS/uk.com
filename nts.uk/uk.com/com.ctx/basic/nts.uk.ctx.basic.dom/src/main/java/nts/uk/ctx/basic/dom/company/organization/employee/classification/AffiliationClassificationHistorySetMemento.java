@@ -6,7 +6,6 @@ package nts.uk.ctx.basic.dom.company.organization.employee.classification;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCode;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 
 /**
  * The Interface AffiliationClassificationHistorySetMemento.
@@ -34,5 +33,5 @@ public interface AffiliationClassificationHistorySetMemento {
 	 *
 	 * @param employeeId the new employee id
 	 */
-	void setEmployeeId(EmployeeId employeeId);
+	void setEmployeeId(String employeeId);
 }

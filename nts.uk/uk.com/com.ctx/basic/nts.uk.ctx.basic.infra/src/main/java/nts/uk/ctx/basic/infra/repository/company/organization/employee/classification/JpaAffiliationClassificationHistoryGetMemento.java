@@ -6,7 +6,6 @@ package nts.uk.ctx.basic.infra.repository.company.organization.employee.classifi
 
 import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCode;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistoryGetMemento;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHistPK;
@@ -63,8 +62,8 @@ public class JpaAffiliationClassificationHistoryGetMemento
 	 * ClassificationHistoryGetMemento#getEmployeeId()
 	 */
 	@Override
-	public EmployeeId getEmployeeId() {
-		return new EmployeeId(this.classificationHistory.getKmnmtClassificationHistPK().getEmpId());
+	public String getEmployeeId() {
+		return this.classificationHistory.getKmnmtClassificationHistPK().getEmpId();
 	}
 
 }
