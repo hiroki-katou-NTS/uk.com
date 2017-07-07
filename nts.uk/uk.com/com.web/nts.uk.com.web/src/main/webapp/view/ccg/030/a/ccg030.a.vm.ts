@@ -37,9 +37,6 @@ module ccg030.a.viewmodel {
             self.tempFileID = ko.observable('');
             self.isCreate = ko.observable(null);
             self.isDelete = ko.observable(false);
-            self.isCreate.subscribe((value) => {
-                self.changeMode(value);
-            });
             // Enable
             self.enableDownload = ko.observable(true);
             self.enablePreview = ko.observable(true);
@@ -62,12 +59,12 @@ module ccg030.a.viewmodel {
         /** Creat new FlowMenu */
         createNewFlowMenu() {
             var self = this;
-            $(".nts-input").ntsError("clear");
-            _.defer(() => { $("#inpCode").focus(); });
+            errors.clearAll();
             self.isCreate(true);
             self.isDelete(false);
             self.selectedFlowMenuCD(null);
             self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
+            self.focusToInput();
         }
 
         /** Click Registry button */
@@ -83,9 +80,11 @@ module ccg030.a.viewmodel {
                 nts.uk.ui.block.invisible();
                 if (self.isCreate() === true) {
                     service.createFlowMenu(flowMenu).done((data) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.reloadData().done(() => {
-                            self.selectFlowMenuByIndexByCode(topPageCode);
+                            self.selectFlowMenuByCode(topPageCode);
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                self.focusToInput();
+                            });
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage({ messageId: "Msg_3" }));
@@ -96,8 +95,9 @@ module ccg030.a.viewmodel {
                 else {
                     service.updateFlowMenu(flowMenu).done((data) => {
                         self.reloadData();
-                        _.defer(() => { $("#inpName").focus(); });
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.focusToInput();
+                        });
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
@@ -105,8 +105,8 @@ module ccg030.a.viewmodel {
             }
         }
 
-        //削除ボタン
-        deleteNewFlowMenu() {
+        /** Delete FlowMenu */
+        deleteFlowMenu() {
             var self = this;
             if (self.selectedFlowMenuCD() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
@@ -117,9 +117,11 @@ module ccg030.a.viewmodel {
                             index = _.min([self.listFlowMenu().length - 2, index]);
                             self.reloadData().done(() => {
                                 self.selectFlowMenuByIndex(index);
+                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                    self.focusToInput();
+                                    errors.clearAll();
+                                });
                             });
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                            errors.clearAll();
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_76" });
                         }).always(() => {
@@ -145,7 +147,6 @@ module ccg030.a.viewmodel {
                     else {
                         self.uploadFileProcess();
                     }
-                    
                 });
             }
         }
@@ -166,8 +167,9 @@ module ccg030.a.viewmodel {
                 errors.clearAll();
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err.message);
-            }).always(() =>{
-                nts.uk.ui.block.clear();});
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
         }
 
         deleteButtonClick(): void {
@@ -215,7 +217,7 @@ module ccg030.a.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        // Open ccg030 B Dialog
+        /** Open ccg030 B Dialog */
         open030B_Dialog() {
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared("flowmenu", this.selectedFlowMenu(), false);
@@ -228,8 +230,8 @@ module ccg030.a.viewmodel {
         /** Find Current FlowMenu by ID */
         private findFlowMenu(flowmenuCD: string): void {
             var self = this;
-            $(".nts-input").ntsError("clear");
-            _.defer(() => { $("#inpName").focus(); });
+            if (nts.uk.ui._viewModel !== undefined)
+                errors.clearAll();
             var selectedFlowmenu = _.find(self.listFlowMenu(), ['topPageCode', flowmenuCD]);
             if (selectedFlowmenu !== undefined) {
                 self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
@@ -239,6 +241,7 @@ module ccg030.a.viewmodel {
                     selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
                 self.isCreate(false);
+                self.focusToInput();
                 if (!util.isNullOrEmpty(selectedFlowmenu.fileID))
                     self.isDelete(true);
                 else
@@ -251,11 +254,11 @@ module ccg030.a.viewmodel {
             }
         }
 
-        //蛻晄悄繝�繝ｼ繧ｿ蜿門ｾ怜�ｦ逅�
+        /** Reload Data */
         private reloadData(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            /** Get list FlowMenu*/
+            // Get list FlowMenu
             service.fillAllFlowMenu().done(function(listFlowMenu: Array<any>) {
                 listFlowMenu = _.orderBy(listFlowMenu, ["topPageCode"], ["asc"]);
                 self.listFlowMenu(listFlowMenu);
@@ -274,22 +277,8 @@ module ccg030.a.viewmodel {
             return dfd.promise();
         }
 
-        /** Init Mode */
-        private changeMode(isCreate: boolean) {
-            var self = this;
-            $(".nts-input").ntsError("clear");
-            if (isCreate === true) {
-                self.selectedFlowMenuCD(null);
-                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 4, 4));
-                _.defer(() => { $("#inpCode").focus(); });
-            }
-            else {
-                _.defer(() => { $("#inpName").focus(); });
-            }
-        }
-
         /** Select FlowMenu by Code: Create & Update case*/
-        private selectFlowMenuByIndexByCode(topPageCode: string) {
+        private selectFlowMenuByCode(topPageCode: string) {
             this.selectedFlowMenuCD(topPageCode);
         }
 
@@ -303,12 +292,14 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenuCD(null);
         }
 
-        private messName(messCode: string): string {
-            var self = this;
-            var Msg = _.find(self.listMessage(), function(mess) {
-                return mess.messCode === messCode;
-            })
-            return Msg.messName;
+        /** Focus to input */
+        focusToInput() {
+            if (this.isCreate() == true) {
+                $("#inpCode").focus();
+            }
+            else {
+                $("#inpName").focus();
+            }
         }
     }
 
