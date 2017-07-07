@@ -10,12 +10,26 @@ module nts.uk.at.view.kmk008.a {
                 return dfd.promise();
             }
 
-            opendScreenWithLaborSystemAtr0() {
+            opendScreenBWithLaborSystemAtr0() {
                 nts.uk.request.jump("/view/kmk/008/b/index.xhtml", { "laborSystemAtr": 0 });
             }
 
-            opendScreenWithLaborSystemAtr1() {
+            opendScreenBWithLaborSystemAtr1() {
                 nts.uk.request.jump("/view/kmk/008/b/index.xhtml", { "laborSystemAtr": 1 });
+            }
+
+            openDialogScreenJ() {
+                nts.uk.ui.windows.sub.modal("/view/kmk/008/j/index.xhtml").onClosed(() => {
+                });
+            }
+
+            openDialogScreenI() {
+                nts.uk.ui.windows.sub.modal("/view/kmk/008/i/index.xhtml").onClosed(() => {
+                });
+            }
+
+            opendScreenG() {
+                 nts.uk.request.jump("/view/kmk/008/g/index.xhtml");
             }
         }
 
