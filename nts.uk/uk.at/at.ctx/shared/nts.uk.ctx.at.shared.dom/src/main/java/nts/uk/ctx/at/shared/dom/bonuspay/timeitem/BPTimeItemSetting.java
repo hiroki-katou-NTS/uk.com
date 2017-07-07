@@ -8,10 +8,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.HTCalSettingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.OTCalSettingAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.WTCalSettingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author hungnm
@@ -22,7 +20,7 @@ public class BPTimeItemSetting extends AggregateRoot {
 
 	private String companyId;
 
-	private TimeItemId tiemItemId;
+	private String tiemItemId;
 
 	private HTCalSettingAtr holidayCalSettingAtr;
 
@@ -34,7 +32,7 @@ public class BPTimeItemSetting extends AggregateRoot {
 
 	}
 
-	private BPTimeItemSetting(String companyId, TimeItemId tiemItemId, HTCalSettingAtr holidayCalSettingAtr,
+	private BPTimeItemSetting(String companyId, String tiemItemId, HTCalSettingAtr holidayCalSettingAtr,
 			OTCalSettingAtr overtimeCalSettingAtr, WTCalSettingAtr worktimeCalSettingAtr) {
 		super();
 		this.companyId = companyId;
@@ -47,7 +45,7 @@ public class BPTimeItemSetting extends AggregateRoot {
 
 	public static BPTimeItemSetting createFromJavaType(String companyId, String tiemItemId, int holidayCalSettingAtr,
 			int overtimeCalSettingAtr, int worktimeCalSettingAtr) {
-		return new BPTimeItemSetting(companyId, new TimeItemId(tiemItemId),
+		return new BPTimeItemSetting(companyId,tiemItemId,
 				EnumAdaptor.valueOf(holidayCalSettingAtr, HTCalSettingAtr.class),
 				EnumAdaptor.valueOf(overtimeCalSettingAtr, OTCalSettingAtr.class),
 				EnumAdaptor.valueOf(worktimeCalSettingAtr, WTCalSettingAtr.class));

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.find.standardtime.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
 
 /**
@@ -14,7 +12,7 @@ public class AgreementMonthSettingDto {
 
 	private int yearMonthValue;
 
-	private BigDecimal errorOneMonth;
+	private Long errorOneMonth;
 
-	private BigDecimal alarmOneMonth;
+	private Long alarmOneMonth;
 }

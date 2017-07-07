@@ -40,7 +40,7 @@ public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPT
 	@Override
 	public void updateListSetting(List<BPTimeItemSetting> lstSetting) {
 		lstSetting.forEach(c->{
-			Optional<KbpstBPTimeItemSetting> kbpstBPTimeItemSettingOptional = this.queryProxy().find(new KbpstBPTimeItemSettingPK(c.getCompanyId().toString(), c.getTiemItemId().v()), KbpstBPTimeItemSetting.class);
+			Optional<KbpstBPTimeItemSetting> kbpstBPTimeItemSettingOptional = this.queryProxy().find(new KbpstBPTimeItemSettingPK(c.getCompanyId().toString(), c.getTiemItemId()), KbpstBPTimeItemSetting.class);
 			if (kbpstBPTimeItemSettingOptional.isPresent()) {
 				KbpstBPTimeItemSetting kbpstBPTimeItemSetting = kbpstBPTimeItemSettingOptional.get();
 				kbpstBPTimeItemSetting.holidayCalSettingAtr= new BigDecimal(c.getHolidayCalSettingAtr().value);
