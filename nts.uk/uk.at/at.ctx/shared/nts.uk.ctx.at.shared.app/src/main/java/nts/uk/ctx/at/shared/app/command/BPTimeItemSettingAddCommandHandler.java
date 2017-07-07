@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BPTimeItemSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class BPTimeItemSettingAddCommandHandler extends CommandHandler<List<BPTimeItemSettingAddCommand>> {
@@ -18,13 +19,14 @@ public class BPTimeItemSettingAddCommandHandler extends CommandHandler<List<BPTi
 
 	@Override
 	public void handle(CommandHandlerContext<List<BPTimeItemSettingAddCommand>> context) {
+		String companyId = AppContexts.user().companyId();
 		List<BPTimeItemSettingAddCommand> bpTimeItemSettingAddCommand = context.getCommand();
 		bpTimeItemSettingRepository.addListSetting(bpTimeItemSettingAddCommand.stream()
-				.map(c -> toBPTimeItemSettingDomain(c)).collect(Collectors.toList()));
+				.map(c -> toBPTimeItemSettingDomain(c,companyId)).collect(Collectors.toList()));
 	}
 
-	private BPTimeItemSetting toBPTimeItemSettingDomain(BPTimeItemSettingAddCommand bpTimeItemSettingAddCommand) {
-		return BPTimeItemSetting.createFromJavaType(bpTimeItemSettingAddCommand.getCompanyId(),
+	private BPTimeItemSetting toBPTimeItemSettingDomain(BPTimeItemSettingAddCommand bpTimeItemSettingAddCommand,String companyId) {
+		return BPTimeItemSetting.createFromJavaType(companyId,
 				bpTimeItemSettingAddCommand.getTimeItemId(), bpTimeItemSettingAddCommand.holidayCalSettingAtr,
 				bpTimeItemSettingAddCommand.overtimeCalSettingAtr, bpTimeItemSettingAddCommand.worktimeCalSettingAtr);
 	}

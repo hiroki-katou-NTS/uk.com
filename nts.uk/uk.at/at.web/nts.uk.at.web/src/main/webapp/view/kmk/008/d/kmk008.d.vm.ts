@@ -46,10 +46,7 @@ module nts.uk.at.view.kmk008.d {
                         return emp.code == newValue;
                     });
                     if (empSelect) { self.currentEmpName(empSelect.name); }
-
                 });
-
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
@@ -93,12 +90,15 @@ module nts.uk.at.view.kmk008.d {
 
             removeData() {
                 let self = this;
-                let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
-                new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                    self.getalreadySettingList();
-                    self.setSelectCodeAfterRemove(self.selectedCode());
-                });
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
+                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+                            self.getalreadySettingList();
+                            self.setSelectCodeAfterRemove(self.selectedCode());
+                        });
 
+                    });
             }
 
             getalreadySettingList() {
