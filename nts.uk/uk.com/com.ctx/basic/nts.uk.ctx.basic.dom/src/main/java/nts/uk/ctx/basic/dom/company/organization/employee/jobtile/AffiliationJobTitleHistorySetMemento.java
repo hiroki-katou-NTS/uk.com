@@ -5,7 +5,6 @@
 package nts.uk.ctx.basic.dom.company.organization.employee.jobtile;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 import nts.uk.ctx.basic.dom.company.organization.jobtitle.PositionId;
 
 /**
@@ -27,7 +26,7 @@ public interface AffiliationJobTitleHistorySetMemento {
 	 *
 	 * @param employeeId the new employee id
 	 */
-	void setEmployeeId(EmployeeId employeeId);
+	void setEmployeeId(String employeeId);
 	
 	
 	/**

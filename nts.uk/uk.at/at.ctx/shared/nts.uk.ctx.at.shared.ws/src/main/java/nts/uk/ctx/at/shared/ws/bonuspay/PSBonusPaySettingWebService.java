@@ -9,54 +9,35 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.PSBonusPaySettingAddCommand;
-import nts.uk.ctx.at.shared.app.command.PSBonusPaySettingAddCommandHandler;
-import nts.uk.ctx.at.shared.app.command.PSBonusPaySettingDeleteCommand;
-import nts.uk.ctx.at.shared.app.command.PSBonusPaySettingDeleteCommandHandler;
-import nts.uk.ctx.at.shared.app.command.PSBonusPaySettingUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.PSBonusPaySettingUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.PSBonusPaySettingCommand;
+import nts.uk.ctx.at.shared.app.command.PSBonusPaySettingCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.PSBonusPaySettingDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.PSBonusPaySettingFinder;
 
-@Path("at/share/psBonusPaySetting")
 @Produces("application/json")
+@Path("at/share/psBonusPaySetting")
 public class PSBonusPaySettingWebService extends WebService {
 	@Inject
-	private PSBonusPaySettingFinder psBonusPaySettingFinder;
+	private PSBonusPaySettingFinder finder;
+
 	@Inject
-	private PSBonusPaySettingAddCommandHandler psBonusPaySettingAddCommandHandler;
-	@Inject
-	private PSBonusPaySettingDeleteCommandHandler psBonusPaySettingDeleteCommandHandler;
-	@Inject
-	private PSBonusPaySettingUpdateCommandHandler psBonusPaySettingUpdateCommandHandler;
+	private PSBonusPaySettingCommandHandler commandHandler;
 
 	@POST
-	@Path("getListPSBonusPaySettingSetting")
+	@Path("getList")
 	public List<PSBonusPaySettingDto> getListPSBonusPaySettingSetting(List<String> lstEmployeeId) {
-		return this.psBonusPaySettingFinder.getListSetting(lstEmployeeId);
-	}
-	@POST
-	@Path("getPersonalBonusPaySetting/{employeeId}")
-	public PSBonusPaySettingDto getPersonalBonusPaySetting(@PathParam("employeeId") String employeeId){
-		return this.psBonusPaySettingFinder.getPersonalBonusPaySetting(employeeId);
+		return this.finder.getListSetting(lstEmployeeId);
 	}
 
 	@POST
-	@Path("addPSBonusPaySettingSetting")
-	public void addPSBonusPaySettingSetting(PSBonusPaySettingAddCommand psBonusPaySettingAddCommand) {
-	this.psBonusPaySettingAddCommandHandler.handle(psBonusPaySettingAddCommand);
+	@Path("getSetting/{employeeId}")
+	public PSBonusPaySettingDto getPersonalBonusPaySetting(@PathParam("employeeId") String employeeId) {
+		return this.finder.getPersonalBonusPaySetting(employeeId);
 	}
 
 	@POST
-	@Path("updatePSBonusPaySettingSetting")
-	public void updatePSBonusPaySettingSetting(PSBonusPaySettingUpdateCommand psBonusPaySettingUpdateCommand) {
-	this.psBonusPaySettingUpdateCommandHandler.handle(psBonusPaySettingUpdateCommand);
+	@Path("saveSetting")
+	public void addPSBonusPaySettingSetting(PSBonusPaySettingCommand command) {
+		this.commandHandler.handle(command);
 	}
-
-	@POST
-	@Path("removePSBonusPaySettingSetting")
-	public void removePSBonusPaySettingSetting(PSBonusPaySettingDeleteCommand psBonusPaySettingDeleteCommand) {
-	this.psBonusPaySettingDeleteCommandHandler.handle(psBonusPaySettingDeleteCommand);
-	}
-
 }

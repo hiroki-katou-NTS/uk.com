@@ -22,7 +22,6 @@ module nts.uk.at.view.kmk012.a {
             textEditorOption: KnockoutObservable<any>;
             visibleUseClassification: KnockoutObservable<boolean>;
             enableChangeClosureDate: KnockoutObservable<boolean>;
-            enableChangeClosureDateAnd: KnockoutObservable<boolean>;
             enableUseClassification: KnockoutObservable<boolean>;
                         
             constructor() {
@@ -55,26 +54,24 @@ module nts.uk.at.view.kmk012.a {
                 });
                 
                 self.selectCodeLstClosureHistory.subscribe(function(val: ClosureHistoryMDto){
-                    self.enableChangeClosureDate(val.historyId == self.closureModel.closureHistories()[0].historyId);
-                    self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
+                    self.enableChangeClosureDate(val.startDate == self.closureModel.closureHistories()[0].startDate);
                     self.detailClosureHistory(val);
                 });
                 
                 self.visibleUseClassification = ko.observable(true);
                 self.enableChangeClosureDate = ko.observable(true);
                 self.enableUseClassification = ko.observable(true);
-                self.enableChangeClosureDateAnd = ko.observable(true);
                 
                 
                 self.closureModel.useClassification.subscribe(function(val: number){
                     if (val == 0) {
-                        self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
                         self.enableUseClassification(false);
+                        self.enableChangeClosureDate(self.enableChangeClosureDate() && self.enableUseClassification());
                         self.clearValiate();
                     }
                     else {
-                        self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
                         self.enableUseClassification(true);
+                        self.enableChangeClosureDate(self.enableChangeClosureDate() && self.enableUseClassification());
                         self.clearValiate();
                     }
                 });
@@ -263,7 +260,6 @@ module nts.uk.at.view.kmk012.a {
                 dto.closureId = self.closureHistoryModel.closureId();
                 dto.closureDate = self.closureHistoryModel.closureDate();
                 dto.startDate = self.closureHistoryModel.startDate();
-                dto.endDate = self.closureHistoryModel.e;
                 return dto;    
             }
             

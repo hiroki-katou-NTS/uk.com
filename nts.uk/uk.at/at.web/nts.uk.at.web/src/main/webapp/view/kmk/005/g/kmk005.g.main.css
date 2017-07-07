@@ -6,10 +6,6 @@ html, body, #master-wrapper {
 	height: calc(100% - 50px);
 }
 
-.sidebar-content-header {
-	line-height: 50px;
-}
-
 .sidebar-content-header .title {
 	width: 165px;
 }

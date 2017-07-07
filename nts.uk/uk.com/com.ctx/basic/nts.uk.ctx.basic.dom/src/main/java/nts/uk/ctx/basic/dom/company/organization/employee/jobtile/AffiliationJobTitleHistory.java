@@ -7,7 +7,6 @@ package nts.uk.ctx.basic.dom.company.organization.employee.jobtile;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 import nts.uk.ctx.basic.dom.company.organization.jobtitle.PositionId;
 
 /**
@@ -23,7 +22,7 @@ public class AffiliationJobTitleHistory extends AggregateRoot{
 
 	/** The employee id. */
 	// 社員ID
-	private EmployeeId employeeId;
+	private String employeeId;
 	
 	
 	/** The job title id. */

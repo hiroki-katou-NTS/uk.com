@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.portal.dom.webmenu.DefaultMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuName;
@@ -33,7 +34,7 @@ public class CopyWebMenuCommandHandler extends CommandHandler<CopyWebMenuCommand
 		}
 		
 		WebMenu currentWebMenu = currentWebMenuOp.get();
-		WebMenu newWebMenu = new WebMenu(companyId, new WebMenuCode(command.getWebMenuCode()), new WebMenuName(command.getWebMenuName()), currentWebMenu.getDefaultMenu(), currentWebMenu.getMenuBars());
+		WebMenu newWebMenu = new WebMenu(companyId, new WebMenuCode(command.getWebMenuCode()), new WebMenuName(command.getWebMenuName()), DefaultMenu.NoDefaultMenu, currentWebMenu.getMenuBars());
 		
 		Optional<WebMenu> webMenu = webMenuRepository.find(companyId, command.getWebMenuCode());
 

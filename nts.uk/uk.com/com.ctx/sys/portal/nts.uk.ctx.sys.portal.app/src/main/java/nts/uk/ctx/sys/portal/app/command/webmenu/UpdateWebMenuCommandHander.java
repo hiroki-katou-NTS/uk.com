@@ -50,9 +50,11 @@ public class UpdateWebMenuCommandHander extends CommandHandler<UpdateWebMenuComm
 				}).collect(Collectors.toList());
 		
 		WebMenu domain =  WebMenu.createFromJavaType(companyId, command.getWebMenuCode(), command.getWebMenuName(), command.getDefaultMenu(), menuBars);
+		if (domain.isDefault()) {
+			webMenuRepository.changeNotDefault(companyId);
+		}
 		
 		webMenuRepository.update(domain);
-		
 	}
 
 }
