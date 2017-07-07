@@ -14,6 +14,14 @@
 					height : 600
 				};
 			</script>
+			
+			<com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth
+					nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth
+					nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear
+					nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear
+			</com:ValidatorScript>
+			
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk008.k.main.css" />
 			<com:scriptfile path="kmk008.k.start.js" />
@@ -68,7 +76,6 @@
 							<input id="txt-year"
 								data-bind="ntsTimeEditor: {
 								name: '#[KMK008_29]',
-								constraint: 'SampleTimeDuration',
 								value: yearOrYearMonthValue,
 								inputFormat: $parent.inputFormatYearOrYearMonth,
 								enable: $parent.newMode,
@@ -85,7 +92,7 @@
 							<input id="txt-year-error-time"
 								data-bind="ntsTimeEditor: {
 								name: '#[KMK008_42]',
-								constraint: 'SampleTimeDuration',
+								constraint: $parent.constraintErrorTime,
 								value: errorOneYearOrYearMonth,
 								inputFormat: 'time',
 								mode: 'time',
@@ -102,7 +109,7 @@
 							<input id="txt-year-error-time"
 								data-bind="ntsTimeEditor: {
 								name: '#[KMK008_43]',
-								constraint: 'SampleTimeDuration',
+								constraint: $parent.constraintAlarmTime,
 								value:alarmOneYearOrYearMonth,
 								inputFormat: 'time',
 								mode: 'time',

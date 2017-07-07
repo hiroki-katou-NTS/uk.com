@@ -9,7 +9,6 @@ module nts.uk.at.view.kmk008.c {
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
