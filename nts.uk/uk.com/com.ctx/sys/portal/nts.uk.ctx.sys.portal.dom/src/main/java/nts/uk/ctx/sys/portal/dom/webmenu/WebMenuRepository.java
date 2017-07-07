@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.dom.webmenu;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
+
 /**
  * 
  * @author sonnh
@@ -43,4 +45,10 @@ public interface WebMenuRepository {
 	 */
 	void remove(String companyId, String webMenuCode);
 
+	/**
+	 * add person type
+	 * @param personalTying
+	 */
+	void add(PersonalTying personalTying);
+	
 }
