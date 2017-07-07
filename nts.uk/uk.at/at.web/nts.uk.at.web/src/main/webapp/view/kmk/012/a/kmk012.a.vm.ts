@@ -263,7 +263,6 @@ module nts.uk.at.view.kmk012.a {
                 dto.closureId = self.closureHistoryModel.closureId();
                 dto.closureDate = self.closureHistoryModel.closureDate();
                 dto.startDate = self.closureHistoryModel.startDate();
-                dto.endDate = self.closureHistoryModel.e;
                 return dto;    
             }
             
