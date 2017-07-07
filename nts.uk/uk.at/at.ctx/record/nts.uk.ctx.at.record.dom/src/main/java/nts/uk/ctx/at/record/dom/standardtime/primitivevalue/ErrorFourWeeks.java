@@ -1,19 +1,17 @@
 package nts.uk.ctx.at.record.dom.standardtime.primitivevalue;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * 
  * @author nampt
  *
  */
-@DecimalRange(min = "0", max = "40320")
-public class ErrorFourWeeks extends DecimalPrimitiveValue<ErrorFourWeeks> {
+@TimeRange(max="672:00", min = "00:00")
+public class ErrorFourWeeks extends TimeDurationPrimitiveValue<ErrorFourWeeks> {
 
-	public ErrorFourWeeks(BigDecimal rawValue) {
+	public ErrorFourWeeks(Long rawValue) {
 		super(rawValue);
 	}
 
