@@ -40,6 +40,7 @@ module nts.uk.pr.view.kmf001.l {
                 let dfd = $.Deferred<any>();
                 $.when(self.loadManageDistinctEnums()).done(function() {
                     self.loadSetting();
+                    $("#manage-nursing").focus();
                     dfd.resolve();
                 });
                 return dfd.promise();

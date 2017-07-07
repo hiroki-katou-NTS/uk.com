@@ -36,9 +36,10 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var code = '1';
+            var transferData = __viewContext.transferred.value;
+            var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
             self.topPageCode(code);
-                  service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
+            service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
                 console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
