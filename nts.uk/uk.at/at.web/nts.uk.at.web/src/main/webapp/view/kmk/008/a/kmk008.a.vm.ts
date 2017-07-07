@@ -1,25 +1,23 @@
 module nts.uk.at.view.kmk008.a {
     export module viewmodel {
         export class ScreenModel {
-            printType: number;
             constructor() {
-                let self = this;
-                            
+
             }
             startPage(): JQueryPromise<any> {
-                let self = this;
                 let dfd = $.Deferred();
+                dfd.resolve();
                 return dfd.promise();
+            }
+
+            opendScreenWithLaborSystemAtr0() {
+                nts.uk.request.jump("/view/kmk/008/b/index.xhtml", { "laborSystemAtr": 0 });
+            }
+
+            opendScreenWithLaborSystemAtr1() {
+                nts.uk.request.jump("/view/kmk/008/b/index.xhtml", { "laborSystemAtr": 1 });
             }
         }
 
-        export class ItemModel {
-            code: number;
-            name: string;
-            constructor(code: number, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
     }
 }

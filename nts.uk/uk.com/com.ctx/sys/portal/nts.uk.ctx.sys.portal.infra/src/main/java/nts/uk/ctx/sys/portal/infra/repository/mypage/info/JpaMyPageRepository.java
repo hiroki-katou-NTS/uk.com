@@ -31,17 +31,22 @@ public class JpaMyPageRepository extends JpaRepository implements MyPageReposito
 		entity.layoutId = domain.getLayoutId();
 		return entity;
 	}
+	/**
+	 * get my page
+	 * @param employeeId
+	 * @param layoutId
+	 * @return
+	 */
 	@Override
-	public MyPage getMyPage(String employeeId) {
-		Optional<MyPage> myPage =  this.queryProxy().query(SELECT_MYPAGE, CcgptMyPage.class)
+	public Optional<MyPage> getMyPage(String employeeId) {
+		return  this.queryProxy().query(SELECT_MYPAGE, CcgptMyPage.class)
 				.setParameter("employeeId", employeeId)
 				.getSingle(c->toDomain(c));
-		if(!myPage.isPresent()){
-			return null;
-		}else{
-			return myPage.get();
-		}
 	}
+	/**
+	 * add my page
+	 * @param myPage
+	 */
 	@Override
 	public void addMyPage(MyPage myPage) {
 		this.commandProxy().insert(toEntity(myPage));

@@ -11,14 +11,16 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "KBPST_PS_BP_SET")
 public class KbpstPersonalBPSetting extends UkJpaEntity implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
+	
 	@EmbeddedId
 	public KbpstPersonalBPSettingPK kbpstPersonalBPSettingPK;
+	
 	@Column(name = "BONUS_PAY_SET_CD")
 	public String bonusPaySettingCode;
 
@@ -26,5 +28,4 @@ public class KbpstPersonalBPSetting extends UkJpaEntity implements Serializable 
 	protected Object getKey() {
 		return kbpstPersonalBPSettingPK;
 	}
-
 }

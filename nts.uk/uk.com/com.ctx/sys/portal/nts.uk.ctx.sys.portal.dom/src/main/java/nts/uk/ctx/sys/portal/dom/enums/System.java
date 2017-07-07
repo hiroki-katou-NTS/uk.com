@@ -5,7 +5,7 @@ package nts.uk.ctx.sys.portal.dom.enums;
  * @author sonnh1
  *
  */
-public enum System {
+public enum System {	
 	/**
 	 * 0:共通
 	 */

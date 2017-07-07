@@ -1,16 +1,23 @@
 package nts.uk.ctx.sys.portal.dom.mypage;
 
+import java.util.Optional;
+
 /**
- * The Interface MyPageRepository.
+ * 
+ * @author hoatt
+ *
  */
 public interface MyPageRepository {
 	/**
-	 * hoatt
 	 * get my page
 	 * @param employeeId
 	 * @param layoutId
 	 * @return
 	 */
-	MyPage getMyPage(String employeeId);
+	Optional<MyPage> getMyPage(String employeeId);
+	/**
+	 * add my page
+	 * @param myPage
+	 */
 	void addMyPage(MyPage myPage);
 }
