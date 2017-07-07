@@ -71,11 +71,6 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	private MyPageRepository mypage;
 	@Inject
 	private TopPageJobSetRepository topPageJobSet;
-	/**
-	 * check = true (When start: display top page)
-	 * check = false (When start: display my page)
-	 */
-	Boolean check = false;
 	
 	@Inject
 	private FlowMenuRepository repository;
@@ -280,6 +275,11 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 */
 	@Override
 	public LayoutAllDto getTopPageForPosition(JobPositionDto jobPosition, TopPageJobSet topPageJob) {
+		/**
+		 * check = true (When start: display top page)
+		 * check = false (When start: display my page)
+		 */
+		Boolean check = false;
 		//companyId
 		String companyId = AppContexts.user().companyId();
 		//employeeId
@@ -293,7 +293,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		if(topPageJob.getPersonPermissionSet() == PersonPermissionSetting.SET && tpSelfSet != null){//check topPageJob: setting or not setting
 			//display top page self set (本人トップページ設定)-C
 			check = true;
-			layoutTopPage = getTopPageByCode(companyId,tpSelfSet.getCode(), System.COMMON.value, MenuClassification.TopPage.value, check);
+			layoutTopPage = getTopPageByCode(companyId,tpSelfSet.getCode(), System.Common.value, MenuClassification.TopPage.value, check);
 			if (!checkMyPage) {//not use my page
 				return new LayoutAllDto(null, layoutTopPage, check, checkMyPage, checkTopPage);
 			}
@@ -342,6 +342,11 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 */
 	@Override
 	public LayoutAllDto getTopPageNotPosition() {
+		/**
+		 * check = true (When start: display top page)
+		 * check = false (When start: display my page)
+		 */
+		Boolean check = false;
 		//companyId
 		String companyId = AppContexts.user().companyId();
 		//employeeId
@@ -356,7 +361,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		if(topPPerson.isPresent()){//co tpPerson
 			TopPagePersonSet tpPerson = topPPerson.get();
 			String code = tpPerson.getLoginMenuCode().toString();
-			if(!StringUtil.isNullOrEmpty(code,true)){//co login menu code
+			if(!StringUtil.isNullOrEmpty(code,true)){//login menu code not empty
 				//display top page person set (個人別トップページ設定)-B
 				check = true;
 				layoutToppage = getTopPageByCode(companyId,tpPerson.getTopMenuCode().toString(),tpPerson.getLoginSystem().value,tpPerson.getMenuClassification().value,check);
