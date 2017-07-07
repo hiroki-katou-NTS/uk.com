@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk012.a {
                 });
                 
                 self.selectCodeLstClosureHistory.subscribe(function(val: ClosureHistoryMDto){
-                    self.enableChangeClosureDate(val.historyId == self.closureModel.closureHistories()[0].historyId);
+                    self.enableChangeClosureDate(val.startDate == self.closureModel.closureHistories()[0].startDate);
                     self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
                     self.detailClosureHistory(val);
                 });
@@ -263,7 +263,6 @@ module nts.uk.at.view.kmk012.a {
                 dto.closureId = self.closureHistoryModel.closureId();
                 dto.closureDate = self.closureHistoryModel.closureDate();
                 dto.startDate = self.closureHistoryModel.startDate();
-                dto.endDate = self.closureHistoryModel.e;
                 return dto;    
             }
             

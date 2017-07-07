@@ -8,7 +8,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCode;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 
 /**
  * The Class AffiliationClassificationHistory.
@@ -27,7 +26,7 @@ public class AffiliationClassificationHistory extends AggregateRoot {
 
 	/** The employee id. */
 	// 社員ID
-	private EmployeeId employeeId;
+	private String employeeId;
 	
 	
 	/**

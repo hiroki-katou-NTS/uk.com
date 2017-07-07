@@ -108,7 +108,7 @@ public class EmployeeSearchFinder {
 		// to map work place history
 		Map<String, AffiliationWorkplaceHistory> workplaceHistoryMap = workplaceHistory.stream()
 				.collect(Collectors.toMap((workplace) -> {
-					return workplace.getEmployeeId().v();
+					return workplace.getEmployeeId();
 				}, Function.identity()));
 
 		// get person name
@@ -124,17 +124,17 @@ public class EmployeeSearchFinder {
 
 		employees.forEach(employee -> {
 			// check exist data
-			if (workplaceHistoryMap.containsKey(employee.getSId().v())
+			if (workplaceHistoryMap.containsKey(employee.getSId())
 					&& personMap.containsKey(employee.getPId()) && workplaceMap.containsKey(
-							workplaceHistoryMap.get(employee.getSId().v()).getWorkplaceId().v())) {
+							workplaceHistoryMap.get(employee.getSId()).getWorkplaceId().v())) {
 
 				// add to dto
 				EmployeeSearchDto dto = new EmployeeSearchDto();
-				dto.setEmployeeId(employee.getSId().v());
+				dto.setEmployeeId(employee.getSId());
 				dto.setEmployeeCode(employee.getSCd().v());
 				dto.setEmployeeName(personMap.get(employee.getPId()).getPersonName().v());
 				dto.setWorkplaceId(
-						workplaceHistoryMap.get(employee.getSId().v()).getWorkplaceId().v());
+						workplaceHistoryMap.get(employee.getSId()).getWorkplaceId().v());
 
 				dto.setWorkplaceCode(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceCode().v());
 				dto.setWorkplaceName(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceName().v());
@@ -167,7 +167,7 @@ public class EmployeeSearchFinder {
 		// get all employee of company id
 		List<Employee> employees = this.repositoryEmployee.getAllEmployee(companyId);
 
-		return toEmployee(baseDate, employees.stream().map(employee -> employee.getSId().v())
+		return toEmployee(baseDate, employees.stream().map(employee -> employee.getSId())
 				.collect(Collectors.toList()), companyId);
 	}
 	
@@ -216,7 +216,7 @@ public class EmployeeSearchFinder {
 		// find by classification
 		List<AffiliationClassificationHistory> classificationHistorys = this.repositoryClassificationHistory
 				.searchClassification(
-						employmentHistory.stream().map(employment -> employment.getEmployeeId().v())
+						employmentHistory.stream().map(employment -> employment.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getClassificationCodes());
 
@@ -224,23 +224,23 @@ public class EmployeeSearchFinder {
 		List<AffiliationJobTitleHistory> jobTitleHistory = this.repositoryJobTitleHistory
 				.searchJobTitleHistory(
 						classificationHistorys.stream()
-								.map(classification -> classification.getEmployeeId().v())
+								.map(classification -> classification.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getJobTitleCodes());
 		// find by work place
 		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
 				.searchWorkplaceHistory(
-						jobTitleHistory.stream().map(jobtitle -> jobtitle.getEmployeeId().v())
+						jobTitleHistory.stream().map(jobtitle -> jobtitle.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getWorkplaceCodes());
 		// to employees
 		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployeeId(companyId,
-				workplaceHistory.stream().map(workplace -> workplace.getEmployeeId().v())
+				workplaceHistory.stream().map(workplace -> workplace.getEmployeeId())
 						.collect(Collectors.toList()));
 
 		// to person info
 		return this.toEmployee(input.getBaseDate(), employees.stream()
-				.map(employee -> employee.getSId().v()).collect(Collectors.toList()), companyId);
+				.map(employee -> employee.getSId()).collect(Collectors.toList()), companyId);
 	}
 	
 	
@@ -271,7 +271,7 @@ public class EmployeeSearchFinder {
 
 		// return data
 		return this.toEmployee(baseDate, workplaceHistory.stream()
-				.map(workplace -> workplace.getEmployeeId().v()).collect(Collectors.toList()),
+				.map(workplace -> workplace.getEmployeeId()).collect(Collectors.toList()),
 				companyId);
 	}
 
@@ -312,7 +312,7 @@ public class EmployeeSearchFinder {
 						.collect(Collectors.toList()));
 		// return data
 		return this.toEmployee(baseDate, workplaceHistory.stream()
-				.map(workplace -> workplace.getEmployeeId().v()).collect(Collectors.toList()),
+				.map(workplace -> workplace.getEmployeeId()).collect(Collectors.toList()),
 				companyId);
 	}
 	
