@@ -19,7 +19,7 @@ module nts.uk.at.view.kmk005.h {
                 isMultiSelect: false,
                 isShowAlreadySet: true,
                 isShowSelectButton: false,
-                baseDate: undefined,
+                baseDate: ko.observable(new Date()),
                 selectedWorkplaceId: undefined,
                 alreadySettingList: ko.observableArray([])
             };
@@ -31,7 +31,6 @@ module nts.uk.at.view.kmk005.h {
                     model = self.model();
 
                 $.extend(tree, {
-                    baseDate: self.baseDate,
                     selectedWorkplaceId: model.wid
                 });
 
@@ -66,7 +65,7 @@ module nts.uk.at.view.kmk005.h {
                     }).fail(x => alert(x));
 
                 });
-                
+
                 // call start after tree-grid initial
                 $('#tree-grid')['ntsTreeComponent'](self.treeGrid).done(() => { self.start(); });
             }
@@ -81,9 +80,9 @@ module nts.uk.at.view.kmk005.h {
                 tree.alreadySettingList.removeAll();
                 service.getData(wids).done((resp: Array<any>) => {
                     if (resp && resp.length) {
-                        _.each(resp, x => tree.alreadySettingList.push({ workplaceId: x.workplaceId, settingType: 1 }));
+                        _.each(resp, x => tree.alreadySettingList.push({ workplaceId: x.workplaceId, isAlreadySetting: true }));
                     }
-                    
+
                     // call subscribe function of wid
                     model.wid.valueHasMutated();
                 }).fail(x => alert(x));
