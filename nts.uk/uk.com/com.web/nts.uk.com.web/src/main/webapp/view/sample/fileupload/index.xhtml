@@ -29,6 +29,7 @@
 					<h2>binding file upload by knockout</h2>
 					<div id="fileupload1"
 						data-bind="ntsFileUpload:{filename: filename,accept: accept,text :textId, onfilenameclick: function(filename){alert(filename);}}"></div>
+						<input data-bind="value: filename"/>
 					<input type="button" id="button1" value="upload1" />
 					<pre>
 					<![CDATA[
@@ -36,6 +37,7 @@
 <div id="fileupload1" data-bind="ntsFileUpload:{
 						filename: filename, //optional
 						accept: accept, //optional
+						aslink: boolean // if true then file name is displayed as hyperlink, default is false
 						text: textId,//optional
 						onchange: function(filename){
 							//optional
