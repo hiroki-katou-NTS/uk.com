@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author hungnm
@@ -15,11 +14,11 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 public class CompanyBonusPaySetting extends AggregateRoot {
 
-	private CompanyId companyId;
+	private String companyId;
 
 	private BonusPaySettingCode bonusPaySettingCode;
 
-	private CompanyBonusPaySetting(CompanyId companyId, BonusPaySettingCode bonusPaySettingCode) {
+	private CompanyBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode) {
 		super();
 		this.companyId = companyId;
 		this.bonusPaySettingCode = bonusPaySettingCode;
@@ -30,6 +29,6 @@ public class CompanyBonusPaySetting extends AggregateRoot {
 	}
 
 	public static CompanyBonusPaySetting createFromJavaType(String companyId, String bonusPaySettingCode) {
-		return new CompanyBonusPaySetting(new CompanyId(companyId), new BonusPaySettingCode(bonusPaySettingCode));
+		return new CompanyBonusPaySetting(companyId, new BonusPaySettingCode(bonusPaySettingCode));
 	}
 }

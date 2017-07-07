@@ -9,7 +9,7 @@ public class AgreementYearSettingDto {
 
 	private int yearValue;
 	
-	private BigDecimal errorOneYear;
+	private Long errorOneYear;
 	
-	private BigDecimal alarmOneYear;
+	private Long alarmOneYear;
 }

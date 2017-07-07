@@ -111,13 +111,13 @@ public class BasicAgreementSetting extends AggregateRoot {
 		this.limitOneYear = limitOneYear;
 	}
 
-	public static BasicAgreementSetting createFromJavaType(String basicSettingId, BigDecimal alarmWeek,
-			BigDecimal errorWeek, BigDecimal limitWeek, BigDecimal alarmTwoWeeks, BigDecimal errorTwoWeeks,
-			BigDecimal limitTwoWeeks, BigDecimal alarmFourWeeks, BigDecimal errorFourWeeks, BigDecimal limitFourWeeks,
-			BigDecimal alarmOneMonth, BigDecimal errorOneMonth, BigDecimal limitOneMonth, BigDecimal alarmTwoMonths,
-			BigDecimal errorTwoMonths, BigDecimal limitTwoMonths, BigDecimal alarmThreeMonths,
-			BigDecimal errorThreeMonths, BigDecimal limitThreeMonths, BigDecimal alarmOneYear, BigDecimal errorOneYear,
-			BigDecimal limitOneYear) {
+	public static BasicAgreementSetting createFromJavaType(String basicSettingId, Long alarmWeek,
+			Long errorWeek, Long limitWeek, Long alarmTwoWeeks, Long errorTwoWeeks,
+			Long limitTwoWeeks, Long alarmFourWeeks, Long errorFourWeeks, Long limitFourWeeks,
+			Long alarmOneMonth, Long errorOneMonth, Long limitOneMonth, Long alarmTwoMonths,
+			Long errorTwoMonths, Long limitTwoMonths, Long alarmThreeMonths,
+			Long errorThreeMonths, Long limitThreeMonths, Long alarmOneYear, Long errorOneYear,
+			Long limitOneYear) {
 		return new BasicAgreementSetting(basicSettingId, new AlarmWeek(alarmWeek), new ErrorWeek(errorWeek), new LimitWeek(limitWeek),
 				new AlarmTwoWeeks(alarmTwoWeeks), new ErrorTwoWeeks(errorTwoWeeks), new LimitTwoWeeks(limitTwoWeeks),
 				new AlarmFourWeeks(alarmFourWeeks),new ErrorFourWeeks(errorFourWeeks),new LimitFourWeeks(limitFourWeeks),

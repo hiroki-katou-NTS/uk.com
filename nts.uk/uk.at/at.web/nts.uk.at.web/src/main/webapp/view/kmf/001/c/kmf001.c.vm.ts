@@ -119,6 +119,7 @@ module nts.uk.pr.view.kmf001.c {
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadPreemptionPermitEnums(),
                         self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums()).done(function() {
                     self.loadSetting();
+                    $('#annual-manage').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();

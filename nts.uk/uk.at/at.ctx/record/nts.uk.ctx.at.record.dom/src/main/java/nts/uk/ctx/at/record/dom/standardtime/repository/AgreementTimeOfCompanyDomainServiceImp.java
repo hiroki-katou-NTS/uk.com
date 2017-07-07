@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
  *
  */
 @Stateless
-public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCompanyDomainService{
+public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCompanyDomainService {
 
 	@Inject
 	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
@@ -24,8 +24,9 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
 	@Override
-	public List<String> add(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfCompany agreementTimeOfCompany) {
-		
+	public List<String> add(BasicAgreementSetting basicAgreementSetting,
+			AgreementTimeOfCompany agreementTimeOfCompany) {
+
 		List<String> errors = new ArrayList<>();
 		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
 			/**
@@ -43,16 +44,16 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 
-		this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
-
-		this.basicAgreementSettingRepository.add(basicAgreementSetting);
-		
+		if (errors.isEmpty()) {
+			this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
+			this.basicAgreementSettingRepository.add(basicAgreementSetting);
+		}
 		return errors;
 	}
 
 	@Override
 	public List<String> update(BasicAgreementSetting basicAgreementSetting) {
-		
+
 		List<String> errors = new ArrayList<>();
 		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
 			/**
@@ -69,9 +70,11 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 			 */
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
-		
-		this.basicAgreementSettingRepository.updateForCompany(basicAgreementSetting);
-		
+
+		if (errors.isEmpty()) {
+			this.basicAgreementSettingRepository.updateForCompany(basicAgreementSetting);
+		}
+
 		return errors;
 	}
 

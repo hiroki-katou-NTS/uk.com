@@ -33,7 +33,7 @@ public class AgreementYearSetting extends AggregateRoot{
 		this.alarmOneYear = alarmOneYear;
 	}
 	
-	public static AgreementYearSetting createFromJavaType(String employeeId, int yearvalue, BigDecimal errorOneYear, BigDecimal alarmOneYear){
+	public static AgreementYearSetting createFromJavaType(String employeeId, int yearvalue, Long errorOneYear, Long alarmOneYear){
 		return new AgreementYearSetting(employeeId, yearvalue, new ErrorOneYear(errorOneYear), new AlarmOneYear(alarmOneYear));
 	}
 	

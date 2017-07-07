@@ -71,7 +71,8 @@ module nts.uk.at.view.kmk008.d {
                 if (indexCodealreadySetting != -1) {
                     new service.Service().updateAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
                         if (listError.length > 0) {
-                            alert("Error");
+                            let errorCode = _.split(listError[0], ',');
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
                         self.getDetail(self.selectedCode());
@@ -80,7 +81,8 @@ module nts.uk.at.view.kmk008.d {
                 }
                 new service.Service().addAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
                     if (listError.length > 0) {
-                        alert("Error");
+                        let errorCode = _.split(listError[0], ',');
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
                     self.getalreadySettingList();

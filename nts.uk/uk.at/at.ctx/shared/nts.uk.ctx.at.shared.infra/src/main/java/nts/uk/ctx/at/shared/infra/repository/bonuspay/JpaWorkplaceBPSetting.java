@@ -25,7 +25,7 @@ public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySe
 
 	@Override
 	public void addWPBPSetting(WorkplaceBonusPaySetting domain) {
-		Optional<WorkplaceBonusPaySetting> update = getWPBPSetting(new WorkplaceId(domain.getWorkplaceId().v()));
+		Optional<WorkplaceBonusPaySetting> update = getWPBPSetting(new WorkplaceId(domain.getWorkplaceId()));
 
 		if (!update.isPresent()) {
 			this.commandProxy().insert(toEntity(domain));
@@ -41,11 +41,11 @@ public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySe
 
 	@Override
 	public void removeWPBPSetting(WorkplaceBonusPaySetting domain) {
-		Optional<WorkplaceBonusPaySetting> deleteable = getWPBPSetting(new WorkplaceId(domain.getWorkplaceId().v()));
+		Optional<WorkplaceBonusPaySetting> deleteable = getWPBPSetting(new WorkplaceId(domain.getWorkplaceId()));
 
 		if (deleteable.isPresent()) {
 			this.commandProxy().remove(KbpstWPBonusPaySetting.class,
-					new KbpstWPBonusPaySettingPK(domain.getWorkplaceId().v()));
+					new KbpstWPBonusPaySettingPK(domain.getWorkplaceId()));
 		}
 	}
 

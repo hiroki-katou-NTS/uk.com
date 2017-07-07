@@ -46,10 +46,10 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 
-		this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
-
-		this.basicAgreementSettingRepository.add2(basicAgreementSetting);
-
+		if (errors.isEmpty()) {
+			this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
+			this.basicAgreementSettingRepository.add2(basicAgreementSetting);
+		}
 		return errors;
 	}
 
@@ -72,7 +72,10 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 			 */
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
-		this.basicAgreementSettingRepository.update2(basicAgreementSetting);
+
+		if (errors.isEmpty()) {
+			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
+		}
 
 		return errors;
 	}
