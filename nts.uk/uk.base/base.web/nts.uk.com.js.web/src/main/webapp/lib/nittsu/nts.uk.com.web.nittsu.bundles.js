@@ -1372,13 +1372,13 @@ var nts;
             var listEmpire = {
                 "明治": "1868/01/01",
                 "大正": "1912/07/30",
-                "昭和": "1926/12/25",
-                "平成": "1989/01/08"
+                "昭��?": "1926/12/25",
+                "平��?": "1989/01/08"
             };
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function getYearMonthJapan(year, month) {
                 if (month)
-                    return year + "年 " + month + " 月";
+                    return year + "年 " + month + " ��?";
                 return year;
             }
             var JapanYearMonth = (function () {
@@ -1399,7 +1399,7 @@ var nts;
                 JapanYearMonth.prototype.toString = function () {
                     return (this.empire === undefined ? "" : this.empire + " ")
                         + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " 月");
+                        + (this.month === undefined ? "" : this.month + " ��?");
                 };
                 return JapanYearMonth;
             }());
@@ -1407,7 +1407,7 @@ var nts;
             function yearInJapanEmpire(date) {
                 var year = moment.utc(date, defaultInputFormat, true).year();
                 if (year == 1868) {
-                    return new JapanYearMonth("明治元年");
+                    return new JapanYearMonth("明治��?��");
                 }
                 if (year <= 1912) {
                     var diff = year - 1867;
@@ -1419,25 +1419,25 @@ var nts;
                 }
                 if (year < 1989) {
                     var diff = year - 1925;
-                    return new JapanYearMonth("昭和 ", diff);
+                    return new JapanYearMonth("昭��? ", diff);
                 }
                 if (year == 1989) {
-                    return new JapanYearMonth("平成元年 ", diff);
+                    return new JapanYearMonth("平成�?年 ", diff);
                 }
                 var diff = year - 1988;
-                return new JapanYearMonth("平成 ", diff);
+                return new JapanYearMonth("平��? ", diff);
             }
             time_1.yearInJapanEmpire = yearInJapanEmpire;
             function yearmonthInJapanEmpire(yearmonth) {
                 if (!(yearmonth instanceof String)) {
                     yearmonth = "" + yearmonth;
                 }
-                var nguyennien = "元年";
+                var nguyennien = "��?��";
                 yearmonth = yearmonth.replace("/", "");
                 var year = parseInt(yearmonth.substring(0, 4));
                 var month = parseInt(yearmonth.substring(4));
                 if (year == 1868) {
-                    return new JapanYearMonth("明治元年 ", undefined, month);
+                    return new JapanYearMonth("明治��?�� ", undefined, month);
                 }
                 if (year < 1912) {
                     var diff = year - 1867;
@@ -1446,7 +1446,7 @@ var nts;
                 if (year == 1912) {
                     if (month < 8)
                         return new JapanYearMonth("明治 ", 45, month);
-                    return new JapanYearMonth("大正元年 ", undefined, month);
+                    return new JapanYearMonth("大正��?�� ", undefined, month);
                 }
                 if (year < 1926) {
                     var diff = year - 1911;
@@ -1455,17 +1455,17 @@ var nts;
                 if (year == 1926) {
                     if (month < 12)
                         return new JapanYearMonth("大正", 15, month);
-                    return new JapanYearMonth("昭和元年 ", undefined, month);
+                    return new JapanYearMonth("昭和�?年 ", undefined, month);
                 }
                 if (year < 1989) {
                     var diff = year - 1925;
-                    return new JapanYearMonth("昭和 ", diff, month);
+                    return new JapanYearMonth("昭��? ", diff, month);
                 }
                 if (year == 1989) {
-                    return new JapanYearMonth("平成元年 ", undefined, month);
+                    return new JapanYearMonth("平成�?年 ", undefined, month);
                 }
                 var diff = year - 1988;
-                return new JapanYearMonth("平成 ", diff, month);
+                return new JapanYearMonth("平��? ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
             var JapanDateMoment = (function () {
@@ -1477,7 +1477,7 @@ var nts;
                 JapanDateMoment.prototype.toString = function () {
                     return (this.empire === undefined ? "" : this.empire + " ")
                         + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " 月")
+                        + (this.month === undefined ? "" : this.month + " ��?")
                         + (this.day === undefined ? "" : this.day + " ");
                 };
                 return JapanDateMoment;
@@ -1508,10 +1508,10 @@ var nts;
             }
             time_1.formatSeconds = formatSeconds;
             /**
-            * 日付をフォーマットする
-            * @param  {Date}   date	 日付
-            * @param  {String} [format] フォーマット
-            * @return {String}		  フォーマット済み日付
+            * 日付をフォーマットす��?
+            * @param  {Date}   date	 日��?
+            * @param  {String} [format] フォーマッ��?
+            * @return {String}		  フォーマット済み日��?
             */
             function formatDate(date, format) {
                 if (!format)
@@ -1837,6 +1837,8 @@ var nts;
                 __extends(MomentResult, _super);
                 function MomentResult(momentObject, outputFormat) {
                     _super.call(this, true);
+                    this.min = moment.utc("1900/01/01", "YYYY/MM/DD", true);
+                    this.max = moment.utc("9999/12/31", "YYYY/MM/DD", true);
                     this.momentObject = momentObject;
                     this.outputFormat = uk.text.getISOFormat(outputFormat);
                 }
@@ -1845,6 +1847,11 @@ var nts;
                 };
                 MomentResult.prototype.failed = function (msg) {
                     this.msg = (msg) ? msg : "Invalid format";
+                    this.success = false;
+                };
+                MomentResult.prototype.failedWithMessegeId = function (msgID, params) {
+                    this.msgID = msgID;
+                    this.params = params;
                     this.success = false;
                 };
                 MomentResult.prototype.format = function () {
@@ -1856,6 +1863,12 @@ var nts;
                     if (!this.success)
                         return null;
                     return this.momentObject;
+                };
+                MomentResult.prototype.systemMin = function () {
+                    return this.min;
+                };
+                MomentResult.prototype.systemMax = function () {
+                    return this.max;
                 };
                 MomentResult.prototype.toNumber = function (outputFormat) {
                     var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
@@ -1876,6 +1889,18 @@ var nts;
                     }
                 };
                 MomentResult.prototype.getMsg = function () { return this.msg; };
+                MomentResult.prototype.getEmsg = function (name) {
+                    if (this.msgID === undefined) {
+                        return this.msg;
+                    }
+                    else {
+                        if (name !== undefined) {
+                            this.params.unshift(name);
+                        }
+                        return nts.uk.resource.getMessage(this.msgID, this.params);
+                    }
+                };
+                MomentResult.prototype.getMsgID = function () { return this.msgID === undefined ? "" : this.msgID; };
                 return MomentResult;
             }(ParseResult));
             time_1.MomentResult = MomentResult;
@@ -1883,10 +1908,26 @@ var nts;
                 var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
                 var momentObject = moment.utc(datetime, inputFormats, true);
                 var result = new MomentResult(momentObject, outputFormat);
-                if (momentObject.isValid())
-                    result.succeeded();
-                else
+                if (momentObject.isValid()) {
+                    if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())) {
+                        var parsedFormat = momentObject.creationData().format;
+                        if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0) {
+                            result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
+                        }
+                        else if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") < 0 && parsedFormat.indexOf("Y") >= 0) {
+                            result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
+                        }
+                        else {
+                            result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
+                        }
+                    }
+                    else {
+                        result.succeeded();
+                    }
+                }
+                else {
                     result.failed();
+                }
                 return result;
             }
             time_1.parseMoment = parseMoment;
@@ -1895,6 +1936,7 @@ var nts;
                     return defaultInputFormat;
                 }
                 if (format === "yearmonth") {
+                    format = "YM";
                     format = "YM";
                 }
                 var uniqueFormat = _.uniq(format.split(""));
@@ -1935,15 +1977,15 @@ var nts;
                     this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
                     this.shortYmPattern = /^\d{4}\/\d{1,2}$/;
                     this.shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
-                    this.longYmdPattern = /^\d{4}年\d{1,2}月\d{1,2}日$/;
-                    this.longYmdwPattern = /^\d{4}年\d{1,2}月\d{1,2}日\(\w+\)$/;
+                    this.longYmdPattern = /^\d{4}年\d{1,2}��?d{1,2}日$/;
+                    this.longYmdwPattern = /^\d{4}年\d{1,2}��?d{1,2}日\(\w+\)$/;
                     this.longFPattern = /^\d{4}年度$/;
-                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月\d{1,2}日$/;
-                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}月$/;
+                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}��?d{1,2}日$/;
+                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}��?$/;
                     this.fullDateTimeShortPattern = /^\d{4}\/\d{1,2}\/\d{1,2} \d+:\d{2}:\d{2}$/;
                     this.timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
                     this.timeShortHmPattern = /^\d+:\d{2}$/;
-                    this.days = ['日', '月', '火', '水', '木', '金', '土'];
+                    this.days = ['日', '��?', '火', '水', '木', '��?', '��?'];
                 }
                 DateTimeFormatter.prototype.shortYmd = function (date) {
                     var d = this.dateOf(date);
@@ -1998,7 +2040,7 @@ var nts;
                     }
                 };
                 DateTimeFormatter.prototype.toLongJpDate = function (d) {
-                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '��?' + d.getDate() + '日';
                 };
                 DateTimeFormatter.prototype.longF = function (date) {
                     var d = this.dateOf(date);
@@ -2020,7 +2062,7 @@ var nts;
                     if (this.longJmPattern.test(d))
                         return d;
                     var jpDate = this.fullJapaneseDateOf(d);
-                    var start = jpDate.indexOf("月");
+                    var start = jpDate.indexOf("��?");
                     if (start !== -1) {
                         return jpDate.substring(0, start + 1);
                     }
@@ -2736,7 +2778,7 @@ var nts;
                             }
                         }
                         else {
-                            result.fail(parseResult.getMsg(), "");
+                            result.fail(parseResult.getEmsg(this.name), parseResult.getMsgID());
                             return result;
                         }
                         // Time clock
@@ -8193,7 +8235,7 @@ var nts;
                                 value(result.parsedValue);
                             }
                             else {
-                                $input.ntsError('set', result.errorMessage);
+                                $input.ntsError('set', result.errorMessage, result.errorCode);
                                 value(newText);
                             }
                         });
@@ -8201,7 +8243,7 @@ var nts;
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage);
+                                $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
                         });
                         $input.on('validate', (function (e) {
@@ -8209,7 +8251,7 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage);
+                                $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);

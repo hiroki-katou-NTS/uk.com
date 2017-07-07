@@ -260,9 +260,8 @@ module nts.uk.ui.validation {
                 else {
                     result.success(parseResult.format());
                 }
-            }
-            else {
-                result.fail(parseResult.getMsg(), "");
+            } else {
+                result.fail(parseResult.getEmsg(this.name), parseResult.getMsgID());
                 return result;
             }
             
