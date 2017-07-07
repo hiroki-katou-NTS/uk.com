@@ -3295,7 +3295,7 @@ var nts;
                         text = message;
                     }
                     text = text.replace(/\n/g, '<br />');
-                    var $this = $('<div/>').addClass('notice-dialog')
+                    var $this = window.parent.$('<div/>').addClass('notice-dialog')
                         .append($('<div/>').addClass('text').append(text))
                         .append($control)
                         .appendTo('body')
@@ -3309,7 +3309,7 @@ var nts;
                         closeOnEscape: false,
                         buttons: buttons,
                         open: function () {
-                            $(this).closest('.ui-dialog').css('z-index', 120001);
+                            $(this).closest('.ui-dialog').css('z-index', 120002);
                             $('.ui-widget-overlay').last().css('z-index', 120000);
                             $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                             $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
@@ -3322,8 +3322,8 @@ var nts;
                             }
                         },
                         close: function (event) {
-                            $(this).dialog('destroy');
-                            $(event.target).remove();
+                            window.parent.$(this).dialog('destroy');
+                            window.parent.$(event.target).remove();
                         }
                     });
                     //add header text if it has
@@ -3341,7 +3341,7 @@ var nts;
                  */
                 function info(text) {
                     var then = $.noop;
-                    var $dialog = $('<div/>').hide();
+                    var $dialog = window.parent.$('<div/>').hide();
                     $(function () {
                         $dialog.appendTo('body').dialog({
                             autoOpen: false
@@ -3367,7 +3367,7 @@ var nts;
                 ;
                 function alertError(message) {
                     var then = $.noop;
-                    var $dialog = $('<div/>').hide();
+                    var $dialog = window.parent.$('<div/>').hide();
                     $(function () {
                         $dialog.appendTo('body').dialog({
                             autoOpen: false
@@ -3399,7 +3399,7 @@ var nts;
                  */
                 function alert(text) {
                     var then = $.noop;
-                    var $dialog = $('<div/>').hide();
+                    var $dialog = parent.$('<div/>').hide();
                     $(function () {
                         $dialog.appendTo('body').dialog({
                             autoOpen: false
@@ -8964,7 +8964,7 @@ var nts;
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
                         var $dialog = $("<div id='ntsErrorDialog'></div>");
-                        $('body').append($dialog);
+                        parent.$('body').append($dialog);
                         // Create Buttons
                         var dialogbuttons = [];
                         var _loop_2 = function(button) {
@@ -8994,6 +8994,7 @@ var nts;
                         $dialog.dialog({
                             title: title,
                             modal: modal,
+                            autoOpen: false,
                             closeOnEscape: false,
                             width: dialogWidth,
                             maxHeight: 500,
@@ -9023,7 +9024,7 @@ var nts;
                         //var maxrows: number = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
-                        var $dialog = $("#ntsErrorDialog");
+                        var $dialog = parent.$("#ntsErrorDialog");
                         if (show == true) {
                             // Create Error Table
                             var $errorboard = $("<div id='error-board'></div>");
