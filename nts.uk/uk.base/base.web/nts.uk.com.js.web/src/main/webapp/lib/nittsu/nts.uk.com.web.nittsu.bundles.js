@@ -3071,6 +3071,8 @@ var nts;
                                     //return dialogWindow.__viewContext.dialog.beforeClose();
                                 }
                             }).dialog('open');
+                            if (_this.parent !== null)
+                                _this.parent.globalContext.nts.uk.ui.block.clear();
                             //                    var widget= this.$dialog.dialog("widget");
                             //                    widget.draggable("option","containment",false);
                         });
@@ -3087,8 +3089,7 @@ var nts;
                         this.$iframe = $('<iframe/>').css({
                             width: '100%',
                             height: '100%'
-                        })
-                            .appendTo(this.$dialog);
+                        }).appendTo(this.$dialog);
                         this.setGlobal(this.$iframe[0].contentWindow);
                     };
                     ScreenWindow.prototype.onClosed = function (callback) {
@@ -3204,6 +3205,7 @@ var nts;
                     }
                     sub.modeless = modeless;
                     function open(path, options) {
+                        nts.uk.ui.block.invisible();
                         return windows.container.createDialog(path, options, windows.selfId);
                     }
                     sub.open = open;
@@ -8959,10 +8961,6 @@ var nts;
                                 $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                 $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                                 $('.ui-widget-overlay').last().css('z-index', 120000);
-                                //                    let $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
-                                //                    $headerContainer.append($("<img>").attr("src", "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png").addClass("ui-dialog-titlebar-icon");
-                                //                    $headerContainer.append($(this).parent().find(".ui-dialog-title"));
-                                //                    $(this).parent().children(".ui-dialog-titlebar").append($headerContainer);
                             },
                             close: function (event) {
                                 bindingContext.$data.option.show(false);

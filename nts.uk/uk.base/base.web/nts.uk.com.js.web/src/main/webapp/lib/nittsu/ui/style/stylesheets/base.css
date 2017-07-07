@@ -2268,21 +2268,25 @@ button.nts-switch-button[disabled]:hover {
   bottom: 3px;
   background-position: -80px -224px;
 }
-/* line 43, ../sass/components/_dialog.scss */
+/* line 44, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-titlebar-close:active {
+  top: calc(50% + 3px);
+}
+/* line 48, ../sass/components/_dialog.scss */
 .ui-dialog.no-close-btn .ui-dialog-titlebar-close {
   display: none;
 }
-/* line 47, ../sass/components/_dialog.scss */
+/* line 52, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content {
   padding: 20px;
 }
-/* line 50, ../sass/components/_dialog.scss */
+/* line 55, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog {
   min-width: 250px;
   padding: 0;
   position: relative;
 }
-/* line 55, ../sass/components/_dialog.scss */
+/* line 60, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .text {
   display: inline-block;
   margin: 20px;
@@ -2292,14 +2296,14 @@ button.nts-switch-button[disabled]:hover {
   overflow-y: auto;
   line-height: 22px;
 }
-/* line 64, ../sass/components/_dialog.scss */
+/* line 69, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .control {
   right: 10px;
   bottom: 0px;
   position: absolute;
   color: gray;
 }
-/* line 73, ../sass/components/_dialog.scss */
+/* line 78, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane {
   padding: 10px 0;
   margin: 0px;
@@ -2307,11 +2311,11 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
   position: relative;
 }
-/* line 80, ../sass/components/_dialog.scss */
+/* line 85, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane .ui-dialog-buttonset {
   float: none;
 }
-/* line 84, ../sass/components/_dialog.scss */
+/* line 89, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane > .ui-dialog-buttonpane-resize {
   right: 0px;
   bottom: 0px;
@@ -2319,23 +2323,23 @@ button.nts-switch-button[disabled]:hover {
   max-width: 20px;
   max-height: 20px;
 }
-/* line 92, ../sass/components/_dialog.scss */
+/* line 97, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane button {
   margin: 0 10px;
   min-width: 80px;
   font-family: "Meiryo UI";
 }
-/* line 99, ../sass/components/_dialog.scss */
+/* line 104, ../sass/components/_dialog.scss */
 .ui-dialog #error-board {
   overflow: hidden;
 }
-/* line 102, ../sass/components/_dialog.scss */
+/* line 107, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table {
   border-collapse: collapse;
   width: 100%;
   margin: 0;
 }
-/* line 108, ../sass/components/_dialog.scss */
+/* line 113, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td {
   border: solid 1px #bbb;
@@ -2346,20 +2350,20 @@ button.nts-switch-button[disabled]:hover {
   box-sizing: border-box;
   cursor: pointer;
 }
-/* line 119, ../sass/components/_dialog.scss */
+/* line 124, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td:first-child {
   background-color: #A4EEB0;
 }
-/* line 124, ../sass/components/_dialog.scss */
+/* line 129, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table thead tr {
   position: relative;
 }
-/* line 129, ../sass/components/_dialog.scss */
+/* line 134, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody {
   overflow: auto;
 }
-/* line 133, ../sass/components/_dialog.scss */
+/* line 138, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody tr td:last-child {
   color: gray;
 }

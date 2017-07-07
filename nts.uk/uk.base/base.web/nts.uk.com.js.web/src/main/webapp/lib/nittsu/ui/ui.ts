@@ -106,7 +106,8 @@ module nts.uk.ui {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
                         }
                     }).dialog('open');
-                     
+                    if (this.parent !== null)
+                    	this.parent.globalContext.nts.uk.ui.block.clear();
 //                    var widget= this.$dialog.dialog("widget");
 //                    widget.draggable("option","containment",false);
                 });
@@ -126,8 +127,7 @@ module nts.uk.ui {
                 this.$iframe = $('<iframe/>').css({
                     width: '100%',
                     height: '100%'
-                })
-                    .appendTo(this.$dialog);
+                }).appendTo(this.$dialog);
 
                 this.setGlobal((<any>this.$iframe[0]).contentWindow);
             }
@@ -258,6 +258,7 @@ module nts.uk.ui {
             }
 
             export function open(path: string, options?: any) {
+            	nts.uk.ui.block.invisible();
                 return windows.container.createDialog(path, options, selfId);
             }
         }
