@@ -8,7 +8,7 @@
         visibleMyPage: KnockoutObservable<boolean>;
         dataSource: KnockoutObservable<model.LayoutAllDto>;
         displayButton: boolean;
-        topPageCode: KnockoutObservable<string>;
+        topPageCode: KnockoutObservable<string>; 
         constructor() {
             var self = this;
             self.topPageCode = ko.observable('');
@@ -165,10 +165,10 @@
                 this.isExternalUrl = (nts.uk.util.isNullOrEmpty(url)) ? false : true;
                 this.placementID = placementID;
                 this.name = (this.isExternalUrl) ? "外部URL" : name;
-                this.row = ntsNumber.getDecimal(row, 0);
-                this.column = ntsNumber.getDecimal(column, 0);
-                this.width = ntsNumber.getDecimal(width, 0);
-                this.height = ntsNumber.getDecimal(height, 0);
+                this.row = nts.uk.ntsNumber.getDecimal(row, 0);
+                this.column = nts.uk.ntsNumber.getDecimal(column, 0);
+                this.width = nts.uk.ntsNumber.getDecimal(width, 0);
+                this.height = nts.uk.ntsNumber.getDecimal(height, 0);
                 this.url = url;
                 this.topPagePartID = topPagePartID;
                 this.partType = partType;

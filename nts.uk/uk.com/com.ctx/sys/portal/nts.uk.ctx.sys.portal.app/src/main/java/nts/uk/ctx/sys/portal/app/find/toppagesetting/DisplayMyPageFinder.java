@@ -47,9 +47,9 @@ public class DisplayMyPageFinder {
 		if(topPageCode != null && topPageCode != ""){//co top page code
 			LayoutForMyPageDto layoutMypage = topPageSet.findLayoutMyPage();
 			//check my page: use or not use
-			Boolean checkMyPage = topPageSet.checkMyPageSet();
+			boolean checkMyPage = topPageSet.checkMyPageSet();
 			//check top page: setting or not setting
-			Boolean checkTopPage = topPageSet.checkTopPageSet();
+			boolean checkTopPage = topPageSet.checkTopPageSet();
 			TopPageDto topPage = toppageFinder.findByCode(companyId, topPageCode, "0");
 			if(topPage==null){//data is empty
 				return new LayoutAllDto(layoutMypage,null,true,checkMyPage,checkTopPage);
