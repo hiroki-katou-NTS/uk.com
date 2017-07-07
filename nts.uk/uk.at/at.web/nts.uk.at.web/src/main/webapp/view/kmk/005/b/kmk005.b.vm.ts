@@ -39,10 +39,7 @@ module nts.uk.at.view.kmk005.b {
                         })
 
                     }
-                }).fail(function(res) {
-                    window.alert("fail");
                 });
-
                 service.getListBonusPTimeItem().done(function(item: Array<any>) {
                     if (item === undefined || item.length == 0) {
                         for (i = 0; i < 10; i++) {
@@ -57,8 +54,6 @@ module nts.uk.at.view.kmk005.b {
                         })
 
                     }
-                }).fail(function(res) {
-                    window.alert("fail");
                 });
 
                 dfd.resolve();
@@ -73,14 +68,9 @@ module nts.uk.at.view.kmk005.b {
                 var self = this;
 
                 let bonusPayTimeItemListCommand = [];
-                // var checkUseExist = false;
                 let lstUseArt = [];
 
                 ko.utils.arrayForEach(self.timeItemList(), function(item) {
-                    /*    if (item.useAtr() == 1) {
-                            checkUseExist = true;
-                        }
-                        */
                     lstUseArt.push(item.useAtr() == 1 ? true : false);
                     bonusPayTimeItemListCommand.push(ko.mapping.toJS(item));
                 });
@@ -88,10 +78,6 @@ module nts.uk.at.view.kmk005.b {
                 let bonusPayTimeItemSpecListCommand = [];
 
                 ko.utils.arrayForEach(self.timeItemSpecList(), function(item) {
-                    /*    if (item.useAtr() == 1) {
-                            checkUseExist = true;
-                        }
-                        */
                     lstUseArt.push(item.useAtr() == 1 ? true : false);
                     bonusPayTimeItemSpecListCommand.push(ko.mapping.toJS(item));
                 });
@@ -102,12 +88,8 @@ module nts.uk.at.view.kmk005.b {
                             service.addListBonusPayTimeItem(bonusPayTimeItemListCommand);
                             service.addListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
                         } else {
-                            //  if (checkUseExist) {
                             service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand);
                             service.updateListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
-                            //  } else {
-                            //  nts.uk.ui.dialog.alertError({ messageId: "Msg_131" });
-                            // }
                         }
                     })
 
