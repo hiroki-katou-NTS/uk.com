@@ -27,7 +27,6 @@ module ccg013.a.service {
     
     export function deleteWebMenu(webMenuCd): JQueryPromise<any> {
         var path = servicePath.deleteWebMenu;
-        debugger;
         var obj = {
                 webMenuCd: webMenuCd 
             };

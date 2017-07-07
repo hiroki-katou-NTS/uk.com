@@ -43,4 +43,9 @@ public interface WebMenuRepository {
 	 */
 	void remove(String companyId, String webMenuCode);
 
+	/**
+	 * Change all web menu to not default
+	 * @param companyId
+	 */
+	void changeNotDefault(String companyId);
 }
