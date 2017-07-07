@@ -7,7 +7,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author hungnm
@@ -16,13 +15,13 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 public class WorkingTimesheetBonusPaySetting extends AggregateRoot {
 
-	private CompanyId companyId;
+	private String companyId;
 
 	private WorkingTimesheetCode workingTimesheetCode;
 
 	private BonusPaySettingCode bonusPaySettingCode;
 
-	private WorkingTimesheetBonusPaySetting(CompanyId companyId, WorkingTimesheetCode workingTimesheetCode,
+	private WorkingTimesheetBonusPaySetting(String companyId, WorkingTimesheetCode workingTimesheetCode,
 			BonusPaySettingCode bonusPaySettingCode) {
 		super();
 		this.companyId = companyId;
@@ -36,7 +35,7 @@ public class WorkingTimesheetBonusPaySetting extends AggregateRoot {
 
 	public static WorkingTimesheetBonusPaySetting createFromJavaType(String companyId, String workingTimesheetCode,
 			String bonusPaySettingCode) {
-		return new WorkingTimesheetBonusPaySetting(new CompanyId(companyId),
+		return new WorkingTimesheetBonusPaySetting(companyId,
 				new WorkingTimesheetCode(workingTimesheetCode), new BonusPaySettingCode(bonusPaySettingCode));
 	}
 }

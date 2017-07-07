@@ -34,9 +34,9 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 
 	@Override
 	public void removeWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
-		Optional<WorkingTimesheetBonusPaySetting> wTBonusPaySetting = getWTBPSetting(workingTimesheetBonusPaySetting.getCompanyId().v(), workingTimesheetBonusPaySetting.getWorkingTimesheetCode());
+		Optional<WorkingTimesheetBonusPaySetting> wTBonusPaySetting = getWTBPSetting(workingTimesheetBonusPaySetting.getCompanyId(), workingTimesheetBonusPaySetting.getWorkingTimesheetCode());
 		if(wTBonusPaySetting.isPresent()){
-			this.commandProxy().remove(KbpstWTBonusPaySetting.class, new KbpstWTBonusPaySettingPK(workingTimesheetBonusPaySetting.getCompanyId().v(), workingTimesheetBonusPaySetting.getWorkingTimesheetCode().v()));
+			this.commandProxy().remove(KbpstWTBonusPaySetting.class, new KbpstWTBonusPaySettingPK(workingTimesheetBonusPaySetting.getCompanyId(), workingTimesheetBonusPaySetting.getWorkingTimesheetCode().v()));
 		}
 	}
 
