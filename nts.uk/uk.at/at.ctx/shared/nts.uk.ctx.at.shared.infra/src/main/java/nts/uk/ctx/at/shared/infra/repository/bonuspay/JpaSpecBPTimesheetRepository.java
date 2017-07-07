@@ -45,7 +45,7 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 				kbpmtSpecBPTimesheet.roundingTimeAtr= new BigDecimal(c.getRoundingTimeAtr().value);
 				kbpmtSpecBPTimesheet.specialDateItemNO= new BigDecimal(c.getDateCode());
 				kbpmtSpecBPTimesheet.startTime= new BigDecimal(c.getStartTime().minute());
-				kbpmtSpecBPTimesheet.timeItemId = c.getTimeItemId().v();
+				kbpmtSpecBPTimesheet.timeItemId = c.getTimeItemId();
 				kbpmtSpecBPTimesheet.useAtr= new BigDecimal(c.getUseAtr().value);
 				this.commandProxy().update(kbpmtSpecBPTimesheet);
 			}
