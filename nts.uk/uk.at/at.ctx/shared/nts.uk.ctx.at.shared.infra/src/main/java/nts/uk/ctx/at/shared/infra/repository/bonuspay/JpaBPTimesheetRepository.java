@@ -54,9 +54,12 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 	@Override
 	public void removeListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<BonusPayTimesheet> lstTimesheet) {
-		List<KbpmtBPTimesheet> lstKbpmtBPTimesheet = lstTimesheet.stream()
-				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
-		this.commandProxy().removeAll(lstKbpmtBPTimesheet);
+		lstTimesheet.forEach(c->{
+			Optional<KbpmtBPTimesheet> kbpmtBPTimesheet = this.queryProxy().find(new KbpmtBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()), KbpmtBPTimesheet.class);
+			if(kbpmtBPTimesheet.isPresent()){
+				this.commandProxy().remove(kbpmtBPTimesheet);
+			}
+		});
 	}
 
 	private KbpmtBPTimesheet toBonusPayTimesheetEntity(String companyId, String bonusPaySettingCode,
