@@ -5,7 +5,6 @@
 package nts.uk.ctx.basic.dom.company.organization.employee.workplace;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 
 /**
@@ -26,7 +25,7 @@ public interface AffiliationWorkplaceHistoryGetMemento {
 	 *
 	 * @return the employee id
 	 */
-	EmployeeId getEmployeeId();
+	String getEmployeeId();
 	
 	
 	/**
