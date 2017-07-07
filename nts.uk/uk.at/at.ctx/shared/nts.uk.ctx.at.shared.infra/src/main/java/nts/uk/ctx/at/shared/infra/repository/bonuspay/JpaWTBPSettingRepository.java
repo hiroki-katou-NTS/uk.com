@@ -34,7 +34,10 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 
 	@Override
 	public void removeWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
-		this.commandProxy().remove(this.toWTBPSettingEntity(workingTimesheetBonusPaySetting));
+		Optional<WorkingTimesheetBonusPaySetting> wTBonusPaySetting = getWTBPSetting(workingTimesheetBonusPaySetting.getCompanyId(), workingTimesheetBonusPaySetting.getWorkingTimesheetCode());
+		if(wTBonusPaySetting.isPresent()){
+			this.commandProxy().remove(KbpstWTBonusPaySetting.class, new KbpstWTBonusPaySettingPK(workingTimesheetBonusPaySetting.getCompanyId(), workingTimesheetBonusPaySetting.getWorkingTimesheetCode().v()));
+		}
 	}
 
 	private KbpstWTBonusPaySetting toWTBPSettingEntity(
@@ -62,7 +65,6 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 			return Optional.ofNullable(this.toWTBPSettingDomain(kbpstWTBonusPaySetting.get()));
 		}
 		return Optional.empty();
-
 	}
 
 }

@@ -29,7 +29,7 @@ public class JpaCompanyBPSettingRepository extends JpaRepository implements CPBo
 
 	@Override
 	public void saveSetting(CompanyBonusPaySetting setting) {
-		Optional<CompanyBonusPaySetting> domain = this.getSetting(setting.getCompanyId().v());
+		Optional<CompanyBonusPaySetting> domain = this.getSetting(setting.getCompanyId());
 		if (domain.isPresent()) {
 			this.commandProxy().update(toEntity(setting));
 		} else {
@@ -39,16 +39,16 @@ public class JpaCompanyBPSettingRepository extends JpaRepository implements CPBo
 
 	@Override
 	public void removeSetting(CompanyBonusPaySetting setting) {
-		Optional<CompanyBonusPaySetting> domain = this.getSetting(setting.getCompanyId().v());
+		Optional<CompanyBonusPaySetting> domain = this.getSetting(setting.getCompanyId());
 		if (domain.isPresent()) {
 
 			this.commandProxy().remove(KbpstCompanyBPSetting.class,
-					new KbpstCompanyBPSettingPK(setting.getCompanyId().v()));
+					new KbpstCompanyBPSettingPK(setting.getCompanyId()));
 		}
 	}
 
 	private KbpstCompanyBPSetting toEntity(CompanyBonusPaySetting domain) {
-		return new KbpstCompanyBPSetting(new KbpstCompanyBPSettingPK(domain.getCompanyId().v()),
+		return new KbpstCompanyBPSetting(new KbpstCompanyBPSettingPK(domain.getCompanyId()),
 				domain.getBonusPaySettingCode().v());
 	}
 

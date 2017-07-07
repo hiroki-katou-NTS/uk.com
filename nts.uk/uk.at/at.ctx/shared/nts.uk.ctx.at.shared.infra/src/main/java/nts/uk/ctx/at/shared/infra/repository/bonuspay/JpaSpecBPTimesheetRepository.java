@@ -55,9 +55,12 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 	@Override
 	public void removeListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<SpecBonusPayTimesheet> lstTimesheet) {
-		List<KbpmtSpecBPTimesheet> lstKbpmtSpecBPTimesheet = lstTimesheet.stream()
-				.map(c -> toSpecBPTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
-		this.commandProxy().removeAll(lstKbpmtSpecBPTimesheet);
+		lstTimesheet.forEach(c->{
+			Optional<KbpmtSpecBPTimesheet> kbpmtSpecBPTimesheet = this.queryProxy().find(new KbpmtSpecBPTimesheetPK(companyId,c.getTimeSheetId(),bonusPaySettingCode.v()), KbpmtSpecBPTimesheet.class);
+			if (kbpmtSpecBPTimesheet.isPresent()) {
+				this.commandProxy().remove(kbpmtSpecBPTimesheet);
+			}
+		});
 	}
 
 	private SpecBonusPayTimesheet toSpecBPTimesheetDomain(KbpmtSpecBPTimesheet KbpmtSpecBPTimesheet) {

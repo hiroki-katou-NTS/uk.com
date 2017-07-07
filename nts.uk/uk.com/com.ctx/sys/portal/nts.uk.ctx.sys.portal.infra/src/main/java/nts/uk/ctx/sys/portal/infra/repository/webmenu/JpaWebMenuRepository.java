@@ -30,7 +30,9 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstWebMenuPK;
 public class JpaWebMenuRepository extends JpaRepository implements WebMenuRepository {
 
 	private final String SEL_1 = "SELECT a FROM CcgstWebMenu a WHERE a.ccgstWebMenuPK.companyId = :companyId";
-
+	private final String UPD_NOT_DEFAULT = "UPDATE CcgstWebMenu a SET a.defaultMenu = 0 "
+			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId "; 
+	
 	@Override
 	public List<WebMenu> findAll(String companyId) {
 		return this.queryProxy().query(SEL_1, CcgstWebMenu.class).setParameter("companyId", companyId).getList(w -> {
@@ -59,6 +61,13 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	public void remove(String companyId, String webMenuCode) {
 		CcgstWebMenuPK key = new CcgstWebMenuPK(companyId, webMenuCode);
 		this.commandProxy().remove(CcgstWebMenu.class, key);
+	}
+	
+	@Override
+	public void changeNotDefault(String companyId) {
+		this.getEntityManager().createQuery(UPD_NOT_DEFAULT)
+			.setParameter("companyId", companyId)
+			.executeUpdate();
 	}
 
 	/**
@@ -173,5 +182,4 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 				}).collect(Collectors.toList());
 		return treeMenus;
 	}
-
 }

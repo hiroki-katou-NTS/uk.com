@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 public class BPTimeItemSetting extends AggregateRoot {
 
-	private CompanyId companyId;
+	private String companyId;
 
 	private TimeItemId tiemItemId;
 
@@ -30,13 +30,11 @@ public class BPTimeItemSetting extends AggregateRoot {
 
 	private WTCalSettingAtr worktimeCalSettingAtr;
 
-	// private TimeItemTypeAtr timeItemTypeAtr;
-
 	private BPTimeItemSetting() {
 
 	}
 
-	private BPTimeItemSetting(CompanyId companyId, TimeItemId tiemItemId, HTCalSettingAtr holidayCalSettingAtr,
+	private BPTimeItemSetting(String companyId, TimeItemId tiemItemId, HTCalSettingAtr holidayCalSettingAtr,
 			OTCalSettingAtr overtimeCalSettingAtr, WTCalSettingAtr worktimeCalSettingAtr) {
 		super();
 		this.companyId = companyId;
@@ -49,7 +47,7 @@ public class BPTimeItemSetting extends AggregateRoot {
 
 	public static BPTimeItemSetting createFromJavaType(String companyId, String tiemItemId, int holidayCalSettingAtr,
 			int overtimeCalSettingAtr, int worktimeCalSettingAtr) {
-		return new BPTimeItemSetting(new CompanyId(companyId), new TimeItemId(tiemItemId),
+		return new BPTimeItemSetting(companyId, new TimeItemId(tiemItemId),
 				EnumAdaptor.valueOf(holidayCalSettingAtr, HTCalSettingAtr.class),
 				EnumAdaptor.valueOf(overtimeCalSettingAtr, OTCalSettingAtr.class),
 				EnumAdaptor.valueOf(worktimeCalSettingAtr, WTCalSettingAtr.class));
