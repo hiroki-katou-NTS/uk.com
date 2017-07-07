@@ -21,9 +21,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private final String SEL = "SELECT s FROM CcgstStandardMenu s ";
 	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
 	private final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
-			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1";
+			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1";	
 	private final String GET_ALL_STANDARD_MENU_DISPLAY = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
-			+ "AND s.menuAtr = 1";
+			+ "AND s.menuAtr = 1 AND s.webMenuSetting = 1 ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";	
 	private final String FIND_BY_AFTER_LOGIN_DISPLAY = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.afterLoginDisplay = :afterLoginDisplay ";
 	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
@@ -48,7 +48,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		entity.ccgmtStandardMenuPK.companyId = domain.getCompanyId();
 		entity.ccgmtStandardMenuPK.code = domain.getCode().v();
 		entity.ccgmtStandardMenuPK.system = domain.getSystem().value;
-		entity.ccgmtStandardMenuPK.classification = domain.getClassification();
+		entity.ccgmtStandardMenuPK.classification = domain.getClassification().value;
 		entity.afterLoginDisplay = domain.getAfterLoginDisplay();
 		entity.displayName = domain.getDisplayName().v();
 		entity.displayOrder = domain.getDisplayOrder();
@@ -154,7 +154,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		CcgstStandardMenuPK pk;
 		for (StandardMenu obj : StandardMenu) {
 			pk = new CcgstStandardMenuPK(obj.getCompanyId(), obj.getCode().v(), obj.getSystem().value,
-					obj.getClassification());
+					obj.getClassification().value);
 			CcgstStandardMenu o = manager.find(CcgstStandardMenu.class, pk);
 			o.setDisplayName(obj.getDisplayName().v());
 		}
@@ -181,6 +181,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		return isExist;
 	}
 
+	/**
+	 * Get all display standard menu
+	 */
 	@Override
 	public List<StandardMenu> findAllDisplay(String companyId) {
 		return this.queryProxy().query(GET_ALL_STANDARD_MENU_DISPLAY, CcgstStandardMenu.class)

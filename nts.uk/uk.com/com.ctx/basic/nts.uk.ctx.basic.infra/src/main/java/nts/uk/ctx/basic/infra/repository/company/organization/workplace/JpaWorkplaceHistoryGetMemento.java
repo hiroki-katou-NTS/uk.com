@@ -11,21 +11,23 @@ import nts.uk.ctx.basic.dom.company.organization.CompanyId;
 import nts.uk.ctx.basic.dom.company.organization.workplace.HistoryId;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchy;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHistoryGetMemento;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHist;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHist;
 
 /**
  * The Class JpaWorkplaceHistoryGetMemento.
  */
 public class JpaWorkplaceHistoryGetMemento implements WorkPlaceHistoryGetMemento {
 
-	/** The kwpmt wpl hist. */
-	private KwpmtWplHist kwpmtWplHist;
+	/** The cwpmt wkp hist. */
+	private CwpmtWkpHist cwpmtWkpHist;
 	
 	/**
-	 * @param kwpmtWplHist
+	 * Instantiates a new jpa workplace history get memento.
+	 *
+	 * @param cwpmtWkpHist the cwpmt wkp hist
 	 */
-	public JpaWorkplaceHistoryGetMemento(KwpmtWplHist kwpmtWplHist) {
-		this.kwpmtWplHist = kwpmtWplHist;
+	public JpaWorkplaceHistoryGetMemento(CwpmtWkpHist cwpmtWkpHist) {
+		this.cwpmtWkpHist = cwpmtWkpHist;
 	}
 
 	/**
@@ -35,7 +37,7 @@ public class JpaWorkplaceHistoryGetMemento implements WorkPlaceHistoryGetMemento
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.kwpmtWplHist.getKwpmtWplHistPK().getCid());
+		return new CompanyId(this.cwpmtWkpHist.getCwpmtWkpHistPK().getCid());
 	}
 
 	/**
@@ -45,7 +47,7 @@ public class JpaWorkplaceHistoryGetMemento implements WorkPlaceHistoryGetMemento
 	 */
 	@Override
 	public HistoryId getHistoryId() {
-		return new HistoryId(this.kwpmtWplHist.getKwpmtWplHistPK().getHistId());
+		return new HistoryId(this.cwpmtWkpHist.getCwpmtWkpHistPK().getHistId());
 	}
 
 	/**
@@ -55,7 +57,7 @@ public class JpaWorkplaceHistoryGetMemento implements WorkPlaceHistoryGetMemento
 	 */
 	@Override
 	public Period getPeriod() {
-		return new Period(this.kwpmtWplHist.getStrD(),this.kwpmtWplHist.getEndD());
+		return new Period(this.cwpmtWkpHist.getStrD(),this.cwpmtWkpHist.getEndD());
 	}
 
 	/**

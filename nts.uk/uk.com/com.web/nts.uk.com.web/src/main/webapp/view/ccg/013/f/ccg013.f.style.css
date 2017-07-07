@@ -21,7 +21,7 @@
 
 #table {
 	margin-top: 20px;
-	margin-left: 50px;
+	margin-left: 40px;
 }
 
 #gridlist {
@@ -35,7 +35,7 @@
 
 #label {
 	margin-top: 20px;
-	margin-left: 50px;
+	margin-left: 40px;
 }
 
 #date {
@@ -53,7 +53,7 @@
 }
 
 .table1 {
-	margin: 20px 0 0 50px
+	margin: 20px 0 0 40px
 }
 
 .table1 thead tr th:first-child, .table1 tbody tr td:first-child {

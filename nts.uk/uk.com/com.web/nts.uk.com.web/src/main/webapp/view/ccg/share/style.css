@@ -18,28 +18,16 @@
 }
 
 .contentkcp {
-	min-height: 500px;
+	min-height: 400px;
 	padding: 0 !important;
 }
 
-.centerkcp {
-	/* Firefox */
-	display: -moz-box;
-	-moz-box-pack: center;
-	-moz-box-align: center;
-	/* Safari and Chrome */
-	display: -webkit-box;
-	-webkit-box-pack: center;
-	-webkit-box-align: center;
-	/* W3C */
-	display: box;
-	box-pack: center;
-	box-align: center;
-}
-
 .accordion {
-	width: 420px;
+	width: 380px;
 }
+.accordion label {
+	cursor: pointer;
+} 
 .btn-quick-search {
 	cursor: pointer;
 }
@@ -153,13 +141,87 @@
 }
 .tab-content-2 {
 	overflow-y: scroll;
-	height: 500px;
+	height: 600px;
 }
-#ccgcomponent {
-	height: 800px;
+.tab-content-1 {
+	height: 600px;
+}
+.ccg-tabpanel #tab-1 {
+	background-color: white;
+}
+.ccg-tabpanel #tab-2 {
+	background-color: white;
+	padding-right: 5px;
 }
 #ccg-component {
-	height: 500px;
-	float: left;
+	z-index: 999;
 	position: absolute;
+}
+#hor-scroll-button-show {
+	margin-top: 180px;
+}
+#hor-scroll-button-hide {
+	z-index: 998;
+	position: absolute;
+	margin-top: 180px;
+}
+.icon-01-searchmode {
+    margin-left: 8px;
+    background: url(icon/01_ShowHideSearch.png);
+    width: 25px;
+    height: 25px;
+    background-size: 25px 25px;
+    margin-top: 110px;
+    cursor: pointer;
+}
+.btn_apply .icon-01-searchmode {
+    background: url(icon/01_ShowHideSearch.png);
+    width: 25px;
+    height: 25px;
+    background-size: 25px 25px;
+    margin-top: 0px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.labelShowHideButton {
+    cursor: pointer;
+    font-size: 16pt;
+    vertical-align: super;
+    line-height: 38px;
+    writing-mode: vertical-lr;
+    -ms-writing-mode: tb-lr;
+    text-orientation: upright;
+}
+.controlSettingShowHide.caret-right:after {
+    cursor: pointer;
+    color: #AEEE60;
+    border-width: 50px 15px;
+    margin-bottom: 90px;
+}
+.btn_showhide {
+    width: 50px;
+    background-color: #2ECC71 ;
+    padding-left: 8px;
+    color: white;
+    border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+    display: inline-block;
+    height: 370px;
+    cursor: pointer;
+}
+.lbl-apply {
+	font-size: 16px;
+	margin-top: 1px;
+	cursor: pointer;
+	vertical-align: super;
+}
+.ccg-tabpanel #nts-component-list {
+	padding: 0px !important;
+}
+#employeeinfo {
+	margin-top: 30px;
+}
+.ccg-tabpanel {
+	background-color: #F2F2F2;
+	border-radius: 5px;
 }

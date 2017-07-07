@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.record.dom.standardtime.enums;
 
-import lombok.AllArgsConstructor;
-
 /**
  * 
  * @author nampt
  *
  */
-@AllArgsConstructor
 public enum LaborSystemtAtr {
 	
 	/*
@@ -19,5 +16,10 @@ public enum LaborSystemtAtr {
 	DEFORMATION_WORKING_TIME_SYSTEM(1);
 	
 	public final int value;
+	
+	private LaborSystemtAtr(int type) {
+		this.value = type;
+	}
+
 	
 }

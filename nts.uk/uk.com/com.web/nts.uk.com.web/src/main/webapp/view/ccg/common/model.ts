@@ -44,6 +44,7 @@ module nts.uk.com.view.ccg.model {
         topPagePartID: string;
         code: string;
         name: string;
+        codeName: string;
         "type": number;
         width: number;
         height: number;

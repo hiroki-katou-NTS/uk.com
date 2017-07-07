@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
@@ -40,8 +41,24 @@ public class BPTimeItemFinder {
 					bonusPayTimeItem.get());
 		}
 		return null;
+	}
+	
+	public void checkUseArt(List<Boolean> lstuseArt){
+		boolean checkUseExist = false;
+		
+		for (Boolean useArt : lstuseArt) {
+			if(useArt){
+				checkUseExist=useArt;
+			}
+		}
+		if(!checkUseExist){
+			throw new BusinessException("Msg_131");
+		}
 		
 	}
+	
+	
+	
 
 	public BPTimeItemDto getSpecialBonusPayTimeItem(String timeItemId) {
 		String companyId = AppContexts.user().companyId();

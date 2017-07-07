@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.shared.app.find.bonuspay;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.EmployeeId;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 
@@ -15,17 +15,20 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 @Transactional
 public class PSBonusPaySettingFinder {
 	@Inject
-	private PSBonusPaySettingRepository psBonusPaySettingRepository;
+	private PSBonusPaySettingRepository repo;
 
 	public List<PSBonusPaySettingDto> getListSetting(List<String> lstEmployeeId) {
-		List<PersonalBonusPaySetting> lstPersonalBonusPaySetting = this.psBonusPaySettingRepository
-				.getListSetting(lstEmployeeId.stream().map(c -> new EmployeeId(c)).collect(Collectors.toList()));
+		List<PersonalBonusPaySetting> lstPersonalBonusPaySetting = this.repo
+				.getListSetting(lstEmployeeId.stream().collect(Collectors.toList()));
 		return lstPersonalBonusPaySetting.stream().map(c -> toPSBonusPaySettingDto(c)).collect(Collectors.toList());
 	}
 
 	public PSBonusPaySettingDto getPersonalBonusPaySetting(String employeeId) {
-
-		return this.toPSBonusPaySettingDto(psBonusPaySettingRepository.getPersonalBonusPaySetting(new EmployeeId(employeeId)).get());
+		Optional<PersonalBonusPaySetting> domain = repo.getPersonalBonusPaySetting(employeeId);
+		if (domain.isPresent()) {
+			return this.toPSBonusPaySettingDto(domain.get());
+		}
+		return null;
 	}
 
 	private PSBonusPaySettingDto toPSBonusPaySettingDto(PersonalBonusPaySetting personalBonusPaySetting) {

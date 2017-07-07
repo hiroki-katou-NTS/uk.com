@@ -1,26 +1,22 @@
 module nts.uk.at.view.kmk005.g.service {
     import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
 
     let paths: any = {
-        'get': 'at/share/cpBonusPaySetting/getCBPSettingSetting',
-        'add': 'at/share/cpBonusPaySetting/CBPSettingSetting',
-        'update': 'at/share/cpBonusPaySetting/updateCBPSettingSetting',
-        'remove': 'at/share/cpBonusPaySetting/removeCBPSettingSetting'
+        'get': 'at/share/cpBonusPaySetting/getSetting',
+        'save': 'at/share/cpBonusPaySetting/saveSetting',
+        getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}'
     }
 
-    export function get() {
+    export function getData() {
         return ajax(paths.get);
     }
 
-    export function add(command) {
-        return ajax(paths.add, command);
+    export function getName(bonusPaySettingCode) {
+        return ajax(format(paths.getName, bonusPaySettingCode));
     }
 
-    export function update(command) {
-        return ajax(paths.update, command);
-    }
-
-    export function remove(command) {
-        return ajax(paths.remove, command);
+    export function saveData(command: any) {
+        return ajax(paths.save, command);
     }
 }

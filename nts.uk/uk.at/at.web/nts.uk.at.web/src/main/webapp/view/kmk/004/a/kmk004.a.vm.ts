@@ -146,10 +146,8 @@ module nts.uk.at.view.kmk004.a {
                 $.when(self.loadUsageUnitSetting(),
                     self.setStartMonth())
                     .done(() => {
-                        self.loadCompanySetting()
-                            .done(() => {
-                                dfd.resolve();
-                            });
+                        self.onSelectCompany();
+                        dfd.resolve();
                     });
                 return dfd.promise();
             }
@@ -163,14 +161,14 @@ module nts.uk.at.view.kmk004.a {
                 self.clearError();
 
                 // Update flag.
-                self.isLoading(false);
+                self.isLoading(true);
                 self.isCompanySelected(true);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
 
                 // Load data.
-                self.loadCompanySetting();
+                self.loadCompanySetting().done(() => self.isLoading(false));
             }
 
             /**
@@ -187,6 +185,9 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(true);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
+
+                // Force to reload.
+                self.selectedEmploymentCode.valueHasMutated();
 
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
@@ -210,6 +211,9 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(true);
+
+                // Force to reload.
+                self.selectedWorkplaceId.valueHasMutated();
 
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
@@ -515,7 +519,7 @@ module nts.uk.at.view.kmk004.a {
                 service.findAllWorkplaceSetting(self.workplaceWTSetting.year()).done(listId => {
                     self.alreadySettingWorkplaces.removeAll();
                     listId.forEach(id => {
-                        self.alreadySettingWorkplaces.push({ workplaceId: id, settingType: 2 })
+                        self.alreadySettingWorkplaces.push({ workplaceId: id, isAlreadySetting: true })
                     });
                 });
             }
@@ -621,7 +625,7 @@ module nts.uk.at.view.kmk004.a {
                 if (l[0]) {
                     return;
                 }
-                self.alreadySettingWorkplaces.push({ workplaceId: id, settingType: 2 });
+                self.alreadySettingWorkplaces.push({ workplaceId: id, isAlreadySetting: true });
             }
 
             /**

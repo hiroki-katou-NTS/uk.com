@@ -14,12 +14,13 @@ module nts.uk.at.view.kmk008.g {
             employeeName: KnockoutObservable<string>;
 
             items: KnockoutObservableArray<ItemModel>;
+            items2: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
 
             selectedId: KnockoutObservable<string>;
 
-            items2: KnockoutObservableArray<ItemModel>;
+
             currentCode2: KnockoutObservable<any>;
 
             isNewMode: KnockoutObservable<boolean>;
@@ -168,15 +169,22 @@ module nts.uk.at.view.kmk008.g {
                     self.getDetail(employee.employeeId);
                     self.selectedId(employee.employeeId);
                     self.employeeName(employee.name);
-                    let empSelect = _.find(self.items(), emp => {
-                        return emp.code == newValue;
-                    });
-                    //if (empSelect) { self.currentEmpName(empSelect.name); }
 
                 });
 
-                self.selectedTab.subscribe(self.selectedCode => {
-                    return self.getDetail(self.selectedCode);    
+                self.selectedTab.subscribe(x => {
+                    if (self.selectedId()) {
+                        return self.getDetail(self.selectedId());
+                    } else {
+                        if (self.selectedTab() == "tab-2") {
+                            self.items2([]);
+                            self.items2.push(new ItemModel("", "", ""));
+                        } else {
+                            self.items([]);
+                            self.items.push(new ItemModel("", "", ""));
+                        }
+                    }
+
                 });
 
             }
@@ -192,42 +200,46 @@ module nts.uk.at.view.kmk008.g {
             openDiaglog() {
                 let self = this;
                 let isYearMonth = true;
-                if(self.selectedTab == "tab-1" ){
+                if (self.selectedTab() == "tab-1") {
                     isYearMonth = false;
                 }
-                setShared("KMK_008_PARAMS", { employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth : isYearMonth });
+                setShared("KMK_008_PARAMS", { employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth: isYearMonth });
                 modal('../../../kmk/008/k/index.xhtml').onClosed(() => {
-                    let data: string = getShared('KDL007_VALUES');
-                    self.getDetail(data);
+                    //                    let data: string = getShared('KDL007_VALUES');
+                    if (self.selectedId()) {
+                        self.getDetail(self.selectedId());
+                    }
                 });
             }
 
             getDetail(employmentCategoryCode: string) {
                 var self = this;
-                if (self.selectedTab() == "tab-1") {
+                if (self.selectedTab() == "tab-2") {
                     service.getMonth(employmentCategoryCode).done(function(monthData: Array<model.MonthDto>) {
                         if (monthData) {
+                            self.items2([]);
                             _.forEach(monthData, function(value) {
-                                self.items([]);
-                                self.items.push(new ItemModel(value.yearMonthValue, value.errorOneMonth, value.alarmOneMonth));
-                            });
-
-                        } else {
-                            self.items([]);
-                            self.items.push(new ItemModel("", "", ""));
-                        }
-                    });
-                } else {
-                    service.getYear(employmentCategoryCode).done(function(yearData: Array<model.YearDto>) {
-                        if (yearData) {
-                            _.forEach(yearData, function(value) {
-                                self.items2([]);
-                                self.item2.push(new ItemModel(value.yearValue, value.errorOneYear, value.alarmOneYear));
+                                //self.items([]);
+                                self.items2.push(new ItemModel(value.yearMonthValue, value.errorOneMonth, value.alarmOneMonth));
                             });
 
                         } else {
                             self.items2([]);
                             self.items2.push(new ItemModel("", "", ""));
+                        }
+                    });
+                } else {
+                    service.getYear(employmentCategoryCode).done(function(yearData: Array<model.YearDto>) {
+                        if (yearData) {
+                            self.items([]);
+                            _.forEach(yearData, function(value) {
+                                //self.items2([]);
+                                self.items.push(new ItemModel(value.yearValue, value.errorOneYear, value.alarmOneYear));
+                            });
+
+                        } else {
+                            self.items([]);
+                            self.items.push(new ItemModel("", "", ""));
                         }
                     });
                 }

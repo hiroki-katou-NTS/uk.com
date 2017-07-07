@@ -14,13 +14,7 @@
 	clean: right;
 }
 
-#ccgcomponent{
-	width: 32%; 
-	float: left;
-}
-
 #component-items-list{
-	width: 33%; 
 	float: left; 
-	margin-left: 30px;
+	margin-left: 90px;
 }

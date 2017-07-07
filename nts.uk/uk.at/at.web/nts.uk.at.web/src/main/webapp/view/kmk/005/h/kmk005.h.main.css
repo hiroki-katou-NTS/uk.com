@@ -20,3 +20,13 @@ div[class^=screen-h] {
 .screen-h .form-group {
 	margin-bottom: 10px;
 }
+
+.screen-h #tree-grid{
+	width: 500px;
+	float: left;
+	margin-right: 30px; 
+}
+
+.screen-h .ntsSearchBox {
+	min-width: 300px;
+}

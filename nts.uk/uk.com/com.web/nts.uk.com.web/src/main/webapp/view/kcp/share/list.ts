@@ -232,8 +232,9 @@ module kcp.share.list {
 
                 // subscribe when alreadySettingList update => reload component.
                 self.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
-                    self.addAreadySettingAttr(dataList, newSettings);
-                    self.itemList(dataList);
+                    var currentDataList = self.itemList();
+                    self.addAreadySettingAttr(currentDataList, newSettings);
+                    self.itemList(currentDataList);
                 })
             }
             self.itemList(dataList);

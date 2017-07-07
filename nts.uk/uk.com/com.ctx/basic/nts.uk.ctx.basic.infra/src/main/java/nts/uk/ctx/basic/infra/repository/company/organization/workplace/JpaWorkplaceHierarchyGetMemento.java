@@ -7,22 +7,24 @@ package nts.uk.ctx.basic.infra.repository.company.organization.workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.HierarchyCode;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchyGetMemento;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWplHierarchy;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHierarchy;
 
 /**
  * The Class JpaWorkplaceHierarchyGetMemento.
  */
 public class JpaWorkplaceHierarchyGetMemento implements WorkPlaceHierarchyGetMemento {
 
-	/** The kwpmt wpl hierarchy. */
-	private KwpmtWplHierarchy kwpmtWplHierarchy;
+	/** The cwpmt wkp hierarchy. */
+	private CwpmtWkpHierarchy cwpmtWkpHierarchy;
 	
 	
 	/**
-	 * @param kwpmtWplHierarchy
+	 * Instantiates a new jpa workplace hierarchy get memento.
+	 *
+	 * @param cwpmtWkpHierarchy the cwpmt wkp hierarchy
 	 */
-	public JpaWorkplaceHierarchyGetMemento(KwpmtWplHierarchy kwpmtWplHierarchy) {
-		this.kwpmtWplHierarchy = kwpmtWplHierarchy;
+	public JpaWorkplaceHierarchyGetMemento(CwpmtWkpHierarchy cwpmtWkpHierarchy) {
+		this.cwpmtWkpHierarchy = cwpmtWkpHierarchy;
 	}
 
 	/**
@@ -32,7 +34,7 @@ public class JpaWorkplaceHierarchyGetMemento implements WorkPlaceHierarchyGetMem
 	 */
 	@Override
 	public WorkplaceId getWorkplaceId() {
-		return new WorkplaceId(this.kwpmtWplHierarchy.getKwpmtWplHierarchyPK().getWplid());
+		return new WorkplaceId(this.cwpmtWkpHierarchy.getCwpmtWkpHierarchyPK().getWkpid());
 	}
 
 	/**
@@ -42,7 +44,7 @@ public class JpaWorkplaceHierarchyGetMemento implements WorkPlaceHierarchyGetMem
 	 */
 	@Override
 	public HierarchyCode getHierarchyCode() {
-		return new HierarchyCode(this.kwpmtWplHierarchy.getHierarchyCd());
+		return new HierarchyCode(this.cwpmtWkpHierarchy.getHierarchyCd());
 	}
 
 }

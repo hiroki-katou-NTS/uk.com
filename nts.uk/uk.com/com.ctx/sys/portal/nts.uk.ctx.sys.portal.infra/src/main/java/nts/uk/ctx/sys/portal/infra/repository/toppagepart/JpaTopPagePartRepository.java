@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppagepart;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,6 +70,10 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	
 	@Override
 	public List<TopPagePart> findByTypesAndIDs(String companyID, List<Integer> topPagePartTypes, List<String> topPagePartIDs) {
+		//hoatt
+		if(topPagePartTypes.size()==0 || topPagePartIDs.size()==0){
+			return new ArrayList<>();
+		}
 		 return this.queryProxy().query(SELECT_BY_TYPE_AND_IDS, CcgmtTopPagePart.class)
 					.setParameter("companyID", companyID)
 					.setParameter("topPagePartIDs", topPagePartIDs)
@@ -89,7 +94,12 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 
 	@Override
 	public void update(TopPagePart topPagePart) {
-		this.commandProxy().update(toEntity(topPagePart));
+		CcgmtTopPagePart newEntity = toEntity(topPagePart);
+		CcgmtTopPagePart updateEntity = this.queryProxy().find(newEntity.ccgmtTopPagePartPK, CcgmtTopPagePart.class).get();
+		updateEntity.name = newEntity.name;
+		updateEntity.width = newEntity.width;
+		updateEntity.height = newEntity.height;
+		this.commandProxy().update(updateEntity);
 	}
 
 	/**

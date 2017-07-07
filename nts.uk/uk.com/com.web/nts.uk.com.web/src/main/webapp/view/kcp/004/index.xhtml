@@ -33,7 +33,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
-				<div style="margin-left: 30px">
+				<div style="margin-left: 30px" id="content" class="cf">
 					<!-- BEGIN ORVERVIEW -->
 					<div>
 						<h1>KCP004 職場リスト（共通部品）Workplace List</h1>
@@ -73,7 +73,7 @@
 						<div>
 							<table class="table-tree-sample">
 								<tr>
-									<td><div id="tree-grid" style="margin-top: 30px;"></div></td>
+									<td><div id="tree-grid" style="margin-top: 30px;margin-left: 10px;"></div></td>
 									<td>
 										<div>
 											<table class="table-tree-sample" data-bind="with: rowSelected">
@@ -129,11 +129,8 @@ export class ScreenModel {
 				let self = this;
 				
 				self.baseDate = ko.observable(new Date());
-				self.multiSelectedWorkplaceId = ko.observableArray(['wpl1', 'wpl3']);
-				self.alreadySettingList = ko.observableArray([
-						{workplaceId: 'wpl1', settingType: SettingType.NO_SETTING},
-						{workplaceId: 'wpl3', settingType: SettingType.ALREADY_SETTING},
-				]);
+				self.multiSelectedWorkplaceId = ko.observableArray([]);
+				self.alreadySettingList = ko.observableArray([]);
 				self.treeGrid = {
 						isShowAlreadySet: true,
 						isMultiSelect: true,
@@ -148,7 +145,7 @@ export class ScreenModel {
 		}
 }
 								]]></pre>
-								<pre><![CDATA[<!--It is called after apply binding done.-->
+								<pre><![CDATA[<!--It is called after apply binding done. This return JQueryPromise<void>-->
 $('#tree-grid').ntsTreeComponent(self.treeGrid);
 									]]></pre>
 									<h2>API</h2>
@@ -229,20 +226,20 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 										<tr>
 											<td>
 												<lable>alreadySettingList</lable> <br/>
-												<lable><i>(optional)</i></lable>
+												<lable><i>(if isShowAlreadySet is true, it is a required, and opposite.)</i></lable>
 											</td>
 											<td>
 												<b>Type:</b>Array[UnitAlreadySettingModel]<br/>
-												<b>Default:</b><i>empty</i><br/>
-												<div><i>Description:</i> Display icon setting</div>
-												<pre><![CDATA[UnitAlreadySettingModel {
+												<b>Default:</b><i>undefined</i><br/>
+												<div>
+													<i>Description:</i>if it is true (saved setting), it will
+													display icon
+													<img src="../share/icon/icon78.png" style="width: 20px;"></img>
+													and childrent do not save setting, will display
+													<img src="../share/icon/icon84.png" style="width: 20px;"></img>
+												</div> <pre><![CDATA[UnitAlreadySettingModel {
     workplaceId: string;
-    settingType: SettingType;
-}]]></pre>
-												<pre><![CDATA[SettingType {
-    static NO_SETTING = 0;
-    static ALREADY_SETTING = 1;
-    static USE_PARRENT_SETTING =2;
+    isAlreadySetting: boolean;
 }]]></pre>
 											</td>
 										</tr>
@@ -256,7 +253,7 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 								
 								<!-- BEGIN TABS METHOD -->
 								<div id="tabs-method" class="cf">
-									<table style="width: 500px">
+									<table style="width: 700px">
 										<thead>
 											<td style="text-align: center;"><h4>Method</h4></td>
 											<td style="text-align: center;"><h4>Description</h4></td>
@@ -270,10 +267,10 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
     workplaceId: string;
     code: string;
     name: string;
-    nodeText: string;
+    nodeText?: string;
     level: number;
     heirarchyCode: string;
-    settingType: SettingType;
+    isAlreadySetting?: boolean;
     childs: Array<UnitModel>;
 }]]></pre>
 											</td>
@@ -290,7 +287,7 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 											</td>
 										</tr>
 										<tr>
-											<td>$('#tree-grid').focusComponent()</td>
+											<td>$('#tree-grid').focusTreeGridComponent()</td>
 											<td><i>Description:</i>Focus input control in tree grid.</td>
 										</tr>
 									</table>
