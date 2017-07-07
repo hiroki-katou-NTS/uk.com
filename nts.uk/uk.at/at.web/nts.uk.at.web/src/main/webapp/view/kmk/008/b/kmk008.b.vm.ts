@@ -4,7 +4,7 @@ module nts.uk.at.view.kmk008.b {
             show: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-           // selectedTab: KnockoutObservable<string>;
+            // selectedTab: KnockoutObservable<string>;
             viewmodelC: any;
             viewmodelD: any;
             viewmodelE: any;
@@ -17,7 +17,8 @@ module nts.uk.at.view.kmk008.b {
                 self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
-               
+
+                self.viewmodelC.startPage();
                 self.show.subscribe(function(newVal) {
                     if (newVal)
                         $("#sidebar").ntsSideBar("show", 1);
@@ -52,6 +53,25 @@ module nts.uk.at.view.kmk008.b {
                 return dfd.promise();
             }
 
+            tabpanel1Click() {
+                let self = this;
+                self.viewmodelC.startPage();
+            }
+
+            tabpanel2Click() {
+                let self = this;
+                self.viewmodelD.startPage();
+            }
+
+            tabpanel3Click() {
+                let self = this;
+                self.viewmodelE.startPage();
+            }
+
+            tabpanel4Click() {
+                let self = this;
+                self.viewmodelF.startPage();
+            }
         }
     }
 }
