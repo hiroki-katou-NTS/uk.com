@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk012.a {
                 });
                 
                 self.selectCodeLstClosureHistory.subscribe(function(val: ClosureHistoryMDto){
-                    self.enableChangeClosureDate(val.historyId == self.closureModel.closureHistories()[0].historyId);
+                    self.enableChangeClosureDate(val.startDate == self.closureModel.closureHistories()[0].startDate);
                     self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
                     self.detailClosureHistory(val);
                 });
