@@ -155,6 +155,23 @@ liveviewcontainer.append($("<iframe/>").attr("src",nts.uk.request.liveView(FILEI
 					]]>
 					</pre>
 					<div id="liveview"></div>
+					
+					<h1>get uploaded file information</h1>
+					<pre><![CDATA[nts.uk.request.ajax("/shr/infra/file/storage/infor/"+fileId).done(function(res){
+	//return object
+	{
+		"id":string,
+		"originalName":string,
+		//stereo name
+		"fileType":string,
+		"mimeType":string,
+		"originalSize":number,
+		//string date, include timezone
+		"storedAt":string,
+		"temporary":boolean
+	}
+});
+]]></pre>
 
 				</div>
 
