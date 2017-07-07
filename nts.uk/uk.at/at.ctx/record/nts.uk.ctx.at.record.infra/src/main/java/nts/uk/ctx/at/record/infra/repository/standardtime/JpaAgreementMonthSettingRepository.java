@@ -75,8 +75,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		AgreementMonthSetting agreementMonthSetting = AgreementMonthSetting.createFromJavaType(
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.employeeId,
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.yearmonthValue,
-				kmkmtAgreementMonthSet.errorOneMonth,
-				kmkmtAgreementMonthSet.alarmOneMonth);
+				kmkmtAgreementMonthSet.errorOneMonth.longValue(),
+				kmkmtAgreementMonthSet.alarmOneMonth.longValue());
 		return agreementMonthSetting;
 	}
 
@@ -86,8 +86,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		entity.kmkmtAgreementMonthSetPK = new KmkmtAgreementMonthSetPK();
 		entity.kmkmtAgreementMonthSetPK.employeeId = agreementMonthSetting.getEmployeeId();
 		entity.kmkmtAgreementMonthSetPK.yearmonthValue = new BigDecimal(agreementMonthSetting.getYearMonthValue().v());
-		entity.alarmOneMonth = agreementMonthSetting.getAlarmOneMonth().v();
-		entity.errorOneMonth = agreementMonthSetting.getErrorOneMonth().v();
+		entity.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().v());
+		entity.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().v());
 
 		return entity;
 	}

@@ -23,7 +23,7 @@ public class BonusPayTimesheet extends DomainObject {
 
 	private UseAtr useAtr;
 
-	private TimeItemId timeItemId;
+	private String timeItemId;
 
 	private TimeClockPrimitiveValue<Long> startTime;
 
@@ -33,7 +33,7 @@ public class BonusPayTimesheet extends DomainObject {
 
 	private RoundingAtr roundingAtr;
 
-	protected BonusPayTimesheet(int timeSheetId, UseAtr useAtr, TimeItemId timeItemId,
+	protected BonusPayTimesheet(int timeSheetId, UseAtr useAtr, String timeItemId,
 			TimeClockPrimitiveValue<Long> startTime, TimeClockPrimitiveValue<Long> endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr) {
 		super();
@@ -52,7 +52,7 @@ public class BonusPayTimesheet extends DomainObject {
 
 	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, Long startTime,
 			Long endTime, int roundingTimeAtr, int roundingAtr) {
-		return new BonusPayTimesheet(timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), new TimeItemId(timeItemId),
+		return new BonusPayTimesheet(timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
 				new TimeClockPrimitiveValue<>(startTime), new TimeClockPrimitiveValue<>(endTime),
 				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
 				EnumAdaptor.valueOf(roundingAtr, RoundingAtr.class));

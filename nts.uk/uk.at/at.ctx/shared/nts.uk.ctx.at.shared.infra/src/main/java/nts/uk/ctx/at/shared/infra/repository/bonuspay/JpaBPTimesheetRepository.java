@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBPTimesheetPK;
 
 @Stateless
 public class JpaBPTimesheetRepository extends JpaRepository implements BPTimesheetRepository {
-	private final String SELECT_BY_COMPANYID_AND_BPCODE = "SELECT c FROM KbpmtBPTimesheet c WHERE c.kbpmtBPTimesheetPK.companyId = :companyId AND c.kbpstSpecBPTimesheetPK.bonusPaySettingCode = :bonusPaySettingCode  ORDER BY c.kbpstSpecBPTimesheetPK.timeSheetNO";
+	private final String SELECT_BY_COMPANYID_AND_BPCODE = "SELECT c FROM KbpmtBPTimesheet c WHERE c.kbpmtBPTimesheetPK.companyId = :companyId AND c.kbpmtBPTimesheetPK.bonusPaySettingCode = :bonusPaySettingCode  ORDER BY c.kbpmtBPTimesheetPK.timeSheetNO";
 
 	@Override
 	public List<BonusPayTimesheet> getListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode) {
@@ -43,7 +43,7 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 				 kbpmtBPTimesheet.roundingAtr = new BigDecimal(c.getRoundingAtr().value);
 				 kbpmtBPTimesheet.roundingTimeAtr= new BigDecimal(c.getRoundingTimeAtr().value);
 				 kbpmtBPTimesheet.startTime = new BigDecimal(c.getStartTime().minute());
-				 kbpmtBPTimesheet.timeItemId= c.getTimeItemId().v();
+				 kbpmtBPTimesheet.timeItemId= c.getTimeItemId();
 				 kbpmtBPTimesheet.useAtr= new BigDecimal(c.getUseAtr().value);
 				 this.commandProxy().update(kbpmtBPTimesheet);
 			}
@@ -54,9 +54,12 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 	@Override
 	public void removeListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<BonusPayTimesheet> lstTimesheet) {
-		List<KbpmtBPTimesheet> lstKbpmtBPTimesheet = lstTimesheet.stream()
-				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
-		this.commandProxy().removeAll(lstKbpmtBPTimesheet);
+		lstTimesheet.forEach(c->{
+			Optional<KbpmtBPTimesheet> kbpmtBPTimesheet = this.queryProxy().find(new KbpmtBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()), KbpmtBPTimesheet.class);
+			if(kbpmtBPTimesheet.isPresent()){
+				this.commandProxy().remove(kbpmtBPTimesheet);
+			}
+		});
 	}
 
 	private KbpmtBPTimesheet toBonusPayTimesheetEntity(String companyId, String bonusPaySettingCode,

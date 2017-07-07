@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.standardtime.yearsetting;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +15,7 @@ public class AddAgreementYearSettingCommand {
 
 	private int yearValue;
 	
-	private BigDecimal errorOneYear;
+	private Long errorOneYear;
 	
-	private BigDecimal alarmOneYear;
+	private Long alarmOneYear;
 }
