@@ -6,7 +6,6 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class BPTimesheetUpdateCommand {
-	public String companyId;
 	public int timeSheetNO;
 	public int useAtr;
 	public String bonusPaySettingCode;
