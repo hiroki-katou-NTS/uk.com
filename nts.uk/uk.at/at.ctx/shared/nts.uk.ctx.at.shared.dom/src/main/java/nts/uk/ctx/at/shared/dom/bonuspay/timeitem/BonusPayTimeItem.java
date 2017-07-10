@@ -22,7 +22,7 @@ public class BonusPayTimeItem extends AggregateRoot {
 
 	private String companyId;
 
-	private TimeItemId timeItemId;
+	private String timeItemId;
 
 	private UseAtr useAtr;
 
@@ -34,10 +34,10 @@ public class BonusPayTimeItem extends AggregateRoot {
 
 	private BonusPayTimeItem() {
 		super();
-		this.timeItemId = new TimeItemId(IdentifierUtil.randomUniqueId());
+		this.timeItemId = IdentifierUtil.randomUniqueId();
 	}
 
-	private BonusPayTimeItem(String companyId, TimeItemId timeItemId, UseAtr useAtr, TimeItemName timeItemName,
+	private BonusPayTimeItem(String companyId, String timeItemId, UseAtr useAtr, TimeItemName timeItemName,
 			int id, TimeItemTypeAtr timeItemTypeAtr) {
 		super();
 		this.companyId = companyId;
@@ -50,7 +50,7 @@ public class BonusPayTimeItem extends AggregateRoot {
 
 	public static BonusPayTimeItem createFromJavaType(String companyId, String timeItemId, int useAtr,
 			String timeItemName, int id, int timeItemTypeAtr) {
-		return new BonusPayTimeItem(companyId, new TimeItemId(timeItemId),
+		return new BonusPayTimeItem(companyId, timeItemId,
 				EnumAdaptor.valueOf(useAtr, UseAtr.class), new TimeItemName(timeItemName), id,
 				EnumAdaptor.valueOf(timeItemTypeAtr, TimeItemTypeAtr.class));
 	}

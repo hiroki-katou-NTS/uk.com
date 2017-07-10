@@ -14,7 +14,7 @@ module nts.uk.com.view.ccg018.c.viewmodel {
             } else {
                 self.selectedCategorySet = ko.observable(nts.uk.ui.windows.getShared('categorySet'));
             }
-
+            $('#C1-3').focus();
         }
 
         startPage(): JQueryPromise<any> {

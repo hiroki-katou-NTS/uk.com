@@ -19,6 +19,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.SelectedAtr;
 import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

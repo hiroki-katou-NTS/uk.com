@@ -49,7 +49,7 @@
 							<td width="30"></td>
 							<td><div data-bind="ntsFormLabel: {required: true, constraint: ['WebMenuCode', 'WebMenuName']}">#{i18n.getText('CCG013_59')}</div></td>
 							<td width="10"></td>
-							<td><input class="web-code" data-bind="ntsTextEditor: {value: code, required: true, constraint: 'WebMenuCode'}" /></td>
+							<td><input class="web-code" data-bind="ntsTextEditor: {value: code, required: true, constraint: 'WebMenuCode'}, hasfocus: true" /></td>
 							<td width="10"></td>
 							<td><input class="web-name" data-bind="ntsTextEditor: {value: name, required: true, constraint: 'WebMenuName'}" /></td>
 						</tr>

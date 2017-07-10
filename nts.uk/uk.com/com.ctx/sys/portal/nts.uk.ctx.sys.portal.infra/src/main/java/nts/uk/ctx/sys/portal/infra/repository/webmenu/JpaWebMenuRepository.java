@@ -12,14 +12,18 @@ import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBar;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBarPK;
+import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstPersonTying;
+import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstPersonTyingPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTitleBar;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTitleMenuPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTreeMenu;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTreeMenuPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstWebMenu;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstWebMenuPK;
+
 
 /**
  * 
@@ -32,7 +36,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	private final String SEL_1 = "SELECT a FROM CcgstWebMenu a WHERE a.ccgstWebMenuPK.companyId = :companyId";
 	private final String UPD_NOT_DEFAULT = "UPDATE CcgstWebMenu a SET a.defaultMenu = 0 "
 			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId "; 
-	
+
 	@Override
 	public List<WebMenu> findAll(String companyId) {
 		return this.queryProxy().query(SEL_1, CcgstWebMenu.class).setParameter("companyId", companyId).getList(w -> {
@@ -69,6 +73,13 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			.setParameter("companyId", companyId)
 			.executeUpdate();
 	}
+
+	
+	@Override
+	public void add(PersonalTying personalTying){
+		this.commandProxy().insert(convertToDbType(personalTying));
+	}
+	
 
 	/**
 	 * convert to domain WebMenu
@@ -181,5 +192,15 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 					return new CcgstTreeMenu(ccgstTreeMenuPK, trm.getCode().v(), trm.getClassification().value, trm.getSystem().value);
 				}).collect(Collectors.toList());
 		return treeMenus;
+	}
+
+	private CcgstPersonTying convertToDbType(PersonalTying personalTying) { 
+		CcgstPersonTying ccgstPersonTying = new CcgstPersonTying();
+		CcgstPersonTyingPK cPersonTyingPK = new CcgstPersonTyingPK(
+				personalTying.getCompanyId(),
+				personalTying.getWebMenuCode().v(),
+				personalTying.getEmployeeId());
+		ccgstPersonTying.ccgstPersonTyingPK = cPersonTyingPK;
+		return ccgstPersonTying;
 	}
 }
