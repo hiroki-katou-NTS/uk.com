@@ -16,13 +16,22 @@
 			<com:scriptfile path="../a1/ccg018.a1.service.js" />
 			<com:scriptfile path="../b/ccg018.b.vm.js" />
 			<com:scriptfile path="../b/ccg018.b.service.js" />
+
+			<!-- component -->
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 		</ui:define>
 
 		<ui:define name="sidebar">
 			<div data-bind="with: viewmodelA">
 				<ul id="A1_1" class="navigator"
 					data-bind="foreach: tabs().filter(function(t) { return t.display() == true; })">
-					<li><a
+					<li><a tabindex="-1"
 						data-bind="text: name, 
 						click: changeTab,
 						css: { 'active': active },

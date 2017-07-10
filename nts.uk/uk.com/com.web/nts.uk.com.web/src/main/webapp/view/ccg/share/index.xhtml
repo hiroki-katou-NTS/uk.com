@@ -11,7 +11,7 @@
 				<button id="btn_apply" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
 			</div>
 		<div id="tab-panel" class="ccg-tabpanel pull-left" data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-			<div class="tab-content-1" data-bind="if: isQuickSearchTab">
+			<div class="tab-content-1 ccg_tab_content_1" data-bind="if: isQuickSearchTab">
 				<div class="btn-quick-search" data-bind="if: isAllReferableEmployee, click: searchAllEmployee">
 					<div class="flex valign-center btn_big">
 						<i class="icon icon-28-allemployee"></i>
@@ -41,7 +41,7 @@
 					<span class="controlSetting caret-right"></span>
 				</div>
 			</div>
-			<div class="tab-content-2" data-bind="if: isAdvancedSearchTab">
+			<div class="tab-content-2 ccg_tab_content_2" data-bind="if: isAdvancedSearchTab">
 				<div style="padding-right: 15px">
 				<div>
 					<label>#{i18n.getText('CCG001_20')}</label>

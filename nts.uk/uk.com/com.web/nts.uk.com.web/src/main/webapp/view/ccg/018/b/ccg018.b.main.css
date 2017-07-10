@@ -24,6 +24,14 @@ td {
 	border: 1px solid #999999;
 }
 
+#ccgcomponent {
+	z-index: 1000 !important
+}
+
+#part-2 {
+	margin-left: 65px;
+}
+
 #part-3 {
 	margin: 70px 0 0 22px;
 }

@@ -6,14 +6,29 @@ package nts.uk.ctx.at.schedule.app.find.event;
 import java.math.BigDecimal;
 import java.util.List;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author hungnm
  *
  */
-@Value
+@Getter
+@Setter
 public class WkpRequest {
+	
 	private String workplaceId;
+	
 	private List<BigDecimal> lstDate;
+	
+	private WkpRequest(String workplaceId, List<BigDecimal> lstDate) {
+		super();
+		this.workplaceId = workplaceId;
+		this.lstDate = lstDate;
+	}
+	private WkpRequest() {
+		super();
+	}
+	
+	
 }
