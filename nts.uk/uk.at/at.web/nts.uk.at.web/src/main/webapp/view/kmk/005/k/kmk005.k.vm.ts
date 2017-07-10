@@ -42,9 +42,6 @@ module nts.uk.at.view.kmk005.k {
                     let data = self.workTimeList(),
                         row = _.find(data, x => x.code == v);
                     if (row) {
-                        // updateable
-                        model.update(row.flagSet);
-
                         model.wtn(row.name);
                         service.getWorkingTimesheetBonusPaySetByCode(v).done(x => {
                             if (x) {
@@ -67,9 +64,6 @@ module nts.uk.at.view.kmk005.k {
                         model.wtn(getText("KDL007_6"));
                         model.bpsc('000');
                         model.bpsn(getText("KDL007_6"));
-
-                        // updateable as false
-                        model.update(false);
                     }
                 });
 
@@ -228,8 +222,6 @@ module nts.uk.at.view.kmk005.k {
             bpsc: KnockoutObservable<string> = ko.observable('');
             // bonus pay setting name
             bpsn: KnockoutObservable<string> = ko.observable('');
-            // update or insert
-            update: KnockoutObservable<boolean> = ko.observable(false);
         }
     }
 }
