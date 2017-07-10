@@ -1,161 +1,204 @@
 module nts.uk.at.view.kmk005.k {
     export module viewmodel {
-        import kService = nts.uk.at.view.kmk005.k.service;
+        import parseT = nts.uk.time.parseTime;
+        import unblock = nts.uk.ui.block.clear;
+        import block = nts.uk.ui.block.invisible;
+        import getText = nts.uk.resource.getText;
+        import modal = nts.uk.ui.windows.sub.modal;
+        import alertE = nts.uk.ui.dialog.alertError;
+        import setShared = nts.uk.ui.windows.setShared;
+        import getShared = nts.uk.ui.windows.getShared;
+
         export class ScreenModel {
-            columns: KnockoutObservableArray<NtsGridListColumn>;
-            rootWorkTimeList: Array<WorkTime>;
-            workTimeList: KnockoutObservableArray<WorkTime>;
-            selectedWorkTime: KnockoutObservable<WorkTime>;
-            selectedWorkTimeCode: KnockoutObservable<string>;
-            currentBonusPaySetting: KnockoutObservable<BonusPaySetting>;
-            currentWorkingTimesheetBonusPaySet: KnockoutObservable<WorkingTimesheetBonusPaySet>;
-            startTimeOption: KnockoutObservable<number>;
-            startTime: KnockoutObservable<number>;
-            endTimeOption: KnockoutObservable<number>;
-            endTime: KnockoutObservable<number>;
-            isUpdate: boolean;
+            filter: any = {
+                startTime: ko.observable('00:00'),
+                endTime: ko.observable('00:00'),
+                startTimeOption: ko.observable(''),
+                endTimeOption: ko.observable(''),
+                value: undefined
+            };
+
+            model: KnockoutObservable<WorkingTimesheetBonusPaySet> = ko.observable(new WorkingTimesheetBonusPaySet());
+            workTimeList: KnockoutObservableArray<WorkTime> = ko.observableArray([]);
+
             constructor() {
-                var self = this;
-                self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 130 },
-                    { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
-                    { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 },
-                    { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'flagSet' }
-                ]);
-                self.startTimeOption = ko.observable(1);
-                self.startTime = ko.observable('');
-                self.endTimeOption = ko.observable(1);
-                self.endTime = ko.observable('');
-                self.workTimeList = ko.observableArray([]);
-                self.selectedWorkTimeCode = ko.observable('');
-                self.currentWorkingTimesheetBonusPaySet = ko.observable(new WorkingTimesheetBonusPaySet('', '', ''));
-                self.selectedWorkTime = ko.observable(new WorkTime('', '', '', '', ''));
-                self.currentBonusPaySetting = ko.observable(new BonusPaySetting('', '', ''));
-                self.isUpdate = true;
-                self.selectedWorkTimeCode.subscribe((value) => {
-                    self.selectedWorkTime(_.find(self.workTimeList(), (item) => { return _.isEqual(item.code, value); }));
-                    self.getWorkingTimesheetBonusPaySet(value);
-                });
-            }
+                let self = this,
+                    model = self.model();
 
-            start(): JQueryPromise<any> {
-                nts.uk.ui.block.invisible();
-                var self = this;
-                self.workTimeList.removeAll();
-                var dfd = $.Deferred();
-                var dfdGetWorkTime = kService.getWorkTime();
-                var dfdGetWorkingTimesheetBonusPaySet = kService.getWorkingTimesheetBonusPaySet();
-                $.when(dfdGetWorkTime, dfdGetWorkingTimesheetBonusPaySet).done((workTimeData, workingTimesheetBonusPaySetData) => {
-                    self.rootWorkTimeList = workTimeData;
-                    _.forEach(self.rootWorkTimeList, (item) => {
-                        let flagSet = true;
-                        let flag = _.find(workingTimesheetBonusPaySetData, (o) => {
-                            return _.isEqual(item.code, o.workingTimesheetCode);
+                $.extend(self.filter, {
+                    value: ko.computed(() => {
+                        let filter: any = ko.toJS(self.filter),
+                            start: any = parseT(filter.startTime, true),
+                            vstart: string = start.format() || '00:00',
+                            end: any = parseT(filter.endTime, true),
+                            vend: string = end.format() || '00:00';
+
+                        return filter.startTimeOption + (vstart.length == 4 ? '0' + vstart : vstart) + ' ~ ' + filter.endTimeOption + (vend.length == 4 ? '0' + vend : vend);
+                    })
+                });
+
+
+                model.wtc.subscribe(v => {
+                    let data = self.workTimeList(),
+                        row = _.find(data, x => x.code == v);
+                    if (row) {
+                        // updateable
+                        model.update(row.flagSet);
+
+                        model.wtn(row.name);
+                        service.getWorkingTimesheetBonusPaySetByCode(v).done(x => {
+                            if (x) {
+                                model.bpsc(x.bonusPaySettingCode);
+                                service.getBonusPaySettingByCode(x.bonusPaySettingCode).done(c => {
+                                    if (c) {
+                                        model.bpsn(c.name);
+                                    } else {
+                                        model.bpsc('000');
+                                        model.bpsn(getText("KDL007_6"));
+                                    }
+                                });
+                            } else {
+                                model.bpsc('000');
+                                model.bpsn(getText("KDL007_6"));
+                            }
                         });
-                        if (nts.uk.util.isNullOrUndefined(flag)) flagSet = false;
-                        self.workTimeList.push(new WorkTime(item.code, item.name, item.workTime1, item.workTime2, flagSet.toString()));
-                    });
-                    self.selectedWorkTimeCode(_.first(self.workTimeList()).code);
-                    nts.uk.ui.block.clear();
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                });
-                return dfd.promise();
-            }
-
-            getWorkingTimesheetBonusPaySet(value: string): JQueryPromise<any> {
-                nts.uk.ui.block.invisible();
-                var self = this;
-                var dfd = $.Deferred();
-                kService.getWorkingTimesheetBonusPaySetByCode(value).done((data) => {
-                    if (!nts.uk.util.isNullOrEmpty(data)) {
-                        self.currentWorkingTimesheetBonusPaySet(data);
-                        kService.getBonusPaySettingByCode(data.bonusPaySettingCode).done((subData) => { self.currentBonusPaySetting(subData) });
-                        self.isUpdate = true;
                     } else {
-                        self.currentWorkingTimesheetBonusPaySet(new WorkingTimesheetBonusPaySet('', '', ''));
-                        self.currentBonusPaySetting(new BonusPaySetting('', '', ''));
-                        self.isUpdate = false;
+                        model.wtc('');
+                        model.wtn(getText("KDL007_6"));
+                        model.bpsc('000');
+                        model.bpsn(getText("KDL007_6"));
+
+                        // updateable as false
+                        model.update(false);
                     }
-                    nts.uk.ui.block.clear();
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                 });
-                return dfd.promise();
+
+                // call filter value computed
+                self.filter.startTime.valueHasMutated();
+
+                self.start();
             }
 
-            submitData(isUpdate: boolean): void {
-                nts.uk.ui.block.invisible();
-                var self = this;
-                if (isUpdate) {
-                    kService.updateWorkingTimesheetBonusPaySet(self.createCommand()).done((data) => {
-                        self.start();
-                        nts.uk.ui.block.clear();
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+            start() {
+                let self = this,
+                    model = self.model(),
+                    workTime = service.getWorkTime(),
+                    workPaySet = service.getWorkingTimesheetBonusPaySet();
+
+                block();
+                self.workTimeList.removeAll();
+
+                $.when(workTime, workPaySet).done((w: Array<any>, p: Array<any>) => {
+                    _.each(w, (item) => {
+                        item.flagSet = !!_.find(p, x => item.code == x.workingTimesheetCode);
+                        self.workTimeList.push(new WorkTime(item));
                     });
-                } else {
-                    kService.insertWorkingTimesheetBonusPaySet(self.createCommand()).done((data) => {
-                        self.start();
-                        nts.uk.ui.block.clear();
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-                    });
-                }
+                    model.wtc.valueHasMutated();
+                    unblock();
+                }).fail(x => alertE({ messageId: x.messageId }).then(unblock));
             }
 
-            deleteData(): void {
-                nts.uk.ui.block.invisible();
-                var self = this;
-                kService.deleteWorkingTimesheetBonusPaySet(self.createCommand()).done((data) => {
+            saveData(): void {
+                let self = this,
+                    model = ko.toJS(self.model),
+                    command: any = {
+                        action: 1,
+                        workingTimesheetCode: model.wtc,
+                        bonusPaySettingCode: model.bpsc
+                    };
+
+                block();
+                service.saveSetting(command).done((data) => {
                     self.start();
-                    nts.uk.ui.block.clear();
+                    unblock();
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    alertE(res.message).then(function() { unblock(); });
                 });
             }
 
-            createCommand(): any {
-                var self = this;
-                return {
-                    companyId: self.currentBonusPaySetting().companyId(),
-                    workingTimesheetCode: self.selectedWorkTimeCode(),
-                    bonusPaySettingCode: self.currentBonusPaySetting().code()
-                }
+            removeData(): void {
+                let self = this,
+                    model = ko.toJS(self.model),
+                    command: any = {
+                        action: 0,
+                        workingTimesheetCode: model.wtc,
+                        bonusPaySettingCode: model.bpsc
+                    };
+
+                block();
+                service.saveSetting(command).done((data) => {
+                    self.start();
+                    unblock();
+                }).fail(x => alertE(x.message).then(unblock));
             }
-            
-            search(){
-                var self = this;
-                let inputString = self.startTimeOption().toString()+self.startTime().toString()+' ~ '+self.endTimeOption().toString()+self.endTime().toString();
-                $('#k_gridlist-tbl > tbody > tr').css('display','none');
-                let allRow = $('#k_gridlist-tbl > tbody > tr');
-                for(let i=1;i<=allRow.length;i++){
-                    let tr = $('#k_gridlist-tbl > tbody > tr:nth-child('+i+')');
-                    let col1=3; let col2=4;
-                    for(let j=col1;j<=col2;j++){
-                        if(tr.find(":nth-child("+j+")").text().indexOf(inputString) > -1) {
-                            tr.css('display','');
-                            break;
-                        }   
-                    }    
-                }        
+
+            search() {
+                let self = this,
+                    filter: IFilter = ko.toJS(self.filter);
+
+                $('#k_gridlist-tbl>tbody>tr').hide().each((i, x) => {
+                    let child = $(x).find('td'),
+                        value = child[2] && $(child[2]).text();
+
+                    (value == filter.value) && $(x).show();
+                });
             }
-            
-            returnData(){
-                $('#k_gridlist-tbl > tbody > tr').css('display','');        
+
+            returnData() {
+                let self = this,
+                    filter = self.filter;
+
+                filter.startTime('00:00');
+                filter.endTime('00:00');
+                filter.startTimeOption('前日');
+                filter.endTimeOption('前日');
+
+                $('#k_gridlist-tbl>tbody>tr').show();
             }
-            
-            openDialog(){
-                var self = this;
-                nts.uk.ui.windows.setShared('KDL007_PARAM', { isMulti: false, selecteds: [self.currentBonusPaySetting().code] });
-                nts.uk.ui.windows.sub.modal("/view/kdl/007/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                    let newCode = nts.uk.ui.windows.getShared('KDL007_VALUES').selecteds[0];    
-                    kService.getBonusPaySettingByCode(newCode).done((subData) => { self.currentBonusPaySetting(subData) });
-                });      
+
+            openDialog() {
+                let self = this,
+                    model = self.model(),
+                    data = ko.toJS(self.model);
+                setShared('KDL007_PARAM', { isMulti: false, selecteds: [data.bpsc] });
+
+                modal("../../../kdl/007/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(() => {
+                    let data = getShared('KDL007_VALUES');
+                    if (data && data.selecteds.length) {
+                        model.bpsc(data.selecteds[0]);
+                        service.getBonusPaySettingByCode(data.selecteds[0])
+                            .done(x => {
+                                if (x) {
+                                    model.bpsn(x.name);
+                                } else {
+                                    model.bpsc('000');
+                                    model.bpsn(getText("KDL007_6"));
+                                }
+                            })
+                            .fail(x => {
+                                model.bpsc('000');
+                                model.bpsn(getText("KDL007_6"));
+                            });
+                    }
+                });
             }
+        }
+
+        // interface for filter
+        interface IFilter {
+            startTime: string;
+            endTime: string;
+            startTimeOption: number;
+            endTimeOption: number;
+            value: string;
+        }
+
+        interface IWorkTime {
+            code: string;
+            name: string;
+            workTime1: string;
+            workTime2: string;
+            flagSet?: boolean;
         }
 
         class WorkTime {
@@ -163,36 +206,30 @@ module nts.uk.at.view.kmk005.k {
             name: string;
             workTime1: string;
             workTime2: string;
-            flagSet: string;
-            constructor(code: string, name: string, workTime1: string, workTime2: string, flagSet: string) {
-                this.code = code;
-                this.name = name;
-                this.workTime1 = workTime1;
-                this.workTime2 = workTime2;
-                this.flagSet = flagSet;
-            }
-        }
+            flagSet: boolean;
 
-        class BonusPaySetting {
-            companyId: KnockoutObservable<string>;
-            name: KnockoutObservable<string>;
-            code: KnockoutObservable<string>;
-            constructor(companyId: string, name: string, code: string) {
-                this.companyId = ko.observable(companyId);
-                this.name = ko.observable(name);
-                this.code = ko.observable(code);
+            constructor(param: IWorkTime) {
+                let self = this;
+
+                self.code = param.code;
+                self.name = param.name;
+                self.workTime1 = param.workTime1;
+                self.workTime2 = param.workTime2;
+                self.flagSet = param.flagSet || false;
             }
         }
 
         class WorkingTimesheetBonusPaySet {
-            companyId: KnockoutObservable<string>;
-            workingTimesheetCode: KnockoutObservable<string>;
-            bonusPaySettingCode: KnockoutObservable<string>;
-            constructor(companyId: string, workingTimesheetCode: string, bonusPaySettingCode: string) {
-                this.companyId = ko.observable(companyId);
-                this.workingTimesheetCode = ko.observable(workingTimesheetCode);
-                this.bonusPaySettingCode = ko.observable(bonusPaySettingCode);
-            }
+            // working time sheet code
+            wtc: KnockoutObservable<string> = ko.observable('');
+            // working time sheet name
+            wtn: KnockoutObservable<string> = ko.observable('');
+            // bonus pay setting code
+            bpsc: KnockoutObservable<string> = ko.observable('');
+            // bonus pay setting name
+            bpsn: KnockoutObservable<string> = ko.observable('');
+            // update or insert
+            update: KnockoutObservable<boolean> = ko.observable(false);
         }
     }
 }

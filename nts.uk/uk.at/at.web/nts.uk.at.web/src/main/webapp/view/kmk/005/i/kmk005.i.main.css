@@ -32,10 +32,18 @@ div[class^=screen-i] {
 
 .screen-i .right-content {
 	padding-left: 120px;
+	
 }
 
-.screen-i #kcpcomponent {
-	display: inline-block;
+.screen-i .right-content:after{
+	display: block;
+	clear: both;
+	content: '';
+}
+
+.screen-i #kcpcomponent,
+.screen-i .information {
+	float: left;
 }
 
 .screen-i .information {
