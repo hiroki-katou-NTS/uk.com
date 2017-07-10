@@ -169,59 +169,15 @@ module kcp.share.list {
             } else {
                 self.baseDate = ko.observable(new Date());
             }
-            
-            self.selectedCodes.subscribe(function(seletedVal: any) {
-//                if (!seletedVal || seletedVal === data.selectedCode()) {
-//                    return;
-//                }
-//                var selectedValue = seletedVal;
-//                // With job title list -> return id.
-//                if (self.listType == ListType.JOB_TITLE) {
-//                    if (data.isMultiSelect) {
-//                        selectedValue = _.map(seletedVal, function(code) {
-//                            var id = _.filter(self.itemList(), function(item) {
-//                                return item.code === code;
-//                            })[0].id;
-//                            return id ? id : '';
-//                        })
-//                    } else {
-//                        selectedValue = _.filter(self.itemList(), function(item) {
-//                            return item.code === seletedVal;
-//                        })[0].id;
-//                    }
-//                }
-//                if (data.isMultiSelect) {
-//                    // With multi-select => remove no select item.
-//                    var noSeletectIndex = (<Array<string>>selectedValue).indexOf('');
-//                    if (noSeletectIndex > -1) {
-//                        var dataSelected = selectedValue.slice();
-//                        (<Array<string>>dataSelected).splice(noSeletectIndex, 1);
-//                        data.selectedCode(dataSelected);
-//                        return;
-//                    }
-//                }
-//                data.selectedCode(selectedValue);
-            })
-            data.selectedCode.subscribe(function(res) {
-//                if (!res) {
-//                    return;
-//                }
-//                // With job title list -> return id.
-//                var selectedValue;
-//                if (self.listType == ListType.JOB_TITLE) {
-//                    if (data.isMultiSelect) {
-//                        selectedValue = _.map(res, function(id) {
-//                            var code = _.filter(self.itemList(), function(item) {
-//                                return item.id === id;
-//                            })[0].code;
-//                            return code ? code : '';
-//                        })
-//                    } else {
-//                        selectedValue = _.filter(self.itemList(), function(item) {
-//                            return item.id === res;
-//                        })[0].code;
-//                    }
-//                }
+            data.selectedCode.subscribe(function(selectedValue) {
+                // If select No select row and other row in one time.
+                // => un-select No select row.
+                if (self.isMultiple && (<Array<string>>selectedValue).indexOf('') > -1 
+                        && (<Array<string>>selectedValue).length > 1) {
+                    var dataSelected = selectedValue.slice();
+                    (<Array<string>>dataSelected).splice((<Array<string>>selectedValue).indexOf(''), 1);
+                    data.selectedCode(dataSelected);
+                }
             });
             if (self.listType == ListType.JOB_TITLE) {
                 this.listComponentColumn.push({headerText: '', hidden: true, prop: 'id'});
@@ -381,7 +337,7 @@ module kcp.share.list {
                     if (!self.isMultiple){
                         return;
                     }
-                    self.selectedCodes(dataList.map(item => item.code));
+                    self.selectedCodes(dataList.map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
                     return;
                 case SelectType.SELECT_FIRST_ITEM:
                     self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
