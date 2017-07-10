@@ -20,9 +20,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 public class BonusPayTimeItem extends AggregateRoot {
 
-	private CompanyId companyId;
+	private String companyId;
 
-	private TimeItemId timeItemId;
+	private String timeItemId;
 
 	private UseAtr useAtr;
 
@@ -34,10 +34,10 @@ public class BonusPayTimeItem extends AggregateRoot {
 
 	private BonusPayTimeItem() {
 		super();
-		this.timeItemId = new TimeItemId(IdentifierUtil.randomUniqueId());
+		this.timeItemId = IdentifierUtil.randomUniqueId();
 	}
 
-	private BonusPayTimeItem(CompanyId companyId, TimeItemId timeItemId, UseAtr useAtr, TimeItemName timeItemName,
+	private BonusPayTimeItem(String companyId, String timeItemId, UseAtr useAtr, TimeItemName timeItemName,
 			int id, TimeItemTypeAtr timeItemTypeAtr) {
 		super();
 		this.companyId = companyId;
@@ -50,7 +50,7 @@ public class BonusPayTimeItem extends AggregateRoot {
 
 	public static BonusPayTimeItem createFromJavaType(String companyId, String timeItemId, int useAtr,
 			String timeItemName, int id, int timeItemTypeAtr) {
-		return new BonusPayTimeItem(new CompanyId(companyId), new TimeItemId(timeItemId),
+		return new BonusPayTimeItem(companyId, timeItemId,
 				EnumAdaptor.valueOf(useAtr, UseAtr.class), new TimeItemName(timeItemName), id,
 				EnumAdaptor.valueOf(timeItemTypeAtr, TimeItemTypeAtr.class));
 	}
@@ -58,7 +58,7 @@ public class BonusPayTimeItem extends AggregateRoot {
 	public static BonusPayTimeItem initNewData(String companyId, int useAtr, String timeItemName, int id,
 			int timeItemTypeAtr) {
 		BonusPayTimeItem newData = new BonusPayTimeItem();
-		newData.companyId = new CompanyId(companyId);
+		newData.companyId = companyId;
 		newData.useAtr = EnumAdaptor.valueOf(useAtr, UseAtr.class);
 		newData.timeItemName = new TimeItemName(timeItemName);
 		newData.id = id;

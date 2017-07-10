@@ -58,5 +58,11 @@ public class WebMenu extends AggregateRoot {
 		this.menuBars = menuBars;
 	}
 	
-	
+	/**
+	 * Check web menu is default
+	 * @return true is default else false
+	 */
+	public boolean isDefault() {
+		return this.defaultMenu.equals(DefaultMenu.DefaultMenu);
+	}
 }

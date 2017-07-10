@@ -1,7 +1,10 @@
 module ccg018.b.viewmodel {
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+
     export class ScreenModel {
-        items: KnockoutObservableArray<ItemModel>;
-        selectedItem: KnockoutObservable<ItemModel>;
+        items: KnockoutObservableArray<TopPagePersonSet>;
+        selectedItem: KnockoutObservable<TopPagePersonSet>;
         currentCode: KnockoutObservable<any>;
         selectedItemAfterLogin: KnockoutObservable<string>;
         selectedItemAsTopPage: KnockoutObservable<string>;
@@ -11,22 +14,33 @@ module ccg018.b.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<any>;
 
-        comboItemsAfterLogin: KnockoutObservableArray<ItemModel1>;
-        comboItemsAsTopPage: KnockoutObservableArray<ItemModel1>;
+        comboItemsAfterLogin: KnockoutObservableArray<ComboBox>;
+        comboItemsAsTopPage: KnockoutObservableArray<ComboBox>;
 
-        listSid: Array<any>;
+        listSid11: Array<any>;
+
+        //component
+        ccgcomponent: GroupOption;
+        selectedCode: KnockoutObservableArray<string>;
+        showinfoSelectedEmployee: KnockoutObservable<boolean>;
+
+        // Options
+        baseDate: KnockoutObservable<Date>;
+        isQuickSearchTab: KnockoutObservable<boolean>;
+        isAdvancedSearchTab: KnockoutObservable<boolean>;
+        isAllReferableEmployee: KnockoutObservable<boolean>;
+        isOnlyMe: KnockoutObservable<boolean>;
+        isEmployeeOfWorkplace: KnockoutObservable<boolean>;
+        isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
+        isMutipleCheck: KnockoutObservable<boolean>;
+        isSelectAllEmployee: KnockoutObservable<boolean>;
+        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
         constructor() {
             let self = this;
             self.items = ko.observableArray([]);
             self.selectedItem = ko.observable(null);
-            //fix Employee list received
-            self.listSid = [];
-            for (let i = 1; i < 10; i++) {
-                self.listSid.push('90000000-0000-0000-0000-00000000000' + i);
-                self.listSid.push('90000000-0000-0000-0000-00000000001' + i);
-            }
-
+            self.listSid11 = [];
             self.comboItemsAfterLogin = ko.observableArray([]);
             self.comboItemsAsTopPage = ko.observableArray([]);
             self.currentCode = ko.observable();
@@ -44,7 +58,7 @@ module ccg018.b.viewmodel {
                     self.employeeCode(codeChange);
                     self.selectedItem(_.find(self.items(), ['code', codeChange]));
                     self.employeeName(self.selectedItem().name);
-                    self.selectedItemAfterLogin(self.selectedItem().loginMenuCode());
+                    self.selectedItemAfterLogin(self.selectedItem().uniqueCode());
                     self.selectedItemAsTopPage(self.selectedItem().topPageCode());
                     self.isEnable(_.find(self.items(), ['code', self.currentCode()]).isAlreadySetting);
                 } else {
@@ -56,15 +70,73 @@ module ccg018.b.viewmodel {
                 }
             });
 
+            //component
+            self.selectedEmployee = ko.observableArray([]);
+            self.showinfoSelectedEmployee = ko.observable(false);
+            self.baseDate = ko.observable(new Date());
+
+            self.ccgcomponent = {
+                baseDate: self.baseDate,
+                //Show/hide options
+                isQuickSearchTab: true,
+                isAdvancedSearchTab: true,
+                isAllReferableEmployee: true,
+                isOnlyMe: true,
+                isEmployeeOfWorkplace: true,
+                isEmployeeWorkplaceFollow: true,
+                isMutipleCheck: true,
+                isSelectAllEmployee: true,
+
+                //Event options 
+                /**
+                * @param dataList: list employee returned from component.
+                * Define how to use this list employee by yourself in the function's body.
+                */
+                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+                    self.showinfoSelectedEmployee(true);
+                    self.selectedEmployee(dataList);
+                },
+                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+                    self.showinfoSelectedEmployee(true);
+                    var dataEmployee: EmployeeSearchDto[] = [];
+                    dataEmployee.push(data);
+                    self.selectedEmployee(dataEmployee);
+                },
+                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+                    self.showinfoSelectedEmployee(true);
+                    self.selectedEmployee(dataList);
+                },
+                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+                    self.showinfoSelectedEmployee(true);
+                    self.selectedEmployee(dataList);
+                },
+                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+                    self.showinfoSelectedEmployee(true);
+                    self.selectedEmployee(dataEmployee);
+                }
+            }
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             self.findDataForAfterLoginDis();
             self.findBySystemMenuCls();
             self.findTopPagePersonSet();
+
+            self.selectedEmployee.subscribe(function() {
+                self.listSid11 = [];
+                _.each(self.selectedEmployee(), function(x) {
+                    self.listSid11.push(x.employeeId);
+                });
+                self.findTopPagePersonSet();
+            });
+
+            self.bindGrid();
         }
 
         start(): void {
             let self = this;
             self.categorySet(__viewContext.viewModel.viewmodelA1.categorySet());
-            self.bindGrid();
+            if (self.items().length > 0) {
+                self.currentCode(self.items()[0].code);
+            }
         }
 
         bindGrid(): any {
@@ -88,22 +160,43 @@ module ccg018.b.viewmodel {
         findTopPagePersonSet(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            ccg018.b.service.findTopPagePersonSet(self.listSid)
+            ccg018.b.service.findTopPagePersonSet(self.listSid11)
                 .done(function(data) {
                     self.items([]);
-                    var arr = [];
-                    for (let i = 0; i < self.listSid.length; i++) {
-                        let index = self.listSid[i].slice(34);
-                        let topPagePersonSet: any = _.find(data, ['sid', self.listSid[i]]);
+                    let arr = [];
+                    _.each(self.selectedEmployee(), function(x) {
+                        let topPagePersonSet: any = _.find(data, ['sid', x.employeeId]);
                         if (!!topPagePersonSet) {
-                            arr.push(new ItemModel('A0000' + index, '山本' + index, '名古屋市' + index, self.listSid[i], topPagePersonSet.topMenuCode, topPagePersonSet.loginMenuCode, true));
-                        } else {
-                            arr.push(new ItemModel('A0000' + index, '山本' + index, '名古屋市' + index, self.listSid[i], '', '', false));
-                        }
-                    }
-                    self.items(arr);
-                    self.bindGrid();
+                            arr.push(new TopPagePersonSet({
+                                code: x.employeeCode,
+                                name: x.employeeName,
+                                workplaceName: x.workplaceName,
+                                employeeId: x.employeeId,
+                                topPageCode: topPagePersonSet.topMenuCode,
+                                loginMenuCode: topPagePersonSet.loginMenuCode,
+                                system: topPagePersonSet.loginSystem,
+                                menuClassification: topPagePersonSet.menuClassification,
+                                isAlreadySetting: true
+                            }));
 
+                        } else {
+                            arr.push(new TopPagePersonSet({
+                                code: x.employeeCode,
+                                name: x.employeeName,
+                                workplaceName: x.workplaceName,
+                                employeeId: x.employeeId,
+                                topPageCode: '',
+                                loginMenuCode: '',
+                                system: 0,
+                                menuClassification: 0,
+                                isAlreadySetting: false
+                            }));
+                        }
+                    });
+                    self.items(arr);
+                    //                    if (self.items().length > 0) {
+                    //                        self.currentCode(self.items()[0].code);
+                    //                    }
                     dfd.resolve();
                 }).fail();
             return dfd.promise();
@@ -120,9 +213,19 @@ module ccg018.b.viewmodel {
             ccg018.b.service.findBySystemMenuCls()
                 .done(function(data) {
                     if (data.length >= 0) {
-                        self.comboItemsAsTopPage.push(new ItemModel1('', '未設定'));
+                        self.comboItemsAsTopPage.push(new ComboBox({
+                            code: '',
+                            name: '未設定',
+                            system: 0,
+                            menuCls: 0
+                        }));
                         _.forEach(data, function(x) {
-                            self.comboItemsAsTopPage.push(new ItemModel1(x.code, x.displayName, x.system, x.classification));
+                            self.comboItemsAsTopPage.push(new ComboBox({
+                                code: x.code,
+                                name: x.displayName,
+                                system: x.system,
+                                menuCls: x.classification
+                            }));
                         });
                     }
                     dfd.resolve();
@@ -140,9 +243,19 @@ module ccg018.b.viewmodel {
             self.comboItemsAfterLogin([]);
             ccg018.b.service.findDataForAfterLoginDis()
                 .done(function(data) {
-                    self.comboItemsAfterLogin.push(new ItemModel1('', '未設定'));
+                    self.comboItemsAfterLogin.push(new ComboBox({
+                        code: '',
+                        name: '未設定',
+                        system: 0,
+                        menuCls: 0
+                    }));
                     _.forEach(data, function(x) {
-                        self.comboItemsAfterLogin.push(new ItemModel1(x.code, x.displayName, x.system, x.classification));
+                        self.comboItemsAfterLogin.push(new ComboBox({
+                            code: x.code,
+                            name: x.displayName,
+                            system: x.system,
+                            menuCls: x.classification
+                        }));
                     });
                     dfd.resolve();
                 }).fail();
@@ -155,15 +268,17 @@ module ccg018.b.viewmodel {
         saveData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            let tmp = _.find(self.comboItemsAfterLogin(), ['code', self.selectedItem().loginMenuCode()]);
+            if (self.items().length <= 0) {
+                return;
+            }
             let oldCode = self.selectedItem().code;
             let obj = {
                 ctgSet: self.categorySet(),
                 sId: self.selectedItem().employeeId,
                 topMenuCode: self.selectedItemAsTopPage(),
-                loginMenuCode: !!self.categorySet() ? self.selectedItemAfterLogin() : self.selectedItem().loginMenuCode(),
-                loginSystem: tmp.system,
-                loginMenuCls: tmp.menuCls,
+                loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItem().loginMenuCode(),
+                loginSystem: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : self.selectedItem().system(),
+                loginMenuCls: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : self.selectedItem().menuClassification(),
             };
             ccg018.b.service.update(obj).done(function() {
                 $.when(self.findTopPagePersonSet()).done(function() {
@@ -183,14 +298,18 @@ module ccg018.b.viewmodel {
         removeData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(() => {
-                let obj = { sId: self.selectedItem().employeeId };
-                ccg018.b.service.remove(obj).done(function() {
-                    $.when(self.findTopPagePersonSet()).done(function() {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'));
-                    });
-                }).fail();
-            }).ifNo(() => { });
+            if (!!!self.currentCode()) {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_85'));
+            } else {
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(() => {
+                    let obj = { sId: self.selectedItem().employeeId };
+                    ccg018.b.service.remove(obj).done(function() {
+                        $.when(self.findTopPagePersonSet()).done(function() {
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'));
+                        });
+                    }).fail();
+                }).ifNo(() => { });
+            }
             dfd.resolve();
             return dfd.promise();
         }
@@ -210,10 +329,27 @@ module ccg018.b.viewmodel {
             });
         }
 
-
+        /**
+         * Jump to screen CCG015
+         */
+        jumpToCcg015(): void {
+            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+        }
     }
 
-    class ItemModel {
+    interface ITopPagePersonSet {
+        code: string,
+        name: string,
+        workplaceName: string,
+        employeeId: string,
+        topPageCode: string,
+        loginMenuCode: string,
+        system: number,
+        menuClassification: number,
+        isAlreadySetting: boolean
+    }
+
+    class TopPagePersonSet {
         code: string;
         name: string;
         workplaceName: string;
@@ -221,28 +357,47 @@ module ccg018.b.viewmodel {
         topPageCode: KnockoutObservable<string>;
         loginMenuCode: KnockoutObservable<string>;
         isAlreadySetting: boolean;
-        constructor(code: string, name: string, workplaceName: string, employeeId: string, topPageCode: string, loginMenuCode: string, isAlreadySetting: boolean) {
-            this.code = code;
-            this.name = name;
-            this.workplaceName = workplaceName;
-            this.employeeId = employeeId;
-            this.topPageCode = ko.observable(topPageCode);
-            this.loginMenuCode = ko.observable(loginMenuCode);
-            this.isAlreadySetting = isAlreadySetting;
+        system: KnockoutObservable<number>;
+        menuClassification: KnockoutObservable<number>;
+        //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
+        uniqueCode: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: ITopPagePersonSet) {
+            let self = this;
+
+            self.code = param.code;
+            self.name = param.name;
+            self.workplaceName = param.workplaceName;
+            self.employeeId = param.employeeId;
+            self.topPageCode = ko.observable(param.topPageCode);
+            self.loginMenuCode = ko.observable(param.loginMenuCode);
+            self.isAlreadySetting = param.isAlreadySetting;
+            self.system = ko.observable(param.system);
+            self.menuClassification = ko.observable(param.menuClassification);
+            self.uniqueCode(nts.uk.text.format("{0}{1}{2}", param.loginMenuCode, param.system, param.menuClassification));
         }
     }
 
-    class ItemModel1 {
+    interface IComboBox {
         code: string;
         name: string;
         system: number;
         menuCls: number;
+        uniqueCode?: string;
+    }
+    class ComboBox {
+        code: string;
+        name: string;
+        system: number;
+        menuCls: number;
+        uniqueCode: string;
 
-        constructor(code: string, name: string, system?: number, menuCls?: number) {
-            this.code = code;
-            this.name = name;
-            this.system = system;
-            this.menuCls = menuCls;
+        constructor(param: IComboBox) {
+            this.code = param.code;
+            this.name = param.name;
+            this.system = param.system;
+            this.menuCls = param.menuCls;
+            this.uniqueCode = nts.uk.text.format("{0}{1}{2}", param.code, param.system, param.menuCls);
         }
     }
 }

@@ -57,4 +57,12 @@ public interface MyPageSettingRepository {
 	 * @param topPagePartUseSetting the top page part use setting
 	 */
 	void addTopPagePartUseSetting(TopPagePartUseSetting topPagePartUseSetting);
+	/**
+	 * hoatt
+	 * find my page setting
+	 * @param companyId
+	 * @return
+	 */
+	Optional<MyPageSetting> findMyPageSet(String companyId);
+	
 }

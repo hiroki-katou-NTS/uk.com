@@ -150,7 +150,6 @@ module ccg013.a.viewmodel {
                 webMenu = self.currentWebMenu(),
                 menuBars = webMenu.menuBars(),
                 activeid = $('#tabs li[aria-expanded=true]').attr('id');
-            var test = self.isDefaultMenu();
             if (self.isDefaultMenu()) {
                 webMenu.defaultMenu(1);
             } else {
@@ -238,7 +237,7 @@ module ccg013.a.viewmodel {
             let self = this,
                 webMenuCode = self.currentCode();
 
-            service.deleteWebMenu(webMenuCode).done(self.getWebMenu);
+            service.deleteWebMenu(webMenuCode).done(() => { self.getWebMenu(); });
         }
 
 
@@ -349,7 +348,9 @@ module ccg013.a.viewmodel {
                 data = self.currentWebMenu();
 
             setShared("CCG013E_COPY", data);
-            modal("/view/ccg/013/e/index.xhtml").onClosed(self.getWebMenu);
+            modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
+                self.getWebMenu();
+            });
         }
 
         optionFDialog(): void {
@@ -382,14 +383,14 @@ module ccg013.a.viewmodel {
                 let data = getShared("CCG013I_MENU_BAR");
                 if (data) {
                     let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars();
-                    self.currentWebMenu().menuBars([]);
+                    //self.currentWebMenu().menuBars([]);
                     _.forEach(menuBars, function(item: MenuBar) {
                         if (item.menuBarId() == id) {
                             item.menuBarName(data.menuBarName);
                             item.backgroundColor(data.backgroundColor);
                             item.textColor(data.textColor);
                         }
-                        self.currentWebMenu().menuBars.push(item);
+                        // self.currentWebMenu().menuBars.push(item);
                     });
 
                     bindSortable();
@@ -405,20 +406,23 @@ module ccg013.a.viewmodel {
                 menu = _.find(datas, x => x.menuBarId == activeid),
                 dataTitleMenu: Array<any> = menu.titleMenu,
                 titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
+            setShared("CCG013A_ToChild_TitleBar", titleMenu);
             modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
                 let data = getShared("CCG013J_ToMain_TitleBar");
-                if (data) {                    
+                if (data) {
                     let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
                         menuBar = _.find(menuBars, x => x.menuBarId() == activeid);
-                    
-                    _.forEach(menuBar.titleMenu(), function(item: TitleMenu){
-                        if(item.titleMenuId() == id){
-                           item.titleMenuName(data.nameTitleBar);
-                           item.backgroundColor(data.backgroundColor);
-                           item.imageFile(data.imageId);
-                           item.textColor(data.letterColor);
-                        }                     
+
+                    _.forEach(menuBar.titleMenu(), function(item: TitleMenu) {
+                        if (item.titleMenuId() == id) {
+                            item.titleMenuName(data.nameTitleBar);
+                            item.backgroundColor(data.backgroundColor);
+                            item.imageFile(data.imageId);
+                            item.textColor(data.letterColor);
+                        }
                     });
+
+                    bindSortable();
                 }
             });
         }

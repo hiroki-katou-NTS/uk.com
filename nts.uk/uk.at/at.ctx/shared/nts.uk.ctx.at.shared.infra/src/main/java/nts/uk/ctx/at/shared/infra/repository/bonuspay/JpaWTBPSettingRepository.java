@@ -29,7 +29,7 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 
 	@Override
 	public void updateWTBPSetting(WorkingTimesheetBonusPaySetting domain) {
-		Optional<WorkingTimesheetBonusPaySetting> update = getWTBPSetting(domain.getCompanyId().v(),
+		Optional<WorkingTimesheetBonusPaySetting> update = getWTBPSetting(domain.getCompanyId(),
 				domain.getWorkingTimesheetCode());
 
 		if (update.isPresent()) {
@@ -41,12 +41,12 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 
 	@Override
 	public void removeWTBPSetting(WorkingTimesheetBonusPaySetting domain) {
-		Optional<WorkingTimesheetBonusPaySetting> update = getWTBPSetting(domain.getCompanyId().v(),
+		Optional<WorkingTimesheetBonusPaySetting> update = getWTBPSetting(domain.getCompanyId(),
 				domain.getWorkingTimesheetCode());
 
 		if (update.isPresent()) {
 			commandProxy().remove(KbpstWTBonusPaySetting.class,
-					new KbpstWTBonusPaySettingPK(domain.getCompanyId().v(), domain.getWorkingTimesheetCode().v()));
+					new KbpstWTBonusPaySettingPK(domain.getCompanyId(), domain.getWorkingTimesheetCode().v()));
 		}
 	}
 

@@ -82,7 +82,8 @@ module nts.uk.at.view.kmk008.f {
                 if (indexCodealreadySetting != -1) {
                     new service.Service().updateAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
                         if (listError.length > 0) {
-                            alert("Error");
+                            let errorCode = _.split(listError[0], ',');
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
                         self.getDetail(self.selectedCode());
@@ -91,7 +92,8 @@ module nts.uk.at.view.kmk008.f {
                 }
                 new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
                     if (listError.length > 0) {
-                        alert("Error");
+                        let errorCode = _.split(listError[0], ',');
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
                     self.getalreadySettingList();

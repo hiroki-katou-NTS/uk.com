@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.standardtime.monthsetting;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +15,7 @@ public class UpdateAgreementMonthSettingCommand {
 
 	private int yearMonthValue;
 
-	private BigDecimal errorOneMonth;
+	private Long errorOneMonth;
 
-	private BigDecimal alarmOneMonth;
+	private Long alarmOneMonth;
 }

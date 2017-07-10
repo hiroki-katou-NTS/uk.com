@@ -6,7 +6,8 @@ package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
@@ -14,7 +15,8 @@ import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
 /**
  * 労働時間設定.
  */
-@Data
+@Getter
+@Setter
 public class WorkingTimeSetting extends DomainObject {
 
 	/** 日単位. */

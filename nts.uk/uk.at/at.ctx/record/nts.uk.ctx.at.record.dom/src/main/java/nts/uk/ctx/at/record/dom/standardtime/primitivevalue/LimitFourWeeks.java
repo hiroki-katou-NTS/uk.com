@@ -1,22 +1,19 @@
 package nts.uk.ctx.at.record.dom.standardtime.primitivevalue;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * 
  * @author nampt
  *
  */
-@DecimalRange(min = "0", max = "40320")
-public class LimitFourWeeks extends DecimalPrimitiveValue<LimitFourWeeks> {
+@TimeRange(max="672:00", min = "00:00")
+public class LimitFourWeeks extends TimeDurationPrimitiveValue<LimitFourWeeks> {
 
-	public LimitFourWeeks(BigDecimal rawValue) {
+	public LimitFourWeeks(Long rawValue) {
 		super(rawValue);
 	}
-
 	private static final long serialVersionUID = 1L;
 
 	
