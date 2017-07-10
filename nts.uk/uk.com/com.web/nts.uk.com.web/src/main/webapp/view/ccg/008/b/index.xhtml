@@ -15,8 +15,8 @@
 		<ui:define name="content">
 			<div id="content-area" class="body">
 				<div class="functions-area-content">
+					<div data-bind="css: {plus_1: check }"></div>
 					<!-- B1_001: Button トップページの設定 -->
-					<br />
 					<div data-bind="if: checkTopPage">
 						<button tabindex = "1" id = "btn_toppage" class = "btn" data-bind="click: openTopPageSet">#{i18n.getText('CCG008_2')}</button>					
 					</div>
