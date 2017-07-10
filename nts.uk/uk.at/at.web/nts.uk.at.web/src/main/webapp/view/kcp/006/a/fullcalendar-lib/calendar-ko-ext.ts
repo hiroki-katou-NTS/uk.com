@@ -213,11 +213,11 @@ module nts.uk.at.view.kcp006.a {
                     events: events,
                     viewRender: function(view, element) {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-                        fullCalendarRender.viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                        fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     }
                 });
                 $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
-                fullCalendarRender.eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
+                fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
             });
         }
     }
@@ -315,43 +315,43 @@ module nts.uk.at.view.kcp006.a {
 
         fillHolidayAndEventData(lstHoliday, lstEvent): void {
             //blanking value
-            $(".holiday").find("span").html("");
-            $(".holiday-header").removeClass("holiday-header");
-            $(".holiday-name").removeClass("holiday-header");
-            $(".button-event").attr("src", "fullcalendar-lib/icon/121.png");
-            $(".event-data").empty();
+            $("#" + currentCalendar + " .holiday").find("span").html("");
+            $("#" + currentCalendar + " .holiday-header").removeClass("holiday-header");
+            $("#" + currentCalendar + " .holiday-name").removeClass("holiday-header");
+            $("#" + currentCalendar + " .button-event").attr("src", "fullcalendar-lib/icon/121.png");
+            $("#" + currentCalendar + " .event-data").empty();
             //fill data
             for (let i = 0; i < lstHoliday.length; i++) {
                 //update css
-                $(".fc-day-top[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header");
-                $(".holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
+                $("#" + currentCalendar + " .fc-day-top[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header");
+                $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
                 //fill holiday name
-                $(".holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
+                $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
             }
             for (let i = 0; i < lstEvent.length; i++) {
-                $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-label'>" + nts.uk.resource.getText("KCP006_3") + ":</span><br/>");
+                $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-label'>" + nts.uk.resource.getText("KCP006_3") + ":</span><br/>");
                 if (lstEvent[i].companyEvent) {
-                    $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-content'>" + lstEvent[i].companyEvent + "</span><br/>");
+                    $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-content'>" + lstEvent[i].companyEvent + "</span><br/>");
                 } else {
-                    $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-content'></span><br/>");
+                    $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-content'></span><br/>");
                 }
-                $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-label'>" + nts.uk.resource.getText("KCP006_4") + ":</span><br/>");
+                $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-label'>" + nts.uk.resource.getText("KCP006_4") + ":</span><br/>");
                 if (lstEvent[i].workplaceEvent) {
-                    $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'>" + lstEvent[i].workplaceEvent + "</span>");
+                    $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'>" + lstEvent[i].workplaceEvent + "</span>");
                 } else {
-                    $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'></span>");
+                    $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'></span>");
                 }
                 //change icon button
-                $(".button-event[data-date='" + lstEvent[i].start + "']").attr("src", "fullcalendar-lib/icon/120.png");
+                $("#" + currentCalendar + " .button-event[data-date='" + lstEvent[i].start + "']").attr("src", "fullcalendar-lib/icon/120.png");
             }
         }
 
-        eventAfterAllRender(lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable): void {
+        eventAfterAllRender(currentCalendar, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable): void {
             // no display more event
-            $('.fc-more').prop('onclick', null).off('click');
-            $('.fc-more').html("。。。");
+            $("#" + currentCalendar + " .fc-more").prop('onclick', null).off('click');
+            $("#" + currentCalendar + " .fc-more").html("。。。");
             // add div td-container
-            let lstTdHeader = $(".fc-day-top");
+            let lstTdHeader = $("#" + currentCalendar + " .fc-day-top");
             for (let i = 0; i < lstTdHeader.length; i++) {
                 let tdContainer = document.createElement("div");
                 $(tdContainer).append($(lstTdHeader[i]).children());
@@ -360,7 +360,7 @@ module nts.uk.at.view.kcp006.a {
             }
             if (eventUpdatable) {
                 // click button event
-                $(".td-container").delegate("img", "click", function() {
+                $("#" + currentCalendar + " .td-container").delegate("img", "click", function() {
                     nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId, workplaceName: workplaceName });
                     nts.uk.ui.windows.sub.modal('../b/index.xhtml', { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
@@ -374,24 +374,24 @@ module nts.uk.at.view.kcp006.a {
                 });
             }
             //display event note
-            $(".button-event").hover(function() {
-                $(".event-note").empty();
-                $(".event-note").append($(".event-data[data-date='" + $(this).attr("data-date") + "']").children().clone());
-                $(".event-note").css("top", $(this).offset().top - 10);
-                $(".event-note").css("left", $(this).offset().left + 30);
-                $(".event-note").show();
+            $("#" + currentCalendar + " .button-event").hover(function() {
+                $("#" + currentCalendar + " .event-note").empty();
+                $("#" + currentCalendar + " .event-note").append($("#" + currentCalendar + " .event-data[data-date='" + $(this).attr("data-date") + "']").children().clone());
+                $("#" + currentCalendar + " .event-note").css("top", $(this).offset().top - 10);
+                $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 30);
+                $("#" + currentCalendar + " .event-note").show();
             }, function() {
-                $(".event-note").hide();
+                $("#" + currentCalendar + " .event-note").hide();
             });
             // pass chosen date to delegate click cell function
-            $(".fc-day-top").on("click", "button", function() {
+            $("#" + currentCalendar + " .fc-day-top").on("click", "button", function() {
                 nts.uk.at.view.kcp006.a.CellClickEvent($(this).attr("data-date"));
             });
         }
 
-        viewRender(optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {
+        viewRender(currentCalendar, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {
             //customize style: add class for header
-            let dateRows = $(".fc-content-skeleton thead tr");
+            let dateRows = $("#" + currentCalendar + " .fc-content-skeleton thead tr");
             let mappingFirstDay = [
                 [0, 1, 2, 3, 4, 5, 6],
                 [6, 0, 1, 2, 3, 4, 5],
@@ -412,28 +412,28 @@ module nts.uk.at.view.kcp006.a {
                 $(numberCells[mappingFirstDay[firstDay][6]]).addClass("fc-day-top fc-sat");
             }
             //create holiday rows
-            let headers = $(".fc-content-skeleton thead");
-            let numberRow = $(".fc-content-skeleton thead tr").clone();
-            $(".fc-content-skeleton thead tr").addClass("date-number");
+            let headers = $("#" + currentCalendar + " .fc-content-skeleton thead");
+            let numberRow = $("#" + currentCalendar + " .fc-content-skeleton thead tr").clone();
+            $("#" + currentCalendar + " .fc-content-skeleton thead tr").addClass("date-number");
             for (let i = 0; i < 6; i++) {
                 $(numberRow[i]).addClass("holiday");
                 $(headers[i]).append(numberRow[i]);
             }
-            $(".holiday td span").html("");
+            $("#" + currentCalendar + " .holiday td span").html("");
             //update holiday cell
             for (let i = 0; i < lstHoliday.length; i++) {
                 //update css
-                $(".fc-day-top[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header");
-                $(".holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
+                $("#" + currentCalendar + " .fc-day-top[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header");
+                $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
                 if (holidayDisplay) {
                     //fill holiday name
-                    $(".holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
+                    $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
                 }
             }
             let currentHeaders = [];
             if (eventDisplay) {
                 //create event button
-                let dateHeaders = $(".date-number td");
+                let dateHeaders = $("#" + currentCalendar + " .date-number td");
                 for (let i = 0; i < dateHeaders.length; i++) {
                     if ($(dateHeaders[i]).attr("data-date")) {
                         currentHeaders.push(dateHeaders[i]);
@@ -445,27 +445,27 @@ module nts.uk.at.view.kcp006.a {
                 }
                 //fill event data to note
                 for (let i = 0; i < lstEvent.length; i++) {
-                    $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-label'>" + nts.uk.resource.getText("KCP006_3") + ":</span><br/>");
+                    $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-label'>" + nts.uk.resource.getText("KCP006_3") + ":</span><br/>");
                     if (lstEvent[i].companyEvent) {
-                        $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-content'>" + lstEvent[i].companyEvent + "</span><br/>");
+                        $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-content'>" + lstEvent[i].companyEvent + "</span><br/>");
                     } else {
-                        $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-content'></span><br/>");
+                        $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='com-event-content'></span><br/>");
                     }
-                    $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-label'>" + nts.uk.resource.getText("KCP006_4") + ":</span><br/>");
+                    $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-label'>" + nts.uk.resource.getText("KCP006_4") + ":</span><br/>");
                     if (lstEvent[i].workplaceEvent) {
-                        $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'>" + lstEvent[i].workplaceEvent + "</span>");
+                        $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'>" + lstEvent[i].workplaceEvent + "</span>");
                     } else {
-                        $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'></span>");
+                        $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'></span>");
                     }
                     //change icon button
-                    $(".button-event[data-date='" + lstEvent[i].start + "']").attr("src", "../../../../view/kcp/006/a/fullcalendar-lib/icon/120.png");
+                    $("#" + currentCalendar + " .button-event[data-date='" + lstEvent[i].start + "']").attr("src", "../../../../view/kcp/006/a/fullcalendar-lib/icon/120.png");
                 }
             }
             //create event note container
-            $(".fc-view-container").append("<div class='event-note'></div>");
+            $("#" + currentCalendar + " .fc-view-container").append("<div class='event-note'></div>");
             if (cellButtonDisplay) {
                 //create cell button
-                let holidayHeaders = $(".holiday td");
+                let holidayHeaders = $("#" + currentCalendar + " .holiday td");
                 currentHeaders = [];
                 for (let i = 0; i < holidayHeaders.length; i++) {
                     if ($(holidayHeaders[i]).attr("data-date")) {
@@ -478,7 +478,7 @@ module nts.uk.at.view.kcp006.a {
             }
             //change background color each option day
             for (let i = 0; i < optionDates.length; i++) {
-                $("td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
+                $("#" + currentCalendar + " td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
             }
         }
     }
