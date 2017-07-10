@@ -17,13 +17,13 @@ public class CcgstPersonTyingPK implements Serializable {
 	
 	/** Company ID */
 	@Column(name = "CID")
-	public String companyID;
+	public String companyId;
 	
 	/** Web menu code */
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
 	
 	@Column(name = "SID")
-	public String employID;
+	public String employeeId;
 
 }

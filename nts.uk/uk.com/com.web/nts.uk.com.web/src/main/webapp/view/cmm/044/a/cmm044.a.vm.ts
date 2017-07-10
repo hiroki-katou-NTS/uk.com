@@ -17,6 +17,7 @@ module cmm044.a.viewmodel {
         itemList: KnockoutObservableArray<any>;
         index_of_itemDelete: any;
         isEnableDelete: KnockoutObservable<boolean>;
+        isEnableAdd: KnockoutObservable<boolean>;
 
         displayEmployeeInfo1: KnockoutObservable<boolean>;
         displayEmployeeInfo2: KnockoutObservable<boolean>;
@@ -75,6 +76,7 @@ module cmm044.a.viewmodel {
             self.displayEmployeeInfo4 = ko.observable(true);
 
             self.isEnableDelete = ko.observable(true);
+            self.isEnableAdd = ko.observable(true);
 
             self.agentAppType1 = ko.observable(0);
             self.agentAppType2 = ko.observable(0);
@@ -166,15 +168,19 @@ module cmm044.a.viewmodel {
             self.selectedEmployee = ko.observableArray([]);
             
             self.isShow = ko.observable(false);
+            
         }
         start() {
             let self = this;
             var dfd = $.Deferred();
             self.currentItem(new model.AgentAppDto(null, "", "", "", "", null, "", null, "", null, "", null));
             self.initCCG001();
+            if(self.empItems().length == 0){
+                self.isEnableDelete(false);
+                self.isEnableAdd(false);
+            }
             dfd.resolve();
-            return dfd.promise();
-            
+            return dfd.promise();    
 
         }
 
@@ -347,6 +353,7 @@ module cmm044.a.viewmodel {
             self.displayEmployeeInfo3(true);
             self.displayEmployeeInfo4(true);
             self.isEnableDelete(false);
+            self.isEnableAdd(true);
             nts.uk.ui.errors.clearAll();
             self.agentAppType1(0);
             self.agentAppType2(0);
