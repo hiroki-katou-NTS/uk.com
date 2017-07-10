@@ -46,7 +46,7 @@ public class BPTimesheetFinder {
 			BonusPayTimesheet bonusPayTimesheet) {
 		return new BPTimesheetDto(companyId, bonusPayTimesheet.getTimeSheetId(), bonusPayTimesheet.getUseAtr().value,
 				bonusPaySettingCode, bonusPayTimesheet.getTimeItemId().toString(),
-				bonusPayTimesheet.getStartTime().minute(), bonusPayTimesheet.getEndTime().minute(),
+				bonusPayTimesheet.getStartTime().v().intValue(), bonusPayTimesheet.getEndTime().v().intValue(),
 				bonusPayTimesheet.getRoundingTimeAtr().value, bonusPayTimesheet.getRoundingAtr().value);
 
 	}
