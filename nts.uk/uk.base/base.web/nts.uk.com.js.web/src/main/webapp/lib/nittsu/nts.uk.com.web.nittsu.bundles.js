@@ -11341,6 +11341,9 @@ var nts;
                         var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
                         var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
                         var selectedRows = $source.igGrid("selectedRows");
+                        if (nts.uk.util.isNullOrEmpty(selectedRows)) {
+                            return;
+                        }
                         selectedRows.sort(function (one, two) {
                             return one.index - two.index;
                         });
@@ -12005,11 +12008,11 @@ var nts;
                         $up.append("<i class='icon icon-button-arrow-top'/>");
                         $down.append("<i class='icon icon-button-arrow-bottom'/>");
                         var move = function (upDown, $targetElement) {
-                            var multySelectedRaw = $targetElement.igGrid("selectedRows");
+                            var multiSelectedRaw = $targetElement.igGrid("selectedRows");
                             var singleSelectedRaw = $targetElement.igGrid("selectedRow");
                             var selected = [];
-                            if (multySelectedRaw !== null) {
-                                selected = _.filter(multySelectedRaw, function (item) {
+                            if (multiSelectedRaw !== null) {
+                                selected = _.filter(multiSelectedRaw, function (item) {
                                     return item["index"] >= 0;
                                 });
                             }
@@ -12022,7 +12025,18 @@ var nts;
                             var source = _.cloneDeep($targetElement.igGrid("option", "dataSource"));
                             var group = 1;
                             var grouped = { "group1": [] };
-                            if (selected.length > 0) {
+                            if (selected.length > 0 && selected.length < source.length) {
+                                _.forEach(selected, function (sle) {
+                                    if (nts.uk.util.isNullOrEmpty($(sle.element).attr("data-row-idx"))) {
+                                        var correctIndex = _.findIndex(source, function (s) {
+                                            return s[primaryKey].toString() === sle.id.toString();
+                                        });
+                                        sle.index = correctIndex;
+                                    }
+                                    else {
+                                        sle.index = parseInt($(sle.element).attr("data-row-idx"));
+                                    }
+                                });
                                 var size = selected.length;
                                 selected = _.sortBy(selected, "index");
                                 _.forEach(selected, function (item, idx) {
@@ -12051,13 +12065,13 @@ var nts;
                                     }
                                 });
                                 if (moved) {
-                                    $targetElement.igGrid("virtualScrollTo", 0);
+                                    //                        $targetElement.igGrid("virtualScrollTo", 0);
                                     data.targetSource(source);
                                     //                        $targetElement.igGrid("option", "dataSource", source);
                                     //                        $targetElement.igGrid("dataBind");
                                     var index = upDown + grouped["group1"][0].index;
                                     //                        var index = $targetElement.igGrid("selectedRows")[0].index;
-                                    $targetElement.igGrid("virtualScrollTo", index);
+                                    _.defer(function () { $targetElement.igGrid("virtualScrollTo", index); });
                                 }
                             }
                         };
