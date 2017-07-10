@@ -39,10 +39,10 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 	 Optional<KbpmtBPTimesheet> kbpmtBPTimesheetOptional = this.queryProxy().find(new KbpmtBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()), KbpmtBPTimesheet.class);
 			if(kbpmtBPTimesheetOptional.isPresent()){
 				 KbpmtBPTimesheet kbpmtBPTimesheet = kbpmtBPTimesheetOptional.get();
-				 kbpmtBPTimesheet.endTime = new BigDecimal(c.getEndTime().minute());
+				 kbpmtBPTimesheet.endTime = new BigDecimal(c.getEndTime().v());
 				 kbpmtBPTimesheet.roundingAtr = new BigDecimal(c.getRoundingAtr().value);
 				 kbpmtBPTimesheet.roundingTimeAtr= new BigDecimal(c.getRoundingTimeAtr().value);
-				 kbpmtBPTimesheet.startTime = new BigDecimal(c.getStartTime().minute());
+				 kbpmtBPTimesheet.startTime = new BigDecimal(c.getStartTime().v());
 				 kbpmtBPTimesheet.timeItemId= c.getTimeItemId();
 				 kbpmtBPTimesheet.useAtr= new BigDecimal(c.getUseAtr().value);
 				 this.commandProxy().update(kbpmtBPTimesheet);
@@ -57,7 +57,7 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 		lstTimesheet.forEach(c->{
 			Optional<KbpmtBPTimesheet> kbpmtBPTimesheet = this.queryProxy().find(new KbpmtBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()), KbpmtBPTimesheet.class);
 			if(kbpmtBPTimesheet.isPresent()){
-				this.commandProxy().remove(kbpmtBPTimesheet);
+				this.commandProxy().remove(kbpmtBPTimesheet.get());
 			}
 		});
 	}
@@ -66,8 +66,8 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 			BonusPayTimesheet bonusPayTimesheet) {
 		return new KbpmtBPTimesheet(new KbpmtBPTimesheetPK(companyId, bonusPayTimesheet.getTimeSheetId(),bonusPaySettingCode),
 				new BigDecimal(bonusPayTimesheet.getUseAtr().value),
-				bonusPayTimesheet.getTimeItemId().toString(), new BigDecimal(bonusPayTimesheet.getStartTime().minute()),
-				new BigDecimal(bonusPayTimesheet.getEndTime().minute()),
+				bonusPayTimesheet.getTimeItemId().toString(), new BigDecimal(bonusPayTimesheet.getStartTime().v()),
+				new BigDecimal(bonusPayTimesheet.getEndTime().v()),
 				new BigDecimal(bonusPayTimesheet.getRoundingTimeAtr().value),
 				new BigDecimal(bonusPayTimesheet.getRoundingAtr().value));
 

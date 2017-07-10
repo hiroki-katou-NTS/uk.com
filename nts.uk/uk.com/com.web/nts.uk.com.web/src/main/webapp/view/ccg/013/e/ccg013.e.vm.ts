@@ -39,13 +39,16 @@
                 webMenuCode: code,
                 webMenuName: name    
             }
-            service.copy(data).done(function() {
-                //    
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
-            });
             
-            self.closeDialog();
+            if(nts.uk.ui.errors.hasError() !== true){
+                service.copy(data).done(function() {
+                    //    
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                });
+                
+                self.closeDialog();
+            }
         }
         
         /**

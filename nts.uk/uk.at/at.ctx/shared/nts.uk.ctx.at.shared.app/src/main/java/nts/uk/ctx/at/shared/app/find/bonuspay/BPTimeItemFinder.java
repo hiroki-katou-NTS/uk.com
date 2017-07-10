@@ -20,6 +20,11 @@ public class BPTimeItemFinder {
 	@Inject
 	private BPTimeItemRepository bpTimeItemRepository;
 
+	public int checkInit() {
+		String companyId = AppContexts.user().companyId();
+		return this.bpTimeItemRepository.checkInit(companyId);
+	}
+
 	public List<BPTimeItemDto> getListBonusPayTimeItem() {
 		String companyId = AppContexts.user().companyId();
 		List<BonusPayTimeItem> listBonusPayTimeItem = this.bpTimeItemRepository.getListBonusPayTimeItem(companyId);
