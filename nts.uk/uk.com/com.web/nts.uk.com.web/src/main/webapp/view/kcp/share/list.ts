@@ -173,7 +173,7 @@ module kcp.share.list {
             }
             
             self.selectedCodes.subscribe(function(seletedVal: any) {
-                if (!seletedVal) {
+                if (!seletedVal || seletedVal === data.selectedCode()) {
                     return;
                 }
                 var selectedValue = seletedVal;
@@ -204,6 +204,9 @@ module kcp.share.list {
                 }
                 data.selectedCode(selectedValue);
             })
+            data.selectedCode.subscribe(function(res) {
+                self.selectedCodes(res);
+            });
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
