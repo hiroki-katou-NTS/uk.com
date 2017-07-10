@@ -170,7 +170,14 @@ module kcp.share.list {
                 self.baseDate = ko.observable(new Date());
             }
             data.selectedCode.subscribe(function(selectedValue) {
-//                if ()
+                // If select No select row and other row in one time.
+                // => un-select No select row.
+                if (self.isMultiple && (<Array<string>>selectedValue).indexOf('') > -1 
+                        && (<Array<string>>selectedValue).length > 1) {
+                    var dataSelected = selectedValue.slice();
+                    (<Array<string>>dataSelected).splice((<Array<string>>selectedValue).indexOf(''), 1);
+                    data.selectedCode(dataSelected);
+                }
             });
             if (self.listType == ListType.JOB_TITLE) {
                 this.listComponentColumn.push({headerText: '', hidden: true, prop: 'id'});
