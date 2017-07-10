@@ -23,7 +23,7 @@ public class BPSettingUpdateCommandHandler extends CommandHandler<BPSettingUpdat
 	protected void handle(CommandHandlerContext<BPSettingUpdateCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		BPSettingUpdateCommand bpSettingUpdateCommand = context.getCommand();
-		bonusPaySettingService.addBonusPaySetting(this.toBonusPaySettingDomain(bpSettingUpdateCommand,companyId));
+		bonusPaySettingService.updateBonusPaySetting(this.toBonusPaySettingDomain(bpSettingUpdateCommand,companyId));
 	}
 
 	private BonusPaySetting toBonusPaySettingDomain(BPSettingUpdateCommand bpSettingUpdateCommand,String companyId) {
