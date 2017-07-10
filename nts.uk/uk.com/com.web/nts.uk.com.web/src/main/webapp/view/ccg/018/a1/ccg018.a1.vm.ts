@@ -5,8 +5,8 @@ module ccg018.a1.viewmodel {
         isVisible: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<number>;
         listJobTitle: KnockoutObservableArray<any>;
-        comboItemsAfterLogin: KnockoutObservableArray<ItemModel>;
-        comboItemsAsTopPage: KnockoutObservableArray<ItemModel>;
+        comboItemsAfterLogin: KnockoutObservableArray<ComboBox>;
+        comboItemsAsTopPage: KnockoutObservableArray<ComboBox>;
         //appear/disappear header of scroll on UI
         isHeaderScroll: KnockoutObservable<boolean>;
 
