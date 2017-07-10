@@ -502,12 +502,9 @@ module nts.uk.at.view.kmk004.a {
             private setAlreadySettingEmploymentList(): void {
                 let self = this;
                 service.findAllEmploymentSetting(self.employmentWTSetting.year()).done(listCode => {
-                    if (listCode) {
-                        self.alreadySettingEmployments.removeAll();
-                        listCode.forEach(item => {
-                            self.alreadySettingEmployments.push({ code: item, isAlreadySetting: true })
-                        });
-                    }
+                    self.alreadySettingEmployments(_.map(listCode, function(code) {
+                        return { code: code, isAlreadySetting: true };
+                    }));
                 });
             }
 
@@ -517,10 +514,9 @@ module nts.uk.at.view.kmk004.a {
             private setAlreadySettingWorkplaceList(): void {
                 let self = this;
                 service.findAllWorkplaceSetting(self.workplaceWTSetting.year()).done(listId => {
-                    self.alreadySettingWorkplaces.removeAll();
-                    listId.forEach(id => {
-                        self.alreadySettingWorkplaces.push({ workplaceId: id, isAlreadySetting: true })
-                    });
+                    self.alreadySettingWorkplaces(_.map(listId, function(id) {
+                        return { workplaceId: id, isAlreadySetting: true };
+                    }));
                 });
             }
 
