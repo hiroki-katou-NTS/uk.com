@@ -344,7 +344,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectType: SelectType.SELECT_ALL,
                         selectedCode: self.selectedCodeClassification,
                         isDialog: true,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
+                        maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
                     }
 
                     self.jobtitles = {
@@ -355,7 +355,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedCode: self.selectedCodeJobtitle,
                         isDialog: true,
                         baseDate: self.baseDate,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
+                        maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                     }
 
                     self.workplaces = {
@@ -367,7 +367,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedWorkplaceId: self.selectedCodeWorkplace,
                         baseDate: self.baseDate,
                         isDialog: true,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
                     }
 
                     self.employeeinfo = {
@@ -379,7 +378,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedCode: self.selectedCodeEmployee,
                         isDialog: true,
                         isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
+                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYEE
                     }
                 }
             }
@@ -387,9 +386,9 @@ module nts.uk.com.view.ccg.share.ccg {
         
         export class ConfigCCGKCP{
             static MAX_ROWS_EMPLOYMENT = 10;
-            static MAX_ROWS_EMPLOYMENT1 = 10;
-            static MAX_ROWS_EMPLOYMENT2 = 10;
-            static MAX_ROWS_EMPLOYMENT3 = 10;    
+            static MAX_ROWS_CLASSIFICATION = 10;
+            static MAX_ROWS_JOBTITLE = 10;
+            static MAX_ROWS_EMPLOYEE = 15;    
         }
     }
 }
