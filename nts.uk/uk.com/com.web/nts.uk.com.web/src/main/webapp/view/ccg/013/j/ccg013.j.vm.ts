@@ -91,11 +91,14 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
 
         submit() {
             var self = this;
-            console.time('タイトルバー編集');
-            var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.fileID());
-            windows.setShared("CCG013J_ToMain_TitleBar", titleBar);
-            console.timeEnd('タイトルバー編集');
-            self.cancel_Dialog();
+            
+            if(nts.uk.ui.errors.hasError() !== true){
+                console.time('タイトルバー編集');
+                var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.fileID());
+                windows.setShared("CCG013J_ToMain_TitleBar", titleBar);
+                console.timeEnd('タイトルバー編集');
+                self.cancel_Dialog();
+            }
         }
     }
 
