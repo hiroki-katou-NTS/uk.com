@@ -20,12 +20,12 @@ public interface TopPageSettingRepository {
 	 * 
 	 * @param topPageSetting
 	 */
-	public void insert(TopPageSetting topPageSetting);
+	void insert(TopPageSetting topPageSetting);
 
 	/**
 	 * update data to TOPPAGE_SETTING
 	 * 
 	 * @param topPageSetting
 	 */
-	public void update(TopPageSetting topPageSetting);
+	void update(TopPageSetting topPageSetting);
 }
