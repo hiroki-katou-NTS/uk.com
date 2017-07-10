@@ -45,7 +45,7 @@
 				<div id="contents-area-label">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',
 						['#Com_Person'])}</div>
-					<span class="label" data-bind="text: employeeId"></span> <span
+					<span class="label" data-bind="text: employeeCode"></span> <span
 						class="label" data-bind="text: employeeName"></span>
 				</div>
 				<div class="contents-area-show-data">
@@ -59,7 +59,7 @@
 							primaryKey: 'yearOrYearMonthValue',
 							columns: [
 								{ headerText: '', key: 'yearOrYearMonthValue',	 hidden: true },
-                    			{ headerText: '#{i18n.getText('KMK008_29')}', key: 'yearOrYearMonthFormat', width: 150}
+                    			{ headerText: yearLabel, key: 'yearOrYearMonthFormat', width: 150}
 							],
 							multiple: false,
 							value: currentCodeSelect,
