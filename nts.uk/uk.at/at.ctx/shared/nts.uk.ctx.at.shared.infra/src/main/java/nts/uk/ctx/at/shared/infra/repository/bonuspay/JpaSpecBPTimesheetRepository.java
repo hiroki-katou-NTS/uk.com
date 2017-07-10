@@ -58,7 +58,7 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 		lstTimesheet.forEach(c->{
 			Optional<KbpmtSpecBPTimesheet> kbpmtSpecBPTimesheet = this.queryProxy().find(new KbpmtSpecBPTimesheetPK(companyId,c.getTimeSheetId(),bonusPaySettingCode.v()), KbpmtSpecBPTimesheet.class);
 			if (kbpmtSpecBPTimesheet.isPresent()) {
-				this.commandProxy().remove(kbpmtSpecBPTimesheet);
+				this.commandProxy().remove(kbpmtSpecBPTimesheet.get());
 			}
 		});
 	}

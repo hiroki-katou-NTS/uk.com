@@ -64,16 +64,7 @@ module nts.uk.at.view.kmk012.a {
                 
                 
                 self.closureModel.useClassification.subscribe(function(val: number){
-                    if (val == 0) {
-                        self.enableUseClassification(false);
-                        self.enableChangeClosureDate(self.enableChangeClosureDate() && self.enableUseClassification());
-                        self.clearValiate();
-                    }
-                    else {
-                        self.enableUseClassification(true);
-                        self.enableChangeClosureDate(self.enableChangeClosureDate() && self.enableUseClassification());
-                        self.clearValiate();
-                    }
+                    self.updateDataInit(val);
                 });
             }
 
@@ -100,6 +91,28 @@ module nts.uk.at.view.kmk012.a {
                 return dfd.promise();
             }
             
+            updateDataInit(useClass: number){
+                var self = this;
+                if (useClass == 0) {
+                    self.enableUseClassification(false);
+                    self.enableChangeClosureDate(self.checkIsFirstClosure() && self.enableUseClassification());
+                    self.clearValiate();
+                }
+                else {
+                    self.enableUseClassification(true);
+                    self.enableChangeClosureDate(self.checkIsFirstClosure());
+                    self.clearValiate();
+                }
+            }
+            
+            checkIsFirstClosure(): boolean{
+                var self = this;
+                if (self.closureModel.closureHistories().length > 0) {
+                    return self.closureHistoryModel.startDate() == self.closureModel.closureHistories()[0].startDate;
+                }
+                return false;
+            }
+            
             /**
              * detail closure by call service find by id => update view model
              */
@@ -119,9 +132,12 @@ module nts.uk.at.view.kmk012.a {
                 var self = this;
                 service.findByIdClosureHistory(master).done(function(data){
                     self.closureHistoryModel.updateData(data);
+                    self.updateDataInit(self.closureModel.useClassification());
                     self.clearValiate();
                 });
             }
+            
+            
             
             /**
              * ini data closure day
