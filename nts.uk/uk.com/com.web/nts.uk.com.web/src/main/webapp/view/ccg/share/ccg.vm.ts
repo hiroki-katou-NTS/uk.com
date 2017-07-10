@@ -74,6 +74,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 this.isShow = ko.observable(false);
             }
 
+            // update select tabs
             public updateTabs(): NtsTabPanelModel[] {
                 var self = this;
                 var arrTabs: NtsTabPanelModel[] = [];
@@ -98,6 +99,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 return arrTabs;
             }
 
+            // get tab by update selected
             public updateSelectedTab(): string {
                 var selectedTab: string = '';
                 var self = this;
@@ -201,6 +203,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 dto.employmentCodes = self.selectedCodeEmployment();
                 dto.jobTitleCodes = self.selectedCodeJobtitle();
                 dto.workplaceCodes = self.selectedCodeWorkplace();
+                console.log(dto);
                 return dto;
             }
 
@@ -326,7 +329,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectType: SelectType.SELECT_ALL,
                         listType: ListType.EMPLOYMENT,
                         selectedCode: self.selectedCodeEmployment,
-                        isDialog: true
+                        isDialog: true,
+                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
                     };
 
                     self.classifications = {
@@ -335,7 +339,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         listType: ListType.Classification,
                         selectType: SelectType.SELECT_ALL,
                         selectedCode: self.selectedCodeClassification,
-                        isDialog: true
+                        isDialog: true,
+                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
                     }
 
                     self.jobtitles = {
@@ -346,6 +351,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedCode: self.selectedCodeJobtitle,
                         isDialog: true,
                         baseDate: self.baseDate,
+                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
                     }
 
                     self.workplaces = {
@@ -356,7 +362,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         isShowSelectButton: true,
                         selectedWorkplaceId: self.selectedCodeWorkplace,
                         baseDate: self.baseDate,
-                        isDialog: true
+                        isDialog: true,
+                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
                     }
 
                     self.employeeinfo = {
@@ -368,9 +375,17 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedCode: self.selectedCodeEmployee,
                         isDialog: true,
                         isShowNoSelectRow: false,
+                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
                     }
                 }
             }
+        }
+        
+        export class ConfigCCGKCP{
+            static MAX_ROWS_EMPLOYMENT = 10;
+            static MAX_ROWS_EMPLOYMENT1 = 10;
+            static MAX_ROWS_EMPLOYMENT2 = 10;
+            static MAX_ROWS_EMPLOYMENT3 = 10;    
         }
     }
 }
