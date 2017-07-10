@@ -92,7 +92,7 @@ module kcp.share.list {
         /**
          * Max rows to visible in list component.
          */
-        maxRows?: number;
+        maxRows: number;
     }
     
     export class SelectType {
@@ -207,7 +207,8 @@ module kcp.share.list {
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 100});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 100,
+                        template: "<td class='list-component-name-col' title='${name}'>${name}</td>",});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
                 self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
@@ -301,19 +302,11 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
-                
-                $('#' + self.componentGridId).igGrid({
-                    features: [
-                        {
-                            name: "Tooltips"
-                        }
-                    ]
-                })
-                dfd.resolve();
             });
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
                 self.addIconToAlreadyCol();
+                $('.list-component-name-col').tooltip();
             });
             
             // defined function get data list.
