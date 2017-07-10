@@ -37,7 +37,7 @@ public class JpaTopPageSettingRepository extends JpaRepository implements TopPag
 
 		entity.ccgptTopPageSettingPK = new CcgptTopPageSettingPK();
 		entity.ccgptTopPageSettingPK.companyId = domain.getCompanyId();
-		entity.ctgSet = domain.getCtgSet().value;
+		entity.ctgSet = domain.getCategorySet().value;
 		return entity;
 	}
 
@@ -66,7 +66,7 @@ public class JpaTopPageSettingRepository extends JpaRepository implements TopPag
 		CcgptTopPageSettingPK pk = new CcgptTopPageSettingPK(topPageSetting.getCompanyId());
 		CcgptTopPageSetting entity = this.queryProxy().find(pk, CcgptTopPageSetting.class).get();
 		entity.ccgptTopPageSettingPK = pk;
-		entity.ctgSet = topPageSetting.getCtgSet().value;
+		entity.ctgSet = topPageSetting.getCategorySet().value;
 		this.commandProxy().update(entity);
 	}
 }

@@ -10,10 +10,10 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSetting;
  */
 @Value
 public class TopPageSettingDto {
-	// Catelogy Setting
+	// Category Setting
 	int ctgSet;
 
 	public static TopPageSettingDto fromDomain(TopPageSetting domain) {
-		return new TopPageSettingDto(domain.getCtgSet().value);
+		return new TopPageSettingDto(domain.getCategorySet().value);
 	}
 }
