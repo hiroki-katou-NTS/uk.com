@@ -313,7 +313,7 @@ module nts.uk.at.view.kcp006.a {
             return dfdLoadDB.promise();
         }
 
-        fillHolidayAndEventData(lstHoliday, lstEvent): void {
+        fillHolidayAndEventData(currentCalendar, lstHoliday, lstEvent): void {
             //blanking value
             $("#" + currentCalendar + " .holiday").find("span").html("");
             $("#" + currentCalendar + " .holiday-header").removeClass("holiday-header");
@@ -368,7 +368,7 @@ module nts.uk.at.view.kcp006.a {
                         lstEvent = [];
                         fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId)
                             .done(() => {
-                                fullCalendarRender.fillHolidayAndEventData(lstHoliday, lstEvent);
+                                fullCalendarRender.fillHolidayAndEventData(currentCalendar, lstHoliday, lstEvent);
                             });
                     });
                 });
