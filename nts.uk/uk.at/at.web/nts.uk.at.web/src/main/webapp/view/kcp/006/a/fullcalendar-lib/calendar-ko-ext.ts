@@ -440,7 +440,7 @@ module nts.uk.at.view.kcp006.a {
                     }
                 }
                 for (let i = 0; i < currentHeaders.length; i++) {
-                    $(currentHeaders[i]).append("<img class='button-event' data-date='" + $(currentHeaders[i]).attr("data-date") + "' src='fullcalendar-lib/icon/121.png'/>");
+                    $(currentHeaders[i]).append("<img class='button-event' data-date='" + $(currentHeaders[i]).attr("data-date") + "' src='../../../../view/kcp/006/a/fullcalendar-lib/icon/121.png'/>");
                     $(currentHeaders[i]).append("<div class='event-data' data-date='" + $(currentHeaders[i]).attr("data-date") + "'></div>");
                 }
                 //fill event data to note
@@ -458,7 +458,7 @@ module nts.uk.at.view.kcp006.a {
                         $(".event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'></span>");
                     }
                     //change icon button
-                    $(".button-event[data-date='" + lstEvent[i].start + "']").attr("src", "fullcalendar-lib/icon/120.png");
+                    $(".button-event[data-date='" + lstEvent[i].start + "']").attr("src", "../../../../view/kcp/006/a/fullcalendar-lib/icon/120.png");
                 }
             }
             //create event note container
