@@ -100,13 +100,8 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 self.topPageModel().topPageCode(data.topPageCode);
                 self.topPageModel().topPageName(data.topPageName);
-                if (data.layoutId != "" && data.layoutId != null) {
-                    self.topPageModel().layoutId(data.layoutId);
-                    self.changePreviewIframe(data.layoutId);
-                }
-                else {
-                    self.changePreviewIframe(null);
-                }
+                self.topPageModel().layoutId(data.layoutId);
+                self.changePreviewIframe(data.layoutId);
             }
 
             private collectData(): TopPageDto {
