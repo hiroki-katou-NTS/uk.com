@@ -22,8 +22,8 @@ public class WTBonusPaySettingCommandHandler extends CommandHandler<WTBonusPaySe
 		WorkingTimesheetBonusPaySetting domain = toDomain(command);
 		switch (command.getAction()) {
 		case 1:
-
-			Optional<WorkingTimesheetBonusPaySetting> update = repo.getWTBPSetting(domain.getCompanyId().v(),
+			String companyId = AppContexts.user().companyId();
+			Optional<WorkingTimesheetBonusPaySetting> update = repo.getWTBPSetting(companyId,
 					domain.getWorkingTimesheetCode());
 
 			if (update.isPresent()) {

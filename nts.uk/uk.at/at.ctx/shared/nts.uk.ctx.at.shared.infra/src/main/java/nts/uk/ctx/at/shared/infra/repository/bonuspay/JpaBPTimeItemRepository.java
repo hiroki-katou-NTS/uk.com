@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBonusPayTimeItemPK;
 
 @Stateless
 public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItemRepository {
+	private final String CHECK_INIT = "SELECT count(c) FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.useAtr = 1";
 	private final String SELECT_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 0 ORDER BY c.timeItemNo  ASC";
 	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 1 ORDER BY c.timeItemNo  ASC";
 	private final String SELECT_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId  AND c.kbpstBonusPayTimeItemPK.timeItemId = :timeItemId   AND  c.timeItemTypeAtr = 0 ORDER BY c.timeItemNo  ASC";
@@ -102,6 +103,12 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 		return Optional.empty();
 		
 		
+	}
+
+	@Override
+	public int checkInit(String companyId) {
+		return this.queryProxy().query(CHECK_INIT, Long.class)
+				.setParameter("companyId", companyId).getSingle().get().intValue();
 	}
 
 }
