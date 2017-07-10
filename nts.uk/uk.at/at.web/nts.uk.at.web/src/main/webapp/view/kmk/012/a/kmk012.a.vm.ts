@@ -107,7 +107,10 @@ module nts.uk.at.view.kmk012.a {
             
             checkIsFirstClosure(): boolean{
                 var self = this;
-                return self.closureHistoryModel.startDate() == self.closureModel.closureHistories()[0].startDate;
+                if (self.closureModel.closureHistories().length > 0) {
+                    return self.closureHistoryModel.startDate() == self.closureModel.closureHistories()[0].startDate;
+                }
+                return false;
             }
             
             /**

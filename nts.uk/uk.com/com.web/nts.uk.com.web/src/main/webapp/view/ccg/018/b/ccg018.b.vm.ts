@@ -1,6 +1,7 @@
 module ccg018.b.viewmodel {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    import blockUI = nts.uk.ui.block;
 
     export class ScreenModel {
         items: KnockoutObservableArray<TopPagePersonSet>;
@@ -203,72 +204,13 @@ module ccg018.b.viewmodel {
             return dfd.promise();
         }
 
-        //        /**
-        //         * Find data in table STANDARD_MENU base on CompanyId and System = 0(common) and MenuClassification = 8(top page)
-        //         * Return 2 array comboItemsAsTopPage and comboItemsAfterLogin
-        //         */
-        //        findBySystemMenuCls(): JQueryPromise<any> {
-        //            let self = this;
-        //            let dfd = $.Deferred();
-        //            self.comboItemsAsTopPage([]);
-        //            ccg018.b.service.findBySystemMenuCls()
-        //                .done(function(data) {
-        //                    if (data.length >= 0) {
-        //                        self.comboItemsAsTopPage.push(new ComboBox({
-        //                            code: '',
-        //                            name: '未設定',
-        //                            system: 0,
-        //                            menuCls: 0
-        //                        }));
-        //                        _.forEach(data, function(x) {
-        //                            self.comboItemsAsTopPage.push(new ComboBox({
-        //                                code: x.code,
-        //                                name: x.displayName,
-        //                                system: x.system,
-        //                                menuCls: x.classification
-        //                            }));
-        //                        });
-        //                    }
-        //                    dfd.resolve();
-        //                }).fail();
-        //            return dfd.promise();
-        //        }
-        //
-        //        /**
-        //         * find data in talbel STANDARD_MENU with companyId and 
-        //         * afterLoginDisplay = 1 (display)  or System = 0(common) and MenuClassification = 8(top page)
-        //         */
-        //        findDataForAfterLoginDis(): JQueryPromise<any> {
-        //            let self = this;
-        //            let dfd = $.Deferred();
-        //            self.comboItemsAfterLogin([]);
-        //            ccg018.b.service.findDataForAfterLoginDis()
-        //                .done(function(data) {
-        //                    self.comboItemsAfterLogin.push(new ComboBox({
-        //                        code: '',
-        //                        name: '未設定',
-        //                        system: 0,
-        //                        menuCls: 0
-        //                    }));
-        //                    _.forEach(data, function(x) {
-        //                        self.comboItemsAfterLogin.push(new ComboBox({
-        //                            code: x.code,
-        //                            name: x.displayName,
-        //                            system: x.system,
-        //                            menuCls: x.classification
-        //                        }));
-        //                    });
-        //                    dfd.resolve();
-        //                }).fail();
-        //            return dfd.promise();
-        //        }
-
         /**
          * Update/Insert data in to table TOPPAGE_PERSON_SET
          */
         saveData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            blockUI.invisible();
             if (self.items().length <= 0) {
                 return;
             }
@@ -291,6 +233,8 @@ module ccg018.b.viewmodel {
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
+            }).always(function() {
+                blockUI.clear();
             });
             return dfd.promise();
         }
@@ -326,6 +270,7 @@ module ccg018.b.viewmodel {
          */
         openDialogC(): void {
             let self = this;
+            blockUI.invisible();
             nts.uk.ui.windows.setShared('categorySet', self.categorySet());
             nts.uk.ui.windows.sub.modal('/view/ccg/018/c/index.xhtml', { dialogClass: 'no-close' }).onClosed(() => {
                 if (nts.uk.ui.windows.getShared('categorySetC') != undefined) {
@@ -334,6 +279,7 @@ module ccg018.b.viewmodel {
                     }
                 }
             });
+            blockUI.clear();
         }
 
         /**
