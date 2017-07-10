@@ -3106,8 +3106,14 @@ var nts;
                                 position: {
                                     my: "center",
                                     at: "center",
-                                    of: "body",
+                                    of: window,
                                     collision: "none"
+                                },
+                                open: function () {
+                                    if ($(this).parent().height() >= $(window).height()) {
+                                        $(this).dialog("option", "position", { my: "center top", at: "center top", of: window, collision: "none" });
+                                        $(this).parent().css("position", "absolute");
+                                    }
                                 },
                                 beforeClose: function () {
                                     //return dialogWindow.__viewContext.dialog.beforeClose();
