@@ -43,7 +43,7 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 				 kbpmtBPTimesheet.roundingAtr = new BigDecimal(c.getRoundingAtr().value);
 				 kbpmtBPTimesheet.roundingTimeAtr= new BigDecimal(c.getRoundingTimeAtr().value);
 				 kbpmtBPTimesheet.startTime = new BigDecimal(c.getStartTime().minute());
-				 kbpmtBPTimesheet.timeItemId= c.getTimeItemId().v();
+				 kbpmtBPTimesheet.timeItemId= c.getTimeItemId();
 				 kbpmtBPTimesheet.useAtr= new BigDecimal(c.getUseAtr().value);
 				 this.commandProxy().update(kbpmtBPTimesheet);
 			}

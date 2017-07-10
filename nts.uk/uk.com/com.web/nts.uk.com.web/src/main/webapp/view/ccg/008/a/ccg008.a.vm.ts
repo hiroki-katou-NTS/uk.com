@@ -8,7 +8,7 @@
         visibleMyPage: KnockoutObservable<boolean>;
         dataSource: KnockoutObservable<model.LayoutAllDto>;
         displayButton: boolean;
-        topPageCode: KnockoutObservable<string>;
+        topPageCode: KnockoutObservable<string>; 
         constructor() {
             var self = this;
             self.topPageCode = ko.observable('');
@@ -36,9 +36,10 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var code = '1';
+            var transferData = __viewContext.transferred.value;
+            var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
             self.topPageCode(code);
-                  service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
+            service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
                 console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
@@ -165,10 +166,10 @@
                 this.isExternalUrl = (nts.uk.util.isNullOrEmpty(url)) ? false : true;
                 this.placementID = placementID;
                 this.name = (this.isExternalUrl) ? "外部URL" : name;
-                this.row = ntsNumber.getDecimal(row, 0);
-                this.column = ntsNumber.getDecimal(column, 0);
-                this.width = ntsNumber.getDecimal(width, 0);
-                this.height = ntsNumber.getDecimal(height, 0);
+                this.row = nts.uk.ntsNumber.getDecimal(row, 0);
+                this.column = nts.uk.ntsNumber.getDecimal(column, 0);
+                this.width = nts.uk.ntsNumber.getDecimal(width, 0);
+                this.height = nts.uk.ntsNumber.getDecimal(height, 0);
                 this.url = url;
                 this.topPagePartID = topPagePartID;
                 this.partType = partType;
