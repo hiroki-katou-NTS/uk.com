@@ -12,9 +12,11 @@ module nts.uk.com.view.ccg.share.ccg {
 
 
     export module viewmodel {
+        
         /**
         * Screen Model.
         */
+        
         export class ListGroupScreenModel {
             isMultiple: boolean;
             isQuickSearchTab: boolean;
@@ -111,9 +113,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 return selectedTab;
             }
+            
             /**
              * Init component.
              */
+            
             public init($input: JQuery, data: GroupOption): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
