@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk008.k {
             newMode: KnockoutObservable<boolean>;
             isYearMonth: boolean;
             employeeId: string;
+            employeeCode : string;
             employeeName: string;
             yearLabel: string;
             yearErrorTimeLabel: string;
@@ -27,13 +28,14 @@ module nts.uk.at.view.kmk008.k {
 
             constructor() {
                 let self = this,
-                    dto: IData = nts.uk.ui.windows.getShared("KMK_008_PARAMS") || { employeeId: '', employeeName: '', isYearMonth: false };
+                    dto: IData = nts.uk.ui.windows.getShared("KMK_008_PARAMS") || {employeeCode: '', employeeId: '', employeeName: '', isYearMonth: false };
 
                 self.newMode = ko.observable(false);
                 self.deleteEnable = ko.observable(false);
 
                 self.isYearMonth = dto.isYearMonth;
                 self.employeeId = dto.employeeId;
+                self.employeeCode = dto.employeeCode;
                 self.employeeName = dto.employeeName;
                 self.isUpdate = true;
 
@@ -43,12 +45,12 @@ module nts.uk.at.view.kmk008.k {
                 self.yearErrorTimeLabel = nts.uk.resource.getText("KMK008_19");
                 self.yearAlarmTimeLabel = nts.uk.resource.getText("KMK008_20");
                 if (self.isYearMonth) {
-                    self.yearLabel = nts.uk.resource.getText("KMK008_29");
+                    self.yearLabel = nts.uk.resource.getText("KMK008_30");
                     self.inputFormatYearOrYearMonth = "YYYY/MM";
                     self.constraintErrorTime = "ErrorOneMonth";
                     self.constraintAlarmTime = "AlarmOneMonth";
                 } else {
-                    self.yearLabel = nts.uk.resource.getText("KMK008_30");
+                    self.yearLabel = nts.uk.resource.getText("KMK008_29");
                     self.inputFormatYearOrYearMonth = "YYYY";
                     self.constraintErrorTime = "ErrorOneYear";
                     self.constraintAlarmTime = "AlarmOneYear";
@@ -267,9 +269,9 @@ module nts.uk.at.view.kmk008.k {
 
     export class SettingModel {
         employeeId: KnockoutObservable<string> = ko.observable("");
-        yearOrYearMonthValue: KnockoutObservable<number> = ko.observable(0);
-        errorOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(0);
-        alarmOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(0);
+        yearOrYearMonthValue: KnockoutObservable<number> = ko.observable(null);
+        errorOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(null);
+        alarmOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(null);
         constructor(data: ShowListModel, employeeId: string) {
             this.employeeId(employeeId);
             if (!data) return;
@@ -326,6 +328,7 @@ module nts.uk.at.view.kmk008.k {
 
     interface IData {
         employeeId?: string;
+        employeeCode : string;
         employeeName: string;
         isYearMonth: boolean;
     }
