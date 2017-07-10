@@ -305,6 +305,7 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
+                dfd.resolve();
             });
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
