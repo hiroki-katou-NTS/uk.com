@@ -23,10 +23,13 @@ import nts.uk.ctx.at.shared.app.find.bonuspay.BPSettingFinder;
 public class BonusPaySettingWebService extends WebService {
 	@Inject
 	private BPSettingFinder bpSettingFinder;
+
 	@Inject
 	private BPSettingAddCommandHandler bpSettingAddCommandHandler;
+
 	@Inject
 	private BPSettingDeleteCommandHandler bpSettingDeleteCommandHandler;
+
 	@Inject
 	private BPSettingUpdateCommandHandler bpSettingUpdateCommandHandler;
 
@@ -35,9 +38,10 @@ public class BonusPaySettingWebService extends WebService {
 	public List<BPSettingDto> getAllBonusPaySetting() {
 		return this.bpSettingFinder.getAllBonusPaySetting();
 	}
+
 	@POST
 	@Path("getBonusPaySetting/{bonusPaySettingCode}")
-	public BPSettingDto getBonusPaySetting(@PathParam("bonusPaySettingCode")  String bonusPaySettingCode){
+	public BPSettingDto getBonusPaySetting(@PathParam("bonusPaySettingCode") String bonusPaySettingCode) {
 		return this.bpSettingFinder.getBonusPaySetting(bonusPaySettingCode);
 	}
 
@@ -52,6 +56,7 @@ public class BonusPaySettingWebService extends WebService {
 	public void updateBonusPaySetting(BPSettingUpdateCommand bpSettingUpdateCommand) {
 		this.bpSettingUpdateCommandHandler.handle(bpSettingUpdateCommand);
 	}
+
 	@POST
 	@Path("removeBonusPaySetting")
 	public void removeBonusPaySetting(BPSettingDeleteCommand bpSettingDeleteCommand) {

@@ -4,14 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * The Class UsageUnitSetting.
  */
 // 労働時間と日数の設定の利用単位の設定
-public class UsageUnitSetting extends DomainObject {
+public class UsageUnitSetting extends AggregateRoot {
 	
 	/** The company id. */
 	///** 会社ID. */

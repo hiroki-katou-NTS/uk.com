@@ -75,8 +75,8 @@ module kcp005.a.viewmodel {
 
             self.alreadySettingList = ko.observableArray([{ code: '1', isAlreadySetting: true }, { code: '2', isAlreadySetting: true }]);
             self.employeeList = ko.observableArray<UnitModel>([
-                { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
-                { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
+                { code: '1', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd', workplaceName: 'HN' },
+                { code: '2', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl', workplaceName: 'HN' },
                 { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
                 { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
             ]);
@@ -115,7 +115,8 @@ module kcp005.a.viewmodel {
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                isShowSelectAllButton: self.isShowSelectAllButton()
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                maxRows: 12
             };
 
             self.selectionTypeList = ko.observableArray([

@@ -16,12 +16,12 @@ public class TopPageSetting extends AggregateRoot {
 
 	private String companyId;
 
-	private CatelogySetting ctgSet;
+	private CategorySetting categorySet;
 
-	public TopPageSetting(String companyId, CatelogySetting ctgSet) {
+	public TopPageSetting(String companyId, CategorySetting categorySet) {
 		super();
 		this.companyId = companyId;
-		this.ctgSet = ctgSet;
+		this.categorySet = categorySet;
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class TopPageSetting extends AggregateRoot {
 	 * @param ctgSet
 	 * @return
 	 */
-	public static TopPageSetting createFromJavaType(String companyId, int ctgSet) {
-		return new TopPageSetting(companyId, EnumAdaptor.valueOf(ctgSet, CatelogySetting.class));
+	public static TopPageSetting createFromJavaType(String companyId, int categorySet) {
+		return new TopPageSetting(companyId, EnumAdaptor.valueOf(categorySet, CategorySetting.class));
 	}
 }

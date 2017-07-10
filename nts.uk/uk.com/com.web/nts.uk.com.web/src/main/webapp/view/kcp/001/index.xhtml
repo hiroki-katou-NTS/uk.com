@@ -19,6 +19,13 @@
 			<div id="contents-area">
 			<div id="side-menu" class="cf"></div>
 				<div id="content">
+					<div class="cf">
+						<note class="pull-left" style="width:500px;">
+						<b>Update 2017/07/10</b>
+						<br />
+						- Add attributed maxRows.<br />
+						</note>
+					</div>
 					<div id="function-area" style="margin: 40px; margin-bottom: 10px">
 						<h1>KCP001-雇用リスト</h1>
 						<h2>(Employment List)</h2>
@@ -159,7 +166,8 @@
 														selectedCode: self.selectedCode,
 														isDialog: self.isDialog(),
 														isShowNoSelectRow: self.isShowNoSelectRow(),
-														alreadySettingList: self.alreadySettingList
+														alreadySettingList: self.alreadySettingList,
+														maxRows: 12
 													};
 												}
 												self.employmentList = ko.observableArray<UnitModel>([]);
@@ -290,6 +298,15 @@
     code: string;
     isAlreadySetting: boolean;
 }]]></pre>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<lable>maxRows</lable> <br/>
+											</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<b>Default:</b><i> 12</i><br/>
 											</td>
 										</tr>
 									</table>

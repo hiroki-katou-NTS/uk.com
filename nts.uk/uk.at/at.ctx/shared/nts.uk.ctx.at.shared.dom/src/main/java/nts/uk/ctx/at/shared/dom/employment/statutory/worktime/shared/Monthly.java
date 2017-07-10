@@ -6,14 +6,14 @@ package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
 import java.time.Month;
 
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
 
 /**
  * The Class Monthly.
  */
-@Value
+@Getter
 public class Monthly extends DomainObject {
 
 	/** The time. */
@@ -21,4 +21,15 @@ public class Monthly extends DomainObject {
 
 	/** The month. */
 	private Month month;
+
+	/**
+	 * Instantiates a new monthly.
+	 *
+	 * @param time the time
+	 * @param month the month
+	 */
+	public Monthly(MonthlyTime time, Month month) {
+		this.time = time;
+		this.month = month;
+	}
 }
