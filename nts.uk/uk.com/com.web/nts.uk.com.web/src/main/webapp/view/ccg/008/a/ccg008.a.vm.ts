@@ -121,7 +121,12 @@
             let dialogTitle = nts.uk.resource.getText("CCG008_2");
             nts.uk.ui.windows.setShared('checkTopPage', self.dataSource().checkTopPage, true);
             nts.uk.ui.windows.setShared('checkMyPage', self.dataSource().checkMyPage, true);
-            var transferData: commonModel.TransferLayoutInfo = {parentCode: self.dataSource().myPage.employeeID, layoutID: self.dataSource().myPage.layoutID, pgType: 2};
+            if(self.dataSource().myPage==null){
+                var transferData: commonModel.TransferLayoutInfo = {parentCode: '', layoutID: '', pgType: 2};
+            }else{
+                var transferData: commonModel.TransferLayoutInfo = {parentCode: self.dataSource().myPage.employeeID, layoutID: self.dataSource().myPage.layoutID, pgType: 2};
+            }
+            
             nts.uk.ui.windows.setShared('CCG008_layout', transferData);
             nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", {title: dialogTitle});
         }

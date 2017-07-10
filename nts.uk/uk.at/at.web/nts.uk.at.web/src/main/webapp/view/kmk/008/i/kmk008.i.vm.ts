@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk008.i {
                     if (data) {
                         self.operationSetting(new OperationSettingModel(data));
                     }
-                dfd.resolve();
+                    dfd.resolve();
                 })
                 return dfd.promise();
             }
@@ -54,6 +54,10 @@ module nts.uk.at.view.kmk008.i {
                         new service.Service().insertData(new OperationSettingModelUpdate(self.operationSetting()));
                     }
                 });
+            }
+
+            closeDialog(): void {
+                nts.uk.ui.windows.close();
             }
         }
 

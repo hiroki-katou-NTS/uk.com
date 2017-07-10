@@ -141,7 +141,7 @@ module nts.uk.pr.view.kmf001.d {
             // Bind EmploymentSetting Data
             private bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
                 var self = this;
-                self.clearErrors();
+                self.clearEmptErrors();
                 if (data == undefined) {
                     self.yearsAmountByEmp(null);
                     self.maxDaysCumulationByEmp(null);
@@ -255,6 +255,7 @@ module nts.uk.pr.view.kmf001.d {
                     });
             }
             
+            // Clear Errors Company Tab
             private clearErrors(): void {
                 var self = this;
                 // Clear errors
@@ -262,9 +263,9 @@ module nts.uk.pr.view.kmf001.d {
                 $('#max-days-company').ntsError('clear');
             }
             
+            // Clear Errors Employment Tab
             private clearEmptErrors(): void {
                 var self = this;
-                // Clear errors
                 $('#year-amount-emp').ntsError('clear');
                 $('#max-days-emp').ntsError('clear');
             }

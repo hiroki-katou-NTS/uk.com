@@ -1,12 +1,14 @@
 module ccg018.a1.viewmodel {
+    import blockUI = nts.uk.ui.block;
+
     export class ScreenModel {
         date: KnockoutObservable<string>;
         items: KnockoutObservableArray<TopPageJobSet> = ko.observableArray([]);
         isVisible: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<number>;
         listJobTitle: KnockoutObservableArray<any>;
-        comboItemsAfterLogin: KnockoutObservableArray<ItemModel>;
-        comboItemsAsTopPage: KnockoutObservableArray<ItemModel>;
+        comboItemsAfterLogin: KnockoutObservableArray<ComboBox>;
+        comboItemsAsTopPage: KnockoutObservableArray<ComboBox>;
         //appear/disappear header of scroll on UI
         isHeaderScroll: KnockoutObservable<boolean>;
 
@@ -175,6 +177,7 @@ module ccg018.a1.viewmodel {
          */
         searchByDate(): any {
             let self = this;
+            blockUI.invisible();
             self.items([]);
             ccg018.a1.service.findDataOfJobTitle(self.date())
                 .done(function(data) {
@@ -186,15 +189,20 @@ module ccg018.a1.viewmodel {
                         });
                         self.findDataOfTopPageJobSet(listJobId);
                     }
-                }).fail();
+                }).fail().always(function() {
+                    blockUI.clear();
+                });
+
         }
 
 
         /**
          * Update/insert data in TOPPAGE_JOB_SET
          */
-        update(): void {
+        update(): JQueryPromise<any> {
             let self = this;
+            let dfd = $.Deferred();
+            blockUI.invisible();
             let command = {
                 listTopPageJobSet: ko.mapping.toJS(self.items()),
                 ctgSet: self.categorySet()
@@ -203,7 +211,10 @@ module ccg018.a1.viewmodel {
                 .done(function() {
                     self.searchByDate();
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
-                }).fail();
+                }).fail().always(function() {
+                    blockUI.clear();
+                });
+            return dfd.promise();
         }
 
         /**
@@ -211,6 +222,7 @@ module ccg018.a1.viewmodel {
          */
         openDialogC(): void {
             let self = this;
+            blockUI.invisible();
             // the default value of categorySet = undefined
             nts.uk.ui.windows.setShared('categorySet', self.categorySet());
             nts.uk.ui.windows.sub.modal("/view/ccg/018/c/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
@@ -220,6 +232,7 @@ module ccg018.a1.viewmodel {
                     }
                 }
             });
+            blockUI.clear();
         }
 
         /**
