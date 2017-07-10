@@ -13173,6 +13173,7 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var fileName = data.filename;
+                        var isLink = data.aslink;
                         var suportedExtension = ko.unwrap(data.accept);
                         var textId = ko.unwrap(data.text);
                         var control = $(element);
@@ -13188,7 +13189,22 @@ var nts;
                             browserButtonText = "ファイルアップロード";
                         }
                         fileBrowserButton.text(browserButtonText);
-                        var fileNameLable = $("<span class='filename' style='margin-left: 5px;'></span> ");
+                        var fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
+                        var displayAsLink = false;
+                        if (isLink != undefined) {
+                            if (typeof isLink == 'function') {
+                                displayAsLink = isLink();
+                            }
+                            else {
+                                displayAsLink = isLink;
+                            }
+                        }
+                        if (displayAsLink) {
+                            fileNameLable.addClass("filename");
+                        }
+                        else {
+                            fileNameLable.addClass("standard-file-name");
+                        }
                         var fileInput = $("<input style ='display:none;' type='file' class='fileinput'/>");
                         if (suportedExtension) {
                             fileInput.attr("accept", suportedExtension.toString());
@@ -13206,9 +13222,7 @@ var nts;
                             if (fileName != undefined) {
                                 data.filename(getSelectedFileName);
                             }
-                            else {
-                                fileNameLable.text(getSelectedFileName);
-                            }
+                            fileNameLable.text(getSelectedFileName);
                             if (typeof onchange == 'function') {
                                 onchange($(this).val());
                             }
@@ -13229,7 +13243,7 @@ var nts;
                         var data = valueAccessor();
                         var fileName = ko.unwrap(data.filename);
                         var control = $(element);
-                        var fileNameLable = control.parent().find(".filename");
+                        var fileNameLable = control.parent().find(".filenamelabel");
                         fileNameLable.text(fileName);
                     };
                     return NtsFileUploadBindingHandler;
