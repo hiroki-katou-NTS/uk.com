@@ -4929,6 +4929,7 @@ var nts;
                         validation.scanValidators($(self), options.columns);
                         // Cell color
                         var cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
+                        $(this).addClass('compact-grid');
                         var columnControlTypes = {};
                         var columnSpecialTypes = {};
                         var formatColumn = function (column) {
@@ -4991,7 +4992,7 @@ var nts;
                                     enable: isEnable
                                 };
                                 var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
-                                var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", "35px"));
+                                var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", ntsControls.HEIGHT_CONTROL));
                                 var $_self = $self;
                                 setTimeout(function () {
                                     var $self = $_self;
@@ -5699,6 +5700,7 @@ var nts;
                         ntsControls.BUTTON = 'Button';
                         ntsControls.DELETE_BUTTON = 'DeleteButton';
                         ntsControls.TEXTBOX = 'TextBox';
+                        ntsControls.HEIGHT_CONTROL = "27px";
                         ntsControls.COMBO_CLASS = "nts-combo-container";
                         function getControl(name) {
                             switch (name) {
@@ -5724,7 +5726,7 @@ var nts;
                                 var $self = this;
                                 var rowId = rowObj[$grid.igGrid("option", "primaryKey")];
                                 var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
-                                var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", "35px"));
+                                var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", ntsControls.HEIGHT_CONTROL));
                                 setTimeout(function () {
                                     var rId = rowObj[$grid.igGrid("option", "primaryKey")];
                                     var $gridCell = $grid.igGrid("cellById", rId, column.key);

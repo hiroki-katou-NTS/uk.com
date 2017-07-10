@@ -2225,6 +2225,11 @@ button.nts-switch-button[disabled]:hover {
   border-color: #0096f2;
 }
 
+/* line 27, ../sass/components/_combobox.scss */
+.compact-grid .ui-igcombo-wrapper {
+  height: 27px;
+}
+
 /* line 2, ../sass/components/_dialog.scss */
 .nts-fileupload-container .filename {
   cursor: pointer;
@@ -3321,6 +3326,11 @@ button.search-btn {
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ui-state-hover,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
   background-color: #007fff;
+}
+
+/* line 127, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper table tr td .nts-grid.control {
+  height: 35px;
 }
 
 /*****************************
