@@ -1116,6 +1116,24 @@ button.auto-height {
   height: auto;
 }
 
+/* line 226, ../sass/components/_button.scss */
+#functions-area,
+#functions-area-bottom {
+  font-size: 0;
+}
+/* line 229, ../sass/components/_button.scss */
+#functions-area button,
+#functions-area-bottom button {
+  margin-left: 15px;
+  min-width: 65px;
+}
+/* line 233, ../sass/components/_button.scss */
+#functions-area button.danger,
+#functions-area-bottom button.danger {
+  margin-left: 45px;
+  margin-right: 30px;
+}
+
 /*****************************
   Caret
 *****************************/
