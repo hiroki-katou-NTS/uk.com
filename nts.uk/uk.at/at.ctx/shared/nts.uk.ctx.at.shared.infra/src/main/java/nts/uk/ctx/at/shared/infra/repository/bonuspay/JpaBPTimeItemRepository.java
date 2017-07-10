@@ -41,9 +41,17 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 
 	@Override
 	public void updateListBonusPayTimeItem(List<BonusPayTimeItem> lstTimeItem) {
-		List<KbpstBonusPayTimeItem> lstKbpstBonusPayTimeItem = lstTimeItem.stream()
-				.map(c -> toBonusPayTimeItemEntity(c)).collect(Collectors.toList());
-		this.commandProxy().updateAll(lstKbpstBonusPayTimeItem);
+		lstTimeItem.forEach(c->{
+			Optional<KbpstBonusPayTimeItem> kbpstBonusPayTimeItemOptional  = this.queryProxy().find(new KbpstBonusPayTimeItemPK(c.getCompanyId().toString(), c.getTimeItemId()), KbpstBonusPayTimeItem.class);
+			if(kbpstBonusPayTimeItemOptional.isPresent()){
+				KbpstBonusPayTimeItem kbpstBonusPayTimeItem = kbpstBonusPayTimeItemOptional.get();
+				kbpstBonusPayTimeItem.timeItemName=c.getTimeItemName().v();
+				kbpstBonusPayTimeItem.timeItemNo= new BigDecimal(c.getId());
+				kbpstBonusPayTimeItem.timeItemTypeAtr= new BigDecimal(c.getTimeItemTypeAtr().value);
+				kbpstBonusPayTimeItem.useAtr= new BigDecimal(c.getUseAtr().value);
+				this.commandProxy().update(kbpstBonusPayTimeItem);
+			}
+		});
 		
 	}
 

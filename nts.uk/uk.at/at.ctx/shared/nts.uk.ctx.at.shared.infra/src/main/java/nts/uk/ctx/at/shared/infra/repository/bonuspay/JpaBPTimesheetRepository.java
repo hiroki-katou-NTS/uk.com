@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBPTimesheetPK;
 
 @Stateless
 public class JpaBPTimesheetRepository extends JpaRepository implements BPTimesheetRepository {
-	private final String SELECT_BY_COMPANYID_AND_BPCODE = "SELECT c FROM KbpmtBPTimesheet c WHERE c.kbpmtBPTimesheetPK.companyId = :companyId AND c.kbpstSpecBPTimesheetPK.bonusPaySettingCode = :bonusPaySettingCode  ORDER BY c.kbpstSpecBPTimesheetPK.timeSheetNO";
+	private final String SELECT_BY_COMPANYID_AND_BPCODE = "SELECT c FROM KbpmtBPTimesheet c WHERE c.kbpmtBPTimesheetPK.companyId = :companyId AND c.kbpmtBPTimesheetPK.bonusPaySettingCode = :bonusPaySettingCode  ORDER BY c.kbpmtBPTimesheetPK.timeSheetNO";
 
 	@Override
 	public List<BonusPayTimesheet> getListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode) {
@@ -34,18 +35,31 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 	@Override
 	public void updateListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<BonusPayTimesheet> lstTimesheet) {
-		List<KbpmtBPTimesheet> lstKbpmtBPTimesheet = lstTimesheet.stream()
-				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
-		this.commandProxy().updateAll(lstKbpmtBPTimesheet);
-
+		lstTimesheet.forEach(c->{
+	 Optional<KbpmtBPTimesheet> kbpmtBPTimesheetOptional = this.queryProxy().find(new KbpmtBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()), KbpmtBPTimesheet.class);
+			if(kbpmtBPTimesheetOptional.isPresent()){
+				 KbpmtBPTimesheet kbpmtBPTimesheet = kbpmtBPTimesheetOptional.get();
+				 kbpmtBPTimesheet.endTime = new BigDecimal(c.getEndTime().minute());
+				 kbpmtBPTimesheet.roundingAtr = new BigDecimal(c.getRoundingAtr().value);
+				 kbpmtBPTimesheet.roundingTimeAtr= new BigDecimal(c.getRoundingTimeAtr().value);
+				 kbpmtBPTimesheet.startTime = new BigDecimal(c.getStartTime().minute());
+				 kbpmtBPTimesheet.timeItemId= c.getTimeItemId();
+				 kbpmtBPTimesheet.useAtr= new BigDecimal(c.getUseAtr().value);
+				 this.commandProxy().update(kbpmtBPTimesheet);
+			}
+	
+		});
 	}
 
 	@Override
 	public void removeListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<BonusPayTimesheet> lstTimesheet) {
-		List<KbpmtBPTimesheet> lstKbpmtBPTimesheet = lstTimesheet.stream()
-				.map(c -> toBonusPayTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
-		this.commandProxy().removeAll(lstKbpmtBPTimesheet);
+		lstTimesheet.forEach(c->{
+			Optional<KbpmtBPTimesheet> kbpmtBPTimesheet = this.queryProxy().find(new KbpmtBPTimesheetPK(companyId, c.getTimeSheetId(), bonusPaySettingCode.v()), KbpmtBPTimesheet.class);
+			if(kbpmtBPTimesheet.isPresent()){
+				this.commandProxy().remove(kbpmtBPTimesheet);
+			}
+		});
 	}
 
 	private KbpmtBPTimesheet toBonusPayTimesheetEntity(String companyId, String bonusPaySettingCode,

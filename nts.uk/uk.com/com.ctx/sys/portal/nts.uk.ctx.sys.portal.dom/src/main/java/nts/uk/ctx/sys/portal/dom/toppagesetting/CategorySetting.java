@@ -5,7 +5,7 @@ package nts.uk.ctx.sys.portal.dom.toppagesetting;
  * @author sonnh1
  *
  */
-public enum CatelogySetting {
+public enum CategorySetting {
 	/**
 	 * 0 - 分けない
 	 */
@@ -17,7 +17,7 @@ public enum CatelogySetting {
 
 	public final int value;
 
-	CatelogySetting(int type) {
+	CategorySetting(int type) {
 		this.value = type;
 	}
 }

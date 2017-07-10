@@ -41,8 +41,9 @@ public class DeformationLaborSettingDto {
 	 * @return the deformation labor setting
 	 */
 	public static DeformationLaborSetting toDomain(DeformationLaborSettingDto dto) {
-		DeformationLaborSetting domain = new DeformationLaborSetting(
-				WorkingTimeSettingDto.toDomain(dto.getStatutorySetting()), WeekStart.valueOf(dto.getWeekStart()));
+		DeformationLaborSetting domain = new DeformationLaborSetting();
+		domain.setStatutorySetting(WorkingTimeSettingDto.toDomain(dto.getStatutorySetting()));
+		domain.setWeekStart(WeekStart.valueOf(dto.getWeekStart()));
 		return domain;
 	}
 }

@@ -48,8 +48,6 @@ module nts.uk.at.view.kmk008.f {
                     if (empSelect) { self.currentClassificationName(empSelect.name); }
 
                 });
-
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
@@ -71,7 +69,7 @@ module nts.uk.at.view.kmk008.f {
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.classificationCodes.length > 0) {
-                        self.alreadySettingList(_.map(data.classificationCodes, item => { return { code: item, isAlreadySetting: true } }));
+                        self.alreadySettingList(_.map(data.classificationCodes, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
                     }
                 })
             }
@@ -84,7 +82,8 @@ module nts.uk.at.view.kmk008.f {
                 if (indexCodealreadySetting != -1) {
                     new service.Service().updateAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
                         if (listError.length > 0) {
-                            alert("Error");
+                            let errorCode = _.split(listError[0], ',');
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
                         self.getDetail(self.selectedCode());
@@ -93,7 +92,8 @@ module nts.uk.at.view.kmk008.f {
                 }
                 new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
                     if (listError.length > 0) {
-                        alert("Error");
+                        let errorCode = _.split(listError[0], ',');
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
                     self.getalreadySettingList();
@@ -103,11 +103,15 @@ module nts.uk.at.view.kmk008.f {
 
             removeDataClassification() {
                 let self = this;
-                let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
-                new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                    self.getalreadySettingList();
-                    self.setSelectCodeAfterRemove(self.selectedCode());
-                });
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
+                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+                            self.getalreadySettingList();
+                            self.setSelectCodeAfterRemove(self.selectedCode());
+                        });
+                    });
+
             }
 
             getDetail(classificationCode: string) {
@@ -231,27 +235,27 @@ module nts.uk.at.view.kmk008.f {
                 self.laborSystemAtr = laborSystemAtr;
                 self.classificationCode = classificationCode;
                 if (!data) return;
-                self.alarmWeek = data.alarmWeek() || 0;
-                self.errorWeek = data.errorWeek() || 0;
-                self.limitWeek = data.limitWeek() || 0;
-                self.alarmTwoWeeks = data.alarmTwoWeeks() || 0;
-                self.errorTwoWeeks = data.errorTwoWeeks() || 0;
-                self.limitTwoWeeks = data.limitTwoWeeks() || 0;
-                self.alarmFourWeeks = data.alarmFourWeeks() || 0;
-                self.errorFourWeeks = data.errorFourWeeks() || 0;
-                self.limitFourWeeks = data.limitFourWeeks() || 0;
-                self.alarmOneMonth = data.alarmOneMonth() || 0;
-                self.errorOneMonth = data.errorOneMonth() || 0;
-                self.limitOneMonth = data.limitOneMonth() || 0;
-                self.alarmTwoMonths = data.alarmTwoMonths() || 0;
-                self.errorTwoMonths = data.errorTwoMonths() || 0;
-                self.limitTwoMonths = data.limitTwoMonths() || 0;
-                self.alarmThreeMonths = data.alarmThreeMonths() || 0;
-                self.errorThreeMonths = data.errorThreeMonths() || 0;
-                self.limitThreeMonths = data.limitThreeMonths() || 0;
-                self.alarmOneYear = data.alarmOneYear() || 0;
-                self.errorOneYear = data.errorOneYear() || 0;
-                self.limitOneYear = data.limitOneYear() || 0;
+                self.alarmWeek = +data.alarmWeek() || 0;
+                self.errorWeek = +data.errorWeek() || 0;
+                self.limitWeek = +data.limitWeek() || 0;
+                self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
+                self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
+                self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
+                self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
+                self.errorFourWeeks = +data.errorFourWeeks() || 0;
+                self.limitFourWeeks = +data.limitFourWeeks() || 0;
+                self.alarmOneMonth = +data.alarmOneMonth() || 0;
+                self.errorOneMonth = +data.errorOneMonth() || 0;
+                self.limitOneMonth = +data.limitOneMonth() || 0;
+                self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
+                self.errorTwoMonths = +data.errorTwoMonths() || 0;
+                self.limitTwoMonths = +data.limitTwoMonths() || 0;
+                self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
+                self.errorThreeMonths = +data.errorThreeMonths() || 0;
+                self.limitThreeMonths = +data.limitThreeMonths() || 0;
+                self.alarmOneYear = +data.alarmOneYear() || 0;
+                self.errorOneYear = +data.errorOneYear() || 0;
+                self.limitOneYear = +data.limitOneYear() || 0;
             }
         }
 
@@ -273,9 +277,13 @@ module nts.uk.at.view.kmk008.f {
         }
 
 
-        export interface UnitAlreadySettingModel {
+        export class UnitAlreadySettingModel {
             code: string;
             isAlreadySetting: boolean;
+            constructor(code: string, isAlreadySetting: boolean) {
+                this.code = code;
+                this.isAlreadySetting = isAlreadySetting;
+            }
         }
     }
 }

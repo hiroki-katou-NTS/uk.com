@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.standardtime.workplace;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,45 +15,45 @@ public class UpdateAgreementTimeOfWorkPlaceCommand {
 
 	private int laborSystemAtr;
 
-	private BigDecimal alarmWeek;
+	private Long alarmWeek;
 
-	private BigDecimal errorWeek;
+	private Long errorWeek;
 
-	private BigDecimal limitWeek;
+	private Long limitWeek;
 
-	private BigDecimal alarmTwoWeeks;
+	private Long alarmTwoWeeks;
 
-	private BigDecimal errorTwoWeeks;
+	private Long errorTwoWeeks;
 
-	private BigDecimal limitTwoWeeks;
+	private Long limitTwoWeeks;
 
-	private BigDecimal alarmFourWeeks;
+	private Long alarmFourWeeks;
 
-	private BigDecimal errorFourWeeks;
+	private Long errorFourWeeks;
 
-	private BigDecimal limitFourWeeks;
+	private Long limitFourWeeks;
 
-	private BigDecimal alarmOneMonth;
+	private Long alarmOneMonth;
 
-	private BigDecimal errorOneMonth;
+	private Long errorOneMonth;
 
-	private BigDecimal limitOneMonth;
+	private Long limitOneMonth;
 
-	private BigDecimal alarmTwoMonths;
+	private Long alarmTwoMonths;
 
-	private BigDecimal errorTwoMonths;
+	private Long errorTwoMonths;
 
-	private BigDecimal limitTwoMonths;
+	private Long limitTwoMonths;
 
-	private BigDecimal alarmThreeMonths;
+	private Long alarmThreeMonths;
 
-	private BigDecimal errorThreeMonths;
+	private Long errorThreeMonths;
 
-	private BigDecimal limitThreeMonths;
+	private Long limitThreeMonths;
 
-	private BigDecimal alarmOneYear;
+	private Long alarmOneYear;
 
-	private BigDecimal errorOneYear;
+	private Long errorOneYear;
 
-	private BigDecimal limitOneYear;
+	private Long limitOneYear;
 }

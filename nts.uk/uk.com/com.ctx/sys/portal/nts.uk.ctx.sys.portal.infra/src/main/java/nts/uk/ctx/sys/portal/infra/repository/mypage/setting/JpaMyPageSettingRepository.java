@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
@@ -107,10 +108,22 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 * @return the ccgmt my page set
 	 */
 	private CcgmtMyPageSet myPageSetToEntity(MyPageSetting domain) {
-		CcgmtMyPageSet entity = new CcgmtMyPageSet(domain.getCompanyId(), domain.getUseMyPage().value,
-				domain.getUseWidget().value, domain.getUseDashboard().value, domain.getUseFlowMenu().value,
-				domain.getExternalUrlPermission().value);
-		return entity;
+		// Find Entity
+		CcgmtMyPageSet entity = this.queryProxy().query(GET_ONE_MPS, CcgmtMyPageSet.class)
+				.setParameter("companyId", domain.getCompanyId()).getSingleOrNull();
+		if (entity != null) {
+			entity.setUseMyPageAtr(domain.getUseMyPage().value);
+			entity.setUseWidgetAtr(domain.getUseWidget().value);
+			entity.setUseDashBoardAtr(domain.getUseDashboard().value);
+			entity.setUseFolowMenuAtr(domain.getUseFlowMenu().value);
+			entity.setExternalUrlPermissionAtr(domain.getExternalUrlPermission().value);
+			return entity;
+		} else {
+			CcgmtMyPageSet newEntity = new CcgmtMyPageSet(domain.getCompanyId(), domain.getUseMyPage().value,
+					domain.getUseWidget().value, domain.getUseDashboard().value, domain.getUseFlowMenu().value,
+					domain.getExternalUrlPermission().value);
+			return newEntity;
+		}
 	}
 
 	/**
@@ -121,9 +134,18 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 */
 	private List<CcgmtPartItemSet> partItemSetToEntity(List<TopPagePartUseSetting> lstTopPagePartUseSetting) {
 		List<CcgmtPartItemSet> lstEntity = lstTopPagePartUseSetting.stream().map(item -> {
-			CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(item.getCompanyId(), item.getTopPagePartId());
-			CcgmtPartItemSet entity = new CcgmtPartItemSet(key,item.getUseDivision().value);
-			return entity;
+			// find entity
+			CcgmtPartItemSet entity = this.queryProxy().query(GET_ONE_PIS_BY_TPP_ID, CcgmtPartItemSet.class)
+					.setParameter("companyId", item.getCompanyId())
+					.setParameter("topPagePartId", item.getTopPagePartId()).getSingleOrNull();
+			if (entity != null) {
+				entity.setUseAtr(item.getUseDivision().value);
+				return entity;
+			} else {
+				CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(item.getCompanyId(), item.getTopPagePartId());
+				CcgmtPartItemSet newEntity = new CcgmtPartItemSet(key, item.getUseDivision().value);
+				return newEntity;
+			}
 		}).collect(Collectors.toList());
 		return lstEntity;
 	}
@@ -152,5 +174,34 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 				.query(GET_ONE_PIS, CcgmtPartItemSet.class).setParameter("companyId", companyId)
 				.getList(p -> pusToDomain(p));
 		return lstTopPagePartUseSetting;
+	}
+
+	/**
+	 * hoatt
+	 * find my page setting
+	 * @param companyId
+	 * @return
+	 */
+	@Override
+	public Optional<MyPageSetting> findMyPageSet(String companyId) {
+		
+		return this.queryProxy().find(companyId, CcgmtMyPageSet.class).map(c->toDomainMyPageSet(c));
+	}
+	/**
+	 * hoatt
+	 * convert entity CcgmtMyPageSet to domain MyPageSetting
+	 * @param entity
+	 * @return
+	 */
+	private MyPageSetting toDomainMyPageSet(CcgmtMyPageSet entity) {
+		 List<TopPagePartUseSetting> lstTopPart = null;
+		val domain = MyPageSetting.createFromJavaType(entity.getCid(),
+				Integer.valueOf(entity.getUseMyPageAtr()),
+				Integer.valueOf(entity.getUseWidgetAtr()),
+				Integer.valueOf(entity.getUseDashBoardAtr()),
+				Integer.valueOf(entity.getUseFolowMenuAtr()),
+				Integer.valueOf(entity.getExternalUrlPermissionAtr()),
+						lstTopPart);
+		return domain;
 	}
 }

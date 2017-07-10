@@ -8,7 +8,7 @@
         visibleMyPage: KnockoutObservable<boolean>;
         dataSource: KnockoutObservable<model.LayoutAllDto>;
         displayButton: boolean;
-        topPageCode: KnockoutObservable<string>;
+        topPageCode: KnockoutObservable<string>; 
         constructor() {
             var self = this;
             self.topPageCode = ko.observable('');
@@ -36,7 +36,8 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var code = '1';
+            var transferData = __viewContext.transferred.value;
+            var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
             self.topPageCode(code);
             service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
                 console.log(data);
@@ -82,7 +83,7 @@
                 }
                 listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                 if (listPlacement !== undefined)
-                console.log(listPlacement);
+                    self.placements(listPlacement);
                 _.defer(() => { self.setupPositionAndSizeAll('toppage'); });
             }
         }
@@ -109,7 +110,6 @@
                 listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                 if (listPlacement !== undefined)
                 self.placements(listPlacement); 
-                console.log(listPlacement);
                     self.placements(listPlacement);
                 _.defer(() => { self.setupPositionAndSizeAll('mypage'); });
             }
@@ -128,14 +128,14 @@
         /** Setup position and size for all Placements */
         private setupPositionAndSizeAll(name: string): void {
             var self = this;
-            _.forEach(self.placements(), (placement) => {
-                self.setupPositionAndSize(name, placement);
+            _.forEach(self.placements(), (placement, index) => {
+                self.setupPositionAndSize(name, placement, index);
             });
         }
  
         /** Setup position and size for a Placement */
-        private setupPositionAndSize(name: string, placement: model.Placement): void {
-            var $placement = $("#" + name + "_" + placement.placementID);
+        private setupPositionAndSize(name: string, placement: model.Placement, index: number): void {
+            var $placement = $("#" + name + "_" + placement.placementID + "_" + index);
             $placement.css({
                 top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
                 left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
@@ -143,7 +143,7 @@
                 height: (placement.height * 150) + ((placement.height - 1) * 10)
             });
         }
-    }
+    }  
      export module model {
          /** Client Placement class */
         export class Placement {
@@ -166,10 +166,10 @@
                 this.isExternalUrl = (nts.uk.util.isNullOrEmpty(url)) ? false : true;
                 this.placementID = placementID;
                 this.name = (this.isExternalUrl) ? "外部URL" : name;
-                this.row = ntsNumber.getDecimal(row, 0);
-                this.column = ntsNumber.getDecimal(column, 0);
-                this.width = ntsNumber.getDecimal(width, 0);
-                this.height = ntsNumber.getDecimal(height, 0);
+                this.row = nts.uk.ntsNumber.getDecimal(row, 0);
+                this.column = nts.uk.ntsNumber.getDecimal(column, 0);
+                this.width = nts.uk.ntsNumber.getDecimal(width, 0);
+                this.height = nts.uk.ntsNumber.getDecimal(height, 0);
                 this.url = url;
                 this.topPagePartID = topPagePartID;
                 this.partType = partType;

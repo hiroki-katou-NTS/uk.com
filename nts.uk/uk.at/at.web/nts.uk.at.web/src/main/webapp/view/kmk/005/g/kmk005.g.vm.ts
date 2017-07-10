@@ -80,6 +80,7 @@ module nts.uk.at.view.kmk005 {
             saveData() {
                 let self = this, view = __viewContext.viewModel,
                     activeTab = _.find(self.tabs(), t => t.active());
+
                 switch (activeTab.id) {
                     case 'G':
                         if (typeof view.viewmodelG.saveData == 'function') {
@@ -93,7 +94,7 @@ module nts.uk.at.view.kmk005 {
                         break;
                     case 'I':
                         if (typeof view.viewmodelI.saveData == 'function') {
-                            view.viewmodelK.saveData();
+                            view.viewmodelI.saveData();
                         }
                         break;
                     case 'K':
@@ -120,7 +121,7 @@ module nts.uk.at.view.kmk005 {
                         break;
                     case 'I':
                         if (typeof view.viewmodelI.removeData == 'function') {
-                            view.viewmodelK.removeData();
+                            view.viewmodelI.removeData();
                         }
                         break;
                     case 'K':
@@ -173,7 +174,14 @@ module nts.uk.at.view.kmk005 {
                 service.getData().done(resp => {
                     if (resp) {
                         model.id(resp.bonusPaySettingCode);
-                        service.getName(resp.bonusPaySettingCode).done(x => model.name(x.name)).fail(x => alert(x));
+                        service.getName(resp.bonusPaySettingCode).done(x => {
+                            if (x) {
+                                model.name(x.name);
+                            } else {
+                                model.id('000');
+                                model.name(getText("KDL007_6"));
+                            }
+                        }).fail(x => alert(x));
                     } else {
                         model.id('000');
                         model.name(getText("KDL007_6"));

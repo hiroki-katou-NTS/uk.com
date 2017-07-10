@@ -47,7 +47,8 @@
 
 			<com:scriptfile path="../d/kmk008.d.vm.js" />
 			<com:scriptfile path="../d/kmk008.d.service.js" />
-
+			
+			<com:stylefile path="../e/kmk008.e.main.css" />
 			<com:scriptfile path="../e/kmk008.e.vm.js" />
 			<com:scriptfile path="../e/kmk008.e.service.js" />
 
@@ -58,10 +59,10 @@
 
 		<ui:define name="sidebar" tabindex="1">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator" class="active">#{i18n.getText('Com_Employment')}</a></li>
-				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
-				<li><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Class')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="click: tabpanel1Click">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="click: tabpanel2Click">#{i18n.getText('Com_Employment')}</a></li>
+				<li><a href="#tabpanel-3" role="tab-navigator" data-bind="click: tabpanel3Click">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#tabpanel-4" role="tab-navigator" data-bind="click: tabpanel4Click">#{i18n.getText('Com_Class')}</a></li>
 			</ul>
 		</ui:define>
 

@@ -12,7 +12,7 @@ public class Employee extends AggregateRoot {
 
 	private String pId;
 
-	private EmployeeId sId;
+	private String sId;
 
 	private EmployeeCode sCd;
 
@@ -26,7 +26,7 @@ public class Employee extends AggregateRoot {
 			GeneralDate retirementDate, GeneralDate joinDate) {
 		return new Employee(companyId, 
 				pId, 
-				new EmployeeId(sId), 
+				sId, 
 				new EmployeeCode(sCd), 
 				new EmployeeMail(sMail), 
 				retirementDate,

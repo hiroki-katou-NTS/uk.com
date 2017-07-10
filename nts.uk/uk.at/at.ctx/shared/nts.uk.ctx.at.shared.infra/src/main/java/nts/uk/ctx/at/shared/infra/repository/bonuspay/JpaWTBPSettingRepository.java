@@ -19,50 +19,58 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 	@Override
 	public List<WorkingTimesheetBonusPaySetting> getListSetting(String companyId) {
 		return this.queryProxy().query(SELECT_BY_COMPANYID, KbpstWTBonusPaySetting.class)
-				.setParameter("companyId", companyId).getList(x -> this.toWTBPSettingDomain(x));
+				.setParameter("companyId", companyId).getList(x -> this.toDomain(x));
 	}
 
 	@Override
-	public void addWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
-		this.commandProxy().insert(this.toWTBPSettingEntity(workingTimesheetBonusPaySetting));
+	public void addWTBPSetting(WorkingTimesheetBonusPaySetting domain) {
+		updateWTBPSetting(domain);
 	}
 
 	@Override
-	public void updateWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
-		this.commandProxy().update(this.toWTBPSettingEntity(workingTimesheetBonusPaySetting));
+	public void updateWTBPSetting(WorkingTimesheetBonusPaySetting domain) {
+		Optional<WorkingTimesheetBonusPaySetting> update = getWTBPSetting(domain.getCompanyId(),
+				domain.getWorkingTimesheetCode());
+
+		if (update.isPresent()) {
+			commandProxy().update(toEntity(domain));
+		} else {
+			commandProxy().insert(toEntity(domain));
+		}
 	}
 
 	@Override
-	public void removeWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
-		this.commandProxy().remove(this.toWTBPSettingEntity(workingTimesheetBonusPaySetting));
-	}
+	public void removeWTBPSetting(WorkingTimesheetBonusPaySetting domain) {
+		Optional<WorkingTimesheetBonusPaySetting> update = getWTBPSetting(domain.getCompanyId(),
+				domain.getWorkingTimesheetCode());
 
-	private KbpstWTBonusPaySetting toWTBPSettingEntity(
-			WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
-		return new KbpstWTBonusPaySetting(
-				new KbpstWTBonusPaySettingPK(workingTimesheetBonusPaySetting.getCompanyId().toString(),
-						workingTimesheetBonusPaySetting.getWorkingTimesheetCode().toString()),
-				workingTimesheetBonusPaySetting.getBonusPaySettingCode().toString());
-
-	}
-
-	private WorkingTimesheetBonusPaySetting toWTBPSettingDomain(KbpstWTBonusPaySetting kbpstWTBonusPaySetting) {
-		return WorkingTimesheetBonusPaySetting.createFromJavaType(
-				kbpstWTBonusPaySetting.kbpstWTBonusPaySettingPK.companyId,
-				kbpstWTBonusPaySetting.kbpstWTBonusPaySettingPK.workingTimesheetCode,
-				kbpstWTBonusPaySetting.bonusPaySettingCode);
+		if (update.isPresent()) {
+			commandProxy().remove(KbpstWTBonusPaySetting.class,
+					new KbpstWTBonusPaySettingPK(domain.getCompanyId(), domain.getWorkingTimesheetCode().v()));
+		}
 	}
 
 	@Override
 	public Optional<WorkingTimesheetBonusPaySetting> getWTBPSetting(String companyId,
 			WorkingTimesheetCode workingTimesheetCode) {
-		Optional<KbpstWTBonusPaySetting> kbpstWTBonusPaySetting = this.queryProxy()
+		Optional<KbpstWTBonusPaySetting> entity = this.queryProxy()
 				.find(new KbpstWTBonusPaySettingPK(companyId, workingTimesheetCode.v()), KbpstWTBonusPaySetting.class);
-		if (kbpstWTBonusPaySetting.isPresent()) {
-			return Optional.ofNullable(this.toWTBPSettingDomain(kbpstWTBonusPaySetting.get()));
+
+		if (entity.isPresent()) {
+			return Optional.ofNullable(toDomain(entity.get()));
 		}
+
 		return Optional.empty();
+	}
+
+	private KbpstWTBonusPaySetting toEntity(WorkingTimesheetBonusPaySetting domain) {
+		return new KbpstWTBonusPaySetting(new KbpstWTBonusPaySettingPK(domain.getCompanyId().toString(),
+				domain.getWorkingTimesheetCode().toString()), domain.getBonusPaySettingCode().toString());
 
 	}
 
+	private WorkingTimesheetBonusPaySetting toDomain(KbpstWTBonusPaySetting entity) {
+		return WorkingTimesheetBonusPaySetting.createFromJavaType(entity.kbpstWTBonusPaySettingPK.companyId,
+				entity.kbpstWTBonusPaySettingPK.workingTimesheetCode, entity.bonusPaySettingCode);
+	}
 }

@@ -9,7 +9,6 @@ module nts.uk.at.view.kmk008.c {
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
@@ -33,12 +32,22 @@ module nts.uk.at.view.kmk008.c {
                 let self = this;
                 let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
                 if (self.isUpdate) {
-                    new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function() {
+                    new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
+                        if (listError.length > 0) {
+                            let errorCode = _.split(listError[0], ',');
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
+                            return;
+                        }
                         self.startPage();
                     });
                     return;
                 }
-                new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function() {
+                new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
+                    if (listError.length > 0) {
+                        let errorCode = _.split(listError[0], ',');
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
+                        return;
+                    }
                     self.startPage();
                 });
             }
@@ -121,27 +130,27 @@ module nts.uk.at.view.kmk008.c {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 if (!data) return;
-                self.alarmWeek = data.alarmWeek() || 0;
-                self.errorWeek = data.errorWeek() || 0;
-                self.limitWeek = data.limitWeek() || 0;
-                self.alarmTwoWeeks = data.alarmTwoWeeks() || 0;
-                self.errorTwoWeeks = data.errorTwoWeeks() || 0;
-                self.limitTwoWeeks = data.limitTwoWeeks() || 0;
-                self.alarmFourWeeks = data.alarmFourWeeks() || 0;
-                self.errorFourWeeks = data.errorFourWeeks() || 0;
-                self.limitFourWeeks = data.limitFourWeeks() || 0;
-                self.alarmOneMonth = data.alarmOneMonth() || 0;
-                self.errorOneMonth = data.errorOneMonth() || 0;
-                self.limitOneMonth = data.limitOneMonth() || 0;
-                self.alarmTwoMonths = data.alarmTwoMonths() || 0;
-                self.errorTwoMonths = data.errorTwoMonths() || 0;
-                self.limitTwoMonths = data.limitTwoMonths() || 0;
-                self.alarmThreeMonths = data.alarmThreeMonths() || 0;
-                self.errorThreeMonths = data.errorThreeMonths() || 0;
-                self.limitThreeMonths = data.limitThreeMonths() || 0;
-                self.alarmOneYear = data.alarmOneYear() || 0;
-                self.errorOneYear = data.errorOneYear() || 0;
-                self.limitOneYear = data.limitOneYear() || 0;
+                self.alarmWeek = +data.alarmWeek() || 0;
+                self.errorWeek = +data.errorWeek() || 0;
+                self.limitWeek = +data.limitWeek() || 0;
+                self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
+                self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
+                self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
+                self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
+                self.errorFourWeeks = +data.errorFourWeeks() || 0;
+                self.limitFourWeeks = +data.limitFourWeeks() || 0;
+                self.alarmOneMonth = +data.alarmOneMonth() || 0;
+                self.errorOneMonth = +data.errorOneMonth() || 0;
+                self.limitOneMonth = +data.limitOneMonth() || 0;
+                self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
+                self.errorTwoMonths = +data.errorTwoMonths() || 0;
+                self.limitTwoMonths = +data.limitTwoMonths() || 0;
+                self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
+                self.errorThreeMonths = +data.errorThreeMonths() || 0;
+                self.limitThreeMonths = +data.limitThreeMonths() || 0;
+                self.alarmOneYear = +data.alarmOneYear() || 0;
+                self.errorOneYear = +data.errorOneYear() || 0;
+                self.limitOneYear = +data.limitOneYear() || 0;
             }
         }
     }

@@ -39,10 +39,6 @@ module nts.uk.pr.view.ccg015.b {
                 ]);
                 this.currentCode = ko.observable("w1");
                 self.data = ko.observable(null);
-                self.selectedTab.subscribe(function() {
-                    self.data(self.collectData());
-                    self.setData(self.data());
-                });
             }
             start(): JQueryPromise<void> {
                 var self = this;
@@ -67,9 +63,6 @@ module nts.uk.pr.view.ccg015.b {
                             });
                         });
                     }
-                    self.selectedTab("tab_dash_board");
-                    self.selectedTab("tab_flow_menu");
-                    self.selectedTab("tab_widget");
                 });
             }
             private loadDataToScreen(data: MyPageSettingDto): JQueryPromise<void> {

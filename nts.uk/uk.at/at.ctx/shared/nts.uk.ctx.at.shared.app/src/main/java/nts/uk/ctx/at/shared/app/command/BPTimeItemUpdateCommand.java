@@ -5,7 +5,6 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class BPTimeItemUpdateCommand {
-	public String companyId;
 	private String timeItemId;
 	public int useAtr;
 	public String timeItemName;

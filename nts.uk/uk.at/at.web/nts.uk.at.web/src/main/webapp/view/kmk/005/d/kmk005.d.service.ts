@@ -1,16 +1,16 @@
 module nts.uk.at.view.kmk005.d {
     export module service {
         var paths: any = {
-            findByCodeList: "at/shared/worktime/findByCodeList",
-            findByTime: "at/shared/worktime/findByTime",
+            getSetting: "at/share/bpUnitUseSetting/getSetting",
+            updateSetting: "at/share/bpUnitUseSetting/updateSetting",
         }
         
-        export function findByCodeList(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findByCodeList, command);
+        export function getSetting(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getSetting);
         }
         
-        export function findByTime(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findByTime, command);
+        export function updateSetting(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateSetting, command);
         }
     }
 }

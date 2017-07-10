@@ -166,6 +166,14 @@ module kcp.share.tree {
                 self.filterData();
             });
             
+            // subscribe change item list origin
+            self.backupItemList.subscribe((newData) => {
+                // data is empty, set selected work place id empty
+                if (!newData || newData.length <= 0) {
+                    self.selectedWorkplaceIds(self.isMultiple ? [] : '');
+                }
+            });
+            
             // Find data.
             service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
                 if (res != null) {
@@ -291,7 +299,7 @@ module kcp.share.tree {
         private addAlreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitAlreadySettingModel>) {
             let mapAlreadySetting = _.reduce(alreadySettingList, function(hash, value) {
                 let key = value['workplaceId'];
-                hash[key] = value['isAlreadySetting'];
+                hash[key] = value['isAlreadySetting'] == false ? null : value['isAlreadySetting'];
                 return hash;
             }, {});
             this.updateTreeData(dataList, mapAlreadySetting);

@@ -46,21 +46,13 @@ module nts.uk.at.view.kmk008.d {
                         return emp.code == newValue;
                     });
                     if (empSelect) { self.currentEmpName(empSelect.name); }
-
                 });
-
-                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                self.alreadySettingList([]);
-                new service.Service().getList(self.laborSystemAtr).done(data => {
-                    if (data.employmentCategoryCodes.length > 0) {
-                        self.alreadySettingList(_.map(data.employmentCategoryCodes, item => { return { code: item, isAlreadySetting: true } }));
-                    }
-                })
+                self.getalreadySettingList();
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
                     self.employmentList($('#empt-list-setting').getDataList());
                     if (self.employmentList().length > 0) {
@@ -79,7 +71,8 @@ module nts.uk.at.view.kmk008.d {
                 if (indexCodealreadySetting != -1) {
                     new service.Service().updateAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
                         if (listError.length > 0) {
-                            alert("Error");
+                            let errorCode = _.split(listError[0], ',');
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
                         self.getDetail(self.selectedCode());
@@ -88,26 +81,38 @@ module nts.uk.at.view.kmk008.d {
                 }
                 new service.Service().addAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
                     if (listError.length > 0) {
-                        alert("Error");
+                        let errorCode = _.split(listError[0], ',');
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
+                    self.getalreadySettingList();
                     self.getDetail(self.selectedCode());
                 });
             }
 
             removeData() {
                 let self = this;
-                let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
-                new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                    new service.Service().getList(self.laborSystemAtr).done(data => {
-                        if (data.employmentCategoryCodes.length > 0) {
-                            self.alreadySettingList(_.map(data.employmentCategoryCodes, item => { return { code: item, isAlreadySetting: true } }));
-                        }
-                    })
-                   
-                    self.getDetail(self.selectedCode());
-                });
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
+                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+                            self.getalreadySettingList();
+                            self.setSelectCodeAfterRemove(self.selectedCode());
+                        });
 
+                    });
+            }
+
+            getalreadySettingList() {
+                let self = this;
+                self.alreadySettingList([]);
+                new service.Service().getList(self.laborSystemAtr).done(data => {
+                    if (data.employmentCategoryCodes.length > 0) {
+                        self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
+                            return new UnitAlreadySettingModel(item.toString(), true);
+                        }));
+                    }
+                })
             }
 
             getDetail(employmentCategoryCode: string) {
@@ -118,9 +123,38 @@ module nts.uk.at.view.kmk008.d {
 
                 });
             }
-            
-            setSelectCodeAfterRemove(currentSelectCode: string){
-                
+
+            setSelectCodeAfterRemove(currentSelectCode: string) {
+                let self = this;
+                let empLength = self.employmentList().length;
+                if (empLength == 0) {
+                    self.selectedCode("");
+                    return;
+                }
+                let empSelectIndex = _.findIndex(self.employmentList(), emp => {
+                    return emp.code == self.selectedCode();
+                });
+                if (empSelectIndex == -1) {
+                    self.selectedCode("");
+                    return;
+                }
+                if (empSelectIndex == 0 && empLength == 1) {
+                    self.getDetail(currentSelectCode);
+                    return;
+                }
+                if (empSelectIndex == 0 && empLength > 1) {
+                    self.selectedCode(self.employmentList()[empSelectIndex + 1].code);
+                    return;
+                }
+
+                if (empSelectIndex < empLength - 1) {
+                    self.selectedCode(self.employmentList()[empSelectIndex + 1].code);
+                    return;
+                }
+                if (empSelectIndex == empLength - 1) {
+                    self.selectedCode(self.employmentList()[empSelectIndex - 1].code);
+                    return;
+                }
             }
         }
 
@@ -202,27 +236,27 @@ module nts.uk.at.view.kmk008.d {
                 self.laborSystemAtr = laborSystemAtr;
                 self.employmentCategoryCode = employmentCategoryCode;
                 if (!data) return;
-                self.alarmWeek = data.alarmWeek() || 0;
-                self.errorWeek = data.errorWeek() || 0;
-                self.limitWeek = data.limitWeek() || 0;
-                self.alarmTwoWeeks = data.alarmTwoWeeks() || 0;
-                self.errorTwoWeeks = data.errorTwoWeeks() || 0;
-                self.limitTwoWeeks = data.limitTwoWeeks() || 0;
-                self.alarmFourWeeks = data.alarmFourWeeks() || 0;
-                self.errorFourWeeks = data.errorFourWeeks() || 0;
-                self.limitFourWeeks = data.limitFourWeeks() || 0;
-                self.alarmOneMonth = data.alarmOneMonth() || 0;
-                self.errorOneMonth = data.errorOneMonth() || 0;
-                self.limitOneMonth = data.limitOneMonth() || 0;
-                self.alarmTwoMonths = data.alarmTwoMonths() || 0;
-                self.errorTwoMonths = data.errorTwoMonths() || 0;
-                self.limitTwoMonths = data.limitTwoMonths() || 0;
-                self.alarmThreeMonths = data.alarmThreeMonths() || 0;
-                self.errorThreeMonths = data.errorThreeMonths() || 0;
-                self.limitThreeMonths = data.limitThreeMonths() || 0;
-                self.alarmOneYear = data.alarmOneYear() || 0;
-                self.errorOneYear = data.errorOneYear() || 0;
-                self.limitOneYear = data.limitOneYear() || 0;
+                self.alarmWeek = +data.alarmWeek() || 0;
+                self.errorWeek = +data.errorWeek() || 0;
+                self.limitWeek = +data.limitWeek() || 0;
+                self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
+                self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
+                self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
+                self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
+                self.errorFourWeeks = +data.errorFourWeeks() || 0;
+                self.limitFourWeeks = +data.limitFourWeeks() || 0;
+                self.alarmOneMonth = +data.alarmOneMonth() || 0;
+                self.errorOneMonth = +data.errorOneMonth() || 0;
+                self.limitOneMonth = +data.limitOneMonth() || 0;
+                self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
+                self.errorTwoMonths = +data.errorTwoMonths() || 0;
+                self.limitTwoMonths = +data.limitTwoMonths() || 0;
+                self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
+                self.errorThreeMonths = +data.errorThreeMonths() || 0;
+                self.limitThreeMonths = +data.limitThreeMonths() || 0;
+                self.alarmOneYear = +data.alarmOneYear() || 0;
+                self.errorOneYear = +data.errorOneYear() || 0;
+                self.limitOneYear = +data.limitOneYear() || 0;
             }
         }
 
@@ -241,12 +275,17 @@ module nts.uk.at.view.kmk008.d {
             name?: string;
             workplaceName?: string;
             isAlreadySetting?: boolean;
+
         }
 
 
-        export interface UnitAlreadySettingModel {
+        export class UnitAlreadySettingModel {
             code: string;
             isAlreadySetting: boolean;
+            constructor(code: string, isAlreadySetting: boolean) {
+                this.code = code;
+                this.isAlreadySetting = isAlreadySetting;
+            }
         }
 
 

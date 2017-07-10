@@ -23,7 +23,13 @@ module nts.uk.at.view.kmk005.e {
             
             startPage(): JQueryPromise<any> {
                 var self = this;
-                return self.getData();
+                var dfd = $.Deferred();
+                self.getData().done(()=>{
+                    dfd.resolve();        
+                }).fail(()=>{
+                    dfd.reject();    
+                });
+                return dfd.promise();
             }
             
             getData(): JQueryPromise<any> {
@@ -37,7 +43,7 @@ module nts.uk.at.view.kmk005.e {
                     dfdListData.forEach(function(item){
                         self.bonusPayTimeItemSettings.push(
                             new BonusPayTimeItemSetting(
-                                item.companytId,
+                                item.companyId,
                                 item.timeItemId,
                                 item.holidayCalSettingAtr,
                                 item.overtimeCalSettingAtr,
@@ -48,7 +54,7 @@ module nts.uk.at.view.kmk005.e {
                     dfdSpecListData.forEach(function(item){
                         self.specBonusPayTimeItemSettings.push(
                             new BonusPayTimeItemSetting(
-                                item.companytId,
+                                item.companyId,
                                 item.timeItemId,
                                 item.holidayCalSettingAtr,
                                 item.overtimeCalSettingAtr,
@@ -92,15 +98,15 @@ module nts.uk.at.view.kmk005.e {
         class BonusPayTimeItemSetting {
             companyId:  KnockoutObservable<string>;
             timeItemId:  KnockoutObservable<string>;
-            worktimeCalSettingAtr:  KnockoutObservable<number>;
+            holidayCalSettingAtr:  KnockoutObservable<number>;
             overtimeCalSettingAtr:  KnockoutObservable<number>;
-            holidayCalSettingAtr:  KnockoutObservable<number>;  
-            constructor(companyId: string, timeItemId: string, worktimeCalSettingAtr: number, overtimeCalSettingAtr: number, holidayCalSettingAtr: number){
+            worktimeCalSettingAtr:  KnockoutObservable<number>;  
+            constructor(companyId: string, timeItemId: string, holidayCalSettingAtr: number, overtimeCalSettingAtr: number, worktimeCalSettingAtr: number){
                 this.companyId = ko.observable(companyId);     
                 this.timeItemId = ko.observable(timeItemId); 
-                this.worktimeCalSettingAtr = ko.observable(worktimeCalSettingAtr); 
-                this.overtimeCalSettingAtr = ko.observable(overtimeCalSettingAtr); 
                 this.holidayCalSettingAtr = ko.observable(holidayCalSettingAtr); 
+                this.overtimeCalSettingAtr = ko.observable(overtimeCalSettingAtr); 
+                this.worktimeCalSettingAtr = ko.observable(worktimeCalSettingAtr);
             }
         }
     }

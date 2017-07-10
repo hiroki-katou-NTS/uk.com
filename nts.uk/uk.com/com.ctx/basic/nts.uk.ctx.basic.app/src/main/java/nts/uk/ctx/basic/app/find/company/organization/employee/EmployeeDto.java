@@ -19,7 +19,7 @@ public class EmployeeDto {
 
 	public  static EmployeeDto fromDomain(Employee domain) {
 		return new EmployeeDto(domain.getPId(),
-				domain.getSId().v(),
+				domain.getSId(),
 				domain.getSCd().v(),
 				domain.getSMail().v(),
 				domain.getRetirementDate(),

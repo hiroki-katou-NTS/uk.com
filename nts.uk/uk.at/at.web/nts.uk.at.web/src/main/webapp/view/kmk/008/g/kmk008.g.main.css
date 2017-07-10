@@ -14,13 +14,11 @@
 	clean: right;
 }
 
-#ccgcomponent{
-	width: 32%; 
-	float: left;
-}
-
 #component-items-list{
-	width: 26%; 
 	float: left; 
 	margin-left: 90px;
+}
+
+.ui-tabs-panel > div {
+    height: 350px;
 }

@@ -18,7 +18,11 @@
 }
 
 .contentkcp {
-	min-height: 400px;
+	min-height: 350px;
+	padding-top: 8px !important;
+	padding-left: 10px !important;
+}
+#nts-component-tree {
 	padding: 0 !important;
 }
 
@@ -146,24 +150,23 @@
 .tab-content-1 {
 	height: 600px;
 }
-#tab-1 {
+.ccg-tabpanel #tab-1 {
 	background-color: white;
 }
-#tab-2 {
+.ccg-tabpanel #tab-2 {
 	background-color: white;
 	padding-right: 5px;
 }
-#ccgcomponent {
-	z-index: 9999;
-	position: absolute;
-}
 #ccg-component {
-	
+	z-index: 999;
+	position: absolute;
 }
 #hor-scroll-button-show {
 	margin-top: 180px;
 }
 #hor-scroll-button-hide {
+	z-index: 998;
+	position: absolute;
 	margin-top: 180px;
 }
 .icon-01-searchmode {
@@ -216,13 +219,13 @@
 	cursor: pointer;
 	vertical-align: super;
 }
-#nts-component-list {
+.ccg-tabpanel #nts-component-list {
 	padding: 0px !important;
 }
 #employeeinfo {
 	margin-top: 30px;
 }
-#tab-panel {
+.ccg-tabpanel {
 	background-color: #F2F2F2;
 	border-radius: 5px;
 }

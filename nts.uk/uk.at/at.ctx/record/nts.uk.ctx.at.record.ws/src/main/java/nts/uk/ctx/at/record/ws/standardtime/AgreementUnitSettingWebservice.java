@@ -38,7 +38,7 @@ public class AgreementUnitSettingWebservice {
 	}
 	
 	@POST
-	@Path("getAgreementTimeOfWorkPlace")
+	@Path("getAgreementUnitSetting")
 	public AgreementUnitSettingDto getList() {
 		return this.agreementUnitSettingFinder.find();
 	}

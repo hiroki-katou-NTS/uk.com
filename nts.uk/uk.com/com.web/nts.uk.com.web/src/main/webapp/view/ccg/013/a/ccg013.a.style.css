@@ -1,5 +1,5 @@
 @CHARSET "UTF-8";
-
+html, body {height: 100%;}
 #functions-area {
 	margin-top: 10px;
 }
@@ -125,11 +125,13 @@ ul.tree-menu {
 }
 
 ul.tree-menu li {
-	height: 35px;
+	min-height: 35px;
 	width: 125px;
 	border: 1px solid rgb(128, 164, 104) !important;
 	margin-top: -1px;
+	word-break: break-all;
 }
+
 
 ul.tree-menu li:last-child {
 	border-bottom: 1px solid rgb(128, 164, 104) !important;

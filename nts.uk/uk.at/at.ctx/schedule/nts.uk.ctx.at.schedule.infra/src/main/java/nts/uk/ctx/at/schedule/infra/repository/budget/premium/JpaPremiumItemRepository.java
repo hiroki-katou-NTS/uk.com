@@ -24,27 +24,20 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	@Override
 	public void update(PremiumItem premiumItem) {
-		this.commandProxy().update(convertToEntity(premiumItem));
+		KmnmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(), premiumItem.getID()), KmnmtPremiumItem.class).get();
+		if(premiumItem.getUseAtr().equals(UseAttribute.Use)){
+			item.setUseAtr(premiumItem.getUseAtr().value);
+			item.setName(premiumItem.getName().v());
+		} else {
+			item.setUseAtr(premiumItem.getUseAtr().value);
+		}
+		this.commandProxy().update(item);
 	}
 	
 	@Override
 	public List<PremiumItem> findByCompanyID(String companyID) {
 		return this.queryProxy().query(findAll, KmnmtPremiumItem.class).setParameter("CID", companyID)
 				.getList(x -> convertToDomain(x));
-	}
-	
-	/**
-	 * convert PremiumItem Domain Object to PremiumItem Entity Object
-	 * @param premiumItem PremiumItem Domain Object
-	 * @return PremiumItem Entity Object
-	 */
-	private KmnmtPremiumItem convertToEntity(PremiumItem premiumItem){
-		return new KmnmtPremiumItem(
-				new KmnmpPremiumItemPK(premiumItem.getCompanyID(), premiumItem.getID()),
-				premiumItem.getAttendanceID(),
-				premiumItem.getName().v(), 
-				premiumItem.getDisplayNumber(), 
-				premiumItem.getUseAtr().value);
 	}
 	
 	/**
