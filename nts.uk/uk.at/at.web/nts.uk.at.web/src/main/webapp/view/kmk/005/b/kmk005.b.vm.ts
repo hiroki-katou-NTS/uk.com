@@ -91,17 +91,14 @@ module nts.uk.at.view.kmk005.b {
                             service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand);
                             service.updateListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
                         }
+                self.closeDialog();
                     })
 
                 })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.message });
-                    });;
-
-
-
-
-                self.closeDialog();
+                        nts.uk.ui.dialog.alertError(res.message);
+                       // nts.uk.ui.dialog.alertError({ messageId: res.message });
+                    });
             }
 
             /**

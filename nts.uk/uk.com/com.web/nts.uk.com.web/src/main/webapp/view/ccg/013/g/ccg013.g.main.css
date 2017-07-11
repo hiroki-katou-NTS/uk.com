@@ -75,6 +75,7 @@
 .left-contents {
 	float: left;
 	padding: 25px 12px 0px 15px;
+	margin-left: -27px;
 }
 
 .right-contents {
@@ -133,22 +134,33 @@
 }
 
 #hr1 {
-	width: 330px;
+	width: 291px;
 	margin-left: -1px;
 }
 
 #hr2 {
-	width: 330px;
-	margin-left: -1px;
+	width: 291px;
+    margin-left: -12px;
 }
 
 .tab-content-1 {
     height: 362px;
 }
 #label-2{
+	margin-right: 60px;
 	float: right;
-	
+	margin-top: -53px;
 }
 #multi-list1_container {
     margin-left: -1px !important;
+}
+.btn_showhide{
+	    margin-left: -84px;
+    margin-top: -130px;
+}
+.ntsMoveDataArea {
+    height: 100%;
+    vertical-align: middle;
+    width: 112px;
+    text-align: center;
 }

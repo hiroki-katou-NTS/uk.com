@@ -9,8 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingCommand;
-import nts.uk.ctx.at.shared.app.command.WPBonusPaySettingCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.WPBonusPaySettingCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.WPBonusPaySettingCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.WPBonusPaySettingDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.WPBonusPaySettingFinder;
 

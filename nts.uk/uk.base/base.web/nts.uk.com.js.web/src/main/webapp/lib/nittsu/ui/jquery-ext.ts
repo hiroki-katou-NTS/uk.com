@@ -1061,6 +1061,8 @@ module nts.uk.ui.jqueryExtentions {
             // Cell color
             let cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
             
+            $(this).addClass('compact-grid');
+            
             let columnControlTypes = {};
             let columnSpecialTypes = {};
             let formatColumn = function(column: any) {
@@ -1123,7 +1125,7 @@ module nts.uk.ui.jqueryExtentions {
                         enable: isEnable
                     };
                     var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
-                    var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", "35px"));
+                    var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", ntsControls.HEIGHT_CONTROL));
                     var $_self = $self;
                     setTimeout(function() {
                         var $self = $_self;
@@ -1809,6 +1811,7 @@ module nts.uk.ui.jqueryExtentions {
             export let BUTTON: string = 'Button';
             export let DELETE_BUTTON = 'DeleteButton';
             export let TEXTBOX = 'TextBox';
+            export let HEIGHT_CONTROL = "27px";
             
             export let COMBO_CLASS = "nts-combo-container";
 
@@ -1835,7 +1838,7 @@ module nts.uk.ui.jqueryExtentions {
                     var $self = this;
                     var rowId = rowObj[$grid.igGrid("option", "primaryKey")];
                     var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
-                    var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", "35px"));
+                    var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", HEIGHT_CONTROL));
                     setTimeout(function() {
                         let rId = rowObj[$grid.igGrid("option", "primaryKey")];
                         var $gridCell = $grid.igGrid("cellById", rId, column.key);

@@ -21,7 +21,7 @@
 #functions-area > button:NTH-CHILD(2) { margin-left: 100px; }
 #functions-area > button:NTH-CHILD(3) { margin-left: 10px; }
 #functions-area > button:NTH-CHILD(4) { margin-left: 200px; }
-#functions-area > div:NTH-CHILD(5) { margin-left: 330px; }
+#functions-area > div:NTH-CHILD(5) { margin-left: 300px; }
 #functions-area > div:NTH-CHILD(5) > div:NTH-CHILD(2) { width: 160px; }
 #functions-area > div:NTH-CHILD(5) > div:NTH-CHILD(2) > a { 
 	text-decoration: underline;
@@ -30,7 +30,6 @@
 
 .leftContent {
 	display: inline-block; 
-	width: 300px;
 	padding-left: 15px; 
 	padding-top: 10px;
 }
@@ -38,6 +37,7 @@
 	display: inline-block; 
 	vertical-align: top;
 	padding-top: 20px;
+	margin-left: 30px;
 }
 .column1 { width: 150px; }
 .column2 { width: 75px; }

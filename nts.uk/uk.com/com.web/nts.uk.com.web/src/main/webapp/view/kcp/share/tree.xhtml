@@ -52,7 +52,7 @@
 		<com:ko tag="if" bind="!isMultiple" >
 			<table id="single-tree-grid" class="cf" tabindex="7"
 				data-bind="ntsTreeGridView:{
-					height: 315,
+					height: treeStyle.height,
 					dataSource: itemList,
 					value: selectedWorkplaceIds,
 					primaryKey: 'workplaceId',
@@ -67,7 +67,7 @@
 		<com:ko tag="if" bind="isMultiple" >
 			<table id="multiple-tree-grid" class="cf" tabindex="7"
 				data-bind="ntsTreeGridView:{
-					height: 315,
+					height: treeStyle.height,
 					options: itemList,
 					selectedValues: selectedWorkplaceIds,
 					optionsValue: 'workplaceId',

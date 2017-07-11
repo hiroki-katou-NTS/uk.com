@@ -11,7 +11,7 @@ module nts.uk.at.view.kmk005.a {
                 
                service.checkInit().done(function(item: number) {
                     if (item == 0) {
-                      nts.uk.ui.windows.sub.modal("/view/kmk/005/b/index.xhtml", {title: "蜉�邨ｦ鬆�逶ｮ縺ｮ險ｭ螳�"});
+                      nts.uk.ui.windows.sub.modal("/view/kmk/005/b/index.xhtml", {title: "加給項目の設定"});
                     } 
                     dfd.resolve();
                 }).fail(function(res) {
@@ -22,19 +22,19 @@ module nts.uk.at.view.kmk005.a {
             }
             
             openTimeItem(): void  {
-                nts.uk.ui.windows.sub.modal("/view/kmk/005/b/index.xhtml", {title: "蜉�邨ｦ鬆�逶ｮ縺ｮ險ｭ螳�"});
+                nts.uk.ui.windows.sub.modal("/view/kmk/005/b/index.xhtml", {title: "加給項目の設定"});
             }
             
             openUnitSetting(): void   {
-                nts.uk.ui.windows.sub.modal("/view/kmk/005/d/index.xhtml", {title: "蛻ｩ逕ｨ蜊倅ｽ阪�ｮ險ｭ螳�"});
+                nts.uk.ui.windows.sub.modal("/view/kmk/005/d/index.xhtml", {title: "利用単位の設定"});
             }
             
             openTimeItemSetting(): void   {
-                nts.uk.ui.windows.sub.modal("/view/kmk/005/e/index.xhtml", {title: "閾ｪ蜍戊ｨ育ｮ励�ｮ險ｭ螳�"});
+                nts.uk.ui.windows.sub.modal("/view/kmk/005/e/index.xhtml", {title: "自動計算の設定"});
             }
             
             openTimeSheetItem(): void {
-                 nts.uk.ui.windows.sub.modal("/view/kmk/005/f/index.xhtml", {title: "蜉�邨ｦ譎る俣蟶ｯ縺ｮ逋ｻ骭ｲ"});
+                 nts.uk.ui.windows.sub.modal("/view/kmk/005/f/index.xhtml", {title: "加給時間帯の登録"});
             }
             openBonusPay(): void
             {

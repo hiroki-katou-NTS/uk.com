@@ -33,7 +33,7 @@
 
 		<ui:define name="sidebar">
 			<div data-bind="with: tabView">
-				<ul class="navigator" data-bind="foreach: tabs">
+				<ul class="navigator" data-bind="foreach: tabs().filter(function(t) { return t.display() == true})">
 					<li><a
 						data-bind="text: name, click: changeTab, css: { 'active': active }, attr: { href: '#tabpanel-' + id.toLowerCase() }"></a></li>
 				</ul>

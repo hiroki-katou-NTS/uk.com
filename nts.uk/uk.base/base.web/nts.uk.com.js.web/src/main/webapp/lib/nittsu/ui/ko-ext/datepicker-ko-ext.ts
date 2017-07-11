@@ -119,7 +119,7 @@ module nts.uk.ui.koExtentions {
                     value(result.parsedValue);
                 }
                 else {
-                    $input.ntsError('set', result.errorMessage);
+                    $input.ntsError('set', result.errorMessage, result.errorCode);
                     value(newText);
                 }
             });
@@ -128,7 +128,7 @@ module nts.uk.ui.koExtentions {
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage);
+                    $input.ntsError('set', result.errorMessage, result.errorCode);
                 }
             });
 
@@ -138,7 +138,7 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage);
+                    $input.ntsError('set', result.errorMessage, result.errorCode);
                 }
             }));
             

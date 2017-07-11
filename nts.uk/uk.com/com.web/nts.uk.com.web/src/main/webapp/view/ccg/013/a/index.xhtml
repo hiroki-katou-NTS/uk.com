@@ -57,7 +57,7 @@
 							<div class="control-group" data-bind="with: currentWebMenu">
 								<div data-bind="ntsFormLabel: {required: true}">コード/名称</div>
 								<span><input style="width: 40px"
-									data-name="#{i18n.getText('CCG013_49')}" data-bind="ntsTextEditor: {value: webMenuCode,constraint: 'WebMenuCode', required: true, enable: false}" /></span> <span><input
+									data-name="#{i18n.getText('CCG013_49')}" data-bind="ntsTextEditor: {value: webMenuCode,constraint: 'WebMenuCode', required: true, enable: true}" /></span> <span><input
 									style="width: 180px"
 									data-name="#{i18n.getText('CCG013_50')}" data-bind="ntsTextEditor: {value: webMenuName,constraint: 'WebMenuName', required: true}" /></span>
 								<div class="bg-yellow">
@@ -70,7 +70,7 @@
 							</div>
 							<div class="label warning">#{i18n.getText('CCG013_13')}</div>
 							<div style="max-width: 800px; overflow-x: auto;">
-								<div id="tabs" data-bind="with: currentWebMenu">
+								<div id="tabs" data-bind="with: currentWebMenu, style: { 'width': widthTab()}">
 									<div>
 										<ul data-bind="foreach: menuBars">
 											<li data-bind="attr: { id: menuBarId }"
@@ -90,12 +90,13 @@
 														data-bind="attr:{id: titleMenuId}">
 														<div class="title-menu-name context-menu-title"
 															data-bind="style: {color: textColor, 'background-color': backgroundColor}, text: titleMenuName"></div>
+														<span class="caret-bottom"></span>
 														<ul class="tree-menu" data-bind="foreach: {data: treeMenu}">
 															<li class="context-menu-tree"
 																data-bind="attr:{id: treeMenuId},text: name">
 															</li>
 														</ul>
-														<button class="button-add-treemenu caret-bottom"
+														<button class="button-add-treemenu"
 															data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
 															画面の追加<span style="display: block">+</span>
 														</button>
