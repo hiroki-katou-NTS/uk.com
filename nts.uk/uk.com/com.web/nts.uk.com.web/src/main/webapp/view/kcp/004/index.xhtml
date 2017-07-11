@@ -140,7 +140,8 @@ export class ScreenModel {
 						selectType: SelectionType.SELECT_FIRST_ITEM,
 						isShowSelectButton: true,
 						isDialog: false,
-						alreadySettingList: self.alreadySettingList
+						alreadySettingList: self.alreadySettingList,
+						maxRows: 10
 				};
 		}
 }
@@ -241,6 +242,17 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
     workplaceId: string;
     isAlreadySetting: boolean;
 }]]></pre>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<lable>maxRows</lable> <br/>
+												<lable><i>(optinal)</i></lable>
+											</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<b>Default:</b><i>12</i><br/>
+												<label><i>Description:</i>Display max row in tree grid.</label>
 											</td>
 										</tr>
 									</table>

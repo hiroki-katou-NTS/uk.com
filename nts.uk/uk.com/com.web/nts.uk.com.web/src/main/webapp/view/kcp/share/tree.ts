@@ -78,6 +78,11 @@ module kcp.share.tree {
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
+        
+        /**
+         * Limit display row
+         */
+        maxRows?: number;
     }
     
     export class TreeType {
@@ -89,6 +94,10 @@ module kcp.share.tree {
         static SELECT_ALL = 2;
         static SELECT_FIRST_ITEM = 3;
         static NO_SELECT = 4;
+    }
+    
+    export interface TreeStyle {
+        height: number;
     }
     
     export class TreeComponentScreenModel {
@@ -106,6 +115,8 @@ module kcp.share.tree {
         listWorkplaceId: Array<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
+        treeStyle: TreeStyle;
+        
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([]);
@@ -114,7 +125,7 @@ module kcp.share.tree {
             self.hasBaseDate = ko.observable(false);
             self.alreadySettingList = ko.observableArray([]);
             self.treeComponentColumn = [
-                { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
+                { headerText: "", key: 'workplaceId', dataType: "string", hidden: true, width: "0%"},
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: "90%", dataType: "string" }
             ];
             self.levelList = [
@@ -144,12 +155,16 @@ module kcp.share.tree {
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
             }
+            if (!data.maxRows) {
+                data.maxRows = 12;
+            }
+            self.calHeightTree(data);
             
             // If show Already setting.
             if (data.isShowAlreadySet) {
                 // Add row already setting.
                 self.treeComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'isAlreadySetting', width: "15%", dataType: 'string'
+                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'isAlreadySetting', width: "10%", dataType: 'string',
                     formatter: function(isAlreadySetting: string) {
                         if (isAlreadySetting == 'true') {
                             return '<div style="text-align: center;"><i class="icon icon icon-78"></i></div>';
@@ -245,6 +260,16 @@ module kcp.share.tree {
             }
             
             return dfd.promise();
+        }
+        
+        /**
+         * Calculate number max row
+         */
+        private calHeightTree(data: TreeComponentOption) {
+            let height = 24;
+            this.treeStyle = {
+                height: height * (data.maxRows + 1) + 1
+            };
         }
         
         /**
