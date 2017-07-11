@@ -1,28 +1,21 @@
-package nts.uk.ctx.sys.portal.dom.jobtitletying;
+package nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying;
 
 import java.util.List;
-import java.util.Optional;
-
-import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 
 /**
  * @author yennth
  * The interface JobTitleTyingRepository
  */
 public interface JobTitleTyingRepository {
+
 	/**
-	 * @author yennth
-	 * @param JobTitleTying
-	 * @return
-	 */
-	boolean isExistWebMenuCode(List<JobTitleTying> JobTitleTying);
-	/**
+	 * update menu code
 	 * @author yennth
 	 * @param JobTitleTying
 	 */
 	void changeMenuCode(List<JobTitleTying> JobTitleTying);
 	/**
-	 * 
+	 * find a web menu code list in the list
 	 * @param companyId
 	 * @param jobId
 	 * @return

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.find.jobtitletying;
+package nts.uk.ctx.sys.portal.app.find.webmenu.jobtitletying;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,8 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-
-import nts.uk.ctx.sys.portal.dom.jobtitletying.JobTitleTyingRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

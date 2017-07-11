@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.command.jobtitletying;
+package nts.uk.ctx.sys.portal.app.command.webmenu.jobtitletying;
 
 import java.util.List;
 

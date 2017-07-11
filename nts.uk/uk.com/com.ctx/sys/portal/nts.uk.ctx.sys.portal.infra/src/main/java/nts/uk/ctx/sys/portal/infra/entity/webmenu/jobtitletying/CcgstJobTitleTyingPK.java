@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.infra.entity.jobtitletying;
+package nts.uk.ctx.sys.portal.infra.entity.webmenu.jobtitletying;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

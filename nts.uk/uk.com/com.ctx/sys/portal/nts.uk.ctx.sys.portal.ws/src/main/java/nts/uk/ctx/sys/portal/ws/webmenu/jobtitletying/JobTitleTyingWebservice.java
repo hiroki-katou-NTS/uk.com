@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.ws.jobtitletying;
+package nts.uk.ctx.sys.portal.ws.webmenu.jobtitletying;
 
 import java.util.List;
 
@@ -8,14 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.portal.app.command.jobtitletying.JobTitleTyingCommand;
-import nts.uk.ctx.sys.portal.app.command.jobtitletying.UpdateJobTitleTyingCommand;
-import nts.uk.ctx.sys.portal.app.command.jobtitletying.UpdateJobTitleTyingCommandHandler;
-import nts.uk.ctx.sys.portal.app.find.jobtitletying.JobTitleTyingDto;
-import nts.uk.ctx.sys.portal.app.find.jobtitletying.JobTitleTyingFinder;
+import nts.uk.ctx.sys.portal.app.command.webmenu.jobtitletying.JobTitleTyingCommand;
+import nts.uk.ctx.sys.portal.app.command.webmenu.jobtitletying.UpdateJobTitleTyingCommand;
+import nts.uk.ctx.sys.portal.app.command.webmenu.jobtitletying.UpdateJobTitleTyingCommandHandler;
+import nts.uk.ctx.sys.portal.app.find.webmenu.jobtitletying.JobTitleTyingDto;
+import nts.uk.ctx.sys.portal.app.find.webmenu.jobtitletying.JobTitleTyingFinder;
 
 
-@Path("sys/portal/jobtitletying")
+@Path("sys/portal/webmenu/jobtitletying")
 @Produces("application/json")
 public class JobTitleTyingWebservice extends WebService {
 	@Inject

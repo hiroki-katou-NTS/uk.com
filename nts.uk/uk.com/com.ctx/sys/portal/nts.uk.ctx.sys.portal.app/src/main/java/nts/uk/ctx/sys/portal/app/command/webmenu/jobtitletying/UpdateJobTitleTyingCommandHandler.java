@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.command.jobtitletying;
+package nts.uk.ctx.sys.portal.app.command.webmenu.jobtitletying;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.jobtitletying.JobTitleTying;
-import nts.uk.ctx.sys.portal.dom.jobtitletying.JobTitleTyingRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTying;
+import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 @Stateless
 @Transactional
 public class UpdateJobTitleTyingCommandHandler extends CommandHandler<UpdateJobTitleTyingCommand>{

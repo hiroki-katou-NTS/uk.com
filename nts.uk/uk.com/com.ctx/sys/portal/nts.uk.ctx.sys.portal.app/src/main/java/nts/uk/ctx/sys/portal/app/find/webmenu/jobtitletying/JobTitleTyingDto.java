@@ -1,7 +1,7 @@
-package nts.uk.ctx.sys.portal.app.find.jobtitletying;
+package nts.uk.ctx.sys.portal.app.find.webmenu.jobtitletying;
 
 import lombok.Data;
-import nts.uk.ctx.sys.portal.dom.jobtitletying.JobTitleTying;
+import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTying;
 
 /**
  * @author yennth
