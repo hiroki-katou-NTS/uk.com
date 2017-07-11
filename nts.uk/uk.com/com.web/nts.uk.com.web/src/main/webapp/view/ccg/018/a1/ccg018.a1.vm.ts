@@ -9,8 +9,6 @@ module ccg018.a1.viewmodel {
         listJobTitle: KnockoutObservableArray<any>;
         comboItemsAfterLogin: KnockoutObservableArray<ComboBox>;
         comboItemsAsTopPage: KnockoutObservableArray<ComboBox>;
-        //appear/disappear header of scroll on UI
-        isHeaderScroll: KnockoutObservable<boolean>;
 
         roundingRules: KnockoutObservableArray<any>;
 
@@ -23,10 +21,6 @@ module ccg018.a1.viewmodel {
             self.categorySet = ko.observable(undefined);
             self.isVisible = ko.computed(function() {
                 return !!self.categorySet();
-            });
-
-            self.isHeaderScroll = ko.computed(function() {
-                return self.items().length > 15 ? true : false;
             });
 
             self.roundingRules = ko.observableArray([
@@ -164,7 +158,6 @@ module ccg018.a1.viewmodel {
                                 }));
                             }
                         });
-
                         dfd.resolve();
                     }
                 }).fail();
@@ -201,8 +194,12 @@ module ccg018.a1.viewmodel {
          */
         update(): JQueryPromise<any> {
             let self = this;
+            if (self.items().length == 0) {
+                return;
+            }
             let dfd = $.Deferred();
             blockUI.invisible();
+
             let command = {
                 listTopPageJobSet: ko.mapping.toJS(self.items()),
                 ctgSet: self.categorySet()
@@ -210,7 +207,8 @@ module ccg018.a1.viewmodel {
             ccg018.a1.service.update(command)
                 .done(function() {
                     self.searchByDate();
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                    dfd.resolve();
                 }).fail().always(function() {
                     blockUI.clear();
                 });

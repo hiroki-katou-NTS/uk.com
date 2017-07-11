@@ -29,6 +29,8 @@
          */
         submit() {
             var self = this;
+            nts.uk.ui.block.invisible();
+            
             var code = self.code();
             var name = self.name();
             var allowOverwrite = self.allowOverwrite();
@@ -42,12 +44,15 @@
             
             if(nts.uk.ui.errors.hasError() !== true){
                 service.copy(data).done(function() {
-                    //    
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_20" }).then(() => { 
+                        self.closeDialog();
+                    });
+                    
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();      
                 });
-                
-                self.closeDialog();
             }
         }
         

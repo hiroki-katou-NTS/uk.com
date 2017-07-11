@@ -48,8 +48,14 @@
 	overflow-x: hidden;
 }
 
-.table1 thead tr th, .table1 tbody td {
+.table1 thead tr th {
 	border: 1px solid #999999;
+
+}
+
+ .table1 tbody td {
+	border: 1px solid #999999;
+	border-top: 0px! important;
 }
 
 .table1 {
@@ -57,19 +63,23 @@
 }
 
 .table1 thead tr th:first-child, .table1 tbody tr td:first-child {
-	width: 70px
+	width: 70px;
+	height: 25px;
+	
 }
 
 .table1 thead tr th:nth-child(2), .table1 tbody tr td:nth-child(2) {
-	width: 100px
+	width: 100px;
+	height: 25px;
 }
 
 .table1 thead tr th:nth-child(3), .table1 tbody tr td:nth-child(3) {
-	width: 250px
+	width: 250px;
+	height: 25px;
 }
 
 .table1 thead tr th:last-child{
-	width: 16px
+	width: 16px;
 }
 
 .table1 thead tr {
