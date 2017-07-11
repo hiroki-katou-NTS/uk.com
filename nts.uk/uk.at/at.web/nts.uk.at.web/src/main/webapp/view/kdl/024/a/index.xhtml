@@ -25,7 +25,7 @@
 				<button id="btnNew" class="btnMenu" data-bind="click: addNew" tabindex="1">#{i18n.getText('KDL024_1')}</button>
 				<button id="btnSave" class="btnMenu proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KDL024_2')}</button>
 				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
-					data-bind="click: del, enable: !isNew()" style="margin-left: 60px;" tabindex="3">#{i18n.getText('KDL024_3')}</button>
+					data-bind="click: del, enable: !isNew()" tabindex="3">#{i18n.getText('KDL024_3')}</button>
 				<button id="btnClose" class="btnMenu" data-bind="click: close" tabindex="4">#{i18n.getText('KDL024_4')}</button>
 			</div>
 			<div id="content-area" class="cf">
