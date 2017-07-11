@@ -40,6 +40,11 @@
 	    bottom: 3px;
 	    background-position: -80px -224px;
 	}
+	
+	.ui-dialog-titlebar-close:active {
+		top: calc(50% + 3px);
+	}
+	
 	&.no-close-btn .ui-dialog-titlebar-close {
 		display: none;
 	}

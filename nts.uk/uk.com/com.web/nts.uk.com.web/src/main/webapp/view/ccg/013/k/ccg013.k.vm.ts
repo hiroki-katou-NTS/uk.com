@@ -36,7 +36,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                 { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80 },
                 { headerText: nts.uk.resource.getText("CCG013_52"), key: 'targetItems', width: 150 },
                 {
-                    headerText: nts.uk.resource.getText("CCG013_83"), key: 'displayName', width: 150,
+                    headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', width: 150,
                     template: "<input class=\"displayName-input\" type=\"text\" value=\"${displayName}\" onchange='update(this, \"displayName\")' />"
                 }
             ];
@@ -110,7 +110,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });     
                         self.getListStandardMenu(self.selectedCode());
                     }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.alertError(error.message);
                         self.getListStandardMenu(self.selectedCode());
                     });
                 }
@@ -119,8 +119,8 @@ module nts.uk.com.view.ccg013.k.viewmodel {
         }    
 
         /** close Dialog **/
-        closeDialog() {
-            nts.uk.ui.windows.close();
+        closeDialog() {   
+            nts.uk.ui.windows.close(); 
         }
 
     }

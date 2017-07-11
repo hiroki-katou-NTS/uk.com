@@ -42,6 +42,14 @@ nts.uk.request.ajax("pr", "pr/proto/paymentdatemaster/processing/findall", {data
 							<p>Jump to another page. Jump method receive 2 parameters are path and datas.</p>
 							<pre><![CDATA[//Try to paste this to console
 nts.uk.request.jump("view/sample/requestulitily/request.xhtml", {})]]></pre>
+							<p>How to get transferred data:</p>
+							<pre><![CDATA[//This is in start.ts
+__viewContext.ready(function () {
+	
+	this.transferred.ifPresent(data => {
+		console.log(data);
+	});]]></pre>
+							<p>this.transferred is <a href="../optionalutility/optional.xhtml">nts.uk.util.optional</a></p>
 							</div>
 						</div>
 						

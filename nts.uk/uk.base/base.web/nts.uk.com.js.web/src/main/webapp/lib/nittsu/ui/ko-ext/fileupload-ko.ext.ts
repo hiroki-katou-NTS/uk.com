@@ -19,6 +19,7 @@ module nts.uk.ui.koExtentions {
             // Get data
             let data = valueAccessor();
             let fileName = data.filename;
+            let isLink = data.aslink
             let suportedExtension = ko.unwrap(data.accept);
             let textId: string = ko.unwrap(data.text);
             let control = $(element);
@@ -27,13 +28,29 @@ module nts.uk.ui.koExtentions {
             let fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
             let fileBrowserButton = $("<button class='browser-button' ></button>");
             let browserButtonText: string;
+
             if (textId) {
                 browserButtonText = nts.uk.resource.getText(textId);
             } else {
                 browserButtonText = "ファイルアップロード";
             }
             fileBrowserButton.text(browserButtonText);
-            let fileNameLable = $("<span class='filename' style='margin-left: 5px;'></span> ");
+            let fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
+            
+            var displayAsLink=false;
+            if(isLink != undefined){
+                if(typeof isLink =='function'){
+                    displayAsLink = isLink();    
+                }else{
+                    displayAsLink = isLink;
+                }    
+            }
+            
+            if (displayAsLink) {
+                fileNameLable.addClass("filename");
+            } else {
+                fileNameLable.addClass("standard-file-name");
+            }
             let fileInput = $("<input style ='display:none;' type='file' class='fileinput'/>");
             if (suportedExtension) {
                 fileInput.attr("accept", suportedExtension.toString());
@@ -42,17 +59,16 @@ module nts.uk.ui.koExtentions {
             fileuploadContainer.append(fileNameLable);
             fileuploadContainer.append(fileInput);
             fileuploadContainer.appendTo(control);
-            fileBrowserButton.click(function(){
-                    fileInput.val(null);
+            fileBrowserButton.click(function() {
+                fileInput.val(null);
             });
             fileInput.change(function() {
                 var selectedFilePath = $(this).val();
-               var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
+                var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
                 if (fileName != undefined) {
                     data.filename(getSelectedFileName);
-                } else {
-                    fileNameLable.text(getSelectedFileName);
                 }
+                fileNameLable.text(getSelectedFileName);
                 if (typeof onchange == 'function') {
                     onchange($(this).val());
                 }
@@ -60,9 +76,9 @@ module nts.uk.ui.koExtentions {
             fileBrowserButton.click(function() {
                 fileInput.click();
             });
-            if(onfilenameclick){
-                fileNameLable.click(function(){
-                    onfilenameclick($(this).text());    
+            if (onfilenameclick) {
+                fileNameLable.click(function() {
+                    onfilenameclick($(this).text());
                 });
             }
 
@@ -75,7 +91,7 @@ module nts.uk.ui.koExtentions {
             let data = valueAccessor();
             let fileName = ko.unwrap(data.filename);
             let control = $(element);
-            let fileNameLable = control.parent().find(".filename");
+            let fileNameLable = control.parent().find(".filenamelabel");
             fileNameLable.text(fileName);
         }
     }

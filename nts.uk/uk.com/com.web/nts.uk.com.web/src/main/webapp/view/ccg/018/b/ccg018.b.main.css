@@ -14,16 +14,6 @@
 	margin: 50px 0 0 20px;
 }
 
-th {
-	border: 1px solid #999999;
-	background-color: #E0F59E;
-	height: 25px;
-}
-
-td {
-	border: 1px solid #999999;
-}
-
 #ccgcomponent {
 	z-index: 1000 !important
 }
@@ -42,7 +32,7 @@ td {
 }
 
 #table-1 tbody tr td #combo-box {
-	padding: 2px;
+	padding: 2px 2px 0 2px;
 	height: 25px;
 	min-width: 150px !important;
 	width: 150px !important

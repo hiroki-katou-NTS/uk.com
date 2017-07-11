@@ -711,6 +711,9 @@ module nts.uk.ui.koExtentions {
             var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
             var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
             var selectedRows = $source.igGrid("selectedRows");
+            if (nts.uk.util.isNullOrEmpty(selectedRows)) {
+                return;        
+            }
             selectedRows.sort(function(one, two) {
                 return one.index - two.index; 
             });
