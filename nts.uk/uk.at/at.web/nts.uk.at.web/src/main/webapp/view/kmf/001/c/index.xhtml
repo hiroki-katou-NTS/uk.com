@@ -25,17 +25,12 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<div style="margin: 7px 20px;">
-					<button class="pull-left btn-default"
-						data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
-					<button class="proceed btn-default" data-bind="click: save"
-						tabindex="2">#{i18n.getText('KMF001_28')}</button>
-					<label class="pull-right btn-default">#{i18n.getText('KMF001_14')}</label>
-					<a class="pull-right"
-						data-bind="ntsLinkButton: {
-								jump: '/view/kmf/001/c/index.xhtml' }"
-						tabindex="3">#{i18n.getText('KMF001_29')}</a>
-				</div>
+				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
+				<button class="proceed" data-bind="click: save" tabindex="2">#{i18n.getText('KMF001_28')}</button>
+				<label class="pull-right btn-default">#{i18n.getText('KMF001_14')}</label>
+				<a class="pull-right" data-bind="ntsLinkButton: {jump: '/view/kmf/001/c/index.xhtml' }"
+					tabindex="3">#{i18n.getText('KMF001_29')}
+				</a>
 			</div>
 
 			<div id="contents-area">
