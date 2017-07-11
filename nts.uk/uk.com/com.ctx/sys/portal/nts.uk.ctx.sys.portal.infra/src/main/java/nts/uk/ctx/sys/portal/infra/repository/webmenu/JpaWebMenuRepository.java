@@ -12,11 +12,8 @@ import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBar;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBarPK;
-import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstPersonTying;
-import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstPersonTyingPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTitleBar;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTitleMenuPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTreeMenu;
@@ -74,11 +71,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			.executeUpdate();
 	}
 
-	
-	@Override
-	public void add(PersonalTying personalTying){
-		this.commandProxy().insert(convertToDbType(personalTying));
-	}
+
 	
 
 	/**
@@ -194,13 +187,5 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		return treeMenus;
 	}
 
-	private CcgstPersonTying convertToDbType(PersonalTying personalTying) { 
-		CcgstPersonTying ccgstPersonTying = new CcgstPersonTying();
-		CcgstPersonTyingPK cPersonTyingPK = new CcgstPersonTyingPK(
-				personalTying.getCompanyId(),
-				personalTying.getWebMenuCode().v(),
-				personalTying.getEmployeeId());
-		ccgstPersonTying.ccgstPersonTyingPK = cPersonTyingPK;
-		return ccgstPersonTying;
-	}
+
 }
