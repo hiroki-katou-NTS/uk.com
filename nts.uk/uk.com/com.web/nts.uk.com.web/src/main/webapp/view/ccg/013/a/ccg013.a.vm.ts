@@ -17,6 +17,7 @@ module ccg013.a.viewmodel {
         currentWebMenu: KnockoutObservable<WebMenu>;
         isCreated: KnockoutObservable<boolean>;
         isDefaultMenu: KnockoutObservable<boolean>;
+        widthTab: KnockoutComputed<string>;
 
         constructor() {
             var self = this;
@@ -29,6 +30,20 @@ module ccg013.a.viewmodel {
                 defaultMenu: 0,
                 menuBars: []
             }));
+
+            self.widthTab = ko.computed(() => {
+                //let activeid = $('#tabs li[aria-expanded=true]').attr('id');
+
+//                if (!activeid) {
+//                    return '800px';
+//                }
+
+                let datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars),
+                  //  menu = _.find(datas, x => x.menuBarId == activeid),                
+                    wTab = self.currentWebMenu().menuBars().length * 132 + 400 + 'px';
+
+                return wTab;
+            });
 
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
@@ -96,6 +111,7 @@ module ccg013.a.viewmodel {
 
                     service.findStandardMenuList().done((menuNames: Array<any>) => {
                         _.each(_.orderBy(res.menuBars, 'displayOrder', 'asc'), x => {
+                            
                             // push list name of tree menu to IMenuBar
                             x.menuNames = menuNames;
 
@@ -145,7 +161,9 @@ module ccg013.a.viewmodel {
         }
 
 
+
         addWebMenu(): any {
+            nts.uk.ui.block.invisible();
             var self = this,
                 webMenu = self.currentWebMenu(),
                 menuBars = webMenu.menuBars(),
@@ -182,8 +200,13 @@ module ccg013.a.viewmodel {
             service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
                 self.getWebMenu().done(() => {
                     bindSortable();
+                    self.currentCode(webMenu.webMenuCode());
                     $("#tabs li#" + activeid + ' a').trigger('click');
                 });
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alert(error.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -196,7 +219,7 @@ module ccg013.a.viewmodel {
             let self = this,
                 menu = self.currentWebMenu(),
                 menuBars = menu.menuBars();
-
+            self.currentCode();
             _.remove(menuBars, (item: MenuBar) => item.menuBarId() == menuBarId);
             menu.menuBars.valueHasMutated();
         }
@@ -236,8 +259,22 @@ module ccg013.a.viewmodel {
         removeWebMenu(): void {
             let self = this,
                 webMenuCode = self.currentCode();
-
-            service.deleteWebMenu(webMenuCode).done(() => { self.getWebMenu(); });
+            let index = 0;
+            if (self.isDefaultMenu()) {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_72'));
+            } else {
+                service.deleteWebMenu(webMenuCode).done(function() {
+                    self.getWebMenu().done(() => {
+                        if (self.items().length > 0) {
+                            index = self.items().length - 1;
+                            if (index < 0) {
+                                index = 0;
+                            }
+                        }
+                        self.currentCode(self.items()[index].webMenuCode);
+                    });
+                });
+            }
         }
 
 
@@ -259,6 +296,7 @@ module ccg013.a.viewmodel {
 
 
         openBdialog(): any {
+            nts.uk.ui.block.invisible();
             var self = this,
                 webmenu = self.currentWebMenu();
             modal("/view/ccg/013/b/index.xhtml").onClosed(function() {
@@ -281,6 +319,8 @@ module ccg013.a.viewmodel {
                     bindSortable();
                     $("#tabs li#" + id + " a").click();
                 }
+
+                nts.uk.ui.block.clear();
             });
         }
 
