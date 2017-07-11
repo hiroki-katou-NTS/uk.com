@@ -23,7 +23,7 @@ module cmm044.a.viewmodel {
         displayEmployeeInfo2: KnockoutObservable<boolean>;
         displayEmployeeInfo3: KnockoutObservable<boolean>;
         displayEmployeeInfo4: KnockoutObservable<boolean>;
-        
+
         histItems: KnockoutObservableArray<model.AgentDto>;
         histSelectedItem: KnockoutObservable<any>;
         currentItem: KnockoutObservable<model.AgentAppDto>;
@@ -32,14 +32,14 @@ module cmm044.a.viewmodel {
         agentAppType2: KnockoutObservable<number>;
         agentAppType3: KnockoutObservable<number>;
         agentAppType4: KnockoutObservable<number>;
-        
+
         agentSid1: KnockoutObservable<string>;
         agentSid2: KnockoutObservable<string>;
         agentSid3: KnockoutObservable<string>;
         agentSid4: KnockoutObservable<string>;
-        
 
-        employeeList : KnockoutObservable<any>;
+
+        employeeList: KnockoutObservable<any>;
         employeeNameScreen1: KnockoutObservable<any>;
         employeeNameScreen2: KnockoutObservable<any>;
         employeeNameScreen3: KnockoutObservable<any>;
@@ -54,9 +54,9 @@ module cmm044.a.viewmodel {
         selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
-        
+
         isShow: KnockoutObservable<boolean>;
-        
+
         constructor() {
             let self = this;
             self.index_of_itemDelete = ko.observable(-1);
@@ -82,16 +82,15 @@ module cmm044.a.viewmodel {
             self.agentAppType2 = ko.observable(0);
             self.agentAppType3 = ko.observable(0);
             self.agentAppType4 = ko.observable(0);
-            
+
             self.agentSid1 = ko.observable('');
             self.agentSid2 = ko.observable('');
             self.agentSid3 = ko.observable('');
             self.agentSid4 = ko.observable('');
-            
+
             self.agentAppType1.subscribe(function(newValue) {
                 self.displayEmployeeInfo1(newValue == 0);
                 self.currentItem().agentAppType1(newValue);
- 
             });
             self.agentAppType2.subscribe(function(newValue) {
                 self.displayEmployeeInfo2(newValue == 0);
@@ -108,23 +107,8 @@ module cmm044.a.viewmodel {
 
             self.histItems = ko.observableArray([]);
             self.selectedTab = ko.observable('tab-1');
-            self.selectedTab.subscribe(function(newValue){
-            var currentName1 = _.find(self.empItems(),['personId',self.currentItem().agentSid1()])
-            var currentName2 = _.find(self.empItems(),['personId',self.currentItem().agentSid2()])
-            var currentName3 = _.find(self.empItems(),['personId',self.currentItem().agentSid3()])
-            var currentName4 = _.find(self.empItems(),['personId',self.currentItem().agentSid4()])            
-                if (newValue == 'tab-1' && currentName1) {
-                        self.employeeNameScreen1(currentName1.name);
-                    }else if (newValue == ('tab-2') && currentName2) {
-                        self.employeeNameScreen2(currentName2.name);        
-                    }else if (newValue == ('tab-3') && currentName3) {      
-                        self.employeeNameScreen3(currentName3.name);
-                    }else if (newValue == ('tab-3') && currentName3){
-                        self.employeeNameScreen4(currentName4.name);
-                    } 
-                
-            
-            })
+
+
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
             self.empSelectedItem.subscribe(function(newValue) {
@@ -135,7 +119,7 @@ module cmm044.a.viewmodel {
                         } else {
                             self.initAgent();
                         }
-                    });             
+                    });
                 }
             });
 
@@ -146,9 +130,29 @@ module cmm044.a.viewmodel {
                     $("#daterangepicker").find(".ntsStartDatePicker").blur();
                     nts.uk.ui.errors.clearAll();
                     self.isEnableDelete(true);
+                    self.isEnableAdd(true);
                 }
-         
+
+
             });
+            
+            self.selectedTab.subscribe(function(newValue) {
+            var currentName1 = _.find(self.empItems(), ['personId', self.currentItem().agentSid1()]);
+            var currentName2 = _.find(self.empItems(), ['personId', self.currentItem().agentSid2()]);
+            var currentName3 = _.find(self.empItems(), ['personId', self.currentItem().agentSid3()]);
+            var currentName4 = _.find(self.empItems(), ['personId', self.currentItem().agentSid4()]);
+            if (newValue == 'tab-1' && currentName1) {
+                self.employeeNameScreen1(currentName1.name);
+            } else if (newValue == ('tab-2') && currentName2) {
+                self.employeeNameScreen2(currentName2.name);
+            } else if (newValue == ('tab-3') && currentName3) {
+                self.employeeNameScreen3(currentName3.name);
+            } else if (newValue == ('tab-3') && currentName3) {
+                self.employeeNameScreen4(currentName4.name);
+            }
+
+
+        });
 
             self.itemList = ko.observableArray([
                 new BoxModel(0, nts.uk.resource.getText("CMM044_16")),
@@ -156,31 +160,31 @@ module cmm044.a.viewmodel {
                 new BoxModel(2, nts.uk.resource.getText("CMM044_18"))
             ]);
             self.dateValue = ko.observable({ startDate: '', endDate: '' });
-            self.employeeList  = ko.observable('');
+            self.employeeList = ko.observable('');
             self.employeeNameScreen1 = ko.observable('');
             self.employeeNameScreen2 = ko.observable('');
             self.employeeNameScreen3 = ko.observable('');
             self.employeeNameScreen4 = ko.observable('');
-            
+
             self.ccgcomponent = ko.observable();
             self.selectedCode = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(true);
             self.selectedEmployee = ko.observableArray([]);
-            
+
             self.isShow = ko.observable(false);
-            
+
         }
         start() {
             let self = this;
             var dfd = $.Deferred();
             self.currentItem(new model.AgentAppDto(null, "", "", "", "", null, "", null, "", null, "", null));
             self.initCCG001();
-            if(self.empItems().length == 0){
+            if (self.empItems().length == 0) {
                 self.isEnableDelete(false);
                 self.isEnableAdd(false);
             }
             dfd.resolve();
-            return dfd.promise();    
+            return dfd.promise();
 
         }
 
@@ -242,10 +246,10 @@ module cmm044.a.viewmodel {
                     agent.agentSid3, agent.agentAppType3,
                     agent.agentSid4, agent.agentAppType4));
 
-                    self.agentAppType1(agent.agentAppType1);
-                    self.agentAppType2(agent.agentAppType2);
-                    self.agentAppType3(agent.agentAppType3);
-                    self.agentAppType4(agent.agentAppType4);
+                self.agentAppType1(agent.agentAppType1);
+                self.agentAppType2(agent.agentAppType2);
+                self.agentAppType3(agent.agentAppType3);
+                self.agentAppType4(agent.agentAppType4);
 
                 self.dateValue({ startDate: agent.startDate, endDate: agent.endDate });
                 $("#daterangepicker").find(".ntsStartDatePicker").focus();
@@ -275,7 +279,7 @@ module cmm044.a.viewmodel {
          */
         addAgent() {
             var self = this;
-
+            nts.uk.ui.block.invisible();
             self.currentItem().agentAppType1(self.agentAppType1());
             self.currentItem().agentAppType2(self.agentAppType2());
             self.currentItem().agentAppType3(self.agentAppType3());
@@ -294,10 +298,12 @@ module cmm044.a.viewmodel {
             if (existsItem) {
                 service.updateAgent(agent).done(function() {
                     self.getAllAgen(self.empSelectedItem().personId);
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                     $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(function(){
+                    nts.uk.ui.block.clear();    
                 })
             } else {
                 service.addAgent(agent).done(function(res) {
@@ -305,11 +311,15 @@ module cmm044.a.viewmodel {
                     if (self.histSelectedItem) {
                         self.getAllAgen(self.empSelectedItem().personId);
                         self.histSelectedItem(res);
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                         $("#daterangepicker").find(".ntsStartDatePicker").focus();
+
                     }
+                   
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(function(){
+                    nts.uk.ui.block.clear();    
                 })
             }
         }
@@ -334,7 +344,7 @@ module cmm044.a.viewmodel {
                         } else {
                             requestId = self.histItems()[index_of_itemDelete].requestId;
                         }
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"));
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16"));
                         self.histSelectedItem(requestId);
                         $("#daterangepicker").find(".ntsStartDatePicker").focus();
                     });
@@ -359,6 +369,11 @@ module cmm044.a.viewmodel {
             self.agentAppType2(0);
             self.agentAppType3(0);
             self.agentAppType4(0);
+            self.employeeNameScreen1("");
+            self.employeeNameScreen2("");
+            self.employeeNameScreen3("");
+            self.employeeNameScreen4("");
+            
             self.selectedTab('tab-1');
             self.histSelectedItem("");
             self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
@@ -366,13 +381,16 @@ module cmm044.a.viewmodel {
         }
         openDDialog() {
             let self = this;
+            nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared('cmm044_DataPerson', self.empItems());
             nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.block.clear();
             });
 
         }
         openCDL021(tab: number, employeeId: string) {
             let self = this;
+            nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared('cmm044_Name', employeeId);
             nts.uk.ui.windows.setShared('cmm044_DataPerson', self.empItems());
             nts.uk.ui.windows.setShared('cmm044_Tab', tab);
@@ -383,80 +401,82 @@ module cmm044.a.viewmodel {
                     if (tabNumber == 1) {
                         self.agentSid1(employee.employeId);
                         self.employeeNameScreen1(employee.employeeName);
-                    }else if (tabNumber == 2) {      
+                    } else if (tabNumber == 2) {
                         self.agentSid2(employee.employeId);
                         self.employeeNameScreen2(employee.employeeName);
-                    }else if (tabNumber == 3) {      
+                    } else if (tabNumber == 3) {
                         self.agentSid3(employee.employeId);
                         self.employeeNameScreen3(employee.employeeName);
-                    }else {
+                    } else {
                         self.agentSid4(employee.employeId);
                         self.employeeNameScreen4(employee.employeeName);
                     }
                 }
+                nts.uk.ui.block.clear();
             });
         }
-        
+
         openCCG001() {
             let self = this;
             $("#ccgcomponent, #ccgcomponent_contents").toggleClass("show");
-            
+
             isOnlyMe: ko.observable(false);
         }
-        
+
         initCCG001() {
             let self = this;
             self.ccgcomponent = {
-               baseDate: ko.observable(new Date()),
-               // Show/hide options 
-               isQuickSearchTab: true,
-               isAdvancedSearchTab:true,
-               isAllReferableEmployee: true,
-               isOnlyMe: true,
-               isEmployeeOfWorkplace: true,
-               isEmployeeWorkplaceFollow: true,
-               isMutipleCheck: true,
-               isSelectAllEmployee:true,
-               
-               //Event options
-               /**
-               * @param dataList: list employee returned from component.
-               * Define how to use this list employee by yourself in the function's body.
-               */
-               onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.searchEmployee(dataList);
-               },
-               onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                   self.showinfoSelectedEmployee(true);
-                   var dataEmployee: EmployeeSearchDto[] = [];
-                   dataEmployee.push(data);
-                   self.searchEmployee(dataEmployee);
-               },
-               onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.searchEmployee(dataList);
-               },
-               onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.searchEmployee(dataList);
-               },
-               onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                   self.searchEmployee(dataEmployee);
-               }
-           }
+                baseDate: ko.observable(new Date()),
+                // Show/hide options 
+                isQuickSearchTab: true,
+                isAdvancedSearchTab: true,
+                isAllReferableEmployee: true,
+                isOnlyMe: true,
+                isEmployeeOfWorkplace: true,
+                isEmployeeWorkplaceFollow: true,
+                isMutipleCheck: true,
+                isSelectAllEmployee: true,
 
-           $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-        
+                //Event options
+                /**
+                * @param dataList: list employee returned from component.
+                * Define how to use this list employee by yourself in the function's body.
+                */
+                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+                    self.searchEmployee(dataList);
+
+                },
+                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+                    self.showinfoSelectedEmployee(true);
+                    var dataEmployee: EmployeeSearchDto[] = [];
+                    dataEmployee.push(data);
+                    self.searchEmployee(dataEmployee);
+                },
+                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+                    self.searchEmployee(dataList);
+                },
+                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+                    self.searchEmployee(dataList);
+                },
+                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+                    self.searchEmployee(dataEmployee);
+                }
+            }
+
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+
         }
-        
+
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             var self = this;
             self.empItems.removeAll();
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
                 self.empItems.push(new PersonModel({
-                        personId: item.employeeId,
-                        code: item.employeeCode,
-                        name: item.employeeName,
-                    }));    
-            });    
+                    personId: item.employeeId,
+                    code: item.employeeCode,
+                    name: item.employeeName,
+                }));
+            });
         }
     }
 

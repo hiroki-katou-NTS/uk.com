@@ -45,9 +45,10 @@
                 backgroundColor: self.bgColor()    
             }
             
-            nts.uk.ui.windows.setShared("CCG013I_MENU_BAR", menuBar);
-            
-            self.closeDialog();
+            if(nts.uk.ui.errors.hasError() !== true){
+                nts.uk.ui.windows.setShared("CCG013I_MENU_BAR", menuBar);            
+                self.closeDialog();
+            }
         }
         
         /**

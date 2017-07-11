@@ -14,12 +14,6 @@ module cmm044.g.viewmodel {
         empItems: KnockoutObservableArray<PersonModel>;
         empSelectedItem: KnockoutObservable<any>;
         infoList: KnockoutObservable<any>;
-        singleSelectedCode: any;
-        singleSelectedNewCode: any;
-        selectedCodes: any;
-        selectedNewCodes: any;
-        headers: any;
-        allItems: KnockoutObservableArray<ItemModel>;
         items: KnockoutObservableArray<ItemModel>;
         newItems: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
@@ -27,9 +21,7 @@ module cmm044.g.viewmodel {
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         newCurrentCodeList: KnockoutObservableArray<any>;
-        dataItems: KnockoutObservableArray<ItemModel>;
 
-        selectedSystemCode: KnockoutObservable<number>;
         
         //CGG001
         ccgcomponent: GroupOption;
@@ -52,20 +44,13 @@ module cmm044.g.viewmodel {
         constructor() {
             let self = this;
             
-            self.singleSelectedCode = ko.observable(null);
-            self.singleSelectedNewCode = ko.observable(null);
-            self.selectedCodes = ko.observableArray([]);
-            self.selectedNewCodes = ko.observableArray([]);
             
             
                      
             self.empItems= ko.observableArray([]);
-            self.allItems = ko.observableArray([]);
             self.items = ko.observableArray([]);
             self.newItems = ko.observableArray([]);
-            self.dataItems = ko.observableArray([]);
             
-            self.selectedSystemCode = ko.observable(0);
             self.empSelectedItem = ko.observable();
             
             self.columns = ko.observableArray([
@@ -94,10 +79,7 @@ module cmm044.g.viewmodel {
                     item.primaryKey = item.webMenuCode + item.order;
                     self.items.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));
             })
-            
-            
-            
-            
+ 
         }
         start() {
             let self = this;
@@ -105,36 +87,22 @@ module cmm044.g.viewmodel {
             self.initCCG001();
         }
 
-         add(): void{
-             
-             
-            var self = this;
-            
-            var newItems = [];
-            _.forEach(self.infoList, function(item: ItemModel) {
-                if (_.indexOf(self.currentCodeList(), item.primaryKey) !== -1) {
-                    item.order = self.newItems().length + 1;
-                    item.primaryKey = item.webMenuCode + item.order;
-                    self.newItems.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));
-                } 
+        addPersonType(){
+            var self = this; 
+            var items = []
+            _.each(self.currentCodeList(), function(x){
+                items.push({
+                    employeeId: self.empSelectedItem().personId,
+                    webMenuCode: x.webMenuCode 
+                });
             })
+                   
+ 
+            service.addPerson(items).done(function(res){      
+            }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                })
 
-            self.currentCodeList([]);
-            self.newCurrentCodeList([]);
-        }
-        
-        remove(): void{
-            var self = this;            
-            var newItems = self.newItems();
-            _.remove(newItems, function(currentObject: ItemModel) {
-                return _.indexOf(self.newCurrentCodeList(), currentObject.primaryKey) !== -1;
-            });
-            
-            self.newItems([]);
-            _.forEach(newItems, function(item) {
-                item.order = self.newItems().length + 1;
-                self.newItems.push(item);
-            })            
         }
         
         initCCG001() {
@@ -170,10 +138,9 @@ module cmm044.g.viewmodel {
                    self.searchEmployee(dataEmployee);
                }
            }
-
            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-        
         }
+        
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             var self = this;
             self.empItems.removeAll();
@@ -185,14 +152,10 @@ module cmm044.g.viewmodel {
                     }));    
             });    
         }
-
         
         closeDialog() {
             nts.uk.ui.windows.close();
         }
-    
- 
-
     }
 
     interface IPersonModel {

@@ -141,7 +141,7 @@ module nts.uk.pr.view.kmf001.d {
             // Bind EmploymentSetting Data
             private bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
                 var self = this;
-                self.clearErrors();
+                self.clearEmptErrors();
                 if (data == undefined) {
                     self.yearsAmountByEmp(null);
                     self.maxDaysCumulationByEmp(null);
@@ -178,6 +178,8 @@ module nts.uk.pr.view.kmf001.d {
             // Switch To Employment Tab
             private switchToEmploymentTab(): void {
                 var self = this;
+                // Clear Errors
+                self.clearErrors();
                 self.isShowEmployment(true);
                 // Already Setting List
                 service.findAllByEmployment().done(function(data: any) {
@@ -224,6 +226,8 @@ module nts.uk.pr.view.kmf001.d {
             // Switch To Company Tab
             private switchToCompanyTab(): void {
                 var self = this;
+                // Clear Errors
+                self.clearEmptErrors();
                 self.isShowEmployment(false);
                 self.findRetentionYearly();
             }
@@ -233,8 +237,7 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 
                 // Clear errors
-                $('#year-amount-company').ntsError('clear');
-                $('#max-days-company').ntsError('clear');
+                self.clearErrors();
                 
                 // Validate. 
                 $('#year-amount-company').ntsEditor('validate');
@@ -250,6 +253,21 @@ module nts.uk.pr.view.kmf001.d {
                     .fail((res) => {
                         nts.uk.ui.dialog.alertError(res.message);
                     });
+            }
+            
+            // Clear Errors Company Tab
+            private clearErrors(): void {
+                var self = this;
+                // Clear errors
+                $('#year-amount-company').ntsError('clear');
+                $('#max-days-company').ntsError('clear');
+            }
+            
+            // Clear Errors Employment Tab
+            private clearEmptErrors(): void {
+                var self = this;
+                $('#year-amount-emp').ntsError('clear');
+                $('#max-days-emp').ntsError('clear');
             }
             
             // Collect Data By Employment
@@ -269,7 +287,7 @@ module nts.uk.pr.view.kmf001.d {
             private registerByEmployment(): void {
                 var self = this;
                 // Clear errors
-                self.clearErrors();
+                self.clearEmptErrors();
 
                 // Validate. 
                 $('#year-amount-emp').ntsEditor('validate');
@@ -288,13 +306,7 @@ module nts.uk.pr.view.kmf001.d {
                         nts.uk.ui.dialog.alertError(res.message);
                     });
             }
-            
-            // Clear Errors
-            private clearErrors(): void {
-                $('#year-amount-emp').ntsError('clear');
-                $('#max-days-emp').ntsError('clear');
-            }
-            
+
         }
         
         // Class ListType

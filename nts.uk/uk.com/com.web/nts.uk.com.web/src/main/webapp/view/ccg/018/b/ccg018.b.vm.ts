@@ -1,6 +1,7 @@
 module ccg018.b.viewmodel {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    import blockUI = nts.uk.ui.block;
 
     export class ScreenModel {
         items: KnockoutObservableArray<TopPagePersonSet>;
@@ -14,35 +15,36 @@ module ccg018.b.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<any>;
 
-        comboItemsAfterLogin: KnockoutObservableArray<ComboBox>;
-        comboItemsAsTopPage: KnockoutObservableArray<ComboBox>;
+        comboItemsAfterLogin: KnockoutObservableArray<any>;
+        comboItemsAsTopPage: KnockoutObservableArray<any>;
 
-        listSid11: Array<any>;
+        listSid: Array<any>;
+        isSelectedFirst: KnockoutObservable<boolean>;
 
         //component
         ccgcomponent: GroupOption;
-        selectedCode: KnockoutObservableArray<string>;
+        //        selectedCode: KnockoutObservableArray<string>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
         // Options
         baseDate: KnockoutObservable<Date>;
-        isQuickSearchTab: KnockoutObservable<boolean>;
-        isAdvancedSearchTab: KnockoutObservable<boolean>;
-        isAllReferableEmployee: KnockoutObservable<boolean>;
-        isOnlyMe: KnockoutObservable<boolean>;
-        isEmployeeOfWorkplace: KnockoutObservable<boolean>;
-        isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
-        isMutipleCheck: KnockoutObservable<boolean>;
-        isSelectAllEmployee: KnockoutObservable<boolean>;
+        //        isQuickSearchTab: KnockoutObservable<boolean>;
+        //        isAdvancedSearchTab: KnockoutObservable<boolean>;
+        //        isAllReferableEmployee: KnockoutObservable<boolean>;
+        //        isOnlyMe: KnockoutObservable<boolean>;
+        //        isEmployeeOfWorkplace: KnockoutObservable<boolean>;
+        //        isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
+        //        isMutipleCheck: KnockoutObservable<boolean>;
+        //        isSelectAllEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
         constructor() {
             let self = this;
             self.items = ko.observableArray([]);
             self.selectedItem = ko.observable(null);
-            self.listSid11 = [];
-            self.comboItemsAfterLogin = ko.observableArray([]);
-            self.comboItemsAsTopPage = ko.observableArray([]);
+            self.listSid = [];
+            self.comboItemsAfterLogin = ko.observableArray();
+            self.comboItemsAsTopPage = ko.observableArray();
             self.currentCode = ko.observable();
             self.employeeCode = ko.observable('');
             self.employeeName = ko.observable('');
@@ -52,7 +54,10 @@ module ccg018.b.viewmodel {
             self.isVisible = ko.computed(function() {
                 return !!self.categorySet();
             });
-            self.isEnable = ko.observable(true);
+
+            self.isEnable = ko.observable(false);
+            self.isSelectedFirst = ko.observable(true);
+
             self.currentCode.subscribe(function(codeChange: any) {
                 if (!!self.currentCode()) {
                     self.employeeCode(codeChange);
@@ -116,14 +121,12 @@ module ccg018.b.viewmodel {
                 }
             }
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-            self.findDataForAfterLoginDis();
-            self.findBySystemMenuCls();
             self.findTopPagePersonSet();
 
             self.selectedEmployee.subscribe(function() {
-                self.listSid11 = [];
+                self.listSid = [];
                 _.each(self.selectedEmployee(), function(x) {
-                    self.listSid11.push(x.employeeId);
+                    self.listSid.push(x.employeeId);
                 });
                 self.findTopPagePersonSet();
             });
@@ -134,9 +137,8 @@ module ccg018.b.viewmodel {
         start(): void {
             let self = this;
             self.categorySet(__viewContext.viewModel.viewmodelA1.categorySet());
-            if (self.items().length > 0) {
-                self.currentCode(self.items()[0].code);
-            }
+            self.comboItemsAfterLogin(__viewContext.viewModel.viewmodelA1.comboItemsAfterLogin());
+            self.comboItemsAsTopPage(__viewContext.viewModel.viewmodelA1.comboItemsAsTopPage());
         }
 
         bindGrid(): any {
@@ -150,7 +152,7 @@ module ccg018.b.viewmodel {
                 selectedCode: self.currentCode,
                 isShowNoSelectRow: false,
                 isDialog: false,
-                selectType: 3,
+                selectType: 4,
                 isShowSelectAllButton: false,
                 employeeInputList: self.items
             };
@@ -160,7 +162,7 @@ module ccg018.b.viewmodel {
         findTopPagePersonSet(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            ccg018.b.service.findTopPagePersonSet(self.listSid11)
+            ccg018.b.service.findTopPagePersonSet(self.listSid)
                 .done(function(data) {
                     self.items([]);
                     let arr = [];
@@ -178,7 +180,6 @@ module ccg018.b.viewmodel {
                                 menuClassification: topPagePersonSet.menuClassification,
                                 isAlreadySetting: true
                             }));
-
                         } else {
                             arr.push(new TopPagePersonSet({
                                 code: x.employeeCode,
@@ -194,69 +195,10 @@ module ccg018.b.viewmodel {
                         }
                     });
                     self.items(arr);
-                    //                    if (self.items().length > 0) {
-                    //                        self.currentCode(self.items()[0].code);
-                    //                    }
-                    dfd.resolve();
-                }).fail();
-            return dfd.promise();
-        }
-
-        /**
-         * Find data in table STANDARD_MENU base on CompanyId and System = 0(common) and MenuClassification = 8(top page)
-         * Return 2 array comboItemsAsTopPage and comboItemsAfterLogin
-         */
-        findBySystemMenuCls(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            self.comboItemsAsTopPage([]);
-            ccg018.b.service.findBySystemMenuCls()
-                .done(function(data) {
-                    if (data.length >= 0) {
-                        self.comboItemsAsTopPage.push(new ComboBox({
-                            code: '',
-                            name: '未設定',
-                            system: 0,
-                            menuCls: 0
-                        }));
-                        _.forEach(data, function(x) {
-                            self.comboItemsAsTopPage.push(new ComboBox({
-                                code: x.code,
-                                name: x.displayName,
-                                system: x.system,
-                                menuCls: x.classification
-                            }));
-                        });
+                    if (self.isSelectedFirst() && self.items().length > 0) {
+                        self.currentCode(self.items()[0].code);
                     }
-                    dfd.resolve();
-                }).fail();
-            return dfd.promise();
-        }
-
-        /**
-         * find data in talbel STANDARD_MENU with companyId and 
-         * afterLoginDisplay = 1 (display)  or System = 0(common) and MenuClassification = 8(top page)
-         */
-        findDataForAfterLoginDis(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            self.comboItemsAfterLogin([]);
-            ccg018.b.service.findDataForAfterLoginDis()
-                .done(function(data) {
-                    self.comboItemsAfterLogin.push(new ComboBox({
-                        code: '',
-                        name: '未設定',
-                        system: 0,
-                        menuCls: 0
-                    }));
-                    _.forEach(data, function(x) {
-                        self.comboItemsAfterLogin.push(new ComboBox({
-                            code: x.code,
-                            name: x.displayName,
-                            system: x.system,
-                            menuCls: x.classification
-                        }));
-                    });
+                    self.isSelectedFirst(true);
                     dfd.resolve();
                 }).fail();
             return dfd.promise();
@@ -268,6 +210,7 @@ module ccg018.b.viewmodel {
         saveData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            blockUI.invisible();
             if (self.items().length <= 0) {
                 return;
             }
@@ -281,13 +224,17 @@ module ccg018.b.viewmodel {
                 loginMenuCls: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : self.selectedItem().menuClassification(),
             };
             ccg018.b.service.update(obj).done(function() {
+                self.isSelectedFirst(false);
                 $.when(self.findTopPagePersonSet()).done(function() {
                     self.currentCode(oldCode);
+                    self.isEnable(true);
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                 });
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
+            }).always(function() {
+                blockUI.clear();
             });
             return dfd.promise();
         }
@@ -304,7 +251,11 @@ module ccg018.b.viewmodel {
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(() => {
                     let obj = { sId: self.selectedItem().employeeId };
                     ccg018.b.service.remove(obj).done(function() {
+                        self.isSelectedFirst(false);
                         $.when(self.findTopPagePersonSet()).done(function() {
+                            self.isEnable(false);
+                            self.selectedItemAfterLogin('');
+                            self.selectedItemAsTopPage('');
                             nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'));
                         });
                     }).fail();
@@ -319,6 +270,7 @@ module ccg018.b.viewmodel {
          */
         openDialogC(): void {
             let self = this;
+            blockUI.invisible();
             nts.uk.ui.windows.setShared('categorySet', self.categorySet());
             nts.uk.ui.windows.sub.modal('/view/ccg/018/c/index.xhtml', { dialogClass: 'no-close' }).onClosed(() => {
                 if (nts.uk.ui.windows.getShared('categorySetC') != undefined) {
@@ -327,6 +279,7 @@ module ccg018.b.viewmodel {
                     }
                 }
             });
+            blockUI.clear();
         }
 
         /**

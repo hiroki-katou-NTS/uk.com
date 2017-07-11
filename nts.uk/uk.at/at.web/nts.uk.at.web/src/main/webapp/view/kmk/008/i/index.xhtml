@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 860,
-					height : 650
+					width : 700,
+					height : 600
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -137,7 +137,7 @@
 				<HR />
 				<div class="valign-center control-group function-button-class">
 						<button class="proceed x-large" data-bind = "">#{i18n.getText('KMK008_37')}</button>
-						<button class="small"  data-bind = "">#{i18n.getText('KMK008_38')}</button>
+						<button class="small"  data-bind="click: $parent.closeDialog">#{i18n.getText('KMK008_38')}</button>
 				</div>
 				
 			</div>

@@ -214,7 +214,7 @@ module nts.uk.at.view.kmk008.g {
                 if (self.selectedTab() == "tab-1") {
                     isYearMonth = false;
                 }
-                setShared("KMK_008_PARAMS", { employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth: isYearMonth });
+                setShared("KMK_008_PARAMS", {employeeCode : self.selectedCode(), employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth: isYearMonth });
                 modal('../../../kmk/008/k/index.xhtml').onClosed(() => {
                     //                    let data: string = getShared('KDL007_VALUES');
                     if (self.selectedId()) {
@@ -231,8 +231,7 @@ module nts.uk.at.view.kmk008.g {
                         if (monthData) {
                             self.items2([]);
                             _.forEach(monthData, function(value) {
-                                //self.items([]);
-                                self.items2.push(new ItemModel(value.yearMonthValue, value.errorOneMonth, value.alarmOneMonth));
+                                self.items2.push(new ItemModel(nts.uk.time.parseYearMonth(value.yearMonthValue).format(), value.errorOneMonth, value.alarmOneMonth));
                             });
 
                         } else {
@@ -245,7 +244,6 @@ module nts.uk.at.view.kmk008.g {
                         if (yearData) {
                             self.items([]);
                             _.forEach(yearData, function(value) {
-                                //self.items2([]);
                                 self.items.push(new ItemModel(value.yearValue, value.errorOneYear, value.alarmOneYear));
                             });
 
@@ -258,7 +256,7 @@ module nts.uk.at.view.kmk008.g {
             }
 
             setNewMode() {
-                var self = this;
+                let self = this;
                 self.isNewMode(true);
             }
         }

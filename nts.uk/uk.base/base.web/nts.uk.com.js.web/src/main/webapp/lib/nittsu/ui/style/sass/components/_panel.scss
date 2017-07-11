@@ -1,4 +1,6 @@
 .panel {
+	$margin: 50px;
+	
 	padding: 10px;
 	position: relative;
 	
@@ -12,5 +14,11 @@
 	&.ntsPanel {
 		background-color: $green_background_color;
 		border-radius: 7px;
+		padding: 20px;
+		box-sizing: border-box;
+		&.direction-top{margin-top: $margin;}
+		&.direction-bottom{margin-bottom: $margin;}
+		&.direction-right{margin-right: $margin;}
+		&.direction-left{margin-left: $margin;}
 	}
 }

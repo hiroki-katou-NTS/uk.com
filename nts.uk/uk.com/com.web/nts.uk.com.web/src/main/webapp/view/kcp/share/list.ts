@@ -137,6 +137,7 @@ module kcp.share.list {
         componentGridId: string;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         searchOption: any;
+        targetKey: string;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -152,14 +153,11 @@ module kcp.share.list {
             var dfd = $.Deferred<void>();
             var self = this;
             self.isMultiple = data.isMultiSelect;
+            self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             if (!data.maxRows) {
-                data.maxRows = 15;
+                data.maxRows = 12;
             }
-            if (data.isMultiSelect) {
-                self.selectedCodes = ko.observableArray([]);
-            } else {
-                self.selectedCodes = ko.observable(null);
-            }
+            self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
@@ -171,43 +169,23 @@ module kcp.share.list {
             } else {
                 self.baseDate = ko.observable(new Date());
             }
-            
-            self.selectedCodes.subscribe(function(seletedVal: any) {
-                if (!seletedVal) {
-                    return;
+            data.selectedCode.subscribe(function(selectedValue) {
+                // If select No select row and other row in one time.
+                // => un-select No select row.
+                if (self.isMultiple && (<Array<string>>selectedValue).indexOf('') > -1 
+                        && (<Array<string>>selectedValue).length > 1) {
+                    var dataSelected = selectedValue.slice();
+                    (<Array<string>>dataSelected).splice((<Array<string>>selectedValue).indexOf(''), 1);
+                    data.selectedCode(dataSelected);
                 }
-                var selectedValue = seletedVal;
-                // With job title list -> return id.
-                if (self.listType == ListType.JOB_TITLE) {
-                    if (data.isMultiSelect) {
-                        selectedValue = _.map(seletedVal, function(code) {
-                            var id = _.filter(self.itemList(), function(item) {
-                                return item.code === code;
-                            })[0].id;
-                            return id ? id : '';
-                        })
-                    } else {
-                        selectedValue = _.filter(self.itemList(), function(item) {
-                            return item.code === seletedVal;
-                        })[0].id;
-                    }
-                }
-                if (data.isMultiSelect) {
-                    // With multi-select => remove no select item.
-                    var noSeletectIndex = (<Array<string>>selectedValue).indexOf('');
-                    if (noSeletectIndex > -1) {
-                        var dataSelected = selectedValue.slice();
-                        (<Array<string>>dataSelected).splice(noSeletectIndex, 1);
-                        data.selectedCode(dataSelected);
-                        return;
-                    }
-                }
-                data.selectedCode(selectedValue);
-            })
+            });
+            if (self.listType == ListType.JOB_TITLE) {
+                this.listComponentColumn.push({headerText: '', hidden: true, prop: 'id'});
+            }
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 100,
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170,
                         template: "<td class='list-component-name-col' title='${name}'>${name}</td>",});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
@@ -286,11 +264,11 @@ module kcp.share.list {
             }
             self.searchOption = {
                 searchMode: 'filter',
-                targetKey: 'code',
+                targetKey: self.targetKey,
                 comId: self.componentGridId,
                 items: self.itemList,
                 selected: self.selectedCodes,
-                selectedKey: 'code',
+                selectedKey: self.targetKey,
                 fields: fields,
                 mode: 'igGrid'
             }
@@ -302,6 +280,7 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
+                dfd.resolve();
             });
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
@@ -358,7 +337,7 @@ module kcp.share.list {
                     if (!self.isMultiple){
                         return;
                     }
-                    self.selectedCodes(dataList.map(item => item.code));
+                    self.selectedCodes(dataList.map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
                     return;
                 case SelectType.SELECT_FIRST_ITEM:
                     self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
@@ -402,7 +381,7 @@ module kcp.share.list {
         private initGridStyle(data: ComponentOption) {
             var codeColumnSize: number = 50;
             var companyColumnSize: number = 0;
-            var heightOfRow : number = 21;
+            var heightOfRow : number = 23;
             switch(data.listType) {
                 case ListType.EMPLOYMENT:
                     break;
@@ -425,7 +404,7 @@ module kcp.share.list {
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
-            var totalRowsHeight = heightOfRow * data.maxRows;
+            var totalRowsHeight = heightOfRow * data.maxRows + 24;
             var totalHeight: number = this.hasBaseDate ? 123 : 55;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,

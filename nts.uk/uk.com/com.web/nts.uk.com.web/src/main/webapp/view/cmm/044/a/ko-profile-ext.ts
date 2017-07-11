@@ -23,14 +23,14 @@ class ProfileHandler implements KnockoutBindingHandler {
         } else {
             input.onchange = e => {
                 let options = ko.toJS(params.options),
-                    option = _.find(options, m => m[params.code] == e.target.value);
+                    option = _.find(options, m => m[params.code] == e.target['value']);
                 if (option) {
                     params.value(option);
                 } else {
                     if (params.error) {
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7"));
                     }
-                    e.target.value = params.value()[params.code];
+                    e.target['value'] = params.value()[params.code];
                 }
             };
         }
@@ -39,32 +39,13 @@ class ProfileHandler implements KnockoutBindingHandler {
         input.classList.add("nts-editor");
         input.classList.add("nts-input");
 
-
-        previewBtn.onclick = () => {
-            let options = ko.toJS(params.options), index = _.findIndex(options, m => m[params.key] == params.value()[params.key]);
-            if (index > 0) {
-                params.value(options[--index]);
-                nts.uk.ui.errors.clearAll();
-            }
-        };
-
-        nextBtn.onclick = () => {
-            let options = ko.toJS(params.options), index = _.findIndex(options, m => m[params.key] == params.value()[params.key]);
-            if (index < options.length - 1) {
-                params.value(options[++index]);
-                nts.uk.ui.errors.clearAll();
-            }
-        };
-
         params.value.subscribe((v) => {
             if (v) {
                 label.innerText = v[params.name];
                 labelName.innerText = v[params.code];
 
                 let _options: Array<any> = ko.toJS(params.options);
-                labelPerson.innerText = '1' + '/' + _options.length + ' 人';
-
-                input.setAttribute('value', v[params.code]);
+                labelPerson.innerText = (_options.length ? '1' : '0') + '/' + _options.length + ' 人';
 
                 let options = ko.toJS(params.options), index = _.findIndex(options, m => m[params.key] == v[params.key]);
                 if (index == options.length - 1) {
@@ -82,12 +63,32 @@ class ProfileHandler implements KnockoutBindingHandler {
                 label.innerText = '';
                 labelName.innerText = '';
                 labelPerson.innerText = '';
-                input.setAttribute('value', '');
             }
+            input['value'] = '';
         });
+
+        previewBtn.onclick = () => {
+            let options = ko.toJS(params.options), index = _.findIndex(options, m => m[params.key] == params.value()[params.key]);
+            if (index > 0) {
+                input['value'] = '';
+                params.value(options[--index]);
+                nts.uk.ui.errors.clearAll();
+            }
+        };
+
+        nextBtn.onclick = () => {
+            let options = ko.toJS(params.options), index = _.findIndex(options, m => m[params.key] == params.value()[params.key]);
+            if (index < options.length - 1) {
+                input['value'] = '';
+                params.value(options[++index]);
+                nts.uk.ui.errors.clearAll();
+            }
+        };
 
         params.options.subscribe((v) => {
             let options = ko.toJS(params.options);
+            labelPerson.innerText = (options.length ? '1' : '0') + '/' + options.length + ' 人';
+
             if (!options.length) {
                 params.value(undefined);
                 nextBtn.setAttribute('disabled', 'disabled');

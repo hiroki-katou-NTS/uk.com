@@ -85,7 +85,7 @@ module nts.uk.ui.koExtentions {
 
             var $dialog = $("<div id='ntsErrorDialog'></div>");
 
-            $('body').append($dialog);
+            parent.$('body').append($dialog);
             // Create Buttons
             var dialogbuttons = [];
             for (let button of buttons) {
@@ -111,7 +111,7 @@ module nts.uk.ui.koExtentions {
             $dialog.dialog({
                 title: title,
                 modal: modal,
-
+                autoOpen:false,
                 closeOnEscape: false,
                 width: dialogWidth,
                 maxHeight: 500,
@@ -121,11 +121,6 @@ module nts.uk.ui.koExtentions {
                     $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                     $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                     $('.ui-widget-overlay').last().css('z-index', 120000);
-
-                    //                    let $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
-                    //                    $headerContainer.append($("<img>").attr("src", "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png").addClass("ui-dialog-titlebar-icon");
-                    //                    $headerContainer.append($(this).parent().find(".ui-dialog-title"));
-                    //                    $(this).parent().children(".ui-dialog-titlebar").append($headerContainer);
                 },
                 close: function(event) {
                     bindingContext.$data.option.show(false);
@@ -148,7 +143,7 @@ module nts.uk.ui.koExtentions {
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
 
-            var $dialog = $("#ntsErrorDialog");
+            var $dialog = parent.$("#ntsErrorDialog");
 
             if (show == true) {
                 
