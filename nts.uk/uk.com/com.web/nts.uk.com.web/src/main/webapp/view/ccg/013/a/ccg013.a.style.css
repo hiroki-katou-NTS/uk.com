@@ -145,7 +145,6 @@ ul.tree-menu li:last-child {
 
 .title-menu div.title-menu-name {
 	width: 100px !important;
-	margin-bottom: 25px !important;
 	padding: 15px !important;
 	border-radius: 10px !important;
 	margin-left: 2px;
@@ -182,4 +181,17 @@ ul.tree-menu li:last-child {
 
 .button-add-treemenu {
 	width: 128px;
+}
+
+.caret-bottom:after,
+.caret-top:after,
+.caret-left:after {
+	margin-bottom: 5px !important;
+    margin-left: 40px !important;
+}
+
+.caret-bottom:after {
+  border-right: 2em solid transparent  !important;
+  border-left: 2em solid transparent !important;
+  color: rgb(217, 217, 217) !important;
 }
