@@ -9,12 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.BPTimesheetAddCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimesheetAddCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPTimesheetDeleteCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimesheetDeleteCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPTimesheetUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimesheetUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetDeleteCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetDeleteCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetUpdateCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimesheetDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimesheetFinder;
 
