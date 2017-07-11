@@ -77,11 +77,12 @@ td {
 }
 
 /* for EDGE browser */
-@supports (-ms-ime-align:auto ) { .table1 tbody {
-	height: 495px;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
+@supports (-ms-ime-align:auto ) { 
+	.table1 tbody { 
+		height:495px;
+ 		overflow-y: auto;
+ 		overflow-x: hidden;
+}}
 
 .table1 thead tr th:first-child, .table1 tbody tr td:first-child {
 	width: 50px
