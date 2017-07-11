@@ -209,11 +209,11 @@ module ccg018.b.viewmodel {
          */
         saveData(): JQueryPromise<any> {
             let self = this;
-            let dfd = $.Deferred();
-            blockUI.invisible();
-            if (self.items().length <= 0) {
+            if (self.items().length == 0) {
                 return;
             }
+            let dfd = $.Deferred();
+            blockUI.invisible();
             let oldCode = self.selectedItem().code;
             let obj = {
                 ctgSet: self.categorySet(),
@@ -227,8 +227,9 @@ module ccg018.b.viewmodel {
                 self.isSelectedFirst(false);
                 $.when(self.findTopPagePersonSet()).done(function() {
                     self.currentCode(oldCode);
+                    self.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
                     self.isEnable(true);
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 });
                 dfd.resolve();
             }).fail(function(res) {
@@ -246,7 +247,7 @@ module ccg018.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             if (!!!self.currentCode()) {
-                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_85'));
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_85'));
             } else {
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(() => {
                     let obj = { sId: self.selectedItem().employeeId };
@@ -256,7 +257,7 @@ module ccg018.b.viewmodel {
                             self.isEnable(false);
                             self.selectedItemAfterLogin('');
                             self.selectedItemAsTopPage('');
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'));
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         });
                     }).fail();
                 }).ifNo(() => { });

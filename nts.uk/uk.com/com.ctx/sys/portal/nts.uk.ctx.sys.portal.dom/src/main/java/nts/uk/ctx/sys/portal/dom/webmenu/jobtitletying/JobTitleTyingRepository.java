@@ -9,11 +9,11 @@ import java.util.List;
 public interface JobTitleTyingRepository {
 
 	/**
-	 * update menu code
+	 * update menu code, if record doesn't exit in list, insert record to the list
 	 * @author yennth
 	 * @param JobTitleTying
 	 */
-	void changeMenuCode(List<JobTitleTying> JobTitleTying);
+	void updateAndInsertMenuCode(List<JobTitleTying> JobTitleTying);
 	/**
 	 * find a web menu code list in the list
 	 * @param companyId
@@ -21,4 +21,8 @@ public interface JobTitleTyingRepository {
 	 * @return
 	 */
 	List<JobTitleTying> findWebMenuCode(String companyId, List<String> jobId);
+	/**
+	 * check web menu code
+	 */
+	void validate(JobTitleTying obj);
 }

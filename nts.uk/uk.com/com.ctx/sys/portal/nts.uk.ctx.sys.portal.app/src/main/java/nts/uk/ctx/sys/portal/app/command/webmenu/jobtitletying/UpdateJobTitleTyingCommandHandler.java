@@ -16,6 +16,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
+
 @Stateless
 @Transactional
 public class UpdateJobTitleTyingCommandHandler extends CommandHandler<UpdateJobTitleTyingCommand>{
@@ -31,14 +32,10 @@ public class UpdateJobTitleTyingCommandHandler extends CommandHandler<UpdateJobT
 		String companyId = AppContexts.user().companyId();
 		List<JobTitleTyingCommand> jobTitleTyings = update.getJobTitleTyings();
 		for(JobTitleTyingCommand obj: jobTitleTyings){
-			JobTitleTying o = JobTitleTying.updateWebMenuCode(companyId, obj.getJobId(), obj.getWebMenuCode());
-			if(o.getWebMenuCode() == null)
-			{
-				throw new BusinessException("");
-			}
-			else
-				lstJobTitleTying.add(o);
+			JobTitleTying newobject = JobTitleTying.updateWebMenuCode(companyId, obj.getJobId(), obj.getWebMenuCode());
+			newobject.validate();
+			lstJobTitleTying.add(newobject);
 		}
-		jobTitleTyingRepository.changeMenuCode(lstJobTitleTying);
+		jobTitleTyingRepository.updateAndInsertMenuCode(lstJobTitleTying);
 	}
 }

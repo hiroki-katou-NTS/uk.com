@@ -2,20 +2,20 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.workplace;
+package nts.uk.ctx.basic.dom.company.organization.employee.jobtile;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
+import nts.uk.ctx.basic.dom.company.organization.jobtitle.PositionId;
 
 /**
- * The Class AffiliationWorkplaceHistory.
+ * The Class JobTitleHistory.
  */
-// 所属職場履歴
+//所属職位履歴
 @Getter
-public class AffiliationWorkplaceHistory extends AggregateRoot {
-
+public class AffJobTitleHistory extends AggregateRoot{
+	
 	/** The period. */
 	// 期間
 	private Period period;
@@ -23,30 +23,33 @@ public class AffiliationWorkplaceHistory extends AggregateRoot {
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
-
-	/** The work place id. */
-	// 職場ID
-	private WorkplaceId workplaceId;
-
+	
+	
+	/** The job title id. */
+	// 職位ID
+	private PositionId jobTitleId;
+	
+	
 	/**
-	 * Instantiates a new employee work place history.
+	 * Instantiates a new job title history.
 	 *
 	 * @param memento the memento
 	 */
-	public AffiliationWorkplaceHistory(AffiliationWorkplaceHistoryGetMemento memento) {
+	public AffJobTitleHistory(AffJobTitleHistoryGetMemento memento) {
 		this.period = memento.getPeriod();
 		this.employeeId = memento.getEmployeeId();
-		this.workplaceId = memento.getWorkplaceId();
+		this.jobTitleId = memento.getJobTitleId();
 	}
 	
 	/**
-	 * Save to memen to.
+	 * Save to memento.
 	 *
-	 * @param memento the memen to
+	 * @param memento the memento
 	 */
-	public void saveToMemento(AffiliationWorkplaceHistorySetMemento memento){
+	public void saveToMemento(AffJobTitleHistorySetMemento memento){
 		memento.setPeriod(this.period);
 		memento.setEmployeeId(this.employeeId);
-		memento.setWorkplaceId(this.workplaceId);
+		memento.setJobTitleId(this.jobTitleId);
 	}
+	
 }

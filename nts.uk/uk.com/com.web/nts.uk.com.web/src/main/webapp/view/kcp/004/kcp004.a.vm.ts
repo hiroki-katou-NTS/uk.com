@@ -47,9 +47,7 @@ module kcp004.a.viewmodel {
             self.isDialog = ko.observable(false);
             self.isShowAlreadySet = ko.observable(true);
             self.isShowSelectButton = ko.observable(true);
-            self.enableShowSelectButton = ko.computed(function() {
-                return self.isMultipleTreeGrid();
-            });
+            self.enableShowSelectButton = ko.observable(true);
             
             // Control component
             self.baseDate = ko.observable(new Date());
@@ -102,9 +100,9 @@ module kcp004.a.viewmodel {
 //            self.alreadySettingList.subscribe(function() {
 //                self.reloadTreeGrid();
 //            });
-            self.isShowSelectButton.subscribe(function() {
-                self.reloadTreeGrid();
-            });
+//            self.isShowSelectButton.subscribe(function() {
+//                self.reloadTreeGrid();
+//            });
             self.selectedSelectionType.subscribe((code) => {
                 if (code == 1) {
                     self.resetSelectedWorkplace();

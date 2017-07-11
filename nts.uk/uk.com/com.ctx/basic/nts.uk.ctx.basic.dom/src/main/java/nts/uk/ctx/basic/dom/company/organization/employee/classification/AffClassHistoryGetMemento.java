@@ -2,16 +2,22 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.jobtile;
+package nts.uk.ctx.basic.dom.company.organization.employee.classification;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.jobtitle.PositionId;
+import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCode;
 
 /**
- * The Interface JobTitleHistoryGetMemento.
+ * The Interface AffiliationClassificationHistoryGetMemento.
  */
-public interface AffiliationJobTitleHistoryGetMemento {
+public interface AffClassHistoryGetMemento {
 
+	/**
+	 * Gets the classification code.
+	 *
+	 * @return the classification code
+	 */
+	ClassificationCode getClassificationCode();
 	
 	/**
 	 * Gets the period.
@@ -27,12 +33,4 @@ public interface AffiliationJobTitleHistoryGetMemento {
 	 * @return the employee id
 	 */
 	String getEmployeeId();
-	
-	
-	/**
-	 * Gets the job title id.
-	 *
-	 * @return the job title id
-	 */
-	PositionId getJobTitleId();
 }

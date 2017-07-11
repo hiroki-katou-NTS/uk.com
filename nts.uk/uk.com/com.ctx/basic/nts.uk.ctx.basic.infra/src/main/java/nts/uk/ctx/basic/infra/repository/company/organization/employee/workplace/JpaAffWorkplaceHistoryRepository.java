@@ -19,19 +19,18 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.workplace.KmnmtAffiliWorkplaceHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.workplace.KmnmtAffiliWorkplaceHistPK_;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.workplace.KmnmtAffiliWorkplaceHist_;
 
 /**
- * The Class JpaAffiliationWorkplaceHistoryRepository.
+ * The Class JpaAffWorkplaceHistoryRepository.
  */
 @Stateless
-public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
-		implements AffiliationWorkplaceHistoryRepository {
-
+public class JpaAffWorkplaceHistoryRepository extends JpaRepository
+		implements AffWorkplaceHistoryRepository {
 	
 	/*
 	 * (non-Javadoc)
@@ -41,7 +40,7 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 	 * java.util.List)
 	 */
 	@Override
-	public List<AffiliationWorkplaceHistory> searchWorkplaceHistory(GeneralDate baseDate,
+	public List<AffWorkplaceHistory> searchWorkplaceHistory(GeneralDate baseDate,
 			List<String> workplaces) {
 
 		// check exist data
@@ -96,13 +95,13 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the employee workplace history
 	 */
-	private AffiliationWorkplaceHistory toDomain(KmnmtAffiliWorkplaceHist entity) {
-		return new AffiliationWorkplaceHistory(
-				new JpaAffiliationWorkplaceHistoryGetMemento(entity));
+	private AffWorkplaceHistory toDomain(KmnmtAffiliWorkplaceHist entity) {
+		return new AffWorkplaceHistory(
+				new JpaAffWorkplaceHistoryGetMemento(entity));
 	}
 
 	@Override
-	public List<AffiliationWorkplaceHistory> searchWorkplaceHistory(List<String> employeeIds,
+	public List<AffWorkplaceHistory> searchWorkplaceHistory(List<String> employeeIds,
 			GeneralDate baseDate, List<String> workplaces) {
 
 		// check exist data
@@ -164,7 +163,7 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 	 * java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<AffiliationWorkplaceHistory> searchWorkplaceHistoryByEmployee(String employeeId, 
+	public List<AffWorkplaceHistory> searchWorkplaceHistoryByEmployee(String employeeId, 
 			GeneralDate baseDate) {
 
 		// get entity manager
@@ -209,7 +208,7 @@ public class JpaAffiliationWorkplaceHistoryRepository extends JpaRepository
 	}
 
 	@Override
-	public List<AffiliationWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
+	public List<AffWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
 			GeneralDate baseDate) {
 		
 		// check exist data

@@ -10,7 +10,7 @@ import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCo
 /**
  * The Interface AffiliationClassificationHistorySetMemento.
  */
-public interface AffiliationClassificationHistorySetMemento {
+public interface AffClassHistorySetMemento {
 
 	/**
 	 * Sets the classification code.

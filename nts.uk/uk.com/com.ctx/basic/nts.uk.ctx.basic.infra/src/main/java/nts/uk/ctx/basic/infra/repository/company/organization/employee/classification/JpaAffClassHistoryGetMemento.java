@@ -6,15 +6,14 @@ package nts.uk.ctx.basic.infra.repository.company.organization.employee.classifi
 
 import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCode;
-import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistoryGetMemento;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffClassHistoryGetMemento;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHistPK;
 
 /**
- * The Class JpaAffiliationClassificationHistoryGetMemento.
+ * The Class JpaAffClassHistoryGetMemento.
  */
-public class JpaAffiliationClassificationHistoryGetMemento
-		implements AffiliationClassificationHistoryGetMemento {
+public class JpaAffClassHistoryGetMemento implements AffClassHistoryGetMemento {
 	
 	/** The classification history. */
 	private KmnmtAffiliClassificationHist classificationHistory;
@@ -24,7 +23,7 @@ public class JpaAffiliationClassificationHistoryGetMemento
 	 *
 	 * @param classificationHistory the classification history
 	 */
-	public JpaAffiliationClassificationHistoryGetMemento(KmnmtAffiliClassificationHist classificationHistory) {
+	public JpaAffClassHistoryGetMemento(KmnmtAffiliClassificationHist classificationHistory) {
 		if (classificationHistory.getKmnmtClassificationHistPK() == null) {
 			classificationHistory.setKmnmtClassificationHistPK(new KmnmtAffiliClassificationHistPK());
 		}

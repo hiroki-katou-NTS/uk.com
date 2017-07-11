@@ -5,16 +5,15 @@
 package nts.uk.ctx.basic.infra.repository.company.organization.employee.jobtitle;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJobTitleHistorySetMemento;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistorySetMemento;
 import nts.uk.ctx.basic.dom.company.organization.jobtitle.PositionId;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.jobtitle.KmnmtAffiliJobTitleHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.jobtitle.KmnmtAffiliJobTitleHistPK;
 
 /**
- * The Class JpaAffiliationJobTitleHistorySetMemento.
+ * The Class JpaAffJobTitleHistorySetMemento.
  */
-public class JpaAffiliationJobTitleHistorySetMemento
-		implements AffiliationJobTitleHistorySetMemento {
+public class JpaAffJobTitleHistorySetMemento implements AffJobTitleHistorySetMemento {
 	
 	/** The job title history. */
 	private KmnmtAffiliJobTitleHist jobTitleHistory;
@@ -24,7 +23,7 @@ public class JpaAffiliationJobTitleHistorySetMemento
 	 *
 	 * @param jobTitleHistory the job title history
 	 */
-	public JpaAffiliationJobTitleHistorySetMemento(KmnmtAffiliJobTitleHist jobTitleHistory) {
+	public JpaAffJobTitleHistorySetMemento(KmnmtAffiliJobTitleHist jobTitleHistory) {
 		if (jobTitleHistory.getKmnmtJobTitleHistPK() == null) {
 			jobTitleHistory.setKmnmtJobTitleHistPK(new KmnmtAffiliJobTitleHistPK());
 		}

@@ -19,8 +19,8 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffiliationEmploymentHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffiliationEmploymentHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.employment.KmnmtAffiliEmploymentHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.employment.KmnmtAffiliEmploymentHistPK_;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.employment.KmnmtAffiliEmploymentHist_;
@@ -29,8 +29,8 @@ import nts.uk.ctx.basic.infra.entity.company.organization.employee.employment.Km
  * The Class JpaAffiliationEmploymentHistoryRepository.
  */
 @Stateless
-public class JpaAffiliationEmploymentHistoryRepository extends JpaRepository
-		implements AffiliationEmploymentHistoryRepository {
+public class JpaAffEmploymentHistoryRepository extends JpaRepository
+		implements AffEmploymentHistoryRepository {
 
 	/**
 	 * To domain.
@@ -38,8 +38,8 @@ public class JpaAffiliationEmploymentHistoryRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the employment history
 	 */
-	private AffiliationEmploymentHistory toDomain(KmnmtAffiliEmploymentHist entity){
-		return new AffiliationEmploymentHistory(new JpaAffiliationEmploymentHistoryGetMemento(entity));
+	private AffEmploymentHistory toDomain(KmnmtAffiliEmploymentHist entity){
+		return new AffEmploymentHistory(new JpaAffEmploymentHistoryGetMemento(entity));
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaAffiliationEmploymentHistoryRepository extends JpaRepository
 	 * java.util.List)
 	 */
 	@Override
-	public List<AffiliationEmploymentHistory> searchEmployee(GeneralDate baseDate,
+	public List<AffEmploymentHistory> searchEmployee(GeneralDate baseDate,
 			List<String> employmentCodes) {
 		
 		// get entity manager
@@ -107,7 +107,7 @@ public class JpaAffiliationEmploymentHistoryRepository extends JpaRepository
 	 * nts.arc.time.GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<AffiliationEmploymentHistory> searchEmployee(List<String> employeeIds, GeneralDate baseDate,
+	public List<AffEmploymentHistory> searchEmployee(List<String> employeeIds, GeneralDate baseDate,
 			List<String> employmentCodes) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();

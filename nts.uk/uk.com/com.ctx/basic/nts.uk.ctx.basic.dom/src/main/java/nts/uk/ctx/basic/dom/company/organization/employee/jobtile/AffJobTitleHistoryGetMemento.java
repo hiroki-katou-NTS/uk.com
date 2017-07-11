@@ -8,32 +8,31 @@ import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.jobtitle.PositionId;
 
 /**
- * The Class JobTitleHistorySetMemento.
+ * The Interface JobTitleHistoryGetMemento.
  */
-public interface AffiliationJobTitleHistorySetMemento {
-	
-	
-	/**
-	 * Sets the period.
-	 *
-	 * @param period the new period
-	 */
-	void setPeriod(Period period);
-	
-	
-	/**
-	 * Sets the employee id.
-	 *
-	 * @param employeeId the new employee id
-	 */
-	void setEmployeeId(String employeeId);
-	
-	
-	/**
-	 * Sets the job title id.
-	 *
-	 * @param jobTitleId the new job title id
-	 */
-	void setJobTitleId(PositionId jobTitleId);
+public interface AffJobTitleHistoryGetMemento {
 
+	
+	/**
+	 * Gets the period.
+	 *
+	 * @return the period
+	 */
+	Period getPeriod();
+	
+	
+	/**
+	 * Gets the employee id.
+	 *
+	 * @return the employee id
+	 */
+	String getEmployeeId();
+	
+	
+	/**
+	 * Gets the job title id.
+	 *
+	 * @return the job title id
+	 */
+	PositionId getJobTitleId();
 }
