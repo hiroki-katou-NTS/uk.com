@@ -531,23 +531,23 @@ div.label {
 /*****************************
   Icon
 *****************************/
-/* line 224, ../sass/components/_commons.scss */
+/* line 4, ../sass/components/_icons.scss */
 .icon {
   position: relative;
   display: inline-block;
 }
-/* line 228, ../sass/components/_commons.scss */
+/* line 8, ../sass/components/_icons.scss */
 .icon::before, .icon::after {
   content: '';
   position: absolute;
   display: block;
 }
-/* line 234, ../sass/components/_commons.scss */
+/* line 14, ../sass/components/_icons.scss */
 .icon.icon-close {
   width: 16px;
   height: 16px;
 }
-/* line 237, ../sass/components/_commons.scss */
+/* line 17, ../sass/components/_icons.scss */
 .icon.icon-close::before, .icon.icon-close::after {
   height: 3px;
   width: 100%;
@@ -556,7 +556,7 @@ div.label {
   margin-top: -1px;
   background: #404040;
 }
-/* line 245, ../sass/components/_commons.scss */
+/* line 25, ../sass/components/_icons.scss */
 .icon.icon-close::before {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -564,7 +564,7 @@ div.label {
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 248, ../sass/components/_commons.scss */
+/* line 28, ../sass/components/_icons.scss */
 .icon.icon-close::after {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
@@ -572,7 +572,7 @@ div.label {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-/* line 253, ../sass/components/_commons.scss */
+/* line 33, ../sass/components/_icons.scss */
 .icon.icon-dot {
   width: 16px;
   height: 16px;
@@ -581,7 +581,7 @@ div.label {
   background: #00B050;
   box-sizing: border-box;
 }
-/* line 262, ../sass/components/_commons.scss */
+/* line 42, ../sass/components/_icons.scss */
 .icon.icon-search {
   width: 12px;
   height: 12px;
@@ -589,7 +589,7 @@ div.label {
   border-radius: 100%;
   transform: rotate(-45deg);
 }
-/* line 268, ../sass/components/_commons.scss */
+/* line 48, ../sass/components/_icons.scss */
 .icon.icon-search::after {
   top: 12px;
   left: 5px;
@@ -597,7 +597,7 @@ div.label {
   width: 2px;
   background-color: #333333;
 }
-/* line 276, ../sass/components/_commons.scss */
+/* line 56, ../sass/components/_icons.scss */
 .icon.icon-searchbox {
   position: absolute;
   top: 0;
@@ -608,7 +608,7 @@ div.label {
   background: #00B050;
   border-radius: 5px;
 }
-/* line 286, ../sass/components/_commons.scss */
+/* line 66, ../sass/components/_icons.scss */
 .icon.icon-searchbox:before {
   width: 12px;
   height: 12px;
@@ -617,7 +617,7 @@ div.label {
   top: 6px;
   left: 7px;
 }
-/* line 294, ../sass/components/_commons.scss */
+/* line 74, ../sass/components/_icons.scss */
 .icon.icon-searchbox::after {
   top: 18px;
   left: 22px;
@@ -627,14 +627,14 @@ div.label {
   background-color: #FFF;
   transform: rotate(-45deg);
 }
-/* line 304, ../sass/components/_commons.scss */
+/* line 84, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left {
   margin: 10px 0 10px 3px;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 310, ../sass/components/_commons.scss */
+/* line 90, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -643,7 +643,7 @@ div.label {
   left: -3px;
   top: -4px;
 }
-/* line 318, ../sass/components/_commons.scss */
+/* line 98, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -652,14 +652,14 @@ div.label {
   left: -3px;
   top: 4px;
 }
-/* line 327, ../sass/components/_commons.scss */
+/* line 107, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right {
   margin: 10px 3px 10px 0;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 333, ../sass/components/_commons.scss */
+/* line 113, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -668,7 +668,7 @@ div.label {
   right: -3px;
   top: -4px;
 }
-/* line 341, ../sass/components/_commons.scss */
+/* line 121, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -677,14 +677,14 @@ div.label {
   right: -3px;
   top: 4px;
 }
-/* line 350, ../sass/components/_commons.scss */
+/* line 130, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top {
   margin: 8px 5px 0 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 356, ../sass/components/_commons.scss */
+/* line 136, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -693,7 +693,7 @@ div.label {
   left: -2px;
   top: 2px;
 }
-/* line 364, ../sass/components/_commons.scss */
+/* line 144, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -702,14 +702,14 @@ div.label {
   left: -10px;
   top: 2px;
 }
-/* line 373, ../sass/components/_commons.scss */
+/* line 153, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom {
   margin: 5px 5px 3px 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 379, ../sass/components/_commons.scss */
+/* line 159, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -718,7 +718,7 @@ div.label {
   left: -2px;
   bottom: 2px;
 }
-/* line 387, ../sass/components/_commons.scss */
+/* line 167, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -726,6 +726,25 @@ div.label {
   transform: rotate(-130deg);
   left: -10px;
   bottom: 2px;
+}
+
+/* line 179, ../sass/components/_icons.scss */
+.img-icon.arrow-up {
+  background: url("images/icons/arrow-up.png") no-repeat center;
+  width: 24px;
+  height: 24px;
+}
+/* line 183, ../sass/components/_icons.scss */
+.img-icon.arrow-down {
+  background: url("images/icons/arrow-down.png") no-repeat center;
+  width: 24px;
+  height: 24px;
+}
+/* line 187, ../sass/components/_icons.scss */
+.img-icon.filter {
+  background: url("images/icons/filter.png") no-repeat center;
+  width: 30px;
+  height: 28px;
 }
 
 /* line 2, ../sass/components/_accordion.scss */
@@ -956,57 +975,57 @@ button[disabled] {
   cursor: default;
   color: #888888;
 }
-/* line 46, ../sass/components/_button.scss */
+/* line 39, ../sass/components/_button.scss */
 button.proceed {
   background-color: #A4EEB0;
 }
-/* line 49, ../sass/components/_button.scss */
+/* line 42, ../sass/components/_button.scss */
 button.proceed:hover {
   background-color: #79e68b;
 }
-/* line 53, ../sass/components/_button.scss */
+/* line 46, ../sass/components/_button.scss */
 button.proceed[disabled] {
   background-color: #b0d3b5;
 }
-/* line 57, ../sass/components/_button.scss */
+/* line 50, ../sass/components/_button.scss */
 button.danger {
   background-color: #FED3C6;
 }
-/* line 60, ../sass/components/_button.scss */
+/* line 53, ../sass/components/_button.scss */
 button.danger:hover {
   background-color: #fec0ad;
 }
-/* line 64, ../sass/components/_button.scss */
+/* line 57, ../sass/components/_button.scss */
 button.danger[disabled] {
   background-color: #ead2cb;
 }
-/* line 69, ../sass/components/_button.scss */
+/* line 62, ../sass/components/_button.scss */
 button.with-icon {
   background-repeat: no-repeat;
   background-position: 3px;
   background-size: 16px;
   padding-left: 21px;
 }
-/* line 76, ../sass/components/_button.scss */
+/* line 69, ../sass/components/_button.scss */
 button.with-icon.small {
   background-position: 2px 1px;
   background-size: 14px;
   padding-left: 17px;
 }
-/* line 82, ../sass/components/_button.scss */
+/* line 75, ../sass/components/_button.scss */
 button.with-icon.large {
   background-position: 4px;
   background-size: 20px;
   padding-left: 28px;
 }
-/* line 88, ../sass/components/_button.scss */
+/* line 81, ../sass/components/_button.scss */
 button.with-icon.x-large {
   background-position: 7px 5px;
   background-size: 30px;
   padding-left: 38px;
 }
 
-/* line 97, ../sass/components/_button.scss */
+/* line 90, ../sass/components/_button.scss */
 button {
   color: #404040;
   font-size: 13px;
@@ -1018,32 +1037,33 @@ button {
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   overflow: visible;
 }
-/* line 125, ../sass/components/_button.scss */
+/* line 118, ../sass/components/_button.scss */
 button:focus {
   border-color: #0096f2;
   box-shadow: 0 2px 2px 0 #0096f2;
 }
-/* line 128, ../sass/components/_button.scss */
+/* line 121, ../sass/components/_button.scss */
 button:focus.small {
+  box-shadow: 0 2px 2px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 132, ../sass/components/_button.scss */
+/* line 126, ../sass/components/_button.scss */
 button:focus.large {
-  box-shadow: 0 4px #0096f2;
+  box-shadow: 0 4px 2px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 140, ../sass/components/_button.scss */
+/* line 134, ../sass/components/_button.scss */
 button:focus.x-large {
-  box-shadow: 0 5px #0096f2;
+  box-shadow: 0 5px 3px 0 #0096f2;
   /* END: SAME ALL SIZES */
 }
-/* line 149, ../sass/components/_button.scss */
-button:active {
+/* line 143, ../sass/components/_button.scss */
+button:active:enabled {
   top: 3px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 #999;
 }
-/* line 155, ../sass/components/_button.scss */
+/* line 149, ../sass/components/_button.scss */
 button.small {
   /* START: SAME ALL SIZES */
   font-size: 12px;
@@ -1053,13 +1073,13 @@ button.small {
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 171, ../sass/components/_button.scss */
-button.small:active {
+/* line 165, ../sass/components/_button.scss */
+button.small:active:enabled {
   top: 3px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 179, ../sass/components/_button.scss */
+/* line 173, ../sass/components/_button.scss */
 button.large {
   /* START: SAME ALL SIZES */
   font-size: 15px;
@@ -1069,13 +1089,13 @@ button.large {
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 195, ../sass/components/_button.scss */
-button.large:active {
+/* line 189, ../sass/components/_button.scss */
+button.large:active:enabled {
   top: 4px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
 }
-/* line 203, ../sass/components/_button.scss */
+/* line 197, ../sass/components/_button.scss */
 button.x-large {
   /* START: SAME ALL SIZES */
   font-size: 22px;
@@ -1085,15 +1105,33 @@ button.x-large {
   box-shadow: 0 5px #999;
   /* END: SAME ALL SIZES */
 }
-/* line 219, ../sass/components/_button.scss */
-button.x-large:active {
+/* line 213, ../sass/components/_button.scss */
+button.x-large:active:enabled {
   top: 5px;
   border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
 }
-/* line 227, ../sass/components/_button.scss */
+/* line 221, ../sass/components/_button.scss */
 button.auto-height {
   height: auto;
+}
+
+/* line 226, ../sass/components/_button.scss */
+#functions-area,
+#functions-area-bottom {
+  font-size: 0;
+}
+/* line 229, ../sass/components/_button.scss */
+#functions-area button,
+#functions-area-bottom button {
+  margin-left: 15px;
+  min-width: 65px;
+}
+/* line 233, ../sass/components/_button.scss */
+#functions-area button.danger,
+#functions-area-bottom button.danger {
+  margin-left: 45px;
+  margin-right: 30px;
 }
 
 /*****************************
@@ -1805,19 +1843,37 @@ button.nts-switch-button[disabled]:hover {
   padding: 10px;
   position: relative;
 }
-/* line 5, ../sass/components/_panel.scss */
+/* line 7, ../sass/components/_panel.scss */
 .panel.panel-frame {
   border: 2px solid #B1B1B1;
   border-radius: 7px;
 }
-/* line 9, ../sass/components/_panel.scss */
+/* line 11, ../sass/components/_panel.scss */
 .panel.panel-gray-bg {
   background-color: #E7E6E6;
 }
-/* line 12, ../sass/components/_panel.scss */
+/* line 14, ../sass/components/_panel.scss */
 .panel.ntsPanel {
   background-color: #E0F59E;
   border-radius: 7px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+/* line 19, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-top {
+  margin-top: 50px;
+}
+/* line 20, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-bottom {
+  margin-bottom: 50px;
+}
+/* line 21, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-right {
+  margin-right: 50px;
+}
+/* line 22, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-left {
+  margin-left: 50px;
 }
 
 @CHARSET "UTF-8";
@@ -1971,6 +2027,7 @@ button.nts-switch-button[disabled]:hover {
 .listbox-wrapper {
   border: 1px solid grey;
   display: inline-block;
+  overflow: hidden;
 }
 
 /* line 3, ../sass/components/_gridlist.scss */
@@ -2205,6 +2262,11 @@ button.nts-switch-button[disabled]:hover {
   border-color: #0096f2;
 }
 
+/* line 27, ../sass/components/_combobox.scss */
+.compact-grid .ui-igcombo-wrapper {
+  height: 27px;
+}
+
 /* line 2, ../sass/components/_dialog.scss */
 .nts-fileupload-container .filename {
   cursor: pointer;
@@ -2248,21 +2310,25 @@ button.nts-switch-button[disabled]:hover {
   bottom: 3px;
   background-position: -80px -224px;
 }
-/* line 43, ../sass/components/_dialog.scss */
+/* line 44, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-titlebar-close:active {
+  top: calc(50% + 3px);
+}
+/* line 48, ../sass/components/_dialog.scss */
 .ui-dialog.no-close-btn .ui-dialog-titlebar-close {
   display: none;
 }
-/* line 47, ../sass/components/_dialog.scss */
+/* line 52, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content {
   padding: 20px;
 }
-/* line 50, ../sass/components/_dialog.scss */
+/* line 55, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog {
   min-width: 250px;
   padding: 0;
   position: relative;
 }
-/* line 55, ../sass/components/_dialog.scss */
+/* line 60, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .text {
   display: inline-block;
   margin: 20px;
@@ -2272,14 +2338,14 @@ button.nts-switch-button[disabled]:hover {
   overflow-y: auto;
   line-height: 22px;
 }
-/* line 64, ../sass/components/_dialog.scss */
+/* line 69, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .control {
   right: 10px;
   bottom: 0px;
   position: absolute;
   color: gray;
 }
-/* line 73, ../sass/components/_dialog.scss */
+/* line 78, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane {
   padding: 10px 0;
   margin: 0px;
@@ -2287,11 +2353,11 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
   position: relative;
 }
-/* line 80, ../sass/components/_dialog.scss */
+/* line 85, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane .ui-dialog-buttonset {
   float: none;
 }
-/* line 84, ../sass/components/_dialog.scss */
+/* line 89, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane > .ui-dialog-buttonpane-resize {
   right: 0px;
   bottom: 0px;
@@ -2299,23 +2365,23 @@ button.nts-switch-button[disabled]:hover {
   max-width: 20px;
   max-height: 20px;
 }
-/* line 92, ../sass/components/_dialog.scss */
+/* line 97, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane button {
   margin: 0 10px;
   min-width: 80px;
   font-family: "Meiryo UI";
 }
-/* line 99, ../sass/components/_dialog.scss */
+/* line 104, ../sass/components/_dialog.scss */
 .ui-dialog #error-board {
   overflow: hidden;
 }
-/* line 102, ../sass/components/_dialog.scss */
+/* line 107, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table {
   border-collapse: collapse;
   width: 100%;
   margin: 0;
 }
-/* line 108, ../sass/components/_dialog.scss */
+/* line 113, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td {
   border: solid 1px #bbb;
@@ -2326,20 +2392,20 @@ button.nts-switch-button[disabled]:hover {
   box-sizing: border-box;
   cursor: pointer;
 }
-/* line 119, ../sass/components/_dialog.scss */
+/* line 124, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td:first-child {
   background-color: #A4EEB0;
 }
-/* line 124, ../sass/components/_dialog.scss */
+/* line 129, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table thead tr {
   position: relative;
 }
-/* line 129, ../sass/components/_dialog.scss */
+/* line 134, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody {
   overflow: auto;
 }
-/* line 133, ../sass/components/_dialog.scss */
+/* line 138, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody tr td:last-child {
   color: gray;
 }
@@ -2749,30 +2815,33 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 1, ../sass/components/_searchbox.scss */
-input.ntsSearchBox {
+.nts-searchbbox-wrapper {
+  margin-bottom: 15px;
+}
+/* line 4, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper input.ntsSearchBox {
   box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid #999;
+  border-radius: 3px;
   font-size: 14px;
-  background-color: white;
-  background-image: url("enter mark.png");
+  background-image: url("images/icons/enter_mark.png");
   background-position: right;
   background-repeat: no-repeat;
   padding: 6px 30px 6px 15px;
-  -webkit-transition: width 0.4s ease-in-out;
+  vertical-align: top;
   transition: width 0.4s ease-in-out;
 }
-
-/* When the input field gets focus, change its width to 100% */
-/* line 16, ../sass/components/_searchbox.scss */
-input.ntsSearchBox:focus {
-  border: 2px solid #00BFFF;
+/* line 17, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper input.ntsSearchBox:focus {
+  box-shadow: 0 0 1px 1px #0096f2;
   outline: none;
 }
-
-/* line 20, ../sass/components/_searchbox.scss */
-button.search-btn {
-  margin: 5px;
+/* line 22, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper button.search-btn,
+.nts-searchbbox-wrapper button.clear-btn {
+  vertical-align: top;
+  margin-left: 5px;
+  min-width: 65px;
 }
 
 /*!
@@ -3299,6 +3368,11 @@ button.search-btn {
   background-color: #007fff;
 }
 
+/* line 127, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper table tr td .nts-grid.control {
+  height: 35px;
+}
+
 /*****************************
   Limited label
 *****************************/
@@ -3476,12 +3550,12 @@ button.search-btn {
   top: 10px;
 }
 
-/* line 41, ../sass/base.scss */
+/* line 42, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 45, ../sass/base.scss */
+/* line 46, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

@@ -36,13 +36,6 @@ $button-disabled-base-color: #888888;
         color: $button-disabled-base-color;
     }
 
-    &:active {
-		
-        &[disabled] {
-			
-        }
-    }
-
     &.proceed {
         background-color: $button-proceed-base-color;
 
@@ -126,13 +119,14 @@ button {
 		border-color: $focused_color;
 		box-shadow: 0 2px 2px 0 $focused_color;
 	  	&.small {
+	  		box-shadow: 0 2px 2px 0 $focused_color;
 	    	/* END: SAME ALL SIZES */
 	    }
 	    
 	    &.large {
     		$_thickness_gap: 1px;
 	    	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
-	 	    box-shadow: 0 $_border_bottom_width #0096f2;
+	 	    box-shadow: 0 $_border_bottom_width 2px 0 #0096f2;
 	    	
 	    	/* END: SAME ALL SIZES */
 	    }
@@ -141,12 +135,12 @@ button {
     		$_thickness_gap: 2px;
 	    	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
 	    	
-	  	 	box-shadow: 0 $_border_bottom_width #0096f2;
+	  	 	box-shadow: 0 $_border_bottom_width 3px 0 #0096f2;
 	    	/* END: SAME ALL SIZES */
 		}
 	}
 	
-    &:active {
+    &:active:enabled {
         top: $_base_border_bottom_width;
         border-color: $button-boxshadow-base-color;
 		box-shadow: 0 0 #999;
@@ -168,7 +162,7 @@ button {
     	height: $_height;
     	box-shadow: 0 $_border_bottom_width $button-boxshadow-base-color;
     	
-    	&:active {
+    	&:active:enabled {
     		top: $_border_bottom_width;
     		border-color: $button-boxshadow-base-color;
 			box-shadow: 0 0 $button-boxshadow-base-color;
@@ -192,7 +186,7 @@ button {
     	height: $_height;
  	    box-shadow: 0 $_border_bottom_width $button-boxshadow-base-color;
     	
-    	&:active {
+    	&:active:enabled {
     		top: $_border_bottom_width;
     		border-color: $button-boxshadow-base-color;
 			box-shadow: 0 0 $button-boxshadow-base-color !important;
@@ -216,7 +210,7 @@ button {
     	height: $_height;
   	 	box-shadow: 0 $_border_bottom_width #999;
     	
-    	&:active {
+    	&:active:enabled {
     		top: $_border_bottom_width;
     		border-color: $button-boxshadow-base-color;
 			box-shadow: 0 0 $button-boxshadow-base-color !important;
@@ -227,5 +221,18 @@ button {
     &.auto-height{
     	height: auto;
     }
-	
+}
+
+#functions-area,
+#functions-area-bottom {
+	font-size: 0;
+	button {
+		margin-left: 15px;
+		min-width: 65px;
+		
+		&.danger {
+			margin-left: 45px;
+			margin-right: 30px;
+		}
+	}
 }
