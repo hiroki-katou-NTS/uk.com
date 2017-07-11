@@ -99,7 +99,13 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.23'
+        // Apache commons CSV
+		compile group: 'org.apache.commons', name: 'commons-csv', version: '1.4'
+        
+        // Apache commons IO
+		compile group: 'commons-io', name: 'commons-io', version: '2.5'
+		
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.24'
 		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.6'
 		
 	}
