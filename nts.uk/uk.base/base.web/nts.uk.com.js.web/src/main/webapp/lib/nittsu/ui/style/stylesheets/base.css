@@ -2796,30 +2796,33 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 1, ../sass/components/_searchbox.scss */
-input.ntsSearchBox {
+.nts-searchbbox-wrapper {
+  margin-bottom: 15px;
+}
+/* line 4, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper input.ntsSearchBox {
   box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid #999;
+  border-radius: 3px;
   font-size: 14px;
-  background-color: white;
-  background-image: url("enter mark.png");
+  background-image: url("images/icons/enter_mark.png");
   background-position: right;
   background-repeat: no-repeat;
   padding: 6px 30px 6px 15px;
-  -webkit-transition: width 0.4s ease-in-out;
+  vertical-align: top;
   transition: width 0.4s ease-in-out;
 }
-
-/* When the input field gets focus, change its width to 100% */
-/* line 16, ../sass/components/_searchbox.scss */
-input.ntsSearchBox:focus {
-  border: 2px solid #00BFFF;
+/* line 17, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper input.ntsSearchBox:focus {
+  box-shadow: 0 0 1px 1px #0096f2;
   outline: none;
 }
-
-/* line 20, ../sass/components/_searchbox.scss */
-button.search-btn {
-  margin: 5px;
+/* line 22, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper button.search-btn,
+.nts-searchbbox-wrapper button.clear-btn {
+  vertical-align: top;
+  margin-left: 5px;
+  min-width: 65px;
 }
 
 /*!
