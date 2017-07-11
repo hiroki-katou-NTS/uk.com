@@ -1,12 +1,14 @@
 package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -25,6 +27,10 @@ public class TopPageJobSetFinder {
 	public List<TopPageJobSetDto> find(List<String> listJobId) {
 		String companyId = AppContexts.user().companyId();
 		List<TopPageJobSetDto> topPageJobSetDto = new ArrayList<>();
+		//check empty listJobId
+		if (CollectionUtil.isEmpty(listJobId)) {
+			return Collections.emptyList();
+		}
 		// find toppagejobset base on companyId and list jobId
 		List<TopPageJobSet> listTopPageJobSet = topPageJobSetRepo.findByListJobId(companyId, listJobId);
 		if (listTopPageJobSet.size() > 0) {

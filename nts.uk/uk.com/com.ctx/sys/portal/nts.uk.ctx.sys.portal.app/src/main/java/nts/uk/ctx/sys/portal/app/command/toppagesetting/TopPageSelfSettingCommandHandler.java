@@ -25,7 +25,7 @@ public class TopPageSelfSettingCommandHandler extends CommandHandler<TopPageSelf
 	@Override
 	protected void handle(CommandHandlerContext<TopPageSelfSettingCommand> context) {
 		//lay employeeId
-		String employeeId = AppContexts.user().employeeCode();
+		String employeeId = AppContexts.user().employeeId();
 		TopPageSelfSet topPageNew = TopPageSelfSet.createFromJavaType(employeeId,
 										context.getCommand().getCode());
 		//Kiem tra trong du lieu trong data

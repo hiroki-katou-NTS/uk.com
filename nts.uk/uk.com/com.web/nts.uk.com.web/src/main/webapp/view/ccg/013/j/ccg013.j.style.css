@@ -35,7 +35,7 @@ table.control {
 	margin-left: 10px;
 }
 
-img {
+#liveview {
 	width: 270px;
 	height: 150px;
 }
@@ -44,13 +44,12 @@ img {
 	cursor: pointer;
 	color: blue;
 	text-decoration: underline;
+	width: 200px;
+	overflow: hidden;
+	display: inline-block;
 }
 
-table tr td {
-	padding: 5px;
-}
-
-span{
+.description{
 	height: 30px;
 }
 
@@ -70,4 +69,5 @@ span{
 
 .filename{
 	width: 200px;
+	display: none;
 }

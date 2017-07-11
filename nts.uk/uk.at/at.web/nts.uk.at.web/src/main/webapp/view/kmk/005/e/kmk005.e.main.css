@@ -2,8 +2,9 @@
 .control-group.valign-top > * { vertical-align: top; }
 .control-group.valign-bottom > * { vertical-align: bottom; }
 
-.tab-content-1, .tab-content-2 {
-	width: 1160px;
+#tab-1, #tab-2 {
+    width: 1170px;
+    height: 550px;
 }
 .ui-tabs-tab {
 	text-align: center;
@@ -13,40 +14,28 @@ table, tr, th, td {
 	border: 1px solid #999999;
 }
 .switch-1 {
-	width: 215px;
-}
-.switch-1  > button:NTH-CHILD(1) {
-	width: 100px;
-}
-.switch-1  > button:NTH-CHILD(2) {
-	width: 115px;
+	
 }
 .switch-2 {
-	width: 415px;
-}
-.switch-2 > button:NTH-CHILD(1) {
-	width: 100px;
-}
-.switch-2 > button:NTH-CHILD(2) {
-	width: 115px;
-}
-.switch-2 > button:NTH-CHILD(3) {
-	width: 200px;
+	
 }
 .switch-3 {
-	width: 415px;
-}
-.switch-3 > button:NTH-CHILD(1) {
-	width: 100px;
-}
-.switch-3 > button:NTH-CHILD(2) {
-	width: 115px;
-}
-.switch-3 > button:NTH-CHILD(3) {
-	width: 200px;
+	
 }
 .textBody {
 	margin-left: 15px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(1) {
+	width: 65px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(2) {
+	width: 205px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(3) {
+	width: 408px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(4) {
+	width: 408px;
 }
 #table-panel-1 > thead > tr:NTH-CHILD(1) > th {
 	padding-left: 10px;
@@ -60,7 +49,6 @@ table, tr, th, td {
 	background: #F8ECD1;
 }
 #table-panel-1 > tbody > tr > td:NTH-CHILD(1) {
-	width: 100px;
 	padding: 3px;
 	background-color: #EDFAC2;
 }
@@ -75,6 +63,18 @@ table, tr, th, td {
 }
 #table-panel-1 > tbody > tr > td:NTH-CHILD(4) {
 	padding: 3px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(1) {
+	width: 65px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(2) {
+	width: 205px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(3) {
+	width: 408px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(4) {
+	width: 408px;
 }
 #table-panel-2 > thead > tr:NTH-CHILD(1) > th {
 	padding-left: 10px;
@@ -91,7 +91,6 @@ table, tr, th, td {
 	background: white;
 }
 #table-panel-2 > tbody > tr > td:NTH-CHILD(1) {
-	width: 100px;
 	padding: 3px;
 	background-color: #EDFAC2;
 }

@@ -149,7 +149,7 @@ module kcp.share.tree {
             if (data.isShowAlreadySet) {
                 // Add row already setting.
                 self.treeComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'isAlreadySetting', width: "15%",
+                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'isAlreadySetting', width: "15%", dataType: 'string'
                     formatter: function(isAlreadySetting: string) {
                         if (isAlreadySetting == 'true') {
                             return '<div style="text-align: center;"><i class="icon icon icon-78"></i></div>';
@@ -164,6 +164,14 @@ module kcp.share.tree {
             // subscribe change selected level
             self.levelSelected.subscribe(function(level) {
                 self.filterData();
+            });
+            
+            // subscribe change item list origin
+            self.backupItemList.subscribe((newData) => {
+                // data is empty, set selected work place id empty
+                if (!newData || newData.length <= 0) {
+                    self.selectedWorkplaceIds(self.isMultiple ? [] : '');
+                }
             });
             
             // Find data.

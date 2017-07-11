@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
@@ -173,5 +174,34 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 				.query(GET_ONE_PIS, CcgmtPartItemSet.class).setParameter("companyId", companyId)
 				.getList(p -> pusToDomain(p));
 		return lstTopPagePartUseSetting;
+	}
+
+	/**
+	 * hoatt
+	 * find my page setting
+	 * @param companyId
+	 * @return
+	 */
+	@Override
+	public Optional<MyPageSetting> findMyPageSet(String companyId) {
+		
+		return this.queryProxy().find(companyId, CcgmtMyPageSet.class).map(c->toDomainMyPageSet(c));
+	}
+	/**
+	 * hoatt
+	 * convert entity CcgmtMyPageSet to domain MyPageSetting
+	 * @param entity
+	 * @return
+	 */
+	private MyPageSetting toDomainMyPageSet(CcgmtMyPageSet entity) {
+		 List<TopPagePartUseSetting> lstTopPart = null;
+		val domain = MyPageSetting.createFromJavaType(entity.getCid(),
+				Integer.valueOf(entity.getUseMyPageAtr()),
+				Integer.valueOf(entity.getUseWidgetAtr()),
+				Integer.valueOf(entity.getUseDashBoardAtr()),
+				Integer.valueOf(entity.getUseFolowMenuAtr()),
+				Integer.valueOf(entity.getExternalUrlPermissionAtr()),
+						lstTopPart);
+		return domain;
 	}
 }

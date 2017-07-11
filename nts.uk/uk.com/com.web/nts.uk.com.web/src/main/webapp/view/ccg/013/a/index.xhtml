@@ -8,7 +8,8 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode
+					nts.uk.ctx.sys.portal.dom.webmenu.WebMenuName
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg013.a.style.css" />
@@ -20,7 +21,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="A_BTN_001" data-bind="click: cleanForm">新規</button>
-				<button id="A_BTN_002" class="proceed" data-bind="click: addWebMenu">登録</button>
+				<button id="A_BTN_002" class="proceed" data-bind="click: addWebMenu,enable: $root.errors.isEmpty">登録</button>
 				<button id="A_BTN_005" data-bind="click: optionEDialog">コピー</button>
 				<button id="A_BTN_009" data-bind="click: optionFDialog">職位紐付け設定</button>
 				<button id="A_BTN_006" data-bind="click: optionGDialog">個人紐付け設定</button>
@@ -46,7 +47,7 @@
 								dataSource: items,
 								primaryKey: 'webMenuCode',
 								columns: columns2,
-								multiple: false,
+								multiple: false,								
 								value: currentCode
 						}"></table>
 						</div>
@@ -56,9 +57,9 @@
 							<div class="control-group" data-bind="with: currentWebMenu">
 								<div data-bind="ntsFormLabel: {required: true}">コード/名称</div>
 								<span><input style="width: 40px"
-									data-bind="ntsTextEditor: {value: webMenuCode}" /></span> <span><input
+									data-name="#{i18n.getText('CCG013_49')}" data-bind="ntsTextEditor: {value: webMenuCode,constraint: 'WebMenuCode', required: true, enable: false}" /></span> <span><input
 									style="width: 180px"
-									data-bind="ntsTextEditor: {value: webMenuName}" /></span>
+									data-name="#{i18n.getText('CCG013_50')}" data-bind="ntsTextEditor: {value: webMenuName,constraint: 'WebMenuName', required: true}" /></span>
 								<div class="bg-yellow">
 									<div style="margin-left: 5px;"
 										data-bind="ntsCheckBox: {checked: $parent.isDefaultMenu, text: '概定のメニューに設定する' }"
@@ -94,7 +95,7 @@
 																data-bind="attr:{id: treeMenuId},text: name">
 															</li>
 														</ul>
-														<button class="button-add-treemenu"
+														<button class="button-add-treemenu caret-bottom"
 															data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
 															画面の追加<span style="display: block">+</span>
 														</button>

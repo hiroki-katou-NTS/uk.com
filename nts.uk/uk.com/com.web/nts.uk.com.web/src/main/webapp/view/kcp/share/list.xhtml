@@ -23,10 +23,10 @@
 		</com:ko>
 		<table style="clear: both;"
 			data-bind="ntsGridList: {								
-				height: 400,
+				height: gridStyle.rowHeight,
 				width: gridStyle.totalColumnSize,
 				dataSource: itemList,
-				primaryKey: 'code',
+				primaryKey: targetKey,
 				columns: listComponentColumn,
 				multiple: isMultiple,
 				value: selectedCodes,

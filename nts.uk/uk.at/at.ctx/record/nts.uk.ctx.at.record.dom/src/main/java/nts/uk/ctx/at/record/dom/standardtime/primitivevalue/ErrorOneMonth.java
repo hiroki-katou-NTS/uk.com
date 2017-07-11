@@ -1,19 +1,17 @@
 package nts.uk.ctx.at.record.dom.standardtime.primitivevalue;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * 
  * @author nampt
  *
  */
-@DecimalRange(min = "0", max = "44640")
-public class ErrorOneMonth extends DecimalPrimitiveValue<ErrorOneMonth>{
+@TimeRange(max="744:00", min = "00:00")
+public class ErrorOneMonth extends TimeDurationPrimitiveValue<ErrorOneMonth>{
 	
-	public ErrorOneMonth(BigDecimal rawValue) {
+	public ErrorOneMonth(Long rawValue) {
 		super(rawValue);
 	}
 

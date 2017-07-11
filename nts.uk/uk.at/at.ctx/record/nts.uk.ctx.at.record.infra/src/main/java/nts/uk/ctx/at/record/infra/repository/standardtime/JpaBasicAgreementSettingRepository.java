@@ -127,27 +127,27 @@ public class JpaBasicAgreementSettingRepository extends JpaRepository implements
 
 		entity.kmkmtBasicAgreementSettingPK = new KmkmtBasicAgreementSettingPK();
 		entity.kmkmtBasicAgreementSettingPK.basicSettingId = basicAgreementSetting.getBasicSettingId();
-		entity.alarmWeek = basicAgreementSetting.getAlarmWeek().v();
-		entity.alarmTwoWeeks = basicAgreementSetting.getAlarmTwoWeeks().v();
-		entity.alarmFourWeeks = basicAgreementSetting.getAlarmFourWeeks().v();
-		entity.alarmOneMonth = basicAgreementSetting.getAlarmOneMonth().v();
-		entity.alarmTwoMonths = basicAgreementSetting.getAlarmTwoMonths().v();
-		entity.alarmThreeMonths = basicAgreementSetting.getAlarmThreeMonths().v();
-		entity.alarmOneYear = basicAgreementSetting.getAlarmOneYear().v();
-		entity.errorWeek = basicAgreementSetting.getErrorWeek().v();
-		entity.errorTwoWeeks = basicAgreementSetting.getErrorTwoWeeks().v();
-		entity.errorFourWeeks = basicAgreementSetting.getErrorFourWeeks().v();
-		entity.errorOneMonth = basicAgreementSetting.getErrorOneMonth().v();
-		entity.errorTwoMonths = basicAgreementSetting.getErrorTwoMonths().v();
-		entity.errorThreeMonths = basicAgreementSetting.getErrorThreeMonths().v();
-		entity.errorOneYear = basicAgreementSetting.getErrorOneYear().v();
-		entity.limitWeek = isCompany ? basicAgreementSetting.getLimitWeek().v() : BigDecimal.ZERO;
-		entity.limitTwoWeeks = isCompany ? basicAgreementSetting.getLimitTwoWeeks().v() : BigDecimal.ZERO;
-		entity.limitFourWeeks = isCompany ? basicAgreementSetting.getLimitFourWeeks().v() : BigDecimal.ZERO;
-		entity.limitOneMonth = isCompany ? basicAgreementSetting.getLimitOneMonth().v() : BigDecimal.ZERO;
-		entity.limitTwoMonths = isCompany ? basicAgreementSetting.getLimitTwoMonths().v() : BigDecimal.ZERO;
-		entity.limitThreeMonths = isCompany ? basicAgreementSetting.getLimitThreeMonths().v() : BigDecimal.ZERO;
-		entity.limitOneYear = isCompany ? basicAgreementSetting.getLimitOneYear().v() : BigDecimal.ZERO;
+		entity.alarmWeek = new BigDecimal(basicAgreementSetting.getAlarmWeek().v());
+		entity.alarmTwoWeeks = new BigDecimal(basicAgreementSetting.getAlarmTwoWeeks().v());
+		entity.alarmFourWeeks = new BigDecimal(basicAgreementSetting.getAlarmFourWeeks().v());
+		entity.alarmOneMonth = new BigDecimal(basicAgreementSetting.getAlarmOneMonth().v());
+		entity.alarmTwoMonths = new BigDecimal(basicAgreementSetting.getAlarmTwoMonths().v());
+		entity.alarmThreeMonths = new BigDecimal(basicAgreementSetting.getAlarmThreeMonths().v());
+		entity.alarmOneYear = new BigDecimal(basicAgreementSetting.getAlarmOneYear().v());
+		entity.errorWeek = new BigDecimal(basicAgreementSetting.getErrorWeek().v());
+		entity.errorTwoWeeks = new BigDecimal(basicAgreementSetting.getErrorTwoWeeks().v());
+		entity.errorFourWeeks = new BigDecimal(basicAgreementSetting.getErrorFourWeeks().v());
+		entity.errorOneMonth = new BigDecimal(basicAgreementSetting.getErrorOneMonth().v());
+		entity.errorTwoMonths = new BigDecimal(basicAgreementSetting.getErrorTwoMonths().v());
+		entity.errorThreeMonths = new BigDecimal(basicAgreementSetting.getErrorThreeMonths().v());
+		entity.errorOneYear = new BigDecimal(basicAgreementSetting.getErrorOneYear().v());
+		entity.limitWeek = isCompany ? new BigDecimal(basicAgreementSetting.getLimitWeek().v()) : BigDecimal.ZERO;
+		entity.limitTwoWeeks = isCompany ? new BigDecimal(basicAgreementSetting.getLimitTwoWeeks().v()) : BigDecimal.ZERO;
+		entity.limitFourWeeks = isCompany ? new BigDecimal(basicAgreementSetting.getLimitFourWeeks().v()) : BigDecimal.ZERO;
+		entity.limitOneMonth = isCompany ? new BigDecimal(basicAgreementSetting.getLimitOneMonth().v()) : BigDecimal.ZERO;
+		entity.limitTwoMonths = isCompany ? new BigDecimal(basicAgreementSetting.getLimitTwoMonths().v()) : BigDecimal.ZERO;
+		entity.limitThreeMonths = isCompany ? new BigDecimal(basicAgreementSetting.getLimitThreeMonths().v()) : BigDecimal.ZERO;
+		entity.limitOneYear = isCompany ? new BigDecimal(basicAgreementSetting.getLimitOneYear().v()) : BigDecimal.ZERO;
 
 		return entity;
 	}
@@ -155,17 +155,17 @@ public class JpaBasicAgreementSettingRepository extends JpaRepository implements
 	private static BasicAgreementSetting toDomain(KmkmtBasicAgreementSetting kmkmtBasicAgreementSetting) {
 		BasicAgreementSetting basicAgreementSetting = BasicAgreementSetting.createFromJavaType(
 				kmkmtBasicAgreementSetting.kmkmtBasicAgreementSettingPK.basicSettingId,
-				kmkmtBasicAgreementSetting.alarmWeek, kmkmtBasicAgreementSetting.errorWeek,
-				kmkmtBasicAgreementSetting.limitWeek, kmkmtBasicAgreementSetting.alarmTwoWeeks,
-				kmkmtBasicAgreementSetting.errorTwoWeeks, kmkmtBasicAgreementSetting.limitTwoWeeks,
-				kmkmtBasicAgreementSetting.alarmFourWeeks, kmkmtBasicAgreementSetting.errorFourWeeks,
-				kmkmtBasicAgreementSetting.limitFourWeeks, kmkmtBasicAgreementSetting.alarmOneMonth,
-				kmkmtBasicAgreementSetting.errorOneMonth, kmkmtBasicAgreementSetting.limitOneMonth,
-				kmkmtBasicAgreementSetting.alarmTwoMonths, kmkmtBasicAgreementSetting.errorTwoMonths,
-				kmkmtBasicAgreementSetting.limitTwoMonths, kmkmtBasicAgreementSetting.alarmThreeMonths,
-				kmkmtBasicAgreementSetting.errorThreeMonths, kmkmtBasicAgreementSetting.limitThreeMonths,
-				kmkmtBasicAgreementSetting.alarmOneYear, kmkmtBasicAgreementSetting.errorOneYear,
-				kmkmtBasicAgreementSetting.limitOneYear);
+				kmkmtBasicAgreementSetting.alarmWeek.longValue(), kmkmtBasicAgreementSetting.errorWeek.longValue(),
+				kmkmtBasicAgreementSetting.limitWeek.longValue(), kmkmtBasicAgreementSetting.alarmTwoWeeks.longValue(),
+				kmkmtBasicAgreementSetting.errorTwoWeeks.longValue(), kmkmtBasicAgreementSetting.limitTwoWeeks.longValue(),
+				kmkmtBasicAgreementSetting.alarmFourWeeks.longValue(), kmkmtBasicAgreementSetting.errorFourWeeks.longValue(),
+				kmkmtBasicAgreementSetting.limitFourWeeks.longValue(), kmkmtBasicAgreementSetting.alarmOneMonth.longValue(),
+				kmkmtBasicAgreementSetting.errorOneMonth.longValue(), kmkmtBasicAgreementSetting.limitOneMonth.longValue(),
+				kmkmtBasicAgreementSetting.alarmTwoMonths.longValue(), kmkmtBasicAgreementSetting.errorTwoMonths.longValue(),
+				kmkmtBasicAgreementSetting.limitTwoMonths.longValue(), kmkmtBasicAgreementSetting.alarmThreeMonths.longValue(),
+				kmkmtBasicAgreementSetting.errorThreeMonths.longValue(), kmkmtBasicAgreementSetting.limitThreeMonths.longValue(),
+				kmkmtBasicAgreementSetting.alarmOneYear.longValue(), kmkmtBasicAgreementSetting.errorOneYear.longValue(),
+				kmkmtBasicAgreementSetting.limitOneYear.longValue());
 		return basicAgreementSetting;
 	}
 }

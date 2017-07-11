@@ -45,7 +45,7 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 				kbpmtSpecBPTimesheet.roundingTimeAtr= new BigDecimal(c.getRoundingTimeAtr().value);
 				kbpmtSpecBPTimesheet.specialDateItemNO= new BigDecimal(c.getDateCode());
 				kbpmtSpecBPTimesheet.startTime= new BigDecimal(c.getStartTime().minute());
-				kbpmtSpecBPTimesheet.timeItemId = c.getTimeItemId().v();
+				kbpmtSpecBPTimesheet.timeItemId = c.getTimeItemId();
 				kbpmtSpecBPTimesheet.useAtr= new BigDecimal(c.getUseAtr().value);
 				this.commandProxy().update(kbpmtSpecBPTimesheet);
 			}
@@ -55,9 +55,12 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 	@Override
 	public void removeListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode,
 			List<SpecBonusPayTimesheet> lstTimesheet) {
-		List<KbpmtSpecBPTimesheet> lstKbpmtSpecBPTimesheet = lstTimesheet.stream()
-				.map(c -> toSpecBPTimesheetEntity(companyId, bonusPaySettingCode.v(), c)).collect(Collectors.toList());
-		this.commandProxy().removeAll(lstKbpmtSpecBPTimesheet);
+		lstTimesheet.forEach(c->{
+			Optional<KbpmtSpecBPTimesheet> kbpmtSpecBPTimesheet = this.queryProxy().find(new KbpmtSpecBPTimesheetPK(companyId,c.getTimeSheetId(),bonusPaySettingCode.v()), KbpmtSpecBPTimesheet.class);
+			if (kbpmtSpecBPTimesheet.isPresent()) {
+				this.commandProxy().remove(kbpmtSpecBPTimesheet.get());
+			}
+		});
 	}
 
 	private SpecBonusPayTimesheet toSpecBPTimesheetDomain(KbpmtSpecBPTimesheet KbpmtSpecBPTimesheet) {

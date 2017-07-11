@@ -10,9 +10,9 @@ public class LayoutAllDto {
 	/**top page*/
 	private LayoutForTopPageDto topPage;
 	/**check xem hien thi toppage hay mypage truoc*/
-	private Boolean check;
+	private boolean check;
 	/**check my page co duoc hien khong*/
-	private Boolean checkMyPage;
+	private boolean checkMyPage;
 	/**check top page co duoc setting khong*/
-	private Boolean checkTopPage;
+	private boolean checkTopPage;
 }

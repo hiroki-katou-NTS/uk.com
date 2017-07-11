@@ -4,8 +4,10 @@
         checkTopPage: boolean;
         checkMyPage: boolean;
         transferData: KnockoutObservable<commonModel.TransferLayoutInfo>;
+        check: boolean;
         constructor() {
             var self = this;
+            self.check = false;
             self.checkTopPage = true;
             self.checkMyPage = true;
             self.transferData = ko.observable(null);
@@ -17,10 +19,14 @@
             self.transferData(nts.uk.ui.windows.getShared('CCG008_layout'));
             self.checkTopPage = nts.uk.ui.windows.getShared('checkTopPage');
             self.checkMyPage = nts.uk.ui.windows.getShared('checkMyPage');
+            if(!self.checkMyPage || !self.checkTopPage){ 
+            self.check = true;
+//               nts.uk.ui.windows.getSelf().setHeight(220); 
+            }
         }
         //close dialog
         closeDialog() {
-             nts.uk.ui.windows.close();   
+             nts.uk.ui.windows.close(); 
         }        
         //open dialog top page setting (トップページの選択)
         openTopPageSet(): void{

@@ -35,8 +35,6 @@ module nts.uk.at.view.kmk005.d {
                     workingTimesheetUseAtr: self.useWorkTimeSheet()?1:0
                 });
                 
-                
-                
                 self.closeDialog();
                 }
              closeDialog(): void {

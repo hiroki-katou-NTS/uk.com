@@ -23,10 +23,11 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div id="functions-area-content"></div>
+				<div id="functions-area-content"><a tabindex="2"
+			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a></div>
 			</div>
 			<div id="contents-area">
-				<div class="cf">
+				<div class=" container cf">
 					<div id="ccgcomponent"></div>
 					<div id="component-items-list"></div>
 
@@ -40,11 +41,11 @@
 						<div id="tab-panel"
 							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }" style="margin-top: 30px;">
 							<div class="tab-content-1">
-								<button id="settingButton" data-bind="click: openDiaglog">#{i18n.getText('KMK008_31')}</button>
+								<button id="settingButton" data-bind="click: openDiaglog, enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
 								<div>
 									<table id="single-list"
 										data-bind="ntsGridList: {								
-									height: 350,
+									height: 250,
 									dataSource: items,
 									primaryKey: 'code',
 									columns: columns,
@@ -55,10 +56,10 @@
 							</div>
 							<div class="tab-content-2">
 								<div>
-									<button id="settingButton" data-bind="click: openDiaglog">設定</button>
+									<button id="settingButton" data-bind="click: openDiaglog , enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
 									<table id="single-list"
 										data-bind="ntsGridList: {								
-									height: 350,
+									height: 250,
 									dataSource: items2,
 									primaryKey: 'code',
 									columns: columns,

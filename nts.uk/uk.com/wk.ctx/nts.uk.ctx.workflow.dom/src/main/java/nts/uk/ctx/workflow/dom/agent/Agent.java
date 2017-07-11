@@ -171,6 +171,7 @@ public class Agent extends AggregateRoot {
 	public void checkAgentSid(List<Agent> agentSidList){
 		
 		this.checkSameAgentRequest();
+		this.checkAgentRequest();
 		
 		List<RangeDate> rangeDateList1 = agentSidList.stream()
 				.filter(x->x.getAgentSid1().equals(this.agentSid1) && !this.requestId.equals(x.getRequestId().toString()))
@@ -235,6 +236,15 @@ public class Agent extends AggregateRoot {
 		&&  this.agentAppType3 == AgentAppType.NO_SETTINGS
 		&&  this.agentAppType4 == AgentAppType.NO_SETTINGS) {
 			throw new BusinessException("Msg_225");
+		}
+	}
+	
+	private void checkAgentRequest() {
+		if ((this.agentAppType1 == AgentAppType.SUBSTITUTE_DESIGNATION &&  this.agentSid1 == "")
+		|| ( this.agentAppType2 == AgentAppType.SUBSTITUTE_DESIGNATION &&  this.agentSid2 == "")
+		|| (this.agentAppType3 == AgentAppType.SUBSTITUTE_DESIGNATION &&  this.agentSid3 == "")
+		|| ( this.agentAppType4 == AgentAppType.SUBSTITUTE_DESIGNATION &&  this.agentSid4 == "")) {
+			throw new BusinessException("Msg_141");
 		}
 	}
 	

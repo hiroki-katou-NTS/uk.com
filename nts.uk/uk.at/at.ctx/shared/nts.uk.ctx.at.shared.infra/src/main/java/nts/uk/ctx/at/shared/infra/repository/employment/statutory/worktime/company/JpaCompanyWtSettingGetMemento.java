@@ -67,8 +67,9 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 		entities.forEach(item -> {
 			switch (item.getJcwstCompanyWtSetPK().getCtg()) {
 			case WtSettingConstant.NORMAL:
-				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
-						WeekStart.valueOf(item.getStrWeek()));
+				this.normalSetting = new NormalSetting();
+				this.normalSetting.setStatutorySetting(this.getWorkTimeSetting(item));
+				this.normalSetting.setWeekStart(WeekStart.valueOf(item.getStrWeek()));
 				break;
 			case WtSettingConstant.FLEX:
 				if (item.getJcwstCompanyWtSetPK().getType() == WtSettingConstant.SPECIFIED) {
@@ -78,8 +79,9 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 				this.flexSetting.setStatutorySetting(this.getWorkTimeSetting(item));
 				break;
 			case WtSettingConstant.DEFORMED:
-				this.deformedSetting = new DeformationLaborSetting(this.getWorkTimeSetting(item),
-						WeekStart.valueOf(item.getStrWeek()));
+				this.deformedSetting = new DeformationLaborSetting();
+				this.deformedSetting.setStatutorySetting(this.getWorkTimeSetting(item));
+				this.deformedSetting.setWeekStart(WeekStart.valueOf(item.getStrWeek()));
 				break;
 			default:
 				break;

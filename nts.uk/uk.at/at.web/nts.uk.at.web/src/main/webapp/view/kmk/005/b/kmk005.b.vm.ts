@@ -30,35 +30,30 @@ module nts.uk.at.view.kmk005.b {
                         for (i = 0; i < 10; i++) {
                             self.timeItemSpecList.push(
                                 new TimeItem(
-                                    "持定加給" + (i + 1), 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, "", ""
+                                    "持定加給" + (i + 1), 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, ""
                                 ));
                         }
                     } else {
                         item.forEach(function(item) {
-                            self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.companyId, item.timeItemId));
+                            self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId));
                         })
 
                     }
-                }).fail(function(res) {
-                    window.alert("fail");
                 });
-
                 service.getListBonusPTimeItem().done(function(item: Array<any>) {
                     if (item === undefined || item.length == 0) {
                         for (i = 0; i < 10; i++) {
                             self.timeItemList.push(
                                 new TimeItem(
-                                    "加給" + (i + 1), 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, "", ""
+                                    "加給" + (i + 1), 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, ""
                                 ));
                         }
                     } else {
                         item.forEach(function(item) {
-                            self.timeItemList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.companyId, item.timeItemId));
+                            self.timeItemList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId));
                         })
 
                     }
-                }).fail(function(res) {
-                    window.alert("fail");
                 });
 
                 dfd.resolve();
@@ -73,14 +68,9 @@ module nts.uk.at.view.kmk005.b {
                 var self = this;
 
                 let bonusPayTimeItemListCommand = [];
-                // var checkUseExist = false;
                 let lstUseArt = [];
 
                 ko.utils.arrayForEach(self.timeItemList(), function(item) {
-                    /*    if (item.useAtr() == 1) {
-                            checkUseExist = true;
-                        }
-                        */
                     lstUseArt.push(item.useAtr() == 1 ? true : false);
                     bonusPayTimeItemListCommand.push(ko.mapping.toJS(item));
                 });
@@ -88,10 +78,6 @@ module nts.uk.at.view.kmk005.b {
                 let bonusPayTimeItemSpecListCommand = [];
 
                 ko.utils.arrayForEach(self.timeItemSpecList(), function(item) {
-                    /*    if (item.useAtr() == 1) {
-                            checkUseExist = true;
-                        }
-                        */
                     lstUseArt.push(item.useAtr() == 1 ? true : false);
                     bonusPayTimeItemSpecListCommand.push(ko.mapping.toJS(item));
                 });
@@ -102,24 +88,17 @@ module nts.uk.at.view.kmk005.b {
                             service.addListBonusPayTimeItem(bonusPayTimeItemListCommand);
                             service.addListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
                         } else {
-                            //  if (checkUseExist) {
                             service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand);
                             service.updateListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
-                            //  } else {
-                            //  nts.uk.ui.dialog.alertError({ messageId: "Msg_131" });
-                            // }
                         }
+                self.closeDialog();
                     })
 
                 })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.message });
-                    });;
-
-
-
-
-                self.closeDialog();
+                        nts.uk.ui.dialog.alertError(res.message);
+                       // nts.uk.ui.dialog.alertError({ messageId: res.message });
+                    });
             }
 
             /**
@@ -135,15 +114,13 @@ module nts.uk.at.view.kmk005.b {
             useAtr: KnockoutObservable<number>;
             timeItemNo: KnockoutObservable<number>;
             timeItemTypeAtr: KnockoutObservable<number>;
-            companyId: KnockoutObservable<string>;
             timeItemId: KnockoutObservable<string>;
-            constructor(timeItemName: string, useAtr: number, timeItemNo: number, timeItemTypeAtr: number, companyId: string, timeItemId: string) {
+            constructor(timeItemName: string, useAtr: number, timeItemNo: number, timeItemTypeAtr: number, timeItemId: string) {
                 var self = this;
                 self.timeItemName = ko.observable(timeItemName);
                 self.useAtr = ko.observable(useAtr);
                 self.timeItemNo = ko.observable(timeItemNo);
                 self.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
-                self.companyId = ko.observable(companyId);
                 self.timeItemId = ko.observable(timeItemId);
             }
         }

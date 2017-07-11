@@ -26,6 +26,7 @@ module kcp001.a.viewmodel {
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
         jsonData: KnockoutObservable<string>;
+        selectedItems: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
@@ -48,6 +49,10 @@ module kcp001.a.viewmodel {
 
             self.multiBySelectedCode = ko.observableArray([]);
             self.multiSelectedCode = ko.observableArray([]);
+            self.selectedItems = ko.observable(null);
+            self.selectedItems.subscribe(function(res) {
+                alert(res);
+            })
 
             self.isMultiSelect = ko.observable(false);
             // isMultiSelect Subscribe
@@ -86,7 +91,8 @@ module kcp001.a.viewmodel {
                 selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
-                alreadySettingList: self.alreadySettingList
+                alreadySettingList: self.alreadySettingList,
+                maxRows: 12, 
             };
 
             self.selectionTypeList = ko.observableArray([

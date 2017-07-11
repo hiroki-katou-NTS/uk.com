@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 public class BonusPaySetting extends AggregateRoot {
 
-	private CompanyId companyId;
+	private String companyId;
 
 	private BonusPaySettingCode code;
 
@@ -28,7 +28,7 @@ public class BonusPaySetting extends AggregateRoot {
 
 	private List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet;
 
-	private BonusPaySetting(CompanyId companyId, BonusPaySettingCode code, BonusPaySettingName name,
+	private BonusPaySetting(String companyId, BonusPaySettingCode code, BonusPaySettingName name,
 			List<BonusPayTimesheet> lstBonusPayTimesheet, List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet) {
 		super();
 		this.companyId = companyId;
@@ -44,7 +44,7 @@ public class BonusPaySetting extends AggregateRoot {
 
 	public static BonusPaySetting createFromJavaType(String companyId, String code, String name,
 			List<BonusPayTimesheet> lstBonusPayTimesheet, List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet) {
-		return new BonusPaySetting(new CompanyId(companyId), new BonusPaySettingCode(code),
+		return new BonusPaySetting(companyId, new BonusPaySettingCode(code),
 				new BonusPaySettingName(name), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);
 	}
 

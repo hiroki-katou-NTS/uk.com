@@ -8,8 +8,8 @@ module nts.uk.at.view.kmk005.f {
             getBonusPayTimeItem: "at/share/bonusPayTimeItem/getListBonusPayTimeItem",
             getSpecBonusPayTimeItem: "at/share/bonusPayTimeItem/getListSpecialBonusPayTimeItem",
             getSpecDateItem: "at/share/specificdateitem/getall",
-            getBonusPayTimesheet: "at/share/bpTimesheet/getListTimesheet/{bonusPaySettingCode}",
-            getSpecBonusPayTimesheet: "at/share/specBonusPayTimesheet/getListTimesheet/{bonusPaySettingCode}"
+            getBonusPayTimesheet: "at/share/bpTimesheet/getListTimesheet/{0}",
+            getSpecBonusPayTimesheet: "at/share/specBonusPayTimesheet/getListTimesheet/{0}"
         }
         
         export function getBonusPaySetting(): JQueryPromise<any> {

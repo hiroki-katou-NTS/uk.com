@@ -89,7 +89,8 @@ module kcp003.a.viewmodel {
                 selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
-                alreadySettingList: self.alreadySettingList
+                alreadySettingList: self.alreadySettingList,
+                maxRows: 12
             };
             
             self.selectionTypeList = ko.observableArray([
