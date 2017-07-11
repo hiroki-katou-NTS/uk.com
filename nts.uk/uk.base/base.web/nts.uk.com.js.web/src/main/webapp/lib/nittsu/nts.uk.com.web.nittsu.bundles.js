@@ -10904,7 +10904,7 @@ var nts;
                         var container = $(element);
                         container.addClass("panel ntsPanel caret-background");
                         var caretClass = "caret-" + direction;
-                        container.addClass(caretClass);
+                        container.addClass(caretClass + " direction-" + direction);
                         if (showIcon === true) {
                             container.append("<i class='icon icon-searchbox'></i>");
                         }

@@ -1843,19 +1843,37 @@ button.nts-switch-button[disabled]:hover {
   padding: 10px;
   position: relative;
 }
-/* line 5, ../sass/components/_panel.scss */
+/* line 7, ../sass/components/_panel.scss */
 .panel.panel-frame {
   border: 2px solid #B1B1B1;
   border-radius: 7px;
 }
-/* line 9, ../sass/components/_panel.scss */
+/* line 11, ../sass/components/_panel.scss */
 .panel.panel-gray-bg {
   background-color: #E7E6E6;
 }
-/* line 12, ../sass/components/_panel.scss */
+/* line 14, ../sass/components/_panel.scss */
 .panel.ntsPanel {
   background-color: #E0F59E;
   border-radius: 7px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+/* line 19, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-top {
+  margin-top: 50px;
+}
+/* line 20, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-bottom {
+  margin-bottom: 50px;
+}
+/* line 21, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-right {
+  margin-right: 50px;
+}
+/* line 22, ../sass/components/_panel.scss */
+.panel.ntsPanel.direction-left {
+  margin-left: 50px;
 }
 
 @CHARSET "UTF-8";
