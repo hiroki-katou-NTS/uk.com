@@ -1,22 +1,28 @@
-input.ntsSearchBox {
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: white;
-    background-image: url('enter mark.png');
-    background-position: right; 
-    background-repeat: no-repeat;
-    padding: 6px 30px 6px 15px;
-    -webkit-transition: width 0.4s ease-in-out;
-    transition: width 0.4s ease-in-out; 
-}
-
-/* When the input field gets focus, change its width to 100% */
-input.ntsSearchBox:focus {
-    border: 2px solid #00BFFF;
-    outline: none;
-}
-button.search-btn {
-	margin: 5px;
+.nts-searchbbox-wrapper{
+	margin-bottom: 15px;
+	
+	input.ntsSearchBox {
+	    box-sizing: border-box;
+	    border: 1px solid #999;
+	    border-radius: 3px;
+	    font-size: 14px;
+	    background-image: url('images/icons/enter_mark.png');
+	    background-position: right;
+	    background-repeat: no-repeat;
+	    padding: 6px 30px 6px 15px;
+	    vertical-align: top;
+	    transition: width 0.4s ease-in-out; 
+	}
+	
+	input.ntsSearchBox:focus {
+        box-shadow: 0 0 1px 1px #0096f2;
+	    outline: none;
+	}
+	
+	button.search-btn,
+	button.clear-btn {
+		vertical-align: top;
+		margin-left: 5px;
+		min-width: 65px;
+	}
 }
