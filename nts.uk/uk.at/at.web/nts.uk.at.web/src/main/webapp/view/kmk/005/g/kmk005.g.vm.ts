@@ -21,10 +21,14 @@ module nts.uk.at.view.kmk005 {
 
             constructor() {
                 let self = this;
+                //get use setting 
+                nts.uk.at.view.kmk005.g.service.getUseSetting()
+                    .done((useSetting) => {
+                        self.tabs()[1].display(useSetting.workplaceUseAtr);
+                        self.tabs()[2].display(useSetting.personalUseAtr);
+                        self.tabs()[3].display(useSetting.workingTimesheetUseAtr);
+                    });
                 
-                self.tabs()[3].display(false);
-                
-
                 self.tabs().map((t) => {
                     // set title for tab
                     if (t.active() == true) {
@@ -149,7 +153,7 @@ module nts.uk.at.view.kmk005 {
             name: string;
             active: KnockoutObservable<boolean> = ko.observable(false);
             display: KnockoutObservable<boolean> = ko.observable(true);
-            
+
             constructor(param: ITabModel) {
                 this.id = param.id;
                 this.name = param.name;

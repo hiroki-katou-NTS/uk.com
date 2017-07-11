@@ -212,12 +212,13 @@ module nts.uk.at.view.kcp006.a {
                     validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
                     events: events,
                     viewRender: function(view, element) {
-                        let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
                         fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                    },
+                    eventAfterAllRender: function(view) {
+                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
                     }
                 });
                 $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
-                fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
             });
         }
     }
