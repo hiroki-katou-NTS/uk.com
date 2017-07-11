@@ -119,3 +119,15 @@
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
 	background-color: #007fff;
 }
+
+.nts-grid-wrapper {
+	table {
+		tr {
+			td {
+				.nts-grid.control {
+					height: 35px;
+				}
+			}
+		}
+	}
+}
