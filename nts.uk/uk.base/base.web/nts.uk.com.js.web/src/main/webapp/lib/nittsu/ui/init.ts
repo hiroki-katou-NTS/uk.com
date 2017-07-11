@@ -55,7 +55,7 @@ module nts.uk.ui {
         $(function () {
             documentReady.fire();
             
-            __viewContext.transferred = uk.sessionStorage.getItemAndRemove(uk.request.STORAGE_KEY_TRANSFER_DATA)
+            __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
                 .map(v => JSON.parse(v));
             
             _.defer(() => _start.call(__viewContext));
