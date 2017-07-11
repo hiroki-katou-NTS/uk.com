@@ -49,6 +49,11 @@ var nts;
                 if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
                     return value;
                 }
+                switch (formatOption.formatId) {
+                    case 'Number_Separated':
+                        formatOption.grouplength = 3;
+                        break;
+                }
                 var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
                 var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
                 var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
