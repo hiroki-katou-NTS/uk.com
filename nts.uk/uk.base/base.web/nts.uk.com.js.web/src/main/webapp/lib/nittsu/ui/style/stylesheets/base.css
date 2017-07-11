@@ -2027,6 +2027,7 @@ button.nts-switch-button[disabled]:hover {
 .listbox-wrapper {
   border: 1px solid grey;
   display: inline-block;
+  overflow: hidden;
 }
 
 /* line 3, ../sass/components/_gridlist.scss */
