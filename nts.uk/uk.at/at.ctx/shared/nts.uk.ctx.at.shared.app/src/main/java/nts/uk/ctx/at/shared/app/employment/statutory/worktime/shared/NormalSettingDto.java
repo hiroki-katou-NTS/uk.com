@@ -45,8 +45,9 @@ public class NormalSettingDto {
 	 * @return the normal setting
 	 */
 	public static NormalSetting toDomain(NormalSettingDto dto) {
-		NormalSetting domain = new NormalSetting(WorkingTimeSettingDto.toDomain(dto.getStatutorySetting()),
-				WeekStart.valueOf(dto.getWeekStart()));
+		NormalSetting domain = new NormalSetting();
+		domain.setStatutorySetting(WorkingTimeSettingDto.toDomain(dto.getStatutorySetting()));
+		domain.setWeekStart(WeekStart.valueOf(dto.getWeekStart()));
 		return domain;
 	}
 }

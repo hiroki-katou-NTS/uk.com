@@ -197,6 +197,9 @@
          * Close the popup
          */
         closeDialog() {
+            var self = this;
+            nts.uk.ui.windows.setShared("CCG013D_MENUS", self.newItems());
+            
             nts.uk.ui.windows.close();
         }
     }

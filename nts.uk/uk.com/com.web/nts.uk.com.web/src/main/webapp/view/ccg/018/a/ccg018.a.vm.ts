@@ -15,9 +15,10 @@ module ccg018.a.viewmodel {
                     self.title(t.name);
                 }
             });
+
         };
 
-        changeTab(tab: TabModel) {
+        changeTab(tab: TabModel): any {
             let self = this, view: any = __viewContext.viewModel,
                 oldtab: TabModel = _.find(self.tabs(), t => t.active());
 

@@ -15,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
  */
 public interface BPTimeItemRepository {
 
+	int checkInit(String companyId);
+
 	List<BonusPayTimeItem> getListBonusPayTimeItem(String companyId);
 
 	List<BonusPayTimeItem> getListSpecialBonusPayTimeItem(String companyId);

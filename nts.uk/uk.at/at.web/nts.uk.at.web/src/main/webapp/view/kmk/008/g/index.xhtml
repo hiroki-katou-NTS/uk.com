@@ -23,7 +23,8 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div id="functions-area-content"></div>
+				<div id="functions-area-content"><a tabindex="2"
+			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a></div>
 			</div>
 			<div id="contents-area">
 				<div class=" container cf">
@@ -58,7 +59,7 @@
 									<button id="settingButton" data-bind="click: openDiaglog , enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
 									<table id="single-list"
 										data-bind="ntsGridList: {								
-									height: 350,
+									height: 250,
 									dataSource: items2,
 									primaryKey: 'code',
 									columns: columns,

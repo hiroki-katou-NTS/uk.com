@@ -17,23 +17,12 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 public class BonusPaySettingDomainService implements BonusPaySettingService {
 	@Inject
 	private BPTimesheetRepository bpTimesheetRepository;
+
 	@Inject
 	private SpecBPTimesheetRepository specBPTimesheetRepository;
+
 	@Inject
 	private BPSettingRepository bpSettingRepository;
-
-	// @Override
-	// public List<BonusPaySetting> getAllBonusPaySetting(String companyId) {
-	//
-	// List<BonusPaySetting> lstBonusPaySetting =
-	// bpSettingRepository.getAllBonusPaySetting(companyId);
-	// List<BonusPaySetting> lstBonusPaySettingRefer = new
-	// ArrayList<BonusPaySetting>();
-	// lstBonusPaySetting.forEach(a ->
-	// lstBonusPaySettingRefer.add(this.toBonusPaySettingRefer(a)));
-	//
-	// return lstBonusPaySettingRefer;
-	// }
 
 	@Override
 	public void addBonusPaySetting(BonusPaySetting domain) {
@@ -62,27 +51,6 @@ public class BonusPaySettingDomainService implements BonusPaySettingService {
 				lstBonusPayTimesheet);
 		specBPTimesheetRepository.removeListTimesheet(companyId, new BonusPaySettingCode(bonusPaySettingCode),
 				lstSpecBonusPayTimesheet);
-		bpSettingRepository.removeBonusPaySetting(companyId,new BonusPaySettingCode(bonusPaySettingCode));
+		bpSettingRepository.removeBonusPaySetting(companyId, new BonusPaySettingCode(bonusPaySettingCode));
 	}
-
-	// private BonusPaySetting toBonusPaySettingRefer(BonusPaySetting
-	// bonusPaySetting) {
-	// List<BonusPayTimesheet> lstBonusPayTimesheet = bpTimesheetRepository
-	// .getListTimesheet(bonusPaySetting.getCompanyId().toString(),
-	// bonusPaySetting.getCode().toString());
-	// List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet =
-	// specBPTimesheetRepository
-	// .getListTimesheet(bonusPaySetting.getCompanyId().toString(),
-	// bonusPaySetting.getCode().toString());
-	// BonusPaySetting bonusPaySettingRefer =
-	// BonusPaySetting.createFromJavaType(
-	// bonusPaySetting.getCompanyId().toString(),
-	// bonusPaySetting.getCode().toString(),
-	// bonusPaySetting.getName().toString());
-	// bonusPaySettingRefer.setListTimesheet(lstBonusPayTimesheet);
-	// bonusPaySettingRefer.setListSpecialTimesheet(lstSpecBonusPayTimesheet);
-	// return bonusPaySettingRefer;
-	//
-	// }
-
 }
