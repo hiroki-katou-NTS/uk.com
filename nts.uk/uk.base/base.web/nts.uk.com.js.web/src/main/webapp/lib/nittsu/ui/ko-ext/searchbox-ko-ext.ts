@@ -52,19 +52,6 @@ module nts.uk.ui.koExtentions {
         }
         
         private cloneDeepX(source: Array<any>): Array<any>{
-            let self = this;
-//            let result = [];
-//            
-//            _.forEach(source, function (item: any){
-//                let cloned = _.cloneDeep(item);
-//                
-//                if(!nts.uk.util.isNullOrUndefined(self.childField)){
-//                    cloned[self.childField] = self.cloneDeepX(cloned[self.childField]).slice();        
-//                }
-//                
-//                result.push(cloned);                
-//            });   
-            
             return _.cloneDeep(source); 
         }
     }
@@ -143,7 +130,6 @@ module nts.uk.ui.koExtentions {
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             
-            var searchBox = $(element);
             var data = ko.unwrap(valueAccessor());
             var fields = ko.unwrap(data.fields);
             var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
@@ -163,7 +149,7 @@ module nts.uk.ui.koExtentions {
             var component;
             let targetMode = data.mode;
             if (targetMode === "listbox") {
-                component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                 targetMode = "igGrid";    
             } else {
                 component = $("#" + ko.unwrap(data.comId));    
@@ -171,7 +157,7 @@ module nts.uk.ui.koExtentions {
             
             var $container = $(element);
             let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
-            $container.attr("tabindex", "-1");
+            $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
             $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span>");  
             $container.append("<button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button>"); 
             
@@ -238,8 +224,6 @@ module nts.uk.ui.koExtentions {
                     
                     if (targetMode === 'igGrid') {  
                         if(searchMode === "filter"){
-//                            component.igGrid("option", "dataSource", result.options);  
-//                            component.igGrid("dataBind");
                             $container.data("filteredSrouce", result.options); 
                             component.attr("filtered", true);   
                             selected(selectedValue);
@@ -317,10 +301,8 @@ module nts.uk.ui.koExtentions {
                             return oldItem[primaryKey] === item[primaryKey];        
                         }) === undefined;            
                     });
-//                    setTimeout(function () {
-                        component.igGrid("option", "dataSource", source);  
-                        component.igGrid("dataBind");         
-//                    }, 10);         
+                    component.igGrid("option", "dataSource", source);  
+                    component.igGrid("dataBind");         
                 } 
             }
             srhX.setDataSource(arr);

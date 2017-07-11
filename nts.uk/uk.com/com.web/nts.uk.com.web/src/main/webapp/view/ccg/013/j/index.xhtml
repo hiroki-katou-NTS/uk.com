@@ -21,13 +21,13 @@
 		<ui:define name="content">
 
 			<div id="contents-area">
-				<span>#{i18n.getText('CCG013_92')}</span>
+				<span class="description">#{i18n.getText('CCG013_92')}</span>
 				<table class="control">
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_93')}</div></td>
 						<td colspan="2"><input tabindex="1"
 							data-name="#{i18n.getText('CCG013_50')}"
-							data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName', required: true}" /></td>
+							data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName', required: true}, hasfocus: true" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_94')}</div></td>

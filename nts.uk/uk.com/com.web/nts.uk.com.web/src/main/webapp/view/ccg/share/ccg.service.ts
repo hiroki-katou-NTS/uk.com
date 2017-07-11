@@ -5,13 +5,13 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            searchAllEmployee: "basic/organization/employee/search/allemployee",
-            searchEmployeeByLogin: "basic/organization/employee/search/onlyemployee",
-            searchModeEmployee: "basic/organization/employee/search/advanced",
-            searchOfWorkplace: "basic/organization/employee/search/ofworkplace",
-            searchWorkplaceChild: "basic/organization/employee/search/workplacechild",
-            searchWorkplaceOfEmployee: "basic/organization/employee/search/workplaceemp",
-            getOfSelectedEmployee: "basic/organization/employee/search/getoffselect",
+            searchAllEmployee: "basic/organization/employee/allemployee",
+            searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
+            searchModeEmployee: "basic/organization/employee/advanced",
+            searchOfWorkplace: "basic/organization/employee/ofworkplace",
+            searchWorkplaceChild: "basic/organization/employee/workplacechild",
+            searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
+            getOfSelectedEmployee: "basic/organization/employee/getoffselect",
             
         }
 

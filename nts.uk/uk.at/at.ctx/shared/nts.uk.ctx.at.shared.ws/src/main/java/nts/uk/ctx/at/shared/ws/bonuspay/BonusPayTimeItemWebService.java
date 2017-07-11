@@ -9,10 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemAddCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemAddCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.BPTimeItemUpdateCommandhandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommandhandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemFinder;
 
@@ -28,10 +28,17 @@ public class BonusPayTimeItemWebService extends WebService {
 	private BPTimeItemFinder bpTimeItemFinder;
 
 	@POST
+	@Path("checkInit")
+	public int checkInit() {
+		return this.bpTimeItemFinder.checkInit();
+	}	
+
+	@POST
 	@Path("getListBonusPayTimeItem")
 	public List<BPTimeItemDto> getListBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItem();
 	}
+	
 	@POST
 	@Path("checkUseArt")
 	public void checkUseArt(List<Boolean> lstuseArt){

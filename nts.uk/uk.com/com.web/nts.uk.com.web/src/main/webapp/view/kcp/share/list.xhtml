@@ -19,14 +19,14 @@
 		</div>
 
 		<com:ko tag="if" bind="isHasButtonSelectAll">
-			<button data-bind="click: selectAll" style="margin-top: 5px;margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
+			<button data-bind="click: selectAll" style="margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
 		</com:ko>
 		<table style="clear: both;"
 			data-bind="ntsGridList: {								
 				height: gridStyle.rowHeight,
 				width: gridStyle.totalColumnSize,
 				dataSource: itemList,
-				primaryKey: 'code',
+				primaryKey: targetKey,
 				columns: listComponentColumn,
 				multiple: isMultiple,
 				value: selectedCodes,

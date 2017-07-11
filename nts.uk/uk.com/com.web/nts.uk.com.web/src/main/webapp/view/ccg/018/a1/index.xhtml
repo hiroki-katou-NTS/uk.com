@@ -10,7 +10,7 @@
 <div class="sidebar-content-header">
 	<span class="title">#{i18n.getText('CCG018_1')}</span>
 	<button tabindex="-1" id="A1-4" class="proceed"
-		data-bind="click: update">#{i18n.getText('CCG018_3')}</button>
+		data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('CCG018_3')}</button>
 	<button tabindex="-1" id="A1-5" data-bind="click: openDialogC">#{i18n.getText('CCG018_4')}</button>
 	<a tabindex="-1" id="A1-6" href="#"
 		data-bind=" click: jumpToCcg015 ,ntsLinkButton: { }"><img
@@ -35,7 +35,6 @@
 					<th data-bind="visible: isVisible">#{i18n.getText('CCG018_10')}</th>
 					<th>#{i18n.getText('CCG018_11')}</th>
 					<th>#{i18n.getText('CCG018_12')}</th>
-					<th data-bind="visible: isHeaderScroll"></th>
 				</tr>
 			</thead>
 			<tbody data-bind="foreach: items">

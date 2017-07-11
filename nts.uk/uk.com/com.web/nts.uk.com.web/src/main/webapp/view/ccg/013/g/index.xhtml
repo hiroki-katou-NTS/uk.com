@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 935, height: 650 };</script>
+			<script>var dialogSize = { width: 900, height: 650 };</script>
 			<!-- COMPONENT CCG001 -->
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
@@ -25,7 +25,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed">#{i18n.getText('CCG013_70')}</button>
+				<button class="proceed" data-bind="click: addPersonType">#{i18n.getText('CCG013_70')}</button>
 				<button class="pdf" data-bind="click: closeDialog">#{i18n.getText('CCG013_71')}</button>
 			</div>
 			<div id="contents-area">
@@ -55,13 +55,12 @@
 						<div class="cell-column1">
 							<div id="ccgcomponent"></div>
 						</div>
-						<div class="search-box" 
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list1', 
-							items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+
 						<br />
 						
 						<table class="left-data" id="multi-list1"
 							data-bind="ntsSwapList: {
+								showSearchBox: { showLeft : true, showRight: false},
 								height: 320,
 								options: items,
 								optionsValue: 'primaryKey',

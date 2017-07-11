@@ -1,14 +1,14 @@
 module ccg018.a1.viewmodel {
+    import blockUI = nts.uk.ui.block;
+
     export class ScreenModel {
         date: KnockoutObservable<string>;
         items: KnockoutObservableArray<TopPageJobSet> = ko.observableArray([]);
         isVisible: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<number>;
         listJobTitle: KnockoutObservableArray<any>;
-        comboItemsAfterLogin: KnockoutObservableArray<ItemModel>;
-        comboItemsAsTopPage: KnockoutObservableArray<ItemModel>;
-        //appear/disappear header of scroll on UI
-        isHeaderScroll: KnockoutObservable<boolean>;
+        comboItemsAfterLogin: KnockoutObservableArray<ComboBox>;
+        comboItemsAsTopPage: KnockoutObservableArray<ComboBox>;
 
         roundingRules: KnockoutObservableArray<any>;
 
@@ -21,10 +21,6 @@ module ccg018.a1.viewmodel {
             self.categorySet = ko.observable(undefined);
             self.isVisible = ko.computed(function() {
                 return !!self.categorySet();
-            });
-
-            self.isHeaderScroll = ko.computed(function() {
-                return self.items().length > 15 ? true : false;
             });
 
             self.roundingRules = ko.observableArray([
@@ -162,7 +158,6 @@ module ccg018.a1.viewmodel {
                                 }));
                             }
                         });
-
                         dfd.resolve();
                     }
                 }).fail();
@@ -175,6 +170,7 @@ module ccg018.a1.viewmodel {
          */
         searchByDate(): any {
             let self = this;
+            blockUI.invisible();
             self.items([]);
             ccg018.a1.service.findDataOfJobTitle(self.date())
                 .done(function(data) {
@@ -186,15 +182,24 @@ module ccg018.a1.viewmodel {
                         });
                         self.findDataOfTopPageJobSet(listJobId);
                     }
-                }).fail();
+                }).fail().always(function() {
+                    blockUI.clear();
+                });
+
         }
 
 
         /**
          * Update/insert data in TOPPAGE_JOB_SET
          */
-        update(): void {
+        update(): JQueryPromise<any> {
             let self = this;
+            if (self.items().length == 0) {
+                return;
+            }
+            let dfd = $.Deferred();
+            blockUI.invisible();
+
             let command = {
                 listTopPageJobSet: ko.mapping.toJS(self.items()),
                 ctgSet: self.categorySet()
@@ -202,8 +207,12 @@ module ccg018.a1.viewmodel {
             ccg018.a1.service.update(command)
                 .done(function() {
                     self.searchByDate();
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
-                }).fail();
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                    dfd.resolve();
+                }).fail().always(function() {
+                    blockUI.clear();
+                });
+            return dfd.promise();
         }
 
         /**
@@ -211,6 +220,7 @@ module ccg018.a1.viewmodel {
          */
         openDialogC(): void {
             let self = this;
+            blockUI.invisible();
             // the default value of categorySet = undefined
             nts.uk.ui.windows.setShared('categorySet', self.categorySet());
             nts.uk.ui.windows.sub.modal("/view/ccg/018/c/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
@@ -220,6 +230,7 @@ module ccg018.a1.viewmodel {
                     }
                 }
             });
+            blockUI.clear();
         }
 
         /**

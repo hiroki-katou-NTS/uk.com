@@ -9,12 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.BPSettingAddCommand;
-import nts.uk.ctx.at.shared.app.command.BPSettingAddCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPSettingDeleteCommand;
-import nts.uk.ctx.at.shared.app.command.BPSettingDeleteCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPSettingUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.BPSettingUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingDeleteCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingDeleteCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingUpdateCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPSettingDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPSettingFinder;
 

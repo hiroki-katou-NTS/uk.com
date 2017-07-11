@@ -17,7 +17,7 @@ public interface TopPageSetFactory {
 	 * @param placements
 	 * @return
 	 */
-	LayoutForMyPageDto buildLayoutDto(Layout layout, List<Placement> placements);
+	LayoutForMyPageDto buildLayoutMyPage(Layout layout, List<Placement> placements);
 	/**
 	 * build layout top page
 	 * @param layout
