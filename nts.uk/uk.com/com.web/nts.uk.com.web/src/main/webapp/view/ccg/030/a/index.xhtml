@@ -83,7 +83,8 @@
 									<div id="file_upload"
 										data-bind="ntsFileUpload:{
 											filename: selectedFlowMenu().fileName, 
-											accept: ['.jpg,.gif,.bmp,.jpeg,.png'], 
+											accept: ['.jpg,.gif,.bmp,.jpeg,.png'],
+											aslink: true,
 											text: '',
 											onchange: uploadFile.bind($data),
 											onfilenameclick: open030B_Dialog.bind($data) }"></div>

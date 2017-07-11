@@ -18,10 +18,13 @@ module ccg030.a.viewmodel {
         enablePreview: KnockoutObservable<boolean>;
         // Message
         listMessage: KnockoutObservableArray<ItemMessage>;
+        //old file name
+        oldFileName: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
             // list
+            self.oldFileName = ko.observable("未設定");
             self.listFlowMenu = ko.observableArray([]);
             self.selectedFlowMenuCD = ko.observable(null);
             self.selectedFlowMenuCD.subscribe((value) => {
@@ -134,6 +137,7 @@ module ccg030.a.viewmodel {
         /** Upload File */
         uploadFile(): void {
             var self = this;
+            
             nts.uk.ui.block.invisible();
             if (self.isCreate() === true) {
                 self.uploadFileProcess();
@@ -158,7 +162,9 @@ module ccg030.a.viewmodel {
                 onSuccess: function() { },
                 onFail: function() { }
             }
+            
             nts.uk.ui.block.invisible();
+            
             $("#file_upload").ntsFileUpload(option).done(function(res) {
                 self.tempFileID(res[0].id);
                 self.selectedFlowMenu().fileID(res[0].id);
@@ -166,6 +172,8 @@ module ccg030.a.viewmodel {
                 self.isDelete(true);
                 errors.clearAll();
             }).fail(function(err) {
+                self.selectedFlowMenu().fileName("");
+                self.selectedFlowMenu().fileName(self.oldFileName().length === 0 ? '未設定' : self.oldFileName());
                 nts.uk.ui.dialog.alertError(err.message);
             }).always(() => {
                 nts.uk.ui.block.clear();
@@ -240,6 +248,9 @@ module ccg030.a.viewmodel {
                     selectedFlowmenu.fileName.lenght === 0 ? '未設定' : selectedFlowmenu.fileName,
                     selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
+                if(flowmenuCD !== null){
+                    self.oldFileName(selectedFlowmenu.fileName);
+                }
                 self.isCreate(false);
                 self.focusToInput();
                 if (!util.isNullOrEmpty(selectedFlowmenu.fileID))
