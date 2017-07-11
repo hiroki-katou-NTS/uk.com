@@ -83,7 +83,11 @@ module nts.uk.ui.koExtentions {
                         name: "RowSelectors",
                         enableCheckBoxes: showCheckBox,
                         checkBoxMode: "biState"
-                    }]
+                    },
+                    {
+                        name: "Resizing"
+                    }
+                ]
             });
             var treeGridId = $treegrid.attr('id');
             $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
@@ -111,7 +115,7 @@ module nts.uk.ui.koExtentions {
             var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
             if ($(element).igTreeGridSelection("option", "multipleSelection") !== multiple) {
                 $(element).igTreeGridSelection("option", "multipleSelection", multiple);
-            }
+            } 
 
             // Set show checkbox.
             var showCheckBox = ko.unwrap(data.showCheckBox != undefined ? data.showCheckBox : true);
