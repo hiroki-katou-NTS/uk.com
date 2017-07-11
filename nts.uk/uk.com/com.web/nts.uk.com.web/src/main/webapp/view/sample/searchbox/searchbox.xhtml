@@ -18,6 +18,8 @@
 			</ui:define>
 			
 			<ui:define name="content">
+				<div id="functions-area">
+				</div>
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -26,87 +28,69 @@
 						<h3>for igGrid version (igGrid without binding), view <a href="searchbox-igGrid.xhtml">THIS PAGE</a></h3>				
 						<h2>Overview</h2>						
 						<div class="cf">
-							<div style="float:left">	
-								<h3>Search mode: highlight</h3>				
-								<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>																
-								<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
-										searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code'], enable: enable} " />																																														
-								<h3>Single Selection TreeGrid</h3>
-								<table id="treegrid1"
-									data-bind="ntsTreeGridView:{
-										width: 700,
-										height: 250,
-										options: dataSource,
-										value: singleSelectedCode,						
-										optionsValue: 'code',
-										optionsChild: 'childs',
-										optionsText: 'nodeText',
-										multiple: false,
-										enable: true,										
-										showCheckBox: false}">
-								</table>
-								<br/>
-								<h3>Search mode: filter</h3>																				
-								<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
-									items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
-								<h3>Multi Selection</h3>
-								<table id="multi-list" data-bind="ntsGridList: {
-										height: 320,
-										options: items,
-										optionsValue: 'code',
-										columns: columns,
-										multiple: true,
-										value: currentCodeList
-									}"></table>
-									<br/>
-									
-								<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list2', 
-								items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'listbox'}" />																																														
-								<h3>List Box Multi Selection</h3>
-								<table id="multi-list2" data-bind="ntsListBox: {
-										options: items,
-										optionsValue: 'code',
-										multiple: true,
-										value: currentCodeList,
-										rows: 10,
-										columns: [
-											{ key: 'code', length: 4 },
-											{ key: 'name', length: 10 },
-											{ key: 'description', length: 10 }
-										]
-									}"></table>
-									<br/>
-							</div>
-							<div style="float:left">
-								<br/><br/>
-								<h4>Your single selected code:</h4>
-								<span data-bind="text: singleSelectedCode"></span>
-							</div>
-						</div>
-						
-						<div class="cf">
-							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
-								<h3>Multi Selection TreeGrid</h3>
-								<table id="treegrid2"
-									data-bind="ntsTreeGridView:{
-										width: 700,
-										height: 250,
-										options: dataSource2,
-										selectedValues: selectedCodes2,								
-										optionsValue: 'code',
-										optionsChild: 'childs',
-										optionsText: 'nodeText',
-										multiple: true,
-										enable: true,										
-										showCheckBox: true}">
-								</table>
-							</div>
-							<div style="float:left">
-								<br/><br/>
-								<h4>Your multi selected codes:</h4>
-								<span data-bind="text: selectedCodes2"></span>
-							</div>
+							<h2>ListBox</h2>
+							<div style="width: 422px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
+							items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'listbox'}" />																																														
+							<table id="multi-list2" data-bind="ntsListBox: {
+									options: items,
+									optionsValue: 'code',
+									multiple: true,
+									value: currentCodeList,
+									rows: 10,
+									columns: [
+										{ key: 'code', length: 4 },
+										{ key: 'name', length: 10 },
+										{ key: 'description', length: 10 }
+									]
+								}"></table>
+							<hr/>
+							<h2>GridList</h2>
+							<h3>Search mode: filter</h3>
+							<div style="width: 852px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+								items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
+							<table id="multi-list" data-bind="ntsGridList: {
+									height: 320,
+									options: items,
+									optionsValue: 'code',
+									columns: columns,
+									multiple: true,
+									value: currentCodeList
+								}"></table>
+							<hr/>
+							<h2>TreeGrid</h2>
+							<h3>Search mode: highlight</h3>
+							<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>																
+							<div style="width: 700px;" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
+									searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code'], enable: enable} " />																																														
+							<table id="treegrid1"
+								data-bind="ntsTreeGridView:{
+									width: 700,
+									height: 250,
+									options: dataSource,
+									value: singleSelectedCode,						
+									optionsValue: 'code',
+									optionsChild: 'childs',
+									optionsText: 'nodeText',
+									multiple: false,
+									enable: true,										
+									showCheckBox: false}">
+							</table>
+							<hr/>
+							<h2>Multi Selection TreeGrid</h2>
+							<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
+							<table id="treegrid2"
+								data-bind="ntsTreeGridView:{
+									width: 700,
+									height: 250,
+									options: dataSource2,
+									selectedValues: selectedCodes2,								
+									optionsValue: 'code',
+									optionsChild: 'childs',
+									optionsText: 'nodeText',
+									multiple: true,
+									enable: true,										
+									showCheckBox: true}">
+							</table>
 						</div>
 						<article class="cf">
 							<div class="tabs">

@@ -44,12 +44,33 @@
 	border: none !important;
 }
 
+th {
+	border: 1px solid #999999;
+	background-color: #E0F59E;
+	height: 25px;
+	border-bottom: 0px
+}
+
+td {
+	border: 1px solid #999999;
+}
+
+.table1 {
+	width: 842px
+}
+
 .table1 thead tr, .table1 tbody {
 	display: block;
 }
 
 .table1 tbody {
 	height: 482px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+*::-ms-backdrop, .table1 tbody {
+	height: 525px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -62,19 +83,17 @@
 	width: 180px
 }
 
-.table1 thead tr th {
+.table1 thead tr th, .table1 tbody tr td:nth-child(3), .table1 tbody tr td:nth-child(4)
+	{
 	width: 204px
 }
 
-.table1 thead tr th:nth-child(5) {
+.table1 thead tr th:nth-child(5), .table1 tbody tr td:nth-child(5) {
 	width: 180px
-}
-
-.table1 thead tr th:last-child {
-	width: 19px
 }
 
 .ui-igcombo-wrapper {
 	height: 27px;
-	padding: 2px;
+	padding-top: 2px;
+	padding-left: 2px;
 }

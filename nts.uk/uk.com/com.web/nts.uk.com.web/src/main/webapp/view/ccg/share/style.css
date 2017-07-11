@@ -1,9 +1,5 @@
 @CHARSET "UTF-8";
 
-.ntsSearchBox {
-	width: 230px !important;
-}
-
 .controlSetting.caret-right:after {
 	cursor: pointer;
 	color: #2ECC71;
