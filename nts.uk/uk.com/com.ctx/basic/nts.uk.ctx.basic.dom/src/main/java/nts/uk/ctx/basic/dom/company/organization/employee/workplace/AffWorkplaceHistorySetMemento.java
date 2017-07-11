@@ -2,28 +2,20 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.employment;
+package nts.uk.ctx.basic.dom.company.organization.employee.workplace;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.employment.EmploymentCode;
+import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 
 /**
- * The Interface EmploymentHistorySetMemento.
+ * The Interface AffiliationWorkplaceHistorySetMemento.
  */
-public interface AffiliationEmploymentHistorySetMemento {
-
-	/**
-	 * Sets the employment code.
-	 *
-	 * @param employmentCode the new employment code
-	 */
-	void setEmploymentCode(EmploymentCode employmentCode);
-	
+public interface AffWorkplaceHistorySetMemento {
 	
 	/**
-	 * Sets the period.
+	 * Sets the.
 	 *
-	 * @param period the new period
+	 * @param period the period
 	 */
 	void setPeriod(Period period);
 	
@@ -34,4 +26,13 @@ public interface AffiliationEmploymentHistorySetMemento {
 	 * @param employeeId the new employee id
 	 */
 	void setEmployeeId(String employeeId);
+	
+	
+	/**
+	 * Sets the work place id.
+	 *
+	 * @param workplaceId the new work place id
+	 */
+	void setWorkplaceId(WorkplaceId workplaceId);
+
 }

@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 /**
  * The Interface EmploymentHistoryRepository.
  */
-public interface AffiliationEmploymentHistoryRepository {
+public interface AffEmploymentHistoryRepository {
 
 	/**
 	 * Search employee.
@@ -20,7 +20,7 @@ public interface AffiliationEmploymentHistoryRepository {
 	 * @param employmentCodes the employment codes
 	 * @return the list
 	 */
-	List<AffiliationEmploymentHistory> searchEmployee(GeneralDate baseDate, List<String> employmentCodes );
+	List<AffEmploymentHistory> searchEmployee(GeneralDate baseDate, List<String> employmentCodes );
 	
 	
 	/**
@@ -31,7 +31,7 @@ public interface AffiliationEmploymentHistoryRepository {
 	 * @param employmentCodes the employment codes
 	 * @return the list
 	 */
-	List<AffiliationEmploymentHistory> searchEmployee(List<String> employeeIds, 
+	List<AffEmploymentHistory> searchEmployee(List<String> employeeIds, 
 			GeneralDate baseDate, List<String> employmentCodes );
 	
 	

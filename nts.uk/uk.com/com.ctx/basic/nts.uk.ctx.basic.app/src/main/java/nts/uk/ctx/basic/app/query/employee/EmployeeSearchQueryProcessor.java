@@ -18,14 +18,14 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
-import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiClassHistoryRepository;
-import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffiliationEmploymentHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffiliationEmploymentHistoryRepository;
-import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJobTitleHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJobTitleHistoryRepository;
-import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffClassHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffClassHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchy;
 import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
@@ -38,7 +38,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class EmployeeQueryProcessor.
  */
 @Stateless
-public class EmployeeQueryProcessor {
+public class EmployeeSearchQueryProcessor {
 	/** The person repository. */
 	@Inject
 	private PersonRepository personRepository;
@@ -53,20 +53,20 @@ public class EmployeeQueryProcessor {
 	
 	/** The employment history repository. */
 	@Inject
-	private AffiliationEmploymentHistoryRepository employmentHistoryRepository;
+	private AffEmploymentHistoryRepository employmentHistoryRepository;
 	
 	/** The classification history repository. */
 	@Inject
-	private AffiClassHistoryRepository classificationHistoryRepository;
+	private AffClassHistoryRepository classificationHistoryRepository;
 	
 	
 	/** The job title history repository. */
 	@Inject
-	private AffiliationJobTitleHistoryRepository jobTitleHistoryRepository;
+	private AffJobTitleHistoryRepository jobTitleHistoryRepository;
 	
 	/** The workplace history repository. */
 	@Inject
-	private AffiliationWorkplaceHistoryRepository workplaceHistoryRepository;
+	private AffWorkplaceHistoryRepository workplaceHistoryRepository;
 	
 	
 	/**
@@ -86,7 +86,7 @@ public class EmployeeQueryProcessor {
 				employeeIds);
 
 		// get work place history by employee
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceOfCompanyId(employeeIds, baseDate);
 
 		// check exist data work place
@@ -105,7 +105,7 @@ public class EmployeeQueryProcessor {
 				}, Function.identity()));
 
 		// to map work place history
-		Map<String, AffiliationWorkplaceHistory> workplaceHistoryMap = workplaceHistory.stream()
+		Map<String, AffWorkplaceHistory> workplaceHistoryMap = workplaceHistory.stream()
 				.collect(Collectors.toMap((workplace) -> {
 					return workplace.getEmployeeId();
 				}, Function.identity()));
@@ -211,25 +211,25 @@ public class EmployeeQueryProcessor {
 		String companyId = loginUserContext.companyId();
 
 		// find by employment
-		List<AffiliationEmploymentHistory> employmentHistory = this.employmentHistoryRepository
+		List<AffEmploymentHistory> employmentHistory = this.employmentHistoryRepository
 				.searchEmployee(input.getBaseDate(), input.getEmploymentCodes());
 
 		// find by classification
-		List<AffiliationClassificationHistory> classificationHistorys = this.classificationHistoryRepository
+		List<AffClassHistory> classificationHistorys = this.classificationHistoryRepository
 				.searchClassification(
 						employmentHistory.stream().map(employment -> employment.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getClassificationCodes());
 
 		// find by job title
-		List<AffiliationJobTitleHistory> jobTitleHistory = this.jobTitleHistoryRepository
+		List<AffJobTitleHistory> jobTitleHistory = this.jobTitleHistoryRepository
 				.searchJobTitleHistory(
 						classificationHistorys.stream()
 								.map(classification -> classification.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getJobTitleCodes());
 		// find by work place
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceHistory(
 						jobTitleHistory.stream().map(jobtitle -> jobtitle.getEmployeeId())
 								.collect(Collectors.toList()),
@@ -262,7 +262,7 @@ public class EmployeeQueryProcessor {
 		// get employee id
 		String employeeId = loginUserContext.employeeId();
 		
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 		
 		// check exist data
@@ -295,7 +295,7 @@ public class EmployeeQueryProcessor {
 		
 		
 		// get data work place history
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 
 		// check exist data
@@ -334,7 +334,7 @@ public class EmployeeQueryProcessor {
 		
 		
 		// get data work place history
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 
 		// return data

@@ -2,20 +2,21 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.workplace;
+package nts.uk.ctx.basic.dom.company.organization.employee.jobtile;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
+import nts.uk.ctx.basic.dom.company.organization.jobtitle.PositionId;
 
 /**
- * The Interface AffiliationWorkplaceHistorySetMemento.
+ * The Class JobTitleHistorySetMemento.
  */
-public interface AffiliationWorkplaceHistorySetMemento {
+public interface AffJobTitleHistorySetMemento {
+	
 	
 	/**
-	 * Sets the.
+	 * Sets the period.
 	 *
-	 * @param period the period
+	 * @param period the new period
 	 */
 	void setPeriod(Period period);
 	
@@ -29,10 +30,10 @@ public interface AffiliationWorkplaceHistorySetMemento {
 	
 	
 	/**
-	 * Sets the work place id.
+	 * Sets the job title id.
 	 *
-	 * @param workplaceId the new work place id
+	 * @param jobTitleId the new job title id
 	 */
-	void setWorkplaceId(WorkplaceId workplaceId);
+	void setJobTitleId(PositionId jobTitleId);
 
 }

@@ -17,7 +17,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.app.find.company.organization.employee.EmployeeDto;
 import nts.uk.ctx.basic.app.find.company.organization.employee.EmployeeFinder;
-import nts.uk.ctx.basic.app.query.employee.EmployeeQueryProcessor;
+import nts.uk.ctx.basic.app.query.employee.EmployeeSearchQueryProcessor;
 import nts.uk.ctx.basic.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.basic.app.query.employee.EmployeeSearchListQuery;
 import nts.uk.ctx.basic.app.query.employee.EmployeeSearchQuery;
@@ -31,7 +31,7 @@ public class EmployeeWebService extends WebService {
 	
 	/** The employee query processor. */
 	@Inject
-	private EmployeeQueryProcessor employeeQueryProcessor;
+	private EmployeeSearchQueryProcessor employeeQueryProcessor;
 	
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}")

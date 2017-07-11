@@ -10,11 +10,11 @@ import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.employment.EmploymentCode;
 
 /**
- * The Class AffiliationEmploymentHistory.
+ * The Class AffEmploymentHistory.
  */
 // 所属雇用履歴
 @Getter
-public class AffiliationEmploymentHistory extends AggregateRoot{
+public class AffEmploymentHistory extends AggregateRoot{
 
 	/** The employment code. */
 	// 雇用コード
@@ -34,7 +34,7 @@ public class AffiliationEmploymentHistory extends AggregateRoot{
 	 *
 	 * @param memento the memento
 	 */
-	public AffiliationEmploymentHistory(AffiliationEmploymentHistoryGetMemento memento) {
+	public AffEmploymentHistory(AffEmploymentHistoryGetMemento memento) {
 		this.employmentCode = memento.getEmploymentCode();
 		this.period = memento.getPeriod();
 		this.employeeId = memento.getEmployeeId();
@@ -46,7 +46,7 @@ public class AffiliationEmploymentHistory extends AggregateRoot{
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(AffiliationEmploymentHistorySetMemento memento){
+	public void saveToMemento(AffEmploymentHistorySetMemento memento){
 		memento.setEmploymentCode(this.employmentCode);
 		memento.setPeriod(this.period);
 		memento.setEmployeeId(this.employeeId);

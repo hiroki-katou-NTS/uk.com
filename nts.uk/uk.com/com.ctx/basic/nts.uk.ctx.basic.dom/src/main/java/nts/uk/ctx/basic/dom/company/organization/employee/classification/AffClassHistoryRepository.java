@@ -9,9 +9,9 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Interface AffiClassHistoryRepository.
+ * The Interface AffClassHistoryRepository.
  */
-public interface AffiClassHistoryRepository {
+public interface AffClassHistoryRepository {
 
 	/**
 	 * Search classification.
@@ -20,7 +20,7 @@ public interface AffiClassHistoryRepository {
 	 * @param classificationCodes the classification codes
 	 * @return the list
 	 */
-	List<AffiliationClassificationHistory> searchClassification(GeneralDate baseDate, 
+	List<AffClassHistory> searchClassification(GeneralDate baseDate, 
 			List<String> classificationCodes);
 
 	/**
@@ -31,7 +31,7 @@ public interface AffiClassHistoryRepository {
 	 * @param classificationCodes the classification codes
 	 * @return the list
 	 */
-	List<AffiliationClassificationHistory> searchClassification(List<String> employeeIds, 
+	List<AffClassHistory> searchClassification(List<String> employeeIds, 
 			GeneralDate baseDate, List<String> classificationCodes);
 
 }

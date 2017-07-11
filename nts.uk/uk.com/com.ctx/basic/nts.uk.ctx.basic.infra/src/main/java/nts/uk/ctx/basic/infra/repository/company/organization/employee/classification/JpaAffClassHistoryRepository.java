@@ -19,8 +19,8 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiClassHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffClassHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffClassHistoryRepository;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHistPK_;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHist_;
@@ -29,8 +29,8 @@ import nts.uk.ctx.basic.infra.entity.company.organization.employee.classificatio
  * The Class JpaAffiliationClassificationHistoryRepository.
  */
 @Stateless
-public class JpaAffiliationClassificationHistoryRepository extends JpaRepository
-		implements AffiClassHistoryRepository {
+public class JpaAffClassHistoryRepository extends JpaRepository
+		implements AffClassHistoryRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -40,7 +40,7 @@ public class JpaAffiliationClassificationHistoryRepository extends JpaRepository
 	 * GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<AffiliationClassificationHistory> searchClassification(GeneralDate baseDate,
+	public List<AffClassHistory> searchClassification(GeneralDate baseDate,
 			List<String> classificationCodes) {
 		
 		if(CollectionUtil.isEmpty(classificationCodes)){
@@ -94,8 +94,8 @@ public class JpaAffiliationClassificationHistoryRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the classification history
 	 */
-	private AffiliationClassificationHistory toDomain(KmnmtAffiliClassificationHist entity) {
-		return new AffiliationClassificationHistory(new JpaAffiliationClassificationHistoryGetMemento(entity));
+	private AffClassHistory toDomain(KmnmtAffiliClassificationHist entity) {
+		return new AffClassHistory(new JpaAffClassHistoryGetMemento(entity));
 	}
 
 	/*
@@ -106,7 +106,7 @@ public class JpaAffiliationClassificationHistoryRepository extends JpaRepository
 	 * nts.arc.time.GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<AffiliationClassificationHistory> searchClassification(List<String> employeeIds,
+	public List<AffClassHistory> searchClassification(List<String> employeeIds,
 			GeneralDate baseDate, List<String> classificationCodes) {
 
 		// check not data 

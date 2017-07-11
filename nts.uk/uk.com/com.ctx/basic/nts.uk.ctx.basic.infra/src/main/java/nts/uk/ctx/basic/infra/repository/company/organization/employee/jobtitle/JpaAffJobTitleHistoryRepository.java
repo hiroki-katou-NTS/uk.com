@@ -19,27 +19,27 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJobTitleHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJobTitleHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistoryRepository;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.jobtitle.KmnmtAffiliJobTitleHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.jobtitle.KmnmtAffiliJobTitleHistPK_;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.jobtitle.KmnmtAffiliJobTitleHist_;
 
 /**
- * The Class JpaAffiliationJobTitleHistoryRepository.
+ * The Class JpaAffJobTitleHistoryRepository.
  */
 @Stateless
-public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
-		implements AffiliationJobTitleHistoryRepository {
+public class JpaAffJobTitleHistoryRepository extends JpaRepository
+		implements AffJobTitleHistoryRepository {
 	
 	/**
 	 * To domain.
 	 *
 	 * @param entity the entity
-	 * @return the job title history
+	 * @return the aff job title history
 	 */
-	private AffiliationJobTitleHistory toDomain(KmnmtAffiliJobTitleHist entity){
-		return new AffiliationJobTitleHistory(new JpaAffiliationJobTitleHistoryGetMemento(entity));
+	private AffJobTitleHistory toDomain(KmnmtAffiliJobTitleHist entity){
+		return new AffJobTitleHistory(new JpaAffJobTitleHistoryGetMemento(entity));
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 	 * java.util.List)
 	 */
 	@Override
-	public List<AffiliationJobTitleHistory> searchJobTitleHistory(GeneralDate baseDate,
+	public List<AffJobTitleHistory> searchJobTitleHistory(GeneralDate baseDate,
 			List<String> positionIds) {
 		
 		// check exist data
@@ -107,7 +107,7 @@ public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 	 * nts.arc.time.GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<AffiliationJobTitleHistory> searchJobTitleHistory(List<String> employeeIds,
+	public List<AffJobTitleHistory> searchJobTitleHistory(List<String> employeeIds,
 			GeneralDate baseDate, List<String> positionIds) {
 		// check exist data
 		if (CollectionUtil.isEmpty(positionIds) || CollectionUtil.isEmpty(employeeIds)) {

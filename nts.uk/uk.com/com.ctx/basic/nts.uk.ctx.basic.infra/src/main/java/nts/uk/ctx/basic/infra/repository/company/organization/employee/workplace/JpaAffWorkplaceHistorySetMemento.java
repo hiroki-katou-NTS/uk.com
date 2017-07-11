@@ -5,26 +5,25 @@
 package nts.uk.ctx.basic.infra.repository.company.organization.employee.workplace;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistorySetMemento;
+import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistorySetMemento;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.workplace.KmnmtAffiliWorkplaceHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.workplace.KmnmtAffiliWorkplaceHistPK;
 
 /**
- * The Class JpaAffiliationWorkplaceHistorySetMemento.
+ * The Class JpaAffWorkplaceHistorySetMemento.
  */
-public class JpaAffiliationWorkplaceHistorySetMemento
-		implements AffiliationWorkplaceHistorySetMemento {
+public class JpaAffWorkplaceHistorySetMemento implements AffWorkplaceHistorySetMemento {
 
 	/** The workplace history. */
 	private KmnmtAffiliWorkplaceHist workplaceHistory;
 
 	/**
-	 * Instantiates a new jpa workplace history set memento.
+	 * Instantiates a new jpa aff workplace history set memento.
 	 *
 	 * @param workplaceHistory the workplace history
 	 */
-	public JpaAffiliationWorkplaceHistorySetMemento(KmnmtAffiliWorkplaceHist workplaceHistory) {
+	public JpaAffWorkplaceHistorySetMemento(KmnmtAffiliWorkplaceHist workplaceHistory) {
 		if (workplaceHistory.getKmnmtAffiliWorkplaceHistPK() == null) {
 			workplaceHistory.setKmnmtAffiliWorkplaceHistPK(new KmnmtAffiliWorkplaceHistPK());
 		}

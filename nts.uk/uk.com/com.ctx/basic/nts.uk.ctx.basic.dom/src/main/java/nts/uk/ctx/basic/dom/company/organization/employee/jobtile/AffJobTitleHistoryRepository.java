@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class JobTitleHistoryRepository.
  */
-public interface AffiliationJobTitleHistoryRepository {
+public interface AffJobTitleHistoryRepository {
 
 	/**
 	 * Search job title history.
@@ -20,7 +20,7 @@ public interface AffiliationJobTitleHistoryRepository {
 	 * @param positionIds the position ids
 	 * @return the list
 	 */
-	List<AffiliationJobTitleHistory> searchJobTitleHistory(GeneralDate baseDate, List<String> positionIds);
+	List<AffJobTitleHistory> searchJobTitleHistory(GeneralDate baseDate, List<String> positionIds);
 
 	/**
 	 * Search job title history.
@@ -30,6 +30,6 @@ public interface AffiliationJobTitleHistoryRepository {
 	 * @param positionIds the position ids
 	 * @return the list
 	 */
-	List<AffiliationJobTitleHistory> searchJobTitleHistory(List<String> employeeIds,
+	List<AffJobTitleHistory> searchJobTitleHistory(List<String> employeeIds,
 			GeneralDate baseDate, List<String> positionIds);
 }

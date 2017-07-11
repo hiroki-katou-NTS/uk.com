@@ -10,11 +10,11 @@ import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCode;
 
 /**
- * The Class AffiliationClassificationHistory.
+ * The Class AffClassHistory.
  */
 // 所属分類履歴
 @Getter
-public class AffiliationClassificationHistory extends AggregateRoot {
+public class AffClassHistory extends AggregateRoot {
 
 	/** The classification code. */
 	// 分類コード
@@ -34,7 +34,7 @@ public class AffiliationClassificationHistory extends AggregateRoot {
 	 *
 	 * @param memento the memento
 	 */
-	public AffiliationClassificationHistory(AffiliationClassificationHistoryGetMemento memento) {
+	public AffClassHistory(AffClassHistoryGetMemento memento) {
 		this.classificationCode = memento.getClassificationCode();
 		this.period = memento.getPeriod();
 		this.employeeId = memento.getEmployeeId();
@@ -46,7 +46,7 @@ public class AffiliationClassificationHistory extends AggregateRoot {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(AffiliationClassificationHistorySetMemento memento){
+	public void saveToMemento(AffClassHistorySetMemento memento){
 		memento.setClassificationCode(this.classificationCode);
 		memento.setPeriod(this.period);
 		memento.setEmployeeId(this.employeeId);

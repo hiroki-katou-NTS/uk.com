@@ -5,15 +5,14 @@
 package nts.uk.ctx.basic.infra.repository.company.organization.employee.workplace;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistoryGetMemento;
+import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryGetMemento;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.workplace.KmnmtAffiliWorkplaceHist;
 
 /**
- * The Class JpaAffiliationWorkplaceHistoryGetMemento.
+ * The Class JpaAffWorkplaceHistoryGetMemento.
  */
-public class JpaAffiliationWorkplaceHistoryGetMemento
-		implements AffiliationWorkplaceHistoryGetMemento {
+public class JpaAffWorkplaceHistoryGetMemento implements AffWorkplaceHistoryGetMemento {
 
 	/** The workplace history. */
 	private KmnmtAffiliWorkplaceHist workplaceHistory;
@@ -23,7 +22,7 @@ public class JpaAffiliationWorkplaceHistoryGetMemento
 	 *
 	 * @param workplaceHistory the workplace history
 	 */
-	public JpaAffiliationWorkplaceHistoryGetMemento(KmnmtAffiliWorkplaceHist workplaceHistory) {
+	public JpaAffWorkplaceHistoryGetMemento(KmnmtAffiliWorkplaceHist workplaceHistory) {
 		this.workplaceHistory = workplaceHistory;
 	}
 

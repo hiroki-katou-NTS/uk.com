@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 /**
  * The Interface AffiliationWorkplaceHistoryRepository.
  */
-public interface AffiliationWorkplaceHistoryRepository {
+public interface AffWorkplaceHistoryRepository {
 	
 	/**
 	 * Search employee.
@@ -20,7 +20,7 @@ public interface AffiliationWorkplaceHistoryRepository {
 	 * @param workplaces the workplaces
 	 * @return the list
 	 */
-	public List<AffiliationWorkplaceHistory> searchWorkplaceHistory(GeneralDate baseDate, List<String> workplaces);
+	public List<AffWorkplaceHistory> searchWorkplaceHistory(GeneralDate baseDate, List<String> workplaces);
 	
 	/**
 	 * Search employee.
@@ -30,7 +30,7 @@ public interface AffiliationWorkplaceHistoryRepository {
 	 * @param workplaces the workplaces
 	 * @return the list
 	 */
-	public List<AffiliationWorkplaceHistory> searchWorkplaceHistory(List<String> employeeIds, 
+	public List<AffWorkplaceHistory> searchWorkplaceHistory(List<String> employeeIds, 
 			GeneralDate baseDate, List<String> workplaces);
 	
 	/**
@@ -40,7 +40,7 @@ public interface AffiliationWorkplaceHistoryRepository {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	public List<AffiliationWorkplaceHistory> searchWorkplaceHistoryByEmployee(String employeeId, 
+	public List<AffWorkplaceHistory> searchWorkplaceHistoryByEmployee(String employeeId, 
 			GeneralDate baseDate);
 	
 	
@@ -51,6 +51,6 @@ public interface AffiliationWorkplaceHistoryRepository {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	public List<AffiliationWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
+	public List<AffWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
 			GeneralDate baseDate);
 }
