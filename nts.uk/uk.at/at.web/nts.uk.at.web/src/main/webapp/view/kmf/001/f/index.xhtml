@@ -31,7 +31,7 @@
 
 		<ui:define name="sidebar-content">
 			<div id="company-tab" role="tabpanel">
-				<div class="sidebar-content-header">
+				<div id="functions-area" class="sidebar-content-header pad_line">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button tabindex="2" data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button>
 					<button tabindex="3" data-bind="click: saveData"
@@ -40,8 +40,6 @@
 						<label tabindex="4" data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div>
 				</div>
-				<div class="ruledLine"></div>
-
 				<div id="company-content">
 					<div data-bind="ntsFormLabel: {required: true}"
 						class="margin_right_125">#{i18n.getText('KMF001_75')}</div>
@@ -230,7 +228,7 @@
 
 
 			<div id="employment-tab" role="tabpanel">
-				<div class="sidebar-content-header">
+				<div id="functions-area" class="sidebar-content-header pad_line">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 					<button tabindex="2" data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button>
 					<button tabindex="3"
@@ -240,7 +238,6 @@
 						<label tabindex="4" data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div>
 				</div>
-				<div class="ruledLine"></div>
 				<div id="employment-content">
 
 					<table id="main-scr-tbl">

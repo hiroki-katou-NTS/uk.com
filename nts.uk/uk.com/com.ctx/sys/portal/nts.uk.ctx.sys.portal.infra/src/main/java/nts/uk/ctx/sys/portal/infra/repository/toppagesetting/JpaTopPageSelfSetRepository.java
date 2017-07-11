@@ -68,9 +68,8 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
  	 */
 	@Override
 	public Optional<TopPageSelfSet> getTopPageSelfSet(String employeeId) {
-		return this.queryProxy().query(SELECT_TOPPAGE_SELFSET, CcgptTopPageSelfSet.class)
-						.setParameter("employeeId", employeeId)
-						.getSingle(c->toDomain(c));
+		return this.queryProxy().find(new CcgptTopPageSelfSetPK(employeeId), CcgptTopPageSelfSet.class)
+			    .map(c->toDomain(c));
 	}
 	/**
 	 * Add the Top Page Self Setting.
@@ -86,7 +85,11 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
  	 */
 	@Override
 	public void updateTopPageSelfSet(TopPageSelfSet topPageSelfSet) {
-		this.commandProxy().update(toEntity(topPageSelfSet));
+		CcgptTopPageSelfSet a = toEntity(topPageSelfSet);
+		CcgptTopPageSelfSet x = this.queryProxy().find(a.ccgptTopPageSelfSetPK, CcgptTopPageSelfSet.class).get();
+		x.setCode(a.code);
+		this.commandProxy().update(x);
+
 	}
 	/**
 	 * Find a Layout

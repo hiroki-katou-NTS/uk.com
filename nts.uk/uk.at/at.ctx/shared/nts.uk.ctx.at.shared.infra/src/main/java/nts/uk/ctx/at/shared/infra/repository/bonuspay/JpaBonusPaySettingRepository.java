@@ -35,7 +35,7 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 		if(kbpmtBonusPaySettingOptional.isPresent()){
 			KbpmtBonusPaySetting kbpmtBonusPaySetting = kbpmtBonusPaySettingOptional.get();
 			kbpmtBonusPaySetting.name=domain.getName().v();
-			this.commandProxy().update(kbpmtBonusPaySettingOptional);
+			this.commandProxy().update(kbpmtBonusPaySetting);
 		}
 
 	}

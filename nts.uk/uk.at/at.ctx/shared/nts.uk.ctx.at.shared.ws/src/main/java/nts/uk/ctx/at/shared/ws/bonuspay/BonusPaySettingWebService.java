@@ -9,12 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.BPSettingAddCommand;
-import nts.uk.ctx.at.shared.app.command.BPSettingAddCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPSettingDeleteCommand;
-import nts.uk.ctx.at.shared.app.command.BPSettingDeleteCommandHandler;
-import nts.uk.ctx.at.shared.app.command.BPSettingUpdateCommand;
-import nts.uk.ctx.at.shared.app.command.BPSettingUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingDeleteCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingDeleteCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingUpdateCommandHandler;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPSettingDto;
 import nts.uk.ctx.at.shared.app.find.bonuspay.BPSettingFinder;
 
@@ -23,10 +23,13 @@ import nts.uk.ctx.at.shared.app.find.bonuspay.BPSettingFinder;
 public class BonusPaySettingWebService extends WebService {
 	@Inject
 	private BPSettingFinder bpSettingFinder;
+
 	@Inject
 	private BPSettingAddCommandHandler bpSettingAddCommandHandler;
+
 	@Inject
 	private BPSettingDeleteCommandHandler bpSettingDeleteCommandHandler;
+
 	@Inject
 	private BPSettingUpdateCommandHandler bpSettingUpdateCommandHandler;
 
@@ -35,9 +38,10 @@ public class BonusPaySettingWebService extends WebService {
 	public List<BPSettingDto> getAllBonusPaySetting() {
 		return this.bpSettingFinder.getAllBonusPaySetting();
 	}
+
 	@POST
 	@Path("getBonusPaySetting/{bonusPaySettingCode}")
-	public BPSettingDto getBonusPaySetting(@PathParam("bonusPaySettingCode")  String bonusPaySettingCode){
+	public BPSettingDto getBonusPaySetting(@PathParam("bonusPaySettingCode") String bonusPaySettingCode) {
 		return this.bpSettingFinder.getBonusPaySetting(bonusPaySettingCode);
 	}
 
@@ -52,6 +56,7 @@ public class BonusPaySettingWebService extends WebService {
 	public void updateBonusPaySetting(BPSettingUpdateCommand bpSettingUpdateCommand) {
 		this.bpSettingUpdateCommandHandler.handle(bpSettingUpdateCommand);
 	}
+
 	@POST
 	@Path("removeBonusPaySetting")
 	public void removeBonusPaySetting(BPSettingDeleteCommand bpSettingDeleteCommand) {

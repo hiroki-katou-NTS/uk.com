@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.CategorySetting;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSetting;
@@ -29,10 +30,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class UpdateTopPageJobSetCommandHandler extends CommandHandler<TopPageJobSetBase> {
 
 	@Inject
-	TopPageSettingRepository topPageSettingRepo;
+	private TopPageSettingRepository topPageSettingRepo;
 
 	@Inject
-	TopPageJobSetRepository topPageJobSetRepo;
+	private TopPageJobSetRepository topPageJobSetRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<TopPageJobSetBase> context) {
@@ -52,13 +53,13 @@ public class UpdateTopPageJobSetCommandHandler extends CommandHandler<TopPageJob
 				.collect(Collectors.toMap(TopPageJobSet::getJobId, x -> x));
 		for (UpdateTopPageJobSetCommand updateTopPageSettingCommandObj : updateTopPageJobSetCommand) {
 			TopPageJobSet topPageJobSet = topPageJobMap.get(updateTopPageSettingCommandObj.getJobId());
-			TopPageJobSet TopPageJobSetObj = updateTopPageSettingCommandObj.toDomain(companyId);
+			TopPageJobSet topPageJobSetObj = updateTopPageSettingCommandObj.toDomain(companyId);
 			if (topPageJobSet == null) {
-				topPageJobSetRepo.add(TopPageJobSetObj);
-			} else if (categorySet == 1) {
-				topPageJobSetRepo.update(TopPageJobSetObj);
+				topPageJobSetRepo.add(topPageJobSetObj);
+			} else if (categorySet == CategorySetting.DIVIDE.value) {
+				topPageJobSetRepo.update(topPageJobSetObj);
 			} else {
-				topPageJobSetRepo.updateProperty(TopPageJobSetObj);
+				topPageJobSetRepo.updateProperty(topPageJobSetObj);
 			}
 		}
 

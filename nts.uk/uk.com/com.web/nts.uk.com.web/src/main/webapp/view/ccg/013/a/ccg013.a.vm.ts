@@ -237,7 +237,7 @@ module ccg013.a.viewmodel {
             let self = this,
                 webMenuCode = self.currentCode();
 
-            service.deleteWebMenu(webMenuCode).done(self.getWebMenu);
+            service.deleteWebMenu(webMenuCode).done(() => { self.getWebMenu(); });
         }
 
 
@@ -349,7 +349,7 @@ module ccg013.a.viewmodel {
 
             setShared("CCG013E_COPY", data);
             modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
-              self.getWebMenu();
+                self.getWebMenu();
             });
         }
 
@@ -421,7 +421,7 @@ module ccg013.a.viewmodel {
                             item.textColor(data.letterColor);
                         }
                     });
-                    
+
                     bindSortable();
                 }
             });

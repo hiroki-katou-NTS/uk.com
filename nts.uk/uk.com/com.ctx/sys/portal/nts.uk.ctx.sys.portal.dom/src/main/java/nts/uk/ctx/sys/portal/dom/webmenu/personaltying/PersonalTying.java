@@ -1,19 +1,44 @@
 package nts.uk.ctx.sys.portal.dom.webmenu.personaltying;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
+import nts.gul.text.StringUtil;
 
-@AllArgsConstructor
 public class PersonalTying extends AggregateRoot {
 	
 	@Getter
-	private String companyCode;
+	private String companyId;
     
 	@Getter
-	private WebMenuCode webMenuCode;
+	private String webMenuCode;
 	
 	@Getter
-	private String employId;
+	private String employeeId;
+	
+	@Override
+	public void validate() {
+		super.validate();
+		if (StringUtil.isNullOrEmpty(this.employeeId, true) || StringUtil.isNullOrEmpty(this.webMenuCode, true)) {
+			throw new RuntimeException("Employee or Web menu code null");
+		}
+	}
+	
+	public PersonalTying (String companyId, String webMenuCode, String employeeId){
+		super();
+		this.companyId = companyId;
+		this.webMenuCode = webMenuCode;
+		this.employeeId = employeeId;
+		
+	}
+
+	/**
+	 * 
+	 * @param companyId
+	 * @param webMenuCode
+	 * @param employeeId
+	 * @return
+	 */
+	public static PersonalTying createFromJavaType(String companyId, String webMenuCode, String employeeId){
+		return new PersonalTying(companyId, webMenuCode, employeeId);
+	}
 }
