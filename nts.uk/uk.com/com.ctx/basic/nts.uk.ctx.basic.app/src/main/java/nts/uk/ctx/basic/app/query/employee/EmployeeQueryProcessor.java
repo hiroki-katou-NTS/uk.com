@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.app.find.company.organization.employee.search;
+package nts.uk.ctx.basic.app.query.employee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiClassHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffiliationEmploymentHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffiliationEmploymentHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJobTitleHistory;
@@ -35,39 +35,38 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class EmployeeSearchFinder.
+ * The Class EmployeeQueryProcessor.
  */
 @Stateless
-public class EmployeeSearchFinder {
-	
-	/** The repository person. */
+public class EmployeeQueryProcessor {
+	/** The person repository. */
 	@Inject
-	private PersonRepository repositoryPerson;
+	private PersonRepository personRepository;
 	
-	/** The repository employee. */
+	/** The employee repository. */
 	@Inject
-	private EmployeeRepository repositoryEmployee;
+	private EmployeeRepository employeeRepository;
 	
-	/** The repository workplace. */
+	/** The workplace repository. */
 	@Inject
-	private WorkplaceRepository repositoryWorkplace;
+	private WorkplaceRepository workplaceRepository;
 	
-	/** The repository employment history. */
+	/** The employment history repository. */
 	@Inject
-	private AffiliationEmploymentHistoryRepository repositoryEmploymentHistory;
+	private AffiliationEmploymentHistoryRepository employmentHistoryRepository;
 	
-	/** The repository classification history. */
+	/** The classification history repository. */
 	@Inject
-	private AffiliationClassificationHistoryRepository repositoryClassificationHistory;
+	private AffiClassHistoryRepository classificationHistoryRepository;
 	
 	
-	/** The repository job title history. */
+	/** The job title history repository. */
 	@Inject
-	private AffiliationJobTitleHistoryRepository repositoryJobTitleHistory;
+	private AffiliationJobTitleHistoryRepository jobTitleHistoryRepository;
 	
-	/** The repository workplace history. */
+	/** The workplace history repository. */
 	@Inject
-	private AffiliationWorkplaceHistoryRepository repositoryWorkplaceHistory;
+	private AffiliationWorkplaceHistoryRepository workplaceHistoryRepository;
 	
 	
 	/**
@@ -79,15 +78,15 @@ public class EmployeeSearchFinder {
 	 * @return the list
 	 */
 
-	public List<EmployeeSearchDto> toEmployee(GeneralDate baseDate, List<String> employeeIds,
+	public List<EmployeeSearchData> toEmployee(GeneralDate baseDate, List<String> employeeIds,
 			String companyId) {
 
 		// get employee list
-		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployeeId(companyId,
+		List<Employee> employees = this.employeeRepository.getListPersonByListEmployeeId(companyId,
 				employeeIds);
 
 		// get work place history by employee
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
+		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceOfCompanyId(employeeIds, baseDate);
 
 		// check exist data work place
@@ -96,7 +95,7 @@ public class EmployeeSearchFinder {
 		}
 
 		// get all work place of company
-		List<Workplace> workplaces = this.repositoryWorkplace.getAllWorkplaceOfCompany(companyId,
+		List<Workplace> workplaces = this.workplaceRepository.getAllWorkplaceOfCompany(companyId,
 				baseDate);
 
 		// to map work place
@@ -112,7 +111,7 @@ public class EmployeeSearchFinder {
 				}, Function.identity()));
 
 		// get person name
-		List<Person> persons = this.repositoryPerson.getPersonByPersonId(
+		List<Person> persons = this.personRepository.getPersonByPersonId(
 				employees.stream().map(employee -> employee.getPId()).collect(Collectors.toList()));
 
 		// to map person (person id)
@@ -120,7 +119,7 @@ public class EmployeeSearchFinder {
 			return person.getPersonId().v();
 		}, Function.identity()));
 
-		List<EmployeeSearchDto> employeeSearchData = new ArrayList<>();
+		List<EmployeeSearchData> employeeSearchData = new ArrayList<>();
 
 		employees.forEach(employee -> {
 			// check exist data
@@ -129,7 +128,7 @@ public class EmployeeSearchFinder {
 							workplaceHistoryMap.get(employee.getSId()).getWorkplaceId().v())) {
 
 				// add to dto
-				EmployeeSearchDto dto = new EmployeeSearchDto();
+				EmployeeSearchData dto = new EmployeeSearchData();
 				dto.setEmployeeId(employee.getSId());
 				dto.setEmployeeCode(employee.getSCd().v());
 				dto.setEmployeeName(personMap.get(employee.getPId()).getPersonName().v());
@@ -156,16 +155,16 @@ public class EmployeeSearchFinder {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	public List<EmployeeSearchDto> searchAllEmployee(GeneralDate baseDate){
-		
-		// get login user
+	public List<EmployeeSearchData> searchAllEmployee(GeneralDate baseDate){
+
+		//get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 		
-		// get company id login
+		//get company id
 		String companyId = loginUserContext.companyId();
-		
+				
 		// get all employee of company id
-		List<Employee> employees = this.repositoryEmployee.getAllEmployee(companyId);
+		List<Employee> employees = this.employeeRepository.getAllEmployee(companyId);
 
 		return toEmployee(baseDate, employees.stream().map(employee -> employee.getSId())
 				.collect(Collectors.toList()), companyId);
@@ -178,17 +177,21 @@ public class EmployeeSearchFinder {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	public List<EmployeeSearchDto> searchEmployeeByLogin(GeneralDate baseDate){
-		
-		// get login user
+	public List<EmployeeSearchData> searchEmployeeByLogin(GeneralDate baseDate){
+
+		//get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 		
-		// get company id login
+		//get company id
 		String companyId = loginUserContext.companyId();
 		
+		// get employee id
+		String employeeId = loginUserContext.employeeId();
+				
+		// add employeeId
 		List<String> employeeIds = new ArrayList<>();
 		
-		employeeIds.add(loginUserContext.employeeId());
+		employeeIds.add(employeeId);
 		
 		// get data
 		return toEmployee(baseDate, employeeIds, companyId);
@@ -200,8 +203,7 @@ public class EmployeeSearchFinder {
 	 * @param input the input
 	 * @return the list
 	 */
-	public List<EmployeeSearchDto> searchModeEmployee(EmployeeSearchInDto input) {
-
+	public List<EmployeeSearchData> searchModeEmployee(EmployeeSearchQuery input) {
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -209,38 +211,38 @@ public class EmployeeSearchFinder {
 		String companyId = loginUserContext.companyId();
 
 		// find by employment
-
-		List<AffiliationEmploymentHistory> employmentHistory = this.repositoryEmploymentHistory
+		List<AffiliationEmploymentHistory> employmentHistory = this.employmentHistoryRepository
 				.searchEmployee(input.getBaseDate(), input.getEmploymentCodes());
 
 		// find by classification
-		List<AffiliationClassificationHistory> classificationHistorys = this.repositoryClassificationHistory
+		List<AffiliationClassificationHistory> classificationHistorys = this.classificationHistoryRepository
 				.searchClassification(
 						employmentHistory.stream().map(employment -> employment.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getClassificationCodes());
 
 		// find by job title
-		List<AffiliationJobTitleHistory> jobTitleHistory = this.repositoryJobTitleHistory
+		List<AffiliationJobTitleHistory> jobTitleHistory = this.jobTitleHistoryRepository
 				.searchJobTitleHistory(
 						classificationHistorys.stream()
 								.map(classification -> classification.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getJobTitleCodes());
 		// find by work place
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
+		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceHistory(
 						jobTitleHistory.stream().map(jobtitle -> jobtitle.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getWorkplaceCodes());
 		// to employees
-		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployeeId(companyId,
+		List<Employee> employees = this.employeeRepository.getListPersonByListEmployeeId(companyId,
 				workplaceHistory.stream().map(workplace -> workplace.getEmployeeId())
 						.collect(Collectors.toList()));
 
 		// to person info
-		return this.toEmployee(input.getBaseDate(), employees.stream()
-				.map(employee -> employee.getSId()).collect(Collectors.toList()), companyId);
+		return this.toEmployee(input.getBaseDate(),
+				employees.stream().map(employee -> employee.getSId()).collect(Collectors.toList()),
+				companyId);
 	}
 	
 	
@@ -250,18 +252,17 @@ public class EmployeeSearchFinder {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	public List<EmployeeSearchDto> searchOfWorkplace(GeneralDate baseDate) {
+	public List<EmployeeSearchData> searchOfWorkplace(GeneralDate baseDate) {
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get company id
+		String companyId = loginUserContext.companyId();
 
 		// get employee id
 		String employeeId = loginUserContext.employeeId();
 		
-		
-		// get company id
-		String companyId = loginUserContext.companyId();
-
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
+		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 		
 		// check exist data
@@ -281,18 +282,20 @@ public class EmployeeSearchFinder {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	public List<EmployeeSearchDto> searchWorkplaceChild(GeneralDate baseDate) {
+	public List<EmployeeSearchData> searchWorkplaceChild(GeneralDate baseDate) {
+		
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get employee id
-		String employeeId = loginUserContext.employeeId();
 
 		// get company id
 		String companyId = loginUserContext.companyId();
 
+		// get employee id
+		String employeeId = loginUserContext.employeeId();
+		
+		
 		// get data work place history
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
+		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 
 		// check exist data
@@ -303,11 +306,11 @@ public class EmployeeSearchFinder {
 		// get data child
 		List<WorkPlaceHierarchy> workPlaceHierarchies = new ArrayList<>();
 		workplaceHistory.forEach(work -> {
-			workPlaceHierarchies.addAll(this.repositoryWorkplace.findAllHierarchyChild(companyId,
+			workPlaceHierarchies.addAll(this.workplaceRepository.findAllHierarchyChild(companyId,
 					work.getWorkplaceId().v()));
 		});
 		
-		workplaceHistory = this.repositoryWorkplaceHistory.searchWorkplaceHistory(baseDate,
+		workplaceHistory = this.workplaceHistoryRepository.searchWorkplaceHistory(baseDate,
 				workPlaceHierarchies.stream().map(workplace -> workplace.getWorkplaceId().v())
 						.collect(Collectors.toList()));
 		// return data
@@ -328,9 +331,10 @@ public class EmployeeSearchFinder {
 
 		// get employee id
 		String employeeId = loginUserContext.employeeId();
-
+		
+		
 		// get data work place history
-		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
+		List<AffiliationWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 
 		// return data
@@ -344,10 +348,10 @@ public class EmployeeSearchFinder {
 	 * @param input the input
 	 * @return the of selected employee
 	 */
-	public List<EmployeeSearchDto> getOfSelectedEmployee(EmployeeSearchGetDto input){
+	public List<EmployeeSearchData> getOfSelectedEmployee(EmployeeSearchListQuery input){		
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// get company id
 		String companyId = loginUserContext.companyId();
 		

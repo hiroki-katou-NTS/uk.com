@@ -13,25 +13,51 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * The Class EmployeeFinder.
+ */
 @Stateless
 public class EmployeeFinder {
-	@Inject
-	private EmployeeRepository EmpRepo;
-
-	private String companyId = AppContexts.user().companyId();
 	
-	/** Get person ID by EmployeeCode */
+	/** The employee repository. */
+	@Inject
+	private EmployeeRepository employeeRepository;
+	
+	/**
+	 * Gets the person id by employee code.
+	 *
+	 * @param employeeCode the employee code
+	 * @return the person id by employee code
+	 */
 	public Optional<EmployeeDto> getPersonIdByEmployeeCode(String employeeCode) {
-		return this.EmpRepo.getPersonIdByEmployeeCode(companyId, employeeCode)
+		
+		//get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		//get company id
+		String companyId = loginUserContext.companyId();
+		
+		return this.employeeRepository.getPersonIdByEmployeeCode(companyId, employeeCode)
 				.map(item -> EmployeeDto.fromDomain(item));
 	}
-	/** Get person ID by LIST EmployeeCode */
+	
+	/**
+	 * Gets the list person id by employee code.
+	 *
+	 * @param listEmployeeCode the list employee code
+	 * @return the list person id by employee code
+	 */
 	public List<EmployeeDto> getListPersonIdByEmployeeCode(List<String> listEmployeeCode) {
-		return this.EmpRepo.getListPersonByListEmployee(companyId, listEmployeeCode)
-				.stream()
-				.map(item -> EmployeeDto.fromDomain(item))
-				.collect(Collectors.toList());
+
+		//get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		//get company id
+		String companyId = loginUserContext.companyId();
+		return this.employeeRepository.getListPersonByListEmployee(companyId, listEmployeeCode)
+				.stream().map(item -> EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -40,7 +66,15 @@ public class EmployeeFinder {
 	 * @return the all employee
 	 */
 	public List<EmployeeDto> getAllEmployee() {
-		return this.EmpRepo.getAllEmployee(companyId).stream()
+
+		//get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		//get company id
+		String companyId = loginUserContext.companyId();
+		return this.employeeRepository.getAllEmployee(companyId).stream()
 				.map(item -> EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
+	
+	
 }

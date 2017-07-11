@@ -20,7 +20,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiClassHistoryRepository;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHistPK_;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.classification.KmnmtAffiliClassificationHist_;
@@ -30,7 +30,7 @@ import nts.uk.ctx.basic.infra.entity.company.organization.employee.classificatio
  */
 @Stateless
 public class JpaAffiliationClassificationHistoryRepository extends JpaRepository
-		implements AffiliationClassificationHistoryRepository {
+		implements AffiClassHistoryRepository {
 
 	/*
 	 * (non-Javadoc)

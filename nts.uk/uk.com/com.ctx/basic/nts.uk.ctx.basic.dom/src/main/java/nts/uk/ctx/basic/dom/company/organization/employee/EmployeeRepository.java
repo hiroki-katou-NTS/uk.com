@@ -7,10 +7,27 @@ package nts.uk.ctx.basic.dom.company.organization.employee;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The Interface EmployeeRepository.
+ */
 public interface EmployeeRepository {
-	// get List Employee
+	
+	/**
+	 * Gets the person id by employee code.
+	 *
+	 * @param companyId the company id
+	 * @param employeeCode the employee code
+	 * @return the person id by employee code
+	 */
 	Optional<Employee> getPersonIdByEmployeeCode(String companyId, String employeeCode);
-	//Get List Person ID
+	
+	/**
+	 * Gets the list person by list employee.
+	 *
+	 * @param companyId the company id
+	 * @param employeeCode the employee code
+	 * @return the list person by list employee
+	 */
 	List<Employee> getListPersonByListEmployee(String companyId, List<String> employeeCode);
 	
 	
@@ -30,6 +47,5 @@ public interface EmployeeRepository {
 	 * @param employeeIds the employee ids
 	 * @return the list person by list employee
 	 */
-	//Get List Person ID
 	List<Employee> getListPersonByListEmployeeId(String companyId, List<String> employeeIds);
 }

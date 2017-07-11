@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.app.find.company.organization.employee.search;
+package nts.uk.ctx.basic.app.query.employee;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,11 +12,11 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class EmployeeSearchGetDto.
+ * The Class EmployeeSearchListQuery.
  */
 @Getter
 @Setter
-public class EmployeeSearchGetDto implements Serializable {
+public class EmployeeSearchListQuery implements Serializable {
 
 	
 	/** The Constant serialVersionUID. */

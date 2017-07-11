@@ -9,9 +9,9 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Interface AffiliationClassificationHistoryRepository.
+ * The Interface AffiClassHistoryRepository.
  */
-public interface AffiliationClassificationHistoryRepository {
+public interface AffiClassHistoryRepository {
 
 	/**
 	 * Search classification.
