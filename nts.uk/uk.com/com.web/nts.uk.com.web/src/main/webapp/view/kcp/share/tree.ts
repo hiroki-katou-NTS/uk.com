@@ -186,9 +186,8 @@ module kcp.share.tree {
                     if (data.isShowAlreadySet) { 
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
-                            self.addAlreadySettingAttr(res, newAlreadySettings);
-                            self.itemList(res);
-                            self.backupItemList(res);
+                            self.addAlreadySettingAttr(self.backupItemList(), newAlreadySettings);
+                            self.itemList(self.backupItemList());
                             
                             self.filterData();
                         });
