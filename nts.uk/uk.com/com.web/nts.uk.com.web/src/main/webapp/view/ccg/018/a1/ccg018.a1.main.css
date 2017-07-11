@@ -69,8 +69,16 @@ td {
 	overflow-x: hidden;
 }
 
+/* for IE browser */
 *::-ms-backdrop, .table1 tbody {
 	height: 525px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* for EDGE browser */
+@supports (-ms-ime-align:auto ) { .table1 tbody {
+	height: 495px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
