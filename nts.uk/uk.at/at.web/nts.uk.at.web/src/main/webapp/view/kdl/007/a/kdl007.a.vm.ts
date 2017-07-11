@@ -51,15 +51,14 @@ module kdl007.a.viewmodel {
 
         // push data to parent screen
         register() {
-            let self = this,
-                items: Array<ItemModel> = ko.toJS(self.dataSources),
-                codeList: Array<string> = ko.toJS(self.currentCodeList);
-
-            if (typeof codeList == 'object' && !codeList.length) {
+            if (typeof this.currentCodeList() == 'object' && !this.currentCodeList().length) {
                 alertError({ messageId: "Msg_30" });
                 return;
             }
-
+            this.currentCodeList.remove(x => x== '');
+            let self = this,
+                items: Array<ItemModel> = ko.toJS(self.dataSources),
+                codeList: Array<string> = ko.toJS(self.currentCodeList);
             setShared('KDL007_VALUES', { selecteds: self.isMulti ? codeList : [codeList] }, true);
 
             self.close();
