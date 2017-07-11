@@ -11010,7 +11010,11 @@ var nts;
                                     name: "RowSelectors",
                                     enableCheckBoxes: showCheckBox,
                                     checkBoxMode: "biState"
-                                }]
+                                },
+                                {
+                                    name: "Resizing"
+                                }
+                            ]
                         });
                         var treeGridId = $treegrid.attr('id');
                         $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
