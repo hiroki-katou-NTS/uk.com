@@ -42,9 +42,6 @@ module kdl007.a.viewmodel {
 
                     //filter real selected code from source
                     self.currentCodeList(_.filter(resp, x => selectedItems.indexOf(x.code) > -1).map(x => x.code));
-                    if(self.currentCodeList().length == 0 ){
-                        self.currentCodeList([''])
-                        }
                 }
             });
         }
