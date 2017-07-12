@@ -28,7 +28,7 @@ public enum ClosingDateType {
 	// 7: 8日
 	EIGHTH(7),
 	// 8: 9日
-	NINTH(8),
+	NINETH(8),
 	// 9: 10日
 	TENTH(9),
 	// 10: 11日

@@ -5,7 +5,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.NumberOfTimeOverLimitType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 
@@ -21,7 +21,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 
 	private StartingMonthType startingMonth;
 
-	private NumberOfTimeOverLimitType numberTimesOverLimitType;
+	private TimeOverLimitType numberTimesOverLimitType;
 
 	private ClosingDateType closingDateType;
 
@@ -32,7 +32,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	private TargetSettingAtr alarmListAtr;
 
 	public AgreementOperationSetting(String companyId, StartingMonthType startingMonth,
-			NumberOfTimeOverLimitType numberTimesOverLimitType, ClosingDateType closingDateType,
+			TimeOverLimitType numberTimesOverLimitType, ClosingDateType closingDateType,
 			ClosingDateAtr closingDateAtr, TargetSettingAtr yearlyWorkTableAtr, TargetSettingAtr alarmListAtr) {
 		super();
 		this.companyId = companyId;
@@ -50,7 +50,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 		return new AgreementOperationSetting(
 				companyId,
 				EnumAdaptor.valueOf(startingMonth, StartingMonthType.class),
-				EnumAdaptor.valueOf(numberTimesOverLimitType, NumberOfTimeOverLimitType.class),
+				EnumAdaptor.valueOf(numberTimesOverLimitType, TimeOverLimitType.class),
 				EnumAdaptor.valueOf(closingDateType, ClosingDateType.class),
 				EnumAdaptor.valueOf(closingDateAtr, ClosingDateAtr.class),
 				EnumAdaptor.valueOf(yearlyWorkTableAtr, TargetSettingAtr.class),

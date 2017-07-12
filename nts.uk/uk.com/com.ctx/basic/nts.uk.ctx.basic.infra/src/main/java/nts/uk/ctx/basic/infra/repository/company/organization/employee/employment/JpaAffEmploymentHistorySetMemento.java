@@ -51,7 +51,7 @@ public class JpaAffEmploymentHistorySetMemento implements AffEmploymentHistorySe
 	 */
 	@Override
 	public void setPeriod(Period period) {
-		this.employmentHistory.setStrD(period.getStartDate());
+		this.employmentHistory.getKmnmtEmploymentHistPK().setStrD(period.getStartDate());
 		this.employmentHistory.setEndD(period.getEndDate());
 	}
 

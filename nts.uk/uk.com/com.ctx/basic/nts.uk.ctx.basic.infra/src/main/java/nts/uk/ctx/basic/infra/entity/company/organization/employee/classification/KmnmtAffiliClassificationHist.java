@@ -38,12 +38,7 @@ public class KmnmtAffiliClassificationHist extends UkJpaEntity implements Serial
     @EmbeddedId
     protected KmnmtAffiliClassificationHistPK kmnmtClassificationHistPK;
     
-    /** The str D. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "STR_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate strD;
+   
     
     /** The end D. */
     @Basic(optional = false)
@@ -56,18 +51,6 @@ public class KmnmtAffiliClassificationHist extends UkJpaEntity implements Serial
     }
 
     public KmnmtAffiliClassificationHist(KmnmtAffiliClassificationHistPK kmnmtClassificationHistPK) {
-        this.kmnmtClassificationHistPK = kmnmtClassificationHistPK;
-    }
-
-    public KmnmtAffiliClassificationHist(String histId, String sid, String clscd) {
-        this.kmnmtClassificationHistPK = new KmnmtAffiliClassificationHistPK(histId, sid, clscd);
-    }
-
-    public KmnmtAffiliClassificationHistPK getKmnmtClassificationHistPK() {
-        return kmnmtClassificationHistPK;
-    }
-
-    public void setKmnmtClassificationHistPK(KmnmtAffiliClassificationHistPK kmnmtClassificationHistPK) {
         this.kmnmtClassificationHistPK = kmnmtClassificationHistPK;
     }
 

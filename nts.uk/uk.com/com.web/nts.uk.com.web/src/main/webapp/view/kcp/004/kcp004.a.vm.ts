@@ -47,7 +47,9 @@ module kcp004.a.viewmodel {
             self.isDialog = ko.observable(false);
             self.isShowAlreadySet = ko.observable(true);
             self.isShowSelectButton = ko.observable(true);
-            self.enableShowSelectButton = ko.observable(true);
+            self.enableShowSelectButton = ko.computed(function() {
+                return self.isMultipleTreeGrid();
+            });
             
             // Control component
             self.baseDate = ko.observable(new Date());
@@ -86,7 +88,6 @@ module kcp004.a.viewmodel {
                     self.selectedSelectionType(1);
                 }
                 self.resetSelectedWorkplace();
-                self.isShowSelectButton(code == 1);
                 self.reloadTreeGrid().done(() => {
                     self.getSelectedData();
                 });
@@ -100,9 +101,9 @@ module kcp004.a.viewmodel {
 //            self.alreadySettingList.subscribe(function() {
 //                self.reloadTreeGrid();
 //            });
-//            self.isShowSelectButton.subscribe(function() {
-//                self.reloadTreeGrid();
-//            });
+            self.isShowSelectButton.subscribe(function() {
+                self.reloadTreeGrid();
+            });
             self.selectedSelectionType.subscribe((code) => {
                 if (code == 1) {
                     self.resetSelectedWorkplace();
@@ -194,6 +195,10 @@ module kcp004.a.viewmodel {
             self.setTreeData();
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                 $('#tree-grid').focusTreeGridComponent();
+                // fix focus placeholder in IE 10
+                $('#combo-box-tree-component').on('mousedown', function() {
+                    $('#combo-box-tree-component').focus();
+                });
                 dfd.resolve();
             });
             return dfd.promise();

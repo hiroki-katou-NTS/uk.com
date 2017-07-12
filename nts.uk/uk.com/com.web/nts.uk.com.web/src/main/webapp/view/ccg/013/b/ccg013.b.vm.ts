@@ -56,7 +56,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             })); 
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage(): JQueryPromise<any> { 
             var self = this;
             var dfd = $.Deferred();
             var data = windows.getShared("CCG013A_StandardMeNu");
@@ -92,7 +92,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         submit() {
             var self = this;
             var menuCls = null;
-            if (nts.uk.ui.errors.hasError()) {
+            if (nts.uk.ui.errors.hasError() || (self.letterColor() === "" || self.backgroundColor() === "")) {
                 return;    
             }
             var standMenu = _.find(self.listStandardMenu(), function(item: service.MenuBarDto) {
@@ -112,8 +112,6 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             var standardMenus =  _.chain(self.allPart()).filter(['system', value]).value();
             self.listStandardMenu(standardMenus);
         }
-
-
     }
 
     class MenuBar {
@@ -135,5 +133,4 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             this.menuCls = menuCls;
         }
     }
-
 }

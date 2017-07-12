@@ -27,7 +27,7 @@ module ksm002.b.viewmodel {
         workplaceName: KnockoutObservable<string>;
         //Workplace List 
         multiSelectedWorkplaceId: KnockoutObservable<string>;
-        baseDate: KnockoutObservable(Date);
+        baseDate: KnockoutObservable<Date>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         treeGrid: TreeComponentOption;
         

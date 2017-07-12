@@ -21,7 +21,7 @@ public class CcgstPersonTyingPK implements Serializable {
 	
 	/** Web menu code */
 	@Column(name = "WEB_MENU_CD")
-	public String webMenuCd;
+	public String webMenuCode;
 	
 	@Column(name = "SID")
 	public String employeeId;

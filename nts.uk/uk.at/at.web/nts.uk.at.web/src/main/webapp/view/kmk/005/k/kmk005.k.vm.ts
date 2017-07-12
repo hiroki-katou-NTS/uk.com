@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk005.k {
         import block = nts.uk.ui.block.invisible;
         import getText = nts.uk.resource.getText;
         import modal = nts.uk.ui.windows.sub.modal;
+        import alert = nts.uk.ui.dialog.alert;
         import alertE = nts.uk.ui.dialog.alertError;
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
@@ -50,19 +51,19 @@ module nts.uk.at.view.kmk005.k {
                                     if (c) {
                                         model.bpsn(c.name);
                                     } else {
-                                        model.bpsc('000');
+                                        model.bpsc('');
                                         model.bpsn(getText("KDL007_6"));
                                     }
                                 });
                             } else {
-                                model.bpsc('000');
+                                model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             }
                         });
                     } else {
                         model.wtc('');
                         model.wtn(getText("KDL007_6"));
-                        model.bpsc('000');
+                        model.bpsc('');
                         model.bpsn(getText("KDL007_6"));
                     }
                 });
@@ -100,14 +101,20 @@ module nts.uk.at.view.kmk005.k {
                         workingTimesheetCode: model.wtc,
                         bonusPaySettingCode: model.bpsc
                     };
-
-                block();
-                service.saveSetting(command).done((data) => {
-                    self.start();
-                    unblock();
-                }).fail((res) => {
-                    alertE(res.message).then(function() { unblock(); });
-                });
+                if (model.bpsc !== '') {
+                    if (model.wtc && model.wtc !== '') {
+                        block();
+                        service.saveSetting(command).done(() => {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                            unblock();
+                        }).fail((res) => {
+                            alertE(res.message).then(function() { unblock(); });
+                        });
+                    }
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
+                }
             }
 
             removeData(): void {
@@ -118,12 +125,14 @@ module nts.uk.at.view.kmk005.k {
                         workingTimesheetCode: model.wtc,
                         bonusPaySettingCode: model.bpsc
                     };
-
-                block();
-                service.saveSetting(command).done((data) => {
-                    self.start();
-                    unblock();
-                }).fail(x => alertE(x.message).then(unblock));
+                if (model.wtc && model.wtc !== '') {
+                    block();
+                    service.saveSetting(command).done(() => {
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                        self.start();
+                        unblock();
+                    }).fail(x => alertE(x.message).then(unblock));
+                }
             }
 
             search() {
@@ -165,12 +174,12 @@ module nts.uk.at.view.kmk005.k {
                                 if (x) {
                                     model.bpsn(x.name);
                                 } else {
-                                    model.bpsc('000');
+                                    model.bpsc('');
                                     model.bpsn(getText("KDL007_6"));
                                 }
                             })
                             .fail(x => {
-                                model.bpsc('000');
+                                model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             });
                     }

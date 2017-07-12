@@ -100,8 +100,9 @@
 	text-align: center;
 	padding-top: 16px;
 }
-.ntsSearchBox.nts-editor.ntsSearchBox_Component{
-	    margin-left: -29px;
+
+.ntsSearchBox.nts-editor.ntsSearchBox_Component {
+	margin-left: -29px;
 }
 
 .move-function {
@@ -120,47 +121,65 @@
 	margin-bottom: -18px;
 	position: fixed;
 }
+
 .tab-content-2 {
-    overflow-y: scroll;
-    height: 411px;
-}
-#hor-scroll-button-hide {
-	margin-top: -33px;
-	margin-left: -22px;
-
-}
-#hor-scroll-button-hide {
-	margin-top: 135px;
+	overflow-y: scroll;
+	height: 320px;
 }
 
-#hr1 {
-	width: 291px;
+#hor-scroll-button-hide {
+	margin-top: 48px;
+	margin-left: -108px;
+}
+
+#ccg-component {
+	margin-top: -56px;
 	margin-left: -1px;
+	width: 700px;
 }
 
-#hr2 {
+.bac-kieu-phong{
+	float:left;
 	width: 291px;
-    margin-left: -12px;
+	padding-bottom: 15px;
+	margin-bottom: 15px;
+	border-bottom: 1px solid #000;
+	margin-right:112px;
+}
+.nam-hieu-ca{
+	float:left;
+	width: 291px;
+	padding-bottom: 15px;
+	margin-bottom: 15px;
+	border-bottom: 1px solid #000;
 }
 
 .tab-content-1 {
-    height: 362px;
+	height: 320px;
 }
-#label-2{
-	margin-right: 60px;
-	float: right;
-	margin-top: -53px;
-}
+
 #multi-list1_container {
-    margin-left: -1px !important;
+	margin-left: -1px !important;
 }
-.btn_showhide{
-	    margin-left: -84px;
-    margin-top: -130px;
+
+.btn_showhide {
+	margin-left: 0px;
+	margin-top: -73px;
+	height: 352px !important;
 }
+
 .ntsMoveDataArea {
-    height: 100%;
-    vertical-align: middle;
-    width: 112px;
-    text-align: center;
+	height: 100%;
+	vertical-align: middle;
+	width: 112px;
+	text-align: center;
+}
+
+#multi-list1-grid1_displayContainer, #multi-list1-grid2_displayContainer
+	{
+	height: 241px !important;
+}
+
+#multi-list1-grid1_scrollContainer, #multi-list1-grid2_scrollContainer {
+	height: 241px !important;
 }

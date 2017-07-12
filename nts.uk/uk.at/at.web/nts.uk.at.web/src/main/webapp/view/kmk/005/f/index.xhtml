@@ -5,14 +5,17 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<body>
-		<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kmk005.f.service.js" />
 				<com:scriptfile path="kmk005.f.vm.js" />
 				<com:scriptfile path="kmk005.f.start.js" />
 				<com:stylefile path="kmk005.f.main.css" />
-				<script>var dialogSize = { width: 1240, height: 710 };</script>
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode
+  					nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingName
+   				</com:ValidatorScript>
 			</ui:define>
 			
 			<ui:define name="content">
@@ -23,17 +26,18 @@
 							<a tabindex="-1" href="" >#{i18n.getText('KMK005_58')}</a>
 						</div>
 					</div>
-					<button tabindex="2" data-bind="click: createData">#{i18n.getText('KMK005_59')}</button>
+					<button tabindex="2" data-bind="click: function(){ createData(false) }">#{i18n.getText('KMK005_59')}</button>
 					<button tabindex="3" class="proceed" data-bind="click: submitData">#{i18n.getText('KMK005_60')}</button>
 					<button tabindex="5" class="danger" data-bind="click: deleteData, enable: isUpdate">#{i18n.getText('KMK005_62')}</button>	
 					<div tabindex="6" class="myLinkButton"> 
 						<input tabindex="-1" class="myLinkButtonIcon" type="image" src="data: image/png;base64,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"/>
-						<div class="myLinkButtonText" >
+						<div class="myLinkButtonText" data-bind="click: navigateViewToK">
 							<a tabindex="-1" href="" >#{i18n.getText('KMK005_15')}</a>
 						</div>
 					</div>
 				</div>
 				<div id="contents-area">
+				<div class = "container cf"  style="display: inline-block;">
 					<div class="leftContent">
 						<div data-bind="ntsPanel:{width: '210px', height: '380px', direction: 'right', showIcon: false, visible: true}">
 							<div id="gridlist-div">
@@ -55,11 +59,12 @@
 					<div class="rightContent">
 						<div class="table">
 							<div class="cell column1">
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_64')}</div>
+								<div data-bind="ntsFormLabel: {constraint: ['BonusPaySettingCode','BonusPaySettingName'], required: true }">#{i18n.getText('KMK005_64')}</div>
 							</div>
 							<div class="cell column2" data-bind="with: currentBonusPaySetting">
 								<input tabindex="7" class="inputRequired" id="requiredCode" data-bind="ntsTextEditor: {	
 												name: '#[KMK005_63]',
+												constraint: 'BonusPaySettingCode',
 												value: code,
 												option: { width: '50px', textalign: 'right' },
 												required: true,
@@ -68,6 +73,7 @@
 							<div class="cell column3" data-bind="with: currentBonusPaySetting">
 								<input tabindex="8" class="inputRequired" id="requiredName" data-bind="ntsTextEditor: {
 												name: '#[KMK005_43]',
+												constraint: 'BonusPaySettingName',
 												value: name,
 												option: { width: '220px' },
 												required: true,
@@ -152,8 +158,7 @@
 																name: '#[KMK005_69]',
 																options: ko.observableArray([
 													                { code: 0, name: '#{i18n.getText('Enum_Rounding_Down')}' },
-													                { code: 1, name: '#{i18n.getText('Enum_Rounding_Up')}' },
-													                { code: 2, name: '#{i18n.getText('Enum_Rounding_LessThanOrEqual')}' }
+													                { code: 1, name: '#{i18n.getText('Enum_Rounding_Up')}' }
 													            ]),
 																optionsValue: 'code',
 																value: roundingAtr,
@@ -257,8 +262,7 @@
 																name: '#[KMK005_69]',
 																options: ko.observableArray([
 													                { code: 0, name: '#{i18n.getText('Enum_Rounding_Down')}' },
-													                { code: 1, name: '#{i18n.getText('Enum_Rounding_Up')}' },
-													                { code: 2, name: '#{i18n.getText('Enum_Rounding_LessThanOrEqual')}' }
+													                { code: 1, name: '#{i18n.getText('Enum_Rounding_Up')}' }
 													            ]),
 																optionsValue: 'code',
 																value: roundingAtr,
@@ -273,6 +277,7 @@
 								</div>
 							</div>
 						</div>
+					</div>
 					</div>
 				</div>
 			</ui:define>

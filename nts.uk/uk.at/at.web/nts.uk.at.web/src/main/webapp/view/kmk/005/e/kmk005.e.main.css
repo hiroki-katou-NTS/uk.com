@@ -26,7 +26,7 @@ table, tr, th, td {
 	margin-left: 15px;
 }
 #table-panel-1 > thead > tr > th:NTH-CHILD(1) {
-	width: 65px;
+	width: 70px;
 }
 #table-panel-1 > thead > tr > th:NTH-CHILD(2) {
 	width: 205px;
@@ -48,24 +48,24 @@ table, tr, th, td {
 	padding: 2px;
 	background: #F8ECD1;
 }
+#table-panel-1 > thead > tr:NTH-CHILD(2) > th:NTH-CHILD(1) {
+	background: white;
+}
 #table-panel-1 > tbody > tr > td:NTH-CHILD(1) {
 	padding: 3px;
 	background-color: #EDFAC2;
 }
-#table-panel-1 > thead > tr:NTH-CHILD(2) > th:NTH-CHILD(1) {
-	background: white;
-}
 #table-panel-1 > tbody > tr > td:NTH-CHILD(2) {
-	padding: 3px;
+	padding: 2px;
 }
 #table-panel-1 > tbody > tr > td:NTH-CHILD(3) {
-	padding: 3px;
+	padding: 2px;
 }
 #table-panel-1 > tbody > tr > td:NTH-CHILD(4) {
-	padding: 3px;
+	padding: 2px;
 }
 #table-panel-2 > thead > tr > th:NTH-CHILD(1) {
-	width: 65px;
+	width: 70px;
 }
 #table-panel-2 > thead > tr > th:NTH-CHILD(2) {
 	width: 205px;
@@ -95,16 +95,13 @@ table, tr, th, td {
 	background-color: #EDFAC2;
 }
 #table-panel-2 > tbody > tr > td:NTH-CHILD(2) {
-	padding: 3px;
+	padding: 2px;
 }
 #table-panel-2 > tbody > tr > td:NTH-CHILD(3) {
-	padding: 3px;
+	padding: 2px;
 }
 #table-panel-2 > tbody > tr > td:NTH-CHILD(4) {
-	padding: 3px;
-}
-#table-panel-2 > tbody > tr > td:NTH-CHILD(5) {
-	padding: 3px;
+	padding: 2px;
 }
 #functions-area-bottom > button {
 	margin-right: 10px;

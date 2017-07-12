@@ -50,7 +50,7 @@ public class JpaAffClassHistoryGetMemento implements AffClassHistoryGetMemento {
 	 */
 	@Override
 	public Period getPeriod() {
-		return new Period(this.classificationHistory.getStrD(),
+		return new Period(this.classificationHistory.getKmnmtClassificationHistPK().getStrD(),
 				this.classificationHistory.getEndD());
 	}
 

@@ -40,7 +40,7 @@ public class JpaAffWorkplaceHistorySetMemento implements AffWorkplaceHistorySetM
 	 */
 	@Override
 	public void setPeriod(Period period) {
-		this.workplaceHistory.setStrD(period.getStartDate());
+		this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().setStrD(period.getStartDate());
 		this.workplaceHistory.setEndD(period.getEndDate());
 	}
 
