@@ -41,7 +41,7 @@
             var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
             self.topPageCode(code);
             service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                console.log(data);
+                //console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
                     location.href = data.topPage.standardMenuUrl;
