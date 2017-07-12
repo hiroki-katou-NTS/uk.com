@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
 import nts.uk.shr.com.context.AppContexts;
+
 /**
  * 
  * @author hoatt
@@ -36,50 +37,53 @@ public class DisplayMyPageFinder {
 	private TopPageJobSetRepository topPageJobSet;
 	@Inject
 	private TopPageSelfSettingFinder topPageSelfSet;
+
 	/**
 	 * find layout (top page)
+	 * 
 	 * @param topPageCode
 	 * @return
 	 */
-	public LayoutAllDto findLayoutTopPage(String topPageCode){
-		//companyId
+	public LayoutAllDto findLayoutTopPage(String fromScreen, String topPageCode) {
+		// companyId
 		String companyId = AppContexts.user().companyId();
-		if(topPageCode != null && topPageCode != ""){//co top page code
+		if (topPageCode != null && topPageCode != "") {// co top page code
 			LayoutForMyPageDto layoutMypage = topPageSet.findLayoutMyPage();
-			//check my page: use or not use
+			// check my page: use or not use
 			boolean checkMyPage = topPageSet.checkMyPageSet();
-			//check top page: setting or not setting
+			// check top page: setting or not setting
 			boolean checkTopPage = topPageSet.checkTopPageSet();
 			TopPageDto topPage = toppageFinder.findByCode(companyId, topPageCode, "0");
-			if(topPage==null){//data is empty
-				return new LayoutAllDto(layoutMypage,null,true,checkMyPage,checkTopPage);
+			if (topPage == null) {// data is empty
+				return new LayoutAllDto(layoutMypage, null, true, checkMyPage, checkTopPage);
 			}
-			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(),PGType.TOPPAGE.value);
-			if (layout.isPresent()) {//co du lieu
+			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(), PGType.TOPPAGE.value);
+			if (layout.isPresent()) {// co du lieu
 				List<Placement> placements = placementRepository.findByLayout(topPage.getLayoutId());
 				LayoutForTopPageDto layoutTopPage = topPageSet.buildLayoutTopPage(layout.get(), placements);
-				return new LayoutAllDto(layoutMypage,layoutTopPage,true,checkMyPage,checkTopPage);
+				return new LayoutAllDto(layoutMypage, layoutTopPage, true, checkMyPage, checkTopPage);
 			}
-			return new LayoutAllDto(layoutMypage,null,true,checkMyPage,checkTopPage);
+			return new LayoutAllDto(layoutMypage, null, true, checkMyPage, checkTopPage);
 		}
-		//top page code is empty
-		//get position(所属職位履歴)
+		// top page code is empty
+		// get position(所属職位履歴)
 		JobPositionDto jobPosition = topPageSelfSet.getJobPosition(AppContexts.user().employeeId());
 		List<String> lstJobId = new ArrayList<>();
 		if (jobPosition == null) {
-			return topPageSet.getTopPageNotPosition();
+			return topPageSet.getTopPageNotPosition(fromScreen);
 		}
-			  
+
 		lstJobId.add(jobPosition.getJobId());
-			  
-		//lay top page job title set
-		List<TopPageJobSet>lstTpJobSet = topPageJobSet.findByListJobId(companyId, lstJobId);
-		if(lstTpJobSet.isEmpty()){//position and job setting
-			return topPageSet.getTopPageNotPosition();
+
+		// lay top page job title set
+		List<TopPageJobSet> lstTpJobSet = topPageJobSet.findByListJobId(companyId, lstJobId);
+		if (lstTpJobSet.isEmpty()) {// position and job setting
+			return topPageSet.getTopPageNotPosition(fromScreen);
 		}
+
 		TopPageJobSet tpJobSet = lstTpJobSet.get(0);
-			  
-		return topPageSet.getTopPageForPosition(jobPosition, tpJobSet);
-		
+
+		return topPageSet.getTopPageForPosition(fromScreen, jobPosition, tpJobSet);
+
 	}
 }

@@ -39,7 +39,7 @@ public class JpaAffJobTitleHistorySetMemento implements AffJobTitleHistorySetMem
 	 */
 	@Override
 	public void setPeriod(Period period) {
-		this.jobTitleHistory.setStrD(period.getStartDate());
+		this.jobTitleHistory.getKmnmtJobTitleHistPK().setStrD(period.getStartDate());
 		this.jobTitleHistory.setEndD(period.getEndDate());
 	}
 

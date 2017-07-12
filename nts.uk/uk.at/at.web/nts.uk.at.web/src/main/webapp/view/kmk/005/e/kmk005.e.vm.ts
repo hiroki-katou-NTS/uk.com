@@ -40,46 +40,64 @@ module nts.uk.at.view.kmk005.e {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
+                var dfdGetItemList = eService.getListBonusPayTimeItem();
+                var dfdGetSpecItemList = eService.getListSpecialBonusPayTimeItem();
                 var dfdGetList = eService.getListSetting();
                 var dfdGetSpecList = eService.getListSpecialSetting();
-                $.when(dfdGetList, dfdGetSpecList).done((dfdListData, dfdSpecListData) => {
-                    self.bonusPayTimeItemSettings.removeAll();
-                    if(!nts.uk.util.isNullOrEmpty(dfdListData)){
-                        dfdListData.forEach(function(item){
-                            self.bonusPayTimeItemSettings.push(
-                                new BonusPayTimeItemSetting(
-                                    item.companyId,
-                                    item.timeItemId,
-                                    item.holidayCalSettingAtr,
-                                    item.overtimeCalSettingAtr,
-                                    item.worktimeCalSettingAtr)
-                            );       
-                        }); 
-                        self.listUpdate = true;
+                $.when(dfdGetItemList, dfdGetSpecItemList, dfdGetList, dfdGetSpecList).done((dfdItemListData, dfdSpecItemListData, dfdListData, dfdSpecListData) => {
+                    if(nts.uk.util.isNullOrEmpty(dfdItemListData)||nts.uk.util.isNullOrEmpty(dfdSpecItemListData)) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_131" });        
                     } else {
-                        for (let i = 0; i < 10; i++) {
-                            self.bonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', i.toString(), 0, 0, 0));
-                        } 
-                        self.listUpdate = false;
-                    }
-                    self.specBonusPayTimeItemSettings.removeAll();
-                    if(!nts.uk.util.isNullOrEmpty(dfdSpecListData)){
-                        dfdSpecListData.forEach(function(item){
-                            self.specBonusPayTimeItemSettings.push(
-                                new BonusPayTimeItemSetting(
-                                    item.companyId,
-                                    item.timeItemId,
-                                    item.holidayCalSettingAtr,
-                                    item.overtimeCalSettingAtr,
-                                    item.worktimeCalSettingAtr)
-                            );         
-                        });   
-                        self.specListUpdate = true;
-                    } else {
-                        for (let i = 0; i < 10; i++) {
-                            self.specBonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', i.toString(), 0, 0, 0));
-                        } 
-                        self.specListUpdate = false;     
+                        self.bonusPayTimeItemSettings.removeAll();
+                        if(!nts.uk.util.isNullOrEmpty(dfdListData)){
+                            dfdItemListData.forEach(function(item){
+                                let result = _.find(dfdListData, (o)=>{ return o.timeItemId == item.timeItemId});
+                                if(nts.uk.util.isNullOrUndefined(result)){
+                                    self.bonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', item.timeItemId, item.timeItemName, 0, 0, 0));  
+                                } else {
+                                    self.bonusPayTimeItemSettings.push(
+                                        new BonusPayTimeItemSetting(
+                                            result.companyId,
+                                            item.timeItemId,
+                                            item.timeItemName,
+                                            result.holidayCalSettingAtr,
+                                            result.overtimeCalSettingAtr,
+                                            result.worktimeCalSettingAtr)
+                                    );      
+                                } 
+                            }); 
+                            self.listUpdate = true;
+                        } else {
+                            dfdItemListData.forEach(function(item){
+                                self.bonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', item.timeItemId, item.timeItemName, 0, 0, 0));
+                            }); 
+                            self.listUpdate = false;
+                        }
+                        self.specBonusPayTimeItemSettings.removeAll();
+                        if(!nts.uk.util.isNullOrEmpty(dfdSpecListData)){
+                            dfdSpecItemListData.forEach(function(item){
+                                let result = _.find(dfdSpecListData, (o)=>{ return o.timeItemId == item.timeItemId});
+                                if(nts.uk.util.isNullOrUndefined(result)){
+                                    self.specBonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', item.timeItemId, item.timeItemName, 0, 0, 0));  
+                                } else {
+                                    self.specBonusPayTimeItemSettings.push(
+                                        new BonusPayTimeItemSetting(
+                                            result.companyId,
+                                            item.timeItemId,
+                                            item.timeItemName,
+                                            result.holidayCalSettingAtr,
+                                            result.overtimeCalSettingAtr,
+                                            result.worktimeCalSettingAtr)
+                                    );  
+                                }       
+                            });   
+                            self.specListUpdate = true;
+                        } else {
+                            dfdSpecItemListData.forEach(function(item){
+                                self.specBonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', item.timeItemId, item.timeItemName, 0, 0, 0));
+                            }); 
+                            self.specListUpdate = false;     
+                        }
                     }
                     nts.uk.ui.block.clear();
                     dfd.resolve(); 
@@ -94,47 +112,18 @@ module nts.uk.at.view.kmk005.e {
                 var self = this;
                 if(_.isEqual(self.selectedTab(),'tab-1')) {
                     if(self.listUpdate){
-                        self.update(self.bonusPayTimeItemSettings()); 
+                        eService.updateListSetting(ko.mapping.toJS(self.bonusPayTimeItemSettings()));
                     } else {
-                        self.insert(self.bonusPayTimeItemSettings()); 
+                        eService.insertListSetting(ko.mapping.toJS(self.bonusPayTimeItemSettings()));
                     }       
                 } else {
                     if(self.specListUpdate){
-                        self.update(self.specBonusPayTimeItemSettings());
+                        eService.updateListSetting(ko.mapping.toJS(self.specBonusPayTimeItemSettings()));
                     } else {
-                        self.insert(self.specBonusPayTimeItemSettings());
+                        eService.insertListSetting(ko.mapping.toJS(self.specBonusPayTimeItemSettings())); 
                     }
-                }        
-            }
-            
-            insert(command: Array<BonusPayTimeItemSetting>): void {
-                nts.uk.ui.block.invisible();
-                var self = this;
-                eService.insertListSetting(ko.mapping.toJS(command))
-                .done(function(){
-                    self.getData().done(function(){
-                        nts.uk.ui.block.clear();         
-                    }).fail(function(){
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});     
-                    });       
-                }).fail(function(res){
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});       
-                });            
-            }
-            
-            update(command: Array<BonusPayTimeItemSetting>): void {
-                nts.uk.ui.block.invisible();
-                var self = this;
-                eService.updateListSetting(ko.mapping.toJS(command))
-                .done(function(){
-                    self.getData().done(function(){
-                        nts.uk.ui.block.clear();         
-                    }).fail(function(){
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});     
-                    });       
-                }).fail(function(res){
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});       
-                });            
+                }   
+                nts.uk.ui.windows.close();      
             }
             
             closeDialog(): void {
@@ -145,12 +134,14 @@ module nts.uk.at.view.kmk005.e {
         class BonusPayTimeItemSetting {
             companyId:  KnockoutObservable<string>;
             timeItemId:  KnockoutObservable<string>;
+            name: KnockoutObservable<string>;
             holidayCalSettingAtr:  KnockoutObservable<number>;
             overtimeCalSettingAtr:  KnockoutObservable<number>;
             worktimeCalSettingAtr:  KnockoutObservable<number>;  
-            constructor(companyId: string, timeItemId: string, holidayCalSettingAtr: number, overtimeCalSettingAtr: number, worktimeCalSettingAtr: number){
+            constructor(companyId: string, timeItemId: string, name: string, holidayCalSettingAtr: number, overtimeCalSettingAtr: number, worktimeCalSettingAtr: number){
                 this.companyId = ko.observable(companyId);     
                 this.timeItemId = ko.observable(timeItemId); 
+                this.name = ko.observable(name);
                 this.holidayCalSettingAtr = ko.observable(holidayCalSettingAtr); 
                 this.overtimeCalSettingAtr = ko.observable(overtimeCalSettingAtr); 
                 this.worktimeCalSettingAtr = ko.observable(worktimeCalSettingAtr);

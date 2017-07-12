@@ -21,13 +21,15 @@ public class AddPersonalTyingCommandHandler extends CommandHandler<List<PersonTy
 	
 	@Override
 	protected void handle(CommandHandlerContext<List<PersonTypingCommand>> context) {
+		
 		List<PersonTypingCommand> persons = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		respository.delete(companyId);
 		
 		persons.forEach(person-> {
 			PersonalTying personalTying = new PersonalTying(companyId, person.getWebMenuCode(), person.getEmployeeId());
 			personalTying.validate();
-			respository.delete(companyId);
+			
 			respository.add(personalTying);
 		});
 	}
