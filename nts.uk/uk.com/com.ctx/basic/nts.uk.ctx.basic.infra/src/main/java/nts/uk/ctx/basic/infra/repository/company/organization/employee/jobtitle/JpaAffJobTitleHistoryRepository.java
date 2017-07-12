@@ -82,7 +82,8 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.strD), baseDate));
+				.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
+						.get(KmnmtAffiliJobTitleHistPK_.strD), baseDate));
 
 		// endDate >= base date
 		lstpredicateWhere.add(criteriaBuilder
@@ -143,7 +144,8 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.strD), baseDate));
+				.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
+						.get(KmnmtAffiliJobTitleHistPK_.strD), baseDate));
 
 		// endDate >= base date
 		lstpredicateWhere.add(criteriaBuilder

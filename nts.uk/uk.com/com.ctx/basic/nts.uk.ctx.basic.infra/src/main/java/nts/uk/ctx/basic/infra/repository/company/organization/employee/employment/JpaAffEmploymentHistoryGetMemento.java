@@ -49,7 +49,8 @@ public class JpaAffEmploymentHistoryGetMemento implements AffEmploymentHistoryGe
 	 */
 	@Override
 	public Period getPeriod() {
-		return new Period(this.employmentHistory.getStrD(), this.employmentHistory.getEndD());
+		return new Period(this.employmentHistory.getKmnmtEmploymentHistPK().getStrD(),
+				this.employmentHistory.getEndD());
 	}
 
 	/*
