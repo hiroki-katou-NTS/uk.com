@@ -37,12 +37,7 @@ public class KmnmtAffiliWorkplaceHist extends UkJpaEntity implements Serializabl
     /** The kmnmt workplace hist PK. */
     @EmbeddedId
     protected KmnmtAffiliWorkplaceHistPK kmnmtAffiliWorkplaceHistPK;
-    
-    /** The str D. */
-    @NotNull
-    @Column(name = "STR_D")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate strD;
+  
     
     /** The end D. */
     @Basic(optional = false)
