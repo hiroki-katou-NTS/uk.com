@@ -212,7 +212,7 @@ module nts.uk.at.view.kmk005.i {
                 if (model.bid !== '') {
                     if (model.eid !== '') {
                         service.saveData(data).done(() => {
-                            alert(nts.uk.resource.getMessage("Msg_15", []));
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
                             self.start();
                         });
                     }
@@ -231,7 +231,7 @@ module nts.uk.at.view.kmk005.i {
                     };
                 if (model.eid !== '') {
                     service.saveData(data).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_16", []));
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                         self.start();
                     });
                 }
