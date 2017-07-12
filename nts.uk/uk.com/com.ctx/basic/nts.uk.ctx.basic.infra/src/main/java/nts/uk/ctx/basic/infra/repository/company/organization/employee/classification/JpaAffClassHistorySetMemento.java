@@ -52,7 +52,7 @@ public class JpaAffClassHistorySetMemento implements AffClassHistorySetMemento {
 	 */
 	@Override
 	public void setPeriod(Period period) {
-		this.classifcationHistory.setStrD(period.getStartDate());
+		this.classifcationHistory.getKmnmtClassificationHistPK().setStrD(period.getStartDate());
 		this.classifcationHistory.setEndD(period.getEndDate());
 	}
 

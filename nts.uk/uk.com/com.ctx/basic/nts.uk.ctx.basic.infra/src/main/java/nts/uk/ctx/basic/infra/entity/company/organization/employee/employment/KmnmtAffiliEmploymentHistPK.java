@@ -8,11 +8,14 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class KmnmtAffiliEmploymentHistPK.
@@ -24,12 +27,6 @@ public class KmnmtAffiliEmploymentHistPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	/** The hist id. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "HIST_ID")
-    private String histId;
     
     /** The empId. */
     @Basic(optional = false)
@@ -43,13 +40,14 @@ public class KmnmtAffiliEmploymentHistPK implements Serializable {
     @NotNull
     @Column(name = "EMPCD")
     private String emptcd;
+    
+    /** The str D. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "STR_D")
+    @Convert(converter = GeneralDateToDBConverter.class)
+    private GeneralDate strD;
 
     public KmnmtAffiliEmploymentHistPK() {
-    }
-
-    public KmnmtAffiliEmploymentHistPK(String histId, String empId, String emptcd) {
-        this.histId = histId;
-        this.empId = empId;
-        this.emptcd = emptcd;
     }
 }

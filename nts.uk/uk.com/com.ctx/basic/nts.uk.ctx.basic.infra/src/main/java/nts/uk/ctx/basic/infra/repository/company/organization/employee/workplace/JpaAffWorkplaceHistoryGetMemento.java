@@ -34,7 +34,8 @@ public class JpaAffWorkplaceHistoryGetMemento implements AffWorkplaceHistoryGetM
 	 */
 	@Override
 	public Period getPeriod() {
-		return new Period(this.workplaceHistory.getStrD(), this.workplaceHistory.getEndD());
+		return new Period(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getStrD(),
+				this.workplaceHistory.getEndD());
 	}
 
 	/*

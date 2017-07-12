@@ -164,7 +164,7 @@ module kcp.share.list {
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
             self.listType = data.listType;
-            if (self.hasBaseDate) {
+            if (data.baseDate) {
                 self.baseDate = data.baseDate;
             } else {
                 self.baseDate = ko.observable(new Date());
@@ -302,6 +302,7 @@ module kcp.share.list {
                     $(".ntsSearchBox").focus();
                 }
             }
+            $.fn.reloadJobtitleDataList = self.reload;
             return dfd.promise();
         }
         
@@ -538,6 +539,11 @@ interface JQuery {
      * Focus component.
      */
     focusComponent(): void;
+    
+    /**
+     * Function reload job title data list. Support job title list only.
+     */
+    reloadJobtitleDataList(): void;
 }
 
 (function($: any) {

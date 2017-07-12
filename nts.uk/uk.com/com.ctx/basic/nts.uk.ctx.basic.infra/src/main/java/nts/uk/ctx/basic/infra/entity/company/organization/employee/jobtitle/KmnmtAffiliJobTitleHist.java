@@ -36,13 +36,6 @@ public class KmnmtAffiliJobTitleHist extends UkJpaEntity implements Serializable
     @EmbeddedId
     protected KmnmtAffiliJobTitleHistPK kmnmtJobTitleHistPK;
     
-    /** The str D. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "STR_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate strD;
-    
     /** The end D. */
     @Basic(optional = false)
     @NotNull

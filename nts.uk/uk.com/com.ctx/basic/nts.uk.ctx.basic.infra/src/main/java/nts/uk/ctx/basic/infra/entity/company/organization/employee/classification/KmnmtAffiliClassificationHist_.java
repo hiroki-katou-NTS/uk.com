@@ -17,9 +17,6 @@ public class KmnmtAffiliClassificationHist_ {
 
 	/** The kmnmt classification hist PK. */
 	public static volatile SingularAttribute<KmnmtAffiliClassificationHist, KmnmtAffiliClassificationHistPK> kmnmtClassificationHistPK;
-
-	/** The str D. */
-	public static volatile SingularAttribute<KmnmtAffiliClassificationHist, GeneralDate> strD;
 	
 	/** The end D. */
 	public static volatile SingularAttribute<KmnmtAffiliClassificationHist, GeneralDate> endD;

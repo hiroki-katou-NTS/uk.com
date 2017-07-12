@@ -70,8 +70,10 @@ public class JpaAffClassHistoryRepository extends JpaRepository
 						.get(KmnmtAffiliClassificationHistPK_.clscd).in(classificationCodes)));
 
 		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliClassificationHist_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
+						.get(KmnmtAffiliClassificationHistPK_.strD),
+				baseDate));
 
 		// endDate >= base date
 		lstpredicateWhere.add(criteriaBuilder
@@ -132,18 +134,20 @@ public class JpaAffClassHistoryRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// employee id in data employee id
-		lstpredicateWhere.add(
-				criteriaBuilder.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
+		lstpredicateWhere.add(criteriaBuilder
+				.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
 						.get(KmnmtAffiliClassificationHistPK_.empId).in(employeeIds)));
-		
+
 		// classification in data classification
-		lstpredicateWhere.add(
-				criteriaBuilder.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
+		lstpredicateWhere.add(criteriaBuilder
+				.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
 						.get(KmnmtAffiliClassificationHistPK_.clscd).in(classificationCodes)));
 
 		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliClassificationHist_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
+						.get(KmnmtAffiliClassificationHistPK_.strD),
+				baseDate));
 
 		// endDate >= base date
 		lstpredicateWhere.add(criteriaBuilder
