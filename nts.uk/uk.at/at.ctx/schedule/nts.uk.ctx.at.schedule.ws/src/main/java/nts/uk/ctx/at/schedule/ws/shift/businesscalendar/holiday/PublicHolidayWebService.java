@@ -31,4 +31,11 @@ public class PublicHolidayWebService extends WebService {
 	public List<PublicHolidayDto> getHolidayByListDate(List<BigDecimal> lstDate) {
 		return this.publicHolidayFinder.getHolidaysByListDate(lstDate);
 	}
+	
+	@POST
+	@Path("getAllHoliday")
+	public List<PublicHolidayDto> getAllHolidays() {
+		return this.publicHolidayFinder.getAllHolidays();
+	}
+
 }

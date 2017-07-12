@@ -16,4 +16,6 @@ public interface PublicHolidayRepository {
 
 	List<PublicHoliday> getHolidaysByListDate(String companyId, List<BigDecimal> lstDate);
 	
+	List<PublicHoliday> getAllHolidays(String companyId);
+	
 }
