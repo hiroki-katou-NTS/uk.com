@@ -28,4 +28,9 @@ public class PublicHolidayFinder {
 		return this.publicHolidayRepository.getHolidaysByListDate(AppContexts.user().companyId(), lstDate).stream()
 				.map(domain -> PublicHolidayDto.fromDomain(domain)).collect(Collectors.toList());
 	}
+	
+	public List<PublicHolidayDto> getAllHolidays() {
+		return this.publicHolidayRepository.getAllHolidays(AppContexts.user().companyId()).stream()
+				.map(domain -> PublicHolidayDto.fromDomain(domain)).collect(Collectors.toList());
+	}
 }
