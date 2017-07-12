@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk005.h {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
+    import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -52,13 +53,15 @@ module nts.uk.at.view.kmk005.h {
                             service.getName(x.bonusPaySettingCode).done(m => {
                                 if (m) {
                                     model.name(m.name)
+                                     __viewContext.viewModel.tabView.isEnable(true);
                                 } else {
-                                    model.id('');
+                                    model.id('000');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('');
+                             __viewContext.viewModel.tabView.isEnable(false);
+                            model.id('000');
                             model.name(getText("KDL007_6"));
                         }
 
@@ -105,12 +108,12 @@ module nts.uk.at.view.kmk005.h {
                                     model.name(resp.name);
                                 }
                                 else {
-                                    model.id('');
+                                    model.id('000');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('');
+                            model.id('000');
                             model.name(getText("KDL007_6"));
                         }
                     }
@@ -125,16 +128,12 @@ module nts.uk.at.view.kmk005.h {
                         bonusPaySettingCode: model.id,
                         action: 0
                     };
-                if (model.id !== '') {
-                    if (model.wid !== '') {
-                        // call service to save setting
-                        service.saveData(command).done(() => {
-                            alert(nts.uk.resource.getMessage("Msg_15", []));
-                            self.start();
-                        });
-                    }
-                } else {
-                    alert(nts.uk.resource.getMessage("Msg_30", []));
+                if (model.wid !== '') {
+                    // call service to save setting
+                    service.saveData(command).done(() => {
+                        info(nts.uk.resource.getMessage("Msg_15"));
+                        self.start();
+                    });
                 }
             }
 
@@ -146,13 +145,13 @@ module nts.uk.at.view.kmk005.h {
                         bonusPaySettingCode: model.id,
                         action: 1
                     };
-                if (model.wid !== '') {
-                    // call service to delete setting
-                    service.saveData(command).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_16", []));
-                        self.start();
-                    });
-                }
+
+                // call service to delete setting
+                 confirm({messageId:'Msg_18'}).ifYes(()=>{
+                    service.saveData(command).done(x =>{
+                  info(nts.uk.resource.getMessage("Msg_16"));     
+                  self.start()  } ).fail(x => alert(x));
+                });
             }
         }
 

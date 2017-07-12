@@ -2,10 +2,12 @@ module nts.uk.at.view.kmk005 {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
+    import info = nts.uk.ui.dialog.info;
     import href = nts.uk.request.jump;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+
 
     let __viewContext: any = window["__viewContext"] || {};
 
@@ -18,6 +20,8 @@ module nts.uk.at.view.kmk005 {
                 new TabModel({ id: 'I', name: getText('Com_Person') }),
                 new TabModel({ id: 'K', name: getText('KMK005_44') }),
             ]);
+
+            isEnable: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 let self = this;
@@ -187,13 +191,15 @@ module nts.uk.at.view.kmk005 {
                         service.getName(resp.bonusPaySettingCode).done(x => {
                             if (x) {
                                 model.name(x.name);
+                                __viewContext.viewModel.tabView.isEnable(true);
                             } else {
-                                model.id('');
+                                model.id('000');
                                 model.name(getText("KDL007_6"));
                             }
                         }).fail(x => alert(x));
                     } else {
-                        model.id('');
+                        __viewContext.viewModel.tabView.isEnable(false);
+                        model.id('000');
                         model.name(getText("KDL007_6"));
                     }
                 }).fail(x => alert(x));
@@ -216,12 +222,12 @@ module nts.uk.at.view.kmk005 {
                                     model.name(resp.name);
                                 }
                                 else {
-                                    model.id('');
+                                    model.id('000');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('');
+                            model.id('000');
                             model.name(getText("KDL007_6"));
                         }
                     }
@@ -235,16 +241,12 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 0 // add/update mode
                     };
-                if (data.id !== '') {
-                    service.saveData(command)
-                        .done(() => {
-                            alert(nts.uk.resource.getMessage("Msg_15", []));
-                            self.start();
-                        })
-                        .fail(x => alert(x));
-                } else {
-                    alert(nts.uk.resource.getMessage("Msg_30", []));
-                }
+                service.saveData(command)
+                    .done(() => {
+                        info(nts.uk.resource.getMessage("Msg_15"));
+                        self.start();
+                    })
+                    .fail(x => alert(x));
             }
 
             removeData() {
@@ -254,11 +256,11 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 1 // remove mode
                     };
-
-                service.saveData(command).done(() => {
-                    alert(nts.uk.resource.getMessage("Msg_16", []));
-                    self.start();
-                }).fail(x => alert(x));
+                confirm({messageId:'Msg_18'}).ifYes(()=>{
+                    service.saveData(command).done(x =>{
+                  info(nts.uk.resource.getMessage("Msg_16"));     
+                  self.start()  } ).fail(x => alert(x));
+                });
             }
         }
 
