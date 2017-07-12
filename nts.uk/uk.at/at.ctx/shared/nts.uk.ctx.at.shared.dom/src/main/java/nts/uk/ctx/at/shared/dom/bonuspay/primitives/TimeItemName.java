@@ -13,7 +13,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 // 勤怠項目名称
-@StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(12)
 public class TimeItemName extends StringPrimitiveValue<TimeItemName> {
 	/** The Constant serialVersionUID. */

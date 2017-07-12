@@ -35,7 +35,10 @@ module nts.uk.at.view.kmk005.f {
                 self.currentBPSetCode.subscribe(function(value) {
                     if (value != "") {
                         self.isUpdate(true);
-                        self.currentBonusPaySetting(ko.mapping.fromJS(_.clone(_.find(self.bonusPaySettingList(), (o) => { return o.code == value; }))));
+                        self.currentBonusPaySetting(ko.mapping.fromJS(_.find(self.bonusPaySettingList(), (o) => { 
+                            let codes = o.code;
+                            return String(codes) == value; 
+                        })));
                         self.getBonusPayTimesheets(value);
                     } else {
                         self.isUpdate(false);
@@ -228,9 +231,14 @@ module nts.uk.at.view.kmk005.f {
                 let self = this;           
                 href("../a/index.xhtml");
             }
+            
+            navigateViewToK() {
+                let self = this;           
+                href("../g/index.xhtml");
+            }
         }
 
-        class BonusPaySetting {
+       export class BonusPaySetting {
             companyId: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
             code: KnockoutObservable<string>;
@@ -241,7 +249,7 @@ module nts.uk.at.view.kmk005.f {
             }
         }
 
-        class BonusPayTimeItem {
+        export class BonusPayTimeItem {
             companyId: string;
             timeItemId: string;
             useAtr: number;
@@ -258,7 +266,7 @@ module nts.uk.at.view.kmk005.f {
             }
         }
 
-        class SpecDateItem {
+        export class SpecDateItem {
             useAtr: number;
             timeItemId: string;
             specificName: string;
@@ -271,7 +279,7 @@ module nts.uk.at.view.kmk005.f {
             }
         }
 
-        class BonusPayTimesheet {
+        export class BonusPayTimesheet {
             companyId: KnockoutObservable<string>;
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
@@ -295,7 +303,7 @@ module nts.uk.at.view.kmk005.f {
             }
         }
 
-        class SpecBonusPayTimesheet {
+        export class SpecBonusPayTimesheet {
             companyId: KnockoutObservable<string>;
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;

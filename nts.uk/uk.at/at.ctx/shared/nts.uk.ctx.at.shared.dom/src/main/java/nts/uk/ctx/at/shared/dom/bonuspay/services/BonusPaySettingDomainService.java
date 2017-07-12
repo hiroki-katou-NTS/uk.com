@@ -53,4 +53,9 @@ public class BonusPaySettingDomainService implements BonusPaySettingService {
 				lstSpecBonusPayTimesheet);
 		bpSettingRepository.removeBonusPaySetting(companyId, new BonusPaySettingCode(bonusPaySettingCode));
 	}
+
+	@Override
+	public boolean isExisted(String companyId, BonusPaySettingCode code) {
+		return bpSettingRepository.isExisted(companyId, code);
+	}
 }

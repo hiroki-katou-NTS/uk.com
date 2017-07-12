@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
@@ -23,6 +25,9 @@ public class BPSettingAddCommandHandler extends CommandHandler<BPSettingAddComma
 	protected void handle(CommandHandlerContext<BPSettingAddCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		BPSettingAddCommand bpSettingAddCommand = context.getCommand();
+		if(bonusPaySettingService.isExisted(companyId, new BonusPaySettingCode(bpSettingAddCommand.getCode()))) {
+			throw new BusinessException("Msg_3");
+		}
 		bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand,companyId));
 	}
 

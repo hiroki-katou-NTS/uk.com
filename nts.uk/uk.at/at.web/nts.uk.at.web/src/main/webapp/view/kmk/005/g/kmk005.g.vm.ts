@@ -188,12 +188,12 @@ module nts.uk.at.view.kmk005 {
                             if (x) {
                                 model.name(x.name);
                             } else {
-                                model.id('000');
+                                model.id('');
                                 model.name(getText("KDL007_6"));
                             }
                         }).fail(x => alert(x));
                     } else {
-                        model.id('000');
+                        model.id('');
                         model.name(getText("KDL007_6"));
                     }
                 }).fail(x => alert(x));
@@ -216,12 +216,12 @@ module nts.uk.at.view.kmk005 {
                                     model.name(resp.name);
                                 }
                                 else {
-                                    model.id('000');
+                                    model.id('');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('000');
+                            model.id('');
                             model.name(getText("KDL007_6"));
                         }
                     }
@@ -235,12 +235,16 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 0 // add/update mode
                     };
-                service.saveData(command)
-                    .done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_15", []));
-                        self.start();
-                    })
-                    .fail(x => alert(x));
+                if (data.id !== '') {
+                    service.saveData(command)
+                        .done(() => {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                        })
+                        .fail(x => alert(x));
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
+                }
             }
 
             removeData() {
@@ -251,7 +255,10 @@ module nts.uk.at.view.kmk005 {
                         action: 1 // remove mode
                     };
 
-                service.saveData(command).done(x => self.start()).fail(x => alert(x));
+                service.saveData(command).done(() => {
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                    self.start();
+                }).fail(x => alert(x));
             }
         }
 
