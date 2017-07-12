@@ -220,16 +220,9 @@ public class MultiLanguageResource implements IInternationalization {
 	public Map<ResourceType, Map<String, String>> getResourceForProgram(String programId) {
 		Map<ResourceType, Map<String, String>> result = new HashMap<>();
 
-		/**
-		 * TODO: because program has not defined yet, then get all resource
-		 * Map<String, String> messages = new HashMap<String, String>();
-		 * messages.putAll(messageResource.getOrDefault(SystemProperties.SYSTEM_ID,
-		 * new HashMap<String, String>()));
-		 * messages.putAll(messageResource.getOrDefault(programId, new
-		 * HashMap<String, String>())); result.put(ResourceType.MESSAGE,
-		 * messages);
-		 */
-		result.put(ResourceType.MESSAGE, getAllMessage());
+		Map<String, String> messages = new HashMap<String, String>();
+		messages.putAll(messageResource.getOrDefault(SystemProperties.SYSTEM_ID, new HashMap<String, String>()));
+		result.put(ResourceType.MESSAGE, messages);
 
 		// result.put(ResourceType.CODE_NAME,
 		// getCodeNameResourceOfProgram(programId));
