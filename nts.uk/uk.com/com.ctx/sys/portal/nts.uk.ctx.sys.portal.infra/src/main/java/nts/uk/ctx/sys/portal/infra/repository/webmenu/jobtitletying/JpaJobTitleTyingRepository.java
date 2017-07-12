@@ -9,6 +9,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.jobtitletying.CcgstJobTitleTying;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.jobtitletying.CcgstJobTitleTyingPK;
+
 /**
  * @author yennth
  * The Class JpaJobTitleTyingRepository.
@@ -20,7 +21,7 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 			+ "AND s.ccgstJobTitleTyingPK.jobId in :jobId ";
 	
 	@Override
-	public void changeMenuCode(List<JobTitleTying> JobTitleTying){
+	public void updateAndInsertMenuCode(List<JobTitleTying> JobTitleTying){
 		EntityManager manager = this.getEntityManager();
 		CcgstJobTitleTyingPK pk;
 		for(JobTitleTying obj: JobTitleTying){
@@ -46,5 +47,12 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 				.setParameter("companyId", companyId)
 				.setParameter("jobId", jobId)
 				.getList(t -> toDomain(t));
+	}
+	
+	@Override
+	public void validate(JobTitleTying obj){
+		if(obj.getWebMenuCode()==null){
+			throw new RuntimeException("Not Found WebMenuCode:" + obj.getWebMenuCode());
+		}
 	}
 }

@@ -88,7 +88,6 @@ module kcp004.a.viewmodel {
                     self.selectedSelectionType(1);
                 }
                 self.resetSelectedWorkplace();
-                self.isShowSelectButton(code == 1);
                 self.reloadTreeGrid().done(() => {
                     self.getSelectedData();
                 });

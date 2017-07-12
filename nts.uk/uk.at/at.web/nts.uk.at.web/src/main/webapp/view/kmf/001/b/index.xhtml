@@ -68,7 +68,7 @@
 									required: enableInputPriority,
 									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr data-bind="visible: retentionYearlySetting">
+						<tr data-bind="visible: compensLeaveComSetSetting">
 							<td data-bind="text: acquisitionTypeEnums()[1].localizedName">
 								<!-- 代休 -->
 							</td>
@@ -80,7 +80,7 @@
 									option: textEditorOption,
 									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr data-bind="visible: compensLeaveComSetSetting">
+						<tr data-bind="visible: comSubtSetting">
 							<td data-bind="text: acquisitionTypeEnums()[2].localizedName">
 								<!-- 振休 -->
 							</td>
@@ -93,7 +93,7 @@
 									required: enableInputPriority,
 									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr data-bind="visible: comSubtSetting">
+						<tr data-bind="visible: retentionYearlySetting">
 							<td data-bind="text: acquisitionTypeEnums()[3].localizedName">
 								<!-- 積立年休 -->
 							</td>

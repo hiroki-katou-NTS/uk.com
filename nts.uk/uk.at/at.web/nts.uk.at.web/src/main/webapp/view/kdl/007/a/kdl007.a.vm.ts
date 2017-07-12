@@ -42,24 +42,20 @@ module kdl007.a.viewmodel {
 
                     //filter real selected code from source
                     self.currentCodeList(_.filter(resp, x => selectedItems.indexOf(x.code) > -1).map(x => x.code));
-                    if(self.currentCodeList().length == 0 ){
-                        self.currentCodeList([''])
-                        }
                 }
             });
         }
 
         // push data to parent screen
         register() {
-            let self = this,
-                items: Array<ItemModel> = ko.toJS(self.dataSources),
-                codeList: Array<string> = ko.toJS(self.currentCodeList);
-
-            if (typeof codeList == 'object' && !codeList.length) {
+            if (typeof this.currentCodeList() == 'object' && !this.currentCodeList().length) {
                 alertError({ messageId: "Msg_30" });
                 return;
             }
-
+            this.currentCodeList.remove(x => x== '');
+            let self = this,
+                items: Array<ItemModel> = ko.toJS(self.dataSources),
+                codeList: Array<string> = ko.toJS(self.currentCodeList);
             setShared('KDL007_VALUES', { selecteds: self.isMulti ? codeList : [codeList] }, true);
 
             self.close();
