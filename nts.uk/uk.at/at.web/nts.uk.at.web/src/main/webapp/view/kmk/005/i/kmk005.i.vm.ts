@@ -122,12 +122,12 @@ module nts.uk.at.view.kmk005.i {
                                     if (m) {
                                         model.bname(m.name)
                                     } else {
-                                        model.bid('000');
+                                        model.bid('');
                                         model.bname(getText("KDL007_6"));
                                     }
                                 }).fail(m => alert(m));
                             } else {
-                                model.bid('000');
+                                model.bid('');
                                 model.bname(getText("KDL007_6"));
                             }
                         }).fail(x => alert(x));
@@ -189,12 +189,12 @@ module nts.uk.at.view.kmk005.i {
                                     model.bname(resp.name);
                                 }
                                 else {
-                                    model.bid('000');
+                                    model.bid('');
                                     model.bname(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.bid('000');
+                            model.bid('');
                             model.bname(getText("KDL007_6"));
                         }
                     }
@@ -225,8 +225,12 @@ module nts.uk.at.view.kmk005.i {
                         employeeId: model.eid,
                         bonusPaySettingCode: model.bid,
                     };
-
-                service.saveData(data).done(x => { self.start(); });
+                if (model.eid !== '') {
+                    service.saveData(data).done(() => {
+                        alert(nts.uk.resource.getMessage("Msg_16", []));
+                        self.start();
+                    });
+                }
             }
         }
     }
