@@ -4,22 +4,12 @@
 	float: left;
 }
 
-#image {
-	width: 200px;
-	height: 600px;
-	margin-top: 10px;
-}
-
-#nts-component-list {
-	margin: 50px 0 0 20px;
-}
-
 #ccgcomponent {
 	z-index: 1000 !important
 }
 
 #part-2 {
-	margin-left: 65px;
+	margin: 50px 0 0 85px;
 }
 
 #part-3 {
@@ -54,4 +44,8 @@
 
 #B3_13 {
 	margin: 0px 20px;
+}
+
+.screen-b .nts-searchbbox-wrapper {
+	min-width: 100%;
 }
