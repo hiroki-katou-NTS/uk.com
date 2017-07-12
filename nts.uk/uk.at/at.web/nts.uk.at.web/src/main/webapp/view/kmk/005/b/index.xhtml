@@ -12,7 +12,10 @@
 			<com:scriptfile path="kmk005.b.vm.js" />
 			<com:scriptfile path="kmk005.b.service.js" />
 			<com:stylefile path="kmk005.b.main.css" />
-				<script>var dialogSize = { width: 600, height: 800 };</script>
+				<script>var dialogSize = { width: 590, height: 650 };</script>
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemName
+   				</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -20,15 +23,17 @@
 				<div>
 					<div class="label">#{i18n.getText('KMK005_8')}</div>
 				</div>
-				<div id="tab-panel"
+				<div tabindex="1" id="tab-panel" style="height: 415px"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-					<div class="tab-content-1">
-						<table id="premium-set-tbl-b">
+					<div class="tab-content-1"  style="height: 415px">
+						<table id="premium-set-tbl-b" height="410">
 							<thead>
 								<tr>
 									<th>#{i18n.getText('KMK005_19')}</th>
-									<th id = "time-item-name">#{i18n.getText('KMK005_20')}</th>
-									<th>#{i18n.getText('KMK005_21')}</th>
+									<th tabindex="4" id = "time-item-name">#{i18n.getText('KMK005_20')}</th>
+									<th>
+									<div id="time-item-const" data-bind="ntsFormLabel: { constraint: 'TimeItemName', inline: true}">#{i18n.getText('KMK005_21')}</div>
+									</th>
 								</tr>
 							</thead>
 							<tbody data-bind="foreach: timeItemList">
@@ -52,6 +57,7 @@
 										data-bind="ntsTextEditor: {
 										name: '#[KML005_31]', 
 										value: timeItemName, 
+										constraint: 'TimeItemName',
 										option: { width: '220px' }, 
 										required: true, 
 										enable: Boolean(useAtr()==1) }" />
@@ -65,13 +71,15 @@
 
 
 					</div>
-					<div class="tab-content-2">
-						<table id="premium-set-tbl-b">
+					<div class="tab-content-2"  style="height: 415px">
+						<table id="premium-set-tbl-b"  height="410">
 							<thead>
 								<tr>
 									<th>#{i18n.getText('KMK005_19')}</th>
 									<th>#{i18n.getText('KMK005_20')}</th>
-									<th>#{i18n.getText('KMK005_21')}</th>
+									<th>
+									<div id="time-item-const" data-bind="ntsFormLabel: { constraint: 'TimeItemName', inline: true}">#{i18n.getText('KMK005_21')}</div>
+									</th>
 								</tr>
 							</thead>
 							<tbody data-bind="foreach: timeItemSpecList">
@@ -95,6 +103,7 @@
 										data-bind="ntsTextEditor: {
 										name: '#[KML005_28]', 
 										value: timeItemName, 
+										constraint: 'TimeItemName',
 										option: { width: '220px' }, 
 										required: true, 
 										enable: Boolean(useAtr()==1) }" />
@@ -110,9 +119,9 @@
 
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="300" class="x-large proceed center-e"
+				<button tabindex="6" class="x-large proceed center-e"
 					data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KMK005_32')}</button>
-				<button tabindex="400" class="ui-dialog-titlebar-close"
+				<button tabindex="7" class="ui-dialog-titlebar-close"
 					data-bind="click: closeDialog">#{i18n.getText('KMK005_33')}</button>
 			</div>
 		</ui:define>

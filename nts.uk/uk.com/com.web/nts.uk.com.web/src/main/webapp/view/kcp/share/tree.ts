@@ -78,6 +78,11 @@ module kcp.share.tree {
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
+        
+        /**
+         * Limit display row
+         */
+        maxRows?: number;
     }
     
     export class TreeType {
@@ -89,6 +94,10 @@ module kcp.share.tree {
         static SELECT_ALL = 2;
         static SELECT_FIRST_ITEM = 3;
         static NO_SELECT = 4;
+    }
+    
+    export interface TreeStyle {
+        height: number;
     }
     
     export class TreeComponentScreenModel {
@@ -105,6 +114,9 @@ module kcp.share.tree {
         levelSelected: KnockoutObservable<number>;
         listWorkplaceId: Array<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        $input: JQuery;
+        data: TreeComponentOption
+        treeStyle: TreeStyle;
         
         constructor() {
             let self = this;
@@ -113,10 +125,6 @@ module kcp.share.tree {
             self.listWorkplaceId = [];
             self.hasBaseDate = ko.observable(false);
             self.alreadySettingList = ko.observableArray([]);
-            self.treeComponentColumn = [
-                { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
-                { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: "90%", dataType: "string" }
-            ];
             self.levelList = [
                 {level: 1, name: '1'},
                 {level: 2, name: '2'},
@@ -135,35 +143,26 @@ module kcp.share.tree {
         public init($input: JQuery, data: TreeComponentOption) :JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
+            self.data = data;
+            self.$input = $input;
             self.isMultiple = data.isMultiSelect;
             self.hasBaseDate(!self.isMultiple);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
-            self.isShowSelectButton = data.isShowSelectButton;
+            self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
             }
-            
-            // If show Already setting.
-            if (data.isShowAlreadySet) {
-                // Add row already setting.
-                self.treeComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'isAlreadySetting', width: "15%", dataType: 'string'
-                    formatter: function(isAlreadySetting: string) {
-                        if (isAlreadySetting == 'true') {
-                            return '<div style="text-align: center;"><i class="icon icon icon-78"></i></div>';
-                        }
-                        if (isAlreadySetting == 'false') {
-                            return '<div style="text-align: center;"><i class="icon icon icon-84"></i></div>';
-                        }
-                        return '';
-                    }
-                });
+            if (!data.maxRows) {
+                data.maxRows = 12;
             }
+            self.calHeightTree(data);
+            
+            
             // subscribe change selected level
             self.levelSelected.subscribe(function(level) {
-                self.filterData();
+                self.filterData(data, $input);
             });
             
             // subscribe change item list origin
@@ -186,11 +185,10 @@ module kcp.share.tree {
                     if (data.isShowAlreadySet) { 
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
-                            self.addAlreadySettingAttr(res, newAlreadySettings);
-                            self.itemList(res);
-                            self.backupItemList(res);
+                            self.addAlreadySettingAttr(self.backupItemList(), newAlreadySettings);
+                            self.itemList(self.backupItemList());
                             
-                            self.filterData();
+                            self.filterData(data, $input);
                         });
                     }
                     
@@ -198,26 +196,9 @@ module kcp.share.tree {
                     self.itemList(res);
                     self.backupItemList(res);
                 }
-                var webserviceLocator = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
-                    .mergeRelativePath('/view/kcp/share/tree.xhtml').serialize();
-                $input.load(webserviceLocator, function() {
-                    ko.cleanNode($input[0]);
-                    ko.applyBindings(self, $input[0]);
-                    
-                    // defined function get data list.
-                    $('#script-for-' + $input.attr('id')).remove();
-                    var s = document.createElement("script");
-                    s.type = "text/javascript";
-                    s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = '
-                        + JSON.stringify(self.backupItemList());
-                    s.id = 'script-for-' + $input.attr('id');
-                    $("head").append(s);
-                    $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-                        return window['dataList' + this.attr('id').replace(/-/gi, '')];
-                    }
+                self.loadTreeGrid().done(function() {
                     dfd.resolve();
-                });
+                })
                 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
                    self.addIconToAlreadyCol();
@@ -246,6 +227,81 @@ module kcp.share.tree {
             }
             
             return dfd.promise();
+        }
+        
+        /**
+         * Add columns to tree grid list.
+         */
+        private addColToGrid(data: TreeComponentOption, dataList: Array<UnitModel>) {
+            let self = this;
+            // Convert tree to array.
+            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
+            self.treeComponentColumn = [
+                { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
+                { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string" }
+            ];
+            // If show Already setting.
+            if (data.isShowAlreadySet) {
+                // Add row already setting.
+                self.treeComponentColumn.push({
+                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'isAlreadySetting', width: 70, dataType: 'string',
+                    formatter: function(isAlreadySetting: string) {
+                        if (isAlreadySetting == 'true') {
+                            return '<div style="text-align: center;"><i class="icon icon icon-78"></i></div>';
+                        }
+                        if (isAlreadySetting == 'false') {
+                            return '<div style="text-align: center;"><i class="icon icon icon-84"></i></div>';
+                        }
+                        return '';
+                    }
+                });
+            }
+        }
+        
+        /**
+         * Convert tree data to array.
+         */
+        private convertTreeToArray(dataList: Array<UnitModel>): Array<any> {
+            let self = this;
+            let res = [];
+            _.forEach(dataList, function(item) {
+                if (item.childs && item.childs.length > 0) {
+                    res = res.concat(self.convertTreeToArray(item.childs));
+                }
+                res.push({name: item.nodeText, level: item.level});
+            })
+            return res;
+        }
+        /**
+         * Calculate real size of text.
+         */
+        private getMaxSizeOfTextList(textArray: Array<any>): number {
+            var max = 0;
+            var paddingPerLevel = 32;
+            var defaultFontSize = 14;
+            var defaultFontFamily = ['DroidSansMono', 'Meiryo'];
+            _.forEach(textArray, function(item) {
+                var o = $('<div id="test">' + item.name + '</div>')
+                    .css({ 'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden',
+                         'font-size': defaultFontSize, 'font-family': defaultFontFamily })
+                    .appendTo($('body'))
+                var w = o.width() + item.level * paddingPerLevel;
+                if (w > max) {
+                    max = w;
+                }
+                o.remove();
+            });
+            return max;
+        }
+        
+        /**
+         * Calculate number max row
+         */
+        private calHeightTree(data: TreeComponentOption) {
+            let height = 24;
+            this.treeStyle = {
+                height: height * (data.maxRows + 1) + 1
+            };
         }
         
         /**
@@ -355,7 +411,7 @@ module kcp.share.tree {
         /**
          * Filter data by level
          */
-        private filterData() {
+        private filterData(data?: TreeComponentOption, $input?: JQuery) {
             let self = this;
             if (self.backupItemList().length > 0) {
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
@@ -363,8 +419,39 @@ module kcp.share.tree {
                     self.itemList(subItemList);
 //                    self.selectedWorkplaceIds(self.isMultiple ? [subItemList[0].workplaceId] : subItemList[0]
 //                        .workplaceId);
+                    if (!data || !$input) {
+                        return;
+                    }
+                    self.loadTreeGrid();
                 }
             }
+        }
+        
+        private loadTreeGrid() : JQueryPromise<void> {
+            let dfd = $.Deferred<void>();
+            let self = this;
+            self.addColToGrid(self.data, self.itemList());
+            let webserviceLocator = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/tree.xhtml').serialize();
+            self.$input.load(webserviceLocator, function() {
+                ko.cleanNode(self.$input[0]);
+                ko.applyBindings(self, self.$input[0]);
+
+                // defined function get data list.
+                $('#script-for-' + self.$input.attr('id')).remove();
+                var s = document.createElement("script");
+                s.type = "text/javascript";
+                s.innerHTML = 'var dataList' + self.$input.attr('id').replace(/-/gi, '') + ' = '
+                    + JSON.stringify(self.backupItemList());
+                s.id = 'script-for-' + self.$input.attr('id');
+                $("head").append(s);
+                $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                    return window['dataList' + this.attr('id').replace(/-/gi, '')];
+                }
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
         /**

@@ -47,6 +47,8 @@ public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPT
 				kbpstBPTimeItemSetting.overtimeCalSettingAtr= new BigDecimal(c.getOvertimeCalSettingAtr().value);
 				kbpstBPTimeItemSetting.worktimeCalSettingAtr= new BigDecimal(c.getWorktimeCalSettingAtr().value);
 				this.commandProxy().update(kbpstBPTimeItemSetting);
+			}else{
+				this.commandProxy().insert(c);
 			}
 		});
 	}

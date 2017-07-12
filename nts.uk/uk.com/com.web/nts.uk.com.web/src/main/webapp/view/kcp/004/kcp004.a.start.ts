@@ -7,6 +7,10 @@ module kcp004.a {
             screenModel.jsonData(JSON.stringify($('#tree-grid').getDataList(), undefined, 10));
             screenModel.isBindingTreeGrid(true);
             screenModel.getSelectedData();
+            
+            $('#combo-box-tree-component').on('mousedown', function() {
+                $('#combo-box-tree-component').focus();
+            });
         });
     });
 }

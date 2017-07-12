@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
@@ -19,8 +20,6 @@ import nts.uk.ctx.sys.portal.dom.webmenu.SelectedAtr;
 import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
-import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -31,9 +30,10 @@ public class WebMenuFinder {
 	
 	@Inject
 	private StandardMenuRepository standardMenuRepository;
-
+	
 	@Inject
-	private PersonalTyingRepository personalTyingRepository;
+	private IInternationalization internationalization;
+
 	/**
 	 * Find a web menu by code
 	 * @param webMenuCode
@@ -83,7 +83,7 @@ public class WebMenuFinder {
 	}
 	
 	public EditMenuBarDto getEditMenuBarDto() {
-		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class);
+		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class, internationalization);
 		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class);
 		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
@@ -143,21 +143,5 @@ public class WebMenuFinder {
 		}).collect(Collectors.toList());
 		return treeMenus;
 	}
-
-	public List<PersonTypeDto> findAllPerson(String employeeId) {
-		String companyId = AppContexts.user().companyId();
-		return personalTyingRepository.findAll(companyId, employeeId).stream().map(e -> {
-			return convertToDbType(e);
-		}).collect(Collectors.toList()); 
-	}
-
-	private PersonTypeDto convertToDbType(PersonalTying personalTying) {
-		PersonTypeDto personTypeDto = new PersonTypeDto();
-		personTypeDto.setWebMenuCode(personalTying.getWebMenuCode());
-		personTypeDto.setEmployeeId(personalTying.getEmployeeId());
-		
-		return personTypeDto;
-	}
-
 
 }

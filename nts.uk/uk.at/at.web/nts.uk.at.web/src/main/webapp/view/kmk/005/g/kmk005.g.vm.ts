@@ -21,9 +21,13 @@ module nts.uk.at.view.kmk005 {
 
             constructor() {
                 let self = this;
-                
-                self.tabs()[3].display(false);
-                
+                //get use setting 
+                nts.uk.at.view.kmk005.g.service.getUseSetting()
+                    .done((useSetting) => {
+                        self.tabs()[1].display(useSetting.workplaceUseAtr);
+                        self.tabs()[2].display(useSetting.personalUseAtr);
+                        self.tabs()[3].display(useSetting.workingTimesheetUseAtr);
+                    });
 
                 self.tabs().map((t) => {
                     // set title for tab
@@ -149,7 +153,7 @@ module nts.uk.at.view.kmk005 {
             name: string;
             active: KnockoutObservable<boolean> = ko.observable(false);
             display: KnockoutObservable<boolean> = ko.observable(true);
-            
+
             constructor(param: ITabModel) {
                 this.id = param.id;
                 this.name = param.name;
@@ -184,12 +188,12 @@ module nts.uk.at.view.kmk005 {
                             if (x) {
                                 model.name(x.name);
                             } else {
-                                model.id('000');
+                                model.id('');
                                 model.name(getText("KDL007_6"));
                             }
                         }).fail(x => alert(x));
                     } else {
-                        model.id('000');
+                        model.id('');
                         model.name(getText("KDL007_6"));
                     }
                 }).fail(x => alert(x));
@@ -212,12 +216,12 @@ module nts.uk.at.view.kmk005 {
                                     model.name(resp.name);
                                 }
                                 else {
-                                    model.id('000');
+                                    model.id('');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('000');
+                            model.id('');
                             model.name(getText("KDL007_6"));
                         }
                     }
@@ -231,8 +235,12 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 0 // add/update mode
                     };
-
-                service.saveData(command).done(x => self.start()).fail(x => alert(x));
+                service.saveData(command)
+                    .done(() => {
+                        alert(nts.uk.resource.getMessage("Msg_15", []));
+                        self.start();
+                    })
+                    .fail(x => alert(x));
             }
 
             removeData() {
@@ -242,8 +250,11 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 1 // remove mode
                     };
-
-                service.saveData(command).done(x => self.start()).fail(x => alert(x));
+                
+                service.saveData(command).done(() => {
+                    alert(nts.uk.resource.getMessage("Msg_16", []));
+                    self.start();
+                }).fail(x => alert(x));
             }
         }
 

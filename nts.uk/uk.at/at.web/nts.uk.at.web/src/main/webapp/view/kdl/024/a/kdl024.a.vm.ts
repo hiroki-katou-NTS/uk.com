@@ -53,7 +53,9 @@ module kdl024.a.viewmodel {
             var dfd = $.Deferred<any>();
             nts.uk.ui.block.invisible();
             // Get list budget   
-            service.getListExternalBudget().done(function(lstBudget: IBudgetItem) {
+            //service.getListExternalBudget().done(function(lstBudget: IBudgetItem) {
+                service.getListtest().done(function(lstBudget: any) {
+                    debugger;
                 nts.uk.ui.block.clear();
                 if (lstBudget.length > 0) {
                     self.isNew(false);
