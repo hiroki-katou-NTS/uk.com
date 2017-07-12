@@ -51,19 +51,19 @@ module nts.uk.at.view.kmk005.k {
                                     if (c) {
                                         model.bpsn(c.name);
                                     } else {
-                                        model.bpsc('000');
+                                        model.bpsc('');
                                         model.bpsn(getText("KDL007_6"));
                                     }
                                 });
                             } else {
-                                model.bpsc('000');
+                                model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             }
                         });
                     } else {
                         model.wtc('');
                         model.wtn(getText("KDL007_6"));
-                        model.bpsc('000');
+                        model.bpsc('');
                         model.bpsn(getText("KDL007_6"));
                     }
                 });
@@ -121,12 +121,14 @@ module nts.uk.at.view.kmk005.k {
                         workingTimesheetCode: model.wtc,
                         bonusPaySettingCode: model.bpsc
                     };
-
-                block();
-                service.saveSetting(command).done((data) => {
-                    self.start();
-                    unblock();
-                }).fail(x => alertE(x.message).then(unblock));
+                if (model.wtc && model.wtc !== '') {
+                    block();
+                    service.saveSetting(command).done(() => {
+                        alert(nts.uk.resource.getMessage("Msg_16", []));
+                        self.start();
+                        unblock();
+                    }).fail(x => alertE(x.message).then(unblock));
+                }
             }
 
             search() {
@@ -168,12 +170,12 @@ module nts.uk.at.view.kmk005.k {
                                 if (x) {
                                     model.bpsn(x.name);
                                 } else {
-                                    model.bpsc('000');
+                                    model.bpsc('');
                                     model.bpsn(getText("KDL007_6"));
                                 }
                             })
                             .fail(x => {
-                                model.bpsc('000');
+                                model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             });
                     }
