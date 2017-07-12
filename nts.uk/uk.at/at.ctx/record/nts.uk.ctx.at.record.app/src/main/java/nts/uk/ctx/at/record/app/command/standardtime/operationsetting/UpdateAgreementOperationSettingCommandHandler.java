@@ -9,7 +9,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
-import nts.uk.ctx.at.record.dom.standardtime.enums.NumberOfTimeOverLimitType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
@@ -35,7 +35,7 @@ public class UpdateAgreementOperationSettingCommandHandler
 
 		AgreementOperationSetting agreementOperationSetting = new AgreementOperationSetting(companyId,
 				EnumAdaptor.valueOf(command.getStartingMonth(), StartingMonthType.class) ,
-				EnumAdaptor.valueOf(command.getNumberTimesOverLimitType(), NumberOfTimeOverLimitType.class),
+				EnumAdaptor.valueOf(command.getNumberTimesOverLimitType(), TimeOverLimitType.class),
 				EnumAdaptor.valueOf(command.getClosingDateType(), ClosingDateType.class),
 				EnumAdaptor.valueOf(command.getClosingDateAtr(), ClosingDateAtr.class),
 				EnumAdaptor.valueOf(command.getYearlyWorkTableAtr(), TargetSettingAtr.class),

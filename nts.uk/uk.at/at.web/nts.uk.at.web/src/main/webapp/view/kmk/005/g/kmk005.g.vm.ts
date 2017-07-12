@@ -238,7 +238,7 @@ module nts.uk.at.view.kmk005 {
                 if (data.id !== '') {
                     service.saveData(command)
                         .done(() => {
-                            alert(nts.uk.resource.getMessage("Msg_15", []));
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
                             self.start();
                         })
                         .fail(x => alert(x));
@@ -256,7 +256,7 @@ module nts.uk.at.view.kmk005 {
                     };
 
                 service.saveData(command).done(() => {
-                    alert(nts.uk.resource.getMessage("Msg_16", []));
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     self.start();
                 }).fail(x => alert(x));
             }

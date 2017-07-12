@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.bonuspay.services;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 
 public interface BonusPaySettingService {
@@ -11,5 +12,7 @@ public interface BonusPaySettingService {
 	public void updateBonusPaySetting(BonusPaySetting domain);
 
 	public void deleteBonusPaySetting(String companyId, String bonusPaySettingCode);
+	
+	boolean isExisted(String companyId, BonusPaySettingCode code);
 
 }

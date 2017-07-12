@@ -105,7 +105,7 @@ module nts.uk.at.view.kmk005.k {
                     if (model.wtc && model.wtc !== '') {
                         block();
                         service.saveSetting(command).done(() => {
-                            alert(nts.uk.resource.getMessage("Msg_15", []));
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
                             self.start();
                             unblock();
                         }).fail((res) => {
@@ -128,7 +128,7 @@ module nts.uk.at.view.kmk005.k {
                 if (model.wtc && model.wtc !== '') {
                     block();
                     service.saveSetting(command).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_16", []));
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                         self.start();
                         unblock();
                     }).fail(x => alertE(x.message).then(unblock));

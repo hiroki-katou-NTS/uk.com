@@ -10,11 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Setter
 @Table(name = "KSMST_SPECIFIC_DATE_ITEM")
 public class KsmstSpecificDateItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

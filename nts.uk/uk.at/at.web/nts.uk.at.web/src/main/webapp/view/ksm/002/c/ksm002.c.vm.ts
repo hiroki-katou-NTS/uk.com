@@ -1,8 +1,8 @@
 module ksm002.c {
     export module viewmodel {
         export class ScreenModel {
-            rootList: Array<SpecificDateItemDto>;
-            premiumItemList: KnockoutObservableArray<SpecificDateItemDto>;
+            rootList: Array<SpecificDateItemCommand>;
+            premiumItemList: KnockoutObservableArray<SpecificDateItem>;
             isInsert: Boolean;
             allUse: KnockoutObservable<number>;
             textKSM002_38: string;
@@ -17,7 +17,7 @@ module ksm002.c {
 //                return nts.uk.resource.getText("KML001_"+(30+index));    
 //            }
             /**
-             * get data on start page
+             * get data on start page 
              */
             startPage(): JQueryPromise<any> {
                 nts.uk.ui.block.invisible();
@@ -26,7 +26,7 @@ module ksm002.c {
                 service.getAllSpecificDate().done(function(data) {
                         data.forEach(function(item){
                             self.premiumItemList.push(
-                                new SpecificDateItemDto(
+                                new SpecificDateItemCommand(
                                     item.timeItemId,
                                     item.useAtr,
                                     item.specificDateItemNo,
@@ -57,28 +57,27 @@ module ksm002.c {
             submitAndCloseDialog(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
-                let premiumItemListCommand = [];
+                let lstSpecificDateItem : Array<SpecificDateItemCommand>;
                 let rootLists = self.rootList;
                 $(".premiumName").trigger("validate");
                 ko.utils.arrayForEach(self.premiumItemList(), function(item, index) { 
-                    if(ko.mapping.toJSON(item)!=ko.mapping.toJSON(rootLists[index])){
-//                        item.isChange(true);        
-                    }
-                    premiumItemListCommand.push(ko.mapping.toJS(item));
+//                    if(ko.mapping.toJSON(item)!=ko.mapping.toJSON(rootLists[index])){
+////                        item.isChange(true);        
+//                    }
+                    lstSpecificDateItem= self.premiumItemList();
                 });
-//                if (!nts.uk.ui.errors.hasError()){
-//                servicebase.premiumItemUpdate(premiumItemListCommand)
-//                    .done(function(res: Array<any>) {
-//                        if(self.isInsert){
-//                            nts.uk.ui.windows.setShared('premiumSets', ko.mapping.toJS(premiumItemListCommand));    
-//                        }
-//                        nts.uk.ui.windows.setShared('updatePremiumSeting', true);
-//                        nts.uk.ui.block.clear();
-//                        nts.uk.ui.windows.close();
-//                    }).fail(function(res) {
-//                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});
-//                    });
-//                } else nts.uk.ui.block.clear();
+                self.premiumItemList
+                if (!nts.uk.ui.errors.hasError()){
+                service.updateSpecificDate(lstSpecificDateItem)
+                    .done(function(res: Array<any>) {
+                        if(self.isInsert){
+                        }
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.windows.close();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});
+                    });
+                } else nts.uk.ui.block.clear();
             }
             
             /**
@@ -89,7 +88,7 @@ module ksm002.c {
             }
         }
     }
-    class SpecificDateItemDto{
+    export class SpecificDateItemCommand{
         timeItemId: KnockoutObservable<string>;
         useAtr: KnockoutObservable<number>;
         specificDateItemNo: KnockoutObservable<number>;
