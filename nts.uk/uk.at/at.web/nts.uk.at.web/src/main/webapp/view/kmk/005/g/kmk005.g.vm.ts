@@ -16,7 +16,7 @@ module nts.uk.at.view.kmk005 {
             title: KnockoutObservable<string> = ko.observable('');
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
                 new TabModel({ id: 'G', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'H', name: getText('Com_Department') }),
+                new TabModel({ id: 'H', name: getText('Com_Workplace') }),
                 new TabModel({ id: 'I', name: getText('Com_Person') }),
                 new TabModel({ id: 'K', name: getText('KMK005_44') }),
             ]);
