@@ -38,7 +38,7 @@
 						<com:ko tag="with" bind="normalSetting">
 						<div class="control-group">
 							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
-							<div tabindex="3" style="margin-left: 50px; display: inline-flex"
+							<div tabindex="3" class="cbb-weekstart"
 								id="combo-box"
 								data-bind="ntsComboBox: {name:'#[KMK004_6]',
 												options: $parents[1].itemList,
@@ -50,8 +50,7 @@
 							<com:ko tag="with" bind="statutorySetting">
 								<div class="control-group">
 									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
-									<table tabindex="4" style="margin-left: 105px; display: inline"
-										class="border-all">
+									<table tabindex="4" class="border-all tbl-daily">
 										<tr class="bg-dark-green">
 											<td></td>
 											<td>#{i18n.getText('KMK004_8')}</td>
@@ -71,8 +70,7 @@
 									</table>
 								</div>
 								<div class="control-group">
-									<table tabindex="7" class="border-all"
-										style="display: inline; margin-left: 200px">
+									<table tabindex="7" class="border-all tbl-monthly">
 										<tr class="bg-dark-green">
 											<td>#{i18n.getText('KMK004_13')}</td>
 											<td>#{i18n.getText('KMK004_8')}</td>
@@ -99,8 +97,7 @@
 						<com:ko tag="with" bind="flexSetting">
 							<div class="control-group">
 								<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
-								<table tabindex="10" style="margin-left: 105px; display: inline"
-									class="border-all">
+								<table tabindex="10" class="border-all tbl-daily">
 									<tr class="bg-dark-green">
 										<td></td>
 										<td>#{i18n.getText('KMK004_16')}</td>
@@ -118,8 +115,7 @@
 								</table>
 							</div>
 							<div class="control-group">
-								<table tabindex="13" class="border-all"
-									style="display: inline; margin-left: 200px">
+								<table tabindex="13" class="border-all tbl-monthly">
 									<tr class="bg-dark-green">
 										<td>#{i18n.getText('KMK004_13')}</td>
 										<td>#{i18n.getText('KMK004_17')}</td>
@@ -150,7 +146,7 @@
 						<com:ko tag="with" bind="deformationLaborSetting">
 						<div class="control-group">
 							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
-							<div tabindex="18" style="margin-left: 50px; display: inline-flex"
+							<div tabindex="18" class="cbb-weekstart"
 								id="combo-box"
 								data-bind="ntsComboBox: {name:'#[KMK004_23]',
 												options: $parents[1].itemList,
@@ -162,8 +158,7 @@
 							<com:ko tag="with" bind="statutorySetting">
 								<div class="control-group">
 									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
-									<table tabindex="19" style="margin-left: 105px; display: inline"
-										class="border-all">
+									<table tabindex="19" class="border-all tbl-daily">
 										<tr class="bg-dark-green">
 											<td></td>
 											<td>#{i18n.getText('KMK004_8')}</td>
@@ -183,8 +178,7 @@
 									</table>
 								</div>
 								<div class="control-group">
-									<table tabindex="22" class="border-all"
-										style="display: inline; margin-left: 200px">
+									<table tabindex="22" class="border-all tbl-monthly">
 										<tr class="bg-dark-green">
 											<td>#{i18n.getText('KMK004_13')}</td>
 											<td>#{i18n.getText('KMK004_8')}</td>
