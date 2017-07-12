@@ -4,6 +4,10 @@ class ProfileHandler implements KnockoutBindingHandler {
         if (params.enable == undefined) {
             params.enable = true;
         }
+        
+        if (params.showTxtEmployee == undefined) {
+            params.showTxtEmployee = true;    
+        }
 
         let container1: HTMLElement = document.createElement('div'),
             container2: HTMLElement = document.createElement('div'),
@@ -33,6 +37,10 @@ class ProfileHandler implements KnockoutBindingHandler {
                     e.target['value'] = params.value()[params.code];
                 }
             };
+        }
+        
+        if (!params.showTxtEmployee) {
+           input.setAttribute("style", "display: none;");   
         }
 
         input.setAttribute('type', 'text');

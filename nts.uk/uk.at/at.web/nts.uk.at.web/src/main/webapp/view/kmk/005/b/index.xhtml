@@ -21,7 +21,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
-					<div class="label">#{i18n.getText('KMK005_8')}</div>
+					<div class="label">#{i18n.getText('KMK005_16')}</div>
 				</div>
 				<div tabindex="1" id="tab-panel" style="height: 415px"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
@@ -43,7 +43,7 @@
 									<td>
 										<div class="cf"
 											data-bind="ntsSwitchButton: {
-										name: '#[KML005_30]',
+										name: '#[KMK005_20]',
 										options:ko.observableArray([
 											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
 								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
@@ -55,7 +55,7 @@
 									</td>
 									<td><input class="premiumName"
 										data-bind="ntsTextEditor: {
-										name: '#[KML005_31]', 
+										name: '#[KMK005_21]', 
 										value: timeItemName, 
 										constraint: 'TimeItemName',
 										option: { width: '220px' }, 
@@ -89,7 +89,7 @@
 									<td>
 										<div class="cf"
 											data-bind="ntsSwitchButton: {
-										name: '#[KML005_27]',
+										name: '#[KMK005_20]',
 										options:ko.observableArray([
 											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
 								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
@@ -101,7 +101,7 @@
 									</td>
 									<td><input class="premiumName"
 										data-bind="ntsTextEditor: {
-										name: '#[KML005_28]', 
+										name: '#[KMK005_21]', 
 										value: timeItemName, 
 										constraint: 'TimeItemName',
 										option: { width: '220px' }, 
