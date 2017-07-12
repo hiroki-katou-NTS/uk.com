@@ -148,7 +148,7 @@ module kcp.share.tree {
             self.isMultiple = data.isMultiSelect;
             self.hasBaseDate(!self.isMultiple);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
-            self.isShowSelectButton = data.isShowSelectButton;
+            self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
             if (data.alreadySettingList) {
@@ -235,7 +235,7 @@ module kcp.share.tree {
         private addColToGrid(data: TreeComponentOption, dataList: Array<UnitModel>) {
             let self = this;
             // Convert tree to array.
-            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 300);
+            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string" }
