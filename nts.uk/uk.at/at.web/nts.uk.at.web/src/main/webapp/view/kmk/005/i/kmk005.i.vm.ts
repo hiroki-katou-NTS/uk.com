@@ -209,11 +209,15 @@ module nts.uk.at.view.kmk005.i {
                         employeeId: model.eid,
                         bonusPaySettingCode: model.bid,
                     };
-                if (model.eid !== '') {
-                    service.saveData(data).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_15", []));
-                        self.start();
-                    });
+                if (model.bid !== '') {
+                    if (model.eid !== '') {
+                        service.saveData(data).done(() => {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                        });
+                    }
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
                 }
             }
 
@@ -227,7 +231,7 @@ module nts.uk.at.view.kmk005.i {
                     };
                 if (model.eid !== '') {
                     service.saveData(data).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_16", []));
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                         self.start();
                     });
                 }

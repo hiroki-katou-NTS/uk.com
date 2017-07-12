@@ -21,7 +21,7 @@
 		<ui:define name="content">
 
 			<div id="contents-area">
-				<span class="description">#{i18n.getText('CCG013_92')}</span>
+				<span class="description">#{i18n.getText('CCG013_92')}</span> <br />
 				<table class="control">
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_93')}</div></td>
@@ -58,9 +58,8 @@
 						<td tabindex="7" class="col2"><span id="imageName"
 							data-bind="text:imageName"></span></td>
 						<td tabindex="8" class="pull-right">
-							<button id="delBtn" class="danger" 
-								data-bind="click: deleteFile, enable: isDelete()"
-								>#{i18n.getText('CCG013_98')}</button>
+							<button id="delBtn" class="danger"
+								data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG013_98')}</button>
 						</td>
 					</tr>
 					<tr>

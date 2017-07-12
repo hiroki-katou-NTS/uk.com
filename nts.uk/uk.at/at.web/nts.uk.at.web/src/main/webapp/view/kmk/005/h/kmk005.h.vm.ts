@@ -125,12 +125,16 @@ module nts.uk.at.view.kmk005.h {
                         bonusPaySettingCode: model.id,
                         action: 0
                     };
-                if (model.wid !== '') {
-                    // call service to save setting
-                    service.saveData(command).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_15", []));
-                        self.start();
-                    });
+                if (model.id !== '') {
+                    if (model.wid !== '') {
+                        // call service to save setting
+                        service.saveData(command).done(() => {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                        });
+                    }
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
                 }
             }
 
@@ -145,7 +149,7 @@ module nts.uk.at.view.kmk005.h {
                 if (model.wid !== '') {
                     // call service to delete setting
                     service.saveData(command).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_16", []));
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                         self.start();
                     });
                 }

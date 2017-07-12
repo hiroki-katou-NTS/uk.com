@@ -38,6 +38,7 @@ table.control {
 img {
 	width: 270px;
 	height: 150px;
+	padding-top: 1em
 }
 
 #imageName {
@@ -49,7 +50,6 @@ img {
 	display: inline-block;
 }
 
-
 #description {
 	height: 20px;
 	padding-bottom: 5px;
@@ -59,23 +59,29 @@ img {
 	margin: 5px 0px 5px 0px;
 }
 
-.col2{
+.col2 {
 	width: 180px;
 }
-#delBtn{
+
+#delBtn {
 	position: relative;
-    width: 80px;
+	width: 80px;
 }
 
-.pull-right {text-align: right;}
+.pull-right {
+	text-align: right;
+}
 
-#nameTitleBar{
+#nameTitleBar {
 	width: 220px !important;
 }
-#file_upload{
+
+#file_upload {
 	width: 200px;
 	overflow: hidden;
 }
-.labelRight{
-	margin-left: 10px;	
+
+.labelRight {
+	margin-left: 10px;
 }
+
