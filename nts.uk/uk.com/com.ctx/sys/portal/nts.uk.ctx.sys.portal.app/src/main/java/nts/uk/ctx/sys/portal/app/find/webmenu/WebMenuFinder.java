@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
+import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -31,6 +32,8 @@ public class WebMenuFinder {
 	@Inject
 	private StandardMenuRepository standardMenuRepository;
 
+	@Inject
+	private PersonalTyingRepository personalTyingRepository;
 	/**
 	 * Find a web menu by code
 	 * @param webMenuCode
@@ -140,5 +143,21 @@ public class WebMenuFinder {
 		}).collect(Collectors.toList());
 		return treeMenus;
 	}
+
+	public List<PersonTypeDto> findAllPerson(String employeeId) {
+		String companyId = AppContexts.user().companyId();
+		return personalTyingRepository.findAll(companyId, employeeId).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList()); 
+	}
+
+	private PersonTypeDto convertToDbType(PersonalTying personalTying) {
+		PersonTypeDto personTypeDto = new PersonTypeDto();
+		personTypeDto.setWebMenuCode(personalTying.getWebMenuCode());
+		personTypeDto.setEmployeeId(personalTying.getEmployeeId());
+		
+		return personTypeDto;
+	}
+
 
 }
