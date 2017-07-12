@@ -31,13 +31,13 @@ public interface TopPageSetFactory {
 	 * @param topPageJob
 	 * @return
 	 */
-	LayoutAllDto getTopPageForPosition(JobPositionDto jobPosition,TopPageJobSet topPageJob);
+	LayoutAllDto getTopPageForPosition(String fromScreen, JobPositionDto jobPosition,TopPageJobSet topPageJob);
 	/**
 	 * get top page not position
 	 * @param tpPerson
 	 * @return
 	 */
-	LayoutAllDto getTopPageNotPosition();
+	LayoutAllDto getTopPageNotPosition(String fromScreen);
 	/**
 	 * get top page by code
 	 * @param companyId

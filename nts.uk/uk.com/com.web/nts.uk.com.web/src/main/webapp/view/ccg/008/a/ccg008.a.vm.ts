@@ -38,8 +38,9 @@
             var dfd = $.Deferred();
             var transferData = __viewContext.transferred.value;
             var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
+            var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
             self.topPageCode(code);
-            service.getTopPageByCode( self.topPageCode()).done((data: model.LayoutAllDto) => {
+            service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
