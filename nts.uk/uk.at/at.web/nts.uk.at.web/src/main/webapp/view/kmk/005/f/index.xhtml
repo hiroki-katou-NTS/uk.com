@@ -26,7 +26,7 @@
 							<a tabindex="-1" href="" >#{i18n.getText('KMK005_58')}</a>
 						</div>
 					</div>
-					<button tabindex="2" data-bind="click: createData">#{i18n.getText('KMK005_59')}</button>
+					<button tabindex="2" data-bind="click: function(){ createData(false) }">#{i18n.getText('KMK005_59')}</button>
 					<button tabindex="3" class="proceed" data-bind="click: submitData">#{i18n.getText('KMK005_60')}</button>
 					<button tabindex="5" class="danger" data-bind="click: deleteData, enable: isUpdate">#{i18n.getText('KMK005_62')}</button>	
 					<div tabindex="6" class="myLinkButton"> 
