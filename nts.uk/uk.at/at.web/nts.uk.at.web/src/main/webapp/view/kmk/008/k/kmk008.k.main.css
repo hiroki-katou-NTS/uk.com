@@ -1,14 +1,8 @@
 #contents-area {
-	width: 510px;
 	height: 500px;
 }
 
-#functions-area-content {
-	width: 510px;
-}
-
 .button-margin-left {
-	margin-right: 40px;
 }
 
 #single-list_virtualContainer {
@@ -40,7 +34,6 @@
 
 #functions-area-content>button {
 	width: 80px;
-	margin-left: 25px;
 }
 
 #contents-area-show-data-left, #contents-area-show-data-right {

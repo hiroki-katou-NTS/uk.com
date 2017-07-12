@@ -5,7 +5,7 @@ package nts.uk.ctx.at.record.dom.standardtime.enums;
  * @author nampt
  *
  */
-public enum NumberOfTimeOverLimitType {
+public enum TimeOverLimitType {
 	
 	/*
 	 * ３６協定超過上限回数
@@ -39,7 +39,7 @@ public enum NumberOfTimeOverLimitType {
 
 	public final int value;
 	
-	private NumberOfTimeOverLimitType(int type) {
+	private TimeOverLimitType(int type) {
 		this.value = type;
 	}
 
