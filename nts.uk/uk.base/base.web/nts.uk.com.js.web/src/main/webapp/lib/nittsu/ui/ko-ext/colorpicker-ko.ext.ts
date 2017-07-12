@@ -88,16 +88,20 @@ module nts.uk.ui.koExtentions {
                 }
             });
             
+            let validateRequired = function ($p){
+                $p.ntsError('clear');
+                    let value = $p.spectrum("get");
+                    if(nts.uk.util.isNullOrUndefined(value)){
+                        $p.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]), 'FND_E_REQ_INPUT');
+                    }    
+            }
+            
             $container.keydown((evt, ui) => {
                 let code = evt.which || evt.keyCode;
                 if (code.toString() === "9"){
                     
                     if (required === true){
-                        $picker.ntsError('clear');
-                        let value = $picker.spectrum("get");
-                        if(!nts.uk.util.isNullOrUndefined(color)){
-                            $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]), 'FND_E_REQ_INPUT');
-                        }        
+                        validateRequired($picker);       
                     }
                     $picker.spectrum("hide");
                 }  
@@ -105,13 +109,16 @@ module nts.uk.ui.koExtentions {
             
             $container.on('validate', (function(e: Event) {
                 if (required === true){
-                    $picker.ntsError('clear');
-                    let value = $picker.spectrum("get");
-                    if(!nts.uk.util.isNullOrUndefined(color)){
-                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]), 'FND_E_REQ_INPUT');
-                    }        
+                    validateRequired($picker);           
                 }
             }));
+            
+            $picker.spectrum("container").find(".sp-clear").click(function (e: Event){
+                 $picker.spectrum("set", null);
+                 if (required === true){
+                    validateRequired($picker);       
+                 }                 
+            });
             
             if(!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)){
                 $container.width(width);
