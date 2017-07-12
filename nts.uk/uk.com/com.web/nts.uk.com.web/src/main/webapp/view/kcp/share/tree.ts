@@ -300,7 +300,7 @@ module kcp.share.tree {
         private calHeightTree(data: TreeComponentOption) {
             let height = 24;
             this.treeStyle = {
-                height: height * (data.maxRows + 1) + 1
+                height: height * (data.maxRows + 1) + 17
             };
         }
         
