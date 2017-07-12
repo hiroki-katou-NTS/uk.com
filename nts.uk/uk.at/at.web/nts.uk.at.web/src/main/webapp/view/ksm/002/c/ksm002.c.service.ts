@@ -1,12 +1,19 @@
 module ksm002.c.service {
      var paths = {
-         getAllSpecificDateByCompany: "at/schedule/specificdateitem/getallspecificdate"
+         getAllSpecificDate: "at/schedule/specificdateitem/getallspecificdate",
+         updateSpecificDate: "at/schedule/specificdateitem/updatespecificdate"
     }
 
     /**
-    * get all SpecificDateByCompany 
+    * get all SpecificDate
     */
     export function getAllSpecificDate(): JQueryPromise<Array<any>>{
-        return nts.uk.request.ajax("at", paths.getAllSpecificDateByCompany);
+        return nts.uk.request.ajax("at", paths.getAllSpecificDate);
     }  
+    /**
+    * update SpecificDate
+    */
+    export function updateSpecificDate(lstSpecificDateItem: Array<viewmodel.SpecificDateItemCommand>): JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("at", paths.updateSpecificDate,lstSpecificDateItem);
+    }
 }
