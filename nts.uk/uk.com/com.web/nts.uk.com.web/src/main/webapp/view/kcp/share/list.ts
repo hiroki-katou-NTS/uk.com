@@ -164,7 +164,7 @@ module kcp.share.list {
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
             self.listType = data.listType;
-            if (self.hasBaseDate) {
+            if (data.baseDate) {
                 self.baseDate = data.baseDate;
             } else {
                 self.baseDate = ko.observable(new Date());
