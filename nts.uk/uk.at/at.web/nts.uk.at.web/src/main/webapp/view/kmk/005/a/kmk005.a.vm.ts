@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk005.a {
             }
             
             openTimeSheetItem(): void {
-                nts.uk.request.jump("/view/kmk/005/f/index.xhtml");
+                 nts.uk.request.jump("/view/kmk/005/f/index.xhtml");
             }
             openBonusPay(): void
             {
