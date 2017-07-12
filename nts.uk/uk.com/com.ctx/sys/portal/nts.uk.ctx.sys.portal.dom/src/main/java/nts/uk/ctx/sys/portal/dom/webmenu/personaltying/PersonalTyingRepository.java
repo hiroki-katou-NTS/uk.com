@@ -8,18 +8,18 @@ public interface PersonalTyingRepository {
 
 	
 	/**
-	 * add person type
+	 * add person
 	 * @param personalTying
 	 */
 	void add(PersonalTying personalTying);
 	/**
-	 * 
+	 * delete person
 	 * @param companyId
 	 */
 	void delete(String companyId);
 	
 	/**
-	 * 
+	 * find all person
 	 * @param companyId
 	 * @param webMenuCode
 	 * @param employeeId
