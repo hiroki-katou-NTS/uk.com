@@ -10,20 +10,22 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDa
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSet;
 
 @Stateless
-public class JpaCompanySpecificDateRepository extends JpaRepository implements CompanySpecificDateRepository{
-	
-	
-	private static final String GET_BY_DATE = "SELECT s FROM KsmmtComSpecDateSet s WHERE s.companyId = :companyId AND s.specificDate =: specificDate ";
-	
-	
+public class JpaCompanySpecificDateRepository extends JpaRepository implements CompanySpecificDateRepository {
+
+	private static final String SELECT_NO_WHERE = "SELECT s FROM KsmmtComSpecDateSet s";
+
+	private static final String GET_BY_DATE = SELECT_NO_WHERE + " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND s.ksmmtComSpecDateSetPK.specificDate =: specificDate";
+
 	@Override
 	public Optional<CompanySpecificDateItem> getComSpecByDate(String companyId, int specificDate) {
-		return this.queryProxy().query(GET_BY_DATE, KsmmtComSpecDateSet.class)
-		.setParameter("companyId", companyId)
-		.setParameter("specificDate", specificDate)
-		.getSingle(x -> toDomain(x));
+		return this.queryProxy().query(GET_BY_DATE, KsmmtComSpecDateSet.class).setParameter("companyId", companyId)
+				.setParameter("specificDate", specificDate).getSingle(x -> toDomain(x));
 	}
-	private CompanySpecificDateItem toDomain(KsmmtComSpecDateSet ksmmtComSpecDate){
-		return CompanySpecificDateItem.createFromJavaType(ksmmtComSpecDate.companyId, ksmmtComSpecDate.specificDate,ksmmtComSpecDate.specificDateItemNo);
+
+	private CompanySpecificDateItem toDomain(KsmmtComSpecDateSet ksmmtComSpecDate) {
+		return CompanySpecificDateItem.createFromJavaType(ksmmtComSpecDate.ksmmtComSpecDateSetPK.companyId,
+				ksmmtComSpecDate.ksmmtComSpecDateSetPK.specificDate,
+				ksmmtComSpecDate.ksmmtComSpecDateSetPK.specificDateItemNo);
 	}
 }
