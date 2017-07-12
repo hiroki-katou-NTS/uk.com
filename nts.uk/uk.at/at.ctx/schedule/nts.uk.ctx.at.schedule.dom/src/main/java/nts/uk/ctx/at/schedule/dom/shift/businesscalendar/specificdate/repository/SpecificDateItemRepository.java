@@ -7,5 +7,11 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.Speci
 public interface SpecificDateItemRepository {
 	
 	List<SpecificDateItem> getAll(String companyId);
+	/**
+	 * hoatt
+	 * update list Specific Date Item
+	 * @param lstSpecificDateItem
+	 */
+	void updateDivTime(List<SpecificDateItem> lstSpecificDateItem);
 
 }
