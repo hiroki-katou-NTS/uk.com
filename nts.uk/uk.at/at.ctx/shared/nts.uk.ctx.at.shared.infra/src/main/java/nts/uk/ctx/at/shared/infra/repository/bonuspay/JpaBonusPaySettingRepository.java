@@ -17,7 +17,11 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySettingPK;
 
 @Stateless
 public class JpaBonusPaySettingRepository extends JpaRepository implements BPSettingRepository {
+	
 	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId";
+	
+	private final String IS_EXISTED = "SELECT COUNT(c) FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId AND c.kbpmtBonusPaySettingPK.code = :code";
+	
 	@Override
 	public List<BonusPaySetting> getAllBonusPaySetting(String companyId) {
 		return this.queryProxy().query(SELECT_BY_COMPANYID, KbpmtBonusPaySetting.class)
@@ -68,6 +72,14 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 			return  Optional.ofNullable(this.toBonusPaySettingDomain(kbpmtBonusPaySetting.get()));
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public boolean isExisted(String companyId, BonusPaySettingCode code) {
+		return this.queryProxy().query(IS_EXISTED, Long.class)
+				.setParameter("companyId", companyId)
+				.setParameter("code", code.v())
+				.getSingle().get() > 0;
 	}
 
 }
