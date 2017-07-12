@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk005.i {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
+    import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -121,12 +122,14 @@ module nts.uk.at.view.kmk005.i {
                                 service.getName(d.bonusPaySettingCode).done(m => {
                                     if (m) {
                                         model.bname(m.name)
+                                        __viewContext.viewModel.tabView.isEnable(true);
                                     } else {
                                         model.bid('000');
                                         model.bname(getText("KDL007_6"));
                                     }
                                 }).fail(m => alert(m));
                             } else {
+                                __viewContext.viewModel.tabView.isEnable(false);
                                 model.bid('000');
                                 model.bname(getText("KDL007_6"));
                             }
@@ -211,7 +214,7 @@ module nts.uk.at.view.kmk005.i {
                     };
                 if (model.eid !== '') {
                     service.saveData(data).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_15", []));
+                         info(nts.uk.resource.getMessage("Msg_15"));
                         self.start();
                     });
                 }
@@ -226,7 +229,11 @@ module nts.uk.at.view.kmk005.i {
                         bonusPaySettingCode: model.bid,
                     };
 
-                service.saveData(data).done(x => { self.start(); });
+                   confirm({messageId:'Msg_18'}).ifYes(()=>{
+                    service.saveData(data).done(x =>{
+                  info(nts.uk.resource.getMessage("Msg_16"));     
+                  self.start()  } ).fail(x => alert(x));
+                });
             }
         }
     }
