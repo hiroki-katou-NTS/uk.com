@@ -2,12 +2,10 @@ module nts.uk.at.view.kmk005 {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
-    import info = nts.uk.ui.dialog.info;
     import href = nts.uk.request.jump;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-
 
     let __viewContext: any = window["__viewContext"] || {};
 
@@ -16,12 +14,10 @@ module nts.uk.at.view.kmk005 {
             title: KnockoutObservable<string> = ko.observable('');
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
                 new TabModel({ id: 'G', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'H', name: getText('Com_Workplace') }),
+                new TabModel({ id: 'H', name: getText('Com_Department') }),
                 new TabModel({ id: 'I', name: getText('Com_Person') }),
                 new TabModel({ id: 'K', name: getText('KMK005_44') }),
             ]);
-
-            isEnable: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 let self = this;
@@ -191,15 +187,13 @@ module nts.uk.at.view.kmk005 {
                         service.getName(resp.bonusPaySettingCode).done(x => {
                             if (x) {
                                 model.name(x.name);
-                                __viewContext.viewModel.tabView.isEnable(true);
                             } else {
-                                model.id('000');
+                                model.id('');
                                 model.name(getText("KDL007_6"));
                             }
                         }).fail(x => alert(x));
                     } else {
-                        __viewContext.viewModel.tabView.isEnable(false);
-                        model.id('000');
+                        model.id('');
                         model.name(getText("KDL007_6"));
                     }
                 }).fail(x => alert(x));
@@ -222,12 +216,12 @@ module nts.uk.at.view.kmk005 {
                                     model.name(resp.name);
                                 }
                                 else {
-                                    model.id('000');
+                                    model.id('');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('000');
+                            model.id('');
                             model.name(getText("KDL007_6"));
                         }
                     }
@@ -241,12 +235,16 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 0 // add/update mode
                     };
-                service.saveData(command)
-                    .done(() => {
-                        info(nts.uk.resource.getMessage("Msg_15"));
-                        self.start();
-                    })
-                    .fail(x => alert(x));
+                if (data.id !== '') {
+                    service.saveData(command)
+                        .done(() => {
+                            alert(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                        })
+                        .fail(x => alert(x));
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
+                }
             }
 
             removeData() {
@@ -256,11 +254,11 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 1 // remove mode
                     };
-                confirm({messageId:'Msg_18'}).ifYes(()=>{
-                    service.saveData(command).done(x =>{
-                  info(nts.uk.resource.getMessage("Msg_16"));     
-                  self.start()  } ).fail(x => alert(x));
-                });
+
+                service.saveData(command).done(() => {
+                    alert(nts.uk.resource.getMessage("Msg_16", []));
+                    self.start();
+                }).fail(x => alert(x));
             }
         }
 

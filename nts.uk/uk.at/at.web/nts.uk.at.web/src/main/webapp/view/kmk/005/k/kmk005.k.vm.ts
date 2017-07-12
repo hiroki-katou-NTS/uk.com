@@ -6,8 +6,6 @@ module nts.uk.at.view.kmk005.k {
         import getText = nts.uk.resource.getText;
         import modal = nts.uk.ui.windows.sub.modal;
         import alert = nts.uk.ui.dialog.alert;
-        import confirm = nts.uk.ui.dialog.confirm;
-        import info = nts.uk.ui.dialog.info;
         import alertE = nts.uk.ui.dialog.alertError;
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
@@ -52,22 +50,20 @@ module nts.uk.at.view.kmk005.k {
                                 service.getBonusPaySettingByCode(x.bonusPaySettingCode).done(c => {
                                     if (c) {
                                         model.bpsn(c.name);
-                                         __viewContext.viewModel.tabView.isEnable(true);
                                     } else {
-                                        model.bpsc('000');
+                                        model.bpsc('');
                                         model.bpsn(getText("KDL007_6"));
                                     }
                                 });
                             } else {
-                                 __viewContext.viewModel.tabView.isEnable(false);
-                                model.bpsc('000');
+                                model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             }
                         });
                     } else {
                         model.wtc('');
                         model.wtn(getText("KDL007_6"));
-                        model.bpsc('000');
+                        model.bpsc('');
                         model.bpsn(getText("KDL007_6"));
                     }
                 });
@@ -105,15 +101,19 @@ module nts.uk.at.view.kmk005.k {
                         workingTimesheetCode: model.wtc,
                         bonusPaySettingCode: model.bpsc
                     };
-                if (model.wtc && model.wtc !== '') {
-                    block();
-                    service.saveSetting(command).done(() => {
-                         info(nts.uk.resource.getMessage("Msg_15"));
-                        self.start();
-                        unblock();
-                    }).fail((res) => {
-                        alertE(res.message).then(function() { unblock(); });
-                    });
+                if (model.bpsc !== '') {
+                    if (model.wtc && model.wtc !== '') {
+                        block();
+                        service.saveSetting(command).done(() => {
+                            alert(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                            unblock();
+                        }).fail((res) => {
+                            alertE(res.message).then(function() { unblock(); });
+                        });
+                    }
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
                 }
             }
 
@@ -125,12 +125,14 @@ module nts.uk.at.view.kmk005.k {
                         workingTimesheetCode: model.wtc,
                         bonusPaySettingCode: model.bpsc
                     };
-                 block();
-                  confirm({messageId:'Msg_18'}).ifYes(()=>{
-                    service.saveSetting(command).done(x =>{
-                  info(nts.uk.resource.getMessage("Msg_16"));     
-                  self.start(); unblock();  } ).fail(x => alert(x));
-                });
+                if (model.wtc && model.wtc !== '') {
+                    block();
+                    service.saveSetting(command).done(() => {
+                        alert(nts.uk.resource.getMessage("Msg_16", []));
+                        self.start();
+                        unblock();
+                    }).fail(x => alertE(x.message).then(unblock));
+                }
             }
 
             search() {
@@ -172,12 +174,12 @@ module nts.uk.at.view.kmk005.k {
                                 if (x) {
                                     model.bpsn(x.name);
                                 } else {
-                                    model.bpsc('000');
+                                    model.bpsc('');
                                     model.bpsn(getText("KDL007_6"));
                                 }
                             })
                             .fail(x => {
-                                model.bpsc('000');
+                                model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             });
                     }
