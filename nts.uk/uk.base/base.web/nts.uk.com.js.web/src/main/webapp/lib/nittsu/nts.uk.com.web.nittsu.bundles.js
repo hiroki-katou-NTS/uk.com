@@ -12024,7 +12024,7 @@ var nts;
                         var $container = $(element);
                         var width = ko.unwrap(data.width);
                         var color = ko.unwrap(data.value);
-                        var dataName = ko.unwrap(data.name);
+                        var dataName = data.name === undefined ? "" : nts.uk.resource.getControlName(ko.unwrap(data.name));
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var required = data.required === undefined ? false : ko.unwrap(data.required);
                         var tag = $container.prop("tagName").toLowerCase();
@@ -12083,7 +12083,7 @@ var nts;
                                     data.value(color.toHexString());
                                 }
                                 else if (required === true) {
-                                    _.defer(function () { $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName])); });
+                                    $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
                                 }
                             }
                         });
@@ -12094,7 +12094,7 @@ var nts;
                                     $picker.ntsError('clear');
                                     var value = $picker.spectrum("get");
                                     if (!nts.uk.util.isNullOrUndefined(color)) {
-                                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
+                                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
                                     }
                                 }
                                 $picker.spectrum("hide");

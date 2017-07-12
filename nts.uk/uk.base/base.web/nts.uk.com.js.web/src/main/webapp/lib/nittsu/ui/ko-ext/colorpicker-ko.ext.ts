@@ -16,7 +16,7 @@ module nts.uk.ui.koExtentions {
             
             let width = ko.unwrap(data.width);
             let color = ko.unwrap(data.value);
-            let dataName = ko.unwrap(data.name);
+            let dataName = data.name === undefined ? "" : nts.uk.resource.getControlName(ko.unwrap(data.name));
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             let required = data.required === undefined ? false : ko.unwrap(data.required);
             
@@ -76,7 +76,9 @@ module nts.uk.ui.koExtentions {
                     if(!nts.uk.util.isNullOrUndefined(color) && !nts.uk.util.isNullOrUndefined(data.value)){
                         data.value(color.toHexString()); // #ff0000    
                     } else if (required === true) {
-                        _.defer(() => { $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ])); });      
+//                        _.defer(() => { 
+                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]), 'FND_E_REQ_INPUT'); 
+//                        });      
                     }
                 }
             });
@@ -89,7 +91,7 @@ module nts.uk.ui.koExtentions {
                         $picker.ntsError('clear');
                         let value = $picker.spectrum("get");
                         if(!nts.uk.util.isNullOrUndefined(color)){
-                            $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]));
+                            $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]), 'FND_E_REQ_INPUT');
                         }        
                     }
                     $picker.spectrum("hide");
