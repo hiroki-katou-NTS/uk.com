@@ -209,8 +209,12 @@ module nts.uk.at.view.kmk005.i {
                         employeeId: model.eid,
                         bonusPaySettingCode: model.bid,
                     };
-
-                service.saveData(data).done(x => { self.start(); });
+                if (model.eid !== '') {
+                    service.saveData(data).done(() => {
+                        alert(nts.uk.resource.getMessage("Msg_15", []));
+                        self.start();
+                    });
+                }
             }
 
             removeData() {

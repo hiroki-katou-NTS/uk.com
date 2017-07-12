@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk005 {
                         self.tabs()[2].display(useSetting.personalUseAtr);
                         self.tabs()[3].display(useSetting.workingTimesheetUseAtr);
                     });
-                
+
                 self.tabs().map((t) => {
                     // set title for tab
                     if (t.active() == true) {
@@ -235,8 +235,12 @@ module nts.uk.at.view.kmk005 {
                         bonusPaySettingCode: data.id,
                         action: 0 // add/update mode
                     };
-
-                service.saveData(command).done(x => self.start()).fail(x => alert(x));
+                service.saveData(command)
+                    .done(() => {
+                        alert(nts.uk.resource.getMessage("Msg_15", []));
+                        self.start();
+                    })
+                    .fail(x => alert(x));
             }
 
             removeData() {

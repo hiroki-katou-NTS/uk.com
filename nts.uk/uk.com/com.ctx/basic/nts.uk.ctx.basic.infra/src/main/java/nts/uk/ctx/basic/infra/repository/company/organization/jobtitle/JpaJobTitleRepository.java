@@ -40,6 +40,7 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 	 */
 	@Override
 	public List<JobTitle> findAll(String companyId, GeneralDate referenceDate) {
+
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -49,34 +50,25 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList
-				.add(cb.equal(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.companyId), companyId));
+		predicateList.add(
+				cb.equal(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.companyId),
+						companyId));
 		predicateList.add(cb.lessThanOrEqualTo(root.get(CjtmtJobTitle_.startDate), referenceDate));
 		predicateList.add(cb.greaterThanOrEqualTo(root.get(CjtmtJobTitle_.endDate), referenceDate));
 
 		List<Order> orderList = new ArrayList<Order>();
 		// Sort by sequence master.
-		orderList.add(cb.asc(root.get(CjtmtJobTitle_.csqmtSequenceMaster).get(CsqmtSequenceMaster_.order)));
+		orderList.add(cb
+				.asc(root.get(CjtmtJobTitle_.csqmtSequenceMaster).get(CsqmtSequenceMaster_.order)));
 		// Sort by job code.
-		orderList.add(cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
+		orderList.add(
+				cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(orderList);
 
 		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList());
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the cjtmt job title
-	 */
-	private CjtmtJobTitle toEntity(JobTitle domain) {
-		CjtmtJobTitle entity = new CjtmtJobTitle();
-		domain.saveToMemento(new JpaJobTitleSetMemento(entity));
-		return entity;
 	}
 
 	/**
