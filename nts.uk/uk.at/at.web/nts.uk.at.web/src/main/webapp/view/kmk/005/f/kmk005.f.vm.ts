@@ -6,7 +6,7 @@ module nts.uk.at.view.kmk005.f {
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
             time: KnockoutObservable<string>;
-            bonusPaySettingList: KnockoutObservableArray<any>;
+            bonusPaySettingList: KnockoutObservableArray<BonusPaySetting>;
             bonusPayTimeItemList: KnockoutObservableArray<BonusPayTimeItem>;
             specBonusPayTimeItemList: KnockoutObservableArray<BonusPayTimeItem>;
             specDateItem: KnockoutObservableArray<SpecDateItem>;
@@ -33,7 +33,7 @@ module nts.uk.at.view.kmk005.f {
                 self.specDateItem = ko.observableArray([]);
                 self.isUpdate = ko.observable(true);
                 self.currentBPSetCode.subscribe(function(value) {
-                    if (value != '') {
+                    if (value != "") {
                         self.isUpdate(true);
                         self.currentBonusPaySetting(ko.mapping.fromJS(_.find(self.bonusPaySettingList(), (o) => { 
                             let codes = o.code;
