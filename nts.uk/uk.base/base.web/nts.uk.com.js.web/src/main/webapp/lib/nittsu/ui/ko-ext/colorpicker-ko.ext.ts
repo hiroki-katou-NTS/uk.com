@@ -21,24 +21,29 @@ module nts.uk.ui.koExtentions {
             let required = data.required === undefined ? false : ko.unwrap(data.required);
             
             let tag = $container.prop("tagName").toLowerCase();
+            let id = $container.attr("id");
             let $picker;
             if (tag === "input"){
                 $picker = $container; 
-                $picker.appendTo("<div class='ntsControl ntsColorPicker_Container'/>");     
+                $picker.wrap("<div class='ntsControl ntsColorPicker_Container'/>");     
                 $picker.addClass("ntsColorPicker");
-            } else if (tag === 'div'){
+                $container = $picker.parent();
+            } else if (tag === 'div') {
                 $container.addClass("ntsControl ntsColorPicker_Container");
                 $container.append("<input class='ntsColorPicker'/>");    
                 $picker = $container.find(".ntsColorPicker");                  
             } else {
-                $container.appendTo("<div class='ntsControl ntsColorPicker_Container'/>");
+                $container.wrap("<div class='ntsControl ntsColorPicker_Container'/>");
+                $container.removeAttr("id");
                 $container.hide();
                 $container = $container.parent();
-                $container.append("<input class='ntsColorPicker'/"); 
+                $container.append("<input class='ntsColorPicker'/>"); 
                 $picker = $container.find(".ntsColorPicker");     
             }
             
-            $picker.data("required", required);
+            $container.css("min-height", 32).attr("id", id);
+            
+            $picker.data("required", required).removeAttr("id");
             if(nts.uk.util.isNullOrEmpty($container.attr("tabindex"))){
                 $container.attr("tabindex", "0");        
             }
@@ -97,6 +102,16 @@ module nts.uk.ui.koExtentions {
                     $picker.spectrum("hide");
                 }  
             });
+            
+            $container.on('validate', (function(e: Event) {
+                if (required === true){
+                    $picker.ntsError('clear');
+                    let value = $picker.spectrum("get");
+                    if(!nts.uk.util.isNullOrUndefined(color)){
+                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]), 'FND_E_REQ_INPUT');
+                    }        
+                }
+            }));
             
             if(!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)){
                 $container.width(width);
