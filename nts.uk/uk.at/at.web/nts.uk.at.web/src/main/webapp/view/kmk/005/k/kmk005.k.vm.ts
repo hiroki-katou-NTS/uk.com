@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk005.k {
         import block = nts.uk.ui.block.invisible;
         import getText = nts.uk.resource.getText;
         import modal = nts.uk.ui.windows.sub.modal;
+        import alert = nts.uk.ui.dialog.alert;
         import alertE = nts.uk.ui.dialog.alertError;
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
@@ -100,14 +101,16 @@ module nts.uk.at.view.kmk005.k {
                         workingTimesheetCode: model.wtc,
                         bonusPaySettingCode: model.bpsc
                     };
-
-                block();
-                service.saveSetting(command).done((data) => {
-                    self.start();
-                    unblock();
-                }).fail((res) => {
-                    alertE(res.message).then(function() { unblock(); });
-                });
+                if (model.wtc && model.wtc !== '') {
+                    block();
+                    service.saveSetting(command).done(() => {
+                        alert(nts.uk.resource.getMessage("Msg_15", []));
+                        self.start();
+                        unblock();
+                    }).fail((res) => {
+                        alertE(res.message).then(function() { unblock(); });
+                    });
+                }
             }
 
             removeData(): void {
