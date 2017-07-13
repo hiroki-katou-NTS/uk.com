@@ -12,8 +12,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.holiday.CreatePublicHolidayCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.holiday.CreatePublicHolidayCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.holiday.DeletePublicHolidayCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.holiday.DeletePublicHolidayCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.holiday.UpdatePublicHolidayCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.holiday.UpdatePublicHolidayCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.holiday.PublicHolidayDto;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.holiday.PublicHolidayFinder;
+import nts.uk.ctx.sys.portal.app.command.titlemenu.UpdateTitleMenuCommand;
 
 /**
  * @author hungnm
@@ -25,6 +32,16 @@ public class PublicHolidayWebService extends WebService {
 
 	@Inject
 	private PublicHolidayFinder publicHolidayFinder;
+	
+	@Inject
+	private CreatePublicHolidayCommandHandler createPublicHoliday;
+	
+	@Inject
+	private UpdatePublicHolidayCommandHandler updatePublicHoliday;
+	
+	@Inject
+	private DeletePublicHolidayCommandHandler deletePublicHoliday;
+	
 
 	@POST
 	@Path("getHolidayByListDate")
@@ -37,5 +54,24 @@ public class PublicHolidayWebService extends WebService {
 	public List<PublicHolidayDto> getAllHolidays() {
 		return this.publicHolidayFinder.getAllHolidays();
 	}
-
+	
+	@POST
+	@Path("create")
+	public void createPublicHoliday(CreatePublicHolidayCommand command) {
+		this.createPublicHoliday.handle(command);
+	}
+	
+	@POST
+	@Path("update")
+	public void updatePublicHoliday(UpdatePublicHolidayCommand command) {
+		this.updatePublicHoliday.handle(command);
+	}
+	
+	@POST
+	@Path("delete")
+	public void deletePublicHoliday(DeletePublicHolidayCommand command) {
+		this.deletePublicHoliday.handle(command);
+	}
+	
+	
 }

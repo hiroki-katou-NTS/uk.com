@@ -173,12 +173,8 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			String menuCode = getMenuCode(fromScreen, tpPerson.getTopMenuCode(), tpPerson.getLoginMenuCode());
 			layoutTopPage = getTopPageByCode(companyId, menuCode, tpPerson.getLoginSystem().value,
 					tpPerson.getMenuClassification().value, check);
-			Optional<MyPageSetting> myPage = myPageSet.findMyPageSet(companyId);
-			if (!myPage.isPresent()) {
-				return new LayoutAllDto(null, layoutTopPage, check, false, checkTopPage);
-			}
 			// case not use my page
-			if (myPage.get().getUseMyPage().value == UseDivision.NotUse.value) {
+			if (!checkMyPage) {
 				return new LayoutAllDto(null, layoutTopPage, check, false, checkTopPage);
 			}
 			LayoutForMyPageDto layoutMypage = findLayoutMyPage();
@@ -332,25 +328,24 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	public LayoutForMyPageDto findLayoutMyPage() {
 		// employeeId
 		String employeeId = AppContexts.user().employeeId();
-		LayoutForMyPageDto layoutMypage = null;
 		Optional<MyPage> mPage = mypage.getMyPage(employeeId);
 		if (!mPage.isPresent()) {// register my page
 			MyPage mypageNew = MyPage.createNew(employeeId);
 			mypage.addMyPage(mypageNew);
-			layoutMypage = new LayoutForMyPageDto(employeeId, mypageNew.getLayoutId(), PGType.MYPAGE.value, null, null);
-			return layoutMypage;
+			return new LayoutForMyPageDto(employeeId, mypageNew.getLayoutId(), PGType.MYPAGE.value, null, null);
 		}
+		
 		Optional<Layout> layout = toppageRepository.find(mPage.get().getLayoutId(), PGType.MYPAGE.value);
-		if (layout.isPresent()) {
-			List<Placement> placements = placementRepository.findByLayout(mPage.get().getLayoutId());
-			if (!placements.isEmpty()) {
-				layoutMypage = buildLayoutMyPage(layout.get(), placements);
-			}
-		} else {
-			layoutMypage = new LayoutForMyPageDto(employeeId, mPage.get().getLayoutId(), PGType.MYPAGE.value, null,
-					null);
+		if (!layout.isPresent()) {
+			return new LayoutForMyPageDto(employeeId, mPage.get().getLayoutId(), PGType.MYPAGE.value, null, null);	
 		}
-		return layoutMypage;
+		
+		List<Placement> placements = placementRepository.findByLayout(mPage.get().getLayoutId());
+		if (!placements.isEmpty()) {
+			return buildLayoutMyPage(layout.get(), placements);
+		}
+		
+		return null;
 	}
 
 	/**
@@ -368,20 +363,23 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		List<PlacementDto> placementDtos = new ArrayList<PlacementDto>();
 		for (Placement placement : placements) {
 			if (placement.isExternalUrl()) {
-				if (!topOrMy) {// mypage
-					if (myPage.getExternalUrlPermission().value == UseDivision.Use.value) {
-						ExternalUrl externalUrl = placement.getExternalUrl().get();
-						placementDtos.add(new PlacementDto(placement.getPlacementID(), placement.getLayoutID(),
-								placement.getColumn().v(), placement.getRow().v(), fromExternalUrl(externalUrl)));
-					}
+				// case top page
+				if (topOrMy) {
+					ExternalUrl externalUrl = placement.getExternalUrl().get();
+					placementDtos.add(new PlacementDto(placement.getPlacementID(), placement.getLayoutID(),
+							placement.getColumn().v(), placement.getRow().v(), fromExternalUrl(externalUrl)));
 					continue;
 				}
-				// toppage
-				ExternalUrl externalUrl = placement.getExternalUrl().get();
-				placementDtos.add(new PlacementDto(placement.getPlacementID(), placement.getLayoutID(),
-						placement.getColumn().v(), placement.getRow().v(), fromExternalUrl(externalUrl)));
+				
+				// case my page
+				if (UseDivision.Use.equals(myPage.getUseMyPage())) { //todo myPage.getExternalUrlPermission().value == UseDivision.Use.value
+					ExternalUrl externalUrl = placement.getExternalUrl().get();
+					placementDtos.add(new PlacementDto(placement.getPlacementID(), placement.getLayoutID(),
+							placement.getColumn().v(), placement.getRow().v(), fromExternalUrl(externalUrl)));
+				}
 				continue;
 			}
+			
 			Optional<TopPagePart> topPagePart = activeTopPageParts.stream()
 					.filter(c -> c.getToppagePartID().equals(placement.getToppagePartID())).findFirst();
 			if (topPagePart.isPresent()) {

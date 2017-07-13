@@ -16,15 +16,15 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             //combobox
             self.itemList = ko.observableArray([
                 // 共通 :COMMON(0) 
-                new ItemModel('0', '共通'),
+                new ItemModel('0', nts.uk.resource.getText("Enum_System_COMMON")),
                 // 勤次郎  :TIME_SHEET(1) 
-                new ItemModel('1', '勤次郎'),
+                new ItemModel('1', nts.uk.resource.getText("Enum_System_TIME_SHEET")),
                 // オフィスヘルパー :OFFICE_HELPER(2) 
-                new ItemModel('2', 'オフィスヘルパー'),
+                new ItemModel('2', nts.uk.resource.getText("Enum_System_OFFICE_HELPER")),
                 // Ｑ太郎 :KYUYOU(3) 
-                new ItemModel('3', 'Ｑ太郎'),
+                new ItemModel('3', nts.uk.resource.getText("Enum_System_KYUYOU")),
                 //  人事郎  :JINJIROU (4) 
-                new ItemModel('4', '人事郎')
+                new ItemModel('4', nts.uk.resource.getText("Enum_System_JINJIROU"))
             ]);
             self.selectedCode = ko.observable('0');
             self.isEnable = ko.observable(true);

@@ -151,6 +151,7 @@ module kcp.share.list {
          */
         public init($input: JQuery, data: ComponentOption) :JQueryPromise<void> {
             var dfd = $.Deferred<void>();
+            ko.cleanNode($input[0]);
             var self = this;
             self.isMultiple = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
@@ -277,7 +278,6 @@ module kcp.share.list {
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
             $input.load(webserviceLocator, function() {
                 $input.find('table').attr('id', self.componentGridId);
-                ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
                 dfd.resolve();
