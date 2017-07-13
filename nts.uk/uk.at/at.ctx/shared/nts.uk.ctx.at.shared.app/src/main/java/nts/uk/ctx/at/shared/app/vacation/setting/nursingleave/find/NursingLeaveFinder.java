@@ -55,4 +55,14 @@ public class NursingLeaveFinder {
         
         return Arrays.asList(nursingSettingDto, childNursingSettingDto);
     }
+    
+    /**
+     * Find list work type code by company id.
+     *
+     * @return the list
+     */
+    public List<String> findListWorkTypeCodeByCompanyId() {
+        String companyId = AppContexts.user().companyId();
+        return this.nursingRepo.findWorkTypeCodesByCompanyId(companyId);
+    }
 }

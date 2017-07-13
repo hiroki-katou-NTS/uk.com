@@ -430,7 +430,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         isShowSelectButton: true,
                         selectedWorkplaceId: self.selectedCodeWorkplace,
                         baseDate: self.baseDate,
-                        isDialog: true,
+                        maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
+                        isDialog: true
                     }
 
                     self.employeeinfo = {
@@ -452,6 +453,7 @@ module nts.uk.com.view.ccg.share.ccg {
             static MAX_ROWS_EMPLOYMENT = 10;
             static MAX_ROWS_CLASSIFICATION = 10;
             static MAX_ROWS_JOBTITLE = 10;
+            static MAX_ROWS_WORKPLACE = 10;
             static MAX_ROWS_EMPLOYEE = 15;    
         }
     }
