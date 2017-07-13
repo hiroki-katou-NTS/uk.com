@@ -5,29 +5,32 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate.SpecificDateItemCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate.UpdateSpecificDateItemCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.specificdate.SpecificDateItemDto;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.specificdate.SpecificDateItemFinder;
 
-@Path("at/schedule/shift/businesscalendar/specificdate")
+@Path("at/schedule/specificdateitem")
 @Produces("application/json")
 public class SpecificDateItemWebService extends WebService {
 
 	@Inject
 	private SpecificDateItemFinder find;
+	@Inject
+	private UpdateSpecificDateItemCommandHandler update;
 	
 	@POST
 	@Path("getallspecificdate")
-	public List<SpecificDateItemDto> getAllSpecificDate() {
+	public List<SpecificDateItemDto> getAllSpecificDateByCompany() {
 		return this.find.getAllByCompany();
 	}
 	
 	@POST
-	@Path("getspecificdatebyuse/{useAtr}")
-	public List<SpecificDateItemDto> getSpecificDateByIsUse(@PathParam("useAtr") int useAtr) {
-		return this.find.getSpecDateItemIsUse(useAtr);
+	@Path("updatespecificdate")
+	public void UpdateSpecificDateByCompany(List<SpecificDateItemCommand> lstSpecificDateItem) {
+		this.update.handle(lstSpecificDateItem);
 	}
 }

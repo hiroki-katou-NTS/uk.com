@@ -9,18 +9,15 @@ module nts.uk.at.view.kmk008.i {
             constructor() { }
 
             getData(): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getData);
-                return nts.uk.request.ajax("at", _path);
+                return nts.uk.request.ajax("at", this.paths.getData);
             };
 
             insertData(OperationSettingModelUpdate: any): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.insertData, OperationSettingModelUpdate);
-                return nts.uk.request.ajax("at", _path);
+                return nts.uk.request.ajax("at", this.paths.insertData, OperationSettingModelUpdate);
             };
 
             updateData(OperationSettingModelUpdate: any): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.updateData, OperationSettingModelUpdate);
-                return nts.uk.request.ajax("at", _path);
+                return nts.uk.request.ajax("at", this.paths.updateData, OperationSettingModelUpdate);
             };
 
         }

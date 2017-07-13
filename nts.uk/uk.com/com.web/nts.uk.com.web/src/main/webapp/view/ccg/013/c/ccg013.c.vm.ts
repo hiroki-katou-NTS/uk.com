@@ -36,10 +36,10 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.selectedTitleAtr = ko.observable(0);
             self.enableGrid = ko.observable(false);
             $("#titleSeach").prop("disabled", true);
-            _.defer(function(){
-                $(".ntsSearchBox").prop('disabled',true);    
+            _.defer(function() {
+                $(".ntsSearchBox").prop('disabled', true);
             });
-            
+
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
@@ -56,7 +56,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             //image upload
             self.filename = ko.observable(""); //file name
             self.imageName = ko.observable("");
-            self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'),0));
+            self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             self.accept = ko.observableArray([".png"]); //supported extension
             self.textId = ko.observable(""); // file browser button text id
             self.fileID = ko.observable('');
@@ -116,7 +116,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                 self.fileID(res[0].id);
                 self.filename('');
                 self.imageName(res[0].originalName);
-                self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'),res[0].originalSize));
+                self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), res[0].originalSize));
                 self.isDelete(true);
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err.message);
@@ -128,7 +128,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         private deleteFile(): void {
             var self = this;
             self.imageName('');
-            self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'),0));
+            self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             $("#liveview").html('');
             self.isDelete(false);
         }
@@ -144,14 +144,14 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             }
             if (self.selectedTitleAtr() == 1) {
                 if (self.currentTitleMenu() !== '') {
-                    var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), self.currentTitleMenu());
+                    var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), self.currentTitleMenu(), self.imageName(), self.imageSize());
                     windows.setShared("CCG013C_TitleBar", titleBar1);
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_75" });
                     return false;
                 }
             } else {
-                var titleBar0 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), '');
+                var titleBar0 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), '', self.imageName(), self.imageSize());
                 windows.setShared("CCG013C_TitleBar", titleBar0);
             }
             self.cancel_Dialog();
@@ -165,14 +165,19 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         selectedTitleAtr: number;
         imageId: string;
         titleMenuCode: string;
+        imageName: string;
+        imageSize: string;
 
-        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number, imageId: string, titleMenuCode: string) {
+
+        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number, imageId: string, titleMenuCode: string, imageName: string, imageSize: string) {
             this.nameTitleBar = nameTitleBar;
             this.letterColor = letterColor;
             this.backgroundColor = backgroundColor;
             this.selectedTitleAtr = selectedTitleAtr;
             this.imageId = imageId;
             this.titleMenuCode = titleMenuCode;
+            this.imageName = imageName;
+            this.imageSize = imageSize;
         }
     }
 

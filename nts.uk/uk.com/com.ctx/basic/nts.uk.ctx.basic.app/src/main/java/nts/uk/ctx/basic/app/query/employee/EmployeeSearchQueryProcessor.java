@@ -85,6 +85,11 @@ public class EmployeeSearchQueryProcessor {
 		List<Employee> employees = this.employeeRepository.getListPersonByListEmployeeId(companyId,
 				employeeIds);
 
+		// check exist employee
+		if(CollectionUtil.isEmpty(employees)){
+			throw new BusinessException("Msg_317");
+		}
+		
 		// get work place history by employee
 		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
 				.searchWorkplaceOfCompanyId(employeeIds, baseDate);

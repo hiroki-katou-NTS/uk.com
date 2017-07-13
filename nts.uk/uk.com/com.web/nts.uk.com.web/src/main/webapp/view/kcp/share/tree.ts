@@ -114,7 +114,8 @@ module kcp.share.tree {
         levelSelected: KnockoutObservable<number>;
         listWorkplaceId: Array<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-        
+        $input: JQuery;
+        data: TreeComponentOption
         treeStyle: TreeStyle;
         
         constructor() {
@@ -142,10 +143,12 @@ module kcp.share.tree {
         public init($input: JQuery, data: TreeComponentOption) :JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
+            self.data = data;
+            self.$input = $input;
             self.isMultiple = data.isMultiSelect;
             self.hasBaseDate(!self.isMultiple);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
-            self.isShowSelectButton = data.isShowSelectButton;
+            self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
             if (data.alreadySettingList) {
@@ -193,7 +196,7 @@ module kcp.share.tree {
                     self.itemList(res);
                     self.backupItemList(res);
                 }
-                self.loadTreeGrid(data, $input).done(function() {
+                self.loadTreeGrid().done(function() {
                     dfd.resolve();
                 })
                 
@@ -232,7 +235,7 @@ module kcp.share.tree {
         private addColToGrid(data: TreeComponentOption, dataList: Array<UnitModel>) {
             let self = this;
             // Convert tree to array.
-            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 300);
+            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string" }
@@ -297,7 +300,7 @@ module kcp.share.tree {
         private calHeightTree(data: TreeComponentOption) {
             let height = 24;
             this.treeStyle = {
-                height: height * (data.maxRows + 1) + 1
+                height: height * (data.maxRows + 1) + 17
             };
         }
         
@@ -419,29 +422,29 @@ module kcp.share.tree {
                     if (!data || !$input) {
                         return;
                     }
-                    self.loadTreeGrid(data, $input)
+                    self.loadTreeGrid();
                 }
             }
         }
         
-        private loadTreeGrid(data: TreeComponentOption, $input: JQuery) : JQueryPromise<void> {
+        private loadTreeGrid() : JQueryPromise<void> {
             let dfd = $.Deferred<void>();
             let self = this;
-            self.addColToGrid(data, self.itemList());
+            self.addColToGrid(self.data, self.itemList());
             let webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/tree.xhtml').serialize();
-            $input.load(webserviceLocator, function() {
-                ko.cleanNode($input[0]);
-                ko.applyBindings(self, $input[0]);
+            self.$input.load(webserviceLocator, function() {
+                ko.cleanNode(self.$input[0]);
+                ko.applyBindings(self, self.$input[0]);
 
                 // defined function get data list.
-                $('#script-for-' + $input.attr('id')).remove();
+                $('#script-for-' + self.$input.attr('id')).remove();
                 var s = document.createElement("script");
                 s.type = "text/javascript";
-                s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = '
+                s.innerHTML = 'var dataList' + self.$input.attr('id').replace(/-/gi, '') + ' = '
                     + JSON.stringify(self.backupItemList());
-                s.id = 'script-for-' + $input.attr('id');
+                s.id = 'script-for-' + self.$input.attr('id');
                 $("head").append(s);
                 $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                     return window['dataList' + this.attr('id').replace(/-/gi, '')];
@@ -454,7 +457,7 @@ module kcp.share.tree {
         /**
          * Find list work place by base date
          */
-        private reload(data: TreeComponentOption, $input: JQuery) {
+        private reload() {
             let self = this;
             if (!self.baseDate()) {
                 return;
@@ -467,7 +470,7 @@ module kcp.share.tree {
                 self.backupItemList(res);
                 
                 // Filter data
-                self.filterData(data, $input);
+                self.filterData();
             });
         }
         
