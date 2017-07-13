@@ -34,11 +34,18 @@ module kdl007.b.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                console.log(lst);
-                let lstItemMapping =  _.map(lst.selecteds , item => {
+                let str='';
+                _.each(lst, x => str+= x +',');
+                self.SelectedCode(str);
+                if(lst== null || undefined){
+                    self.items();
+                }else{
+                    let lstItemMapping =  _.map(lst.selecteds , item => {
                         return new model.ItemModel2(item, '');
                 });
-                self.items(lstItemMapping);
+                self.items(lstItemMapping); 
+                }
+
             })
         }
         OpenDialog007(){
@@ -51,6 +58,9 @@ module kdl007.b.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('KDL007_VALUES');
+                let str='';
+                _.each(lst, x => str+= x +',');
+                self.SelectedCode(str);
                 console.log(lst);
                 let lstItemMapping =  _.map(lst , item => {
                     return new model.ItemModel2(item, '');
