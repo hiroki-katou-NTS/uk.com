@@ -42,6 +42,13 @@ module kdl007.a.viewmodel {
 
                     //filter real selected code from source
                     self.currentCodeList(_.filter(resp, x => selectedItems.indexOf(x.code) > -1).map(x => x.code));
+                    if(self.currentCodeList().length == 0 ){
+                        self.currentCodeList([''])
+                    }
+                    if(self.isMulti==false && self.currentCodeList().length > 0 ){
+                        self.currentCodeList([''])
+                    }
+                    $("#multi-list").focus();
                 }
             });
         }
@@ -53,15 +60,17 @@ module kdl007.a.viewmodel {
                 return;
             }
             this.currentCodeList.remove(x => x== '');
-            let self = this,
-                items: Array<ItemModel> = ko.toJS(self.dataSources),
-                codeList: Array<string> = ko.toJS(self.currentCodeList);
+                let self = this,
+                    items: Array<ItemModel> = ko.toJS(self.dataSources),
+                    codeList: Array<string> = ko.toJS(self.currentCodeList);     
+
             setShared('KDL007_VALUES', { selecteds: self.isMulti ? codeList : [codeList] }, true);
 
-            self.close();
+            close();
         }
 
         close() {
+            setShared('KDL007_VALUES',[]);
             close();
         }
     }
