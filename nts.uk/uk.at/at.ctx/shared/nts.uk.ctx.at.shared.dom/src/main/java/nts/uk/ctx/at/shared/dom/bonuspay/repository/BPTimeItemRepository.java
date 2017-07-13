@@ -19,7 +19,11 @@ public interface BPTimeItemRepository {
 
 	List<BonusPayTimeItem> getListBonusPayTimeItem(String companyId);
 
+	List<BonusPayTimeItem> getListBonusPayTimeItemInUse(String companyId);
+
 	List<BonusPayTimeItem> getListSpecialBonusPayTimeItem(String companyId);
+
+	List<BonusPayTimeItem> getListSpecialBonusPayTimeItemInUse(String companyId);
 
 	Optional<BonusPayTimeItem> getBonusPayTimeItem(String companyId, TimeItemId timeItemId);
 

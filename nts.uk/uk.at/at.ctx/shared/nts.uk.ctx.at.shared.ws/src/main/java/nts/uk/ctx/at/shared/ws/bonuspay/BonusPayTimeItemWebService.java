@@ -37,6 +37,12 @@ public class BonusPayTimeItemWebService extends WebService {
 	@Path("getListBonusPayTimeItem")
 	public List<BPTimeItemDto> getListBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListBonusPayTimeItem();
+	}	
+
+	@POST
+	@Path("getListBonusPayTimeItemInUse")
+	public List<BPTimeItemDto> getListBonusPayTimeItemInUse() {
+		return this.bpTimeItemFinder.getListBonusPayTimeItemInUse();
 	}
 	
 	@POST
@@ -50,6 +56,13 @@ public class BonusPayTimeItemWebService extends WebService {
 	public List<BPTimeItemDto> getListSpecialBonusPayTimeItem() {
 		return this.bpTimeItemFinder.getListSpecialBonusPayTimeItem();
 	}
+
+	@POST
+	@Path("getListSpecialBonusPayTimeItemInUse")
+	public List<BPTimeItemDto> getListSpecialBonusPayTimeItemInUse() {
+		return this.bpTimeItemFinder.getListSpecialBonusPayTimeItemInUse();
+	}
+	
 	@POST
 	@Path("getBonusPayTimeItem/{timeItemId}")
 	public BPTimeItemDto getBonusPayTimeItem(@PathParam("timeItemId") String timeItemId){

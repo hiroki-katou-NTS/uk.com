@@ -31,9 +31,21 @@ public class BPTimeItemFinder {
 		return listBonusPayTimeItem.stream().map(c -> toBPTimeItemDto(c)).collect(Collectors.toList());
 	}
 
+	public List<BPTimeItemDto> getListBonusPayTimeItemInUse() {
+		String companyId = AppContexts.user().companyId();
+		List<BonusPayTimeItem> listBonusPayTimeItem = this.bpTimeItemRepository.getListBonusPayTimeItemInUse(companyId);
+		return listBonusPayTimeItem.stream().map(c -> toBPTimeItemDto(c)).collect(Collectors.toList());
+	}
+
 	public List<BPTimeItemDto> getListSpecialBonusPayTimeItem() {
 		String companyId = AppContexts.user().companyId();
 		List<BonusPayTimeItem> listBonusPayTimeItem = this.bpTimeItemRepository.getListSpecialBonusPayTimeItem(companyId);
+		return listBonusPayTimeItem.stream().map(c -> toBPTimeItemDto(c)).collect(Collectors.toList());
+	}
+
+	public List<BPTimeItemDto> getListSpecialBonusPayTimeItemInUse() {
+		String companyId = AppContexts.user().companyId();
+		List<BonusPayTimeItem> listBonusPayTimeItem = this.bpTimeItemRepository.getListSpecialBonusPayTimeItemInUse(companyId);
 		return listBonusPayTimeItem.stream().map(c -> toBPTimeItemDto(c)).collect(Collectors.toList());
 	}
 
