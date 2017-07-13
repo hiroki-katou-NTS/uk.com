@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.bonuspay;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -17,18 +18,43 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class BPSettingAddCommandHandler extends CommandHandler<BPSettingAddCommand> {
+public class BPSettingAddCommandHandler extends CommandHandlerWithResult<BPSettingAddCommand, List<RegisterErrorList>> {
 	@Inject
 	private BonusPaySettingService bonusPaySettingService;
 
 	@Override
-	protected void handle(CommandHandlerContext<BPSettingAddCommand> context) {
+	protected List<RegisterErrorList> handle(CommandHandlerContext<BPSettingAddCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		BPSettingAddCommand bpSettingAddCommand = context.getCommand();
 		if(bonusPaySettingService.isExisted(companyId, new BonusPaySettingCode(bpSettingAddCommand.getCode()))) {
 			throw new BusinessException("Msg_3");
 		}
-		bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand,companyId));
+		List<BPTimesheetAddCommand> lstBPTimesheetAddCommand = bpSettingAddCommand.getLstBonusPayTimesheet();
+		List<SpecBPTimesheetAddCommand> lstSpecBPTimesheetAddCommand = bpSettingAddCommand
+				.getLstSpecBonusPayTimesheet();
+		if(lstBPTimesheetAddCommand.stream().allMatch(item -> item.useAtr == 0) 
+				&& lstSpecBPTimesheetAddCommand.stream().allMatch(item -> item.useAtr == 0)) {
+			throw new BusinessException("Msg_34");
+		}
+		List<RegisterErrorList> errorLists = new ArrayList<>();
+		lstBPTimesheetAddCommand.forEach(item ->{
+			if(item.getUseAtr() == 1 && item.getStartTime() > item.getEndTime()) {
+				errorLists.add(new RegisterErrorList(true, item.getTimeSheetNO(), "Msg_28"));
+			} else if (item.getUseAtr() == 1 && item.getStartTime() == item.getEndTime()) {
+				errorLists.add(new RegisterErrorList(true, item.getTimeSheetNO(), "Msg_33"));				
+			}
+		});
+		lstSpecBPTimesheetAddCommand.forEach(item ->{
+			if(item.getUseAtr() == 1 && item.getStartTime() > item.getEndTime()) {
+				errorLists.add(new RegisterErrorList(false, item.getTimeSheetNO(), "Msg_28"));
+			} else if (item.getUseAtr() == 1 && item.getStartTime() == item.getEndTime()) {
+				errorLists.add(new RegisterErrorList(false, item.getTimeSheetNO(), "Msg_33"));				
+			}
+		});
+		if(errorLists.isEmpty()) {
+			bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand,companyId));			
+		}
+		return errorLists;
 	}
 
 	private BonusPaySetting ToBonusPaySettingDomain(BPSettingAddCommand bpSettingAddCommand,String companyId) {

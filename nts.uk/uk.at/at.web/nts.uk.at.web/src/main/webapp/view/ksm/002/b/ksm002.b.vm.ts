@@ -127,8 +127,8 @@ module ksm002.b.viewmodel {
                     treeType: 2,
                     selectedWorkplaceId: self.multiSelectedWorkplaceId,
                     baseDate: self.baseDate,
-                    selectType: 1,
-                    isShowSelectButton: true,
+                    selectType: 1,  
+                    isShowSelectButton: false,
                     isDialog: false,
                     alreadySettingList: self.alreadySettingList
             };

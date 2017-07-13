@@ -15,6 +15,7 @@
 				<com:ValidatorScript>
 					nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode
   					nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingName
+  					nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPayTime
    				</com:ValidatorScript>
 			</ui:define>
 			
@@ -113,11 +114,13 @@
 													</td>
 													<td>
 														<span>
-															<input data-bind="ntsTimeEditor: { value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />
+															<input data-bind="attr: { id: 'BP' + timeSheetNO() }, ntsTimeEditor: { 
+								constraint: 'BonusPayTime',value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />
 														</span>
 														<span>～</span>
 														<span>
-															<input data-bind="ntsTimeEditor: { value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />	
+															<input data-bind="ntsTimeEditor: { 
+								constraint: 'BonusPayTime',value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />	
 														</span>
 													</td>
 													<td>
@@ -217,11 +220,13 @@
 													</td>
 													<td>
 														<span>
-															<input data-bind="ntsTimeEditor: { value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />
+															<input data-bind="attr: { id: 'SBP' + timeSheetNO() }, ntsTimeEditor: { 
+								constraint: 'BonusPayTime',value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />
 														</span>
 														<span>～</span>
 														<span>
-															<input data-bind="ntsTimeEditor: { value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />	
+															<input data-bind="ntsTimeEditor: { 
+								constraint: 'BonusPayTime',value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: Boolean(useAtr()==1) }" />	
 														</span>
 													</td>
 													<td>
