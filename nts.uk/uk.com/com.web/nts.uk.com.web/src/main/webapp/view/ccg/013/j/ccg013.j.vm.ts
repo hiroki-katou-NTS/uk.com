@@ -23,8 +23,6 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
-            //delete button 
-            self.isDelete = ko.observable(true);
             //image upload
             self.filename = ko.observable("");
             //file name
@@ -42,6 +40,10 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
                     liveviewcontainer.html("");
                     liveviewcontainer.append($("<img/>").attr("src", nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/" + id)));
                 }
+            });
+
+            self.isDelete = ko.pureComputed(function() {
+                return !!self.fileID();
             });
 
             var setShareTitleMenu = nts.uk.ui.windows.getShared("CCG013A_ToChild_TitleBar");
@@ -77,7 +79,6 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
                 self.filename('');
                 self.imageName(res[0].originalName);
                 self.imageSize(nts.uk.text.format(resource.getText('CCG013_99'), res[0].originalSize));
-                self.isDelete(true);
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err.message);
             });
@@ -89,7 +90,6 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
             self.imageSize(nts.uk.text.format(resource.getText('CCG013_99'), 0));
             self.fileID('');
             $("#liveview").html('');
-            self.isDelete(false);
         }
 
         cancel_Dialog(): any {
