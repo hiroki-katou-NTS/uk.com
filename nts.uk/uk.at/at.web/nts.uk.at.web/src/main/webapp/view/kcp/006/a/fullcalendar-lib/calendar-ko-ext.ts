@@ -54,47 +54,6 @@ module nts.uk.at.view.kcp006.a {
             let container = $(element);
             //set width
             container.css("width", "600px");
-            //get list date
-            let lstDate = [];
-            if (startDate < endDate) {
-                for (let i = startDate; i <= endDate; i++) {
-                    lstDate.push(moment(yearMonth * 100 + i, "YYYYMMDD").format("YYYYMMDD"));
-                }
-            } else {
-                for (let i = startDate; i <= 31; i++) {
-                    lstDate.push(moment(yearMonth * 100 + i, "YYYYMMDD").format("YYYYMMDD"));
-                }
-                for (let i = 1; i <= endDate; i++) {
-                    lstDate.push(moment((yearMonth + 1) * 100 + i, "YYYYMMDD").format("YYYYMMDD"));
-                }
-            }
-            _.remove(lstDate, (val) => {
-                return val === "Invalid date";
-            });
-            //convert date options to events
-            let events = [];
-            if (optionDates.length > 0) {
-                events = optionDates.map(function(option) {
-                    let lstEvent = [];
-                    for (let i = 0; i < option.listText.length; i++) {
-                        lstEvent.push({
-                            title: option.listText[i],
-                            start: option.start,
-                            textColor: option.textColor,
-                            color: option.backgroundColor
-                        });
-                    }
-                    return lstEvent;
-                }).reduce(function(a, b) {
-                    return a.concat(b);
-                });
-            };
-            // create duration month
-            let durationMonth = 1;
-            if (startDate >= endDate) {
-                durationMonth = 2;
-            };
-            let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
             $(container).fullCalendar({
                 header: false,
                 defaultView: 'customMonth',
@@ -361,7 +320,8 @@ module nts.uk.at.view.kcp006.a {
             }
             if (eventUpdatable) {
                 // click button event
-                $("#" + currentCalendar + " .td-container").delegate("img", "click", function() {
+                $("#calendar .td-container img").off();
+                 $("#calendar .td-container img").on('click', function() {
                     nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId, workplaceName: workplaceName });
                     nts.uk.ui.windows.sub.modal('../b/index.xhtml', { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
@@ -385,6 +345,7 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " .event-note").hide();
             });
             // pass chosen date to delegate click cell function
+            $("#" + currentCalendar + " .fc-day-top").off();
             $("#" + currentCalendar + " .fc-day-top").on("click", "button", function() {
                 nts.uk.at.view.kcp006.a.CellClickEvent($(this).attr("data-date"));
             });
