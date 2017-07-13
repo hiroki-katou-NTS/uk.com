@@ -6,6 +6,7 @@ module nts.uk.at.view.kmk008.f {
             laborSystemAtr: number = 0;
             currentClassificationName: KnockoutObservable<string>;
 
+            maxRows : number;
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
@@ -29,6 +30,7 @@ module nts.uk.at.view.kmk008.f {
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
                 self.listComponentOption = {
+                    maxRows : 15,
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
                     listType: 1,
@@ -86,6 +88,7 @@ module nts.uk.at.view.kmk008.f {
                             nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.getDetail(self.selectedCode());
                     });
                     return;
@@ -96,6 +99,7 @@ module nts.uk.at.view.kmk008.f {
                         nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                     self.getalreadySettingList();
                     self.getDetail(self.selectedCode());
                 });
@@ -108,7 +112,7 @@ module nts.uk.at.view.kmk008.f {
                         let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
                         new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
                             self.getalreadySettingList();
-                            self.setSelectCodeAfterRemove(self.selectedCode());
+                            self.getDetail(self.selectedCode());
                         });
                     });
 
