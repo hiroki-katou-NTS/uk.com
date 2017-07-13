@@ -1,0 +1,53 @@
+.leftExtend {
+	padding-top: 20px;
+    padding-left: 20px;
+    display: inline-block;	
+}
+.rightExtend {
+	margin-left: 30px;
+	margin-top: 20px;
+	display: inline-block;
+    vertical-align: top;
+}
+.noteTable {
+	margin-bottom: 10px;
+	width: 600px;
+}
+.infoTable {
+	border-radius: 5px;
+    border: 1px solid #999999;
+	width: 300px;
+}
+.infoTable > div:FIRST-CHILD {
+	padding-top: 15px;
+	height: 30px;
+	background: #C5E0B4;
+	border-bottom: 1px solid #999999;
+	padding-top: 10px;
+    padding-left: 15px;
+}
+.infoTable > div:LAST-CHILD {
+	padding: 10px 5px;
+}
+.labelSqr {
+	padding-top: 20px;
+	display: inline-block;
+	text-align: center;
+    word-wrap: break-word;
+    width: 80px;
+    height: 55px;
+    border-radius: 5px;
+    border: 1px solid #999999;
+    vertical-align: middle;
+    margin-left: 5px;
+    margin-right: 5px;	
+}
+.labelSqr1 > span {
+	color: #589CAE;
+}
+.labelSqr2 > span {
+	color: #FF1D1D;
+}
+.labelSqr3 > span {
+	color: #00AC47;
+}
