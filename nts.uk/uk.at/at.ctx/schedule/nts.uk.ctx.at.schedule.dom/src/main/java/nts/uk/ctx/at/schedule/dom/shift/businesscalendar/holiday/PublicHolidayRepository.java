@@ -5,7 +5,7 @@ package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday;
 
 import java.math.BigDecimal;
 import java.util.List;
-
+import java.util.Optional;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -13,9 +13,20 @@ import nts.arc.time.GeneralDate;
  *
  */
 public interface PublicHolidayRepository {
+	
+	Optional<PublicHoliday> getHolidaysByDate(String companyID, BigDecimal date);
 
 	List<PublicHoliday> getHolidaysByListDate(String companyId, List<BigDecimal> lstDate);
 	
 	List<PublicHoliday> getAllHolidays(String companyId);
+
+
+	void remove (String companyID , BigDecimal date);
 	
+	void update (PublicHoliday  publicHoliday);
+	
+	void add (PublicHoliday  publicHoliday);
+	
+	
+
 }

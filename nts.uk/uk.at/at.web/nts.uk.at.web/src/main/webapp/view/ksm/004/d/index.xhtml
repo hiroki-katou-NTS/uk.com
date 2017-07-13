@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+		<script>var dialogSize = { width: 960, height: 520 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksm004.d.main.css" />
+			<com:scriptfile path="ksm004.d.start.js" />
+			<com:scriptfile path="ksm004.d.vm.js" />
+			<com:scriptfile path="ksm004.d.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div>
+				<div>
+				<table id="table-top">
+					<tr>
+						<td>
+							<!-- D1_1 -->
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM004_36')}</div>
+						</td>
+						<td>
+							<div >
+							<!-- D1_4 -->			
+								<input class="nts-validate"  style="width: 70px;float: left;"
+									data-bind="ntsTimeEditor: {
+										name: '#[KSM004_37]',
+										value: startMonth,
+										inputFormat: 'yearmonth', 
+										mode: 'time', 
+										constraint: 'Time'}" />	
+
+						 <span>~</span>  
+						 <!-- D1_5 -->
+						 		<input class="nts-validate"  style="width: 70px;float: left;"
+									data-bind="ntsTimeEditor: {
+										name: '#[KSM004_36]',
+										value: endMonth,
+										inputFormat: 'yearmonth', 
+										mode: 'time', 
+										constraint: 'Time'}" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<td>
+							<!-- D1_8 -->
+							<div tabindex="10" style="margin-bottom: 10px"
+									data-bind="ntsCheckBox:{
+									checked: true,
+									text: '#{i18n.getText('KSM004_53')}'
+									}">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- D1_2 -->
+							<div data-bind="ntsFormLabel: {}"	>#{i18n.getText('KSM004_37')}</div>
+						</td>
+						<td></td>
+					</tr>
+				</table>
+				</div>
+				<hr/>
+				<table id="table-bottom">
+					<!-- Thu 2 -->
+					<tr>
+						<td class ="tbDay">
+							<!-- D2_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_38')}</div>
+						</td>
+						<td class ="tbDay">
+							<div  data-bind="ntsRadioBoxGroup: {
+									options: workdayGroup,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedMon}">
+							</div>
+						</td>
+					</tr>
+					<!-- Thu 3 -->
+					<tr>
+						<td class ="tbDay">
+							<!-- D2_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_39')}</div>
+						</td>
+						<td class ="tbDay">
+							<div  data-bind="ntsRadioBoxGroup: {
+									options: workdayGroup,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedTue}">
+							</div>
+						</td>
+					</tr>
+					<!-- Thu 4 -->
+					<tr>
+						<td class ="tbDay">
+							<!-- D2_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_40')}</div>
+						</td>
+						<td class ="tbDay">
+							<div  data-bind="ntsRadioBoxGroup: {
+									options: workdayGroup,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedWed}">
+							</div>
+						</td>
+					</tr>
+					<!-- Thu 5 -->
+					<tr>
+						<td class ="tbDay">
+							<!-- D2_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_41')}</div>
+						</td>
+						<td class ="tbDay">
+							<div  data-bind="ntsRadioBoxGroup: {
+									options: workdayGroup,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedThu}">
+							</div>
+						</td>
+					</tr>
+					<!-- Thu 6 -->
+					<tr>
+						<td class ="tbDay">
+							<!-- D2_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_42')}</div>
+						</td>
+						<td class ="tbDay">
+							<div  data-bind="ntsRadioBoxGroup: {
+									options: workdayGroup,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedFri}">
+							</div>
+						</td>
+					</tr>
+					<!-- Thu 7 -->
+					<tr>
+						<td class ="tbDay">
+							<!-- D2_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_43')}</div>
+						</td>
+						<td class ="tbDay">
+							<div  data-bind="ntsRadioBoxGroup: {
+									options: workdayGroup,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedSat}">
+							</div>
+						</td>
+					</tr>
+					<!-- CN -->
+					<tr>
+						<td class ="tbDay">
+							<!-- D2_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_44')}</div>
+						</td>
+						<td class ="tbDay">
+							<div  data-bind="ntsRadioBoxGroup: {
+									options: workdayGroup,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedSun}">
+							</div>
+						</td>
+					</tr>
+				</table>
+				<div  id="functions-area-bottom">
+					<!-- D4_1 -->
+					<div id="checkedBtn" data-bind="ntsCheckBox:{
+							checked: checkSelect,
+							text: '#{i18n.getText('KSM004_49')}'}">
+					</div>
+					<div style='clear:both'></div>
+					<button  class="x-large proceed">#{i18n.getText('KSM004_34')}</button>
+					<button >#{i18n.getText('KSM004_35')}</button>
+				</div>
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
