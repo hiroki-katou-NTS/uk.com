@@ -8,11 +8,13 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.i18n.custom.IInternationalization;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementOperationSettingDetailDto;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementOperationSettingDto;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
-import nts.uk.ctx.at.record.dom.standardtime.enums.NumberOfTimeOverLimitType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
@@ -25,6 +27,8 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AgreementOperationSettingFinder {
+	
+	@Inject IInternationalization internationalization;
 
 	@Inject
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
@@ -37,13 +41,13 @@ public class AgreementOperationSettingFinder {
 		Optional<AgreementOperationSetting> agreementOperationSetting = this.agreementOperationSettingRepository
 				.find(companyId);
 
-		List<EnumConstant> startingMonthEnum = EnumAdaptor.convertToValueNameList(StartingMonthType.class);
+		List<EnumConstant> startingMonthEnum = EnumAdaptor.convertToValueNameList(StartingMonthType.class, internationalization);
 		List<EnumConstant> numberTimesOverLimitTypeEnum = EnumAdaptor
-				.convertToValueNameList(NumberOfTimeOverLimitType.class);
-		List<EnumConstant> closingDateTypeEnum = EnumAdaptor.convertToValueNameList(ClosingDateType.class);
-		List<EnumConstant> closingDateAtrEnum = EnumAdaptor.convertToValueNameList(ClosingDateAtr.class);
-		List<EnumConstant> yearlyWorkTableAtrEnum = EnumAdaptor.convertToValueNameList(TargetSettingAtr.class);
-		List<EnumConstant> alarmListAtrEnum = EnumAdaptor.convertToValueNameList(TargetSettingAtr.class);
+				.convertToValueNameList(TimeOverLimitType.class, internationalization);
+		List<EnumConstant> closingDateTypeEnum = EnumAdaptor.convertToValueNameList(ClosingDateType.class, internationalization);
+		List<EnumConstant> closingDateAtrEnum = EnumAdaptor.convertToValueNameList(ClosingDateAtr.class, internationalization);
+		List<EnumConstant> yearlyWorkTableAtrEnum = EnumAdaptor.convertToValueNameList(TargetSettingAtr.class, internationalization);
+		List<EnumConstant> alarmListAtrEnum = EnumAdaptor.convertToValueNameList(TargetSettingAtr.class, internationalization);
 
 		agreementOperationSettingDto.setAlarmListAtrEnum(alarmListAtrEnum);
 		agreementOperationSettingDto.setClosingDateAtrEnum(closingDateAtrEnum);
@@ -52,14 +56,16 @@ public class AgreementOperationSettingFinder {
 		agreementOperationSettingDto.setStartingMonthEnum(startingMonthEnum);
 		agreementOperationSettingDto.setYearlyWorkTableAtrEnum(yearlyWorkTableAtrEnum);
 		if (agreementOperationSetting.isPresent()) {
-			agreementOperationSettingDto.setAlarmListAtr(agreementOperationSetting.get().getAlarmListAtr().value);
-			agreementOperationSettingDto.setClosingDateAtr(agreementOperationSetting.get().getClosingDateAtr().value);
-			agreementOperationSettingDto.setClosingDateType(agreementOperationSetting.get().getClosingDateType().value);
-			agreementOperationSettingDto
+			AgreementOperationSettingDetailDto agreementOperationSettingDetailDto = new AgreementOperationSettingDetailDto();
+			agreementOperationSettingDetailDto.setAlarmListAtr(agreementOperationSetting.get().getAlarmListAtr().value);
+			agreementOperationSettingDetailDto.setClosingDateAtr(agreementOperationSetting.get().getClosingDateAtr().value);
+			agreementOperationSettingDetailDto.setClosingDateType(agreementOperationSetting.get().getClosingDateType().value);
+			agreementOperationSettingDetailDto
 					.setNumberTimesOverLimitType(agreementOperationSetting.get().getNumberTimesOverLimitType().value);
-			agreementOperationSettingDto.setStartingMonth(agreementOperationSetting.get().getStartingMonth().value);
-			agreementOperationSettingDto
+			agreementOperationSettingDetailDto.setStartingMonth(agreementOperationSetting.get().getStartingMonth().value);
+			agreementOperationSettingDetailDto
 					.setYearlyWorkTableAtr(agreementOperationSetting.get().getYearlyWorkTableAtr().value);
+			agreementOperationSettingDto.setAgreementOperationSettingDetailDto(agreementOperationSettingDetailDto);
 		}
 
 		return agreementOperationSettingDto;

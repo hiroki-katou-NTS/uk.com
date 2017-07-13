@@ -17,9 +17,6 @@ public class KmnmtAffiliWorkplaceHist_ {
 
 	/** The kmnmt emp workplace hist PK. */
 	public static volatile SingularAttribute<KmnmtAffiliWorkplaceHist, KmnmtAffiliWorkplaceHistPK> kmnmtAffiliWorkplaceHistPK;
-
-	/** The str D. */
-	public static volatile SingularAttribute<KmnmtAffiliWorkplaceHist, GeneralDate> strD;
 	
 	/** The end D. */
 	public static volatile SingularAttribute<KmnmtAffiliWorkplaceHist, GeneralDate> endD;

@@ -38,7 +38,8 @@ public class JpaAffJobTitleHistoryGetMemento implements AffJobTitleHistoryGetMem
 	 */
 	@Override
 	public Period getPeriod() {
-		return new Period(this.jobTitleHistory.getStrD(), this.jobTitleHistory.getEndD());
+		return new Period(this.jobTitleHistory.getKmnmtJobTitleHistPK().getStrD(),
+				this.jobTitleHistory.getEndD());
 	}
 
 	/*

@@ -102,13 +102,21 @@ module ksm002.a.viewmodel {
             nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
                 alert(date);
             };
+            
         }
 
         /** Start page */
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            dfd.resolve();
+            service.getSpecificDateByCompany().done(function(lstSpecifiDate: any) {
+                console.log(lstSpecifiDate);
+                debugger;
+                dfd.resolve();
+            }).fail(function(res){
+                nts.uk.ui.dialog.alertError(res.message);
+                dfd.reject();
+            });
             return dfd.promise();
         }
     }

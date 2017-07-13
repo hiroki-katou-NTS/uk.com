@@ -57,7 +57,7 @@ public class AgentWebService extends WebService {
 	@Path("add")
 	@POST
 	public JavaTypeResult<String> add(AgentCommandBase command) {
-		return this.addAgentCommandHandler.handle(command);
+		return new JavaTypeResult<String>(this.addAgentCommandHandler.handle(command));
 	}
 
 	@Path("update")

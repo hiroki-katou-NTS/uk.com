@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 600, height: 750 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="ksm004.c.style.css" />
+			<com:scriptfile path="ksm004.c.service.js" />
+			<com:scriptfile path="ksm004.c.start.js" />
+			<com:scriptfile path="ksm004.c.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="1">#{i18n.getText('KSM004_1')}</button>
+				<button class="proceed" tabindex="2">#{i18n.getText('KSM004_2')}</button>
+				<button class="danger" tabindex="3">#{i18n.getText('KSM004_3')}</button>
+				<button tabindex="4">#{i18n.getText('KSM004_4')}</button>
+			</div>
+			<div id="contents-area">
+			<div class="container">
+				<div class="left-contents">
+				<div class="row1-left">
+					<div tabindex="5"
+						data-bind="ntsDatePicker: { value: year, dateFormat: 'YYYY', valueFormat: 'YYYY' }"></div>
+					<button tabindex="6">#{i18n.getText('KSM004_22')}</button>
+				</div>
+				<table id="single-list"
+					data-bind="ntsGridList: {								
+								height: 350,
+								dataSource: filterHolidays,
+								primaryKey: 'date',
+								columns: columns,
+								multiple: false,
+								value: currentCode
+							}"></table></div>
+				<div class="right-contents">
+					<div class="row1-right">
+						<label id = "label-head">#{i18n.getText('KSM004_25')}</label>
+					</div>
+					<div class="row2-right">
+					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM004_26')}</div>
+					<input tabindex="7" data-bind="ntsTextEditor: {value: simpleValue1}" />
+					</div>
+					<div class="row3-right">
+					<div tabindex="8" data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">#{i18n.getText('KSM004_27')}</div>
+					<input tabindex="9" data-bind="ntsTextEditor: {value: holidayName}" />
+					</div>
+				</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

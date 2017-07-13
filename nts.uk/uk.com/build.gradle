@@ -26,13 +26,13 @@ buildscript {
 	}
 }
 
-//すべてのプロジェクトに適応すべき内容はここに追記する
+//すべてのプロジェクトに適応すべき�?容はここに追記す�?
 allprojects {
 	apply from: "$rootDir/gradle/properties.gradle"
 	apply from: "$rootDir/gradle/library_properties.gradle"
 	apply plugin: "com.jfrog.artifactory"
 
-	//ビルド及び実行は、Java8を対象とする
+	//ビルド及び実行�?、Java8を対象とする
 	sourceCompatibility = "$javaVersion"
 	targetCompatibility = "$javaVersion" 
 
@@ -51,7 +51,7 @@ subprojects {
 		}
 	}
 	
-	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
+	//compileJavaとcompileTestJavaの実行時の�?��コードをunicodeで�?�?
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
 	dependencies {
@@ -99,13 +99,19 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.23'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.6.1'
+        // Apache commons CSV
+		compile group: 'org.apache.commons', name: 'commons-csv', version: '1.4'
+        
+        // Apache commons IO
+		compile group: 'commons-io', name: 'commons-io', version: '2.5'
+		
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.24.1'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.7'
 		
 	}
 }
 
-//========================shr　↓=====================================
+//========================shr�?�?=====================================
 project (':shr:nts.uk.shr.com') {
 	dependencies {
 		compile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
@@ -133,9 +139,9 @@ project (':shr:nts.uk.shr.find') {
 	dependencies {
 	}
 }
-//========================shr ↑=====================================
+//========================shr �?=====================================
 
-//========================basic↓=====================================
+//========================basic�?=====================================
 project (':com.ctx:basic:nts.uk.ctx.basic.ws') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
@@ -179,9 +185,9 @@ project (':com.ctx:basic:nts.uk.ctx.basic.pubimp') {
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
-//========================basic ↑=====================================
+//========================basic �?=====================================
 
-//========================sys:portal　↓=====================================
+//========================sys:portal�?�?=====================================
 
 project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws') {
 	dependencies {
@@ -226,15 +232,17 @@ project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
 		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
 	}
 }
-//========================sys:portal ↑=====================================
+//========================sys:portal �?=====================================
 
-//=====================nts.uk.com.web↓============================
+//=====================nts.uk.com.web�?============================
 project (':com.web:nts.uk.com.web') {
 	apply plugin: 'war'
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
 		baseName= "nts.uk.com.web"
-		
+		into("view") {
+			from compileTypeScript.outputs
+		}
 	}
 	compileTypeScript {
 		sourcemap = true
@@ -319,7 +327,7 @@ project (':com.web:nts.uk.com.web') {
 
 	}
 }
-//========================nts.uk.com.web↑=====================================
+//========================nts.uk.com.web�?=====================================
 
 project (':wk.ctx:nts.uk.ctx.workflow.ws') {
 	dependencies {
