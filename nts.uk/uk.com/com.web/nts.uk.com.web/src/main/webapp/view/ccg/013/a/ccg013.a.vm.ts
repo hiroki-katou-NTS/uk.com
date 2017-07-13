@@ -461,6 +461,8 @@ module ccg013.a.viewmodel {
                             item.backgroundColor(data.backgroundColor);
                             item.imageFile(data.imageId);
                             item.textColor(data.letterColor);
+                            item.imageName(data.imageName);
+                            item.imageSize(data.imageSize);
                         }
                     });
 
@@ -581,8 +583,8 @@ module ccg013.a.viewmodel {
         titleMenuCode: KnockoutObservable<string>;
         displayOrder: KnockoutObservable<number>;
         treeMenu: KnockoutObservableArray<TreeMenu>;
-        imageName: string;
-        imageSize: string;
+        imageName: KnockoutObservable<string>;
+        imageSize: KnockoutObservable<string>;
 
         constructor(param: ITitleMenu) {
             this.menuBarId = ko.observable(param.menuBarId);
@@ -599,8 +601,8 @@ module ccg013.a.viewmodel {
                 x.name = name && name.displayName;
                 return new TreeMenu(x);
             }));
-            this.imageName = param.imageName;
-            this.imageSize = param.imageSize;
+            this.imageName = ko.observable(param.imageName);
+            this.imageSize = ko.observable(param.imageSize);
         }
     }
 
