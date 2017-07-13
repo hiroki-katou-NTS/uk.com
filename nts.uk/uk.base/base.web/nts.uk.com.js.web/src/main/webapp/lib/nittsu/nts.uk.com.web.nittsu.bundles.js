@@ -11402,6 +11402,77 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsLegentButtonBindingHandler = (function () {
+                    function NtsLegentButtonBindingHandler() {
+                    }
+                    NtsLegentButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var $container = $(element);
+                        $container.text('■ 凡例');
+                        $container.click(function () {
+                            showLegendPanel($container, data);
+                        });
+                    };
+                    NtsLegentButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return NtsLegentButtonBindingHandler;
+                }());
+                function getColorCodeFromItem(legendItem) {
+                    return uk.util.optional.of(legendItem.cssClass)
+                        .map(function (cc) { return getColorCodeFromCssClass(cc); })
+                        .orElse(legendItem.colorCode);
+                }
+                function getColorCodeFromCssClass(legendCssClass) {
+                    var $temp = $('<span/>').addClass(legendCssClass.className)
+                        .hide()
+                        .appendTo('body');
+                    var colorCode = $temp.css(legendCssClass.colorPropertyName);
+                    $temp.remove();
+                    return colorCode;
+                }
+                function showLegendPanel($legendButton, options) {
+                    var legendSize = 18;
+                    var $panel = $('<div/>').addClass('nts-legendbutton-panel');
+                    options.items.forEach(function (item) {
+                        $('<div/>').addClass('legend-item')
+                            .append($('<div/>')
+                            .addClass('legend-item-symbol')
+                            .css({
+                            'background-color': getColorCodeFromItem(item),
+                            width: legendSize + 'px',
+                            height: legendSize + 'px'
+                        })
+                            .text('　'))
+                            .append($('<div/>')
+                            .addClass('legend-item-label')
+                            .text(item.labelText))
+                            .appendTo($panel);
+                    });
+                    $panel.appendTo('body').position({
+                        my: 'left top',
+                        at: 'left bottom',
+                        of: $legendButton
+                    });
+                    _.defer(function () {
+                        $(window).bind('mousedown.legendpanel', function () {
+                            $panel.remove();
+                            $(window).unbind('mousedown.legendpanel');
+                        });
+                    });
+                }
+                ko.bindingHandlers['ntsLegendButton'] = new NtsLegentButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
         (function (ui_13) {
             var option;
             (function (option_2) {
