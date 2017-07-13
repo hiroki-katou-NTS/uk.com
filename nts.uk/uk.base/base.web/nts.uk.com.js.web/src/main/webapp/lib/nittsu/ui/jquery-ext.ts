@@ -960,26 +960,43 @@ module nts.uk.ui.jqueryExtentions {
     }
 
     module ntsSideBar {
-
-        $.fn.ntsSideBar = function(action?: string, index?: number): any {
+    	export interface SideBarSetting {
+    		active?: number;
+    		beforeActivate?: (event, ui) => void,
+    		activate?: (event, ui) => void,
+    	};
+    	export interface SideBarEventInfo {
+			oldIndex: number,
+			newIndex: number,
+			oldTab: JQuery,
+			newTab: JQuery
+    	}
+    	
+    	var defaultOption: SideBarSetting = {
+			active: 0,
+			beforeActivate: function(event, info) {},
+			activate: function(event, info) {},
+    	};
+    	
+        $.fn.ntsSideBar = function(action?: string, option?: any): any {
             var $control = $(this);
             if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
-                return init($control);
+                return init($control, option);
             }
             else if (action === "active") {
-                return active($control, index);
+                return active($control, option);
             }
             else if (action === "enable") {
-                return enable($control, index);
+                return enable($control, option);
             }
             else if (action === "disable") {
-                return disable($control, index);
+                return disable($control, option);
             }
             else if (action === "show") {
-                return show($control, index);
+                return show($control, option);
             }
             else if (action === "hide") {
-                return hide($control, index);
+                return hide($control, option);
             }
             else if (action === "getCurrent") {
                 return getCurrent($control);
@@ -989,18 +1006,28 @@ module nts.uk.ui.jqueryExtentions {
             };
         }
 
-        function init(control: JQuery): JQuery {
+        function init(control: JQuery, option: any): JQuery {
             $("html").addClass("sidebar-html");
+            var settings: SideBarSetting = $.extend({}, defaultOption, option);
             control.find("div[role=tabpanel]").hide();
-            control.on("click", "#sidebar-area .navigator a", function(e) {
-                e.preventDefault();
+            control.off("click", "#sidebar-area .navigator a");
+            control.on("click", "#sidebar-area .navigator a", function(event) {
+            	event.preventDefault();
+            	var info: SideBarEventInfo = {
+        			oldIndex: getCurrent(control),
+        			newIndex: $(this).closest("li").index(),
+        			oldTab: control.find("#sidebar-area .navigator a.active").closest("li"),
+        			newTab: $(this).closest("li")
+            	};
+                settings.beforeActivate.call(this, event, info);
                 if ($(this).attr("disabled") !== "true" &&
                     $(this).attr("disabled") !== "disabled" &&
                     $(this).attr("href") !== undefined) {
                     active(control, $(this).closest("li").index());
                 }
+                settings.activate.call(this, event, info);
             });
-            control.find("#sidebar-area .navigator a.active").trigger('click');
+            active(control, settings.active);
             return control;
         }
 
@@ -1042,7 +1069,6 @@ module nts.uk.ui.jqueryExtentions {
             index = control.find("#sidebar-area .navigator a.active").closest("li").index();
             return index;
         }
-
     }
 
     export module ntsGrid {
