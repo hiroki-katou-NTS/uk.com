@@ -85,16 +85,18 @@ module nts.uk.ui {
                 };
 
                 this.build$dialog(options);
-
+                
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
                     
-                    options.title = '※ダイアログタイトルは基盤で自動化予定';
-
+                    let dialogName = this.globalContext.__viewContext["program"]["programName"];
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　
+                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
+                
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
                         height: options.height || this.globalContext.dialogSize.height,
-                        title: options.title || "dialog",
+                        title: title,
                         resizable: options.resizable,
                         position: {
                             my: "center",
@@ -106,7 +108,7 @@ module nts.uk.ui {
                         	if ($(this).parent().height() >= $(window).height()) {
 	                    		$(this).dialog("option", "position", {my: "center top", at: "center top", of: window, collision: "none"})
 	                    		$(this).parent().css("position","absolute");
-                        	}
+                        	} 
                         },
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();

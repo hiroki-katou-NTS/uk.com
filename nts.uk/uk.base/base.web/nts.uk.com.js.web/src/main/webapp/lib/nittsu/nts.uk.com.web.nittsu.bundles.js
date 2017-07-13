@@ -2874,11 +2874,13 @@ var nts;
                         this.build$dialog(options);
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
-                            options.title = '※ダイアログタイトルは基盤で自動化予定';
+                            var dialogName = _this.globalContext.__viewContext["program"]["programName"];
+                            var title = nts.uk.util.isNullOrEmpty(dialogName)
+                                || path !== _this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
-                                title: options.title || "dialog",
+                                title: title,
                                 resizable: options.resizable,
                                 position: {
                                     my: "center",
