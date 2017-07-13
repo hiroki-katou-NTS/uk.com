@@ -36,59 +36,60 @@ module ksm002.a.viewmodel {
             self.currentMonth = ko.observable(moment(new Date()).format("MM"));
             //Calendar
             self.yearMonthPicked = ko.observable(self.currentYear()+self.currentMonth());
-            self.cssRangerYM = {
-            };
-            self.optionDates = ko.observableArray([
-                {
-                    start: '2017-07-01',
-                    textColor: 'red',
-                    backgroundColor: 'white',
-                    listText: [
-                        "Sleep",
-                        "Study",
-                        "Eat"
-                    ]
-                },
-                {
-                    start: '2017-07-05',
-                    textColor: '#31859C',
-                    backgroundColor: 'white',
-                    listText: [
-                        "Sleepaaaa",
-                        "Study",
-                        "Eating",
-                        "Woman"
-                    ]
-                },
-                {
-                    start: '2017-07-10',
-                    textColor: '#31859C',
-                    backgroundColor: 'white',
-                    listText: [
-                        "Sleep",
-                        "Study"
-                    ]
-                },
-                {
-                    start: '2017-07-20',
-                    textColor: 'blue',
-                    backgroundColor: 'white',
-                    listText: [
-                        "Sleep",
-                        "Study",
-                        "Play"
-                    ]
-                },
-                {
-                    start: '2017-07-26',
-                    textColor: 'blue',
-                    backgroundColor: 'red',
-                    listText: [
-                        "Sleep",
-                        "Study",
-                        "Play"
-                    ]
-                }
+            self.cssRangerYM = {};
+            self.optionDates = ko.observableArray([]);
+            
+            
+//                {
+//                    start: '2017-07-01',
+//                    textColor: 'red',
+//                    backgroundColor: 'white',
+//                    listText: [
+//                        "Sleep",
+//                        "Study",
+//                        "Eat"
+//                    ]
+//                },
+//                {
+//                    start: '2017-07-05',
+//                    textColor: '#31859C',
+//                    backgroundColor: 'white',
+//                    listText: [
+//                        "Sleepaaaa",
+//                        "Study",
+//                        "Eating",
+//                        "Woman"
+//                    ]
+//                },
+//                {
+//                    start: '2017-07-10',
+//                    textColor: '#31859C',
+//                    backgroundColor: 'white',
+//                    listText: [
+//                        "Sleep",
+//                        "Study"
+//                    ]
+//                },
+//                {
+//                    start: '2017-07-20',
+//                    textColor: 'blue',
+//                    backgroundColor: 'white',
+//                    listText: [
+//                        "Sleep",
+//                        "Study",
+//                        "Play"
+//                    ]
+//                },
+//                {
+//                    start: '2017-07-26',
+//                    textColor: 'blue',
+//                    backgroundColor: 'red',
+//                    listText: [
+//                        "Sleep",
+//                        "Study",
+//                        "Play"
+//                    ]
+//                }
             ]);
             self.firstDay = ko.observable(1);
             self.startDate = 1;
@@ -100,18 +101,19 @@ module ksm002.a.viewmodel {
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(true);
             nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
-                self.optionDates([
-                        {
-                            start: '2017-07-29',
-                            textColor: 'gray',
-                            backgroundColor: 'pink',
-                            listText: [
-                                "CUD",
-                                "IAM",
-                                "MAHP"
-                            ]
-                        }
-                    ])
+//                self.optionDates([
+//                        {
+//                            start: '2017-07-29',
+//                            textColor: 'gray',
+//                            backgroundColor: 'pink',
+//                            listText: [
+//                                "CUD",
+//                                "IAM",
+//                                "MAHP"
+//                            ]
+//                        }
+//                    ])
+                alert('sssss');
             };
             
         }
@@ -122,6 +124,14 @@ module ksm002.a.viewmodel {
             var dfd = $.Deferred<any>();
             let processDate : number = 20170101;
             let isUse : number = 1;
+            let arrOptionaDates : Array<IOptionalDate> = [];
+            for(let i=0; i<10;i++){
+                arrOptionaDates.push(new OptionalDate('2017-07-0'+i, 'red','gray',["duc"+i,"pham"+i,"minh"]));
+            }
+            //arrOptionaDates.push(new OptionalDate('2017-07-01', 'red','blue',["duc","pham","minh"]));
+            debugger;
+            self.optionDates(arrOptionaDates);
+            
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if(lstSpecifiDate.length>0){
                     //get Company Start Day
@@ -158,6 +168,9 @@ module ksm002.a.viewmodel {
         }
     }
 
+    
+    
+    
     class BoxModel {
         id: number;
         name: string;
@@ -176,5 +189,19 @@ module ksm002.a.viewmodel {
             self.specItemNo = specItemNo;
             self.specItemName = specItemName;
         }
+    }
+        
+    class OptionalDate{
+        start:string;
+        textColor: string;
+        backgroundColor:string;
+        listText: Array<string>;
+        constructor(start,textColor,backgroundColor,listText){
+            var self = this; 
+            self.start = start;
+            self.textColor = textColor;
+            self.backgroundColor = backgroundColor;
+            self.listText = listText;
+        }    
     }
 }
