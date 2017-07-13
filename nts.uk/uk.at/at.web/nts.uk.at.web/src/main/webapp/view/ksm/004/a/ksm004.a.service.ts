@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm004.f {
+module nts.uk.at.view.ksm004.a {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     export module service {
