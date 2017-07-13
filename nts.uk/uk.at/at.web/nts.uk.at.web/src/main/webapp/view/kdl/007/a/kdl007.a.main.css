@@ -24,3 +24,7 @@
 hr { 
 	margin-top: 15px;
 }
+.ui-iggrid .ui-iggrid-tablebody td{
+	white-space: nowrap;
+	nowrap: nowrap;
+}
