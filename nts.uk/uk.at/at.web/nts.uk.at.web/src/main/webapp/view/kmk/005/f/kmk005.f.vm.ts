@@ -58,6 +58,7 @@ module nts.uk.at.view.kmk005.f {
                             self.bonusPaySettingList(dfdBonusPaySettingData);
                             self.currentBonusPaySetting(ko.mapping.fromJS(_.first(self.bonusPaySettingList())));
                             self.currentBPSetCode(self.currentBonusPaySetting().code());
+                            self.getBonusPayTimesheets(self.currentBPSetCode());
                             self.isUpdate(true);
                         } else {
                             self.isUpdate(false);
@@ -123,8 +124,8 @@ module nts.uk.at.view.kmk005.f {
                     self.currentSpecBonusPayTimesheets.removeAll();
                     if(nts.uk.util.isNullOrEmpty(dfdTimesheetListData)||nts.uk.util.isNullOrEmpty(dfdGetSpecTimesheetListData)){
                         for (let i = 0; i < 10; i++) {
-                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 1, 1, '', i.toString(), 0, 0, 0, 0));
-                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 1, 1, '', i.toString(), 0, 0, 0, 0, 1));
+                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i+1, 0, (i+1).toString(), (i+1).toString(), 0, 0, 0, 0));
+                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i+1, 0, (i+1).toString(), (i+1).toString(), 0, 0, 0, 0, 0));
                         }    
                     } else {
                         dfdTimesheetListData.forEach(function(item) {
