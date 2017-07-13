@@ -32,7 +32,7 @@
 					<tr>
 						<td><div 
 								data-bind="ntsFormLabel: {required: true, enable: true}">#{i18n.getText('CCG013_62')}</div></td>
-						<td><div tabindex="1"
+						<td><div id="dateTime" tabindex="1"
 								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 						</td>
 						<td><div tabindex="2">
@@ -49,7 +49,7 @@
 							<th>#{i18n.getText('CCG013_65')}</th>
 							<th>#{i18n.getText('CCG013_66')}</th>
 							<th data-bind="visible: true">#{i18n.getText('CCG013_67')}</th>
-							<th data-bind="visible: isHeaderScroll"></th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
