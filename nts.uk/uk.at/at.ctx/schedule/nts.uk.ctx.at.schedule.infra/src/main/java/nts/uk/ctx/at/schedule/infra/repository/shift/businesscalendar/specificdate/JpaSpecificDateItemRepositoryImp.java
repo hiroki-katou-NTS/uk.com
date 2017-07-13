@@ -12,18 +12,43 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.K
 @Stateless
 public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements SpecificDateItemRepository{
 	
-	private static final String GET_ALL = "SELECT s FROM KsmstSpecificDateItem s WHERE s.ksmstSpecificDateItemPK.companyId = :companyId";
+	private static final String SELECT_NO_WHERE = "SELECT s FROM KsmstSpecificDateItem s";
+	private static final String GET_ALL = SELECT_NO_WHERE
+			+ " WHERE s.ksmstSpecificDateItemPK.companyId = :companyId";
+	private static final String GET_BY_USE = SELECT_NO_WHERE 
+			+ " WHERE s.ksmstSpecificDateItemPK.companyId = :companyId"
+			+ " AND s.useAtr = :useAtr";
 
+	/**
+	 * convert Entity to Domain
+	 * @param ksmstSpecificDateItem
+	 * @return
+	 */
+	private SpecificDateItem toBonusPaySettingDomain(KsmstSpecificDateItem ksmstSpecificDateItem) {
+		return SpecificDateItem.createFromJavaType(ksmstSpecificDateItem.ksmstSpecificDateItemPK.companyId,
+				ksmstSpecificDateItem.ksmstSpecificDateItemPK.itemItemId, 
+				ksmstSpecificDateItem.useAtr, ksmstSpecificDateItem.itemNo, ksmstSpecificDateItem.name);
+	}
+	
+	/**
+	 * Get ALL Specific Date Item by ComId 
+	 */
 	@Override
 	public List<SpecificDateItem> getAll(String companyId) {
 		return this.queryProxy().query(GET_ALL, KsmstSpecificDateItem.class)
 				.setParameter("companyId", companyId).getList(x -> this.toBonusPaySettingDomain(x));
 	}
 
-	private SpecificDateItem toBonusPaySettingDomain(KsmstSpecificDateItem ksmstSpecificDateItem) {
-		return SpecificDateItem.createFromJavaType(ksmstSpecificDateItem.ksmstSpecificDateItemPK.companyId,
-				ksmstSpecificDateItem.ksmstSpecificDateItemPK.itemItemId, 
-				ksmstSpecificDateItem.useAtr, ksmstSpecificDateItem.itemNo, ksmstSpecificDateItem.name);
+	
+	/**
+	 * Get Specific Date Item by ComId and is USE
+	 */
+	@Override
+	public List<SpecificDateItem> getSpecifiDateByUse(String companyId, int useAtr) {
+		return this.queryProxy().query(GET_BY_USE, KsmstSpecificDateItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("useAtr", useAtr)
+				.getList(x -> this.toBonusPaySettingDomain(x));
 	}
 
 }

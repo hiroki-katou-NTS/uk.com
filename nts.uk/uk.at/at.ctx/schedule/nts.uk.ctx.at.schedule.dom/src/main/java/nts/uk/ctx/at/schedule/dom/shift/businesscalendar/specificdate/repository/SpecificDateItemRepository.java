@@ -6,6 +6,18 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.Speci
 
 public interface SpecificDateItemRepository {
 	
+	/**
+	 * Get all Specific Date Item 
+	 * @param companyId
+	 * @return
+	 */
 	List<SpecificDateItem> getAll(String companyId);
-
+	
+	/**
+	 * get Specific Date is Use
+	 * @param companyId
+	 * @param useAtr
+	 * @return
+	 */
+	List<SpecificDateItem> getSpecifiDateByUse(String companyId, int useAtr);
 }

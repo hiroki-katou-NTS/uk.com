@@ -19,9 +19,9 @@ public class CompanySpecificDateItem extends AggregateRoot {
 		this.specificDateItemNo = specificDateItemNo;
 	}
 
-	public static CompanySpecificDateItem createFromJavaType(String companyId, BigDecimal specificDate,
-			BigDecimal specificDateItemNo) {
-		return new CompanySpecificDateItem(companyId, new SpecificDate(specificDate),
+	public static CompanySpecificDateItem createFromJavaType(String companyId, BigDecimal specificDate, BigDecimal specificDateItemNo) {
+		return new CompanySpecificDateItem(companyId, 
+				new SpecificDate(specificDate),
 				new SpecificDateItemNo(specificDateItemNo));
 	}
 }
