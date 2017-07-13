@@ -118,8 +118,9 @@ module nts.uk.pr.view.kmf001.c {
                 let dfd = $.Deferred<any>();
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadPreemptionPermitEnums(),
                         self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums()).done(function() {
-                    self.loadSetting();
-                    $('#annual-manage').focus();
+                    self.loadSetting().done(() => {
+                        $('#annual-manage').focus();
+                    });
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -134,6 +135,7 @@ module nts.uk.pr.view.kmf001.c {
                 let command = self.toJsObject();
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
+                        $('#annual-manage').focus();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         dfd.resolve();
                     });
