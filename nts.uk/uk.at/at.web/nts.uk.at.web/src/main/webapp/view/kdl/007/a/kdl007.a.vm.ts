@@ -25,6 +25,7 @@ module kdl007.a.viewmodel {
 
             // approved selected code from param
             self.currentCodeList(param.selecteds || []);
+            self.currentCodeList.remove(x => x == '');
 
             // remove all items when started, except first item
             self.dataSources.remove(x => x.code != '');
@@ -45,7 +46,7 @@ module kdl007.a.viewmodel {
                     if(self.currentCodeList().length == 0 ){
                         self.currentCodeList([''])
                     }
-                    if(self.isMulti==false && self.currentCodeList().length > 0 ){
+                    if(self.isMulti==false && self.currentCodeList().length > 1 ){
                         self.currentCodeList([''])
                     }
                     $("#multi-list").focus();
