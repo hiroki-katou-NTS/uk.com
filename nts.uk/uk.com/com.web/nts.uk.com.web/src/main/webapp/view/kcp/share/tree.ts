@@ -197,6 +197,9 @@ module kcp.share.tree {
                     self.backupItemList(res);
                 }
                 self.loadTreeGrid().done(function() {
+                    $('#combo-box-tree-component').on('mousedown', function() {
+                        $('#combo-box-tree-component').focus();
+                    });
                     dfd.resolve();
                 })
                 
@@ -419,10 +422,15 @@ module kcp.share.tree {
                     self.itemList(subItemList);
 //                    self.selectedWorkplaceIds(self.isMultiple ? [subItemList[0].workplaceId] : subItemList[0]
 //                        .workplaceId);
+                    self.initSelectedValue(data, self.itemList());
                     if (!data || !$input) {
                         return;
                     }
-                    self.loadTreeGrid();
+                    self.loadTreeGrid().done(() => {
+                        $('#combo-box-tree-component').on('mousedown', function() {
+                            $('#combo-box-tree-component').focus();
+                        });
+                    });
                 }
             }
         }
@@ -601,6 +609,7 @@ module kcp.share.tree {
             for (let item of dataList) {
                 let newItem: any = {};
                 if (item.level <= level) {
+                    self.listWorkplaceId.push(item.workplaceId);
                     newItem = JSON.parse(JSON.stringify(item));
                     listModel.push(newItem);
                     if (level == 1) {
