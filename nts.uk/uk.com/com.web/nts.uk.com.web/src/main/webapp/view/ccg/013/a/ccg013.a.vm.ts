@@ -331,7 +331,9 @@ module ccg013.a.viewmodel {
                         titleMenuAtr: data.selectedTitleAtr,
                         titleMenuCode: data.titleMenuCode,
                         displayOrder: displayOrder,
-                        treeMenu: []
+                        treeMenu: [],
+                        imageName: data.imageName,
+                        imageSize: data.imageSize,
                     }));
 
                     bindSortable();
@@ -447,6 +449,8 @@ module ccg013.a.viewmodel {
                             item.backgroundColor(data.backgroundColor);
                             item.imageFile(data.imageId);
                             item.textColor(data.letterColor);
+                            item.imageName(data.imageName);
+                            item.imageSize(data.imageSize);
                         }
                     });
 
@@ -574,6 +578,8 @@ module ccg013.a.viewmodel {
         displayOrder: number;
         treeMenu: Array<ITreeMenu>;
         menuNames?: Array<any>;
+        imageName?: string;
+        imageSize?: string;
     }
 
     export class TitleMenu {
@@ -587,6 +593,8 @@ module ccg013.a.viewmodel {
         titleMenuCode: KnockoutObservable<string>;
         displayOrder: KnockoutObservable<number>;
         treeMenu: KnockoutObservableArray<TreeMenu>;
+        imageName: KnockoutObservable<string>;
+        imageSize: KnockoutObservable<string>;
 
         constructor(param: ITitleMenu) {
             this.menuBarId = ko.observable(param.menuBarId);
@@ -603,6 +611,8 @@ module ccg013.a.viewmodel {
                 x.name = name && name.displayName;
                 return new TreeMenu(x);
             }));
+            this.imageName = ko.observable(param.imageName);
+            this.imageSize = ko.observable(param.imageSize);
         }
     }
 
