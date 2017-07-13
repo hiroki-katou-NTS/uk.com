@@ -190,6 +190,34 @@
 											</tr>
 										</tbody>
 									</table>
+									<h2>Method</h2>
+									<a href="http://localhost:8080/nts.uk.com.web/view/sample/customdatepicker/customdatepicker.xhtml">Yearmonth picker's API</a><br/>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Name</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>render</td>
+												<td>
+													<pre><![CDATA[$('#calendar').fullCalendar('render');]]></pre>
+													This method is useful in the scenario where a tab setup might hide/show a calendar.<br/> 
+													Call this method whenever the tabs are shown. Here is an example with the jQuery UI tab plugin:<br/>
+													<pre><![CDATA[$('#my-tabs').tabs({
+    activate: function(event, ui) {
+        $('#calendar').fullCalendar('render');
+    }
+});]]></pre>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>

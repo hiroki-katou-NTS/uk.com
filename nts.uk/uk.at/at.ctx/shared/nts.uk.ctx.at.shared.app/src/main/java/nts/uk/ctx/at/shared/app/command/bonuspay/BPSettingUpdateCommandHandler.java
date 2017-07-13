@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.shared.app.command.bonuspay;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
@@ -15,15 +17,40 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class BPSettingUpdateCommandHandler extends CommandHandler<BPSettingUpdateCommand> {
+public class BPSettingUpdateCommandHandler extends CommandHandlerWithResult<BPSettingUpdateCommand, List<RegisterErrorList>> {
 	@Inject
 	private BonusPaySettingService bonusPaySettingService;
 
 	@Override
-	protected void handle(CommandHandlerContext<BPSettingUpdateCommand> context) {
+	protected List<RegisterErrorList> handle(CommandHandlerContext<BPSettingUpdateCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		BPSettingUpdateCommand bpSettingUpdateCommand = context.getCommand();
-		bonusPaySettingService.updateBonusPaySetting(this.toBonusPaySettingDomain(bpSettingUpdateCommand,companyId));
+		List<BPTimesheetUpdateCommand> lstBPTimesheetAddCommand = bpSettingUpdateCommand.getLstBonusPayTimesheet();
+		List<SpecBPTimesheetUpdateCommand> lstSpecBPTimesheetAddCommand = bpSettingUpdateCommand
+				.getLstSpecBonusPayTimesheet();
+		if(lstBPTimesheetAddCommand.stream().allMatch(item -> item.useAtr == 0) 
+				&& lstSpecBPTimesheetAddCommand.stream().allMatch(item -> item.useAtr == 0)) {
+			throw new BusinessException("Msg_34");
+		}
+		List<RegisterErrorList> errorLists = new ArrayList<>();
+		lstBPTimesheetAddCommand.forEach(item ->{
+			if(item.getUseAtr() == 1 && item.getStartTime() > item.getEndTime()) {
+				errorLists.add(new RegisterErrorList(true, item.getTimeSheetNO(), "Msg_28"));
+			} else if (item.getUseAtr() == 1 && item.getStartTime() == item.getEndTime()) {
+				errorLists.add(new RegisterErrorList(true, item.getTimeSheetNO(), "Msg_33"));				
+			}
+		});
+		lstSpecBPTimesheetAddCommand.forEach(item ->{
+			if(item.getUseAtr() == 1 && item.getStartTime() > item.getEndTime()) {
+				errorLists.add(new RegisterErrorList(false, item.getTimeSheetNO(), "Msg_28"));
+			} else if (item.getUseAtr() == 1 && item.getStartTime() == item.getEndTime()) {
+				errorLists.add(new RegisterErrorList(false, item.getTimeSheetNO(), "Msg_33"));				
+			}
+		});
+		if(errorLists.isEmpty()) {
+			bonusPaySettingService.updateBonusPaySetting(this.toBonusPaySettingDomain(bpSettingUpdateCommand,companyId));			
+		}
+		return errorLists;
 	}
 
 	private BonusPaySetting toBonusPaySettingDomain(BPSettingUpdateCommand bpSettingUpdateCommand,String companyId) {

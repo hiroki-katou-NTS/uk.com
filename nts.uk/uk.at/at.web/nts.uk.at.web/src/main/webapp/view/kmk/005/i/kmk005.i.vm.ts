@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk005.i {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    let __viewContext: any = window["__viewContext"] || {};
+
     export module viewmodel {
         export class ScreenModel {
             ccgcomponent: any = {
@@ -52,6 +54,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(datas[0].employeeCode);
+                        model.bid.valueHasMutated();
                     },
                     onSearchOnlyClicked: (data: any) => {
                         self.kcpcompoment.employeeInputList([data].map(x => {
@@ -64,6 +68,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(data.employeeCode);
+                        model.bid.valueHasMutated();
                     },
                     onSearchOfWorkplaceClicked: (datas: Array<any>) => {
                         self.kcpcompoment.employeeInputList(datas.map(x => {
@@ -76,6 +82,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(datas[0].employeeCode);
+                        model.bid.valueHasMutated()
                     },
                     onSearchWorkplaceChildClicked: (datas: Array<any>) => {
                         self.kcpcompoment.employeeInputList(datas.map(x => {
@@ -88,6 +96,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(datas[0].employeeCode);
+                        model.bid.valueHasMutated()
                     },
                     onApplyEmployee: (datas: Array<any>) => {
                         self.kcpcompoment.employeeInputList(datas.map(x => {
@@ -100,6 +110,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(datas[0].employeeCode);
+                        model.bid.valueHasMutated()
                     }
                 });
 
@@ -167,7 +179,8 @@ module nts.uk.at.view.kmk005.i {
             start() {
                 let self = this,
                     model = self.model();
-
+                model.ecd('');
+                self.kcpcompoment.employeeInputList([]);
                 model.ecd.valueHasMutated();
                 self.kcpcompoment.employeeInputList.valueHasMutated();
             }
@@ -263,6 +276,14 @@ module nts.uk.at.view.kmk005.i {
             self.eid(param.eid || '');
             self.ecd(param.ecd || '');
             self.ename(param.ename || '');
+
+            self.bid.subscribe(x => {
+                let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
+                    acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                if (acts && acts.id == 'I') {
+                    view.removeAble(!!x);
+                }
+            });
         }
     }
 

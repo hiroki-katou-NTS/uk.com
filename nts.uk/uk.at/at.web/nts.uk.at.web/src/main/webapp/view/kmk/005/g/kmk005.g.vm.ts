@@ -12,9 +12,10 @@ module nts.uk.at.view.kmk005 {
     export module viewmodel {
         export class TabScreenModel {
             title: KnockoutObservable<string> = ko.observable('');
+            removeAble: KnockoutObservable<boolean> = ko.observable(true);
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
                 new TabModel({ id: 'G', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'H', name: getText('Com_Department') }),
+                new TabModel({ id: 'H', name: getText('Com_Workplace') }),
                 new TabModel({ id: 'I', name: getText('Com_Person') }),
                 new TabModel({ id: 'K', name: getText('KMK005_44') }),
             ]);
@@ -47,7 +48,8 @@ module nts.uk.at.view.kmk005 {
                 if (oldtab.id == tab.id) {
                     return;
                 }
-
+                //set not display remove button first when change tab
+                //__viewContext.viewModel.tabView.removeAble(false);
                 tab.active(true);
                 self.title(tab.name);
                 self.tabs().map(t => (t.id != tab.id) && t.active(false));
@@ -188,11 +190,14 @@ module nts.uk.at.view.kmk005 {
                             if (x) {
                                 model.name(x.name);
                             } else {
+                                __viewContext.viewModel.tabView.removeAble(false);
                                 model.id('');
                                 model.name(getText("KDL007_6"));
                             }
                         }).fail(x => alert(x));
+                        model.id.valueHasMutated();
                     } else {
+                        __viewContext.viewModel.tabView.removeAble(false);
                         model.id('');
                         model.name(getText("KDL007_6"));
                     }
@@ -277,6 +282,14 @@ module nts.uk.at.view.kmk005 {
 
                 self.id(param.id);
                 self.name(param.name);
+
+                self.id.subscribe(x => {
+                    let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
+                        acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                    if (acts && acts.id == 'G') {
+                        view.removeAble(!!x);
+                    }
+                });
             }
         }
     }

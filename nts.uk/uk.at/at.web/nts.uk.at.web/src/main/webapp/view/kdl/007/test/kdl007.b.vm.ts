@@ -61,7 +61,6 @@ module kdl007.b.viewmodel {
                 let str='';
                 _.each(lst, x => str+= x +',');
                 self.SelectedCode(str);
-                console.log(lst);
                 let lstItemMapping =  _.map(lst , item => {
                     return new model.ItemModel2(item, '');
                 });

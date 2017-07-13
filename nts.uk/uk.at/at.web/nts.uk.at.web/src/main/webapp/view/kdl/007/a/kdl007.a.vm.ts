@@ -10,7 +10,7 @@ module kdl007.a.viewmodel {
         posibleItems: KnockoutObservableArray<string> = ko.observableArray([]);
         currentCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
         dataSources: KnockoutObservableArray<ItemModel> = ko.observableArray([new ItemModel({ code: "", name: getText("KDL007_6") })]);
-
+        lstCodeOld: KnockoutObservableArray<string> = ko.observableArray([]);
         constructor() {
             let self = this;
             self.start();
@@ -25,7 +25,8 @@ module kdl007.a.viewmodel {
 
             // approved selected code from param
             self.currentCodeList(param.selecteds || []);
-
+            self.currentCodeList.remove(x => x == '');
+            self.lstCodeOld(self.currentCodeList());
             // remove all items when started, except first item
             self.dataSources.remove(x => x.code != '');
 
@@ -45,7 +46,7 @@ module kdl007.a.viewmodel {
                     if(self.currentCodeList().length == 0 ){
                         self.currentCodeList([''])
                     }
-                    if(self.isMulti==false && self.currentCodeList().length > 0 ){
+                    if(self.isMulti==false && self.currentCodeList().length > 1 ){
                         self.currentCodeList([''])
                     }
                     $("#multi-list").focus();
@@ -70,7 +71,14 @@ module kdl007.a.viewmodel {
         }
 
         close() {
-            setShared('KDL007_VALUES',[]);
+           let param: IData = getShared('KDL007_PARAM') || { isMulti: false, workplaceCode: null,standardDate: null, selecteds: [] };
+            if(this.isMulti==false && this.lstCodeOld().length > 1 ){
+                
+                setShared('KDL007_VALUES',null);
+            }else{
+                setShared('KDL007_VALUES',param.workplaceCode);
+            }
+            
             close();
         }
     }
