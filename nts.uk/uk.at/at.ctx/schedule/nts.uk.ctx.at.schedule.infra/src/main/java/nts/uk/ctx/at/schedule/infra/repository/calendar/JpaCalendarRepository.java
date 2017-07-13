@@ -28,18 +28,18 @@ public class JpaCalendarRepository  extends JpaRepository implements CalendarRep
 	private final String SELECT_COMPANY_BY_DATE = SELECT_ALL_COMPANY
 			+ " and c.ksmmtCalendarCompanyPK.dateId = :dateId";
 	//query calendar class
-	private final String SELECT_FROM_CLASS = "select cl from KsmmtCalendarClass cl";
+	private final String SELECT_FROM_CLASS = "select l from KsmmtCalendarClass l";
 	private final String SELECT_ALL_CLASS = SELECT_FROM_CLASS
-			+ " where cl.ksmmtCalendarClassPK.companyId = :companyId "
-			+ " and cl.ksmmtClendarClassPK.classId = :classId ";
+			+ " where l.ksmmtCalendarClassPK.companyId = :companyId "
+			+ " and l.ksmmtCalendarClassPK.classId = :classId ";
 	private final String SELECT_CLASS_BY_DATE = SELECT_ALL_CLASS
-			+ " and cl.ksmmtCalendarClassPK.dateId = :dateId";
-	//query calendar Class 
+			+ " and l.ksmmtCalendarClassPK.dateId = :dateId";
+	//query calendar WORKPLACE 
 	private	final String SELECT_FROM_WORKPLACE = "select w from KsmmtCalendarWorkplace w";
 	private final String SELECT_ALL_WORKPLACE = SELECT_FROM_WORKPLACE
-			+ " where w.ksmmtCalendarWorkplace.workPlaceId = :workPlaceId ";
+			+ " where w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ";
 	private final String SELECT_WORKPLACE_BY_DATE = SELECT_ALL_WORKPLACE
-			+ " and w.ksmmtCalendarWorkplace.dateId = :dateId";
+			+ " and w.ksmmtCalendarWorkplacePK.dateId = :dateId";
 	
 	/**
 	 * company
@@ -206,6 +206,7 @@ public class JpaCalendarRepository  extends JpaRepository implements CalendarRep
 				.getList(c->toDomainCalendarWorkplace(c));
 	}
 
+	
 	@Override
 	public void addCalendarWorkplace(CalendarWorkplace calendarWorkplace) {
 		this.commandProxy().insert(toEntityCalendarWorkplace(calendarWorkplace));

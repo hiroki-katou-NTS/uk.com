@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.specificdayset.company;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -14,18 +15,22 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 
 	private static final String SELECT_NO_WHERE = "SELECT s FROM KsmmtComSpecDateSet s";
 
-	private static final String GET_BY_DATE = SELECT_NO_WHERE + " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
-			+ " AND s.ksmmtComSpecDateSetPK.specificDate =: specificDate";
+	private static final String GET_BY_DATE = SELECT_NO_WHERE 
+			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND s.ksmmtComSpecDateSetPK.specificDate = :specificDate";
 
 	@Override
-	public Optional<CompanySpecificDateItem> getComSpecByDate(String companyId, int specificDate) {
-		return this.queryProxy().query(GET_BY_DATE, KsmmtComSpecDateSet.class).setParameter("companyId", companyId)
-				.setParameter("specificDate", specificDate).getSingle(x -> toDomain(x));
+	public List<CompanySpecificDateItem> getComSpecByDate(String companyId, int specificDate) {
+		return this.queryProxy().query(GET_BY_DATE, KsmmtComSpecDateSet.class)
+				.setParameter("companyId", companyId)
+				.setParameter("specificDate", specificDate)
+				.getList(x -> toDomain(x));
 	}
 
-	private CompanySpecificDateItem toDomain(KsmmtComSpecDateSet ksmmtComSpecDate) {
-		return CompanySpecificDateItem.createFromJavaType(ksmmtComSpecDate.ksmmtComSpecDateSetPK.companyId,
-				ksmmtComSpecDate.ksmmtComSpecDateSetPK.specificDate,
-				ksmmtComSpecDate.ksmmtComSpecDateSetPK.specificDateItemNo);
+	private static CompanySpecificDateItem toDomain(KsmmtComSpecDateSet entity) {
+		CompanySpecificDateItem domain = CompanySpecificDateItem.createFromJavaType(
+				entity.ksmmtComSpecDateSetPK.companyId, entity.ksmmtComSpecDateSetPK.specificDate,
+				entity.ksmmtComSpecDateSetPK.specificDateItemNo);
+		return domain;
 	}
 }

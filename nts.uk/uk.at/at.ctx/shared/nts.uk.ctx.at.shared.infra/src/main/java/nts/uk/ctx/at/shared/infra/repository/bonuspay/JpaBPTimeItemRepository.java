@@ -18,7 +18,9 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBonusPayTimeItemPK;
 public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItemRepository {
 	private final String CHECK_INIT = "SELECT count(c) FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.useAtr = 1";
 	private final String SELECT_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 0 ORDER BY c.timeItemNo  ASC";
+	private final String SELECT_BPTIMEITEM_INUSE_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 0 AND c.useAtr = 1 ORDER BY c.timeItemNo  ASC";
 	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 1 ORDER BY c.timeItemNo  ASC";
+	private final String SELECT_SPEC_BPTIMEITEM_INUSE_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 1  AND c.useAtr = 1 ORDER BY c.timeItemNo  ASC";
 	private final String SELECT_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId  AND c.kbpstBonusPayTimeItemPK.timeItemId = :timeItemId   AND  c.timeItemTypeAtr = 0 ORDER BY c.timeItemNo  ASC";
 	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND c.kbpstBonusPayTimeItemPK.timeItemId = :timeItemId AND  c.timeItemTypeAtr = 1 ORDER BY c.timeItemNo  ASC";
 	@Override
@@ -109,6 +111,18 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 	public int checkInit(String companyId) {
 		return this.queryProxy().query(CHECK_INIT, Long.class)
 				.setParameter("companyId", companyId).getSingle().get().intValue();
+	}
+
+	@Override
+	public List<BonusPayTimeItem> getListBonusPayTimeItemInUse(String companyId) {
+		return this.queryProxy().query(SELECT_BPTIMEITEM_INUSE_BY_COMPANYID, KbpstBonusPayTimeItem.class)
+				.setParameter("companyId", companyId).getList(x -> this.toBonusPayTimeItemDomain(x));
+	}
+
+	@Override
+	public List<BonusPayTimeItem> getListSpecialBonusPayTimeItemInUse(String companyId) {
+		return this.queryProxy().query(SELECT_SPEC_BPTIMEITEM_INUSE_BY_COMPANYID, KbpstBonusPayTimeItem.class)
+				.setParameter("companyId", companyId).getList(x -> this.toBonusPayTimeItemDomain(x));
 	}
 
 }
