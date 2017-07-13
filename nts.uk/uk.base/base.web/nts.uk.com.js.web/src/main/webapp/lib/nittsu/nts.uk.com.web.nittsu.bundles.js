@@ -12024,15 +12024,17 @@ var nts;
                         var $container = $(element);
                         var width = ko.unwrap(data.width);
                         var color = ko.unwrap(data.value);
-                        var dataName = ko.unwrap(data.name);
+                        var dataName = data.name === undefined ? "" : nts.uk.resource.getControlName(ko.unwrap(data.name));
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var required = data.required === undefined ? false : ko.unwrap(data.required);
                         var tag = $container.prop("tagName").toLowerCase();
+                        var id = $container.attr("id");
                         var $picker;
                         if (tag === "input") {
                             $picker = $container;
-                            $picker.appendTo("<div class='ntsControl ntsColorPicker_Container'/>");
+                            $picker.wrap("<div class='ntsControl ntsColorPicker_Container'/>");
                             $picker.addClass("ntsColorPicker");
+                            $container = $picker.parent();
                         }
                         else if (tag === 'div') {
                             $container.addClass("ntsControl ntsColorPicker_Container");
@@ -12040,13 +12042,15 @@ var nts;
                             $picker = $container.find(".ntsColorPicker");
                         }
                         else {
-                            $container.appendTo("<div class='ntsControl ntsColorPicker_Container'/>");
+                            $container.wrap("<div class='ntsControl ntsColorPicker_Container'/>");
+                            $container.removeAttr("id");
                             $container.hide();
                             $container = $container.parent();
-                            $container.append("<input class='ntsColorPicker'/");
+                            $container.append("<input class='ntsColorPicker'/>");
                             $picker = $container.find(".ntsColorPicker");
                         }
-                        $picker.data("required", required);
+                        $container.css("min-height", 32).attr("id", id);
+                        $picker.data("required", required).removeAttr("id");
                         if (nts.uk.util.isNullOrEmpty($container.attr("tabindex"))) {
                             $container.attr("tabindex", "0");
                         }
@@ -12083,21 +12087,35 @@ var nts;
                                     data.value(color.toHexString());
                                 }
                                 else if (required === true) {
-                                    _.defer(function () { $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName])); });
+                                    $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
                                 }
                             }
                         });
+                        var validateRequired = function ($p) {
+                            $p.ntsError('clear');
+                            var value = $p.spectrum("get");
+                            if (nts.uk.util.isNullOrUndefined(value)) {
+                                $p.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
+                            }
+                        };
                         $container.keydown(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code.toString() === "9") {
                                 if (required === true) {
-                                    $picker.ntsError('clear');
-                                    var value = $picker.spectrum("get");
-                                    if (!nts.uk.util.isNullOrUndefined(color)) {
-                                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
-                                    }
+                                    validateRequired($picker);
                                 }
                                 $picker.spectrum("hide");
+                            }
+                        });
+                        $container.on('validate', (function (e) {
+                            if (required === true) {
+                                validateRequired($picker);
+                            }
+                        }));
+                        $picker.spectrum("container").find(".sp-clear").click(function (e) {
+                            $picker.spectrum("set", null);
+                            if (required === true) {
+                                validateRequired($picker);
                             }
                         });
                         if (!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)) {
