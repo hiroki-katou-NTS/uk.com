@@ -237,10 +237,23 @@ module nts.uk.pr.view.kmf001.l {
                 self.nursingDay = ko.observable(null);
                 self.nursingNumberLeaveDay = ko.observable(null);
                 self.nursingNumberPerson = ko.observable(null);
-                self.workTypeCodes = ko.observableArray(["001", "002", "003", "004"]);
+                self.workTypeCodes = ko.observableArray([]);
                 self.typeCode = ko.computed(function() {
                     return self.workTypeCodes().join(", ");
                 }, self);
+            }
+            
+            private openDialog() {
+                let self = this;
+                service.findWorkTypeCodes().done(function(res) {
+                    nts.uk.ui.windows.setShared('KDL002_Multiple', true);
+                    nts.uk.ui.windows.setShared('KDL002_AllItemObj', res);
+                    nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.workTypeCodes());
+                    nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(() => {
+                        let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                        self.workTypeCodes(data.map(item => item.code));
+                    });
+                });
             }
         }
     }

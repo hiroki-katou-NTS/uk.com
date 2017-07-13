@@ -7,25 +7,44 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
         //text editor
-        simpleValue1: KnockoutObservable<string>;
-        holidayName: KnockoutObservable<string>;
+        date: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+
+        // TitleMenu Details
+        selectedHolidayInfo: KnockoutObservable<HolidayInfo>;
+        isCreate: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            self.year = ko.observable(null); 
+            self.year = ko.observable(null);
             self.year.subscribe((newValue) => {
                 self.findHolidayInfoByYear(newValue);
             });
+
             //Grid List
             self.allHolidays = ko.observableArray([]);
             self.filterHolidays = ko.observableArray([]);
-            self.currentCode = ko.observable();
+            self.currentCode = ko.observable(null);
+            self.currentCode.subscribe((value: string) => {
+                self.findHolidayInfo(value);
+            });
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'date', width: 100 },
-                { headerText: '名称', key: 'name', width: 150 }
+                { headerText: nts.uk.resource.getText("KSM004_23"), key: 'date', width: 100 },
+                { headerText: nts.uk.resource.getText("KSM004_24"), key: 'name', width: 150 }
             ]);
             // text editor
-            self.simpleValue1 = ko.observable("");
-            self.holidayName = ko.observable("");
+            self.date = ko.observable("");
+            self.name = ko.observable("");
+
+            // Holiday Details
+            self.selectedHolidayInfo = ko.observable(null);
+            self.selectedHolidayInfo.subscribe((value: HolidayInfo) => {
+                self.date(value.date);
+                self.name(value.name);
+            });
+            self.isCreate = ko.observable(null);
+            self.isCreate.subscribe((value) => {
+                self.changeInitMode(value);
+            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -43,16 +62,16 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         private findHolidayInfoByYear(year: number) {
             var self = this;
             var filterHolidays = _.filter(self.allHolidays(), (item) => {
-                return item.date.toString().substr(0,4) == year.toString();
+                return item.date.toString().substr(0, 4) == year.toString();
             });
             self.filterHolidays(filterHolidays);
             self.selectHolidayByIndex(0);
         }
-        
+
 
         /** Select Holiday by Index: Start & Delete case */
         private selectHolidayByIndex(index: number) {
@@ -63,7 +82,41 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             else
                 self.currentCode(null);
         }
-        
+
+        /** Init Mode */
+        private changeInitMode(isCreate: boolean) {
+            var self = this;
+            if (isCreate === true) {
+                self.currentCode(null);
+            }
+        }
+
+        /** Create Button Click */
+        createButtonClick() {
+            var self = this;
+            self.isCreate(true);
+            self.currentCode(null);
+            self.selectedHolidayInfo(new HolidayInfo("", ""));
+            $("#date").focus();
+
+        }
+        /** Get Selected HolidayInfo */
+        private findHolidayInfo(value: any) {
+            var self = this;
+            var selectedHolidayInfo = _.find(self.filterHolidays(), (item) => {
+                return item.date == value;
+            });
+            if (selectedHolidayInfo !== undefined) {
+                self.isCreate(false);
+                self.selectedHolidayInfo(new HolidayInfo(selectedHolidayInfo.date, selectedHolidayInfo.name));
+
+            }
+            else {
+                self.isCreate(true);
+                self.selectedHolidayInfo(new HolidayInfo("", ""));
+            }
+        }
+
     }
     export class HolidayInfo {
         date: string;

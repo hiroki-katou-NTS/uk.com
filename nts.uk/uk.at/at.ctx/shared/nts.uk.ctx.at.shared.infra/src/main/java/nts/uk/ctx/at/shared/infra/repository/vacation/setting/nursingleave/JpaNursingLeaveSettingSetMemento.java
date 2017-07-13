@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -111,20 +112,27 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
         }
         for (int i = 0; i < workTypeCodes.size(); i++) {
             String workTypeCode = workTypeCodes.get(i);
-            
-            KnlmtNursingWorkTypePK pk = new KnlmtNursingWorkTypePK();
-            pk.setCid(this.entityNursing.getKnlmtNursingLeaveSetPK().getCid());
-            pk.setNursingCtr(this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr());
-            pk.setOrderNumber(i);
-            
-            KnlmtNursingWorkType entityWorkType = listWorkType.stream()
-                    .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == pk.getNursingCtr()
-                            && entity.getKnlmtNursingWorkTypePK().getOrderNumber() == pk.getOrderNumber())
-                    .findFirst()
-                    .orElse(new KnlmtNursingWorkType(pk));
-            
+            int nursingCtr = this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr();
+            int orderNumber = i;
+
+            Optional<KnlmtNursingWorkType> optional = listWorkType.stream()
+                    .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == nursingCtr
+                            && entity.getKnlmtNursingWorkTypePK().getOrderNumber() == orderNumber)
+                    .findFirst();
+
+            KnlmtNursingWorkType entityWorkType = null;
+            if (optional.isPresent()) {
+                entityWorkType = optional.get();
+            } else {
+                KnlmtNursingWorkTypePK pk = new KnlmtNursingWorkTypePK();
+                pk.setCid(this.entityNursing.getKnlmtNursingLeaveSetPK().getCid());
+                pk.setNursingCtr(nursingCtr);
+                pk.setOrderNumber(orderNumber);
+
+                entityWorkType = new KnlmtNursingWorkType(pk);
+                listWorkType.add(entityWorkType);
+            }
             entityWorkType.setWorkTypeCode(workTypeCode);
-            listWorkType.add(entityWorkType);
         }
         this.entityNursing.setListWorkType(listWorkType);
     }
