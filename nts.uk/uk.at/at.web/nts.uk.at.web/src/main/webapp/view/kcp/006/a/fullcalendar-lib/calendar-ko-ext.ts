@@ -113,8 +113,7 @@ module nts.uk.at.view.kcp006.a {
                 locale: "ja",
                 navLinks: false, // can't click day/week names to navigate views
                 editable: false,
-                eventLimit: true, // allow "more" link when too many events
-                events: events
+                eventLimit: true // allow "more" link when too many events
             });
         }
 
@@ -210,7 +209,6 @@ module nts.uk.at.view.kcp006.a {
             fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
                 $(container).fullCalendar('option', {
                     validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
-                    events: events,
                     viewRender: function(view, element) {
                         fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     },
@@ -218,6 +216,8 @@ module nts.uk.at.view.kcp006.a {
                         fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
                     }
                 });
+                $(container).fullCalendar('removeEvents');
+                $(container).fullCalendar('addEventSource', events);
                 $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
             });
         }

@@ -36,8 +36,10 @@ public class SpecificDateItemFinder {
 	 */
 	public List<SpecificDateItemDto> getSpecDateItemIsUse(int useAtr) {
 		String companyId = AppContexts.user().companyId();
-		return specificDateItemRepository.getSpecifiDateByUse(companyId, useAtr).stream()
-				.map(c -> toSpecificDateItemDto(c)).collect(Collectors.toList());
+		return specificDateItemRepository.getSpecifiDateByUse(companyId, useAtr)
+				.stream()
+				.map(c -> toSpecificDateItemDto(c))
+				.collect(Collectors.toList());
 	}
 
 	private SpecificDateItemDto toSpecificDateItemDto(SpecificDateItem specificDateItem) {

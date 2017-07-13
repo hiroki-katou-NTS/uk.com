@@ -6,7 +6,18 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.Speci
 
 public interface SpecificDateItemRepository {
 	
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
 	List<SpecificDateItem> getAll(String companyId);
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	List<SpecificDateItem> getSpecifiDateByUse(String companyId,int useAtr);
 	/**
 	 * hoatt
 	 * update list Specific Date Item
