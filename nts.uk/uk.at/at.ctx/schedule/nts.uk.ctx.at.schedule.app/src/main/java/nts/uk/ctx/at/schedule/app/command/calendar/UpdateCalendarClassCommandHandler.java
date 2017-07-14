@@ -31,7 +31,7 @@ public class UpdateCalendarClassCommandHandler extends CommandHandler<UpdateCale
 			calendarClassRepo.updateCalendarClass(calendarClass);
 			
 		} else {
-			//do something
+			calendarClassRepo.addCalendarClass(calendarClass);
 		}
 		
 	}

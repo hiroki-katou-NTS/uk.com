@@ -23,6 +23,9 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.holiday.KsmmtP
 public class JpaPublicHolidayRepository extends JpaRepository implements PublicHolidayRepository {
 
 	private final String SELECT_BY_LISTDATE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId AND a.ksmmtPublicHolidayPK.date IN :lstDate";
+	private final String SELECT_BY_DATE = "SELECT a FROM KsmmtPublicHoliday a "
+			+ " WHERE a.ksmmtPublicHolidayPK.companyId = :companyId "
+			+ " AND a.ksmmtPublicHolidayPK.date = :date ";
 	private final String SELECT_ALL = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId";
 	private final String SELECT_SINGLE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyID AND a.ksmmtPublicHolidayPK.date = :date";
 
@@ -46,9 +49,8 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 
 	@Override
 	public Optional<PublicHoliday> getHolidaysByDate(String companyID, BigDecimal date) {
-		return this.queryProxy().query(SELECT_SINGLE, KsmmtPublicHoliday.class)
-				.setParameter("companyID", companyID).setParameter("date", date).getSingle(c -> toDomain(c));
-
+		return this.queryProxy().query(SELECT_BY_DATE, KsmmtPublicHoliday.class)
+				.setParameter("companyId", companyID).setParameter("date", date).getSingle(c -> toDomain(c));
 	}
 
 	@Override
