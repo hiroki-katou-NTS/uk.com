@@ -1,8 +1,14 @@
 module ksm004.d.viewmodel{
     export class ScreenModel{
-        // start and end month
+        //checkHoliday
+        checkHoliday :KnockoutObservable<boolean>;
+        //checkOverwrite
+        checkOverwrite :KnockoutObservable<boolean>;
+                      
+        // start and end month , typeClass
         startMonth : KnockoutObservable<number>;
         endMonth : KnockoutObservable<number>;
+        typeClass : KnockoutObservable<number>;
         
         // select day
         workdayGroup : KnockoutObservableArray<any>;
@@ -13,20 +19,36 @@ module ksm004.d.viewmodel{
         selectedFri : KnockoutObservable<number>;
         selectedSat : KnockoutObservable<number>;
         selectedSun : KnockoutObservable<number>;
+        //dateId,workingDayAtr
+        dateId : KnockoutObservable<number>;
+        workingDayAtr : KnockoutObservable<number>;
+        //classId
+        classId : KnockoutObservable<string>;
+        //WorkPlaceId
+        workPlaceId : 
         
-        // check box Overwrite
-        checkSelect :  KnockoutObservable<boolean>;
         
         constructor(){
             var self = this;
             //start and end month
-            self.startMonth = ko.observable(201601);
-            self.endMonth = ko.observable(201612);
-            //
+            self.startMonth = ko.observable(201602);
+            self.endMonth = ko.observable(201602);
+            self.typeClass = ko.observable(0);
+            //checkHoliday
+            self.checkHoliday = ko.observable(true);
+            //checkUpdate
+            self.checkOverwrite = ko.observable(true);
+            
+            //date , workingDayAtr
+            self.dateId = ko.observable(0);
+            self.workingDayAtr = ko.observable(0);
+            //classId
+            self.classId = ko.observable('');
+            //workdayGroup
             self.workdayGroup = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText('KSM004_46') },
-                { code: '1', name: nts.uk.resource.getText('KSM004_47') },
-                { code: '2', name: nts.uk.resource.getText('KSM004_48') }
+                { code: 0, name: nts.uk.resource.getText('KSM004_46') },
+                { code: 1, name: nts.uk.resource.getText('KSM004_47') },
+                { code: 2, name: nts.uk.resource.getText('KSM004_48') }
             ]);
             // day
             self.selectedMon = ko.observable(0);
@@ -36,14 +58,59 @@ module ksm004.d.viewmodel{
             self.selectedFri = ko.observable(0);
             self.selectedSat = ko.observable(2);
             self.selectedSun = ko.observable(1);
-            //checked
-            self.checkSelect = ko.observable(false);
 
         }//end constructor
         
+         /**
+         * function startPage
+         */
         startPage(){
             
         }//end startPage
+        
+        /**
+         * function btn decition
+         */
+        decition(){
+            var self = this;
+            
+            let startYM = moment(self.startMonth(),'YYYYMM');
+            let endYM = moment(self.endMonth(),'YYYYMM');
+            
+            while(startYM.month() <= endYM.month()) //value : 0-11
+            {
+                let dateOfMonth = startYM.date(); //value : 1-31 
+                let dateOfWeek = startYM.day();   //value : 0-6
+                alert(dateOfMonth);
+                if(self.typeClass ==0){
+                }
+                startYM.add(1,'d');
+            }
+            
+        }//end decition
+        
+        /**
+         * add calendar company
+         */
+        addCalendarCompany() {
+            var self = this;
+            var calendarCompany = new model.CalendarCompany(self.dateId(),self.workingDayAtr());
+            service.addCalendarCompany(calendarCompany).done(function(){
+                //nts.uk.ui.dialog.info({ messageId: "Msg_15" });    
+            });    
+        }
+        /**
+         * update calendar company
+         */
+        updateCalendarCompany(){
+            var self = this;
+            var calendarCompany = new model.CalendarCompany(self.dateId(),self.workingDayAtr());
+            service.updateCalendarCompany(calendarCompany).done(function(){
+                //nts.uk.ui.dialog.info({ messageId: "Msg_15" });    
+            });    
+        }
+        
+        
     }//end screen model
 
     //model

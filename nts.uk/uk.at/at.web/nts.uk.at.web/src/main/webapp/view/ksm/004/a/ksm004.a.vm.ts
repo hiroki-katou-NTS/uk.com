@@ -4,22 +4,7 @@ module nts.uk.at.view.ksm004.a {
     import aService = nts.uk.at.view.ksm004.a.service;
     export module viewmodel {
         export class ScreenModel {
-            calendarData: KnockoutObservable<any>;
             yearMonthPicked: KnockoutObservable<number> = ko.observable(moment(new Date()).format('YYYYMM'));
-            cssRangerYM: any;
-            optionDates: KnockoutObservableArray<any>;
-            firstDay: number;
-            yearMonth: KnockoutObservable<number>;
-            startDate: number;
-            endDate: number;
-            workplaceId: KnockoutObservable<string>;
-            eventDisplay: KnockoutObservable<boolean>;
-            eventUpdatable: KnockoutObservable<boolean>;
-            holidayDisplay: KnockoutObservable<boolean>;
-            cellButtonDisplay: KnockoutObservable<boolean>;
-            workplaceName: KnockoutObservable<string>;
-            listComponentOption: ListComponentOption;
-            
             calendarPanel: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
                 yearMonth: this.yearMonthPicked,
@@ -33,7 +18,6 @@ module nts.uk.at.view.ksm004.a {
                 holidayDisplay: ko.observable(true),
                 cellButtonDisplay: ko.observable(true)
             }
-            
             kcpTreeGrid: ITreeGrid = {
                 treeType: 1,
                 selectType: 1,
@@ -45,30 +29,25 @@ module nts.uk.at.view.ksm004.a {
                 selectedWorkplaceId: undefined,
                 alreadySettingList: ko.observableArray([])
             };
-            
             kcpGridlist: IGridList = {
-                listType: 4,
-                selectType: 1,
+                listType: 2,
+                selectType: 2,
                 isDialog: false,
                 isMultiSelect: false,
                 isShowAlreadySet: true,
                 isShowNoSelectRow: false,
-                isShowWorkPlaceName: true,
-                isShowSelectAllButton: false,
                 selectedCode: ko.observableArray([]),
-                employeeInputList: ko.observableArray([]),
                 alreadySettingList: ko.observableArray([])
             };
-            
-            currentCalendarCompany: KnockoutObservable<CalendarCompany> = ko.observable(new CalendarCompany('',0));
-            currentCalendarWorkPlace: KnockoutObservable<CalendarWorkPlace> = ko.observable(new CalendarWorkPlace('','',0));
-            currentCalendarClass: KnockoutObservable<CalendarClass> = ko.observable(new CalendarClass('','',0));
+            currentCalendarWorkPlace: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
+            currentCalendarClass: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
+            currentWorkingDayAtr: number = 0;
             constructor() {
                 var self = this;
-                self.kcpTreeGrid.selectedWorkplaceId = self.currentCalendarWorkPlace().workPlaceID;
+                self.kcpTreeGrid.selectedWorkplaceId = self.currentCalendarWorkPlace().key;
+                self.kcpGridlist.selectedCode =  self.currentCalendarClass().key;
                 self.calendarPanel.yearMonth(self.yearMonthPicked());
-                self.cssRangerYM = {};
-                self.currentCalendarWorkPlace().workPlaceID.subscribe(value => {
+                self.currentCalendarWorkPlace().key.subscribe(value => {
                     let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
                     let item = _.find(data, m => m.workplaceId == value);
                     if (item) {
@@ -76,16 +55,43 @@ module nts.uk.at.view.ksm004.a {
                     } else {
                         self.currentCalendarWorkPlace().name('');
                     }    
+                    self.getCalenderWorkPlaceByCode(value);
+                });
+                self.currentCalendarClass().key.subscribe(value => {
+                    let data: Array<any> = $('#classification-list-setting')['getDataList']();
+                    let item = _.find(data, m => m.code == value);
+                    if (item) {
+                        self.currentCalendarClass().name(item.name);
+                    } else {
+                        self.currentCalendarClass().name('');
+                    }    
+                    self.getCalendarClassById(value);
                 });
                 nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
                     nts.uk.ui._viewModel.content.calendarPanel.optionDates.removeAll();
                 }; 
                 $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
                     $('#classification-list-setting').ntsListComponent(self.kcpGridlist).done(() => {
+                        self.currentCalendarWorkPlace().key(_.first($('#tree-grid')['getDataList']()).workplaceId);
+                        self.currentCalendarClass().key(_.first($('#classification-list-setting')['getDataList']()).code);
                         self.start();
                     });
                 });
-                self.calendarPanel.optionDates.valueHasMutated();
+                $("#sidebar").ntsSideBar("init", {
+                    active: 0,
+                    activate: (event, info) => {
+                        switch(info.newIndex) {
+                            case 1:
+                                self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key().toString());
+                                break;
+                            case 2:
+                                self.getCalendarClassById(self.currentCalendarClass().key().toString());
+                                break;
+                            default:
+                                self.getAllCalendarCompany();
+                        }
+                    }
+                });
             }
             
             settingDayAtr(date){
@@ -111,17 +117,33 @@ module nts.uk.at.view.ksm004.a {
                     }).fail((res) => {
                     
                     });
-                //self.currentCalendarWorkPlace().workPlaceID(_.first($('#tree-grid')['getDataList']()).workplaceId);    
                 return dfd.promise();    
             }
             
-            getCalenderWorkPlaceByCode(): JQueryPromise<any>{
+            getCalenderWorkPlaceByCode(value): JQueryPromise<any>{
                 var self = this; 
                 var dfd = $.Deferred();
-                aService.getAllCalendarCompany()
-                    .done((dataCompany) => {
+                aService.getCalendarWorkPlaceByCode(value)
+                    .done((dataWorkPlace) => {
                         let a = [];
-                        _.forEach(dataCompany,(companyItem)=>{
+                        _.forEach(dataWorkPlace,(workPlaceItem)=>{
+                            a.push(new CalendarItem(workPlaceItem.dateId,workPlaceItem.workingDayAtr));
+                        });   
+                        self.calendarPanel.optionDates(a);
+                        dfd.resolve();  
+                    }).fail((res) => {
+                    
+                    });
+                return dfd.promise();  
+            }
+            
+            getCalendarClassById(value): JQueryPromise<any>{
+                var self = this; 
+                var dfd = $.Deferred();
+                aService.getCalendarClassById(value)
+                    .done((dataClass) => {
+                        let a = [];
+                        _.forEach(dataClass,(companyItem)=>{
                             a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
                         });   
                         self.calendarPanel.optionDates(a);
@@ -129,27 +151,14 @@ module nts.uk.at.view.ksm004.a {
                     }).fail((res) => {
                     
                     });
-                //self.currentCalendarWorkPlace().workPlaceID(_.first($('#tree-grid')['getDataList']()).workplaceId);    
-                return dfd.promise();  
+                return dfd.promise();
             }
             
-            getCalendarClassById(): JQueryPromise<any>{
-                
-            }
-            
-            changeTab() {
+            changeWorkingDayAtr(value){
                 var self = this;
-                let currentTab : number = $("#sidebar").ntsSideBar("getCurrent");
-                switch(currentTab) {
-                    case 1:
-                        self.getCalenderWorkPlaceByCode();
-                        break;
-                    case 2:
-                        self.getCalendarClassById();
-                        break;
-                    default:
-                        self.getAllCalendarCompany();
-                }
+                self.currentWorkingDayAtr = value;
+                $('.labelSqr'+value).css()
+                console.log(value);    
             }
             
             openDialogC() {
@@ -161,6 +170,8 @@ module nts.uk.at.view.ksm004.a {
             openDialogD() {
                 var self = this;
                 nts.uk.ui.windows.setShared('classification', 0);
+                nts.uk.ui.windows.setShared('workPlaceId', self.currentCalendarWorkPlace().key());
+                nts.uk.ui.windows.setShared('classCD',  self.currentCalendarClass().key());
                 nts.uk.ui.windows.setShared('startTime', '200007');
                 nts.uk.ui.windows.setShared('endTime', '200008');
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }); 
@@ -200,46 +211,17 @@ module nts.uk.at.view.ksm004.a {
             isMultiSelect: boolean;
             isShowAlreadySet: boolean;
             isShowNoSelectRow: boolean;
-            isShowWorkPlaceName: boolean;
-            isShowSelectAllButton: boolean;
             selectedCode: KnockoutObservable<string>;
-            employeeInputList: KnockoutObservableArray<any>;
             alreadySettingList: KnockoutObservableArray<any>;
         }
         
-        class CalendarCompany {
-            ymd: KnockoutObservable<string>;
-            workingDayAtr: KnockoutObservable<number>;   
-            constructor(ymd: string, workingDayAtr: number){
-                this.ymd = ko.observable(ymd);   
-                this.workingDayAtr = ko.observable(workingDayAtr);
-            } 
-        }
-        
-        class CalendarWorkPlace {
-            workPlaceID: KnockoutObservable<string>;
-            ymd: KnockoutObservable<string>;
-            workingDayAtr: KnockoutObservable<number>;   
-            name?: KnockoutObservable<string>;
-            constructor(workPlaceID: string, ymd: string, workingDayAtr: number, name?: string){
-                this.workPlaceID = ko.observable(workPlaceID);
-                this.ymd = ko.observable(ymd);   
-                this.workingDayAtr = ko.observable(workingDayAtr);
+        class SimpleObject {
+            key: KnockoutObservable<string>;
+            name: KnockoutObservable<string>;
+            constructor(key: string, name: string){
+                this.key = ko.observable(key);
                 this.name = ko.observable(name);
             }      
-        }
-        
-        class CalendarClass {
-            classCD: KnockoutObservable<string>;
-            ymd: KnockoutObservable<string>;
-            workingDayAtr: KnockoutObservable<number>;   
-            name?: KnockoutObservable<string>;
-            constructor(classCD: string, ymd: string, workingDayAtr: number, name?: string){
-                this.classCD = ko.observable(classCD);
-                this.ymd = ko.observable(ymd);   
-                this.workingDayAtr = ko.observable(workingDayAtr);
-                this.name = ko.observable(name);
-            }   
         }
         
         class CalendarItem {
@@ -252,15 +234,15 @@ module nts.uk.at.view.ksm004.a {
                 this.backgroundColor = 'white';
                 switch(listText) {
                     case 1:
-                        this.textColor = '#FF1D1D';
+                        this.textColor = '#FF3B3B';
                         this.listText = WorkingDayAtr.WorkingDayAtr_WorkPlace.toString();
                         break;
                     case 2:
-                        this.textColor = '#FF1D1D';
+                        this.textColor = '#FF3B3B';
                         this.listText = WorkingDayAtr.WorkingDayAtr_Class.toString();
                         break;
                     default:
-                        this.textColor = '#589CAE';
+                        this.textColor = '#31859C';
                         this.listText = WorkingDayAtr.WorkingDayAtr_Company.toString();
                         break;
                 }        

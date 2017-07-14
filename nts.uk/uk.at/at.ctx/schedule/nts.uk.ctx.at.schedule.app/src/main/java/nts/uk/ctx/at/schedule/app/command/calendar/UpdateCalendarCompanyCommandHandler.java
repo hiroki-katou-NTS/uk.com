@@ -26,9 +26,11 @@ public class UpdateCalendarCompanyCommandHandler extends CommandHandler<UpdateCa
 		Optional<CalendarCompany> calendarCom =calendarCompanyRepo.findCalendarCompanyByDate(companyId,
 				context.getCommand().getDateId());
 		if (calendarCom.isPresent()) {
+			//update
 			calendarCompanyRepo.updateCalendarCompany(calendarCompany);
 		} else {
-			//do 
+			//insert
+			calendarCompanyRepo.addCalendarCompany(calendarCompany);
 		}
 		
 	}
