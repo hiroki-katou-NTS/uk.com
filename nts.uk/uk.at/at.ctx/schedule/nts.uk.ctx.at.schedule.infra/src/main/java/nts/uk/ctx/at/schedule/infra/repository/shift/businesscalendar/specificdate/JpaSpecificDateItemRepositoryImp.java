@@ -16,9 +16,12 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.K
 @Stateless
 public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements SpecificDateItemRepository {
 
-	private static final String GET_ALL = "SELECT s FROM KsmstSpecificDateItem s WHERE s.ksmstSpecificDateItemPK.companyId = :companyId";
-	private static final String GET_BY_USE = "SELECT s FROM KsmstSpecificDateItem s WHERE s.ksmstSpecificDateItemPK.companyId = :companyId AND s.useAtr = :useAtr";
-
+	private static final String SELECT_NO_WHERE = "SELECT s FROM KsmstSpecificDateItem s";
+	private static final String GET_ALL = SELECT_NO_WHERE
+			+ " WHERE s.ksmstSpecificDateItemPK.companyId = :companyId";
+	private static final String GET_BY_USE = SELECT_NO_WHERE
+			+" WHERE s.ksmstSpecificDateItemPK.companyId = :companyId"
+			+ " AND s.useAtr = :useAtr";
 	/**
 	 * Entity to Domain
 	 * 
