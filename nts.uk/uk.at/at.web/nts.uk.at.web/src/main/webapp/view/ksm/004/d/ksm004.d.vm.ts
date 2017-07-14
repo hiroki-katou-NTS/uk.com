@@ -2,7 +2,7 @@ module ksm004.d.viewmodel{
     export class ScreenModel{
         // start and end month
         startMonth : KnockoutObservable<number>;
-        startMonth : KnockoutObservable<number>;
+        endMonth : KnockoutObservable<number>;
         
         // select day
         workdayGroup : KnockoutObservableArray<any>;
@@ -34,8 +34,8 @@ module ksm004.d.viewmodel{
             self.selectedWed = ko.observable(0);
             self.selectedThu = ko.observable(0);
             self.selectedFri = ko.observable(0);
-            self.selectedSat = ko.observable(0);
-            self.selectedSun = ko.observable(0);
+            self.selectedSat = ko.observable(2);
+            self.selectedSun = ko.observable(1);
             //checked
             self.checkSelect = ko.observable(false);
 
@@ -44,5 +44,39 @@ module ksm004.d.viewmodel{
         startPage(){
             
         }//end startPage
-    }//end screen model    
+    }//end screen model
+
+    //model
+    export module model {
+        //class calendar company
+        export class CalendarCompany {
+            dateId: number;
+            workingDayAtr: number;
+            constructor(dateId: number, workingDayAtr: number) {
+                this.dateId = dateId;
+                this.workingDayAtr = workingDayAtr;
+            }
+        }
+        // class calendar class
+        export class CalendarClass {
+            classId : string;
+            dateId: number;
+            workingDayAtr: number;
+            constructor(classId:string, dateId: number, workingDayAtr: number) {
+                this.classId = classId;
+                this.dateId = dateId;
+                this.workingDayAtr = workingDayAtr;
+            }
+        }
+        //class calendar workplace
+        export class CalendarWorkplace {
+            dateId: number;
+            workingDayAtr: number;
+            constructor(dateId: number, workingDayAtr: number) {
+                this.dateId = dateId;
+                this.workingDayAtr = workingDayAtr;
+            }
+        }
+    }
+    
 }
