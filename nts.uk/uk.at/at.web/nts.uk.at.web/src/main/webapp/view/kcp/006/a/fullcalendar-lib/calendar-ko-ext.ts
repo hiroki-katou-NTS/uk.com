@@ -241,7 +241,7 @@ module nts.uk.at.view.kcp006.a {
             let dfdGetHoliday = $.Deferred<any>();
             service.getPublicHoliday(lstDate)
                 .done((data: Array<model.EventObj>) => {
-                    data.forEach((a) => { lstHoliday.push({ start: moment(a.date, "YYYYMMDD").format("YYYY-MM-DD"), holidayName: a.name }); });
+                    data.forEach((a) => { lstHoliday.push({ start: moment(a.date, "YYYYMMDD").format("YYYY-MM-DD"), holidayName: a.holidayName }); });
                     dfdGetHoliday.resolve();
                 });
             // list event received from server
@@ -403,6 +403,8 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
                 if (holidayDisplay) {
                     //fill holiday name
+                    $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
+                    $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
                     $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
                 }
             }
