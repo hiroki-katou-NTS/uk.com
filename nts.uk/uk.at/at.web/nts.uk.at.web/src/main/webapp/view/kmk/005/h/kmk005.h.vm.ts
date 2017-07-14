@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk005.h {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    
+    let __viewContext: any = window["__viewContext"] || {};
 
     export module viewmodel {
         export class ScreenModel {
@@ -75,7 +77,7 @@ module nts.uk.at.view.kmk005.h {
                     tree = self.treeGrid,
                     model = self.model(),
                     wids: Array<string> = flat($('#tree-grid')['getDataList'](), 'childs').map(x => x.workplaceId);
-
+                model.wid(wids[0]);
                 // get ready setting list
                 tree.alreadySettingList.removeAll();
                 service.getData(wids).done((resp: Array<any>) => {
@@ -84,6 +86,7 @@ module nts.uk.at.view.kmk005.h {
                     }
 
                     // call subscribe function of wid
+                    model.id.valueHasMutated();
                     model.wid.valueHasMutated();
                 }).fail(x => alert(x));
             }
@@ -177,6 +180,14 @@ module nts.uk.at.view.kmk005.h {
                 self.name(param.name);
                 self.wid(param.wid || '');
                 self.wname(param.wname || '');
+
+                self.id.subscribe(x => {
+                    let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
+                        acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                    if (acts && acts.id == 'H') {
+                        view.removeAble(!!x);
+                    }
+                });
             }
         }
 

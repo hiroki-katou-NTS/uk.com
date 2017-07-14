@@ -29,7 +29,6 @@ public class SpecificDateItemWebService extends WebService {
 		return this.find.getAllByCompany();
 	}
 	
-	
 	@POST
 	@Path("getspecificdatebyuse/{useAtr}")
 	public List<SpecificDateItemDto> getAllSpecificDateByCompany(@PathParam("useAtr") int useAtr) {

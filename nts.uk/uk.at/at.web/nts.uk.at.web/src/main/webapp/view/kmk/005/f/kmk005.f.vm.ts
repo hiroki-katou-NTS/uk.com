@@ -198,6 +198,7 @@ module nts.uk.at.view.kmk005.f {
                                 });
                             }
                             else {
+                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                                 self.getBonusPaySetting();
                             }
                             nts.uk.ui.block.clear();
@@ -219,6 +220,7 @@ module nts.uk.at.view.kmk005.f {
                                 });
                             }
                             else {
+                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                                 self.getBonusPaySetting();
                             }
                             nts.uk.ui.block.clear();

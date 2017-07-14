@@ -10,13 +10,13 @@
 				<com:stylefile path="/view/sample/catalog/catalog.css" of="/nts.uk.com.web"/>
 			    <com:scriptfile path="/view/sample/catalog/catalog.js" of="/nts.uk.com.web"/>
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
-				<com:scriptfile path="kcp006.a.vm.js" />
-				<com:scriptfile path="kcp006.a.start.js" />
-				<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web"/>
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
 				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web"/>
 				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web"/>
 				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="kcp006.a.vm.js" />
+				<com:scriptfile path="kcp006.a.start.js" />
+				<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web"/>
 			</ui:define>
 			
 			<ui:define name="content">
@@ -190,6 +190,44 @@
 											</tr>
 										</tbody>
 									</table>
+									<h2>Method</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Name</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>render</td>
+												<td>
+													<pre><![CDATA[$('#calendar').fullCalendar('render');]]></pre>
+													This method is useful in the scenario where a tab setup might hide/show a calendar.<br/> 
+													Call this method whenever the tabs are shown. Here is an example with the jQuery UI tab plugin:<br/>
+													<pre><![CDATA[$('#my-tabs').tabs({
+    activate: function(event, ui) {
+        $('#calendar').fullCalendar('render');
+    }
+});]]></pre>
+												</td>
+											</tr>
+											<tr>
+												<td>cellClick</td>
+												<td>
+													Triggered when the user clicks on a button on each cell date: <br/>
+													<pre><![CDATA[$("#calendar").ntsCalendar("init", {
+    cellClick: function(date) {
+        alert(date);
+    }
+});]]></pre>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
@@ -275,9 +313,11 @@
             self.eventUpdatable = ko.observable(true);
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(true);
-            nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
-                alert(date);
-            };
+            $("#calendar").ntsCalendar("init", {
+                cellClick: function(date) {
+                    alert(date);
+                }
+            });
         }
 
     }]]></pre>

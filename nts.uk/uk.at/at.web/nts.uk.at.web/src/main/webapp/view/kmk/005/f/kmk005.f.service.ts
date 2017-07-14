@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk005.f {
             deleteBonusPaySetting: "at/share/bonusPaySetting/removeBonusPaySetting",
             getBonusPayTimeItem: "at/share/bonusPayTimeItem/getListBonusPayTimeItemInUse",
             getSpecBonusPayTimeItem: "at/share/bonusPayTimeItem/getListSpecialBonusPayTimeItemInUse",
-            getSpecDateItem: "at/schedule/specificdateitem/getallspecificdate",
+            getSpecDateItem: "at/schedule/shift/businesscalendar/specificdate/getallspecificdate",
             getBonusPayTimesheet: "at/share/bpTimesheet/getListTimesheet/{0}",
             getSpecBonusPayTimesheet: "at/share/specBonusPayTimesheet/getListTimesheet/{0}"
         }
