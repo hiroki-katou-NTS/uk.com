@@ -83,6 +83,7 @@ module nts.uk.at.view.ksm005.c {
             
            listComponentOption: any;
            selectedCode: KnockoutObservable<string>;
+           employeeInfo: KnockoutObservable<UnitModel>;
            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
            isShowNoSelectRow: KnockoutObservable<boolean>;
            employeeList: KnockoutObservableArray<UnitModel>;
@@ -93,7 +94,7 @@ module nts.uk.at.view.ksm005.c {
                var self = this;
                self.selectedEmployee = ko.observableArray([]);
                self.baseDate = ko.observable(new Date());
-
+               self.employeeInfo = ko.observable({code:'',name:''});
                self.ccgcomponent = {
                    baseDate: self.baseDate,
                    //Show/hide options
@@ -146,7 +147,13 @@ module nts.uk.at.view.ksm005.c {
                self.applyKCP005ContentSearch([]);
                $('#component-items-list').ntsListComponent(self.listComponentOption);
 
+               self.selectedCode.subscribe(function(employeeCode: string){
+                   self.employeeInfo(self.selectEmployeeSearch(employeeCode));
+               });
            }
+            /**
+             * apply ccg001 search data to kcp005
+             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
                 self.employeeList([]);
@@ -175,9 +182,32 @@ module nts.uk.at.view.ksm005.c {
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
-                    maxRows :15
+                    maxRows :17
                 };
                 
+            }
+            
+            /**
+             * update selected employee kcp005 => detail
+             */
+            public selectEmployeeSearch(employeeCode: string): UnitModel{
+                var employee: UnitModel;
+                var self = this;
+                for (var employeeSelect: UnitModel of self.employeeList()) {
+                    if (employeeSelect.code === employeeCode) {
+                        employee = employeeSelect;
+                        break;
+                    }
+                }
+                return employee;
+            }
+            
+            
+            /**
+             * open dialog system change (f)
+             */
+            public onpenDialogSystemChange():void {
+                 nts.uk.ui.windows.sub.modal("/view/ksm/005/f/index.xhtml");
             }
         
         }

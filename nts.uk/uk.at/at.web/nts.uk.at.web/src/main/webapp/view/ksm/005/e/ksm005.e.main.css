@@ -1,0 +1,33 @@
+@CHARSET "UTF-8";
+
+.contents {
+	margin: 0;
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.period_labels {
+	width: 300px;
+}
+
+.employee_labels {
+	margin-top: 20px;
+	width: 350px;
+}
+
+.workday_labels {
+	width: 385px;
+	margin-left: 20px;
+	margin-top: 20px;
+}
+
+.lableData {
+	width: 135px;
+}
+
+.contentDetail {
+	width: 150px;
+	margin-left: 20px;
+}
