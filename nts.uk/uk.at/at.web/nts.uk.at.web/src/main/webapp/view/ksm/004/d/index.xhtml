@@ -52,7 +52,7 @@
 							<!-- D1_8 -->
 							<div tabindex="10" style="margin-bottom: 10px"
 									data-bind="ntsCheckBox:{
-									checked: true,
+									checked: checkHoliday,
 									text: '#{i18n.getText('KSM004_53')}'
 									}">
 							</div>
@@ -80,7 +80,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedMon}">
+									value: selectedMon,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -95,7 +96,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedTue}">
+									value: selectedTue,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -110,7 +112,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedWed}">
+									value: selectedWed,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -125,7 +128,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedThu}">
+									value: selectedThu,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -140,7 +144,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedFri}">
+									value: selectedFri,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -155,7 +160,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedSat}">
+									value: selectedSat,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -170,7 +176,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedSun}">
+									value: selectedSun,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -178,11 +185,11 @@
 				<div style="margin-bottom: 79px;" id="functions-area-bottom">
 					<!-- D4_1 -->
 					<div data-bind="ntsCheckBox:{
-							checked: checkSelect,
+							checked: checkOverwrite,
 							text: '#{i18n.getText('KSM004_49')}'}">
 					</div>
 					<div style='clear:both'></div>
-					<button class="x-large proceed">#{i18n.getText('KSM004_34')}</button>
+					<button class="x-large proceed" data-bind="click: decition">#{i18n.getText('KSM004_34')}</button>
 					<button >#{i18n.getText('KSM004_35')}</button>
 				</div>
 				
