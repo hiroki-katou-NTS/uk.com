@@ -1,21 +1,18 @@
 module ksm002.c {
     export module viewmodel {
         export class ScreenModel {
-            rootList: Array<SpecificDateItemCommand>;
-            premiumItemList: KnockoutObservableArray<SpecificDateItem>;
+            rootList: Array<SpecificDateItem>;
+            specificDateItem: KnockoutObservableArray<SpecificDateItem>;
             isInsert: Boolean;
             allUse: KnockoutObservable<number>;
-            textKSM002_38: string;
+            textKSM002_39: string;
             constructor() {
                 var self = this;
-                self.premiumItemList = ko.observableArray([]);   
+                self.specificDateItem = ko.observableArray([]);   
                 self.isInsert = nts.uk.ui.windows.getShared('isInsert');
-                self.textKSM002_38 = nts.uk.resource.getText("KSM002_38",[__viewContext.primitiveValueConstraints.PremiumName.maxLength/2]);
+                self.textKSM002_39 = nts.uk.resource.getText("KSM002_39",[__viewContext.primitiveValueConstraints.SpecificName.maxLength/2]);
             }
             
-//            getText(index): string {
-//                return nts.uk.resource.getText("KML001_"+(30+index));    
-//            }
             /**
              * get data on start page 
              */
@@ -25,18 +22,23 @@ module ksm002.c {
                 var dfd = $.Deferred();
                 service.getAllSpecificDate().done(function(data) {
                         data.forEach(function(item){
-                            self.premiumItemList.push(
-                                new SpecificDateItemCommand(
+                            self.specificDateItem.push(
+                                new SpecificDateItem(
                                     item.timeItemId,
                                     item.useAtr,
                                     item.specificDateItemNo,
                                     item.specificName
                                 ));
                         });
-                        self.rootList = _.clone(ko.mapping.toJS(self.premiumItemList()));
+                    while(self.specificDateItem().length<10){
+                        self.specificDateItem.push(
+                                new SpecificDateItem('',1,0,''));
+                    }
+                    console.log(self.specificDateItem());
+                        self.rootList = _.clone(ko.mapping.toJS(self.specificDateItem()));
                         self.allUse = ko.pureComputed(function(){
                             let x: number = 0;
-                            self.premiumItemList().forEach(function(item) { 
+                            self.specificDateItem().forEach(function(item) { 
                                 x+=parseInt(item.useAtr().toString());
                             });        
                             return x;
@@ -57,16 +59,13 @@ module ksm002.c {
             submitAndCloseDialog(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
-                let lstSpecificDateItem : Array<SpecificDateItemCommand>;
+                let lstSpecificDateItem : Array<SpecificDateItemCommand> = [];
                 let rootLists = self.rootList;
-                $(".premiumName").trigger("validate");
-                ko.utils.arrayForEach(self.premiumItemList(), function(item, index) { 
-//                    if(ko.mapping.toJSON(item)!=ko.mapping.toJSON(rootLists[index])){
-////                        item.isChange(true);        
-//                    }
-                    lstSpecificDateItem= self.premiumItemList();
+                $(".specificName").trigger("validate");
+                ko.utils.arrayForEach(self.specificDateItem(), function(item, index) { 
+                    lstSpecificDateItem.push(new SpecificDateItemCommand(item.timeItemId(),item.useAtr(),item.specificDateItemNo(),item.specificName()));
                 });
-                self.premiumItemList
+                self.specificDateItem
                 if (!nts.uk.ui.errors.hasError()){
                 service.updateSpecificDate(lstSpecificDateItem)
                     .done(function(res: Array<any>) {
@@ -88,7 +87,7 @@ module ksm002.c {
             }
         }
     }
-    export class SpecificDateItemCommand{
+    export class SpecificDateItem{
         timeItemId: KnockoutObservable<string>;
         useAtr: KnockoutObservable<number>;
         specificDateItemNo: KnockoutObservable<number>;
@@ -98,6 +97,18 @@ module ksm002.c {
             this.useAtr = ko.observable(useAtr);
             this.specificDateItemNo = ko.observable(specificDateItemNo);
             this.specificName = ko.observable(specificName);
+        }
+    }
+        export class SpecificDateItemCommand{
+        timeItemId: string;
+        useAtr: number;
+        specificDateItemNo: number;
+        specificName: string;
+        constructor(timeItemId: string,useAtr: number,specificDateItemNo: number,specificName: string){
+            this.timeItemId = timeItemId;
+            this.useAtr = useAtr;
+            this.specificDateItemNo = specificDateItemNo;
+            this.specificName = specificName;
         }
     }
 }
