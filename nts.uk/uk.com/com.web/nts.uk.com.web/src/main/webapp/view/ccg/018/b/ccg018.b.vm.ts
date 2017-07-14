@@ -23,19 +23,10 @@ module ccg018.b.viewmodel {
 
         //component
         ccgcomponent: GroupOption;
-        //        selectedCode: KnockoutObservableArray<string>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
         // Options
         baseDate: KnockoutObservable<Date>;
-        //        isQuickSearchTab: KnockoutObservable<boolean>;
-        //        isAdvancedSearchTab: KnockoutObservable<boolean>;
-        //        isAllReferableEmployee: KnockoutObservable<boolean>;
-        //        isOnlyMe: KnockoutObservable<boolean>;
-        //        isEmployeeOfWorkplace: KnockoutObservable<boolean>;
-        //        isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
-        //        isMutipleCheck: KnockoutObservable<boolean>;
-        //        isSelectAllEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
         constructor() {
@@ -219,9 +210,9 @@ module ccg018.b.viewmodel {
                 ctgSet: self.categorySet(),
                 sId: self.selectedItem().employeeId,
                 topMenuCode: self.selectedItemAsTopPage(),
-                loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItem().loginMenuCode(),
-                loginSystem: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : self.selectedItem().system(),
-                loginMenuCls: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : self.selectedItem().menuClassification(),
+                loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItemAsTopPage(),
+                loginSystem: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : 0,
+                loginMenuCls: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : 8,
             };
             ccg018.b.service.update(obj).done(function() {
                 self.isSelectedFirst(false);
