@@ -136,7 +136,7 @@ import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 			var self = this;
 			self.selectedEmployee = ko.observableArray([]);
 			self.showinfoSelectedEmployee = ko.observable(false);
-			self.baseDate: ko.observable(new Date());
+			self.baseDate = ko.observable(new Date());
 			
             self.ccgcomponent = {
                baseDate: self.baseDate,

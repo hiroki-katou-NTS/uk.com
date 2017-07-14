@@ -9,7 +9,7 @@ module nts.uk.com.view.ccg008.test {
         
         constructor() {
             var self = this;  
-            self.topPageCode = ko.observable("");      
+            self.topPageCode = ko.observable("");
         }
         
         loginScreen() {
@@ -19,6 +19,11 @@ module nts.uk.com.view.ccg008.test {
         
         topPage() {
             var self = this;
+            if (nts.uk.ui.errors.hasError() || !self.topPageCode()) {
+                nts.uk.ui.dialog.alertError("トップページコードを入力してください");
+                $("#toppagecode").focus();
+                return;    
+            }
             nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {topPageCode: self.topPageCode()});
         }
         

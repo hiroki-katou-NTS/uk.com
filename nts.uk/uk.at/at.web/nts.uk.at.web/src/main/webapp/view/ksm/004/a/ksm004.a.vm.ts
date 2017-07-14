@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksm004.a {
     import flat = nts.uk.util.flatArray;
     import getText = nts.uk.resource.getText;
+    import aService = nts.uk.at.view.ksm004.a.service;
     export module viewmodel {
         export class ScreenModel {
             calendarData: KnockoutObservable<any>;
@@ -143,7 +144,13 @@ module nts.uk.at.view.ksm004.a {
             }
             
             start() {
-                
+                var self = this; 
+                aService.getAllCalendarCompany().done((data) => {
+                    self.    
+                }).fail((res) => {
+                    
+                });
+                self.currentCalendarWorkPlace().workPlaceID(_.first($('#tree-grid')['getDataList']()).workplaceId);    
                 
             }
             
@@ -160,6 +167,20 @@ module nts.uk.at.view.ksm004.a {
                 self.calendarPanel.eventUpdatable(true);
                 self.calendarPanel.holidayDisplay(true);
                 self.calendarPanel.cellButtonDisplay(true);
+            }
+            
+            openDialogC() {
+                var self = this;
+                nts.uk.ui.windows.setShared('date', '2000');
+                nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" });   
+            }
+            
+            openDialogD() {
+                var self = this;
+                nts.uk.ui.windows.setShared('classification', 0);
+                nts.uk.ui.windows.setShared('startTime', '200007');
+                nts.uk.ui.windows.setShared('endTime', '200008');
+                nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }); 
             }
         }
 
@@ -255,6 +276,38 @@ module nts.uk.at.view.ksm004.a {
                 this.workingDayAtr = ko.observable(workingDayAtr);
                 this.name = ko.observable(name);
             }   
+        }
+        
+        class CalendarItem {
+            start: string;
+            textColor: string;
+            backgroundColor: string;
+            listText: string;
+            constructor(start: number, listText: number) {
+                this.start = start.toString();
+                this.backgroundColor = 'white';
+                switch(listText) {
+                    case 1:
+                        this.textColor = '#FF1D1D';
+                        this.listText = WorkingDayAtr.WorkingDayAtr_WorkPlace;
+                        break;
+                    case 2:
+                        this.textColor = '#FF1D1D';
+                        this.listText = WorkingDayAtr.WorkingDayAtr_Class;
+                        break;
+                    default:
+                        this.textColor = '#589CAE';
+                        this.listText = WorkingDayAtr.WorkingDayAtr_Company;
+                        break;
+                }
+                listText: string;        
+            }
+        }
+        
+        export enum WorkingDayAtr {
+            WorkingDayAtr_Company = '稼働日',
+            WorkingDayAtr_WorkPlace = '非稼働日（法内）',
+            WorkingDayAtr_Class = '非稼働日（法外）'
         }
     }
 }
