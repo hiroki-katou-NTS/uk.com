@@ -15,11 +15,11 @@
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active">の間</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator">操作</a></li>
-				<li><a href="#tabpanel-3" role="tab-navigator">切断</a></li>
-				<li><a href="#tabpanel-4" role="tab-navigator">接続</a></li>
-				<li><a data-bind="click: testSideMenu">Do something</a></li>
+				<li><a data-id="0" href="#tabpanel-1" role="tab-navigator" class="active">の間</a></li>
+				<li><a data-id="1" href="#tabpanel-2" role="tab-navigator">操作</a></li>
+				<li><a data-id="2" href="#tabpanel-3" role="tab-navigator">切断</a></li>
+				<li><a data-id="3" href="#tabpanel-4" role="tab-navigator">接続</a></li>
+				<li><a data-bind="click: testSideMenu" data-id="4">DoSomething</a></li>
 			</ul>
 			<div class="divider"></div>
 			<span>ログインをしなおしてください</span>
