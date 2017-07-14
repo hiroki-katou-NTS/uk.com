@@ -57,7 +57,7 @@ public class ClosureHistorySaveCommandHandler extends CommandHandler<ClosureHist
 			
 			// edit history not last 
 			if (closureHistoryLast.isPresent()
-					&& closureHistoryLast.get().getStartYearMonth().v()
+					&& !closureHistoryLast.get().getStartYearMonth().v()
 							.equals(command.getClosureHistory().getStartDate())
 					&& command.getClosureHistory().getClosureDate() != closureHistoryLast.get()
 							.toClosureDate()) {
