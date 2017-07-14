@@ -44,6 +44,13 @@
 		&.valign-top { vertical-align: top; }
 	}
 }
+.disappear {
+	position: absolute;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
 
 /*****************************
   ntsControl

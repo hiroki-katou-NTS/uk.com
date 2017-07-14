@@ -49,6 +49,7 @@ $sidebar_arrow_width: 50px;
 		&.active{
 			background-color:$sidebar_theme_color;
 			color: $sidebar_border_color;
+			cursor: default;
 		}
 		&[disabled=disabled] {
 			color:#BBB;
