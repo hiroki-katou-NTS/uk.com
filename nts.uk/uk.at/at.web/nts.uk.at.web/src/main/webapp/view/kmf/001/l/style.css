@@ -9,13 +9,12 @@
     width: 100%;
     z-index: 999;
 }
-#functions-area {
+.fix-on-top {
         overflow: hidden;
     position: fixed; /* Set the navbar to fixed position */
-    top: 42px; /* Position the navbar at the top of the page */
+    top: 50px; /* Position the navbar at the top of the page */
     width: 100%;
     z-index: 900;
-    height: auto;
     background: white;
 }
 #contents-area {
@@ -46,6 +45,9 @@ table#table tr td.title {
 }
 .ntsControl {
     display: inline !important;
+}
+#manage-nursing, #child-manage-nursing {
+	display: inline-block !important;;
 }
 .td-combo-box {
 	padding-left: 4px;

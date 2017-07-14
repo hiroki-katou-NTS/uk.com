@@ -42,10 +42,9 @@ module nts.uk.com.view.ccg013.f.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             var data = windows.getShared("CCG013F_JOB_TITLE");
-            $("#dateTime").focus();
             self.dataCombobox = data;
             if (data.length > 0) {
-                self.comboWebMenuCode.push(new WebMenu('', '未設定'));
+                self.comboWebMenuCode.push(new WebMenu('000', '未設定'));
                 _.each(data, function(obj) {
                     self.comboWebMenuCode.push(new WebMenu(obj.webMenuCode, obj.webMenuName));
                 });
@@ -74,11 +73,14 @@ module nts.uk.com.view.ccg013.f.viewmodel {
             let data = [];
             let obj;
             _.each(arr, function(item) {
+                if(item.webMenuCode()=='000')
+                    item.webMenuCode('');
                 obj = new JobTitleTying(item.jobId, item.webMenuCode());
                 data.push(obj);
             });
             service.updateWebMenuCode(data);
-            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){$("#dateTime").focus();});
+            
         }
 
         /** search in list and return objects satisfy condition start date < date input < end date */
@@ -100,7 +102,11 @@ module nts.uk.com.view.ccg013.f.viewmodel {
 
         /** close dialog */
         closeDialog() {
+            var t0 = performance.now();                
+            var t1 = performance.now();
+                
             nts.uk.ui.windows.close();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
         /** Set up general object */

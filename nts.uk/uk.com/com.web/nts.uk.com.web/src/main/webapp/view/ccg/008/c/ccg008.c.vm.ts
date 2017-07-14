@@ -70,7 +70,7 @@ module nts.uk.com.view.ccg008.c {
                 var self = this;
                 let test = self.find(self.selectedCode());
                 //khong co item nao duoc chon
-                if(test===null||test===undefined){
+                if(!test){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_218"});
                 }else{
                     //co item duoc chon

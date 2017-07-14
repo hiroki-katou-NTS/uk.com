@@ -10,6 +10,8 @@ module nts.uk.at.view.kmk005.k {
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
 
+        let __viewContext: any = window["__viewContext"] || {};
+
         export class ScreenModel {
             filter: any = {
                 startTime: ko.observable('00:00'),
@@ -51,19 +53,19 @@ module nts.uk.at.view.kmk005.k {
                                     if (c) {
                                         model.bpsn(c.name);
                                     } else {
-                                        model.bpsc('000');
+                                        model.bpsc('');
                                         model.bpsn(getText("KDL007_6"));
                                     }
                                 });
                             } else {
-                                model.bpsc('000');
+                                model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             }
                         });
                     } else {
                         model.wtc('');
                         model.wtn(getText("KDL007_6"));
-                        model.bpsc('000');
+                        model.bpsc('');
                         model.bpsn(getText("KDL007_6"));
                     }
                 });
@@ -79,16 +81,16 @@ module nts.uk.at.view.kmk005.k {
                     model = self.model(),
                     workTime = service.getWorkTime(),
                     workPaySet = service.getWorkingTimesheetBonusPaySet();
-
                 block();
                 self.workTimeList.removeAll();
-
                 $.when(workTime, workPaySet).done((w: Array<any>, p: Array<any>) => {
                     _.each(w, (item) => {
                         item.flagSet = !!_.find(p, x => item.code == x.workingTimesheetCode);
                         self.workTimeList.push(new WorkTime(item));
                     });
+                    model.wtc(w[0].code);
                     model.wtc.valueHasMutated();
+                    model.bpsc.valueHasMutated();
                     unblock();
                 }).fail(x => alertE({ messageId: x.messageId }).then(unblock));
             }
@@ -101,15 +103,19 @@ module nts.uk.at.view.kmk005.k {
                         workingTimesheetCode: model.wtc,
                         bonusPaySettingCode: model.bpsc
                     };
-                if (model.wtc && model.wtc !== '') {
-                    block();
-                    service.saveSetting(command).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_15", []));
-                        self.start();
-                        unblock();
-                    }).fail((res) => {
-                        alertE(res.message).then(function() { unblock(); });
-                    });
+                if (model.bpsc !== '') {
+                    if (model.wtc && model.wtc !== '') {
+                        block();
+                        service.saveSetting(command).done(() => {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                            unblock();
+                        }).fail((res) => {
+                            alertE(res.message).then(function() { unblock(); });
+                        });
+                    }
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
                 }
             }
 
@@ -121,12 +127,14 @@ module nts.uk.at.view.kmk005.k {
                         workingTimesheetCode: model.wtc,
                         bonusPaySettingCode: model.bpsc
                     };
-
-                block();
-                service.saveSetting(command).done((data) => {
-                    self.start();
-                    unblock();
-                }).fail(x => alertE(x.message).then(unblock));
+                if (model.wtc && model.wtc !== '') {
+                    block();
+                    service.saveSetting(command).done(() => {
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                        self.start();
+                        unblock();
+                    }).fail(x => alertE(x.message).then(unblock));
+                }
             }
 
             search() {
@@ -168,12 +176,12 @@ module nts.uk.at.view.kmk005.k {
                                 if (x) {
                                     model.bpsn(x.name);
                                 } else {
-                                    model.bpsc('000');
+                                    model.bpsc('');
                                     model.bpsn(getText("KDL007_6"));
                                 }
                             })
                             .fail(x => {
-                                model.bpsc('000');
+                                model.bpsc('');
                                 model.bpsn(getText("KDL007_6"));
                             });
                     }
@@ -204,6 +212,7 @@ module nts.uk.at.view.kmk005.k {
             workTime1: string;
             workTime2: string;
             flagSet: boolean;
+            flagSet2: string;
 
             constructor(param: IWorkTime) {
                 let self = this;
@@ -213,6 +222,7 @@ module nts.uk.at.view.kmk005.k {
                 self.workTime1 = param.workTime1;
                 self.workTime2 = param.workTime2;
                 self.flagSet = param.flagSet || false;
+                self.flagSet2 = param.flagSet ? '<span style="font-size: 1.2em;margin-left: 35%;color: #63C28A;">✔</span' : '';
             }
         }
 
@@ -225,6 +235,17 @@ module nts.uk.at.view.kmk005.k {
             bpsc: KnockoutObservable<string> = ko.observable('');
             // bonus pay setting name
             bpsn: KnockoutObservable<string> = ko.observable('');
+
+            constructor() {
+                var self = this;
+                self.bpsc.subscribe(x => {
+                    let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
+                        acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                    if (acts && acts.id == 'K') {
+                        view.removeAble(!!x);
+                    }
+                });
+            }
         }
     }
 }

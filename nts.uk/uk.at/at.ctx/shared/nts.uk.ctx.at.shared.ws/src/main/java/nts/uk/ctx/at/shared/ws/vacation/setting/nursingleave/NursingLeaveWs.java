@@ -67,4 +67,15 @@ public class NursingLeaveWs extends WebService {
     public List<NursingLeaveSettingDto> findByCompanyId() {
         return this.nursingFinder.findNursingLeaveByCompanyId();
     }
+    
+    /**
+     * Find list work type code by company id.
+     *
+     * @return the list
+     */
+    @POST
+    @Path("find/listworktypecode")
+    public List<String> findListWorkTypeCodeByCompanyId() {
+        return this.nursingFinder.findListWorkTypeCodeByCompanyId();
+    }
 }

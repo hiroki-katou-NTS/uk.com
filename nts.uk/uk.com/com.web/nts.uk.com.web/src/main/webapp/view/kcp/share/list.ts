@@ -151,6 +151,7 @@ module kcp.share.list {
          */
         public init($input: JQuery, data: ComponentOption) :JQueryPromise<void> {
             var dfd = $.Deferred<void>();
+            ko.cleanNode($input[0]);
             var self = this;
             self.isMultiple = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
@@ -164,7 +165,7 @@ module kcp.share.list {
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
             self.listType = data.listType;
-            if (self.hasBaseDate) {
+            if (data.baseDate) {
                 self.baseDate = data.baseDate;
             } else {
                 self.baseDate = ko.observable(new Date());
@@ -277,7 +278,6 @@ module kcp.share.list {
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
             $input.load(webserviceLocator, function() {
                 $input.find('table').attr('id', self.componentGridId);
-                ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
                 dfd.resolve();
@@ -382,7 +382,7 @@ module kcp.share.list {
         private initGridStyle(data: ComponentOption) {
             var codeColumnSize: number = 50;
             var companyColumnSize: number = 0;
-            var heightOfRow : number = 23;
+            var heightOfRow : number = 24;
             switch(data.listType) {
                 case ListType.EMPLOYMENT:
                     break;

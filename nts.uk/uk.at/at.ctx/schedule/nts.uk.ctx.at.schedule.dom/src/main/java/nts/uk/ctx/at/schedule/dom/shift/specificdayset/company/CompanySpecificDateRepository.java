@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.schedule.dom.shift.specificdayset.company;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface CompanySpecificDateRepository {
-	//get Company Specific Date by Date
-	Optional<CompanySpecificDateItem> getComSpecByDate(String companyId, int specificDate);
+	//get List Company Specific Date by Date
+	List<CompanySpecificDateItem> getComSpecByDate(String companyId, int specificDate);
 }

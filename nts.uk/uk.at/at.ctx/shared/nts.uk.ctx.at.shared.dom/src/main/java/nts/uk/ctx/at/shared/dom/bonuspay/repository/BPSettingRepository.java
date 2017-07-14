@@ -24,4 +24,6 @@ public interface BPSettingRepository {
 	void updateBonusPaySetting(BonusPaySetting domain);
 
 	void removeBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode);
+
+	boolean isExisted(String companyId, BonusPaySettingCode code);
 }

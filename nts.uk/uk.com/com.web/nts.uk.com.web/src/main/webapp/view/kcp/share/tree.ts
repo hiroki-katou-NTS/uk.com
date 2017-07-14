@@ -148,7 +148,7 @@ module kcp.share.tree {
             self.isMultiple = data.isMultiSelect;
             self.hasBaseDate(!self.isMultiple);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
-            self.isShowSelectButton = data.isShowSelectButton;
+            self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
             if (data.alreadySettingList) {
@@ -197,6 +197,9 @@ module kcp.share.tree {
                     self.backupItemList(res);
                 }
                 self.loadTreeGrid().done(function() {
+                    $('#combo-box-tree-component').on('mousedown', function() {
+                        $('#combo-box-tree-component').focus();
+                    });
                     dfd.resolve();
                 })
                 
@@ -235,7 +238,7 @@ module kcp.share.tree {
         private addColToGrid(data: TreeComponentOption, dataList: Array<UnitModel>) {
             let self = this;
             // Convert tree to array.
-            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 300);
+            let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string" }
@@ -300,7 +303,7 @@ module kcp.share.tree {
         private calHeightTree(data: TreeComponentOption) {
             let height = 24;
             this.treeStyle = {
-                height: height * (data.maxRows + 1) + 1
+                height: height * (data.maxRows + 1) + 17
             };
         }
         
@@ -419,10 +422,15 @@ module kcp.share.tree {
                     self.itemList(subItemList);
 //                    self.selectedWorkplaceIds(self.isMultiple ? [subItemList[0].workplaceId] : subItemList[0]
 //                        .workplaceId);
+                    self.initSelectedValue(data, self.itemList());
                     if (!data || !$input) {
                         return;
                     }
-                    self.loadTreeGrid();
+                    self.loadTreeGrid().done(() => {
+                        $('#combo-box-tree-component').on('mousedown', function() {
+                            $('#combo-box-tree-component').focus();
+                        });
+                    });
                 }
             }
         }
@@ -601,6 +609,7 @@ module kcp.share.tree {
             for (let item of dataList) {
                 let newItem: any = {};
                 if (item.level <= level) {
+                    self.listWorkplaceId.push(item.workplaceId);
                     newItem = JSON.parse(JSON.stringify(item));
                     listModel.push(newItem);
                     if (level == 1) {

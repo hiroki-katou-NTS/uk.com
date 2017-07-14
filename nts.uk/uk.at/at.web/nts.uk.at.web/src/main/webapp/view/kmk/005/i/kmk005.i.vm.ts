@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk005.i {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    let __viewContext: any = window["__viewContext"] || {};
+
     export module viewmodel {
         export class ScreenModel {
             ccgcomponent: any = {
@@ -52,6 +54,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(datas[0].employeeCode);
+                        model.bid.valueHasMutated();
                     },
                     onSearchOnlyClicked: (data: any) => {
                         self.kcpcompoment.employeeInputList([data].map(x => {
@@ -64,6 +68,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(data.employeeCode);
+                        model.bid.valueHasMutated();
                     },
                     onSearchOfWorkplaceClicked: (datas: Array<any>) => {
                         self.kcpcompoment.employeeInputList(datas.map(x => {
@@ -76,6 +82,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(datas[0].employeeCode);
+                        model.bid.valueHasMutated()
                     },
                     onSearchWorkplaceChildClicked: (datas: Array<any>) => {
                         self.kcpcompoment.employeeInputList(datas.map(x => {
@@ -88,6 +96,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(datas[0].employeeCode);
+                        model.bid.valueHasMutated()
                     },
                     onApplyEmployee: (datas: Array<any>) => {
                         self.kcpcompoment.employeeInputList(datas.map(x => {
@@ -100,6 +110,8 @@ module nts.uk.at.view.kmk005.i {
                                 workplaceName: x.workplaceName
                             };
                         }));
+                        model.ecd(datas[0].employeeCode);
+                        model.bid.valueHasMutated()
                     }
                 });
 
@@ -122,12 +134,12 @@ module nts.uk.at.view.kmk005.i {
                                     if (m) {
                                         model.bname(m.name)
                                     } else {
-                                        model.bid('000');
+                                        model.bid('');
                                         model.bname(getText("KDL007_6"));
                                     }
                                 }).fail(m => alert(m));
                             } else {
-                                model.bid('000');
+                                model.bid('');
                                 model.bname(getText("KDL007_6"));
                             }
                         }).fail(x => alert(x));
@@ -167,7 +179,6 @@ module nts.uk.at.view.kmk005.i {
             start() {
                 let self = this,
                     model = self.model();
-
                 model.ecd.valueHasMutated();
                 self.kcpcompoment.employeeInputList.valueHasMutated();
             }
@@ -189,12 +200,12 @@ module nts.uk.at.view.kmk005.i {
                                     model.bname(resp.name);
                                 }
                                 else {
-                                    model.bid('000');
+                                    model.bid('');
                                     model.bname(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.bid('000');
+                            model.bid('');
                             model.bname(getText("KDL007_6"));
                         }
                     }
@@ -209,11 +220,15 @@ module nts.uk.at.view.kmk005.i {
                         employeeId: model.eid,
                         bonusPaySettingCode: model.bid,
                     };
-                if (model.eid !== '') {
-                    service.saveData(data).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_15", []));
-                        self.start();
-                    });
+                if (model.bid !== '') {
+                    if (model.eid !== '') {
+                        service.saveData(data).done(() => {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                        });
+                    }
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
                 }
             }
 
@@ -225,8 +240,12 @@ module nts.uk.at.view.kmk005.i {
                         employeeId: model.eid,
                         bonusPaySettingCode: model.bid,
                     };
-
-                service.saveData(data).done(x => { self.start(); });
+                if (model.eid !== '') {
+                    service.saveData(data).done(() => {
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                        self.start();
+                    });
+                }
             }
         }
     }
@@ -255,6 +274,14 @@ module nts.uk.at.view.kmk005.i {
             self.eid(param.eid || '');
             self.ecd(param.ecd || '');
             self.ename(param.ename || '');
+
+            self.bid.subscribe(x => {
+                let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
+                    acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                if (acts && acts.id == 'I') {
+                    view.removeAble(!!x);
+                }
+            });
         }
     }
 
