@@ -6,7 +6,7 @@ module nts.uk.at.view.kmk005.f {
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
             time: KnockoutObservable<string>;
-            bonusPaySettingList: KnockoutObservableArray<BonusPaySetting>;
+            bonusPaySettingList: KnockoutObservableArray<any>;
             bonusPayTimeItemList: KnockoutObservableArray<BonusPayTimeItem>;
             specBonusPayTimeItemList: KnockoutObservableArray<BonusPayTimeItem>;
             specDateItem: KnockoutObservableArray<SpecDateItem>;
@@ -32,16 +32,6 @@ module nts.uk.at.view.kmk005.f {
                 self.currentSpecBonusPayTimesheets = ko.observableArray([]);
                 self.specDateItem = ko.observableArray([]);
                 self.isUpdate = ko.observable(true);
-                self.currentBPSetCode.subscribe(function(value) {
-                    if (value != "") {
-                        self.isUpdate(true);
-                        self.currentBonusPaySetting(ko.mapping.fromJS(_.clone(_.find(self.bonusPaySettingList(), (o) => { return o.code == value; }))));
-                        self.getBonusPayTimesheets(value);
-                    } else {
-                        self.isUpdate(false);
-                        self.currentBonusPaySetting(new BonusPaySetting('', '', ''));
-                    }
-                });
             }
 
             startPage(): JQueryPromise<any> {
@@ -68,12 +58,27 @@ module nts.uk.at.view.kmk005.f {
                             self.bonusPaySettingList(dfdBonusPaySettingData);
                             self.currentBonusPaySetting(ko.mapping.fromJS(_.first(self.bonusPaySettingList())));
                             self.currentBPSetCode(self.currentBonusPaySetting().code());
+                            self.getBonusPayTimesheets(self.currentBPSetCode());
                             self.isUpdate(true);
                         } else {
                             self.isUpdate(false);
-                            self.createData();
+                            self.createData(true);
                             self.currentBPSetCode('');
                         }
+                        self.currentBPSetCode.subscribe(function(value) {
+                            nts.uk.ui.errors.clearAll();
+                            if (value != '') {
+                                self.isUpdate(true);
+                                self.currentBonusPaySetting(ko.mapping.fromJS(_.find(self.bonusPaySettingList(), (o) => {
+                                    let codes = o.code;
+                                    return String(codes) == value;
+                                })));
+                                self.getBonusPayTimesheets(value);
+                            } else {
+                                self.isUpdate(false);
+                                self.currentBonusPaySetting(new BonusPaySetting('', '', ''));
+                            }
+                        });
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     }).fail((res1, res2, res3, res4) => {
@@ -96,7 +101,8 @@ module nts.uk.at.view.kmk005.f {
                             self.currentBPSetCode(self.currentBonusPaySetting().code());
                         } else {
                             self.isUpdate(false);
-                            self.createData();
+                            self.bonusPaySettingList([]);
+                            self.createData(false);
                         }
                         nts.uk.ui.block.clear();
                         dfd.resolve();
@@ -116,11 +122,11 @@ module nts.uk.at.view.kmk005.f {
                 $.when(dfdTimesheetList, dfdGetSpecTimesheetList).done((dfdTimesheetListData, dfdGetSpecTimesheetListData) => {
                     self.currentBonusPayTimesheets.removeAll();
                     self.currentSpecBonusPayTimesheets.removeAll();
-                    if(nts.uk.util.isNullOrEmpty(dfdTimesheetListData)||nts.uk.util.isNullOrEmpty(dfdGetSpecTimesheetListData)){
+                    if (nts.uk.util.isNullOrEmpty(dfdTimesheetListData) || nts.uk.util.isNullOrEmpty(dfdGetSpecTimesheetListData)) {
                         for (let i = 0; i < 10; i++) {
-                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 1, 1, '', i.toString(), 0, 0, 0, 0));
-                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 1, 1, '', i.toString(), 0, 0, 0, 0, 1));
-                        }    
+                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0));
+                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0, 0));
+                        }
                     } else {
                         dfdTimesheetListData.forEach(function(item) {
                             self.currentBonusPayTimesheets.push(new BonusPayTimesheet(
@@ -134,7 +140,7 @@ module nts.uk.at.view.kmk005.f {
                                 item.roundingTimeAtr,
                                 item.roundingAtr));
                         });
-                        
+
                         dfdGetSpecTimesheetListData.forEach(function(item) {
                             self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet(
                                 item.companyId,
@@ -158,7 +164,8 @@ module nts.uk.at.view.kmk005.f {
                 return dfd.promise();
             }
 
-            createData(): void {
+            createData(firstTime: boolean): void {
+                if (!firstTime) nts.uk.ui.errors.clearAll();
                 var self = this;
                 self.isUpdate(false);
                 self.currentBonusPaySetting(new BonusPaySetting('', '', ''));
@@ -166,8 +173,8 @@ module nts.uk.at.view.kmk005.f {
                 self.currentBonusPayTimesheets.removeAll();
                 self.currentSpecBonusPayTimesheets.removeAll();
                 for (let i = 0; i < 10; i++) {
-                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i+1, 0, (i+1).toString(), (i+1).toString(), 0, 0, 0, 0));
-                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i+1, 0, (i+1).toString(), (i+1).toString(), 0, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0, 0));
                 }
             }
 
@@ -180,7 +187,20 @@ module nts.uk.at.view.kmk005.f {
                         fService.updateBonusPaySetting(
                             self.createCommand(self.currentBonusPaySetting(), self.currentBonusPayTimesheets(), self.currentSpecBonusPayTimesheets())
                         ).done((data) => {
-                            self.getBonusPaySetting();
+                            if (data.length > 0) {
+                                _.forEach(data, function(value) {
+                                    if (value.isBPTimeSheet == true) {
+                                        $("#BP" + value.timeSheetNO).ntsError('set', { messageId: value.errorId });
+                                    }
+                                    else if (value.isBPTimeSheet == false) {
+                                        $("#SBP" + value.timeSheetNO).ntsError('set', { messageId: value.errorId });
+                                    }
+                                });
+                            }
+                            else {
+                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                                self.getBonusPaySetting();
+                            }
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -189,7 +209,20 @@ module nts.uk.at.view.kmk005.f {
                         fService.insertBonusPaySetting(
                             self.createCommand(self.currentBonusPaySetting(), self.currentBonusPayTimesheets(), self.currentSpecBonusPayTimesheets())
                         ).done((data) => {
-                            self.getBonusPaySetting();
+                            if (data.length > 0) {
+                                _.forEach(data, function(value) {
+                                    if (value.isBPTimeSheet == true) {
+                                        $("#BP" + value.timeSheetNO).ntsError('set', { messageId: value.errorId });
+                                    }
+                                    else if (value.isBPTimeSheet == false) {
+                                        $("#SBP" + value.timeSheetNO).ntsError('set', { messageId: value.errorId });
+                                    }
+                                });
+                            }
+                            else {
+                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                                self.getBonusPaySetting();
+                            }
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -223,14 +256,19 @@ module nts.uk.at.view.kmk005.f {
                     lstSpecBonusPayTimesheet: ko.mapping.toJS(specBonusPayTimesheets)
                 }
             }
-            
+
             navigateView() {
-                let self = this;           
+                let self = this;
                 href("../a/index.xhtml");
+            }
+
+            navigateViewToK() {
+                let self = this;
+                href("../g/index.xhtml");
             }
         }
 
-        class BonusPaySetting {
+        export class BonusPaySetting {
             companyId: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
             code: KnockoutObservable<string>;
@@ -241,7 +279,7 @@ module nts.uk.at.view.kmk005.f {
             }
         }
 
-        class BonusPayTimeItem {
+        export class BonusPayTimeItem {
             companyId: string;
             timeItemId: string;
             useAtr: number;
@@ -258,7 +296,7 @@ module nts.uk.at.view.kmk005.f {
             }
         }
 
-        class SpecDateItem {
+        export class SpecDateItem {
             useAtr: number;
             timeItemId: string;
             specificName: string;
@@ -271,7 +309,7 @@ module nts.uk.at.view.kmk005.f {
             }
         }
 
-        class BonusPayTimesheet {
+        export class BonusPayTimesheet {
             companyId: KnockoutObservable<string>;
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
@@ -295,7 +333,7 @@ module nts.uk.at.view.kmk005.f {
             }
         }
 
-        class SpecBonusPayTimesheet {
+        export class SpecBonusPayTimesheet {
             companyId: KnockoutObservable<string>;
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;

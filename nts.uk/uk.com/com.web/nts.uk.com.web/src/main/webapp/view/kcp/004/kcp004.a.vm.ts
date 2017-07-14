@@ -195,6 +195,10 @@ module kcp004.a.viewmodel {
             self.setTreeData();
             $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
                 $('#tree-grid').focusTreeGridComponent();
+                // fix focus placeholder in IE 10
+                $('#combo-box-tree-component').on('mousedown', function() {
+                    $('#combo-box-tree-component').focus();
+                });
                 dfd.resolve();
             });
             return dfd.promise();

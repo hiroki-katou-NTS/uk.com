@@ -16,9 +16,29 @@ public class SpecificDateItemFinder {
 	@Inject
 	private SpecificDateItemRepository specificDateItemRepository;
 
+	/**
+	 * get All
+	 * 
+	 * @return
+	 */
 	public List<SpecificDateItemDto> getAllByCompany() {
 		String companyId = AppContexts.user().companyId();
-		return specificDateItemRepository.getAll(companyId).stream().map(c -> toSpecificDateItemDto(c))
+		return specificDateItemRepository.getAll(companyId)
+				.stream()
+				.map(c -> toSpecificDateItemDto(c))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * get Specific Date Item is USE or NOT
+	 * 
+	 * @return
+	 */
+	public List<SpecificDateItemDto> getSpecDateItemIsUse(int useAtr) {
+		String companyId = AppContexts.user().companyId();
+		return specificDateItemRepository.getSpecifiDateByUse(companyId, useAtr)
+				.stream()
+				.map(c -> toSpecificDateItemDto(c))
 				.collect(Collectors.toList());
 	}
 

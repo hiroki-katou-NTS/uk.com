@@ -1,6 +1,5 @@
 module nts.uk.at.view.kmk008.i {
     export module viewmodel {
-
         export class ScreenModel {
             operationSetting: KnockoutObservable<OperationSettingModel>;
             selectedClosingDateAtr: KnockoutObservable<number>;
@@ -8,7 +7,7 @@ module nts.uk.at.view.kmk008.i {
             isEnableTargetSetting: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
-                self._init();
+                self._init();               
                 self.selectedClosingDateAtr.subscribe(function(newValue) {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     self.operationSetting().selectedClosingDateAtr = newValue
@@ -34,10 +33,10 @@ module nts.uk.at.view.kmk008.i {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-
                 new service.Service().getData().done(data => {
                     if (data) {
                         self.operationSetting(new OperationSettingModel(data));
+                        self.selectedClosingDateAtr( self.operationSetting().selectedClosingDateAtr);
                     }
                     dfd.resolve();
                 })
@@ -46,14 +45,16 @@ module nts.uk.at.view.kmk008.i {
 
             insertAndUpdate() {
                 let self = this;
-
                 new service.Service().getData().done(data => {
-                    if (data) {
+                    if (data && data.agreementOperationSettingDetailDto) {
                         new service.Service().updateData(new OperationSettingModelUpdate(self.operationSetting()));
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                     } else {
                         new service.Service().insertData(new OperationSettingModelUpdate(self.operationSetting()));
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                     }
                 });
+                self.closeDialog();
             }
 
             closeDialog(): void {
@@ -62,12 +63,12 @@ module nts.uk.at.view.kmk008.i {
         }
 
         export class OperationSettingModel {
-            startingMonth: KnockoutObservableArray<any>;
-            numberTimesOverLimitType: KnockoutObservableArray<any>;
-            closingDateType: KnockoutObservableArray<any>;
-            closingDateAtr: KnockoutObservableArray<any>;
-            yearlyWorkTableAtr: KnockoutObservableArray<any>;
-            alarmListAtr: KnockoutObservableArray<any>;
+            startingMonth: any;
+            numberTimesOverLimitType: any;
+            closingDateType: any;
+            closingDateAtr: any;
+            yearlyWorkTableAtr: any;
+            alarmListAtr: any;
             selectedStartingMonth: KnockoutObservable<string>;
             selectedClosingDateType: KnockoutObservable<string>;
             selectedClosingDateAtr: number;
@@ -77,51 +78,51 @@ module nts.uk.at.view.kmk008.i {
             constructor(data: any) {
                 let self = this;
                 if (data) {
-                    self.startingMonth = ko.observableArray(data.startingMonthEnum);
-                    self.numberTimesOverLimitType = ko.observableArray(data.numberTimesOverLimitTypeEnum);
-                    self.closingDateType = ko.observableArray(data.closingDateTypeEnum);
-                    self.closingDateAtr = ko.observableArray(data.closingDateAtrEnum);
-                    self.yearlyWorkTableAtr = ko.observableArray(data.yearlyWorkTableAtrEnum);
-                    self.alarmListAtr = ko.observableArray(data.alarmListAtrEnum);
-
-                    self.selectedStartingMonth = ko.observable(data.startingMonth);
-                    self.selectedClosingDateType = ko.observable(data.closingDateType);
-                    self.selectedClosingDateAtr = 0;
-                    self.selectedNumberTimesOverLimitType = ko.observable(data.numberTimesOverLimitType);
-                    self.selectedAlarmListAtr = ko.observable(data.alarmListAtr);
-                    self.selectedYearlyWorkTableAtr = ko.observable(data.yearlyWorkTableAtr);
+                    self.startingMonth = data.startingMonthEnum;
+                    self.numberTimesOverLimitType = data.numberTimesOverLimitTypeEnum;                   
+                    self.closingDateType = data.closingDateTypeEnum;
+                    self.closingDateAtr = data.closingDateAtrEnum;
+                    self.yearlyWorkTableAtr = data.yearlyWorkTableAtrEnum;
+                    self.alarmListAtr = data.alarmListAtrEnum;
+                    
+                    self.selectedStartingMonth = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.startingMonth : "1");
+                    self.selectedClosingDateType = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.closingDateType : "1");
+                    self.selectedClosingDateAtr = data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.closingDateAtr : "0";
+                    self.selectedNumberTimesOverLimitType = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.numberTimesOverLimitType : "6");
+                    self.selectedAlarmListAtr = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.alarmListAtr : "0");
+                    self.selectedYearlyWorkTableAtr = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.yearlyWorkTableAtr : "0");
                 } else {
-                    self.startingMonth = ko.observableArray([]);
-                    self.closingDateType = ko.observableArray([]);
-                    self.closingDateAtr = ko.observableArray([]);
-                    self.numberTimesOverLimitType = ko.observableArray([]);
-                    self.alarmListAtr = ko.observableArray([]);
-                    self.yearlyWorkTableAtr = ko.observableArray([]);
+                    self.startingMonth = new Array();
+                    self.closingDateType = new Array();
+                    self.closingDateAtr = new Array();
+                    self.numberTimesOverLimitType = new Array();
+                    self.alarmListAtr = new Array();
+                    self.yearlyWorkTableAtr = new Array();
                     self.selectedStartingMonth = ko.observable("1");
                     self.selectedClosingDateType = ko.observable("1");
                     self.selectedClosingDateAtr = 0;
-                    self.selectedNumberTimesOverLimitType = ko.observable("1");
-                    self.selectedAlarmListAtr = ko.observable("1");
-                    self.selectedYearlyWorkTableAtr = ko.observable("1");
+                    self.selectedNumberTimesOverLimitType = ko.observable("6");
+                    self.selectedAlarmListAtr = ko.observable("0");
+                    self.selectedYearlyWorkTableAtr = ko.observable("0");
                 }
             }
         }
 
         export class OperationSettingModelUpdate {
-            selectedStartingMonth: number;
-            selectedClosingDateType: number;
-            selectedClosingDateAtr: number;
-            selectedNumberTimesOverLimitType: number;
-            selectedAlarmListAtr: number;
-            selectedYearlyWorkTableAtr: number;
+            startingMonth: number;
+            closingDateType: number;
+            closingDateAtr: number;
+            numberTimesOverLimitType: number;
+            alarmListAtr: number;
+            yearlyWorkTableAtr: number;
             constructor(data: OperationSettingModel) {
                 let self = this;
-                self.selectedStartingMonth = Number(data.startingMonth);
-                self.selectedClosingDateType = Number(data.selectedClosingDateType);
-                self.selectedClosingDateAtr = Number(data.selectedClosingDateAtr);
-                self.selectedNumberTimesOverLimitType = Number(data.numberTimesOverLimitType);
-                self.selectedAlarmListAtr = Number(data.selectedAlarmListAtr);
-                self.selectedYearlyWorkTableAtr = Number(data.selectedYearlyWorkTableAtr);
+                self.startingMonth = Number(data.selectedStartingMonth());
+                self.closingDateType = Number(data.selectedClosingDateType());
+                self.closingDateAtr = Number(data.selectedClosingDateAtr);
+                self.numberTimesOverLimitType = Number(data.selectedNumberTimesOverLimitType());
+                self.alarmListAtr = Number(data.selectedAlarmListAtr());
+                self.yearlyWorkTableAtr = Number(data.selectedYearlyWorkTableAtr());
             }
         }
 

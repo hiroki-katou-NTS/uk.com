@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.command;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -98,6 +98,6 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
         setting.setStartMonthDay(null);
         setting.setNursingNumberLeaveDay(null);
         setting.setNursingNumberPerson(null);
-        setting.setWorkTypeCodes(Arrays.asList("001", "002", "003", "004"));
+        setting.setWorkTypeCodes(new ArrayList<>());
     }
 }

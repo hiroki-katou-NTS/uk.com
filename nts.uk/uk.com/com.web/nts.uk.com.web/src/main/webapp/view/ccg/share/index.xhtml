@@ -7,7 +7,7 @@
 		<div class="pull-left" style="background-color: #F2F2F2; border-radius: 5px;">
 			<div class="control-group" style="margin-left: 5px; margin-top: 20px;">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
-				<div data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate}"></div> 
+				<div data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'CCG001_1',required: true }"></div> 
 				<button id="btn_apply" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
 			</div>
 		<div id="tab-panel" class="ccg-tabpanel pull-left" data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
@@ -43,22 +43,28 @@
 			</div>
 			<div class="tab-content-2 ccg_tab_content_2" data-bind="if: isAdvancedSearchTab">
 				<div style="padding-right: 15px">
-				<div>
-					<label>#{i18n.getText('CCG001_20')}</label>
-				</div>
-				<div class="accordion">
-					<h3>
-						<label>#{i18n.getText('CCG001_5')}</label>
-					</h3>
-					<div class="contentkcp" id="employmentList"></div>
-					<h3>
-						<label>#{i18n.getText('CCG001_6')}</label>
-					</h3>
-					<div class="contentkcp"  id="classificationList"></div>
-					<h3>
-						<label>#{i18n.getText('CCG001_7',["Com_Jobtile"])}</label>
-					</h3>
-					<div class="contentkcp" id="jobtitleList"></div>
+					<div>
+						<label>#{i18n.getText('CCG001_20')}</label>
+					</div>
+					<div class="accordion">
+						<h3>
+							<label>#{i18n.getText('CCG001_5')}</label>
+						</h3>
+						<div class="contentkcp" id="employmentList"></div>
+					</div>
+					<div class="accordion">
+						<h3>
+							<label>#{i18n.getText('CCG001_6')}</label>
+						</h3>
+						<div class="contentkcp"  id="classificationList"></div>
+					</div>
+					<div class="accordion">
+						<h3>
+							<label>#{i18n.getText('CCG001_7',["Com_Jobtile"])}</label>
+						</h3>
+						<div class="contentkcp" id="jobtitleList"></div>
+					</div>
+					<div class="accordion">
 					<h3>
 						<label>#{i18n.getText('CCG001_8')}</label>
 					</h3>
@@ -77,7 +83,6 @@
 				</div>
 				<br/>
 				<span class="btn_apply" data-bind="click: applyEmployee">
-					<i class="icon icon-01-searchmode"></i>
 					<label class="lbl-apply">#{i18n.getText('CCG001_19')}</label>
 				</span>
 				</div>

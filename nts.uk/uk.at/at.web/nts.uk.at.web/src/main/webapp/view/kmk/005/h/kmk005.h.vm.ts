@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk005.h {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    
+    let __viewContext: any = window["__viewContext"] || {};
 
     export module viewmodel {
         export class ScreenModel {
@@ -53,12 +55,12 @@ module nts.uk.at.view.kmk005.h {
                                 if (m) {
                                     model.name(m.name)
                                 } else {
-                                    model.id('000');
+                                    model.id('');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('000');
+                            model.id('');
                             model.name(getText("KDL007_6"));
                         }
 
@@ -75,7 +77,7 @@ module nts.uk.at.view.kmk005.h {
                     tree = self.treeGrid,
                     model = self.model(),
                     wids: Array<string> = flat($('#tree-grid')['getDataList'](), 'childs').map(x => x.workplaceId);
-
+                model.wid(wids[0]);
                 // get ready setting list
                 tree.alreadySettingList.removeAll();
                 service.getData(wids).done((resp: Array<any>) => {
@@ -84,6 +86,7 @@ module nts.uk.at.view.kmk005.h {
                     }
 
                     // call subscribe function of wid
+                    model.id.valueHasMutated();
                     model.wid.valueHasMutated();
                 }).fail(x => alert(x));
             }
@@ -105,12 +108,12 @@ module nts.uk.at.view.kmk005.h {
                                     model.name(resp.name);
                                 }
                                 else {
-                                    model.id('000');
+                                    model.id('');
                                     model.name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('000');
+                            model.id('');
                             model.name(getText("KDL007_6"));
                         }
                     }
@@ -125,12 +128,16 @@ module nts.uk.at.view.kmk005.h {
                         bonusPaySettingCode: model.id,
                         action: 0
                     };
-                if (model.wid !== '') {
-                    // call service to save setting
-                    service.saveData(command).done(() => {
-                        alert(nts.uk.resource.getMessage("Msg_15", []));
-                        self.start();
-                    });
+                if (model.id !== '') {
+                    if (model.wid !== '') {
+                        // call service to save setting
+                        service.saveData(command).done(() => {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
+                            self.start();
+                        });
+                    }
+                } else {
+                    alert(nts.uk.resource.getMessage("Msg_30", []));
                 }
             }
 
@@ -142,9 +149,13 @@ module nts.uk.at.view.kmk005.h {
                         bonusPaySettingCode: model.id,
                         action: 1
                     };
-
-                // call service to delete setting
-                service.saveData(command).done(() => { self.start(); });
+                if (model.wid !== '') {
+                    // call service to delete setting
+                    service.saveData(command).done(() => {
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                        self.start();
+                    });
+                }
             }
         }
 
@@ -169,6 +180,14 @@ module nts.uk.at.view.kmk005.h {
                 self.name(param.name);
                 self.wid(param.wid || '');
                 self.wname(param.wname || '');
+
+                self.id.subscribe(x => {
+                    let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
+                        acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                    if (acts && acts.id == 'H') {
+                        view.removeAble(!!x);
+                    }
+                });
             }
         }
 

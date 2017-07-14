@@ -1,12 +1,6 @@
 @CHARSET "UTF-8";
 
-#functions-area {
-	height: 60px;
-}
-
 .btnSave {
-	margin-top: 10px;
-	margin-left: 20px;
 	width: 80px;
 }
 

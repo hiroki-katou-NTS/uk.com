@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -61,8 +62,8 @@ public class TopPageSelfWebService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("/gettoppage")
-	public LayoutAllDto activeLayoutTopPage(String topPageCode){
-		return topPage.findLayoutTopPage(topPageCode);
+	@Path("/gettoppage/{fromScreen}")
+	public LayoutAllDto activeLayoutTopPage(@PathParam("fromScreen") String fromScreen, String topPageCode){
+		return topPage.findLayoutTopPage(fromScreen, topPageCode);
 	}
 }

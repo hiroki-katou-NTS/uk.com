@@ -20,8 +20,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         selectCodeStandardMenu: KnockoutObservable<string>;
         allPart: KnockoutObservableArray<any>;
         selectedSystemID: KnockoutObservable<string>;
-        textOption:KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
-        
+        textOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
+
         constructor() {
             var self = this;
             self.nameMenuBar = ko.observable("");
@@ -39,24 +39,25 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.listStandardMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', key: 'code', width: '60px' },
-                { headerText: '名称', prop: 'displayName', key: 'displayName', width: '200px' }
+                { headerText: '名称', prop: 'displayName', key: 'displayName', width: '200px' },
+                { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', display: 'none' }
             ]);
             self.selectCodeStandardMenu = ko.observable('');
             self.currentListStandardMenu = ko.observable('');
             //Follow SystemSelect
             self.selectedSystemID = ko.observable(null);
             self.selectedCodeSystemSelect.subscribe((value) => { self.changeSystem(value); });
-            self.selectedRadioAtcClass.subscribe(function(value){
-                 if (value == 0) {
-                    self.currentListStandardMenu('');    
-                 }
+            self.selectedRadioAtcClass.subscribe(function(value) {
+                if (value == 0) {
+                    self.currentListStandardMenu('');
+                }
             });
             self.textOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                 width: "160px"
-            })); 
+            }));
         }
 
-        startPage(): JQueryPromise<any> { 
+        startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             var data = windows.getShared("CCG013A_StandardMeNu");
@@ -73,8 +74,23 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 self.listSystemSelect(editMenuBar.listSystem);
                 self.allPart(editMenuBar.listStandardMenu);
-                let listStandardMenu: Array<service.MenuBarDto> = _.orderBy(editMenuBar.listStandardMenu, "code", "asc");
-                self.listStandardMenu(editMenuBar.listStandardMenu);
+                let listStandardMenu: Array<MenuBarDto> = _.orderBy(editMenuBar.listStandardMenu, "code", "asc");
+                _.forEach(editMenuBar.listStandardMenu, (item) => {
+                    self.listStandardMenu.push(new MenuBarDto(
+                        item.afterLoginDisplay,
+                        item.classification,
+                        item.code,
+                        item.companyId,
+                        item.displayName,
+                        item.displayOrder,
+                        item.logSettingDisplay,
+                        item.menuAtr,
+                        item.system,
+                        item.targetItems,
+                        item.url,
+                        item.webMenuSetting
+                    ));
+                });
                 self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
             }).fail(function(error) {
@@ -92,16 +108,26 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         submit() {
             var self = this;
             var menuCls = null;
+            var code = null;
             if (nts.uk.ui.errors.hasError() || (self.letterColor() === "" || self.backgroundColor() === "")) {
-                return;    
+                return;
             }
-            var standMenu = _.find(self.listStandardMenu(), function(item: service.MenuBarDto) {
-                return item.code == self.currentListStandardMenu();    
+            var standMenu = _.find(self.listStandardMenu(), function(item: MenuBarDto) {
+                return item.uniqueCode == self.currentListStandardMenu();
             });
             if (standMenu) {
                 menuCls = standMenu.classification;
-            }            
-            var menuBar = new MenuBar(self.currentListStandardMenu(), self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass(), self.selectedCodeSystemSelect(), menuCls);
+                code = standMenu.code;
+            }
+            var menuBar = new MenuBar({
+                code: code,
+                nameMenuBar: self.nameMenuBar(),
+                letterColor: self.letterColor(),
+                backgroundColor: self.backgroundColor(),
+                selectedRadioAtcClass: self.selectedRadioAtcClass(),
+                system: self.selectedCodeSystemSelect(),
+                menuCls: menuCls,
+            });
             windows.setShared("CCG013B_MenuBar", menuBar);
             self.cancel_Dialog();
         }
@@ -109,9 +135,19 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         /** Change System */
         private changeSystem(value): void {
             var self = this;
-            var standardMenus =  _.chain(self.allPart()).filter(['system', value]).value();
+            var standardMenus = _.chain(self.allPart()).filter(['system', value]).value();
             self.listStandardMenu(standardMenus);
         }
+    }
+
+    interface IMenuBar {
+        code: string;
+        nameMenuBar: string;
+        letterColor: string;
+        backgroundColor: string;
+        selectedRadioAtcClass: number;
+        system: number;
+        menuCls: number;
     }
 
     class MenuBar {
@@ -122,15 +158,49 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         selectedRadioAtcClass: number;
         system: number;
         menuCls: number;
+        uniqueCode: string;
 
-        constructor(code: string, nameMenuBar: string, letterColor: string, backgroundColor: string, selectedRadioAtcClass: number, system: number, menuCls: number) {
+        constructor(param: IMenuBar) {
+            this.code = param.code;
+            this.nameMenuBar = param.nameMenuBar;
+            this.letterColor = param.letterColor;
+            this.backgroundColor = param.backgroundColor;
+            this.selectedRadioAtcClass = param.selectedRadioAtcClass;
+            this.system = param.system;
+            this.menuCls = param.menuCls;
+            this.uniqueCode = this.code + this.system + this.menuCls;
+        }
+    }
+
+    class MenuBarDto {
+        afterLoginDisplay: number;
+        classification: number;
+        code: string;
+        companyId: string;
+        displayName: string;
+        displayOrder: number;
+        logSettingDisplay: number;
+        menuAtr: number;
+        system: number;
+        targetItems: string;
+        url: string;
+        webMenuSetting: number;
+        uniqueCode: string;
+
+        constructor(afterLoginDisplay: number, classification: number, code: string, companyId: string, displayName: string, displayOrder: number, logSettingDisplay: number, menuAtr: number, system: number, targetItems: string, url: string, webMenuSetting: number) {
+            this.afterLoginDisplay = afterLoginDisplay;
+            this.classification = classification;
             this.code = code;
-            this.nameMenuBar = nameMenuBar;
-            this.letterColor = letterColor;
-            this.backgroundColor = backgroundColor;
-            this.selectedRadioAtcClass = selectedRadioAtcClass;
+            this.companyId = companyId;
+            this.displayName = displayName;
+            this.displayOrder = displayOrder;
+            this.logSettingDisplay = logSettingDisplay;
+            this.menuAtr = menuAtr;
             this.system = system;
-            this.menuCls = menuCls;
+            this.targetItems = targetItems;
+            this.url = url;
+            this.webMenuSetting = webMenuSetting;
+            this.uniqueCode = nts.uk.text.format("{0}{1}{2}", code, system, classification);;
         }
     }
 }

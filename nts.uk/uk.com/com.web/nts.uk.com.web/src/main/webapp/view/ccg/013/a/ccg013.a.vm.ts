@@ -17,7 +17,7 @@ module ccg013.a.viewmodel {
         currentWebMenu: KnockoutObservable<WebMenu>;
         isCreated: KnockoutObservable<boolean>;
         isDefaultMenu: KnockoutObservable<boolean>;
-        widthTab: KnockoutComputed<string>;
+        widthTab: KnockoutObservable<string> = ko.observable('800px');
 
         constructor() {
             var self = this;
@@ -30,20 +30,6 @@ module ccg013.a.viewmodel {
                 defaultMenu: 0,
                 menuBars: []
             }));
-
-            self.widthTab = ko.computed(() => {
-                //let activeid = $('#tabs li[aria-expanded=true]').attr('id');
-
-//                if (!activeid) {
-//                    return '800px';
-//                }
-
-                let datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars),
-                  //  menu = _.find(datas, x => x.menuBarId == activeid),                
-                    wTab = self.currentWebMenu().menuBars().length * 132 + 400 + 'px';
-
-                return wTab;
-            });
 
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
@@ -58,9 +44,9 @@ module ccg013.a.viewmodel {
             ]);
 
             self.columns2 = ko.observableArray([
-                { headerText: '既定', key: 'icon', width: 50 },
-                { headerText: 'コード', key: 'webMenuCode', width: 50 },
-                { headerText: '名称', key: 'webMenuName', width: 50 }
+                { headerText: nts.uk.resource.getText("CCG013_8"), key: 'icon', width: 50 },
+                { headerText: nts.uk.resource.getText("CCG013_9"), key: 'webMenuCode', width: 50 },
+                { headerText: nts.uk.resource.getText("CCG013_10"), key: 'webMenuName', width: 50 }
             ]);
 
             new contextMenu(".context-menu-bar", [
@@ -111,7 +97,7 @@ module ccg013.a.viewmodel {
 
                     service.findStandardMenuList().done((menuNames: Array<any>) => {
                         _.each(_.orderBy(res.menuBars, 'displayOrder', 'asc'), x => {
-                            
+
                             // push list name of tree menu to IMenuBar
                             x.menuNames = menuNames;
 
@@ -257,6 +243,7 @@ module ccg013.a.viewmodel {
          * Remove web menu
          */
         removeWebMenu(): void {
+            nts.uk.ui.block.invisible();
             let self = this,
                 webMenuCode = self.currentCode();
             let index = 0;
@@ -275,6 +262,7 @@ module ccg013.a.viewmodel {
                     });
                 });
             }
+            nts.uk.ui.block.clear();
         }
 
 
@@ -343,7 +331,9 @@ module ccg013.a.viewmodel {
                         titleMenuAtr: data.selectedTitleAtr,
                         titleMenuCode: data.titleMenuCode,
                         displayOrder: displayOrder,
-                        treeMenu: []
+                        treeMenu: [],
+                        imageName: data.imageName,
+                        imageSize: data.imageSize,
                     }));
 
                     bindSortable();
@@ -459,6 +449,8 @@ module ccg013.a.viewmodel {
                             item.backgroundColor(data.backgroundColor);
                             item.imageFile(data.imageId);
                             item.textColor(data.letterColor);
+                            item.imageName(data.imageName);
+                            item.imageSize(data.imageSize);
                         }
                     });
 
@@ -503,6 +495,20 @@ module ccg013.a.viewmodel {
             this.webMenuName = ko.observable(param.webMenuName);
             this.defaultMenu = ko.observable(param.defaultMenu);
             this.menuBars = ko.observableArray(param.menuBars.map(x => new MenuBar(x)));
+
+            this.menuBars.subscribe(x => {
+                if (__viewContext['viewModel']) {
+                    let vm = __viewContext['viewModel'],
+                        pw = x.length * 160 + 360,
+                        tm = _.maxBy(x, m => m.titleMenu().length),
+                        cw = tm && tm.titleMenu().length * 160 + 360;
+                    if (!x.length) {
+                        vm.widthTab('800px');
+                    } else {
+                        vm.widthTab((pw > cw ? pw : cw) + 'px');
+                    }
+                }
+            });
         }
     }
 
@@ -537,7 +543,7 @@ module ccg013.a.viewmodel {
         constructor(param: IMenuBar) {
             this.menuBarId = ko.observable(param.menuBarId);
             this.code = ko.observable(param.code);
-            this.menuBarName = ko.observable(param.menuBarName || 'UNKNOW');
+            this.menuBarName = ko.observable(param.menuBarName || 'なし');
             this.selectedAtr = ko.observable(param.selectedAtr);
             this.system = ko.observable(param.system);
             this.menuCls = ko.observable(param.menuCls);
@@ -549,6 +555,14 @@ module ccg013.a.viewmodel {
                 return new TitleMenu(x);
             }));
             this.targetContent = ko.observable("#tab-content-" + param.menuBarId);
+
+            this.titleMenu.subscribe(x => {
+                let vm = __viewContext['viewModel'];
+                if (vm) {
+                    let cm = vm.currentWebMenu();
+                    cm.menuBars.valueHasMutated();
+                }
+            });
         }
     }
 
@@ -564,6 +578,8 @@ module ccg013.a.viewmodel {
         displayOrder: number;
         treeMenu: Array<ITreeMenu>;
         menuNames?: Array<any>;
+        imageName?: string;
+        imageSize?: string;
     }
 
     export class TitleMenu {
@@ -577,11 +593,13 @@ module ccg013.a.viewmodel {
         titleMenuCode: KnockoutObservable<string>;
         displayOrder: KnockoutObservable<number>;
         treeMenu: KnockoutObservableArray<TreeMenu>;
+        imageName: KnockoutObservable<string>;
+        imageSize: KnockoutObservable<string>;
 
         constructor(param: ITitleMenu) {
             this.menuBarId = ko.observable(param.menuBarId);
             this.titleMenuId = ko.observable(param.titleMenuId);
-            this.titleMenuName = ko.observable(param.titleMenuName || 'UNKNOW');
+            this.titleMenuName = ko.observable(param.titleMenuName || 'なし');
             this.backgroundColor = ko.observable(param.backgroundColor);
             this.imageFile = ko.observable(param.imageFile);
             this.textColor = ko.observable(param.textColor);
@@ -593,6 +611,8 @@ module ccg013.a.viewmodel {
                 x.name = name && name.displayName;
                 return new TreeMenu(x);
             }));
+            this.imageName = ko.observable(param.imageName);
+            this.imageSize = ko.observable(param.imageSize);
         }
     }
 
@@ -618,7 +638,7 @@ module ccg013.a.viewmodel {
             this.treeMenuId = ko.observable(randomId());
             this.titleMenuId = ko.observable(param.titleMenuId);
             this.code = ko.observable(param.code);
-            this.name = ko.observable(param.name || 'UNKNOW');
+            this.name = ko.observable(param.name || 'なし');
             this.displayOrder = ko.observable(param.displayOrder);
             this.classification = ko.observable(param.classification);
             this.system = ko.observable(param.system);
