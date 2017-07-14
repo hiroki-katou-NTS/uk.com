@@ -5,7 +5,7 @@ module nts.uk.at.view.ksm004.a {
     export module viewmodel {
         export class ScreenModel {
             calendarData: KnockoutObservable<any>;
-            yearMonthPicked: KnockoutObservable<number>;
+            yearMonthPicked: KnockoutObservable<number> = ko.observable(moment(new Date()).format('YYYYMM'));
             cssRangerYM: any;
             optionDates: KnockoutObservableArray<any>;
             firstDay: number;
@@ -22,7 +22,7 @@ module nts.uk.at.view.ksm004.a {
             
             calendarPanel: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
-                yearMonth: ko.observable(moment(new Date()).format('YYYYMM')),
+                yearMonth: this.yearMonthPicked,
                 firstDay: 0,
                 startDate: 1,
                 endDate: 31,
@@ -66,7 +66,7 @@ module nts.uk.at.view.ksm004.a {
             constructor() {
                 var self = this;
                 self.kcpTreeGrid.selectedWorkplaceId = self.currentCalendarWorkPlace().workPlaceID;
-                self.yearMonthPicked = ko.observable(moment(new Date()).format('YYYYMM'));
+                self.calendarPanel.yearMonth(self.yearMonthPicked());
                 self.cssRangerYM = {};
                 self.currentCalendarWorkPlace().workPlaceID.subscribe(value => {
                     let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
@@ -77,59 +77,8 @@ module nts.uk.at.view.ksm004.a {
                         self.currentCalendarWorkPlace().name('');
                     }    
                 });
-                self.calendarPanel.optionDates([
-                    {
-                        start: '2017-07-01',
-                        textColor: '#589CAE',
-                        backgroundColor: 'white',
-                        listText: [
-                            "Sleep",
-                            "Study"
-                        ]
-                    },
-                    {
-                        start: '2017-07-05',
-                        textColor: '#31859C',
-                        backgroundColor: 'white',
-                        listText: [
-                            "Sleepaaaa",
-                            "Study",
-                            "Eating",
-                            "Woman"
-                        ]
-                    },
-                    {
-                        start: '2017-07-10',
-                        textColor: '#31859C',
-                        backgroundColor: 'white',
-                        listText: [
-                            "Sleep",
-                            "Study"
-                        ]
-                    },
-                    {
-                        start: '2017-07-20',
-                        textColor: 'blue',
-                        backgroundColor: 'white',
-                        listText: [
-                            "Sleep",
-                            "Study",
-                            "Play"
-                        ]
-                    }
-                ]);
                 nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
-                    nts.uk.ui._viewModel.content.calendarPanel.optionDates.push(
-                        {
-                            start: '2017-07-08',
-                            textColor: 'blue',
-                            backgroundColor: 'red',
-                            listText: [
-                                "Sleep",
-                                "Study"
-                            ]
-                        }
-                    );    
+                    nts.uk.ui._viewModel.content.calendarPanel.optionDates.removeAll();
                 }; 
                 $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
                     $('#classification-list-setting').ntsListComponent(self.kcpGridlist).done(() => {
@@ -143,30 +92,64 @@ module nts.uk.at.view.ksm004.a {
                 console.log(date);    
             }
             
-            start() {
+            start(): JQueryPromise<any> { 
+                var self = this;
+                return self.getAllCalendarCompany();
+            }
+            
+            getAllCalendarCompany(): JQueryPromise<any>{
                 var self = this; 
-                aService.getAllCalendarCompany().done((data) => {
-                    self.    
-                }).fail((res) => {
+                var dfd = $.Deferred();
+                aService.getAllCalendarCompany()
+                    .done((dataCompany) => {
+                        let a = [];
+                        _.forEach(dataCompany,(companyItem)=>{
+                            a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
+                        });   
+                        self.calendarPanel.optionDates(a);
+                        dfd.resolve();  
+                    }).fail((res) => {
                     
-                });
-                self.currentCalendarWorkPlace().workPlaceID(_.first($('#tree-grid')['getDataList']()).workplaceId);    
+                    });
+                //self.currentCalendarWorkPlace().workPlaceID(_.first($('#tree-grid')['getDataList']()).workplaceId);    
+                return dfd.promise();    
+            }
+            
+            getCalenderWorkPlaceByCode(): JQueryPromise<any>{
+                var self = this; 
+                var dfd = $.Deferred();
+                aService.getAllCalendarCompany()
+                    .done((dataCompany) => {
+                        let a = [];
+                        _.forEach(dataCompany,(companyItem)=>{
+                            a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
+                        });   
+                        self.calendarPanel.optionDates(a);
+                        dfd.resolve();  
+                    }).fail((res) => {
+                    
+                    });
+                //self.currentCalendarWorkPlace().workPlaceID(_.first($('#tree-grid')['getDataList']()).workplaceId);    
+                return dfd.promise();  
+            }
+            
+            getCalendarClassById(): JQueryPromise<any>{
                 
             }
             
             changeTab() {
                 var self = this;
-                self.calendarPanel.optionDates([]);
-                self.calendarPanel.yearMonth(moment(new Date()).format('YYYYMM'));
-                self.calendarPanel.firstDay = 0;
-                self.calendarPanel.startDate = 1;
-                self.calendarPanel.endDate = 31;
-                self.calendarPanel.workplaceId("0");
-                self.calendarPanel.workplaceName("");
-                self.calendarPanel.eventDisplay(true);
-                self.calendarPanel.eventUpdatable(true);
-                self.calendarPanel.holidayDisplay(true);
-                self.calendarPanel.cellButtonDisplay(true);
+                let currentTab : number = $("#sidebar").ntsSideBar("getCurrent");
+                switch(currentTab) {
+                    case 1:
+                        self.getCalenderWorkPlaceByCode();
+                        break;
+                    case 2:
+                        self.getCalendarClassById();
+                        break;
+                    default:
+                        self.getAllCalendarCompany();
+                }
             }
             
             openDialogC() {
@@ -181,25 +164,6 @@ module nts.uk.at.view.ksm004.a {
                 nts.uk.ui.windows.setShared('startTime', '200007');
                 nts.uk.ui.windows.setShared('endTime', '200008');
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }); 
-            }
-        }
-
-
-        interface ITabModel {
-            id: string;
-            name: string;
-            active?: boolean;
-        }
-
-        class TabModel {
-            id: string;
-            name: string;
-            active: KnockoutObservable<boolean> = ko.observable(false);
-            
-            constructor(param: ITabModel) {
-                this.id = param.id;
-                this.name = param.name;
-                this.active(param.active || false);
             }
         }
         
@@ -284,23 +248,22 @@ module nts.uk.at.view.ksm004.a {
             backgroundColor: string;
             listText: string;
             constructor(start: number, listText: number) {
-                this.start = start.toString();
+                this.start = moment(start.toString()).format('YYYY-MM-DD');
                 this.backgroundColor = 'white';
                 switch(listText) {
                     case 1:
                         this.textColor = '#FF1D1D';
-                        this.listText = WorkingDayAtr.WorkingDayAtr_WorkPlace;
+                        this.listText = WorkingDayAtr.WorkingDayAtr_WorkPlace.toString();
                         break;
                     case 2:
                         this.textColor = '#FF1D1D';
-                        this.listText = WorkingDayAtr.WorkingDayAtr_Class;
+                        this.listText = WorkingDayAtr.WorkingDayAtr_Class.toString();
                         break;
                     default:
                         this.textColor = '#589CAE';
-                        this.listText = WorkingDayAtr.WorkingDayAtr_Company;
+                        this.listText = WorkingDayAtr.WorkingDayAtr_Company.toString();
                         break;
-                }
-                listText: string;        
+                }        
             }
         }
         
