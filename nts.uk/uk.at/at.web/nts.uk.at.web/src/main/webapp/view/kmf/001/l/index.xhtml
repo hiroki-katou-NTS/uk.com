@@ -24,7 +24,7 @@
 			<div id="functions-area" class="fix-on-top">
 				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
 				<button class="proceed" data-bind="click: save" tabindex="2">#{i18n.getText('KMF001_28')}</button>
-				<label class="pull-right">#{i18n.getText('KMF001_29')}</label>
+				<label class="pull-right" style="margin-right: 20px;">#{i18n.getText('KMF001_29')}</label>
 			</div>
 
 			<div id="contents-area">
@@ -120,7 +120,7 @@
 								<td><label>#{i18n.getText('KMF001_114')}</label></td>
 								<td>
 									<div>
-										<input class="nts-input"
+										<input id="work-type-code-nursing" class="nts-input"
 											data-bind="ntsTextEditor: {
 											value: typeCode,
 											name: '#[KMF001_114]',
@@ -229,7 +229,7 @@
 								<td><label>#{i18n.getText('KMF001_121')}</label></td>
 								<td>
 									<div>
-										<input class="nts-input"
+										<input id="work-type-code-child-nursing" class="nts-input"
 											data-bind="ntsTextEditor: {
 											value: typeCode,
 											name: '#[KMF001_121]',

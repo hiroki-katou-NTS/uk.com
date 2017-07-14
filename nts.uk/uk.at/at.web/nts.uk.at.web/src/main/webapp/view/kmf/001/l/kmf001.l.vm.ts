@@ -28,10 +28,10 @@ module nts.uk.pr.view.kmf001.l {
                 }));
                 self.manageDistinctList = ko.observableArray([]);
                 
-                self.nursingSetting = ko.observable(new NursingSettingModel());
+                self.nursingSetting = ko.observable(new NursingSettingModel(self));
                 self.backupNursingSetting = ko.observable(null);
                 
-                self.childNursingSetting = ko.observable(new NursingSettingModel());
+                self.childNursingSetting = ko.observable(new NursingSettingModel(self));
                 self.backupChildNursingSetting = ko.observable(null);
             }
             
@@ -133,8 +133,7 @@ module nts.uk.pr.view.kmf001.l {
                     $('#nursing-number-person').ntsEditor('validate');
                     
                     if (!self.nursingSetting().workTypeCodes() || self.nursingSetting().workTypeCodes().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_152"});
-                        return false;
+                        $('#work-type-code-nursing').ntsError('set', {messageId:"Msg_152"});
                     }
                 }
                 if (self.childNursingSetting().enableNursing()) {
@@ -145,8 +144,7 @@ module nts.uk.pr.view.kmf001.l {
                     
                     if (!self.childNursingSetting().workTypeCodes()
                             || self.childNursingSetting().workTypeCodes().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_152"});
-                        return false;
+                        $('#work-type-code-child-nursing').ntsError('set', {messageId:"Msg_152"});
                     }
                 }
                 if ($('.nts-input').ntsError('hasError')) {
@@ -161,12 +159,14 @@ module nts.uk.pr.view.kmf001.l {
                 $('#nursing-day').ntsError('clear');
                 $('#nursing-number-leave-day').ntsError('clear');
                 $('#nursing-number-person').ntsError('clear');
+                $('#work-type-code-nursing').ntsError('clear');
             
                 // 介護
                 $('#child-nursing-month').ntsError('clear');
                 $('#child-nursing-day').ntsError('clear');
                 $('#child-nursing-number-leave-day').ntsError('clear');
                 $('#child-nursing-number-person').ntsError('clear');
+                $('#work-type-code-child-nursing').ntsError('clear');
             }
             
             // find enumeration ManageDistinct
@@ -229,8 +229,11 @@ module nts.uk.pr.view.kmf001.l {
             workTypeCodes: KnockoutObservableArray<string>;
             typeCode: KnockoutObservable<string>;
             
-            constructor() {
+            parent: ScreenModel;
+            
+            constructor(parent: ScreenModel) {
                 let self = this;
+                self.parent = parent;
                 self.selectedManageNursing = ko.observable(1);
                 self.enableNursing = ko.computed(function() {
                     return self.selectedManageNursing() == 1;
@@ -254,6 +257,14 @@ module nts.uk.pr.view.kmf001.l {
                     nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(() => {
                         let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                         self.workTypeCodes(data.map(item => item.code));
+                        if (self.parent.nursingSetting().workTypeCodes()
+                                && self.parent.nursingSetting().workTypeCodes().length > 0) {
+                            $('#work-type-code-nursing').ntsError('clear');
+                        }
+                        if (self.parent.childNursingSetting().workTypeCodes()
+                                && self.parent.childNursingSetting().workTypeCodes().length > 0) {
+                            $('#work-type-code-child-nursing').ntsError('clear');
+                        }
                     });
                 });
             }
