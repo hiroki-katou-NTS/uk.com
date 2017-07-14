@@ -5,9 +5,12 @@ package nts.uk.ctx.at.schedule.ws.shift.businesscalendar.holiday;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.holiday.CreatePublicHolidayCommand;
@@ -49,6 +52,12 @@ public class PublicHolidayWebService extends WebService {
 	@Path("getAllHoliday")
 	public List<PublicHolidayDto> getAllHolidays() {
 		return this.publicHolidayFinder.getAllHolidays();
+	}
+	
+	@POST
+	@Path("getHolidayByDate/{date}")
+	public Optional<PublicHolidayDto> getHolidayByDate(@PathParam("date") BigDecimal date){
+		return this.publicHolidayFinder.getHolidayByDate(date);
 	}
 
 	@POST

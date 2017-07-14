@@ -20,16 +20,16 @@ public class UpdateCalendarWorkplaceCommandHandler extends CommandHandler<Update
 	@Override
 	protected void handle(CommandHandlerContext<UpdateCalendarWorkplaceCommand> context) {
 		String workPlaceId = UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d").toString();
-		CalendarWorkplace calendarCompany = CalendarWorkplace.createFromJavaType(workPlaceId, 
+		CalendarWorkplace calendarWorkplace = CalendarWorkplace.createFromJavaType(workPlaceId, 
 				context.getCommand().getDateId(),
 				context.getCommand().getWorkingDayAtr());
 		Optional<CalendarWorkplace> calendarCom =calendarWorkplaceRepo.findCalendarWorkplaceByDate(workPlaceId,
 				context.getCommand().getDateId());
 		if (calendarCom.isPresent()) {
-			calendarWorkplaceRepo.updateCalendarWorkplace(calendarCompany);
-			//do something
+			calendarWorkplaceRepo.updateCalendarWorkplace(calendarWorkplace);
+			
 		} else {
-			//do something
+			calendarWorkplaceRepo.addCalendarWorkplace(calendarWorkplace);
 		}
 	}
 }
