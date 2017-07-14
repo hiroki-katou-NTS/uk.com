@@ -24,4 +24,15 @@ public class WorkTypeFinder {
 				.map(c -> WorkTypeDto.fromDomain(c)).collect(Collectors.toList());
 		return lst;
 	}
+	
+	/**
+	 * Find by company id.
+	 *
+	 * @return the list
+	 */
+	public List<WorkTypeDto> findByCompanyId() {
+	    return this.workTypeRepo.findByCompanyId(companyId).stream()
+                .map(c -> WorkTypeDto.fromDomain(c))
+                .collect(Collectors.toList());
+	}
 }
