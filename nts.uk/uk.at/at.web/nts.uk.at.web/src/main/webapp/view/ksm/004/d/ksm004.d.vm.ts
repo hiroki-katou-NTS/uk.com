@@ -1,36 +1,39 @@
-module ksm004.d.viewmodel{
-    export class ScreenModel{
+module ksm004.d.viewmodel {
+    export class ScreenModel {
         //checkHoliday
-        checkHoliday :KnockoutObservable<boolean>;
+        checkHoliday: KnockoutObservable<boolean>;
         //checkOverwrite
-        checkOverwrite :KnockoutObservable<boolean>;
-                      
+        checkOverwrite: KnockoutObservable<boolean>;
+
         // start and end month , typeClass
-        startMonth : KnockoutObservable<number>;
-        endMonth : KnockoutObservable<number>;
-        typeClass : KnockoutObservable<number>;
-        
+        startMonth: KnockoutObservable<number>;
+        endMonth: KnockoutObservable<number>;
+        typeClass: KnockoutObservable<number>;
+
         // select day
-        workdayGroup : KnockoutObservableArray<any>;
-        selectedMon : KnockoutObservable<number>;
-        selectedTue : KnockoutObservable<number>;
-        selectedWed : KnockoutObservable<number>;
-        selectedThu : KnockoutObservable<number>;
-        selectedFri : KnockoutObservable<number>;
-        selectedSat : KnockoutObservable<number>;
-        selectedSun : KnockoutObservable<number>;
+        workdayGroup: KnockoutObservableArray<any>;
+        selectedMon: KnockoutObservable<number>;
+        selectedTue: KnockoutObservable<number>;
+        selectedWed: KnockoutObservable<number>;
+        selectedThu: KnockoutObservable<number>;
+        selectedFri: KnockoutObservable<number>;
+        selectedSat: KnockoutObservable<number>;
+        selectedSun: KnockoutObservable<number>;
         //dateId,workingDayAtr
-        dateId : KnockoutObservable<number>;
-        workingDayAtr : KnockoutObservable<number>;
+        dateId: KnockoutObservable<number>;
+        workingDayAtr: KnockoutObservable<number>;
         //classId
-        classId : KnockoutObservable<string>;
+        classId: KnockoutObservable<string>;
         //WorkPlaceId
-        workPlaceId : 
-        
-        
-        constructor(){
+        constructor() {
             var self = this;
             //start and end month
+            nts.uk.ui.windows.getShared('classification');
+            nts.uk.ui.windows.getShared('workPlaceId');
+            nts.uk.ui.windows.getShared('classCD');
+            nts.uk.ui.windows.getShared('startTime');
+            nts.uk.ui.windows.getShared('endTime');
+            
             self.startMonth = ko.observable(201602);
             self.endMonth = ko.observable(201602);
             self.typeClass = ko.observable(0);
@@ -38,7 +41,6 @@ module ksm004.d.viewmodel{
             self.checkHoliday = ko.observable(true);
             //checkUpdate
             self.checkOverwrite = ko.observable(true);
-            
             //date , workingDayAtr
             self.dateId = ko.observable(0);
             self.workingDayAtr = ko.observable(0);
@@ -60,57 +62,96 @@ module ksm004.d.viewmodel{
             self.selectedSun = ko.observable(1);
 
         }//end constructor
-        
-         /**
-         * function startPage
-         */
-        startPage(){
-            
+
+        /**
+        * function startPage
+        */
+        startPage() {
+
         }//end startPage
-        
+
         /**
          * function btn decition
          */
-        decition(){
+        decition() {
             var self = this;
-            
-            let startYM = moment(self.startMonth(),'YYYYMM');
-            let endYM = moment(self.endMonth(),'YYYYMM');
-            
-            while(startYM.month() <= endYM.month()) //value : 0-11
+
+            let startYM = moment(self.startMonth(), 'YYYYMM');
+            let endYM = moment(self.endMonth(), 'YYYYMM');
+
+            while (startYM.month() <= endYM.month()) //value : 0-11
             {
-                let dateOfMonth = startYM.date(); //value : 1-31 
+                let dateOfMonth = startYM.date(); //value : 1-31
+
                 let dateOfWeek = startYM.day();   //value : 0-6
-                alert(dateOfMonth);
-                if(self.typeClass ==0){
+
+                let date = parseInt(startYM.format("YYYYMMDD"));
+                self.dateId(date);
+                switch(dateOfWeek){
+                    case 0: self.workingDayAtr(self.selectedMon());break;
+                    case 1: self.workingDayAtr(self.selectedTue());break;
+                    case 2: self.workingDayAtr(self.selectedWed());break;
+                    case 3: self.workingDayAtr(self.selectedThu());break;
+                    case 4: self.workingDayAtr(self.selectedFri());break;
+                    case 5: self.workingDayAtr(self.selectedSat());break;
+                    case 6: self.workingDayAtr(self.selectedSun());break;
+                    default : break;   
                 }
-                startYM.add(1,'d');
+                //self.workingDayAtr()
+                // if D3_2 : neu la ngay thuong
+                if (dateOfWeek != 5 && dateOfWeek != 6) {
+                    if (self.checkHoliday() == true) {
+                        self.checkHoli(date).done(function(data) {
+                            if (data.present == true) {
+                                self.workingDayAtr(2);
+                            }
+
+                        });
+                    }
+                }
+                // if typeclass : company
+                if (self.typeClass() == 0) {
+                    //if check overwrite = true
+                    if (self.checkOverwrite() == true) {
+                        self.updateCalendarCompany();
+                    } else {
+                        self.addCalendarCompany();
+                    }
+                }
+                startYM.add(1, 'd');
             }
-            
+
         }//end decition
-        
+
+        checkHoli(date: number) {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.getHolidayByDate(date).done(function(data) {
+                dfd.resolve(data);
+            });
+            return dfd.promise();
+        }
+
+
         /**
          * add calendar company
          */
         addCalendarCompany() {
             var self = this;
-            var calendarCompany = new model.CalendarCompany(self.dateId(),self.workingDayAtr());
-            service.addCalendarCompany(calendarCompany).done(function(){
-                //nts.uk.ui.dialog.info({ messageId: "Msg_15" });    
-            });    
+            var calendarCompany = new model.CalendarCompany(self.dateId(), self.workingDayAtr());
+            service.addCalendarCompany(calendarCompany);
         }
+
         /**
          * update calendar company
          */
-        updateCalendarCompany(){
+        updateCalendarCompany() {
             var self = this;
-            var calendarCompany = new model.CalendarCompany(self.dateId(),self.workingDayAtr());
-            service.updateCalendarCompany(calendarCompany).done(function(){
-                //nts.uk.ui.dialog.info({ messageId: "Msg_15" });    
-            });    
+            var calendarCompany = new model.CalendarCompany(self.dateId(), self.workingDayAtr());
+            service.updateCalendarCompany(calendarCompany);
         }
-        
-        
+
+
     }//end screen model
 
     //model
@@ -126,10 +167,10 @@ module ksm004.d.viewmodel{
         }
         // class calendar class
         export class CalendarClass {
-            classId : string;
+            classId: string;
             dateId: number;
             workingDayAtr: number;
-            constructor(classId:string, dateId: number, workingDayAtr: number) {
+            constructor(classId: string, dateId: number, workingDayAtr: number) {
                 this.classId = classId;
                 this.dateId = dateId;
                 this.workingDayAtr = workingDayAtr;
@@ -145,5 +186,5 @@ module ksm004.d.viewmodel{
             }
         }
     }
-    
+
 }

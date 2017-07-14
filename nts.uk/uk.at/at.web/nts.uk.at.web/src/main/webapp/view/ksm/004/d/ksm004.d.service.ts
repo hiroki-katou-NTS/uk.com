@@ -52,7 +52,7 @@ module ksm004.d.service{
      * add new calendar Company
      */
     export function getHolidayByDate(date : number) : JQueryPromise<Array<>>{
-        return nts.uk.request.ajax("at",paths.getHolidayByDate,date);    
+        return nts.uk.request.ajax("at",paths.getHolidayByDate+date);    
     }
     
 }
