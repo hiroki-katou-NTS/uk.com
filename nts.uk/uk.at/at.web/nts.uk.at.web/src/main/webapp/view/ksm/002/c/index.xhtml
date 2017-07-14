@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 660, height: 640 };</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName
+					nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName
    			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm002.c.main.css" />
@@ -24,20 +24,20 @@
 				<div>
 					<div class="label">#{i18n.getText('KSM002_37')}</div>
 				</div>
-				<table id="premium-set-tbl-b">
+				<table id="specific-set-tbl-b">
 					<thead>
 						<tr>
 							<th>#{i18n.getText('KSM002_59')}</th>
 							<th>#{i18n.getText('KSM002_38')}</th>
-							<th data-bind="text: textKSM002_38"></th>
+							<th data-bind="text: textKSM002_39"></th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach: premiumItemList">
+					<tbody data-bind="foreach: specificDateItem">
 						<tr>
-							<td data-bind="text: $index()"></td>
+							<td data-bind="text: ($index()+1)"></td>
 							<td>
 								<div class="cf" data-bind="ntsSwitchButton: {
-										name: '#[KML001_17]',
+										name: '#[KSM002_38]',
 										options: ko.observableArray([
 											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
 								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
@@ -48,13 +48,14 @@
 										enable: true }"></div>	
 							</td>
 							<td>
-								<input  class="premiumName" data-bind="ntsTextEditor: {
-										name: '#[KML001_28]',
+								<input class="specificName" data-bind="ntsTextEditor: {
+										name: '#[KSM002_39]',
 										value: specificName,
-										constraint: 'PremiumName',
+										constraint: 'SpecificName',
 										option: { width: '275px' },
 										required: true, 
-										enable: Boolean(useAtr()==1) }" />
+										enable: Boolean(useAtr()==1) },
+										attr: { id: 'specificName' + $index()}" />
 							</td>
 						</tr>
 					</tbody>

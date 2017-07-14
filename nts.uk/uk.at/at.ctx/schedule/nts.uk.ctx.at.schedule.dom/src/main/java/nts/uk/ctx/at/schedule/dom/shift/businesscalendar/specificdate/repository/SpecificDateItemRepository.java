@@ -23,6 +23,12 @@ public interface SpecificDateItemRepository {
 	 * update list Specific Date Item
 	 * @param lstSpecificDateItem
 	 */
-	void updateDivTime(List<SpecificDateItem> lstSpecificDateItem);
+	void updateSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem);
+	/**
+	 * hoatt
+	 * add list Specific Date Item
+	 * @param lstSpecificDateItem
+	 */
+	void addSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem);
 
 }

@@ -10,30 +10,27 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kdl002.b.main.css" />
-			<com:scriptfile path="kdl002.b.start.js" />
-			<com:scriptfile path="kdl002.b.vm.js" />
+			<com:stylefile path="ksm002.test.main.css" />
+			<com:scriptfile path="ksm002.test.start.js" />
+			<com:scriptfile path="ksm002.test.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="total">
 				<!-- A1_1 -->
 				<div>
-					<button class="btnMenu" data-bind="click: OpenDialog002" >002 Single</button>
-					<button class="btnMenu" data-bind="click: OpenDialog0022" >002 Multiple</button>
+					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialogC" >KSM002_C</button>
+					<button id="btnNew" class="btnMenu" data-bind="click: check" >007Multiple</button>
 				</div>
-				<div>選択可能な勤務種類コード</div>
-				<!-- A1_2 -->
-				<TEXTAREA rows="7" cols="31" data-bind="value: SelectableCode"></TEXTAREA>
-                 <div>(Eg:001,002,003,...)</div>
                  <br></br>
 				<div>選択中の勤務種類コード</div>
 				<!-- A1_2 -->
-				<input class="nts-input"
+				<input  class="nts-input"
 					data-bind="ntsTextEditor: {
                                    value: SelectedCode,
-                                   enable: true, 
+                                   enable: test_true, 
                                    required: false}"/>
                  <div>(Eg: Single: 001 | Multiple: 001,002,003,...)</div>
+                 <div>(Table: KBPMT_BONUS_PAY_SET)</div>
                  <br></br>
 				<div style="float: left; margin-bottom: 20px;">
 					<div>

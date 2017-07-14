@@ -50,19 +50,19 @@ module nts.uk.at.view.kmk005.e {
                     } else {
                         self.bonusPayTimeItemSettings.removeAll();
                         if(!nts.uk.util.isNullOrEmpty(dfdListData)){
-                            dfdItemListData.forEach(function(item){
-                                let result = _.find(dfdListData, (o)=>{ return o.timeItemId == item.timeItemId});
+                            dfdListData.forEach(function(item){
+                                let result = _.find(dfdItemListData, (o)=>{ return o.timeItemId == item.timeItemId});
                                 if(nts.uk.util.isNullOrUndefined(result)){
-                                    self.bonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', item.timeItemId, item.timeItemName, 0, 0, 0));  
+                                    self.bonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', result.timeItemId, result.timeItemName, 0, 0, 0));  
                                 } else {
                                     self.bonusPayTimeItemSettings.push(
                                         new BonusPayTimeItemSetting(
-                                            result.companyId,
-                                            item.timeItemId,
-                                            item.timeItemName,
-                                            result.holidayCalSettingAtr,
-                                            result.overtimeCalSettingAtr,
-                                            result.worktimeCalSettingAtr)
+                                            item.companyId,
+                                            result.timeItemId,
+                                            result.timeItemName,
+                                            item.holidayCalSettingAtr,
+                                            item.overtimeCalSettingAtr,
+                                            item.worktimeCalSettingAtr)
                                     );      
                                 } 
                             }); 
@@ -75,19 +75,19 @@ module nts.uk.at.view.kmk005.e {
                         }
                         self.specBonusPayTimeItemSettings.removeAll();
                         if(!nts.uk.util.isNullOrEmpty(dfdSpecListData)){
-                            dfdSpecItemListData.forEach(function(item){
-                                let result = _.find(dfdSpecListData, (o)=>{ return o.timeItemId == item.timeItemId});
+                            dfdSpecListData.forEach(function(item){
+                                let result = _.find(dfdSpecItemListData, (o)=>{ return o.timeItemId == item.timeItemId});
                                 if(nts.uk.util.isNullOrUndefined(result)){
-                                    self.specBonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', item.timeItemId, item.timeItemName, 0, 0, 0));  
+                                    self.specBonusPayTimeItemSettings.push(new BonusPayTimeItemSetting('', result.timeItemId, result.timeItemName, 0, 0, 0));  
                                 } else {
                                     self.specBonusPayTimeItemSettings.push(
                                         new BonusPayTimeItemSetting(
-                                            result.companyId,
-                                            item.timeItemId,
-                                            item.timeItemName,
-                                            result.holidayCalSettingAtr,
-                                            result.overtimeCalSettingAtr,
-                                            result.worktimeCalSettingAtr)
+                                            item.companyId,
+                                            result.timeItemId,
+                                            result.timeItemName,
+                                            item.holidayCalSettingAtr,
+                                            item.overtimeCalSettingAtr,
+                                            item.worktimeCalSettingAtr)
                                     );  
                                 }       
                             });   
