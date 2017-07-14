@@ -39,8 +39,9 @@ module nts.uk.pr.view.kmf001.l {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadManageDistinctEnums()).done(function() {
-                    self.loadSetting();
-                    $("#manage-nursing").focus();
+                    self.loadSetting().done(() => {
+                        $("#manage-nursing").focus();
+                    });
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -55,6 +56,7 @@ module nts.uk.pr.view.kmf001.l {
                 let command = self.toJsObject();
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
+                        $("#manage-nursing").focus();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         dfd.resolve();
                     });
@@ -125,10 +127,10 @@ module nts.uk.pr.view.kmf001.l {
                 let self = this;
                 self.clearError();
                 if (self.nursingSetting().enableNursing()) {
-                    $('#nursing-month').ntsError('validate');
-                    $('#nursing-day').ntsError('validate');
-                    $('#nursing-number-leave-day').ntsError('validate');
-                    $('#nursing-number-person').ntsError('validate');
+                    $('#nursing-month').ntsEditor('validate');
+                    $('#nursing-day').ntsEditor('validate');
+                    $('#nursing-number-leave-day').ntsEditor('validate');
+                    $('#nursing-number-person').ntsEditor('validate');
                     
                     if (!self.nursingSetting().workTypeCodes() || self.nursingSetting().workTypeCodes().length == 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_152"});
@@ -136,10 +138,10 @@ module nts.uk.pr.view.kmf001.l {
                     }
                 }
                 if (self.childNursingSetting().enableNursing()) {
-                    $('#child-nursing-month').ntsError('validate');
-                    $('#child-nursing-day').ntsError('validate');
-                    $('#child-nursing-number-leave-day').ntsError('validate');
-                    $('#child-nursing-number-person').ntsError('validate');
+                    $('#child-nursing-month').ntsEditor('validate');
+                    $('#child-nursing-day').ntsEditor('validate');
+                    $('#child-nursing-number-leave-day').ntsEditor('validate');
+                    $('#child-nursing-number-person').ntsEditor('validate');
                     
                     if (!self.childNursingSetting().workTypeCodes()
                             || self.childNursingSetting().workTypeCodes().length == 0) {
@@ -155,16 +157,16 @@ module nts.uk.pr.view.kmf001.l {
             
             private clearError(): void {
                 // 子の看護
-                $('#nursing-month').ntsError('validate');
-                $('#nursing-day').ntsError('validate');
-                $('#nursing-number-leave-day').ntsError('validate');
-                $('#nursing-number-person').ntsError('validate');
+                $('#nursing-month').ntsError('clear');
+                $('#nursing-day').ntsError('clear');
+                $('#nursing-number-leave-day').ntsError('clear');
+                $('#nursing-number-person').ntsError('clear');
             
                 // 介護
-                $('#child-nursing-month').ntsError('validate');
-                $('#child-nursing-day').ntsError('validate');
-                $('#child-nursing-number-leave-day').ntsError('validate');
-                $('#child-nursing-number-person').ntsError('validate');
+                $('#child-nursing-month').ntsError('clear');
+                $('#child-nursing-day').ntsError('clear');
+                $('#child-nursing-number-leave-day').ntsError('clear');
+                $('#child-nursing-number-person').ntsError('clear');
             }
             
             // find enumeration ManageDistinct
