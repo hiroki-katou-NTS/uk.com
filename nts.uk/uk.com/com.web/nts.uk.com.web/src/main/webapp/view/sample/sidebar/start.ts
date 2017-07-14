@@ -23,10 +23,16 @@ __viewContext.ready(function() {
                     $("#sidebar").ntsSideBar("disable", 2);
                 }
             });
+            $("#sidebar").ntsSideBar("init", {
+            	active: 1,
+            	activate: (event, info) => {
+            		console.log(info);
+            	}
+            });
         }
 
         testSideMenu() {
-            alert("clicked");
+        	alert($("#sidebar").ntsSideBar("getCurrent"));
         }
 
         openSubWindow() {
