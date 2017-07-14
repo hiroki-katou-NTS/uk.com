@@ -417,6 +417,10 @@ module kcp.share.tree {
         private filterData(data?: TreeComponentOption, $input?: JQuery) {
             let self = this;
             if (self.backupItemList().length > 0) {
+                // clear list selected work place id
+                self.listWorkplaceId = [];
+                
+                // find sub list unit model by level
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
                 if (subItemList.length > 0) {
                     self.itemList(subItemList);

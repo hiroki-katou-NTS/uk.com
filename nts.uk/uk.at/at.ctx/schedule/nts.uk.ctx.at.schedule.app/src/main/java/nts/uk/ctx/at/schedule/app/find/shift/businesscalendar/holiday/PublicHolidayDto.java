@@ -19,7 +19,7 @@ public class PublicHolidayDto {
 
 	private int date;
 
-	private String name;
+	private String holidayName;
 
 	public static PublicHolidayDto fromDomain(PublicHoliday domain) {
 		return new PublicHolidayDto(domain.getDate().intValue(), domain.getHolidayName().v());

@@ -1,7 +1,7 @@
 module ksm002.c.service {
      var paths = {
-         getAllSpecificDate: "at/schedule/specificdateitem/getallspecificdate",
-         updateSpecificDate: "at/schedule/specificdateitem/updatespecificdate"
+         getAllSpecificDate: "at/schedule/shift/businesscalendar/specificdate/getallspecificdate",
+         updateSpecificDate: "at/schedule/shift/businesscalendar/specificdate/updatespecificdate"
     }
 
     /**

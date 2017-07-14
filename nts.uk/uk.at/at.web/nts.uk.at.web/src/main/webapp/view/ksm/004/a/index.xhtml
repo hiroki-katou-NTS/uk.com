@@ -27,9 +27,9 @@
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="click: changeTab">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="click: changeTab">#{i18n.getText('Com_Workplace')}</a></li>
-				<li><a href="#tabpanel-3" role="tab-navigator" data-bind="click: changeTab">#{i18n.getText('Com_Class')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Class')}</a></li>
 			</ul>
 		</ui:define>
 
@@ -52,9 +52,9 @@
 							<div class="infoTable">
 								<div><span>#{i18n.getText('KSM004_9')}</span></div>
 								<div>
-									<div class="labelSqr labelSqr1"><span>稼働日</span></div>
-									<div class="labelSqr labelSqr2"><span>非稼働日（法内）</span></div>
-									<div class="labelSqr labelSqr3"><span>非稼働日（法外）</span></div>
+									<div class="labelSqr labelSqr1" data-bind="click: function(){changeWorkingDayAtr(0)}"><span>稼働日</span></div>
+									<div class="labelSqr labelSqr2" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>非稼働日（法内）</span></div>
+									<div class="labelSqr labelSqr3" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法外）</span></div>
 								</div>
 							</div>
 						</div>
@@ -64,14 +64,13 @@
 								value: yearMonthPicked, 
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
-								cssRanger: cssRangerYM,
 								defaultClass: 'round-orange',
 								showJumpButtons: true}"></div>
 							</div>
 							<div data-bind="with: calendarPanel">
 								<div id="calendar" data-bind="ntsCalendar: {
 								optionDates: optionDates, 
-								yearMonth: yearMonth, 
+								yearMonth: yearMonth,
 								firstDay: firstDay, 
 								startDate: startDate, 
 								endDate: endDate,
@@ -119,7 +118,6 @@
 								value: yearMonthPicked, 
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
-								cssRanger: cssRangerYM,
 								defaultClass: 'round-orange',
 								showJumpButtons: true}"></div>
 							</div>
@@ -156,7 +154,7 @@
 						<div class="noteTable">
 							<div class="titleTable">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_10')}</div>
-								<label>A3_19</label>
+								<label data-bind="text: currentCalendarClass().name"></label>
 							</div>
 							<hr/>
 							<div class="infoTable">
@@ -174,7 +172,6 @@
 								value: yearMonthPicked, 
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
-								cssRanger: cssRangerYM,
 								defaultClass: 'round-orange',
 								showJumpButtons: true}"></div>
 							</div>

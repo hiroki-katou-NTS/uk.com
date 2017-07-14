@@ -74,8 +74,8 @@ public class PublicHolidayWebService extends WebService {
 
 	@POST
 	@Path("delete")
-	public void deletePublicHoliday(BigDecimal date) {
-		DeletePublicHolidayCommand command = new DeletePublicHolidayCommand(date);
+	public void deletePublicHoliday(String date) {
+		DeletePublicHolidayCommand command = new DeletePublicHolidayCommand(new BigDecimal(date));
 		this.deletePublicHoliday.handle(command);
 	}
 

@@ -27,6 +27,7 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 			+ " WHERE a.ksmmtPublicHolidayPK.companyId = :companyId "
 			+ " AND a.ksmmtPublicHolidayPK.date = :date ";
 	private final String SELECT_ALL = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId";
+	private final String SELECT_SINGLE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyID AND a.ksmmtPublicHolidayPK.date = :date";
 
 	@Override
 	public List<PublicHoliday> getHolidaysByListDate(String companyId, List<BigDecimal> lstDate) {
@@ -50,7 +51,6 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 	public Optional<PublicHoliday> getHolidaysByDate(String companyID, BigDecimal date) {
 		return this.queryProxy().query(SELECT_BY_DATE, KsmmtPublicHoliday.class)
 				.setParameter("companyId", companyID).setParameter("date", date).getSingle(c -> toDomain(c));
-
 	}
 
 	@Override

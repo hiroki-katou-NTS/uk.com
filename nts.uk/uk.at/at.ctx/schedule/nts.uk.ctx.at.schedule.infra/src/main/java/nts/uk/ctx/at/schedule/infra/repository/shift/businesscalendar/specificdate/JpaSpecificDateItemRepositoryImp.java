@@ -64,18 +64,26 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 * @param lstSpecificDateItem
 	 */
 	@Override
-	public void updateDivTime(List<SpecificDateItem> lstSpecificDateItem) {
+	public void updateSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem) {
 		List<KsmstSpecificDateItem> lstEntity = new ArrayList<>();
 		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
 			KsmstSpecificDateItem b = toEntity(specificDateItem);
-			KsmstSpecificDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KsmstSpecificDateItem.class)
-					.get();
+			KsmstSpecificDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KsmstSpecificDateItem.class).get();
 			x.setUseAtr(b.useAtr);
 			x.setItemNo(b.itemNo);
 			x.setName(b.name);
 			lstEntity.add(x);
 		}
 		this.commandProxy().updateAll(lstEntity);
+	}
+
+	@Override
+	public void addSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem) {
+		List<KsmstSpecificDateItem> lstEntity = new ArrayList<>();
+		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
+			lstEntity.add(toEntity(specificDateItem));
+		}
+		this.commandProxy().insertAll(lstEntity);
 	}
 
 }

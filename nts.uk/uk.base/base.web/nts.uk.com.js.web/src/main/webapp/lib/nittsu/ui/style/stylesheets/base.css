@@ -534,23 +534,28 @@ div.label {
 /*****************************
   Icon
 *****************************/
-/* line 4, ../sass/components/_icons.scss */
+/* line 5, ../sass/components/_icons.scss */
+button .icon {
+  vertical-align: middle;
+}
+
+/* line 9, ../sass/components/_icons.scss */
 .icon {
   position: relative;
   display: inline-block;
 }
-/* line 8, ../sass/components/_icons.scss */
+/* line 13, ../sass/components/_icons.scss */
 .icon::before, .icon::after {
   content: '';
   position: absolute;
   display: block;
 }
-/* line 14, ../sass/components/_icons.scss */
+/* line 19, ../sass/components/_icons.scss */
 .icon.icon-close {
   width: 16px;
   height: 16px;
 }
-/* line 17, ../sass/components/_icons.scss */
+/* line 22, ../sass/components/_icons.scss */
 .icon.icon-close::before, .icon.icon-close::after {
   height: 3px;
   width: 100%;
@@ -559,7 +564,7 @@ div.label {
   margin-top: -1px;
   background: #404040;
 }
-/* line 25, ../sass/components/_icons.scss */
+/* line 30, ../sass/components/_icons.scss */
 .icon.icon-close::before {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -567,7 +572,7 @@ div.label {
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 28, ../sass/components/_icons.scss */
+/* line 33, ../sass/components/_icons.scss */
 .icon.icon-close::after {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
@@ -575,7 +580,7 @@ div.label {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-/* line 33, ../sass/components/_icons.scss */
+/* line 38, ../sass/components/_icons.scss */
 .icon.icon-dot {
   width: 16px;
   height: 16px;
@@ -584,7 +589,7 @@ div.label {
   background: #00B050;
   box-sizing: border-box;
 }
-/* line 42, ../sass/components/_icons.scss */
+/* line 47, ../sass/components/_icons.scss */
 .icon.icon-search {
   width: 12px;
   height: 12px;
@@ -592,7 +597,7 @@ div.label {
   border-radius: 100%;
   transform: rotate(-45deg);
 }
-/* line 48, ../sass/components/_icons.scss */
+/* line 53, ../sass/components/_icons.scss */
 .icon.icon-search::after {
   top: 12px;
   left: 5px;
@@ -600,7 +605,7 @@ div.label {
   width: 2px;
   background-color: #333333;
 }
-/* line 56, ../sass/components/_icons.scss */
+/* line 61, ../sass/components/_icons.scss */
 .icon.icon-searchbox {
   position: absolute;
   top: 0;
@@ -611,7 +616,7 @@ div.label {
   background: #00B050;
   border-radius: 5px;
 }
-/* line 66, ../sass/components/_icons.scss */
+/* line 71, ../sass/components/_icons.scss */
 .icon.icon-searchbox:before {
   width: 12px;
   height: 12px;
@@ -620,7 +625,7 @@ div.label {
   top: 6px;
   left: 7px;
 }
-/* line 74, ../sass/components/_icons.scss */
+/* line 79, ../sass/components/_icons.scss */
 .icon.icon-searchbox::after {
   top: 18px;
   left: 22px;
@@ -630,14 +635,14 @@ div.label {
   background-color: #FFF;
   transform: rotate(-45deg);
 }
-/* line 84, ../sass/components/_icons.scss */
+/* line 89, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left {
   margin: 10px 0 10px 3px;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 90, ../sass/components/_icons.scss */
+/* line 95, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -646,7 +651,7 @@ div.label {
   left: -3px;
   top: -4px;
 }
-/* line 98, ../sass/components/_icons.scss */
+/* line 103, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-left:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -655,14 +660,14 @@ div.label {
   left: -3px;
   top: 4px;
 }
-/* line 107, ../sass/components/_icons.scss */
+/* line 112, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right {
   margin: 10px 3px 10px 0;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 113, ../sass/components/_icons.scss */
+/* line 118, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -671,7 +676,7 @@ div.label {
   right: -3px;
   top: -4px;
 }
-/* line 121, ../sass/components/_icons.scss */
+/* line 126, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-right:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -680,14 +685,14 @@ div.label {
   right: -3px;
   top: 4px;
 }
-/* line 130, ../sass/components/_icons.scss */
+/* line 135, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top {
   margin: 8px 5px 0 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 136, ../sass/components/_icons.scss */
+/* line 141, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -696,7 +701,7 @@ div.label {
   left: -2px;
   top: 2px;
 }
-/* line 144, ../sass/components/_icons.scss */
+/* line 149, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-top:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -705,14 +710,14 @@ div.label {
   left: -10px;
   top: 2px;
 }
-/* line 153, ../sass/components/_icons.scss */
+/* line 158, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom {
   margin: 5px 5px 3px 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 159, ../sass/components/_icons.scss */
+/* line 164, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -721,7 +726,7 @@ div.label {
   left: -2px;
   bottom: 2px;
 }
-/* line 167, ../sass/components/_icons.scss */
+/* line 172, ../sass/components/_icons.scss */
 .icon.icon-button-arrow-bottom:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -731,20 +736,30 @@ div.label {
   bottom: 2px;
 }
 
-/* line 179, ../sass/components/_icons.scss */
-.img-icon.arrow-up {
+/* line 183, ../sass/components/_icons.scss */
+.img-icon {
+  display: inline-block;
+}
+/* line 185, ../sass/components/_icons.scss */
+.img-icon.icon-arrow-up {
   background: url("images/icons/arrow-up.png") no-repeat center;
   width: 24px;
   height: 24px;
 }
-/* line 183, ../sass/components/_icons.scss */
-.img-icon.arrow-down {
+/* line 189, ../sass/components/_icons.scss */
+.img-icon.icon-arrow-down {
   background: url("images/icons/arrow-down.png") no-repeat center;
   width: 24px;
   height: 24px;
 }
-/* line 187, ../sass/components/_icons.scss */
-.img-icon.filter {
+/* line 193, ../sass/components/_icons.scss */
+.img-icon.icon-download {
+  background: url("images/icons/download.png") no-repeat center;
+  width: 17px;
+  height: 16px;
+}
+/* line 197, ../sass/components/_icons.scss */
+.img-icon.icon-filter {
   background: url("images/icons/filter.png") no-repeat center;
   width: 30px;
   height: 28px;
@@ -3397,6 +3412,31 @@ button.nts-switch-button[disabled]:hover {
   padding: 5px;
 }
 
+/* line 1, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel {
+  position: absolute;
+  padding: 10px;
+  background-color: #fff;
+  border: solid 2px #aaa;
+}
+/* line 7, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel .legend-item {
+  margin-bottom: 8px;
+}
+/* line 10, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel .legend-item:last-child {
+  margin-bottom: 0;
+}
+/* line 14, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel .legend-item .legend-item-symbol {
+  display: inline-block;
+}
+/* line 18, ../sass/components/_legendbutton.scss */
+.nts-legendbutton-panel .legend-item .legend-item-label {
+  display: inline-block;
+  margin-left: 6px;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
@@ -3553,12 +3593,12 @@ button.nts-switch-button[disabled]:hover {
   top: 10px;
 }
 
-/* line 42, ../sass/base.scss */
+/* line 43, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 46, ../sass/base.scss */
+/* line 47, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
