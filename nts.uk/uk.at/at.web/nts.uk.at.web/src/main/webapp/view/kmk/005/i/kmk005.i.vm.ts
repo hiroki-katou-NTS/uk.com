@@ -179,8 +179,6 @@ module nts.uk.at.view.kmk005.i {
             start() {
                 let self = this,
                     model = self.model();
-                model.ecd('');
-                self.kcpcompoment.employeeInputList([]);
                 model.ecd.valueHasMutated();
                 self.kcpcompoment.employeeInputList.valueHasMutated();
             }
