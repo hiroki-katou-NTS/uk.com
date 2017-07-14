@@ -25,11 +25,11 @@
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
-					<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KSM005_7')}</a>
+					<a data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
 					<button>#{i18n.getText('KSM005_8')}</button>
 					<button class="proceed">#{i18n.getText('KSM005_9')}</button>
-					<button>#{i18n.getText('KSM005_10')}</button>
+					<button data-bind="click: openBatchSettingDialog">#{i18n.getText('KSM005_10')}</button>
 					<button class="danger">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">

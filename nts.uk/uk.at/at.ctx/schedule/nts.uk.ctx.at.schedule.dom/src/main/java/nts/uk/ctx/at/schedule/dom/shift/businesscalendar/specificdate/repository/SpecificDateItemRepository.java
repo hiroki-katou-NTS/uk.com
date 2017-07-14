@@ -30,5 +30,13 @@ public interface SpecificDateItemRepository {
 	 * @param lstSpecificDateItem
 	 */
 	void addSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem);
+	/**
+	 * hoatt
+	 * get list Specifi Date By List Code
+	 * @param companyId
+	 * @param lstSpecificDateItem
+	 * @return
+	 */
+	List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<String> lstSpecificDateItem);
 
 }

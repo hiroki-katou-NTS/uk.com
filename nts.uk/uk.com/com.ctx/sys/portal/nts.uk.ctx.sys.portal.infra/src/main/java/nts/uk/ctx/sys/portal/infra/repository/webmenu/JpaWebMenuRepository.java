@@ -32,7 +32,8 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	private final String SEL_1 = "SELECT a FROM CcgstWebMenu a WHERE a.ccgstWebMenuPK.companyId = :companyId";
 	private final String UPD_NOT_DEFAULT = "UPDATE CcgstWebMenu a SET a.defaultMenu = 0 "
-			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId "; 
+			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId "
+			+ "AND a.ccgstWebMenuPK.webMenuCd != :webMenuCd " ; 
 
 	@Override
 	public List<WebMenu> findAll(String companyId) {
@@ -65,9 +66,10 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	}
 	
 	@Override
-	public void changeNotDefault(String companyId) {
+	public void changeNotDefault(String companyId, String webMenuCode) {
 		this.getEntityManager().createQuery(UPD_NOT_DEFAULT)
 			.setParameter("companyId", companyId)
+			.setParameter("webMenuCd", webMenuCode)
 			.executeUpdate();
 	}
 
