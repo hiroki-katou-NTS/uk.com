@@ -241,7 +241,7 @@ module nts.uk.at.view.kcp006.a {
             let dfdGetHoliday = $.Deferred<any>();
             service.getPublicHoliday(lstDate)
                 .done((data: Array<model.EventObj>) => {
-                    data.forEach((a) => { lstHoliday.push({ start: moment(a.date, "YYYYMMDD").format("YYYY-MM-DD"), holidayName: a.name }); });
+                    data.forEach((a) => { lstHoliday.push({ start: moment(a.date, "YYYYMMDD").format("YYYY-MM-DD"), holidayName: a.holidayName }); });
                     dfdGetHoliday.resolve();
                 });
             // list event received from server
