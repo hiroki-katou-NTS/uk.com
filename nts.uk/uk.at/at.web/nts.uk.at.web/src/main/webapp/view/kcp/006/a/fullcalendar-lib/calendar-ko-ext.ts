@@ -404,8 +404,6 @@ module nts.uk.at.view.kcp006.a {
                 if (holidayDisplay) {
                     //fill holiday name
                     $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
-                    $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
-                    $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
                 }
             }
             let currentHeaders = [];
