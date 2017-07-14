@@ -244,6 +244,9 @@ module nts.uk.pr.view.kmf001.l {
                 self.nursingNumberPerson = ko.observable(null);
                 self.workTypeCodes = ko.observableArray([]);
                 self.typeCode = ko.computed(function() {
+                    if (!self.workTypeCodes()) {
+                        self.workTypeCodes([]);
+                    }
                     return self.workTypeCodes().join(", ");
                 }, self);
             }
@@ -256,6 +259,9 @@ module nts.uk.pr.view.kmf001.l {
                     nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.workTypeCodes());
                     nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(() => {
                         let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                        if (!data) {
+                            return;
+                        }
                         self.workTypeCodes(data.map(item => item.code));
                         if (self.parent.nursingSetting().workTypeCodes()
                                 && self.parent.nursingSetting().workTypeCodes().length > 0) {
