@@ -90,7 +90,7 @@ module ksm002.a.viewmodel {
 //                        "Play"
 //                    ]
 //                }
-            ]);
+            //]);
             self.firstDay = ko.observable(1);
             self.startDate = 1;
             self.endDate = moment([self.currentYear(),Number(self.currentMonth())+1]).endOf('month').format('DD');
@@ -126,10 +126,10 @@ module ksm002.a.viewmodel {
             let isUse : number = 1;
             let arrOptionaDates : Array<IOptionalDate> = [];
             for(let i=0; i<10;i++){
-                arrOptionaDates.push(new OptionalDate('2017-07-0'+i, 'red','gray',["duc"+i,"pham"+i,"minh"]));
+                arrOptionaDates.push(new OptionalDate('2017-07-0'+i, 'white','gray',["duc"+i,"pham"+i,"minh"]));
             }
             //arrOptionaDates.push(new OptionalDate('2017-07-01', 'red','blue',["duc","pham","minh"]));
-            debugger;
+            //debugger;
             self.optionDates(arrOptionaDates);
             
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
