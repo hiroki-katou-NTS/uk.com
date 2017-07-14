@@ -13,7 +13,7 @@ module nts.uk.at.view.ksm004.a {
             updateCalendarClass: "at/schedule/calendar/updatecalendarclass",
             deleteCalendarClass: "at/schedule/calendar/deletecalendarclass",
             
-            getCalendarWorkPlaceByCode: "at/schedule/calendar/getCalendarWorkplaceByCode/{0}",
+            getCalendarWorkPlaceByCode: "at/schedule/calendar/getallcalendarworkplace",
             insertCalendarWorkPlace: "at/schedule/calendar/addcalendarworkplace",
             updateCalendarWorkPlace: "at/schedule/calendar/updatecalendarworkplace",
             deleteCalendarWorkPlace: "at/schedule/calendar/deletecalendarworkplace"
@@ -54,7 +54,7 @@ module nts.uk.at.view.ksm004.a {
         
         
         export function getCalendarWorkPlaceByCode(workPlaceCode): JQueryPromise<any> {
-            return ajax(format(paths.getCalendarWorkPlaceByCode, workPlaceCode));
+            return ajax(paths.getCalendarWorkPlaceByCode, {'key': workPlaceCode});
         }
         
         export function insertCalendarWorkPlace(command): JQueryPromise<any> {
