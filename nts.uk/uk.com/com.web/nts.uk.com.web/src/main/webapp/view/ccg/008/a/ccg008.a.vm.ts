@@ -64,56 +64,44 @@
  
         //display top page
         showToppage(data: model.LayoutForTopPageDto){
-            var self = this;
-            if (data != null) {
-                let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
-                     var html = '<iframe src="'+ item.placementPartDto.externalUrl +'"/>';
-                    return new model.Placement(item.placementID, item.placementPartDto.name,
-                        item.row, item.column,
-                        item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
-                        item.placementPartDto.topPagePartID, item.placementPartDto.type,html);
-                });
-                if(data.flowMenu != null){
-                    _.map(data.flowMenu, (items) => {
-                        var html = '<img style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
-                        listPlacement.push( new model.Placement(items.fileID, items.fileName,
-                        items.row, items.column,
-                        items.widthSize, items.heightSize, null,
-                        items.toppagePartID, 2,html));
-                    });
-                }
-                listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
-                if (listPlacement !== undefined)
-                    self.placements(listPlacement);
-                _.defer(() => { self.setupPositionAndSizeAll('toppage'); });
-            }
+            var self = this;            
+            self.buildLayout(data, model.TOPPAGE);
         }
         //display my page
         showMypage(data: model.LayoutForMyPageDto){
             var self = this;
-            if (data != null) {
-                let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
+            self.buildLayout(data, model.MYPAGE);
+        }
+         
+         /** Build layout for top page or my page **/
+        buildLayout(data: any, pgType: string) {
+            var self = this;
+            if (!data) {
+                return;    
+            }    
+            
+            let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
                     var html = '<iframe src="'+ item.placementPartDto.externalUrl +'"/>';
                     return new model.Placement(item.placementID, item.placementPartDto.name,
                         item.row, item.column,
                         item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
                         item.placementPartDto.topPagePartID, item.placementPartDto.type, html);
                 });
-                if(data.flowMenu != null){
-                    _.map(data.flowMenu, (items) => {
-                        var html = '<img style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
-                        listPlacement.push( new model.Placement(items.fileID, items.fileName,
-                        items.row, items.column,
-                        items.widthSize, items.heightSize, null,
-                        items.toppagePartID, 2, html));
-                    });
-                }
-                listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
-                if (listPlacement !== undefined)
-                self.placements(listPlacement); 
-                    self.placements(listPlacement);
-                _.defer(() => { self.setupPositionAndSizeAll('mypage'); });
+            
+            if(data.flowMenu != null){
+                _.map(data.flowMenu, (items) => {
+                    var html = '<img style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
+                    listPlacement.push( new model.Placement(items.fileID, items.topPageName,
+                    items.row, items.column,
+                    items.widthSize, items.heightSize, null,
+                    items.toppagePartID, model.TopPagePartType.FLOWMENU, html));
+                });
             }
+            listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
+            if (listPlacement !== undefined) {
+                self.placements(listPlacement);
+            } 
+            _.defer(() => { self.setupPositionAndSizeAll(pgType); });
         }
             
         //for setting dialog
@@ -150,7 +138,7 @@
             });
         }
     }  
-     export module model {
+    export module model {
          /** Client Placement class */
         export class Placement {
             // Required
@@ -249,5 +237,13 @@
             //check top page co duoc setting khong
             checkTopPage: boolean;
         }
+        export enum TopPagePartType {
+            WIDGET = 0,
+            DASHBOARD, 
+            FLOWMENU,
+            EXTERNAL_URL   
+        }
+        export const MYPAGE = 'mypage';
+        export const TOPPAGE = 'toppage';
     }
 }
