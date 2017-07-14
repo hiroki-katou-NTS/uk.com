@@ -1,6 +1,11 @@
 /*****************************
   Icon
 *****************************/
+button {
+	.icon {
+		vertical-align: middle;
+	}
+}
 .icon {
 	position: relative;
 	display: inline-block;
@@ -176,15 +181,20 @@
 }
 
 .img-icon {
-	&.arrow-up {
+	display: inline-block;
+	&.icon-arrow-up {
 		background: url('images/icons/arrow-up.png') no-repeat center;
 	    width: 24px; height: 24px;
 	}
-	&.arrow-down {
+	&.icon-arrow-down {
 		background: url('images/icons/arrow-down.png') no-repeat center;
 	    width: 24px; height: 24px;
 	}
-	&.filter {
+	&.icon-download {
+		background: url('images/icons/download.png') no-repeat center;
+	    width: 17px; height: 16px;
+	}
+	&.icon-filter {
 		background: url('images/icons/filter.png') no-repeat center;
 	    width: 30px; height: 28px;
 	}

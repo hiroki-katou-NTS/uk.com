@@ -29,7 +29,7 @@
 								<colgroup>
 									<col width="210px" />
 									<col width="350px" />
-									<col width="160px" />
+									<col width="*" />
 									<col width="*" />
 								</colgroup>
 								<thead>
@@ -90,7 +90,7 @@
 								<colgroup>
 									<col width="210px" />
 									<col width="350px" />
-									<col width="160px" />
+									<col width="*" />
 									<col width="*" />
 								</colgroup>
 								<thead>
@@ -109,10 +109,10 @@
 											Heigth: 24px<br/>
 										</td>
 										<td>
-											<button class="img-icon arrow-up"></button>
-											<i class="img-icon arrow-up label"></i>
+											<i class="img-icon icon-arrow-up"></i>
+											<button><i class="img-icon icon-arrow-up"></i></button>
 										</td>
-										<td><pre><![CDATA[<button class="img-icon arrow-up"></button>]]></pre></td>
+										<td><pre><![CDATA[<button><i class="img-icon icon-arrow-up"></i></button>]]></pre></td>
 									</tr>
 									<tr>
 										<td>Arrow Down</td>
@@ -121,10 +121,23 @@
 											Heigth: 24px<br/>
 										</td>
 										<td>
-											<button class="img-icon arrow-down"></button>
-											<i class="img-icon arrow-down label"></i>
+											<i class="img-icon icon-arrow-down"></i>
+											<button><i class="img-icon icon-arrow-down"></i></button>
 										</td>
-										<td><pre><![CDATA[<button class="img-icon arrow-down"></button>]]></pre></td>
+										<td><pre><![CDATA[<button><i class="img-icon icon-arrow-down"></i></button>]]></pre></td>
+									</tr>
+									<tr>
+										<td>Dơnload</td>
+										<td>
+											Width: 17px<br/>
+											Heigth: 16px<br/>
+										</td>
+										<td>
+											<i class="img-icon icon-download"></i>
+											<button>ダウンロード <i class="img-icon icon-download"></i></button>
+											<button class="proceed">Download <i class="img-icon icon-download"></i></button>
+										</td>
+										<td><pre><![CDATA[<button>ダウンロード <i class="img-icon icon-download"></i></button>]]></pre></td>
 									</tr>
 									<tr>
 										<td>Filter</td>
@@ -132,8 +145,11 @@
 											Width: 30px<br/>
 											Heigth: 28px<br/>
 										</td>
-										<td><i class="img-icon filter label"></i></td>
-										<td><pre><![CDATA[<i class="img-icon filter label"></i>]]></pre></td>
+										<td>
+											<i class="img-icon icon-filter label"></i>
+											<button class="auto-height"><i class="img-icon icon-filter label"></i></button>
+										</td>
+										<td><pre><![CDATA[<i class="img-icon icon-filter"></i>]]></pre></td>
 									</tr>
 								</tbody>
 							</table>
