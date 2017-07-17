@@ -6,9 +6,11 @@ module ksm002.e{
             dataSource: KnockoutObservableArray<SpecificDateItemDto>;
             date: string;
             selectedCodes: Array<string>;
+            size: number;
             constructor() {
                 var self = this;
                 self.dataSource = ko.observableArray([]);
+                self.size = 780;
                 self.startPage();
             }
             startPage(){
@@ -34,6 +36,10 @@ module ksm002.e{
                                 if(items.timeItemId() == selectedCode) items.useAtr(1);
                             });
                         });
+                    }
+                    if(param.selectable.length < 3){
+                        nts.uk.ui.windows.getSelf().setWidth(550); 
+                        self.size = 450;   
                     }
                     $('#specificItem_0').focus();
                     nts.uk.ui.block.clear();
