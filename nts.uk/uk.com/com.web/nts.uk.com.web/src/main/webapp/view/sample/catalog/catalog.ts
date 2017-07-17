@@ -91,12 +91,22 @@ $(function(){
     $('pre').addClass('prettyprint')
     $.getScript("https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js");
     
-    $(".tabs").tabs();
+    $(".tabs").tabs({
+    	create: function(event: Event, ui: any) {
+    		$(".tabs").find('.ui-tabs-panel').addClass('disappear');
+    		ui.panel.removeClass('disappear');
+    	},
+    	activate: function(evt: Event, ui: any) {
+    		$(".tabs").find('.ui-tabs-panel').addClass('disappear');
+            ui.newPanel.removeClass('disappear');
+        }
+    });
     
     $(".catalog-accordion").accordion({
         active: false,
         animate: false,
-        collapsible: true
+        collapsible: true,
+        heightStyle: "content"
     });
     
 });
