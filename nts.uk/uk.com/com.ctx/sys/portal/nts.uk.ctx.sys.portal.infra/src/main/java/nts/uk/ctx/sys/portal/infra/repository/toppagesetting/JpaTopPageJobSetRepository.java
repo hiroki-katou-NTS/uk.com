@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSet;
@@ -66,7 +68,7 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 	public void add(TopPageJobSet topPageJobSet) {
 		this.commandProxy().insert(toEntity(topPageJobSet));
 	}
-
+	
 	/**
 	 * Update TopPageJobSet
 	 */
@@ -84,7 +86,8 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 	}
 
 	/**
-	 * Update several property of TopPageJobSet
+	 * Update property of TopPageJobSet: loginMenuCd = topMenuCd, 
+	 * loginMenuCls = TopPage, system = Common
 	 */
 	@Override
 	public void updateProperty(TopPageJobSet topPageJobSet) {
@@ -93,6 +96,9 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		entity.ccgptTopPageJobSetPK = pk;
 		entity.personPermissionSet = topPageJobSet.getPersonPermissionSet().value;
 		entity.topMenuCd = topPageJobSet.getTopMenuCode().v();
+		entity.loginMenuCd = topPageJobSet.getTopMenuCode().v();
+		entity.loginMenuCls = MenuClassification.TopPage.value;
+		entity.system = System.COMMON.value;
 		this.commandProxy().update(entity);
 	}
 }
