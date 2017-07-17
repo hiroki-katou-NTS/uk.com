@@ -157,8 +157,10 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectCompany(): void {
                 let self = this;
-                self.isLoading(true);
+                // Clear error.
+                self.clearError();
 
+                self.isLoading(true);
                 // Load data.
                 self.loadCompanySetting().done(() => {
                     // Update flag.
