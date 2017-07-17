@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 485, height: 560 };</script>
+			<script>var dialogSize = { width: 485, height: 610 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.sys.portal.dom.webmenu.TitleBarName
 			</com:ValidatorScript>
@@ -31,15 +31,15 @@
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_94')}</div></td>
-						<td colspan="2"><div id="colorpicker" tabindex="2"
+						<td colspan="2"><div id="colorpicker1" tabindex="2"
 								data-name="#{i18n.getText('CCG013_19')} "
-								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}" /></td>
+								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50,required: true}" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_95')}</div></td>
-						<td colspan="2"><div id="colorpicker" tabindex="4"
+						<td colspan="2"><div id="colorpicker2" tabindex="4"
 								data-name="#{i18n.getText('CCG013_23')}"
-								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50}" /></td>
+								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50,required: true}" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_96')}</div></td>

@@ -139,6 +139,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         submit() {
             var self = this;
+            $(".ntsColorPicker_Container").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
