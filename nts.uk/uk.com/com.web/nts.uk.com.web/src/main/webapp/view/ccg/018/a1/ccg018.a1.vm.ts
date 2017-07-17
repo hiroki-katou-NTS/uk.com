@@ -194,12 +194,11 @@ module ccg018.a1.viewmodel {
          */
         update(): JQueryPromise<any> {
             let self = this;
+            blockUI.invisible();
             if (self.items().length == 0) {
                 return;
             }
             let dfd = $.Deferred();
-            blockUI.invisible();
-
             let command = {
                 listTopPageJobSet: ko.mapping.toJS(self.items()),
                 ctgSet: self.categorySet()

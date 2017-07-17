@@ -37,10 +37,10 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-					<button class="proceed">#{i18n.getText('KSM004_1')}</button>
+					<button class="proceed" data-bind="click: function(){submitCalendar(0)}">#{i18n.getText('KSM004_1')}</button>
 					<button data-bind="click: openDialogD">#{i18n.getText('KSM004_2')}</button>
 					<button data-bind="click: openDialogC">#{i18n.getText('KSM004_3')}</button>
-					<button class="danger">#{i18n.getText('KSM004_4')}</button>
+					<button class="danger" data-bind="click: function(){removeCalendar(0)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="rightExtend">
@@ -52,9 +52,9 @@
 							<div class="infoTable">
 								<div><span>#{i18n.getText('KSM004_9')}</span></div>
 								<div>
-									<div class="labelSqr labelSqr1" data-bind="click: function(){changeWorkingDayAtr(0)}"><span>稼働日</span></div>
-									<div class="labelSqr labelSqr2" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>非稼働日（法内）</span></div>
-									<div class="labelSqr labelSqr3" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法外）</span></div>
+									<div class="labelSqr labelSqr1" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
+									<div class="labelSqr labelSqr2" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
+									<div class="labelSqr labelSqr3" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
 								</div>
 							</div>
 						</div>
@@ -88,9 +88,9 @@
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-					<button class="proceed">#{i18n.getText('KSM004_1')}</button>
+					<button class="proceed" data-bind="click: function(){submitCalendar(1)}">#{i18n.getText('KSM004_1')}</button>
 					<button>#{i18n.getText('KSM004_2')}</button>
-					<button class="danger">#{i18n.getText('KSM004_4')}</button>
+					<button class="danger" data-bind="click: function(){removeCalendar(1)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="leftExtend">
@@ -142,9 +142,9 @@
 			<div id="tabpanel-3" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-					<button class="proceed">#{i18n.getText('KSM004_1')}</button>
+					<button class="proceed" data-bind="click: function(){submitCalendar(2)}">#{i18n.getText('KSM004_1')}</button>
 					<button>#{i18n.getText('KSM004_2')}</button>
-					<button class="danger">#{i18n.getText('KSM004_4')}</button>
+					<button class="danger" data-bind="click: function(){removeCalendar(2)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="leftExtend">

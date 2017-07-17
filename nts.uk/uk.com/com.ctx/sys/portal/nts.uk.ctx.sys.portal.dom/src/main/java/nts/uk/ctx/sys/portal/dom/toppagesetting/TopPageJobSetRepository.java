@@ -33,7 +33,7 @@ public interface TopPageJobSetRepository {
 	void update(TopPageJobSet topPageJobSet);
 
 	/**
-	 * update several property in table TOPPAGE_JOB_SET
+	 * update property in table TOPPAGE_JOB_SET with loginMenuCd = topMenuCd
 	 * 
 	 * @param topPageJobSet
 	 */

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find.dto;
 
 import java.util.List;
 
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -30,6 +31,10 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 
     /** The work type codes. */
     public List<String> workTypeCodes;
+    
+    /** The work type. */
+    @Setter
+    public String workType;
 
     /*
      * (non-Javadoc)

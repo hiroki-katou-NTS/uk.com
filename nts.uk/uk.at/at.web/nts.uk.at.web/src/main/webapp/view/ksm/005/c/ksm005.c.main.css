@@ -5,7 +5,16 @@
 	margin-left: 20px;
 }
 
-.contentkcp005{
+.contentkcp005 {
 	margin-top: 40px;
 	margin-left: 100px;
+}
+
+.contentDetail {
+	margin-top: 40px;
+	margin-left: 40px;
+}
+
+.lableData {
+	width: 125px;
 }

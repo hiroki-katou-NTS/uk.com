@@ -208,6 +208,7 @@ module nts.uk.pr.view.kmf001.l {
                 ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
                 ob().nursingNumberPerson(object.nursingNumberPerson);
                 ob().workTypeCodes(object.workTypeCodes);
+                ob().typeCode(object.workType);
             }
             
             private convertMonthDay(setting : KnockoutObservable<NursingSettingModel>): number {
@@ -243,17 +244,13 @@ module nts.uk.pr.view.kmf001.l {
                 self.nursingNumberLeaveDay = ko.observable(null);
                 self.nursingNumberPerson = ko.observable(null);
                 self.workTypeCodes = ko.observableArray([]);
-                self.typeCode = ko.computed(function() {
-                    if (!self.workTypeCodes()) {
-                        self.workTypeCodes([]);
-                    }
-                    return self.workTypeCodes().join(", ");
-                }, self);
+                self.typeCode = ko.observable('');
             }
             
             private openDialog() {
                 let self = this;
                 service.findWorkTypeCodes().done(function(res) {
+                    
                     nts.uk.ui.windows.setShared('KDL002_Multiple', true);
                     nts.uk.ui.windows.setShared('KDL002_AllItemObj', res);
                     nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.workTypeCodes());
@@ -263,6 +260,7 @@ module nts.uk.pr.view.kmf001.l {
                             return;
                         }
                         self.workTypeCodes(data.map(item => item.code));
+                        self.typeCode(data.map(item => item.code + '.' + item.name).join(", "));
                         if (self.parent.nursingSetting().workTypeCodes()
                                 && self.parent.nursingSetting().workTypeCodes().length > 0) {
                             $('#work-type-code-nursing').ntsError('clear');
