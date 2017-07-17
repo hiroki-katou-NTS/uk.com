@@ -100,7 +100,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	public List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<String> lstSpecificDateItem) {
 		return this.queryProxy().query(GET_BY_LIST_CODE, KsmstSpecificDateItem.class)
 				.setParameter("companyId", companyId)
-				.setParameter("lstSpecifiDateItem", lstSpecificDateItem)
+				.setParameter("lstSpecificDateItem", lstSpecificDateItem)
 				.getList(c->toBonusPaySettingDomain(c));
 	}
 
