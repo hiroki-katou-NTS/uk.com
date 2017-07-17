@@ -88,6 +88,29 @@
 		holidayDisplay: holidayDisplay,
 		cellButtonDisplay: cellButtonDisplay}"></div>
 </div>]]></pre>
+									<h2>Object</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Name</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>DateObject</td>
+												<td>
+													<b>start:</b>The date/time of date. Required.A Moment-ish input, like an ISO8601 string ('YYYY-MM-DD').<br/>
+													<b>textColor:</b>Sets list text's text color. Required, rgb code or color name.<br/>
+													<b>backgroundColor:</b>Sets date's backgroud color. Required, rgb code or color name.<br/>
+													<b>listText:</b>List text display in the date. Required, array of string.<br/>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 									<h2>API</h2>
 									<i>Only for the calendar, for yearmonth picker please see more in following link:</i>
 									<a href="http://localhost:8080/nts.uk.com.web/view/sample/customdatepicker/customdatepicker.xhtml">Yearmonth picker's API</a><br/>
@@ -105,7 +128,7 @@
 											<tr>
 												<td>optionDates</td>
 												<td>
-													<b>Type:</b>KnockoutObservableArray&lt;any&gt;<br/>
+													<b>Type:</b>KnockoutObservableArray&lt;DateObject&gt;<br/>
 													List options of specification dates
 												</td>
 											</tr>
