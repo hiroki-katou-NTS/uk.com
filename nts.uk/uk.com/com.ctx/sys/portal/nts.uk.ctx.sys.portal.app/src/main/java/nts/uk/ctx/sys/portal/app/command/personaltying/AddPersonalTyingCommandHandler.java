@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.portal.app.command.personaltying;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -14,20 +12,20 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class AddPersonalTyingCommandHandler extends CommandHandler<List<PersonTypingCommand>>{
+public class AddPersonalTyingCommandHandler extends CommandHandler<PersonTypingCommand> {
 	
 	@Inject
 	private PersonalTyingRepository respository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<List<PersonTypingCommand>> context) {
+	protected void handle(CommandHandlerContext<PersonTypingCommand> context) {
+		PersonTypingCommand person = context.getCommand();
 		
-		List<PersonTypingCommand> persons = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		respository.delete(companyId);
+		respository.delete(companyId, person.getEmployeeId());
 		
-		persons.forEach(person-> {
-			PersonalTying personalTying = new PersonalTying(companyId, person.getWebMenuCode(), person.getEmployeeId());
+		person.getWebMenuCodes().forEach(menuCode-> {
+			PersonalTying personalTying = new PersonalTying(companyId, menuCode, person.getEmployeeId());
 			personalTying.validate();
 			
 			respository.add(personalTying);

@@ -11,16 +11,16 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class DeletePersonalTyingCommandHandler extends CommandHandler<AddPersonalTyingCommand>{
+public class DeletePersonalTyingCommandHandler extends CommandHandler<DeletePersonalTyingCommand>{
 	@Inject
 	private PersonalTyingRepository respository;
-	
-
 
 	@Override
-	protected void handle(CommandHandlerContext<AddPersonalTyingCommand> context) {
+	protected void handle(CommandHandlerContext<DeletePersonalTyingCommand> context) {
+		DeletePersonalTyingCommand command = context.getCommand();
+		
 		String companyId = AppContexts.user().companyId();
-		respository.delete(companyId);
-
+		respository.delete(companyId,command.getEmployeeId());
+		
 	}
 }

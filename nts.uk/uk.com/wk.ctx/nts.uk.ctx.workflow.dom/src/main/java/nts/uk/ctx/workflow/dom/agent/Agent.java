@@ -239,6 +239,9 @@ public class Agent extends AggregateRoot {
 		}
 	}
 	
+	/**
+	 * check agentAppType by agentSid
+	 */
 	private void checkAgentRequest() {
 		if ((this.agentAppType1 == AgentAppType.SUBSTITUTE_DESIGNATION &&  this.agentSid1 == "")
 		|| ( this.agentAppType2 == AgentAppType.SUBSTITUTE_DESIGNATION &&  this.agentSid2 == "")

@@ -14,8 +14,7 @@
 			<button tabindex="4" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
 			</span>
 		</div>
-		<div class="contents-area">
-		<div class="wrapper" data-bind="ifnot: isLoading">
+		<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
 			<com:ko tag="with" bind="companyWTSetting">
 				<div class="control-group">
 					<div tabindex="1" id="companyYearPicker" 
@@ -198,7 +197,6 @@
 					<!-- DEFORMATION LABOR WORK TIME SETTING END -->
 				</div>
 			</com:ko>
-		</div>
 		</div>
 	</ui:composition>
 </body>

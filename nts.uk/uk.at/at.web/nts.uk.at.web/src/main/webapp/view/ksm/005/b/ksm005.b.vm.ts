@@ -7,8 +7,7 @@ module nts.uk.at.view.ksm005.b {
             columnMonthlyPatterns: KnockoutObservableArray<NtsGridListColumn>;
             lstMonthlyPattern: KnockoutObservableArray<MonthlyPatternDto>;
             selectMonthlyPattern: KnockoutObservable<string>;
-            code: KnockoutObservable<string>;
-            name: KnockoutObservable<string>;
+            monthlyPatternModel: KnockoutObservable<MonthlyPatternModel>;
             textEditorOption: KnockoutObservable<any>;
             textEditorOptionName: KnockoutObservable<any>;
 
@@ -31,8 +30,8 @@ module nts.uk.at.view.ksm005.b {
             constructor() {
                 var self = this;
                 self.columnMonthlyPatterns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSM005_13"), key: 'monthlyPatternCode', width: 100 },
-                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'monthlyPatternName', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
+                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 }
                 ]);
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "50px",
@@ -45,38 +44,18 @@ module nts.uk.at.view.ksm005.b {
                     textalign: "left"
                 }));
 
-                var monthlyPatterns: MonthlyPatternDto[] = [];
-                var monthlyPatternDto001: MonthlyPatternDto = { monthlyPatternCode: '001', monthlyPatternName: '001' };
-                var monthlyPatternDto002: MonthlyPatternDto = { monthlyPatternCode: '002', monthlyPatternName: '002' };
-                var monthlyPatternDto003: MonthlyPatternDto = { monthlyPatternCode: '003', monthlyPatternName: '003' };
-                var monthlyPatternDto004: MonthlyPatternDto = { monthlyPatternCode: '004', monthlyPatternName: '004' };
-                var monthlyPatternDto005: MonthlyPatternDto = { monthlyPatternCode: '005', monthlyPatternName: '005' };
-                var monthlyPatternDto006: MonthlyPatternDto = { monthlyPatternCode: '006', monthlyPatternName: '006' };
-                var monthlyPatternDto007: MonthlyPatternDto = { monthlyPatternCode: '007', monthlyPatternName: '007' };
-                var monthlyPatternDto008: MonthlyPatternDto = { monthlyPatternCode: '008', monthlyPatternName: '008' };
-                var monthlyPatternDto009: MonthlyPatternDto = { monthlyPatternCode: '009', monthlyPatternName: '009' };
-                var monthlyPatternDto010: MonthlyPatternDto = { monthlyPatternCode: '010', monthlyPatternName: '010' };
-                monthlyPatterns.push(monthlyPatternDto001);
-                monthlyPatterns.push(monthlyPatternDto002);
-                monthlyPatterns.push(monthlyPatternDto003);
-                monthlyPatterns.push(monthlyPatternDto004);
-                monthlyPatterns.push(monthlyPatternDto005);
-                monthlyPatterns.push(monthlyPatternDto006);
-                monthlyPatterns.push(monthlyPatternDto007);
-                monthlyPatterns.push(monthlyPatternDto008);
-                monthlyPatterns.push(monthlyPatternDto009);
-                monthlyPatterns.push(monthlyPatternDto010);
-                self.lstMonthlyPattern = ko.observableArray(monthlyPatterns);
-                self.selectMonthlyPattern = ko.observable(monthlyPatternDto001.monthlyPatternCode);
-                self.code = ko.observable(monthlyPatternDto001.monthlyPatternCode);
-                self.name = ko.observable(monthlyPatternDto001.monthlyPatternCode);
-
-                self.yearMonthPicked = ko.observable(200005);
+                self.lstMonthlyPattern = ko.observableArray([]);
+                self.monthlyPatternModel = ko.observable(new MonthlyPatternModel());
+                self.selectMonthlyPattern = ko.observable('');
+                self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string){
+                   self.detailMonthlyPattern(monthlyPatternCode); 
+                });
+                self.yearMonthPicked = ko.observable(201707);
                 self.cssRangerYM = {
                 };
                 self.optionDates = ko.observableArray([
                     {
-                        start: '2000-05-01',
+                        start: '2017-07-01',
                         textColor: 'red',
                         backgroundColor: 'white',
                         listText: [
@@ -85,7 +64,7 @@ module nts.uk.at.view.ksm005.b {
                         ]
                     },
                     {
-                        start: '2000-05-05',
+                        start: '2017-07-05',
                         textColor: '#31859C',
                         backgroundColor: 'white',
                         listText: [
@@ -96,7 +75,7 @@ module nts.uk.at.view.ksm005.b {
                         ]
                     },
                     {
-                        start: '2000-05-10',
+                        start: '2017-07-10',
                         textColor: '#31859C',
                         backgroundColor: 'white',
                         listText: [
@@ -105,7 +84,7 @@ module nts.uk.at.view.ksm005.b {
                         ]
                     },
                     {
-                        start: '2000-05-20',
+                        start: '2017-07-20',
                         textColor: 'blue',
                         backgroundColor: 'white',
                         listText: [
@@ -115,7 +94,7 @@ module nts.uk.at.view.ksm005.b {
                         ]
                     },
                     {
-                        start: '2000-06-20',
+                        start: '2017-07-22',
                         textColor: 'blue',
                         backgroundColor: 'red',
                         listText: [
@@ -136,6 +115,7 @@ module nts.uk.at.view.ksm005.b {
                 self.cellButtonDisplay = ko.observable(true);
                 nts.uk.at.view.kcp006.a.CellClickEvent = function(date) {
                     alert(date);
+                    console.log(date);
                 };
             }
 
@@ -146,6 +126,48 @@ module nts.uk.at.view.ksm005.b {
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml");
             }
 
+            /**
+            * start page data 
+            */
+            startPage(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                service.findAllMonthlyPattern().done(function(data) {
+                    self.lstMonthlyPattern(data);
+                    self.selectMonthlyPattern(data[0].code);
+                    self.monthlyPatternModel().updateData(data[0]);
+                    dfd.resolve(self);
+                });
+                return dfd.promise();
+            }
+            
+            /**
+             * detail monthly pattern by selected monthly pattern code
+             */
+            detailMonthlyPattern(monthlyPatternCode: string): void {
+                var self = this;
+                service.findByIdWorkMonthlySetting(monthlyPatternCode).done(function(data){
+                    service.findByIdMonthlyPattern(monthlyPatternCode).done(function(res){
+                        self.monthlyPatternModel().updateData(res);
+                        console.log(data);
+                    });
+                });
+            }
+
+        }
+        
+        export class MonthlyPatternModel{
+            code: KnockoutObservable<string>;
+            name: KnockoutObservable<string>;
+            constructor(){
+                this.code = ko.observable('');    
+                this.name = ko.observable('');    
+            }    
+            
+            updateData(dto: MonthlyPatternDto) {
+                this.code(dto.code);
+                this.name(dto.name);
+            }
         }
 
     }
