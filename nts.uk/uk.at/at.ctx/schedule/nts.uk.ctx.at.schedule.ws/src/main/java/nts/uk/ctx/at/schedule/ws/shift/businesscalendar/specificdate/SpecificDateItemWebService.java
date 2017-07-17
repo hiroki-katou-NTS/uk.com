@@ -40,4 +40,10 @@ public class SpecificDateItemWebService extends WebService {
 	public void UpdateSpecificDateByCompany(List<SpecificDateItemCommand> lstSpecificDateItem) {
 		this.update.handle(lstSpecificDateItem);
 	}
+	
+	@POST
+	@Path("getspecificdatebylistcode")
+	public List<SpecificDateItemDto> getSpecificDateByListCode(List<String> lstSpecificDateItem){
+		return this.find.getSpecificDateItemByListCode(lstSpecificDateItem);
+	}
 }

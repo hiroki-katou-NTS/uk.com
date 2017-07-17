@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 350, height: 450 };</script>
+				<com:stylefile path="ksm005.f.main.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="ksm005.f.start.js" />
+				<com:scriptfile path="ksm005.f.service.js" />
+				<com:scriptfile path="ksm005.f.vm.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName
+				</com:ValidatorScript>
+			</ui:define>
+			<ui:define name="content">
+				<div class="contents">
+					<div class="monthlyPatternContents">
+						<table id="lstMonthlyPattern" 
+							data-bind="ntsGridList: {								
+							height: 250,
+							dataSource: lstMonthlyPattern,
+							primaryKey: 'monthlyPatternCode',
+							columns: columnMonthlyPatterns,
+							multiple: false,
+							value: selectMonthlyPattern
+						}"></table>	
+					</div>
+				</div>
+				
+				<div id="functions-area-bottom">
+					<button tabindex="1" class="proceed x-large" >#{i18n.getText('KSM005_25')}</button>
+					<button tabindex="2" class="large">#{i18n.getText('KSM005_26')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>

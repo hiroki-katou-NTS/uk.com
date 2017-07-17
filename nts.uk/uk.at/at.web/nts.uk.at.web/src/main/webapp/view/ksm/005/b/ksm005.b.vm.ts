@@ -139,6 +139,13 @@ module nts.uk.at.view.ksm005.b {
                 };
             }
 
+            /**
+             * open dialog batch setting (init view model e)
+             */
+            public openBatchSettingDialog(): void {
+                nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml");
+            }
+
         }
 
     }

@@ -31,30 +31,21 @@
 				</div>
 				<div class="contents">
 					<div id="ccgcomponent"></div>
-					<div data-bind="if: showinfoSelectedEmployee()">
-					<br/>
-					<div class="labelselect">List data returned:</div>
-					<br/> 
-					<table>
-						<tr>
-							<td><b>EmployeeId</b></td>
-							<td><b>EmployeeCode</b></td>
-							<td><b>EmployeeName</b></td>
-							<td><b>WorkplaceId</b></td>
-							<td><b>WorkplaceCode</b></td>
-							<td><b>WorkplaceName</b></td>
-						</tr>
-						<com:ko-foreach bind="selectedEmployee">
-							<tr>
-								<td data-bind="text: employeeId"></td>
-								<td data-bind="text: employeeCode"></td>
-								<td data-bind="text: employeeName"></td>
-								<td data-bind="text: workplaceId"></td>
-								<td data-bind="text: workplaceCode"></td>
-								<td data-bind="text: workplaceName"></td>
-							</tr>
-						</com:ko-foreach>
-						</table>
+					<div id="component-items-list" class="pull-left contentkcp005"></div>
+					<div class="pull-left contentDetail">
+						<div class="lableData" data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KSM005_21')}</label>
+						</div>
+						<label  data-bind="text: employeeInfo().name"></label>
+						<br />
+						<br />
+						<div class="lableData"
+							data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KSM005_22')}</label>
+						</div>
+						<button data-bind="click: onpenDialogSystemChange">#{i18n.getText('KSM005_23')}</button>
+						<label  data-bind="text: employeeInfo().code"></label>
+						<label  data-bind="text: employeeInfo().name"></label>
 					</div>
 				</div>
 			</ui:define>

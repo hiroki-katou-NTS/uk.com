@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 450, height: 550 };</script>
+				<com:stylefile path="ksm005.e.main.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="ksm005.e.start.js" />
+				<com:scriptfile path="ksm005.e.service.js" />
+				<com:scriptfile path="ksm005.e.vm.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName
+				</com:ValidatorScript>
+			</ui:define>
+			<ui:define name="content">
+				<div class="contents">
+					<div class="period_labels">
+						<div
+							data-bind="ntsFormLabel: {required: true}">
+							<label>#{i18n.getText('KSM005_27')}</label>
+						</div>
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+						<label>~</label>
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+					</div>
+					<div class="employee_labels">
+						<div data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KSM005_28')}</label>
+						</div>
+						<br />
+						<hr/>
+					</div>
+					
+					<div class="pull-left workday_labels">
+						<div class="pull-left lableData"
+							data-bind="ntsFormLabel: {required: true}">
+							<label>#{i18n.getText('KSM005_29')}</label>
+						</div>
+						<button class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<div class="pull-left contentDetail">
+							<label>001 XXXXXXXXXXX</label>
+							<br/>
+							<label>002 YYYYYYYYYYY</label>
+						</div>
+					</div>
+					<div class="pull-left workday_labels">
+						<div class="pull-left lableData"
+							data-bind="ntsFormLabel: {required: true}">
+							<label>#{i18n.getText('KSM005_30')}</label>
+						</div>
+						<button class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<div class="pull-left contentDetail">
+							<label>001 XXXXXXXXXXX</label>
+							<br/>
+							<label>002 YYYYYYYYYYY</label>
+						</div>
+					</div>
+					<div class="pull-left workday_labels">
+						<div class="pull-left lableData"
+							data-bind="ntsFormLabel: {required: true}">
+							<label>#{i18n.getText('KSM005_31')}</label>
+						</div>
+						<button class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<div class="pull-left contentDetail">
+							<label>001 XXXXXXXXXXX</label>
+							<br/>
+							<label>002 YYYYYYYYYYY</label>
+						</div>
+					</div>
+					<div class="pull-left workday_labels">
+						<div class="pull-left lableData"
+							data-bind="ntsFormLabel: {required: true}">
+							<label>#{i18n.getText('KSM005_32')}</label>
+						</div>
+						<button class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<div class="pull-left contentDetail">
+							<label>001 XXXXXXXXXXX</label>
+							<br/>
+							<label>002 YYYYYYYYYYY</label>
+						</div>
+					</div>
+				</div>
+				
+				<div id="functions-area-bottom">
+					<button tabindex="1" class="proceed x-large" >#{i18n.getText('KSM005_25')}</button>
+					<button tabindex="2" class="large">#{i18n.getText('KSM005_26')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>
