@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.calendar.CalendarRepository;
+import nts.uk.ctx.at.schedule.dom.calendar.CalendarCompanyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CalendarCompanyFinder {
 
 	@Inject
-	private CalendarRepository calendarCompanyRepo;
+	private CalendarCompanyRepository calendarCompanyRepo;
 	
 	String companyId = AppContexts.user().companyId();
 	
@@ -23,5 +23,13 @@ public class CalendarCompanyFinder {
 				.map(c->CalendarCompanyDto.fromDomain(c))
 				.collect(Collectors.toList());
 		return list;
+	}
+	
+	public List<CalendarCompanyDto> getCalendarCompanyByYearMonth(String yearMonth){
+		String companyId = AppContexts.user().companyId();
+		return this.calendarCompanyRepo.getCalendarCompanyByYearMonth(companyId, yearMonth)
+				.stream()
+				.map(c->CalendarCompanyDto.fromDomain(c))
+				.collect(Collectors.toList());
 	}
 }

@@ -7,18 +7,18 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.calendar.CalendarRepository;
+import nts.uk.ctx.at.schedule.dom.calendar.CalendarClassRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CalendarClassFinder {
 	@Inject
-	private CalendarRepository calendarClassRepo;
+	private CalendarClassRepository calendarClassRepository;
 	
 	String companyId = AppContexts.user().companyId();
 	
 	public List<CalendarClassDto> getAllCalendarClass(String classId){
-		List<CalendarClassDto> list = this.calendarClassRepo.getAllCalendarClass(companyId,classId)
+		List<CalendarClassDto> list = this.calendarClassRepository.getAllCalendarClass(companyId,classId)
 				.stream()
 				.map(c->CalendarClassDto.fromDomain(c))
 				.collect(Collectors.toList());

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.calendar;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -8,26 +9,29 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.calendar.CalendarCompany;
-import nts.uk.ctx.at.schedule.dom.calendar.CalendarRepository;
+import nts.uk.ctx.at.schedule.dom.calendar.CalendarCompanyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class AddCalendarCompanyCommandHandler extends CommandHandler<AddCalendarCompanyCommand> {
+public class AddCalendarCompanyCommandHandler extends CommandHandler<List<AddCalendarCompanyCommand>> {
 	@Inject
-	private CalendarRepository calendarCompanyRepo;
+	private CalendarCompanyRepository calendarCompanyRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddCalendarCompanyCommand> context) {
+	protected void handle(CommandHandlerContext<List<AddCalendarCompanyCommand>> context) {
 		String companyId = AppContexts.user().companyId();
-		CalendarCompany calendarCompany = CalendarCompany.createFromJavaType(companyId, 
-				context.getCommand().getDateId(),
-				context.getCommand().getWorkingDayAtr());
-		Optional<CalendarCompany> calendarCom =calendarCompanyRepo.findCalendarCompanyByDate(companyId,
-				context.getCommand().getDateId());
-		if (calendarCom.isPresent()) {
-			//do something
-		} else {
-			calendarCompanyRepo.addCalendarCompany(calendarCompany);
+		List<AddCalendarCompanyCommand> calendarCompanyCommands = context.getCommand();
+		for(AddCalendarCompanyCommand calendarCompanyCommand: calendarCompanyCommands){
+			CalendarCompany calendarCompany = CalendarCompany.createFromJavaType(companyId, 
+					calendarCompanyCommand.getDateId(),
+					calendarCompanyCommand.getWorkingDayAtr());
+			Optional<CalendarCompany> calendarCom =calendarCompanyRepo.findCalendarCompanyByDate(companyId,
+					calendarCompanyCommand.getDateId());
+			if (calendarCom.isPresent()) {
+				//do something
+			} else {
+				calendarCompanyRepo.addCalendarCompany(calendarCompany);
+			}
 		}
 	}
 
