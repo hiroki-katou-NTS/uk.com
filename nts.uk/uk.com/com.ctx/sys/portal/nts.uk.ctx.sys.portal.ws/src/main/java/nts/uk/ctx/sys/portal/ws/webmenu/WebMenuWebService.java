@@ -9,8 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.portal.app.command.personaltying.AddPersonalTyingCommand;
 import nts.uk.ctx.sys.portal.app.command.personaltying.AddPersonalTyingCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.personaltying.DeletePersonalTyingCommand;
 import nts.uk.ctx.sys.portal.app.command.personaltying.DeletePersonalTyingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.personaltying.PersonTypingCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommand;
@@ -96,12 +96,12 @@ public class WebMenuWebService extends WebService {
 	
 	@POST
 	@Path("addPerson")
-	public void addPerson(List<PersonTypingCommand> command) {
+	public void addPerson(PersonTypingCommand command) {
 		this.addPersonTypeCommandHandler.handle(command);
 	}
 	@POST
 	@Path("deletePerson")
-	public void deletePerson(AddPersonalTyingCommand command) {
+	public void deletePerson(DeletePersonalTyingCommand command) {
 		this.deletePersonTypeCommandHandler.handle(command);
 	}
 	

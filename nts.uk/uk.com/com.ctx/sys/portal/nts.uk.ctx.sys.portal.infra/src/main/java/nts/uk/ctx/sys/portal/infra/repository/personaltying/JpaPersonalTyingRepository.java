@@ -21,6 +21,7 @@ public class JpaPersonalTyingRepository extends JpaRepository implements Persona
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE FROM CcgstPersonTying e");
 		builderString.append(" WHERE e.ccgstPersonTyingPK.companyId= :companyId");
+		builderString.append(" AND e.ccgstPersonTyingPK.employeeId = :employeeId");
 		REMOVE_ALL = builderString.toString(); 
 		
 		builderString = new StringBuilder();
@@ -36,8 +37,11 @@ public class JpaPersonalTyingRepository extends JpaRepository implements Persona
 	}
 
 	@Override
-	public void delete(String companyId) {
-		this.getEntityManager().createQuery(REMOVE_ALL).setParameter("companyId", companyId).executeUpdate();
+	public void delete(String companyId, String employeeId) {
+		this.getEntityManager().createQuery(REMOVE_ALL)
+		.setParameter("companyId", companyId)
+		.setParameter("employeeId", employeeId)
+		.executeUpdate();
 	}
 
 	private CcgstPersonTying convertToDbType(PersonalTying personalTying) {

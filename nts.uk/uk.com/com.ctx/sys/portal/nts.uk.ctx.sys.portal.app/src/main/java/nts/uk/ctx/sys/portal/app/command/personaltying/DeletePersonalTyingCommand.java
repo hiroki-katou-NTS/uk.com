@@ -1,13 +1,16 @@
 package nts.uk.ctx.sys.portal.app.command.personaltying;
 
-import java.util.List;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class PersonTypingCommand {
-	private String employeeId;
-	private List<String> webMenuCodes;
+public class DeletePersonalTyingCommand {
+
+		private String employeeId;
+
+
+
 }

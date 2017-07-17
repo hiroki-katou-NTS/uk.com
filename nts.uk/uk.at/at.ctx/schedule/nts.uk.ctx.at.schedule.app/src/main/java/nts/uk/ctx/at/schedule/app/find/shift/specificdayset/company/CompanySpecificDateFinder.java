@@ -14,9 +14,19 @@ public class CompanySpecificDateFinder {
 	@Inject
 	private CompanySpecificDateRepository companySpecDateRepo;
 
+	// NO with name
 	public List<CompanySpecificDateDto> getComSpecByDate(int comSpecDate) {
 		String companyId = AppContexts.user().companyId();
 		return companySpecDateRepo.getComSpecByDate(companyId, comSpecDate)
+				.stream()
+				.map(item -> CompanySpecificDateDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
+
+	// WITH name
+	public List<CompanySpecificDateDto> getComSpecByDateWithName(String comSpecDate, int useAtr) {
+		String companyId = AppContexts.user().companyId();
+		return companySpecDateRepo.getComSpecByDateWithName(companyId, comSpecDate, useAtr)
 				.stream()
 				.map(item -> CompanySpecificDateDto.fromDomain(item))
 				.collect(Collectors.toList());

@@ -18,10 +18,17 @@ public class CompanySpecificDateWebService extends WebService {
 
 	@Inject
 	private CompanySpecificDateFinder find;
-	
+
 	@POST
 	@Path("getcompanyspecificdaysetbydate/{processDate}")
 	public List<CompanySpecificDateDto> getCompanySpecificDateByCompany(@PathParam("processDate") int processDate) {
 		return this.find.getComSpecByDate(processDate);
+	}
+
+	@POST
+	@Path("getcompanyspecificdaysetbydatewithname/{processDate}/{useatr}")
+	public List<CompanySpecificDateDto> getCompanySpecificDateByCompanyWithName(
+			@PathParam("processDate") String processDate, @PathParam("useatr") int useatr) {
+		return this.find.getComSpecByDateWithName(processDate, useatr);
 	}
 }
