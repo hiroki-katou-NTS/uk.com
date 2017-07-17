@@ -16,7 +16,7 @@ public interface PersonalTyingRepository {
 	 * delete person
 	 * @param companyId
 	 */
-	void delete(String companyId);
+	void delete(String companyId, String employeeId);
 	
 	/**
 	 * find all person
