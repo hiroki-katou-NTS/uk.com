@@ -19,11 +19,14 @@
 			<fieldset data-bind="allowEdit: (selectedEmploymentCode())">
 				<com:ko tag="with" bind="employmentWTSetting">
 				<div class="control-group">
-					<input tabindex="1" id="employmentYearPicker"
-						data-bind="ntsNumberEditor: {name:'#[KMK004_31]',
-													value: year,
-													constraint: 'Year',
-													required: true}"/>
+					<div tabindex="1" id="employmentYearPicker" 
+						data-bind="ntsDatePicker: {name:'#[KMK004_31]', 
+												value: year, 
+												dateFormat: 'YYYY', 
+												valueFormat: 'YYYY', 
+												fiscalYear: true, 
+												showJumpButtons: true}">
+					</div>
 				</div>
 				<div class="control-group">
 					<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
