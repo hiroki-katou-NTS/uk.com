@@ -83,15 +83,15 @@ module nts.uk.at.view.ksm004.a {
                     activate: (event, info) => {
                         switch(info.newIndex) {
                             case 1:
-                                self.yearMonthPicked((moment(new Date()).format('YYYY01')));
+                                self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key().toString());
                                 break;
                             case 2:
-                                self.yearMonthPicked((moment(new Date()).format('YYYY01')));
+                                self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.getCalendarClassById(self.currentCalendarClass().key().toString());
                                 break;
                             default:
-                                self.yearMonthPicked((moment(new Date()).format('YYYY01')));
+                                self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.getAllCalendarCompany();
                         }
                     }
