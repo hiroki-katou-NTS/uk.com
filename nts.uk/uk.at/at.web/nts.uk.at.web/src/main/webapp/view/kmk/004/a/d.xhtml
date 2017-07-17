@@ -13,8 +13,8 @@
 			<button tabindex="3" class="danger" data-bind="click: removeWorkplace, disable: isNewMode() || !selectedWorkplaceId()">#{i18n.getText('KMK004_29')}</button>
 			</span>
 		</div>
-		<div class="contents-area">
-			<div id="list-workplace" class="pull-left"></div>
+		<div class="contents-area cf">
+			<div id="list-workplace" class="pull-left" style="margin-top: 10px"></div>
 			<div class="right-content pull-left" data-bind="ifnot: isLoading">
 			<fieldset data-bind="allowEdit: (selectedWorkplaceId())">
 				<com:ko tag="with" bind="workplaceWTSetting">
