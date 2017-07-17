@@ -7268,8 +7268,14 @@ var nts;
                             container.children(content).wrap('<div id="' + id + '"></div>');
                         }
                         container.tabs({
+                            create: function (event, ui) {
+                                container.find('.ui-tabs-panel').addClass('disappear');
+                                ui.panel.removeClass('disappear');
+                            },
                             activate: function (evt, ui) {
                                 data.active(ui.newPanel[0].id);
+                                container.find('.ui-tabs-panel').addClass('disappear');
+                                ui.newPanel.removeClass('disappear');
                                 container.children('ul').children('.ui-tabs-active').addClass('active');
                                 container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
                                 container.children('ul').children('.ui-state-disabled').addClass('disabled');

@@ -2154,18 +2154,19 @@ button.nts-switch-button[disabled]:hover {
 .ui-widget.ui-tabs .ui-tabs-panel {
   border: 2px solid #B1B1B1;
   border-radius: 7px;
+  display: block !important;
 }
-/* line 36, ../sass/components/_tabpanel.scss */
+/* line 37, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical {
   display: flex;
 }
-/* line 39, ../sass/components/_tabpanel.scss */
+/* line 40, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-nav {
   float: left;
   padding: .4em 0;
   border-radius: 0;
 }
-/* line 44, ../sass/components/_tabpanel.scss */
+/* line 45, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-nav li {
   clear: left;
   width: 100%;
@@ -2173,13 +2174,13 @@ button.nts-switch-button[disabled]:hover {
   border-radius: 0;
   border-width: 1px 0;
 }
-/* line 51, ../sass/components/_tabpanel.scss */
+/* line 52, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-nav li.ui-tabs-active {
   padding: 0;
   margin: 0;
   border-color: #00B050;
 }
-/* line 58, ../sass/components/_tabpanel.scss */
+/* line 59, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical .ui-tabs-panel {
   width: 100%;
   overflow: hidden;
