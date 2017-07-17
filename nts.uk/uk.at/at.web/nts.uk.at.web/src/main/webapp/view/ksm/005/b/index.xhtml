@@ -20,7 +20,8 @@
 				<com:scriptfile path="ksm005.b.service.js" />
 				<com:scriptfile path="ksm005.b.vm.js" />
 				<com:ValidatorScript>
-					nts.uk.ctx.at.record.dom.workrecord.closure.ClosureName
+					nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternCode
+					nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternName
 				</com:ValidatorScript>
 			</ui:define>
 			<ui:define name="content">
@@ -38,35 +39,37 @@
 							data-bind="ntsGridList: {								
 							height: 350,
 							dataSource: lstMonthlyPattern,
-							primaryKey: 'monthlyPatternCode',
+							primaryKey: 'code',
 							columns: columnMonthlyPatterns,
 							multiple: false,
 							value: selectMonthlyPattern
 						}"></table>	
 					</div>
 					<div class="pull-left monthlyPatternDetail">
-						<div class="lableData" 
-							data-name="#{i18n.getText('KSM005_16')}" 
-							data-bind="ntsFormLabel: {required: true}">
-							<label>#{i18n.getText('KSM005_16')}</label>
+						<div data-bind="with: monthlyPatternModel">
+							<div class="lableData" 
+								data-name="#{i18n.getText('KSM005_16')}" 
+								data-bind="ntsFormLabel: {required: true, constraint:['MonthlyPatternCode','MonthlyPatternName']}">
+								<label>#{i18n.getText('KSM005_16')}</label>
+							</div>
+							<input data-bind="ntsTextEditor: {
+								value: code,
+								constraint: 'MonthlyPatternCode',
+								option: $root.textEditorOption,
+								required: true,
+								name:'#[KSM005_17]', 
+								enable: true,
+								immediate: false}" />
+								
+							<input data-bind="ntsTextEditor: {
+								value: name,
+								constraint: 'MonthlyPatternName',
+								option: $root.textEditorOptionName,
+								required: true,
+								name:'#[KSM005_18]', 
+								enable: true,
+								immediate: false}" />
 						</div>
-						<input data-bind="ntsTextEditor: {
-							value: code,
-							constraint: 'ClosureName',
-							option: textEditorOption,
-							required: true,
-							name:'#[KSM005_17]', 
-							enable: true,
-							immediate: false}" />
-							
-						<input data-bind="ntsTextEditor: {
-							value: name,
-							constraint: 'ClosureName',
-							option: textEditorOptionName,
-							required: true,
-							name:'#[KSM005_18]', 
-							enable: true,
-							immediate: false}" />
 						<br/>
 						<br/>
 						<div class="nts-calendar-container">

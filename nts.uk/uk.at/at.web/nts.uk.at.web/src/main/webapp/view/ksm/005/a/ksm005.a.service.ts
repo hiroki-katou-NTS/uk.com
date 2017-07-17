@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk012.a {
+module nts.uk.at.view.ksm005.a {
     export module service {
         var paths = {
             findAllClosureHistory: "ctx/at/record/workrecord/closure/history/findAll",
