@@ -3,57 +3,63 @@ module ksm002.e{
         import getShared = nts.uk.ui.windows.getShared;
         export class ScreenModel {
             dataSource: KnockoutObservableArray<SpecificDateItemDto>;
-            size: KnockoutObservable<number>;
-            textKML001_47: KnockoutObservable<string>;
+            date: string;
+            selectedCodes: Array<string>;
             constructor() {
                 var self = this;
                 self.dataSource = ko.observableArray([]);
-                self.size = ko.observable(nts.uk.ui.windows.getShared('size'));
-                self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47'));
-                self.start();
+                self.startPage();
             }
-            start(){
+            startPage(){
+                nts.uk.ui.block.invisible();
                 var self = this;
+                var dfd = $.Deferred();
                 let param: IData  = getShared('KSM002E_PARAM') || { date: null, selectable: [],selecteds: [] };
                 console.log(param); 
+                self.date = param.date;
+                self.selectedCodes = param.selecteds;
                 service.getSpecificdateByListCode(param.selectable).done(function(data){
                     _.each(data, item => {
                         self.dataSource.push(new SpecificDateItemDto(
                                 item.timeItemId, 
-                                item.useAtr,
+                                0,
                                 item.specificDateItemNo,
                                 item.specificName));
                         
                     });
-                    console.log(self.dataSource());
+                    if(param.selecteds != []){
+                        _.each(param.selecteds, selectedCode =>{
+                            _.find(self.dataSource(), function(items){
+                                if(items.timeItemId() == selectedCode) items.useAtr(1);
+                            });
+                        });
+                    }
+                    $('#specificItem_0').focus();
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
                 });    
-            }
-            convert(value: number): boolean{
-            if (value == 1) {
-                    return true;
-                } else {
-                    return false;
-                }    
             }
             /**
              * process parameter and close dialog 
              */
             submitAndCloseDialog(): void {
                 var self = this;
-//                if(!vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.beginStartDate())){
-//                    $("#startDateInput").ntsError('set', {messageId:"Msg_102"});
-//                } else {
-//                    nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
-//                    nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
-//                    nts.uk.ui.windows.close(); 
-//                }
+                let selectedCodes = [];
+                _.each(self.dataSource(), item => {
+                    if(item.useAtr()== 1){
+                        selectedCodes.push(item.timeItemId());
+                    }
+                });
+                    nts.uk.ui.windows.setShared('KSM002E_VALUES', {date: self.date,selecteds: selectedCodes});
+                    nts.uk.ui.windows.close(); 
             }
             
             /**
              * close dialog and do nothing
              */
             closeDialog(): void {
-                $("#startDateInput").ntsError('clear');
+                var self = this;
+                nts.uk.ui.windows.setShared('KSM002E_VALUES', {date: self.date,selecteds: self.selectedCodes});
                 nts.uk.ui.windows.close();   
             }
         }
@@ -64,10 +70,10 @@ module ksm002.e{
         }
         class SpecificDateItemDto{
             timeItemId : KnockoutObservable<string>;
-            useAtr : KnockoutObservable<boolean>;
+            useAtr : KnockoutObservable<number>;
             specificDateItemNo : KnockoutObservable<number>;
             specificName : KnockoutObservable<string>;
-            constructor(timeItemId : string, useAtr : boolean,specificDateItemNo : number,specificName : string){
+            constructor(timeItemId : string, useAtr : number,specificDateItemNo : number,specificName : string){
                 this.timeItemId = ko.observable(timeItemId);
                 this.useAtr = ko.observable(useAtr);
                 this.specificDateItemNo = ko.observable(specificDateItemNo);
