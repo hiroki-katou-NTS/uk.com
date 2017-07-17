@@ -5,11 +5,16 @@
 	margin-left: 20px;
 }
 
-.monthlyPatternContents {
-	padding: 20px;
-	width: 270px;
+.contentkcp005 {
+	margin-top: 40px;
+	margin-left: 100px;
 }
 
-.monthlyPatternDetail {
-	margin-left: 50px;
+.contentDetail {
+	margin-top: 40px;
+	margin-left: 40px;
+}
+
+.lableData {
+	width: 125px;
 }

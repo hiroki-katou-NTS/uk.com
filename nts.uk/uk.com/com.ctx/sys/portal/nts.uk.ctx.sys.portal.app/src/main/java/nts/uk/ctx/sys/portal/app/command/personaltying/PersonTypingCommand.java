@@ -1,13 +1,13 @@
 package nts.uk.ctx.sys.portal.app.command.personaltying;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class PersonTypingCommand {
 	private String employeeId;
-	private String webMenuCode;
+	private List<String> webMenuCodes;
 }

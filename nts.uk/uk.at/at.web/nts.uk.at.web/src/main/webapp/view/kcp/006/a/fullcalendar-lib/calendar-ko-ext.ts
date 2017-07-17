@@ -2,6 +2,25 @@ module nts.uk.at.view.kcp006.a {
     /**
      * Calendar binding handler
      */
+    // pass chosen date to delegate click cell function
+    var defaultOption = {
+        cellClick: function(date) { }
+    };
+    $.fn.ntsCalendar = function(action: string, option: any) {
+        if (action == "init") {
+            var $control = $(this);
+            var setting = $.extend({}, defaultOption, option);
+            $control.off("click", ".button-cell");
+            $control.on("click", ".button-cell", function(event) {
+                event.preventDefault();
+                var choosenDate = $(this).attr("data-date");
+                setting.cellClick.call(this, choosenDate);
+            });
+            return $control;
+        }
+    }
+
+
     class CalendarBindingHandler implements KnockoutBindingHandler {
         /**
          * Constructor.
@@ -222,7 +241,7 @@ module nts.uk.at.view.kcp006.a {
             let dfdGetHoliday = $.Deferred<any>();
             service.getPublicHoliday(lstDate)
                 .done((data: Array<model.EventObj>) => {
-                    data.forEach((a) => { lstHoliday.push({ start: moment(a.date, "YYYYMMDD").format("YYYY-MM-DD"), holidayName: a.name }); });
+                    data.forEach((a) => { lstHoliday.push({ start: moment(a.date, "YYYYMMDD").format("YYYY-MM-DD"), holidayName: a.holidayName }); });
                     dfdGetHoliday.resolve();
                 });
             // list event received from server
@@ -321,7 +340,7 @@ module nts.uk.at.view.kcp006.a {
             if (eventUpdatable) {
                 // click button event
                 $("#calendar .td-container img").off();
-                 $("#calendar .td-container img").on('click', function() {
+                $("#calendar .td-container img").on('click', function() {
                     nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId, workplaceName: workplaceName });
                     nts.uk.ui.windows.sub.modal('../b/index.xhtml', { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
@@ -343,11 +362,6 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " .event-note").show();
             }, function() {
                 $("#" + currentCalendar + " .event-note").hide();
-            });
-            // pass chosen date to delegate click cell function
-            $("#" + currentCalendar + " .fc-day-top").off();
-            $("#" + currentCalendar + " .fc-day-top").on("click", "button", function() {
-                nts.uk.at.view.kcp006.a.CellClickEvent($(this).attr("data-date"));
             });
         }
 

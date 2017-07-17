@@ -65,16 +65,14 @@ module kdl002.a.viewmodel {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_10"});
                     return;
                 }
-
-                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstObj,true);
+                let lstItem2 = _.orderBy(lstObj,['code'],['asc'])
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2,true);
             }else{
                 let objectNew2 = self.findItem(self.currentCodeList().toString());
                 if(objectNew2 != undefined && objectNew2 != null){
                     var lstObj2 ={ "code": objectNew2.workTypeCode, "name":objectNew2.name};
                 }
-                let listnew =[];
-                listnew.push(lstObj2);
-                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', listnew,true);
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', [lstObj2],true);
             }
             nts.uk.ui.windows.close();
         }
@@ -90,6 +88,25 @@ module kdl002.a.viewmodel {
         }
         //Close Dialog
         close() {
+            var self = this;
+            let selectCode = nts.uk.ui.windows.getShared('KDL002_SelectedItemId');
+            if(self.isMulti == true){
+                let lstObj = [];
+                for (let i =0, length = selectCode.length; i< length ;i++) {
+                    let objectNew = self.findItem(selectCode[i]);
+                    if(objectNew != undefined && objectNew != null){
+                        lstObj.push({"code": objectNew.workTypeCode, "name":objectNew.name});
+                    }
+                }
+                let lstItem2 = _.orderBy(lstObj,['code'],['asc']);
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2,true);
+            }else{
+                let objectNew2 = self.findItem(selectCode.toString());
+                if(objectNew2 != undefined && objectNew2 != null){
+                    var lstObj2 ={ "code": objectNew2.workTypeCode, "name":objectNew2.name};
+                }
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', [lstObj2],true);
+            }
             nts.uk.ui.windows.close();
         }
     }

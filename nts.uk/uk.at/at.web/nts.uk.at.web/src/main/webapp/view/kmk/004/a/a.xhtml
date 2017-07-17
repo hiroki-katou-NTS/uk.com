@@ -6,23 +6,25 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div class="sidebar-content-header">
+		<div id="functions-area" class="sidebar-content-header">
 			<span class="title">#{i18n.getText('Com_Company')}</span>
 			<span class="action-bar">
-			<button tabindex="1" data-bind="click: saveCompanySetting" class="proceed">#{i18n.getText('KMK004_27')}</button>
+			<button tabindex="1" data-bind="click: saveCompanySetting, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
 			<button tabindex="3" class="danger" data-bind="click: removeCompanySetting, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
 			<button tabindex="4" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
 			</span>
 		</div>
-		<div class="contents-area">
-		<div class="wrapper" data-bind="ifnot: isLoading">
+		<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
 			<com:ko tag="with" bind="companyWTSetting">
 				<div class="control-group">
-					<input tabindex="1" id="companyYearPicker"
-						data-bind="ntsNumberEditor: {name:'#[KMK004_31]',
-													value: year,
-													constraint: 'Year',
-													required: true}"/>
+					<div tabindex="1" id="companyYearPicker" 
+						data-bind="ntsDatePicker: {name:'#[KMK004_31]', 
+												value: year, 
+												dateFormat: 'YYYY', 
+												valueFormat: 'YYYY', 
+												fiscalYear: true, 
+												showJumpButtons: true}">
+					</div>
 				</div>
 				<div id="tab-panel" class="pull-left"
 					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
@@ -195,7 +197,6 @@
 					<!-- DEFORMATION LABOR WORK TIME SETTING END -->
 				</div>
 			</com:ko>
-		</div>
 		</div>
 	</ui:composition>
 </body>

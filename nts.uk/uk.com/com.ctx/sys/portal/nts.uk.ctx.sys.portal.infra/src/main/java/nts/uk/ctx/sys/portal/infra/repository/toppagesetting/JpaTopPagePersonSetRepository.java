@@ -22,8 +22,6 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSetPK
 @Transactional
 public class JpaTopPagePersonSetRepository extends JpaRepository implements TopPagePersonSetRepository {
 	private final String SEL = "SELECT c FROM CcgptTopPagePersonSet c ";
-	private final String SELECT_TOPPAGE_PERSON_BYCODE = SEL + "WHERE c.ccgptTopPagePersonSetPK.companyId = :companyId "
-			+ " AND c.ccgptTopPagePersonSetPK.employeeId = :employeeId";
 	private final String SELECT_BY_LIST_SID = SEL + "WHERE c.ccgptTopPagePersonSetPK.companyId = :companyId "
 			+ " AND c.ccgptTopPagePersonSetPK.employeeId IN :employeeId";
 
@@ -33,9 +31,10 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 				entity.loginMenuCls);
 		return domain;
 	}
-	
+
 	/**
 	 * Convert to type of database
+	 * 
 	 * @param domain
 	 * @return
 	 */
@@ -51,7 +50,7 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 		entity.loginMenuCls = domain.getMenuClassification().value;
 		return entity;
 	}
-	
+
 	/**
 	 * Find TopPagePersonSet by companyId and list employeeId
 	 */
@@ -66,10 +65,8 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 	 */
 	@Override
 	public Optional<TopPagePersonSet> getbyCode(String companyId, String employeeId) {
-		Optional<TopPagePersonSet> obj = this.queryProxy()
-				.query(SELECT_TOPPAGE_PERSON_BYCODE, CcgptTopPagePersonSet.class).setParameter("companyId", companyId)
-				.setParameter("employeeId", employeeId).getSingle(c -> toDomain(c));
-		return obj;
+		CcgptTopPagePersonSetPK pk = new CcgptTopPagePersonSetPK(companyId, employeeId);
+		return this.queryProxy().find(pk, CcgptTopPagePersonSet.class).map(x -> toDomain(x));
 	}
 
 	/**

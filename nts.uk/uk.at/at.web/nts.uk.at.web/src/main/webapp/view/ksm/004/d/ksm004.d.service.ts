@@ -7,7 +7,9 @@ module ksm004.d.service{
         updateCalendarClass:"at/schedule/calendar/updatecalendarclass",
         
         addCalendarWorkplace:"at/schedule/calendar/addcalendarworkplace",
-        updateCalendarWorkplace:"at/schedule/calendar/updatecalendarorkplace"   
+        updateCalendarWorkplace:"at/schedule/calendar/updatecalendarorkplace",
+        
+        getHolidayByDate : "at/schedule/holiday/getHolidayByDate/"
     }    
     /**
      * add new calendar Company
@@ -44,6 +46,13 @@ module ksm004.d.service{
      */
     export function updateCalendarWorkplace(calendarWorkplace : viewmodel.model.CalendarWorkplace) : JQueryPromise<Array<view.model.CalendarWorkplace>>{
         return nts.uk.request.ajax("at",paths.updateCalendarWorkplace,calendarWorkplace);    
+    }
+    
+    /**
+     * add new calendar Company
+     */
+    export function getHolidayByDate(date : number) : JQueryPromise<Array<>>{
+        return nts.uk.request.ajax("at",paths.getHolidayByDate+date);    
     }
     
 }

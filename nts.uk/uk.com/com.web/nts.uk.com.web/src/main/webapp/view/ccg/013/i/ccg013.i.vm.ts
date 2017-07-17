@@ -37,7 +37,7 @@
          */
         submit() {
             var self = this;
-            
+            $(".ntsColorPicker_Container").trigger("validate");
             //Set data
             var menuBar = {
                 menuBarName: self.nameMenuBar(),

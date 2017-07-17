@@ -18,11 +18,13 @@ module ccg013.a.viewmodel {
         isCreated: KnockoutObservable<boolean>;
         isDefaultMenu: KnockoutObservable<boolean>;
         widthTab: KnockoutObservable<string> = ko.observable('800px');
+        checkDisabled: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
-            self.isCreated = ko.observable(true);
+            self.isCreated = ko.observable(false);
             self.isDefaultMenu = ko.observable(false);
+            self.checkDisabled = ko.observable(false);
 
             self.currentWebMenu = ko.observable(new WebMenu({
                 webMenuCode: "",
@@ -84,11 +86,15 @@ module ccg013.a.viewmodel {
 
             self.currentCode = ko.observable();
             self.currentCode.subscribe(function(newValue) {
-                self.isCreated(false);
-
                 service.findWebMenu(newValue).done(function(res: service.WebMenuDto) {
                     let webmenu = self.currentWebMenu();
-
+                    if (!newValue) {
+                        self.isCreated(true);
+                        self.checkDisabled(true);
+                    } else {
+                        self.isCreated(false);
+                        self.checkDisabled(false);
+                    }
                     webmenu.webMenuCode(res.webMenuCode);
                     webmenu.webMenuName(res.webMenuName);
                     self.isDefaultMenu(!!res.defaultMenu);
@@ -154,11 +160,13 @@ module ccg013.a.viewmodel {
                 webMenu = self.currentWebMenu(),
                 menuBars = webMenu.menuBars(),
                 activeid = $('#tabs li[aria-expanded=true]').attr('id');
+
             if (self.isDefaultMenu()) {
                 webMenu.defaultMenu(1);
             } else {
                 webMenu.defaultMenu(0);
             }
+
             $('#tabs li.context-menu-bar').each((bi, be) => {
                 let bid = be.attributes['id'].value,
                     menubar = _.find(menuBars, (x: MenuBar) => x.menuBarId() == bid);
@@ -184,16 +192,20 @@ module ccg013.a.viewmodel {
                 }
             });
             service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 self.getWebMenu().done(() => {
                     bindSortable();
                     self.currentCode(webMenu.webMenuCode());
                     $("#tabs li#" + activeid + ' a').trigger('click');
                 });
             }).fail(function(error) {
-                nts.uk.ui.dialog.alert(error.message);
+                self.isCreated(false);
+                self.isDefaultMenu(true);
+                nts.uk.ui.dialog.alertError(error.message);
             }).always(function() {
                 nts.uk.ui.block.clear();
             });
+
         }
 
 
@@ -247,10 +259,9 @@ module ccg013.a.viewmodel {
             let self = this,
                 webMenuCode = self.currentCode();
             let index = 0;
-            if (self.isDefaultMenu()) {
-                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_72'));
-            } else {
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.deleteWebMenu(webMenuCode).done(function() {
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                     self.getWebMenu().done(() => {
                         if (self.items().length > 0) {
                             index = self.items().length - 1;
@@ -260,9 +271,13 @@ module ccg013.a.viewmodel {
                         }
                         self.currentCode(self.items()[index].webMenuCode);
                     });
+                }).fail(function(error) {
+                    self.isCreated(false);
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
-            }
-            nts.uk.ui.block.clear();
+            });
         }
 
 
@@ -271,6 +286,7 @@ module ccg013.a.viewmodel {
          */
         cleanForm(): void {
             var self = this;
+            self.checkDisabled(true);
             self.isCreated(true);
 
             self.currentWebMenu(new WebMenu({
@@ -280,7 +296,14 @@ module ccg013.a.viewmodel {
                 menuBars: []
             }));
             self.currentCode("");
+            self.clearError();
         }
+
+        clearError(): void {
+            $('#A_INP_003').ntsError('clear');
+            $('#A_INP_004').ntsError('clear');
+        }
+
 
 
         openBdialog(): any {

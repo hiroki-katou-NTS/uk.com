@@ -55,12 +55,10 @@
 				<div class="right-content">
 					<div class="control-group" data-bind="with: currentWebMenu">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_11')}</div>
-						<span><input style="width: 40px"
-							data-name="#{i18n.getText('CCG013_49')}"
-							data-bind="ntsTextEditor: {value: webMenuCode,constraint: 'WebMenuCode', required: true, enable: true}" /></span>
-						<span><input style="width: 180px"
-							data-name="#{i18n.getText('CCG013_50')}"
-							data-bind="ntsTextEditor: {value: webMenuName,constraint: 'WebMenuName', required: true}" /></span>
+						<span><input style="width: 40px" id="A_INP_003"
+							data-bind="ntsTextEditor: {value: webMenuCode,name: '#[CCG013_49]',constraint: 'WebMenuCode', required: true, enable: $parent.checkDisabled}" /></span>
+						<span><input style="width: 180px" id="A_INP_004"
+							data-bind="ntsTextEditor: {value: webMenuName,name: '#[CCG013_50]',constraint: 'WebMenuName', required: true}" /></span>
 						<div class="bg-yellow">
 							<div style="margin-left: 5px;"
 								data-bind="ntsCheckBox: {checked: $parent.isDefaultMenu }"

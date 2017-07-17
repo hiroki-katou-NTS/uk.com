@@ -35,5 +35,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("lstPossible", lstPossible)
 				.getList(c->toDomain(c));
 	}
+    @Override
+    public List<WorkType> findByCompanyId(String companyId) {
+        String query = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId";
+        return this.queryProxy().query(query, KmnmtWorkType.class)
+                .setParameter("companyId", companyId)
+                .getList(c->toDomain(c));
+    }
 
 }
