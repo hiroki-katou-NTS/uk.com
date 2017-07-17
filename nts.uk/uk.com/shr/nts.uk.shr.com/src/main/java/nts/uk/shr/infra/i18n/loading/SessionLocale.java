@@ -17,7 +17,8 @@ public class SessionLocale implements ISessionLocale {
 	private long version;
 
 	public SessionLocale() {
-		this.currentLocale = Locale.getDefault();
+		//TODO: temp fix for test
+		this.currentLocale = Locale.JAPANESE;
 		version = IdentifierUtil.randomUniqueId().hashCode();
 	}
 
