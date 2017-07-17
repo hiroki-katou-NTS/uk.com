@@ -45,6 +45,9 @@ module nts.uk.at.view.ksm004.a {
             isUpdate: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 var self = this;
+                self.yearMonthPicked.subscribe(value => {
+                    self.getAllCalendarCompany();        
+                });
                 self.kcpTreeGrid.selectedWorkplaceId = self.currentCalendarWorkPlace().key;
                 self.kcpGridlist.selectedCode =  self.currentCalendarClass().key;
                 self.calendarPanel.yearMonth(self.yearMonthPicked());
@@ -68,9 +71,21 @@ module nts.uk.at.view.ksm004.a {
                     }    
                     self.getCalendarClassById(value);
                 });
-                nts.uk.at.view.kcp006.a.CellClickEvent = function(date){
-                    nts.uk.ui._viewModel.content.setWorkingDayAtr(date);
-                }; 
+                $("#calendar").ntsCalendar("init", {
+                    cellClick: function(date) {
+                        nts.uk.ui._viewModel.content.setWorkingDayAtr(date);
+                    }
+                });
+                $("#calendar1").ntsCalendar("init", {
+                    cellClick: function(date) {
+                        nts.uk.ui._viewModel.content.setWorkingDayAtr(date);
+                    }
+                });
+                $("#calendar2").ntsCalendar("init", {
+                    cellClick: function(date) {
+                        nts.uk.ui._viewModel.content.setWorkingDayAtr(date);
+                    }
+                });
                 $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
                     $('#classification-list-setting').ntsListComponent(self.kcpGridlist).done(() => {
                         self.currentCalendarWorkPlace().key(_.first($('#tree-grid')['getDataList']()).workplaceId);
@@ -121,35 +136,45 @@ module nts.uk.at.view.ksm004.a {
             submitCalendar(value){
                 //nts.uk.ui.block.invisible();
                 var self = this;
-                if(nts.uk.util.isNullOrEmpty(self.calendarPanel.optionDates())){
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_140" });
+                let dayOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").daysInMonth(); 
+                if(self.calendarPanel.optionDates().length<dayOfMonth){
+                    nts.uk.ui.dialog.confirm({ messageId: 'Msg_140' }).ifYes(function(){ 
+                        self.processData(value, true);    
+                    }).ifNo(function(){
+                        nts.uk.ui.block.clear();        
+                    });
                 } else {
-                    if(self.isUpdate()){
-                        switch(value) {
-                            case 1:
-                                self.updateCalendarWorkPlace(self.convertToCommand(self.calendarPanel.optionDates()));
-                                break;
-                            case 2:
-                                self.updateCalendarClass(self.convertToCommand(self.calendarPanel.optionDates()));
-                                break;
-                            default:
-                                self.updateCalendarCompany(self.convertToCommand(self.calendarPanel.optionDates()));
-                                break;
-                        }    
-                    } else {
-                        switch(value) {
-                            case 1:
-                                self.insertCalendarWorkPlace(self.convertToCommand(self.calendarPanel.optionDates()));
-                                break;
-                            case 2:
-                                self.insertCalendarClass(self.convertToCommand(self.calendarPanel.optionDates()));
-                                break;
-                            default:
-                                self.insertCalendarCompany(self.convertToCommand(self.calendarPanel.optionDates()));
-                                break;
-                        } 
-                    }
+                    self.processData(value, false);
                 }
+            }
+            
+            processData(value, autoFill){
+                var self = this;
+                if(self.isUpdate()){
+                    switch(value) {
+                        case 1:
+                            self.updateCalendarWorkPlace(self.convertToCommand(self.calendarPanel.optionDates(),autoFill));
+                            break;
+                        case 2:
+                            self.updateCalendarClass(self.convertToCommand(self.calendarPanel.optionDates(),autoFill));
+                            break;
+                        default:
+                            self.updateCalendarCompany(self.convertToCommand(self.calendarPanel.optionDates(),autoFill));
+                            break;
+                    }    
+                } else {
+                    switch(value) {
+                        case 1:
+                            self.insertCalendarWorkPlace(self.convertToCommand(self.calendarPanel.optionDates(),autoFill));
+                            break;
+                        case 2:
+                            self.insertCalendarClass(self.convertToCommand(self.calendarPanel.optionDates(),autoFill));
+                            break;
+                        default:
+                            self.insertCalendarCompany(self.convertToCommand(self.calendarPanel.optionDates(),autoFill));
+                            break;
+                    } 
+                }        
             }
             
             removeCalendar(value){
@@ -158,13 +183,13 @@ module nts.uk.at.view.ksm004.a {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function(){ 
                     switch(value) {
                         case 1:
-                            self.deleteCalendarWorkPlace(self.convertToCommand(self.calendarPanel.optionDates()));
+                            self.deleteCalendarWorkPlace(self.convertToCommand(self.calendarPanel.optionDates(),false));
                             break;
                         case 2:
-                            self.deleteCalendarClass(self.convertToCommand(self.calendarPanel.optionDates()));
+                            self.deleteCalendarClass(self.convertToCommand(self.calendarPanel.optionDates(),false));
                             break;
                         default:
-                            self.deleteCalendarCompany(self.convertToCommand(self.calendarPanel.optionDates()));
+                            self.deleteCalendarCompany({yearMonth: self.yearMonthPicked().toString()});
                             break;
                     }  
                 }).ifNo(function(){
@@ -328,17 +353,40 @@ module nts.uk.at.view.ksm004.a {
                     });
             }
             
-            convertToCommand(inputArray: Array<CalendarItem>){
+            convertToCommand(inputArray: Array<CalendarItem>, autoFill: boolean){
                 var self = this;
+                let dayOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").daysInMonth(); 
                 let a = [];
-                _.forEach(inputArray, item => {
-                    a.push({
-                        dateId: Number(moment(item.start).format('YYYYMMDD')),
-                        workingDayAtr: self.currentCalendarWorkPlace().key(),
-                        classId: self.currentCalendarClass().key(),
-                        workPlaceId: self.convertEnumNametoNumber(item.listText[0])
-                    });    
-                });
+                if(!autoFill) {
+                    _.forEach(inputArray, item => {
+                        a.push({
+                            dateId: Number(moment(item.start).format('YYYYMMDD')),
+                            workingDayAtr: self.convertEnumNametoNumber(item.listText[0]),
+                            classId: self.currentCalendarClass().key(),
+                            workPlaceId: self.currentCalendarWorkPlace().key()
+                        });    
+                    });
+                } else {
+                    for(let i=1; i<=dayOfMonth; i++){
+                        let indexDate = self.yearMonthPicked().toString()+("00"+i).slice(-2);
+                        let result = _.find(self.calendarPanel.optionDates(), o => o.start == moment(indexDate).format('YYYY-MM-DD'));
+                        if(result == null) {
+                            a.push({
+                                dateId: Number(indexDate),
+                                workingDayAtr: 0,
+                                classId: self.currentCalendarClass().key(),
+                                workPlaceId: self.currentCalendarWorkPlace().key()
+                            });        
+                        } else {
+                            a.push({
+                                dateId: Number(moment(result.start).format('YYYYMMDD')),
+                                workingDayAtr: self.convertEnumNametoNumber(result.listText[0]),
+                                classId: self.currentCalendarClass().key(),
+                                workPlaceId: self.currentCalendarWorkPlace().key()
+                            });    
+                        }    
+                    }    
+                }
                 return a;
                     
             }
@@ -346,9 +394,9 @@ module nts.uk.at.view.ksm004.a {
             convertEnumNametoNumber(name){
                 let n = '';
                 switch(name) {
-                    case '非稼働日（法内）': s = 1; break;
-                    case '非稼働日（法外）': s = 2; break;
-                    default: s = 0;
+                    case '非稼働日（法内）': n = 1; break;
+                    case '非稼働日（法外）': n = 2; break;
+                    default: n = 0;
                 }         
                 return n;
             }
