@@ -107,9 +107,10 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         submit() {
             var self = this;
+            $(".ntsColorPicker_Container").trigger("validate");
             var menuCls = null;
             var code = null;
-            if (nts.uk.ui.errors.hasError() || (self.letterColor() === "" || self.backgroundColor() === "")) {
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             var standMenu = _.find(self.listStandardMenu(), function(item: MenuBarDto) {

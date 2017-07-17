@@ -8,9 +8,9 @@ module nts.uk.at.view.kmk008.g {
 
     export module viewmodel {
         export class ScreenModel {
-            
-            isShowButton : KnockoutObservable<boolean>;
-            
+
+            isShowButton: KnockoutObservable<boolean>;
+
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
@@ -36,6 +36,7 @@ module nts.uk.at.view.kmk008.g {
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isShowWorkPlaceName: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
+            maxRows: number;
 
             //search
             ccgcomponent: GroupOption;
@@ -56,9 +57,9 @@ module nts.uk.at.view.kmk008.g {
 
             constructor() {
                 let self = this;
-                
+
                 self.isShowButton = ko.observable(true);
-                
+
                 self.isNewMode = ko.observable(true);
                 self.isUpdateMode = ko.observable(false);
                 self.isNewMode.subscribe(function(val) {
@@ -74,6 +75,7 @@ module nts.uk.at.view.kmk008.g {
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.listComponentOption = {
+                    maxRows: 15,
                     isMultiSelect: false,
                     listType: 4,
                     selectType: 1,
@@ -167,7 +169,7 @@ module nts.uk.at.view.kmk008.g {
                 self.currentCode2 = ko.observable();
 
                 self.selectedCode.subscribe(newValue => {
-                    
+
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     let data = $('#component-items-list').getDataList();
                     let employee = _.find(data, function(o) {
@@ -200,10 +202,10 @@ module nts.uk.at.view.kmk008.g {
                 let self = this;
                 let dfd = $.Deferred();
 
-                if(!self.selectedCode()){
-                    self.isShowButton(false);    
+                if (!self.selectedCode()) {
+                    self.isShowButton(false);
                 }
-                
+
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -214,7 +216,7 @@ module nts.uk.at.view.kmk008.g {
                 if (self.selectedTab() == "tab-1") {
                     isYearMonth = false;
                 }
-                setShared("KMK_008_PARAMS", {employeeCode : self.selectedCode(), employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth: isYearMonth });
+                setShared("KMK_008_PARAMS", { employeeCode: self.selectedCode(), employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth: isYearMonth });
                 modal('../../../kmk/008/k/index.xhtml').onClosed(() => {
                     //                    let data: string = getShared('KDL007_VALUES');
                     if (self.selectedId()) {
@@ -231,7 +233,7 @@ module nts.uk.at.view.kmk008.g {
                         if (monthData) {
                             self.items2([]);
                             _.forEach(monthData, function(value) {
-                                self.items2.push(new ItemModel(nts.uk.time.parseYearMonth(value.yearMonthValue).format(), value.errorOneMonth, value.alarmOneMonth));
+                                self.items2.push(new ItemModel(nts.uk.time.parseYearMonth(value.yearMonthValue).format(), nts.uk.time.parseTime(value.errorOneMonth, true).format(), nts.uk.time.parseTime(value.alarmOneMonth, true).format()));
                             });
 
                         } else {
@@ -244,7 +246,7 @@ module nts.uk.at.view.kmk008.g {
                         if (yearData) {
                             self.items([]);
                             _.forEach(yearData, function(value) {
-                                self.items.push(new ItemModel(value.yearValue, value.errorOneYear, value.alarmOneYear));
+                                self.items.push(new ItemModel(value.yearValue, nts.uk.time.parseTime(value.errorOneYear, true).format(), nts.uk.time.parseTime(value.alarmOneYear, true).format()));
                             });
 
                         } else {

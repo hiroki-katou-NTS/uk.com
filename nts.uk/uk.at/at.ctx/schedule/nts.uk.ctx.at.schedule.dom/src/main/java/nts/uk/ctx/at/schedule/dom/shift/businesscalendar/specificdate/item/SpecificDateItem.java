@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.UseAtr;
 
 @Getter
+@Setter
 public class SpecificDateItem extends AggregateRoot {
 	
 	private String companyId;

@@ -6,11 +6,14 @@ package nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -32,6 +35,10 @@ public class NursingLeaveFinder {
     @Inject
     private NursingLeaveSettingRepository nursingRepo;
     
+    /** The work type finder. */
+    @Inject
+    private WorkTypeFinder workTypeFinder;
+    
     /**
      * Find nursing leave by company id.
      *
@@ -43,17 +50,35 @@ public class NursingLeaveFinder {
         if (CollectionUtil.isEmpty(listSetting)) {
             return null;
         }
+        // Find all work type by company id
+        List<WorkTypeDto> listWorkType = this.workTypeFinder.findByCompanyId();
+        
         // NURSING
         NursingLeaveSetting nursingSetting = listSetting.get(INDEX_NURSING_SETTING);
         NursingLeaveSettingDto nursingSettingDto = new NursingLeaveSettingDto();
         nursingSetting.saveToMemento(nursingSettingDto);
+        nursingSettingDto.setWorkType(this.findWorkType(listWorkType, nursingSetting.getWorkTypeCodes()));
         
         // CHILD NURSING
         NursingLeaveSetting childNursingSetting = listSetting.get(INDEX_CHILD_NURSING_SETTING);
         NursingLeaveSettingDto childNursingSettingDto = new NursingLeaveSettingDto();
         childNursingSetting.saveToMemento(childNursingSettingDto);
+        childNursingSettingDto.setWorkType(this.findWorkType(listWorkType, childNursingSetting.getWorkTypeCodes()));
         
         return Arrays.asList(nursingSettingDto, childNursingSettingDto);
+    }
+    
+    /**
+     * Find work type.
+     *
+     * @param listWorkTypeCode the list work type code
+     * @return the string
+     */
+    private String findWorkType(List<WorkTypeDto> listWorkType, List<String> listWorkTypeCode) {
+        return listWorkType.stream()
+                .filter(item -> listWorkTypeCode.contains(item.getWorkTypeCode()))
+                .map(item -> item.getWorkTypeCode() + "." + item.getName())
+                .collect(Collectors.joining(", "));
     }
     
     /**

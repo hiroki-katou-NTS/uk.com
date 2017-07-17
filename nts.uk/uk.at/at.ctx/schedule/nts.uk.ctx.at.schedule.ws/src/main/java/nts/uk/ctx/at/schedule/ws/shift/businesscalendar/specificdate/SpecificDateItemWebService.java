@@ -29,7 +29,6 @@ public class SpecificDateItemWebService extends WebService {
 		return this.find.getAllByCompany();
 	}
 	
-	
 	@POST
 	@Path("getspecificdatebyuse/{useAtr}")
 	public List<SpecificDateItemDto> getAllSpecificDateByCompany(@PathParam("useAtr") int useAtr) {
@@ -40,5 +39,11 @@ public class SpecificDateItemWebService extends WebService {
 	@Path("updatespecificdate")
 	public void UpdateSpecificDateByCompany(List<SpecificDateItemCommand> lstSpecificDateItem) {
 		this.update.handle(lstSpecificDateItem);
+	}
+	
+	@POST
+	@Path("getspecificdatebylistcode")
+	public List<SpecificDateItemDto> getSpecificDateByListCode(List<String> lstSpecificDateItem){
+		return this.find.getSpecificDateItemByListCode(lstSpecificDateItem);
 	}
 }

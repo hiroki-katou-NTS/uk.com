@@ -1,14 +1,17 @@
 package nts.uk.ctx.sys.portal.app.command.webmenu;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.portal.dom.webmenu.DefaultMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
@@ -27,6 +30,15 @@ public class UpdateWebMenuCommandHander extends CommandHandler<UpdateWebMenuComm
 	protected void handle(CommandHandlerContext<UpdateWebMenuCommand> context) {
 		UpdateWebMenuCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		
+		Optional<WebMenu> webMenu = webMenuRepository.find(companyId, command.getWebMenuCode());
+		if (!webMenu.isPresent()) {
+			throw new RuntimeException("Not found web menu code:" + command.getWebMenuCode());
+		}
+		
+		if (webMenu.get().isDefault() && DefaultMenu.NoDefaultMenu.value == command.getDefaultMenu()) {
+			throw new BusinessException("Msg_71");
+		}
 		
 		List<MenuBar> menuBars = command.getMenuBars().stream()
 				.map(mn -> { 
@@ -51,8 +63,9 @@ public class UpdateWebMenuCommandHander extends CommandHandler<UpdateWebMenuComm
 		
 		WebMenu domain =  WebMenu.createFromJavaType(companyId, command.getWebMenuCode(), command.getWebMenuName(), command.getDefaultMenu(), menuBars);
 		if (domain.isDefault()) {
-			webMenuRepository.changeNotDefault(companyId);
+			webMenuRepository.changeNotDefault(companyId, command.getWebMenuCode());
 		}
+		domain.validate();
 		
 		webMenuRepository.update(domain);
 	}

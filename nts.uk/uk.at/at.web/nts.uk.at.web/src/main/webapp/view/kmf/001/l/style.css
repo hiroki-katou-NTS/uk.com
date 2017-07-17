@@ -46,6 +46,9 @@ table#table tr td.title {
 .ntsControl {
     display: inline !important;
 }
+#manage-nursing, #child-manage-nursing {
+	display: inline-block !important;;
+}
 .td-combo-box {
 	padding-left: 4px;
 }

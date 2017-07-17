@@ -12,4 +12,12 @@ public interface WorkTypeRepository {
 	 * @return
 	 */
 	List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible);
+	
+	/**
+	 * Find by company id.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<WorkType> findByCompanyId(String companyId);
 }

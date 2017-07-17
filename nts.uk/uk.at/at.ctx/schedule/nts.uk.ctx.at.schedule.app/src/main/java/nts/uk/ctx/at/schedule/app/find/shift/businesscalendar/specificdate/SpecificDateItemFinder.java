@@ -47,4 +47,16 @@ public class SpecificDateItemFinder {
 				specificDateItem.getSpecificDateItemNo().v(), specificDateItem.getSpecificName().v());
 	}
 
+	/**
+	 * get Specific Date Item By List Code
+	 * @param lstSpecificDateItem
+	 * @return
+	 */
+	public List<SpecificDateItemDto> getSpecificDateItemByListCode(List<String> lstSpecificDateItem){
+		String companyId = AppContexts.user().companyId();
+		return specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDateItem)
+				.stream()
+				.map(c-> toSpecificDateItemDto(c))
+				.collect(Collectors.toList());
+	}
 }

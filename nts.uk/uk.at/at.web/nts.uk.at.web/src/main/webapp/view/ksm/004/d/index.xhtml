@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 960, height: 520 };</script>
+		<script>var dialogSize = { width: 1280, height: 768 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm004.d.main.css" />
 			<com:scriptfile path="ksm004.d.start.js" />
@@ -25,24 +25,23 @@
 						</td>
 						<td>
 							<div >
-							<!-- D1_4 -->			
-								<input class="nts-validate"  style="width: 70px;float: left;"
-									data-bind="ntsTimeEditor: {
-										name: '#[KSM004_37]',
-										value: startMonth,
-										inputFormat: 'yearmonth', 
-										mode: 'time', 
-										constraint: 'Time'}" />	
-
-						 <span>~</span>  
-						 <!-- D1_5 -->
-						 		<input class="nts-validate"  style="width: 70px;float: left;"
-									data-bind="ntsTimeEditor: {
-										name: '#[KSM004_36]',
-										value: endMonth,
-										inputFormat: 'yearmonth', 
-										mode: 'time', 
-										constraint: 'Time'}" />
+								<!-- D1_4 -->
+								<div data-bind="ntsDatePicker: { 
+									value: startMonth, 
+									dateFormat: 'yearmonth', 
+									valueFormat: 'YYYYMM', 
+									fiscalMonthsMode: true, 
+									defaultClass: 'round-orange' }">
+								</div>		
+								<span>～</span>
+								<div data-bind="ntsDatePicker: { 
+									value: endMonth, 
+									dateFormat: 'yearmonth', 
+									valueFormat: 'YYYYMM', 
+									fiscalMonthsMode: true, 
+									defaultClass: 'round-orange' }">
+								</div> 
+							
 							</div>
 						</td>
 					</tr>
@@ -53,7 +52,7 @@
 							<!-- D1_8 -->
 							<div tabindex="10" style="margin-bottom: 10px"
 									data-bind="ntsCheckBox:{
-									checked: true,
+									checked: checkHoliday,
 									text: '#{i18n.getText('KSM004_53')}'
 									}">
 							</div>
@@ -81,7 +80,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedMon}">
+									value: selectedMon,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -96,7 +96,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedTue}">
+									value: selectedTue,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -111,7 +112,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedWed}">
+									value: selectedWed,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -126,7 +128,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedThu}">
+									value: selectedThu,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -141,7 +144,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedFri}">
+									value: selectedFri,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -156,7 +160,8 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedSat}">
+									value: selectedSat,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
@@ -171,19 +176,20 @@
 									options: workdayGroup,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedSun}">
+									value: selectedSun,
+									enable: true}">
 							</div>
 						</td>
 					</tr>
 				</table>
-				<div  id="functions-area-bottom">
+				<div style="margin-bottom: 79px;" id="functions-area-bottom">
 					<!-- D4_1 -->
-					<div id="checkedBtn" data-bind="ntsCheckBox:{
-							checked: checkSelect,
+					<div data-bind="ntsCheckBox:{
+							checked: checkOverwrite,
 							text: '#{i18n.getText('KSM004_49')}'}">
 					</div>
 					<div style='clear:both'></div>
-					<button  class="x-large proceed">#{i18n.getText('KSM004_34')}</button>
+					<button class="x-large proceed" data-bind="click: decition">#{i18n.getText('KSM004_34')}</button>
 					<button >#{i18n.getText('KSM004_35')}</button>
 				</div>
 				

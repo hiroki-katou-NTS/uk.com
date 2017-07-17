@@ -132,7 +132,7 @@ module ksm002.b.viewmodel {
                     isDialog: false,
                     alreadySettingList: self.alreadySettingList
             };
-            $('#tree-grid').ntsTreeComponent(self.treeGrid);
+            //$('#tree-grid').ntsTreeComponent(self.treeGrid);
         }
 
         /** Start page */
