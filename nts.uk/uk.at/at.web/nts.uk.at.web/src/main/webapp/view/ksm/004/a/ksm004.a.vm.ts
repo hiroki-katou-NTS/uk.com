@@ -4,7 +4,7 @@ module nts.uk.at.view.ksm004.a {
     import aService = nts.uk.at.view.ksm004.a.service;
     export module viewmodel {
         export class ScreenModel {
-            yearMonthPicked: KnockoutObservable<number> = ko.observable(moment(new Date()).format('YYYY01'));
+            yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYY01')));
             calendarPanel: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
                 yearMonth: this.yearMonthPicked,
@@ -83,15 +83,15 @@ module nts.uk.at.view.ksm004.a {
                     activate: (event, info) => {
                         switch(info.newIndex) {
                             case 1:
-                                self.yearMonthPicked((moment(new Date()).format('YYYY01')));
+                                self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key().toString());
                                 break;
                             case 2:
-                                self.yearMonthPicked((moment(new Date()).format('YYYY01')));
+                                self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.getCalendarClassById(self.currentCalendarClass().key().toString());
                                 break;
                             default:
-                                self.yearMonthPicked((moment(new Date()).format('YYYY01')));
+                                self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.getAllCalendarCompany();
                         }
                     }
@@ -175,7 +175,7 @@ module nts.uk.at.view.ksm004.a {
             getAllCalendarCompany(): JQueryPromise<any>{
                 var self = this; 
                 var dfd = $.Deferred();
-                aService.getAllCalendarCompany()
+                aService.getAllCalendarCompany(self.yearMonthPicked().toString())
                     .done((dataCompany) => {
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataCompany)){
