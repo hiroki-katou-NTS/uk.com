@@ -1,9 +1,9 @@
 module ksm002.a.service {
     var paths = {
-        //getSpecDateByCompany: "at/schedule/shift/businesscalendar/specificdate/getallspecificdate",
         getSpecDateByIsUse: "at/schedule/shift/businesscalendar/specificdate/getspecificdatebyuse",
         getCompanyStartDay: "at/schedule/shift/businesscalendar/businesscalendar/getcompanystartday",
         getComSpecDateByCompanyDate: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydate",
+        insertComSpecDate: "at/schedule/shift/specificdayset/company/insertcompanyspecificdate",
         getComSpecDateByCompanyDateWithName: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydatewithname"
     }
     /**
@@ -31,4 +31,9 @@ module ksm002.a.service {
     export function getCompanyStartDay(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getCompanyStartDay);
     }
+    /** Insert companySpecDate*/
+    export function insertComSpecificDate(lstComSpecificDateItem: Array<viewmodel.CompanySpecificDateCommand>): JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("at", paths.insertComSpecDate,lstComSpecificDateItem);
+    }
+    
 }
