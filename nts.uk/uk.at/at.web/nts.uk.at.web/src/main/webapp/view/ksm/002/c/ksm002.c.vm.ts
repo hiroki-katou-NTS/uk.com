@@ -3,13 +3,11 @@ module ksm002.c {
         export class ScreenModel {
             rootList: Array<SpecificDateItem>;
             specificDateItem: KnockoutObservableArray<SpecificDateItem>;
-            isInsert: Boolean;
             allUse: KnockoutObservable<number>;
             textKSM002_39: string;
             constructor() {
                 var self = this;
                 self.specificDateItem = ko.observableArray([]);   
-                self.isInsert = nts.uk.ui.windows.getShared('isInsert');
                 self.textKSM002_39 = nts.uk.resource.getText("KSM002_39",[__viewContext.primitiveValueConstraints.SpecificName.maxLength/2]);
             }
             
@@ -69,8 +67,6 @@ module ksm002.c {
                 if (!nts.uk.ui.errors.hasError()){
                 service.updateSpecificDate(lstSpecificDateItem)
                     .done(function(res: Array<any>) {
-                        if(self.isInsert){
-                        }
                         nts.uk.ui.block.clear();
                         nts.uk.ui.windows.close();
                     }).fail(function(res) {

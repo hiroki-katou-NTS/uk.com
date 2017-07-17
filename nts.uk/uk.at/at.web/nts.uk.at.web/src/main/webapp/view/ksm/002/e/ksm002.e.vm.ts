@@ -1,6 +1,7 @@
 module ksm002.e{
     export module viewmodel {
         import getShared = nts.uk.ui.windows.getShared;
+        import setShared = nts.uk.ui.windows.setShared;
         export class ScreenModel {
             dataSource: KnockoutObservableArray<SpecificDateItemDto>;
             date: string;
@@ -50,7 +51,7 @@ module ksm002.e{
                         selectedCodes.push(item.timeItemId());
                     }
                 });
-                    nts.uk.ui.windows.setShared('KSM002E_VALUES', {date: self.date,selecteds: selectedCodes});
+                    setShared('KSM002E_VALUES', {date: self.date,selecteds: selectedCodes});
                     nts.uk.ui.windows.close(); 
             }
             
@@ -59,7 +60,7 @@ module ksm002.e{
              */
             closeDialog(): void {
                 var self = this;
-                nts.uk.ui.windows.setShared('KSM002E_VALUES', {date: self.date,selecteds: self.selectedCodes});
+                setShared('KSM002E_VALUES', {date: self.date,selecteds: self.selectedCodes});
                 nts.uk.ui.windows.close();   
             }
         }
