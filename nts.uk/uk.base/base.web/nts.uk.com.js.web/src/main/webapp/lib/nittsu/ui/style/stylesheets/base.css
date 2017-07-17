@@ -3439,7 +3439,13 @@ button.nts-switch-button[disabled]:hover {
   background-color: #ccc;
   height: 50px;
 }
-
+#master-wrapper{
+	height:100vh;
+}
+#contents-area{
+	overflow-y:auto;
+	
+}
 /* line 1, ../sass/frame/_functions.scss */
 #functions-area {
   height: 40px;
