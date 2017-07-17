@@ -31,9 +31,6 @@ module ksm002.a.viewmodel {
             self.itemList = ko.observableArray([]);
             self.selectedIds = ko.observableArray([1, 2]);
             self.enable = ko.observable(true);
-            //current Date
-            //            self.currentYear = ko.observable(moment(new Date()).format("YYYY"));
-            //            self.currentMonth = ko.observable(moment(new Date()).format("MM"));
             //Calendar
             self.yearMonthPicked = ko.observable(moment(new Date()).format("YYYYMM"));
             self.cssRangerYM = {};
@@ -52,7 +49,10 @@ module ksm002.a.viewmodel {
                 alert('sssss');
             };
             self.yearMonthPicked.subscribe(function(value) {
-                alert(value);
+                let arrOptionaDates: Array<OptionalDate> = [];
+                self.getDataToOneMonth(value).done(function(arrOptionaDates){
+                    self.optionDates(arrOptionaDates);
+                })
             })
         }
 
@@ -60,62 +60,28 @@ module ksm002.a.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            //let processMonth: number = 1900;
             let isUse: number = 1;
             let arrOptionaDates: Array<OptionalDate> = [];
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
-                    //get Company Start Day
-                    service.getCompanyStartDay().done(function(startDayComapny: any) {
-                        self.firstDay(startDayComapny.startDay);
-                        //Fill data to Calendar 
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                        dfd.reject();
+                    //Set Start Day of Company
+                    self.getComStartDay().done(function(startDay:number){
+                        self.firstDay(startDay);
                     });
-                    //
-                    //set parameter to caledar
+                    //set parameter to calendar
                     let lstBoxCheck: Array<BoxModel> = [];
                     _.forEach(lstSpecifiDate, function(item) {
                         lstBoxCheck.push(new BoxModel(item.specificDateItemNo, item.specificName));
                     });
                     _.orderBy(lstBoxCheck, ['id'], ['desc']);
                     self.itemList(lstBoxCheck);
-                    //Get end of Month
-                    let endMonth: number = moment(self.yearMonthPicked()).endOf('month').date();
-                    //Array Name 
-                    let arrName: Array<string> = [];
-                    let specDay: string = '00';
-                    let processDay : number = '19000101';
-                    //get data from StartDate to EndDate
-                    //get List Text 
-                    //specDay = _.padStart(i, 2, '0');
-                    //processDate = Number(self.yearMonthPicked());
-                    service.getCompanySpecificDateByCompanyDateWithName(self.yearMonthPicked(), isUse).done(function(lstComSpecDate: any) {
-                        //debugger;
-                        if (lstComSpecDate.length > 0) {
-//                            for(let i=0; i<endMonth;i++){
-//                                processDay = Number(self.yearMonthPicked()+_.padStart(i, 2, '0'));
-//                               _.find(lstComSpecDate,function(item){
-//                                    if()    
-//                               })
-//                            }
-//                            _.orderBy(lstComSpecDate,'specificDate','asc');
-//                            _.forEach(lstComSpecDate, function(itemSpec) {
-//                                arrName.push(itemSpec.specificDateItemName);
-//                            });
-//                            if (arrName.length > 0) {
-//                                arrOptionaDates.push(new OptionalDate(moment(self.yearMonthPicked()).format("YYYY-MM-") + specDay, 'red', 'white', arrName));
-//                            };
-                        }
-                        //
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                        dfd.reject();
-                    });
-                    //fill data to Calendar
+                    //Set data to calendar
+                    self.getDataToOneMonth(self.yearMonthPicked()).done(function(arrOptionaDates) {
+                        if(arrOptionaDates.length>0)
+                            self.isNew(false);
+                        self.optionDates(arrOptionaDates);    
+                    })
+                    dfd.resolve();
                 }
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
@@ -123,11 +89,57 @@ module ksm002.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        
+        /**Fill data to each month*/
+        // Return Array of data in day
+        getDataToOneMonth(processMonth: string) : JQueryPromise<Array<OptionalDate>> {
+            let dfd = $.Deferred<any>();
+            let endOfMonth: number = moment(processMonth).endOf('month').date();
+            let isUse: number = 1;
+            let arrOptionaDates : Array<OptionalDate> = [];
+            //Array Name to fill on  one Date
+            let arrName: Array<string> = [];
+            service.getCompanySpecificDateByCompanyDateWithName(processMonth, isUse).done(function(lstComSpecDate: any) {
+                if (lstComSpecDate.length > 0) {
+                    for (let j = 1; j <= endOfMonth; j++) {
+                        let processDay: string = processMonth + _.padStart(j, 2, '0');
+                        arrName = [];
+                        //Loop in each Day
+                        _.forEach(lstComSpecDate, function(comItem) {
+                            if (comItem.specificDate == Number(processDay)) {
+                                arrName.push(comItem.specificDateItemName);
+                            };
+                        });
+                        arrOptionaDates.push(new OptionalDate(moment(processDay).format('YYYY-MM-DD'), 'red', 'white', arrName));
+                    };
+                    //Return Array of Data in Month
+                    dfd.resolve(arrOptionaDates);
+                }
+               
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        /** get Start Day of Company*/
+        getComStartDay(): JQueryPromise<number>{
+            let dfd = $.Deferred<any>();
+            //get Company Start Day
+            service.getCompanyStartDay().done(function(startDayComapny: number) {
+                //self.firstDay();
+                dfd.resolve(startDayComapny.startDay);
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
+        
     }
-
-
-
-
+    
     class BoxModel {
         id: number;
         name: string;
