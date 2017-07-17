@@ -18,7 +18,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 
 	private static final String GET_ALL = "SELECT s FROM KsmstSpecificDateItem s WHERE s.ksmstSpecificDateItemPK.companyId = :companyId";
 	private static final String GET_BY_USE = "SELECT s FROM KsmstSpecificDateItem s WHERE s.ksmstSpecificDateItemPK.companyId = :companyId AND s.useAtr = :useAtr";
-
+	private static final String GET_BY_LIST_CODE = GET_ALL + " AND s.ksmstSpecificDateItemPK.itemItemId IN :lstSpecificDateItem";
 	/**
 	 * Entity to Domain
 	 * 
@@ -59,23 +59,49 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	}
 
 	/**
-	 * hoatt update list Specific Date Item
-	 * 
+	 * hoatt
+	 * update list Specific Date Item
 	 * @param lstSpecificDateItem
 	 */
 	@Override
-	public void updateDivTime(List<SpecificDateItem> lstSpecificDateItem) {
+	public void updateSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem) {
 		List<KsmstSpecificDateItem> lstEntity = new ArrayList<>();
 		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
 			KsmstSpecificDateItem b = toEntity(specificDateItem);
-			KsmstSpecificDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KsmstSpecificDateItem.class)
-					.get();
+			KsmstSpecificDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KsmstSpecificDateItem.class).get();
 			x.setUseAtr(b.useAtr);
 			x.setItemNo(b.itemNo);
 			x.setName(b.name);
 			lstEntity.add(x);
 		}
 		this.commandProxy().updateAll(lstEntity);
+	}
+	/**
+	 * hoatt
+	 * add list Specific Date Item
+	 * @param lstSpecificDateItem
+	 */
+	@Override
+	public void addSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem) {
+		List<KsmstSpecificDateItem> lstEntity = new ArrayList<>();
+		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
+			lstEntity.add(toEntity(specificDateItem));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+	/**
+	 * hoatt
+	 * get list Specifi Date By List Code
+	 * @param companyId
+	 * @param lstSpecificDateItem
+	 * @return
+	 */
+	@Override
+	public List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<String> lstSpecificDateItem) {
+		return this.queryProxy().query(GET_BY_LIST_CODE, KsmstSpecificDateItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("lstSpecifiDateItem", lstSpecificDateItem)
+				.getList(c->toBonusPaySettingDomain(c));
 	}
 
 }

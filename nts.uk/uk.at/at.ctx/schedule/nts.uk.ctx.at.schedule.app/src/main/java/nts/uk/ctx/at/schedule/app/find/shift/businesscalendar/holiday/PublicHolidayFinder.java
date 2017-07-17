@@ -5,6 +5,7 @@ package nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.holiday;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,5 +33,10 @@ public class PublicHolidayFinder {
 	public List<PublicHolidayDto> getAllHolidays() {
 		return this.publicHolidayRepository.getAllHolidays(AppContexts.user().companyId()).stream()
 				.map(domain -> PublicHolidayDto.fromDomain(domain)).collect(Collectors.toList());
+	}
+	
+	public Optional<PublicHolidayDto> getHolidayByDate(BigDecimal date){
+		return this.publicHolidayRepository.getHolidaysByDate(AppContexts.user().companyId(), 
+				date).map(x -> PublicHolidayDto.fromDomain(x));
 	}
 }

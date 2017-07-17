@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.holiday;
 
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;

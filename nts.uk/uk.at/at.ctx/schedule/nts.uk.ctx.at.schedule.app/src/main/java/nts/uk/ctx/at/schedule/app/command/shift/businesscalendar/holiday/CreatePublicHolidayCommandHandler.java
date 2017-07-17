@@ -27,8 +27,8 @@ public class CreatePublicHolidayCommandHandler extends CommandHandler<CreatePubl
 	protected void handle(CommandHandlerContext<CreatePublicHolidayCommand> context) {
 
 		CreatePublicHolidayCommand command = context.getCommand();
-			if (StringUtil.isNullOrEmpty(command.getDate().toString(), true) || StringUtil.isNullOrEmpty(command.getHolidayName(), true)) 
-				{ throw new BusinessException("");}
+			/*if (StringUtil.isNullOrEmpty(command.getDate().toString(), true) || StringUtil.isNullOrEmpty(command.getHolidayName(), true)) 
+				{ throw new BusinessException("");}*/
 			publicHolidayService.createHolidayInfo(command.toDomain());
 		
 	}

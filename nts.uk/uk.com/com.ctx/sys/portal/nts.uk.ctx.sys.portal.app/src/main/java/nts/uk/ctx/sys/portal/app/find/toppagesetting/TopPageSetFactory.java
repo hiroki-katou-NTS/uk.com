@@ -39,15 +39,6 @@ public interface TopPageSetFactory {
 	 */
 	LayoutAllDto getTopPageNotPosition(String fromScreen);
 	/**
-	 * get top page by code
-	 * @param companyId
-	 * @param code
-	 * @param system
-	 * @param classification
-	 * @return
-	 */
-	LayoutForTopPageDto getTopPageByCode(String companyId, String code, int system, int classification, boolean check);
-	/**
 	 * check my page co duoc su dung khong
 	 * @return
 	 */
