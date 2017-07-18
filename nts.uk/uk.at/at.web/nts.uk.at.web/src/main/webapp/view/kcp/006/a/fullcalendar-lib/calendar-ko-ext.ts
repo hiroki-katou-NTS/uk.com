@@ -4,6 +4,7 @@ module nts.uk.at.view.kcp006.a {
      */
     // pass chosen date to delegate click cell function
     var defaultOption = {
+        buttonClick: function(date) { },
         cellClick: function(date) { }
     };
     $.fn.ntsCalendar = function(action: string, option: any) {
@@ -13,8 +14,18 @@ module nts.uk.at.view.kcp006.a {
             $control.off("click", ".button-cell");
             $control.on("click", ".button-cell", function(event) {
                 event.preventDefault();
+                event.stopPropagation();
                 var choosenDate = $(this).attr("data-date");
-                setting.cellClick.call(this, choosenDate);
+                setting.buttonClick.call(this, choosenDate);
+            });
+            $control.off("click", "td .fc-day");
+            $control.on("click", "td .fc-day", function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                var choosenDate = $(this).attr("data-date");
+                if (choosenDate){
+                    setting.cellClick.call(this, choosenDate);
+                }
             });
             return $control;
         }
@@ -340,9 +351,10 @@ module nts.uk.at.view.kcp006.a {
             if (eventUpdatable) {
                 // click button event
                 $("#calendar .td-container img").off();
-                $("#calendar .td-container img").on('click', function() {
+                $("#calendar .td-container img").on('click', function(event) {
+                    event.stopPropagation();
                     nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId, workplaceName: workplaceName });
-                    nts.uk.ui.windows.sub.modal('../b/index.xhtml', { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
+                    nts.uk.ui.windows.sub.modal('../../../../view/kcp/006/b/index.xhtml', { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
                         lstHoliday = [];
                         lstEvent = [];
@@ -457,9 +469,5 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " td .fc-day[data-date='" + optionDates[i].start + "']").css("background-color", optionDates[i].backgroundColor);
             }
         }
-    }
-
-    export function CellClickEvent(paramDate) {
-
     }
 }

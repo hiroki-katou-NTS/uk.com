@@ -78,7 +78,7 @@ public class NursingLeaveFinder {
         return listWorkType.stream()
                 .filter(item -> listWorkTypeCode.contains(item.getWorkTypeCode()))
                 .map(item -> item.getWorkTypeCode() + "." + item.getName())
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining("、"));
     }
     
     /**
