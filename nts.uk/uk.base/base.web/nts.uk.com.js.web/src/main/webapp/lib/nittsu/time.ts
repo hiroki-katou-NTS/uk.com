@@ -1,19 +1,19 @@
 /// <reference path="reference.ts"/>
 
-?�module nts.uk.time {
+module nts.uk.time {
 
     var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
     var listEmpire: { [year: string]: string } = {
         "明治": "1868/01/01",
         "大正": "1912/07/30",
-        "昭�?": "1926/12/25",
-        "平�?": "1989/01/08"
+        "昭和": "1926/12/25",
+        "平成": "1989/01/08"
     };
     var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
 
     function getYearMonthJapan(year, month?) {
         if (month)
-            return year + "年 " + month + " �?";
+            return year + "年 " + month + " 月";
         return year;
     }
 
@@ -43,14 +43,14 @@
         public toString() {
             return (this.empire === undefined ? "" : this.empire + " ")
                 + (this.year === undefined ? "" : this.year + " 年 ")
-                + (this.month === undefined ? "" : this.month + " �?");
+                + (this.month === undefined ? "" : this.month + " 月");
         }
     }
 
     export function yearInJapanEmpire(date: any): JapanYearMonth {
         let year = moment.utc(date, defaultInputFormat, true).year();
         if (year == 1868) {
-            return new JapanYearMonth("明治�?��");
+            return new JapanYearMonth("明治元年");
         }
         if (year <= 1912) {
             var diff = year - 1867;
@@ -62,25 +62,25 @@
         }
         if (year < 1989) {
             var diff = year - 1925;
-            return new JapanYearMonth("昭�? ", diff);
+            return new JapanYearMonth("昭和 ", diff);
         }
         if (year == 1989) {
-            return new JapanYearMonth("平成�?年 ", diff);
+            return new JapanYearMonth("平成元年 ", diff);
         }
         var diff = year - 1988;
-        return new JapanYearMonth("平�? ", diff);
+        return new JapanYearMonth("平成 ", diff);
     }
 
     export function yearmonthInJapanEmpire(yearmonth): JapanYearMonth {
         if (!(yearmonth instanceof String)) {
             yearmonth = "" + yearmonth;
         }
-        var nguyennien = "�?��";
+        var nguyennien = "元年";
         yearmonth = yearmonth.replace("/", "");
         var year = parseInt(yearmonth.substring(0, 4));
         var month = parseInt(yearmonth.substring(4));
         if (year == 1868) {
-            return new JapanYearMonth("明治�?�� ", undefined, month);
+            return new JapanYearMonth("明治元年 ", undefined, month);
         }
         if (year < 1912) {
             var diff = year - 1867;
@@ -88,7 +88,7 @@
         }
         if (year == 1912) {
             if (month < 8) return new JapanYearMonth("明治 ", 45, month);
-            return new JapanYearMonth("大正�?�� ", undefined, month);
+            return new JapanYearMonth("大正元年 ", undefined, month);
         }
         if (year < 1926) {
             var diff = year - 1911;
@@ -96,17 +96,17 @@
         }
         if (year == 1926) {
             if (month < 12) return new JapanYearMonth("大正", 15, month);
-            return new JapanYearMonth("昭和�?年 ", undefined, month);
+            return new JapanYearMonth("昭和元年 ", undefined, month);
         }
         if (year < 1989) {
             var diff = year - 1925;
-            return new JapanYearMonth("昭�? ", diff, month);
+            return new JapanYearMonth("昭和 ", diff, month);
         }
         if (year == 1989) {
-            return new JapanYearMonth("平成�?年 ", undefined, month);
+            return new JapanYearMonth("平成元年 ", undefined, month);
         }
         var diff = year - 1988;
-        return new JapanYearMonth("平�? ", diff, month);
+        return new JapanYearMonth("平成 ", diff, month);
     }
 
     export class JapanDateMoment {
@@ -125,7 +125,7 @@
         public toString() {
             return (this.empire === undefined ? "" : this.empire + " ")
                 + (this.year === undefined ? "" : this.year + " 年 ")
-                + (this.month === undefined ? "" : this.month + " �?")
+                + (this.month === undefined ? "" : this.month + " 月")
                 + (this.day === undefined ? "" : this.day + " ");
         }
     }
@@ -157,10 +157,10 @@
     }
 
 	/**
-	* 日付をフォーマットす�?
-	* @param  {Date}   date	 日�?
-	* @param  {String} [format] フォーマッ�?
-	* @return {String}		  フォーマット済み日�?
+	* Format date
+	* @param  {Date}   date	 date
+	* @param  {String} [format] format
+	* @return {String}		  formatted date
 	*/
     export function formatDate(date: Date, format: any) {
         if (!format)
@@ -647,15 +647,15 @@
         shortYmdwPattern =/^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
         shortYmPattern = /^\d{4}\/\d{1,2}$/;
         shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
-        longYmdPattern = /^\d{4}年\d{1,2}�?d{1,2}日$/;
-        longYmdwPattern = /^\d{4}年\d{1,2}�?d{1,2}日\(\w+\)$/;
+        longYmdPattern = /^\d{4}年\d{1,2}月d{1,2}日$/;
+        longYmdwPattern = /^\d{4}年\d{1,2}月d{1,2}日\(\w+\)$/;
         longFPattern = /^\d{4}年度$/;
-        longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}�?d{1,2}日$/;
-        longJmPattern = /^\w{2}\d{1,3}年\d{1,2}�?$/;
+        longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月d{1,2}日$/;
+        longJmPattern = /^\w{2}\d{1,3}年\d{1,2}月$/;
         fullDateTimeShortPattern = /^\d{4}\/\d{1,2}\/\d{1,2} \d+:\d{2}:\d{2}$/;
         timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
         timeShortHmPattern = /^\d+:\d{2}$/;
-        days = ['日', '�?', '火', '水', '木', '�?', '�?'];
+        days = ['日', '月', '火', '水', '木', '金', '土'];
         
         shortYmd(date: string) {
             let d = this.dateOf(date);
@@ -708,7 +708,7 @@
         }
             
         toLongJpDate(d: Date) {
-            return d.getFullYear() + '年' + (d.getMonth() + 1) + '�?' + d.getDate() + '日';
+            return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
         }
         
         longF(date: string) {
@@ -730,7 +730,7 @@
             let d = this.dateOf(date);
             if (this.longJmPattern.test(d)) return d;
             let jpDate = this.fullJapaneseDateOf(d);
-            let start = jpDate.indexOf("�?"); 
+            let start = jpDate.indexOf("月"); 
             if (start !== -1) {
                 return jpDate.substring(0, start + 1);
             }
