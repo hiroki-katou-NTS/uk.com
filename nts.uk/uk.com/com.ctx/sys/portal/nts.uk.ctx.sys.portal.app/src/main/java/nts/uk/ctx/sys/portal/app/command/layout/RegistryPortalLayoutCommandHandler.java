@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.app.command.placement.PortalPlacementCommand;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
@@ -45,7 +46,9 @@ public class RegistryPortalLayoutCommandHandler extends CommandHandlerWithResult
 
 		// Create Layout if not exist
 		if (!layoutService.isExist(layoutID)) {
-			layoutID = IdentifierUtil.randomUniqueId();
+			if (StringUtil.isNullOrEmpty(layoutID, true)) {
+				layoutID = IdentifierUtil.randomUniqueId();
+			}
 			Layout layout = layoutCommand.toDomain(layoutID);
 			layoutService.createLayout(companyID, layoutCommand.getParentCode(), layoutCommand.getPgType(), layout);
 		}
