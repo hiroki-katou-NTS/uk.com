@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
@@ -44,8 +45,8 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		entity.ccgptTopPageJobSetPK = new CcgptTopPageJobSetPK();
 		entity.ccgptTopPageJobSetPK.companyId = domain.getCompanyId();
 		entity.ccgptTopPageJobSetPK.jobId = domain.getJobId();
-		entity.loginMenuCd = domain.getLoginMenuCode().v();
-		entity.topMenuCd = domain.getTopMenuCode().v();
+		entity.loginMenuCd = StringUtil.isNullOrEmpty(domain.getLoginMenuCode().v(), true) ? "    " : domain.getLoginMenuCode().v();
+		entity.topMenuCd = StringUtil.isNullOrEmpty(domain.getTopMenuCode().v(), true) ? "    " : domain.getTopMenuCode().v();
 		entity.personPermissionSet = domain.getPersonPermissionSet().value;
 		entity.system = domain.getLoginSystem().value;
 		entity.loginMenuCls = domain.getMenuClassification().value;
