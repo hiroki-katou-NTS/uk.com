@@ -143,6 +143,7 @@ module kcp.share.tree {
         public init($input: JQuery, data: TreeComponentOption) :JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
+            ko.cleanNode($input[0]);
             self.data = data;
             self.$input = $input;
             self.isMultiple = data.isMultiSelect;
@@ -188,7 +189,7 @@ module kcp.share.tree {
                             self.addAlreadySettingAttr(self.backupItemList(), newAlreadySettings);
                             self.itemList(self.backupItemList());
                             
-                            self.filterData(data, $input);
+                            //self.filterData(data, $input);
                         });
                     }
                     
