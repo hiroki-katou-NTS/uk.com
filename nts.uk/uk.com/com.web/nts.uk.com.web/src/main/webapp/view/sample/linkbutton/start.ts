@@ -4,12 +4,12 @@ __viewContext.ready(function () {
         
         constructor() {
             var self = this;
-            self.linkText = ko.observable("Do something");
+            self.linkText = ko.observable("振込元銀行の登録へ");
         }
         
-        doSomething(s) {
+        doSomething(s: string) {
             var self = this;
-            self.linkText(self.linkText() + "❤" + s);
+            self.linkText(self.linkText() + s);
         }
     }
     
