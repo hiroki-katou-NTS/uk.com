@@ -39,6 +39,13 @@ module ksm002.test.viewmodel {
 
             })
         }
+        
+         OpenDialogD(){
+//            var self = this;
+            nts.uk.ui.windows.sub.modal('/view/ksm/002/d/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+
+            })
+        }
     }
     export module model {
         export class ItemModel2 {

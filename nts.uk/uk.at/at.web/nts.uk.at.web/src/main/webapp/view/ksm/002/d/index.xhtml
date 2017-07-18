@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 550, height: 600 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ksm002.d.vm.js" />
+			<com:scriptfile path="ksm002.d.start.js" />
+			<com:stylefile path="ksm002.d.main.css" />
+			<com:scriptfile path="ksm002.d.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<table class="table">
+				<colgroup>
+					<col width="150px"/>
+					<col width="*"/>
+				</colgroup>
+					<tr>
+						<td><div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KSM002_42')}</div></td>
+						<td ><label id="D1_2">aaa</label></td>		
+						
+					</tr>
+					
+					<tr>
+						<td><div style="margin-top:10px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_43')}</div></td>
+						<td>
+							<div  tabindex="1" style="margin-top:10px" data-bind="ntsDatePicker: { 
+									value: startMonth, 
+									dateFormat: 'date', 
+									valueFormat: 'YYYYMMDD', 
+									fiscalMonthsMode: true, 
+									defaultClass: 'round-orange' }">
+								</div>		
+								<span>～</span>
+								<div tabindex="2" style="margin-top:10px" data-bind="ntsDatePicker: { 
+									value: endMonth, 
+									dateFormat: 'date', 
+									valueFormat: 'YYYYMMDD', 
+									fiscalMonthsMode: true, 
+									defaultClass: 'round-orange' }">
+								</div> 
+						</td>
+					</tr>
+					
+					<tr>
+						<td><div style="margin-top:10px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_44')}</div></td>
+						<td>
+							<div data-bind = "foreach: specificDateItem">
+							<div class = "itemName" data-bind="ntsCheckBox: { 
+										checked: useAtr,
+										text: specificName()}"></div>
+							</div> 
+						</td>
+					</tr>
+					
+					<tr>
+						<td><div style="margin-top:10px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_53')}></div></td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+			<div id="functions-area-bottom" style="height:130px !important">
+				<div class="bg-yellow">
+					<div id="radioButton" data-bind="ntsRadioBoxGroup: {
+						options: itemList,
+						optionsValue: 'id',
+						optionsText: 'name',
+						value: selectedId}"></div>
+				</div>
+				<button style="margin-top: 6px" class="x-large proceed center-e" data-bind="click: submitDialog">#{i18n.getText('KML001_19')}</button>
+				<button style="margin-top: 10px" class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>	
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
