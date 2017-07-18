@@ -28,7 +28,7 @@ public class InsertCompanySpecificDateCommandHandler extends CommandHandler<List
 				.map(c -> CompanySpecificDateItem.createFromJavaType(
 				companyId,
 				c.getSpecificDate(),
-				c.getSpecificDateItemNo(),
+				c.getSpecificDateNo(),
 				"")).collect(Collectors.toList());
 
 		repo.InsertComSpecDate(listInsert);
