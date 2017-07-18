@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.specificdayset.company;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSetPK;
 
 @Stateless
 public class JpaCompanySpecificDateRepository extends JpaRepository implements CompanySpecificDateRepository {
@@ -59,5 +63,36 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 				entity.ksmmtComSpecDateSetPK.companyId, entity.ksmmtComSpecDateSetPK.specificDate,
 				entity.ksmmtComSpecDateSetPK.specificDateItemNo, specificDateItemName);
 		return domain;
+	}
+	
+	//No with Name 
+	private static KsmmtComSpecDateSet toEntity(CompanySpecificDateItem domain){
+		val entity = new KsmmtComSpecDateSet();
+		entity.ksmmtComSpecDateSetPK = new KsmmtComSpecDateSetPK(
+				domain.getCompanyId(),
+				domain.getSpecificDate().v(),
+				domain.getSpecificDateItemNo().v());
+		return entity;
+	}
+	// No with name 
+	@Override
+	public void InsertComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem) {
+		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
+		for(CompanySpecificDateItem comSpecDateItem : lstComSpecDateItem){
+			lstEntity.add(toEntity(comSpecDateItem));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+
+	@Override
+	public void UpdateComSpecDate(List<CompanySpecificDateItem>lstComSpecDateItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void DeleteComSpecDate(CompanySpecificDateItem lstComSpecDateItem) {
+		// TODO Auto-generated method stub
+		
 	}
 }
