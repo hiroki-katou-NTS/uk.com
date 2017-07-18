@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.calendar;
+package nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.daycalendar;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.calendar.CalendarWorkPlaceRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 
 @Stateless
 public class CalendarWorkplaceFinder {
