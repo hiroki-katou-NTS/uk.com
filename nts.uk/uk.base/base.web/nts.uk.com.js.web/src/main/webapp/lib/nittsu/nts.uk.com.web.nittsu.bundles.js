@@ -4798,7 +4798,7 @@ var nts;
                             }
                             else if (self.options.format === self.Y_FORMAT) {
                                 var postCalcVal = parsedTime.year + value;
-                                if (postCalcVal < 1899) {
+                                if (postCalcVal < 1900) {
                                     year = 9999;
                                 }
                                 else if (postCalcVal > 9999) {
