@@ -127,7 +127,7 @@
 					<table>
 						<tr>
 							<td>
-								<div id="left-content"></div>	
+								<div tabindex="1" id="left-content"></div>	
 							</td>
 
 							<td id="right-content">
@@ -165,7 +165,7 @@
 									<tr>
 										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_102')}</td>
 										<td>
-											<div style="margin-left: 5px;" tabindex=""
+											<div style="margin-left: 5px;" tabindex="3"
 												data-bind="ntsComboBox: {
 																			options: $parent.timeDigestiveUnitEnums,
 																			optionsValue: 'value',
@@ -181,7 +181,7 @@
 									<tr>
 										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_98')}</td>
 										<td>
-											<div style="margin-left: 5px;" tabindex=""
+											<div style="margin-left: 5px;" tabindex="4"
 												data-bind="ntsComboBox: {
 																			options: $parent.sixtyHourExtraEnums,
 																			optionsValue: 'value',

@@ -308,7 +308,7 @@ module nts.uk.at.view.kcp006.a {
             $("#" + currentCalendar + " .holiday").find("span").html("");
             $("#" + currentCalendar + " .holiday-header").removeClass("holiday-header");
             $("#" + currentCalendar + " .holiday-name").removeClass("holiday-header");
-            $("#" + currentCalendar + " .button-event").attr("src", "fullcalendar-lib/icon/121.png");
+            $("#" + currentCalendar + " .button-event").attr("src", "../../../../view/kcp/006/a/fullcalendar-lib/icon/121.png");
             $("#" + currentCalendar + " .event-data").empty();
             //fill data
             for (let i = 0; i < lstHoliday.length; i++) {
@@ -332,7 +332,7 @@ module nts.uk.at.view.kcp006.a {
                     $("#" + currentCalendar + " .event-data[data-date='" + lstEvent[i].start + "']").append("<span class='wkp-event-content'></span>");
                 }
                 //change icon button
-                $("#" + currentCalendar + " .button-event[data-date='" + lstEvent[i].start + "']").attr("src", "fullcalendar-lib/icon/120.png");
+                $("#" + currentCalendar + " .button-event[data-date='" + lstEvent[i].start + "']").attr("src", "../../../../view/kcp/006/a/fullcalendar-lib/icon/120.png");
             }
         }
 
