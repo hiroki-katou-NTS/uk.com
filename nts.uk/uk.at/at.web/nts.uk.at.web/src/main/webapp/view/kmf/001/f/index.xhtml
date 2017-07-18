@@ -21,8 +21,8 @@
 			</script>
 		</ui:define>
 
-		<ui:define tabindex="1" name="sidebar">
-			<ul class="navigator">
+		<ui:define name="sidebar">
+			<ul tabindex="1" class="navigator">
 				<li><a href="#company-tab" role="tab-navigator" data-bind="click: switchToCompanyTab" class="active">#{i18n.getText('Com_Company')}</a></li>
 				<li><a href="#employment-tab" role="tab-navigator"
 					data-bind="click: switchToEmploymentTab" >#{i18n.getText('Com_Employment')}</a></li>
@@ -230,12 +230,12 @@
 			<div id="employment-tab" role="tabpanel">
 				<div id="functions-area" class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
-					<button tabindex="2" data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button>
-					<button tabindex="3"
+					<button data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button>
+					<button
 						data-bind="click: saveEmployment,enable: !isEmptyEmployment()"
 						class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
 					<div class="link_label">
-						<label tabindex="4" data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
+						<label data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div>
 				</div>
 				<div id="employment-content">
@@ -244,7 +244,7 @@
 						<tr>
 							<td>
 								<!-- left -->
-								<div id="list-employ-component"></div>
+								<div tabindex ="1" id="list-employ-component"></div>
 							</td>
 							<td id="main-scr-tbl-right">
 								<!-- right -->
