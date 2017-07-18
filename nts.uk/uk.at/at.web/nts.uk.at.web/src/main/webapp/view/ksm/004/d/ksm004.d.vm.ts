@@ -35,15 +35,16 @@ module ksm004.d.viewmodel {
         constructor() {
             var self = this;
             //start and end month
-            nts.uk.ui.windows.getShared('classification');
-            nts.uk.ui.windows.getShared('workPlaceId');
-            nts.uk.ui.windows.getShared('classCD');
-            nts.uk.ui.windows.getShared('startTime');
-            nts.uk.ui.windows.getShared('endTime');
+            //get data Form : A
+            let param :IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM')|| { classification: 0, yearMonth: 20160101,workPlaceId: null, classId: null };
+            //classId
+            self.classId = ko.observable(param.classId);
+            //workPlaceId
+            self.workPlaceId = ko.observable(param.workPlaceId);
 
-            self.startMonth = ko.observable(201701);
-            self.endMonth = ko.observable(201702);
-            self.typeClass = ko.observable(1);
+            self.startMonth = ko.observable(param.yearMonth);
+            self.endMonth = ko.observable(param.yearMonth);
+            self.typeClass = ko.observable(param.classification);
             //checkHoliday
             self.checkHoliday = ko.observable(true);
             //checkUpdate
@@ -51,10 +52,7 @@ module ksm004.d.viewmodel {
             //date , workingDayAtr
             self.dateId = ko.observable(0);
             self.workingDayAtr = ko.observable(0);
-            //classId
-            self.classId = ko.observable('0000000001');
-            //workPlaceId
-            self.workPlaceId = ko.observable('38400000-8cf0-11bd-b23e-10b96e4ef00d');
+            
             //workdayGroup
             self.workdayGroup = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText('KSM004_46') },
@@ -148,12 +146,12 @@ module ksm004.d.viewmodel {
                 if(self.typeClass() == 0) {
                     //if check overwrite = true
                     if (self.checkOverwrite() == true) {
-                        self.updateCalendarCompany();
+                        self.updateCalendarCompany(self.list());
                     } else {
-                        self.addCalendarCompany();
+                        self.addCalendarCompany(self.list());
                     }
                 //if calendar class
-                } else if (self.typeClass() == 1) {
+                } else if (self.typeClass() == 2) {
                     // add classId in list
                     _.forEach(self.list(), function(value) {
                             value.classId = self.classId();    
@@ -167,7 +165,7 @@ module ksm004.d.viewmodel {
                         self.addCalendarClass(self.list());
                     }
                 //if calendar workplace   
-                } else if (self.typeClass() == 2) {
+                } else if (self.typeClass() == 1) {
                     // add workPlaceId in list
                     _.forEach(self.list(), function(value) {
                             value.workPlaceId = self.workPlaceId();    
@@ -259,7 +257,7 @@ module ksm004.d.viewmodel {
             /**
              * update calendar workplace
              */
-            updateCalendarWorkplace() {
+            updateCalendarWorkplace(list) {
             var self = this;
                  service.updateCalendarWorkplace(list).done(function(){
                      nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -319,6 +317,12 @@ module ksm004.d.viewmodel {
                  this.date = date;
                  this.holidayName = holidayName;
              }
+        }
+        interface IData {
+            classification: number,
+            yearMonth: number,
+            workPlaceId: string,
+            classId: string
         }
     }
 

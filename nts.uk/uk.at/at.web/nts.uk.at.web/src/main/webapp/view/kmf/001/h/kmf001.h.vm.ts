@@ -109,6 +109,7 @@ module nts.uk.pr.view.kmf001.h {
                 $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums(),self.loadEmploymentList()).done(function() {
                     self.loadComSettingDetails();
                     self.selectedItem(self.employmentList()[0].code);
+                    $('#company-manage').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -122,6 +123,7 @@ module nts.uk.pr.view.kmf001.h {
                         self.hasEmp(false);
                         dfd.resolve();
                     }
+                    $('#employment-manage').focus();
                 });
             }
             private loadEmploymentList(): JQueryPromise<any> {
