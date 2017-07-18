@@ -2674,12 +2674,17 @@ button.nts-switch-button[disabled]:hover {
   width: 65%;
 }
 /* line 264, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .body {
-  float: left;
-  position: absolute;
-  width: 95%;
-  height: 95%;
-  padding: 2.5%;
+.nts-wizard>.content>.body {
+	display: block !important;
+	visibility: hidden;
+	float: left;
+	position: absolute;
+	width: 95%;
+	height: 95%;
+	padding: 2.5%;
+}
+.nts-wizard>.content>.current {
+	visibility: visible;
 }
 /* line 272, ../sass/components/_wizard.scss */
 .nts-wizard > .actions {
