@@ -14,12 +14,10 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         itemRadioAtcClass: KnockoutObservableArray<any>;
         selectedRadioAtcClass: KnockoutObservable<number>;
         //GridList
+        allPart: KnockoutObservableArray<any>;
         listStandardMenu: KnockoutObservableArray<any>;
         columns: KnockoutObservableArray<any>;
-        currentListStandardMenu: KnockoutObservable<string>;
-        selectCodeStandardMenu: KnockoutObservable<string>;
-        allPart: KnockoutObservableArray<any>;
-        selectedSystemID: KnockoutObservable<string>;
+        selectedStandardMenuKey: KnockoutObservable<string>;
         textOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
 
         constructor() {
@@ -27,7 +25,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.nameMenuBar = ko.observable("");
             //Combo box
             self.listSystemSelect = ko.observableArray([]);
-            self.selectedCodeSystemSelect = ko.observable(0);
+            self.selectedCodeSystemSelect = ko.observable(null);
             //Radio button
             self.itemRadioAtcClass = ko.observableArray([]);
             self.selectedRadioAtcClass = ko.observable(0);
@@ -42,19 +40,14 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 { headerText: '名称', prop: 'displayName', key: 'displayName', width: '200px' },
                 { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', display: 'none' }
             ]);
-            self.selectCodeStandardMenu = ko.observable('');
-            self.currentListStandardMenu = ko.observable('');
+            self.selectedStandardMenuKey = ko.observable('');
             //Follow SystemSelect
-            self.selectedSystemID = ko.observable(null);
             self.selectedCodeSystemSelect.subscribe((value) => { self.changeSystem(value); });
             self.selectedRadioAtcClass.subscribe(function(value) {
                 if (value == 0) {
-                    self.currentListStandardMenu('');
+                    self.selectedStandardMenuKey('');
                 }
             });
-            self.textOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                width: "160px"
-            }));
         }
 
         startPage(): JQueryPromise<any> {
@@ -66,17 +59,14 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 self.letterColor(data.pickerLetter);
                 self.backgroundColor(data.pickerBackground);
                 self.selectedRadioAtcClass(data.radioActlass);
-
             }
 
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function(editMenuBar: service.EditMenuBarDto) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 self.listSystemSelect(editMenuBar.listSystem);
-                self.allPart(editMenuBar.listStandardMenu);
-                let listStandardMenu: Array<MenuBarDto> = _.orderBy(editMenuBar.listStandardMenu, "code", "asc");
                 _.forEach(editMenuBar.listStandardMenu, (item) => {
-                    self.listStandardMenu.push(new MenuBarDto(
+                    self.allPart.push(new MenuBarDto(
                         item.afterLoginDisplay,
                         item.classification,
                         item.code,
@@ -91,6 +81,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                         item.webMenuSetting
                     ));
                 });
+                self.selectedCodeSystemSelect(0);
                 self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
             }).fail(function(error) {
@@ -114,7 +105,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 return;
             }
             var standMenu = _.find(self.listStandardMenu(), function(item: MenuBarDto) {
-                return item.uniqueCode == self.currentListStandardMenu();
+                return item.uniqueCode == self.selectedStandardMenuKey();
             });
             if (standMenu) {
                 menuCls = standMenu.classification;
@@ -132,11 +123,24 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             windows.setShared("CCG013B_MenuBar", menuBar);
             self.cancel_Dialog();
         }
+        
+        /** Select by Index: Start & Delete case */
+        private selectStandardMenuByIndex(index: number) {
+            var self = this;
+            var selectStdMenuByIndex = _.nth(self.listStandardMenu(), index);
+            if (selectStdMenuByIndex !== undefined)
+                self.selectedStandardMenuKey(selectStdMenuByIndex.uniqueCode);
+            else
+                self.selectedStandardMenuKey(null);
+        }
 
-        /** Change System */
         private changeSystem(value): void {
             var self = this;
-            var standardMenus = _.chain(self.allPart()).filter(['system', value]).value();
+            var standardMenus: any = _.chain(self.allPart())
+                .filter((item: any) => {
+                    if (item.system == 0 && item.classification == 8) return true;
+                    if (item.system == value) return true;
+                }).sortBy(['classification', 'code']).value();
             self.listStandardMenu(standardMenus);
         }
     }

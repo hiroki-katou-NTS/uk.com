@@ -13,8 +13,8 @@
 			<button tabindex="3" class="danger" data-bind="click: removeEmployment, disable: isNewMode() || !selectedEmploymentCode()">#{i18n.getText('KMK004_29')}</button>
 			</span>
 		</div>
-		<div class="contents-area">
-			<div id="list-employment" class="pull-left"></div>
+		<div class="contents-area cf">
+			<div id="list-employment" class="pull-left" style="margin-top: 10px"></div>
 			<div class="right-content pull-left" data-bind="ifnot: isLoading">
 			<fieldset data-bind="allowEdit: (selectedEmploymentCode())">
 				<com:ko tag="with" bind="employmentWTSetting">
@@ -33,7 +33,7 @@
 					<span id="lblEmploymentCode" data-bind="text: employmentCode"></span>
 					<span id="lblEmploymentName" data-bind="text: employmentName"></span>
 				</div>
-				<div id="tab-panel"
+				<div tabindex="2" id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
 
 					<!-- NORMAL WORK TIME SETTING START -->

@@ -34,7 +34,7 @@ public class KnlmtNursingWorkType extends UkJpaEntity implements Serializable {
     private KnlmtNursingWorkTypePK knlmtNursingWorkTypePK;
     
     /** The work type code. */
-    @Column(name = "DAY_CD")
+    @Column(name = "WORK_TYPE_CD")
     private String workTypeCode;
     
     /** The knlmt nursing leave set. */

@@ -28,7 +28,7 @@ module ksm002.test.viewmodel {
             return _.split(str, ','); 
         }
         OpenDialogE(){
-             nts.uk.ui.windows.setShared('KSM002E_PARAM',{date: '2017/07/17', selectable: ['1','2','3','4','5','6'],selecteds: ['3'] });
+             nts.uk.ui.windows.setShared('KSM002E_PARAM',{date: '2017/07/17', selectable: ['1','2','3','4','5','6','7','8','9','1c69fe07-0ba5-4de6-879e-f2e12235bf9d','e72a2a19-8b5f-4d03-a687-16b4408a5f86'],selecteds: ['3'] });
              nts.uk.ui.windows.sub.modal('/view/ksm/002/e/index.xhtml', { title: '乖離時間の登録＞対象項目', });
             
         }

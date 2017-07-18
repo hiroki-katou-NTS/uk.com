@@ -3,12 +3,14 @@ package nts.uk.ctx.at.schedule.dom.shift.specificdayset.company;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDate;
 
 @Getter
+@Setter
 public class CompanySpecificDateItem extends AggregateRoot {
 	private String companyId;
 	private SpecificDate specificDate;

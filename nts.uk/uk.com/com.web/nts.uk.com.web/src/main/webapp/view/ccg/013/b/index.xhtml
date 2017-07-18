@@ -25,7 +25,7 @@
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_18')}</div></td>
 						<td><input class="menu-bar-name"
-							data-bind="ntsTextEditor: {name: '#[CCG013_18]',value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption }, hasFocus: true" /></td>
+							data-bind="ntsTextEditor: {name: '#[CCG013_18]',value: nameMenuBar, constraint: 'MenuBarName', required: true, option: {width: '160px'} }, hasFocus: true" /></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
 						<td><div id="colorpicker"
 								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50, required: true}" /></td>
@@ -41,7 +41,7 @@
 										enable: true}">
 							</div>
 							<button
-								data-bind="ntsHelpButton: {image: 'CCG013_002.png', position: 'right top', enable: true }">?</button>
+								data-bind="ntsHelpButton: {image: 'CCG013_002.png', position: 'bottom center', enable: true }">?</button>
 						</td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_23')}</div></td>
 						<td><div id="colorpicker"
@@ -65,14 +65,14 @@
 					<span class="caret-bottom outline"></span>
 					<div style="width: 290px; margin-bottom: 10px;"
 						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
-								items: listStandardMenu, selected: currentListStandardMenu, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid', enable: selectedRadioAtcClass()==1}" />
+								items: listStandardMenu, selected: selectedStandardMenuKey, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid', enable: selectedRadioAtcClass()==1}" />
 					<table id="multi-list"
 						data-bind="ntsGridList: {
 									height: 200,
 									options: listStandardMenu,
 									optionsValue: 'uniqueCode',
 									columns: columns,
-									value: currentListStandardMenu,
+									value: selectedStandardMenuKey,
 									enable: selectedRadioAtcClass()==1
 								}"></table>
 
