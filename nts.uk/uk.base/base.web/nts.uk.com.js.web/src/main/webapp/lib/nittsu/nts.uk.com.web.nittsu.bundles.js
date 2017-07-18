@@ -2335,6 +2335,14 @@ var nts;
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
+                    var content_height = 50 + 20;
+                    if ($("#functions-area").length != 0) {
+                        content_height += 49;
+                    }
+                    if ($("#functions-area-bottom").length != 0) {
+                        content_height += 74;
+                    }
+                    $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
                 };
                 $(function () {
                     ui.documentReady.fire();
