@@ -23,10 +23,11 @@ public class SpecificDateItemFinder {
 	 */
 	public List<SpecificDateItemDto> getAllByCompany() {
 		String companyId = AppContexts.user().companyId();
-		return specificDateItemRepository.getAll(companyId)
+		List<SpecificDateItemDto> lst= specificDateItemRepository.getAll(companyId)
 				.stream()
 				.map(c -> toSpecificDateItemDto(c))
 				.collect(Collectors.toList());
+		return lst;
 	}
 
 	/**
@@ -36,10 +37,11 @@ public class SpecificDateItemFinder {
 	 */
 	public List<SpecificDateItemDto> getSpecDateItemIsUse(int useAtr) {
 		String companyId = AppContexts.user().companyId();
-		return specificDateItemRepository.getSpecifiDateByUse(companyId, useAtr)
+		List<SpecificDateItemDto> lst =  specificDateItemRepository.getSpecifiDateByUse(companyId, useAtr)
 				.stream()
 				.map(c -> toSpecificDateItemDto(c))
 				.collect(Collectors.toList());
+		return lst;
 	}
 
 	private SpecificDateItemDto toSpecificDateItemDto(SpecificDateItem specificDateItem) {

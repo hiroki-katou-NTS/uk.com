@@ -56,7 +56,13 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	@Override
 	public void update(WebMenu webMenu) {
-		this.commandProxy().update(toEntity(webMenu));
+		CcgstWebMenuPK key = new CcgstWebMenuPK(webMenu.getCompanyId(), webMenu.getWebMenuCode().v());
+		CcgstWebMenu entity = this.queryProxy().find(key, CcgstWebMenu.class).get();
+		entity.ccgstWebMenuPK = key;
+		entity.defaultMenu = webMenu.getDefaultMenu().value;
+		entity.webMenuName = webMenu.getWebMenuName().v();
+		entity.menuBars = toEntityMenuBar(webMenu);	
+		this.commandProxy().update(entity);
 	}
 
 	@Override

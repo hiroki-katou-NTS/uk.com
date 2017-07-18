@@ -25,49 +25,18 @@ module ksm002.test.viewmodel {
            
         } 
         list(str: string):Array<string>{
-            return _.split(str, ',');
+            return _.split(str, ','); 
         }
-        check(){
-            this.test_true(true);
+        OpenDialogE(){
+             nts.uk.ui.windows.setShared('KSM002E_PARAM',{date: '2017/07/17', selectable: ['1','2','3','4','5','6','7','8','9','1c69fe07-0ba5-4de6-879e-f2e12235bf9d','e72a2a19-8b5f-4d03-a687-16b4408a5f86'],selecteds: ['3'] });
+             nts.uk.ui.windows.sub.modal('/view/ksm/002/e/index.xhtml', { title: '乖離時間の登録＞対象項目', });
             
         }
-        OpenDialog0072(){
-            var self = this;
-            let param: IData = {
-                isMulti: true,
-                selecteds: self.list(self.SelectedCode())
-            }
-            nts.uk.ui.windows.setShared('KDL007_PARAM', param,true);
-            nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                self.items([]);
-                var lst = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                let str='';
-                _.each(lst, x => str+= x +',');
-                self.SelectedCode(str);
-                if(lst== null || undefined){
-                    self.items();
-                }else{
-                    let lstItemMapping =  _.map(lst.selecteds , item => {
-                        return new model.ItemModel2(item, '');
-                });
-                self.items(lstItemMapping); 
-                }
 
-            })
-        }
         OpenDialogC(){
 //            var self = this;
             nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                self.items([]);
-                var lst = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                let str='';
-                _.each(lst, x => str+= x +',');
-                self.SelectedCode(str);
-                console.log(lst);
-                let lstItemMapping =  _.map(lst , item => {
-                    return new model.ItemModel2(item, '');
-                });
-                self.items(lstItemMapping);
+
             })
         }
     }

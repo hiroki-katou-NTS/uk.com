@@ -139,22 +139,26 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         submit() {
             var self = this;
-            if (nts.uk.ui.errors.hasError()) {
+            $(".ntsColorPicker_Container").trigger("validate");
+            var hasError = nts.uk.ui.errors.hasError() || nts.uk.text.isNullOrEmpty(self.nameTitleBar().trim());
+            if (hasError) {
                 return;
             }
             if (self.selectedTitleAtr() == 1) {
                 if (self.currentTitleMenu() !== '') {
                     var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), self.currentTitleMenu(), self.imageName(), self.imageSize());
                     windows.setShared("CCG013C_TitleBar", titleBar1);
+                    self.cancel_Dialog();
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_75" });
-                    return false;
+                    return;
                 }
             } else {
                 var titleBar0 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), '', self.imageName(), self.imageSize());
                 windows.setShared("CCG013C_TitleBar", titleBar0);
+                self.cancel_Dialog();
             }
-            self.cancel_Dialog();
+            
         }
     }
 

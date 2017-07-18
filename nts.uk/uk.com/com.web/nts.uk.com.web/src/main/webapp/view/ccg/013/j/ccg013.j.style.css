@@ -43,7 +43,7 @@ table.control {
 
 #liveview img {
 	width: 270px;
-	height: 150px;
+	height: 200px;
 	padding-top: 0.5em
 }
 
@@ -85,4 +85,3 @@ table.control {
 .control td {
 	padding-bottom: 0.5em
 }
-

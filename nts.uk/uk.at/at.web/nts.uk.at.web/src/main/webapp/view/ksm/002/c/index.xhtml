@@ -62,8 +62,10 @@
 				</table>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>	
+				<!-- C2_1: Button 決定 -->
+				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_40')}</button>
+				<!-- C2_2: Button キャンセル -->
+				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KSM002_41')}</button>	
 			</div>
 		</ui:define>
 	</ui:composition>

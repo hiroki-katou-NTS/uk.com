@@ -40,7 +40,7 @@ module nts.uk.at.view.kmk004.a {
                 // Flag.
                 self.isNewMode = ko.observable(true);
                 self.isLoading = ko.observable(true);
-                self.isCompanySelected = ko.observable(true);
+                self.isCompanySelected = ko.observable(false);
                 self.isEmploymentSelected = ko.observable(false);
                 self.isWorkplaceSelected = ko.observable(false);
                 self.isEmployeeSelected = ko.observable(false);
@@ -160,15 +160,17 @@ module nts.uk.at.view.kmk004.a {
                 // Clear error.
                 self.clearError();
 
-                // Update flag.
                 self.isLoading(true);
-                self.isCompanySelected(true);
-                self.isEmploymentSelected(false);
-                self.isEmployeeSelected(false);
-                self.isWorkplaceSelected(false);
-
                 // Load data.
-                self.loadCompanySetting().done(() => self.isLoading(false));
+                self.loadCompanySetting().done(() => {
+                    // Update flag.
+                    self.isCompanySelected(true);
+                    self.isEmploymentSelected(false);
+                    self.isEmployeeSelected(false);
+                    self.isWorkplaceSelected(false);
+                    self.isLoading(false);
+                    $('#companyYearPicker').focus();
+                });
             }
 
             /**
@@ -192,6 +194,7 @@ module nts.uk.at.view.kmk004.a {
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
                     self.isLoading(false);
+                    $('#employmentYearPicker').focus();
                     // Set already setting list.
                     self.setAlreadySettingEmploymentList();
                 });
@@ -218,6 +221,7 @@ module nts.uk.at.view.kmk004.a {
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
                     self.isLoading(false);
+                    $('#workplaceYearPicker').focus();
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
                 });

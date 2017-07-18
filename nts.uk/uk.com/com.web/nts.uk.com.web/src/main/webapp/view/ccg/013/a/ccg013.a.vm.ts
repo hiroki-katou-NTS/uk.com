@@ -200,7 +200,7 @@ module ccg013.a.viewmodel {
                 });
             }).fail(function(error) {
                 self.isCreated(false);
-                self.checkDisabled(true);
+                self.isDefaultMenu(true);
                 nts.uk.ui.dialog.alertError(error.message);
             }).always(function() {
                 nts.uk.ui.block.clear();
@@ -259,21 +259,24 @@ module ccg013.a.viewmodel {
             let self = this,
                 webMenuCode = self.currentCode();
             let index = 0;
-            service.deleteWebMenu(webMenuCode).done(function() {
-                self.getWebMenu().done(() => {
-                    if (self.items().length > 0) {
-                        index = self.items().length - 1;
-                        if (index < 0) {
-                            index = 0;
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.deleteWebMenu(webMenuCode).done(function() {
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
+                    self.getWebMenu().done(() => {
+                        if (self.items().length > 0) {
+                            index = self.items().length - 1;
+                            if (index < 0) {
+                                index = 0;
+                            }
                         }
-                    }
-                    self.currentCode(self.items()[index].webMenuCode);
+                        self.currentCode(self.items()[index].webMenuCode);
+                    });
+                }).fail(function(error) {
+                    self.isCreated(false);
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
-            }).fail(function(error) {
-                self.isCreated(false);
-                nts.uk.ui.dialog.alertError(error.message);
-            }).always(function() {
-                nts.uk.ui.block.clear();
             });
         }
 
@@ -293,7 +296,14 @@ module ccg013.a.viewmodel {
                 menuBars: []
             }));
             self.currentCode("");
+            self.clearError();
         }
+
+        clearError(): void {
+            $('#A_INP_003').ntsError('clear');
+            $('#A_INP_004').ntsError('clear');
+        }
+
 
 
         openBdialog(): any {

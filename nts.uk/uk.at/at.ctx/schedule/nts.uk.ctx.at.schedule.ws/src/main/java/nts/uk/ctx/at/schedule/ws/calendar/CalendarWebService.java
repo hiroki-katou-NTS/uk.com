@@ -8,6 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.calendar.AddCalendarClassCommand;
 import nts.uk.ctx.at.schedule.app.command.calendar.AddCalendarClassCommandHandler;
@@ -96,13 +99,20 @@ public class CalendarWebService extends WebService {
 	public List<CalendarCompanyDto> getAllCalendarCompany(){
 		return this.getAllCalendarCompany.getAllCalendarCompany();
 	}
+	
+	@POST
+	@Path("getcalendarcompanyByYearMonth")
+	public List<CalendarCompanyDto> getCalendarCompanyByYearMonth(KeySreach yearMonth){
+		return this.getAllCalendarCompany.getCalendarCompanyByYearMonth(yearMonth.key);
+	}
+	
 	/**
 	 * add calendar company
 	 * @param command
 	 */
 	@POST
 	@Path("addcalendarcompany")
-	public void addCalendarCompany(AddCalendarCompanyCommand command){
+	public void addCalendarCompany(List<AddCalendarCompanyCommand> command){
 		this.addCalendarCompany.handle(command);
 	}
 	/**
@@ -111,7 +121,7 @@ public class CalendarWebService extends WebService {
 	 */
 	@POST
 	@Path("updatecalendarcompany")
-	public void updateCalendarCompany(UpdateCalendarCompanyCommand command){
+	public void updateCalendarCompany(List<UpdateCalendarCompanyCommand> command){
 		this.updateCalendarCompany.handle(command);
 	}
 	
@@ -142,7 +152,7 @@ public class CalendarWebService extends WebService {
 	 */
 	@POST
 	@Path("addcalendarclass")
-	public void addCalendarClass(AddCalendarClassCommand command){
+	public void addCalendarClass(List<AddCalendarClassCommand> command){
 		this.addCalendarClass.handle(command);
 	}
 	/**
@@ -151,7 +161,7 @@ public class CalendarWebService extends WebService {
 	 */
 	@POST
 	@Path("updatecalendarclass")
-	public void updateCalendarClass(UpdateCalendarClassCommand command){
+	public void updateCalendarClass(List<UpdateCalendarClassCommand> command){
 		this.updateCalendarClass.handle(command);
 	}
 	
@@ -173,8 +183,8 @@ public class CalendarWebService extends WebService {
 	 */
 	@POST
 	@Path("getallcalendarworkplace")
-	public List<CalendarWorkplaceDto> getAllCalendarWorkplace(){
-		return this.getAllCalendarWorkplace.getAllCalendarWorkplace();
+	public List<CalendarWorkplaceDto> getAllCalendarWorkplace(KeySreach workPlaceID){
+		return this.getAllCalendarWorkplace.getAllCalendarWorkplace(workPlaceID.key);
 	}
 	/**
 	 * add calendar Workplace
@@ -182,7 +192,7 @@ public class CalendarWebService extends WebService {
 	 */
 	@POST
 	@Path("addcalendarworkplace")
-	public void addCalendarWorkplace(AddCalendarWorkplaceCommand command){
+	public void addCalendarWorkplace(List<AddCalendarWorkplaceCommand> command){
 		this.addCalendarWorkplace.handle(command);
 	}
 	/**
@@ -191,7 +201,7 @@ public class CalendarWebService extends WebService {
 	 */
 	@POST
 	@Path("updatecalendarworkplace")
-	public void updateCalendarWorkplace(UpdateCalendarWorkplaceCommand command){
+	public void updateCalendarWorkplace(List<UpdateCalendarWorkplaceCommand> command){
 		this.updateCalendarWorkplace.handle(command);
 	}
 	
@@ -204,4 +214,10 @@ public class CalendarWebService extends WebService {
 	public void deleteCalendarWorkplace(DeleteCalendarWorkplaceCommand command){
 		this.deleteCalendarWorkplace.handle(command);
 	}
+}
+
+
+@Data
+class KeySreach {
+	String key;
 }

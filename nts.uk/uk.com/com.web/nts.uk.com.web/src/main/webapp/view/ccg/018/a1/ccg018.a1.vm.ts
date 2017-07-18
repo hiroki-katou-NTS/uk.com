@@ -199,7 +199,6 @@ module ccg018.a1.viewmodel {
             }
             let dfd = $.Deferred();
             blockUI.invisible();
-
             let command = {
                 listTopPageJobSet: ko.mapping.toJS(self.items()),
                 ctgSet: self.categorySet()

@@ -3,7 +3,7 @@ module nts.uk.at.view.ksm004.a {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {
-            getAllCalendarCompany: "at/schedule/calendar/getallcalendarcompany",
+            getAllCalendarCompany: "at/schedule/calendar/getcalendarcompanyByYearMonth",
             insertCalendarCompany: "at/schedule/calendar/addcalendarcompany",
             updateCalendarCompany: "at/schedule/calendar/updatecalendarcompany",
             deleteCalendarCompany: "at/schedule/calendar/deletecalendarcompany",
@@ -19,8 +19,8 @@ module nts.uk.at.view.ksm004.a {
             deleteCalendarWorkPlace: "at/schedule/calendar/deletecalendarworkplace"
         }
         
-        export function getAllCalendarCompany(): JQueryPromise<any> {
-            return ajax(paths.getAllCalendarCompany);
+        export function getAllCalendarCompany(command): JQueryPromise<any> {
+            return ajax(paths.getAllCalendarCompany, {'key': command});
         }
         
         export function insertCalendarCompany(command): JQueryPromise<any> {
