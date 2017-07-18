@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.specificdayset.company;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

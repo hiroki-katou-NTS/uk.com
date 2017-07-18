@@ -12,7 +12,7 @@ public class CompanySpecificDateCommand {
 
 	private BigDecimal specificDate;
 
-	private BigDecimal specificDateItemNo;
+	private BigDecimal specificDateNo;
 	
 	
 //	public CompanySpecificDateItem toDomain() {
