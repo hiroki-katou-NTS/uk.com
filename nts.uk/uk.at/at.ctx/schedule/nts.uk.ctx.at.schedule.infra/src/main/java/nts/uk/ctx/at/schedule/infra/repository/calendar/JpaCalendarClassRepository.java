@@ -23,6 +23,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 			+ " and l.ksmmtCalendarClassPK.dateId = :dateId";
 	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.ksmmtCalendarClassPK.dateId >= :startYM and l.ksmmtCalendarClassPK.dateId <= :endYM";
 	private final String DELETE_BY_YEAR_MONTH = "delete from KsmmtCalendarClass l where l.ksmmtCalendarClassPK.companyId = :companyId"
+			+ " and l.ksmmtCalendarClassPK.classId = :classId "
 			+" and l.ksmmtCalendarClassPK.dateId >= :startYM and l.ksmmtCalendarClassPK.dateId <= :endYM";
 	/**
 	 * class
@@ -97,6 +98,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 	public List<CalendarClass> getCalendarClassByYearMonth(String companyId, String classId, String yearMonth) {
 		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KsmmtCalendarClass.class)
 				.setParameter("companyId", companyId)
+				.setParameter("classId", classId)
 				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
 				.setParameter("endYM", Integer.valueOf(yearMonth+"31"))
 				.getList(x -> toDomainCalendarClass(x));
@@ -105,6 +107,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 	public void deleteCalendarClassByYearMonth(String companyId, String classId, String yearMonth) {
 		this.queryProxy().query(DELETE_BY_YEAR_MONTH, KsmmtCalendarClass.class)
 				.setParameter("companyId", companyId)
+				.setParameter("classId", classId)
 				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
 				.setParameter("endYM", Integer.valueOf(yearMonth+"31"));
 	}

@@ -16,7 +16,7 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(true)
+                cellButtonDisplay: ko.observable(false)
             }
             kcpTreeGrid: ITreeGrid = {
                 treeType: 1,
@@ -46,31 +46,22 @@ module nts.uk.at.view.ksm004.a {
             constructor() {
                 var self = this;
                 self.yearMonthPicked.subscribe(value => {
-                    self.getAllCalendarCompany();        
+                    let i = $("#sidebar").ntsSideBar("getCurrent");
+                    switch(i) {
+                        case 1:
+                            self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key().toString());
+                            break;
+                        case 2:
+                            self.getCalendarClassById(self.currentCalendarClass().key().toString());
+                            break;
+                        default:
+                            self.getAllCalendarCompany();
+                            break;
+                    }                
                 });
                 self.kcpTreeGrid.selectedWorkplaceId = self.currentCalendarWorkPlace().key;
                 self.kcpGridlist.selectedCode =  self.currentCalendarClass().key;
                 self.calendarPanel.yearMonth(self.yearMonthPicked());
-                self.currentCalendarWorkPlace().key.subscribe(value => {
-                    let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
-                    let item = _.find(data, m => m.workplaceId == value);
-                    if (item) {
-                        self.currentCalendarWorkPlace().name(item.name);
-                    } else {
-                        self.currentCalendarWorkPlace().name('');
-                    }    
-                    self.getCalenderWorkPlaceByCode(value);
-                });
-                self.currentCalendarClass().key.subscribe(value => {
-                    let data: Array<any> = $('#classification-list-setting')['getDataList']();
-                    let item = _.find(data, m => m.code == value);
-                    if (item) {
-                        self.currentCalendarClass().name(item.name);
-                    } else {
-                        self.currentCalendarClass().name('');
-                    }    
-                    self.getCalendarClassById(value);
-                });
                 $("#calendar").ntsCalendar("init", {
                     cellClick: function(date) {
                         nts.uk.ui._viewModel.content.setWorkingDayAtr(date);
@@ -90,7 +81,26 @@ module nts.uk.at.view.ksm004.a {
                     $('#classification-list-setting').ntsListComponent(self.kcpGridlist).done(() => {
                         self.currentCalendarWorkPlace().key(_.first($('#tree-grid')['getDataList']()).workplaceId);
                         self.currentCalendarClass().key(_.first($('#classification-list-setting')['getDataList']()).code);
-                        self.start();
+                        self.currentCalendarWorkPlace().key.subscribe(value => {
+                            let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
+                            let item = _.find(data, m => m.workplaceId == value);
+                            if (item) {
+                                self.currentCalendarWorkPlace().name(item.name);
+                            } else {
+                                self.currentCalendarWorkPlace().name('');
+                            }    
+                            self.getCalenderWorkPlaceByCode(value);
+                        });
+                        self.currentCalendarClass().key.subscribe(value => {
+                            let data: Array<any> = $('#classification-list-setting')['getDataList']();
+                            let item = _.find(data, m => m.code == value);
+                            if (item) {
+                                self.currentCalendarClass().name(item.name);
+                            } else {
+                                self.currentCalendarClass().name('');
+                            }    
+                            self.getCalendarClassById(value);
+                        });
                     });
                 });
                 $("#sidebar").ntsSideBar("init", {
@@ -99,15 +109,18 @@ module nts.uk.at.view.ksm004.a {
                         switch(info.newIndex) {
                             case 1:
                                 self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
-                                self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key().toString());
+                                self.yearMonthPicked.valueHasMutated();
+                                self.currentWorkingDayAtr = null;
                                 break;
                             case 2:
                                 self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
-                                self.getCalendarClassById(self.currentCalendarClass().key().toString());
+                                self.yearMonthPicked.valueHasMutated();
+                                self.currentWorkingDayAtr = null;
                                 break;
                             default:
                                 self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
-                                self.getAllCalendarCompany();
+                                self.yearMonthPicked.valueHasMutated();
+                                self.currentWorkingDayAtr = null;
                         }
                     }
                 });
@@ -201,6 +214,7 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.getAllCalendarCompany(self.yearMonthPicked().toString())
                     .done((dataCompany) => {
+                        self.calendarPanel.optionDates.removeAll();
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataCompany)){
                             _.forEach(dataCompany,(companyItem)=>{
@@ -209,9 +223,9 @@ module nts.uk.at.view.ksm004.a {
                             self.calendarPanel.optionDates(a);
                             self.isUpdate(true);
                         } else {
-                            self.calendarPanel.optionDates([]);
                             self.isUpdate(false);     
                         }
+                        self.calendarPanel.optionDates.valueHasMutated();
                         nts.uk.ui.block.clear(); 
                         dfd.resolve();  
                     }).fail((res) => {
@@ -225,8 +239,9 @@ module nts.uk.at.view.ksm004.a {
                 nts.uk.ui.block.invisible();
                 var self = this; 
                 var dfd = $.Deferred();
-                aService.getCalendarWorkPlaceByCode(value)
+                aService.getCalendarWorkPlaceByCode(value,self.yearMonthPicked().toString())
                     .done((dataWorkPlace) => {
+                        self.calendarPanel.optionDates.removeAll();
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataWorkPlace)){
                             _.forEach(dataWorkPlace,(workPlaceItem)=>{
@@ -235,9 +250,9 @@ module nts.uk.at.view.ksm004.a {
                             self.calendarPanel.optionDates(a);
                             self.isUpdate(true); 
                         } else {
-                            self.calendarPanel.optionDates([]);
                             self.isUpdate(false);      
                         }
+                        self.calendarPanel.optionDates.valueHasMutated();
                         nts.uk.ui.block.clear();
                         dfd.resolve();  
                     }).fail((res) => {
@@ -251,8 +266,9 @@ module nts.uk.at.view.ksm004.a {
                 nts.uk.ui.block.invisible();
                 var self = this; 
                 var dfd = $.Deferred();
-                aService.getCalendarClassById(value)
+                aService.getCalendarClassById(value,self.yearMonthPicked().toString())
                     .done((dataClass) => {
+                        self.calendarPanel.optionDates.removeAll();
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataClass)){
                             _.forEach(dataClass,(companyItem)=>{
@@ -261,9 +277,9 @@ module nts.uk.at.view.ksm004.a {
                             self.calendarPanel.optionDates(a);
                             self.isUpdate(true); 
                         } else {
-                            self.calendarPanel.optionDates([]);
                             self.isUpdate(false);      
                         }
+                        self.calendarPanel.optionDates.valueHasMutated();
                         nts.uk.ui.block.clear();
                         dfd.resolve();  
                     }).fail((res) => {
@@ -452,7 +468,7 @@ module nts.uk.at.view.ksm004.a {
                 {
                     yearMonth: self.yearMonthPicked()
                 });
-                nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml");   
+                nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {});  
             }
             
             openDialogD() {
@@ -464,7 +480,7 @@ module nts.uk.at.view.ksm004.a {
                     workPlaceId: self.currentCalendarWorkPlace().key(),
                     classCD: self.currentCalendarClass().key()
                 });
-                nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml"); 
+                nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {}); 
             }
         }
         

@@ -8,19 +8,19 @@ module nts.uk.at.view.ksm004.a {
             updateCalendarCompany: "at/schedule/calendar/updatecalendarcompany",
             deleteCalendarCompany: "at/schedule/calendar/deletecalendarcompany",
             
-            getCalendarClassById: "at/schedule/calendar/getallcalendarclass/{0}",
+            getCalendarClassById: "at/schedule/calendar/getcalendarclassByYearMonth",
             insertCalendarClass: "at/schedule/calendar/addcalendarclass",
             updateCalendarClass: "at/schedule/calendar/updatecalendarclass",
             deleteCalendarClass: "at/schedule/calendar/deletecalendarclass",
             
-            getCalendarWorkPlaceByCode: "at/schedule/calendar/getallcalendarworkplace",
+            getCalendarWorkPlaceByCode: "at/schedule/calendar/getcalendarWorkPlaceByYearMonth",
             insertCalendarWorkPlace: "at/schedule/calendar/addcalendarworkplace",
             updateCalendarWorkPlace: "at/schedule/calendar/updatecalendarworkplace",
             deleteCalendarWorkPlace: "at/schedule/calendar/deletecalendarworkplace"
         }
         
-        export function getAllCalendarCompany(command): JQueryPromise<any> {
-            return ajax(paths.getAllCalendarCompany, {'key': command});
+        export function getAllCalendarCompany(yearMonth): JQueryPromise<any> {
+            return ajax(paths.getAllCalendarCompany, {'key': '', 'yearMonth': yearMonth});
         }
         
         export function insertCalendarCompany(command): JQueryPromise<any> {
@@ -36,8 +36,8 @@ module nts.uk.at.view.ksm004.a {
         }
         
         
-        export function getCalendarClassById(classId): JQueryPromise<any> {
-            return ajax(format(paths.getCalendarClassById, classId));
+        export function getCalendarClassById(classId, yearMonth): JQueryPromise<any> {
+            return ajax(paths.getCalendarClassById, {'key': classId, 'yearMonth': yearMonth});
         }
         
         export function insertCalendarClass(command): JQueryPromise<any> {
@@ -53,8 +53,8 @@ module nts.uk.at.view.ksm004.a {
         }
         
         
-        export function getCalendarWorkPlaceByCode(workPlaceCode): JQueryPromise<any> {
-            return ajax(paths.getCalendarWorkPlaceByCode, {'key': workPlaceCode});
+        export function getCalendarWorkPlaceByCode(workPlaceCode, yearMonth): JQueryPromise<any> {
+            return ajax(paths.getCalendarWorkPlaceByCode, {'key': workPlaceCode, 'yearMonth': yearMonth});
         }
         
         export function insertCalendarWorkPlace(command): JQueryPromise<any> {

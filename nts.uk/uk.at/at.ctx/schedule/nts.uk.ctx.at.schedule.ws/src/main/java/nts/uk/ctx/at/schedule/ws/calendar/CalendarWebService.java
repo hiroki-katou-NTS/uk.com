@@ -102,8 +102,8 @@ public class CalendarWebService extends WebService {
 	
 	@POST
 	@Path("getcalendarcompanyByYearMonth")
-	public List<CalendarCompanyDto> getCalendarCompanyByYearMonth(KeySreach yearMonth){
-		return this.getAllCalendarCompany.getCalendarCompanyByYearMonth(yearMonth.key);
+	public List<CalendarCompanyDto> getCalendarCompanyByYearMonth(KeySearch keySearch){
+		return this.getAllCalendarCompany.getCalendarCompanyByYearMonth(keySearch.yearMonth);
 	}
 	
 	/**
@@ -146,6 +146,12 @@ public class CalendarWebService extends WebService {
 	public List<CalendarClassDto> getAllCalendarClass(@PathParam("classId") String classId){
 		return this.getAllCalendarClass.getAllCalendarClass(classId);
 	}
+	
+	@POST
+	@Path("getcalendarclassByYearMonth")
+	public List<CalendarClassDto> getCalendarClassByYearMonth(KeySearch keySearch){
+		return this.getAllCalendarClass.getCalendarClassByYearMonth(keySearch.key, keySearch.yearMonth);
+	}
 	/**
 	 * add calendar Class
 	 * @param command
@@ -183,8 +189,14 @@ public class CalendarWebService extends WebService {
 	 */
 	@POST
 	@Path("getallcalendarworkplace")
-	public List<CalendarWorkplaceDto> getAllCalendarWorkplace(KeySreach workPlaceID){
+	public List<CalendarWorkplaceDto> getAllCalendarWorkplace(KeySearch workPlaceID){
 		return this.getAllCalendarWorkplace.getAllCalendarWorkplace(workPlaceID.key);
+	}
+	
+	@POST
+	@Path("getcalendarWorkPlaceByYearMonth")
+	public List<CalendarWorkplaceDto> getCalendarWorkPlaceByYearMonth(KeySearch keySearch){
+		return this.getAllCalendarWorkplace.getWorkplaceByYearMonth(keySearch.key, keySearch.yearMonth);
 	}
 	/**
 	 * add calendar Workplace
@@ -218,6 +230,7 @@ public class CalendarWebService extends WebService {
 
 
 @Data
-class KeySreach {
+class KeySearch {
 	String key;
+	String yearMonth;
 }

@@ -91,13 +91,15 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	@Override
 	public List<CalendarWorkplace> getCalendarWorkPlaceByYearMonth(String workPlaceId, String yearMonth) {
 		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KsmmtCalendarWorkplace.class)
+				.setParameter("workPlaceId", workPlaceId )
 				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
 				.setParameter("endYM", Integer.valueOf(yearMonth+"31"))
 				.getList(x -> toDomainCalendarWorkplace(x));
 	}
 	@Override
 	public void deleteCalendarWorkPlaceByYearMonth(String workPlaceId, String yearMonth) {
-		this.queryProxy().query(SELECT_BY_YEAR_MONTH, KsmmtCalendarWorkplace.class)
+		this.queryProxy().query(DELETE_BY_YEAR_MONTH, KsmmtCalendarWorkplace.class)
+				.setParameter("workPlaceId", workPlaceId )
 				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
 				.setParameter("endYM", Integer.valueOf(yearMonth+"31"));
 		

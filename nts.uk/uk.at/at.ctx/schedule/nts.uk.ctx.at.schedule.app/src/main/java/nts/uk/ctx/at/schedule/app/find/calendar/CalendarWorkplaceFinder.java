@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.calendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.calendar.CalendarWorkPlaceRepository;
 
 @Stateless
@@ -20,6 +19,13 @@ public class CalendarWorkplaceFinder {
 				.map(c->CalendarWorkplaceDto.fromDomain(c))
 				.collect(Collectors.toList());
 		return list;
+	}
+	
+	public List<CalendarWorkplaceDto> getWorkplaceByYearMonth(String workPlaceId, String yearMonth){
+		return this.calendarWorkPlaceRepository.getCalendarWorkPlaceByYearMonth(workPlaceId, yearMonth)
+				.stream()
+				.map(c->CalendarWorkplaceDto.fromDomain(c))
+				.collect(Collectors.toList());
 	}
 
 }

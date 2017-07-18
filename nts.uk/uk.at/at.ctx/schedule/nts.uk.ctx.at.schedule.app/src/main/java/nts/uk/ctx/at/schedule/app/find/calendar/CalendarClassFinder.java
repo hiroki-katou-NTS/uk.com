@@ -24,5 +24,13 @@ public class CalendarClassFinder {
 				.collect(Collectors.toList());
 		return list;
 	}
+	
+	public List<CalendarClassDto> getCalendarClassByYearMonth(String classId, String yearMonth){
+		String companyId = AppContexts.user().companyId();
+		return this.calendarClassRepository.getCalendarClassByYearMonth(companyId, classId, yearMonth)
+				.stream()
+				.map(c->CalendarClassDto.fromDomain(c))
+				.collect(Collectors.toList());
+	}
 
 }
