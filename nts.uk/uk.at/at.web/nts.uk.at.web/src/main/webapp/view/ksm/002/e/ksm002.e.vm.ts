@@ -13,6 +13,9 @@ module ksm002.e{
                 self.size = 780;
                 self.startPage();
             }
+            /**
+             * start page: getShared param and load data
+             */
             startPage(){
                 nts.uk.ui.block.invisible();
                 var self = this;
@@ -37,6 +40,7 @@ module ksm002.e{
                             });
                         });
                     }
+                    //set size when data < 3
                     if(param.selectable.length < 3){
                         nts.uk.ui.windows.getSelf().setWidth(550); 
                         self.size = 450;   
@@ -57,12 +61,12 @@ module ksm002.e{
                         selectedCodes.push(item.timeItemId());
                     }
                 });
-                    setShared('KSM002E_VALUES', {date: self.date,selecteds: selectedCodes});
-                    nts.uk.ui.windows.close(); 
+                setShared('KSM002E_VALUES', {date: self.date,selecteds: selectedCodes});
+                nts.uk.ui.windows.close(); 
             }
             
             /**
-             * close dialog and do nothing
+             * close dialog and setShared
              */
             closeDialog(): void {
                 var self = this;
