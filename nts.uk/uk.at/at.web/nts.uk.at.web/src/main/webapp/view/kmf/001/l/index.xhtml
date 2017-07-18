@@ -57,23 +57,8 @@
 							</tr>
 							<tr>
 								<td><label>#{i18n.getText('KMF001_109')}</label></td>
-								<td><div tabindex="5">
-										<input id="nursing-month"
-											data-bind="ntsNumberEditor: {
-									value: nursingMonth,
-									constraint: '',
-									required: enableNursing,
-									option: $parent.numberEditorOption,
-									enable: enableNursing}" />
-										<span>月</span> <input id="nursing-day"
-											style="margin-left: 10px;"
-											data-bind="ntsNumberEditor: {
-									value: nursingDay,
-									constraint: '',
-									required: enableNursing,
-									option: $parent.numberEditorOption,
-									enable: enableNursing}" />
-										<span>日</span>
+								<td><div tabindex="5"
+										data-bind="ntsMonthDays: {value: monthDay, enable: enableNursing}" >
 									</div></td>
 								<td><div></div></td>
 							</tr>
@@ -90,7 +75,7 @@
 											constraint: 'NumberDayNursing',
 											name: '#[KMF001_111]',
 											required: enableNursing,
-											option: $parent.textEditorOption,
+											option: $parent.numberEditorOption,
 											enable: enableNursing}" />
 									</div>
 								</td>
@@ -109,7 +94,7 @@
 											constraint: 'NumberDayNursing',
 											name: '#[KMF001_112]',
 											required: enableNursing,
-											option: $parent.textEditorOption,
+											option: $parent.numberEditorOption,
 											enable: enableNursing}" />
 									</div>
 								</td>
@@ -166,23 +151,7 @@
 							</tr>
 							<tr>
 								<td><label>#{i18n.getText('KMF001_117')}</label></td>
-								<td><div tabindex="10">
-										<input id="child-nursing-month"
-											data-bind="ntsNumberEditor: {
-									value: nursingMonth,
-									constraint: '',
-									required: enableNursing,
-									option: $parent.numberEditorOption,
-									enable: enableNursing}" />
-										<span>月</span> <input id="child-nursing-day"
-											style="margin-left: 10px;"
-											data-bind="ntsNumberEditor: {
-									value: nursingDay,
-									constraint: '',
-									required: enableNursing,
-									option: $parent.numberEditorOption,
-									enable: enableNursing}" />
-										<span>日</span>
+								<td><div tabindex="10" data-bind="ntsMonthDays: {value: monthDay, enable: enableNursing}">
 									</div></td>
 								<td><div></div></td>
 							</tr>
@@ -199,7 +168,7 @@
 											name: '#[KMF001_119]',
 											constraint: 'NumberDayNursing',
 											required: enableNursing,
-											option: $parent.textEditorOption,
+											option: $parent.numberEditorOption,
 											enable: enableNursing}" />
 									</div>
 								</td>
@@ -218,7 +187,7 @@
 											constraint: 'NumberDayNursing',
 											name: '#[KMF001_120]',
 											required: enableNursing,
-											option: $parent.textEditorOption,
+											option: $parent.numberEditorOption,
 											enable: enableNursing}" />
 									</div>
 								</td>
