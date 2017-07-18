@@ -169,6 +169,7 @@ module nts.uk.at.view.kmk004.a {
                     self.isEmployeeSelected(false);
                     self.isWorkplaceSelected(false);
                     self.isLoading(false);
+                    $('#companyYearPicker').focus();
                 });
             }
 
@@ -193,6 +194,7 @@ module nts.uk.at.view.kmk004.a {
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
                     self.isLoading(false);
+                    $('#employmentYearPicker').focus();
                     // Set already setting list.
                     self.setAlreadySettingEmploymentList();
                 });
@@ -219,6 +221,7 @@ module nts.uk.at.view.kmk004.a {
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
                     self.isLoading(false);
+                    $('#workplaceYearPicker').focus();
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
                 });
