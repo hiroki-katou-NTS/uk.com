@@ -265,86 +265,79 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 /* line 21, ../sass/components/_commons.scss */
-.hyperlink {
-  color: #0066CC;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-/* line 22, ../sass/components/_commons.scss */
 .control-group.valign-center > * {
   vertical-align: middle;
 }
 
-/* line 23, ../sass/components/_commons.scss */
+/* line 22, ../sass/components/_commons.scss */
 .control-group.valign-top > * {
   vertical-align: top;
 }
 
-/* line 24, ../sass/components/_commons.scss */
+/* line 23, ../sass/components/_commons.scss */
 .control-group.valign-bottom > * {
   vertical-align: bottom;
 }
 
-/* line 25, ../sass/components/_commons.scss */
+/* line 24, ../sass/components/_commons.scss */
 .halign-left {
   text-align: left;
 }
 
-/* line 26, ../sass/components/_commons.scss */
+/* line 25, ../sass/components/_commons.scss */
 .halign-right {
   text-align: right;
 }
 
-/* line 27, ../sass/components/_commons.scss */
+/* line 26, ../sass/components/_commons.scss */
 .halign-center {
   text-align: center;
 }
 
-/* line 28, ../sass/components/_commons.scss */
+/* line 27, ../sass/components/_commons.scss */
 .container {
   width: 1200px;
 }
-/* line 30, ../sass/components/_commons.scss */
+/* line 29, ../sass/components/_commons.scss */
 .container:before, .container:after {
   content: " ";
   display: table;
 }
-/* line 31, ../sass/components/_commons.scss */
+/* line 30, ../sass/components/_commons.scss */
 .container:after {
   clear: both;
 }
 
-/* line 33, ../sass/components/_commons.scss */
+/* line 32, ../sass/components/_commons.scss */
 .flex {
   display: flex;
 }
-/* line 35, ../sass/components/_commons.scss */
+/* line 34, ../sass/components/_commons.scss */
 .flex .item {
   flex: 1;
 }
-/* line 36, ../sass/components/_commons.scss */
+/* line 35, ../sass/components/_commons.scss */
 .flex.valign-center {
   align-items: center;
 }
 
-/* line 38, ../sass/components/_commons.scss */
+/* line 37, ../sass/components/_commons.scss */
 .table {
   display: table;
 }
-/* line 40, ../sass/components/_commons.scss */
+/* line 39, ../sass/components/_commons.scss */
 .table .cell {
   display: table-cell;
 }
-/* line 42, ../sass/components/_commons.scss */
+/* line 41, ../sass/components/_commons.scss */
 .table .cell.valign-center {
   vertical-align: middle;
 }
-/* line 43, ../sass/components/_commons.scss */
+/* line 42, ../sass/components/_commons.scss */
 .table .cell.valign-bottom {
   vertical-align: bottom;
 }
-/* line 44, ../sass/components/_commons.scss */
+/* line 43, ../sass/components/_commons.scss */
 .table .cell.valign-top {
   vertical-align: top;
 }
@@ -352,12 +345,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /*****************************
   ntsControl
 *****************************/
-/* line 51, ../sass/components/_commons.scss */
+/* line 50, ../sass/components/_commons.scss */
 .control-group {
   margin-bottom: 10px;
 }
 
-/* line 52, ../sass/components/_commons.scss */
+/* line 51, ../sass/components/_commons.scss */
 .ntsControl {
   display: inline-block;
 }
@@ -365,7 +358,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /*****************************
   NtsFormLabel
 *****************************/
-/* line 57, ../sass/components/_commons.scss */
+/* line 56, ../sass/components/_commons.scss */
 div.form-label {
   display: inline-block;
   box-sizing: border-box;
@@ -375,34 +368,34 @@ div.form-label {
   border-width: 0 0 0 5px;
   padding: 0 10px 0 8px;
 }
-/* line 79, ../sass/components/_commons.scss */
+/* line 78, ../sass/components/_commons.scss */
 div.form-label.broken label {
   line-height: inherit;
 }
-/* line 82, ../sass/components/_commons.scss */
+/* line 81, ../sass/components/_commons.scss */
 div.form-label.inline {
   height: 23px;
   line-height: 23px;
 }
-/* line 85, ../sass/components/_commons.scss */
+/* line 84, ../sass/components/_commons.scss */
 div.form-label.inline label {
   line-height: 23px;
 }
-/* line 88, ../sass/components/_commons.scss */
+/* line 87, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 92, ../sass/components/_commons.scss */
+/* line 91, ../sass/components/_commons.scss */
 div.form-label.disabled {
   border-color: #AAA;
 }
-/* line 96, ../sass/components/_commons.scss */
+/* line 95, ../sass/components/_commons.scss */
 div.form-label > label {
   max-height: 100%;
   font-size: 14px;
   line-height: 37px;
 }
-/* line 102, ../sass/components/_commons.scss */
+/* line 101, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -410,38 +403,24 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 109, ../sass/components/_commons.scss */
+/* line 108, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 113, ../sass/components/_commons.scss */
+/* line 112, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 118, ../sass/components/_commons.scss */
+/* line 117, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
 }
 
 /*****************************
-  NtsLinkButton
-*****************************/
-/* line 128, ../sass/components/_commons.scss */
-.link-button {
-  display: inline-block;
-  padding: 3px 12px;
-  background-color: #E0F59E;
-  color: #0D86D1;
-  text-decoration: underline;
-  cursor: pointer;
-  user-select: none;
-}
-
-/*****************************
   NtsPopupPanel
 *****************************/
-/* line 142, ../sass/components/_commons.scss */
+/* line 126, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -455,12 +434,12 @@ div.popup-panel {
 /*****************************
   NtsEditor
 *****************************/
-/* line 154, ../sass/components/_commons.scss */
+/* line 138, ../sass/components/_commons.scss */
 .ntsControl.error .nts-editor, .ntsControl.error .ntsDatepicker, .ntsControl.error .sp-replacer {
   border-color: #ff6666;
 }
 
-/* line 159, ../sass/components/_commons.scss */
+/* line 143, ../sass/components/_commons.scss */
 .ui-igcombo.error {
   border-color: #ff6666;
 }
@@ -468,7 +447,7 @@ div.popup-panel {
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 166, ../sass/components/_commons.scss */
+/* line 150, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
   display: none;
@@ -484,13 +463,13 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 179, ../sass/components/_commons.scss */
+/* line 163, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 185, ../sass/components/_commons.scss */
+/* line 169, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
   display: inline-block;
 }
@@ -498,32 +477,32 @@ div.popup-panel {
 /*****************************
   Label
 *****************************/
-/* line 194, ../sass/components/_commons.scss */
+/* line 178, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 198, ../sass/components/_commons.scss */
+/* line 182, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 205, ../sass/components/_commons.scss */
+/* line 189, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 211, ../sass/components/_commons.scss */
+/* line 195, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 217, ../sass/components/_commons.scss */
+/* line 201, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -3434,6 +3413,66 @@ button.nts-switch-button[disabled]:hover {
   margin-left: 6px;
 }
 
+/* line 1, ../sass/components/_linkbutton.scss */
+.hyperlink {
+  color: #0066CC;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* line 7, ../sass/components/_linkbutton.scss */
+.link-button {
+  position: relative;
+  display: inline-block;
+  padding: 0px 12px;
+  line-height: 30px;
+  background-color: #E0F59E;
+  color: #0D86D1;
+  text-decoration: underline;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+/* line 21, ../sass/components/_linkbutton.scss */
+.link-button.goout {
+  padding-left: 40px;
+}
+/* line 24, ../sass/components/_linkbutton.scss */
+.link-button.goout:before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  display: block;
+  background-image: url("images/icons/go-out.png");
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  height: 20px;
+  width: 26px;
+}
+/* line 38, ../sass/components/_linkbutton.scss */
+.link-button.goback {
+  padding-left: 25px;
+  margin-left: 15px;
+  text-decoration: none;
+  color: #333;
+}
+/* line 44, ../sass/components/_linkbutton.scss */
+.link-button.goback:before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 0px;
+  display: block;
+  background-image: url("images/icons/go-back.png");
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  height: 30px;
+  width: 30px;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
@@ -3590,12 +3629,12 @@ button.nts-switch-button[disabled]:hover {
   top: 10px;
 }
 
-/* line 43, ../sass/base.scss */
+/* line 44, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 47, ../sass/base.scss */
+/* line 48, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
