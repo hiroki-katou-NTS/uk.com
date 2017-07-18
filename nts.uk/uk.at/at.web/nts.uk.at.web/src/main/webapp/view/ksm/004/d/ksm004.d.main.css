@@ -1,5 +1,5 @@
 #table-top {
-	margin-top: 33px;
+	margin-top: 13px;
 	margin-left: 76px;
 }
 
@@ -26,4 +26,26 @@
 }
 #cancelBtn{
 	width: 90px;
+}
+
+.nts-first-radio>.ntsRadioBox:first-child {
+	background-color: #CCFFFF;
+	
+}
+.nts-second-radio>.ntsRadioBox:nth-child(2) {
+	background-color: #FDEADA;
+	
+}
+.nts-thirt-radio>.ntsRadioBox:nth-child(3) {
+	background-color: #DAEEF3;
+	
+}
+.ntsRadioBox{
+	margin: 3px;
+    padding: 5px;
+}
+.ntsCheckBox-label-bottom{
+	background-color: #F7EFD4;
+    padding: 3px;
+    margin: 10px;
 }
