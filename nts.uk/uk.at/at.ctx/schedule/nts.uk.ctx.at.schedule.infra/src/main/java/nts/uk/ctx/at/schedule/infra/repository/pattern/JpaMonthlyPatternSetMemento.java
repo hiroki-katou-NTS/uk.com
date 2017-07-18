@@ -2,28 +2,34 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.find.shift.pattern.dto;
+package nts.uk.ctx.at.schedule.infra.repository.pattern;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternName;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSetMemento;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPattern;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class MonthlyPatternDto.
+ * The Class JpaMonthlyPatternSetMemento.
  */
-
-@Getter
-@Setter
-public class MonthlyPatternDto implements MonthlyPatternSetMemento{
+public class JpaMonthlyPatternSetMemento implements MonthlyPatternSetMemento {
 	
-	/** The code. */
-	private String code;
+	/** The mothly pattern. */
+	private KmpstMonthPattern mothlyPattern;
 	
-	/** The name. */
-	private String name;
+	/**
+	 * Instantiates a new jpa monthly pattern set memento.
+	 *
+	 * @param mothlyPattern the mothly pattern
+	 */
+	public JpaMonthlyPatternSetMemento(KmpstMonthPattern mothlyPattern) {
+		if(mothlyPattern.getKmpstMonthPatternPK() == null){
+			mothlyPattern.setKmpstMonthPatternPK(new KmpstMonthPatternPK());
+		}
+		this.mothlyPattern = mothlyPattern;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -33,8 +39,7 @@ public class MonthlyPatternDto implements MonthlyPatternSetMemento{
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		// No thing code
-
+		this.mothlyPattern.getKmpstMonthPatternPK().setCid(companyId.v());
 	}
 
 	/*
@@ -46,7 +51,7 @@ public class MonthlyPatternDto implements MonthlyPatternSetMemento{
 	 */
 	@Override
 	public void setMonthlyPatternCode(MonthlyPatternCode monthlyPatternCode) {
-		this.code = monthlyPatternCode.v();
+		this.mothlyPattern.getKmpstMonthPatternPK().setPatternCd(monthlyPatternCode.v());
 	}
 
 	/*
@@ -58,7 +63,7 @@ public class MonthlyPatternDto implements MonthlyPatternSetMemento{
 	 */
 	@Override
 	public void setMonthlyPatternName(MonthlyPatternName monthlyPatternName) {
-		this.name = monthlyPatternName.v();
+		this.mothlyPattern.setPatternName(monthlyPatternName.v());
 	}
 
 }

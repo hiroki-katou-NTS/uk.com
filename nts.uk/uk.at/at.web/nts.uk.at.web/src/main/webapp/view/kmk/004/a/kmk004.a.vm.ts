@@ -207,6 +207,8 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectWorkplace(): void {
                 let self = this;
+                // Reset base date
+                self.baseDate(new Date());
                 // Clear error.
                 self.clearError();
 
@@ -599,7 +601,7 @@ module nts.uk.at.view.kmk004.a {
                         self.workplaceWTSetting.year(new Date().getFullYear());
                     }
                     // Clear error inputs
-                    $('.nts-editor').ntsError('clear');
+                    $('.nts-input').ntsError('clear');
                 }
             }
 
