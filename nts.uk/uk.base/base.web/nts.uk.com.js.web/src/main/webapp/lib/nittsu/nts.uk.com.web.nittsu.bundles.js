@@ -12573,8 +12573,8 @@ var nts;
                     };
                     function init(control, option) {
                         $("html").addClass("sidebar-html");
+                        control.find("div[role=tabpanel]").addClass("disappear");
                         var settings = $.extend({}, defaultOption, option);
-                        control.find("div[role=tabpanel]").hide();
                         control.off("click", "#sidebar-area .navigator a");
                         control.on("click", "#sidebar-area .navigator a", function (event) {
                             event.preventDefault();
@@ -12598,8 +12598,8 @@ var nts;
                     function active(control, index) {
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
-                        control.find("div[role=tabpanel]").hide();
-                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
+                        control.find("div[role=tabpanel]").addClass("disappear");
+                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).removeClass("disappear");
                         return control;
                     }
                     function enable(control, index) {
@@ -12623,9 +12623,7 @@ var nts;
                         return control;
                     }
                     function getCurrent(control) {
-                        var index = 0;
-                        index = control.find("#sidebar-area .navigator a.active").closest("li").index();
-                        return index;
+                        return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
             })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
