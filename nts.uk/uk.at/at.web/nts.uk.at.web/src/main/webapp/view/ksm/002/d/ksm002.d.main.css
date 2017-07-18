@@ -1,0 +1,17 @@
+.bg-yellow{
+	width: 500px;
+	height: 70px;
+	margin-left: 25px;
+}
+
+.ntsRadioBox {
+	margin-top: 10px;
+	margin-left: 25px;
+    float: left;
+}
+
+.itemName{
+	width: 150px;
+	float: left;
+	margin-left: 20px;
+}

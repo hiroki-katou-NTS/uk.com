@@ -134,14 +134,13 @@ module nts.uk.at.view.ksm004.a {
             }
             
             submitCalendar(value){
-                //nts.uk.ui.block.invisible();
                 var self = this;
                 let dayOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").daysInMonth(); 
                 if(self.calendarPanel.optionDates().length<dayOfMonth){
                     nts.uk.ui.dialog.confirm({ messageId: 'Msg_140' }).ifYes(function(){ 
                         self.processData(value, true);    
                     }).ifNo(function(){
-                        nts.uk.ui.block.clear();        
+                        // do nothing    
                     });
                 } else {
                     self.processData(value, false);
@@ -178,7 +177,6 @@ module nts.uk.at.view.ksm004.a {
             }
             
             removeCalendar(value){
-                nts.uk.ui.block.invisible();
                 var self = this;
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function(){ 
                     switch(value) {
@@ -193,11 +191,12 @@ module nts.uk.at.view.ksm004.a {
                             break;
                     }  
                 }).ifNo(function(){
-                    nts.uk.ui.block.clear();        
+                    // do nothing           
                 });
             }
             
             getAllCalendarCompany(): JQueryPromise<any>{
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 var dfd = $.Deferred();
                 aService.getAllCalendarCompany(self.yearMonthPicked().toString())
@@ -213,143 +212,181 @@ module nts.uk.at.view.ksm004.a {
                             self.calendarPanel.optionDates([]);
                             self.isUpdate(false);     
                         }
+                        nts.uk.ui.block.clear(); 
                         dfd.resolve();  
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                        dfd.reject();
                     });
                 return dfd.promise();    
             }
             
             getCalenderWorkPlaceByCode(value): JQueryPromise<any>{
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 var dfd = $.Deferred();
                 aService.getCalendarWorkPlaceByCode(value)
                     .done((dataWorkPlace) => {
                         let a = [];
-                        _.forEach(dataWorkPlace,(workPlaceItem)=>{
-                            a.push(new CalendarItem(workPlaceItem.dateId,workPlaceItem.workingDayAtr));
-                        });   
-                        self.calendarPanel.optionDates(a);
+                        if(!nts.uk.util.isNullOrEmpty(dataWorkPlace)){
+                            _.forEach(dataWorkPlace,(workPlaceItem)=>{
+                                a.push(new CalendarItem(workPlaceItem.dateId,workPlaceItem.workingDayAtr));
+                            });   
+                            self.calendarPanel.optionDates(a);
+                            self.isUpdate(true); 
+                        } else {
+                            self.calendarPanel.optionDates([]);
+                            self.isUpdate(false);      
+                        }
+                        nts.uk.ui.block.clear();
                         dfd.resolve();  
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                        dfd.reject();
                     });
                 return dfd.promise();  
             }
             
             getCalendarClassById(value): JQueryPromise<any>{
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 var dfd = $.Deferred();
                 aService.getCalendarClassById(value)
                     .done((dataClass) => {
                         let a = [];
-                        _.forEach(dataClass,(companyItem)=>{
-                            a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
-                        });   
-                        self.calendarPanel.optionDates(a);
+                        if(!nts.uk.util.isNullOrEmpty(dataClass)){
+                            _.forEach(dataClass,(companyItem)=>{
+                                a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
+                            });  
+                            self.calendarPanel.optionDates(a);
+                            self.isUpdate(true); 
+                        } else {
+                            self.calendarPanel.optionDates([]);
+                            self.isUpdate(false);      
+                        }
+                        nts.uk.ui.block.clear();
                         dfd.resolve();  
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                        dfd.reject();
                     });
                 return dfd.promise();
             }
             
             insertCalendarCompany(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.insertCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getAllCalendarCompany();      
+                        self.getAllCalendarCompany();    
+                        nts.uk.ui.block.clear();  
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
             insertCalendarWorkPlace(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.insertCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key());      
+                        self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key());  
+                        nts.uk.ui.block.clear();    
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
             insertCalendarClass(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.insertCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getCalendarClassById(self.currentCalendarClass().key());    
+                        self.getCalendarClassById(self.currentCalendarClass().key());   
+                        nts.uk.ui.block.clear(); 
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
             updateCalendarCompany(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.updateCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.getAllCalendarCompany();      
+                        nts.uk.ui.block.clear();
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
             updateCalendarWorkPlace(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.updateCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key());      
+                        self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key());   
+                        nts.uk.ui.block.clear();   
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
             updateCalendarClass(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.updateCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getCalendarClassById(self.currentCalendarClass().key());      
+                        self.getCalendarClassById(self.currentCalendarClass().key());    
+                        nts.uk.ui.block.clear();  
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
             deleteCalendarCompany(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.deleteCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         self.getAllCalendarCompany();      
+                        nts.uk.ui.block.clear();
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
             deleteCalendarWorkPlace(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.deleteCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key());      
+                        nts.uk.ui.block.clear();
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
             deleteCalendarClass(value){
+                nts.uk.ui.block.invisible();
                 var self = this; 
                 aService.deleteCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         self.getCalendarClassById(self.currentCalendarClass().key());      
+                        nts.uk.ui.block.clear();
                     }).fail((res) => {
-                    
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             
@@ -388,7 +425,6 @@ module nts.uk.at.view.ksm004.a {
                     }    
                 }
                 return a;
-                    
             }
             
             convertEnumNametoNumber(name){
@@ -412,18 +448,23 @@ module nts.uk.at.view.ksm004.a {
             
             openDialogC() {
                 var self = this;
-                nts.uk.ui.windows.setShared('date', '2000');
-                nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" });   
+                nts.uk.ui.windows.setShared('KSM004_C_PARAM', 
+                {
+                    yearMonth: self.yearMonthPicked()
+                });
+                nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml");   
             }
             
             openDialogD() {
                 var self = this;
-                nts.uk.ui.windows.setShared('classification', 0);
-                nts.uk.ui.windows.setShared('workPlaceId', self.currentCalendarWorkPlace().key());
-                nts.uk.ui.windows.setShared('classCD',  self.currentCalendarClass().key());
-                nts.uk.ui.windows.setShared('startTime', '200007');
-                nts.uk.ui.windows.setShared('endTime', '200008');
-                nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }); 
+                nts.uk.ui.windows.setShared('KSM004_D_PARAM', 
+                {
+                    classification: $("#sidebar").ntsSideBar("getCurrent"),
+                    yearMonth: self.yearMonthPicked(),
+                    workPlaceId: self.currentCalendarWorkPlace().key(),
+                    classCD: self.currentCalendarClass().key()
+                });
+                nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml"); 
             }
         }
         

@@ -191,7 +191,9 @@ module ccg018.b.viewmodel {
                     }
                     self.isSelectedFirst(true);
                     dfd.resolve();
-                }).fail();
+                }).fail(function(){
+                        dfd.reject();    
+                    });
             return dfd.promise();
         }
 
@@ -200,7 +202,7 @@ module ccg018.b.viewmodel {
          */
         saveData(): JQueryPromise<any> {
             let self = this;
-            if (self.items().length == 0) {
+            if (!self.currentCode()) {
                 return;
             }
             let dfd = $.Deferred();
@@ -250,7 +252,9 @@ module ccg018.b.viewmodel {
                             self.selectedItemAsTopPage('');
                             nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         });
-                    }).fail();
+                    }).fail(function(){
+                        dfd.reject();    
+                    });
                 }).ifNo(() => { });
             }
             dfd.resolve();

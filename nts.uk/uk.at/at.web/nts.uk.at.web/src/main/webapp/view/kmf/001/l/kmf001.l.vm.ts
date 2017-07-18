@@ -241,7 +241,7 @@ module nts.uk.pr.view.kmf001.l {
                             return;
                         }
                         self.workTypeCodes(data.map(item => item.code));
-                        self.typeCode(data.map(item => item.code + '.' + item.name).join(", "));
+                        self.typeCode(data.map(item => item.code + '.' + item.name).join("、"));
                         if (self.parent.nursingSetting().workTypeCodes()
                                 && self.parent.nursingSetting().workTypeCodes().length > 0) {
                             $('#work-type-code-nursing').ntsError('clear');
