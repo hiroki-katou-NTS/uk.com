@@ -41,14 +41,14 @@ module cmm044.g.viewmodel {
 
         constructor() {
             let self = this;
-            
+
             self.empItems = ko.observableArray([]);
             self.items = ko.observableArray([]);
             self.newItems = ko.observableArray([]);
-            
+
             self.infoList = nts.uk.ui.windows.getShared("CCG013G_WEB_MENU");
             self.empSelectedItem = ko.observable();
-            self.empSelectedItem.subscribe(function(value: any){
+            self.empSelectedItem.subscribe(function(value: any) {
                 self.currentCodeList.removeAll();
                 self.items.removeAll();
                 _.forEach(self.infoList, function(item: ItemModel) {
@@ -56,22 +56,22 @@ module cmm044.g.viewmodel {
                     item.primaryKey = item.webMenuCode + item.order;
                     self.items.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));
                 })
-                
+
                 if (value && value.personId) {
                     service.findPerson(value.personId).done(function(data) {
                         if (data && data.length > 0) {
                             _.forEach(data, function(item) {
-                                var webPerson = _.find(self.items(), function(currentItem: ItemModel){
+                                var webPerson = _.find(self.items(), function(currentItem: ItemModel) {
                                     return currentItem.webMenuCode == item.webMenuCode;
                                 });
-                                
+
                                 self.currentCodeList.push(webPerson);
                             })
-                        } 
-                    });    
+                        }
+                    });
                 }
             });
-            
+
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG013_76"), prop: 'webMenuCode', key: 'webMenuCode', width: 55 },
                 { headerText: nts.uk.resource.getText("CCG013_77"), prop: 'webMenuName', key: 'webMenuName', width: 167 },
@@ -90,11 +90,10 @@ module cmm044.g.viewmodel {
             self.selectedEmployee = ko.observableArray([]);
 
             self.showinfoSelectedEmployee = ko.observable(false);
-            self.baseDate = ko.observable(new Date());            
+            self.baseDate = ko.observable(new Date());
         }
         start() {
             let self = this;
-
             self.initCCG001();
         }
 
@@ -102,24 +101,24 @@ module cmm044.g.viewmodel {
             var self = this;
             var items = []
             if (!nts.uk.util.isNullOrUndefined(self.empSelectedItem())) {
-            
                 _.each(self.currentCodeList(), function(x) {
-                    items.push({
-                        employeeId: self.empSelectedItem().personId,
-                        webMenuCode: x.webMenuCode
-                    });
-                })   
-                if(self.currentCodeList().length <= 10){
-                service.addPerson(items).done(function(res) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    items.push(x.webMenuCode);
                 })
-                    }else{nts.uk.ui.dialog.info({ messageId: "Msg_73" });}
-                    
+                if (self.currentCodeList().length <= 10) {
+                    var dataTranfer = {
+                        employeeId: self.empSelectedItem().personId,
+                        webMenuCodes: items,    
+                    }
+                    service.addPerson(dataTranfer).done(function(res) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        $(".nts-editor").find(".nts-input").focus();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    })
+                } else { nts.uk.ui.dialog.info({ messageId: "Msg_73" }); }
             }
+            
             return;
-
         }
 
         initCCG001() {

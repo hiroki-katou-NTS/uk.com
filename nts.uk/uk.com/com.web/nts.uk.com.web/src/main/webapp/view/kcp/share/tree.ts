@@ -303,7 +303,7 @@ module kcp.share.tree {
         private calHeightTree(data: TreeComponentOption) {
             let height = 24;
             this.treeStyle = {
-                height: height * (data.maxRows + 1) + 17
+                height: height * (data.maxRows + 1) + 22
             };
         }
         
@@ -343,13 +343,13 @@ module kcp.share.tree {
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/icon/icon84.png').serialize();
             $('.icon-84').attr('style', "background: url('"+ icon84Link
-                +"');width: 20px;height: 20px;background-size: 20px 20px;")
+                +"');width: 18px;height: 18px;background-size: 20px 20px;")
             
             var icon78Link = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
             $('.icon-78').attr('style', "background: url('"+ icon78Link
-                +"');width: 20px;height: 20px;background-size: 20px 20px;")
+                +"');width: 18px;height: 18px;background-size: 20px 20px;")
         }
         
         /**

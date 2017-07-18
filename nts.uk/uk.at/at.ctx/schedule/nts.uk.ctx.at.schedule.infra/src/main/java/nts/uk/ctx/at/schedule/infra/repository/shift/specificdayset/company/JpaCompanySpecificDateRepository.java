@@ -1,14 +1,17 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.specificdayset.company;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSetPK;
 
 @Stateless
 public class JpaCompanySpecificDateRepository extends JpaRepository implements CompanySpecificDateRepository {
@@ -19,18 +22,77 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
 			+ " AND s.ksmmtComSpecDateSetPK.specificDate = :specificDate";
 
+	// get List With Name of Specific
+	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KsmmtComSpecDateSet s"
+			+ " INNER JOIN KsmstSpecificDateItem p ON p.itemNo = s.ksmmtComSpecDateSetPK.specificDateItemNo"
+			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND CAST(s.ksmmtComSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')"
+			+ " AND p.useAtr = :useAtr";
+
+	// No WITH name
 	@Override
 	public List<CompanySpecificDateItem> getComSpecByDate(String companyId, int specificDate) {
 		return this.queryProxy().query(GET_BY_DATE, KsmmtComSpecDateSet.class)
 				.setParameter("companyId", companyId)
-				.setParameter("specificDate", specificDate)
-				.getList(x -> toDomain(x));
+				.setParameter("specificDate", specificDate).getList(x -> toDomain(x));
 	}
 
+	// WITH name
+	@Override
+	public List<CompanySpecificDateItem> getComSpecByDateWithName(String companyId, String specificDate, int useAtr) {
+		return this.queryProxy().query(GET_BY_USE_WITH_NAME, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("specificDate", specificDate)
+				.setParameter("useAtr", useAtr)
+				.getList(x -> toDomainWithName(x));
+	}
+
+	// No with name
 	private static CompanySpecificDateItem toDomain(KsmmtComSpecDateSet entity) {
 		CompanySpecificDateItem domain = CompanySpecificDateItem.createFromJavaType(
 				entity.ksmmtComSpecDateSetPK.companyId, entity.ksmmtComSpecDateSetPK.specificDate,
-				entity.ksmmtComSpecDateSetPK.specificDateItemNo);
+				entity.ksmmtComSpecDateSetPK.specificDateItemNo, "");
 		return domain;
+	}
+
+	// With NAME
+	private static CompanySpecificDateItem toDomainWithName(Object[] object) {
+		String specificDateItemName = (String) object[0];
+		KsmmtComSpecDateSet entity = (KsmmtComSpecDateSet) object[2];
+		CompanySpecificDateItem domain = CompanySpecificDateItem.createFromJavaType(
+				entity.ksmmtComSpecDateSetPK.companyId, entity.ksmmtComSpecDateSetPK.specificDate,
+				entity.ksmmtComSpecDateSetPK.specificDateItemNo, specificDateItemName);
+		return domain;
+	}
+	
+	//No with Name 
+	private static KsmmtComSpecDateSet toEntity(CompanySpecificDateItem domain){
+		val entity = new KsmmtComSpecDateSet();
+		entity.ksmmtComSpecDateSetPK = new KsmmtComSpecDateSetPK(
+				domain.getCompanyId(),
+				domain.getSpecificDate().v(),
+				domain.getSpecificDateItemNo().v());
+		return entity;
+	}
+	// No with name 
+	@Override
+	public void InsertComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem) {
+		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
+		for(CompanySpecificDateItem comSpecDateItem : lstComSpecDateItem){
+			lstEntity.add(toEntity(comSpecDateItem));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+
+	@Override
+	public void UpdateComSpecDate(List<CompanySpecificDateItem>lstComSpecDateItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void DeleteComSpecDate(CompanySpecificDateItem lstComSpecDateItem) {
+		// TODO Auto-generated method stub
+		
 	}
 }

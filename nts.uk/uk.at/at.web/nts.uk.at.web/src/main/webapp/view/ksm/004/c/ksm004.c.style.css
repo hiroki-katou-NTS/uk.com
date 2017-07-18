@@ -2,9 +2,11 @@
 .left-contents{margin-top: 30px;float:left;}
 .right-contents{margin-top: 30px;float:left; margin-left: 60px;}
 #contents-area{margin-left: 10px;}
-.ntsControl.nts-datepicker-wrapper{margin-right: 72px;}
+.ntsControl.nts-datepicker-wrapper{margin-right: 55px;}
 .row1-left{margin-bottom:10px;}
 .row1-right{margin: 5px 0px 15px 0px;}
 .row2-right{margin-bottom: 15px;}
-#date{margin-left: 91px;}
 .row3-right span {margin-left: 60px; vertical-align: top;}
+#datepicker{margin-left: 0px;}
+#label2{margin-right: 91px;}
+.container {width: 800px;}
