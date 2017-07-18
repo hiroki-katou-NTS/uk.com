@@ -407,21 +407,21 @@
                 }
             }
         }
-        
+
         export module value {
-        
+
             export function reset($controls: JQuery, defaultVal?: any, immediateApply?: boolean) {
                 var resetEvent = new CustomEvent(DefaultValue.RESET_EVT, {
-                    detail: { 
-                                value: defaultVal,
-                                immediateApply: immediateApply === undefined ? true : immediateApply
-                            }
+                    detail: {
+                        value: defaultVal,
+                        immediateApply: immediateApply === undefined ? true : immediateApply
+                    }
                 });
                 _.forEach($controls, function(control) {
                     control.dispatchEvent(resetEvent);
                 });
             }
-            
+
             export class DefaultValue {
                 static RESET_EVT: string = "reset";
                 onReset($control: JQuery, koValue: (data?: any) => any) {
@@ -433,15 +433,15 @@
                     });
                     return this;
                 }
-                
+
                 applyReset($control: JQuery, koValue: (data?: any) => any): any {
-                    var defaultVal = _.cloneDeep($control.data("default")); 
+                    var defaultVal = _.cloneDeep($control.data("default"));
                     var isDirty = defaultVal !== koValue();
                     if ($control.ntsError("hasError")) $control.ntsError("clear");
                     if (defaultVal !== undefined && isDirty) setTimeout(() => koValue(defaultVal), 0);
-                    return { isDirty: isDirty }; 
+                    return { isDirty: isDirty };
                 }
-            
+
                 asDefault($control: JQuery, koValue: (data?: any) => any, defaultValue: any, immediateApply: boolean) {
                     var defaultVal = defaultValue !== undefined ? defaultValue : koValue();
                     $control.data("default", defaultVal);
@@ -605,7 +605,17 @@
 
         export function getMessage(messageId: string, params: string[]): string {
             let message = messages[messageId];
-            if (!message) { return messageId; }
+            if (!message) {
+                let responseText="";
+                nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function(res) {
+                    responseText=res;
+                }).fail(function() {
+                });
+                if (responseText.length == 0 || responseText === messageId) {
+                    return messageId;
+                }
+                message = responseText;
+            }
             message = formatParams(message, params);
             message = formatCompCustomizeResource(message);
             return message;
@@ -621,16 +631,16 @@
             return message;
         }
         function formatParams(message: string, args: string[]) {
-            if (args==null||args.length==0) return message;
+            if (args == null || args.length == 0) return message;
             let paramRegex = /{([0-9])+(:\w+)?}/;
             let matches: string[];
             let formatter = time.getFormatter();
             while (matches = paramRegex.exec(message)) {
                 let code = matches[1];
                 let text = args[parseInt(code)];
-//                if(text!=undefined && text.indexOf("#")==0){
-//                    text = getText(text.substring(1))
-//                }
+                //                if(text!=undefined && text.indexOf("#")==0){
+                //                    text = getText(text.substring(1))
+                //                }
                 let param = matches[2];
                 if (param !== undefined && formatter !== undefined) {
                     text = time.applyFormat(param.substring(1), text, formatter);
@@ -639,13 +649,13 @@
             }
             return message;
         }
-        
+
         export function getControlName(name: string): string {
             var hashIdx = name.indexOf("#");
             if (hashIdx !== 0) return name;
-            var names = name.substring(hashIdx + 2, name.length -　1).split(",");
+            var names = name.substring(hashIdx + 2, name.length - 1).split(",");
             if (names.length > 1) {
-                let params: Array<string> = new Array<string>(); 
+                let params: Array<string> = new Array<string>();
                 _.forEach(names, function(n: string, idx: number) {
                     if (idx === 0) return true;
                     params.push(getText(n.trim()));
@@ -654,56 +664,56 @@
             }
             return getText(names[0]);
         }
-        
+
     }
-     
+
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
     export var localStorage = new WebStorageWrapper(window.localStorage);
 
     export module characteristics {
-        
+
         /**
          * Now, "characteristic data" is saved in Local Storage.
          * In the future, the data may be saved in DB using Ajax.
          * So these APIs have jQuery Deferred Interface to support asynchronous. 
          */
-        
+
         let delayToEmulateAjax = 100;
-        
+
         export function save(key: string, value: any) {
             let dfd = $.Deferred();
-            
+
             setTimeout(() => {
                 localStorage.setItemAsJson(createKey(key), value);
                 dfd.resolve();
             }, delayToEmulateAjax);
-            
+
             return dfd.promise();
         }
-        
+
         export function restore(key: string): JQueryPromise<any> {
             let dfd = $.Deferred();
-            
+
             setTimeout(() => {
                 let value = localStorage.getItem(createKey(key))
                     .map(v => JSON.parse(v)).orElse(undefined);
                 dfd.resolve(value);
             }, delayToEmulateAjax);
-            
+
             return dfd.promise();
         }
-        
+
         export function remove(key: string) {
             let dfd = $.Deferred();
-            
+
             setTimeout(() => {
                 localStorage.removeItem(createKey(key));
                 dfd.resolve();
             }, delayToEmulateAjax);
-            
+
             return dfd.promise();
         }
-        
+
         function createKey(key: string): string {
             return 'nts.uk.characteristics.' + key;
         }

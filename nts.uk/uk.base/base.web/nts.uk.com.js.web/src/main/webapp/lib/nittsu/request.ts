@@ -162,14 +162,14 @@ module nts.uk.request {
             url: webserviceLocator.serialize(),
             dataType: options.dataType || 'json',
             data: data,
-            headers: { 
+            headers: {
                 'PG-Path': location.current.serialize()
             }
         }).done(function(res) {
             if (res !== undefined && res.businessException) {
                 dfd.reject(res);
             } else if (res !== undefined && res.commandResult === true) {
-                dfd.resolve(res.value);        
+                dfd.resolve(res.value);
             } else {
                 dfd.resolve(res);
             }
@@ -177,7 +177,52 @@ module nts.uk.request {
 
         return dfd.promise();
     }
+    export function syncAjax(path: string, data?: any, options?: any);
+    export function syncAjax(webAppId: WebAppId, path: string, data?: any, options?: any) {
 
+        if (typeof arguments[1] !== 'string') {
+            return ajax.apply(null, _.concat(location.currentAppId, arguments));
+        }
+
+        var dfd = $.Deferred();
+        options = options || {};
+
+        if (typeof data === 'object') {
+            data = JSON.stringify(data);
+        }
+
+        var webserviceLocator = location.siteRoot
+            .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
+            .mergeRelativePath(location.ajaxRootDir)
+            .mergeRelativePath(path);
+
+        $.ajax({
+            type: options.method || 'POST',
+            contentType: options.contentType || 'application/json',
+            url: webserviceLocator.serialize(),
+            dataType: options.dataType || 'json',
+            data: data,
+            async: false,
+            headers: {
+                'PG-Path': location.current.serialize()
+            },
+            success: function(res) {
+                if (res !== undefined && res.businessException) {
+                    dfd.reject(res);
+                } else if (res !== undefined && res.commandResult === true) {
+                    dfd.resolve(res.value);
+                } else {
+                    dfd.resolve(res);
+                }
+            },
+            error: function(xhr,status, error) {
+                alert(error);
+                dfd.reject(); 
+            }
+        });
+
+        return dfd.promise();
+    }
     export function uploadFile(data: FormData, option?: any): $.Deferred {
         let dfd = $.Deferred();
         $.ajax({
@@ -244,16 +289,17 @@ module nts.uk.request {
         }
 
         export function donwloadFile(fileId: string) {
-           var dfd = $.Deferred();
-            $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId),{
-            successCallback: function (url) { 
-              dfd.resolve();
-            },
-            failCallback: function (responseHtml, url) {
-                var responseError = $(responseHtml);
-                var error = JSON.parse(responseError.text());
-                dfd.reject(error);
-            }});
+            var dfd = $.Deferred();
+            $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+                successCallback: function(url) {
+                    dfd.resolve();
+                },
+                failCallback: function(responseHtml, url) {
+                    var responseError = $(responseHtml);
+                    var error = JSON.parse(responseError.text());
+                    dfd.reject(error);
+                }
+            });
             return dfd.promise();
         }
     }
@@ -280,14 +326,14 @@ module nts.uk.request {
     export function liveView(webAppId: WebAppId, fileId: string): string {
         let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
         if (typeof arguments[1] !== 'string') {
-            return  resolvePath(liveViewPath) + _.concat(location.currentAppId,arguments)[1];
+            return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
         }
 
         var webserviceLocator = location.siteRoot
             .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
             .mergeRelativePath(liveViewPath);
 
-        let fullPath =  webserviceLocator.serialize() + fileId;
+        let fullPath = webserviceLocator.serialize() + fileId;
         return fullPath;
     }
     export module location {
