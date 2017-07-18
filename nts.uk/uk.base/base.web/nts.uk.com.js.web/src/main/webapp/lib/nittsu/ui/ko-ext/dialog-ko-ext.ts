@@ -120,7 +120,7 @@ module nts.uk.ui.koExtentions {
                 open: function() {
                     $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                     $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
-                    $('.ui-widget-overlay').last().css('z-index', 120000);
+                    $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
                 },
                 close: function(event) {
                     bindingContext.$data.option.show(false);

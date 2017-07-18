@@ -3123,6 +3123,17 @@ var nts;
                     return Message;
                 }());
                 dialog.Message = Message;
+                function getMaxZIndex() {
+                    var overlayElements = parent.$(".ui-widget-overlay");
+                    var max = 120002;
+                    if (overlayElements.length > 0) {
+                        var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
+                        var temp = _.max(zIndexs);
+                        max = temp > max ? temp : max;
+                    }
+                    return max;
+                }
+                dialog.getMaxZIndex = getMaxZIndex;
                 function createNoticeDialog(message, buttons, header) {
                     var $control = $('<div/>').addClass('control');
                     var text;
@@ -3156,8 +3167,8 @@ var nts;
                         closeOnEscape: false,
                         buttons: buttons,
                         open: function () {
-                            $(this).closest('.ui-dialog').css('z-index', 120002);
-                            $('.ui-widget-overlay').last().css('z-index', 120000);
+                            $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
+                            $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
                             $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                             $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                             if (header && header.icon) {
@@ -4915,7 +4926,7 @@ var nts;
                             open: function () {
                                 $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                 $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
-                                $('.ui-widget-overlay').last().css('z-index', 120000);
+                                $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
                             },
                             close: function (event) {
                                 bindingContext.$data.option.show(false);
