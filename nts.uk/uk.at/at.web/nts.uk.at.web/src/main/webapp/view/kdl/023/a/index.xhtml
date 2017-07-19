@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
+				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
+				<com:stylefile path="style.css" />
+				<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="kdl023.a.service.js" />
+				<com:scriptfile path="kdl023.a.vm.js" />
+				<com:scriptfile path="kdl023.a.start.js" />
+			</ui:define>
+			<ui:define name="content">
+				<div id="contents-area cf">
+					<div class="pull-left reflect-setting bg-green caret-right caret-background cf">
+						<div class="control-group cf">
+							<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_3')}</div>
+							<div id="asdvasdv" class="pull-left" style="margin-left: 36px"
+								data-bind="ntsComboBox: {
+										name: 'abcx',
+										options: itemList,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedCode,
+										enable: true,
+										columns: [
+											{ prop: 'code', length: 3 },
+											{ prop: 'name', length: 5 },
+										]}">
+							</div>
+						</div>
+						<div class="control-group">
+							<div class="" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_5')}</div>
+						</div>
+						<div class="control-group">
+							<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
+						</div>
+						<div class="margin-left-100">
+							<div class="control-group">
+								<div data-bind="ntsCheckBox: { checked: checked, text: '#{i18n.getText('KDL023_6')}' }"></div>
+							</div>
+							<div class="control-group">
+								<div data-bind="ntsCheckBox: { checked: checked, text: '#{i18n.getText('KDL023_7')}' }"></div>
+							</div>
+							<div class="control-group">
+								<div data-bind="ntsCheckBox: { checked: checked, text: '#{i18n.getText('KDL023_8')}' }"></div>
+							</div>
+							<div class="control-group">
+								<p class="priority">#{i18n.getText('KDL023_9')}</p>
+							</div>
+						</div>
+						<div class="control-group">
+							<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
+						</div>
+						<div class="margin-left-100">
+							<div class="control-group">
+								<label class="ntsRadioBox"><input type="radio"
+									name="textRadio"
+									data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: zxcv, enable: true" />
+									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
+								</label>
+							</div>
+							<div class="control-group">
+								<label class="ntsRadioBox"><input type="radio"
+									name="textRadio"
+									data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: zxcv, enable: true" />
+									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
+								</label>
+							</div>
+						</div>
+						<button class="btn-apply-setting caret-right pull-right" data-bind="click: onBtnApplySettingClicked">#{i18n.getText('KDL023_13')}</button>
+					</div>
+					<div class="nts-calendar-container pull-left">
+						<div class="nts-calendar-header">
+							<div data-bind="ntsDatePicker: {
+							value: yearMonthPicked, 
+							dateFormat: 'yearmonth', 
+							valueFormat: 'YYYYMM', 
+							cssRanger: cssRangerYM,
+							defaultClass: 'round-orange',
+							showJumpButtons: true}"></div>
+						</div>
+						<div id="calendar" data-bind="ntsCalendar: {
+							optionDates: optionDates, 
+							yearMonth: yearMonthPicked, 
+							firstDay: firstDay, 
+							startDate: startDate, 
+							endDate: endDate,
+							workplaceId: workplaceId,
+							workplaceName: workplaceName,
+							eventDisplay: eventDisplay,
+							eventUpdatable: eventUpdatable,
+							holidayDisplay: holidayDisplay,
+							cellButtonDisplay: cellButtonDisplay}"></div>
+					</div>
+				</div>
+				<div id="functions-area-bottom">
+					<button id="btnCancel" class="large" data-bind=""
+						tabindex="4">#{i18n.getText('KDL023_16')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

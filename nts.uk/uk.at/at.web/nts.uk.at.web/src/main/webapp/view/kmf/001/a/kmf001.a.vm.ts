@@ -15,7 +15,7 @@ module nts.uk.pr.view.kmf001.a {
             private startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
+                $('#annual-paid-leave-setting').focus();
                 // resolve.
                 dfd.resolve();
 

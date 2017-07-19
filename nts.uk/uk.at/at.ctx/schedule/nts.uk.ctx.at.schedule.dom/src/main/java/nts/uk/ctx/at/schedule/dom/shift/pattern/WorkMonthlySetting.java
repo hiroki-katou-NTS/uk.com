@@ -15,11 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
  */
 // 月間勤務就業設定
 
-/**
- * Gets the sift code.
- *
- * @return the sift code
- */
 @Getter
 public class WorkMonthlySetting extends AggregateRoot {
 
@@ -34,7 +29,6 @@ public class WorkMonthlySetting extends AggregateRoot {
 	/** The sift code. */
 	// 就業時間帯コード
 	private SiftCode siftCode;
-	
 	
 	/** The date. */
 	// 年月日

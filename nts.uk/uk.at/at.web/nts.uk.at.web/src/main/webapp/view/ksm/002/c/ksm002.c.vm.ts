@@ -19,7 +19,8 @@ module ksm002.c {
                 var self = this;
                 var dfd = $.Deferred();
                 service.getAllSpecificDate().done(function(data) {
-                    data.forEach(function(item){
+                    let dataSource =  _.orderBy(data, ["specificDateItemNo"], ["asc"]);
+                    dataSource.forEach(function(item){
                         self.specificDateItem.push(
                             new SpecificDateItem(
                                 item.timeItemId,

@@ -3,7 +3,23 @@ package nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace;
 import java.util.List;
 
 public interface WorkplaceSpecificDateRepository {
-	// get Company Specific Date by Date
-	List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String companyId, int specificDate);
+	/**
+	 * 
+	 * @param workplaceId
+	 * @param specificDate
+	 * @return
+	 */
+	List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, int specificDate);
+	/**
+	 * add WorkplaceSpec
+	 * @param lstWorkplaceSpecificDate
+	 */
+	void addWorkplaceSpec(List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate);
+	/**
+	 * delete WorkplaceSpec
+	 * @param workplaceId
+	 * @param specificDate
+	 */
+	void deleteWorkplaceSpec(String workplaceId, int specificDate);
 
 }

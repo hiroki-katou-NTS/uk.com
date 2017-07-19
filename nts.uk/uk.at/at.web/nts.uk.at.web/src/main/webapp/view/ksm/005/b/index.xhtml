@@ -28,10 +28,10 @@
 				<div id="functions-area">
 					<a data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
-					<button>#{i18n.getText('KSM005_8')}</button>
-					<button class="proceed">#{i18n.getText('KSM005_9')}</button>
+					<button data-bind="click: resetData">#{i18n.getText('KSM005_8')}</button>
+					<button class="proceed" data-bind="click: saveDataMonthlyPattern">#{i18n.getText('KSM005_9')}</button>
 					<button data-bind="click: openBatchSettingDialog">#{i18n.getText('KSM005_10')}</button>
-					<button class="danger">#{i18n.getText('KSM005_12')}</button>
+					<button class="danger" data-bind="click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">
 					<div class="pull-left monthlyPatternContents caret-right caret-background bg-green">
@@ -52,7 +52,9 @@
 								data-bind="ntsFormLabel: {required: true, constraint:['MonthlyPatternCode','MonthlyPatternName']}">
 								<label>#{i18n.getText('KSM005_16')}</label>
 							</div>
-							<input data-bind="ntsTextEditor: {
+							<input id="inp_monthlyPatternCode" 
+								class="nts-input"
+								data-bind="ntsTextEditor: {
 								value: code,
 								constraint: 'MonthlyPatternCode',
 								option: $root.textEditorOption,
@@ -61,7 +63,9 @@
 								enable: true,
 								immediate: false}" />
 								
-							<input data-bind="ntsTextEditor: {
+							<input id="inp_monthlyPatternName" 
+								class="nts-input" 
+								data-bind="ntsTextEditor: {
 								value: name,
 								constraint: 'MonthlyPatternName',
 								option: $root.textEditorOptionName,

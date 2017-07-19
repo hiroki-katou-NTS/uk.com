@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm005.f {
+module nts.uk.at.view.ksm005.e {
 
     import MonthlyPatternDto = service.model.MonthlyPatternDto;
     export module viewmodel {

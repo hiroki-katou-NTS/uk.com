@@ -117,7 +117,14 @@
             }
             
             nts.uk.ui.windows.setShared('CCG008_layout', transferData);
-            nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", {title: dialogTitle});
+            nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", {title: dialogTitle}).onClosed(() => {
+                var transferData = __viewContext.transferred.value;
+                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+                    self.dataSource(data);
+                    self.showMypage(self.dataSource().myPage); 
+                });    
+            });
         }
         /** Setup position and size for all Placements */
         private setupPositionAndSizeAll(name: string): void {

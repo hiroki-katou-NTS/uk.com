@@ -84,7 +84,7 @@ public class ClosureHistoryHeaderDto implements ClosureHistorySetMemento {
 			this.closureDate = LAST_DATE;
 		}
 		else {
-			this.closureDate = closureDate.getClosureDay();
+			this.closureDate = closureDate.getClosureDay().v();
 		}
 	}
 

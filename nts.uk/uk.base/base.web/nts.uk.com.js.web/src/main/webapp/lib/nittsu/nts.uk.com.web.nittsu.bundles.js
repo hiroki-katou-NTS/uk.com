@@ -606,7 +606,15 @@ var nts;
             function getMessage(messageId, params) {
                 var message = messages[messageId];
                 if (!message) {
-                    return messageId;
+                    var responseText_1 = "";
+                    nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function (res) {
+                        responseText_1 = res;
+                    }).fail(function () {
+                    });
+                    if (responseText_1.length == 0 || responseText_1 === messageId) {
+                        return messageId;
+                    }
+                    message = responseText_1;
                 }
                 message = formatParams(message, params);
                 message = formatCompCustomizeResource(message);
@@ -1178,17 +1186,38 @@ var nts;
             }());
             text_3.NumberUnit = NumberUnit;
             var units = {
-                "JPY": new NumberUnit("JPY", "円", "right", "ja-JP"),
-                "PERCENT": new NumberUnit("PERCENT", "%", "right", "ja-JP"),
-                "DAYS": new NumberUnit("DAYS", "日", "right", "ja-JP"),
-                "MONTHS": new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
-                "YEARS": new NumberUnit("YEARS", "年", "right", "ja-JP"),
-                "FIS_MONTH": new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
-                "FIS_YEAR": new NumberUnit("FIS_YEAR", "年度", "right", "ja-JP"),
-                "TIMES": new NumberUnit("TIMES", "回", "right", "ja-JP")
+                "JPY": {
+                    "ja": new NumberUnit("JPY", "円", "right", "ja"),
+                    "en": new NumberUnit("JPY", "\u00A5", "left", "en")
+                },
+                "PERCENT": {
+                    "ja": new NumberUnit("PERCENT", "%", "right", "ja"),
+                    "en": new NumberUnit("PERCENT", "%", "right", "en")
+                },
+                "DAYS": {
+                    "ja": new NumberUnit("DAYS", "日", "right", "ja")
+                },
+                "MONTHS": {
+                    "ja": new NumberUnit("MONTHS", "ヶ月", "right", "ja")
+                },
+                "YEARS": {
+                    "ja": new NumberUnit("YEARS", "年", "right", "ja")
+                },
+                "FIS_MONTH": {
+                    "ja": new NumberUnit("FIS_MONTH", "月度", "right", "ja")
+                },
+                "FIS_YEAR": {
+                    "ja": new NumberUnit("FIS_YEAR", "年度", "right", "ja")
+                },
+                "TIMES": {
+                    "ja": new NumberUnit("TIMES", "回", "right", "ja")
+                },
+                "AGE": {
+                    "ja": new NumberUnit("AGE", "歳", "right", "ja")
+                }
             };
             function getNumberUnit(unitId) {
-                return units[unitId];
+                return units[unitId][systemLanguage];
             }
             text_3.getNumberUnit = getNumberUnit;
         })(text = uk.text || (uk.text = {}));
@@ -1209,13 +1238,13 @@ var nts;
             var listEmpire = {
                 "明治": "1868/01/01",
                 "大正": "1912/07/30",
-                "昭��?": "1926/12/25",
-                "平��?": "1989/01/08"
+                "昭和": "1926/12/25",
+                "平成": "1989/01/08"
             };
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function getYearMonthJapan(year, month) {
                 if (month)
-                    return year + "年 " + month + " ��?";
+                    return year + "年 " + month + " 月";
                 return year;
             }
             var JapanYearMonth = (function () {
@@ -1236,7 +1265,7 @@ var nts;
                 JapanYearMonth.prototype.toString = function () {
                     return (this.empire === undefined ? "" : this.empire + " ")
                         + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " ��?");
+                        + (this.month === undefined ? "" : this.month + " 月");
                 };
                 return JapanYearMonth;
             }());
@@ -1244,7 +1273,7 @@ var nts;
             function yearInJapanEmpire(date) {
                 var year = moment.utc(date, defaultInputFormat, true).year();
                 if (year == 1868) {
-                    return new JapanYearMonth("明治��?��");
+                    return new JapanYearMonth("明治元年");
                 }
                 if (year <= 1912) {
                     var diff = year - 1867;
@@ -1256,25 +1285,25 @@ var nts;
                 }
                 if (year < 1989) {
                     var diff = year - 1925;
-                    return new JapanYearMonth("昭��? ", diff);
+                    return new JapanYearMonth("昭和 ", diff);
                 }
                 if (year == 1989) {
-                    return new JapanYearMonth("平成�?年 ", diff);
+                    return new JapanYearMonth("平成元年 ", diff);
                 }
                 var diff = year - 1988;
-                return new JapanYearMonth("平��? ", diff);
+                return new JapanYearMonth("平成 ", diff);
             }
             time_1.yearInJapanEmpire = yearInJapanEmpire;
             function yearmonthInJapanEmpire(yearmonth) {
                 if (!(yearmonth instanceof String)) {
                     yearmonth = "" + yearmonth;
                 }
-                var nguyennien = "��?��";
+                var nguyennien = "元年";
                 yearmonth = yearmonth.replace("/", "");
                 var year = parseInt(yearmonth.substring(0, 4));
                 var month = parseInt(yearmonth.substring(4));
                 if (year == 1868) {
-                    return new JapanYearMonth("明治��?�� ", undefined, month);
+                    return new JapanYearMonth("明治元年 ", undefined, month);
                 }
                 if (year < 1912) {
                     var diff = year - 1867;
@@ -1283,7 +1312,7 @@ var nts;
                 if (year == 1912) {
                     if (month < 8)
                         return new JapanYearMonth("明治 ", 45, month);
-                    return new JapanYearMonth("大正��?�� ", undefined, month);
+                    return new JapanYearMonth("大正元年 ", undefined, month);
                 }
                 if (year < 1926) {
                     var diff = year - 1911;
@@ -1292,17 +1321,17 @@ var nts;
                 if (year == 1926) {
                     if (month < 12)
                         return new JapanYearMonth("大正", 15, month);
-                    return new JapanYearMonth("昭和�?年 ", undefined, month);
+                    return new JapanYearMonth("昭和元年 ", undefined, month);
                 }
                 if (year < 1989) {
                     var diff = year - 1925;
-                    return new JapanYearMonth("昭��? ", diff, month);
+                    return new JapanYearMonth("昭和 ", diff, month);
                 }
                 if (year == 1989) {
-                    return new JapanYearMonth("平成�?年 ", undefined, month);
+                    return new JapanYearMonth("平成元年 ", undefined, month);
                 }
                 var diff = year - 1988;
-                return new JapanYearMonth("平��? ", diff, month);
+                return new JapanYearMonth("平成 ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
             var JapanDateMoment = (function () {
@@ -1314,7 +1343,7 @@ var nts;
                 JapanDateMoment.prototype.toString = function () {
                     return (this.empire === undefined ? "" : this.empire + " ")
                         + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " ��?")
+                        + (this.month === undefined ? "" : this.month + " 月")
                         + (this.day === undefined ? "" : this.day + " ");
                 };
                 return JapanDateMoment;
@@ -1787,15 +1816,15 @@ var nts;
                     this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
                     this.shortYmPattern = /^\d{4}\/\d{1,2}$/;
                     this.shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
-                    this.longYmdPattern = /^\d{4}年\d{1,2}��?d{1,2}日$/;
-                    this.longYmdwPattern = /^\d{4}年\d{1,2}��?d{1,2}日\(\w+\)$/;
+                    this.longYmdPattern = /^\d{4}年\d{1,2}月d{1,2}日$/;
+                    this.longYmdwPattern = /^\d{4}年\d{1,2}月d{1,2}日\(\w+\)$/;
                     this.longFPattern = /^\d{4}年度$/;
-                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}��?d{1,2}日$/;
-                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}��?$/;
+                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月d{1,2}日$/;
+                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}月$/;
                     this.fullDateTimeShortPattern = /^\d{4}\/\d{1,2}\/\d{1,2} \d+:\d{2}:\d{2}$/;
                     this.timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
                     this.timeShortHmPattern = /^\d+:\d{2}$/;
-                    this.days = ['日', '��?', '火', '水', '木', '��?', '��?'];
+                    this.days = ['日', '月', '火', '水', '木', '金', '土'];
                 }
                 DateTimeFormatter.prototype.shortYmd = function (date) {
                     var d = this.dateOf(date);
@@ -1850,7 +1879,7 @@ var nts;
                     }
                 };
                 DateTimeFormatter.prototype.toLongJpDate = function (d) {
-                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '��?' + d.getDate() + '日';
+                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
                 };
                 DateTimeFormatter.prototype.longF = function (date) {
                     var d = this.dateOf(date);
@@ -1872,7 +1901,7 @@ var nts;
                     if (this.longJmPattern.test(d))
                         return d;
                     var jpDate = this.fullJapaneseDateOf(d);
-                    var start = jpDate.indexOf("��?");
+                    var start = jpDate.indexOf("月");
                     if (start !== -1) {
                         return jpDate.substring(0, start + 1);
                     }
@@ -2126,6 +2155,48 @@ var nts;
                 return dfd.promise();
             }
             request.ajax = ajax;
+            function syncAjax(webAppId, path, data, options) {
+                if (typeof arguments[1] !== 'string') {
+                    return ajax.apply(null, _.concat(location.currentAppId, arguments));
+                }
+                var dfd = $.Deferred();
+                options = options || {};
+                if (typeof data === 'object') {
+                    data = JSON.stringify(data);
+                }
+                var webserviceLocator = location.siteRoot
+                    .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(location.ajaxRootDir)
+                    .mergeRelativePath(path);
+                $.ajax({
+                    type: options.method || 'POST',
+                    contentType: options.contentType || 'application/json',
+                    url: webserviceLocator.serialize(),
+                    dataType: options.dataType || 'json',
+                    data: data,
+                    async: false,
+                    headers: {
+                        'PG-Path': location.current.serialize()
+                    },
+                    success: function (res) {
+                        if (res !== undefined && res.businessException) {
+                            dfd.reject(res);
+                        }
+                        else if (res !== undefined && res.commandResult === true) {
+                            dfd.resolve(res.value);
+                        }
+                        else {
+                            dfd.resolve(res);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert(error);
+                        dfd.reject();
+                    }
+                });
+                return dfd.promise();
+            }
+            request.syncAjax = syncAjax;
             function uploadFile(data, option) {
                 var dfd = $.Deferred();
                 $.ajax({
@@ -2198,7 +2269,8 @@ var nts;
                             var responseError = $(responseHtml);
                             var error = JSON.parse(responseError.text());
                             dfd.reject(error);
-                        } });
+                        }
+                    });
                     return dfd.promise();
                 }
                 specials.donwloadFile = donwloadFile;
@@ -2284,6 +2356,14 @@ var nts;
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
+                    var content_height = 50 + 20;
+                    if ($("#functions-area").length != 0) {
+                        content_height += 49;
+                    }
+                    if ($("#functions-area-bottom").length != 0) {
+                        content_height += 74;
+                    }
+                    $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
                 };
                 $(function () {
                     ui.documentReady.fire();
@@ -3043,6 +3123,17 @@ var nts;
                     return Message;
                 }());
                 dialog.Message = Message;
+                function getMaxZIndex() {
+                    var overlayElements = parent.$(".ui-widget-overlay");
+                    var max = 120002;
+                    if (overlayElements.length > 0) {
+                        var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
+                        var temp = _.max(zIndexs);
+                        max = temp > max ? temp : max;
+                    }
+                    return max;
+                }
+                dialog.getMaxZIndex = getMaxZIndex;
                 function createNoticeDialog(message, buttons, header) {
                     var $control = $('<div/>').addClass('control');
                     var text;
@@ -3076,8 +3167,8 @@ var nts;
                         closeOnEscape: false,
                         buttons: buttons,
                         open: function () {
-                            $(this).closest('.ui-dialog').css('z-index', 120002);
-                            $('.ui-widget-overlay').last().css('z-index', 120000);
+                            $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
+                            $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
                             $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                             $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                             if (header && header.icon) {
@@ -4707,7 +4798,7 @@ var nts;
                             }
                             else if (self.options.format === self.Y_FORMAT) {
                                 var postCalcVal = parsedTime.year + value;
-                                if (postCalcVal < 1899) {
+                                if (postCalcVal < 1900) {
                                     year = 9999;
                                 }
                                 else if (postCalcVal > 9999) {
@@ -4835,7 +4926,7 @@ var nts;
                             open: function () {
                                 $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                 $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
-                                $('.ui-widget-overlay').last().css('z-index', 120000);
+                                $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
                             },
                             close: function (event) {
                                 bindingContext.$data.option.show(false);
@@ -7268,8 +7359,14 @@ var nts;
                             container.children(content).wrap('<div id="' + id + '"></div>');
                         }
                         container.tabs({
+                            create: function (event, ui) {
+                                container.find('.ui-tabs-panel').addClass('disappear');
+                                ui.panel.removeClass('disappear');
+                            },
                             activate: function (evt, ui) {
                                 data.active(ui.newPanel[0].id);
+                                container.find('.ui-tabs-panel').addClass('disappear');
+                                ui.newPanel.removeClass('disappear');
                                 container.children('ul').children('.ui-tabs-active').addClass('active');
                                 container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
                                 container.children('ul').children('.ui-state-disabled').addClass('disabled');
@@ -12514,8 +12611,8 @@ var nts;
                     };
                     function init(control, option) {
                         $("html").addClass("sidebar-html");
+                        control.find("div[role=tabpanel]").addClass("disappear");
                         var settings = $.extend({}, defaultOption, option);
-                        control.find("div[role=tabpanel]").hide();
                         control.off("click", "#sidebar-area .navigator a");
                         control.on("click", "#sidebar-area .navigator a", function (event) {
                             event.preventDefault();
@@ -12539,8 +12636,8 @@ var nts;
                     function active(control, index) {
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
-                        control.find("div[role=tabpanel]").hide();
-                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
+                        control.find("div[role=tabpanel]").addClass("disappear");
+                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).removeClass("disappear");
                         return control;
                     }
                     function enable(control, index) {
@@ -12564,9 +12661,7 @@ var nts;
                         return control;
                     }
                     function getCurrent(control) {
-                        var index = 0;
-                        index = control.find("#sidebar-area .navigator a.active").closest("li").index();
-                        return index;
+                        return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
             })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
