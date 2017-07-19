@@ -32,7 +32,6 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 		return entity;
 	}
 	/**
-	 * hoatt
 	 * get workplace Spec By Date
 	 * @param workplaceId
 	 * @param specificDate
@@ -46,7 +45,6 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 				.getList(c->toDomain(c));
 	}
 	/**
-	 * hoatt
 	 * add WorkplaceSpec
 	 * @param lstWorkplaceSpecificDate
 	 */
@@ -60,7 +58,6 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 		this.commandProxy().insertAll(lstEntity);
 	}
 	/**
-	 * hoatt
 	 * delete WorkplaceSpec
 	 * @param workplaceId
 	 * @param specificDate
