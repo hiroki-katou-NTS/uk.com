@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.specificdayset.company;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,5 +93,32 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	public void DeleteComSpecDate(CompanySpecificDateItem lstComSpecDateItem) {
 		// TODO Auto-generated method stub
 		
+	}
+	/**
+	 * add List ComSpecDate
+	 * @param lstComSpecDateItem
+	 */
+	@Override
+	public void addListComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem) {
+		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
+		for (CompanySpecificDateItem specificDateItem : lstComSpecDateItem) {
+			lstEntity.add(toEntity(specificDateItem));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+	/**
+	 * delete ComSpecByDate
+	 * @param companyId
+	 * @param specificDate
+	 */
+	@Override
+	public void deleteComSpecByDate(String companyId, int specificDate) {
+		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
+		List<CompanySpecificDateItem> lstCompanySpecificDate = this.getComSpecByDate(companyId, specificDate);
+		for (CompanySpecificDateItem companySpecificDate : lstCompanySpecificDate) {
+			KsmmtComSpecDateSet entity = toEntity(companySpecificDate);
+			lstEntity.add(entity);
+		}
+		this.commandProxy().removeAll(lstEntity);
 	}
 }
