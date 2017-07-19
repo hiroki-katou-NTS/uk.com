@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.eclipse.persistence.sdo.helper.delegates.SDOXSDHelperDelegate;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -92,7 +90,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					}
 				}
 				//add item new in db
-				workplaceRepo.addWorkplaceSpec(lstAdd);
+				workplaceRepo.InsertWpSpecDate(lstAdd);
 				date = date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 			}else{
@@ -104,9 +102,9 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate = new ArrayList<>();
 				
 				for (Integer timeItemId : lstTimeItemId) {
-					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,b,BigDecimal.valueOf(timeItemId)));
+					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,b,BigDecimal.valueOf(timeItemId),""));
 				}
-				workplaceRepo.addWorkplaceSpec(lstWorkplaceSpecificDate);
+				workplaceRepo.InsertWpSpecDate(lstWorkplaceSpecificDate);
 				
 			}
 			date = date.addDays(1);

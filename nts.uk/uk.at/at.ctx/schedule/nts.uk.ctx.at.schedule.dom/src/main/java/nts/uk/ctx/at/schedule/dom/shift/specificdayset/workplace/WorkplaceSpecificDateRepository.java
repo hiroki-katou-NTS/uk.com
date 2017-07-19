@@ -14,4 +14,11 @@ public interface WorkplaceSpecificDateRepository {
 
 	// delete to Company Specific Date
 	void DeleteWpSpecDate(String companyId, String processMonth);
+	/**
+	 * delete WorkplaceSpec
+	 * @param workplaceId
+	 * @param specificDate
+	 */
+	void deleteWorkplaceSpec(String workplaceId, int specificDate);
+
 }

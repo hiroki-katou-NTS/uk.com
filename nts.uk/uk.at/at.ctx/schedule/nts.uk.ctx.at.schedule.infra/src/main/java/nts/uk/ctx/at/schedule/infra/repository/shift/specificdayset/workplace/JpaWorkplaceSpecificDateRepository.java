@@ -9,7 +9,6 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSetPK;
 
@@ -104,4 +103,21 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 			.setParameter("endYm", Integer.valueOf(processMonth+"31"))
 			.executeUpdate();
 	}
+
+	/**
+	 * delete WorkplaceSpec
+	 * @param workplaceId
+	 * @param specificDate
+	 */
+	@Override
+	public void deleteWorkplaceSpec(String workplaceId, int specificDate) {
+		List<KsmmtWpSpecDateSet> lstEntity = new ArrayList<>();
+		List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate = this.getWorkplaceSpecByDate(workplaceId, specificDate);
+		for (WorkplaceSpecificDateItem workplaceSpecificDateItem : lstWorkplaceSpecificDate) {
+			KsmmtWpSpecDateSet entity = toEntity(workplaceSpecificDateItem);
+			lstEntity.add(entity);
+		}
+		this.commandProxy().removeAll(lstEntity);
+	}
+	
 }
