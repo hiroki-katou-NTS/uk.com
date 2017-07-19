@@ -29,12 +29,12 @@
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_31')}</div></td>
 						<td><input id="nameTitleBar" tabindex="1"
 							data-name="#{i18n.getText('CCG013_50')}"
-							data-bind="ntsTextEditor: {required: true, value: nameTitleBar, constraint: 'TitleBarName'}, hasFocus: true" /></td>
+							data-bind="ntsTextEditor: {name:'#[CCG013_50]', required: true, value: nameTitleBar, constraint: 'TitleBarName'}, hasFocus: true" /></td>
 						<td><div class="labelRight"
 								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
 						<td><div id="colorpicker1" tabindex="2"
 								data-name="#{i18n.getText('CCG013_19')}"
-								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50, required: true}" /></td>
+								data-bind="ntsColorPicker: {name:'#[CCG013_19]', value: letterColor, enable: true, width: 50, required: true}" /></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -56,7 +56,7 @@
 						<td>
 							<div id="colorpicker2" tabindex="4"
 								data-name="#{i18n.getText('CCG013_19')}"
-								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50,required: true}" />
+								data-bind="ntsColorPicker: {name:'#[CCG013_19]', value: backgroundColor, enable: true, width: 50,required: true}" />
 						</td>
 						<td></td>
 					</tr>
@@ -74,7 +74,8 @@
 											selected: currentTitleMenu, 
 											selectedKey: 'titleCode', 
 											fields: ['titleName', 'titleCode'], 
-											mode: 'igGrid'}" />
+											mode: 'igGrid',
+											enable: enableGrid}" />
 								<table id="multi-list"
 									data-bind="ntsGridList: {
 											height: 230,
@@ -86,10 +87,10 @@
 								</table>
 							</div>
 						</td>
-						<td>
+						<td style="vertical-align: top;">
 							<div class="labelRight" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div>
 						</td>
-						<td colspan="2">
+						<td colspan="2" style="vertical-align: top;">
 							<div id="file_upload" tabindex="6"
 								data-bind="ntsFileUpload:{
 								filename: filename,
@@ -103,12 +104,14 @@
 						<td></td>
 						<td class="col2"><span id="imageName" tabindex="7"
 							data-bind="text:imageName"></span></td>
-						<td class="pull-right"><button id="delBtn" tabindex="8"
-								class="danger" data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG030_5')}</button></td>
+						<td class="pull-right" style="vertical-align: top;">
+							<div><button id="delBtn" tabindex="8"
+								class="danger" data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG030_5')}</button></div>
+						</td>
 					</tr>
 					<tr>
 						<td></td>
-						<td id="imageSize" colspan="2"><label
+						<td style="vertical-align: top;" id="imageSize" colspan="2"><label
 							data-bind="text: imageSize"></label></td>
 					</tr>
 					<tr>
