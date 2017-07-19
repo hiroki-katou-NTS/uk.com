@@ -8,18 +8,22 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
 public class KsmmtWpSpecDateSetPK implements Serializable{
+
+	
 	private static final long serialVersionUID = 1L;
-	/**職場ID*/
+	
 	@Column(name = "WKPID")
 	public String workplaceId;
-	/**年月日*/
+
 	@Column(name = "SPECIFIC_DATE")
 	public BigDecimal specificDate;
-	/**特定日項目NO*/
+
 	@Column(name = "SPECIFIC_DATE_ITEM_NO")
 	public BigDecimal specificDateItemNo;
+
 }

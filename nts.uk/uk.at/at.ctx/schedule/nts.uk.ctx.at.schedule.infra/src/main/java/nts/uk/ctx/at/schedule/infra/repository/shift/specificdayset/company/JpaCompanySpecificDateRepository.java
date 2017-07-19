@@ -27,6 +27,13 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
 			+ " AND CAST(s.ksmmtComSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')"
 			+ " AND p.useAtr = :useAtr";
+	
+	//Delete by Month 
+	private final String DELETE_BY_YEAR_MONTH = "DELETE from KsmmtComSpecDateSet c "
+			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND c.ksmmtComSpecDateSetPK.specificDate >= :startYm"
+			+ " AND c.ksmmtComSpecDateSetPK.specificDate <= :endYm";
+	
 
 	// No WITH name
 	@Override
@@ -82,17 +89,14 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 		}
 		this.commandProxy().insertAll(lstEntity);
 	}
-
+	
 	@Override
-	public void UpdateComSpecDate(List<CompanySpecificDateItem>lstComSpecDateItem) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void DeleteComSpecDate(CompanySpecificDateItem lstComSpecDateItem) {
-		// TODO Auto-generated method stub
-		
+	public void DeleteComSpecDate(String companyId, String processMonth) {
+		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+			.setParameter("companyId", companyId)
+			.setParameter("startYm", Integer.valueOf(processMonth+"01"))
+			.setParameter("endYm", Integer.valueOf(processMonth+"31"))
+			.executeUpdate();
 	}
 	/**
 	 * add List ComSpecDate

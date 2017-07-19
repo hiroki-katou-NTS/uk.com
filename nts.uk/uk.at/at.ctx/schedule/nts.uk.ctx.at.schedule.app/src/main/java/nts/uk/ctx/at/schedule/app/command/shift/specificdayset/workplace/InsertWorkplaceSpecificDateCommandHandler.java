@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company;
+package nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,13 +13,13 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDa
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class InsertCompanySpecificDateCommandHandler extends CommandHandler<List<CompanySpecificDateCommand>> {
+public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<List<WorkplaceSpecificDateCommand>> {
 
 	@Inject
 	private CompanySpecificDateRepository repo;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<CompanySpecificDateCommand>> context) {
+	protected void handle(CommandHandlerContext<List<WorkplaceSpecificDateCommand>> context) {
 		
 		String companyId = AppContexts.user().companyId();
 		

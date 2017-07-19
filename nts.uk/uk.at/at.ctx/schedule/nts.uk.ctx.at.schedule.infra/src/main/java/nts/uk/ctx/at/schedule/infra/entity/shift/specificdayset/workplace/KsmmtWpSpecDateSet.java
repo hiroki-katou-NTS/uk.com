@@ -15,8 +15,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KSMMT_WP_SPEC_DATE_SET")
 public class KsmmtWpSpecDateSet extends UkJpaEntity implements Serializable {
+
+
 	private static final long serialVersionUID = 1L;
-	
 	@EmbeddedId
 	public KsmmtWpSpecDateSetPK ksmmtWpSpecDateSetPK;
 
@@ -25,7 +26,4 @@ public class KsmmtWpSpecDateSet extends UkJpaEntity implements Serializable {
 		return ksmmtWpSpecDateSetPK;
 	}
 }
-
-
-
 
