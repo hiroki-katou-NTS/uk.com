@@ -3384,6 +3384,10 @@ button.nts-switch-button[disabled]:hover {
   height: 35px;
 }
 
+.text-limited {
+  white-space: nowrap;
+}
+
 /*****************************
   Limited label
 *****************************/

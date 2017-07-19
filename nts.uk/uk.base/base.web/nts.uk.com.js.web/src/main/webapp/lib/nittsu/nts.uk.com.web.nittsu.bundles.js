@@ -5508,6 +5508,7 @@ var nts;
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
+                        var ROW_HEIGHT = 21;
                         var $grid = $(element);
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
@@ -5521,7 +5522,11 @@ var nts;
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var enable = ko.unwrap(data.enable);
                         var value = ko.unwrap(data.value);
+                        var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
+                        if (data.multiple) {
+                            ROW_HEIGHT = 24;
+                        }
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         if (data.multiple || showNumbering) {
@@ -5567,13 +5572,44 @@ var nts;
                                         var $tr = $element.closest("tr");
                                         $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
                                     });
+                                    ROW_HEIGHT = 32;
                                 }
                             }
                             return c;
                         });
+                        var isDeleteButton = !uk.util.isNullOrUndefined(deleteOptions) && !uk.util.isNullOrUndefined(deleteOptions.deleteField)
+                            && deleteOptions.visible === true;
+                        var height = data.height;
+                        if (!nts.uk.util.isNullOrEmpty(rows)) {
+                            if (isDeleteButton) {
+                                ROW_HEIGHT = 32;
+                            }
+                            height = rows * ROW_HEIGHT + HEADER_HEIGHT;
+                            var colSettings_1 = [];
+                            _.forEach(iggridColumns, function (c) {
+                                if (c["hidden"] === undefined || c["hidden"] === false) {
+                                    colSettings_1.push({ columnKey: c["key"], allowTooltips: true });
+                                    if (nts.uk.util.isNullOrEmpty(c["columnCssClass"])) {
+                                        c["columnCssClass"] = "text-limited";
+                                    }
+                                    else {
+                                        c["columnCssClass"] += " text-limited";
+                                    }
+                                }
+                            });
+                            features.push({
+                                name: "Tooltips",
+                                columnSettings: colSettings_1,
+                                visibility: "overflow",
+                                showDelay: 200,
+                                hideDelay: 200
+                            });
+                            $grid.addClass("row-limited");
+                        }
+                        $grid.data("height", height);
                         $grid.igGrid({
                             width: data.width,
-                            height: (data.height) + "px",
+                            height: height,
                             primaryKey: optionsValue,
                             columns: iggridColumns,
                             virtualization: true,
@@ -5581,8 +5617,7 @@ var nts;
                             features: features,
                             tabIndex: -1
                         });
-                        if (!uk.util.isNullOrUndefined(deleteOptions) && !uk.util.isNullOrUndefined(deleteOptions.deleteField)
-                            && deleteOptions.visible === true) {
+                        if (isDeleteButton) {
                             var sources = (data.dataSource !== undefined ? data.dataSource : data.options);
                             $grid.ntsGridList("setupDeleteButton", {
                                 deleteField: deleteOptions.deleteField,
@@ -5671,7 +5706,7 @@ var nts;
                             $grid.ntsGridList('setSelected', data.value());
                         }
                         $grid.data("ui-changed", false);
-                        $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height).attr("tabindex", $grid.data("tabindex"));
+                        $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
                     };
                     return NtsGridListBindingHandler;
                 }());
@@ -7478,6 +7513,8 @@ var nts;
                     function NtsTreeGridViewBindingHandler() {
                     }
                     NtsTreeGridViewBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var ROW_HEIGHT = 24;
+                        var HEADER_HEIGHT = 24;
                         var data = valueAccessor();
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var optionsValue = ko.unwrap(data.primaryKey !== undefined ? data.primaryKey : data.optionsValue);
@@ -7486,10 +7523,11 @@ var nts;
                         var extColumns = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
+                        var rows = ko.unwrap(data.rows);
                         var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
-                        var height = ko.unwrap(data.height !== undefined ? data.height : '100%');
-                        var width = ko.unwrap(data.width !== undefined ? data.width : '100%');
+                        var height = ko.unwrap(data.height !== undefined ? data.height : 0);
+                        var width = ko.unwrap(data.width !== undefined ? data.width : 0);
                         if (extColumns !== undefined && extColumns !== null) {
                             var displayColumns = extColumns;
                         }
@@ -7502,6 +7540,56 @@ var nts;
                         var $treegrid = $(element);
                         var tabIndex = nts.uk.util.isNullOrEmpty($treegrid.attr("tabindex")) ? "0" : $treegrid.attr("tabindex");
                         $treegrid.attr("tabindex", "-1");
+                        var features = [];
+                        features.push({
+                            name: "Selection",
+                            multipleSelection: true,
+                            activation: true,
+                            rowSelectionChanged: function (evt, ui) {
+                                var selectedRows = ui.selectedRows;
+                                if (ko.unwrap(data.multiple)) {
+                                    if (ko.isObservable(data.selectedValues)) {
+                                        data.selectedValues(_.map(selectedRows, function (row) {
+                                            return row.id;
+                                        }));
+                                    }
+                                }
+                                else {
+                                    if (ko.isObservable(data.value)) {
+                                        data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
+                                    }
+                                }
+                            }
+                        });
+                        features.push({
+                            name: "RowSelectors",
+                            enableCheckBoxes: showCheckBox,
+                            checkBoxMode: "biState"
+                        });
+                        features.push({ name: "Resizing" });
+                        if (!nts.uk.util.isNullOrEmpty(rows)) {
+                            height = rows * ROW_HEIGHT + HEADER_HEIGHT;
+                            var colSettings_2 = [];
+                            _.forEach(displayColumns, function (c) {
+                                if (c["hidden"] === undefined || c["hidden"] === false) {
+                                    colSettings_2.push({ columnKey: c["key"], allowTooltips: true });
+                                    if (nts.uk.util.isNullOrEmpty(c["columnCssClass"])) {
+                                        c["columnCssClass"] = "text-limited";
+                                    }
+                                    else {
+                                        c["columnCssClass"] += " text-limited";
+                                    }
+                                }
+                            });
+                            features.push({
+                                name: "Tooltips",
+                                columnSettings: colSettings_2,
+                                visibility: "overflow",
+                                showDelay: 200,
+                                hideDelay: 200
+                            });
+                            $treegrid.addClass("row-limited");
+                        }
                         $treegrid.igTreeGrid({
                             width: width,
                             height: height,
@@ -7511,36 +7599,7 @@ var nts;
                             childDataKey: optionsChild,
                             initialExpandDepth: 10,
                             tabIndex: -1,
-                            features: [
-                                {
-                                    name: "Selection",
-                                    multipleSelection: true,
-                                    activation: true,
-                                    rowSelectionChanged: function (evt, ui) {
-                                        var selectedRows = ui.selectedRows;
-                                        if (ko.unwrap(data.multiple)) {
-                                            if (ko.isObservable(data.selectedValues)) {
-                                                data.selectedValues(_.map(selectedRows, function (row) {
-                                                    return row.id;
-                                                }));
-                                            }
-                                        }
-                                        else {
-                                            if (ko.isObservable(data.value)) {
-                                                data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    name: "RowSelectors",
-                                    enableCheckBoxes: showCheckBox,
-                                    checkBoxMode: "biState"
-                                },
-                                {
-                                    name: "Resizing"
-                                }
-                            ]
+                            features: features
                         });
                         var treeGridId = $treegrid.attr('id');
                         $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
