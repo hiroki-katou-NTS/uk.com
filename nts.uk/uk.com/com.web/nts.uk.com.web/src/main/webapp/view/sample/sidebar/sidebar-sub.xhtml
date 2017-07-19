@@ -10,6 +10,8 @@
 	<ui:composition template="../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<script>var dialogSize = { width: 900, height: 700 };</script>
+            <com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 		</ui:define>
 
@@ -52,7 +54,16 @@
 					<button>操作がなかったため</button>
 					<button>接続を切断しました</button>
 				</div>
-				<div class="contents-area">Content 2</div>
+				<div class="contents-area">
+					<table id="multi-list" data-bind="ntsGridList: {
+							height: 350,
+							options: items,
+							optionsValue: 'code',
+							columns: columns,
+							multiple: true,
+							value: currentCodeList
+						}"></table>
+               </div>
 			</div>
 			<div id="tabpanel-3" role="tabpanel">
 				<div class="sidebar-content-header">
@@ -62,7 +73,9 @@
 					<button>操作がなかったため</button>
 					<button>接続を切断しました</button>
 				</div>
-				<div class="contents-area">Content 3</div>
+				<div class="contents-area">
+                    <table id="grid"></table>
+				</div>
 			</div>
 			<div id="tabpanel-4" role="tabpanel">
 				<div class="sidebar-content-header">
