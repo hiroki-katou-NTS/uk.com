@@ -12,9 +12,6 @@ public interface CompanySpecificDateRepository {
 	//insert to Company Specific Date 
 	void InsertComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem);
 	
-	//update to Company Specific Date 
-	void UpdateComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem);
-	
 	//delete to Company Specific Date 
-	void DeleteComSpecDate(CompanySpecificDateItem lstComSpecDateItem);
+	void DeleteComSpecDate(String companyId,String processMonth);
 }
