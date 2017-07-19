@@ -206,7 +206,9 @@ module kcp.share.tree {
                 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
                    self.addIconToAlreadyCol();
-                    $('.tree-component-node-text-col').tooltip();
+                   $('.tree-component-node-text-col').tooltip({
+                       track: true
+                   });
                 });
                 // defined function focus
                 $.fn.focusTreeGridComponent = function() {
