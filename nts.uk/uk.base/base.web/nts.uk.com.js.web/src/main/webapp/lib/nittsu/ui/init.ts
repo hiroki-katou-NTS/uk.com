@@ -50,6 +50,18 @@ module nts.uk.ui {
             
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");
+            
+            //avoid page content overlap header and function area
+            var content_height=50+20;//header height+ content area botton padding,top padding
+            if($("#functions-area").length!=0){
+                content_height +=49;//top function area height
+            }
+            if($("#functions-area-bottom").length!=0){
+                content_height +=74;//top function area height
+            }
+            $("#contents-area").css("height","calc(100vh - "+content_height+"px)");
+//            if($("#functions-area-bottom").length!=0){
+//            }
         }
         
         $(function () {

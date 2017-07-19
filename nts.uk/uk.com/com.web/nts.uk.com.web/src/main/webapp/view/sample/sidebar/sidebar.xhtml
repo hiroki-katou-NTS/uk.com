@@ -11,9 +11,11 @@
 	<ui:composition template="../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 300, height: 200 };</script>
+            <com:scriptfile set="IGNITE" />
 			<com:stylefile path="../catalog/catalog.css" />
-			<com:scriptfile path="start.js" />
 			<com:scriptfile path="../catalog/catalog.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
 			<script>
 					function openSubWindow (){
 						nts.uk.ui.windows.sub.modeless("/view/sample/sidebar/sidebar-sub.xhtml");
@@ -31,8 +33,7 @@
 				<div id="content" class="cf">
 					<h1>Sidebar</h1>
 					<article class="cf">
-						<button data-bind="click: openSubWindow">Dialog with
-							Sidebar</button>
+						<button data-bind="click: openSubWindow">Dialog with Sidebar</button>
 						<button data-bind="click: openNewTab">Page with Sidebar</button>
 					</article>
 					<article class="cf">

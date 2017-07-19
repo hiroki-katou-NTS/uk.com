@@ -10,7 +10,7 @@
 		<ui:composition template="../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 300, height: 200 };</script>
-				
+				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="viewmodel.js" />
@@ -30,10 +30,16 @@
 										<span>Tab Content 1</span><br/>
 									</div>
 									<div class="tab-content-2">
-										<span>Tab Content 2</span><br/>
+										<table id="multi-list" data-bind="ntsGridList: {
+										 		height: 350,
+										 		options: items,
+										 		optionsValue: 'code',
+										 		columns: columns,
+										 		multiple: true,
+										 		value: currentCodeList }"></table>
 									</div>
 									<div class="tab-content-3">
-										<span>Tab Content 3</span><br/>
+										<table id="grid"></table>
 									</div>
 									<div class="tab-content-4">
 										<p>Fusce vitae libero non sem blandit pharetra a vel mi. Integer euismod pellentesque hendrerit. Nam interdum maximus lacus. Mauris dapibus pulvinar quam vitae maximus. Morbi dapibus vitae ligula at facilisis. Quisque rhoncus magna ut enim scelerisque, venenatis tempus lacus volutpat. Sed ut tellus erat. Morbi sollicitudin luctus condimentum. Sed malesuada hendrerit dignissim.</p>
@@ -71,8 +77,8 @@
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-html">Usage</a></li>
+									<li><a href="#tabs-api">API</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
@@ -90,102 +96,7 @@
 		<span>Tab Content 4</span><br/>
 	</div>
 </div>]]></pre>
-									<div class="pull-left">
-										<h2>API</h2>
-										<table>
-											<colgroup>
-												<col width="200px" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th><h4>Binding</h4></th>
-													<th><h4>Description</h4></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>dataSource</td>
-													<td>
-														<b>Type:</b> array&lt;<a href="#TabModel"><span class="color">TabModel</span></a>&gt;<br/>
-														Set checked value for CheckBox
-													</td>
-												</tr>
-												<tr>
-													<td>active</td>
-													<td>
-														<b>Type:</b> string<br/>
-														ID string of active tab
-													</td>
-												</tr>
-												<tr>
-													<td>direction<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> string<br/>
-														<b>Default:</b> "horizontal"<br/>
-														<b>Members:</b><br/>
-														<i>horizontal</i> Tabpanel display horizontal<br/>
-														<i>vertical</i> Tabpanel display vertical
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-									<div id="TabModel" class="feature-box pull-right" style="width:50%;">
-										<div class="header"><h3 >TabModel</h3></div>
-										<div class="content">
-											<table style="width:100%;">
-												<colgroup>
-													<col width="200px" />
-												</colgroup>
-												<thead>
-													<tr>
-														<th><h4>Properties</h4></th>
-														<th><h4>Description</h4></th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>id</td>
-														<td>
-															<b>Type:</b> string<br/>
-															Id for tab panel navagator
-														</td>
-													</tr>
-													<tr>
-														<td>title</td>
-														<td>
-															<b>Type:</b> string<br/>
-															Title for tab panel navagator
-														</td>
-													</tr>
-													<tr>
-														<td>content</td>
-														<td>
-															<b>Type:</b> string<br/>
-															Jquery selector for tab panel content
-														</td>
-													</tr>
-													<tr>
-														<td>enable</td>
-														<td>
-															<b>Type:</b> KnockoutObservable&lt;boolean&gt;<br/>
-															Enable/disable tab panel. When disable tab panel content will be hide
-														</td>
-													</tr>
-													<tr>
-														<td>visible</td>
-														<td>
-															<b>Type:</b> KnockoutObservable&lt;boolean&gt;<br/>
-															Show/hide tab panel navagator
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-								<div id="tabs-viewmodel" class="cf">
-									<h2>TypeScript</h2>
+									<h2>ViewModel</h2>
 <pre><![CDATA[export class ScreenModel {
 	tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
 	selectedTab: KnockoutObservable<string>;
@@ -201,6 +112,97 @@
 		self.selectedTab = ko.observable('tab-2');
 	}
 }]]></pre>
+								</div>
+								<div id="tabs-api" class="cf">
+									<h2>Properties</h2>
+									<table class="table">
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Name</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>dataSource</td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;TabModel&gt;<br/>
+													List TabModel for display
+													<div class="catalog-accordion">
+														<a href="#TabModel">TabModel</a>
+														<table class="table">
+															<colgroup>
+																<col width="150px" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th><h4>Name</h4></th>
+																	<th><h4>Description</h4></th>
+																</tr>
+															</thead>
+																<tbody>
+																	<tr>
+																		<td>id</td>
+																		<td>
+																			<b>Type:</b> string<br/>
+																			Id for tab panel navagator
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>title</td>
+																		<td>
+																			<b>Type:</b> string<br/>
+																			Title for tab panel navagator
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>content</td>
+																		<td>
+																			<b>Type:</b> string<br/>
+																			Jquery selector for tab panel content
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>enable</td>
+																		<td>
+																			<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+																			Enable/disable tab panel. When disable tab panel content will be hide
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>visible</td>
+																		<td>
+																			<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+																			Show/hide tab panel navagator
+																		</td>
+																	</tr>
+																</tbody>
+														</table>
+													</div>													
+												</td>
+											</tr>
+											<tr>
+												<td>active</td>
+												<td>
+													<b>Type:</b> string<br/>
+													ID string of active tab
+												</td>
+											</tr>
+											<tr>
+												<td>direction<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													<b>Default:</b> "horizontal"<br/>
+													<b>Members:</b><br/>
+													<i>horizontal</i> Tabpanel display horizontal<br/>
+													<i>vertical</i> Tabpanel display vertical
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</article>

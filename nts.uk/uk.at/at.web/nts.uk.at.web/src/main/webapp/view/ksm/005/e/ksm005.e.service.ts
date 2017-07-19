@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksm005.f {
+module nts.uk.at.view.ksm005.e {
     export module service {
         var paths = {
         }

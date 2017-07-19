@@ -55,8 +55,10 @@ module nts.uk.ui.jqueryExtentions {
 
         function init(control: JQuery, option: any): JQuery {
             $("html").addClass("sidebar-html");
+            control.find("div[role=tabpanel]").addClass("disappear");
+            
             var settings: SideBarSetting = $.extend({}, defaultOption, option);
-            control.find("div[role=tabpanel]").hide();
+            
             control.off("click", "#sidebar-area .navigator a");
             control.on("click", "#sidebar-area .navigator a", function(event) {
             	event.preventDefault();
@@ -74,6 +76,7 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 settings.activate.call(this, event, info);
             });
+            
             active(control, settings.active);
             return control;
         }
@@ -81,15 +84,14 @@ module nts.uk.ui.jqueryExtentions {
         function active(control: JQuery, index: number): JQuery {
             control.find("#sidebar-area .navigator a").removeClass("active");
             control.find("#sidebar-area .navigator a").eq(index).addClass("active");
-            control.find("div[role=tabpanel]").hide();
-            $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
+            control.find("div[role=tabpanel]").addClass("disappear");
+            $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).removeClass("disappear");
             return control;
         }
 
         function enable(control: JQuery, index: number): JQuery {
             control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
             return control;
-
         }
 
         function disable(control: JQuery, index: number): JQuery {
@@ -112,9 +114,7 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function getCurrent(control: JQuery): number {
-            let index = 0;
-            index = control.find("#sidebar-area .navigator a.active").closest("li").index();
-            return index;
+            return control.find("#sidebar-area .navigator a.active").closest("li").index();
         }
     }
 }

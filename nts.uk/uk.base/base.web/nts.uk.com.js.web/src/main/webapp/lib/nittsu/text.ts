@@ -620,19 +620,40 @@
         }
         
         var units = {
-            "JPY":　new NumberUnit("JPY", "円", "right", "ja-JP"),        
-            "PERCENT":　new NumberUnit("PERCENT", "%", "right", "ja-JP"),
-            "DAYS":　new NumberUnit("DAYS", "日", "right", "ja-JP"),
-            "MONTHS":　new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
-            "YEARS":　new NumberUnit("YEARS", "年", "right", "ja-JP"),
-            "FIS_MONTH":　new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
-            "FIS_YEAR":　new NumberUnit("FIS_YEAR", "年度", "right", "ja-JP"),
-            "TIMES":　new NumberUnit("TIMES", "回", "right", "ja-JP")
+            "JPY":　{
+                "ja": new NumberUnit("JPY", "円", "right", "ja"),
+                "en": new NumberUnit("JPY", "\u00A5", "left", "en")    
+            },        
+            "PERCENT":　{
+                "ja": new NumberUnit("PERCENT", "%", "right", "ja"),
+                "en": new NumberUnit("PERCENT", "%", "right", "en")        
+            },
+            "DAYS":　{
+                "ja": new NumberUnit("DAYS", "日", "right", "ja")    
+            },
+            "MONTHS":　{
+                "ja": new NumberUnit("MONTHS", "ヶ月", "right", "ja")     
+            },
+            "YEARS":　{
+                "ja": new NumberUnit("YEARS", "年", "right", "ja")      
+            },
+            "FIS_MONTH":　{
+                "ja": new NumberUnit("FIS_MONTH", "月度", "right", "ja")       
+            },
+            "FIS_YEAR":　{
+                "ja": new NumberUnit("FIS_YEAR", "年度", "right", "ja")        
+            },
+            "TIMES":　{
+                "ja": new NumberUnit("TIMES", "回", "right", "ja")    
+            },
+            "AGE":　{
+                "ja": new NumberUnit("AGE", "歳", "right", "ja")    
+            }
         };
         
         export function getNumberUnit(unitId: string): NumberUnit{
             //TODO: get system language. Default: japanese
-            return units[unitId];
+            return units[unitId][systemLanguage];
         }
     }
 }

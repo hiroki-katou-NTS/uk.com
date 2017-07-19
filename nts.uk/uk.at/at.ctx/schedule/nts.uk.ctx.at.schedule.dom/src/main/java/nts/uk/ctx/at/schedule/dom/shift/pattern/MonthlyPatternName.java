@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class MonthlyPatternName.
  */
 //月間パターンコード
-@StringMaxLength(40)
+@StringMaxLength(20)
 public class MonthlyPatternName extends StringPrimitiveValue<MonthlyPatternName>{
 	
 	/** The Constant serialVersionUID. */

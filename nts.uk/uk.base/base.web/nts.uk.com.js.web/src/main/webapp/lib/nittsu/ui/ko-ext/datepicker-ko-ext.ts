@@ -752,7 +752,7 @@ module nts.uk.ui.koExtentions {
                     }
                 } else if (self.options.format === self.Y_FORMAT) {
                     let postCalcVal = parsedTime.year + value;
-                    if (postCalcVal < 1899) {
+                    if (postCalcVal < 1900) {
                         year = 9999;
                     } else if (postCalcVal > 9999) {
                         year = 1900;

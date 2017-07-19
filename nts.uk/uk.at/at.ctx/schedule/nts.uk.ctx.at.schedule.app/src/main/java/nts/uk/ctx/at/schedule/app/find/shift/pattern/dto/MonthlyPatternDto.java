@@ -15,18 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class MonthlyPatternDto.
  */
 
-/**
- * Gets the name.
- *
- * @return the name
- */
 @Getter
-
-/**
- * Sets the name.
- *
- * @param name the new name
- */
 @Setter
 public class MonthlyPatternDto implements MonthlyPatternSetMemento{
 	
