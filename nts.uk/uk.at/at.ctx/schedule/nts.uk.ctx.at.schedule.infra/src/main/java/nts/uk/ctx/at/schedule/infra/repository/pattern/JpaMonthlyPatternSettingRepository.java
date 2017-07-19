@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,9 +18,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSet_;
 
@@ -29,6 +32,12 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSet_;
 @Stateless
 public class JpaMonthlyPatternSettingRepository extends JpaRepository
 		implements MonthlyPatternSettingRepository {
+	
+	/** The Constant FIRST_LENGTH. */
+	public static final int FIRST_LENGTH = 1;
+	
+	/** The Constant FIRST_DATA. */
+	public static final int FIRST_DATA = 0;
 	
 	/*
 	 * (non-Javadoc)
@@ -51,8 +60,20 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void update(MonthlyPatternSetting monthlyPatternSetting) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().update(this.toEntity(monthlyPatternSetting));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingRepository#
+	 * remove(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void remove(String employeeId, String monthlyPatternCode) {
+		this.commandProxy().remove(KmpstMonthPatternSet.class,
+				new KmpstMonthPatternSetPK(monthlyPatternCode, employeeId));
 	}
 
 	/*
@@ -63,7 +84,7 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 	 * findById(java.lang.String)
 	 */
 	@Override
-	public Optional<MonthlyPatternSetting> findById(String emmployeeId) {
+	public Optional<MonthlyPatternSetting> findById(String employeeId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -84,7 +105,60 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 		// equal employee id
 		lstpredicateWhere
 				.add(criteriaBuilder.equal(root.get(KmpstMonthPatternSet_.kmpstMonthPatternSetPK)
-						.get(KmpstMonthPatternSetPK_.sid), emmployeeId));
+						.get(KmpstMonthPatternSetPK_.sid), employeeId));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KmpstMonthPatternSet> query = em.createQuery(cq).setMaxResults(FIRST_LENGTH);
+
+		// exclude select
+		List<KmpstMonthPatternSet> resData = query.getResultList();
+
+		if (CollectionUtil.isEmpty(resData)) {
+			return Optional.empty();
+		}
+
+		return Optional.ofNullable(this.toDomain(resData.get(FIRST_DATA)));
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingRepository#
+	 * findAllByEmployeeIds(java.lang.String)
+	 */
+	@Override
+	public List<MonthlyPatternSetting> findAllByEmployeeIds(List<String> employeeIds) {
+		
+		// check exist data input
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMPST_MONTH_PATTERN_SET (KmpstMonthPatternSet SQL)
+		CriteriaQuery<KmpstMonthPatternSet> cq = criteriaBuilder
+				.createQuery(KmpstMonthPatternSet.class);
+
+		// root data
+		Root<KmpstMonthPatternSet> root = cq.from(KmpstMonthPatternSet.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal employee id
+		lstpredicateWhere
+				.add(criteriaBuilder.and(root.get(KmpstMonthPatternSet_.kmpstMonthPatternSetPK)
+						.get(KmpstMonthPatternSetPK_.sid).in(employeeIds)));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -93,9 +167,10 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 		TypedQuery<KmpstMonthPatternSet> query = em.createQuery(cq);
 
 		// exclude select
-		return Optional.ofNullable(this.toDomain(query.getSingleResult()));
+		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+				.collect(Collectors.toList());
+
 	}
-	
 	/**
 	 * To domain.
 	 *
@@ -117,7 +192,6 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 		domain.saveToMemento(new JpaMonthlyPatternSettingSetMemento(entity));
 		return entity;
 	}
-
 
 
 }

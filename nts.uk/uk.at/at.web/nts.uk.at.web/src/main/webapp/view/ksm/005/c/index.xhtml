@@ -26,8 +26,8 @@
 				<div id="functions-area">
 					<a data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
-					<button class="proceed">#{i18n.getText('KSM005_9')}</button>
-					<button class="danger">#{i18n.getText('KSM005_12')}</button>
+					<button class="proceed" data-bind="click: saveMonthlyPatternSetting, enable: enableSave">#{i18n.getText('KSM005_9')}</button>
+					<button class="danger" data-bind="click: deleteMonthlyPatternSetting, enable: enableDelete">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">
 					<div id="ccgcomponent"></div>
@@ -36,16 +36,15 @@
 						<div class="lableData" data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KSM005_21')}</label>
 						</div>
-						<label  data-bind="text: employeeInfo().name"></label>
+						<label  data-bind="text: employeeName"></label>
 						<br />
 						<br />
 						<div class="lableData"
 							data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KSM005_22')}</label>
 						</div>
-						<button data-bind="click: onpenDialogSystemChange">#{i18n.getText('KSM005_23')}</button>
-						<label  data-bind="text: employeeInfo().code"></label>
-						<label  data-bind="text: employeeInfo().name"></label>
+						<button data-bind="click: onpenDialogSystemChange, enable: enableSystemChange">#{i18n.getText('KSM005_23')}</button>
+						<label  data-bind="text: monthlyPatternSetting"></label>
 					</div>
 				</div>
 			</ui:define>

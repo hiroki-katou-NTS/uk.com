@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate.SpecificDateItemCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate.UpdateSpecificDateItemCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate.UpdateSpecificDateSetCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate.UpdateSpecificDateSetCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.specificdate.SpecificDateItemDto;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.specificdate.SpecificDateItemFinder;
 
@@ -22,7 +24,8 @@ public class SpecificDateItemWebService extends WebService {
 	private SpecificDateItemFinder find;
 	@Inject
 	private UpdateSpecificDateItemCommandHandler update;
-	
+	@Inject
+	private UpdateSpecificDateSetCommandHandler updateSet;
 	@POST
 	@Path("getallspecificdate")
 	public List<SpecificDateItemDto> getAllSpecificDateByCompany() {
@@ -45,5 +48,10 @@ public class SpecificDateItemWebService extends WebService {
 	@Path("getspecificdatebylistcode")
 	public List<SpecificDateItemDto> getSpecificDateByListCode(List<String> lstSpecificDateItem){
 		return this.find.getSpecificDateItemByListCode(lstSpecificDateItem);
+	}
+	@POST
+	@Path("updatespecificdateSet")
+	public void updateSpecificDateSet(UpdateSpecificDateSetCommand command){
+		this.updateSet.handle(command);
 	}
 }

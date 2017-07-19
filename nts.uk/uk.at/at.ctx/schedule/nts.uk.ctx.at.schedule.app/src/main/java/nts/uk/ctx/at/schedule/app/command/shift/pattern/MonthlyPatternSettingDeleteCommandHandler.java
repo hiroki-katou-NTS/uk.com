@@ -9,15 +9,14 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingRepository;
 
 /**
  * The Class MonthlyPatternSettingAddCommandHandler.
  */
 @Stateless
-public class MonthlyPatternSettingAddCommandHandler
-		extends CommandHandler<MonthlyPatternSettingAddCommand> {
+public class MonthlyPatternSettingDeleteCommandHandler
+		extends CommandHandler<MonthlyPatternSettingDeleteCommand> {
 
 	/** The repository. */
 	@Inject
@@ -31,14 +30,13 @@ public class MonthlyPatternSettingAddCommandHandler
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<MonthlyPatternSettingAddCommand> context) {
+	protected void handle(CommandHandlerContext<MonthlyPatternSettingDeleteCommand> context) {
 		
 		//get command
-		MonthlyPatternSettingAddCommand command = context.getCommand();
+		MonthlyPatternSettingDeleteCommand command = context.getCommand();
 		
-		MonthlyPatternSetting domain = command.toDomain();
-		
-		this.repository.add(domain);
+		// call repository remove
+		this.repository.remove(command.getEmployeeId(), command.getMonthlyPatternCode());
 	}
 
 }

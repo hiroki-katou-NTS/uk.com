@@ -27,7 +27,7 @@ module ksm002.e{
                 service.getSpecificdateByListCode(param.selectable).done(function(data){
                     _.each(data, item => {
                         self.dataSource.push(new SpecificDateItemDto(
-                                item.timeItemId, 
+                                item.specificDateItemNo, 
                                 0,
                                 item.specificDateItemNo,
                                 item.specificName));
@@ -36,7 +36,7 @@ module ksm002.e{
                     if(param.selecteds != []){
                         _.each(param.selecteds, selectedCode =>{
                             _.find(self.dataSource(), function(items){
-                                if(items.timeItemId() == selectedCode) items.useAtr(1);
+                                if(items.specificDateItemNo() == selectedCode) items.useAtr(1);
                             });
                         });
                     }
@@ -58,7 +58,7 @@ module ksm002.e{
                 let selectedCodes = [];
                 _.each(self.dataSource(), item => {
                     if(item.useAtr()== 1){
-                        selectedCodes.push(item.timeItemId());
+                        selectedCodes.push(item.specificDateItemNo());
                     }
                 });
                 setShared('KSM002E_VALUES', {date: self.date,selecteds: selectedCodes});

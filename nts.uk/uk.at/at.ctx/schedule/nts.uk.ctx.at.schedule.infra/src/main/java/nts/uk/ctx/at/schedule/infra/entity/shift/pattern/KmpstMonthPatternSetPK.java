@@ -37,7 +37,23 @@ public class KmpstMonthPatternSetPK implements Serializable {
     @Column(name = "SID")
     private String sid;
 
+    /**
+     * Instantiates a new kmpst month pattern set PK.
+     */
     public KmpstMonthPatternSetPK() {
     }
+
+	/**
+	 * Instantiates a new kmpst month pattern set PK.
+	 *
+	 * @param monthPatternCd the month pattern cd
+	 * @param sid the sid
+	 */
+	public KmpstMonthPatternSetPK(String monthPatternCd, String sid) {
+		super();
+		this.monthPatternCd = monthPatternCd;
+		this.sid = sid;
+	}
+    
     
 }
