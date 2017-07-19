@@ -9,68 +9,99 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSetPK;
+
 @Stateless
-public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements WorkplaceSpecificDateRepository{
-	private static final String SELECT_BY_DATE = "SELECT c FROM KsmmtWpSpecDateSet c "
-			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
-			+ " AND c.ksmmtWpSpecDateSetPK.specificDate = :specificDate";
+public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements WorkplaceSpecificDateRepository {
+
+	private static final String SELECT_NO_WHERE = "SELECT s FROM KsmmtWpSpecDateSet s";
+
+	private static final String GET_BY_DATE = SELECT_NO_WHERE 
+			+ " WHERE s.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND s.ksmmtWpSpecDateSetPK.specificDate = :specificDate";
+
+	// get List With Name of Specific
+	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KsmmtWpSpecDateSet s"
+			+ " INNER JOIN KsmstSpecificDateItem p ON p.itemNo = s.ksmmtWpSpecDateSetPK.specificDateItemNo"
+			+ " WHERE s.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND CAST(s.ksmmtWpSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')"
+			+ " AND p.useAtr = :useAtr";
 	
-	private static WorkplaceSpecificDateItem toDomain(KsmmtWpSpecDateSet entity){
-		val domain = WorkplaceSpecificDateItem.createFromJavaType(entity.ksmmtWpSpecDateSetPK.workplaceId,
-				entity.ksmmtWpSpecDateSetPK.specificDate,
-				entity.ksmmtWpSpecDateSetPK.specificDateItemNo);
-		return domain;
-	}
-	private static KsmmtWpSpecDateSet toEntity(WorkplaceSpecificDateItem domain){
-		val entity = new KsmmtWpSpecDateSet();
-		entity.ksmmtWpSpecDateSetPK = new KsmmtWpSpecDateSetPK();
-		entity.ksmmtWpSpecDateSetPK.workplaceId = domain.getWorkplaceId();
-		entity.ksmmtWpSpecDateSetPK.specificDate = domain.getSpecificDate().v();
-		entity.ksmmtWpSpecDateSetPK.specificDateItemNo = domain.getSpecificDateItemNo().v();
-		return entity;
-	}
-	/**
-	 * get workplace Spec By Date
-	 * @param workplaceId
-	 * @param specificDate
-	 * @return
-	 */
+	//Delete by Month 
+	
+	private final String DELETE_BY_YEAR_MONTH = "DELETE from KsmmtWpSpecDateSet c "
+			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND c.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
+			+ " AND c.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
+	
+
+	// No WITH name
 	@Override
 	public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, int specificDate) {
-		return this.queryProxy().query(SELECT_BY_DATE, KsmmtWpSpecDateSet.class)
+		return this.queryProxy().query(GET_BY_DATE, KsmmtWpSpecDateSet.class)
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("specificDate", specificDate)
-				.getList(c->toDomain(c));
+				.getList(x -> toDomain(x));
 	}
-	/**
-	 * add WorkplaceSpec
-	 * @param lstWorkplaceSpecificDate
-	 */
+
+	// WITH name
 	@Override
-	public void addWorkplaceSpec(List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate) {
+	public List<WorkplaceSpecificDateItem> getWpSpecByDateWithName(String workplaceId, String specificDate, int useAtr) {
+		return this.queryProxy().query(GET_BY_USE_WITH_NAME, Object[].class)
+				.setParameter("workplaceId", workplaceId)
+				.setParameter("specificDate", specificDate)
+				.setParameter("useAtr", useAtr)
+				.getList(x -> toDomainWithName(x));
+	}
+
+	// No with name
+	private static WorkplaceSpecificDateItem toDomain(KsmmtWpSpecDateSet entity) {
+		WorkplaceSpecificDateItem domain = WorkplaceSpecificDateItem.createFromJavaType(
+				entity.ksmmtWpSpecDateSetPK.workplaceId, entity.ksmmtWpSpecDateSetPK.specificDate,
+				entity.ksmmtWpSpecDateSetPK.specificDateItemNo, "");
+		return domain;
+	}
+
+	// With NAME
+	private static WorkplaceSpecificDateItem toDomainWithName(Object[] object) {
+		String specificDateItemName = (String) object[0];
+		KsmmtWpSpecDateSet entity = (KsmmtWpSpecDateSet) object[2];
+		WorkplaceSpecificDateItem domain = WorkplaceSpecificDateItem.createFromJavaType(
+				entity.ksmmtWpSpecDateSetPK.workplaceId, 
+				entity.ksmmtWpSpecDateSetPK.specificDate,
+				entity.ksmmtWpSpecDateSetPK.specificDateItemNo, 
+				specificDateItemName);
+		return domain;
+	}
+	
+	//No with Name 
+	private static KsmmtWpSpecDateSet toEntity(WorkplaceSpecificDateItem domain){
+		val entity = new KsmmtWpSpecDateSet();
+		entity.ksmmtWpSpecDateSetPK = new KsmmtWpSpecDateSetPK(
+				domain.getWorkplaceId(),
+				domain.getSpecificDate().v(),
+				domain.getSpecificDateItemNo().v());
+		return entity;
+	}
+	// No with name 
+	@Override
+	public void InsertWpSpecDate(List<WorkplaceSpecificDateItem> lstWpSpecDateItem) {
 		List<KsmmtWpSpecDateSet> lstEntity = new ArrayList<>();
-		for (WorkplaceSpecificDateItem workplaceSpecificDateItem : lstWorkplaceSpecificDate) {
-			KsmmtWpSpecDateSet entity = toEntity(workplaceSpecificDateItem);
-			lstEntity.add(entity);
+		for(WorkplaceSpecificDateItem wpSpecDateItem : lstWpSpecDateItem){
+			lstEntity.add(toEntity(wpSpecDateItem));
 		}
 		this.commandProxy().insertAll(lstEntity);
 	}
-	/**
-	 * delete WorkplaceSpec
-	 * @param workplaceId
-	 * @param specificDate
-	 */
-	@Override
-	public void deleteWorkplaceSpec(String workplaceId, int specificDate) {
-		List<KsmmtWpSpecDateSet> lstEntity = new ArrayList<>();
-		List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate = this.getWorkplaceSpecByDate(workplaceId, specificDate);
-		for (WorkplaceSpecificDateItem workplaceSpecificDateItem : lstWorkplaceSpecificDate) {
-			KsmmtWpSpecDateSet entity = toEntity(workplaceSpecificDateItem);
-			lstEntity.add(entity);
-		}
-		this.commandProxy().removeAll(lstEntity);
-	}
 
+	
+	@Override
+	public void DeleteWpSpecDate(String workplaceId, String processMonth) {
+		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+			.setParameter("workplaceId", workplaceId)
+			.setParameter("startYm", Integer.valueOf(processMonth+"01"))
+			.setParameter("endYm", Integer.valueOf(processMonth+"31"))
+			.executeUpdate();
+	}
 }

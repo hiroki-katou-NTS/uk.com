@@ -43,14 +43,14 @@
 					<button class="proceed" data-bind="click: Register">#{i18n.getText('KSM002_6')}</button>
 					<button id="btnSpecSetting" data-bind="click: openKsm002CDialog">#{i18n.getText('KSM002_7')}</button>
 					<button>#{i18n.getText('KSM002_8')}</button>
-					<button class="danger">#{i18n.getText('KSM002_9')}</button>
+					<button class="danger" data-bind="click : DeleteOneMonth">#{i18n.getText('KSM002_9')}</button>
 				</div>
 				<div id="screenA" class="contents-area">
 					<div class="panel panel-frame">
 						<label class="info">#{i18n.getText('KSM002_10')}</label><BR />
 						<div
 							data-bind="ntsMultiCheckBox: {
-							options: itemList,
+							options: boxItemList,
 							optionsValue: 'id',
 							optionsText: 'name',
 							value: selectedIds,	
