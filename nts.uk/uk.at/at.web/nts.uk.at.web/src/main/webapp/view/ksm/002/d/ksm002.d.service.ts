@@ -13,6 +13,6 @@ module ksm002.d.service {
 
     
     export function updateSpecificDateSet(objectToUpdate: viewmodel.ObjectToUpdate): JQueryPromise<void> {
-        return nts.uk.request.ajax("at", paths.updateSpecificDateSet, viewmodel.ObjectToUpdate);
+        return nts.uk.request.ajax("at", paths.updateSpecificDateSet, objectToUpdate);
     }
 }

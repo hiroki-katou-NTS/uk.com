@@ -135,7 +135,7 @@ module ksm002.d{
                 }
                 let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), "");
                 service.updateSpecificDateSet(object).done(function(data) {
-                    
+                    nts.uk.ui.windows.close(); 
                 }).fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     dfd.reject(res); 
