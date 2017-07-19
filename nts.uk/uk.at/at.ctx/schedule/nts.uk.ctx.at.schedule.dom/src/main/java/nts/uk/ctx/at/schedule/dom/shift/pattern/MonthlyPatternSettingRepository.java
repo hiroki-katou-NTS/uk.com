@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,14 +25,29 @@ public interface MonthlyPatternSettingRepository {
 	 */
 	public void update(MonthlyPatternSetting monthlyPatternSetting);
 	
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param employeeId the employee id
+	 * @param monthlyPatternCode the monthly pattern code
+	 */
+	public void remove(String employeeId, String monthlyPatternCode);
+		
 	/**
 	 * Find by id.
 	 *
-	 * @param emmployeeId the emmployee id
+	 * @param employeeId the employee id
 	 * @return the optional
 	 */
-	public Optional<MonthlyPatternSetting> findById(String emmployeeId);
+	public Optional<MonthlyPatternSetting> findById(String employeeId);
 	
 	
-	
+	/**
+	 * Find all by employee ids.
+	 *
+	 * @param employeeIds the employee ids
+	 * @return the list
+	 */
+	public List<MonthlyPatternSetting> findAllByEmployeeIds(List<String> employeeIds);
 }
