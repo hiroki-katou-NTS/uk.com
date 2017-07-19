@@ -10,9 +10,13 @@
         <ui:composition template="../../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
-            	
+            	<com:ValidatorScript>
+					nts.arc.time.YearMonth
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+					nts.uk.shr.com.primitive.sample.SampleTimeClock
+   				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="../catalog/catalog.css" />
-				<com:scriptfile path="/lib/generic/jquery/jquery.steps.js" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="viewmodel.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
@@ -45,11 +49,96 @@
 								</div>
 								<div class="contents">
 									<div class="step-1">contents step1</div>
-									<div class="step-2">contents step2</div>
-									<div class="step-3">contents step3</div>
-									<div class="step-4">contents step4</div>
-									<div class="step-5">contents step5</div>
-									<div class="step-6">contents step6</div>
+									<div class="step-2">
+										<div data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+										items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
+										<h3>Multi Selection</h3>
+										<table id="multi-list" data-bind="ntsGridList: {
+											height: 320,
+											options: items,
+											optionsValue: 'code',
+											columns: columns,
+											multiple: true,
+											value: currentCodeList
+										}"></table>
+									</div>
+									<div class="step-3">
+										<h3>Multi Selection</h3>
+										<table id="single-list" data-bind="ntsGridList: {
+												height: 320,
+												options: items,
+												optionsValue: 'code',
+												columns: columns,
+												multiple: false,
+												value: currentCode
+										}"></table>
+									</div>
+									<div class="step-4">
+										<div id="list-box" data-bind="ntsListBox: {
+											options: items,
+											optionsValue: 'code',
+											optionsText: 'name',
+											multiple: false,
+											value: currentCode,
+											rows: 10,
+											columns: [
+												{ key: 'code', length: 4 },
+												{ key: 'name', length: 10 },
+												{ key: 'description', length: 10 }
+											]}"></div>
+									</div>
+									<div class="step-5">
+										<div style="width: 100%; padding-right: 10px; border-right: 1px solid #ccc;">
+										<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+											<div class="tab-content-1">
+												<span>Tab Content 1</span><br/>
+											</div>
+											<div class="tab-content-2">
+												<span>Tab Content 2</span><br/>
+											</div>
+											<div class="tab-content-3">
+												<span>Tab Content 3</span><br/>
+											</div>
+											<div class="tab-content-4">
+												<p>Fusce vitae libero non sem blandit pharetra a vel mi. Integer euismod pellentesque hendrerit. Nam interdum maximus lacus. Mauris dapibus pulvinar quam vitae maximus. Morbi dapibus vitae ligula at facilisis. Quisque rhoncus magna ut enim scelerisque, venenatis tempus lacus volutpat. Sed ut tellus erat. Morbi sollicitudin luctus condimentum. Sed malesuada hendrerit dignissim.</p>
+												<p>Vestibulum sodales nisl tellus, a bibendum ligula eleifend vitae. Proin dictum eget mi ac mattis. Integer ex lectus, dapibus vitae nibh sit amet, bibendum porta urna. Suspendisse quis iaculis mauris. Integer efficitur bibendum dolor nec posuere. Integer blandit ante eu dolor ullamcorper accumsan. Fusce imperdiet mattis augue sed finibus. Nunc condimentum mollis magna, a euismod risus dapibus ut. Sed dolor nisl, iaculis quis ante sed, pretium tincidunt augue. Fusce sed sapien sapien. Cras suscipit, urna vitae maximus scelerisque, est dolor rutrum elit, id luctus est metus quis nunc. Pellentesque facilisis nibh ut libero scelerisque, non dapibus velit aliquet.</p>
+												<p>Aliquam pharetra tempor neque sed feugiat. Morbi velit quam, porttitor ac metus quis, sodales efficitur dui. Praesent convallis ligula dui. Duis placerat dignissim egestas. Fusce fermentum eleifend risus quis fermentum. Nullam vel dolor arcu. Vivamus id varius arcu. Ut commodo risus erat, quis tincidunt nisl tristique vitae. Maecenas in pulvinar odio. Sed feugiat viverra congue.</p>
+											</div>
+										</div>
+									</div>
+									<div style="width: 100%; padding-left: 10px;">
+										<div id="tab-panel" class="cf" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
+											<div class="tab-content-1">
+												<span>Tab Content 1</span><br/>
+											</div>
+											<div class="tab-content-2">
+												<span>Tab Content 2</span><br/>
+											</div>
+											<div class="tab-content-3">
+												<span>Tab Content 3</span><br/>
+											</div>
+											<div class="tab-content-4">
+												<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus laoreet magna sed massa feugiat, non accumsan nunc sollicitudin. Curabitur ligula nisl, rhoncus vitae feugiat nec, consequat posuere ex. Aenean accumsan a orci non vulputate. Sed fermentum metus vitae ex tristique, id cursus ex vehicula. Donec gravida felis lectus, sed iaculis sapien rutrum eget. Aliquam dui augue, ultricies non consequat ac, commodo vel mauris. Pellentesque molestie placerat justo sed ullamcorper. Quisque at suscipit mi, in mollis erat. Nulla congue ex eu ornare aliquet. Cras laoreet, odio vel tempor interdum, diam mi placerat nisl, in vehicula nisl mauris a sapien. Aenean id ex eros. Maecenas volutpat arcu at dolor mattis tincidunt. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+												<p>Curabitur pulvinar molestie libero, non rutrum quam pharetra sed. Sed vel congue ex. Maecenas interdum lacus enim, in laoreet metus blandit in. Etiam sem elit, ornare nec pulvinar a, pellentesque sed dui. Pellentesque dignissim tortor id erat eleifend congue. Suspendisse vitae dapibus sapien. Suspendisse tristique risus in leo luctus sagittis. Nulla sodales, nisi ut viverra pretium, diam libero pulvinar risus, id gravida orci dolor gravida nisl. Praesent at consequat leo, et mattis ex.</p>
+												<p>Aliquam pharetra tempor neque sed feugiat. Morbi velit quam, porttitor ac metus quis, sodales efficitur dui. Praesent convallis ligula dui. Duis placerat dignissim egestas. Fusce fermentum eleifend risus quis fermentum. Nullam vel dolor arcu. Vivamus id varius arcu. Ut commodo risus erat, quis tincidunt nisl tristique vitae. Maecenas in pulvinar odio. Sed feugiat viverra congue.</p>
+											</div>
+										</div>
+									</div>
+									</div>
+									<div class="step-6">
+										<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD ddd'}"></div>
+										<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD dddd'}"></div>
+										<div id="test" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM'}"></div>
+										<h3>Time Of Day(HH:mm)</h3>
+										<input data-name="Time Of Days Editor" data-bind="ntsTimeEditor: {name: 'Clock', constraint:'SampleTimeClock', value: timeOfDay, inputFormat: 'time', required: true}" />
+										<h3>Time (HH:mm)</h3>
+										<input data-name="Time Editor" data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: time, inputFormat: 'time', mode: 'time', required: true}" />
+										<hr/>
+										<div data-bind="with: yearmontheditor">
+											<h3>YearMonth (YYYY/MM)</h3>
+											<input data-name="YearMonth Editor" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: true}" />
+										</div>
+									</div>
 								</div>
 							</div>
 							

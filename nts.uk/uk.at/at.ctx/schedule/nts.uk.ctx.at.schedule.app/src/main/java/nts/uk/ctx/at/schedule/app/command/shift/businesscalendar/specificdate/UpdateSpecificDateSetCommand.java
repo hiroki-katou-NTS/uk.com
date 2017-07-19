@@ -10,7 +10,7 @@ public class UpdateSpecificDateSetCommand {
 	private int strDate;
 	private int endDate;
 	private List<Integer> dayofWeek;
-	private List<String> lstTimeItemId;
+	private List<Integer> lstTimeItemId;
 	private int setUpdate;
-	
+	private String workplaceId;
 }

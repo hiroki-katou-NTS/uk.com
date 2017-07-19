@@ -11,12 +11,12 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingGetMemento;
 
 /**
- * The Class MonthlyPatternSettingAddCommand.
+ * The Class MonthlyPatternSettingSaveCommand.
  */
 
 @Getter
 @Setter
-public class MonthlyPatternSettingAddCommand {
+public class MonthlyPatternSettingSaveCommand {
 
 	/** The employee id. */
 	private String employeeId;
