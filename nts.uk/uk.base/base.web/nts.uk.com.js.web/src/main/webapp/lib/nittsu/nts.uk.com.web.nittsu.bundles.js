@@ -1422,7 +1422,7 @@ var nts;
                     this.minus = minus;
                     this.hours = hours;
                     this.minutes = minutes;
-                    this.msg = msg || nts.uk.resource.getMessage("FND_E_DATE_YMD");
+                    this.msg = msg || "FND_E_TIME";
                 }
                 ResultParseTime.succeeded = function (minus, hours, minutes) {
                     return new ResultParseTime(true, minus, hours, minutes);
@@ -2600,7 +2600,9 @@ var nts;
                                 result.success(timeParse.toValue());
                             }
                             else {
-                                result.fail(timeParse.getMsg(), "FND_E_DATE_YMD");
+                                var msgId = timeParse.getMsg();
+                                var msg = nts.uk.resource.getMessage(msgId, [this.name, this.constraint.min, this.constraint.max]);
+                                result.fail(msg, msgId);
                                 return result;
                             }
                             if (!util.isNullOrUndefined(this.constraint)) {
@@ -2608,7 +2610,8 @@ var nts;
                                     maxStr = this.constraint.max;
                                     var max = uk.time.parseTime(this.constraint.max);
                                     if (timeParse.success && (max.toValue() < timeParse.toValue())) {
-                                        result.fail("", "");
+                                        var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
+                                        result.fail(msg, "FND_E_TIME");
                                         return result;
                                     }
                                 }
@@ -2616,7 +2619,8 @@ var nts;
                                     minStr = this.constraint.min;
                                     var min = uk.time.parseTime(this.constraint.min);
                                     if (timeParse.success && (min.toValue() > timeParse.toValue())) {
-                                        result.fail("", "");
+                                        var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
+                                        result.fail(msg, "FND_E_TIME");
                                         return result;
                                     }
                                 }
@@ -2658,7 +2662,7 @@ var nts;
                                     maxStr = this.constraint.max;
                                     var maxMoment = moment.duration(maxStr);
                                     if (parseResult.success && (maxMoment.hours() * 60 + maxMoment.minutes()) < inputMoment) {
-                                        result.fail("", "");
+                                        result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
                                         return result;
                                     }
                                 }
@@ -2666,7 +2670,7 @@ var nts;
                                     minStr = this.constraint.min;
                                     var minMoment = moment.duration(minStr);
                                     if (parseResult.success && (minMoment.hours() * 60 + minMoment.minutes()) > inputMoment) {
-                                        result.fail("", "");
+                                        result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
                                         return result;
                                     }
                                 }

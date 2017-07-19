@@ -460,6 +460,7 @@ div.popup-panel {
 #func-notifier-errors {
   position: absolute;
   display: none;
+  z-index: 10;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -472,13 +473,13 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 170, ../sass/components/_commons.scss */
+/* line 171, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 176, ../sass/components/_commons.scss */
+/* line 177, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
   display: inline-block;
 }
@@ -486,32 +487,32 @@ div.popup-panel {
 /*****************************
   Label
 *****************************/
-/* line 185, ../sass/components/_commons.scss */
+/* line 186, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 189, ../sass/components/_commons.scss */
+/* line 190, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 196, ../sass/components/_commons.scss */
+/* line 197, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 202, ../sass/components/_commons.scss */
+/* line 203, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 208, ../sass/components/_commons.scss */
+/* line 209, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -2674,46 +2675,47 @@ button.nts-switch-button[disabled]:hover {
   width: 65%;
 }
 /* line 264, ../sass/components/_wizard.scss */
-.nts-wizard>.content>.body {
-	display: block !important;
-	visibility: hidden;
-	float: left;
-	position: absolute;
-	width: 95%;
-	height: 95%;
-	padding: 2.5%;
+.nts-wizard > .content > .body {
+  display: block !important;
+  visibility: hidden;
+  float: left;
+  position: absolute;
+  width: 95%;
+  height: 95%;
+  padding: 2.5%;
 }
-.nts-wizard>.content>.current {
-	visibility: visible;
+/* line 274, ../sass/components/_wizard.scss */
+.nts-wizard > .content > .current {
+  visibility: visible;
 }
-/* line 272, ../sass/components/_wizard.scss */
+/* line 278, ../sass/components/_wizard.scss */
 .nts-wizard > .actions {
   position: relative;
   display: block;
   text-align: right;
   width: 100%;
 }
-/* line 279, ../sass/components/_wizard.scss */
+/* line 285, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions {
   display: inline;
   float: right;
   margin: 0 2.5%;
   width: 95%;
 }
-/* line 286, ../sass/components/_wizard.scss */
+/* line 292, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul {
   display: inline-block;
   text-align: right;
 }
-/* line 291, ../sass/components/_wizard.scss */
+/* line 297, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul > li {
   margin: 0 0.5em;
 }
-/* line 295, ../sass/components/_wizard.scss */
+/* line 301, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions > ul > li {
   margin: 0 0 0 1em;
 }
-/* line 299, ../sass/components/_wizard.scss */
+/* line 305, ../sass/components/_wizard.scss */
 .nts-wizard > .actions a,
 .nts-wizard > .actions a:hover,
 .nts-wizard > .actions a:active {
@@ -2726,28 +2728,28 @@ button.nts-switch-button[disabled]:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 312, ../sass/components/_wizard.scss */
+/* line 318, ../sass/components/_wizard.scss */
 .nts-wizard > .actions .disabled a,
 .nts-wizard > .actions .disabled a:hover,
 .nts-wizard > .actions .disabled a:active {
   background: #eee;
   color: #aaa;
 }
-/* line 326, ../sass/components/_wizard.scss */
+/* line 332, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue .header .content {
   background: #ABEBF5;
 }
-/* line 328, ../sass/components/_wizard.scss */
+/* line 334, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end > a,
 .nts-wizard.theme-blue > .steps > ul > .end > a:hover,
 .nts-wizard.theme-blue > .steps > ul > .end > a:active {
   background-color: #ABEBF5;
 }
-/* line 332, ../sass/components/_wizard.scss */
+/* line 338, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end.current a, .nts-wizard.theme-blue > .steps > ul > .end.current a:hover, .nts-wizard.theme-blue > .steps > ul > .end.current a:active {
   background-color: #37B0F0;
 }
-/* line 336, ../sass/components/_wizard.scss */
+/* line 342, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .actions a:active {
   background: #ABEBF5;
 }
