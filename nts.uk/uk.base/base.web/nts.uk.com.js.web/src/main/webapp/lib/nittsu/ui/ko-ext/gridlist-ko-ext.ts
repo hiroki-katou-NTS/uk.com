@@ -8,8 +8,9 @@ module nts.uk.ui.koExtentions {
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var HEADER_HEIGHT = 27;
-
+            let HEADER_HEIGHT = 27;
+            let ROW_HEIGHT = 21;
+            
             var $grid = $(element);
             let gridId = $grid.attr('id');
             if (nts.uk.util.isNullOrUndefined(gridId)) {
@@ -24,8 +25,13 @@ module nts.uk.ui.koExtentions {
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
             var enable: boolean = ko.unwrap(data.enable);
             var value = ko.unwrap(data.value);
+            
+            let rows = ko.unwrap(data.rows);
             $grid.data("init", true);
             
+            if (data.multiple){
+                ROW_HEIGHT = 24;            
+            }
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
 //            features.push({ name: 'Sorting', type: 'local' });
@@ -71,15 +77,52 @@ module nts.uk.ui.koExtentions {
                             let selectedValue = $element.attr('data-value');
                             let $tr = $element.closest("tr");  
                             $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
-                        });      
+                        });  
+                        
+                        ROW_HEIGHT = 32;
                     }       
                 }
                 return c; 
             });
+            
+            let isDeleteButton = !util.isNullOrUndefined(deleteOptions) && !util.isNullOrUndefined(deleteOptions.deleteField)
+                && deleteOptions.visible === true;
+            
+            let height = data.height;
+            if(!nts.uk.util.isNullOrEmpty(rows)){
+                if (isDeleteButton){
+                    ROW_HEIGHT = 32;        
+                }
+                height = rows * ROW_HEIGHT + HEADER_HEIGHT;   
+                
+                let colSettings = [];
+                _.forEach(iggridColumns, function (c){
+                    if(c["hidden"] === undefined || c["hidden"] === false){
+                        colSettings.push({ columnKey: c["key"], allowTooltips: true }); 
+                        if (nts.uk.util.isNullOrEmpty(c["columnCssClass"])) { 
+                            c["columnCssClass"] = "text-limited";             
+                        } else {
+                            c["columnCssClass"] += " text-limited";
+                        }
+                    }      
+                });
+                
+                features.push({
+                    name: "Tooltips",
+                    columnSettings: colSettings,
+                    visibility: "overflow",
+                    showDelay: 200,
+                    hideDelay: 200
+                });
+                
+                $grid.addClass("row-limited");
+            }
+            
+            $grid.data("height", height);
 
             $grid.igGrid({
                 width: data.width,
-                height: (data.height) + "px",
+                height: height,
                 primaryKey: optionsValue,
                 columns: iggridColumns,
                 virtualization: true,
@@ -88,8 +131,7 @@ module nts.uk.ui.koExtentions {
                 tabIndex: -1
             });
 
-            if (!util.isNullOrUndefined(deleteOptions) && !util.isNullOrUndefined(deleteOptions.deleteField)
-                && deleteOptions.visible === true) {
+            if (isDeleteButton) {
                 var sources = (data.dataSource !== undefined ? data.dataSource : data.options);
                 $grid.ntsGridList("setupDeleteButton", {
                     deleteField: deleteOptions.deleteField,
@@ -192,7 +234,7 @@ module nts.uk.ui.koExtentions {
                 $grid.ntsGridList('setSelected', data.value());
             }
             $grid.data("ui-changed", false);
-            $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height).attr("tabindex", $grid.data("tabindex"));
+            $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
         }
     }
     
