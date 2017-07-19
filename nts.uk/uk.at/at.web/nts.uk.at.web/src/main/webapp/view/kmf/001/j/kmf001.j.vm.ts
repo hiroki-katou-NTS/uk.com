@@ -108,7 +108,9 @@ module nts.uk.pr.view.kmf001.j {
                 }
                 // Load enums
                 $.when(self.loadTimeDigestiveUnitEnums(), self.loadSixtyHourExtraEnums(), self.loadManageDistinctEnums(), self.loadEmploymentList()).done(function() {
-                    self.loadComSettingDetails();
+                    self.loadComSettingDetails().done(function() {
+                        $('#company_manage').focus();
+                    });
                     self.selectedItem(self.employmentList()[0].code);
                     dfd.resolve();
                 });
@@ -124,6 +126,7 @@ module nts.uk.pr.view.kmf001.j {
                         self.hasEmp(false);
                         dfd.resolve();
                     }
+                    $('#employment-manage').focus();
                 });
             }
             private loadEmploymentList(): JQueryPromise<any> {

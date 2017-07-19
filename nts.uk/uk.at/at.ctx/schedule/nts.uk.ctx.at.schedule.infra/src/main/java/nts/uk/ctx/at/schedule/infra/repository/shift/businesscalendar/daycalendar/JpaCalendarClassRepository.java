@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.calendar;
+package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.daycalendar;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.calendar.CalendarClass;
-import nts.uk.ctx.at.schedule.dom.calendar.CalendarClassRepository;
-import nts.uk.ctx.at.schedule.infra.entity.calendar.KsmmtCalendarClass;
-import nts.uk.ctx.at.schedule.infra.entity.calendar.KsmmtCalendarClassPK;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClassRepository;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClass;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClassPK;
 
 @Stateless
 public class JpaCalendarClassRepository extends JpaRepository implements CalendarClassRepository {
