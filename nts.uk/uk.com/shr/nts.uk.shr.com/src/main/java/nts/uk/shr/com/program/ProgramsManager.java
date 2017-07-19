@@ -22,6 +22,9 @@ public class ProgramsManager {
 	public static final Program Ccg001d = new Program(
 			WebAppId.AT, ProgramIdConsts.Ccg001d, "PgName_Ccg001d", "/view/ccg/001/d/index.xhtml");
 	
+	public static final Program CCG015A = new Program(
+			WebAppId.COM, ProgramIdConsts.CCG015A, "PgName_CCG015A", "/view/ccg/015/a/index.xhtml");
+	
 	// TODO: Define new programs here.
 	
 	/**
