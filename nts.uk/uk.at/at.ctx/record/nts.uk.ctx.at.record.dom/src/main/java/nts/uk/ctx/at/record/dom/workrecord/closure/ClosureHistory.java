@@ -79,6 +79,6 @@ public class ClosureHistory extends DomainObject{
 		if(this.getClosureDate().getLastDayOfMonth()){
 			return 0;
 		}
-		return this.getClosureDate().getClosureDay();
+		return this.getClosureDate().getClosureDay().v();
 	}
 }
