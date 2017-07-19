@@ -4,11 +4,11 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class ExtBudgetActualValue.
- * 外部予算実績受入値
+ * The Class ExtBudgetWorkplaceCode.
+ * 外部予算実績受入値職場コード
  */
 @StringMaxLength(100)
-public class ExtBudgetActualValue extends StringPrimitiveValue<ExtBudgetActualValue> {
+public class ExtBudgetWorkplaceCode extends StringPrimitiveValue<ExtBudgetWorkplaceCode> {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public class ExtBudgetActualValue extends StringPrimitiveValue<ExtBudgetActualVa
      *
      * @param rawValue the raw value
      */
-    public ExtBudgetActualValue(String rawValue) {
+    public ExtBudgetWorkplaceCode(String rawValue) {
         super(rawValue);
     }
 

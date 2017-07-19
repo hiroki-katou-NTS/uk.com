@@ -22,15 +22,13 @@ public class ExternalBudgetError extends AggregateRoot {
     // 受入値
     private ExtBudgetActualValue actualValue;
     
-    /** The process date. */
+    /** The accepted date. */
     // 受入値年月日
-    // TODO: Not found primitive 部予算実績受入値年月日
-    private Integer processDate;
+    private ExtBudgetAccDate acceptedDate;
     
-    /** The work type code. */
-    // 受入値職場コード
-    // TODO: Not found primitive 外部予算実績受入値職場コード 
-    private String workTypeCode;
+    /** The workplace code. */
+    // 受入値職場コート
+    private ExtBudgetWorkplaceCode workplaceCode;
     
     /** The excution id. */
     // 実行ID
@@ -50,8 +48,8 @@ public class ExternalBudgetError extends AggregateRoot {
         this.errorContent = memento.getErrorContent();
         this.numberColumn = memento.getNumberColumn();
         this.actualValue = memento.getActualValue();
-        this.processDate = memento.getProcessDate();
-        this.workTypeCode = memento.getWorkTypeCode();
+        this.acceptedDate = memento.getAcceptedDate();
+        this.workplaceCode = memento.getWorkPlaceCode();
         this.excutionId = memento.getExcutionId();
         this.numberLine = memento.getNumberLine();
     }
@@ -65,8 +63,8 @@ public class ExternalBudgetError extends AggregateRoot {
         memento.setErrorContent(this.errorContent);
         memento.setNumberColumn(this.numberColumn);
         memento.setActualValue(this.actualValue);
-        memento.setProcessDate(this.processDate);
-        memento.setWorkTypeCode(this.workTypeCode);
+        memento.setAcceptedDate(this.acceptedDate);
+        memento.setWorkPlaceCode(this.workplaceCode);
         memento.setExcutionId(this.excutionId);
         memento.setNumberLine(this.numberLine);
     }

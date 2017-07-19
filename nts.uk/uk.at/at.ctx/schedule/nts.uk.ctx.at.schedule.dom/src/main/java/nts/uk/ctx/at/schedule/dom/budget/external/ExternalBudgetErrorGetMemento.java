@@ -27,18 +27,18 @@ public interface ExternalBudgetErrorGetMemento {
     ExtBudgetActualValue getActualValue();
 
     /**
-     * Gets the process date.
+     * Gets the accepted date.
      *
-     * @return the process date
+     * @return the accepted date
      */
-    Integer getProcessDate();
+    ExtBudgetAccDate getAcceptedDate();
 
     /**
-     * Gets the work type code.
+     * Gets the work place code.
      *
-     * @return the work type code
+     * @return the work place code
      */
-    String getWorkTypeCode();
+    ExtBudgetWorkplaceCode getWorkPlaceCode();
 
     /**
      * Gets the excution id.
