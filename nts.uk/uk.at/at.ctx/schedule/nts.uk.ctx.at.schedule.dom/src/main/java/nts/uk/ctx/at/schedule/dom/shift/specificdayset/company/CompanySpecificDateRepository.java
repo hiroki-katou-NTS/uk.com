@@ -14,4 +14,15 @@ public interface CompanySpecificDateRepository {
 	
 	//delete to Company Specific Date 
 	void DeleteComSpecDate(String companyId,String processMonth);
+	/**
+	 * add List ComSpecDate
+	 * @param lstComSpecDateItem
+	 */
+	void addListComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem);
+	/**
+	 * delete ComSpecByDate
+	 * @param companyId
+	 * @param specificDate
+	 */
+	void deleteComSpecByDate(String companyId, int specificDate);
 }

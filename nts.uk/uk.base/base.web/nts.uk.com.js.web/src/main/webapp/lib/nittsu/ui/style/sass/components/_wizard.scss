@@ -262,11 +262,17 @@ $wizard_image_size: 60px;
 	}
 	
 	> .content > .body {
+		display: block !important;
+		visibility: hidden;
 	    float: left;
 	    position: absolute;
 	    width: 95%;
 	    height: 95%;
 	    padding: 2.5%;
+	}
+	
+	> .content > .current {
+		visibility: visible;
 	}
 			
 	> .actions {

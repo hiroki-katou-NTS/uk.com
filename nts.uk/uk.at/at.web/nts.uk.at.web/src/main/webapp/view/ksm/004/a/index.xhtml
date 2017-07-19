@@ -89,7 +89,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button class="proceed" data-bind="click: function(){submitCalendar(1)}">#{i18n.getText('KSM004_1')}</button>
-					<button>#{i18n.getText('KSM004_2')}</button>
+					<button data-bind="click: openDialogD">#{i18n.getText('KSM004_2')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(1)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 				</div>
 				<div class="contents-area">
@@ -143,7 +143,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button class="proceed" data-bind="click: function(){submitCalendar(2)}">#{i18n.getText('KSM004_1')}</button>
-					<button>#{i18n.getText('KSM004_2')}</button>
+					<button data-bind="click: openDialogD">#{i18n.getText('KSM004_2')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(2)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 				</div>
 				<div class="contents-area">

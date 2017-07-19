@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KsmmtWpSpecDateSetPK implements Serializable{
+
 	
 	private static final long serialVersionUID = 1L;
 	

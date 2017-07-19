@@ -23,7 +23,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 			+" WHERE s.ksmstSpecificDateItemPK.companyId = :companyId"
 			+" AND s.useAtr = :useAtr";
 	private static final String GET_BY_LIST_CODE = GET_ALL 
-			+" AND s.ksmstSpecificDateItemPK.itemItemId IN :lstSpecificDateItem";
+			+" AND s.itemNo IN :lstSpecificDateItem";
 	/**
 	 * Entity to Domain
 	 * 
@@ -37,8 +37,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	}
 
 	/**
-	 * hoatt convert domain SpecificDateItem to entity KsmstSpecificDateItem
-	 * 
+	 * convert domain SpecificDateItem to entity KsmstSpecificDateItem
 	 * @param domain
 	 * @return
 	 */
@@ -64,7 +63,6 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	}
 
 	/**
-	 * hoatt
 	 * update list Specific Date Item
 	 * @param lstSpecificDateItem
 	 */
@@ -82,7 +80,6 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 		this.commandProxy().updateAll(lstEntity);
 	}
 	/**
-	 * hoatt
 	 * add list Specific Date Item
 	 * @param lstSpecificDateItem
 	 */
@@ -95,7 +92,6 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 		this.commandProxy().insertAll(lstEntity);
 	}
 	/**
-	 * hoatt
 	 * get list Specifi Date By List Code
 	 * @param companyId
 	 * @param lstSpecificDateItem

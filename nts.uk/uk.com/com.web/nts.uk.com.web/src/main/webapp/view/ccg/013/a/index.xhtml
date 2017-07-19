@@ -27,7 +27,7 @@
 				<button id="A_BTN_009" data-bind="click: optionFDialog">#{i18n.getText('CCG013_4')}</button>
 				<button id="A_BTN_006" data-bind="click: optionGDialog">#{i18n.getText('CCG013_5')}</button>
 				<button id="A_BTN_008" data-bind="click: openKdialog">#{i18n.getText('CCG013_103')}</button>
-				<button id="A_BTN_003" data-bind="click: removeWebMenu"
+				<button id="A_BTN_003" data-bind="click: removeWebMenu,enable: !isCreated() "
 					class="danger">#{i18n.getText('CCG013_6')}</button>
 				<a
 					data-bind="ntsLinkButton: { jump: '/view/ccg/014/a/index.xhtml' }"><img

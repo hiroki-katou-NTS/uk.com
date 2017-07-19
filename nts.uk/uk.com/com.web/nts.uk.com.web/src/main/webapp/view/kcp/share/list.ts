@@ -187,7 +187,7 @@ module kcp.share.list {
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170,
-                        template: "<td class='list-component-name-col'>${name}</td>",});
+                        template: "<td class='list-component-name-col' title='${name}'>${name}</td>",});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
                 self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
@@ -285,7 +285,9 @@ module kcp.share.list {
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
                 self.addIconToAlreadyCol();
-                //$('.list-component-name-col').tooltip();
+                $('.list-component-name-col').tooltip({
+                    track: true
+                });
             });
             
             // defined function get data list.
@@ -382,7 +384,7 @@ module kcp.share.list {
         private initGridStyle(data: ComponentOption) {
             var codeColumnSize: number = 50;
             var companyColumnSize: number = 0;
-            var heightOfRow : number = 24;
+            var heightOfRow : number = data.isMultiSelect ? 24 : 21;
             switch(data.listType) {
                 case ListType.EMPLOYMENT:
                     break;

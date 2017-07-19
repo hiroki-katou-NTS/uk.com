@@ -20,6 +20,11 @@ module ccg018.a1.viewmodel {
             self.comboItemsAsTopPage = ko.observableArray([]);
             self.categorySet = ko.observable(undefined);
             self.isVisible = ko.computed(function() {
+                if (!self.categorySet()) {
+                    $("#width-tbody").addClass("width-tbody");
+                } else {
+                    $("#width-tbody").removeClass("width-tbody");
+                }
                 return !!self.categorySet();
             });
 
@@ -54,7 +59,9 @@ module ccg018.a1.viewmodel {
                         self.categorySet(data.ctgSet);
                     }
                     dfd.resolve();
-                }).fail();
+                }).fail(function() {
+                    dfd.reject();
+                });
             return dfd.promise();
         }
 
@@ -86,7 +93,9 @@ module ccg018.a1.viewmodel {
                         });
                     }
                     dfd.resolve();
-                }).fail();
+                }).fail(function() {
+                    dfd.reject();
+                });
             return dfd.promise();
         }
 
@@ -115,7 +124,9 @@ module ccg018.a1.viewmodel {
                         }));
                     });
                     dfd.resolve();
-                }).fail();
+                }).fail(function() {
+                    dfd.reject();
+                });
             return dfd.promise();
         }
 
@@ -160,7 +171,9 @@ module ccg018.a1.viewmodel {
                         });
                         dfd.resolve();
                     }
-                }).fail();
+                }).fail(function() {
+                    dfd.reject();
+                });
             return dfd.promise();
         }
 
@@ -168,8 +181,9 @@ module ccg018.a1.viewmodel {
          * get JobId, JobCode and JobName in table CJTMT_JOB_TITLE
          * then call function findDataOfTopPageJobSet()
          */
-        searchByDate(): any {
+        searchByDate(): JQueryPromise<any> {
             let self = this;
+            let dfd = $.Deferred();
             blockUI.invisible();
             self.items([]);
             ccg018.a1.service.findDataOfJobTitle(self.date())
@@ -182,10 +196,13 @@ module ccg018.a1.viewmodel {
                         });
                         self.findDataOfTopPageJobSet(listJobId);
                     }
-                }).fail().always(function() {
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                }).always(function() {
                     blockUI.clear();
                 });
-
+            return dfd.promise();
         }
 
 
@@ -194,11 +211,11 @@ module ccg018.a1.viewmodel {
          */
         update(): JQueryPromise<any> {
             let self = this;
-            blockUI.invisible();
             if (self.items().length == 0) {
                 return;
             }
             let dfd = $.Deferred();
+            blockUI.invisible();
             let command = {
                 listTopPageJobSet: ko.mapping.toJS(self.items()),
                 ctgSet: self.categorySet()
@@ -208,7 +225,9 @@ module ccg018.a1.viewmodel {
                     self.searchByDate();
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                     dfd.resolve();
-                }).fail().always(function() {
+                }).fail(function() {
+                    dfd.reject();
+                }).always(function() {
                     blockUI.clear();
                 });
             return dfd.promise();

@@ -98,7 +98,31 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 			.setParameter("endYm", Integer.valueOf(processMonth+"31"))
 			.executeUpdate();
 	}
-
-
-
+	/**
+	 * add List ComSpecDate
+	 * @param lstComSpecDateItem
+	 */
+	@Override
+	public void addListComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem) {
+		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
+		for (CompanySpecificDateItem specificDateItem : lstComSpecDateItem) {
+			lstEntity.add(toEntity(specificDateItem));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+	/**
+	 * delete ComSpecByDate
+	 * @param companyId
+	 * @param specificDate
+	 */
+	@Override
+	public void deleteComSpecByDate(String companyId, int specificDate) {
+		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
+		List<CompanySpecificDateItem> lstCompanySpecificDate = this.getComSpecByDate(companyId, specificDate);
+		for (CompanySpecificDateItem companySpecificDate : lstCompanySpecificDate) {
+			KsmmtComSpecDateSet entity = toEntity(companySpecificDate);
+			lstEntity.add(entity);
+		}
+		this.commandProxy().removeAll(lstEntity);
+	}
 }

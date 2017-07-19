@@ -157,7 +157,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			// display top page self set (本人トップページ設定)-C
 			check = true;
 			layoutTopPage = getTopPageByCode(companyId, tpSelfSet.getCode(), System.COMMON.value,
-					MenuClassification.TopPage.value, isLoginScreen);
+					MenuClassification.TopPage.value, true);
 			if (!checkMyPage) {// not use my page
 				return new LayoutAllDto(null, layoutTopPage, check, checkMyPage, checkTopPage);
 			}
@@ -199,7 +199,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		check = true;
 		String menuCode = getMenuCode(fromScreen, topPageJob.getTopMenuCode(), topPageJob.getLoginMenuCode());
 		layoutTopPage = getTopPageByCode(companyId, menuCode, topPageJob.getLoginSystem().value,
-				topPageJob.getMenuClassification().value, LOGIN_SCREEN.equals(fromScreen));
+				topPageJob.getMenuClassification().value, isLoginScreen);
 		if (!checkMyPage) {// not use my page
 			return new LayoutAllDto(null, layoutTopPage, check, checkMyPage, checkTopPage);
 		}

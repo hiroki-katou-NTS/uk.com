@@ -1,18 +1,68 @@
 module nts.uk.ui.tabpanel.viewmodel {
-    
-    export class ScreenModel {
-        tabs: KnockoutObservableArray<NtsTabPanelModel>;
-        selectedTab: KnockoutObservable<string>;
+	
+	export class ScreenModel {
+		tabs: KnockoutObservableArray<NtsTabPanelModel>;
+		selectedTab: KnockoutObservable<string>;
+		
+		items: KnockoutObservableArray<ItemModel>;
+		columns: KnockoutObservableArray<NtsGridListColumn>;
+		currentCode: KnockoutObservable<any>;
+		currentCodeList: KnockoutObservableArray<any>;
 
-        constructor() {
-            var self = this;
-            self.tabs = ko.observableArray([
-                {id: 'tab-1', title: 'Tab Title 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-2', title: 'Tab Title 2', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-3', title: 'Tab Title 3', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-4', title: 'Tab Title 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)}
-            ]);
-            self.selectedTab = ko.observable('tab-2');
-        }
-    }
+		constructor() {
+			var self = this;
+			self.tabs = ko.observableArray([
+				{id: 'tab-1', title: 'Tab Title 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
+				{id: 'tab-2', title: 'Tab Title 2', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
+				{id: 'tab-3', title: 'Tab Title 3', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)},
+				{id: 'tab-4', title: 'Tab Title 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)}
+			]);
+			self.selectedTab = ko.observable('tab-1');
+			
+			self.items = ko.observableArray([]);
+			for(let i = 1; i < 5; i++) {
+				self.items.push(new ItemModel('00' + i, '基本給', "description " + i, i%3 === 0, "2010/1/1"));
+			}
+			self.columns = ko.observableArray([
+				{ headerText: 'コード', key: 'code', width: 125 },
+				{ headerText: '名称', key: 'name', width: 125 }, 
+				{ headerText: '説明', key: 'description', width: 125 }, 
+				{ headerText: '説明1', key: 'other1', width: 125},
+				{ headerText: '説明2', key: 'other2', width: 125, isDateColumn: true, format: 'YYYY/MM/DD' } 
+			]); 
+			self.currentCode = ko.observable("001");
+			self.currentCodeList = ko.observableArray([]);
+
+			$("#grid").igGrid({
+			     dataSource: self.items(),
+			     primaryKey: 'code',
+			     width: undefined,
+			     height: '350px',
+			     columns: self.columns(),
+			     virtualization: true,
+			     virtualizationMode: 'continuous',
+			     features: [
+			    	 { name: 'Selection', multipleSelection: true },
+			    	 { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: false }
+			     ]
+			 });
+		}
+	}
+	
+	class ItemModel {
+		 code: string;
+		 name: string;
+		 description: string;
+		 other1: string;
+		 other2: string;
+		 deletable: boolean;
+		 constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
+			 this.code = code;
+			 this.name = name;
+			 this.description = description;
+			 this.other1 = other1;
+			 this.other2 = other2 || other1;	
+			 this.deletable = deletable;	
+		 }
+	 }
 }

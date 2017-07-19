@@ -7,6 +7,7 @@ module nts.uk.at.view.ksm005.b {
             columnMonthlyPatterns: KnockoutObservableArray<NtsGridListColumn>;
             lstMonthlyPattern: KnockoutObservableArray<MonthlyPatternDto>;
             selectMonthlyPattern: KnockoutObservable<string>;
+            modeMonthlyPattern: KnockoutObservable<number>;
             monthlyPatternModel: KnockoutObservable<MonthlyPatternModel>;
             textEditorOption: KnockoutObservable<any>;
             textEditorOptionName: KnockoutObservable<any>;
@@ -50,6 +51,7 @@ module nts.uk.at.view.ksm005.b {
                 self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string){
                    self.detailMonthlyPattern(monthlyPatternCode); 
                 });
+                self.modeMonthlyPattern = ko.observable(ModeMonthlyPattern.ADD);
                 self.yearMonthPicked = ko.observable(201707);
                 self.cssRangerYM = {
                 };
@@ -129,30 +131,215 @@ module nts.uk.at.view.ksm005.b {
             /**
             * start page data 
             */
-            startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
                 service.findAllMonthlyPattern().done(function(data) {
                     self.lstMonthlyPattern(data);
-                    self.selectMonthlyPattern(data[0].code);
-                    self.monthlyPatternModel().updateData(data[0]);
+                    if(data.length <= 0){
+                        self.modeMonthlyPattern(ModeMonthlyPattern.ADD);
+                    }else {
+                        self.selectMonthlyPattern(data[0].code);
+                    }
                     dfd.resolve(self);
                 });
                 return dfd.promise();
             }
             
             /**
+             * reload data page by call service
+             */
+            public reloadPage(selectedCode: string, isDelete: boolean ): void{
+                var self = this;
+                service.findAllMonthlyPattern().done(function(data) {
+                    // event delete
+                    if(isDelete){
+                        if(data.length <= 0){
+                            self.modeMonthlyPattern(ModeMonthlyPattern.ADD);
+                            self.lstMonthlyPattern(data);
+                            return; 
+                        }
+                        
+                        if(self.isLastMonthlyPattern(selectedCode)){
+                            self.lstMonthlyPattern(data);
+                            self.selectMonthlyPattern(data[data.length-1].code);   
+                            return;         
+                        }
+                        var dataHistory: MonthlyPatternDto[] = self.lstMonthlyPattern();
+                        // check end visible
+                        var indexSelected: number = 0;
+                        for (var index: number = 0; index < dataHistory.length; index++) {
+                            if (dataHistory[index].code == selectedCode) {
+                                indexSelected = index;
+                                break;
+                            }
+                        }
+
+                        // check next visible
+                        for (var index: number = indexSelected; index < dataHistory.length; index++) {
+                            if (self.isVisibleMonthlyPattern(dataHistory[index].code, data)) {
+                                self.lstMonthlyPattern(data);
+                                self.selectMonthlyPattern(dataHistory[index].code);
+                                return;
+                            }
+                        }
+                        // check previous visible
+                        for (var index: number = indexSelected; index >= 0; index--) {
+                            if (self.isVisibleMonthlyPattern(dataHistory[index].code, data)) {
+                                self.lstMonthlyPattern(data);
+                                self.selectMonthlyPattern(dataHistory[index].code);
+                                return;
+                            }
+                        }
+                       return;  
+                    }
+                    self.lstMonthlyPattern(data);
+                    self.selectMonthlyPattern(selectedCode);
+                }); 
+            }
+            
+            /**
+             * check select by selected code
+             */
+            public isLastMonthlyPattern(selectedCode: string): boolean {
+                var self = this;
+                var index: number = 0;
+                for(var item: MonthlyPatternDto of self.lstMonthlyPattern()){
+                    index++;
+                    if(index == self.lstMonthlyPattern().length && selectedCode === item.code){
+                        return true;
+                    }   
+                }
+                return false;
+            }
+            
+            /**
+             * check exist data by selected
+             */
+            public isVisibleMonthlyPattern(seletedCode: string, dataRes: MonthlyPatternDto[]){
+                for (var item: MonthlyPatternDto of dataRes) {
+                    if(seletedCode === item.code){
+                        return true;    
+                    }
+                }
+                return false;
+            }
+            /**
              * detail monthly pattern by selected monthly pattern code
              */
-            detailMonthlyPattern(monthlyPatternCode: string): void {
+            public detailMonthlyPattern(monthlyPatternCode: string): void {
                 var self = this;
                 service.findByIdWorkMonthlySetting(monthlyPatternCode).done(function(data){
                     service.findByIdMonthlyPattern(monthlyPatternCode).done(function(res){
                         self.monthlyPatternModel().updateData(res);
-                        console.log(data);
+                        self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
                     });
                 });
             }
+            
+            /**
+             * reset data (mode new)
+             */
+            public resetData(): void{
+                var self = this;
+                self.monthlyPatternModel().resetData();   
+                self.modeMonthlyPattern(ModeMonthlyPattern.ADD); 
+            }
+            
+             /**
+             * clear validate client
+             */
+           public clearValiate() {
+                $('#inp_monthlyPatternCode').ntsError('clear')
+                $('#inp_monthlyPatternName').ntsError('clear')
+            }
+            
+            
+            /**
+             * validate client by action click
+             */
+            public validateClient(): boolean {
+                var self = this;
+                self.clearValiate();
+                $("#inp_monthlyPatternCode").ntsEditor("validate");
+                $("#inp_monthlyPatternName").ntsEditor("validate");
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+            
+            /**
+             * save data (add or update monthly pattern)
+             */
+            public saveDataMonthlyPattern(): void{
+                var self = this;
+                if(self.validateClient()){
+                    return;    
+                }
+                // check mode ADD
+                if(self.modeMonthlyPattern() == ModeMonthlyPattern.ADD){
+                    service.addMonthlyPattern(self.collectData()).done(function(){
+                        // show message 15
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                            // reload page
+                            self.reloadPage(self.monthlyPatternModel().code(), false); 
+                        });
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError(error).then(function(){
+                              self.reloadPage(self.selectMonthlyPattern(), false); 
+                        });
+                    });    
+                }else {
+                    // mode UPDATE
+                    service.updateMonthlyPattern(self.collectData()).done(function(){
+                          // show message 15
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                            // reload page
+                            self.reloadPage(self.monthlyPatternModel().code(), false); 
+                        });
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError(error).then(function(){
+                              self.reloadPage(self.selectMonthlyPattern(), false); 
+                        });
+                    });    
+                }                    
+            }
+            
+            /**
+             * delete monthly pattern 
+             */
+            public deleteMonthlyPattern(): void {
+                var self = this;
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    service.deleteMonthlyPattern(self.monthlyPatternModel().code()).done(function() {
+                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
+                            // reload page
+                            self.reloadPage(self.monthlyPatternModel().code(), true); 
+                        });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error).then(function() {
+                            self.reloadPage(self.selectMonthlyPattern(), false);
+                        });
+                    });    
+                }).ifNo(function() {
+                   self.reloadPage(self.selectMonthlyPattern(),false);
+                })    
+            }
+            
+            /**
+             * collect data model
+             */
+            public collectData(): MonthlyPatternDto{
+                var self = this;
+                var dto: MonthlyPatternDto;
+                dto = {
+                    code: self.monthlyPatternModel().code(),
+                    name: self.monthlyPatternModel().name()
+                };
+                return dto;
+            }
+            
 
         }
         
@@ -168,6 +355,16 @@ module nts.uk.at.view.ksm005.b {
                 this.code(dto.code);
                 this.name(dto.name);
             }
+            
+            resetData(){
+                this.code('');
+                this.name('');    
+            }
+        }
+        
+        export class ModeMonthlyPattern {
+            static ADD = 1;
+            static UPDATE = 2;
         }
 
     }

@@ -14,6 +14,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternAddCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternAddCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternDeleteCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternDeleteCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternUpdateCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternUpdateCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.MonthlyPatternFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 
@@ -28,7 +34,17 @@ public class MonthlyPatternWs extends WebService{
 	@Inject
 	private MonthlyPatternFinder finder;
 	
+	/** The add. */
+	@Inject
+	private MonthlyPatternAddCommandHandler add;
 	
+	/** The update. */
+	@Inject
+	private MonthlyPatternUpdateCommandHandler update;
+	
+	/** The delete. */
+	@Inject
+	private MonthlyPatternDeleteCommandHandler delete;
 	/**
 	 * Find all.
 	 *
@@ -50,5 +66,39 @@ public class MonthlyPatternWs extends WebService{
 	@Path("findById/{monthlyPatternCode}")
 	public MonthlyPatternDto findById(@PathParam("monthlyPatternCode") String monthlyPatternCode){
 		return this.finder.findById(monthlyPatternCode);
+	}
+	
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("add")
+	public void add(MonthlyPatternAddCommand command){
+		this.add.handle(command);
+	}
+	
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("update")
+	public void update(MonthlyPatternUpdateCommand command){
+		this.update.handle(command);
+	}
+	
+	/**
+	 * Delete.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("delete")
+	public void delete(MonthlyPatternDeleteCommand command){
+		this.delete.handle(command);
 	}
 }

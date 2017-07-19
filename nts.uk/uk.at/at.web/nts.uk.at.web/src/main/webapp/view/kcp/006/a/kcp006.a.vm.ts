@@ -82,6 +82,9 @@ module nts.uk.at.view.kcp006.a.viewmodel {
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(true);
             $("#calendar").ntsCalendar("init", {
+                buttonClick: function(date) {
+                    alert(date);
+                },
                 cellClick: function(date) {
                     alert(date);
                 }

@@ -24,7 +24,7 @@
 							data-bind="ntsGridList: {								
 							height: 250,
 							dataSource: lstMonthlyPattern,
-							primaryKey: 'monthlyPatternCode',
+							primaryKey: 'code',
 							columns: columnMonthlyPatterns,
 							multiple: false,
 							value: selectMonthlyPattern
@@ -33,7 +33,7 @@
 				</div>
 				
 				<div id="functions-area-bottom">
-					<button tabindex="1" class="proceed x-large" >#{i18n.getText('KSM005_25')}</button>
+					<button tabindex="1" class="proceed x-large" data-bind="click: saveMonthlyPatternSetting">#{i18n.getText('KSM005_25')}</button>
 					<button tabindex="2" class="large">#{i18n.getText('KSM005_26')}</button>
 				</div>
 			</ui:define>
