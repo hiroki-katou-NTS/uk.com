@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.eclipse.persistence.sdo.helper.delegates.SDOXSDHelperDelegate;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -60,27 +62,39 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		GeneralDate sDate = GeneralDate.fromString(String.valueOf(strDate), "yyyyMMdd");
 		GeneralDate eDate = GeneralDate.fromString(String.valueOf(endDate), "yyyyMMdd");
 		GeneralDate date = sDate;
-		while(date == eDate){
+		String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
+		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+		while(dateStr.compareTo(eDateStr)<=0){
 			if(!CheckDayofWeek(date,dayofWeek)){//not setting
-				date.addDays(1);
+				date = date.addDays(1);
 				continue;
 			}
 			//setting
-			int a = Integer.valueOf(date.toString());
+			int a = Integer.valueOf(dateStr);
 			BigDecimal b = BigDecimal.valueOf(a);
 			if(setUpdate==1){
 				//既に設定されている内容は据え置き、追加で設定する - complement
 				//list item da co san trong db
 				List<WorkplaceSpecificDateItem> lstOld = workplaceRepo.getWorkplaceSpecByDate(workplaceId, a);
 				List<WorkplaceSpecificDateItem> lstAdd = lstOld;
+				List<Integer> aa = new ArrayList<Integer>();
 				//find item not exist in db
-				for (Integer timeItemId : lstTimeItemId) {
-					lstAdd = lstAdd.stream().filter(c->
-					timeItemId.equals(c.getSpecificDateItemNo().v())).collect(Collectors.toList()); 
+				if(lstAdd.size()==0){
+					//lst = lstTimeItemId
+					aa = lstTimeItemId;
+				}else{
+					for (Integer timeItemId : lstTimeItemId) {
+						List<WorkplaceSpecificDateItem>	a1 = lstAdd.stream().filter(c->
+						timeItemId.equals(c.getSpecificDateItemNo().v())).collect(Collectors.toList()); 
+						if(a1.isEmpty()){
+							aa.add(timeItemId);
+						}
+					}
 				}
 				//add item new in db
 				workplaceRepo.addWorkplaceSpec(lstAdd);
-				
+				date = date.addDays(1);
+				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new: xoa het caus cu, them moi
 				//delete setting old workplace
@@ -95,7 +109,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				workplaceRepo.addWorkplaceSpec(lstWorkplaceSpecificDate);
 				
 			}
-			date.addDays(1);
+			date = date.addDays(1);
 		}
 	}
 	private void UpdatebyDayforCompany(int strDate, int endDate, List<Integer> dayofWeek, List<Integer> lstTimeItemId ,int setUpdate){

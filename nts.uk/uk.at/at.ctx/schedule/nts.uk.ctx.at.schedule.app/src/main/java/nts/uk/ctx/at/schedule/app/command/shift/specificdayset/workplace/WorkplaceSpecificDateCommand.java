@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company;
+package nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace;
 
 import java.math.BigDecimal;
 
 import lombok.Value;
 
 @Value
-public class CompanySpecificDateCommand {
+public class WorkplaceSpecificDateCommand {
 
 	private BigDecimal specificDate;
 
