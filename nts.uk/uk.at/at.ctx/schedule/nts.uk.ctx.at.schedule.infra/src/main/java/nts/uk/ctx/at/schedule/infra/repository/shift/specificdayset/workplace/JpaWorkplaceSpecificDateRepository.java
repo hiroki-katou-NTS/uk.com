@@ -14,8 +14,8 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtW
 @Stateless
 public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements WorkplaceSpecificDateRepository{
 	private static final String SELECT_BY_DATE = "SELECT c FROM KsmmtWpSpecDateSet c "
-			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId =: workplaceId"
-			+ " AND c.ksmmtWpSpecDateSetPK.specificDate =: specificDate";
+			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND c.ksmmtWpSpecDateSetPK.specificDate = :specificDate";
 	
 	private static WorkplaceSpecificDateItem toDomain(KsmmtWpSpecDateSet entity){
 		val domain = WorkplaceSpecificDateItem.createFromJavaType(entity.ksmmtWpSpecDateSetPK.workplaceId,
