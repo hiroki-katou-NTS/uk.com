@@ -112,6 +112,8 @@ module nts.uk.ui {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
                         }
                     }).dialog('open');
+                    //remove focus on tab key press on the close button on jquery dialog
+                    $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
                     if (this.parent !== null)
                     	this.parent.globalContext.nts.uk.ui.block.clear();
 //                    var widget= this.$dialog.dialog("widget");
