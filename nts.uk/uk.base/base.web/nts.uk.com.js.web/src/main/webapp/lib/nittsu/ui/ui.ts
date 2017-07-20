@@ -289,7 +289,7 @@ module nts.uk.ui {
         }
         export function getMaxZIndex() {
             let overlayElements = parent.$(".ui-widget-overlay");
-            var max = 120002;
+            var max = 120000;
             if (overlayElements.length > 0) {
                 let zIndexs = _.map(overlayElements,function(element){return parseInt($(element).css("z-index"));});
                 var temp = _.max(zIndexs);
