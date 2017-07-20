@@ -3,7 +3,7 @@ module ksm002.b.viewmodel {
     import bService = nts.uk.at.view.ksm002.b.service;
     export class ScreenModel {
         checkBoxList: KnockoutObservableArray<CheckBoxItem> = ko.observableArray([]); 
-        selectedIds: KnockoutObservableArray<number> = ko.observableArray([1,2]); 
+        selectedIds: KnockoutObservableArray<number> = ko.observableArray([]); 
         yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYY01')));
         workPlaceText: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KSM002_61', [nts.uk.resource.getText('Com_Workplace')]));
         currentWorkPlace: KnockoutObservable<WorkPlaceObject> = ko.observable(new WorkPlaceObject('',''));
@@ -61,7 +61,7 @@ module ksm002.b.viewmodel {
                     nts.uk.ui._viewModel.content.viewModelB.setListText(date);
                 },
                 buttonClick: function(date) {
-                    nts.uk.ui._viewModel.content.viewModelB.openDialogE();
+                    nts.uk.ui._viewModel.content.viewModelB.openDialogE(date);
                 }
             });
             $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
@@ -100,6 +100,7 @@ module ksm002.b.viewmodel {
         getSpecDateByIsUse(){
             var self = this;
             bService.getSpecificDateByIsUse(1).done(data=>{
+                self.checkBoxList.removeAll();
                 data.forEach(item => {
                     self.checkBoxList.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
                 });   
@@ -115,6 +116,7 @@ module ksm002.b.viewmodel {
             var self = this;
             bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked(),1).done(data=>{
                 self.rootList = data;
+                self.calendarPanel.optionDates.removeAll();
                 let a = [];
                 if(!nts.uk.util.isNullOrEmpty(data)) {
                     data.forEach(item => {
@@ -177,11 +179,9 @@ module ksm002.b.viewmodel {
          */
         openDialogC() {
             var self = this;
-            nts.uk.ui.windows.setShared('KSM004_C_PARAM', 
-            {
-                yearMonth: self.yearMonthPicked().toString().substring(0,4)
-            });
-            nts.uk.ui.windows.sub.modal("/view/ksm/002/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {});  
+            nts.uk.ui.windows.sub.modal("/view/ksm/002/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                self.getSpecDateByIsUse();    
+            });  
         }
         
         /**
@@ -189,21 +189,28 @@ module ksm002.b.viewmodel {
          */
         openDialogD() {
             var self = this;
-            nts.uk.ui.windows.setShared('KSM004_D_PARAM', 
+            nts.uk.ui.windows.setShared('KSM002_D_PARAM', 
             {
-                yearMonth: self.yearMonthPicked().toString().substring(0,4)
+                util: 2,
+                workplaceObj: ko.mapping.toJS(self.currentWorkPlace()),
+                startDate: Number(moment(self.yearMonthPicked().toString(),'YYYYMM').startOf('month').format('YYYYMMDD')),
+                endDate: Number(moment(self.yearMonthPicked().toString(),'YYYYMM').endOf('month').format('YYYYMMDD'))
             });
-            nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {});  
+            nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                self.getCalendarWorkPlaceByCode();    
+            });  
         }
         
         /**
          * open dialog E event
          */
-        openDialogE() {
+        openDialogE(date: string) {
             var self = this;
-            nts.uk.ui.windows.setShared('KSM004_E_PARAM', 
+            nts.uk.ui.windows.setShared('KSM002_E_PARAM', 
             {
-                yearMonth: self.yearMonthPicked().toString().substring(0,4)
+                date: Number(moment(date).format("YYYYMMDD")),
+                selectable: ko.mapping.toJS(self.checkBoxList()),
+                selecteds: ko.mapping.toJS(self.selectedIds())
             });
             nts.uk.ui.windows.sub.modal("/view/ksm/002/e/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {});  
         }
@@ -233,16 +240,25 @@ module ksm002.b.viewmodel {
             let a = [];
             if(self.isUpdate()){
                 // update case
-                // only update item which is changed
                 self.calendarPanel.optionDates().forEach(item => {
-                    let before = ko.mapping.toJSON(_.find(self.rootList, o => o.specificDate == Number(moment(item.start).format('YYYYMMDD'))));
-                    let current = {
-                        workPlaceId: self.currentWorkPlace().id(),
-                        specificDate: Number(moment(item.start).format('YYYYMMDD')),
-                        specificDateItemNo: self.convertNameToNumber(item.listText)
-                    };   
-                    if(!_.isEqual(before,ko.mapping.toJSON(current))) {
-                        a.push(current);    
+                    let before = _.find(self.rootList, o => o.specificDate == Number(moment(item.start).format('YYYYMMDD')));
+                    if(nts.uk.util.isNullOrUndefined(before)){
+                        a.push({
+                            workPlaceId: self.currentWorkPlace().id(),
+                            specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                            specificDateItemNo: self.convertNameToNumber(item.listText),
+                            isUpdate: false
+                        });
+                    } else {
+                        let current = {
+                            workPlaceId: self.currentWorkPlace().id(),
+                            specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                            specificDateItemNo: self.convertNameToNumber(item.listText)
+                        };   
+                        if(!_.isEqual(ko.mapping.toJSON(before),ko.mapping.toJSON(current))) {
+                            current["isUpdate"] = true;
+                            a.push(current);    
+                        }
                     }
                 });
             } else {

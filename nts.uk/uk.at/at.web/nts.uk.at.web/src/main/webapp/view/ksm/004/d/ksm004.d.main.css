@@ -1,3 +1,7 @@
+body {
+	overflow-y: hidden ;
+}
+
 #table-top {
 	margin-top: 13px;
 	margin-left: 76px;
@@ -9,7 +13,7 @@
 }
 
 .tbDay {
-	padding: 5px 0px;
+	padding: 3px 0px;
 }
 
 #checkedBtn {
@@ -48,4 +52,11 @@
 	background-color: #F7EFD4;
     padding: 3px;
     margin: 10px;
+}
+
+div.form-label{
+	height: 30px;
+}
+#functions-area-bottom{
+	    height: 110px;
 }

@@ -21,17 +21,30 @@ public class UpdateWorkplaceSpecificDateCommandHandler extends CommandHandler<Li
 	@Override
 	protected void handle(CommandHandlerContext<List<WorkplaceSpecificDateCommand>> context) {
 		for(WorkplaceSpecificDateCommand workplaceSpecificDateCommand :  context.getCommand()){
-			repo.deleteWorkplaceSpec(workplaceSpecificDateCommand.getWorkPlaceId(), workplaceSpecificDateCommand.getSpecificDate().intValue());
-			List<WorkplaceSpecificDateItem> listInsert = new ArrayList<WorkplaceSpecificDateItem>();
-			for(BigDecimal specificDateNo : workplaceSpecificDateCommand.getSpecificDateItemNo()){
-				listInsert.add(WorkplaceSpecificDateItem.createFromJavaType(
-						workplaceSpecificDateCommand.getWorkPlaceId(),
-						workplaceSpecificDateCommand.getSpecificDate(),
-						specificDateNo,
-						"empty")
-				);
+			if(workplaceSpecificDateCommand.isUpdate()) {
+				repo.deleteWorkplaceSpec(workplaceSpecificDateCommand.getWorkPlaceId(), workplaceSpecificDateCommand.getSpecificDate().intValue());
+				List<WorkplaceSpecificDateItem> listInsert = new ArrayList<WorkplaceSpecificDateItem>();
+				for(BigDecimal specificDateNo : workplaceSpecificDateCommand.getSpecificDateItemNo()){
+					listInsert.add(WorkplaceSpecificDateItem.createFromJavaType(
+							workplaceSpecificDateCommand.getWorkPlaceId(),
+							workplaceSpecificDateCommand.getSpecificDate(),
+							specificDateNo,
+							"empty")
+					);
+				}
+				repo.InsertWpSpecDate(listInsert);
+			} else {
+				List<WorkplaceSpecificDateItem> listInsert = new ArrayList<WorkplaceSpecificDateItem>();
+				for(BigDecimal specificDateNo : workplaceSpecificDateCommand.getSpecificDateItemNo()){
+					listInsert.add(WorkplaceSpecificDateItem.createFromJavaType(
+							workplaceSpecificDateCommand.getWorkPlaceId(),
+							workplaceSpecificDateCommand.getSpecificDate(),
+							specificDateNo,
+							"empty")
+					);
+				}
+				repo.InsertWpSpecDate(listInsert);
 			}
-			repo.InsertWpSpecDate(listInsert);
 		}
 	}
 

@@ -19,7 +19,7 @@ module ccg013.a.viewmodel {
 
         // MenuBar
         currentMenuBar: KnockoutObservable<MenuBar>;
-        
+
         // UI
         isCreated: KnockoutObservable<boolean>;
         isDefaultMenu: KnockoutObservable<boolean>;
@@ -48,13 +48,17 @@ module ccg013.a.viewmodel {
                 });
                 self.index(index);
                 service.findWebMenu(newValue).done(function(res: service.WebMenuDto) {
+                    nts.uk.ui.errors.clearAll();
+                    $('#webMenuName').focus();
                     let webmenu = self.currentWebMenu();
                     if (!newValue) {
                         self.isCreated(true);
                         self.checkDisabled(true);
+                        $('#webMenuCode').focus();
                     } else {
                         self.isCreated(false);
                         self.checkDisabled(false);
+                        $('#webMenuName').focus();
                     }
                     webmenu.webMenuCode(res.webMenuCode);
                     webmenu.webMenuName(res.webMenuName);
@@ -77,7 +81,7 @@ module ccg013.a.viewmodel {
 
             // MenuBar
             self.currentMenuBar = ko.observable(null);
-            
+
             // UI
             self.isCreated = ko.observable(false);
             self.isDefaultMenu = ko.observable(false);
@@ -103,9 +107,18 @@ module ccg013.a.viewmodel {
 
         /** Registry Webmenu */
         addWebMenu(): any {
-            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.invisible();            
             var self = this;
             var webMenu = self.currentWebMenu();
+            var length = webMenu.webMenuCode().length;                 
+            var fullWebMenuCode = webMenu.webMenuCode();
+            if(length < 3){
+              if(length == 1){
+                  webMenu.webMenuCode('00'+ fullWebMenuCode);
+              } else {
+                  webMenu.webMenuCode('0'+ fullWebMenuCode);
+              }  
+            };
             var activeid = $('#tabs li[aria-expanded=true]').attr('id');
 
             (self.isDefaultMenu()) ? webMenu.defaultMenu(1) : webMenu.defaultMenu(0);
@@ -187,7 +200,7 @@ module ccg013.a.viewmodel {
             _.forEach(self.currentMenuBar().titleMenu(), function(titleMenu: TitleMenu) {
                 titleMenu.treeMenu.remove((x: TreeMenu) => {
                     return x.treeMenuId() == treeMenuId;
-                }); 
+                });
                 titleMenu.treeMenu.valueHasMutated();
             });
             self.calculateTreeMenuOrder(titleMenuId);
@@ -205,6 +218,8 @@ module ccg013.a.viewmodel {
                 menuBars: []
             }));
             self.currentWebMenuCode("");
+            nts.uk.ui.errors.clearAll();
+            
         }
 
         /** Get Webmenu */
@@ -357,7 +372,7 @@ module ccg013.a.viewmodel {
                 return left.displayOrder() == right.displayOrder() ? 0 : (left.displayOrder() < right.displayOrder() ? -1 : 1);
             });
         }
-        
+
         /** Rebind Knockout TreeMenu */
         private rebindTreeMenu(ui: any): void {
             var self = this;
@@ -487,14 +502,16 @@ module ccg013.a.viewmodel {
             var data = self.currentWebMenu();
             setShared("CCG013E_COPY", data);
             modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
-                self.getWebMenu();
+                let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");
+                self.getWebMenu().done(() => {   
+                    self.currentWebMenuCode(newWebMenuCode);
+                });
             });
         }
 
         optionFDialog(): void {
             var self = this;
             var dataTranfer = self.listWebMenu();
-
             setShared("CCG013F_JOB_TITLE", dataTranfer);
             modal("/view/ccg/013/f/index.xhtml");
         }
