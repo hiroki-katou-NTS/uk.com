@@ -13,7 +13,7 @@ public interface WorkplaceSpecificDateRepository {
 	void InsertWpSpecDate(List<WorkplaceSpecificDateItem> lstWpSpecDateItem);
 
 	// delete to Company Specific Date
-	void DeleteWpSpecDate(String companyId, String processMonth);
+	void DeleteWpSpecDate(String workPlaceId, String processMonth);
 	/**
 	 * delete WorkplaceSpec
 	 * @param workplaceId

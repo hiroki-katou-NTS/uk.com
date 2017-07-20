@@ -7,6 +7,7 @@ module ksm002.a.service {
         getCompanyStartDay: "at/schedule/shift/businesscalendar/businesscalendar/getcompanystartday",
         getComSpecDateByCompanyDate: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydate",
         insertComSpecDate: "at/schedule/shift/specificdayset/company/insertcompanyspecificdate",
+        updateComSpecDate: "at/schedule/shift/specificdayset/company/updatecompanyspecificdate",
         deleteComSpecDate: "at/schedule/shift/specificdayset/company/deletecompanyspecificdate",
         getComSpecDateByCompanyDateWithName: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydatewithname"
     }
@@ -45,6 +46,11 @@ module ksm002.a.service {
     /** Insert companySpecDate*/
     export function insertComSpecificDate(lstComSpecificDateItem: Array<viewmodel.CompanySpecificDateCommand>): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax("at", paths.insertComSpecDate, lstComSpecificDateItem);
+    }
+    /** Update companySpecDate*/
+    export function updateComSpecificDate(lstUpdComSpecificDateItem: Array<viewmodel.CompanySpecificDateCommand>): JQueryPromise<Array<any>> {
+        debugger;
+        return nts.uk.request.ajax("at", paths.updateComSpecDate, lstUpdComSpecificDateItem);
     }
 
     /** Insert companySpecDate*/

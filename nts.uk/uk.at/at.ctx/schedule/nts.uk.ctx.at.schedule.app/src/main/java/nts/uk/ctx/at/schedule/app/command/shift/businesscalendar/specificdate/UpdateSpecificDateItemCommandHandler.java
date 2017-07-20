@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.SpecificDateItem;
@@ -22,9 +23,17 @@ public class UpdateSpecificDateItemCommandHandler extends CommandHandler<List<Sp
 	@Override
 	protected void handle(CommandHandlerContext<List<SpecificDateItemCommand>> context) {
 		String companyId = AppContexts.user().companyId();
+		List<SpecificDateItemCommand> lstItem = context.getCommand();
+		int check =0;
+		for (SpecificDateItemCommand item : lstItem) {
+			check = check + item.getUseAtr();
+		}
+		if(check==0){
+			throw new BusinessException("Msg_135");
+		}
 		List<SpecificDateItem> lstAdd = new ArrayList<>();
 		List<SpecificDateItem> lstUpdate = new ArrayList<>();
-		List<SpecificDateItem> listUpdate = context.getCommand().stream().map(c -> {
+		List<SpecificDateItem> listUpdate = lstItem.stream().map(c -> {
 			return SpecificDateItem.createFromJavaType(companyId, c.getTimeItemId(), BigDecimal.valueOf(c.getUseAtr()),
 					BigDecimal.valueOf(c.getSpecificDateItemNo()),c.getSpecificName());
 		}).collect(Collectors.toList());

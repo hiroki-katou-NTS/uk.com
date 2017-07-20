@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 600 };</script>
+			<script>var dialogSize = { width: 650, height: 570 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm004.d.main.css" />
 			<com:scriptfile path="ksm004.d.start.js" />
@@ -26,7 +26,7 @@
 							<td>
 								<div>
 									<!-- D1_4 -->
-									<div
+									<div tabindex="1"
 										data-bind="ntsDatePicker: { 
 									value: startMonth, 
 									dateFormat: 'yearmonth', 
@@ -35,7 +35,7 @@
 									defaultClass: 'round-orange' }">
 									</div>
 									<span>～</span>
-									<div
+									<div tabindex="2"
 										data-bind="ntsDatePicker: { 
 									value: endMonth, 
 									dateFormat: 'yearmonth', 
@@ -51,7 +51,7 @@
 							<td></td>
 							<td>
 								<!-- D1_8 -->
-								<div tabindex="10" style="margin-bottom: 10px"
+								<div tabindex="3" style="margin-top: 3px"
 									data-bind="ntsCheckBox:{
 									checked: checkHoliday,
 									text: '#{i18n.getText('KSM004_53')}'
@@ -77,7 +77,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_38')}</div>
 						</td>
 						<td class="tbDay">
-							<div
+							<div tabindex="4"
 								data-bind="ntsRadioBoxGroup: {
 									options: workdayGroup,
 									optionsValue: 'code',
@@ -99,7 +99,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_39')}</div>
 						</td>
 						<td class="tbDay">
-							<div
+							<div tabindex="5"
 								data-bind="ntsRadioBoxGroup: {
 									options: workdayGroup,
 									optionsValue: 'code',
@@ -121,7 +121,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_40')}</div>
 						</td>
 						<td class="tbDay">
-							<div
+							<div tabindex="6"
 								data-bind="ntsRadioBoxGroup: {
 									options: workdayGroup,
 									optionsValue: 'code',
@@ -143,7 +143,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_41')}</div>
 						</td>
 						<td class="tbDay">
-							<div
+							<div tabindex="7"
 								data-bind="ntsRadioBoxGroup: {
 									options: workdayGroup,
 									optionsValue: 'code',
@@ -165,7 +165,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_42')}</div>
 						</td>
 						<td class="tbDay">
-							<div
+							<div tabindex="8"
 								data-bind="ntsRadioBoxGroup: {
 									options: workdayGroup,
 									optionsValue: 'code',
@@ -187,7 +187,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_43')}</div>
 						</td>
 						<td class="tbDay">
-							<div
+							<div tabindex="9"
 								data-bind="ntsRadioBoxGroup: {
 									options: workdayGroup,
 									optionsValue: 'code',
@@ -209,7 +209,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_44')}</div>
 						</td>
 						<td class="tbDay">
-							<div
+							<div tabindex="10"
 								data-bind="ntsRadioBoxGroup: {
 									options: workdayGroup,
 									optionsValue: 'code',
@@ -228,14 +228,14 @@
 				 <!-- style="margin-bottom: 150px;" -->
 				<div id="functions-area-bottom">
 					<!-- D4_1 -->
-					<div class="ntsCheckBox-label-bottom" 
+					<div class="ntsCheckBox-label-bottom"  tabindex="11"
 						data-bind="ntsCheckBox:{
 							checked: checkOverwrite,
 							text: '#{i18n.getText('KSM004_49')}'}">
 					</div>
 					<div style='clear: both'></div>
-					<button class="x-large proceed" data-bind="click: decition,enable: $root.errors.isEmpty">#{i18n.getText('KSM004_34')}</button>
-					<button data-bind="click:closeDialog">#{i18n.getText('KSM004_35')}</button>
+					<button tabindex="12" class="x-large proceed" data-bind="click: decition,enable: $root.errors.isEmpty">#{i18n.getText('KSM004_34')}</button>
+					<button tabindex="13" data-bind="click:closeDialog">#{i18n.getText('KSM004_35')}</button>
 				</div>
 
 			</div>

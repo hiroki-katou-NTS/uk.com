@@ -5,6 +5,7 @@ body {
 	margin-top: 5px;
 	margin-left: 15px;
 	font-size: large;
+	width: 300px;
 }
 .form-label {
 	display: inline-block !important;
