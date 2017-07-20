@@ -13,14 +13,15 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecif
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 
 @Stateless
-public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<List<WorkplaceSpecificDateCommand>> {
+public class UpdateWorkplaceSpecificDateCommandHandler extends CommandHandler<List<WorkplaceSpecificDateCommand>>{
 
 	@Inject
 	private WorkplaceSpecificDateRepository repo;
-
+	
 	@Override
 	protected void handle(CommandHandlerContext<List<WorkplaceSpecificDateCommand>> context) {
 		for(WorkplaceSpecificDateCommand workplaceSpecificDateCommand :  context.getCommand()){
+			repo.deleteWorkplaceSpec(workplaceSpecificDateCommand.getWorkPlaceId(), workplaceSpecificDateCommand.getSpecificDate().intValue());
 			List<WorkplaceSpecificDateItem> listInsert = new ArrayList<WorkplaceSpecificDateItem>();
 			for(BigDecimal specificDateNo : workplaceSpecificDateCommand.getSpecificDateItemNo()){
 				listInsert.add(WorkplaceSpecificDateItem.createFromJavaType(
