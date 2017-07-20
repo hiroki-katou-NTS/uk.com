@@ -122,7 +122,7 @@ module ksm004.d.viewmodel {
                         }
                         //self.workingDayAtr()
                         // if D3_2 : workingDayAtr = 0
-                        if (self.workingDayAtr() ==0) {
+                        if (self.workingDayAtr() ==0 && self.checkHoliday()== true) {
                             //get holiday by date in list
                             let holiday = _.find(self.listHoliday(),function(item : Holiday){
                                 return item.date == date;
