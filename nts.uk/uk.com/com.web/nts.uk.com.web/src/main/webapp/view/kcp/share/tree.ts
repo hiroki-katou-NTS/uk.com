@@ -293,7 +293,7 @@ module kcp.share.tree {
                     .css({ 'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden',
                          'font-size': defaultFontSize, 'font-family': defaultFontFamily })
                     .appendTo($('body'))
-                var w = o.width() + item.level * paddingPerLevel;
+                var w = o.width() + item.level * paddingPerLevel + 10;
                 if (w > max) {
                     max = w;
                 }
