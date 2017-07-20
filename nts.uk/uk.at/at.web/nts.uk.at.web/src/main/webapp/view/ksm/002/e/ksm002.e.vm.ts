@@ -41,10 +41,10 @@ module ksm002.e{
                         });
                     }
                     //set size when data < 3
-                    if(param.selectable.length < 3){
-                        nts.uk.ui.windows.getSelf().setWidth(550); 
-                        self.size = 450;   
-                    }
+//                    if(param.selectable.length < 3){
+//                         nts.uk.ui.windows.getSelf().setWidth(550); 
+//                        self.size = 450;   
+//                    }
                     $('#specificItem_0').focus();
                     nts.uk.ui.block.clear();
                     dfd.resolve();
