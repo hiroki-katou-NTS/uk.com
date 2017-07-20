@@ -178,7 +178,7 @@ module ksm002.a.viewmodel {
                         selectedOptionalDate.start = selectedDate;
                         selectedOptionalDate.listId = param.selecteds;
                         selectedOptionalDate.listText = _.chain(self.boxItemList()).filter((item) => {
-                            return (param.selecteds.indexOf(item.id.toString()) > -1);
+                            return (param.selecteds.indexOf(item.id) > -1);
                         }).map('name').value();
                         self.optionDates.push(selectedOptionalDate);
                     } else {
