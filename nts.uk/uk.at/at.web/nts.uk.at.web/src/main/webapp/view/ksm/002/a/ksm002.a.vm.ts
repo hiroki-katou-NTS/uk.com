@@ -52,7 +52,11 @@ module ksm002.a.viewmodel {
             $("#calendar").ntsCalendar("init", {
                 buttonClick: function(date) {
                     self.openKsm002EDialog(date);
-                }
+                },
+                cellClick: function(date) {
+                    let param: IData = { date: date, selectable: _.map(self.boxItemList(),'id'), selecteds: self.selectedIds()};
+                    self.setSpecificItemToSelectedDate(param);
+                 }
             });
             //Change Month 
             self.yearMonthPicked.subscribe(function(value) {
@@ -70,8 +74,8 @@ module ksm002.a.viewmodel {
             let isUse: number = 1;
             let arrOptionaDates: Array<OptionalDate> = [];
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
-            //service.getWorkplaceSpecificDate('11429227-6A55-4C19-95C3-3880B71BA9C0','201701',1).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
+                    self.isNew(false);
                     //Set Start Day of Company
                     self.getComStartDay().done(function(startDay: number) {
                         self.firstDay(startDay);
@@ -88,7 +92,9 @@ module ksm002.a.viewmodel {
                         if (arrOptionaDates.length > 0)
                             self.optionDates(arrOptionaDates);
                     })
-                }
+                 }else{
+                    self.isNew(true);                     //In Case no Data, openCDialog                     self.openKsm002CDialog(); 
+                };
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
@@ -98,7 +104,6 @@ module ksm002.a.viewmodel {
         }
 
         /**Fill data to each month*/
-        //Return Array of data in day
         getDataToOneMonth(processMonth: string): JQueryPromise<Array<OptionalDate>> {
             let dfd = $.Deferred<any>();
             let endOfMonth: number = moment(processMonth).endOf('month').date();
@@ -173,25 +178,36 @@ module ksm002.a.viewmodel {
                 let param: IData = getShared('KSM002E_VALUES');
                 //console.log(param);
                 if (param !== undefined) {
-                    if (self.optionDates().length > 0) {
-                        self.optionDates.remove(selectedOptionalDate);
-                        selectedOptionalDate.start = selectedDate;
-                        selectedOptionalDate.listId = param.selecteds;
-                        selectedOptionalDate.listText = _.chain(self.boxItemList()).filter((item) => {
-                            return (param.selecteds.indexOf(item.id.toString()) > -1);
-                        }).map('name').value();
-                        self.optionDates.push(selectedOptionalDate);
-                    } else {
-                        let lstText: Array<string> = [];
-                        lstText = _.chain(self.boxItemList()).filter((item) => {
-                            return (param.selecteds.indexOf(item.id.toString()) > -1);
-                        }).map('name').value();
-                        self.optionDates.push(new OptionalDate(selectedDate, lstText, param.selecteds));
-                    };
+                    self.setSpecificItemToSelectedDate(param);
                 }
             });
         }
+        /** set Specific Item To Select*/
+        setSpecificItemToSelectedDate(param: IData ){
+            var self = this;
+            //get data in process date
+            let selectedDate :string = moment(param.date).format("YYYY-MM-DD"); 
+            let selectedOptionalDate: OptionalDate = _.find(self.optionDates(), function(o) { return o.start == selectedDate; });
+            if (selectedOptionalDate === undefined) {selectedOptionalDate = new OptionalDate();};
+            //get list id selectable
+            let arrSelectable: Array<string> = _.map(self.boxItemList(), 'id');
 
+            if (self.optionDates().length > 0) {
+                self.optionDates.remove(selectedOptionalDate);
+                selectedOptionalDate.start = selectedDate;
+                selectedOptionalDate.listId = param.selecteds;
+                selectedOptionalDate.listText = _.chain(self.boxItemList()).filter((item) => {
+                    return (param.selecteds.indexOf(item.id) > -1);
+                }).map('name').value();
+                self.optionDates.push(selectedOptionalDate);
+            } else {
+                let lstText: Array<string> = [];
+                lstText = _.chain(self.boxItemList()).filter((item) => {
+                    return (param.selecteds.indexOf(item.id) > -1);
+                }).map('name').value();
+                self.optionDates.push(new OptionalDate(selectedDate, lstText, param.selecteds));
+            } 
+        } 
         /**Insert Calendar data*/
         Insert(lstComSpecificDateCommand: Array<CompanySpecificDateCommand>) {
             var self = this;
@@ -229,13 +245,21 @@ module ksm002.a.viewmodel {
             let dfd = $.Deferred<any>();
             var self = this;
             //delete
-            service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
-                self.Insert(self.convertToCommand());
-                dfd.resolve();
+//            service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
+//                self.Insert(self.convertToCommand());
+//                dfd.resolve();
+//            }).fail(function(res) {
+//                nts.uk.ui.dialog.alertError(res.message);
+//                dfd.reject();
+//            });
+            service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
+//                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+//                    self.start();
+//                });
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
-                dfd.reject();
             });
+        
             return dfd.promise();
         }
 

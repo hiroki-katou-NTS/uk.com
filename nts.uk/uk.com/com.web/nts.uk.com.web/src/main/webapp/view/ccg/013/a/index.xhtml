@@ -35,8 +35,7 @@
 				</div>
 			</div>
 			<div id="contents-area">
-				<div id="left-content"
-					class="bg-green caret-right caret-background cf"
+				<div id="left-content" class="bg-green caret-right caret-background cf"
 					style="width: 340px; height: 335px;">
 					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
 						<table id="single-list"
@@ -88,7 +87,7 @@
 												<ul class="tree-menu" data-bind="foreach: {data: treeMenu}">
 													<li class="context-menu-tree" data-bind="attr:{id: treeMenuId},text: name"></li>
 												</ul>
-												<button class="button-add-treemenu" data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
+												<button class="button-add button-add-treemenu" data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
 													#{i18n.getText('CCG013_16')}
 												</button>
 											</div>

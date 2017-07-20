@@ -14,6 +14,7 @@
 			<com:scriptfile path="ksm002.a.service.js" />
 			<com:scriptfile path="ksm002.a.vm.js" />
 			<com:stylefile path="ksm002.a.main.css" />
+			<com:scriptfile path="../b/ksm002.b.service.js" />
 			<com:scriptfile path="../b/ksm002.b.vm.js" />
 			<!--Calendar -->
 			<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web" />
@@ -93,10 +94,10 @@
 			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewModelB">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
-					<button class="proceed">#{i18n.getText('KSM002_6')}</button>
-					<button>#{i18n.getText('KSM002_7')}</button>
-					<button>#{i18n.getText('KSM002_8')}</button>
-					<button class="danger">#{i18n.getText('KSM002_9')}</button>
+					<button class="proceed" data-bind="click: submitEventHandler">#{i18n.getText('KSM002_6')}</button>
+					<button data-bind="click: openDialogC">#{i18n.getText('KSM002_7')}</button>
+					<button data-bind="click: openDialogD">#{i18n.getText('KSM002_8')}</button>
+					<button class="danger" data-bind="click: removeEventHandler, enable: isUpdate">#{i18n.getText('KSM002_9')}</button>
 				</div>
 				<div id="screenB" class="contents-area">
 					<ui:include src="../b/index.xhtml" />

@@ -21,7 +21,7 @@ module nts.uk.ui.koExtentions {
             var HEADER_HEIGHT = 27;
             var CHECKBOX_WIDTH = 70;
             var SEARCH_AREA_HEIGHT = 45;
-            var BUTTON_SEARCH_WIDTH = 60;
+            var BUTTON_SEARCH_WIDTH = 70;
             var INPUT_SEARCH_PADDING = 65;
 
             var $swap = $(element);
@@ -74,15 +74,15 @@ module nts.uk.ui.koExtentions {
                         $SearchArea.find(".clear-btn").text("解除");        
                     }
                     $SearchArea.find(".ntsSearchTextContainer")
-                        .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox ntsSwap_Component'/>");
+                        .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                     $SearchArea.find(".ntsSearchButtonContainer")
                         .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
-                    $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
+                    $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").wrap("<span class='nts-editor-wrapped ntsControl'/>");
                     $SearchArea.find(".search-btn").text("検索");  
                 }
                 
                 var searchAreaId = elementId + "-search-area";
-                $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
+                $swap.append("<div class = 'nts-searchbbox-wrapper ntsSearchArea' id = " + searchAreaId + "/>");
                 var $searchArea = $swap.find(".ntsSearchArea");
                 $searchArea.append("<div class='ntsSwapSearchLeft'/>")
                     .append("<div class='ntsSwapSearchRight'/>");
@@ -593,6 +593,9 @@ module nts.uk.ui.koExtentions {
         
         private clearFilter() {
             if (this.searchMode === "filter") {
+                if(this.originalDataSource === undefined) {
+                    this.resetOriginalDataSource();
+                }
                 this.bindData(this.originalDataSource);
             }
         }

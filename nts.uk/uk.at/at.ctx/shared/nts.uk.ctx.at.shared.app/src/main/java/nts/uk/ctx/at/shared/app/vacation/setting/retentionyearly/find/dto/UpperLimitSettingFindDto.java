@@ -7,18 +7,8 @@ package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Gets the max days cumulation.
- *
- * @return the max days cumulation
- */
-@Getter
 
-/**
- * Sets the max days cumulation.
- *
- * @param maxDaysCumulation the new max days cumulation
- */
+@Getter
 @Setter
 public class UpperLimitSettingFindDto {
 	

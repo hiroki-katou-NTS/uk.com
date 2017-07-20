@@ -19,9 +19,9 @@ public interface BasicWorkSettingSetMemento {
 	/**
 	 * Sets the sift code.
 	 *
-	 * @param siftCode the new sift code
+	 * @param workingCode the new sift code
 	 */
-	void setSiftCode(SiftCode siftCode);
+	void setSiftCode(WorkingCode workingCode);
 	
 	/**
 	 * Sets the work day division.

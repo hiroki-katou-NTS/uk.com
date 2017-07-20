@@ -9,16 +9,19 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * @author yennth
  */
-@Data
 @Entity
 @Table(name = "CCGST_JOB_TITLE_TYING")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class CcgstJobTitleTying extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

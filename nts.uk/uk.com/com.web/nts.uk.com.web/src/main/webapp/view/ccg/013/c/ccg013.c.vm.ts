@@ -46,8 +46,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             //GridList
             self.listTitleMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'titleCode', width: 100 },
-                { headerText: '名称', key: 'titleName', width: 230 }
+                { headerText: nts.uk.resource.getText("CCG013_39"), key: 'titleCode', width: 100 },
+                { headerText: nts.uk.resource.getText("CCG013_40"), key: 'titleName', width: 230 }
             ]);
             //self.selectCodeTitleMenu = ko.observable('');
             self.currentTitleMenu = ko.observable('');
