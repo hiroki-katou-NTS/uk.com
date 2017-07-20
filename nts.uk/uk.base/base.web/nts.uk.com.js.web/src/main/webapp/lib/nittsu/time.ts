@@ -237,7 +237,7 @@ module nts.uk.time {
             this.minus = minus;
             this.hours = hours;
             this.minutes = minutes;
-            this.msg = msg || nts.uk.resource.getMessage("FND_E_DATE_YMD");
+            this.msg = msg || "FND_E_TIME";
         }
 
         static succeeded(minus, hours, minutes) {
