@@ -20,7 +20,7 @@ module ksm002.e{
                 nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
-                let param: IData  = getShared('KSM002E_PARAM') || { date: null, selectable: [],selecteds: [] };
+                let param: IData  = getShared('KSM002_E_PARAM') || { date: null, selectable: [],selecteds: [] };
                 console.log(param); 
                 self.date = param.date;
                 self.selectedCodes = param.selecteds;
