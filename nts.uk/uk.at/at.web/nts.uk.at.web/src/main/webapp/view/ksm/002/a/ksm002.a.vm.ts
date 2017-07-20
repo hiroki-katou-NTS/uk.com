@@ -63,6 +63,9 @@ module ksm002.a.viewmodel {
                 let arrOptionaDates: Array<OptionalDate> = [];
                 self.getDataToOneMonth(value).done(function(arrOptionaDates) {
                     self.optionDates(arrOptionaDates);
+                    if(arrOptionaDates.length<0){
+                        self.isNew(false);    
+                    }
                 })
             })
         }
@@ -244,22 +247,18 @@ module ksm002.a.viewmodel {
             //Delete before Insert            
             let dfd = $.Deferred<any>();
             var self = this;
-            //delete
-//            service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
-//                self.Insert(self.convertToCommand());
-//                dfd.resolve();
-//            }).fail(function(res) {
-//                nts.uk.ui.dialog.alertError(res.message);
-//                dfd.reject();
-//            });
-            service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
-//                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-//                    self.start();
-//                });
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
-            });
-        
+            if (self.isNew() === true) {
+                self.Insert(self.convertToCommand())
+            } else {
+                //Update
+                service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
+                    //                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    //                    self.start();
+                    //                });
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+            }
             return dfd.promise();
         }
 
