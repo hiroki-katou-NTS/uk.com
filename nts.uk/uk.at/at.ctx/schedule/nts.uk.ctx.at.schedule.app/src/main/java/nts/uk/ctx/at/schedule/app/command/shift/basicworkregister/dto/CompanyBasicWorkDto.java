@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +27,7 @@ public class CompanyBasicWorkDto {
 	private String companyId;
 	
 	/** The basic work setting. */
-	private BasicWorkSettingDto basicWorkSetting;
+	private List<BasicWorkSettingDto> basicWorkSetting;
 
 	/**
 	 * To domain.
@@ -65,8 +68,14 @@ public class CompanyBasicWorkDto {
 		 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento#getBasicWorkSetting()
 		 */
 		@Override
-		public BasicWorkSetting getBasicWorkSetting() {
-			return dto.basicWorkSetting.toDomain();
+		public List<BasicWorkSetting> getBasicWorkSetting() {
+			return this.dto.basicWorkSetting.stream().map(dto -> dto.toDomain())
+					.collect(Collectors.toList());
 		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento#getBasicWorkSetting()
+		 */
+		
 	}
 }

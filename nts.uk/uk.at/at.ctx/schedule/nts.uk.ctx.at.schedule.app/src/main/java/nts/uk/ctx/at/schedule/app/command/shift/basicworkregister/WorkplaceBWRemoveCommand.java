@@ -2,19 +2,22 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.dto;
+package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 
 import lombok.Getter;
 import lombok.Setter;
 
 
+/**
+ * The Class WorkplaceBWRemoveCommand.
+ */
 @Getter
 @Setter
-public class UpperLimitSettingFindDto {
+public class WorkplaceBWRemoveCommand {
+
+	/** The workplace id. */
+	private String workplaceId;
 	
-	/** The retention years amount. */
-	private Integer retentionYearsAmount;
-	
-	/** The max days cumulation. */
-	private Integer maxDaysCumulation;
+	/** The work type code. */
+	private String workTypeCode;
 }
