@@ -21,7 +21,7 @@ public interface BasicWorkSettingGetMemento {
 	 *
 	 * @return the sift code
 	 */
-	SiftCode getSiftCode();
+	WorkingCode getSiftCode();
 	
 	/**
 	 * Gets the work day division.

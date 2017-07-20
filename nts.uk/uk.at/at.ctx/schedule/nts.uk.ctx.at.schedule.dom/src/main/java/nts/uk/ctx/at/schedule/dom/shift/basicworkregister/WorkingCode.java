@@ -8,10 +8,10 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * The Class SiftCode. 就業時間帯コード
+ * The Class WorkingCode. 就業時間帯コード
  */
 @StringMaxLength(3)
-public class SiftCode extends CodePrimitiveValue<SiftCode> {
+public class WorkingCode extends CodePrimitiveValue<WorkingCode> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class SiftCode extends CodePrimitiveValue<SiftCode> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public SiftCode(String rawValue) {
+	public WorkingCode(String rawValue) {
 		super(rawValue);
 	}
 }

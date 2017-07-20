@@ -30,19 +30,17 @@ public interface ClassifiBasicWorkRepository {
 	 *
 	 * @param companyId the company id
 	 * @param classificationCode the classification code
-	 * @param workTypeCode the work type code
 	 */
-	void remove(String companyId, String classificationCode, String workTypeCode);
+	void remove(String companyId, String classificationCode);
 	
 	/**
 	 * Find.
 	 *
 	 * @param companyId the company id
 	 * @param classificationCode the classification code
-	 * @param workTypeCode the work type code
 	 * @return the optional
 	 */
-	Optional<ClassificationBasicWork> find(String companyId, String classificationCode, String workTypeCode);
+	Optional<ClassificationBasicWork> find(String companyId, String classificationCode);
 	
 
 //	List<ClassificationBasicWork> findAll(String CompanyId, String classificationCode);
