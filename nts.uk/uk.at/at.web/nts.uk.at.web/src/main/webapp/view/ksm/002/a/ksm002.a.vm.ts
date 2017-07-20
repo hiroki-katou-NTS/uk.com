@@ -184,7 +184,7 @@ module ksm002.a.viewmodel {
                     } else {
                         let lstText: Array<string> = [];
                         lstText = _.chain(self.boxItemList()).filter((item) => {
-                            return (param.selecteds.indexOf(item.id.toString()) > -1);
+                            return (param.selecteds.indexOf(item.id) > -1);
                         }).map('name').value();
                         self.optionDates.push(new OptionalDate(selectedDate, lstText, param.selecteds));
                     };
