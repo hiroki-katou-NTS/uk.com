@@ -12,6 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace.DeleteWorkplaceSpecificDateCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace.DeleteWorkplaceSpecificDateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace.InsertWorkplaceSpecificDateCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace.UpdateWorkplaceSpecificDateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace.WorkplaceSpecificDateCommand;
 import nts.uk.ctx.at.schedule.app.find.shift.specificdayset.workplace.WokplaceSpecificDateDto;
 import nts.uk.ctx.at.schedule.app.find.shift.specificdayset.workplace.WorkplaceSpecificDateFinder;
@@ -24,6 +25,8 @@ public class WorkplaceSpecificDateWebService extends WebService {
 	private WorkplaceSpecificDateFinder find;
 	@Inject
 	private InsertWorkplaceSpecificDateCommandHandler insertCommnad;
+	@Inject
+	private UpdateWorkplaceSpecificDateCommandHandler updateCommnad;
 	@Inject
 	private DeleteWorkplaceSpecificDateCommandHandler deleteCommand;
 
@@ -47,6 +50,12 @@ public class WorkplaceSpecificDateWebService extends WebService {
 	@Path("insertworkplacespecificdate")
 	public void InsertWorkplaceSpecificDate(List<WorkplaceSpecificDateCommand> lstWorkplaceSpecificDateItem) {
 		this.insertCommnad.handle(lstWorkplaceSpecificDateItem);
+	}
+	
+	@POST
+	@Path("updateworkplacespecificdate")
+	public void updateWorkplaceSpecificDate(List<WorkplaceSpecificDateCommand> lstWorkplaceSpecificDateItem) {
+		this.updateCommnad.handle(lstWorkplaceSpecificDateItem);
 	}
 
 	@POST

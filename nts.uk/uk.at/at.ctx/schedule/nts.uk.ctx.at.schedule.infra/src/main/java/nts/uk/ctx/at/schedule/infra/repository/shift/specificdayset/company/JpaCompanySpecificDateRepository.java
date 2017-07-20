@@ -43,6 +43,9 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
 			+ " AND c.ksmmtComSpecDateSetPK.specificDate >= :startYm"
 			+ " AND c.ksmmtComSpecDateSetPK.specificDate <= :endYm";
+	private final String DELETE_BY_DATE = "DELETE FROM KsmmtComSpecDateSet c"
+			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND c.ksmmtComSpecDateSetPK.specificDate = :specificDate";
 	
 
 	/**
@@ -147,12 +150,9 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 */
 	@Override
 	public void deleteComSpecByDate(String companyId, int specificDate) {
-		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
-		List<CompanySpecificDateItem> lstCompanySpecificDate = this.getComSpecByDate(companyId, specificDate);
-		for (CompanySpecificDateItem companySpecificDate : lstCompanySpecificDate) {
-			KsmmtComSpecDateSet entity = toEntity(companySpecificDate);
-			lstEntity.add(entity);
-		}
-		this.commandProxy().removeAll(lstEntity);
+		this.getEntityManager().createQuery(DELETE_BY_DATE)
+		.setParameter("companyId", companyId)
+		.setParameter("specificDate", specificDate)
+		.executeUpdate();
 	}
 }

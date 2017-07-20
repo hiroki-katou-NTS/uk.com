@@ -181,7 +181,7 @@ module kcp.share.tree {
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
                     
                     // Set default value when initial component.
-                    self.initSelectedValue(data, res);
+                    self.initSelectedValue(res);
                     
                     if (data.isShowAlreadySet) { 
                         // subscribe when alreadySettingList update => reload component.
@@ -293,7 +293,7 @@ module kcp.share.tree {
                     .css({ 'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden',
                          'font-size': defaultFontSize, 'font-family': defaultFontFamily })
                     .appendTo($('body'))
-                var w = o.width() + item.level * paddingPerLevel;
+                var w = o.width() + item.level * paddingPerLevel + 10;
                 if (w > max) {
                     max = w;
                 }
@@ -315,12 +315,12 @@ module kcp.share.tree {
         /**
          * Initial select mode
          */
-        private initSelectedValue(data: TreeComponentOption, dataList: Array<UnitModel>) {
+        private initSelectedValue(dataList: Array<UnitModel>) {
             let self = this;
-            switch(data.selectType) {
+            switch(self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
                     if (self.isMultiple) {
-                        self.selectedWorkplaceIds = data.selectedWorkplaceId;
+                        self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
                     }
                     break;
                 case SelectionType.SELECT_ALL:
@@ -329,13 +329,13 @@ module kcp.share.tree {
                     }
                     break;
                 case SelectionType.SELECT_FIRST_ITEM:
-                    self.selectedWorkplaceIds(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                    self.selectedWorkplaceIds(dataList.length > 0 ? self.selectData(self.data, dataList[0]) : null);
                     break;
                 case SelectionType.NO_SELECT:
-                    self.selectedWorkplaceIds(data.isMultiSelect ? [] : '');
+                    self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                     break;
                 default:
-                    self.selectedWorkplaceIds(data.isMultiSelect ? [] : '');
+                    self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                     break
             }
         }
@@ -431,7 +431,7 @@ module kcp.share.tree {
                     self.itemList(subItemList);
 //                    self.selectedWorkplaceIds(self.isMultiple ? [subItemList[0].workplaceId] : subItemList[0]
 //                        .workplaceId);
-                    self.initSelectedValue(data, self.itemList());
+                    self.initSelectedValue(self.itemList());
                     if (!data || !$input) {
                         return;
                     }

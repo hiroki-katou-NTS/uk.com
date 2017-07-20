@@ -26,7 +26,12 @@ public interface PublicHolidayRepository {
 	void update (PublicHoliday  publicHoliday);
 	
 	void add (PublicHoliday  publicHoliday);
-	
-	
-
+	/**
+	 * get pHoliday While Date
+	 * @param strDate
+	 * @param companyId
+	 * @param endDate
+	 * @return
+	 */
+	List<PublicHoliday> getpHolidayWhileDate(String companyId, BigDecimal strDate, BigDecimal endDate);
 }
