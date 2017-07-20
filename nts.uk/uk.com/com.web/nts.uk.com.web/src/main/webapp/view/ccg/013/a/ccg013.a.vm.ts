@@ -106,37 +106,10 @@ module ccg013.a.viewmodel {
             nts.uk.ui.block.invisible();
             var self = this;
             var webMenu = self.currentWebMenu();
-            var menuBars = webMenu.menuBars();
             var activeid = $('#tabs li[aria-expanded=true]').attr('id');
 
-            if (self.isDefaultMenu()) {
-                webMenu.defaultMenu(1);
-            } else {
-                webMenu.defaultMenu(0);
-            }
+            (self.isDefaultMenu()) ? webMenu.defaultMenu(1) : webMenu.defaultMenu(0);
 
-            $('#tabs li.context-menu-bar').each((bi, be) => {
-                let bid = be.attributes['id'].value,
-                    menubar = _.find(menuBars, (x: MenuBar) => x.menuBarId() == bid);
-                if (menubar) {
-                    $('#tab-content-' + bid + ' .title-menu-column.ui-sortable-handle').each((ti, te) => {
-                        let tid = te.attributes['id'].value,
-                            titlemenu = _.find(menubar.titleMenu(), x => x.titleMenuId() == tid);
-                        if (titlemenu) {
-                            titlemenu.displayOrder(ti + 1);
-                            //context-menu-tree ui-sortable-handle
-                            $('#' + tid + ' li.context-menu-tree.ui-sortable-handle').each((mi, me) => {
-                                let mid = me.attributes['id'].value,
-                                    treemenu = _.find(titlemenu.treeMenu(), x => x.treeMenuId() == mid);
-
-                                if (treemenu) {
-                                    treemenu.displayOrder(mi + 1);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
             service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 self.getWebMenu().done(() => {
@@ -286,7 +259,7 @@ module ccg013.a.viewmodel {
                 axis: "x",
                 revert: true,
                 tolerance: "pointer",
-                placeholder: "menubar-navigation-placeholder",
+                placeholder: "menubar-placeholder",
                 stop: function(event, ui) {
                     self.rebindMenuBar();
                 }
@@ -305,7 +278,7 @@ module ccg013.a.viewmodel {
                 items: ".title-menu-column",
                 handle: ".title-menu-name",
                 tolerance: "pointer",
-                placeholder: "menubar-navigation-placeholder",
+                placeholder: "titlemenu-placeholder",
                 stop: function(event, ui) {
                     self.calculateTitleMenuOrder();
                 }
@@ -321,9 +294,10 @@ module ccg013.a.viewmodel {
                 distance: 25,
                 axis: "y",
                 revert: true,
+                scroll: false,
                 items: ".context-menu-tree",
                 tolerance: "pointer",
-                placeholder: "menubar-navigation-placeholder",
+                placeholder: "treemenu-placeholder",
                 stop: function(event, ui) {
                     self.rebindTreeMenu(ui.item.closest(".title-menu-column"));
                 }
@@ -559,12 +533,12 @@ module ccg013.a.viewmodel {
         }
 
         openJdialog(id): any {
-            let activeid = $('#tabs li[aria-expanded=true]').attr('id');
-            let self = this,
-                datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars),
-                menu = _.find(datas, x => x.menuBarId == activeid),
-                dataTitleMenu: Array<any> = menu.titleMenu,
-                titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
+            var self = this;
+            var activeid = self.currentMenuBar().menuBarId();
+            var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
+            var menu = _.find(datas, x => x.menuBarId == activeid);
+            var dataTitleMenu: Array<any> = menu.titleMenu;
+            var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
             setShared("CCG013A_ToChild_TitleBar", titleMenu);
             modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
                 let data = getShared("CCG013J_ToMain_TitleBar");
