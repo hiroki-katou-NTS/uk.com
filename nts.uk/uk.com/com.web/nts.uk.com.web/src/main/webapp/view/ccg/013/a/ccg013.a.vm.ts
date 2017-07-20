@@ -6,93 +6,47 @@ module ccg013.a.viewmodel {
     import menu = nts.uk.ui.contextmenu.ContextMenuItem;
     import contextMenu = nts.uk.ui.contextmenu.ContextMenu;
 
+    const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}, text: menuBarName"></a></li>';
+    const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId},text: name"></li>';
+
     export class ScreenModel {
-        paymentDateProcessingList: KnockoutObservableArray<any>;
-        selectedPaymentDate: KnockoutObservable<any>;
-        items: KnockoutObservableArray<ItemModel>;
-        columns2: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        itemMenu: KnockoutObservableArray<any>;
-        contextmenu1: KnockoutObservable<string>;
+        // WebMenu
+        listWebMenu: KnockoutObservableArray<WebMenuModel>;
+        webMenuColumns: KnockoutObservableArray<any>;
+        currentWebMenuCode: KnockoutObservable<any>;
         currentWebMenu: KnockoutObservable<WebMenu>;
+        index: KnockoutObservable<number>;
+
+        // MenuBar
+        currentMenuBar: KnockoutObservable<MenuBar>;
+        
+        // UI
         isCreated: KnockoutObservable<boolean>;
         isDefaultMenu: KnockoutObservable<boolean>;
         widthTab: KnockoutObservable<string> = ko.observable('800px');
         checkDisabled: KnockoutObservable<boolean>;
-        index: KnockoutObservable<number>;
 
         constructor() {
             var self = this;
-            self.isCreated = ko.observable(false);
-            self.isDefaultMenu = ko.observable(false);
-            self.checkDisabled = ko.observable(false);
-            self.index = ko.observable(0);
-
+            // WebMenu
+            self.listWebMenu = ko.observableArray([]);
+            self.webMenuColumns = ko.observableArray([
+                { headerText: nts.uk.resource.getText("CCG013_8"), key: 'icon', width: 50 },
+                { headerText: nts.uk.resource.getText("CCG013_9"), key: 'webMenuCode', width: 50 },
+                { headerText: nts.uk.resource.getText("CCG013_10"), key: 'webMenuName', width: 50 }
+            ]);
             self.currentWebMenu = ko.observable(new WebMenu({
                 webMenuCode: "",
                 webMenuName: "",
                 defaultMenu: 0,
                 menuBars: []
             }));
-
-            self.paymentDateProcessingList = ko.observableArray([]);
-            self.selectedPaymentDate = ko.observable(null);
-            self.items = ko.observableArray([]);
-
-            self.itemMenu = ko.observableArray([
-                { Name: '個人設定', code: "context-menu1" },
-                { Name: '導入時フロー', code: "context-menu2" },
-                { Name: '個人情報の登録', code: "context-menu3" },
-                { Name: '個人情報の登録', code: "context-menu3" },
-                { Name: '個人情報の登録', code: "context-menu3" }
-            ]);
-
-            self.columns2 = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_8"), key: 'icon', width: 50 },
-                { headerText: nts.uk.resource.getText("CCG013_9"), key: 'webMenuCode', width: 50 },
-                { headerText: nts.uk.resource.getText("CCG013_10"), key: 'webMenuName', width: 50 }
-            ]);
-
-            new contextMenu(".context-menu-bar", [
-                new menu("edit", "メニューバーの編集(U)", (ui) => {
-                    let li = $(ui).parent('li');
-                    self.openIdialog(li.attr('id'));
-                }),
-                new menu("delete", "メニューバーの削除(D)", (ui) => {
-                    var element = $(ui).parent();
-
-                    self.removeMenuBar(element.attr("id"));
-                })
-            ]);
-
-            new contextMenu(".context-menu-title", [
-                new menu("edit", "タイトルメニューの編集(U)", (ui) => {
-                    let div = $(ui).parent('div');
-                    self.openJdialog(div.attr('id'));
-                }),
-                new menu("delete", "タイトルメニューの削除(D)", (ui) => {
-                    let element = $(ui).parent(),
-                        id = element.attr('id');
-                    self.removeTitleBar(id);
-                })
-            ]);
-
-            new contextMenu(".context-menu-tree", [
-                new menu("delete", "メニューの削除(D)", (ui) => {
-
-                    let id = $(ui).attr('id');
-
-                    self.removeTreeMenu(id);
-                })
-            ]);
-
-            self.currentCode = ko.observable();
-            self.currentCode.subscribe(function(newValue) {
-                var index = _.findIndex(self.items(), function(item: ItemModel) {
+            self.currentWebMenuCode = ko.observable();
+            self.currentWebMenuCode.subscribe(function(newValue) {
+                var index = _.findIndex(self.listWebMenu(), function(item: WebMenuModel) {
                     return item.webMenuCode == newValue;
                 });
                 self.index(index);
-
                 service.findWebMenu(newValue).done(function(res: service.WebMenuDto) {
                     let webmenu = self.currentWebMenu();
                     if (!newValue) {
@@ -106,68 +60,54 @@ module ccg013.a.viewmodel {
                     webmenu.webMenuName(res.webMenuName);
                     webmenu.defaultMenu(res.defaultMenu);
                     self.isDefaultMenu(!!res.defaultMenu);
-
                     webmenu.menuBars.removeAll();
-
                     service.findStandardMenuList().done((menuNames: Array<any>) => {
                         _.each(_.orderBy(res.menuBars, 'displayOrder', 'asc'), x => {
-
-                            // push list name of tree menu to IMenuBar
                             x.menuNames = menuNames;
-
                             webmenu.menuBars.push(new MenuBar(x));
                         });
-                        bindSortable();
+                        self.initDisplay();
+                        if (webmenu.menuBars().length > 0)
+                            self.currentMenuBar(webmenu.menuBars()[0]);
                     });
                 });
             });
-
             self.currentWebMenu().menuBars([]);
+            self.index = ko.observable(0);
+
+            // MenuBar
+            self.currentMenuBar = ko.observable(null);
+            
+            // UI
+            self.isCreated = ko.observable(false);
+            self.isDefaultMenu = ko.observable(false);
+            self.checkDisabled = ko.observable(false);
         }
 
+        /** StartPage */
         startPage(): JQueryPromise<void> {
-            var self = this,
-                dfd = $.Deferred<void>();
+            var self = this;
+            var dfd = $.Deferred<void>();
 
             self.getWebMenu().done(function() {
-                if (self.items().length > 0) {
-                    self.currentCode(self.items()[0].webMenuCode);
+                if (self.listWebMenu().length > 0) {
+                    self.currentWebMenuCode(self.listWebMenu()[0].webMenuCode);
                 }
                 else {
                     self.cleanForm();
                 }
-
                 dfd.resolve();
             });
-
             return dfd.promise();
         }
 
-
-        getWebMenu(): any {
-            let self = this,
-                dfd = $.Deferred();
-
-            service.loadWebMenu().done(function(data) {
-                self.items.removeAll();
-
-                _.forEach(data, function(item) {
-                    self.items.push(new ItemModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
-                });
-                dfd.resolve(data);
-            }).fail((res) => { });
-
-            return dfd.promise();
-        }
-
-
-
+        /** Registry Webmenu */
         addWebMenu(): any {
             nts.uk.ui.block.invisible();
-            var self = this,
-                webMenu = self.currentWebMenu(),
-                menuBars = webMenu.menuBars(),
-                activeid = $('#tabs li[aria-expanded=true]').attr('id');
+            var self = this;
+            var webMenu = self.currentWebMenu();
+            var menuBars = webMenu.menuBars();
+            var activeid = $('#tabs li[aria-expanded=true]').attr('id');
 
             if (self.isDefaultMenu()) {
                 webMenu.defaultMenu(1);
@@ -179,8 +119,6 @@ module ccg013.a.viewmodel {
                 let bid = be.attributes['id'].value,
                     menubar = _.find(menuBars, (x: MenuBar) => x.menuBarId() == bid);
                 if (menubar) {
-                    menubar.displayOrder(bi + 1);
-
                     $('#tab-content-' + bid + ' .title-menu-column.ui-sortable-handle').each((ti, te) => {
                         let tid = te.attributes['id'].value,
                             titlemenu = _.find(menubar.titleMenu(), x => x.titleMenuId() == tid);
@@ -202,8 +140,7 @@ module ccg013.a.viewmodel {
             service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 self.getWebMenu().done(() => {
-                    bindSortable();
-                    self.currentCode(webMenu.webMenuCode());
+                    self.currentWebMenuCode(webMenu.webMenuCode());
                     $("#tabs li#" + activeid + ' a').trigger('click');
                 });
             }).fail(function(error) {
@@ -213,59 +150,13 @@ module ccg013.a.viewmodel {
             }).always(function() {
                 nts.uk.ui.block.clear();
             });
-
         }
 
-
-
-        /**
-         * Remove menu bar
-         */
-        removeMenuBar(menuBarId: string): void {
-            let self = this,
-                menu = self.currentWebMenu(),
-                menuBars = menu.menuBars();
-            self.currentCode();
-            _.remove(menuBars, (item: MenuBar) => item.menuBarId() == menuBarId);
-            menu.menuBars.valueHasMutated();
-        }
-
-        /**
-         * Remove title bar
-         */
-        removeTitleBar(titleBarId: string): void {
-            let self = this,
-                menu = self.currentWebMenu(),
-                menuBars = menu.menuBars();
-
-            _.forEach(menuBars, (item: MenuBar) => {
-                _.remove(item.titleMenu(), (x: TitleMenu) => x.titleMenuId() == titleBarId);
-                item.titleMenu.valueHasMutated();
-            });
-        }
-
-
-        removeTreeMenu(treeMenuId: string): void {
-            let self = this,
-                menu = self.currentWebMenu(),
-                menuBars = menu.menuBars();
-
-            _.forEach(menuBars, function(item: MenuBar) {
-                _.forEach(item.titleMenu(), function(v: TitleMenu) {
-                    _.remove(v.treeMenu(), (x: TreeMenu) => x.treeMenuId() == treeMenuId);
-                    v.treeMenu.valueHasMutated();
-                });
-            });
-        }
-
-
-        /**
-         * Remove web menu
-         */
+        /** Remove web menu */
         removeWebMenu(): void {
             nts.uk.ui.block.invisible();
             let self = this,
-                webMenuCode = self.currentCode();
+                webMenuCode = self.currentWebMenuCode();
             if (self.currentWebMenu().defaultMenu()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_72" });
             } else {
@@ -273,10 +164,10 @@ module ccg013.a.viewmodel {
                     service.deleteWebMenu(webMenuCode).done(function() {
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         self.getWebMenu().done(() => {
-                            if (self.index() == self.items().length) {
-                                self.currentCode(self.items()[self.index() - 1].webMenuCode);
+                            if (self.index() == self.listWebMenu().length) {
+                                self.currentWebMenuCode(self.listWebMenu()[self.index() - 1].webMenuCode);
                             } else {
-                                self.currentCode(self.items()[self.index()].webMenuCode);
+                                self.currentWebMenuCode(self.listWebMenu()[self.index()].webMenuCode);
                             }
                         });
                     }).fail(function(error) {
@@ -289,33 +180,258 @@ module ccg013.a.viewmodel {
             nts.uk.ui.block.clear();
         }
 
+        /** Remove menu bar */
+        private removeMenuBar(menuBarId: string): void {
+            let self = this;
+            self.currentWebMenu().menuBars.remove((item) => {
+                return item.menuBarId() == menuBarId;
+            });
+            self.calculateMenuBarOrder();
+        }
 
-        /**
-         * Clean all control in form
-         */
-        cleanForm(): void {
+        /** Remove title bar */
+        private removeTitleBar(titleMenuId: string): void {
+            var self = this;
+
+            var titleMenu: Array<TitleMenu> = [];
+            _.forEach(self.currentMenuBar().titleMenu(), (item: TitleMenu) => {
+                titleMenu.push(item);
+            });
+            _.remove(titleMenu, (item: TitleMenu) => {
+                return item.titleMenuId() == titleMenuId;
+            });
+            self.currentMenuBar().titleMenu.removeAll();
+            self.currentMenuBar().titleMenu(titleMenu);
+            self.calculateTitleMenuOrder();
+            self.setupMenuBar();
+        }
+
+        /** Remove TreeMenu */
+        private removeTreeMenu(ui: any): void {
+            var self = this;
+            var treeMenuId = ui.attr("id");
+            var titleMenuId = ui.closest(".title-menu-column").attr("id");
+            _.forEach(self.currentMenuBar().titleMenu(), function(titleMenu: TitleMenu) {
+                titleMenu.treeMenu.remove((x: TreeMenu) => {
+                    return x.treeMenuId() == treeMenuId;
+                }); 
+                titleMenu.treeMenu.valueHasMutated();
+            });
+            self.calculateTreeMenuOrder(titleMenuId);
+        }
+
+        /** Clean all control in form */
+        private cleanForm(): void {
             var self = this;
             self.checkDisabled(true);
             self.isCreated(true);
-
             self.currentWebMenu(new WebMenu({
                 webMenuCode: "",
                 webMenuName: "",
                 defaultMenu: 0,
                 menuBars: []
             }));
-            self.currentCode("");
+            self.currentWebMenuCode("");
         }
 
+        /** Get Webmenu */
+        private getWebMenu(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            service.loadWebMenu().done(function(data) {
+                self.listWebMenu.removeAll();
+                _.forEach(data, function(item) {
+                    self.listWebMenu.push(new WebMenuModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
+                });
+                dfd.resolve(data);
+            }).fail((res) => { });
+            return dfd.promise();
+        }
 
+        /** 
+         *  Init Display
+         *  Call when start load done 
+         */
+        private initDisplay(): void {
+            var self = this;
+            self.setupMenuBar();
+            self.setupTitleMenu();
+            self.setupTreeMenu();
+            self.setupContextMenu();
+        }
+
+        /** Setup MenuBar */
+        private setupMenuBar(): void {
+            var self = this;
+            var active = (nts.uk.util.isNullOrUndefined(self.currentMenuBar())) ? 0 : self.currentMenuBar().displayOrder() - 1;
+            $("#menubar-tabs.ui-tabs").tabs("destroy");
+            $("#menubar-tabs").tabs({
+                active: active,
+                create: function(event: Event, ui: any) {
+                    $("#menubar-tabs").find('.ui-tabs-panel').addClass('disappear');
+                    ui.panel.removeClass('disappear');
+                },
+                activate: function(evt: Event, ui: any) {
+                    $("#menubar-tabs").find('.ui-tabs-panel').addClass('disappear');
+                    ui.newPanel.removeClass('disappear');
+                    self.currentMenuBar(_.find(self.currentWebMenu().menuBars(), (item) => {
+                        return item.menuBarId() == ui.newTab.attr("id");
+                    }));
+                }
+            });
+            $(".menubar-navigation.ui-sortable").sortable("destroy");
+            $(".menubar-navigation").sortable({
+                opacity: 0.8,
+                distance: 25,
+                axis: "x",
+                revert: true,
+                tolerance: "pointer",
+                placeholder: "menubar-navigation-placeholder",
+                stop: function(event, ui) {
+                    self.rebindMenuBar();
+                }
+            });
+        }
+
+        /** Setup TitleMenu */
+        private setupTitleMenu(): void {
+            var self = this;
+            $(".title-menu.ui-sortable").sortable("destroy");
+            $(".title-menu").sortable({
+                opacity: 0.8,
+                distance: 25,
+                axis: "x",
+                revert: true,
+                items: ".title-menu-column",
+                handle: ".title-menu-name",
+                tolerance: "pointer",
+                placeholder: "menubar-navigation-placeholder",
+                stop: function(event, ui) {
+                    self.calculateTitleMenuOrder();
+                }
+            });
+        }
+
+        /** Setup TreeMenu */
+        private setupTreeMenu(): void {
+            var self = this;
+            $(".tree-menu.ui-sortable").sortable("destroy");
+            $(".tree-menu").sortable({
+                opacity: 0.8,
+                distance: 25,
+                axis: "y",
+                revert: true,
+                items: ".context-menu-tree",
+                tolerance: "pointer",
+                placeholder: "menubar-navigation-placeholder",
+                stop: function(event, ui) {
+                    self.rebindTreeMenu(ui.item.closest(".title-menu-column"));
+                }
+            });
+        }
+
+        /** Setup ContextMenu */
+        private setupContextMenu(): void {
+            var self = this;
+            new contextMenu(".context-menu-bar", [
+                new menu("edit", "メニューバーの編集(U)", (ui) => {
+                    let li = $(ui).parent('li');
+                    self.openIdialog(li.attr('id'));
+                }),
+                new menu("delete", "メニューバーの削除(D)", (ui) => {
+                    let element = $(ui).parent();
+                    self.removeMenuBar(element.attr("id"));
+                })
+            ]);
+            new contextMenu(".context-menu-title", [
+                new menu("edit", "タイトルメニューの編集(U)", (ui) => {
+                    let div = $(ui).parent('div');
+                    self.openJdialog(div.attr('id'));
+                }),
+                new menu("delete", "タイトルメニューの削除(D)", (ui) => {
+                    let element = $(ui).parent();
+                    let id = element.attr('id');
+                    self.removeTitleBar(id);
+                })
+            ]);
+            new contextMenu(".context-menu-tree", [
+                new menu("delete", "メニューの削除(D)", (ui) => {
+                    self.removeTreeMenu($(ui));
+                })
+            ]);
+        }
+
+        /** Rebind Knockout Menubar */
+        private rebindMenuBar(): void {
+            var self = this;
+            ko.cleanNode($(".menubar-navigation")[0]);
+            self.calculateMenuBarOrder();
+            $(".menubar-navigation").html(menuBarHTML);
+            ko.applyBindingsToNode($(".menubar-navigation")[0], {
+                foreach: self.currentWebMenu().menuBars
+            });
+            self.setupMenuBar();
+        }
+
+        /** Calculate MenuBar Index */
+        private calculateMenuBarOrder(): void {
+            var self = this;
+            _.forEach(self.currentWebMenu().menuBars(), (item: MenuBar) => {
+                item.displayOrder($("#" + item.menuBarId(), ".menubar-navigation").index() + 1);
+            });
+            self.currentWebMenu().menuBars.sort((left: MenuBar, right: MenuBar) => {
+                return left.displayOrder() == right.displayOrder() ? 0 : (left.displayOrder() < right.displayOrder() ? -1 : 1);
+            });
+        }
+        
+        /** Rebind Knockout TreeMenu */
+        private rebindTreeMenu(ui: any): void {
+            var self = this;
+            var titleMenuId = ui.attr("id");
+            var titleMenu = _.find(self.currentMenuBar().titleMenu(), (item: TitleMenu) => {
+                return item.titleMenuId() == titleMenuId;
+            });
+            ko.cleanNode($("#" + titleMenuId + " .tree-menu")[0]);
+            self.calculateTreeMenuOrder(ui.attr("id"));
+            $("#" + titleMenuId + " .tree-menu").html(treeMenuHTML);
+            ko.applyBindingsToNode($("#" + titleMenuId + " .tree-menu")[0], {
+                foreach: titleMenu.treeMenu
+            });
+            self.setupTreeMenu();
+        }
+
+        /** Calculate TreeMenu Index */
+        private calculateTreeMenuOrder(titleMenuId: string): void {
+            var self = this;
+            var titleMenu = _.find(self.currentMenuBar().titleMenu(), (item: TitleMenu) => {
+                return item.titleMenuId() == titleMenuId;
+            });
+            _.forEach(titleMenu.treeMenu(), (item: TreeMenu) => {
+                item.displayOrder($("#" + item.treeMenuId(), "#" + titleMenuId + " .tree-menu").index() + 1);
+            });
+            titleMenu.treeMenu().sort((left: TreeMenu, right: TreeMenu) => {
+                return left.displayOrder() == right.displayOrder() ? 0 : (left.displayOrder() < right.displayOrder() ? -1 : 1);
+            });
+        }
+
+        /** Calculate MenuBar Index */
+        private calculateTitleMenuOrder(): void {
+            var self = this;
+            _.forEach(self.currentMenuBar().titleMenu(), (item: TitleMenu) => {
+                item.displayOrder($("#" + item.titleMenuId(), ".title-menu").index() + 1);
+            });
+            self.currentMenuBar().titleMenu.sort((left: TitleMenu, right: TitleMenu) => {
+                return left.displayOrder() == right.displayOrder() ? 0 : (left.displayOrder() < right.displayOrder() ? -1 : 1);
+            });
+        }
+
+        /** Add MenuBar Dialog */
         openBdialog(): any {
-            nts.uk.ui.block.invisible();
-            var self = this,
-                webmenu = self.currentWebMenu();
+            var self = this;
+            var webmenu = self.currentWebMenu();
             modal("/view/ccg/013/b/index.xhtml").onClosed(function() {
-                let id = randomId(),
-                    data = getShared("CCG013B_MenuBar");
-
+                let id = randomId();
+                let data = getShared("CCG013B_MenuBar");
                 if (data) {
                     webmenu.menuBars.push(new MenuBar({
                         menuBarId: id,
@@ -329,16 +445,13 @@ module ccg013.a.viewmodel {
                         displayOrder: self.currentWebMenu().menuBars().length + 1,
                         titleMenu: []
                     }));
-                    bindSortable();
+                    self.setupMenuBar();
                     $("#tabs li#" + id + " a").click();
                 }
-
-                nts.uk.ui.block.clear();
             });
         }
 
         openCdialog(menuBar: MenuBar): any {
-            nts.uk.ui.block.invisible();
             var self = this,
                 webmenu = self.currentWebMenu();
             modal("/view/ccg/013/c/index.xhtml").onClosed(function() {
@@ -361,24 +474,19 @@ module ccg013.a.viewmodel {
                         imageName: data.imageName,
                         imageSize: data.imageSize,
                     }));
-
-                    bindSortable();
                     $("#tabs li#" + menuBar.menuBarId() + " a").click();
                 }
-                nts.uk.ui.block.clear();
             });
         }
 
         openDdialog(titleMenu: TitleMenu): void {
-            nts.uk.ui.block.invisible();
-            let self = this,
-                titleBar = {
-                    name: titleMenu.titleMenuName(),
-                    backgroundColor: titleMenu.backgroundColor(),
-                    textColor: titleMenu.textColor(),
-                    treeMenus: titleMenu.treeMenu()
-                };
-
+            let self = this;
+            let titleBar = {
+                name: titleMenu.titleMenuName(),
+                backgroundColor: titleMenu.backgroundColor(),
+                textColor: titleMenu.textColor(),
+                treeMenus: titleMenu.treeMenu()
+            };
             setShared("titleBar", titleBar);
             modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
                 let data = getShared("CCG013D_MENUS");
@@ -397,83 +505,60 @@ module ccg013.a.viewmodel {
                         }));
                     });
                 }
-                nts.uk.ui.block.clear();
             });
         }
 
-
         optionEDialog(): void {
-            nts.uk.ui.block.invisible();
-            var self = this,
-                data = self.currentWebMenu();
-
+            var self = this;
+            var data = self.currentWebMenu();
             setShared("CCG013E_COPY", data);
             modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
                 self.getWebMenu();
-                nts.uk.ui.block.clear();
             });
         }
 
         optionFDialog(): void {
-            nts.uk.ui.block.invisible();
-            let self = this,
-                dataTranfer = self.items();
+            var self = this;
+            var dataTranfer = self.listWebMenu();
 
             setShared("CCG013F_JOB_TITLE", dataTranfer);
-            modal("/view/ccg/013/f/index.xhtml").onClosed(function() {
-                nts.uk.ui.block.clear();
-            });
+            modal("/view/ccg/013/f/index.xhtml");
         }
 
         optionGDialog(): void {
-            nts.uk.ui.block.invisible();
-            let self = this,
-                dataTranfer = self.items();
-
+            var self = this;
+            var dataTranfer = self.listWebMenu();
             setShared("CCG013G_WEB_MENU", dataTranfer);
-            modal("/view/ccg/013/g/index.xhtml").onClosed(function() {
-                nts.uk.ui.block.clear();
-            });
+            modal("/view/ccg/013/g/index.xhtml");
         }
 
         openKdialog(): any {
-            nts.uk.ui.block.invisible();
             var self = this;
-            modal("/view/ccg/013/k/index.xhtml").onClosed(function() {
-                nts.uk.ui.block.clear();
-            });
+            modal("/view/ccg/013/k/index.xhtml");
         }
 
         openIdialog(id): any {
-            nts.uk.ui.block.invisible();
-            let self = this,
-                datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars),
-                menu = _.find(datas, x => x.menuBarId == id);
+            var self = this;
+            var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
+            var menu = _.find(datas, x => x.menuBarId == id);
             setShared("CCG013I_MENU_BAR1", menu);
             modal("/view/ccg/013/i/index.xhtml").onClosed(function() {
                 let data = getShared("CCG013I_MENU_BAR");
                 if (data) {
                     let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars();
-                    //self.currentWebMenu().menuBars([]);
                     _.forEach(menuBars, function(item: MenuBar) {
                         if (item.menuBarId() == id) {
                             item.menuBarName(data.menuBarName);
                             item.backgroundColor(data.backgroundColor);
                             item.textColor(data.textColor);
                         }
-                        // self.currentWebMenu().menuBars.push(item);
                     });
-
-                    bindSortable();
                     $("#tabs li#" + id + " a").click();
                 }
-
-                nts.uk.ui.block.clear();
             });
         }
 
         openJdialog(id): any {
-            nts.uk.ui.block.invisible();
             let activeid = $('#tabs li[aria-expanded=true]').attr('id');
             let self = this,
                 datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars),
@@ -498,14 +583,13 @@ module ccg013.a.viewmodel {
                         }
                     });
 
-                    bindSortable();
+
                 }
-                nts.uk.ui.block.clear();
             });
         }
     }
 
-    export class ItemModel {
+    export class WebMenuModel {
         webMenuCode: string;
         webMenuName: string;
         defaultMenu: number;
@@ -540,20 +624,6 @@ module ccg013.a.viewmodel {
             this.webMenuName = ko.observable(param.webMenuName);
             this.defaultMenu = ko.observable(param.defaultMenu);
             this.menuBars = ko.observableArray(param.menuBars.map(x => new MenuBar(x)));
-
-            this.menuBars.subscribe(x => {
-                if (__viewContext['viewModel']) {
-                    let vm = __viewContext['viewModel'],
-                        pw = x.length * 160 + 360,
-                        tm = _.maxBy(x, m => m.titleMenu().length),
-                        cw = tm && tm.titleMenu().length * 160 + 360;
-                    if (!x.length) {
-                        vm.widthTab('800px');
-                    } else {
-                        vm.widthTab((pw > cw ? pw : cw) + 'px');
-                    }
-                }
-            });
         }
     }
 
@@ -600,7 +670,6 @@ module ccg013.a.viewmodel {
                 return new TitleMenu(x);
             }));
             this.targetContent = ko.observable("#tab-content-" + param.menuBarId);
-
             this.titleMenu.subscribe(x => {
                 let vm = __viewContext['viewModel'];
                 if (vm) {
