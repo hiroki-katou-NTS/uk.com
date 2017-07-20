@@ -24,16 +24,16 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 		List<BigDecimal> listSpecDate = context.getCommand().stream().map(c->c.getSpecificDate()).distinct().collect(Collectors.toList());
 		for(BigDecimal specDate : listSpecDate)	{
 			companyRepo.deleteComSpecByDate(companyId, specDate.intValue());
-		}
-//		List<CompanySpecificDateItem> listInsert = context.getCommand()
-//				.stream()
-//				.map(c -> CompanySpecificDateItem.createFromJavaType(
-//				companyId,
-//				c.getSpecificDate(),
-//				c.getSpecificDateNo(),
-//				"")).collect(Collectors.toList());
-//		
-//		companyRepo.InsertComSpecDate(listInsert);
+		};
+		List<CompanySpecificDateItem> listInsert = context.getCommand()
+				.stream()
+				.map(c -> CompanySpecificDateItem.createFromJavaType(
+				companyId,
+				c.getSpecificDate(),
+				c.getSpecificDateNo(),
+				"")).collect(Collectors.toList());
+		
+		companyRepo.InsertComSpecDate(listInsert);
 		
 	}
 
