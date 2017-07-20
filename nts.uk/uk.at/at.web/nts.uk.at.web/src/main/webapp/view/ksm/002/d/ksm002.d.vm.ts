@@ -114,7 +114,7 @@ module ksm002.d{
                         self.countDay(self.countDay()+1);
                     }
                 });
-                if(self.countDay() == self.dayInWeek().length){
+                if(self.countDay() == self.dayInWeek().length && self.enable() == false){
                     $('#day_0').ntsError('set', {messageId:"Msg_137"});
                 }
                 // check not choose any item
@@ -135,7 +135,7 @@ module ksm002.d{
                     }
                 }
                 if(self.enable()==true){
-                    listDayToUpdate.push(0);
+                    listDayToUpdate.push(0);     
                 }
                 let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), "");
                 service.updateSpecificDateSet(object).done(function(data) {
