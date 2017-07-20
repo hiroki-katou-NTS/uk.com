@@ -17,7 +17,7 @@ public interface ExternalBudgetLogSetMemento {
      *
      * @param externalBudgetFileName the new external budget file name
      */
-    void setExternalBudgetFileName(String externalBudgetFileName);
+    void setExternalBudgetFileName(ExtBudgetFileName externalBudgetFileName);
 
     /**
      * Sets the external budget code.

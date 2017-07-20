@@ -27,18 +27,18 @@ public interface ExternalBudgetErrorSetMemento {
     void setActualValue(ExtBudgetActualValue actualValue);
 
     /**
-     * Sets the process date.
+     * Sets the accepted date.
      *
-     * @param processDate the new process date
+     * @param acceptedDate the new accepted date
      */
-    void setProcessDate(Integer processDate);
+    void setAcceptedDate(ExtBudgetAccDate acceptedDate);
 
     /**
-     * Sets the work type code.
+     * Sets the work place code.
      *
-     * @param workTypeCode the new work type code
+     * @param workPlaceCode the new work place code
      */
-    void setWorkTypeCode(String workTypeCode);
+    void setWorkPlaceCode(ExtBudgetWorkplaceCode workPlaceCode);
 
     /**
      * Sets the excution id.

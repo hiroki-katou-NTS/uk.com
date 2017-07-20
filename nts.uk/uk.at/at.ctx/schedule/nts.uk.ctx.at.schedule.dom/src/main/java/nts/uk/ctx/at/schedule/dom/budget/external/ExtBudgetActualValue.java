@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class ExtBudgetActualValue.
  * 外部予算実績受入値
  */
-@StringMaxLength(300)
+@StringMaxLength(100)
 public class ExtBudgetActualValue extends StringPrimitiveValue<ExtBudgetActualValue> {
     
     /** The Constant serialVersionUID. */

@@ -2,10 +2,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModelCbb1>;
         selectedCode: KnockoutObservable<string>;
-        checked: KnockoutObservable<boolean>;
-        zxcv: KnockoutObservable<number>;
 
         patternReflection: PatternReflection;
+        dailyPatternSetting: service.model.DailyPatternSetting;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -31,105 +30,105 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                 new ItemModelCbb1('3', '基本給')
             ]);
             self.selectedCode = ko.observable('1');
-            self.checked = ko.observable(true);
-            self.zxcv = ko.observable(1);
 
-            // Test
-            self.patternReflection = new PatternReflection();
-            self.patternReflection.employeeId = 'axbc';
-            self.patternReflection.reflectionMethod = ReflectionMethod.FillInTheBlank;
-            self.patternReflection.patternClassification = PatternClassification.Confirmation;
-            self.patternReflection.statutorySetting = new DayOffSetting();
-            self.patternReflection.nonStatutorySetting = new DayOffSetting();
-            self.patternReflection.holidaySetting = new DayOffSetting();
-            nts.uk.characteristics.save(self.patternReflection.employeeId, self.patternReflection);
+            self.dailyPatternSetting = {};
+            self.dailyPatternSetting.patternCode = 'code';
+            self.dailyPatternSetting.patternName = 'name';
+            self.dailyPatternSetting.workPatterns = [{
+                dispOrder: 1,
+                workTypeCode: '11',
+                workingHoursCode: 'nghi',
+                days: 1,
+            }, {
+                    dispOrder: 2,
+                    workTypeCode: '22',
+                    workingHoursCode: 'lam',
+                    days: 2,
+                }, {
+                    dispOrder: 3,
+                    workTypeCode: '33',
+                    workingHoursCode: 'lam',
+                    days: 3,
+                }];
 
             // Calendar component
-            self.yearMonthPicked = ko.observable(200005);
+            self.yearMonthPicked = ko.observable(201707);
             self.cssRangerYM = {
             };
-            self.optionDates = ko.observableArray([
-                {
-                    start: '2000-05-01',
-                    textColor: 'red',
-                    backgroundColor: 'white',
-                    listText: [
-                        "Sleep",
-                        "Study"
-                    ]
-                },
-                {
-                    start: '2000-05-05',
-                    textColor: '#31859C',
-                    backgroundColor: 'white',
-                    listText: [
-                        "Sleepaaaa",
-                        "Study",
-                        "Eating",
-                        "Woman"
-                    ]
-                },
-                {
-                    start: '2000-05-10',
-                    textColor: '#31859C',
-                    backgroundColor: 'white',
-                    listText: [
-                        "Sleep",
-                        "Study"
-                    ]
-                },
-                {
-                    start: '2000-05-20',
-                    textColor: 'blue',
-                    backgroundColor: 'white',
-                    listText: [
-                        "Sleep",
-                        "Study",
-                        "Play"
-                    ]
-                },
-                {
-                    start: '2000-06-20',
-                    textColor: 'blue',
-                    backgroundColor: 'red',
-                    listText: [
-                        "Sleep",
-                        "Study",
-                        "Play"
-                    ]
-                }
-            ]);
+            self.optionDates = ko.observableArray(self.getOptionDates());
             self.firstDay = 0;
             self.startDate = 1;
             self.endDate = 31;
             self.workplaceId = ko.observable("0");
             self.workplaceName = ko.observable("");
-            self.eventDisplay = ko.observable(true);
-            self.eventUpdatable = ko.observable(true);
+            self.eventDisplay = ko.observable(false);
+            self.eventUpdatable = ko.observable(false);
             self.holidayDisplay = ko.observable(true);
-            self.cellButtonDisplay = ko.observable(true);
-            $("#calendar").ntsCalendar("init", {
-                cellClick: function(date) {
-                    alert(date);
-                }
-            });
+            self.cellButtonDisplay = ko.observable(false);
+        }
+
+        private setCalendar(): void {
+
         }
 
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            dfd.resolve();
+            service.find('empId')
+                .done(function(data: service.model.PatternReflection) {
+                    self.patternReflection = new PatternReflection(data);
+                    dfd.resolve();
+                });
             return dfd.promise();
         }
 
         public onBtnApplySettingClicked(): void {
             let self = this;
-            nts.uk.characteristics.restore(self.patternReflection.employeeId)
-                .done(function(data: PatternReflection) {
-                    console.log(data);
-                    console.log(data.holidaySetting.useClassification);
-                    console.log(data.holidaySetting.workTypeCode);
+            service.save('empId', ko.toJS(self.patternReflection));
+        }
+
+        private getOptionDates(): Array<any> {
+            let self = this;
+            let currentDate = '2017-07-01';
+            let arr = [];
+            do {
+                self.dailyPatternSetting.workPatterns.forEach(item => {
+                    if (item.workTypeCode == '11') {
+                        arr.push({
+                            start: currentDate,
+                            textColor: 'red',
+                            backgroundColor: 'white',
+                            listText: [
+                                'nghi'
+                            ]
+                        });
+                    } else {
+                        arr.push({
+                            start: currentDate,
+                            textColor: 'blue',
+                            backgroundColor: 'white',
+                            listText: [
+                                'lam'
+                            ]
+                        });
+                    }
+                    currentDate = self.nextDay(currentDate);
                 });
+            } while (!self.isLastDayOfMonth(currentDate));
+            return arr;
+        }
+
+        private isLastDayOfMonth(d: string): boolean {
+            let d2 =  moment(d);
+            let currentMonth = d2.month();
+            d2.add(1, 'days');
+            return currentMonth !== d2.month();
+        }
+
+        private nextDay(d: string): string {
+            let d2 = moment(d);
+            d2.add(1, 'days');
+            return d2.format('YYYY-MM-DD');
         }
     }
 
@@ -144,22 +143,28 @@ module nts.uk.at.view.kdl023.a.viewmodel {
     }
     class PatternReflection {
         employeeId: string;
-        reflectionMethod: ReflectionMethod
-        patternClassification: PatternClassification;
+        reflectionMethod: service.model.ReflectionMethod;
+        patternClassification: service.model.PatternClassification;
         statutorySetting: DayOffSetting;
         nonStatutorySetting: DayOffSetting;
         holidaySetting: DayOffSetting;
+
+        constructor(data: service.model.PatternReflection) {
+            let self = this;
+            self.employeeId = data.employeeId;
+            self.reflectionMethod = data.reflectionMethod;
+            self.patternClassification = data.patternClassification;
+            self.statutorySetting = new DayOffSetting(data.statutorySetting);
+            self.nonStatutorySetting = new DayOffSetting(data.nonStatutorySetting);
+            self.holidaySetting = new DayOffSetting(data.holidaySetting);
+        }
     }
     class DayOffSetting {
-        useClassification: boolean
+        useClassification: KnockoutObservable<boolean>;
         workTypeCode: string;
-    }
-    enum PatternClassification {
-        Confirmation,
-        Configuration
-    }
-    enum ReflectionMethod {
-        Overwrite,
-        FillInTheBlank
+        constructor(data: service.model.DayOffSetting) {
+            this.useClassification = ko.observable(data.useClassification);
+            this.workTypeCode = data.workTypeCode;
+        }
     }
 }

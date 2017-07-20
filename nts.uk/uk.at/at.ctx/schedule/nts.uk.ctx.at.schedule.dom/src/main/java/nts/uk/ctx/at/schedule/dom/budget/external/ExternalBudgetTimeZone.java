@@ -10,7 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * The Class ExternalBudgetTimeZone.
  *
  * @param <T> the generic type
- * 外部予算実績時間帯
+ * 外外部予算実績時間帯
  */
 @Getter
 public class ExternalBudgetTimeZone<T> extends AggregateRoot {

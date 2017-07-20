@@ -5,7 +5,7 @@ import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class ExternalBudgetLog.
- * 部予算実績項目受入ログ
+ * 外部予算実績項目受入ログ
  */
 @Getter
 public class ExternalBudgetLog extends AggregateRoot {
@@ -16,8 +16,7 @@ public class ExternalBudgetLog extends AggregateRoot {
     
     /** The ext budget file name. */
     // 外部予算実績受入ファイル名
-    // TODO: not find primitive 外部予算実績受入ファイル名
-    private String extBudgetFileName;
+    private ExtBudgetFileName extBudgetFileName;
     
     /** The ext budget code. */
     //外部予算実績項目コード

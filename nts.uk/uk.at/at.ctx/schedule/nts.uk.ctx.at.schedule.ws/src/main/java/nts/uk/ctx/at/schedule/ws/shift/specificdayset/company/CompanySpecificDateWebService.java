@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.CompanySpecificDateCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.DeleteCompanySpecificDateCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.DeleteCompanySpecificDateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.InsertCompanySpecificDateCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company.CompanySpecificDateDto;
 import nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company.CompanySpecificDateFinder;
@@ -21,7 +23,9 @@ public class CompanySpecificDateWebService extends WebService {
 	@Inject
 	private CompanySpecificDateFinder find;
 	@Inject 
-	private InsertCompanySpecificDateCommandHandler command;
+	private InsertCompanySpecificDateCommandHandler insertCommnad;
+	@Inject 
+	private DeleteCompanySpecificDateCommandHandler deleteCommand;
 
 	@POST
 	@Path("getcompanyspecificdaysetbydate/{processDate}")
@@ -39,6 +43,12 @@ public class CompanySpecificDateWebService extends WebService {
 	@POST
 	@Path("insertcompanyspecificdate")
 	public void InsertCompanySpecificDate(List<CompanySpecificDateCommand> lstComSpecificDateItem) {
-		this.command.handle(lstComSpecificDateItem);
+		this.insertCommnad.handle(lstComSpecificDateItem);
+	}
+	
+	@POST
+	@Path("deletecompanyspecificdate")
+	public void DeleteCompanySpecificDate(DeleteCompanySpecificDateCommand deleteCommand) {
+		this.deleteCommand.handle(deleteCommand);
 	}
 }

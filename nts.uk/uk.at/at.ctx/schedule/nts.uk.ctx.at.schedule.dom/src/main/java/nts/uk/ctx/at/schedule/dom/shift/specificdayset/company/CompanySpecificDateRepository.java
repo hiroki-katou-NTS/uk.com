@@ -12,9 +12,17 @@ public interface CompanySpecificDateRepository {
 	//insert to Company Specific Date 
 	void InsertComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem);
 	
-	//update to Company Specific Date 
-	void UpdateComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem);
-	
 	//delete to Company Specific Date 
-	void DeleteComSpecDate(CompanySpecificDateItem lstComSpecDateItem);
+	void DeleteComSpecDate(String companyId,String processMonth);
+	/**
+	 * add List ComSpecDate
+	 * @param lstComSpecDateItem
+	 */
+	void addListComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem);
+	/**
+	 * delete ComSpecByDate
+	 * @param companyId
+	 * @param specificDate
+	 */
+	void deleteComSpecByDate(String companyId, int specificDate);
 }

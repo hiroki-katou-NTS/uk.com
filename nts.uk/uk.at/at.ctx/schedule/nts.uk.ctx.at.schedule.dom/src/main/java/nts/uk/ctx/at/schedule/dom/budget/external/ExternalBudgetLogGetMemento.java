@@ -17,7 +17,7 @@ public interface ExternalBudgetLogGetMemento {
      *
      * @return the external budget file name
      */
-    String getExternalBudgetFileName();
+    ExtBudgetFileName getExternalBudgetFileName();
 
     /**
      * Gets the external budget code.
