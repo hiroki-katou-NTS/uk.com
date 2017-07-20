@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.basicworkregister;
 
+import java.util.List;
+
 /**
  * The Interface CompanyBasicWorkSetMemento.
  */
@@ -21,5 +23,5 @@ public interface CompanyBasicWorkSetMemento {
 	 *
 	 * @param basicWorkSetting the new basic work setting
 	 */
-	void setBasicWorkSetting(BasicWorkSetting basicWorkSetting);
+	void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting);
 }

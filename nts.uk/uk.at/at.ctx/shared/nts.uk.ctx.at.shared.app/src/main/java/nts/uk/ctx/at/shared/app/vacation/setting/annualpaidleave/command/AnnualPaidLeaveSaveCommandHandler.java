@@ -141,9 +141,9 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setMaxNumberSemiVacation(MaxDayReference.CompanyUniform.value);
         command.setMaxNumberCompany(null);
         // TODO: Check value default
-        command.setMaxGrantDay(0d);
-        command.setMaxRemainingDay(0d);
-        command.setNumberYearRetain(0);
+        command.setMaxGrantDay(null);
+        command.setMaxRemainingDay(null);
+        command.setNumberYearRetain(null);
         // =======
         command.setPermitType(ApplyPermission.ALLOW.value);
         command.setAnnualPriority(AnnualPriority.FIFO.value);

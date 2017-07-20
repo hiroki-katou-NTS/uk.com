@@ -29,13 +29,12 @@ public interface CompanyBasicWorkRepository {
 //	void remove(String companyId, String workTypeCode);
 	
 	/**
-	 * Find.
-	 *
-	 * @param companyId the company id
-	 * @param workTypeCode the work type code
-	 * @return the optional
-	 */
-	Optional<CompanyBasicWork> find(String companyId, String workTypeCode);
+ * Find.
+ *
+ * @param companyId the company id
+ * @return the optional
+ */
+	Optional<CompanyBasicWork> find(String companyId);
 
 //	List<CompanyBasicWork> findAll(String CompanyId);
 }

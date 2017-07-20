@@ -18,7 +18,7 @@ public class BasicWorkSetting extends DomainObject {
 	private WorktypeCode worktypeCode;
 	
 	/** The sift code. */
-	private SiftCode siftCode;
+	private WorkingCode workingCode;
 	
 	/** The work day division. */
 	private WorkdayDivision workdayDivision;
@@ -30,7 +30,7 @@ public class BasicWorkSetting extends DomainObject {
 	 */
 	public BasicWorkSetting(BasicWorkSettingGetMemento memento) {
 		this.worktypeCode = memento.getWorkTypecode();
-		this.siftCode = memento.getSiftCode();
+		this.workingCode = memento.getSiftCode();
 		this.workdayDivision = memento.getWorkDayDivision();
 	}
 	
@@ -41,7 +41,7 @@ public class BasicWorkSetting extends DomainObject {
 	 */
 	public void saveToMemento(BasicWorkSettingSetMemento memento) {
 		memento.setWorkTypeCode(this.worktypeCode);
-		memento.setSiftCode(this.siftCode);
+		memento.setSiftCode(this.workingCode);
 		memento.setWorkDayDivision(this.workdayDivision);
 	}
 
@@ -49,7 +49,7 @@ public class BasicWorkSetting extends DomainObject {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((siftCode == null) ? 0 : siftCode.hashCode());
+		result = prime * result + ((workingCode == null) ? 0 : workingCode.hashCode());
 		result = prime * result + ((workdayDivision == null) ? 0 : workdayDivision.hashCode());
 		result = prime * result + ((worktypeCode == null) ? 0 : worktypeCode.hashCode());
 		return result;
@@ -64,10 +64,10 @@ public class BasicWorkSetting extends DomainObject {
 		if (getClass() != obj.getClass())
 			return false;
 		BasicWorkSetting other = (BasicWorkSetting) obj;
-		if (siftCode == null) {
-			if (other.siftCode != null)
+		if (workingCode == null) {
+			if (other.workingCode != null)
 				return false;
-		} else if (!siftCode.equals(other.siftCode))
+		} else if (!workingCode.equals(other.workingCode))
 			return false;
 		if (workdayDivision != other.workdayDivision)
 			return false;

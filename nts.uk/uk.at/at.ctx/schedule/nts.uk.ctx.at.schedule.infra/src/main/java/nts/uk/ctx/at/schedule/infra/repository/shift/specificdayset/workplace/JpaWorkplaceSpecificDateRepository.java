@@ -34,7 +34,9 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
 			+ " AND c.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
 			+ " AND c.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
-	
+	private final String DELETE_BY_DATE = "DELETE FROM KsmmtWpSpecDateSet c"
+			+ " WHERE c.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND c.ksmmtWpSpecDateSetPK.specificDate = :specificDate";
 
 	// No WITH name
 	@Override
@@ -111,13 +113,10 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void deleteWorkplaceSpec(String workplaceId, int specificDate) {
-		List<KsmmtWpSpecDateSet> lstEntity = new ArrayList<>();
-		List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate = this.getWorkplaceSpecByDate(workplaceId, specificDate);
-		for (WorkplaceSpecificDateItem workplaceSpecificDateItem : lstWorkplaceSpecificDate) {
-			KsmmtWpSpecDateSet entity = toEntity(workplaceSpecificDateItem);
-			lstEntity.add(entity);
-		}
-		this.commandProxy().removeAll(lstEntity);
+		this.getEntityManager().createQuery(DELETE_BY_DATE)
+				.setParameter("workplaceId", workplaceId)
+				.setParameter("specificDate", specificDate)
+				.executeUpdate();
 	}
 	
 }
