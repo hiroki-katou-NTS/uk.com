@@ -350,8 +350,8 @@ module nts.uk.at.view.kcp006.a {
             }
             if (eventUpdatable) {
                 // click button event
-                $("#calendar .td-container img").off();
-                $("#calendar .td-container img").on('click', function(event) {
+                $("#" + currentCalendar + " .td-container img").off();
+                $("#" + currentCalendar + " .td-container img").on('click', function(event) {
                     event.stopPropagation();
                     nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId, workplaceName: workplaceName });
                     nts.uk.ui.windows.sub.modal('../../../../view/kcp/006/b/index.xhtml', { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {

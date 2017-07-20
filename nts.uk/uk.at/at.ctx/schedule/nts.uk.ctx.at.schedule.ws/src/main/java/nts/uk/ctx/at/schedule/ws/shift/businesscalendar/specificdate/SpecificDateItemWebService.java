@@ -51,7 +51,7 @@ public class SpecificDateItemWebService extends WebService {
 	}
 	@POST
 	@Path("updatespecificdateSet")
-	public void updateSpecificDateSet(UpdateSpecificDateSetCommand command){
-		this.updateSet.handle(command);
+	public void updateSpecificDateSet(UpdateSpecificDateSetCommand objectToUpdate){
+		this.updateSet.handle(objectToUpdate);
 	}
 }
