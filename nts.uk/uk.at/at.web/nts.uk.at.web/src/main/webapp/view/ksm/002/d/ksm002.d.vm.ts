@@ -20,6 +20,7 @@ module ksm002.d{
             // check choose any day or item
             countDay: KnockoutObservable<number>;
             countItem: KnockoutObservable<number>;
+            // data receive from mother screen
             param: IData;
             constructor() {
                 let self=this;
@@ -69,7 +70,7 @@ module ksm002.d{
                             ));
                     });
                     if(self.specificDateItem().length==0){
-                        nts.uk.ui.dialog.info({ messageId: "Msg_135" }).then(self.closeDialog());
+                        nts.uk.ui.dialog.info({ messageId: "Msg_135" }).then(function(){nts.uk.ui.windows.close();});
                     }
                     dfd.resolve();
                 }).fail(function(res) { 
@@ -132,6 +133,9 @@ module ksm002.d{
                     if(self.dayInWeek()[i].choose()==1){
                         listDayToUpdate.push(self.convert(self.dayInWeek()[i].day()));
                     }
+                }
+                if(self.enable()==true){
+                    listDayToUpdate.push(0);
                 }
                 let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), "");
                 service.updateSpecificDateSet(object).done(function(data) {
