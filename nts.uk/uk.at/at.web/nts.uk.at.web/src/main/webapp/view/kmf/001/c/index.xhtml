@@ -24,11 +24,11 @@
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
-			<div id="functions-area" class="fix-on-top">
+			<div id="functions-area">
 				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
-				<button class="proceed" data-bind="click: save" tabindex="2">#{i18n.getText('KMF001_28')}</button>
+				<button class="proceed" data-bind="click: save,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KMF001_28')}</button>
 				<label class="pull-right btn-default" style="margin-right: 20px;">#{i18n.getText('KMF001_14')}</label>
-				<a class="pull-right" data-bind="ntsLinkButton: {jump: '/view/kmf/001/c/index.xhtml' }"
+				<a class="pull-right goout" data-bind="ntsLinkButton: {jump: '/view/kmf/001/c/index.xhtml' }"
 					tabindex="3">#{i18n.getText('KMF001_29')}
 				</a>
 			</div>
@@ -102,7 +102,11 @@
 									constraint: 'AnnualNumberDay',
 									name: '#[KMF001_132]',
 									required: requiredMaxNumberCompany,
-									option: numberEditorOption,
+									option: {
+										width: '50px',
+										textalign: 'right',
+										unitID: 'TIMES'
+									},
 									enable: enableMaxNumberCompany}" /></td>
 						</tr>
 						<tr>
@@ -118,7 +122,12 @@
 									constraint: 'AnnualLeaveGrantDay',
 									name: '#[KMF001_36]',
 									required: enableAnnualVacation,
-									option: halfIntegerEditorOption,
+									option: {
+										width: '50px',
+										textalign: 'right',
+										decimallength: 1,
+										unitID: 'DAYS'
+									},
 									enable: enableAnnualVacation}" />
 								</div></td>
 
@@ -129,7 +138,12 @@
 									constraint: 'MaxRemainingDay',
 									name: '#[KMF001_37]',
 									required: enableAnnualVacation,
-									option: halfIntegerEditorOption,
+									option: {
+										width: '50px',
+										textalign: 'right',
+										decimallength: 1,
+										unitID: 'DAYS'
+									},
 									enable: enableAnnualVacation}" /></td>
 						</tr>
 						<tr>
@@ -141,7 +155,11 @@
 									constraint: 'RetentionYear',
 									name: '#[KMF001_38]',
 									required: enableAnnualVacation,
-									option: numberEditorOption,
+									option: {
+										width: '50px',
+										textalign: 'right',
+										unitID: 'YEARS'
+									},
 									enable: enableAnnualVacation}" /></td>
 
 							<td><div></div></td>
@@ -297,7 +315,11 @@
 									constraint: 'MaxTimeDay',
 									name: '#[KMF001_132]',
 									required: requiredTimeMaxNumberCompany,
-									option: numberEditorOption,
+									option: {
+										width: '50px',
+										textalign: 'right',
+										unitID: 'DAYS'
+									},
 									enable: enableTimeMaxNumberCompany}" /></td>
 						</tr>
 						<tr>

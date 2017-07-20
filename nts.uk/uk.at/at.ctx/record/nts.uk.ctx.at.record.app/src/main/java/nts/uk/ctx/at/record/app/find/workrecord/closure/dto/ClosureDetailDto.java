@@ -159,7 +159,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 			this.closureDate = 0;
 			return;
 		}
-		this.closureDate = closureDate.getClosureDay();
+		this.closureDate = closureDate.getClosureDay().v();
 	}
 
 	/*

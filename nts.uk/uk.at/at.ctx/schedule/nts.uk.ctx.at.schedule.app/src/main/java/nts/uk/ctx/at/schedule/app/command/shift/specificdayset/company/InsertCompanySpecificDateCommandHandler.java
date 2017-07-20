@@ -30,7 +30,6 @@ public class InsertCompanySpecificDateCommandHandler extends CommandHandler<List
 				c.getSpecificDate(),
 				c.getSpecificDateNo(),
 				"")).collect(Collectors.toList());
-
 		repo.InsertComSpecDate(listInsert);
 	}
 

@@ -155,7 +155,7 @@ module ksm004.d.viewmodel {
                     // add classId in list
                     _.forEach(self.list(), function(value) {
                             value.classId = self.classId();    
-                        }
+                        });
                     //if check overwrite = true
                     if (self.checkOverwrite() == true) {
                         
@@ -169,7 +169,7 @@ module ksm004.d.viewmodel {
                     // add workPlaceId in list
                     _.forEach(self.list(), function(value) {
                             value.workPlaceId = self.workPlaceId();    
-                        }
+                        });
                     //if check overwrite = true
                     if (self.checkOverwrite() == true) {
                         self.updateCalendarWorkplace(self.list());

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.specificdayset.company;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,13 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
 			+ " AND CAST(s.ksmmtComSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')"
 			+ " AND p.useAtr = :useAtr";
+	
+	//Delete by Month 
+	private final String DELETE_BY_YEAR_MONTH = "DELETE from KsmmtComSpecDateSet c "
+			+ " WHERE c.ksmmtComSpecDateSetPK.companyId = :companyId"
+			+ " AND c.ksmmtComSpecDateSetPK.specificDate >= :startYm"
+			+ " AND c.ksmmtComSpecDateSetPK.specificDate <= :endYm";
+	
 
 	// No WITH name
 	@Override
@@ -83,16 +89,40 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 		}
 		this.commandProxy().insertAll(lstEntity);
 	}
-
+	
 	@Override
-	public void UpdateComSpecDate(List<CompanySpecificDateItem>lstComSpecDateItem) {
-		// TODO Auto-generated method stub
-		
+	public void DeleteComSpecDate(String companyId, String processMonth) {
+		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+			.setParameter("companyId", companyId)
+			.setParameter("startYm", Integer.valueOf(processMonth+"01"))
+			.setParameter("endYm", Integer.valueOf(processMonth+"31"))
+			.executeUpdate();
 	}
-
+	/**
+	 * add List ComSpecDate
+	 * @param lstComSpecDateItem
+	 */
 	@Override
-	public void DeleteComSpecDate(CompanySpecificDateItem lstComSpecDateItem) {
-		// TODO Auto-generated method stub
-		
+	public void addListComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem) {
+		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
+		for (CompanySpecificDateItem specificDateItem : lstComSpecDateItem) {
+			lstEntity.add(toEntity(specificDateItem));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+	/**
+	 * delete ComSpecByDate
+	 * @param companyId
+	 * @param specificDate
+	 */
+	@Override
+	public void deleteComSpecByDate(String companyId, int specificDate) {
+		List<KsmmtComSpecDateSet> lstEntity = new ArrayList<>();
+		List<CompanySpecificDateItem> lstCompanySpecificDate = this.getComSpecByDate(companyId, specificDate);
+		for (CompanySpecificDateItem companySpecificDate : lstCompanySpecificDate) {
+			KsmmtComSpecDateSet entity = toEntity(companySpecificDate);
+			lstEntity.add(entity);
+		}
+		this.commandProxy().removeAll(lstEntity);
 	}
 }

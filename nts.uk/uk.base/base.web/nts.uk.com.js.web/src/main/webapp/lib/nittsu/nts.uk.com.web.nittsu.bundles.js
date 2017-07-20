@@ -1186,17 +1186,38 @@ var nts;
             }());
             text_3.NumberUnit = NumberUnit;
             var units = {
-                "JPY": new NumberUnit("JPY", "円", "right", "ja-JP"),
-                "PERCENT": new NumberUnit("PERCENT", "%", "right", "ja-JP"),
-                "DAYS": new NumberUnit("DAYS", "日", "right", "ja-JP"),
-                "MONTHS": new NumberUnit("MONTHS", "ヶ月", "right", "ja-JP"),
-                "YEARS": new NumberUnit("YEARS", "年", "right", "ja-JP"),
-                "FIS_MONTH": new NumberUnit("FIS_MONTH", "月度", "right", "ja-JP"),
-                "FIS_YEAR": new NumberUnit("FIS_YEAR", "年度", "right", "ja-JP"),
-                "TIMES": new NumberUnit("TIMES", "回", "right", "ja-JP")
+                "JPY": {
+                    "ja": new NumberUnit("JPY", "円", "right", "ja"),
+                    "en": new NumberUnit("JPY", "\u00A5", "left", "en")
+                },
+                "PERCENT": {
+                    "ja": new NumberUnit("PERCENT", "%", "right", "ja"),
+                    "en": new NumberUnit("PERCENT", "%", "right", "en")
+                },
+                "DAYS": {
+                    "ja": new NumberUnit("DAYS", "日", "right", "ja")
+                },
+                "MONTHS": {
+                    "ja": new NumberUnit("MONTHS", "ヶ月", "right", "ja")
+                },
+                "YEARS": {
+                    "ja": new NumberUnit("YEARS", "年", "right", "ja")
+                },
+                "FIS_MONTH": {
+                    "ja": new NumberUnit("FIS_MONTH", "月度", "right", "ja")
+                },
+                "FIS_YEAR": {
+                    "ja": new NumberUnit("FIS_YEAR", "年度", "right", "ja")
+                },
+                "TIMES": {
+                    "ja": new NumberUnit("TIMES", "回", "right", "ja")
+                },
+                "AGE": {
+                    "ja": new NumberUnit("AGE", "歳", "right", "ja")
+                }
             };
             function getNumberUnit(unitId) {
-                return units[unitId];
+                return units[unitId][systemLanguage];
             }
             text_3.getNumberUnit = getNumberUnit;
         })(text = uk.text || (uk.text = {}));
@@ -2335,6 +2356,14 @@ var nts;
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
+                    var content_height = 50 + 20;
+                    if ($("#functions-area").length != 0) {
+                        content_height += 49;
+                    }
+                    if ($("#functions-area-bottom").length != 0) {
+                        content_height += 74;
+                    }
+                    $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
                 };
                 $(function () {
                     ui.documentReady.fire();
@@ -3094,6 +3123,17 @@ var nts;
                     return Message;
                 }());
                 dialog.Message = Message;
+                function getMaxZIndex() {
+                    var overlayElements = parent.$(".ui-widget-overlay");
+                    var max = 120002;
+                    if (overlayElements.length > 0) {
+                        var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
+                        var temp = _.max(zIndexs);
+                        max = temp > max ? temp : max;
+                    }
+                    return max;
+                }
+                dialog.getMaxZIndex = getMaxZIndex;
                 function createNoticeDialog(message, buttons, header) {
                     var $control = $('<div/>').addClass('control');
                     var text;
@@ -3127,8 +3167,8 @@ var nts;
                         closeOnEscape: false,
                         buttons: buttons,
                         open: function () {
-                            $(this).closest('.ui-dialog').css('z-index', 120002);
-                            $('.ui-widget-overlay').last().css('z-index', 120000);
+                            $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
+                            $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
                             $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                             $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                             if (header && header.icon) {
@@ -4758,7 +4798,7 @@ var nts;
                             }
                             else if (self.options.format === self.Y_FORMAT) {
                                 var postCalcVal = parsedTime.year + value;
-                                if (postCalcVal < 1899) {
+                                if (postCalcVal < 1900) {
                                     year = 9999;
                                 }
                                 else if (postCalcVal > 9999) {
@@ -4886,7 +4926,7 @@ var nts;
                             open: function () {
                                 $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                 $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
-                                $('.ui-widget-overlay').last().css('z-index', 120000);
+                                $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
                             },
                             close: function (event) {
                                 bindingContext.$data.option.show(false);
@@ -7319,8 +7359,14 @@ var nts;
                             container.children(content).wrap('<div id="' + id + '"></div>');
                         }
                         container.tabs({
+                            create: function (event, ui) {
+                                container.find('.ui-tabs-panel').addClass('disappear');
+                                ui.panel.removeClass('disappear');
+                            },
                             activate: function (evt, ui) {
                                 data.active(ui.newPanel[0].id);
+                                container.find('.ui-tabs-panel').addClass('disappear');
+                                ui.newPanel.removeClass('disappear');
                                 container.children('ul').children('.ui-tabs-active').addClass('active');
                                 container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
                                 container.children('ul').children('.ui-state-disabled').addClass('disabled');
@@ -12565,8 +12611,8 @@ var nts;
                     };
                     function init(control, option) {
                         $("html").addClass("sidebar-html");
+                        control.find("div[role=tabpanel]").addClass("disappear");
                         var settings = $.extend({}, defaultOption, option);
-                        control.find("div[role=tabpanel]").hide();
                         control.off("click", "#sidebar-area .navigator a");
                         control.on("click", "#sidebar-area .navigator a", function (event) {
                             event.preventDefault();
@@ -12590,8 +12636,8 @@ var nts;
                     function active(control, index) {
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
-                        control.find("div[role=tabpanel]").hide();
-                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
+                        control.find("div[role=tabpanel]").addClass("disappear");
+                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).removeClass("disappear");
                         return control;
                     }
                     function enable(control, index) {
@@ -12615,9 +12661,7 @@ var nts;
                         return control;
                     }
                     function getCurrent(control) {
-                        var index = 0;
-                        index = control.find("#sidebar-area .navigator a.active").closest("li").index();
-                        return index;
+                        return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
             })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
