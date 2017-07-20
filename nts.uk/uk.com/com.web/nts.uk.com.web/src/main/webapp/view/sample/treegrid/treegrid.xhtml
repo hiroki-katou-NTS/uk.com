@@ -48,6 +48,22 @@
 										enable: true,
 										showCheckBox: false}">
 							</table>
+							
+							<table id="treegrid2-limited"
+								data-bind="ntsTreeGridView:{
+										width: 1000,
+										height: 250,
+										dataSource: items2,
+										value: singleSelectedCode,
+										columns: columns,
+										primaryKey: 'code',
+										childDataKey: 'childs',
+										primaryText: 'nodeText',
+										multiple: false,
+										enable: true,
+										showCheckBox: false,
+										rows: 5}">
+							</table>
 						</div>
 						<div style="float: left">
 							<br />
@@ -214,6 +230,10 @@
 											<td>value</td>
 											<td><b>Type:</b> array&lt;any&gt;<br /> List selected
 												value</td>
+										</tr>
+										<tr>
+											<td>rows</td>
+											<td><b>Type:</b> number<br /> max rows are displayed in view and will have scroll and tooltip</td>
 										</tr>
 									</tbody>
 								</table>

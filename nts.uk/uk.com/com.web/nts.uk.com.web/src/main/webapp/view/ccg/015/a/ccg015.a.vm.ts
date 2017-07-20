@@ -100,13 +100,8 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 self.topPageModel().topPageCode(data.topPageCode);
                 self.topPageModel().topPageName(data.topPageName);
-                if (data.layoutId != "" && data.layoutId != null) {
-                    self.topPageModel().layoutId(data.layoutId);
-                    self.changePreviewIframe(data.layoutId);
-                }
-                else {
-                    self.changePreviewIframe(null);
-                }
+                self.topPageModel().layoutId(data.layoutId);
+                self.changePreviewIframe(data.layoutId);
             }
 
             private collectData(): TopPageDto {
@@ -165,7 +160,7 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.setShared('layoutId', self.topPageModel().layoutId());
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml", {
-                    height: 400, width: 800,
+                    height: 320, width: 800,
                     title: "他のトップページコピー",
                     dialogClass: 'no-close'
                 }).onClosed(() => {

@@ -13,6 +13,8 @@ import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.CompanySp
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.DeleteCompanySpecificDateCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.DeleteCompanySpecificDateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.InsertCompanySpecificDateCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.UpdateCompanySpecificDateCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.UpdateCompanySpecificDateCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company.CompanySpecificDateDto;
 import nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company.CompanySpecificDateFinder;
 
@@ -24,6 +26,8 @@ public class CompanySpecificDateWebService extends WebService {
 	private CompanySpecificDateFinder find;
 	@Inject 
 	private InsertCompanySpecificDateCommandHandler insertCommnad;
+	@Inject 
+	private UpdateCompanySpecificDateCommandHandler updateCommand;
 	@Inject 
 	private DeleteCompanySpecificDateCommandHandler deleteCommand;
 
@@ -47,8 +51,17 @@ public class CompanySpecificDateWebService extends WebService {
 	}
 	
 	@POST
+	@Path("updatecompanyspecificdate")
+	public void UpdateCompanySpecificDate(List<CompanySpecificDateCommand> lstUpdComSpecificDateItem) {
+		this.updateCommand.handle(lstUpdComSpecificDateItem);
+	}
+	
+	@POST
 	@Path("deletecompanyspecificdate")
 	public void DeleteCompanySpecificDate(DeleteCompanySpecificDateCommand deleteCommand) {
 		this.deleteCommand.handle(deleteCommand);
 	}
+	
+	
+	
 }

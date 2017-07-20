@@ -13,4 +13,6 @@ public class WorkplaceSpecificDateCommand {
 	private BigDecimal specificDate;
 
 	private List<BigDecimal> specificDateItemNo;
+	
+	private boolean isUpdate;
 }
