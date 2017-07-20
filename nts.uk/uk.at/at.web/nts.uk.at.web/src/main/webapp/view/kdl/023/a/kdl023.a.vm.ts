@@ -1,10 +1,16 @@
 module nts.uk.at.view.kdl023.a.viewmodel {
+
+    import WorkDayDivision = service.model.WorkDayDivision;
+    import WeeklyWorkSetting = service.model.WeeklyWorkSetting;
+    import PublicHoliday = service.model.PublicHoliday;
+
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModelCbb1>;
         selectedCode: KnockoutObservable<string>;
 
         patternReflection: PatternReflection;
         dailyPatternSetting: service.model.DailyPatternSetting;
+        weeklyWorkSetting: WeeklyWorkSetting;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -55,7 +61,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.yearMonthPicked = ko.observable(201707);
             self.cssRangerYM = {
             };
-            self.optionDates = ko.observableArray(self.getOptionDates());
+            self.optionDates = ko.observableArray(self.getOptionDates(201707));
             self.firstDay = 0;
             self.startDate = 1;
             self.endDate = 31;
@@ -65,21 +71,32 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.eventUpdatable = ko.observable(false);
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(false);
-        }
 
-        private setCalendar(): void {
-
+            // Event on yearMonth changed.
+            self.yearMonthPicked.subscribe(yearMonth => {
+                self.optionDates(self.getOptionDates(yearMonth));
+            });
         }
 
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.find('empId')
-                .done(function(data: service.model.PatternReflection) {
-                    self.patternReflection = new PatternReflection(data);
+            $.when(service.find('empId'), service.findWeeklyWorkSetting())
+                .done(function(patternReflection: service.model.PatternReflection, weeklyWorkSetting: WeeklyWorkSetting) {
+                    self.weeklyWorkSetting = weeklyWorkSetting;
+                    self.patternReflection = new PatternReflection(patternReflection);
                     dfd.resolve();
                 });
             return dfd.promise();
+        }
+
+        public forward(): void {
+            let self = this;
+            self.optionDates(self.fw(self.optionDates()));
+        }
+        public backward(): void {
+            let self = this;
+            self.optionDates(self.bw(self.optionDates()));
         }
 
         public onBtnApplySettingClicked(): void {
@@ -87,41 +104,95 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             service.save('empId', ko.toJS(self.patternReflection));
         }
 
-        private getOptionDates(): Array<any> {
+        private getOptionDates(yearMonth: number): Array<any> {
             let self = this;
-            let currentDate = '2017-07-01';
-            let arr = [];
-            do {
+            let parsedYm = moment(nts.uk.time.formatYearMonth(yearMonth));
+            let currentDate = parsedYm.format('YYYY-MM-DD');
+            let isCurrentMonth = true;
+            let result = [];
+            while (isCurrentMonth) {
                 self.dailyPatternSetting.workPatterns.forEach(item => {
-                    if (item.workTypeCode == '11') {
-                        arr.push({
-                            start: currentDate,
-                            textColor: 'red',
-                            backgroundColor: 'white',
-                            listText: [
-                                'nghi'
-                            ]
-                        });
-                    } else {
-                        arr.push({
-                            start: currentDate,
-                            textColor: 'blue',
-                            backgroundColor: 'white',
-                            listText: [
-                                'lam'
-                            ]
-                        });
+                    for (let i; i < item.days; i++) {
+                        switch (self.getWorkDayDivision(parsedYm.day())) {
+                            case 0:
+                                result.push({
+                                    start: currentDate,
+                                    textColor: 'blue',
+                                    backgroundColor: 'white',
+                                    listText: [
+                                        'DI LAM'
+                                    ]
+                                });
+                                break;
+                            case 1:
+                                result.push({
+                                    start: currentDate,
+                                    textColor: 'red',
+                                    backgroundColor: 'white',
+                                    listText: [
+                                        'NGHI'
+                                    ]
+                                });
+                                break;
+                            case 2:
+                                result.push({
+                                    start: currentDate,
+                                    textColor: 'red',
+                                    backgroundColor: 'white',
+                                    listText: [
+                                        'NGHI'
+                                    ]
+                                });
+                                break;
+                        }
+                        if (self.isLastDayOfMonth(currentDate)) {
+                            isCurrentMonth = false;
+                            break;
+                        };
+                        currentDate = self.nextDay(currentDate);
                     }
-                    currentDate = self.nextDay(currentDate);
                 });
-            } while (!self.isLastDayOfMonth(currentDate));
-            return arr;
+            }
+            return result;
         }
 
+        private getWorkDayDivision(dayOfWeek: number): WorkDayDivision {
+            let self = this;
+            switch (dayOfWeek) {
+                case 0:
+                    return self.weeklyWorkSetting.sunday;
+                case 1:
+                    return self.weeklyWorkSetting.monday;
+                case 2:
+                    return self.weeklyWorkSetting.tuesday;
+                case 3:
+                    return self.weeklyWorkSetting.wednesday;
+                case 4:
+                    return self.weeklyWorkSetting.thursday;
+                case 5:
+                    return self.weeklyWorkSetting.friday;
+                case 6:
+                    return self.weeklyWorkSetting.saturday;
+                default:
+                    return WorkDayDivision.WorkingDay;
+            }
+        }
+
+        /**
+         * Check if is last day of month
+         * @param: date ('YYYY-MM-DD')
+         */
         private isLastDayOfMonth(d: string): boolean {
-            let d2 =  moment(d);
+            let d2 = moment(d);
             let currentMonth = d2.month();
             d2.add(1, 'days');
+            return currentMonth !== d2.month();
+        }
+
+        private isFirstDayOfMonth(d: string): boolean {
+            let d2 = moment(d);
+            let currentMonth = d2.month();
+            d2.subtract(1, 'days');
             return currentMonth !== d2.month();
         }
 
@@ -129,6 +200,35 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             let d2 = moment(d);
             d2.add(1, 'days');
             return d2.format('YYYY-MM-DD');
+        }
+
+        private fw(arr: Array<any>): Array<any> {
+            let self = this;
+            let arr2 = arr.map(item => {
+                let d = moment(item.start);
+                if (self.isLastDayOfMonth(item.start)) {
+                    d.startOf('month');
+                } else {
+                    d.add(1, 'days');
+                }
+                item.start = d.format('YYYY-MM-DD');
+                return item;
+            });
+            return arr2;
+        }
+        private bw(arr: Array<any>): Array<any> {
+            let self = this;
+            let arr2 = arr.map(item => {
+                let d = moment(item.start);
+                if (self.isFirstDayOfMonth(item.start)) {
+                    d.endOf('month');
+                } else {
+                    d.subtract(1, 'days');
+                }
+                item.start = d.format('YYYY-MM-DD');
+                return item;
+            });
+            return arr2;
         }
     }
 

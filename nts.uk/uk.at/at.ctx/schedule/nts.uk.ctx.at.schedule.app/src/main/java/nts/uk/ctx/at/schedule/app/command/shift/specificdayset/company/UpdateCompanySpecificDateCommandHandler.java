@@ -32,9 +32,6 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 				c.getSpecificDate(),
 				c.getSpecificDateNo(),
 				"")).collect(Collectors.toList());
-		
 		companyRepo.InsertComSpecDate(listInsert);
-		
 	}
-
 }
