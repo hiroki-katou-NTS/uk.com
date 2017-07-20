@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.basicworkregister;
 
+import java.util.List;
+
 /**
  * The Interface ClassifiBasicWorkSetMemento.
  */
@@ -28,5 +30,5 @@ public interface ClassifiBasicWorkSetMemento {
 	 *
 	 * @param basicWorkSetting the new basic work setting
 	 */
-	void setBasicWorkSetting(BasicWorkSetting basicWorkSetting);
+	void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting);
 }

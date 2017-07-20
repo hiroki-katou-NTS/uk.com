@@ -4,13 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.basicworkregister;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
+
 /**
- * Gets the basic work setting.
- *
- * @return the basic work setting
+ * The Class CompanyBasicWork. 全社基本勤務設定
  */
 @Getter
 public class CompanyBasicWork extends AggregateRoot {
@@ -19,7 +20,7 @@ public class CompanyBasicWork extends AggregateRoot {
 	private CompanyId companyId;
 
 	/** The basic work setting. */
-	private BasicWorkSetting basicWorkSetting;
+	private List<BasicWorkSetting> basicWorkSetting;
 
 	/**
 	 * Instantiates a new company basic work.
