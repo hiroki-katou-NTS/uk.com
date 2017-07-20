@@ -50,7 +50,7 @@ module ksm002.a.viewmodel {
             self.cellButtonDisplay = ko.observable(true);
 
             $("#calendar").ntsCalendar("init", {
-                cellClick: function(date) {
+                buttonClick: function(date) {
                     self.openKsm002EDialog(date);
                 }
             });
@@ -171,19 +171,20 @@ module ksm002.a.viewmodel {
             setShared('KSM002E_PARAM', { date: moment(selectedDate).format('YYYY/MM/DD'), selectable: arrSelectable, selecteds: arrSelecteds });
             nts.uk.ui.windows.sub.modal('/view/ksm/002/e/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function() {
                 let param: IData = getShared('KSM002E_VALUES');
+                //console.log(param);
                 if (param !== undefined) {
                     if (self.optionDates().length > 0) {
                         self.optionDates.remove(selectedOptionalDate);
                         selectedOptionalDate.start = selectedDate;
                         selectedOptionalDate.listId = param.selecteds;
                         selectedOptionalDate.listText = _.chain(self.boxItemList()).filter((item) => {
-                            return (param.selecteds.indexOf(item.id.toString()) > -1);
+                            return (param.selecteds.indexOf(item.id) > -1);
                         }).map('name').value();
                         self.optionDates.push(selectedOptionalDate);
                     } else {
                         let lstText: Array<string> = [];
                         lstText = _.chain(self.boxItemList()).filter((item) => {
-                            return (param.selecteds.indexOf(item.id.toString()) > -1);
+                            return (param.selecteds.indexOf(item.id) > -1);
                         }).map('name').value();
                         self.optionDates.push(new OptionalDate(selectedDate, lstText, param.selecteds));
                     };

@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.eclipse.persistence.sdo.helper.delegates.SDOXSDHelperDelegate;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -67,6 +65,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		while(dateStr.compareTo(eDateStr)<=0){
 			if(!CheckDayofWeek(date,dayofWeek)){//not setting
 				date = date.addDays(1);
+				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				continue;
 			}
 			//setting
@@ -77,22 +76,38 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				//list item da co san trong db
 				List<WorkplaceSpecificDateItem> lstOld = workplaceRepo.getWorkplaceSpecByDate(workplaceId, a);
 				List<WorkplaceSpecificDateItem> lstAdd = lstOld;
-				List<Integer> aa = new ArrayList<Integer>();
+				List<Integer> lstAddNew = new ArrayList<Integer>();
 				//find item not exist in db
 				if(lstAdd.size()==0){
 					//lst = lstTimeItemId
-					aa = lstTimeItemId;
+					lstAddNew = lstTimeItemId;
 				}else{
+					List<WorkplaceSpecificDateItem>	a1 = new ArrayList<>();
+					
 					for (Integer timeItemId : lstTimeItemId) {
-						List<WorkplaceSpecificDateItem>	a1 = lstAdd.stream().filter(c->
-						timeItemId.equals(c.getSpecificDateItemNo().v())).collect(Collectors.toList()); 
-						if(a1.isEmpty()){
-							aa.add(timeItemId);
+						for (WorkplaceSpecificDateItem itemAdd : lstAdd) {
+							BigDecimal a2 = BigDecimal.valueOf(timeItemId);
+							if(a2.equals(itemAdd.getSpecificDateItemNo().v())){
+								a1.add(itemAdd);
+							}
 						}
+//						List<WorkplaceSpecificDateItem>	a1 = lstAdd.stream().filter(c -> {
+//							BigDecimal a2 = BigDecimal.valueOf(timeItemId);
+//						return !a2.equals(c.getSpecificDateItemNo());
+//						}).collect(Collectors.toList()); 
+						if(a1.isEmpty()){
+							lstAddNew.add(timeItemId);
+						}
+						a1 = new ArrayList<>();
 					}
 				}
+				//get by list aa
+				List<WorkplaceSpecificDateItem> listwpSpec = new ArrayList<>();
+				for (Integer addNew : lstAddNew) {
+					listwpSpec.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,b, BigDecimal.valueOf(addNew),""));
+				}
 				//add item new in db
-				workplaceRepo.addWorkplaceSpec(lstAdd);
+				workplaceRepo.InsertWpSpecDate(listwpSpec);
 				date = date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 			}else{
@@ -104,9 +119,9 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate = new ArrayList<>();
 				
 				for (Integer timeItemId : lstTimeItemId) {
-					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,b,BigDecimal.valueOf(timeItemId)));
+					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,b,BigDecimal.valueOf(timeItemId),""));
 				}
-				workplaceRepo.addWorkplaceSpec(lstWorkplaceSpecificDate);
+				workplaceRepo.InsertWpSpecDate(lstWorkplaceSpecificDate);
 				
 			}
 			date = date.addDays(1);
