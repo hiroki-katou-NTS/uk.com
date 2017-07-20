@@ -19,9 +19,8 @@
 	min-width: 560px;
 } */
 
-.btn-default {
+.label-link-button {
 	margin-left: 20px;
-	/* min-width: 80px; */
 }
 #table {
 	margin-top: 30px;
@@ -42,7 +41,7 @@ table#table tr td label.content-label {
 table#table tr td.title {
 	padding-bottom: 35px;
 }
-.ntsControl {
+.holiday-grant-table-link-button {
     display: inline !important;
 }
 #combo-box-time-unit {
