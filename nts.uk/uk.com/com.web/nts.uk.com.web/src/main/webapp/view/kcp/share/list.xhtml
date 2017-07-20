@@ -27,15 +27,15 @@
 			<button data-bind="click: selectAll" style="margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
 		</com:ko>
 		<table style="clear: both;"
-			data-bind="ntsGridList: {								
-				height: gridStyle.rowHeight,
+			data-bind="ntsGridList: {
 				width: gridStyle.totalColumnSize,
 				dataSource: itemList,
 				primaryKey: targetKey,
 				columns: listComponentColumn,
 				multiple: isMultiple,
 				value: selectedCodes,
-				name: getItemNameForList()}">
+				name: getItemNameForList(),
+				rows: maxRows}">
 		</table>
 	</div>
 </ui:composition>
