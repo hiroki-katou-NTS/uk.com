@@ -39,45 +39,45 @@
 										]}">
 							</div>
 						</div>
-						<div class="control-group">
-							<div class="" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_5')}</div>
-						</div>
-						<div class="control-group">
-							<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
-						</div>
-						<div class="margin-left-100">
+						<com:ko tag="with" bind="patternReflection">
 							<div class="control-group">
-								<div data-bind="ntsCheckBox: { checked: checked, text: '#{i18n.getText('KDL023_6')}' }"></div>
+								<div class="" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_5')}</div>
 							</div>
 							<div class="control-group">
-								<div data-bind="ntsCheckBox: { checked: checked, text: '#{i18n.getText('KDL023_7')}' }"></div>
+								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
+							</div>
+							<div class="margin-left-100">
+								<div class="control-group" data-bind="with: statutorySetting">
+									<div data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_6')}' }"></div>
+								</div>
+								<div class="control-group" data-bind="with: nonStatutorySetting">
+									<div data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}' }"></div>
+								</div>
+								<div class="control-group" data-bind="with: holidaySetting">
+									<div data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_8')}' }"></div>
+								</div>
+								<p class="control-group priority">#{i18n.getText('KDL023_9')}</p>
 							</div>
 							<div class="control-group">
-								<div data-bind="ntsCheckBox: { checked: checked, text: '#{i18n.getText('KDL023_8')}' }"></div>
+								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
 							</div>
-							<div class="control-group">
-								<p class="priority">#{i18n.getText('KDL023_9')}</p>
+							<div class="margin-left-100">
+								<div class="control-group">
+									<label class="ntsRadioBox"><input type="radio"
+										name="textRadio"
+										data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: reflectionMethod, enable: true" />
+										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
+									</label>
+								</div>
+								<div class="control-group">
+									<label class="ntsRadioBox"><input type="radio"
+										name="textRadio"
+										data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: reflectionMethod, enable: true" />
+										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
+									</label>
+								</div>
 							</div>
-						</div>
-						<div class="control-group">
-							<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
-						</div>
-						<div class="margin-left-100">
-							<div class="control-group">
-								<label class="ntsRadioBox"><input type="radio"
-									name="textRadio"
-									data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: zxcv, enable: true" />
-									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
-								</label>
-							</div>
-							<div class="control-group">
-								<label class="ntsRadioBox"><input type="radio"
-									name="textRadio"
-									data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: zxcv, enable: true" />
-									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
-								</label>
-							</div>
-						</div>
+						</com:ko>
 						<button class="btn-apply-setting caret-right pull-right" data-bind="click: onBtnApplySettingClicked">#{i18n.getText('KDL023_13')}</button>
 					</div>
 					<div class="nts-calendar-container pull-left">

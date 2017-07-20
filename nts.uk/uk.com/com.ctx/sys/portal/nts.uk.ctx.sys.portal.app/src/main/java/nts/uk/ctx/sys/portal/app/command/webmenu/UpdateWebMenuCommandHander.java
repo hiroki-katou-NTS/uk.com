@@ -21,14 +21,14 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateWebMenuCommandHander extends CommandHandler<UpdateWebMenuCommand> {
+public class UpdateWebMenuCommandHander extends CommandHandler<WebMenuCommandBase> {
 	
 	@Inject
 	private WebMenuRepository webMenuRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateWebMenuCommand> context) {
-		UpdateWebMenuCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<WebMenuCommandBase> context) {
+		WebMenuCommandBase command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
 		Optional<WebMenu> webMenu = webMenuRepository.find(companyId, command.getWebMenuCode());

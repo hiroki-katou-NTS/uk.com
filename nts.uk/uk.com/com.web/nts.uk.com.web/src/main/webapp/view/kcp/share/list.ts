@@ -185,12 +185,14 @@ module kcp.share.list {
             }
             
             // Setup list column.
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
+                        template: "<td class='list-component-name-col' title='${code}'>${code}</td>",});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170,
                         template: "<td class='list-component-name-col' title='${name}'>${name}</td>",});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
-                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
+                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150,
+                        template: "<td class='list-component-name-col' title='${workplaceName}'>${workplaceName}</td>"});
             }
             
             // If show Already setting.
