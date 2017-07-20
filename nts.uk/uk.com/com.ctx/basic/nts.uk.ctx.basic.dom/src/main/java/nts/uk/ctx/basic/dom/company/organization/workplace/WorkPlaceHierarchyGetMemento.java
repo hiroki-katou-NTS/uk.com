@@ -21,5 +21,5 @@ public interface WorkPlaceHierarchyGetMemento {
      *
      * @return the hierarchy code
      */
-    HierarchyCode getHierarchyCode();
+    String getHierarchyCode();
 }

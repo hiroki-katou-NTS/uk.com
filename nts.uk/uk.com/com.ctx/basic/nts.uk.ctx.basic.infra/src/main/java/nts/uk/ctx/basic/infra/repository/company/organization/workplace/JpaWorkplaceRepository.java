@@ -351,7 +351,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		List<WorkPlaceHierarchy> workPlaceHierarchieRes = new ArrayList<>();
 		workplaceHierarchy.forEach(work -> {
 			workPlaceHierarchieRes.addAll(
-					this.getAllHierarchyByHierarchyCode(companyId, work.getHierarchyCode().v()));
+					this.getAllHierarchyByHierarchyCode(companyId, work.getHierarchyCode()));
 		});
 
 		return workPlaceHierarchieRes;

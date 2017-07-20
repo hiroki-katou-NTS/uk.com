@@ -21,5 +21,5 @@ public interface WorkPlaceHierarchySetMemento {
 	 *
 	 * @param hierarchyCode the new hierarchy code
 	 */
-	void setHierarchyCode(HierarchyCode hierarchyCode);
+	void setHierarchyCode(String hierarchyCode);
 }
