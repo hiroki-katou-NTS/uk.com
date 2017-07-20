@@ -108,25 +108,36 @@ module nts.uk.ui {
 	                    		$(this).parent().css("position","absolute");
                         	}
                             
-                            let $dialogDocument = $(this.lastElementChild.contentDocument);
+                            var $dialogDocument = $(this).parent();
+                            let $dialogContentDoc = $(this.lastElementChild.contentDocument);
                             
-                            $dialogDocument.on("keydown", ":tabbable", function(evt) {
-                                let code = evt.which || evt.keyCode;
-                                if (code.toString() === "9"){
-                                    let focusableElements = $dialogDocument.find(":tabbable");
-                                    
-                                    if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false){
-                                        
-                                        focusableElements.first().focus();        
-                                        evt.preventDefault();                           
-                                        
-                                    } else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true){
-                                        
+                            // catch press tab key in close button of dialog.
+                            $dialogDocument.on("keydown", ":tabbable", function (evt) {
+                                 var code = evt.which || evt.keyCode;
+                                 if (code.toString() === "9") {
+                                     var focusableElements = $dialogContentDoc.find(":tabbable");
+                                     if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false){
+                                        focusableElements.first().focus();
+                                        evt.preventDefault();       
+                                     }  else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true){
                                         focusableElements.last().focus();
-                                        evt.preventDefault();     
-                                                                         
-                                    }            
-                                }
+                                        evt.preventDefault();       
+                                     }
+                                 }
+                            });
+                            // catch press tab key for component in dialog.
+                            $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
+                                 var code = evt.which || evt.keyCode;
+                                 if (code.toString() === "9") {
+                                     var focusableElements = $dialogContentDoc.find(":tabbable");
+                                     if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                                        focusableElements.first().focus();
+                                        evt.preventDefault();
+                                     } else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                        focusableElements.last().focus();
+                                        evt.preventDefault(); 
+                                     }
+                                 }
                             });
                         },
                         beforeClose: function() {
