@@ -58,7 +58,7 @@ public class WorkplaceFinder {
 				.forEach(item -> lstHierarchy.addAll(this.repository.findAllHierarchy(item.getHistoryId().v())));
 
 		Collections.sort(lstHierarchy,
-				(left, right) -> left.getHierarchyCode().v().compareTo(right.getHierarchyCode().v()));
+				(left, right) -> left.getHierarchyCode().compareTo(right.getHierarchyCode()));
 		//find all workplace from list hierarchy
 		lstHierarchy.stream()
 				.forEach(item -> lstWorkplace.addAll(this.repository.findAllWorkplace(item.getWorkplaceId().v())));
@@ -106,9 +106,9 @@ public class WorkplaceFinder {
 			WorkplaceFindDto dto = convertFunction.apply(workplace);
 			WorkPlaceHierarchy hierarchy = lstHierarchy.stream()
 					.filter(c -> c.getWorkplaceId().v().equals(workplace.getWorkplaceId().v())).findFirst().get();
-			dto.setHeirarchyCode(hierarchy.getHierarchyCode().v());
+			dto.setHeirarchyCode(hierarchy.getHierarchyCode());
 			//build List
-			this.pushToList(lstReturn, dto, hierarchy.getHierarchyCode().v(),"");
+			this.pushToList(lstReturn, dto, hierarchy.getHierarchyCode(),"");
 		}
 		return lstReturn;
 	}

@@ -10,10 +10,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
+
 /**
- * Gets the management category.
- *
- * @return the management category
+ * The Class EmploymentSettingFindDto.
  */
 @Getter
 @Setter

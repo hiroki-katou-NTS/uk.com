@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition
+		template="../../../../master/sidebar.xhtml">
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksm006.a.main.css" />
+			<com:scriptfile path="ksm006.a.service.js" />
+			<com:scriptfile path="ksm006.a.vm.js" />
+			<com:scriptfile path="ksm006.a.start.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkTypeCode
+				
+			</com:ValidatorScript>
+		</ui:define>
+		<ui:define name="sidebar" id="left-sidebar" tabindex="1">
+			<ul class="navigator">
+				<li><a href="#companyWide-tab" role="tab-navigator" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#workplace-tab" role="tab-navigator" data-bind="click: switchToWorkplaceTab">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#classification-tab" role="tab-navigator" data-bind="click: switchToClassTab">#{i18n.getText('Com_Class')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="companyWide-tab" role="tabpanel" data-bind="if: !isShowEmployment()">
+				<div id="functions-area" class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<button class="proceed" data-bind="click: registerWholeCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+					<button class="danger" data-bind="click: registerWholeCompany, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
+				</div>
+				
+				
+				<div id="companyWide-content">
+					<div id="companyWide-content-detail">
+						<div id="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KSM006_5',["#Com_Company"])}</div>
+						<div id="ruledLine1"></div>
+						<div>
+							<table style="margin: 20px">
+								<tr>
+									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_6')}</div></td>
+									<td><button>#{i18n.getText('KSM006_11')}</button></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="workplace-tab" role="tabpanel" data-bind="if: isShowEmployment()">
+				<div id="functions-area" class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Workplace')}</span>
+					<button class="proceed" data-bind="click: registerWholeCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+					<button class="danger" data-bind="click: registerWholeCompany, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
+				</div>
+				
+				<div id="workplace-content">
+					
+				</div>
+			</div>
+				
+			<div id="classification-tab" role="tabpanel" data-bind="if: isShowEmployment()">
+				<div id="functions-area" class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Class')}</span>
+					<button class="proceed" data-bind="click: registerWholeCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+					<button class="danger" data-bind="click: registerWholeCompany, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
+				</div>
+			
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

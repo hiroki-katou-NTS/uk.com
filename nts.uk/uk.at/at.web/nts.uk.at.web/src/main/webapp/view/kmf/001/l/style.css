@@ -46,9 +46,6 @@ table#table tr td.target-child {
 table#table tr td.title {
 	padding-bottom: 35px;
 }
-.ntsControl {
-    display: inline !important;
-}
 #manage-nursing, #child-manage-nursing {
 	display: inline-block !important;;
 }

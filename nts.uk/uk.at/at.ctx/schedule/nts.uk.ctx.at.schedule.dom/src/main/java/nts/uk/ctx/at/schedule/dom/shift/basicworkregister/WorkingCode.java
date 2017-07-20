@@ -2,32 +2,26 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.workplace;
+package nts.uk.ctx.at.schedule.dom.shift.basicworkregister;
 
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * The Class HierarchyCode.
+ * The Class WorkingCode. 就業時間帯コード
  */
-@StringCharType(CharType.ALPHA_NUMERIC)
-@StringMaxLength(30)
-public class HierarchyCode extends CodePrimitiveValue<HierarchyCode>{
+@StringMaxLength(3)
+public class WorkingCode extends CodePrimitiveValue<WorkingCode> {
 
-	/**
-	 * serialVersionUID
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new hierarchy code.
+	 * Instantiates a new sift code.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public HierarchyCode(String rawValue) {
+	public WorkingCode(String rawValue) {
 		super(rawValue);
 	}
-
 }
