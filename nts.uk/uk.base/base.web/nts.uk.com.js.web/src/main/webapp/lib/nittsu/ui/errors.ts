@@ -23,6 +23,8 @@ module nts.uk.ui.errors {
             this.allResolved = $.Callbacks();
             this.allCellsResolved = $.Callbacks();
 
+             this.option.show.extend({notify:"always"});
+            
             this.errors.subscribe(() => {
                 if (this.errors().length === 0) {
                     this.allResolved.fire();
@@ -44,8 +46,9 @@ module nts.uk.ui.errors {
                 this.hide();
             });
         }
-
+        
         closeButtonClicked() {
+             this.option.show(false);
         }
 
         open() {
