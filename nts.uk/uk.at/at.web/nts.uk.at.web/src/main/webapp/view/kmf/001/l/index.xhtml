@@ -67,8 +67,9 @@
 								<td><label>#{i18n.getText('KMF001_110')}</label></td>
 								<td class="target-child">
 									<div>
-										<label>#{i18n.getText('KMF001_111')}</label> <input
-											id="nursing-number-leave-day" style="float: right;"
+										<label>#{i18n.getText('KMF001_111')}</label>
+										<div style="display: inline;float: right;"><input
+											id="nursing-number-leave-day"
 											tabindex="6" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
@@ -76,7 +77,7 @@
 											name: '#[KMF001_111]',
 											required: enableNursing,
 											option: $parent.numberEditorOption,
-											enable: enableNursing}" />
+											enable: enableNursing}" /></div>
 									</div>
 								</td>
 								<td></td>
@@ -86,8 +87,9 @@
 								<td><label></label></td>
 								<td>
 									<div>
-										<label>#{i18n.getText('KMF001_112')}</label> <input
-											id="nursing-number-person" style="float: right;" tabindex="7"
+										<label>#{i18n.getText('KMF001_112')}</label>
+										<div style="display: inline;float: right;"><input
+											id="nursing-number-person" tabindex="7"
 											class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
@@ -95,7 +97,7 @@
 											name: '#[KMF001_112]',
 											required: enableNursing,
 											option: $parent.numberEditorOption,
-											enable: enableNursing}" />
+											enable: enableNursing}" /></div>
 									</div>
 								</td>
 								<td><label>#{i18n.getText('KMF001_113')}</label></td>
@@ -104,19 +106,17 @@
 							<tr>
 								<td><label>#{i18n.getText('KMF001_114')}</label></td>
 								<td>
-									<div>
 										<input id="work-type-code-nursing" class="nts-input"
 											data-bind="ntsTextEditor: {
 											value: typeCode,
 											name: '#[KMF001_114]',
 											required: enableNursing,
 											option: {
-												width: '92.5%',
+												width: '300',
 												textalign: 'left'
 											},
 											readonly: true,
 											enable: enableNursing}" />
-									</div>
 								</td>
 								<td><button tabindex="8" data-bind="enable: enableNursing, click: openDialog">#{i18n.getText('KMF001_127')}</button></td>
 							</tr>
@@ -161,15 +161,15 @@
 								<td class="target-child">
 									<div>
 										<label style="padding-left: 0px">#{i18n.getText('KMF001_119')}</label>
-										<input id="child-nursing-number-leave-day"
-											style="float: right;" tabindex="11" class="nts-input"
+										<div style="display: inline;float: right;"><input id="child-nursing-number-leave-day"
+											tabindex="11" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
 											name: '#[KMF001_119]',
 											constraint: 'NumberDayNursing',
 											required: enableNursing,
 											option: $parent.numberEditorOption,
-											enable: enableNursing}" />
+											enable: enableNursing}" /></div>
 									</div>
 								</td>
 								<td></td>
@@ -179,8 +179,9 @@
 								<td><label></label></td>
 								<td>
 									<div>
-										<label>#{i18n.getText('KMF001_120')}</label> <input
-											id="child-nursing-number-person" style="float: right;"
+										<label>#{i18n.getText('KMF001_120')}</label>
+										<div style="display: inline;float: right;"><input
+											id="child-nursing-number-person"
 											tabindex="12" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
@@ -188,7 +189,7 @@
 											name: '#[KMF001_120]',
 											required: enableNursing,
 											option: $parent.numberEditorOption,
-											enable: enableNursing}" />
+											enable: enableNursing}" /></div>
 									</div>
 								</td>
 								<td></td>
@@ -204,7 +205,7 @@
 											name: '#[KMF001_121]',
 											required: enableNursing,
 											option: {
-												width: '92.5%',
+												width: '300',
 												textalign: 'left'
 											},
 											readonly: true,

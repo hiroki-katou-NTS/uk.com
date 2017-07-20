@@ -27,10 +27,12 @@
 			<div id="functions-area">
 				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
 				<button class="proceed" data-bind="click: save,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KMF001_28')}</button>
-				<label class="pull-right btn-default" style="margin-right: 20px;">#{i18n.getText('KMF001_14')}</label>
-				<a class="pull-right goout" data-bind="ntsLinkButton: {jump: '/view/kmf/001/c/index.xhtml' }"
-					tabindex="3">#{i18n.getText('KMF001_29')}
-				</a>
+				<div class="pull-right" style="display: inline">
+					<a class="goout" data-bind="ntsLinkButton: {jump: '/view/kmf/001/c/index.xhtml' }"
+						tabindex="3">#{i18n.getText('KMF001_29')}
+					</a>
+					<label class="label-link-button" style="margin-right: 20px;">#{i18n.getText('KMF001_14')}</label>
+				</div>
 			</div>
 
 			<div id="contents-area">
@@ -104,7 +106,6 @@
 									required: requiredMaxNumberCompany,
 									option: {
 										width: '50px',
-										textalign: 'right',
 										unitID: 'TIMES'
 									},
 									enable: enableMaxNumberCompany}" /></td>
@@ -124,7 +125,6 @@
 									required: enableAnnualVacation,
 									option: {
 										width: '50px',
-										textalign: 'right',
 										decimallength: 1,
 										unitID: 'DAYS'
 									},
@@ -140,7 +140,6 @@
 									required: enableAnnualVacation,
 									option: {
 										width: '50px',
-										textalign: 'right',
 										decimallength: 1,
 										unitID: 'DAYS'
 									},
@@ -148,7 +147,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_38')}</label></td>
-							<td style="padding-left: 4px;"><input tabindex="9"
+							<td style="padding-left: 4px;"><div style="width: 82px;"><input tabindex="9"
 								id="number-year-retain" class="nts-input"
 								data-bind="ntsNumberEditor: {
 									value: numberYearRetain,
@@ -157,10 +156,9 @@
 									required: enableAnnualVacation,
 									option: {
 										width: '50px',
-										textalign: 'right',
 										unitID: 'YEARS'
 									},
-									enable: enableAnnualVacation}" /></td>
+									enable: enableAnnualVacation}" /></div></td>
 
 							<td><div></div></td>
 							<td><div></div></td>
@@ -317,13 +315,12 @@
 									required: requiredTimeMaxNumberCompany,
 									option: {
 										width: '50px',
-										textalign: 'right',
 										unitID: 'DAYS'
 									},
 									enable: enableTimeMaxNumberCompany}" /></td>
 						</tr>
 						<tr>
-							<td colspan="4" style="padding-left: 50px;"><div
+							<td colspan="4" style="padding-left: 50px;"><div tabindex="26"
 									data-bind="ntsCheckBox: { checked: isEnoughTimeOneDay,
 									enable: enableTimeMaxNumberCompany,
 									text: '#{i18n.getText('KMF001_55')}' }"></div></td>
