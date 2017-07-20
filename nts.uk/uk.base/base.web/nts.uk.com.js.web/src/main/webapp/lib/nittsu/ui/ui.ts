@@ -90,7 +90,7 @@ module nts.uk.ui {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
                     
                     options.title = '※ダイアログタイトルは基盤で自動化予定';
-
+                    
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
                         height: options.height || this.globalContext.dialogSize.height,
@@ -107,6 +107,27 @@ module nts.uk.ui {
 	                    		$(this).dialog("option", "position", {my: "center top", at: "center top", of: window, collision: "none"})
 	                    		$(this).parent().css("position","absolute");
                         	}
+                            
+                            let $dialogDocument = $(this.lastElementChild.contentDocument);
+                            
+                            $dialogDocument.on("keydown", ":tabbable", function(evt) {
+                                let code = evt.which || evt.keyCode;
+                                if (code.toString() === "9"){
+                                    let focusableElements = $dialogDocument.find(":tabbable");
+                                    
+                                    if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false){
+                                        
+                                        focusableElements.first().focus();        
+                                        evt.preventDefault();                           
+                                        
+                                    } else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true){
+                                        
+                                        focusableElements.last().focus();
+                                        evt.preventDefault();     
+                                                                         
+                                    }            
+                                }
+                            });
                         },
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
