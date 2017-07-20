@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Value;
 
 @Value
 public class WorkplaceSpecificDateCommand {
+	
+	private String workPlaceId;
 
 	private BigDecimal specificDate;
 
-	private BigDecimal specificDateNo;
+	private List<BigDecimal> specificDateItemNo;
 }

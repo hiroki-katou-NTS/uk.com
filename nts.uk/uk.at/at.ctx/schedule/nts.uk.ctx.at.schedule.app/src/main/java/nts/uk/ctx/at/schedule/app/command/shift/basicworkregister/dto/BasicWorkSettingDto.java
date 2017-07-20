@@ -4,18 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSettingGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.SiftCode;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
 
-/**
- * Sets the work day division.
- *
- * @param workDayDivision the new work day division
- */
+@Getter
 @Setter
 public class BasicWorkSettingDto {
 
@@ -67,8 +64,8 @@ public class BasicWorkSettingDto {
 		 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSettingGetMemento#getSiftCode()
 		 */
 		@Override
-		public SiftCode getSiftCode() {
-			return new SiftCode(dto.siftCode);
+		public WorkingCode getSiftCode() {
+			return new WorkingCode(dto.siftCode);
 		}
 
 		/* (non-Javadoc)

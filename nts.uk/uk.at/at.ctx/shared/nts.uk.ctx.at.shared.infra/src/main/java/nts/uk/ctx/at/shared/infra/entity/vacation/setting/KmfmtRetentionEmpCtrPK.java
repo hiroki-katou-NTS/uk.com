@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
@@ -17,7 +19,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @Embeddable
-public class KmfmtRetentionEmpCtrPK {
+public class KmfmtRetentionEmpCtrPK implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
 	@NotNull

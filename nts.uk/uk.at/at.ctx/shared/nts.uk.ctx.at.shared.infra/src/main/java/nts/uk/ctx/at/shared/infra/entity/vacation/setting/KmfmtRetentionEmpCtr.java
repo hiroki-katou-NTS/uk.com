@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -22,13 +24,17 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Table(name = "KMFMT_RETENTION_EMP_CTR")
-public class KmfmtRetentionEmpCtr extends UkJpaEntity {
+public class KmfmtRetentionEmpCtr extends UkJpaEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	/** The kmfmt retention emp ctr PK. */
 	@EmbeddedId
 	protected KmfmtRetentionEmpCtrPK kmfmtRetentionEmpCtrPK;
 
 	/** The year amount. */
+	@Basic(optional = false)
+	@NotNull
 	@Column(name = "NUMBER_OF_YEAR")
 	private short yearAmount;
 

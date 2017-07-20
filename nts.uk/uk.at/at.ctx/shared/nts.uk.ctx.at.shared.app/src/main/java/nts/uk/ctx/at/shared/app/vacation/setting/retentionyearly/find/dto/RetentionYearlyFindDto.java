@@ -9,10 +9,9 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
+
 /**
- * Gets the upper limit setting.
- *
- * @return the upper limit setting
+ * The Class RetentionYearlyFindDto.
  */
 @Getter
 @Setter

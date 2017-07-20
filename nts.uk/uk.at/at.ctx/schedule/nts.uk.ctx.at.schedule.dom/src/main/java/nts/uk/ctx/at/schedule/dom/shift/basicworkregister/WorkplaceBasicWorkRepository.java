@@ -14,14 +14,14 @@ public interface WorkplaceBasicWorkRepository {
 	/**
 	 * Insert.
 	 *
-	 * @param workplaceBasicWork the work place basic work
+	 * @param workplaceBasicWork the workplace basic work
 	 */
 	void insert(WorkplaceBasicWork workplaceBasicWork);
 	
 	/**
 	 * Update.
 	 *
-	 * @param workplaceBasicWork the work place basic work
+	 * @param workplaceBasicWork the workplace basic work
 	 */
 	void update(WorkplaceBasicWork workplaceBasicWork);
 	
@@ -29,18 +29,16 @@ public interface WorkplaceBasicWorkRepository {
 	 * Removes the.
 	 *
 	 * @param workplaceId the workplace id
-	 * @param workTypeCode the work type code
 	 */
-	void remove(String workplaceId, String workTypeCode);
+	void remove(String workplaceId);
 	
 	/**
 	 * Find.
 	 *
 	 * @param workplaceId the workplace id
-	 * @param workTypeCode the work type code
 	 * @return the optional
 	 */
-	Optional<WorkplaceBasicWork> find(String workplaceId, String workTypeCode);
+	Optional<WorkplaceBasicWork> find(String workplaceId);
 	
 
 //	List<WorkplaceBasicWork> findAll(String CompanyId);

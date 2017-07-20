@@ -60,7 +60,7 @@
 					
 					<div class="move-function">
 						<button data-bind="click: add"><i class="icon icon-button-arrow-right"></i></button>
-						<button data-bind="click: remove"><i class="icon icon-button-arrow-left"></i></button>	
+						<button id="remove-items" data-bind="click: remove, enable: disableSwap"><i class="icon icon-button-arrow-left"></i></button>	
 					</div>
 					
 					<div class="right-contents">
@@ -81,7 +81,8 @@
 									targetSource: newItems,
 									primaryKey: 'primaryKey',
 									comId: '#multi-list2',
-									type: 'grid'
+									type: 'grid',
+									enable: disableSwap
 								}"
 							class="">
 						</div>

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,6 +44,12 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 			UpdatebyDayforWorkPlace(data.getStrDate(),data.getEndDate(), data.getDayofWeek(), data.getLstTimeItemId(),data.getSetUpdate(),data.getWorkplaceId());
 		}
 	}
+	/**
+	 * check setting date
+	 * @param dateInString
+	 * @param dayofWeek
+	 * @return
+	 */
 	public static boolean CheckDayofWeek(GeneralDate dateInString, List<Integer> dayofWeek){
 		Integer dateInInt = dateInString.dayOfWeek();
 		boolean value = false;
@@ -56,6 +61,15 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		}
 		return value;
 	}
+	/**
+	 * Update by Day for WorkPlace
+	 * @param strDate
+	 * @param endDate
+	 * @param dayofWeek
+	 * @param lstTimeItemId
+	 * @param setUpdate
+	 * @param workplaceId
+	 */
 	private void UpdatebyDayforWorkPlace(int strDate, int endDate, List<Integer> dayofWeek, List<Integer> lstTimeItemId ,int setUpdate,String workplaceId){
 		GeneralDate sDate = GeneralDate.fromString(String.valueOf(strDate), "yyyyMMdd");
 		GeneralDate eDate = GeneralDate.fromString(String.valueOf(endDate), "yyyyMMdd");
@@ -65,44 +79,57 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		while(dateStr.compareTo(eDateStr)<=0){
 			if(!CheckDayofWeek(date,dayofWeek)){//not setting
 				date = date.addDays(1);
+				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				continue;
 			}
 			//setting
-			int a = Integer.valueOf(dateStr);
-			BigDecimal b = BigDecimal.valueOf(a);
+			int dateInt = Integer.valueOf(dateStr);
+			BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
 			if(setUpdate==1){
 				//既に設定されている内容は据え置き、追加で設定する - complement
 				//list item da co san trong db
-				List<WorkplaceSpecificDateItem> lstOld = workplaceRepo.getWorkplaceSpecByDate(workplaceId, a);
+				List<WorkplaceSpecificDateItem> lstOld = workplaceRepo.getWorkplaceSpecByDate(workplaceId, dateInt);
 				List<WorkplaceSpecificDateItem> lstAdd = lstOld;
-				List<Integer> aa = new ArrayList<Integer>();
+				List<Integer> lstAddNew = new ArrayList<Integer>();
 				//find item not exist in db
 				if(lstAdd.size()==0){
 					//lst = lstTimeItemId
-					aa = lstTimeItemId;
+					lstAddNew = lstTimeItemId;
 				}else{
+					List<WorkplaceSpecificDateItem>	a1 = new ArrayList<>();
+					
 					for (Integer timeItemId : lstTimeItemId) {
-						List<WorkplaceSpecificDateItem>	a1 = lstAdd.stream().filter(c->
-						timeItemId.equals(c.getSpecificDateItemNo().v())).collect(Collectors.toList()); 
-						if(a1.isEmpty()){
-							aa.add(timeItemId);
+						for (WorkplaceSpecificDateItem itemAdd : lstAdd) {
+							BigDecimal a2 = BigDecimal.valueOf(timeItemId);
+							if(a2.equals(itemAdd.getSpecificDateItemNo().v())){
+								a1.add(itemAdd);
+							}
 						}
+						if(a1.isEmpty()){
+							lstAddNew.add(timeItemId);
+						}
+						a1 = new ArrayList<>();
 					}
 				}
+				//get by list aa
+				List<WorkplaceSpecificDateItem> listwpSpec = new ArrayList<>();
+				for (Integer addNew : lstAddNew) {
+					listwpSpec.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,dateBigDecimal, BigDecimal.valueOf(addNew),""));
+				}
 				//add item new in db
-				workplaceRepo.InsertWpSpecDate(lstAdd);
+				workplaceRepo.InsertWpSpecDate(listwpSpec);
 				date = date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new: xoa het caus cu, them moi
 				//delete setting old workplace
 				
-				workplaceRepo.deleteWorkplaceSpec(workplaceId, a);
+				workplaceRepo.deleteWorkplaceSpec(workplaceId, dateInt);
 				//add new
 				List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate = new ArrayList<>();
 				
 				for (Integer timeItemId : lstTimeItemId) {
-					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,b,BigDecimal.valueOf(timeItemId),""));
+					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,dateBigDecimal,BigDecimal.valueOf(timeItemId),""));
 				}
 				workplaceRepo.InsertWpSpecDate(lstWorkplaceSpecificDate);
 				
@@ -110,14 +137,25 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 			date = date.addDays(1);
 		}
 	}
+	/**
+	 * Update by Day for Company
+	 * @param strDate
+	 * @param endDate
+	 * @param dayofWeek
+	 * @param lstTimeItemId
+	 * @param setUpdate
+	 */
 	private void UpdatebyDayforCompany(int strDate, int endDate, List<Integer> dayofWeek, List<Integer> lstTimeItemId ,int setUpdate){
 		String companyId = AppContexts.user().companyId();
 		GeneralDate sDate = GeneralDate.fromString(String.valueOf(strDate), "yyyyMMdd");
 		GeneralDate eDate = GeneralDate.fromString(String.valueOf(endDate), "yyyyMMdd");
 		GeneralDate date = sDate;
-		while(date == eDate){
+		String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
+		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+		while(dateStr.compareTo(eDateStr)<=0){
 			if(!CheckDayofWeek(date,dayofWeek)){//not setting
 				date.addDays(1);
+				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				continue;
 			}
 			//setting
@@ -128,13 +166,36 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				//list item da co san trong db
 				List<CompanySpecificDateItem> lstOld = companyRepo.getComSpecByDate(companyId, dateInt);
 				List<CompanySpecificDateItem> lstAdd = lstOld;
+				List<Integer> lstAddNew = new ArrayList<Integer>();
 				//find item not exist in db
-				for (Integer timeItemId : lstTimeItemId) {
-					lstAdd = lstAdd.stream().filter(c->
-					timeItemId.equals(c.getSpecificDateItemNo().v())).collect(Collectors.toList()); 
+				if(lstAdd.size()==0){
+					//lst = lstTimeItemId
+					lstAddNew = lstTimeItemId;
+				}else{
+					List<CompanySpecificDateItem>	a1 = new ArrayList<>();
+					
+					for (Integer timeItemId : lstTimeItemId) {
+						for (CompanySpecificDateItem itemAdd : lstAdd) {
+							BigDecimal a2 = BigDecimal.valueOf(timeItemId);
+							if(a2.equals(itemAdd.getSpecificDateItemNo().v())){
+								a1.add(itemAdd);
+							}
+						}
+						if(a1.isEmpty()){
+							lstAddNew.add(timeItemId);
+						}
+						a1 = new ArrayList<>();
+					}
+				}
+				//get by list aa
+				List<CompanySpecificDateItem> listwpSpec = new ArrayList<>();
+				for (Integer addNew : lstAddNew) {
+					listwpSpec.add(CompanySpecificDateItem.createFromJavaType(companyId,dateBigDecimal, BigDecimal.valueOf(addNew),""));
 				}
 				//add item new in db
-				companyRepo.addListComSpecDate(lstAdd);
+				companyRepo.addListComSpecDate(listwpSpec);
+				date = date.addDays(1);
+				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new
