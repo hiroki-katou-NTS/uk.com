@@ -3,16 +3,6 @@
 	min-width: 1200px;
 }
 
-.btnStyle {
-	margin-right: 5px;
-	width: 70px;
-}
-
-.btnStyle2 {
-	margin-right: 5px;
-	width: 150px;
-}
-
 .tr360 {
 	width: 360px !important;
 }
@@ -54,10 +44,6 @@
 	color: red;
 }
 
-#btn_delete {
-	margin-right: 5px;
-	margin-left: 20px;
-}
 
 #lbl_registrationOfLaborInsurancePlant {
 	float: right;
