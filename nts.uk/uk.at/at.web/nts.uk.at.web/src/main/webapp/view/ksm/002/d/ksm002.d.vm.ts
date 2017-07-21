@@ -200,7 +200,7 @@ module ksm002.d{
         // a object was received from mother screen
         interface IData {
             util: number,
-            workplaceObj: any,
+            workplaceObj?: any,
             startDate: number,
             endDate: number
         }

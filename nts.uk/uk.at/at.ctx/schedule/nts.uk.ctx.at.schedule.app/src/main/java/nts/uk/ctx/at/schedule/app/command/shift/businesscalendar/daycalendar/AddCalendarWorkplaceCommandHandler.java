@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.daycalendar;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,13 +19,14 @@ public class AddCalendarWorkplaceCommandHandler extends CommandHandler<List<AddC
 
 	@Override
 	protected void handle(CommandHandlerContext<List<AddCalendarWorkplaceCommand>> context) {
-		String workPlaceId = UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d").toString();
 		List<AddCalendarWorkplaceCommand> calendarWorkplaceCommands = context.getCommand();
 		for(AddCalendarWorkplaceCommand calendarWorkplaceCommand: calendarWorkplaceCommands) {
-			CalendarWorkplace calendarCompany = CalendarWorkplace.createFromJavaType(workPlaceId, 
+			CalendarWorkplace calendarCompany = CalendarWorkplace.createFromJavaType(
+					calendarWorkplaceCommand.getWorkPlaceId(), 
 					calendarWorkplaceCommand.getDateId(),
 					calendarWorkplaceCommand.getWorkingDayAtr());
-			Optional<CalendarWorkplace> calendarCom =calendarWorkplaceRepo.findCalendarWorkplaceByDate(workPlaceId,
+			Optional<CalendarWorkplace> calendarCom = calendarWorkplaceRepo.findCalendarWorkplaceByDate(
+					calendarWorkplaceCommand.getWorkPlaceId(),
 					calendarWorkplaceCommand.getDateId());
 			if (calendarCom.isPresent()) {
 				//do something

@@ -9,6 +9,7 @@ module ksm002.b.viewmodel {
         currentWorkPlace: KnockoutObservable<WorkPlaceObject> = ko.observable(new WorkPlaceObject('',''));
         rootList: Array<IWorkPlaceDto> = []; // list data from server
         isUpdate: KnockoutObservableArray<boolean> = ko.observableArray(false);
+        fullCheckBoxItem: Array<CheckBoxItem> = [];
         calendarPanel: ICalendarPanel = {
             optionDates: ko.observableArray([]),
             yearMonth: this.yearMonthPicked,
@@ -65,6 +66,7 @@ module ksm002.b.viewmodel {
                 }
             });
             $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
+                self.getAllSpecDate();
                 self.getSpecDateByIsUse();
                 self.currentWorkPlace().id(_.first($('#tree-grid')['getDataList']()).workplaceId);  
             });
@@ -75,11 +77,19 @@ module ksm002.b.viewmodel {
          */
         submitEventHandler(){
             var self = this;
-            if(self.isUpdate()){
-                self.updateCalendarWorkPlace();
+            if(nts.uk.util.isNullOrEmpty(self.selectedIds())){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_339" });     
             } else {
-                self.insertCalendarWorkPlace();
-            }    
+                if(!self.checkItemUse()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
+                } else {
+                    if(self.isUpdate()){
+                        self.updateCalendarWorkPlace();
+                    } else {
+                        self.insertCalendarWorkPlace();
+                    }    
+                }
+            }
         }
         
         /**
@@ -92,6 +102,20 @@ module ksm002.b.viewmodel {
             }).ifNo(function(){
                 // do nothing           
             });
+        }
+        
+        /**
+         * get full selectable item
+         */
+        getAllSpecDate(){
+            var self = this;
+            bService.getAllSpecDate().done(data=>{
+                data.forEach(item => {
+                    self.fullCheckBoxItem.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
+                });   
+            }).fail(res => {
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+            });            
         }
         
         /**
@@ -114,7 +138,7 @@ module ksm002.b.viewmodel {
          */
         getCalendarWorkPlaceByCode(){
             var self = this;
-            bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked(),1).done(data=>{
+            bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked()).done(data=>{
                 self.rootList = data;
                 self.calendarPanel.optionDates.removeAll();
                 let a = [];
@@ -209,7 +233,7 @@ module ksm002.b.viewmodel {
             nts.uk.ui.windows.setShared('KSM002_E_PARAM', 
             {
                 date: Number(moment(date).format("YYYYMMDD")),
-                selectable: ko.mapping.toJS(self.checkBoxList()),
+                selectable: _.map(self.checkBoxList(), o => o.id),
                 selecteds: ko.mapping.toJS(self.selectedIds())
             });
             nts.uk.ui.windows.sub.modal("/view/ksm/002/e/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {});  
@@ -230,6 +254,29 @@ module ksm002.b.viewmodel {
                 }
             }
             self.calendarPanel.optionDates.valueHasMutated();
+        }
+        
+        /**
+         * check selected item is selectable
+         */
+        checkItemUse(): boolean {
+            var self = this;
+            let selectedUniqueCode = [];
+            let selectableUniqueCode = _.map(self.checkBoxList(), o => o.id);
+            self.calendarPanel.optionDates().forEach(item => {
+                selectedUniqueCode = _.concat(selectedUniqueCode, self.convertNameToNumber(item.listText));  
+            });        
+            selectedUniqueCode = _.uniq(selectedUniqueCode);
+            let result = 1;
+            selectedUniqueCode.forEach(item => {
+                if(_.includes(selectableUniqueCode,item)){
+                    result*=0;   
+                } else {
+                    result*=0;    
+                }    
+            });
+            if(result == 0) return false;
+            else return true;
         }
         
         /**
@@ -281,7 +328,7 @@ module ksm002.b.viewmodel {
             var self = this;   
             let a = [];
             inputArray.forEach(item => {
-                let rs = _.find(self.checkBoxList(), o => {return o.id == item});
+                let rs = _.find(self.fullCheckBoxItem, o => {return o.id == item});
                 a.push(rs.name);       
             });
             return a; 
@@ -294,7 +341,7 @@ module ksm002.b.viewmodel {
             var self = this;   
             let a = [];
             inputArray.forEach(item => {
-                let rs = _.find(self.checkBoxList(), o => {return o.name == item});
+                let rs = _.find(self.fullCheckBoxItem, o => {return o.name == item});
                 a.push(rs.id);       
             });
             return a; 
