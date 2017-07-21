@@ -278,6 +278,21 @@ module ksm002.a.viewmodel {
             });
             return lstComSpecificDateCommand;
         };
+        /**
+         * open dialog D event
+         */
+        openKsm002DDialog() {
+            var self = this;
+            nts.uk.ui.windows.setShared('KSM002_D_PARAM', 
+            {
+                util: 1,
+                startDate: Number(moment(self.yearMonthPicked().toString(),'YYYYMM').startOf('month').format('YYYYMMDD')),
+                endDate: Number(moment(self.yearMonthPicked().toString(),'YYYYMM').endOf('month').format('YYYYMMDD'))
+            });
+            nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                
+            });  
+        }
     }
 
     interface IData {
