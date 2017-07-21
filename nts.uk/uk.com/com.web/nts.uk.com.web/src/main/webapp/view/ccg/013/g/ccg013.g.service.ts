@@ -1,4 +1,4 @@
-module cmm044.g.service {
+module ccg013.g.service {
     var servicePath = {
         addPerson: "sys/portal/webmenu/addPerson",
         deletePerson: "sys/portal/webmenu/deletePerson",

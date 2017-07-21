@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.infra.repository.personaltying;
+package nts.uk.ctx.sys.portal.infra.repository.webmenu;
 
 import java.util.List;
 
@@ -9,7 +9,11 @@ import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstPersonTying;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstPersonTyingPK;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class JpaPersonalTyingRepository extends JpaRepository implements PersonalTyingRepository {
 	
@@ -31,11 +35,17 @@ public class JpaPersonalTyingRepository extends JpaRepository implements Persona
 		FIND_ALL = builderString.toString();
 	}
 
+	/**
+	 * Add new personal tying
+	 */
 	@Override
 	public void add(PersonalTying personalTying) {
 		this.commandProxy().insert(convertToDbType(personalTying));
 	}
 
+	/**
+	 * Delete personal tying
+	 */
 	@Override
 	public void delete(String companyId, String employeeId) {
 		this.getEntityManager().createQuery(REMOVE_ALL)
@@ -44,6 +54,11 @@ public class JpaPersonalTyingRepository extends JpaRepository implements Persona
 		.executeUpdate();
 	}
 
+	/**
+	 * Convert to database
+	 * @param personalTying
+	 * @return
+	 */
 	private CcgstPersonTying convertToDbType(PersonalTying personalTying) {
 		CcgstPersonTying ccgstPersonTying = new CcgstPersonTying();
 		CcgstPersonTyingPK cPersonTyingPK = new CcgstPersonTyingPK(personalTying.getCompanyId(),
@@ -52,6 +67,9 @@ public class JpaPersonalTyingRepository extends JpaRepository implements Persona
 		return ccgstPersonTying;
 	}
 
+	/**
+	 * Find all personal tying by companyId and employeeId
+	 */
 	@Override
 	public List<PersonalTying> findAll(String companyId, String employeeId) {
 		return this.queryProxy().query(FIND_ALL, CcgstPersonTying.class)
@@ -60,6 +78,11 @@ public class JpaPersonalTyingRepository extends JpaRepository implements Persona
 				.getList(c -> convertToDomain(c));
 	}
 	
+	/**
+	 * Convert to domain
+	 * @param ccgstPersonTying
+	 * @return
+	 */
 	private PersonalTying convertToDomain(CcgstPersonTying ccgstPersonTying){
 		PersonalTying personalTying = PersonalTying.createFromJavaType(
 				ccgstPersonTying.ccgstPersonTyingPK.companyId,
