@@ -7,6 +7,20 @@ module nts.uk.at.view.kdl023.a.service {
     export function find(key: string): JQueryPromise<model.PatternReflection> {
         return nts.uk.characteristics.restore(key);
     }
+    export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
+        let dfd = $.Deferred();
+        // default la working day.
+        dfd.resolve({
+            monday: 1,
+            tuesday: 1,
+            wednesday: 2,
+            thursday: 2,
+            friday: 2,
+            saturday: 1,
+            sunday: 1,
+        });
+        return dfd.promise();
+    }
 
     export module model {
         export interface PatternReflection {
@@ -47,6 +61,24 @@ module nts.uk.at.view.kdl023.a.service {
         export enum ReflectionMethod {
             Overwrite,
             FillInTheBlank
+        }
+        export enum WorkDayDivision {
+            WorkingDay = 0,
+            NonWorkingDayInLaw = 1,
+            NonWorkingDayOutrage = 2
+        }
+        export interface WeeklyWorkSetting {
+            monday: WorkDayDivision;
+            tuesday: WorkDayDivision;
+            wednesday: WorkDayDivision;
+            thursday: WorkDayDivision;
+            friday: WorkDayDivision;
+            saturday: WorkDayDivision;
+            sunday: WorkDayDivision;
+        }
+        export interface PublicHoliday {
+            day: number;
+            holidayName: string;
         }
     }
 }
