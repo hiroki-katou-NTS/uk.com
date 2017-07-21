@@ -6,9 +6,9 @@ package nts.uk.ctx.at.schedule.app.find.shift.pattern.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternName;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternSetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

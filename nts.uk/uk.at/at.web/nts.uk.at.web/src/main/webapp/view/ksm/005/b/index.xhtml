@@ -20,13 +20,13 @@
 				<com:scriptfile path="ksm005.b.service.js" />
 				<com:scriptfile path="ksm005.b.vm.js" />
 				<com:ValidatorScript>
-					nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternCode
-					nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternName
+					nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode
+					nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName
 				</com:ValidatorScript>
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
-					<a data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
+					<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
 					<button data-bind="click: resetData">#{i18n.getText('KSM005_8')}</button>
 					<button class="proceed" data-bind="click: saveDataMonthlyPattern">#{i18n.getText('KSM005_9')}</button>
