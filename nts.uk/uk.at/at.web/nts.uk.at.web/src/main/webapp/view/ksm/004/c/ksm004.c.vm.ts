@@ -2,25 +2,27 @@ module nts.uk.at.view.ksm004.c.viewmodel {
     import block = nts.uk.ui.block;
     export class ScreenModel {
         year: KnockoutObservable<number>;
+        yearGetShare: KnockoutObservable<number>;
         // Grid list
         allHolidays: KnockoutObservableArray<PublicHoliday>;
         filterHolidays: KnockoutObservableArray<PublicHoliday>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
-        //text editor
-        date: KnockoutObservable<string>;
-        holidayName: KnockoutObservable<string>;
 
-        // TitleMenu Details
-        selectedPublicHoliday: KnockoutObservable<PublicHoliday>;
+        // Holiday Details
+        selectedPublicHoliday: KnockoutObservable<PublicHolidayObs>;
+
+        // UI
         isCreate: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.year = ko.observable(null);
+            self.yearGetShare = ko.observable(null);
             self.year.subscribe((newValue) => {
                 self.findPublicHolidayByYear(newValue);
                 self.selectHolidayByIndex(0);
             });
+            self.yearGetShare = nts.uk.ui.windows.getShared('KSM004_C_PARAM');
             //Grid List
             self.allHolidays = ko.observableArray([]);
             self.filterHolidays = ko.observableArray([]);
@@ -29,20 +31,14 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                 self.findPublicHoliday(value);
             });
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KSM004_23"), key: 'date', width: 85 },
+                { headerText: nts.uk.resource.getText("KSM004_23"), key: 'date', hidden: true },
+                { headerText: nts.uk.resource.getText("KSM004_23"), key: 'displayDate', width: 85 },
                 { headerText: nts.uk.resource.getText("KSM004_24"), key: 'holidayName', width: 240 }
             ]);
-            // text editor
-            self.date = ko.observable("");
-            self.holidayName = ko.observable("");
-
             // Holiday Details
             self.selectedPublicHoliday = ko.observable(null);
-            self.selectedPublicHoliday.subscribe((value: PublicHoliday) => {
-                self.date(moment(value.date + self.year(), "MM月DD日YYYY").format('YYYY/MM/DD'));
-                self.holidayName(value.holidayName);
-            });
-            self.isCreate = ko.observable(null);
+            // UI
+            self.isCreate = ko.observable(false);
             self.isCreate.subscribe((value) => {
                 self.changeInitMode(value);
             });
@@ -55,7 +51,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             block.invisible();
             dfd.done(() => {
                 block.clear();
-                self.year(2000);
+                self.year(self.yearGetShare.yearMonth);
                 self.selectHolidayByIndex(0);
             });
             return dfd;
@@ -67,8 +63,12 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             var dfd = $.Deferred();
             /** Get list TitleMenu*/
             service.getHolidayByDate().done(function(listPublicHoliday: Array<viewmodel.PublicHoliday>) {
-                listPublicHoliday = _.orderBy(listPublicHoliday, ["date"], ["asc"]);
-                self.allHolidays(listPublicHoliday);
+                var allHoliday: Array<PublicHoliday> = [];
+                _.forEach(listPublicHoliday, (item) => {
+                    allHoliday.push(new PublicHoliday(item.date, item.holidayName));
+                });
+                allHoliday = _.orderBy(allHoliday, ["date"], ["asc"]);
+                self.allHolidays(allHoliday);
                 if (listPublicHoliday.length > 0) {
                     self.isCreate(false);
                 }
@@ -98,8 +98,6 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             var self = this;
             var filterHolidays = _.filter(self.allHolidays(), (item) => {
                 return item.date.toString().substr(0, 4) == year.toString();
-            }).map((holiday) => {
-                return { date: moment(holiday.date, 'YYYYMMDD').format('MM月DD日'), holidayName: holiday.holidayName };
             });
             self.filterHolidays(filterHolidays);
         }
@@ -123,8 +121,13 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         /** Init Mode */
         private changeInitMode(isCreate: boolean) {
             var self = this;
+            $(".nts-input").ntsError("clear");
             if (isCreate === true) {
                 self.currentCode(null);
+                _.defer(() => { $("#date").focus(); });
+            }
+            else {
+                _.defer(() => { $("#name").focus(); });
             }
         }
 
@@ -133,60 +136,67 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             var self = this;
             self.isCreate(true);
             self.currentCode(null);
-            self.selectedPublicHoliday(new PublicHoliday("", ""));
-            $("#date").focus();
-
+            self.selectedPublicHoliday(new PublicHolidayObs("", ""));
+            _.defer(() => { $("#date").focus(); });
+            nts.uk.ui.errors.clearAll();
+            $(".nts-input").ntsError("clear");
         }
 
         /** Registry Button Click */
         registryButtonClick() {
+            console.time('RegistryButton');
             var self = this;
             $(".nts-input").trigger("validate");
-            var publicHoliday = {
-                date: self.date(),
-                holidayName: self.holidayName()
-            };
+            nts.uk.ui.block.invisible();
             if (self.isCreate() === true) {
-                service.createPublicHoliday(publicHoliday).done((data) => {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                service.createPublicHoliday(self.selectedPublicHoliday().toPublicHoliday()).done((data) => {
                     self.reloadData().done(() => {
-                        self.selectByCode(publicHoliday.date);
+                        self.selectByCode(self.selectedPublicHoliday().date());
+                    });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        $("#name").focus();
                     });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_132" });
                 }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             else {
-                service.updatePublicHoliday(publicHoliday).done((data) => {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                    self.reloadData().done(() => {
-                        self.selectByCode(publicHoliday.date);
+                service.updatePublicHoliday(self.selectedPublicHoliday().toPublicHoliday()).done((data) => {
+                    self.reloadData();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        $("#name").focus();
                     });
                 }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
+          console.timeEnd('RegistryButton');  
         }
 
         /**Delete Button Click */
-        removeTitleMenu() {
+        removePublicHoliday() {
             var self = this;
+            nts.uk.ui.block.invisible();
             if (self.currentCode() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
-                    block.invisible();
-                    service.deletePublicHoliday(self.date()).done(() => {
+                    service.deletePublicHoliday({ date: self.selectedPublicHoliday().date() }).done(() => {
                         var index = _.findIndex(self.filterHolidays(), (item) => {
                             return item.date == self.currentCode();
                         });
                         index = _.min([self.filterHolidays().length - 2, index]);
                         self.reloadData().done(() => {
                             self.selectHolidayByIndex(index);
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                self.focusByMode();
+                            });
+                            nts.uk.ui.errors.clearAll();
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }).always(() => {
-                        block.clear();
+                        nts.uk.ui.block.clear();
                     });
                 })
             }
@@ -198,7 +208,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         /*OpenDialog Rename holiday by Google API (KSM 004 E) */
         holidayData() {
             var self = this;
-            nts.uk.ui.windows.setShared("currentCode", self.currentCode());
+            nts.uk.ui.windows.setShared("yearPicker", self.year());
             nts.uk.ui.windows.setShared("filterHoliday", self.filterHolidays());
             nts.uk.ui.windows.sub.modal("/view/ksm/004/e/index.xhtml", { title: nts.uk.resource.getText("Googleデータ確認") }).onClosed(() => {
             });
@@ -212,24 +222,49 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             });
             if (selectedPublicHoliday !== undefined) {
                 self.isCreate(false);
-                self.selectedPublicHoliday(new PublicHoliday(selectedPublicHoliday.date, selectedPublicHoliday.holidayName));
-
+                self.selectedPublicHoliday(new PublicHolidayObs(selectedPublicHoliday.date, selectedPublicHoliday.holidayName));
+                _.defer(() => { $("#name").focus(); });
             }
             else {
                 self.isCreate(true);
-                self.selectedPublicHoliday(new PublicHoliday("", ""));
+                self.selectedPublicHoliday(new PublicHolidayObs("", ""));
             }
         }
 
+        private focusByMode() {
+            var self = this;
+            if (self.isCreate() === true)
+                $("#date").focus();
+            else
+                $("#name").focus();
+        }
+
     }
+
     export class PublicHoliday {
         date: string;
         holidayName: string;
+        displayDate: string;
 
         constructor(date: string, holidayName: string) {
             this.date = date;
             this.holidayName = holidayName;
-
+            this.displayDate = moment(date, 'YYYYMMDD').format('MM月DD日');
         }
     }
+
+    export class PublicHolidayObs {
+        date: KnockoutObservable<string>;
+        holidayName: KnockoutObservable<string>;
+
+        constructor(date: string, holidayName: string) {
+            this.date = ko.observable(date);
+            this.holidayName = ko.observable(holidayName);
+        }
+
+        toPublicHoliday(): PublicHoliday {
+            return new PublicHoliday(this.date(), this.holidayName());
+        }
+    }
+
 } 

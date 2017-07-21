@@ -45,7 +45,7 @@
             if(nts.uk.ui.errors.hasError() !== true){
                 service.copy(data).done(function() {
                     nts.uk.ui.windows.setShared("CCG013E_WEB_CODE_COPY", code);
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_20" }).then(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(() => {
                         self.closeDialog();
                     });
                     
