@@ -38,7 +38,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                 { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80 },
                 { headerText: nts.uk.resource.getText("CCG013_52"), key: 'targetItems', width: 150 },
                 {
-                    headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', width: 150
+                    headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', formatter: _.escape, width: 150
                     //template: "<input class=\"displayName-input\" type=\"text\" value=\"${displayName}\" />"
                 }
             ];
