@@ -9,13 +9,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.portal.app.command.personaltying.AddPersonalTyingCommandHandler;
-import nts.uk.ctx.sys.portal.app.command.personaltying.DeletePersonalTyingCommand;
-import nts.uk.ctx.sys.portal.app.command.personaltying.DeletePersonalTyingCommandHandler;
-import nts.uk.ctx.sys.portal.app.command.personaltying.PersonTypingCommand;
+import nts.uk.ctx.sys.portal.app.command.webmenu.AddPersonalTyingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.webmenu.PersonTypingCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommandHander;
 import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommandHander;
@@ -47,8 +45,6 @@ public class WebMenuWebService extends WebService {
 	@Inject
 	private AddPersonalTyingCommandHandler addPersonTypeCommandHandler;
 	
-	@Inject
-	private DeletePersonalTyingCommandHandler deletePersonTypeCommandHandler;
 
 	@POST
 	@Path("add")
@@ -91,17 +87,11 @@ public class WebMenuWebService extends WebService {
 	public void copyWebMenu(CopyWebMenuCommand command) {
 		this.copyWebMenuCommandHander.handle(command);
 	}
-
 	
 	@POST
 	@Path("addPerson")
 	public void addPerson(PersonTypingCommand command) {
-		this.addPersonTypeCommandHandler.handle(command);
-	}
-	@POST
-	@Path("deletePerson")
-	public void deletePerson(DeletePersonalTyingCommand command) {
-		this.deletePersonTypeCommandHandler.handle(command);
+ 		this.addPersonTypeCommandHandler.handle(command);
 	}
 	
 	@POST

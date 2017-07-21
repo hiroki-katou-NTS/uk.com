@@ -8,7 +8,7 @@
 	<div class="sidebar-content-header">
 		<span class="title">#{i18n.getText('CCG018_1')}</span>
 		<button tabindex="-1" id="A1-4" class="proceed"
-			data-bind="click: save">#{i18n.getText('CCG018_3')}</button>
+			data-bind="click: save, enable: isEmpty">#{i18n.getText('CCG018_3')}</button>
 		<button tabindex="-1" id="A1-5" data-bind="click: openDialogC">#{i18n.getText('CCG018_4')}</button>
 		<a tabindex="-1" id="A1-6" href="#"
 			data-bind=" click: jumpToCcg015 ,ntsLinkButton: { }"><img
