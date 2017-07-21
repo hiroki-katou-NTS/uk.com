@@ -122,6 +122,36 @@ var nts;
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
             }
             util.orDefault = orDefault;
+            function getConstraintMes(primitiveValues) {
+                if (isNullOrEmpty(primitiveValues)) {
+                    return "";
+                }
+                if (!Array.isArray(primitiveValues))
+                    primitiveValues = [primitiveValues];
+                var constraintText = "";
+                _.forEach(primitiveValues, function (primitiveValue) {
+                    var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                    switch (constraint.valueType) {
+                        case 'String':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                            break;
+                        case 'Decimal':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += constraint.min + "～" + constraint.max;
+                            break;
+                        case 'Integer':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += constraint.min + "～" + constraint.max;
+                            break;
+                        default:
+                            constraintText += 'ERROR';
+                            break;
+                    }
+                });
+                return constraintText;
+            }
+            util.getConstraintMes = getConstraintMes;
             function isIn(actual, expects) {
                 for (var i = 0; i < expects.length; i++) {
                     if (actual === expects[i])
@@ -5456,37 +5486,11 @@ var nts;
                         }
                         if (primitiveValue !== undefined) {
                             $formLabel.addClass(isInline ? 'inline' : 'broken');
-                            var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValue);
+                            var constraintText = uk.util.getConstraintMes(primitiveValue);
                             $('<i/>').text(constraintText).appendTo($formLabel);
                         }
                     };
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    };
-                    NtsFormLabelBindingHandler.buildConstraintText = function (primitiveValues) {
-                        if (!Array.isArray(primitiveValues))
-                            primitiveValues = [primitiveValues];
-                        var constraintText = "";
-                        _.forEach(primitiveValues, function (primitiveValue) {
-                            var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
-                            switch (constraint.valueType) {
-                                case 'String':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
-                                    break;
-                                case 'Decimal':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += constraint.min + "～" + constraint.max;
-                                    break;
-                                case 'Integer':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += constraint.min + "～" + constraint.max;
-                                    break;
-                                default:
-                                    constraintText += 'ERROR';
-                                    break;
-                            }
-                        });
-                        return constraintText;
                     };
                     return NtsFormLabelBindingHandler;
                 }());

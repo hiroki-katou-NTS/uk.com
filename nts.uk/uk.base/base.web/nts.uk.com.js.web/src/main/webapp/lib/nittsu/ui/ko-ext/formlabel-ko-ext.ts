@@ -32,7 +32,7 @@ module nts.uk.ui.koExtentions {
             if (primitiveValue !== undefined) {
                 $formLabel.addClass(isInline ? 'inline' : 'broken');
 
-                var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValue);
+                var constraintText = util.getConstraintMes(primitiveValue);
                 $('<i/>').text(constraintText).appendTo($formLabel);
             }
         }
@@ -41,33 +41,6 @@ module nts.uk.ui.koExtentions {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        }
-
-        static buildConstraintText(primitiveValues: any) {
-            if (!Array.isArray(primitiveValues))
-                primitiveValues = [primitiveValues];
-            let constraintText: string = "";
-            _.forEach(primitiveValues, function(primitiveValue) {
-                let constraint = __viewContext.primitiveValueConstraints[primitiveValue];
-                switch (constraint.valueType) {
-                    case 'String':
-                        constraintText += (constraintText.length > 0) ? "/" : "";
-                        constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
-                        break;
-                    case 'Decimal':
-                        constraintText += (constraintText.length > 0) ? "/" : "";
-                        constraintText += constraint.min + "～" + constraint.max; 
-                        break;
-                    case 'Integer':
-                        constraintText += (constraintText.length > 0) ? "/" : "";
-                        constraintText += constraint.min + "～" + constraint.max; 
-                        break;
-                    default:
-                        constraintText += 'ERROR';
-                        break;
-                }
-            });
-            return constraintText;
         }
     }
     

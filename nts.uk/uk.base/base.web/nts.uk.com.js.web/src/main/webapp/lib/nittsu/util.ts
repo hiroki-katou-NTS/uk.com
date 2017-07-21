@@ -153,6 +153,36 @@
         export function orDefault(valueMaybeEmpty: any, defaultValue: any) {
             return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
         }
+        
+        export function getConstraintMes(primitiveValues: any) {
+            if(isNullOrEmpty(primitiveValues)) {
+                return "";        
+            }
+            if (!Array.isArray(primitiveValues))
+                primitiveValues = [primitiveValues];
+            let constraintText: string = "";
+            _.forEach(primitiveValues, function(primitiveValue) {
+                let constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                switch (constraint.valueType) {
+                    case 'String':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                        break;
+                    case 'Decimal':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += constraint.min + "～" + constraint.max; 
+                        break;
+                    case 'Integer':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += constraint.min + "～" + constraint.max; 
+                        break;
+                    default:
+                        constraintText += 'ERROR';
+                        break;
+                }
+            });
+            return constraintText;
+        }
 
         /**
          * Returns true if expects contains actual.
