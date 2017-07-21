@@ -24,9 +24,9 @@ public class CompanySpecificDateFinder {
 	}
 
 	// WITH name
-	public List<CompanySpecificDateDto> getComSpecByDateWithName(String comSpecDate, int useAtr) {
+	public List<CompanySpecificDateDto> getComSpecByDateWithName(String comSpecDate) {
 		String companyId = AppContexts.user().companyId();
-		return companySpecDateRepo.getComSpecByDateWithName(companyId, comSpecDate, useAtr)
+		return companySpecDateRepo.getComSpecByDateWithName(companyId, comSpecDate)
 				.stream()
 				.map(item -> CompanySpecificDateDto.fromDomain(item))
 				.collect(Collectors.toList());
