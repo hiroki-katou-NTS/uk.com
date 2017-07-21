@@ -45,6 +45,7 @@ module ksm002.d{
     
             /** get data when start dialog **/
             startPage(): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred();
                 self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
@@ -72,6 +73,7 @@ module ksm002.d{
                     if(self.specificDateItem().length==0){
                         nts.uk.ui.dialog.info({ messageId: "Msg_135" }).then(function(){nts.uk.ui.windows.close();});
                     }
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
@@ -98,6 +100,7 @@ module ksm002.d{
             }
             /** submit dialog **/
             submitDialog(){
+                nts.uk.ui.block.invisible();
                 let self = this;
                 let listDayToUpdate: Array<number> = [];
                 let listTimeItemToUpdate: Array<number> =[];
@@ -155,6 +158,7 @@ module ksm002.d{
                         dfd.reject(res); 
                         });
                 }
+                nts.uk.ui.block.clear();
             }
         }
         // item for radio button
