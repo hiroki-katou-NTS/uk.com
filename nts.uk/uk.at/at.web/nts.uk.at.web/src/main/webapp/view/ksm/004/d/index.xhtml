@@ -28,20 +28,24 @@
 									<!-- D1_4 -->
 									<div tabindex="1"
 										data-bind="ntsDatePicker: { 
-									value: startMonth, 
-									dateFormat: 'yearmonth', 
-									valueFormat: 'YYYYMM', 
-									fiscalMonthsMode: true, 
-									defaultClass: 'round-orange' }">
+										name:'#{i18n.getText('#KSM004_36')}',
+										value: startMonth, 
+										dateFormat: 'yearmonth', 
+										valueFormat: 'YYYYMM', 
+										fiscalMonthsMode: true, 
+										defaultClass: 'round-orange',
+										required: true }">
 									</div>
 									<span>～</span>
 									<div tabindex="2"
-										data-bind="ntsDatePicker: { 
-									value: endMonth, 
-									dateFormat: 'yearmonth', 
-									valueFormat: 'YYYYMM', 
-									fiscalMonthsMode: true, 
-									defaultClass: 'round-orange' }">
+										data-bind="ntsDatePicker: {
+										name:'#{i18n.getText('#KSM004_36')}', 
+										value: endMonth, 
+										dateFormat: 'yearmonth', 
+										valueFormat: 'YYYYMM', 
+										fiscalMonthsMode: true, 
+										defaultClass: 'round-orange',
+										required: true }">
 									</div>
 
 								</div>
