@@ -3011,6 +3011,7 @@ var nts;
                                 beforeClose: function () {
                                 }
                             }).dialog('open');
+                            $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
                             if (_this.parent !== null)
                                 _this.parent.globalContext.nts.uk.ui.block.clear();
                         });
