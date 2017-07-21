@@ -20,6 +20,7 @@ module ksm002.d{
             // check choose any day or item
             countDay: KnockoutObservable<number>;
             countItem: KnockoutObservable<number>;
+            // data receive from mother screen
             param: IData;
             constructor() {
                 let self=this;
@@ -46,7 +47,7 @@ module ksm002.d{
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                self.param = getShared('KSM002A_PARAM') || { util: 2, workplaceObj: null, startDate: 20160202, endDate: 20160302};
+                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
                 self.endMonth(self.param.endDate);
                 self.startMonth(self.param.startDate);
                 // label to display work place D1_2
@@ -54,7 +55,7 @@ module ksm002.d{
                     self.workPlace(nts.uk.resource.getText('Com_Company'))    
                 }
                 else if(self.param.util == 2){
-                    self.workPlace("param.workplaceObj.name")    
+                    self.workPlace(self.param.workplaceObj.name);    
                 }
                 self.dayInWeek([new DayInWeekItem(nts.uk.resource.getText('KSM002_45'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_46'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_47'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_48'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_49'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_50'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_51'),0)]);
                 service.getSpecificDateByIsUse(1).done(function(data) {
@@ -69,7 +70,7 @@ module ksm002.d{
                             ));
                     });
                     if(self.specificDateItem().length==0){
-                        nts.uk.ui.dialog.info({ messageId: "Msg_135" }).then(self.closeDialog());
+                        nts.uk.ui.dialog.info({ messageId: "Msg_135" }).then(function(){nts.uk.ui.windows.close();});
                     }
                     dfd.resolve();
                 }).fail(function(res) { 
@@ -113,7 +114,7 @@ module ksm002.d{
                         self.countDay(self.countDay()+1);
                     }
                 });
-                if(self.countDay() == self.dayInWeek().length){
+                if(self.countDay() == self.dayInWeek().length && self.enable() == false){
                     $('#day_0').ntsError('set', {messageId:"Msg_137"});
                 }
                 // check not choose any item
@@ -133,7 +134,10 @@ module ksm002.d{
                         listDayToUpdate.push(self.convert(self.dayInWeek()[i].day()));
                     }
                 }
-                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), "");
+                if(self.enable()==true){
+                    listDayToUpdate.push(0);     
+                }
+                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), self.param.workplaceObj.id);
                 service.updateSpecificDateSet(object).done(function(data) {
                     nts.uk.ui.windows.close(); 
                 }).fail(function(res) { 

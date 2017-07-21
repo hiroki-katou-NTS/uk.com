@@ -161,7 +161,8 @@ div.popup-panel {
 #func-notifier-errors {
 	position: absolute;
 	display: none;
-
+	z-index:10;
+	
 	@include border-radius(5px);
 	padding: 1px 17px 3px 17px;
 	font-weight: bold;

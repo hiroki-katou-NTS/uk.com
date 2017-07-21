@@ -67,7 +67,7 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 		updateEntity.name = newEntity.name;
 		updateEntity.layoutID = newEntity.layoutID;
 		this.commandProxy().update(updateEntity);
-				this.commandProxy().update(toEntity(title));
+				
 	}
 	/**
 	 * Remove

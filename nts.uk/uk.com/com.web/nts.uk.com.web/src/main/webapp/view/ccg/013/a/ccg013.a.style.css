@@ -68,94 +68,127 @@ button.search-btn {
 	margin-bottom: 15px;
 }
 
-.menubar-navigation {
+#menubar-tabs {
+	padding: 0px;
+}
+
+#menubar-tabs .menubar-navigation {
 	position: relative;
-	padding: 0px !important;
+	padding: 0px;
 	display: block;
 	float: left;
 }
 
-.menubar-navigation-placeholder {
+#menubar-tabs .menubar-placeholder {
 	float: left;
-	width: 100px;
-	height: 28px;
-	border: 2px dashed #333;
+	width: 140px;
+	height: 48px;
+	border: 1px dashed #666;
     margin-right: 25px;
     box-sizing: border-box;
 }
 
-.menubar-navigation li.context-menu-bar {
-	border-radius: 0px !important;
-	margin-right: 25px
+#menubar-tabs .menubar-navigation li.context-menu-bar {
+	border-radius: 0px;
+	margin: 0 25px 0 0;
+	padding: 0;
+	margin-bottom: -1px;
+	border-width: 1px;
 }
 
-.menubar-navigation li.ui-tabs-active {
-	height: 55px !important;
-	border-radius: 0px !important;
-	background-color: rgb(226, 239, 218) !important;
-	padding-top: 0px !important;
-	margin-bottom: -1px !important;
+#menubar-tabs .menubar-navigation li.ui-tabs-active {
+	height: 80px;
+	background-color: #e2efda;
+	border-bottom-width: 0px;
 }
 
-
-.menubar-navigation li.context-menu-bar a {
+#menubar-tabs .menubar-navigation li.context-menu-bar a {
 	background-color: rgb(112, 173, 71);
-	width: 100px !important;
+	width: 140px;
+	height: 48px;
+	padding: 15px 0px;
 	text-align: center;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+#menubar-tabs .menubar-container {
+	margin-top: 26px;
+	border-radius: 0px;
+	border: 1px solid #B1B1B1;
+	background-color: #e2efda;
+	padding: 5px 0;
+}
+
+#menubar-tabs .menubar-container .title-menu {
+	position: relative;
+}
+
+#menubar-tabs .menubar-container .title-menu .titlemenu-placeholder {
+	position: relative;
+	float: left;
+	height: 58px;
+    width: 140px;
+	border: 1px dashed #666;
+	padding: 0 3px;
+	margin-right: 25px;
+	margin-bottom: 15px;
+	box-sizing: border-box;
+	z-index: 1;
+}
+
+#menubar-tabs .title-menu .title-menu-column {
+	float: left;
+	width: 140px;
+	padding: 0 3px;
+	margin-right: 25px;
+	margin-bottom: 15px;
 	box-sizing: border-box;
 }
 
-.menubar-container {
-	margin-top: 9px;
-	border-radius: 0px !important;
-	border: 1px solid #B1B1B1 !important;
-	background-color: rgb(226, 239, 218) !important;
-	padding: 0px !important;
+#menubar-tabs .title-menu .title-menu-name {
+	padding: 20px 15px;
+	border-radius: 10px;
 }
 
-ul.tree-menu {
-	width: 135px !important;
-	margin-left: 3px;
+#menubar-tabs .title-menu .title-menu-column .tree-menu {
+	position: relative;
 }
 
-ul.tree-menu li {
-	min-height: 35px;
-	width: 125px;
-	border: 1px solid rgb(128, 164, 104) !important;
+#menubar-tabs .title-menu .title-menu-column .tree-menu li {
+	padding: 10px 3px;
+	height: 40px;
 	margin-top: -1px;
-	word-break: break-all;
+	background-color: #e2efda;
+	border: 1px solid #80a468;
+	white-space: nowrap;
+	overflow: hidden;
+	box-sizing: border-box;
 }
 
-ul.tree-menu li:last-child {
-	border-bottom: 1px solid rgb(128, 164, 104) !important;
+#menubar-tabs .title-menu .title-menu-column .tree-menu .treemenu-placeholder {
+	position: relative;
+	height: 40px;
+	width: 100%;
+	border: 1px dashed #666;
+	box-sizing: border-box;
+	z-index: 1;
 }
 
-.title-menu div.title-menu-column {
-	padding-right: 21px !important;
-	float: left;
-	margin-bottom: 15px;
+#menubar-tabs .title-menu .title-menu-column .button-add-treemenu {
+	margin: 4px 0px;
 }
 
-.title-menu div.title-menu-name {
-	width: 100px !important;
-	padding: 15px !important;
-	border-radius: 10px !important;
-	margin-left: 2px;
-	margin-top: 3px;
+.unsortable {
+	
 }
 
 .button-add {
-	border-radius: 5px !important;
-	height: 40px !important;
+	border-radius: 5px;
+	height: 50px;
+	width: 134px;
 }
 
-.button-add-treemenu {
-	border-radius: 5px !important;
-	height: 40px !important;
-	margin-top: 4px !important;
-	width: 137px;
-	margin-left: 3px;
-}
 
 .label.warning {
 	padding: 5px 10px !important;
@@ -168,13 +201,6 @@ ul.tree-menu li:last-child {
 	vertical-align: middle;
 }
 
-.unsortable {
-	margin-top: 3px;
-}
-
-.button-add-treemenu {
-	width: 128px;
-}
 
 .caret-bottom:after, .caret-top:after, .caret-left:after {
 	margin-bottom: 5px !important;

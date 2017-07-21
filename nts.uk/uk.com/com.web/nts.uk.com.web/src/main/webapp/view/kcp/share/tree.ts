@@ -117,6 +117,7 @@ module kcp.share.tree {
         $input: JQuery;
         data: TreeComponentOption
         treeStyle: TreeStyle;
+        maxRows: number;
         
         constructor() {
             let self = this;
@@ -157,6 +158,9 @@ module kcp.share.tree {
             }
             if (!data.maxRows) {
                 data.maxRows = 12;
+                self.maxRows = 12;
+            } else {
+                self.maxRows = data.maxRows;
             }
             self.calHeightTree(data);
             
@@ -198,6 +202,8 @@ module kcp.share.tree {
                     self.backupItemList(res);
                 }
                 self.loadTreeGrid().done(function() {
+                    // Special command -> remove unuse.
+                    $input.find('#multiple-tree-grid_tooltips_ruler').remove();
                     $('#combo-box-tree-component').on('mousedown', function() {
                         $('#combo-box-tree-component').focus();
                     });
@@ -255,10 +261,10 @@ module kcp.share.tree {
                     headerText: nts.uk.resource.getText('KCP004_6'), key: 'isAlreadySetting', width: 70, dataType: 'string',
                     formatter: function(isAlreadySetting: string) {
                         if (isAlreadySetting == 'true') {
-                            return '<div style="text-align: center;"><i class="icon icon icon-78"></i></div>';
+                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon icon-78"></i></div>';
                         }
                         if (isAlreadySetting == 'false') {
-                            return '<div style="text-align: center;"><i class="icon icon icon-84"></i></div>';
+                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon icon-84"></i></div>';
                         }
                         return '';
                     }
