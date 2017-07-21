@@ -2716,6 +2716,7 @@ var nts;
                         this.occurs = ko.computed(function () { return _this.errors().length !== 0 || _this.gridErrors().length !== 0; });
                         this.allResolved = $.Callbacks();
                         this.allCellsResolved = $.Callbacks();
+                        this.option.show.extend({ notify: "always" });
                         this.errors.subscribe(function () {
                             if (_this.errors().length === 0) {
                                 _this.allResolved.fire();
@@ -2734,6 +2735,7 @@ var nts;
                         });
                     }
                     ErrorsViewModel.prototype.closeButtonClicked = function () {
+                        this.option.show(false);
                     };
                     ErrorsViewModel.prototype.open = function () {
                         this.option.show(true);
