@@ -137,7 +137,12 @@ module ksm002.d{
                 if(self.enable()==true){
                     listDayToUpdate.push(0);     
                 }
-                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), self.param.workplaceObj.id);
+                if(self.param.workplaceObj==null || self.param.workplaceObj === undefined){
+                   let id = '';
+                }else{
+                    let id = self.param.workplaceObj.id;
+                }
+                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), id);
                 service.updateSpecificDateSet(object).done(function(data) {
                     nts.uk.ui.windows.close(); 
                 }).fail(function(res) { 

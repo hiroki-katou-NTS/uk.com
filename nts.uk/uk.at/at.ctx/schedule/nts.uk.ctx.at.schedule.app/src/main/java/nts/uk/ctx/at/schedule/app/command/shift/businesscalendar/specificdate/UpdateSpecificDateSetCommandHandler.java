@@ -202,12 +202,12 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		List<PublicHoliday> lstHoliday = checkSelectedHoliday(dayofWeek, strDate, endDate);
 		while(dateStr.compareTo(eDateStr)<=0){
 			if(!checkSet(lstHoliday,date,dayofWeek)){//not setting
-				date.addDays(1);
+				date = date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				continue;
 			}
 			//setting
-			int dateInt = Integer.valueOf(date.toString());
+			int dateInt = Integer.valueOf(dateStr);
 			BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
 			if(setUpdate==1){
 				//既に設定されている内容は据え置き、追加で設定する - complement
@@ -257,7 +257,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				companyRepo.addListComSpecDate(lstComSpecificDate);
 				
 			}
-			date.addDays(1);
+			date = date.addDays(1);
 		}
 	}
 
