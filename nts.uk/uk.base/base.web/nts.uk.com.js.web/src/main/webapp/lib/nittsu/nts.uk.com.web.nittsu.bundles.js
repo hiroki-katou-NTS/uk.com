@@ -2975,6 +2975,36 @@ var nts;
                                         $(this).dialog("option", "position", { my: "center top", at: "center top", of: window, collision: "none" });
                                         $(this).parent().css("position", "absolute");
                                     }
+                                    var $dialogDocument = $(this).parent();
+                                    var $dialogContentDoc = $(this.lastElementChild.contentDocument);
+                                    $dialogDocument.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
+                                    $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
                                 },
                                 beforeClose: function () {
                                 }
