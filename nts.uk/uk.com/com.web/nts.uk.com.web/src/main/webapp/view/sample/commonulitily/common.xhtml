@@ -60,6 +60,13 @@ nts.uk.util.orDefault(null, "default");
 Result: "default"
 nts.uk.util.orDefault("tested", "default");
 Result: "tested"]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>getConstraintMes</h3></div><div class="content">
+						<p>get constraint text</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.util.getConstraintMes("ResidenceCode");
+Result: "半角数字6文字"
+nts.uk.util.getConstraintMes(["ResidenceCode", "ProcessingNo"]);
+Result: "半角数字6文字/1～5"]]></pre></div></div><div class="feature-box"><div class="header">
 						<h3>isIn</h3></div><div class="content">
 						<p>check if a value is existed in a array</p>
 						<pre><![CDATA[//Try to paste this to console
