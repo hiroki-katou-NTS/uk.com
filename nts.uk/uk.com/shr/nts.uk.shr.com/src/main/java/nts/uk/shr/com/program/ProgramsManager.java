@@ -108,6 +108,53 @@ public class ProgramsManager {
 	public static final Program KDL024A = new Program(
 			WebAppId.AT, ProgramIdConsts.KDL024A, "PgName_KDL024A", "/view/kdl/024/a/index.xhtml");
 	
+	/**
+	 * KDL014A
+	 */
+	public static final Program KDL014A = new Program(
+			WebAppId.AT, ProgramIdConsts.KDL014A, "PgName_KDL014A", "/view/kdl/014/a/index.xhtml");
+	
+	/**
+	 * KDL014B
+	 */
+	public static final Program KDL014B = new Program(
+			WebAppId.AT, ProgramIdConsts.KDL014B, "PgName_KDL014B", "/view/kdl/014/b/index.xhtml");
+	
+	/**
+	 * KSM002A
+	 */
+	public static final Program KSM002A = new Program(
+			WebAppId.AT, ProgramIdConsts.KSM002A, "PgName_KSM002A", "/view/ksm/002/a/index.xhtml");
+	
+	/**
+	 * KSM002B
+	 */
+	public static final Program KSM002B = new Program(
+			WebAppId.AT, ProgramIdConsts.KSM002B, "PgName_KSM002B", "/view/ksm/002/b/index.xhtml");
+	
+	/**
+	 * KSM002C
+	 */
+	public static final Program KSM002C = new Program(
+			WebAppId.AT, ProgramIdConsts.KSM002C, "PgName_KSM002C", "/view/ksm/002/c/index.xhtml");
+	
+	/**
+	 * KSM002D
+	 */
+	public static final Program KSM002D = new Program(
+			WebAppId.AT, ProgramIdConsts.KSM002D, "PgName_KSM002D", "/view/ksm/002/d/index.xhtml");
+	
+	/**
+	 * KSM004A
+	 */
+	public static final Program KSM004A = new Program(
+			WebAppId.AT, ProgramIdConsts.KSM004A, "PgName_KSM004A", "/view/ksm/004/a/index.xhtml");
+	/**
+	 * KSM004D
+	 */
+	public static final Program KSM004D = new Program(
+			WebAppId.AT, ProgramIdConsts.KSM004D, "PgName_KSM004D", "/view/ksm/004/d/index.xhtml");
+
 	
 	// TODO: Define new programs here.
 	
