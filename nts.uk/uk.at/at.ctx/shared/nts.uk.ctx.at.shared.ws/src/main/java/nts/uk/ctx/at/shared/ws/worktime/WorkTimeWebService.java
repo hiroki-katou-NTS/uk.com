@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeScheduleDto;
 
 /**
  * 
@@ -21,29 +22,37 @@ import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 
 @Path("at/shared/worktime")
 @Produces("application/json")
-public class WorkTimeWebService extends WebService{
-	
+public class WorkTimeWebService extends WebService {
+
 	@Inject
 	private WorkTimeFinder workTimeFinder;
-	
+
 	@POST
 	@Path("findByCompanyID")
-	public List<WorkTimeDto> findByCompanyID(){
+	public List<WorkTimeDto> findByCompanyID() {
 		return this.workTimeFinder.findByCompanyID();
 	}
-	
+
 	@POST
 	@Path("findByCodeList")
-	public List<WorkTimeDto> findByCodeList(List<String> codelist){
+	public List<WorkTimeDto> findByCodeList(List<String> codelist) {
 		return this.workTimeFinder.findByCodeList(codelist);
 	}
-	
+
 	@POST
 	@Path("findByTime")
-	public List<WorkTimeDto> findByTime(WorkTimeCommandFinder command){
-		return this.workTimeFinder.findByTime(command.codelist, command.startAtr, command.startTime, command.endAtr, command.endTime);
+	public List<WorkTimeDto> findByTime(WorkTimeCommandFinder command) {
+		return this.workTimeFinder.findByTime(command.codelist, command.startAtr, command.startTime, command.endAtr,
+				command.endTime);
+	}
+
+	@POST
+	@Path("findByCIdAndDisplayAtr")
+	public List<WorkTimeScheduleDto> findByCIdAndDisplayAtr() {
+		return this.workTimeFinder.findByCIdAndDisplayAtr();
 	}
 }
+
 @Data
 @NoArgsConstructor
 class WorkTimeCommandFinder {
