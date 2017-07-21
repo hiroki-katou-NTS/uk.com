@@ -1,7 +1,10 @@
 package nts.uk.ctx.sys.portal.app.command.webmenu.jobtitletying;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,15 +30,28 @@ public class UpdateJobTitleTyingCommandHandler extends CommandHandler<UpdateJobT
 	 */
 	@Override
 	protected void handle (CommandHandlerContext<UpdateJobTitleTyingCommand> context){
-		List<JobTitleTying> lstJobTitleTying = new ArrayList<>();
-		UpdateJobTitleTyingCommand update = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		List<JobTitleTyingCommand> jobTitleTyings = update.getJobTitleTyings();
-		for(JobTitleTyingCommand obj: jobTitleTyings){
-			JobTitleTying newobject = JobTitleTying.updateWebMenuCode(companyId, obj.getJobId(), obj.getWebMenuCode());
-			newobject.validate();
-			lstJobTitleTying.add(newobject);
+		List<JobTitleTying> lstJobTitleTyingAdd = new ArrayList<>();
+		List<JobTitleTying> lstJobTitleTyingUpdate = new ArrayList<>();
+		List<JobTitleTyingCommand> jobTitleTyings = context.getCommand().getJobTitleTyings();
+		List<JobTitleTying> listJobTitleTyingUpdate = jobTitleTyings.stream().map(c -> {
+			return JobTitleTying.createFromJavaType(companyId, c.getJobId(), c.getWebMenuCode());
+		}).collect(Collectors.toList());
+		if (listJobTitleTyingUpdate.size() == 0) {
+			return;
 		}
-		jobTitleTyingRepository.updateAndInsertMenuCode(lstJobTitleTying);
+		for (JobTitleTying jobTitleTying : listJobTitleTyingUpdate) {
+			if(jobTitleTying.getJobId().equals(null)){
+				lstJobTitleTyingAdd.add(jobTitleTying);
+			}else{
+				lstJobTitleTyingUpdate.add(jobTitleTying);
+			}
+		}
+		if(lstJobTitleTyingUpdate.size()>0){
+			jobTitleTyingRepository.updateMenuCode(lstJobTitleTyingUpdate);
+		}
+		if(lstJobTitleTyingAdd.size()>0){
+			jobTitleTyingRepository.insertMenuCode(lstJobTitleTyingAdd);;
+		}
 	}
 }

@@ -184,6 +184,7 @@
 
             self.currentCodeList([]);
             self.newCurrentCodeList([]);
+            self.disableSwapButton();
         }
         
         /**
@@ -192,6 +193,9 @@
         remove(): void{
             var self = this;
             var newItems = self.newItems();
+            var countItems = self.newCurrentCodeList().length;
+            var indexRemoved = _.findIndex(newItems, function(currentObject: ItemModel) { return _.indexOf(self.newCurrentCodeList(), currentObject.primaryKey) !== -1; });
+            
             _.remove(newItems, function(currentObject: ItemModel) {
                 return _.indexOf(self.newCurrentCodeList(), currentObject.primaryKey) !== -1;
             });
@@ -202,7 +206,41 @@
                 self.newItems.push(item);
             })   
             
+            self.newCurrentCodeList.removeAll();
+            //Set focus for an item or multiple items
+            if(countItems == 1){
+                self.setFocusItem(newItems, indexRemoved);
+            } else if(countItems > 0 && countItems >= 2) {
+                self.setFocusItems();
+            }
+            
             self.disableSwapButton();
+        }
+        
+        /**
+         * Set focus for an item
+         */
+        setFocusItem(newItems, itemOrder: number): void{
+            var self = this;
+            if (newItems.length == 0) {
+                return;    
+            }
+            
+            if (itemOrder == newItems.length) {
+                self.newCurrentCodeList.push(newItems[itemOrder - 1].primaryKey);
+            } else if (newItems.length > itemOrder) {
+                self.newCurrentCodeList.push(newItems[itemOrder].primaryKey);   
+            } else {
+                self.newCurrentCodeList.push(newItems[itemOrder + 1].primaryKey);       
+            }
+        }
+        
+        /**
+         * Set focus for multiple items
+         */
+        setFocusItems(): void{
+            var self = this;
+            
         }
                 
         /**

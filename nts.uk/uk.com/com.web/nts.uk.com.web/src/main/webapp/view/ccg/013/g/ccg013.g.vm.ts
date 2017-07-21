@@ -1,4 +1,4 @@
-module cmm044.g.viewmodel {
+module ccg013.g.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -51,10 +51,14 @@ module cmm044.g.viewmodel {
             self.empSelectedItem.subscribe(function(value: any) {
                 self.currentCodeList.removeAll();
                 self.items.removeAll();
+                
                 _.forEach(self.infoList, function(item: ItemModel) {
                     item.order = self.newItems().length + 1;
                     item.primaryKey = item.webMenuCode + item.order;
-                    self.items.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));
+                    if(nts.uk.util.isNullOrUndefined(self.empSelectedItem())){
+                        self.items.removeAll()
+                        self.currentCodeList.removeAll()}
+                    else{self.items.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));}                     
                 })
 
                 if (value && value.personId) {
@@ -70,6 +74,7 @@ module cmm044.g.viewmodel {
                         }
                     });
                 }
+
             });
 
             self.columns = ko.observableArray([
@@ -109,16 +114,16 @@ module cmm044.g.viewmodel {
                         employeeId: self.empSelectedItem().personId,
                         webMenuCodes: items,    
                     }
-                    service.addPerson(dataTranfer).done(function(res) {
+                        service.addPerson(dataTranfer).done(function(res) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         $(".nts-editor").find(".nts-input").focus();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
-                    })
+                    })    
                 } else { nts.uk.ui.dialog.info({ messageId: "Msg_73" }); }
             }
-            
             return;
+            
         }
 
         initCCG001() {
@@ -160,6 +165,7 @@ module cmm044.g.viewmodel {
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             var self = this;
             self.empItems.removeAll();
+            
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
                 self.empItems.push(new PersonModel({
                     personId: item.employeeId,
