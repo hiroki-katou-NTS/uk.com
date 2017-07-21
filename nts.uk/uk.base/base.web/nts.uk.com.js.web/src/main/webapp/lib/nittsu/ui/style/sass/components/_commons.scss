@@ -18,7 +18,6 @@
 .absolute {position: absolute !important;}
 .pull-left {float: left;}
 .pull-right {float: right;}
-.hyperlink { color: $hyperlink_color; text-decoration: underline; cursor: pointer; }
 .control-group.valign-center > * { vertical-align: middle; }
 .control-group.valign-top > * { vertical-align: top; }
 .control-group.valign-bottom > * { vertical-align: bottom; }
@@ -47,6 +46,13 @@
 		&.valign-bottom { vertical-align: bottom; }
 		&.valign-top { vertical-align: top; }
 	}
+}
+.disappear {
+	position: absolute;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+	overflow: hidden;
 }
 
 /*****************************
@@ -125,21 +131,6 @@ div.form-label {
 	}
 }
 
-
-/*****************************
-  NtsLinkButton
-*****************************/
-.link-button {
-	display: inline-block;
-	padding: 3px 12px;
-	background-color: $green_background_color;
-	color: #0D86D1;
-	text-decoration: underline;
-	cursor: pointer;
-	user-select: none;
-}
-
-
 /*****************************
   NtsPopupPanel
 *****************************/
@@ -170,7 +161,8 @@ div.popup-panel {
 #func-notifier-errors {
 	position: absolute;
 	display: none;
-
+	z-index:10;
+	
 	@include border-radius(5px);
 	padding: 1px 17px 3px 17px;
 	font-weight: bold;

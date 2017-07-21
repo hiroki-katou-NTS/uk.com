@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 550, height: 500 };</script>
+			<script>var dialogSize = { width: 880, height: 300 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ksm002.e.vm.js" />
 			<com:scriptfile path="ksm002.e.start.js" />
@@ -18,24 +18,30 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
+					<!-- E1_1: Label -->
 					<div class="label">#{i18n.getText('KSM002_58')}</div>
 				</div>
 				<div class="table">
-					<div class="cell" style = "width: 120px;">
+					<div class="cell" style = "width: 125px;">
+						<!-- E1_2 -->
 						<div style = "margin-left: 15px;" data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KSM002_53')}</div>	
 					</div>
-					<div class="cell" style = "width: 360px;">
-							<div data-bind = "foreach: dataSource">
-								<div class = "itemName" data-bind="ntsCheckBox: { 
-											checked: useAtr(),
-											text: specificName()}"></div>
-							</div>
+					<!-- E1_3 -> E1_15: check box -->
+					<div id = "checkBox" class="cell" data-bind="style: {width: size}">
+						<div data-bind = "foreach: dataSource">
+							<div class = "itemName" data-bind="ntsCheckBox: { 
+										checked: useAtr,
+										text: specificName()},
+										attr: {id: 'specificItem' + '_' + $index()}"></div>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>	
+				<!-- E2_1: Button 決定 -->
+				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_40')}</button>
+				<!-- E2_2: Button キャンセル -->
+				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KSM002_41')}</button>	
 			</div>
 		</ui:define>
 	</ui:composition>

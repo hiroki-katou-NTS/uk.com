@@ -46,8 +46,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             //GridList
             self.listTitleMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'titleCode', width: 100 },
-                { headerText: '名称', key: 'titleName', width: 230 }
+                { headerText: nts.uk.resource.getText("CCG013_39"), key: 'titleCode', width: 100 },
+                { headerText: nts.uk.resource.getText("CCG013_40"), key: 'titleName', width: 230 }
             ]);
             //self.selectCodeTitleMenu = ko.observable('');
             self.currentTitleMenu = ko.observable('');
@@ -140,22 +140,25 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         submit() {
             var self = this;
             $(".ntsColorPicker_Container").trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
+            var hasError = nts.uk.ui.errors.hasError() || nts.uk.text.isNullOrEmpty(self.nameTitleBar().trim());
+            if (hasError) {
                 return;
             }
             if (self.selectedTitleAtr() == 1) {
                 if (self.currentTitleMenu() !== '') {
                     var titleBar1 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), self.currentTitleMenu(), self.imageName(), self.imageSize());
                     windows.setShared("CCG013C_TitleBar", titleBar1);
+                    self.cancel_Dialog();
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_75" });
-                    return false;
+                    return;
                 }
             } else {
                 var titleBar0 = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(), self.fileID(), '', self.imageName(), self.imageSize());
                 windows.setShared("CCG013C_TitleBar", titleBar0);
+                self.cancel_Dialog();
             }
-            self.cancel_Dialog();
+            
         }
     }
 

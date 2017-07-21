@@ -241,9 +241,20 @@
 											<tr>
 												<td>cellClick</td>
 												<td>
-													Triggered when the user clicks on a button on each cell date: <br/>
+													Triggered when the user clicks on each cell date: <br/>
 													<pre><![CDATA[$("#calendar").ntsCalendar("init", {
     cellClick: function(date) {
+        alert(date);
+    }
+});]]></pre>
+												</td>
+											</tr>
+											<tr>
+												<td>buttonClick</td>
+												<td>
+													Triggered when the user clicks on each button: <br/>
+													<pre><![CDATA[$("#calendar").ntsCalendar("init", {
+    buttonClick: function(date) {
         alert(date);
     }
 });]]></pre>

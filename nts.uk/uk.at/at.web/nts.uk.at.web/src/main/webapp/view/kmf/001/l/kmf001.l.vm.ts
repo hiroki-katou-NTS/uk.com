@@ -4,7 +4,6 @@ module nts.uk.pr.view.kmf001.l {
         import EnumertionModel = service.model.EnumerationModel;
         
         export class ScreenModel {
-            textEditorOption: KnockoutObservable<any>;
             numberEditorOption: KnockoutObservable<any>;
             manageDistinctList: KnockoutObservableArray<EnumertionModel>;
             
@@ -18,13 +17,10 @@ module nts.uk.pr.view.kmf001.l {
             
             constructor() {
                 let self = this;
-                self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    width: "50px",
-                    textalign: "center"
-                }));
                 self.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    width: "40px",
+                    width: "30",
                     textalign: "center",
+                    unitID: "DAYS"
                 }));
                 self.manageDistinctList = ko.observableArray([]);
                 
@@ -188,7 +184,7 @@ module nts.uk.pr.view.kmf001.l {
                 
                 object.manageType = ob().selectedManageNursing();
                 object.nursingCategory = nursingCategory;
-                object.startMonthDay = self.convertMonthDay(ob());
+                object.startMonthDay = ob().monthDay();
                 object.nursingNumberLeaveDay = ob().nursingNumberLeaveDay();
                 object.nursingNumberPerson = ob().nursingNumberPerson();
                 object.workTypeCodes = ob().workTypeCodes();
@@ -198,33 +194,20 @@ module nts.uk.pr.view.kmf001.l {
             
             private convertModel(ob : KnockoutObservable<NursingSettingModel>, object: any) {
                 ob().selectedManageNursing(object.manageType);
-                if (object.startMonthDay) {
-                    ob().nursingMonth(parseInt(object.startMonthDay/100));
-                    ob().nursingDay(object.startMonthDay - ob().nursingMonth() * 100);
-                } else {
-                    ob().nursingMonth(null);
-                    ob().nursingDay(null);
-                }
+                ob().monthDay(object.startMonthDay);
                 ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
                 ob().nursingNumberPerson(object.nursingNumberPerson);
                 ob().workTypeCodes(object.workTypeCodes);
                 ob().typeCode(object.workType);
             }
             
-            private convertMonthDay(setting : KnockoutObservable<NursingSettingModel>): number {
-                if (!setting.nursingMonth() || !setting.nursingDay()) {
-                    return null;
-                }
-                return parseInt(setting.nursingMonth()) * 100 + parseInt(setting.nursingDay());
-            }
         }
         
         export class NursingSettingModel {
             
             selectedManageNursing: KnockoutObservable<number>;
             enableNursing: KnockoutObservable<boolean>;
-            nursingMonth: KnockoutObservable<number>;
-            nursingDay: KnockoutObservable<number>;
+            monthDay: KnockoutObservable<number>;
             nursingNumberLeaveDay: KnockoutObservable<number>;
             nursingNumberPerson: KnockoutObservable<number>;
             workTypeCodes: KnockoutObservableArray<string>;
@@ -239,8 +222,7 @@ module nts.uk.pr.view.kmf001.l {
                 self.enableNursing = ko.computed(function() {
                     return self.selectedManageNursing() == 1;
                 }, self);
-                self.nursingMonth = ko.observable(null);
-                self.nursingDay = ko.observable(null);
+                self.monthDay = ko.observable(null);
                 self.nursingNumberLeaveDay = ko.observable(null);
                 self.nursingNumberPerson = ko.observable(null);
                 self.workTypeCodes = ko.observableArray([]);
@@ -260,7 +242,7 @@ module nts.uk.pr.view.kmf001.l {
                             return;
                         }
                         self.workTypeCodes(data.map(item => item.code));
-                        self.typeCode(data.map(item => item.code + '.' + item.name).join(", "));
+                        self.typeCode(data.map(item => item.code + '.' + item.name).join("、"));
                         if (self.parent.nursingSetting().workTypeCodes()
                                 && self.parent.nursingSetting().workTypeCodes().length > 0) {
                             $('#work-type-code-nursing').ntsError('clear');

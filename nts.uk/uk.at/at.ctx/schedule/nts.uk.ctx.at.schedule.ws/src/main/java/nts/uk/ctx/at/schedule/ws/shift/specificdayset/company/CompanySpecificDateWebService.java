@@ -9,6 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.CompanySpecificDateCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.DeleteCompanySpecificDateCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.DeleteCompanySpecificDateCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.InsertCompanySpecificDateCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.UpdateCompanySpecificDateCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.company.UpdateCompanySpecificDateCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company.CompanySpecificDateDto;
 import nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company.CompanySpecificDateFinder;
 
@@ -18,6 +24,12 @@ public class CompanySpecificDateWebService extends WebService {
 
 	@Inject
 	private CompanySpecificDateFinder find;
+	@Inject 
+	private InsertCompanySpecificDateCommandHandler insertCommnad;
+	@Inject 
+	private UpdateCompanySpecificDateCommandHandler updateCommand;
+	@Inject 
+	private DeleteCompanySpecificDateCommandHandler deleteCommand;
 
 	@POST
 	@Path("getcompanyspecificdaysetbydate/{processDate}")
@@ -31,4 +43,25 @@ public class CompanySpecificDateWebService extends WebService {
 			@PathParam("processDate") String processDate, @PathParam("useatr") int useatr) {
 		return this.find.getComSpecByDateWithName(processDate, useatr);
 	}
+	
+	@POST
+	@Path("insertcompanyspecificdate")
+	public void InsertCompanySpecificDate(List<CompanySpecificDateCommand> lstComSpecificDateItem) {
+		this.insertCommnad.handle(lstComSpecificDateItem);
+	}
+	
+	@POST
+	@Path("updatecompanyspecificdate")
+	public void UpdateCompanySpecificDate(List<CompanySpecificDateCommand> lstUpdComSpecificDateItem) {
+		this.updateCommand.handle(lstUpdComSpecificDateItem);
+	}
+	
+	@POST
+	@Path("deletecompanyspecificdate")
+	public void DeleteCompanySpecificDate(DeleteCompanySpecificDateCommand deleteCommand) {
+		this.deleteCommand.handle(deleteCommand);
+	}
+	
+	
+	
 }

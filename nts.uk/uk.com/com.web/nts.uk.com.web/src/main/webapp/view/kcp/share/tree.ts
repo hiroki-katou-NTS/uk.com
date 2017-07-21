@@ -117,6 +117,7 @@ module kcp.share.tree {
         $input: JQuery;
         data: TreeComponentOption
         treeStyle: TreeStyle;
+        maxRows: number;
         
         constructor() {
             let self = this;
@@ -143,6 +144,7 @@ module kcp.share.tree {
         public init($input: JQuery, data: TreeComponentOption) :JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
+            ko.cleanNode($input[0]);
             self.data = data;
             self.$input = $input;
             self.isMultiple = data.isMultiSelect;
@@ -156,6 +158,9 @@ module kcp.share.tree {
             }
             if (!data.maxRows) {
                 data.maxRows = 12;
+                self.maxRows = 12;
+            } else {
+                self.maxRows = data.maxRows;
             }
             self.calHeightTree(data);
             
@@ -180,7 +185,7 @@ module kcp.share.tree {
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
                     
                     // Set default value when initial component.
-                    self.initSelectedValue(data, res);
+                    self.initSelectedValue(res);
                     
                     if (data.isShowAlreadySet) { 
                         // subscribe when alreadySettingList update => reload component.
@@ -188,7 +193,7 @@ module kcp.share.tree {
                             self.addAlreadySettingAttr(self.backupItemList(), newAlreadySettings);
                             self.itemList(self.backupItemList());
                             
-                            self.filterData(data, $input);
+                            //self.filterData(data, $input);
                         });
                     }
                     
@@ -197,6 +202,8 @@ module kcp.share.tree {
                     self.backupItemList(res);
                 }
                 self.loadTreeGrid().done(function() {
+                    // Special command -> remove unuse.
+                    $input.find('#multiple-tree-grid_tooltips_ruler').remove();
                     $('#combo-box-tree-component').on('mousedown', function() {
                         $('#combo-box-tree-component').focus();
                     });
@@ -205,6 +212,9 @@ module kcp.share.tree {
                 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
                    self.addIconToAlreadyCol();
+                   $('.tree-component-node-text-col').tooltip({
+                       track: true
+                   });
                 });
                 // defined function focus
                 $.fn.focusTreeGridComponent = function() {
@@ -241,7 +251,8 @@ module kcp.share.tree {
             let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
-                { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string" }
+                { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string",
+                    template: "<td class='tree-component-node-text-col' title='${nodeText}'>${nodeText}</td>"}
             ];
             // If show Already setting.
             if (data.isShowAlreadySet) {
@@ -250,10 +261,10 @@ module kcp.share.tree {
                     headerText: nts.uk.resource.getText('KCP004_6'), key: 'isAlreadySetting', width: 70, dataType: 'string',
                     formatter: function(isAlreadySetting: string) {
                         if (isAlreadySetting == 'true') {
-                            return '<div style="text-align: center;"><i class="icon icon icon-78"></i></div>';
+                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon icon-78"></i></div>';
                         }
                         if (isAlreadySetting == 'false') {
-                            return '<div style="text-align: center;"><i class="icon icon icon-84"></i></div>';
+                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon icon-84"></i></div>';
                         }
                         return '';
                     }
@@ -288,7 +299,7 @@ module kcp.share.tree {
                     .css({ 'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden',
                          'font-size': defaultFontSize, 'font-family': defaultFontFamily })
                     .appendTo($('body'))
-                var w = o.width() + item.level * paddingPerLevel;
+                var w = o.width() + item.level * paddingPerLevel + 10;
                 if (w > max) {
                     max = w;
                 }
@@ -310,12 +321,12 @@ module kcp.share.tree {
         /**
          * Initial select mode
          */
-        private initSelectedValue(data: TreeComponentOption, dataList: Array<UnitModel>) {
+        private initSelectedValue(dataList: Array<UnitModel>) {
             let self = this;
-            switch(data.selectType) {
+            switch(self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
                     if (self.isMultiple) {
-                        self.selectedWorkplaceIds = data.selectedWorkplaceId;
+                        self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
                     }
                     break;
                 case SelectionType.SELECT_ALL:
@@ -324,13 +335,13 @@ module kcp.share.tree {
                     }
                     break;
                 case SelectionType.SELECT_FIRST_ITEM:
-                    self.selectedWorkplaceIds(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                    self.selectedWorkplaceIds(dataList.length > 0 ? self.selectData(self.data, dataList[0]) : null);
                     break;
                 case SelectionType.NO_SELECT:
-                    self.selectedWorkplaceIds(data.isMultiSelect ? [] : '');
+                    self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                     break;
                 default:
-                    self.selectedWorkplaceIds(data.isMultiSelect ? [] : '');
+                    self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                     break
             }
         }
@@ -426,7 +437,7 @@ module kcp.share.tree {
                     self.itemList(subItemList);
 //                    self.selectedWorkplaceIds(self.isMultiple ? [subItemList[0].workplaceId] : subItemList[0]
 //                        .workplaceId);
-                    self.initSelectedValue(data, self.itemList());
+                    self.initSelectedValue(self.itemList());
                     if (!data || !$input) {
                         return;
                     }

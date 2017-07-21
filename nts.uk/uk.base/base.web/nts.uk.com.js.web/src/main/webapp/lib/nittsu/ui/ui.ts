@@ -287,6 +287,16 @@ module nts.uk.ui {
             d: string;
             messageParams?: any[];
         }
+        export function getMaxZIndex() {
+            let overlayElements = parent.$(".ui-widget-overlay");
+            var max = 120000;
+            if (overlayElements.length > 0) {
+                let zIndexs = _.map(overlayElements,function(element){return parseInt($(element).css("z-index"));});
+                var temp = _.max(zIndexs);
+                max = temp > max ? temp : max;
+            }
+            return max;
+        }
         function createNoticeDialog(message, buttons, header?: DialogHeader) {
             var $control = $('<div/>').addClass('control');
             let text;
@@ -321,8 +331,8 @@ module nts.uk.ui {
                     closeOnEscape: false,
                     buttons: buttons,
                     open: function() {
-                        $(this).closest('.ui-dialog').css('z-index', 120002);
-                        $('.ui-widget-overlay').last().css('z-index', 120000);
+                        $(this).closest('.ui-dialog').css('z-index', getMaxZIndex()+2);
+                        $('.ui-widget-overlay').last().css('z-index', getMaxZIndex()+1);
                         $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                         $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
 

@@ -1,13 +1,22 @@
 module nts.uk.at.view.ksm005.f {
     export module service {
         var paths = {
+            findAllMonthlyPattern : "ctx/at/schedule/pattern/monthy/findAll",
         }
+        
+         /**
+         * call service find all monthly pattern
+         */
+        export function findAllMonthlyPattern(): JQueryPromise<model.MonthlyPatternDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllMonthlyPattern);
+        }
+        
         
         export module model {
 
             export interface MonthlyPatternDto {
-                monthlyPatternCode: string;
-                monthlyPatternName: string;
+                code: string;
+                name: string;
             }
                        
         }

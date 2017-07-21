@@ -138,6 +138,7 @@ module kcp.share.list {
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         searchOption: any;
         targetKey: string;
+        maxRows: number;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -155,9 +156,7 @@ module kcp.share.list {
             var self = this;
             self.isMultiple = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
-            if (!data.maxRows) {
-                data.maxRows = 12;
-            }
+            self.maxRows = data.maxRows ? data.maxRows : 12;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
@@ -185,12 +184,14 @@ module kcp.share.list {
             }
             
             // Setup list column.
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
+                        template: "<td class='list-component-name-col' title='${code}'>${code}</td>",});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170,
-                        template: "<td class='list-component-name-col'>${name}</td>",});
+                        template: "<td class='list-component-name-col' title='${name}'>${name}</td>",});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
-                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
+                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150,
+                        template: "<td class='list-component-name-col' title='${workplaceName}'>${workplaceName}</td>"});
             }
             
             // If show Already setting.
@@ -201,7 +202,7 @@ module kcp.share.list {
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
-                            return '<div style="text-align: center;"><i class="icon icon-78"></i></div>';
+                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
                     }
@@ -285,7 +286,9 @@ module kcp.share.list {
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
                 self.addIconToAlreadyCol();
-                //$('.list-component-name-col').tooltip();
+                $('.list-component-name-col').tooltip({
+                    track: true
+                });
             });
             
             // defined function get data list.
@@ -382,7 +385,7 @@ module kcp.share.list {
         private initGridStyle(data: ComponentOption) {
             var codeColumnSize: number = 50;
             var companyColumnSize: number = 0;
-            var heightOfRow : number = 24;
+            var heightOfRow : number = data.isMultiSelect ? 24 : 21;
             switch(data.listType) {
                 case ListType.EMPLOYMENT:
                     break;
@@ -405,8 +408,8 @@ module kcp.share.list {
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
-            var totalRowsHeight = heightOfRow * data.maxRows + 24;
-            var totalHeight: number = this.hasBaseDate ? 123 : 55;
+            var totalRowsHeight = heightOfRow * this.maxRows + 24;
+            var totalHeight: number = this.hasBaseDate ? 101 : 55;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),

@@ -28,7 +28,7 @@ module ksm002.test.viewmodel {
             return _.split(str, ','); 
         }
         OpenDialogE(){
-             nts.uk.ui.windows.setShared('KSM002E_PARAM',{date: '2017/07/17', selectable: ['1','2','3','4','5','6'],selecteds: ['3'] });
+             nts.uk.ui.windows.setShared('KSM002E_PARAM',{date: '2017/07/17', selectable: ['0'],selecteds: ['3'] });
              nts.uk.ui.windows.sub.modal('/view/ksm/002/e/index.xhtml', { title: '乖離時間の登録＞対象項目', });
             
         }
@@ -36,6 +36,13 @@ module ksm002.test.viewmodel {
         OpenDialogC(){
 //            var self = this;
             nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+
+            })
+        }
+        
+         OpenDialogD(){
+//            var self = this;
+            nts.uk.ui.windows.sub.modal('/view/ksm/002/d/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
 
             })
         }

@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.portal.dom.webmenu;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
@@ -8,7 +10,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author sonnh
  *
  */
-@StringMaxLength(4)
+@StringMaxLength(3)
+@StringCharType(CharType.ALPHA_NUMERIC)
 public class WebMenuCode extends StringPrimitiveValue<WebMenuCode> {
 	
 	/**

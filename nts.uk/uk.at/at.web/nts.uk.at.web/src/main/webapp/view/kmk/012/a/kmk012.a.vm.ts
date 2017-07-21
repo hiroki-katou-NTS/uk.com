@@ -122,6 +122,7 @@ module nts.uk.at.view.kmk012.a {
                     self.closureModel.updateData(data);
                     self.selectCodeLstClosureHistory(data.closureSelected);
                     self.detailClosureHistory(data.closureSelected);
+                    $("#selUseClassification").focus();
                 });
            }
             

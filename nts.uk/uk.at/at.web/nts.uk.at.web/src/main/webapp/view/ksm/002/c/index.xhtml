@@ -22,13 +22,18 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
+					<!-- C1_1: Label -->
 					<div class="label">#{i18n.getText('KSM002_37')}</div>
 				</div>
+				<!-- C1_2: List Specific Date Item -->
 				<table id="specific-set-tbl-b">
 					<thead>
 						<tr>
+							<!-- C1_3: No -->
 							<th>#{i18n.getText('KSM002_59')}</th>
+							<!-- C1_4: 使用区分 -->
 							<th>#{i18n.getText('KSM002_38')}</th>
+							<!-- C1_5: 表示名称 -->
 							<th data-bind="text: textKSM002_39"></th>
 						</tr>
 					</thead>
@@ -62,8 +67,10 @@
 				</table>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>	
+				<!-- C2_1: Button 決定 -->
+				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_40')}</button>
+				<!-- C2_2: Button キャンセル -->
+				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KSM002_41')}</button>	
 			</div>
 		</ui:define>
 	</ui:composition>

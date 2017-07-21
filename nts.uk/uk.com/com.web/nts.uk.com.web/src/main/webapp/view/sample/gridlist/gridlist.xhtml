@@ -42,17 +42,38 @@
 								value: currentCode
 							}"></table>
 						<br/>
+						<table id="single-list-limited" data-bind="ntsGridList: {
+								dataSource: items,
+								primaryKey: 'code',
+								columns: columns2,
+								deleteOptions : {visible : true, deleteField: 'deletable'},
+								value: currentCode,
+								rows: 5
+							}"></table>
+						<br/>
 						currentCode: <span data-bind="text: currentCode"></span>
 						<hr />
 						Multiple selectng mode
 						<table id="multi-list" data-bind="ntsGridList: {
 								height: 350,
-								options: items,
+								dataSource: items,
 								optionsValue: 'code',
 								columns: columns,
 								enable: enable,
 								multiple: true,
 								value: currentCodeList
+							}"></table>
+						<br/>
+						<br/>
+							<table id="multi-list-limited" data-bind="ntsGridList: {
+								height: 350,
+								dataSource: items,
+								optionsValue: 'code',
+								columns: columns,
+								enable: enable,
+								multiple: true,
+								value: currentCodeList,
+								rows: 5
 							}"></table>
 						<br />
 						<button data-bind="click: addDeleteButton">Add Delete Button</button>
@@ -170,6 +191,10 @@ currentCodeList: <span data-bind="text: currentCodeList"></span>]]></pre>
 													<b>Type:</b> array&lt;any&gt;<br/>
 													List selected value
 												</td>
+											</tr>
+											<tr>
+												<td>rows</td>
+												<td><b>Type:</b> number<br /> max rows are displayed in view and will have scroll and tooltip</td>
 											</tr>
 											<tr>
 												<td>deleteOptions</td>
