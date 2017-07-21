@@ -425,7 +425,13 @@ div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
 }
-
+.constraint-label {
+	display: block;
+	margin-top: 1px;
+	font-size: 12px;
+	font-weight: normal;
+	color: #777777;
+}
 /*****************************
   NtsPopupPanel
 *****************************/

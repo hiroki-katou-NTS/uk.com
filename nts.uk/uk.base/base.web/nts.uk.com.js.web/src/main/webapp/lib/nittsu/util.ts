@@ -183,6 +183,12 @@
             });
             return constraintText;
         }
+        
+        export function getConstraintLabel(primitiveValues: any){
+            let constraintText = getConstraintMes(primitiveValues);    
+            
+            return "<span class='constraint-label'>(" + constraintText + ")</span>";
+        } 
 
         /**
          * Returns true if expects contains actual.

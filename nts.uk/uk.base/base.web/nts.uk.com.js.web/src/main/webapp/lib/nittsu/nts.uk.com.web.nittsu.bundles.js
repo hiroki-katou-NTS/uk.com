@@ -152,6 +152,11 @@ var nts;
                 return constraintText;
             }
             util.getConstraintMes = getConstraintMes;
+            function getConstraintLabel(primitiveValues) {
+                var constraintText = getConstraintMes(primitiveValues);
+                return "<span class='constraint-label'>(" + constraintText + ")</span>";
+            }
+            util.getConstraintLabel = getConstraintLabel;
             function isIn(actual, expects) {
                 for (var i = 0; i < expects.length; i++) {
                     if (actual === expects[i])
