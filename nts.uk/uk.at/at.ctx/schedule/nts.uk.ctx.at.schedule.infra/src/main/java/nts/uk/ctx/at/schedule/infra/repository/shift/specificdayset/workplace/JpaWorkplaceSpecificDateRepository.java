@@ -25,8 +25,7 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KsmmtWpSpecDateSet s"
 			+ " INNER JOIN KsmstSpecificDateItem p ON p.itemNo = s.ksmmtWpSpecDateSetPK.specificDateItemNo"
 			+ " WHERE s.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
-			+ " AND CAST(s.ksmmtWpSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')"
-			+ " AND p.useAtr = :useAtr";
+			+ " AND CAST(s.ksmmtWpSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')";
 	
 	//Delete by Month 
 	
@@ -49,11 +48,10 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 
 	// WITH name
 	@Override
-	public List<WorkplaceSpecificDateItem> getWpSpecByDateWithName(String workplaceId, String specificDate, int useAtr) {
+	public List<WorkplaceSpecificDateItem> getWpSpecByDateWithName(String workplaceId, String specificDate) {
 		return this.queryProxy().query(GET_BY_USE_WITH_NAME, Object[].class)
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("specificDate", specificDate)
-				.setParameter("useAtr", useAtr)
 				.getList(x -> toDomainWithName(x));
 	}
 

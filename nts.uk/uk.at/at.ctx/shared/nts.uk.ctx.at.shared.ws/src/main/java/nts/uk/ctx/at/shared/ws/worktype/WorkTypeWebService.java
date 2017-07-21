@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.ws.worktype;
 
 import java.util.List;
@@ -28,5 +32,16 @@ public class WorkTypeWebService extends WebService {
 	@Path("getByCIdAndDisplayAtr")
 	public List<WorkTypeDto> getByCIdAndDisplayAtr() {
 		return this.find.findByCIdAndDisplayAtr();
+	}
+	
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll")
+	public List<WorkTypeDto> findAll() {
+		return this.find.findByCompanyId();
 	}
 }
