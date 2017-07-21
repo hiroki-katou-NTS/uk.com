@@ -12,7 +12,7 @@ __viewContext.ready(function () {
             var self = this;
             self.items1 = ko.observableArray([]);
             for(let i = 1; i <= 2; i++) {
-                let level1 = new Node('0000' + i, 'サービス部' + i, []);
+                let level1 = new Node('0000' + i, 'サービス部 サービス部 サービス部  vサービス部  サービス部サービス部 サービス部 サービス部 サービス部サービス部 サービス部サービス部' + i, []);
                 for(let j = 1; j <= 2; j++) {
                     let ij = i + "" + j;
                     let level2 = new Node('0000' + ij, 'サービス部' + ij, []);

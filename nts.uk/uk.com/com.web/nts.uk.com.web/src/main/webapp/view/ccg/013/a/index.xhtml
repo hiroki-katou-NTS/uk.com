@@ -24,7 +24,7 @@
 					<button id="A_BTN_001" data-bind="click: cleanForm">#{i18n.getText('CCG013_1')}</button>
 					<button id="A_BTN_002" class="proceed"
 						data-bind="click: addWebMenu,enable: $root.errors.isEmpty">#{i18n.getText('CCG013_2')}</button>
-					<button id="A_BTN_005" data-bind="click: optionEDialog">#{i18n.getText('CCG013_3')}</button>
+					<button id="A_BTN_005" data-bind="click: optionEDialog,enable: !isCreated() ">#{i18n.getText('CCG013_3')}</button>
 					<button id="A_BTN_009" data-bind="click: optionFDialog">#{i18n.getText('CCG013_4')}</button>
 					<button id="A_BTN_006" data-bind="click: optionGDialog">#{i18n.getText('CCG013_5')}</button>
 					<button id="A_BTN_008" data-bind="click: openKdialog">#{i18n.getText('CCG013_103')}</button>
@@ -35,8 +35,7 @@
 				</div>
 			</div>
 			<div id="contents-area">
-				<div id="left-content"
-					class="bg-green caret-right caret-background cf"
+				<div id="left-content" class="bg-green caret-right caret-background cf"
 					style="width: 340px; height: 335px;">
 					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
 						<table id="single-list"
@@ -53,10 +52,10 @@
 				</div>
 				<div class="right-content">
 					<div class="control-group" data-bind="with: currentWebMenu">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_11')}</div>
-						<span><input style="width: 40px" id="A_INP_003"
+						<div style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: ['WebMenuCode','WebMenuName'],required: true}">#{i18n.getText('CCG013_11')}</div>
+						<span><input style="width: 40px" id="webMenuCode"
 							data-bind="ntsTextEditor: {value: webMenuCode,name: '#[CCG013_49]',constraint: 'WebMenuCode', required: true, enable: $parent.checkDisabled}" /></span>
-						<span><input style="width: 180px" id="A_INP_004"
+						<span><input style="width: 180px" id="webMenuName"
 							data-bind="ntsTextEditor: {value: webMenuName,name: '#[CCG013_50]',constraint: 'WebMenuName', required: true}" /></span>
 						<div class="bg-yellow">
 							<div style="margin-left: 5px;"
@@ -88,7 +87,7 @@
 												<ul class="tree-menu" data-bind="foreach: {data: treeMenu}">
 													<li class="context-menu-tree" data-bind="attr:{id: treeMenuId},text: name"></li>
 												</ul>
-												<button class="button-add-treemenu" data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
+												<button class="button-add button-add-treemenu" data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
 													#{i18n.getText('CCG013_16')}
 												</button>
 											</div>

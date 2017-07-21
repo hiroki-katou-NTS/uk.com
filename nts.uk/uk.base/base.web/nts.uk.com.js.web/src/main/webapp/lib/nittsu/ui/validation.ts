@@ -208,7 +208,9 @@ module nts.uk.ui.validation {
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {
-                    result.fail(timeParse.getMsg(), "FND_E_DATE_YMD"); 
+                    let msgId = timeParse.getMsg();
+                    let msg = nts.uk.resource.getMessage(msgId, [this.name, this.constraint.min, this.constraint.max]);
+                    result.fail(msg, msgId); 
                     return result;
                 }
                 
@@ -217,7 +219,8 @@ module nts.uk.ui.validation {
                         maxStr = this.constraint.max;
                         let max = time.parseTime(this.constraint.max);
                         if (timeParse.success && (max.toValue() < timeParse.toValue())) {
-                            result.fail("", "");
+                            let msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
+                            result.fail(msg, "FND_E_TIME");
                             return result;
                         }
                     }
@@ -226,7 +229,8 @@ module nts.uk.ui.validation {
                         minStr = this.constraint.min;
                         let min = time.parseTime(this.constraint.min);
                         if (timeParse.success && (min.toValue() > timeParse.toValue())) {
-                            result.fail("", "");
+                            let msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
+                            result.fail(msg, "FND_E_TIME");
                             return result;
                         }
                     }
@@ -273,7 +277,7 @@ module nts.uk.ui.validation {
                         maxStr = this.constraint.max;
                         let maxMoment = moment.duration(maxStr);
                         if (parseResult.success && (maxMoment.hours()*60 + maxMoment.minutes()) < inputMoment) {
-                            result.fail("", "");
+                            result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [ this.name, minStr, maxStr ]), "FND_E_CLOCK");
                             return result;
                         } 
                     } 
@@ -281,7 +285,7 @@ module nts.uk.ui.validation {
                         minStr = this.constraint.min;
                         let minMoment = moment.duration(minStr);
                         if (parseResult.success && (minMoment.hours()*60 + minMoment.minutes()) > inputMoment) {
-                            result.fail("", "");
+                            result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [ this.name, minStr, maxStr ]), "FND_E_CLOCK");
                             return result;
                         }
                     }

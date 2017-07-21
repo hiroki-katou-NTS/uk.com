@@ -4,5 +4,7 @@ import lombok.Data;
 
 @Data
 public class DeleteWorkplaceSpecificDateCommand {
+	private String workPlaceId;
+	
 	private String yearMonth;
 }

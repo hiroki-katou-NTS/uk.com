@@ -1,36 +1,37 @@
 package nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 
 @Stateless
 public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<List<WorkplaceSpecificDateCommand>> {
 
 	@Inject
-	private CompanySpecificDateRepository repo;
+	private WorkplaceSpecificDateRepository repo;
 
 	@Override
 	protected void handle(CommandHandlerContext<List<WorkplaceSpecificDateCommand>> context) {
-		
-		String companyId = AppContexts.user().companyId();
-		
-		List<CompanySpecificDateItem> listInsert = context.getCommand()
-				.stream()
-				.map(c -> CompanySpecificDateItem.createFromJavaType(
-				companyId,
-				c.getSpecificDate(),
-				c.getSpecificDateNo(),
-				"")).collect(Collectors.toList());
-		repo.InsertComSpecDate(listInsert);
+		for(WorkplaceSpecificDateCommand workplaceSpecificDateCommand :  context.getCommand()){
+			List<WorkplaceSpecificDateItem> listInsert = new ArrayList<WorkplaceSpecificDateItem>();
+			for(BigDecimal specificDateNo : workplaceSpecificDateCommand.getSpecificDateItemNo()){
+				listInsert.add(WorkplaceSpecificDateItem.createFromJavaType(
+						workplaceSpecificDateCommand.getWorkPlaceId(),
+						workplaceSpecificDateCommand.getSpecificDate(),
+						specificDateNo,
+						"empty")
+				);
+			}
+			repo.InsertWpSpecDate(listInsert);
+		}
 	}
 
 }

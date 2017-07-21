@@ -1,7 +1,6 @@
 .control-group.valign-center > * { vertical-align: middle; }
 .control-group.valign-top > * { vertical-align: top; }
 .control-group.valign-bottom > * { vertical-align: bottom; }
-.control-group { margin: 10px; }
 .item-valign-top { vertical-align: top; }
 .halign-left { text-align: left; }
 .halign-right { text-align: right; }
@@ -10,11 +9,6 @@
 
 .table {
 	margin: 10px;
-}
-
-button {
-	margin-left: 5px;
-	margin-right: 5px;
 }
 
 .short-button {

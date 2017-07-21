@@ -47,7 +47,7 @@ module ksm002.d{
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                self.param = getShared('KSM002A_PARAM') || { util: 2, workplaceObj: null, startDate: 20160202, endDate: 20160302};
+                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
                 self.endMonth(self.param.endDate);
                 self.startMonth(self.param.startDate);
                 // label to display work place D1_2
@@ -55,7 +55,7 @@ module ksm002.d{
                     self.workPlace(nts.uk.resource.getText('Com_Company'))    
                 }
                 else if(self.param.util == 2){
-                    self.workPlace("param.workplaceObj.name")    
+                    self.workPlace(self.param.workplaceObj.name);    
                 }
                 self.dayInWeek([new DayInWeekItem(nts.uk.resource.getText('KSM002_45'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_46'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_47'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_48'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_49'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_50'),0), new DayInWeekItem(nts.uk.resource.getText('KSM002_51'),0)]);
                 service.getSpecificDateByIsUse(1).done(function(data) {
@@ -137,7 +137,7 @@ module ksm002.d{
                 if(self.enable()==true){
                     listDayToUpdate.push(0);     
                 }
-                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), "");
+                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), self.param.workplaceObj.id);
                 service.updateSpecificDateSet(object).done(function(data) {
                     nts.uk.ui.windows.close(); 
                 }).fail(function(res) { 

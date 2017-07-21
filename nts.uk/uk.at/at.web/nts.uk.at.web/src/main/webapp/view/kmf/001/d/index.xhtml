@@ -22,8 +22,8 @@
 				nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsAmount
 			</com:ValidatorScript>
 		</ui:define>
-		<ui:define name="sidebar" id="left-sidebar" tabindex="1">
-			<ul class="navigator">
+		<ui:define name="sidebar" id="left-sidebar">
+			<ul class="navigator" tabindex="1">
 				<li><a href="#whole-company-tab" role="tab-navigator" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
 				<li><a href="#by-employment-tab" role="tab-navigator" data-bind="click: switchToEmploymentTab">#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
@@ -118,7 +118,7 @@
 				</div>
 				<div class="ruledLine"></div>
 				<div id="by-employment-content">
-					<table style="margin: 30px">
+					<table style="margin: 50px">
 						<tr>
 							<td>
 								<div id="left-content" tabindex="1"></div>

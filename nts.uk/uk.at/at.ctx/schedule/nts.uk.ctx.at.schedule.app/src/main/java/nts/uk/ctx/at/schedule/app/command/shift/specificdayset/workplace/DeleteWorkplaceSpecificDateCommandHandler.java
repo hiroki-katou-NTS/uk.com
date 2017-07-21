@@ -5,19 +5,17 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 
 @Stateless
 public class DeleteWorkplaceSpecificDateCommandHandler extends CommandHandler<DeleteWorkplaceSpecificDateCommand> {
 
 	@Inject
-	private CompanySpecificDateRepository repo;
+	private WorkplaceSpecificDateRepository repo;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteWorkplaceSpecificDateCommand> context) {
-		String companyId = AppContexts.user().companyId();
-		repo.DeleteComSpecDate(companyId, context.getCommand().getYearMonth());
+		repo.DeleteWpSpecDate(context.getCommand().getWorkPlaceId(), context.getCommand().getYearMonth());
 	}
 
 }
