@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.command.personaltying;
+package nts.uk.ctx.sys.portal.app.command.webmenu;
 
 import java.util.List;
 
