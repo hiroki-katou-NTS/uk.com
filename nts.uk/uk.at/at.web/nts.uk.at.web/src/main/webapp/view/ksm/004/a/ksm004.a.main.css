@@ -12,20 +12,24 @@
 	display: inline-block;
     vertical-align: top;
 }
+.titleTable:FIRST-CHILD label{
+	font-size: large;
+}
 .noteTable {
 	margin-bottom: 10px;
 	width: 600px;
 }
 .infoTable {
-	border-radius: 5px;
-    border: 1px solid #999999;
+	padding: 0px;
 	width: 300px;
 }
+.infoTable .panel {
+	padding: 0px;
+}
 .infoTable > div:FIRST-CHILD {
-	padding-top: 15px;
 	height: 30px;
 	background: #C5E0B4;
-	border-bottom: 1px solid #999999;
+	border-bottom: 2px solid #B1B1B1;
 	padding-top: 10px;
     padding-left: 15px;
 }
@@ -33,17 +37,14 @@
 	padding: 10px 5px;
 }
 .labelSqr {
-	padding-top: 20px;
+	padding-top: 10px !important;
 	display: inline-block;
 	text-align: center;
-    word-wrap: break-word;
     width: 76px;
-    height: 55px;
-    border-radius: 5px;
-    border: 3px solid #999999;
+    height: 50px;
     vertical-align: middle;
-    margin-left: 5px;
-    margin-right: 5px;	
+    margin-left: 6.5px;
+    margin-right: 6.5px;
 }
 .labelSqr1 > span {
 	color: #31859C;
@@ -53,4 +54,9 @@
 }
 .labelSqr3 > span {
 	color: #FF3B3B;
+}
+.fc-title {
+	text-align: center;
+	font-size: small;
+	vertical-align: middle;
 }
