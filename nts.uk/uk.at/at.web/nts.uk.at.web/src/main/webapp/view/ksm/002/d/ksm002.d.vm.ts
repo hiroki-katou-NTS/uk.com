@@ -103,10 +103,12 @@ module ksm002.d{
                 let listTimeItemToUpdate: Array<number> =[];
                 self.countDay(0);
                 self.countItem(0);
+                let update = 1;
                  nts.uk.ui.errors.clearAll();
                 // check start date <= end date
                 if(self.startMonth() > self.endMonth()){
                     $('#startMonth').ntsError('set', {messageId:"Msg_136"});
+                    update = 0;
                 }
                 // check not choose any day in a week
                 _.each(self.dayInWeek(), function(obj: viewmodel.DayInWeekItem) {
@@ -116,6 +118,7 @@ module ksm002.d{
                 });
                 if(self.countDay() == self.dayInWeek().length && self.enable() == false){
                     $('#day_0').ntsError('set', {messageId:"Msg_137"});
+                    update = 0;
                 }
                 // check not choose any item
                 _.each(self.specificDateItem(), function(obj1: viewmodel.SpecificDateItem) {
@@ -128,6 +131,7 @@ module ksm002.d{
                 });
                 if(self.countItem() == self.specificDateItem().length){
                     $('#item_0').ntsError('set', {messageId:"Msg_138"});
+                    update = 0;
                 }
                 for(let i = 0; i < self.dayInWeek().length; i++){
                     if(self.dayInWeek()[i].choose()==1){
@@ -143,12 +147,14 @@ module ksm002.d{
                     let id = self.param.workplaceObj.id;
                 }
                 let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), id);
-                service.updateSpecificDateSet(object).done(function(data) {
-                    nts.uk.ui.windows.close(); 
-                }).fail(function(res) { 
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-                    dfd.reject(res); 
-                    });
+                if(update ==1){
+                    service.updateSpecificDateSet(object).done(function(data) {
+                        nts.uk.ui.windows.close(); 
+                    }).fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});
+                        dfd.reject(res); 
+                        });
+                }
             }
         }
         // item for radio button
