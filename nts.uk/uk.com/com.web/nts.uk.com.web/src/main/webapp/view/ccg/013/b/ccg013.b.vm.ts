@@ -36,8 +36,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.allPart = ko.observableArray([]);
             self.listStandardMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', key: 'code', width: '60px' },
-                { headerText: '名称', prop: 'displayName', key: 'displayName', width: '200px' },
+                { headerText: nts.uk.resource.getText("CCG013_26"), prop: 'code', key: 'code', width: '60px' },
+                { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '200px' },
                 { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', display: 'none' }
             ]);
             self.selectedStandardMenuKey = ko.observable('');

@@ -4,16 +4,14 @@
 package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * @author hungnm
  *
  */
-@StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLength(40)
+
+@StringMaxLength(20)
 public class HolidayName extends StringPrimitiveValue<HolidayName>  {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

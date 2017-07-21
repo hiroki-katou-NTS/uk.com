@@ -16,9 +16,9 @@ public class WorkplaceSpecificDateFinder {
 	@Inject
 	WorkplaceSpecificDateRepository workplaceSpecDateRepo;
 	// WITH name
-	public List<WokplaceSpecificDateDto> getWpSpecByDateWithName(String workplaceId, String wpSpecDate, int useAtr) {
+	public List<WokplaceSpecificDateDto> getWpSpecByDateWithName(String workplaceId, String wpSpecDate) {
 		List<WokplaceSpecificDateDto> wokplaceSpecificDateDtos = new ArrayList<WokplaceSpecificDateDto>();
-		List<WorkplaceSpecificDateItem> resultList = workplaceSpecDateRepo.getWpSpecByDateWithName(workplaceId, wpSpecDate, useAtr);
+		List<WorkplaceSpecificDateItem> resultList = workplaceSpecDateRepo.getWpSpecByDateWithName(workplaceId, wpSpecDate);
 		for(int i=1;i<=31;i++){
 			int startMonth = Integer.valueOf(wpSpecDate+String.format("%02d", i));
 			List<WorkplaceSpecificDateItem> listByDate = resultList.stream().filter(x -> x.getSpecificDate().v().intValue()==startMonth).collect(Collectors.toList());

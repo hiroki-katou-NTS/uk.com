@@ -33,7 +33,7 @@
 						<td><div 
 								data-bind="ntsFormLabel: {required: true, enable: true}">#{i18n.getText('CCG013_62')}</div></td>
 						<td><div id="dateTime" tabindex="1"
-								data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+								data-bind="ntsDatePicker: {name: '#[CCG013_62]', value: date, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 						</td>
 						<td><div tabindex="2">
 								<button id="btnSearch" data-bind="click: search" class="search-btn caret-bottom">#{i18n.getText('CCG013_63')}</button>

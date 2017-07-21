@@ -17,6 +17,8 @@ module ccg018.b.viewmodel {
 
         listSid: Array<any>;
         isSelectedFirst: KnockoutObservable<boolean>;
+        
+        isEmpty: KnockoutObservable<boolean>;
 
         //component
         ccgcomponent: GroupOption;
@@ -76,6 +78,10 @@ module ccg018.b.viewmodel {
                     self.listSid.push(x.employeeId);
                 });
                 self.findTopPagePersonSet();
+            });
+            
+            self.isEmpty = ko.computed(function(){
+                return !nts.uk.ui.errors.hasError();    
             });
         }
 

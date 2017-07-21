@@ -15,14 +15,27 @@ public class PersonalTying extends AggregateRoot {
 	@Getter
 	private String employeeId;
 	
+
+	
+	
+	/**
+	 * Validate Employee or Web menu code when null
+	 */
 	@Override
 	public void validate() {
+	
 		super.validate();
 		if (StringUtil.isNullOrEmpty(this.employeeId, true) || StringUtil.isNullOrEmpty(this.webMenuCode, true)) {
 			throw new RuntimeException("Employee or Web menu code null");
 		}
 	}
 	
+	/**
+	 * 
+	 * @param companyId
+	 * @param webMenuCode
+	 * @param employeeId
+	 */
 	public PersonalTying (String companyId, String webMenuCode, String employeeId){
 		super();
 		this.companyId = companyId;
@@ -32,7 +45,7 @@ public class PersonalTying extends AggregateRoot {
 	}
 
 	/**
-	 * 
+	 * Create From Java Type
 	 * @param companyId
 	 * @param webMenuCode
 	 * @param employeeId

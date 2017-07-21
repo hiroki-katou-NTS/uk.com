@@ -25,7 +25,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	@Inject
 	private CompanySpecificDateRepository companyRepo;
 	@Inject
-	private static PublicHolidayRepository holidayRepo;
+	private PublicHolidayRepository holidayRepo;
 	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSpecificDateSetCommand> context) {
@@ -65,19 +65,43 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		}
 		return value;
 	}
-	public static List<PublicHoliday> checkSelectedHoliday(List<Integer> lstTimeItemId, int strDate, int endDate){
+	public List<PublicHoliday> checkSelectedHoliday(List<Integer> dayofWeek, int strDate, int endDate){
 		String companyId = AppContexts.user().companyId();
 		boolean check = false;
-		for (Integer timeItemId : lstTimeItemId) {
-			if(timeItemId==0){
+		for (Integer day : dayofWeek) {
+			if(day==0){
 				check = true;
 			}
 		}
-		List<PublicHoliday> lstHoliday = null;
+		List<PublicHoliday> lstHoliday = new ArrayList<>();
 		if(check){
-			lstHoliday = holidayRepo.getpHolidayWhileDate(companyId, BigDecimal.valueOf(strDate), BigDecimal.valueOf(endDate));
+			lstHoliday = holidayRepo.getpHolidayWhileDate(companyId, strDate, endDate);
 		}
 		return lstHoliday;
+	}
+	public static boolean checkHoliday(List<PublicHoliday> lstHoliday, BigDecimal date){
+		boolean check = false;
+		if(lstHoliday.isEmpty()){
+			return false;
+		}
+		for (PublicHoliday publicHoliday : lstHoliday) {
+			if(date.equals(publicHoliday.getDate())){
+				return true;
+			}
+		}
+		return check;
+	}
+	public boolean checkSet(List<PublicHoliday> lstHoliday,GeneralDate date,List<Integer> dayofWeek ){
+		if(lstHoliday.isEmpty() && !checkDayofWeek(date,dayofWeek)){
+			return false;
+		}
+		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+		int dateInt = Integer.valueOf(dateStr);
+		BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
+		if(!checkDayofWeek(date,dayofWeek)&&!checkHoliday(lstHoliday,dateBigDecimal)){//not setting
+			return false;
+		}
+		return true;
 	}
 	/**
 	 * Update by Day for WorkPlace
@@ -94,19 +118,19 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		GeneralDate date = sDate;
 		String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
 		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+		int dateInt = Integer.valueOf(dateStr);
+		BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
 		//check slected public holiday
-		if(true){//public holiday is selected
-			
-		}
+		List<PublicHoliday> lstHoliday = checkSelectedHoliday(dayofWeek, strDate, endDate);
 		while(dateStr.compareTo(eDateStr)<=0){
-			if(!checkDayofWeek(date,dayofWeek)){//not setting
+			if(!checkSet(lstHoliday,date,dayofWeek)){//not setting
 				date = date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				continue;
 			}
 			//setting
-			int dateInt = Integer.valueOf(dateStr);
-			BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
+			dateInt = Integer.valueOf(dateStr);
+			dateBigDecimal = BigDecimal.valueOf(dateInt);
 			if(setUpdate==1){
 				//既に設定されている内容は据え置き、追加で設定する - complement
 				//list item da co san trong db
@@ -174,14 +198,16 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		GeneralDate date = sDate;
 		String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
 		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+		//check slected public holiday
+		List<PublicHoliday> lstHoliday = checkSelectedHoliday(dayofWeek, strDate, endDate);
 		while(dateStr.compareTo(eDateStr)<=0){
-			if(!checkDayofWeek(date,dayofWeek)){//not setting
-				date.addDays(1);
+			if(!checkSet(lstHoliday,date,dayofWeek)){//not setting
+				date = date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				continue;
 			}
 			//setting
-			int dateInt = Integer.valueOf(date.toString());
+			int dateInt = Integer.valueOf(dateStr);
 			BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
 			if(setUpdate==1){
 				//既に設定されている内容は据え置き、追加で設定する - complement
@@ -195,7 +221,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					lstAddNew = lstTimeItemId;
 				}else{
 					List<CompanySpecificDateItem>	a1 = new ArrayList<>();
-					
 					for (Integer timeItemId : lstTimeItemId) {
 						for (CompanySpecificDateItem itemAdd : lstAdd) {
 							BigDecimal a2 = BigDecimal.valueOf(timeItemId);
@@ -232,7 +257,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				companyRepo.addListComSpecDate(lstComSpecificDate);
 				
 			}
-			date.addDays(1);
+			date = date.addDays(1);
 		}
 	}
 

@@ -64,7 +64,7 @@ module ksm002.a.viewmodel {
                 self.getDataToOneMonth(value).done(function(arrOptionaDates) {
                     self.optionDates(arrOptionaDates);
                     if(arrOptionaDates.length<0){
-                        self.isNew(false);    
+                        self.isNew(true);    
                     }
                 })
             })
@@ -78,7 +78,7 @@ module ksm002.a.viewmodel {
             let arrOptionaDates: Array<OptionalDate> = [];
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
-                    self.isNew(false);
+                    
                     //Set Start Day of Company
                     self.getComStartDay().done(function(startDay: number) {
                         self.firstDay(startDay);
@@ -92,11 +92,14 @@ module ksm002.a.viewmodel {
                     self.boxItemList(lstBoxCheck);
                     //Set data to calendar
                     self.getDataToOneMonth(self.yearMonthPicked()).done(function(arrOptionaDates) {
-                        if (arrOptionaDates.length > 0)
+                        if (arrOptionaDates.length > 0) {
                             self.optionDates(arrOptionaDates);
+                        } else {
+                            self.isNew(false);
+                        }
                     })
                  }else{
-                    self.isNew(true);                     //In Case no Data, openCDialog                     self.openKsm002CDialog(); 
+                     //In Case no Data, openCDialog                     self.openKsm002CDialog(); 
                 };
                 dfd.resolve();
             }).fail(function(res) {
@@ -123,7 +126,6 @@ module ksm002.a.viewmodel {
                         arrId = [];
                         //Loop in each Day
                         _.forEach(lstComSpecDate, function(comItem) {
-                            //debugger;
                             if (comItem.specificDate == processDay) {
                                 arrName.push(comItem.specificDateItemName);
                                 arrId.push(comItem.specificDateItemNo);
@@ -214,7 +216,6 @@ module ksm002.a.viewmodel {
         /**Insert Calendar data*/
         Insert(lstComSpecificDateCommand: Array<CompanySpecificDateCommand>) {
             var self = this;
-            //debugger;
             service.insertComSpecificDate(lstComSpecificDateCommand).done(function(res: Array<any>) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.start();
@@ -252,9 +253,9 @@ module ksm002.a.viewmodel {
             } else {
                 //Update
                 service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
-                    //                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    //                    self.start();
-                    //                });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.start();
+                    });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
@@ -277,6 +278,21 @@ module ksm002.a.viewmodel {
             });
             return lstComSpecificDateCommand;
         };
+        /**
+         * open dialog D event
+         */
+        openKsm002DDialog() {
+            var self = this;
+            nts.uk.ui.windows.setShared('KSM002_D_PARAM', 
+            {
+                util: 1,
+                startDate: Number(moment(self.yearMonthPicked().toString(),'YYYYMM').startOf('month').format('YYYYMMDD')),
+                endDate: Number(moment(self.yearMonthPicked().toString(),'YYYYMM').endOf('month').format('YYYYMMDD'))
+            });
+            nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                
+            });  
+        }
     }
 
     interface IData {

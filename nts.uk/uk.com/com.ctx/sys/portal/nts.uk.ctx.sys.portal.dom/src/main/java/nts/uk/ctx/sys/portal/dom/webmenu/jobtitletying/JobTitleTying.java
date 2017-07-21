@@ -37,6 +37,17 @@ public class JobTitleTying extends AggregateRoot{
 	public static JobTitleTying updateWebMenuCode(String companyId, String jobId, String webMenuCode){
 		return new JobTitleTying (companyId, jobId, webMenuCode);
 	}
+	/**
+	 * @author yennth
+	 * insert web menu code
+	 * @param companyId
+	 * @param jobId
+	 * @param webMenuCode
+	 * @return
+	 */
+	public static JobTitleTying insertWebMenuCode(String companyId, String jobId, String webMenuCode){
+		return new JobTitleTying (companyId, jobId, webMenuCode);
+	}
 	
 	public static JobTitleTying createFromJavaType(String companyId, String jobId, String webMenuCode) {
 		return new JobTitleTying(companyId, jobId, webMenuCode);

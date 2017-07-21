@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="ksu001.o.main.css" />
+			<com:scriptfile path="ksu001.o.start.js" />
+			<com:scriptfile path="ksu001.o.vm.js" />
+			<com:scriptfile path="ksu001.o.service.js" />
+			<com:stylefile path="../../common/common.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">		
+			</div>
+			<div id="contents-area">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -33,5 +33,5 @@ public interface PublicHolidayRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<PublicHoliday> getpHolidayWhileDate(String companyId, BigDecimal strDate, BigDecimal endDate);
+	List<PublicHoliday> getpHolidayWhileDate(String companyId, int strDate, int endDate);
 }
