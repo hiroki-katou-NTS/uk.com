@@ -53,6 +53,7 @@
 		<com:ko tag="if" bind="!isMultiple" >
 			<table id="single-tree-grid" class="cf" tabindex="7"
 				data-bind="ntsTreeGridView:{
+					width: 410,
 					height: treeStyle.height,
 					dataSource: itemList,
 					value: selectedWorkplaceIds,
@@ -68,6 +69,7 @@
 		<com:ko tag="if" bind="isMultiple" >
 			<table id="multiple-tree-grid" class="cf" tabindex="7"
 				data-bind="ntsTreeGridView:{
+					width: 410,
 					height: treeStyle.height,
 					options: itemList,
 					selectedValues: selectedWorkplaceIds,

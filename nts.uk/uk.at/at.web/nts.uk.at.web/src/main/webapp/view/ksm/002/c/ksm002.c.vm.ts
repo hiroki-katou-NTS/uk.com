@@ -49,6 +49,16 @@ module ksm002.c {
                     });
                 return dfd.promise();
             }
+            checkUse(lstSpecificDateItem: Array<SpecificDateItem>): boolean{
+                let check = false;
+                let item: SpecificDateItem  = _.find(lstSpecificDateItem, function(obj: SpecificDateItem) {
+                    return obj.useAtr() == 1;
+                })
+                if(item!=null){
+                    check = true;
+                }
+                return check;
+            }
             
             /**
              * save data and close dialog
@@ -56,6 +66,10 @@ module ksm002.c {
             submitAndCloseDialog(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
+                if(!self.checkUse(self.specificDateItem())){
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_135' }).then(function(){nts.uk.ui.block.clear();});
+                    return;
+                }
                 let lstSpecificDateItem : Array<SpecificDateItemCommand> = [];
                 let rootLists = self.rootList;
                 $(".specificName").trigger("validate");

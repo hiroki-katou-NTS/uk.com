@@ -11,6 +11,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
@@ -22,6 +24,8 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	private WorkplaceSpecificDateRepository workplaceRepo;
 	@Inject
 	private CompanySpecificDateRepository companyRepo;
+	@Inject
+	private static PublicHolidayRepository holidayRepo;
 	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSpecificDateSetCommand> context) {
@@ -50,7 +54,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	 * @param dayofWeek
 	 * @return
 	 */
-	public static boolean CheckDayofWeek(GeneralDate dateInString, List<Integer> dayofWeek){
+	public static boolean checkDayofWeek(GeneralDate dateInString, List<Integer> dayofWeek){
 		Integer dateInInt = dateInString.dayOfWeek();
 		boolean value = false;
 		for (Integer integer : dayofWeek) {
@@ -60,6 +64,20 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 			}
 		}
 		return value;
+	}
+	public static List<PublicHoliday> checkSelectedHoliday(List<Integer> lstTimeItemId, int strDate, int endDate){
+		String companyId = AppContexts.user().companyId();
+		boolean check = false;
+		for (Integer timeItemId : lstTimeItemId) {
+			if(timeItemId==0){
+				check = true;
+			}
+		}
+		List<PublicHoliday> lstHoliday = null;
+		if(check){
+			lstHoliday = holidayRepo.getpHolidayWhileDate(companyId, BigDecimal.valueOf(strDate), BigDecimal.valueOf(endDate));
+		}
+		return lstHoliday;
 	}
 	/**
 	 * Update by Day for WorkPlace
@@ -76,8 +94,12 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		GeneralDate date = sDate;
 		String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
 		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+		//check slected public holiday
+		if(true){//public holiday is selected
+			
+		}
 		while(dateStr.compareTo(eDateStr)<=0){
-			if(!CheckDayofWeek(date,dayofWeek)){//not setting
+			if(!checkDayofWeek(date,dayofWeek)){//not setting
 				date = date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				continue;
@@ -153,7 +175,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
 		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 		while(dateStr.compareTo(eDateStr)<=0){
-			if(!CheckDayofWeek(date,dayofWeek)){//not setting
+			if(!checkDayofWeek(date,dayofWeek)){//not setting
 				date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 				continue;

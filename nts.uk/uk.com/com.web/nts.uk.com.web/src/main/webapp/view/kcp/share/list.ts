@@ -138,6 +138,7 @@ module kcp.share.list {
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         searchOption: any;
         targetKey: string;
+        maxRows: number;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -155,9 +156,7 @@ module kcp.share.list {
             var self = this;
             self.isMultiple = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
-            if (!data.maxRows) {
-                data.maxRows = 12;
-            }
+            self.maxRows = data.maxRows ? data.maxRows : 12;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
@@ -203,7 +202,7 @@ module kcp.share.list {
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
-                            return '<div style="text-align: center;"><i class="icon icon-78"></i></div>';
+                            return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
                     }
@@ -409,8 +408,8 @@ module kcp.share.list {
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
-            var totalRowsHeight = heightOfRow * data.maxRows + 24;
-            var totalHeight: number = this.hasBaseDate ? 123 : 55;
+            var totalRowsHeight = heightOfRow * this.maxRows + 24;
+            var totalHeight: number = this.hasBaseDate ? 101 : 55;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),

@@ -5,14 +5,16 @@ module nts.uk.at.view.ksm004.a {
     export module viewmodel {
         export class ScreenModel {
             yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYY01')));
+            currentCalendarWorkPlace: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
+            currentCalendarClass: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
             calendarPanel: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
                 yearMonth: this.yearMonthPicked,
                 firstDay: 0,
                 startDate: 1,
                 endDate: 31,
-                workplaceId: ko.observable("0"),
-                workplaceName: ko.observable(""),
+                workplaceId: this.currentCalendarWorkPlace().key,
+                workplaceName: this.currentCalendarWorkPlace().name,
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
@@ -39,13 +41,10 @@ module nts.uk.at.view.ksm004.a {
                 selectedCode: ko.observableArray([]),
                 alreadySettingList: ko.observableArray([])
             };
-            currentCalendarWorkPlace: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
-            currentCalendarClass: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
             currentWorkingDayAtr: number = null;
             isUpdate: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 var self = this;
-                self.calendarPanel.yearMonth(self.yearMonthPicked());
                 self.yearMonthPicked.subscribe(value => {
                     if(value!=null) {
                         // get data when year month change
@@ -557,7 +556,7 @@ module nts.uk.at.view.ksm004.a {
                 var self = this;
                 nts.uk.ui.windows.setShared('KSM004_C_PARAM', 
                 {
-                    yearMonth: self.yearMonthPicked()
+                    yearMonth: self.yearMonthPicked().toString().substring(0,4)
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {});  
             }

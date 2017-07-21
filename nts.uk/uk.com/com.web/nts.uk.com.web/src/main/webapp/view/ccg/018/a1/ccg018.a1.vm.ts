@@ -8,7 +8,7 @@ module ccg018.a1.viewmodel {
         categorySet: KnockoutObservable<number>;
         listJobTitle: KnockoutObservableArray<any>;
         roundingRules: KnockoutObservableArray<any>;
-        isEmpty: any;
+        isEmpty: KnockoutObservable<boolean>;
 
         constructor(baseModel: base.result.BaseResultModel) {
             super(baseModel); 
@@ -31,7 +31,10 @@ module ccg018.a1.viewmodel {
                 { code: 1, name: nts.uk.resource.getText("CCG018_13") },
                 { code: 0, name: nts.uk.resource.getText("CCG018_14") }
             ]);
-            self.isEmpty = nts.uk.ui.errors.isEmpty;
+            
+            self.isEmpty = ko.computed(function(){
+                return !nts.uk.ui.errors.hasError();    
+            });
 
             $('#A2-2').focus();
         }

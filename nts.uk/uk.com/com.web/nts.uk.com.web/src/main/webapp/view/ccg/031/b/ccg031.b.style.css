@@ -9,9 +9,6 @@ html, body {overflow: visible;}
 .label-lg,
 .label-lg > * {font-size: 1.2rem;}
 
-/* Element style */
-.btn-register {min-width: 100px; margin: 0 15px;}
-.btn-close {min-width: 80px;}
 
 .label-area {padding: 10px;}
 .label-area .label-row {margin-left: 10px;}
