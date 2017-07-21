@@ -5088,6 +5088,8 @@ var nts;
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+                        var tabIndex = $input.attr("tabindex");
+                        $input.data("tabindex", tabIndex);
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
                         var value = data.value;
@@ -5106,7 +5108,19 @@ var nts;
                             $input.attr('disabled', 'disabled');
                             new nts.uk.util.value.DefaultValue().applyReset($input, value);
                         }
-                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
+                        if (readonly === false) {
+                            $input.removeAttr('readonly');
+                            if ($input.data("tabindex") !== undefined) {
+                                $input.attr("tabindex", $input.data("tabindex"));
+                            }
+                            else {
+                                $input.removeAttr("tabindex");
+                            }
+                        }
+                        else {
+                            $input.attr('readonly', 'readonly');
+                            $input.attr("tabindex", -1);
+                        }
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
@@ -5192,6 +5206,8 @@ var nts;
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+                        var tabIndex = $input.attr("tabindex");
+                        $input.data("tabindex", tabIndex);
                     };
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
