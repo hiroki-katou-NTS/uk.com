@@ -54,6 +54,7 @@
 			<table id="single-tree-grid" class="cf" tabindex="7"
 				data-bind="ntsTreeGridView:{
 					width: 410,
+					height: treeStyle.height,
 					dataSource: itemList,
 					value: selectedWorkplaceIds,
 					primaryKey: 'workplaceId',
@@ -62,14 +63,14 @@
 					multiple: isMultiple,
 					enable: true,
 					extColumns: treeComponentColumn,
-					showCheckBox: isMultiple,
-					rows: maxRows}">
+					showCheckBox: isMultiple}">
 			</table>
 		</com:ko>
 		<com:ko tag="if" bind="isMultiple" >
 			<table id="multiple-tree-grid" class="cf" tabindex="7"
 				data-bind="ntsTreeGridView:{
 					width: 410,
+					height: treeStyle.height,
 					options: itemList,
 					selectedValues: selectedWorkplaceIds,
 					optionsValue: 'workplaceId',
@@ -78,8 +79,7 @@
 					multiple: isMultiple,
 					extColumns: treeComponentColumn,
 					enable: true,
-					showCheckBox: isMultiple,
-					rows: maxRows}">
+					showCheckBox: isMultiple}">
 			</table>
 		</com:ko>
 	</div>
