@@ -15,9 +15,9 @@ module nts.uk.at.view.ksm004.a {
                 endDate: 31,
                 workplaceId: this.currentCalendarWorkPlace().key,
                 workplaceName: this.currentCalendarWorkPlace().name,
-                eventDisplay: ko.observable(true),
-                eventUpdatable: ko.observable(true),
-                holidayDisplay: ko.observable(true),
+                eventDisplay: ko.observable(false),
+                eventUpdatable: ko.observable(false),
+                holidayDisplay: ko.observable(false),
                 cellButtonDisplay: ko.observable(false)
             }
             kcpTreeGrid: ITreeGrid = {
@@ -237,11 +237,17 @@ module nts.uk.at.view.ksm004.a {
                     switch(value) {
                         case 1:
                             // select tab Work Place
-                            self.deleteCalendarWorkPlace(self.convertToCommand(self.calendarPanel.optionDates(),false));
+                            self.deleteCalendarWorkPlace({
+                                yearMonth: self.yearMonthPicked().toString(),
+                                workPlaceId: self.currentCalendarWorkPlace().key()
+                            });
                             break;
                         case 2:
                             // select tab Class
-                            self.deleteCalendarClass(self.convertToCommand(self.calendarPanel.optionDates(),false));
+                            self.deleteCalendarClass({
+                                yearMonth: self.yearMonthPicked().toString(),
+                                classId: self.currentCalendarClass().key()
+                            });
                             break;
                         default:
                             // select tab Company
