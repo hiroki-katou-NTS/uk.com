@@ -17,7 +17,7 @@ module nts.uk.pr.view.kmf001.d {
             
             retentionYearsAmount: KnockoutObservable<number>;
             maxDaysCumulation: KnockoutObservable<number>;
-            textEditorOption: KnockoutObservable<any>;
+            
             yearsAmountByEmp: KnockoutObservable<number>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
             isManaged: KnockoutObservable<boolean>;
@@ -56,14 +56,10 @@ module nts.uk.pr.view.kmf001.d {
                 self.maxDaysCumulation = ko.observable(null);
                 self.yearsAmountByEmp = ko.observable(null);
                 self.maxDaysCumulationByEmp = ko.observable(null);
-                self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    width: "50px",
-                    textmode: "text",
-                    textalign: "left"
-                }));
+                
                 self.managementOption = ko.observableArray<ManagementModel>([
-                    new ManagementModel(1, '管理する'),
-                    new ManagementModel(0, '管理しない')
+                    new ManagementModel(1, '邂｡逅�縺吶ｋ'),
+                    new ManagementModel(0, '邂｡逅�縺励↑縺�')
                 ]);
                 self.selectedManagement = ko.observable(1);
                 self.hasSelectedEmp = ko.observable(false);
@@ -77,8 +73,8 @@ module nts.uk.pr.view.kmf001.d {
                     return self.annualManage() == 1;
                 }, self);
                 self.leaveAsWorkDaysOpt = ko.observableArray<LeaveAsWorkDaysModel>([
-                    new LeaveAsWorkDaysModel(true, '管理する'),
-                    new LeaveAsWorkDaysModel(false, '管理しない')
+                    new LeaveAsWorkDaysModel(true, '邂｡逅�縺吶ｋ'),
+                    new LeaveAsWorkDaysModel(false, '邂｡逅�縺励↑縺�')
                 ]);
                 self.leaveAsWorkDays = ko.observable(null);
                 self.enableRegister = ko.computed(function() {
