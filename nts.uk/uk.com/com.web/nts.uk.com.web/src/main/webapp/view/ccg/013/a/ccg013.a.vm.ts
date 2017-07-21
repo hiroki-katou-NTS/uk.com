@@ -32,8 +32,8 @@ module ccg013.a.viewmodel {
             self.listWebMenu = ko.observableArray([]);
             self.webMenuColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG013_8"), key: 'icon', width: 50 },
-                { headerText: nts.uk.resource.getText("CCG013_9"), key: 'webMenuCode', width: 50 },
-                { headerText: nts.uk.resource.getText("CCG013_10"), key: 'webMenuName', width: 50 }
+                { headerText: nts.uk.resource.getText("CCG013_9"), key: 'webMenuCode', width: 50, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_10"), key: 'webMenuName', width: 50, formatter: _.escape }
             ]);
             self.currentWebMenu = ko.observable(new WebMenu({
                 webMenuCode: "",
@@ -86,6 +86,8 @@ module ccg013.a.viewmodel {
             self.isCreated = ko.observable(false);
             self.isDefaultMenu = ko.observable(false);
             self.checkDisabled = ko.observable(false);
+
+            $("#single-list tbody").find("td").addClass("text-align")
         }
 
         /** StartPage */
@@ -107,19 +109,18 @@ module ccg013.a.viewmodel {
 
         /** Registry Webmenu */
         addWebMenu(): any {
-            nts.uk.ui.block.invisible();            
+            nts.uk.ui.block.invisible();
             var self = this;
             var webMenu = self.currentWebMenu();
-            var length = webMenu.webMenuCode().length;                 
+            var length = webMenu.webMenuCode().length;
             var fullWebMenuCode = webMenu.webMenuCode();
-            if(length < 3){
-              if(length == 1){
-                  webMenu.webMenuCode('00'+ fullWebMenuCode);
-              } else {
-                  webMenu.webMenuCode('0'+ fullWebMenuCode);
-              }  
+            if (length < 3) {
+                if (length == 1) {
+                    webMenu.webMenuCode('00' + fullWebMenuCode);
+                } else {
+                    webMenu.webMenuCode('0' + fullWebMenuCode);
+                }
             };
-            var activeid = $('#tabs li[aria-expanded=true]').attr('id');
 
             (self.isDefaultMenu()) ? webMenu.defaultMenu(1) : webMenu.defaultMenu(0);
 
@@ -127,7 +128,6 @@ module ccg013.a.viewmodel {
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 self.getWebMenu().done(() => {
                     self.currentWebMenuCode(webMenu.webMenuCode());
-                    $("#tabs li#" + activeid + ' a').trigger('click');
                 });
             }).fail(function(error) {
                 self.isCreated(false);
@@ -219,7 +219,7 @@ module ccg013.a.viewmodel {
             }));
             self.currentWebMenuCode("");
             nts.uk.ui.errors.clearAll();
-            
+
         }
 
         /** Get Webmenu */
@@ -272,7 +272,8 @@ module ccg013.a.viewmodel {
                 opacity: 0.8,
                 distance: 25,
                 axis: "x",
-                revert: true,
+                revert: false,
+                scroll: true,
                 tolerance: "pointer",
                 placeholder: "menubar-placeholder",
                 stop: function(event, ui) {
@@ -289,7 +290,8 @@ module ccg013.a.viewmodel {
                 opacity: 0.8,
                 distance: 25,
                 axis: "x",
-                revert: true,
+                revert: false,
+                scroll: true,
                 items: ".title-menu-column",
                 handle: ".title-menu-name",
                 tolerance: "pointer",
@@ -308,8 +310,8 @@ module ccg013.a.viewmodel {
                 opacity: 0.8,
                 distance: 25,
                 axis: "y",
-                revert: true,
-                scroll: false,
+                revert: false,
+                scroll: true,
                 items: ".context-menu-tree",
                 tolerance: "pointer",
                 placeholder: "treemenu-placeholder",
@@ -435,7 +437,7 @@ module ccg013.a.viewmodel {
                         titleMenu: []
                     }));
                     self.setupMenuBar();
-                    $("#tabs li#" + id + " a").click();
+                    $("#menubar-tabs li#" + id + " a").trigger('click');
                 }
             });
         }
@@ -463,7 +465,6 @@ module ccg013.a.viewmodel {
                         imageName: data.imageName,
                         imageSize: data.imageSize,
                     }));
-                    $("#tabs li#" + menuBar.menuBarId() + " a").click();
                 }
             });
         }
@@ -479,20 +480,21 @@ module ccg013.a.viewmodel {
             setShared("titleBar", titleBar);
             modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
                 let data = getShared("CCG013D_MENUS");
-
-                titleMenu.treeMenu.removeAll();
-                if (data && data.length > 0) {
-                    _.forEach(data, x => {
-                        var treeMenuId = randomId();
-                        titleMenu.treeMenu.push(new TreeMenu({
-                            titleMenuId: titleMenu.titleMenuId(),
-                            code: x.code,
-                            name: x.name,
-                            displayOrder: x.order,
-                            classification: x.menu_cls,
-                            system: x.system
-                        }));
-                    });
+                if (data !== undefined) {
+                    titleMenu.treeMenu.removeAll();
+                    if (data && data.length > 0) {
+                        _.forEach(data, x => {
+                            var treeMenuId = randomId();
+                            titleMenu.treeMenu.push(new TreeMenu({
+                                titleMenuId: titleMenu.titleMenuId(),
+                                code: x.code,
+                                name: x.name,
+                                displayOrder: x.order,
+                                classification: x.menu_cls,
+                                system: x.system
+                            }));
+                        });
+                    }
                 }
             });
         }
@@ -503,8 +505,10 @@ module ccg013.a.viewmodel {
             setShared("CCG013E_COPY", data);
             modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
                 let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");
-                self.getWebMenu().done(() => {   
-                    self.currentWebMenuCode(newWebMenuCode);
+                self.getWebMenu().done(() => {
+                    if (newWebMenuCode != undefined) {
+                        self.currentWebMenuCode(newWebMenuCode);
+                    };
                 });
             });
         }
@@ -544,7 +548,7 @@ module ccg013.a.viewmodel {
                             item.textColor(data.textColor);
                         }
                     });
-                    $("#tabs li#" + id + " a").click();
+                    $("#menubar-tabs li#" + id + " a").trigger('click');
                 }
             });
         }
@@ -649,7 +653,7 @@ module ccg013.a.viewmodel {
         constructor(param: IMenuBar) {
             this.menuBarId = ko.observable(param.menuBarId);
             this.code = ko.observable(param.code);
-            this.menuBarName = ko.observable(param.menuBarName || 'なし');
+            this.menuBarName = ko.observable(param.menuBarName || '');
             this.selectedAtr = ko.observable(param.selectedAtr);
             this.system = ko.observable(param.system);
             this.menuCls = ko.observable(param.menuCls);
@@ -661,13 +665,6 @@ module ccg013.a.viewmodel {
                 return new TitleMenu(x);
             }));
             this.targetContent = ko.observable("#tab-content-" + param.menuBarId);
-            this.titleMenu.subscribe(x => {
-                let vm = __viewContext['viewModel'];
-                if (vm) {
-                    let cm = vm.currentWebMenu();
-                    cm.menuBars.valueHasMutated();
-                }
-            });
         }
     }
 
@@ -704,7 +701,7 @@ module ccg013.a.viewmodel {
         constructor(param: ITitleMenu) {
             this.menuBarId = ko.observable(param.menuBarId);
             this.titleMenuId = ko.observable(param.titleMenuId);
-            this.titleMenuName = ko.observable(param.titleMenuName || 'なし');
+            this.titleMenuName = ko.observable(param.titleMenuName || '');
             this.backgroundColor = ko.observable(param.backgroundColor);
             this.imageFile = ko.observable(param.imageFile);
             this.textColor = ko.observable(param.textColor);
@@ -743,7 +740,7 @@ module ccg013.a.viewmodel {
             this.treeMenuId = ko.observable(randomId());
             this.titleMenuId = ko.observable(param.titleMenuId);
             this.code = ko.observable(param.code);
-            this.name = ko.observable(param.name || 'なし');
+            this.name = ko.observable(param.name || '');
             this.displayOrder = ko.observable(param.displayOrder);
             this.classification = ko.observable(param.classification);
             this.system = ko.observable(param.system);

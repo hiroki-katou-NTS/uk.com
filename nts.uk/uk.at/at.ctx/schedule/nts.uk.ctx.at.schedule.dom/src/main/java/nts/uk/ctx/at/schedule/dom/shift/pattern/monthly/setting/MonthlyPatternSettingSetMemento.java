@@ -2,19 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.pattern;
+package nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting;
 
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 
-public interface MonthlyPatternSetMemento {
-
-	/**
-	 * Sets the company id.
-	 *
-	 * @param companyId the new company id
-	 */
-	public void setCompanyId(CompanyId companyId);
-	
+/**
+ * The Interface MonthlyPatternSettingSetMemento.
+ */
+public interface MonthlyPatternSettingSetMemento {
 	
 	/**
 	 * Sets the monthly pattern code.
@@ -23,11 +18,10 @@ public interface MonthlyPatternSetMemento {
 	 */
 	public void setMonthlyPatternCode(MonthlyPatternCode monthlyPatternCode);
 	
-	
 	/**
-	 * Sets the monthly pattern name.
+	 * Sets the employee id.
 	 *
-	 * @param monthlyPatternName the new monthly pattern name
+	 * @param employeeId the new employee id
 	 */
-	public void setMonthlyPatternName(MonthlyPatternName monthlyPatternName);
+	public void setEmployeeId(String employeeId);
 }

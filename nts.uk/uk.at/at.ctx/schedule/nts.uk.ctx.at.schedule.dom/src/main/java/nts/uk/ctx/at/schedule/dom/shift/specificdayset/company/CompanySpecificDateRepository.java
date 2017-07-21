@@ -7,7 +7,7 @@ public interface CompanySpecificDateRepository {
 	List<CompanySpecificDateItem> getComSpecByDate(String companyId, int specificDate);
 
 	//get List Company Specific Date by Date WITH NAME
-	List<CompanySpecificDateItem> getComSpecByDateWithName(String companyId, String specificDate, int useAtr);
+	List<CompanySpecificDateItem> getComSpecByDateWithName(String companyId, String specificDate);
 	
 	//insert to Company Specific Date 
 	void InsertComSpecDate(List<CompanySpecificDateItem> lstComSpecDateItem);

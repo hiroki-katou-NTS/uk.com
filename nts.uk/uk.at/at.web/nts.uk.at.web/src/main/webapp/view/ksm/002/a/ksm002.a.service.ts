@@ -3,6 +3,7 @@ module ksm002.a.service {
         //Workplace
         getWorkplaceSpecDateSet: "at/schedule/shift/specificdayset/workplace/getworkplacespecificdate",
         //Company
+        getAllSpecDate: "at/schedule/shift/businesscalendar/specificdate/getallspecificdate",
         getSpecDateByIsUse: "at/schedule/shift/businesscalendar/specificdate/getspecificdatebyuse",
         getCompanyStartDay: "at/schedule/shift/businesscalendar/businesscalendar/getcompanystartday",
         getComSpecDateByCompanyDate: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydate",
@@ -10,6 +11,14 @@ module ksm002.a.service {
         updateComSpecDate: "at/schedule/shift/specificdayset/company/updatecompanyspecificdate",
         deleteComSpecDate: "at/schedule/shift/specificdayset/company/deletecompanyspecificdate",
         getComSpecDateByCompanyDateWithName: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydatewithname"
+    }
+    
+    
+     /**
+     * 
+     */
+    export function getAllSpecificDate(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getAllSpecDate );
     }
     /**
      * 
@@ -27,16 +36,10 @@ module ksm002.a.service {
     /**
      *get companySpecificDate WITH NAME 
      */
-    export function getCompanySpecificDateByCompanyDateWithName(processDate: string, useAtr: number): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getComSpecDateByCompanyDateWithName + "/" + processDate + "/" + useAtr);
+    export function getCompanySpecificDateByCompanyDateWithName(processDate: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getComSpecDateByCompanyDateWithName + "/" + processDate);
     }
 
-    /**
-     *get SpecificDate by workplace Id  WITH NAME 
-     */
-    export function getWorkplaceSpecificDate(workplaceId: string, processDate: string, useAtr: number): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getWorkplaceSpecDateSet + "/" + workplaceId + "/" + processDate + "/" + useAtr);
-    }
     /**
      * 
      */

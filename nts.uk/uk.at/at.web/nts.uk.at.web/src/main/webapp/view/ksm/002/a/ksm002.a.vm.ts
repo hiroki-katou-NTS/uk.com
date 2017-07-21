@@ -4,8 +4,9 @@ module ksm002.a.viewmodel {
     export class ScreenModel {
         //MODE
         isNew: KnockoutObservable<boolean>;
-        // PANE
+        //PANE
         boxItemList: KnockoutObservableArray<BoxModel>;
+        fullBoxItemList : KnockoutObservableArray<BoxModel>;
         selectedIds: KnockoutObservableArray<number>;
         enable: KnockoutObservable<boolean>;
         //current Date
@@ -32,6 +33,7 @@ module ksm002.a.viewmodel {
             var self = this;
             self.isNew = ko.observable(true);
             self.boxItemList = ko.observableArray([]);
+            self.fullBoxItemList = ko.observableArray([]);
             self.selectedIds = ko.observableArray([]);
             self.enable = ko.observable(true);
             //Calendar
@@ -78,7 +80,9 @@ module ksm002.a.viewmodel {
             let arrOptionaDates: Array<OptionalDate> = [];
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
-                    
+                    //getAll SpecDate
+                    self.getAllSpecDate();
+                    //console.log(self.fullBoxItemList());
                     //Set Start Day of Company
                     self.getComStartDay().done(function(startDay: number) {
                         self.firstDay(startDay);
@@ -94,16 +98,15 @@ module ksm002.a.viewmodel {
                     self.getDataToOneMonth(self.yearMonthPicked()).done(function(arrOptionaDates) {
                         if (arrOptionaDates.length > 0) {
                             self.optionDates(arrOptionaDates);
-                        } else {
                             self.isNew(false);
-                        }
+                        } 
                     })
                  }else{
                      //In Case no Data, openCDialog                     self.openKsm002CDialog(); 
                 };
                 dfd.resolve();
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 dfd.reject();
             });
             return dfd.promise();
@@ -111,6 +114,7 @@ module ksm002.a.viewmodel {
 
         /**Fill data to each month*/
         getDataToOneMonth(processMonth: string): JQueryPromise<Array<OptionalDate>> {
+            var self = this;
             let dfd = $.Deferred<any>();
             let endOfMonth: number = moment(processMonth).endOf('month').date();
             let isUse: number = 1;
@@ -118,8 +122,9 @@ module ksm002.a.viewmodel {
             //Array Name to fill on  one Date
             let arrName: Array<string> = [];
             let arrId: Array<string> = [];
-            service.getCompanySpecificDateByCompanyDateWithName(processMonth, isUse).done(function(lstComSpecDate: any) {
+            service.getCompanySpecificDateByCompanyDateWithName(processMonth).done(function(lstComSpecDate: any) {
                 if (lstComSpecDate.length > 0) {
+                    self.isNew(false);
                     for (let j = 1; j <= endOfMonth; j++) {
                         let processDay: string = processMonth + _.padStart(j, 2, '0');
                         arrName = [];
@@ -138,7 +143,7 @@ module ksm002.a.viewmodel {
                 }
 
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 dfd.reject();
             });
             return dfd.promise();
@@ -151,42 +156,26 @@ module ksm002.a.viewmodel {
                 //self.firstDay();
                 dfd.resolve(startDayComapny.startDay);
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 dfd.reject();
             });
             return dfd.promise();
         }
-        /** Open Dialog Specific Date Setting*/
-        openKsm002CDialog() {
+        
+        /**
+         * get full selectable item
+         */
+        getAllSpecDate(){
             var self = this;
-            nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                self.start();
-            })
+            service.getAllSpecificDate().done(data=>{
+                data.forEach(item => {
+                    self.fullBoxItemList.push(new BoxModel(item.specificDateItemNo, item.specificName));    
+                });   
+            }).fail(res => {
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+            });            
         }
-        /**Process open E Dialog*/
-        openKsm002EDialog(selectedDate: string) {
-            var self = this;
-            //get data in process date
-            let selectedOptionalDate: OptionalDate = _.find(self.optionDates(), function(o) { return o.start == selectedDate; });
-            //get list id selected OptinonalDate
-            let arrSelecteds: Array<string> = [];
-            if (selectedOptionalDate !== undefined) {
-                arrSelecteds = selectedOptionalDate.listId;
-            } else {
-                selectedOptionalDate = new OptionalDate();
-            }
-            //get list id selectable
-            let arrSelectable: Array<string> = _.map(self.boxItemList(), 'id');
-
-            setShared('KSM002E_PARAM', { date: moment(selectedDate).format('YYYY/MM/DD'), selectable: arrSelectable, selecteds: arrSelecteds });
-            nts.uk.ui.windows.sub.modal('/view/ksm/002/e/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function() {
-                let param: IData = getShared('KSM002E_VALUES');
-                //console.log(param);
-                if (param !== undefined) {
-                    self.setSpecificItemToSelectedDate(param);
-                }
-            });
-        }
+        
         /** set Specific Item To Select*/
         setSpecificItemToSelectedDate(param: IData ){
             var self = this;
@@ -221,7 +210,7 @@ module ksm002.a.viewmodel {
                     self.start();
                 });
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
         }
 
@@ -233,10 +222,11 @@ module ksm002.a.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                     //Set dataSource to Null
                     self.optionDates([]);
+                    self.isNew(true);
                 });
                 dfd.resolve();
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 dfd.reject();
             });
             return dfd.promise();
@@ -247,20 +237,23 @@ module ksm002.a.viewmodel {
             var self = this;
             //Delete before Insert            
             let dfd = $.Deferred<any>();
-            var self = this;
-            if (self.isNew() === true) {
-                self.Insert(self.convertToCommand())
+            if (self.hasItemSpecNotUse()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });
             } else {
-                //Update
-                service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        self.start();
+                if (self.isNew()) {
+                    self.Insert(self.convertToCommand())
+                } else {
+                    //Update
+                    service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            self.start();
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                });
+                }
+                return dfd.promise();
             }
-            return dfd.promise();
         }
 
         /**convert data to command (delete, insert)*/
@@ -279,6 +272,42 @@ module ksm002.a.viewmodel {
             return lstComSpecificDateCommand;
         };
         /**
+         * check spec item is Use
+         */
+        hasItemSpecNotUse(): boolean {
+            var self = this;
+            let allCode = [];
+            let isUseCode = _.map(self.boxItemList(), o => o.id);
+            _.forEach(self.optionDates(), function(k) {
+                allCode = _.concat(allCode, self.getSpecIdfromName(k.listText));
+            });
+            allCode = _.uniq(allCode);
+            let arrDiff: Array<string> = _.difference(allCode, isUseCode);
+            if (arrDiff.length > 0)
+                return true;
+            else
+                return false;
+        }
+        
+        /**get List ID from List NAME*/
+        getSpecIdfromName(arrSpecDateName: string[]): number[]{
+            var self = this;   
+            let arrSpecId = [];
+            arrSpecDateName.forEach(item => {
+                let specDateItem = _.find(self.fullBoxItemList(), o => {return o.name == item});
+                arrSpecId.push(specDateItem.id);       
+            });
+            return arrSpecId; 
+        }
+        
+        /** Open Dialog Specific Date Setting*/
+        openKsm002CDialog() {
+            var self = this;
+            nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                self.start();
+            })
+        }
+        /**
          * open dialog D event
          */
         openKsm002DDialog() {
@@ -292,6 +321,30 @@ module ksm002.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                 
             });  
+        }
+        /**Process open E Dialog*/
+        openKsm002EDialog(selectedDate: string) {
+            var self = this;
+            //get data in process date
+            let selectedOptionalDate: OptionalDate = _.find(self.optionDates(), function(o) { return o.start == selectedDate; });
+            //get list id selected OptinonalDate
+            let arrSelecteds: Array<string> = [];
+            if (selectedOptionalDate !== undefined) {
+                arrSelecteds = selectedOptionalDate.listId;
+            } else {
+                selectedOptionalDate = new OptionalDate();
+            }
+            //get list id selectable
+            let arrSelectable: Array<string> = _.map(self.boxItemList(), 'id');
+            
+            setShared('KSM002_E_PARAM', { date: moment(selectedDate).format('YYYY/MM/DD'), selectable: arrSelectable, selecteds: arrSelecteds });
+            nts.uk.ui.windows.sub.modal('/view/ksm/002/e/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function() {
+                let param: IData = getShared('KSM002E_VALUES');
+                //console.log(param);
+                if (param !== undefined) {
+                    self.setSpecificItemToSelectedDate(param);
+                }
+            });
         }
     }
 

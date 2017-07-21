@@ -24,7 +24,7 @@
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
-					<a data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
+					<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
 					<button class="proceed" data-bind="click: saveMonthlyPatternSetting, enable: enableSave">#{i18n.getText('KSM005_9')}</button>
 					<button class="danger" data-bind="click: deleteMonthlyPatternSetting, enable: enableDelete">#{i18n.getText('KSM005_12')}</button>

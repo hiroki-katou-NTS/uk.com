@@ -111,13 +111,13 @@ module ksm004.d.viewmodel {
                         
                         // set value workingDayAtr
                         switch (dateOfWeek) {
-                            case 0: self.workingDayAtr(self.selectedMon()); break;
-                            case 1: self.workingDayAtr(self.selectedTue()); break;
-                            case 2: self.workingDayAtr(self.selectedWed()); break;
-                            case 3: self.workingDayAtr(self.selectedThu()); break;
-                            case 4: self.workingDayAtr(self.selectedFri()); break;
-                            case 5: self.workingDayAtr(self.selectedSat()); break;
-                            case 6: self.workingDayAtr(self.selectedSun()); break;
+                            case 0: self.workingDayAtr(self.selectedSun()); break;
+                            case 1: self.workingDayAtr(self.selectedMon()); break;
+                            case 2: self.workingDayAtr(self.selectedTue()); break;
+                            case 3: self.workingDayAtr(self.selectedWed()); break;
+                            case 4: self.workingDayAtr(self.selectedThu()); break;
+                            case 5: self.workingDayAtr(self.selectedFri()); break;
+                            case 6: self.workingDayAtr(self.selectedSat()); break;
                             default: break;
                         }
                         //self.workingDayAtr()
