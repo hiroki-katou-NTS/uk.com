@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorkTypeRepository {
 
@@ -29,4 +30,13 @@ public interface WorkTypeRepository {
 	 * @return List WorkType
 	 */
 	List<WorkType> findByCIdAndDisplayAtr(String companyId, int displayAtr);
+
+	/**
+	 * Find by companyId and workTypeCd
+	 * 
+	 * @param companyId
+	 * @param workTypeCd
+	 * @return WorkType
+	 */
+	Optional<WorkType> findByPK(String companyId, String workTypeCd);
 }

@@ -2716,6 +2716,7 @@ var nts;
                         this.occurs = ko.computed(function () { return _this.errors().length !== 0 || _this.gridErrors().length !== 0; });
                         this.allResolved = $.Callbacks();
                         this.allCellsResolved = $.Callbacks();
+                        this.option.show.extend({ notify: "always" });
                         this.errors.subscribe(function () {
                             if (_this.errors().length === 0) {
                                 _this.allResolved.fire();
@@ -2734,6 +2735,7 @@ var nts;
                         });
                     }
                     ErrorsViewModel.prototype.closeButtonClicked = function () {
+                        this.option.show(false);
                     };
                     ErrorsViewModel.prototype.open = function () {
                         this.option.show(true);
@@ -2975,10 +2977,41 @@ var nts;
                                         $(this).dialog("option", "position", { my: "center top", at: "center top", of: window, collision: "none" });
                                         $(this).parent().css("position", "absolute");
                                     }
+                                    var $dialogDocument = $(this).parent();
+                                    var $dialogContentDoc = $(this.lastElementChild.contentDocument);
+                                    $dialogDocument.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
+                                    $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
                                 },
                                 beforeClose: function () {
                                 }
                             }).dialog('open');
+                            $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
                             if (_this.parent !== null)
                                 _this.parent.globalContext.nts.uk.ui.block.clear();
                         });
@@ -5088,6 +5121,8 @@ var nts;
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+                        var tabIndex = $input.attr("tabindex");
+                        $input.data("tabindex", tabIndex);
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
                         var value = data.value;
@@ -5106,7 +5141,19 @@ var nts;
                             $input.attr('disabled', 'disabled');
                             new nts.uk.util.value.DefaultValue().applyReset($input, value);
                         }
-                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
+                        if (readonly === false) {
+                            $input.removeAttr('readonly');
+                            if ($input.data("tabindex") !== undefined) {
+                                $input.attr("tabindex", $input.data("tabindex"));
+                            }
+                            else {
+                                $input.removeAttr("tabindex");
+                            }
+                        }
+                        else {
+                            $input.attr('readonly', 'readonly');
+                            $input.attr("tabindex", -1);
+                        }
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
@@ -5192,6 +5239,8 @@ var nts;
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+                        var tabIndex = $input.attr("tabindex");
+                        $input.data("tabindex", tabIndex);
                     };
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
@@ -12835,6 +12884,93 @@ var nts;
                     };
                 })(ntsFileUpload || (ntsFileUpload = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_20) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsAccordionBindingHandler = (function () {
+                    function NtsAccordionBindingHandler() {
+                    }
+                    NtsAccordionBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
+                        var realActive = (nts.uk.ntsNumber.isNumber(ko.unwrap(active))) ? Number(ko.unwrap(active)) : ko.unwrap(active);
+                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
+                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
+                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
+                        var header = (data.header !== undefined) ? ko.unwrap(data.header) : "> li > :first-child,> :not(li):even";
+                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var activate = (data.activate !== undefined) ? (data.activate) : function (event, ui) { };
+                        var create = (data.create !== undefined) ? (data.create) : function (event, ui) { };
+                        var container = $(element);
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
+                        container.accordion({
+                            active: realActive,
+                            animate: animate,
+                            collapsible: collapsible,
+                            event: event,
+                            header: header,
+                            heightStyle: heightStyle,
+                            disabled: !enable,
+                            beforeActivate: function (event, ui) {
+                                ui.newPanel.removeClass("disappear");
+                                ui.newPanel.stop(false, false);
+                            },
+                            activate: function (event, ui) {
+                                if (ko.isObservable(active))
+                                    active(container.accordion("option", "active"));
+                                ui.oldPanel.addClass("disappear");
+                                ui.newPanel.removeClass("disappear");
+                                activate.call(this, event, ui);
+                            },
+                            create: function (event, ui) {
+                                container.find(".nts-accordion-content").addClass("disappear");
+                                ui.panel.removeClass("disappear");
+                                create.call(this, event, ui);
+                            },
+                            icons: { "header": "ui-icon-caret-1-s", "activeHeader": "ui-icon-caret-1-n" },
+                            classes: {
+                                "ui-accordion": "ntsAccordion",
+                                "ui-accordion-content": "ui-corner-bottom nts-accordion-content"
+                            }
+                        });
+                    };
+                    NtsAccordionBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
+                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
+                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
+                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
+                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var container = $(element);
+                        var currentOption = container.accordion("option");
+                        if (ko.isObservable(active) && currentOption.active !== ko.unwrap(active))
+                            container.accordion("option", "active", Number(ko.unwrap(active)));
+                        if (currentOption.animate != animate)
+                            container.accordion("option", "animate", animate);
+                        if (currentOption.collapsible != collapsible)
+                            container.accordion("option", "collapsible", collapsible);
+                        if (currentOption.event != event)
+                            container.accordion("option", "event", event);
+                        if (currentOption.heightStyle != heightStyle)
+                            container.accordion("option", "heightStyle", heightStyle);
+                        if (currentOption.disabled != !enable)
+                            container.accordion("option", "disabled", !enable);
+                    };
+                    return NtsAccordionBindingHandler;
+                }());
+                ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
+            })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

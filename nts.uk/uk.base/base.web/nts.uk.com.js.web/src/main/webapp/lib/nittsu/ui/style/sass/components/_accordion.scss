@@ -39,5 +39,9 @@
 	.ui-accordion-content {
 		border-top-width: 1px;
 		border-color: #999;
+		
+		&.nts-accordion-content {
+			display: block !important;
+		}
 	}
 }
