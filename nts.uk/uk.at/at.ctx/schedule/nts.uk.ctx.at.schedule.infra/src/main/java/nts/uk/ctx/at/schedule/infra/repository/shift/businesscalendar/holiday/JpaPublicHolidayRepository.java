@@ -69,7 +69,6 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 		KsmmtPublicHoliday entity = this.queryProxy().find(newEntity.ksmmtPublicHolidayPK, KsmmtPublicHoliday.class)
 				.get();
 		entity.holidayName = newEntity.holidayName;
-		this.commandProxy().update(entity);
 
 	}
 

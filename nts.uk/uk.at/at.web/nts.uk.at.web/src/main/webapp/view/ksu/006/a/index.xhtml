@@ -25,7 +25,7 @@
 				<table>
 				  	<col width="180"></col>
 					<col width="400"></col>
-					<col width="280"></col>
+					<col width="340"></col>
 					<!--BEGIN A2_1 ~ A2_3 -->
 					<tr>
 						<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_3')}</div></td>
@@ -60,7 +60,7 @@
 							</div>
 						</td>
 						<td>
-							<label>#{i18n.getText('KSU006_8')}</label>
+							<label id="label-char-code">#{i18n.getText('KSU006_8')}</label>
 							<div tabindex="6" data-bind="ntsComboBox: {
 									options: encodingList,
 									optionsValue: 'code',
@@ -69,7 +69,7 @@
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'name', length: 5}]}">
+										{ prop: 'name', length: 5}]}" class="pull-right">
 							</div>
 						</td>
 					</tr><!--END A3_1 ~ A3_4 -->
@@ -108,7 +108,7 @@
 				</table>
 				
 				<!-- BEGIN SHOW DATA PREVIEW -->
-				<div data-bind="visible: enableDataPreview">
+				<div data-bind="visible: enableDataPreview()" style="display: none;">
 					<!-- BEGIN DAILY UNIT -->
 					<com:ko tag="if" bind="isDataDailyUnit()">
 						<table id="preview" class="dataPreview">
