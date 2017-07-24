@@ -58,8 +58,8 @@ module nts.uk.pr.view.kmf001.d {
                 self.maxDaysCumulationByEmp = ko.observable(null);
                 
                 self.managementOption = ko.observableArray<ManagementModel>([
-                    new ManagementModel(1, '邂｡逅�縺吶ｋ'),
-                    new ManagementModel(0, '邂｡逅�縺励↑縺�')
+                    new ManagementModel(1, '管理する'),
+                    new ManagementModel(0, '管理しない')
                 ]);
                 self.selectedManagement = ko.observable(1);
                 self.hasSelectedEmp = ko.observable(false);
@@ -73,8 +73,8 @@ module nts.uk.pr.view.kmf001.d {
                     return self.annualManage() == 1;
                 }, self);
                 self.leaveAsWorkDaysOpt = ko.observableArray<LeaveAsWorkDaysModel>([
-                    new LeaveAsWorkDaysModel(true, '邂｡逅�縺吶ｋ'),
-                    new LeaveAsWorkDaysModel(false, '邂｡逅�縺励↑縺�')
+                    new LeaveAsWorkDaysModel(true, '管理する'),
+                    new LeaveAsWorkDaysModel(false, '管理しない')
                 ]);
                 self.leaveAsWorkDays = ko.observable(null);
                 self.enableRegister = ko.computed(function() {
