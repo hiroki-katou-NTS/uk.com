@@ -5,23 +5,14 @@
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresults;
 
 /**
- * The Interface ExtBudgTimeZoneValGetMemento.
- *
- * @param <T> the generic type
+ * The Interface ExternalBudgetFileWritter.
  */
-public interface ExtBudgTimeZoneValGetMemento<T> {
-
+public interface ExternalBudgetFileWritter {
+    
     /**
-     * Gets the time period.
+     * Write.
      *
-     * @return the time period
+     * @param executeId the execute id
      */
-    int getTimePeriod();
-
-    /**
-     * Gets the actual value.
-     *
-     * @return the actual value
-     */
-    ExternalBudgetVal<T> getActualValue();
+    void write(String executeId);
 }
