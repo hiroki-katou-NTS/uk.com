@@ -38,6 +38,11 @@
         submit() {
             var self = this;
             $(".ntsColorPicker_Container").trigger("validate");
+             var hasError = nts.uk.ui.errors.hasError() || nts.uk.text.isNullOrEmpty(self.nameMenuBar().trim());
+            if (hasError) {
+                return;
+            }
+            
             //Set data
             var menuBar = {
                 menuBarName: self.nameMenuBar(),
@@ -45,10 +50,8 @@
                 backgroundColor: self.bgColor()    
             }
             
-            if(nts.uk.ui.errors.hasError() !== true){
-                nts.uk.ui.windows.setShared("CCG013I_MENU_BAR", menuBar);            
-                self.closeDialog();
-            }
+            nts.uk.ui.windows.setShared("CCG013I_MENU_BAR", menuBar);            
+            self.closeDialog();
         }
         
         /**

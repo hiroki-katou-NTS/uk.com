@@ -24,9 +24,9 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_27')}</label>
 						</div>
-						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+						<div tabindex="1" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
 						<label>~</label>
-						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+						<div tabindex="2" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
 					</div>
 					<div class="employee_labels">
 						<div data-bind="ntsFormLabel: {}">
@@ -41,9 +41,9 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_29')}</label>
 						</div>
-						<button class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<button tabindex="3" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
-							<label>001 XXXXXXXXXXX</label>
+							<label data-bind="text: worktypeInfoWorkDays()"></label>
 							<br/>
 							<label>002 YYYYYYYYYYY</label>
 						</div>
@@ -53,7 +53,7 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_30')}</label>
 						</div>
-						<button class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<button tabindex="4" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
 							<label>001 XXXXXXXXXXX</label>
 							<br/>
@@ -65,7 +65,7 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_31')}</label>
 						</div>
-						<button class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<button tabindex="5" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
 							<label>001 XXXXXXXXXXX</label>
 							<br/>
@@ -77,7 +77,7 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_32')}</label>
 						</div>
-						<button class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+						<button tabindex="6" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
 							<label>001 XXXXXXXXXXX</label>
 							<br/>
@@ -87,8 +87,8 @@
 				</div>
 				
 				<div id="functions-area-bottom">
-					<button tabindex="1" class="proceed x-large" >#{i18n.getText('KSM005_25')}</button>
-					<button tabindex="2" class="large">#{i18n.getText('KSM005_26')}</button>
+					<button tabindex="7" class="proceed x-large" data-bind="click: saveMonthlyPatternSettingBatch">#{i18n.getText('KSM005_25')}</button>
+					<button tabindex="8" class="large">#{i18n.getText('KSM005_26')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>
