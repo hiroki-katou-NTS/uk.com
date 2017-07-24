@@ -52,7 +52,10 @@ public class ProgramIdConsts {
 	
 	public static final String KSM004A = "KSM004A";
 	
+	public static final String KSM004C = "KSM004C";
+	
 	public static final String KSM004D = "KSM004D";
+
 	
 	
 }

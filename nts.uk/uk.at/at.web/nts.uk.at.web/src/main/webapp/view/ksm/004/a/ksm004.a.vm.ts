@@ -17,8 +17,8 @@ module nts.uk.at.view.ksm004.a {
                 endDate: 31,
                 workplaceId: ko.observable("0"),
                 workplaceName: ko.observable(""),
-                eventDisplay: ko.observable(false),
-                eventUpdatable: ko.observable(false),
+                eventDisplay: ko.observable(true),
+                eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(false),
                 cellButtonDisplay: ko.observable(false)
             }
@@ -30,8 +30,8 @@ module nts.uk.at.view.ksm004.a {
                 endDate: 31,
                 workplaceId: this.currentCalendarWorkPlace().key,
                 workplaceName: this.currentCalendarWorkPlace().name,
-                eventDisplay: ko.observable(false),
-                eventUpdatable: ko.observable(false),
+                eventDisplay: ko.observable(true),
+                eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(false),
                 cellButtonDisplay: ko.observable(false)
             }
@@ -605,8 +605,8 @@ module nts.uk.at.view.ksm004.a {
             convertEnumNametoNumber(name){
                 let n = '';
                 switch(name) {
-                    case '非稼働日（法内）': n = 1; break;
-                    case '非稼働日（法外）': n = 2; break;
+                    case '非稼働日\n（法内）': n = 1; break;
+                    case '非稼働日\n（法外）': n = 2; break;
                     default: n = 0;
                 }         
                 return n;

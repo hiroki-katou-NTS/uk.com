@@ -97,6 +97,7 @@ module nts.uk.at.view.ksu006.a {
                 self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
                 
                 self.totalRecord(nts.uk.resource.getText("KSU006_123", [self.dataPreview().length]));
+                $('#data-preview').css('visibility', 'visible');
             }
             
             private initNameId() {
