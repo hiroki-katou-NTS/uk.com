@@ -10,22 +10,22 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * The Class WorkMonthlySettingCode.
+ * The Class WorkTypeCode.
  */
 // 勤務種類設定コード
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(3)
-public class WorkMonthlySettingCode extends CodePrimitiveValue<WorkMonthlySettingCode>{
+public class WorkTypeCode extends CodePrimitiveValue<WorkTypeCode>{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Instantiates a new work monthly setting code.
+	 * Instantiates a new work type code.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public WorkMonthlySettingCode(String rawValue) {
+	public WorkTypeCode(String rawValue) {
 		super(rawValue);
 	}
 	

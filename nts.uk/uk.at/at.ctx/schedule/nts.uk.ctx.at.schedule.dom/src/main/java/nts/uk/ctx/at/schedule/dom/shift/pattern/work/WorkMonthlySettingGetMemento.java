@@ -20,11 +20,11 @@ public interface WorkMonthlySettingGetMemento {
 	
 	
 	/**
-	 * Gets the work monthly setting code.
+	 * Gets the work type code.
 	 *
-	 * @return the work monthly setting code
+	 * @return the work type code
 	 */
-	public WorkMonthlySettingCode getWorkMonthlySettingCode();
+	public WorkTypeCode getWorkTypeCode();
 	
 	
 	/**
