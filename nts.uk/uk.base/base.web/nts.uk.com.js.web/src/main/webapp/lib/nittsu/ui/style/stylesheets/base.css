@@ -793,6 +793,10 @@ button .icon {
   border-top-width: 1px;
   border-color: #999;
 }
+/* line 43, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-content.nts-accordion-content {
+  display: block !important;
+}
 
 /* line 3, ../sass/components/_editor.scss */
 .ntsControl {
@@ -3387,6 +3391,7 @@ button.nts-switch-button[disabled]:hover {
   height: 35px;
 }
 
+/* line 135, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktype;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -9,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KmnmtWorkType;
+import nts.uk.ctx.at.shared.infra.entity.worktype.KmnmtWorkTypePK;
 
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
@@ -50,6 +52,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> findByCIdAndDisplayAtr(String companyId, int displayAtr) {
 		return this.queryProxy().query(SELECT_BY_CID_DISPLAY_ATR, KmnmtWorkType.class)
 				.setParameter("companyId", companyId).setParameter("displayAtr", displayAtr).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+		return this.queryProxy().find(new KmnmtWorkTypePK(companyId, workTypeCd), KmnmtWorkType.class)
+				.map(x -> toDomain(x));
 	}
 
 }

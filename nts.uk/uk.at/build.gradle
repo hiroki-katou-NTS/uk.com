@@ -217,6 +217,28 @@ project (':at.ctx:record:nts.uk.ctx.at.record.pubimp') {
 }
 //=========================at:record↑=====================================
 
+//=====================at.screen↓==============================
+project (':at.screen:nts.uk.screen.at.ws') {
+	dependencies {
+		compile project (':at.screen:nts.uk.screen.at.app')
+	
+	}
+}
+
+project (':at.screen:nts.uk.screen.at.app') {
+	dependencies {
+	 	compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
+	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
+	}
+}
+
+project (':at.screen:nts.uk.screen.at.infra') {
+	dependencies {
+		compile project (':at.screen:nts.uk.screen.at.app')
+	}
+}
+//=========================at:screen↑=====================================
 //=====================nts.uk.at.web↓==============================
 project (':at.web:nts.uk.at.web') {
 	apply plugin: 'war'
@@ -280,6 +302,10 @@ project (':at.web:nts.uk.at.web') {
 		runtime project (':at.ctx:record:nts.uk.ctx.at.record.pubimp')
 		runtime project (':at.ctx:record:nts.uk.ctx.at.record.ws')
 
+		runtime project (':at.screen:nts.uk.screen.at.ws')
+		runtime project (':at.screen:nts.uk.screen.at.app')
+		runtime project (':at.screen:nts.uk.screen.at.infra')
+		
 		// implement eraAdapter
 		compile group: 'com', name: 'nts.uk.ctx.basic.app', version: '0.1'
 		compile group: 'com', name: 'nts.uk.ctx.basic.infra', version: '0.1'
