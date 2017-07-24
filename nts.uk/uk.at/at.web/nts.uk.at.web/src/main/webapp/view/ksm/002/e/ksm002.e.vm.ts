@@ -21,7 +21,6 @@ module ksm002.e{
                 var self = this;
                 var dfd = $.Deferred();
                 let param: IData  = getShared('KSM002_E_PARAM') || { date: null, selectable: [],selecteds: [] };
-                console.log(param); 
                 self.date = param.date;
                 self.selectedCodes = param.selecteds;
                 service.getSpecificdateByListCode(param.selectable).done(function(data){
@@ -40,11 +39,6 @@ module ksm002.e{
                             });
                         });
                     }
-                    //set size when data < 3
-//                    if(param.selectable.length < 3){
-//                         nts.uk.ui.windows.getSelf().setWidth(550); 
-//                        self.size = 450;   
-//                    }
                     $('#specificItem_0').focus();
                     nts.uk.ui.block.clear();
                     dfd.resolve();

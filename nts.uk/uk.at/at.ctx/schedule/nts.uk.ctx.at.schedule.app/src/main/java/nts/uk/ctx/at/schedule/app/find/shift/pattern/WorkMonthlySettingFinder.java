@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 
 /**
  * The Class WorkMonthlySettingFinder.

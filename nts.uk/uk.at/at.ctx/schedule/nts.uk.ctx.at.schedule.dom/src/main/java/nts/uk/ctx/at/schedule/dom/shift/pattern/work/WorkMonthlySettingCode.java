@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.pattern;
+package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -10,22 +10,24 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * The Class MonthlyPatternCode.
+ * The Class WorkMonthlySettingCode.
  */
-//月間パターンコード
+// 勤務種類設定コード
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(3)
-public class MonthlyPatternCode extends CodePrimitiveValue<MonthlyPatternCode>{
-	
+public class WorkMonthlySettingCode extends CodePrimitiveValue<WorkMonthlySettingCode>{
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Instantiates a new monthly pattern code.
+	 * Instantiates a new work monthly setting code.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public MonthlyPatternCode(String rawValue) {
+	public WorkMonthlySettingCode(String rawValue) {
 		super(rawValue);
 	}
+	
+
 }

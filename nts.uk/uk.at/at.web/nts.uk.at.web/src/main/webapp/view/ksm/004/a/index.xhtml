@@ -49,23 +49,25 @@
 								<label>#{i18n.getText('KSM004_5')}</label>
 							</div>
 							<hr/>
-							<div class="infoTable">
+							<div class="infoTable panel panel-frame">
 								<div><span>#{i18n.getText('KSM004_9')}</span></div>
 								<div>
-									<div class="labelSqr labelSqr1" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
-									<div class="labelSqr labelSqr2" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
-									<div class="labelSqr labelSqr3" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
+									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
+									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
 								</div>
 							</div>
 						</div>
 						<div class="nts-calendar-container">
 							<div class="nts-calendar-header">
 								<div data-bind="ntsDatePicker: {
+								name: '#[KCP006_1]',
 								value: yearMonthPicked, 
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
 								defaultClass: 'round-orange',
-								showJumpButtons: true}"></div>
+								showJumpButtons: true, 
+								required: true }"></div>
 							</div>
 							<div data-bind="with: calendarPanel">
 								<div id="calendar" data-bind="ntsCalendar: {
@@ -103,25 +105,27 @@
 								<label data-bind="text: currentCalendarWorkPlace().name"></label>
 							</div>
 							<hr/>
-							<div class="infoTable">
+							<div class="infoTable panel panel-frame">
 								<div><span>#{i18n.getText('KSM004_9')}</span></div>
 								<div>
-									<div class="labelSqr labelSqr1" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
-									<div class="labelSqr labelSqr2" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
-									<div class="labelSqr labelSqr3" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
+									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
+									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
 								</div>
 							</div>
 						</div>
 						<div class="nts-calendar-container">
 							<div class="nts-calendar-header">
 								<div data-bind="ntsDatePicker: {
-								value: yearMonthPicked, 
+								name: '#[KCP006_1]',
+								value: yearMonthPicked1, 
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
 								defaultClass: 'round-orange',
-								showJumpButtons: true}"></div>
+								showJumpButtons: true,
+								required: true }"></div>
 							</div>
-							<div data-bind="with: calendarPanel">
+							<div data-bind="with: calendarPanel1">
 								<div id="calendar1" data-bind="ntsCalendar: {
 								optionDates: optionDates, 
 								yearMonth: yearMonth, 
@@ -157,25 +161,27 @@
 								<label data-bind="text: currentCalendarClass().name"></label>
 							</div>
 							<hr/>
-							<div class="infoTable">
+							<div class="infoTable panel panel-frame">
 								<div><span>#{i18n.getText('KSM004_9')}</span></div>
 								<div>
-									<div class="labelSqr labelSqr1" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
-									<div class="labelSqr labelSqr2" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
-									<div class="labelSqr labelSqr3" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
+									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
+									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
 								</div>
 							</div>
 						</div>
 						<div class="nts-calendar-container">
 							<div class="nts-calendar-header">
 								<div data-bind="ntsDatePicker: {
-								value: yearMonthPicked, 
+								name: '#[KCP006_1]',
+								value: yearMonthPicked2, 
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
 								defaultClass: 'round-orange',
-								showJumpButtons: true}"></div>
+								showJumpButtons: true,
+								required: true }"></div>
 							</div>
-							<div data-bind="with: calendarPanel">
+							<div data-bind="with: calendarPanel2">
 								<div id="calendar2" data-bind="ntsCalendar: {
 								optionDates: optionDates, 
 								yearMonth: yearMonth, 
