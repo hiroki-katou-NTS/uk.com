@@ -7,17 +7,23 @@ module nts.uk.at.view.kdl023.a.service {
     export function find(key: string): JQueryPromise<model.PatternReflection> {
         return nts.uk.characteristics.restore(key);
     }
+    export function findAllPattern(key: string): JQueryPromise<model.PatternReflection> {
+        return nts.uk.characteristics.restore(key);
+    }
+    export function getHolidayByListDate(dates: Array<string>): JQueryPromise<Array<any>> {
+        return nts.uk.request.ajax('at/schedule/holiday/getHolidayByListDate', dates);
+    }
     export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
         let dfd = $.Deferred();
         // default la working day.
         dfd.resolve({
-            monday: 1,
-            tuesday: 1,
+            monday: 0,
+            tuesday: 0,
             wednesday: 2,
-            thursday: 2,
-            friday: 2,
+            thursday: 0,
+            friday: 0,
             saturday: 1,
-            sunday: 1,
+            sunday: 2,
         });
         return dfd.promise();
     }
