@@ -188,8 +188,6 @@ module nts.uk.pr.view.kmf001.d {
                     if (data) {
                         // Find EmploymentSetting By employment
                         service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
-                            //                        self.hasSelectedEmp(true);
-                            $('#switch-btn').focus();
                             self.bindEmploymentSettingData(data1);
                         });
                         self.hasSelectedEmp(true);
