@@ -257,7 +257,7 @@
             if(indexRemoved >= self.newItems().length){
                 self.newCurrentCodeList.push(newItems[self.newItems().length - 1].primaryKey);
             } else if(indexRemoved < self.newItems().length) {
-                self.newCurrentCodeList.push(newItems[self.newItems().length - (indexRemoved + 1)].primaryKey);
+                self.newCurrentCodeList.push(newItems[indexRemoved - 1].primaryKey);
             } else {
                 self.newCurrentCodeList.push(newItems[indexRemoved].primaryKey);
             }
