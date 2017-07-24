@@ -4,7 +4,7 @@ module ksm002.b.viewmodel {
     export class ScreenModel {
         checkBoxList: KnockoutObservableArray<CheckBoxItem> = ko.observableArray([]); 
         selectedIds: KnockoutObservableArray<number> = ko.observableArray([]); 
-        yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYY01')));
+        yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYYMM')));
         workPlaceText: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KSM002_61', [nts.uk.resource.getText('Com_Workplace')]));
         currentWorkPlace: KnockoutObservable<WorkPlaceObject> = ko.observable(new WorkPlaceObject('',''));
         rootList: Array<IWorkPlaceDto> = []; // list data from server
@@ -74,10 +74,26 @@ module ksm002.b.viewmodel {
                 }
             });
             $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
-                self.getAllSpecDate();
-                self.getSpecDateByIsUse();
-                self.currentWorkPlace().id(_.first($('#tree-grid')['getDataList']()).workplaceId);  
+                self.start(false);    
             });
+        }
+        
+        /**
+         * get required data
+         */
+        start(value: boolean){
+            var self = this;  
+            if(value){
+                self.getSpecDateByIsUse().done(()=>{
+                    if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
+                        self.openDialogC();
+                    }
+                });  
+            } else {
+                self.getAllSpecDate().done(()=>{
+                    self.currentWorkPlace().id(_.first($('#tree-grid')['getDataList']()).workplaceId);         
+                });
+            }
         }
         
         /**
@@ -116,35 +132,52 @@ module ksm002.b.viewmodel {
          * get full selectable item
          */
         getAllSpecDate(){
+            nts.uk.ui.block.invisible();
             var self = this;
+            var dfd = $.Deferred();
             bService.getAllSpecDate().done(data=>{
                 data.forEach(item => {
                     self.fullCheckBoxItem.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
                 });   
+                nts.uk.ui.block.clear();
+                dfd.resolve();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-            });            
+                dfd.reject();
+            }); 
+            return dfd.promise();           
         }
         
         /**
          * get selectable item
          */
         getSpecDateByIsUse(){
+            nts.uk.ui.block.invisible();
             var self = this;
+            var dfd = $.Deferred();
             bService.getSpecificDateByIsUse(1).done(data=>{
-                self.checkBoxList.removeAll();
-                data.forEach(item => {
-                    self.checkBoxList.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
-                });   
+                if(!nts.uk.util.isNullOrEmpty(data)){
+                    self.checkBoxList.removeAll();
+                    let a = []
+                    data.forEach(item => {
+                        a.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
+                    });   
+                    self.checkBoxList(a);
+                }
+                nts.uk.ui.block.clear();
+                dfd.resolve();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-            });            
+                dfd.reject();
+            });   
+            return dfd.promise();          
         }
         
         /**
          * get calendar work place spec date by work place id and year month
          */
         getCalendarWorkPlaceByCode(){
+            nts.uk.ui.block.invisible();
             var self = this;
             bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked()).done(data=>{
                 self.rootList = data;
@@ -159,6 +192,7 @@ module ksm002.b.viewmodel {
                     self.isUpdate(false);
                 }
                 self.calendarPanel.optionDates(a);
+                nts.uk.ui.block.clear();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
@@ -168,10 +202,12 @@ module ksm002.b.viewmodel {
          * insert calendar work place spec date
          */
         insertCalendarWorkPlace(){
+            nts.uk.ui.block.invisible();
             var self = this;
             bService.insertCalendarWorkPlace(self.createCommand()).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.getCalendarWorkPlaceByCode();            
+                self.getCalendarWorkPlaceByCode();      
+                nts.uk.ui.block.clear();      
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
@@ -181,10 +217,12 @@ module ksm002.b.viewmodel {
          * update calendar work place spec date
          */
         updateCalendarWorkPlace(){
+            nts.uk.ui.block.invisible();
             var self = this;
             bService.updateCalendarWorkPlace(self.createCommand()).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getCalendarWorkPlaceByCode();   
+                nts.uk.ui.block.clear();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
@@ -194,13 +232,15 @@ module ksm002.b.viewmodel {
          * delete calendar work place spec date
          */
         deleteCalendarWorkPlace(){
+            nts.uk.ui.block.invisible();
             var self = this;
             bService.deleteCalendarWorkPlace({
                 workPlaceId: self.currentWorkPlace().id(),
                 yearMonth: self.yearMonthPicked()   
             }).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-               self.getCalendarWorkPlaceByCode(); 
+                self.getCalendarWorkPlaceByCode(); 
+                nts.uk.ui.block.clear();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
