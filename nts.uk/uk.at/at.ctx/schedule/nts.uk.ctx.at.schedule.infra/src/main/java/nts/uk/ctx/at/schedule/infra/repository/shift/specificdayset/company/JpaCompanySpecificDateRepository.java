@@ -33,8 +33,7 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KsmmtComSpecDateSet s"
 			+ " INNER JOIN KsmstSpecificDateItem p ON p.itemNo = s.ksmmtComSpecDateSetPK.specificDateItemNo"
 			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
-			+ " AND CAST(s.ksmmtComSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')"
-			+ " AND p.useAtr = :useAtr";
+			+ " AND CAST(s.ksmmtComSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')";
 	
 	/**
 	 *Delete by Month 
@@ -62,11 +61,10 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 * Get list Company Specific Date  WITH name
 	 */
 	@Override
-	public List<CompanySpecificDateItem> getComSpecByDateWithName(String companyId, String specificDate, int useAtr) {
+	public List<CompanySpecificDateItem> getComSpecByDateWithName(String companyId, String specificDate) {
 		return this.queryProxy().query(GET_BY_USE_WITH_NAME, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("specificDate", specificDate)
-				.setParameter("useAtr", useAtr)
 				.getList(x -> toDomainWithName(x));
 	}
 

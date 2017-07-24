@@ -2,14 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.pattern;
+package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Interface MonthlyPatternGetMemento.
+ * The Class WeeklyWorkSettingGetMemento.
  */
-public interface MonthlyPatternGetMemento {
+public interface WeeklyWorkSettingGetMemento {
 	
 	/**
 	 * Gets the company id.
@@ -20,18 +21,18 @@ public interface MonthlyPatternGetMemento {
 	
 	
 	/**
-	 * Gets the monthly pattern code.
+	 * Gets the day of week.
 	 *
-	 * @return the monthly pattern code
+	 * @return the day of week
 	 */
-	public MonthlyPatternCode  getMonthlyPatternCode();
+	public DayOfWeek getDayOfWeek();
 	
 	
 	/**
-	 * Gets the monthly pattern name.
+	 * Gets the work day division.
 	 *
-	 * @return the monthly pattern name
+	 * @return the work day division
 	 */
-	public MonthlyPatternName getMonthlyPatternName();
+	public WorkdayDivision getWorkdayDivision();
 
 }

@@ -59,10 +59,18 @@ module ksm002.b.viewmodel {
             // calendar event handler 
             $("#calendar1").ntsCalendar("init", {
                 cellClick: function(date) {
-                    nts.uk.ui._viewModel.content.viewModelB.setListText(date);
+                    nts.uk.ui._viewModel.content.viewModelB.setListText(date, self.convertNumberToName(self.selectedIds()));
                 },
                 buttonClick: function(date) {
-                    nts.uk.ui._viewModel.content.viewModelB.openDialogE(date);
+                    let item = _.find(self.calendarPanel.optionDates(), o => o.start == date);
+                    if(nts.uk.util.isNullOrUndefined(item)){
+                        nts.uk.ui._viewModel.content.viewModelB.openDialogE({
+                            start: date,
+                            listText: []        
+                        });       
+                    } else {
+                        nts.uk.ui._viewModel.content.viewModelB.openDialogE(item);
+                    }
                 }
             });
             $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
@@ -228,30 +236,34 @@ module ksm002.b.viewmodel {
         /**
          * open dialog E event
          */
-        openDialogE(date: string) {
+        openDialogE(item) {
             var self = this;
             nts.uk.ui.windows.setShared('KSM002_E_PARAM', 
             {
-                date: Number(moment(date).format("YYYYMMDD")),
+                date: Number(moment(item.start).format("YYYYMMDD")),
                 selectable: _.map(self.checkBoxList(), o => o.id),
-                selecteds: ko.mapping.toJS(self.selectedIds())
+                selecteds: self.convertNameToNumber(item.listText)
             });
-            nts.uk.ui.windows.sub.modal("/view/ksm/002/e/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {});  
+            nts.uk.ui.windows.sub.modal("/view/ksm/002/e/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                let param = nts.uk.ui.windows.getShared('KSM002E_VALUES');   
+                self.setListText(
+                    moment(param.date.toString()).format('YYYY-MM-DD'),
+                    self.convertNumberToName(param.selecteds)    
+                );
+            });  
         }
         
         /**
          * setting item list event
          */
-        setListText(date){
+        setListText(date, data){
             var self = this;
-            if(!nts.uk.util.isNullOrEmpty(self.selectedIds())) {
-                let dateData = self.calendarPanel.optionDates();
-                let existItem = _.find(dateData, item => item.start == date);   
-                if(existItem!=null) {
-                    existItem.changeListText(self.convertNumberToName(self.selectedIds()));   
-                } else {
-                    dateData.push(new CalendarItem(date,self.convertNumberToName(self.selectedIds())));    
-                }
+            let dateData = self.calendarPanel.optionDates();
+            let existItem = _.find(dateData, item => item.start == date);   
+            if(existItem!=null) {
+                existItem.changeListText(data);   
+            } else {
+                dateData.push(new CalendarItem(date, data));    
             }
             self.calendarPanel.optionDates.valueHasMutated();
         }
@@ -270,7 +282,7 @@ module ksm002.b.viewmodel {
             let result = 1;
             selectedUniqueCode.forEach(item => {
                 if(_.includes(selectableUniqueCode,item)){
-                    result*=0;   
+                    result*=1;   
                 } else {
                     result*=0;    
                 }    

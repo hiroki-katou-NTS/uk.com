@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkMonthlySettingWs {
 	
+	/** The finder. */
 	@Inject
 	private WorkMonthlySettingFinder finder;
 

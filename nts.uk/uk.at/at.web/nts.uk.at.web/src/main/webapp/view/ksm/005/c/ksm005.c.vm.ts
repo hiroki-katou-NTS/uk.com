@@ -196,7 +196,7 @@ module nts.uk.at.view.ksm005.c {
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
-                    maxRows: 17
+                    maxRows: 15
                 }; 
                 
             }

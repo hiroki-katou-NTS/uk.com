@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 
@@ -43,6 +44,8 @@ public class DefaultPublicHolidayService implements PublicHolidayService {
 		if (isExist(publicHoliday.getCompanyId(), publicHoliday.getDate())){
 			throw new BusinessException("Msg_132");
 		}
+		if (StringUtil.isNullOrEmpty(publicHoliday.getDate().toString(), true) || StringUtil.isNullOrEmpty(publicHoliday.getHolidayName().toString(), true)) 
+		{ throw new BusinessException("");}
 		publicHolidayRepository.add(publicHoliday);		
 		
 	}
