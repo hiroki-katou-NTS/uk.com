@@ -164,6 +164,8 @@ button.search-btn {
 
 #menubar-tabs .menubar-container .title-menu {
 	min-height: 308px;
+	font-size: 0;
+	white-space: nowrap;
 }
 
 #menubar-tabs .menubar-container .title-menu .titlemenu-placeholder {
@@ -178,14 +180,19 @@ button.search-btn {
 	border-radius: 10px;
 	z-index: 1;
 }
-
+#menubar-tabs .menubar-container .title-menu .title-menu-container {
+	font-size: 0;
+	white-space: nowrap;
+	display: inline-block;
+}
 #menubar-tabs .title-menu .title-menu-column {
-	float: left;
+	display: inline-block;
 	width: 140px;
 	padding: 0 3px;
 	margin-right: 25px;
 	margin-bottom: 15px;
 	box-sizing: border-box;
+	vertical-align: top;
 }
 
 #menubar-tabs .title-menu .title-menu-name {
@@ -224,7 +231,8 @@ button.search-btn {
 }
 
 .unsortable {
-	
+	display: inline-block;
+	vertical-align: top;
 }
 
 .label.warning {
