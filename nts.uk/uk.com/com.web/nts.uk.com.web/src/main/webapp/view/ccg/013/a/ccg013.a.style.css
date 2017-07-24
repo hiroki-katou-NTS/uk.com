@@ -9,6 +9,15 @@
 	
 }
 
+#single-list > tbody > tr > td:first-child {
+	text-align: center;
+}
+
+#single-list .icon-dot {
+	vertical-align: middle;
+	font-size: 0px;
+}
+
 .right-content {
 	width: 75%;
 	padding-left: 50px;

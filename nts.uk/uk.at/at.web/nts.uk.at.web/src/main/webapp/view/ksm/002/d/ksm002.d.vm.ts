@@ -40,9 +40,6 @@ module ksm002.d{
                 self.countItem = ko.observable(0);
                 self.param = null; 
             }
-    
-            
-    
             /** get data when start dialog **/
             startPage(): JQueryPromise<any> {
                 nts.uk.ui.block.invisible();
