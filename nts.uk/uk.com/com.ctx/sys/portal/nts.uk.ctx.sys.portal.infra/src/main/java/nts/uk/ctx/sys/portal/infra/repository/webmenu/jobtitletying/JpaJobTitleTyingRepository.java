@@ -23,7 +23,9 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 	private final String SEL = "SELECT s FROM CcgstJobTitleTying s ";
 	private final String FIND_WEB_MENU_CODE = SEL + "WHERE s.ccgstJobTitleTyingPK.companyId = :companyId "
 			+ "AND s.ccgstJobTitleTyingPK.jobId in :jobId ";
-
+	
+	private final String DELETE_WEB_MENU_CODE = "DELETE FROM CcgstJobTitleTying s WHERE s.ccgstJobTitleTyingPK.companyId = :companyId"
+			+ " AND s.webMenuCode = :webMenuCode ";
 //	@Override
 //	public void updateAndInsertMenuCode(List<JobTitleTying> JobTitleTying) {
 //		EntityManager manager = this.getEntityManager();
@@ -91,5 +93,13 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 			lstEntity.add(toEntity(JobTitleTyingItem));
 		}
 		this.commandProxy().insertAll(lstEntity);
+	}
+	
+	@Override
+	public void removeByMenuCode(String companyId, String webMenuCode) {
+		this.getEntityManager().createQuery(DELETE_WEB_MENU_CODE)
+		.setParameter("companyId", companyId)
+		.setParameter("webMenuCode", webMenuCode)
+		.executeUpdate();
 	}
 }

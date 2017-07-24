@@ -18,8 +18,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPattern;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPattern;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternPK_;

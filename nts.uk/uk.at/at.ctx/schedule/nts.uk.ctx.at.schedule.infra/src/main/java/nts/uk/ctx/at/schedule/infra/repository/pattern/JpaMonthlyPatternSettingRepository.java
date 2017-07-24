@@ -19,8 +19,8 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSetting;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSetting;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSetPK_;

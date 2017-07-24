@@ -7,10 +7,10 @@ package nts.uk.ctx.at.schedule.app.command.shift.pattern;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPattern;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternName;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

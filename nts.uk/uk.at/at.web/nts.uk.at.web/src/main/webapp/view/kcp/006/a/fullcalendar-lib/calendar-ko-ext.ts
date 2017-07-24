@@ -23,7 +23,7 @@ module nts.uk.at.view.kcp006.a {
                 event.preventDefault();
                 event.stopPropagation();
                 var choosenDate = $(this).attr("data-date");
-                if (choosenDate){
+                if (choosenDate) {
                     setting.cellClick.call(this, choosenDate);
                 }
             });
@@ -194,21 +194,23 @@ module nts.uk.at.view.kcp006.a {
             //render view after load db
             let lstHoliday = [];
             let lstEvent = [];
-            let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-            fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
-                $(container).fullCalendar('option', {
-                    validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
-                    viewRender: function(view, element) {
-                        fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
-                    },
-                    eventAfterAllRender: function(view) {
-                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
-                    }
+            if (data.yearMonth()) {
+                let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
+                fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
+                    $(container).fullCalendar('option', {
+                        validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
+                        viewRender: function(view, element) {
+                            fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                        },
+                        eventAfterAllRender: function(view) {
+                            fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
+                        }
+                    });
+                    $(container).fullCalendar('removeEvents');
+                    $(container).fullCalendar('addEventSource', events);
+                    $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
                 });
-                $(container).fullCalendar('removeEvents');
-                $(container).fullCalendar('addEventSource', events);
-                $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
-            });
+            }
         }
     }
 

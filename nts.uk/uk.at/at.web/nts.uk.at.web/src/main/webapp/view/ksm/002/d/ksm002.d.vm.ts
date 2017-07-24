@@ -40,11 +40,9 @@ module ksm002.d{
                 self.countItem = ko.observable(0);
                 self.param = null; 
             }
-    
-            
-    
             /** get data when start dialog **/
             startPage(): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred();
                 self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
@@ -72,6 +70,7 @@ module ksm002.d{
                     if(self.specificDateItem().length==0){
                         nts.uk.ui.dialog.info({ messageId: "Msg_135" }).then(function(){nts.uk.ui.windows.close();});
                     }
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
@@ -98,15 +97,18 @@ module ksm002.d{
             }
             /** submit dialog **/
             submitDialog(){
+                nts.uk.ui.block.invisible();
                 let self = this;
                 let listDayToUpdate: Array<number> = [];
                 let listTimeItemToUpdate: Array<number> =[];
                 self.countDay(0);
                 self.countItem(0);
+                let update = 1;
                  nts.uk.ui.errors.clearAll();
                 // check start date <= end date
                 if(self.startMonth() > self.endMonth()){
                     $('#startMonth').ntsError('set', {messageId:"Msg_136"});
+                    update = 0;
                 }
                 // check not choose any day in a week
                 _.each(self.dayInWeek(), function(obj: viewmodel.DayInWeekItem) {
@@ -116,6 +118,7 @@ module ksm002.d{
                 });
                 if(self.countDay() == self.dayInWeek().length && self.enable() == false){
                     $('#day_0').ntsError('set', {messageId:"Msg_137"});
+                    update = 0;
                 }
                 // check not choose any item
                 _.each(self.specificDateItem(), function(obj1: viewmodel.SpecificDateItem) {
@@ -128,6 +131,7 @@ module ksm002.d{
                 });
                 if(self.countItem() == self.specificDateItem().length){
                     $('#item_0').ntsError('set', {messageId:"Msg_138"});
+                    update = 0;
                 }
                 for(let i = 0; i < self.dayInWeek().length; i++){
                     if(self.dayInWeek()[i].choose()==1){
@@ -137,13 +141,21 @@ module ksm002.d{
                 if(self.enable()==true){
                     listDayToUpdate.push(0);     
                 }
-                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), self.param.workplaceObj.id);
-                service.updateSpecificDateSet(object).done(function(data) {
-                    nts.uk.ui.windows.close(); 
-                }).fail(function(res) { 
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-                    dfd.reject(res); 
-                    });
+                if(self.param.workplaceObj==null || self.param.workplaceObj === undefined){
+                   let id = '';
+                }else{
+                    let id = self.param.workplaceObj.id;
+                }
+                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), id);
+                if(update ==1){
+                    service.updateSpecificDateSet(object).done(function(data) {
+                        nts.uk.ui.windows.close(); 
+                    }).fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});
+                        dfd.reject(res); 
+                        });
+                }
+                nts.uk.ui.block.clear();
             }
         }
         // item for radio button
@@ -200,7 +212,7 @@ module ksm002.d{
         // a object was received from mother screen
         interface IData {
             util: number,
-            workplaceObj: any,
+            workplaceObj?: any,
             startDate: number,
             endDate: number
         }

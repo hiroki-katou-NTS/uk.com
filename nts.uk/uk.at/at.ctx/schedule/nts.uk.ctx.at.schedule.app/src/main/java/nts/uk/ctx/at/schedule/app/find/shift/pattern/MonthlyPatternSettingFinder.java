@@ -13,10 +13,10 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingDto;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPattern;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternRepository;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSetting;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSetting;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

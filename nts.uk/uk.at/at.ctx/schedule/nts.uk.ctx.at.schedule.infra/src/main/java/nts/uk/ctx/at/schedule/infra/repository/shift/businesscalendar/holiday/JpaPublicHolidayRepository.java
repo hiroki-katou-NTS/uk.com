@@ -29,9 +29,9 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 	private final String SELECT_ALL = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId";
 	private final String SELECT_SINGLE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyID AND a.ksmmtPublicHolidayPK.date = :date";
 	private final String SELECT_BY_SDATE_EDATE = "SELECT c FROM KsmmtPublicHoliday c"
-			+ " WHERE a.ksmmtPublicHolidayPK.companyId = :companyId"
-			+ " AND a.ksmmtPublicHolidayPK.date >= :strDate"
-			+ " AND a.ksmmtPublicHolidayPK.date <= :endDate";
+			+ " WHERE c.ksmmtPublicHolidayPK.companyId = :companyId"
+			+ " AND c.ksmmtPublicHolidayPK.date >= :strDate"
+			+ " AND c.ksmmtPublicHolidayPK.date <= :endDate";
 
 	@Override
 	public List<PublicHoliday> getHolidaysByListDate(String companyId, List<BigDecimal> lstDate) {
@@ -69,7 +69,6 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 		KsmmtPublicHoliday entity = this.queryProxy().find(newEntity.ksmmtPublicHolidayPK, KsmmtPublicHoliday.class)
 				.get();
 		entity.holidayName = newEntity.holidayName;
-		this.commandProxy().update(entity);
 
 	}
 
@@ -92,7 +91,7 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 	 * @return
 	 */
 	@Override
-	public List<PublicHoliday> getpHolidayWhileDate(String companyId,BigDecimal strDate, BigDecimal endDate) {
+	public List<PublicHoliday> getpHolidayWhileDate(String companyId,int strDate, int endDate) {
 		return this.queryProxy().query(SELECT_BY_SDATE_EDATE, KsmmtPublicHoliday.class)
 				.setParameter("companyId", companyId)
 				.setParameter("strDate", strDate)

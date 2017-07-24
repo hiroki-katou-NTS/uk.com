@@ -105,10 +105,11 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 	}
 	@Override
 	public void deleteCalendarClassByYearMonth(String companyId, String classId, String yearMonth) {
-		this.queryProxy().query(DELETE_BY_YEAR_MONTH, KsmmtCalendarClass.class)
+		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
 				.setParameter("companyId", companyId)
 				.setParameter("classId", classId)
 				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
-				.setParameter("endYM", Integer.valueOf(yearMonth+"31"));
+				.setParameter("endYM", Integer.valueOf(yearMonth+"31"))
+				.executeUpdate();
 	}
 }
