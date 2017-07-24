@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<!-- COMPONENT CCG001 -->
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<!-- #CCG001 -->
+			<com:stylefile path="../o/index.xhtml" />
+			<com:stylefile path="ksu001.a.main.css" />
+			<com:scriptfile path="ksu001.a.start.js" />
+			<com:scriptfile path="ksu001.a.vm.js" />
+			<com:scriptfile path="ksu001.a.service.js" />
+			
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed">#{i18n.getText('KSU001_1')}</button>
+				<button class="done">#{i18n.getText('KSU001_2')}</button>
+				<button class="create">#{i18n.getText('KSU001_3')}</button>
+				<button class="check">#{i18n.getText('KSU001_4')}</button>
+				<button class="confirm">#{i18n.getText('KSU001_5')}</button>
+				<button class="release">#{i18n.getText('KSU001_6')}</button>
+				<button class="output">#{i18n.getText('KSU001_7')}</button>
+				<button class="hope">#{i18n.getText('KSU001_8')}</button>
+				<button class="vacation">#{i18n.getText('KSU001_9')}</button>
+				<button class="revision">#{i18n.getText('KSU001_10')}</button>
+				<button class="setting">#{i18n.getText('KSU001_11')}</button>	
+			</div>
+			<div id="popup-area2" class="popup-area popup-panel" style="display: none; z-index: 100; visibility: visible; top: 95px; left: 181px;">
+				<button class="proceed generally ">#{i18n.getText('KSU001_12')}</button>
+				<span id = "generally-created">#{i18n.getText('KSU001_15')}</span><br/>
+				<button class="proceed simulation">#{i18n.getText('KSU001_13')}</button>
+				<span id = "simulation-explanation">#{i18n.getText('KSU001_16')}</span><br/>
+				<button class="proceed capture">#{i18n.getText('KSU001_14')}</button>
+				<span id = "capture-explanation">#{i18n.getText('KSU001_17')}</span>
+			</div>
+			<div id="popup-area3" class="popup-area popup-panel" style="display: none; z-index: 100; visibility: visible; top: 95px; left: 261px; width: 286px;">
+				<span id = "alarm-check-explanation">#{i18n.getText('KSU001_18')}</span>
+				<table id="multi-list" data-bind="ntsGridList: {
+					height: 385,
+					options: items,
+					optionsValue: 'code',
+					columns: columns,
+					multiple: true,
+					value: currentCodeList}">
+				</table>
+				<button class="proceed execution-popup3">#{i18n.getText('KSU001_21')}</button>
+			</div>
+			<div id="popup-area4" class="popup-area popup-panel" style="display: none; z-index: 100; visibility: visible; top: 95px; left: 807px;width: 280px;">
+				<div id="button-top">
+				<button class="substitute-holiday">#{i18n.getText('Com_CompensationHoliday')}</button>
+				<button class="pause">#{i18n.getText('Com_SubstituteHoliday')}</button>
+				<button class="annual-holiday">#{i18n.getText('Com_PaidHoliday')}</button>
+				</div>
+				<div id="button-bot">
+				<button class="yearly-reserved">#{i18n.getText('Com_FundedPaidHoliday')}</button>
+				<button class="break">#{i18n.getText('Com_ExsessHoliday')}</button>
+				</div>
+			</div>
+			<div id="popup-area5" class="popup-area popup-panel" style="display: none; z-index: 100; visibility: visible; top: 95px; left: 865px;">
+				<div>
+				<button class="sort-order-setting">#{i18n.getText('KSU001_22')}</button>
+				<span>#{i18n.getText('KSU001_30')}</span>
+				</div>
+				
+				<div>
+				<button class="landscape-setting">#{i18n.getText('KSU001_23')}</button>
+				<span>#{i18n.getText('KSU001_31')}</span>
+				</div>
+				
+				<div>
+				<button class="vertical-scale-setting">#{i18n.getText('KSU001_24')}</button>
+				<span>#{i18n.getText('KSU001_32')}</span>
+				</div>
+				
+				<div>
+				<button class="team-setting">#{i18n.getText('KSU001_25')}</button>
+				<span>#{i18n.getText('KSU001_33')}</span>
+				</div>
+				
+				<div>
+				<button class="people-setting">#{i18n.getText('KSU001_26')}</button>
+				<span>#{i18n.getText('KSU001_34')}</span>
+				</div>
+				
+				<div>
+				<button class="rank-setting">#{i18n.getText('KSU001_27')}</button>
+				<span>#{i18n.getText('KSU001_35')}</span>
+				</div>
+				
+				<div>
+				<button class="external-budget-record">#{i18n.getText('KSU001_28')}</button>
+				<span>#{i18n.getText('KSU001_36')}</span>
+				</div>
+				<div>
+				<button class="support-setting">#{i18n.getText('KSU001_29')}</button>
+				<span>#{i18n.getText('KSU001_37')}</span>
+				</div>
+ 			</div>
+			<div id="popup-area6" class="popup-area popup-panel" style="display: none; z-index: 100; visibility: visible; top: 186px; left: 862px;">
+				
+			</div>
+			<div class = "bottom-area">
+				<button id = "arrow-left"><i class="icon icon-button-arrow-left"></i></button>
+				<span id= "date-time-prev" data-bind = "text: dateTimePrev"></span><span id = "spelcial">~</span>
+				<span id= "date-time-after" data-bind = "text: dateTimeAfter"></span>
+				<button id = "arrow-right"><i class="icon icon-button-arrow-right"></i></button>
+
+				<label style ="margin-left: 40px;">#{i18n.getText('KSU001_38')}:</label><div class="cf" data-bind="ntsSwitchButton: {
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedRuleCode}">
+								</div>
+				<label style ="margin-left: 10px;">#{i18n.getText('KSU001_42')}:</label><div class="cf" data-bind="ntsSwitchButton: {
+								options: roundingRules1,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedRuleCode1}">
+								</div>
+				<label style ="margin-left: 10px;">#{i18n.getText('KSU001_46')}:</label><div class="cf" data-bind="ntsSwitchButton: {
+								options: roundingRules2,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedRuleCode2}">
+								</div>
+				<button class="setting-button"><img src="設定.png" style="width: 20px;" /></button>
+				
+			</div>
+			<div id="contents-area">
+				<div id="ccgcomponent_contents">
+					<div class="left-content">
+					<div id="ccgcomponent"></div>
+					</div>
+					<div class="right-content">
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

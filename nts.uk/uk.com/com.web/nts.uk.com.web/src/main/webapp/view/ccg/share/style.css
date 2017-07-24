@@ -20,6 +20,12 @@
 	padding-left: 10px !important;
 }
 
+.contentkcpWorkplace {
+	min-height: 475px;
+	padding-top: 8px !important;
+	padding-left: 10px !important;
+}
+
 #nts-component-tree {
 	padding: 0 !important;
 }

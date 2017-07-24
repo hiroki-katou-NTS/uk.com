@@ -36,9 +36,9 @@ module ksm004.d.viewmodel {
             var self = this;
             //start and end month
             //get data Form : A
-            let param :IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM')|| { classification: 0, yearMonth: 20160101,workPlaceId: null, classId: null };
+            let param :IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM')|| { classification: 0, yearMonth: 20160101,workPlaceId: null, classCD: null };
             //classId
-            self.classId = ko.observable(param.classId);
+            self.classId = ko.observable(param.classCD);
             //workPlaceId
             self.workPlaceId = ko.observable(param.workPlaceId);
 
@@ -111,13 +111,13 @@ module ksm004.d.viewmodel {
                         
                         // set value workingDayAtr
                         switch (dateOfWeek) {
-                            case 0: self.workingDayAtr(self.selectedMon()); break;
-                            case 1: self.workingDayAtr(self.selectedTue()); break;
-                            case 2: self.workingDayAtr(self.selectedWed()); break;
-                            case 3: self.workingDayAtr(self.selectedThu()); break;
-                            case 4: self.workingDayAtr(self.selectedFri()); break;
-                            case 5: self.workingDayAtr(self.selectedSat()); break;
-                            case 6: self.workingDayAtr(self.selectedSun()); break;
+                            case 0: self.workingDayAtr(self.selectedSun()); break;
+                            case 1: self.workingDayAtr(self.selectedMon()); break;
+                            case 2: self.workingDayAtr(self.selectedTue()); break;
+                            case 3: self.workingDayAtr(self.selectedWed()); break;
+                            case 4: self.workingDayAtr(self.selectedThu()); break;
+                            case 5: self.workingDayAtr(self.selectedFri()); break;
+                            case 6: self.workingDayAtr(self.selectedSat()); break;
                             default: break;
                         }
                         //self.workingDayAtr()
@@ -322,7 +322,7 @@ module ksm004.d.viewmodel {
             classification: number,
             yearMonth: number,
             workPlaceId: string,
-            classId: string
+            classCD: string
         }
     }
 

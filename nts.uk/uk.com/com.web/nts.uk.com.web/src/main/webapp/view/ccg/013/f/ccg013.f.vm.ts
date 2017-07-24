@@ -86,8 +86,10 @@ module nts.uk.com.view.ccg013.f.viewmodel {
         /** search in list and return objects satisfy condition start date < date input < end date */
         search() {
             let self = this;
-            console.log(self.date());
             let arrObj = [];
+            if(nts.uk.ui.errors.hasError()) {
+                return;    
+            }
             service.getAllJobTitle(self.date()).done(function(listJobTitle: Array<viewmodel.TitleMenu>) {
                 listJobTitle = _.orderBy(listJobTitle, ["code"], ["asc"]);
                 if (listJobTitle.length > 0) {

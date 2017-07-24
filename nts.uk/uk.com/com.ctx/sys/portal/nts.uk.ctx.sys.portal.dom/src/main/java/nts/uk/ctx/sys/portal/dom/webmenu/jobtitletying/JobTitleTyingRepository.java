@@ -13,7 +13,13 @@ public interface JobTitleTyingRepository {
 	 * @author yennth
 	 * @param JobTitleTying
 	 */
-	void updateAndInsertMenuCode(List<JobTitleTying> JobTitleTying);
+	void updateMenuCode(List<JobTitleTying> JobTitleTying);
+	/**
+	 *insert menu code, if record doesn't exit in list, insert record to the list
+	 * @author yennth
+	 * @param JobTitleTying
+	 */
+	void insertMenuCode(List<JobTitleTying> JobTitleTying);
 	/**
 	 * find a web menu code list in the list
 	 * @param companyId
@@ -21,8 +27,11 @@ public interface JobTitleTyingRepository {
 	 * @return
 	 */
 	List<JobTitleTying> findWebMenuCode(String companyId, List<String> jobId);
+    
 	/**
-	 * check web menu code
+	 * Remove all job title by web menu code
+	 * @param companyId
+	 * @param webMenuCode
 	 */
-	void validate(JobTitleTying obj);
+	void removeByMenuCode(String companyId, String webMenuCode);
 }

@@ -7,6 +7,9 @@
 		#nts-component-list table tr td {
 			white-space: nowrap;
 		}
+		.float-left {
+			float: left;
+		}
 	</style>
 	<div id="nts-component-list"
 		style="padding: 20px; border-radius: 5px;" data-bind="style: {width: gridStyle.totalComponentSize + 'px', height: gridStyle.totalHeight + 'px'},
@@ -16,18 +19,19 @@
 		</com:ko>
 		<com:ko tag="if" bind="hasBaseDate">
 			<div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">#{i18n.getText('KCP003_2')}</div>
-			<div class="base-date-editor" style="margin-left: 20px;" data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate(), required: true}"></div>
-			<button data-bind="click: reload" style="width: 100px">#{i18n.getText('KCP003_3')}</button>
+			<div class="base-date-editor" style="margin-left: 20px;" data-bind="attr: {tabindex: tabIndex.baseDateInput}, ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate(), required: true}"></div>
+			<button data-bind="attr: {tabindex: tabIndex.decideButton}, click: reload" style="width: 100px">#{i18n.getText('KCP003_3')}</button>
 		</com:ko>
-		<div style="width: 350px; margin-bottom: 10px; float: left;"
-			data-bind="ntsSearchBox: searchOption">
+		<div style="width: 350px; margin-bottom: 10px;"
+			data-bind="attr: {tabindex: tabIndex.searchBox}, css: {'float-left': isHasButtonSelectAll}, ntsSearchBox: searchOption">
 		</div>
 
 		<com:ko tag="if" bind="isHasButtonSelectAll">
-			<button data-bind="click: selectAll" style="margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
+			<button data-bind="attr: {tabindex: tabIndex.selectAllButton}, click: selectAll" style="margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
+			<div style="clear: both;"></div>
 		</com:ko>
-		<table style="clear: both;"
-			data-bind="ntsGridList: {
+		<table
+			data-bind="attr: {tabindex: tabIndex.table}, ntsGridList: {
 				width: gridStyle.totalColumnSize,
 				dataSource: itemList,
 				primaryKey: targetKey,

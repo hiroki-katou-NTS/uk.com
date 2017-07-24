@@ -38,13 +38,14 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                 { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80 },
                 { headerText: nts.uk.resource.getText("CCG013_52"), key: 'targetItems', width: 150 },
                 {
-                    headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', width: 150
+                    headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', formatter: _.escape, width: 150
                     //template: "<input class=\"displayName-input\" type=\"text\" value=\"${displayName}\" />"
                 }
             ];
             self.currentCode = ko.observable();
             self.selectedCode.subscribe((value) => {
                 self.getListStandardMenu(value);
+                $("#grid").igGrid("option", "dataSource", self.list()); 
             });
         }
 
@@ -75,7 +76,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                 });
                 self.getListStandardMenu("0");
                 
-                initGrid(self.columns, self.list());
+                self.initGrid();
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -139,7 +140,49 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             nts.uk.ui.windows.close(); 
         }
         
-        
+        /**
+         * Init grid
+         */
+        initGrid(): void {
+            var self = this;
+            $("#grid").igGrid({
+                primaryKey: "id",
+                columns: self.columns,
+                dataSource: self.list(),
+                features: [
+                {
+                    name: 'Selection',
+                    mode: 'row',
+                    multipleSelection: true,
+                    activation: false       
+                },
+                {
+                    name: "Updating",
+                    enableAddRow: false,
+                    editMode: "cell",
+                    autoCommit: true,
+                    enableDeleteRow: false,
+                    virtualization: true,
+                    virtualizationMode: 'continuous',
+                    columnSettings: [
+                        { columnKey: "displayName", editorType: "text", editorOptions: { type: "text", disabled: false} },
+                        { columnKey: "code", editorOptions: { disabled: true} },
+                        { columnKey: "targetItems", editorOptions: { disabled: true} },
+                    ],
+                    editCellEnded: function(evt, ui){ 
+                        let dataSource: Array<any> = $("#grid").igGrid("option", "dataSource"),
+                            row = dataSource[ui.rowID];
+                        if (row) {
+                            row.displayName = ui.value;
+                        }  
+                        $("#grid").igGrid("option", "dataSource", dataSource); 
+                    }
+                }]
+            });   
+            
+            $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
+            $("#grid").setupSearchScroll("igGrid", true);
+        }
     }
 
     class ItemModel {
@@ -169,48 +212,6 @@ module nts.uk.com.view.ccg013.k.viewmodel {
     }
 }
 
-/**
- * Init grid
- */
-function initGrid(column, dataSource) {
-    $("#grid").igGrid({
-        primaryKey: "id",
-        columns: column,
-        dataSource: dataSource,
-        features: [
-        {
-            name: 'Selection',
-            mode: 'row',
-            multipleSelection: true,
-            activation: false       
-        },
-        {
-            name: "Updating",
-            enableAddRow: false,
-            editMode: "cell",
-            autoCommit: true,
-            enableDeleteRow: false,
-            virtualization: true,
-            virtualizationMode: 'continuous',
-            columnSettings: [
-                { columnKey: "displayName", editorType: "text", editorOptions: { type: "text", disabled: false} },
-                { columnKey: "code", editorOptions: { disabled: true} },
-                { columnKey: "targetItems", editorOptions: { disabled: true} },
-            ],
-            editCellEnded: function(evt, ui){ 
-                let dataSource: Array<any> = $("#grid").igGrid("option", "dataSource"),
-                    row = dataSource[ui.rowID];
-                if (row) {
-                    row.displayName = ui.value;
-                }  
-                $("#grid").igGrid("option", "dataSource", dataSource); 
-            }
-        }]
-    });   
-    
-    $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
-    $("#grid").setupSearchScroll("igGrid", true);
-}
 
 /**
  * Validate input display name

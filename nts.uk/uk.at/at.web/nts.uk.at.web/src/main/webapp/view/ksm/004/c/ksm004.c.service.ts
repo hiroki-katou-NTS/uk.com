@@ -19,7 +19,7 @@ module nts.uk.at.view.ksm004.c.service {
     }
 
     /** Delete PublicHoliday */
-    export function deletePublicHoliday(date: string): JQueryPromise<void> {
-        return nts.uk.request.ajax("at", paths.deletePublicHoliday, date);
+    export function deletePublicHoliday(command): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.deletePublicHoliday, command);
     }
 }

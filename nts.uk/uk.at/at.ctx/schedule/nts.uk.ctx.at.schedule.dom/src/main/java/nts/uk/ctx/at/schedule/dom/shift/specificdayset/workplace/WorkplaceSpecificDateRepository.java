@@ -7,7 +7,7 @@ public interface WorkplaceSpecificDateRepository {
 	List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, int specificDate);
 
 	// get List Company Specific Date by Date WITH NAME
-	List<WorkplaceSpecificDateItem> getWpSpecByDateWithName(String workplaceId, String specificDate, int useAtr);
+	List<WorkplaceSpecificDateItem> getWpSpecByDateWithName(String workplaceId, String specificDate);
 
 	// insert to Company Specific Date
 	void InsertWpSpecDate(List<WorkplaceSpecificDateItem> lstWpSpecDateItem);
