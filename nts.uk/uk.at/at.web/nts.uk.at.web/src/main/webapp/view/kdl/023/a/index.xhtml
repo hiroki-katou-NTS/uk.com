@@ -49,6 +49,19 @@
 							<div class="margin-left-100">
 								<div class="control-group" data-bind="with: statutorySetting">
 									<div data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_6')}' }"></div>
+									<!-- <div id="sdasd" class="pull-left" style="margin-left: 36px"
+										data-bind="ntsComboBox: {
+												name: 'abcx',
+												options: $parent.itemList,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: $parent.selectedCode,
+												enable: true,
+												columns: [
+													{ prop: 'code', length: 3 },
+													{ prop: 'name', length: 5 },
+												]}">
+									</div> -->
 								</div>
 								<div class="control-group" data-bind="with: nonStatutorySetting">
 									<div data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}' }"></div>

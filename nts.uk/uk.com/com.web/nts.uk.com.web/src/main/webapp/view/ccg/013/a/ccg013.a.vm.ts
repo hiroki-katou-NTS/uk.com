@@ -27,6 +27,7 @@ module ccg013.a.viewmodel {
         checkDisabled: KnockoutObservable<boolean>;
 
         constructor() {
+
             var self = this;
             // WebMenu
             self.listWebMenu = ko.observableArray([]);
@@ -150,7 +151,9 @@ module ccg013.a.viewmodel {
                     service.deleteWebMenu(webMenuCode).done(function() {
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         self.getWebMenu().done(() => {
-                            if (self.index() == self.listWebMenu().length) {
+                            if self.listWebMenu().length == 0) {
+                                self.cleanForm();
+                            } else if (self.index() == self.listWebMenu().length) {
                                 self.currentWebMenuCode(self.listWebMenu()[self.index() - 1].webMenuCode);
                             } else {
                                 self.currentWebMenuCode(self.listWebMenu()[self.index()].webMenuCode);
@@ -218,8 +221,9 @@ module ccg013.a.viewmodel {
                 menuBars: []
             }));
             self.currentWebMenuCode("");
-            nts.uk.ui.errors.clearAll();
-
+            if (self.listWebMenu().length > 0) {
+                nts.uk.ui.errors.clearAll();
+            }
         }
 
         /** Get Webmenu */
@@ -227,11 +231,15 @@ module ccg013.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.loadWebMenu().done(function(data) {
-                self.listWebMenu.removeAll();
-                _.forEach(data, function(item) {
-                    self.listWebMenu.push(new WebMenuModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
-                });
-                dfd.resolve(data);
+                if (data.length != 0) {
+                    self.listWebMenu.removeAll();
+                    _.forEach(data, function(item) {
+                        self.listWebMenu.push(new WebMenuModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
+                    });
+                } else {
+                    self.listWebMenu([]);
+                }
+                dfd.resolve();
             }).fail((res) => { });
             return dfd.promise();
         }
