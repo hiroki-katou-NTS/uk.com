@@ -1,12 +1,16 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresults;
 
 import java.io.File;
 import java.util.Map;
 
 /**
- * The Interface ExternalBudgetImportData.
+ * The Interface ExternalBudgetFileReader.
  */
-public interface ExternalBudgetImportData {
+public interface ExternalBudgetFileReader {
     
     /**
      * Find data preview.
@@ -17,12 +21,12 @@ public interface ExternalBudgetImportData {
     Map<String, Object> findDataPreview(File file);
     
     /**
-     * Execute.
+     * Read.
      *
      * @param externalBudgetCode the external budget code
      * @param file the file
      */
-    void execute(String externalBudgetCode, File file);
+    void read(String externalBudgetCode, File file);
     
     /**
      * Close.

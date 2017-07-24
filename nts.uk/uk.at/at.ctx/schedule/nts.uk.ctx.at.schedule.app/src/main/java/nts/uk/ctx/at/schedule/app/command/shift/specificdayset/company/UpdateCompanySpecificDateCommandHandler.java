@@ -21,7 +21,12 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 	@Override
 	protected void handle(CommandHandlerContext<List<CompanySpecificDateCommand>> context) {
 		String companyId = AppContexts.user().companyId();
+		
 		List<BigDecimal> listSpecDate = context.getCommand().stream().map(c->c.getSpecificDate()).distinct().collect(Collectors.toList());
+		
+//		for(UpdateCompanySpecificDateCommand updateCommand : context.getCommand()){
+//			
+//		}
 		for(BigDecimal specDate : listSpecDate)	{
 			companyRepo.deleteComSpecByDate(companyId, specDate.intValue());
 		};
