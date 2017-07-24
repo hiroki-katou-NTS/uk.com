@@ -36,9 +36,9 @@ module ksm004.d.viewmodel {
             var self = this;
             //start and end month
             //get data Form : A
-            let param :IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM')|| { classification: 0, yearMonth: 20160101,workPlaceId: null, classId: null };
+            let param :IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM')|| { classification: 0, yearMonth: 20160101,workPlaceId: null, classCD: null };
             //classId
-            self.classId = ko.observable(param.classId);
+            self.classId = ko.observable(param.classCD);
             //workPlaceId
             self.workPlaceId = ko.observable(param.workPlaceId);
 
@@ -322,7 +322,7 @@ module ksm004.d.viewmodel {
             classification: number,
             yearMonth: number,
             workPlaceId: string,
-            classId: string
+            classCD: string
         }
     }
 
