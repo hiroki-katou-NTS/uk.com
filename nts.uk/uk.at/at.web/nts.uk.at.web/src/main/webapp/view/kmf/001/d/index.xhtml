@@ -55,13 +55,19 @@
 									</td>
 									<td>
 										<div class="margin-bottom">
-											<input id="year-amount-company" data-bind="ntsNumberEditor: {
+											<input id="year-amount-company"
+												data-bind="ntsNumberEditor: {
 												value: retentionYearsAmount,
 												constraint: 'RetentionYearsAmount',
-												option: textEditorOption,
+												option: {
+										width: '50px',
+										unitID: 'YEARS',
+										textalign: 'center'
+									},
 												required: true,
 												enable: isManaged,
-												readonly: false}" tabindex="5"/> 
+												readonly: false}"
+												tabindex="5" />
 										</div>
 									</td>
 								</tr>
@@ -74,13 +80,19 @@
 									</td>
 									<td>
 										<div class="margin-bottom">
-											<input id="max-days-company" data-bind="ntsNumberEditor: {
+											<input id="max-days-company"
+												data-bind="ntsNumberEditor: {
 												value: maxDaysCumulation,
 												constraint: 'MaxDaysRetention',
-												option: textEditorOption,
+												option: {
+										width: '50px',
+										unitID: 'DAYS',
+										textalign: 'center'
+									},
 												required: true,
 												enable: isManaged,
-												readonly: false}" tabindex="6"/>
+												readonly: false}"
+												tabindex="6" />
 										</div>
 									</td>
 								</tr>
@@ -156,7 +168,12 @@
 												<input id='year-amount-emp' data-bind="ntsNumberEditor: {
 													value: yearsAmountByEmp,
 													constraint: 'RetentionYearsAmount',
-													option: textEditorOption,
+													constraint: 'RetentionYearsAmount',
+												option: {
+										width: '50px',
+										unitID: 'YEARS',
+										textalign: 'center'
+									},
 													required: true,
 													enable: hasSelectedEmp,
 													readonly: false}" tabindex="3"/>
@@ -174,7 +191,11 @@
 												<input id='max-days-emp' data-bind="ntsNumberEditor: {
 													value: maxDaysCumulationByEmp,
 													constraint: 'MaxDaysRetention',
-													option: textEditorOption,
+													option: {
+										width: '50px',
+										unitID: 'DAYS',
+										textalign: 'center'
+									},
 													required: true,
 													enable: hasSelectedEmp,
 													readonly: false}" tabindex="4"/>
