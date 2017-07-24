@@ -4,9 +4,9 @@ module ccg013.a {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
         });
-    });
+    }); 
 }
-//
+// 
 //$(window).on('resize', function() {
 //    let container = $('#menu_container'),
 //        parent = container.parent('div');
