@@ -219,11 +219,7 @@
             
             //Set focus for an item or multiple items
             if (countItems > 1) {
-                if (newItems.length == 0) {
-                    return;    
-                }
-                
-                self.newCurrentCodeList.push(newItems[indexRemoved].primaryKey);
+                self.setFocusItems(newItems, indexRemoved);    
             } else {
                 self.setFocusItem(newItems, indexRemoved);    
             }
@@ -248,6 +244,24 @@
                 self.newCurrentCodeList.push(newItems[itemOrder + 1].primaryKey);       
             }
         }
+        
+        /**
+         * Set focus for multiple items
+         */
+        setFocusItems(newItems, indexRemoved: number): void{
+            var self = this;
+            if (newItems.length == 0) {
+                return;    
+            }
+            
+            if(indexRemoved >= self.newItems().length){
+                self.newCurrentCodeList.push(newItems[self.newItems().length - 1].primaryKey);
+            } else if(indexRemoved < self.newItems().length) {
+                self.newCurrentCodeList.push(newItems[self.newItems().length - (indexRemoved + 1)].primaryKey);
+            } else {
+                self.newCurrentCodeList.push(newItems[indexRemoved].primaryKey);
+            }
+        }
                 
         /**
          * Pass data to main screen
@@ -258,7 +272,7 @@
                         
             nts.uk.ui.windows.setShared("CCG013D_MENUS", self.newItems());
             
-            self.closeDialog();
+            nts.uk.ui.windows.close();
         }
         
         /**

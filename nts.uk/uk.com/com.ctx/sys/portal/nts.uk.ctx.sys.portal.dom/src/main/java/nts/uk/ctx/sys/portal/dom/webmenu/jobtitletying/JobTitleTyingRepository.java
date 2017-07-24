@@ -27,5 +27,11 @@ public interface JobTitleTyingRepository {
 	 * @return
 	 */
 	List<JobTitleTying> findWebMenuCode(String companyId, List<String> jobId);
-
+    
+	/**
+	 * Remove all job title by web menu code
+	 * @param companyId
+	 * @param webMenuCode
+	 */
+	void removeByMenuCode(String companyId, String webMenuCode);
 }
