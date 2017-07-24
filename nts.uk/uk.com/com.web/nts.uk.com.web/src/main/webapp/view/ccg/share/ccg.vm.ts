@@ -163,10 +163,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
                     self.applyDataSearch();
-                    $(".accordion").accordion({
-                        active: false,
-                        collapsible: true
-                    });
                     dfd.resolve();
                 });
                 
