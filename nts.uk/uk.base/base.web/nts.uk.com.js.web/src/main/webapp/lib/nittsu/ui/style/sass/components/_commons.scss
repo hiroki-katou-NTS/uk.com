@@ -127,6 +127,13 @@ div.form-label {
 	}
 }
 
+.constraint-label {
+	display: block;
+	margin-top: 1px;
+	font-size: $bfs * 1.4;
+	font-weight: normal;
+	color: #777777;
+}
 /*****************************
   NtsPopupPanel
 *****************************/
