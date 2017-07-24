@@ -21,12 +21,12 @@ th.dataPreview {
 }
 
 td {
-	padding-bottom: 20px;
+	padding: 10px 20px 10px 20px;
 }
 
 td.dataPreview {
 	border: 1px solid black;
-	padding: 10px 20px 10px 20px;
+	/* padding: 10px 20px 10px 20px; */
 	white-space: nowrap;
 }
 
@@ -49,4 +49,8 @@ td.dataPreview {
 	width: 50px !important; padding : 0 !important;
 	white-space: normal !important;
 	padding: 0 !important;
+}
+#label-char-code {
+	padding-top: 9px !important;
+	float: left;
 }

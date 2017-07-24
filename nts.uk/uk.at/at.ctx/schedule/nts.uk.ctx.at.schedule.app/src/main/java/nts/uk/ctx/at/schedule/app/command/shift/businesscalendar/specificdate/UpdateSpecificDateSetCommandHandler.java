@@ -26,7 +26,9 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	private CompanySpecificDateRepository companyRepo;
 	@Inject
 	private PublicHolidayRepository holidayRepo;
-	
+	/**
+	 * Update Specific Date Set 
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSpecificDateSetCommand> context) {
 		UpdateSpecificDateSetCommand data = context.getCommand();
@@ -65,6 +67,13 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		}
 		return value;
 	}
+	/**
+	 * check Selected Holiday
+	 * @param dayofWeek
+	 * @param strDate
+	 * @param endDate
+	 * @return
+	 */
 	public List<PublicHoliday> checkSelectedHoliday(List<Integer> dayofWeek, int strDate, int endDate){
 		String companyId = AppContexts.user().companyId();
 		boolean check = false;
@@ -157,7 +166,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 						a1 = new ArrayList<>();
 					}
 				}
-				//get by list aa
 				List<WorkplaceSpecificDateItem> listwpSpec = new ArrayList<>();
 				for (Integer addNew : lstAddNew) {
 					listwpSpec.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,dateBigDecimal, BigDecimal.valueOf(addNew),""));
@@ -217,7 +225,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				List<Integer> lstAddNew = new ArrayList<Integer>();
 				//find item not exist in db
 				if(lstAdd.size()==0){
-					//lst = lstTimeItemId
 					lstAddNew = lstTimeItemId;
 				}else{
 					List<CompanySpecificDateItem>	a1 = new ArrayList<>();
@@ -243,7 +250,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				companyRepo.addListComSpecDate(listwpSpec);
 				date = date.addDays(1);
 				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
-				
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new
 				//delete setting old workplace
@@ -255,7 +261,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					lstComSpecificDate.add(CompanySpecificDateItem.createFromJavaType(companyId, dateBigDecimal, BigDecimal.valueOf(timeItemId),""));
 				}
 				companyRepo.addListComSpecDate(lstComSpecificDate);
-				
 			}
 			date = date.addDays(1);
 		}

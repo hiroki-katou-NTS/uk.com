@@ -1,0 +1,49 @@
+#combo-box1{
+	top:9px; 
+}
+#time-edit1{
+	text-align: center !important;
+    width: 43px !important;
+}
+#time-edit2{
+	text-align: center !important;
+    width: 43px !important;
+}
+#bot-sky{
+	margin-top: 25px;
+}
+.reserved{
+	margin-left: 10px;
+}
+.reserved{
+	margin-left: 30px;
+}
+.switchButton-wrapper{
+	margin-left: 30px;
+}
+#combo-box2{
+	top:9px;
+	margin-left: 30px;
+	min-width: 590px !important; 
+}
+#combo-box1{
+	min-width: 335px !important; 
+}
+#button-top{
+	float: right;
+}
+#spelcial{
+	margin-left: 10px;
+}
+#time-edit2{
+	margin-left: 10px;
+}
+.04_1{
+	margin-top: -3px !important;
+}
+.undo-button{
+	margin-right: 170px;
+}
+.nts-switch-button{
+	width: 96px;
+}
