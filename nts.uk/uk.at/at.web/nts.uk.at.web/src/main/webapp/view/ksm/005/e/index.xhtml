@@ -24,9 +24,9 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_27')}</label>
 						</div>
-						<div tabindex="1" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+						<div tabindex="1" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yearmonth'}"></div>
 						<label>~</label>
-						<div tabindex="2" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+						<div tabindex="2" data-bind="ntsDatePicker: {value: endYearMonth, dateFormat: 'yearmonth'}"></div>
 					</div>
 					<div class="employee_labels">
 						<div data-bind="ntsFormLabel: {}">
@@ -45,7 +45,7 @@
 						<div class="pull-left contentDetail">
 							<label data-bind="text: worktypeInfoWorkDays()"></label>
 							<br/>
-							<label>002 YYYYYYYYYYY</label>
+							<label data-bind="text: worktimeInfoWorkDays()"></label>
 						</div>
 					</div>
 					<div class="pull-left workday_labels">
@@ -55,9 +55,9 @@
 						</div>
 						<button tabindex="4" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
-							<label>001 XXXXXXXXXXX</label>
+							<label data-bind="text: worktypeInfoStatutoryHolidays()"></label>
 							<br/>
-							<label>002 YYYYYYYYYYY</label>
+							<label data-bind="text: worktimeInfoStatutoryHolidays()"></label>
 						</div>
 					</div>
 					<div class="pull-left workday_labels">
@@ -67,9 +67,9 @@
 						</div>
 						<button tabindex="5" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
-							<label>001 XXXXXXXXXXX</label>
+							<label data-bind="text: worktypeInfoNoneStatutoryHolidays()"></label>
 							<br/>
-							<label>002 YYYYYYYYYYY</label>
+							<label data-bind="text: worktimeInfoNoneStatutoryHolidays()"></label>
 						</div>
 					</div>
 					<div class="pull-left workday_labels">
@@ -79,15 +79,18 @@
 						</div>
 						<button tabindex="6" class="pull-left large">#{i18n.getText('KSM005_23')}</button>
 						<div class="pull-left contentDetail">
-							<label>001 XXXXXXXXXXX</label>
+							<label data-bind="text: worktypeInfoPublicHolidays()"></label>
 							<br/>
-							<label>002 YYYYYYYYYYY</label>
+							<label data-bind="text: worktimeInfoPublicHolidays()"></label>
 						</div>
 					</div>
 				</div>
 				
 				<div id="functions-area-bottom">
-					<button tabindex="7" class="proceed x-large" data-bind="click: saveMonthlyPatternSettingBatch">#{i18n.getText('KSM005_25')}</button>
+					<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KSM005_33')}</div>
+					<br />
+					<br />
+					<button tabindex="7" class="proceed x-large" data-bind="click: saveMonthlyPatternSettingBatch">#{i18n.getText('KSM005_34')}</button>
 					<button tabindex="8" class="large">#{i18n.getText('KSM005_26')}</button>
 				</div>
 			</ui:define>

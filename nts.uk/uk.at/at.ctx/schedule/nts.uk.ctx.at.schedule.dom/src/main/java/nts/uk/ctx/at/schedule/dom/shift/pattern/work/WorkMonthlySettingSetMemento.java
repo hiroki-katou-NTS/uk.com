@@ -23,11 +23,11 @@ public interface WorkMonthlySettingSetMemento {
 	
 	
 	/**
-	 * Sets the work monthly setting code.
+	 * Sets the work type code.
 	 *
-	 * @param workMonthlySettingCode the new work monthly setting code
+	 * @param workTypeCode the new work type code
 	 */
-	public void setWorkMonthlySettingCode(WorkMonthlySettingCode workMonthlySettingCode);
+	public void setWorkTypeCode(WorkTypeCode workTypeCode);
 	
 	
 	/**
