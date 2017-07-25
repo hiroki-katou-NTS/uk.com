@@ -4,11 +4,14 @@ module nts.uk.at.view.kdl023.a.viewmodel {
     import WeeklyWorkSetting = service.model.WeeklyWorkSetting;
     import PublicHoliday = service.model.PublicHoliday;
     import ReflectionMethod = service.model.ReflectionMethod;
+    import WorkType = service.model.WorkType;
+    import WorkTime = service.model.WorkTime;
 
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModelCbb1>;
         selectedCode: KnockoutObservable<string>;
-        listWorkType: KnockoutObservableArray<ItemModelCbb1>;
+        listWorkType: KnockoutObservableArray<WorkType>;
+        listWorkTime: KnockoutObservableArray<WorkTime>;
 
         patternReflection: PatternReflection;
         dailyPatternSetting: service.model.DailyPatternSetting;
@@ -39,11 +42,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                 new ItemModelCbb1('2', '役職手当'),
                 new ItemModelCbb1('3', '基本給')
             ]);
-            self.listWorkType = ko.observableArray([
-                new ItemModelCbb1('1', 'aaaaa'),
-                new ItemModelCbb1('2', 'bbbb'),
-                new ItemModelCbb1('3', 'cccc')
-            ]);
+            self.listWorkType = ko.observableArray([]);
+            self.listWorkTime = ko.observableArray([]);
             self.selectedCode = ko.observable('1');
 
             self.dailyPatternSetting = {};
@@ -84,26 +84,35 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         }
 
         public startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
-            nts.uk.ui.block.invisible();
-            $.when(service.find('empId'), service.findWeeklyWorkSetting(), service.getHolidayByListDate(self.getListDateOfMonth()))
-                .done(function(patternReflection: service.model.PatternReflection, weeklyWorkSetting: WeeklyWorkSetting, listHoliday) {
+            $.when(service.find('empId'),
+                service.findWeeklyWorkSetting(),
+                service.getHolidayByListDate(self.getListDateOfMonth()),
+                service.getAllWorktype())
+                .done(function(patternReflection: service.model.PatternReflection,
+                    weeklyWorkSetting: WeeklyWorkSetting,
+                    listHoliday,
+                    listWorkType) {
                     // Set list holiday
                     self.listHoliday = listHoliday;
+
+                    // Set list worktype.
+                    self.listWorkType(listWorkType);
 
                     // Set weeklyWorkSetting
                     self.weeklyWorkSetting = weeklyWorkSetting;
 
                     // Select first item if worktype code not exist.
-                    if(!patternReflection.statutorySetting.workTypeCode) {
-                        patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].code;
+                    if (!patternReflection.statutorySetting.workTypeCode) {
+                        patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
                     }
-                    if(!patternReflection.nonStatutorySetting.workTypeCode) {
-                        patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].code;
+                    if (!patternReflection.nonStatutorySetting.workTypeCode) {
+                        patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
                     }
-                    if(!patternReflection.holidaySetting.workTypeCode) {
-                        patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].code;
+                    if (!patternReflection.holidaySetting.workTypeCode) {
+                        patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
                     }
 
                     // Set patternReflection.
@@ -112,12 +121,17 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                     // Set optionDates.
                     self.optionDates(self.getOptionDates());
 
+                    // Set list working hours.
+                    service.getListWorkingHour([]).done(list => {
+                        self.listWorkTime(list);
+                    });
+
                     dfd.resolve();
                 }).fail(res => {
                     nts.uk.ui.dialog.alert(res.message);
                 }).always(() => {
                     nts.uk.ui.block.clear();
-                });;
+                });
             return dfd.promise();
         }
 
@@ -134,9 +148,12 @@ module nts.uk.at.view.kdl023.a.viewmodel {
 
         public onBtnApplySettingClicked(): void {
             let self = this;
+            nts.uk.ui.block.invisible();
             // Reload calendar
             self.optionDates(self.getOptionDates());
-            service.save('empId', ko.toJS(self.patternReflection));
+            service.save('empId', ko.toJS(self.patternReflection)).always(() => {
+                nts.uk.ui.block.clear();
+            });;
         }
 
         private getOptionDates(): Array<OptionDate> {
@@ -202,8 +219,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                                     textColor: 'blue',
                                     backgroundColor: 'white',
                                     listText: [
-                                        dailyPatternValue.workTypeCode,
-                                        dailyPatternValue.workingHoursCode
+                                        'di lam',
+                                        //self.getWorktypeNameByCode(dailyPatternValue.workTypeCode),
                                     ]
                                 });
                             }
@@ -225,7 +242,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
 
         private getWorktypeNameByCode(code: string): any {
             let self = this;
-            return _.find(self.listWorkType(), wt => wt.code == code).name;
+            let result = _.find(self.listWorkType(), wt => wt.workTypeCode == code);
+            if (result) {
+                return result.name;
+            }
+            return '';
         }
 
         private getListDateOfMonth(): Array<string> {
