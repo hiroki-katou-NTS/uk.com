@@ -8,6 +8,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModelCbb1>;
         selectedCode: KnockoutObservable<string>;
+        listWorkType: KnockoutObservableArray<ItemModelCbb1>;
 
         patternReflection: PatternReflection;
         dailyPatternSetting: service.model.DailyPatternSetting;
@@ -38,6 +39,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                 new ItemModelCbb1('2', '役職手当'),
                 new ItemModelCbb1('3', '基本給')
             ]);
+            self.listWorkType = ko.observableArray([
+                new ItemModelCbb1('1', 'aaaaa'),
+                new ItemModelCbb1('2', 'bbbb'),
+                new ItemModelCbb1('3', 'cccc')
+            ]);
             self.selectedCode = ko.observable('1');
 
             self.dailyPatternSetting = {};
@@ -65,7 +71,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.cssRangerYM = {
             };
             self.optionDates = ko.observableArray<OptionDate>([]);
-            self.firstDay = 0;
+            self.firstDay = 0; // sunday.
             self.startDate = 1;
             self.endDate = 31;
             self.workplaceId = ko.observable("0");
@@ -94,10 +100,29 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             nts.uk.ui.block.invisible();
             $.when(service.find('empId'), service.findWeeklyWorkSetting(), service.getHolidayByListDate(self.getListDateOfMonth()))
                 .done(function(patternReflection: service.model.PatternReflection, weeklyWorkSetting: WeeklyWorkSetting, listHoliday) {
+                    // Set list holiday
                     self.listHoliday = listHoliday;
+
+                    // Set weeklyWorkSetting
                     self.weeklyWorkSetting = weeklyWorkSetting;
+
+                    // Select first item if worktype code not exist.
+                    if(!patternReflection.statutorySetting.workTypeCode) {
+                        patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].code;
+                    }
+                    if(!patternReflection.nonStatutorySetting.workTypeCode) {
+                        patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].code;
+                    }
+                    if(!patternReflection.holidaySetting.workTypeCode) {
+                        patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].code;
+                    }
+
+                    // Set patternReflection.
                     self.patternReflection = new PatternReflection(patternReflection);
+
+                    // Set optionDates.
                     self.optionDates(self.getOptionDates());
+
                     dfd.resolve();
                 }).fail(res => {
                     nts.uk.ui.dialog.alert(res.message);
@@ -151,7 +176,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                                 textColor: 'red',
                                 backgroundColor: 'white',
                                 listText: [
-                                    'Holiday'
+                                    self.getWorktypeNameByCode(self.patternReflection.holidaySetting.workTypeCode())
                                 ]
                             });
                         }
@@ -164,7 +189,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                                     textColor: 'red',
                                     backgroundColor: 'white',
                                     listText: [
-                                        'Nghi trong luat'
+                                        self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
                                     ]
                                 });
                             }
@@ -175,7 +200,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                                     textColor: 'red',
                                     backgroundColor: 'white',
                                     listText: [
-                                        'Nghi ngoai luat'
+                                        self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
                                     ]
                                 });
                             }
@@ -207,6 +232,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                 });
             }
             return result;
+        }
+
+        private getWorktypeNameByCode(code: string): any {
+            let self = this;
+            return _.find(self.listWorkType(), wt => wt.code == code).name;
         }
 
         private getListDateOfMonth(): Array<string> {
@@ -345,10 +375,10 @@ module nts.uk.at.view.kdl023.a.viewmodel {
     }
     class DayOffSetting {
         useClassification: KnockoutObservable<boolean>;
-        workTypeCode: string;
+        workTypeCode: KnockoutObservable<string>;
         constructor(data: service.model.DayOffSetting) {
             this.useClassification = ko.observable(data.useClassification);
-            this.workTypeCode = data.workTypeCode;
+            this.workTypeCode = ko.observable(data.workTypeCode);
         }
     }
 
