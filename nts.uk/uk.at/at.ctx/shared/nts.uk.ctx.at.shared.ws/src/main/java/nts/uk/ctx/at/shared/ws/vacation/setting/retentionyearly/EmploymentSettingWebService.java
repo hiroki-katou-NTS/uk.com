@@ -13,10 +13,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.EmploymentSaveCommand;
-import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.EmploymentSaveCommandHandler;
-import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.EmploymentSettingFinder;
-import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.dto.EmploymentSettingFindDto;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.EmploymentSaveCommand;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.EmploymentSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.retentionyearly.EmploymentSettingFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.retentionyearly.dto.EmploymentSettingFindDto;
 
 /**
  * The Class EmploymentSettingWebService.

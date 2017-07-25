@@ -14,11 +14,11 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.command.AcquisitionRuleCommand;
-import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.command.SaveAcquisitionRuleCommandHandler;
-import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.AcquisitionRuleDto;
-import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.AcquisitionRuleFinder;
-import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.ApplySettingDto;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.acquisitionrule.AcquisitionRuleCommand;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.acquisitionrule.SaveAcquisitionRuleCommandHandler;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.AcquisitionRuleDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.AcquisitionRuleFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.ApplySettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
 
