@@ -4,13 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours;
 
-import java.io.Serializable;
-
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,19 +19,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class KshstEmp60hVacationPK implements Serializable {
+public class KshstEmp60hVacationPK {
     
     /** The cid. */
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
     @Column(name = "CID")
     private String cid;
     
     /** The contract type cd. */
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "EMP_TYPE_CD")
     private String contractTypeCd;
 
