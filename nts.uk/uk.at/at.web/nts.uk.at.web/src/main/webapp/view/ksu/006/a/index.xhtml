@@ -17,8 +17,8 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" tabindex="1">#{i18n.getText('KSU006_1')}</button>
-				<button tabindex="2">#{i18n.getText('KSU006_2')}</button>
+				<button class="proceed" tabindex="1" data-bind="click: execute, enable: isEnableExecute">#{i18n.getText('KSU006_1')}</button>
+				<button tabindex="2" data-bind="click: openDialogLog">#{i18n.getText('KSU006_2')}</button>
 			</div>
 
 			<div id="contents-area">
@@ -30,7 +30,7 @@
 					<tr>
 						<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_3')}</div></td>
 						<td>
-							<div class="pull-left" tabindex="3" data-bind="ntsComboBox: {
+							<div id="comboExternalBudget" class="pull-left" tabindex="3" data-bind="ntsComboBox: {
 								name: '#[KSU006_4]',
 								options: externalBudgetList,
 								optionsValue: 'code',
@@ -44,7 +44,7 @@
 									{ prop: 'name', length: 5}
 								]}" style="margin-right: 10px;">
 							</div>
-							<button tabindex="4" data-bind="click: openDialog">#{i18n.getText('KSU006_5')}</button>
+							<button id="showDialogExternalBudget" tabindex="4" data-bind="click: openDialogExternBudget">#{i18n.getText('KSU006_5')}</button>
 						</td>
 						<td></td>
 					</tr><!--END A2_1 ~ A2_3 -->
@@ -101,21 +101,21 @@
 					<tr>
 						<td></td>
 						<td>
-							<button tabindex="9" class="caret-bottom" data-bind="click: showDataPreview">#{i18n.getText('KSU006_11')}</button>
-							<label class="pull-right" style="margin-right: 40px;" data-bind="text: totalRecord"></label>
+							<button tabindex="9" class="large caret-bottom" data-bind="click: showDataPreview">#{i18n.getText('KSU006_11')}</button>
+							<label class="pull-right" style="margin-right: 25px;" data-bind="text: totalRecordDisplay"></label>
 						</td>
 					</tr><!--END A3_8 ~ A3_9 -->
 				</table>
 				
 				<!-- BEGIN SHOW DATA PREVIEW -->
-				<div data-bind="visible: enableDataPreview()" style="display: none;">
+				<div id="divTableParent" data-bind="visible: enableDataPreview()" style="display: none;">
 					<!-- BEGIN DAILY UNIT -->
 					<com:ko tag="if" bind="isDataDailyUnit()">
 						<table id="preview" class="dataPreview">
 							<!-- BEGIN HEADER -->
 							<thead>
 								<tr class="bgIgCol">
-									<td rowspan="2" class="dataPreview">#{i18n.getText('KSU006_12')}</td>
+									<td rowspan="2" class="dataPreview firstCol">#{i18n.getText('KSU006_12')}</td>
 									<td class="dataPreview">#{i18n.getText('KSU006_13')}</td>
 									<td class="dataPreview">#{i18n.getText('KSU006_14')}</td>
 									<td class="dataPreview">#{i18n.getText('KSU006_15')}</td>
@@ -129,7 +129,7 @@
 							
 							<!-- BEGIN CONTENT -->
 							<tr data-bind="with: firstRecord">
-								<td rowspan="10" class="dataPreview bgIgCol">#{i18n.getText('KSU006_19')}</td>
+								<td rowspan="10" class="dataPreview bgIgCol firstCol">#{i18n.getText('KSU006_19')}</td>
 								<td class="dataPreview"><div data-bind="text: code"></div></td>
 								<td class="dataPreview"><div data-bind="text: date"></div></td>
 								<td class="dataPreview"><div data-bind="text: listValue[0]"></div></td>
@@ -164,7 +164,7 @@
 									
 									<!-- BEGIN CONTENT -->
 									<tr data-bind="with: firstRecord">
-										<td rowspan="10" class="dataPreview bgIgCol">#{i18n.getText('KSU006_121')}</td>
+										<td rowspan="10" class="dataPreview bgIgCol firstCol">#{i18n.getText('KSU006_121')}</td>
 										<td class="dataPreview"><div data-bind="text: code"></div></td>
 										<td class="dataPreview"><div data-bind="text: date"></div></td>
 									</tr>

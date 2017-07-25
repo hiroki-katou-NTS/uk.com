@@ -7,16 +7,21 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.pattern;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+import nts.arc.time.GeneralDate;
+
 /**
- * The Class KmpstMonthPatternPK_.
+ * The Class KwmmtWorkMonthSetPK_.
  */
-@StaticMetamodel(KmpstMonthPatternPK.class)
-public class KmpstMonthPatternPK_ {
+@StaticMetamodel(KwmmtWorkMonthSetPK.class)
+public class KwmmtWorkMonthSetPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KmpstMonthPatternPK, String> cid;
+	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, String> cid;
 	
-	/** The pattern cd. */
-	public static volatile SingularAttribute<KmpstMonthPatternPK, String> patternCd;
-
+	/** The m pattern cd. */
+	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, String> mPatternCd;
+	
+	/** The ymd K. */
+	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, GeneralDate> ymdK;
+	
 }

@@ -8,18 +8,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KwmstWorkMonthSetPK_.
+ * The Class KmpstMonthPattern_.
  */
-@StaticMetamodel(KwmstWorkMonthSetPK.class)
-public class KwmstWorkMonthSetPK_ {
+@StaticMetamodel(KmpmtMonthPattern.class)
+public class KmpmtMonthPattern_ {
 
-	/** The cid. */
-	public static volatile SingularAttribute<KwmstWorkMonthSetPK, String> cid;
+	/** The kmpmt month pattern PK. */
+	public static volatile SingularAttribute<KmpmtMonthPattern, KmpmtMonthPatternPK> kmpmtMonthPatternPK;
 	
-	/** The work type cd. */
-	public static volatile SingularAttribute<KwmstWorkMonthSetPK, String> workTypeCd;
-	
-	/** The working cd. */
-	public static volatile SingularAttribute<KwmstWorkMonthSetPK, String> workingCd;
-	
+	/** The pattern name. */
+	public static volatile SingularAttribute<KmpmtMonthPattern, String> patternName;
+
 }

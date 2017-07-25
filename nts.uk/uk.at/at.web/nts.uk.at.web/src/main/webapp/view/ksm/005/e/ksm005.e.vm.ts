@@ -106,21 +106,20 @@ module nts.uk.at.view.ksm005.e {
              * find by work time code of data
              */
             public findNameWorkTimeCode(siftCode: string, data: WorkTimeDto[]) {
-                var workTimeName: string = '';
-                for (var worktime: WorkTypeDto of data) {
-                    if (siftCode == worktime.code) {
-                        workTimeName = worktime.name;
-                    }
+                var worktype = _.find(data, function(item) {
+                    return item.code == siftCode;
+                });
+                if (!worktype) {
+                    return '';
                 }
-                return workTimeName;
+                return worktype.name;
             }
 
             /**
              * function check setting monthly pattern setting batch
              */
             public checkMonthlyPatternSettingBatchVal(val: MonthlyPatternSettingBatch){
-                if (val.workTypeCode != undefined && val.workTypeCode != null && val.workTypeCode.length > 0
-                    && val.siftCode != undefined && val.siftCode != null && val.siftCode.length > 0) {
+                if (val.workTypeCode && val.siftCode) {
                     return false;
                 }    
                 return true;
@@ -164,13 +163,13 @@ module nts.uk.at.view.ksm005.e {
                     //return;
                 }
                 self.monthlyPatternSettingBatchWorkDays().workTypeCode = '001';
-                self.monthlyPatternSettingBatchWorkDays().siftCode = 'AAA';
+                self.monthlyPatternSettingBatchWorkDays().siftCode = '001';
                 self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = '002';
-                self.monthlyPatternSettingBatchStatutoryHolidays().siftCode = 'AAA';
+                self.monthlyPatternSettingBatchStatutoryHolidays().siftCode = '002';
                 self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = '002';
-                self.monthlyPatternSettingBatchNoneStatutoryHolidays().siftCode = 'AAA';
+                self.monthlyPatternSettingBatchNoneStatutoryHolidays().siftCode = '003';
                 self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = '002';
-                self.monthlyPatternSettingBatchPublicHolidays().siftCode = 'AAA';
+                self.monthlyPatternSettingBatchPublicHolidays().siftCode = '004';
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.WorkDays, self.monthlyPatternSettingBatchWorkDays());
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.StatutoryHolidays, self.monthlyPatternSettingBatchStatutoryHolidays());
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.NoneStatutoryHolidays, self.monthlyPatternSettingBatchNoneStatutoryHolidays());
@@ -200,8 +199,8 @@ module nts.uk.at.view.ksm005.e {
              */
             public saveMonthlyPatternSettingBatchService(businessDayClassification: BusinessDayClassification, data: MonthlyPatternSettingBatch): void {
                 service.getUserInfo().done(function(userinfo: UserInfoDto) {
-                    key = {companyId: userinfo.companyId, employeeId: userinfo.employeeId, businessDayClassification: businessDayClassification};
-                    service.saveMonthlyPatternSettingBatch(key,data);
+                    var key: KeyMonthlyPatternSettingBatch = {companyId: userinfo.companyId, employeeId: userinfo.employeeId, businessDayClassification: businessDayClassification};
+                    service.saveMonthlyPatternSettingBatch(key ,data);
                 });
             }
         }
