@@ -30,9 +30,11 @@ module ksm002.c {
                             ));
                     });
                     //insert new item when data in db <10 items
+                    let itemNo =self.specificDateItem().length;
                     while(self.specificDateItem().length<10){
                         self.specificDateItem.push(
-                                new SpecificDateItem('',1,0,''));
+                                new SpecificDateItem('',1,itemNo+1,''));
+                        itemNo = itemNo + 1;
                     }
                     self.rootList = _.clone(ko.mapping.toJS(self.specificDateItem()));
                     //check dk: 全ての使用区分が使用しないを選択されている場合
