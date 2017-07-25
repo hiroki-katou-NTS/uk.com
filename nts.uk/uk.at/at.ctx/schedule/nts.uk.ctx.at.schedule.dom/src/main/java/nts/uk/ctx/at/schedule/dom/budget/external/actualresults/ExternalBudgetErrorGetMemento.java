@@ -47,11 +47,11 @@ public interface ExternalBudgetErrorGetMemento {
     ExtBudgetWorkplaceCode getWorkPlaceCode();
 
     /**
-     * Gets the excution id.
+     * Gets the execution id.
      *
-     * @return the excution id
+     * @return the execution id
      */
-    String getExcutionId();
+    String getExecutionId();
 
     /**
      * Gets the number line.

@@ -8,10 +8,11 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,60 +24,85 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KWBST_WORKPLACE_WORK_SET")
+@Table(name = "KWBMT_WORKPLACE_WORK_SET")
 public class KwbmtWorkplaceWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The workplace id. */
-	@Id
-	@NotNull
-	@Column(name = "WKPID")
-	private String workplaceId;
-
-	/** The wd work type code. */
+	/** The kwbmt workplace work set PK. */
+	@EmbeddedId
+	protected KwbmtWorkplaceWorkSetPK kwbmtWorkplaceWorkSetPK;
+	
+	/** The worktype code. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "WD_WORK_TYPE_CD")
-	private String wdWorkTypeCode;
+	@Column(name = "WORK_TYPE_CD")
+	private String worktypeCode;
 
-	/** The wd working code. */
+	/** The working code. */
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "WD_WORKING_CD")
-	private String wdWorkingCode;
+	@Null
+	@Column(name = "WORKING_CD")
+	private String workingCode;
 
-	/** The nwd law work type code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NWDLAW_WORK_TYPE_CD")
-	private String nwdLawWorkTypeCode;
 
-	/** The nwd law working code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NWDLAW_WORKING_CD")
-	private String nwdLawWorkingCode;
-
-	/** The nwd ext work type code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NWDEXT_WORK_TYPE_CD")
-	private String nwdExtWorkTypeCode;
-
-	/** The nwd ext working code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NWDEXT_WORKING_CD")
-	private String nwdExtWorkingCode;
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.workplaceId;
+		return this.kwbmtWorkplaceWorkSetPK;
 	}
+
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((kwbmtWorkplaceWorkSetPK == null) ? 0 : kwbmtWorkplaceWorkSetPK.hashCode());
+		result = prime * result + ((workingCode == null) ? 0 : workingCode.hashCode());
+		result = prime * result + ((worktypeCode == null) ? 0 : worktypeCode.hashCode());
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KwbmtWorkplaceWorkSet other = (KwbmtWorkplaceWorkSet) obj;
+		if (kwbmtWorkplaceWorkSetPK == null) {
+			if (other.kwbmtWorkplaceWorkSetPK != null)
+				return false;
+		} else if (!kwbmtWorkplaceWorkSetPK.equals(other.kwbmtWorkplaceWorkSetPK))
+			return false;
+		if (workingCode == null) {
+			if (other.workingCode != null)
+				return false;
+		} else if (!workingCode.equals(other.workingCode))
+			return false;
+		if (worktypeCode == null) {
+			if (other.worktypeCode != null)
+				return false;
+		} else if (!worktypeCode.equals(other.worktypeCode))
+			return false;
+		return true;
+	}
+
+	
+	
 
 }

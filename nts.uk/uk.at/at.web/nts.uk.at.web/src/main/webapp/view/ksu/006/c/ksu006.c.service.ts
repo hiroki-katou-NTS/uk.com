@@ -5,11 +5,12 @@ module nts.uk.pr.view.ksu006.c {
          */
         var paths: any = {
 //            updateAcquisitionRule: 'ctx/at/share/vacation/setting/acquisitionrule/update',
+            findAllExternalBudgetLog: "at/schedule/budget/external/findAll/log",
         };
         
-//        export function updateAcquisitionRule(command: any): JQueryPromise<any> {
-//            return nts.uk.request.ajax(paths.updateAcquisitionRule, command);
-//        }
+        export function findAllExternalBudgetLog(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllExternalBudgetLog);
+        }
 
         export module model {
             

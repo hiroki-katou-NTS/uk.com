@@ -40,8 +40,11 @@ public class CompanyBWSaveCommandHandler extends CommandHandler<CompanyBWSaveCom
 		// Get Command
 		CompanyBWSaveCommand command = context.getCommand();
 		
+		// Get workdayDivision
+		Integer workdayDivision = command.getCompanyBasicWork().getBasicWorkSetting().get(0).getWorkDayDivision();
+		
 		// Find if exist
-		Optional<CompanyBasicWork> optional = this.repository.find(companyId);
+		Optional<CompanyBasicWork> optional = this.repository.find(companyId, workdayDivision);
 		
 		// Convert to Domain
 		CompanyBasicWork companyBasicWork = command.toDomain();
