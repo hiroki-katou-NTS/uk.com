@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPattern;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpmtMonthPattern;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpmtMonthPatternPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -17,16 +17,16 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaMonthlyPatternSetMemento implements MonthlyPatternSetMemento {
 	
 	/** The mothly pattern. */
-	private KmpstMonthPattern mothlyPattern;
+	private KmpmtMonthPattern mothlyPattern;
 	
 	/**
 	 * Instantiates a new jpa monthly pattern set memento.
 	 *
 	 * @param mothlyPattern the mothly pattern
 	 */
-	public JpaMonthlyPatternSetMemento(KmpstMonthPattern mothlyPattern) {
-		if(mothlyPattern.getKmpstMonthPatternPK() == null){
-			mothlyPattern.setKmpstMonthPatternPK(new KmpstMonthPatternPK());
+	public JpaMonthlyPatternSetMemento(KmpmtMonthPattern mothlyPattern) {
+		if(mothlyPattern.getKmpmtMonthPatternPK() == null){
+			mothlyPattern.setKmpmtMonthPatternPK(new KmpmtMonthPatternPK());
 		}
 		this.mothlyPattern = mothlyPattern;
 	}
@@ -39,7 +39,7 @@ public class JpaMonthlyPatternSetMemento implements MonthlyPatternSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.mothlyPattern.getKmpstMonthPatternPK().setCid(companyId.v());
+		this.mothlyPattern.getKmpmtMonthPatternPK().setCid(companyId.v());
 	}
 
 	/*
@@ -51,7 +51,7 @@ public class JpaMonthlyPatternSetMemento implements MonthlyPatternSetMemento {
 	 */
 	@Override
 	public void setMonthlyPatternCode(MonthlyPatternCode monthlyPatternCode) {
-		this.mothlyPattern.getKmpstMonthPatternPK().setPatternCd(monthlyPatternCode.v());
+		this.mothlyPattern.getKmpmtMonthPatternPK().setMPatternCd(monthlyPatternCode.v());
 	}
 
 	/*
@@ -63,7 +63,7 @@ public class JpaMonthlyPatternSetMemento implements MonthlyPatternSetMemento {
 	 */
 	@Override
 	public void setMonthlyPatternName(MonthlyPatternName monthlyPatternName) {
-		this.mothlyPattern.setPatternName(monthlyPatternName.v());
+		this.mothlyPattern.setMPatternName(monthlyPatternName.v());
 	}
 
 }

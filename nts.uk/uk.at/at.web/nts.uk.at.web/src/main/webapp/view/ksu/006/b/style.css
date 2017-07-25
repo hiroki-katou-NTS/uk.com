@@ -1,0 +1,17 @@
+@CHARSET "UTF-8";
+
+.bgIgCol {
+	background-color: #CFF1A5;
+}
+table#infor-base {
+	width: 450px;
+	margin-bottom: 20px;
+}
+th, td {
+	border: 1px solid black;
+	padding: 10px;
+}
+
+.pull-right-col {
+	padding-left: 50px;
+}

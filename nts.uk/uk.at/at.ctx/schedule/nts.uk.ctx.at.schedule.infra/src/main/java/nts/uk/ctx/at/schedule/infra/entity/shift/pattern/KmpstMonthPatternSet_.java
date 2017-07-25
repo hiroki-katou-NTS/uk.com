@@ -13,7 +13,10 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(KmpstMonthPatternSet.class)
 public class KmpstMonthPatternSet_ {
 
-	/** The kmpst month pattern set PK. */
-	public static volatile SingularAttribute<KmpstMonthPatternSet, KmpstMonthPatternSetPK> kmpstMonthPatternSetPK;
+	/** The sid. */
+	public static volatile SingularAttribute<KmpstMonthPatternSet, String> sid;
+	
+	/** The m pattern cd. */
+	public static volatile SingularAttribute<KmpstMonthPatternSet, String> mPatternCd;
 	
 }

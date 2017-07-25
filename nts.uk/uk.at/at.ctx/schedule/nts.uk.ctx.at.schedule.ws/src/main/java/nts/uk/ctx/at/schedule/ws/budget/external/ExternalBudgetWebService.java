@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.ws.budget.external;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCo
 import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresults.ExtBudgetDataPreviewDto;
 
 @Path("at/schedule/budget/external")
 @Produces("application/json")
@@ -56,4 +58,15 @@ public class ExternalBudgetWebService extends WebService {
 		this.delete.handle(command);
 	}
 
+    /**
+     * Find data preview.
+     *
+     * @param file the file
+     * @return the ext budget data preview dto
+     */
+    @POST
+    @Path("find/preview")
+    public ExtBudgetDataPreviewDto findDataPreview(File fileUpload) {
+        return this.find.findDataPreview(fileUpload);
+    }
 }

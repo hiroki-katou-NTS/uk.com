@@ -15,45 +15,44 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KmpstMonthPatternSetPK.
+ * The Class KmpmtMonthPatternPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KmpstMonthPatternSetPK implements Serializable {
-
-    /** The Constant serialVersionUID. */
+public class KmpmtMonthPatternPK implements Serializable {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	/** The month pattern cd. */
-    @Basic(optional = false)
+	
+	/** The cid. */
+	@Basic(optional = false)
     @NotNull
-    @Column(name = "MONTH_PATTERN_CD")
-    private String monthPatternCd;
+    @Column(name = "CID")
+    private String cid;
     
-    /** The sid. */
+    /** The m pattern cd. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "SID")
-    private String sid;
+    @Column(name = "M_PATTERN_CD")
+    private String mPatternCd;
 
     /**
-     * Instantiates a new kmpst month pattern set PK.
+     * Instantiates a new kmpmt month pattern PK.
      */
-    public KmpstMonthPatternSetPK() {
+    public KmpmtMonthPatternPK() {
     }
 
 	/**
-	 * Instantiates a new kmpst month pattern set PK.
+	 * Instantiates a new kmpmt month pattern PK.
 	 *
-	 * @param monthPatternCd the month pattern cd
-	 * @param sid the sid
+	 * @param cid the cid
+	 * @param mPatternCd the m pattern cd
 	 */
-	public KmpstMonthPatternSetPK(String monthPatternCd, String sid) {
+	public KmpmtMonthPatternPK(String cid, String mPatternCd) {
 		super();
-		this.monthPatternCd = monthPatternCd;
-		this.sid = sid;
-	}
-    
+		this.cid = cid;
+		this.mPatternCd = mPatternCd;
+	}    
     
 }

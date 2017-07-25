@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<script>var dialogSize = { width: 1200, height: 700 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
@@ -21,8 +21,8 @@
 				<com:scriptfile path="kdl023.a.start.js" />
 			</ui:define>
 			<ui:define name="content">
-				<div id="contents-area cf">
-					<div class="pull-left reflect-setting bg-green caret-right caret-background cf">
+				<div id="contents-area" data-bind="visible: true" style="display: none">
+					<div class="pull-left reflect-setting bg-green caret-right caret-background">
 						<div class="control-group cf">
 							<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_3')}</div>
 							<div id="asdvasdv" class="pull-left" style="margin-left: 36px"
@@ -49,25 +49,51 @@
 							<div class="margin-left-100">
 								<div class="control-group" data-bind="with: statutorySetting">
 									<div data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_6')}' }"></div>
-									<!-- <div id="sdasd" class="pull-left" style="margin-left: 36px"
+									<div id="cbb-work-type-statutory" class="pull-right"
 										data-bind="ntsComboBox: {
-												name: 'abcx',
-												options: $parent.itemList,
-												optionsValue: 'code',
+												name: 'zxcv',
+												options: $parents[1].listWorkType,
+												optionsValue: 'workTypeCode',
 												optionsText: 'name',
-												value: $parent.selectedCode,
+												value: workTypeCode,
 												enable: true,
 												columns: [
-													{ prop: 'code', length: 3 },
+													{ prop: 'workTypeCode', length: 3 },
 													{ prop: 'name', length: 5 },
 												]}">
-									</div> -->
+									</div>
 								</div>
 								<div class="control-group" data-bind="with: nonStatutorySetting">
 									<div data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}' }"></div>
+									<div id="cbb-work-type-non-statutory" class="pull-right"
+										data-bind="ntsComboBox: {
+												name: 'ddd',
+												options: $parents[1].listWorkType,
+												optionsValue: 'workTypeCode',
+												optionsText: 'name',
+												value: workTypeCode,
+												enable: true,
+												columns: [
+													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'name', length: 5 },
+												]}">
+									</div>
 								</div>
 								<div class="control-group" data-bind="with: holidaySetting">
 									<div data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_8')}' }"></div>
+									<div id="cbb-work-type-holiday" class="pull-right"
+										data-bind="ntsComboBox: {
+												name: 'ccc',
+												options: $parents[1].listWorkType,
+												optionsValue: 'workTypeCode',
+												optionsText: 'name',
+												value: workTypeCode,
+												enable: true,
+												columns: [
+													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'name', length: 5 },
+												]}">
+									</div>
 								</div>
 								<p class="control-group priority">#{i18n.getText('KDL023_9')}</p>
 							</div>
@@ -94,31 +120,35 @@
 						<button class="btn-apply-setting caret-right pull-right" data-bind="click: onBtnApplySettingClicked">#{i18n.getText('KDL023_13')}</button>
 					</div>
 					<!-- Calendar function -->
-					<button data-bind="click: backward">#{i18n.getText('KDL023_14')}</button>
-					<button data-bind="click: forward">#{i18n.getText('KDL023_15')}</button>
-
-					<div class="nts-calendar-container pull-left">
-						<div class="nts-calendar-header">
-							<div data-bind="ntsDatePicker: {
-							value: yearMonthPicked, 
-							dateFormat: 'yearmonth', 
-							valueFormat: 'YYYYMM', 
-							cssRanger: cssRangerYM,
-							defaultClass: 'round-orange',
-							showJumpButtons: true}"></div>
+					<div id="calendar-reflect-pattern">
+						<div class="pull-right" style="margin-bottom: 10px">
+							<button data-bind="click: backward">#{i18n.getText('KDL023_14')}</button>
+							<button data-bind="click: forward">#{i18n.getText('KDL023_15')}</button>
 						</div>
-						<div id="calendar" data-bind="ntsCalendar: {
-							optionDates: optionDates, 
-							yearMonth: yearMonthPicked, 
-							firstDay: firstDay, 
-							startDate: startDate, 
-							endDate: endDate,
-							workplaceId: workplaceId,
-							workplaceName: workplaceName,
-							eventDisplay: eventDisplay,
-							eventUpdatable: eventUpdatable,
-							holidayDisplay: holidayDisplay,
-							cellButtonDisplay: cellButtonDisplay}"></div>
+
+						<div class="nts-calendar-container">
+							<div class="nts-calendar-header">
+								<div data-bind="ntsDatePicker: {
+								value: yearMonthPicked, 
+								dateFormat: 'yearmonth', 
+								valueFormat: 'YYYYMM', 
+								cssRanger: cssRangerYM,
+								defaultClass: 'round-orange',
+								showJumpButtons: true}"></div>
+							</div>
+							<div id="calendar" data-bind="ntsCalendar: {
+								optionDates: optionDates, 
+								yearMonth: yearMonthPicked, 
+								firstDay: firstDay, 
+								startDate: startDate, 
+								endDate: endDate,
+								workplaceId: workplaceId,
+								workplaceName: workplaceName,
+								eventDisplay: eventDisplay,
+								eventUpdatable: eventUpdatable,
+								holidayDisplay: holidayDisplay,
+								cellButtonDisplay: cellButtonDisplay}"></div>
+						</div>
 					</div>
 				</div>
 				<div id="functions-area-bottom">

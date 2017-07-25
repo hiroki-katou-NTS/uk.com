@@ -8,10 +8,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkTypeCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkingCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 
 /**
  * The Class WorkMonthlySettingDto.
@@ -25,8 +25,8 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	/** The work monthly setting code. */
 	private String code;
 
-	/** The sift code. */
-	private String siftCode;
+	/** The working code. */
+	private String workingCode;
 	
 	
 	/** The date. */
@@ -69,8 +69,8 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	 * setSiftCode(nts.uk.ctx.at.shared.dom.worktime.SiftCode)
 	 */
 	@Override
-	public void setSiftCode(SiftCode siftCode) {
-		this.siftCode = siftCode.v();
+	public void setWorkingCode(WorkingCode workingCode) {
+		this.workingCode = workingCode.v();
 	}
 
 	/*

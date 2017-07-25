@@ -5,6 +5,7 @@ module nts.uk.at.view.ksm005.e {
         var paths = {
             findAllWorkType : "at/share/worktype/findAll",
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
+            checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
             getUserInfo: "ctx/at/schedule/pattern/work/weekly/setting/userinfo"
         }
@@ -35,6 +36,12 @@ module nts.uk.at.view.ksm005.e {
         export function getUserInfo(): JQueryPromise<model.UserInfoDto> {
             return nts.uk.request.ajax('at', paths.getUserInfo);
         }
+        /**
+         * check public holiday by date (YYYYMMDD)
+         */
+        export function checkPublicHoliday(baseDate: string): JQueryPromise<model.OptionalPublicHoliday> {
+            return nts.uk.request.ajax('at', paths.checkPublicHoliday + '/' + baseDate);
+        }
         
         /**
          * save to client service MonthlyPatternSettingBatch
@@ -43,6 +50,9 @@ module nts.uk.at.view.ksm005.e {
             nts.uk.characteristics.save(key, data);
         }
 
+        /**
+         * find data client service MonthlyPatternSettingBatch
+         */
         export function findMonthlyPatternSettingBatch(key: model.KeyMonthlyPatternSettingBatch): JQueryPromise<model.MonthlyPatternSettingBatch> {
             return nts.uk.characteristics.restore(key);
         }
@@ -79,6 +89,10 @@ module nts.uk.at.view.ksm005.e {
                 employeeId: string;    
             }
             
+            export interface OptionalPublicHoliday{
+                present: boolean;    
+            }
+            
             // 月間パターンの一括設定
             export class MonthlyPatternSettingBatch {
                 // 会社ID
@@ -86,22 +100,23 @@ module nts.uk.at.view.ksm005.e {
                 // 勤務種類コード
                 workTypeCode: string;
                 // 就業時間帯コード
-                siftCode: string;
+                workingCode: string;
                 // 社員ID
                 employeeId: string;
                 //稼働日区分
                 businessDayClassification: BusinessDayClassification;
             }
 
+            //稼働日区分
             export enum BusinessDayClassification{
                 // 稼働日
-                WorkDays = 0,
+                WORK_DAYS = 0,
                 //法定内休日
-                StatutoryHolidays = 1,
+                STATUTORY_HOLIDAYS = 1,
                 //法定外休日
-                NoneStatutoryHolidays = 2,
+                NONE_STATUTORY_HOLIDAYS = 2,
                 //祝日
-                PublicHolidays = 3
+                PUBLIC_HOLIDAYS = 3
             }
             
             //稼働日区分
@@ -112,6 +127,13 @@ module nts.uk.at.view.ksm005.e {
                 NON_WORKINGDAY_INLAW = 1,
                 // 非稼働日（法外）
                 NON_WORKINGDAY_EXTRALEGAL = 2
+            }
+            
+            export interface MonthlyPatternSettingBatchDto {
+                settings: MonthlyPatternSettingBatch[];
+                overwrite: boolean;
+                startYearMonth: number;
+                endYearMonth: number;
             }
                        
         }
