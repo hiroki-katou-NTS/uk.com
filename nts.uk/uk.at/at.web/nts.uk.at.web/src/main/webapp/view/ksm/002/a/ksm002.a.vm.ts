@@ -18,7 +18,7 @@ module ksm002.a.viewmodel {
         yearMonthPicked: KnockoutObservable<number>;
         cssRangerYM: any;
         optionDates: KnockoutObservableArray<OptionalDate>;
-        firstDay: KnockoutObservable<number>;
+        firstDay: number;
         yearMonth: KnockoutObservable<number>;
         startDate: number;
         endDate: number;
@@ -41,7 +41,7 @@ module ksm002.a.viewmodel {
             self.cssRangerYM = {};
             self.optionDates = ko.observableArray([]);
 
-            self.firstDay = ko.observable(0);
+            self.firstDay = 3;
             self.startDate = 1;
             self.endDate = 31;
             self.workplaceId = ko.observable("0");
@@ -76,6 +76,7 @@ module ksm002.a.viewmodel {
                 let arrOptionaDates: Array<OptionalDate> = [];
                 self.getDataToOneMonth(value).done(function(arrOptionaDates) {
                     self.optionDates(arrOptionaDates);
+                    self.optionDates.valueHasMutated();
                     if (arrOptionaDates.length > 0) {
                         self.isNew(false);
                     } else {
@@ -98,8 +99,17 @@ module ksm002.a.viewmodel {
                     //getAll SpecDate
                     self.getAllSpecDate();
                     //Set Start Day of Company
-                    self.getComStartDay().done(function(startDay: number) {
-                        self.firstDay(startDay);
+                    //self.firstDay = 3;
+                    //Test 
+                    //nts.uk.characteristics.save('IndividualStartDay', 0);
+                    nts.uk.characteristics.restore('IndividualStartDay').done(function (data) { 
+                        if(nts.uk.util.isNullOrEmpty(data)){
+                            self.getComStartDay().done(function(startDay: number) {
+                                self.firstDay = startDay;
+                            });
+                        } else {
+                            self.firstDay = data;
+                        }
                     });
                     //set parameter to calendar
                     let lstBoxCheck: Array<BoxModel> = [];
@@ -171,7 +181,6 @@ module ksm002.a.viewmodel {
             let dfd = $.Deferred<any>();
             //get Company Start Day
             service.getCompanyStartDay().done(function(startDayComapny: number) {
-                //self.firstDay();
                 dfd.resolve(startDayComapny.startDay);
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -206,12 +215,14 @@ module ksm002.a.viewmodel {
             
             if (nts.uk.util.isNullOrEmpty(selectedOptionalDate)) {
                 self.optionDates.push(new OptionalDate(selectedDate, self.getNamefromSpecId(param.selecteds), param.selecteds));
+                //self.optionDate.valueHasMutated();
             } else {
                 self.optionDates.remove(selectedOptionalDate);
                 selectedOptionalDate.start = selectedDate;
                 selectedOptionalDate.listId = param.selecteds;
                 selectedOptionalDate.listText = self.getNamefromSpecId(param.selecteds);
                 self.optionDates.push(selectedOptionalDate);
+                //self.optionDate.valueHasMutated();
             }
         }
         /**
@@ -389,9 +400,9 @@ module ksm002.a.viewmodel {
                 selectedOptionalDate = new OptionalDate();
             }
             //get list id selectable
-            let arrSelectable: Array<string> = _.map(self.boxItemList(), 'id');
+            //let arrSelectable: Array<string> = ;
 
-            setShared('KSM002_E_PARAM', { date: moment(selectedDate).format('YYYY/MM/DD'), selectable: arrSelectable, selecteds: arrSelecteds });
+            setShared('KSM002_E_PARAM', { date: moment(selectedDate).format('YYYY/MM/DD'), selectable: _.map(self.boxItemList(), 'id'), selecteds: arrSelecteds });
             nts.uk.ui.windows.sub.modal('/view/ksm/002/e/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function() {
                 let param: IData = getShared('KSM002E_VALUES');
                 //console.log(param);
