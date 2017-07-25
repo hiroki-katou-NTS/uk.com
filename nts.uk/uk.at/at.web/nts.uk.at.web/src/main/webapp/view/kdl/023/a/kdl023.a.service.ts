@@ -1,17 +1,30 @@
 module nts.uk.at.view.kdl023.a.service {
 
-    export function save(key: any, data: model.PatternReflection): void {
-        nts.uk.characteristics.save(key, data);
+    let servicePath: any = {
+        getHoliday: 'at/schedule/holiday/getHolidayByListDate',
+        getWorkingHour: 'at/shared/worktime/findByCodeList',
+        getWorkType: 'at/share/worktype/findAll',
+        getAllPattern: 'ctx/at/share/vacation/setting/patterncalendar/getallpattcal'
+    }
+
+    export function save(key: any, data: model.PatternReflection): JQueryPromise<void> {
+        return nts.uk.characteristics.save(key, data);
     }
 
     export function find(key: string): JQueryPromise<model.PatternReflection> {
         return nts.uk.characteristics.restore(key);
     }
-    export function findAllPattern(key: string): JQueryPromise<model.PatternReflection> {
-        return nts.uk.characteristics.restore(key);
+    export function findAllPattern(): JQueryPromise<model.DailyPatternSetting> {
+        return nts.uk.request.ajax(servicePath.getAllPattern);
     }
     export function getHolidayByListDate(dates: Array<string>): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax('at/schedule/holiday/getHolidayByListDate', dates);
+        return nts.uk.request.ajax(servicePath.getHoliday, dates);
+    }
+    export function getAllWorktype(): JQueryPromise<Array<model.WorkType>> {
+        return nts.uk.request.ajax(servicePath.getWorkType);
+    }
+    export function getListWorkingHour(codes: Array<string>): JQueryPromise<Array<model.WorkTime>> {
+        return nts.uk.request.ajax(servicePath.getWorkingHour, codes);
     }
     export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
         let dfd = $.Deferred();
@@ -49,8 +62,8 @@ module nts.uk.at.view.kdl023.a.service {
             days: number;
         }
         export interface WorkType {
-            workTypeCode: number;
-            workTypeName: string;
+            workTypeCode: string;
+            name: string;
         }
         export interface WorkTime {
             code: string;

@@ -5,6 +5,7 @@ module nts.uk.at.view.ksm002.b {
         var paths: any = {
             getAllSpecDate: "at/schedule/shift/businesscalendar/specificdate/getallspecificdate",
             getSpecDateByIsUse: "at/schedule/shift/businesscalendar/specificdate/getspecificdatebyuse",
+            getCompanyStartDay: "at/schedule/shift/businesscalendar/businesscalendar/getcompanystartday",
             getCalendarWorkPlaceByCode: "at/schedule/shift/specificdayset/workplace/getworkplacespecificdate/{0}/{1}",
             insertCalendarWorkPlace: "at/schedule/shift/specificdayset/workplace/insertworkplacespecificdate",
             updateCalendarWorkPlace: "at/schedule/shift/specificdayset/workplace/updateworkplacespecificdate",
@@ -17,6 +18,10 @@ module nts.uk.at.view.ksm002.b {
         
         export function getSpecificDateByIsUse(useAtr: number): JQueryPromise<any> {
             return ajax("at", paths.getSpecDateByIsUse + "/" + useAtr);
+        }
+        
+        export function getCompanyStartDay(): JQueryPromise<any> {
+            return ajax("at", paths.getCompanyStartDay);
         }
         
         export function getCalendarWorkPlaceByCode(workplaceId, processDate): JQueryPromise<any> {
