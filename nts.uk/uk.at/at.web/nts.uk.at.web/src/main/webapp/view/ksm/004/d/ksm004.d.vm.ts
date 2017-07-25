@@ -33,8 +33,6 @@ module ksm004.d.viewmodel {
         itemHoliday: KnockoutObservable<Holiday>;
         //date value
         dateValue: KnockoutObservable<any>;
-        startDateString: KnockoutObservable<string>;
-        endDateString: KnockoutObservable<string>;
         constructor() {
             var self = this;
             //start and end month
@@ -43,15 +41,13 @@ module ksm004.d.viewmodel {
             
             //date value
             self.dateValue = ko.observable({startDate: param.yearMonth.toString(), endDate: param.yearMonth.toString()});
-            self.startDateString = ko.observable(param.yearMonth.toString());
-            self.endDateString = ko.observable(param.yearMonth.toString());
+            self.startMonth = ko.observable(self.dateValue().startDate);
+            self.endMonth = ko.observable(self.dateValue().startDate);
             
             //classId
             self.classId = ko.observable(param.classCD);
             //workPlaceId
             self.workPlaceId = ko.observable(param.workPlaceId);
-            self.startMonth = ko.observable(param.yearMonth);
-            self.endMonth = ko.observable(param.yearMonth);
             self.typeClass = ko.observable(param.classification);
             //checkHoliday
             self.checkHoliday = ko.observable(true);
@@ -82,16 +78,6 @@ module ksm004.d.viewmodel {
             //list holiday
             self.listHoliday = ko.observableArray(null);
             self.itemHoliday = ko.observable(null);
-
-            self.startDateString.subscribe(function(value){
-                self.dateValue().startDate = value;
-                self.dateValue.valueHasMutated();        
-            });
-            
-            self.endDateString.subscribe(function(value){
-                self.dateValue().endDate = value;   
-                self.dateValue.valueHasMutated();      
-            });
         }//end constructor
 
         /**
@@ -109,22 +95,15 @@ module ksm004.d.viewmodel {
 
             let startYM = moment(self.startMonth(), 'YYYYMM');
             let endYM = moment(self.endMonth(), 'YYYYMM');
-            self.getAllHoliday();
-
-            self.list([]);
+            self.getAllHoliday().done(function(){
+                self.list([]);
             endYM.add(1, 'M');
-            nts.uk.ui.block.invisible();
-//            if (startYM >= endYM) {
-//                $('#endYearM').ntsError('set', 'えらーです : abc');
-//                nts.uk.ui.block.clear();
-//                return;
-//            }
-            $('.nts-input').trigger("validate");
+            
+            //$('.nts-input').trigger("validate");
             _.defer(() => {
                 if (!$('.nts-editor').ntsError("hasError")) {
-
+                    nts.uk.ui.block.invisible();
                     // startYM < endYM
-                    
                         while (startYM.format("YYYYMMDD") < endYM.format("YYYYMMDD")) //value : 0-11
                         {
                             //date of month
@@ -199,9 +178,11 @@ module ksm004.d.viewmodel {
                                 self.addCalendarWorkplace(self.list());
                             }
                         }
-                    }
+                    
+                    }//end : !$('.nts-editor').ntsError("hasError")
                     
                 });
+            });
         }//end decition
 
         /**

@@ -47,8 +47,8 @@ public class MonthlyPatternSettingSaveCommandHandler
 		
 		// check exist data
 		if (monthlyPatternSetting.isPresent()) {
-			this.repository.remove(monthlyPatternSetting.get().getEmployeeId(),
-					monthlyPatternSetting.get().getMonthlyPatternCode().v());
+			this.repository.update(domain);
+			return;
 		}
 		// add data if not exist data
 		this.repository.add(domain);

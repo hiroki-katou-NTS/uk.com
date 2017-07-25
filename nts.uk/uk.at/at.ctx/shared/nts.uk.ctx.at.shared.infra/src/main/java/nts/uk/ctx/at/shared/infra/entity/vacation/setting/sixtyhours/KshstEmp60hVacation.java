@@ -65,8 +65,7 @@ public class KshstEmp60hVacation extends KshstSixtyHourVacationSetting implement
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.kshstEmp60hVacationPK;
 	}
     
 }

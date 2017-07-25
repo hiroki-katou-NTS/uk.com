@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.schedule.app.find.budget.external;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresults.ExtBudgetDataPreviewDto;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,5 +26,15 @@ public class ExternalBudgetFinder {
 				.map(item -> ExternalBudgetDto.fromDomain(item))
 				.collect(Collectors.toList());
 		return lstBudget;
+	}
+	
+	/**
+	 * Find data preview.
+	 *
+	 * @param file the file
+	 * @return the ext budget data preview dto
+	 */
+	public ExtBudgetDataPreviewDto findDataPreview(File file) {
+	    return null;
 	}
 }

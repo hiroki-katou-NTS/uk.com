@@ -22,8 +22,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSet_;
 
 /**
@@ -71,9 +69,8 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 	 * remove(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void remove(String employeeId, String monthlyPatternCode) {
-		this.commandProxy().remove(KmpstMonthPatternSet.class,
-				new KmpstMonthPatternSetPK(monthlyPatternCode, employeeId));
+	public void remove(String employeeId) {
+		this.commandProxy().remove(KmpstMonthPatternSet.class, employeeId);
 	}
 
 	/*
@@ -104,8 +101,7 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 
 		// equal employee id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KmpstMonthPatternSet_.kmpstMonthPatternSetPK)
-						.get(KmpstMonthPatternSetPK_.sid), employeeId));
+				.add(criteriaBuilder.equal(root.get(KmpstMonthPatternSet_.sid), employeeId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -157,8 +153,7 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 
 		// equal employee id
 		lstpredicateWhere
-				.add(criteriaBuilder.and(root.get(KmpstMonthPatternSet_.kmpstMonthPatternSetPK)
-						.get(KmpstMonthPatternSetPK_.sid).in(employeeIds)));
+				.add(criteriaBuilder.and(root.get(KmpstMonthPatternSet_.sid).in(employeeIds)));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

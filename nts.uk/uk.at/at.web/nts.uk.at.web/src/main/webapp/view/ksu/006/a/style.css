@@ -1,14 +1,14 @@
 @CHARSET "UTF-8";
 
-#preview {
-	margin-left: 180px;
+#divTableParent {
+	margin-left: 200px;
+	margin-top: 10px;
 }
 
 .table-container {
 	position: relative;
 	width: 900px;
 	display: inline-block;
-	margin-left: 180px;
 }
 
 table.dataPreview {
@@ -28,6 +28,7 @@ td.dataPreview {
 	border: 1px solid black;
 	/* padding: 10px 20px 10px 20px; */
 	white-space: nowrap;
+	text-align: center;
 }
 
 .table-content-value {
@@ -46,9 +47,9 @@ td.dataPreview {
 }
 
 .firstCol {
-	width: 50px !important; padding : 0 !important;
+	width: 130px;
+	word-wrap: break-word;
 	white-space: normal !important;
-	padding: 0 !important;
 }
 #label-char-code {
 	padding-top: 9px !important;
