@@ -146,6 +146,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             let self = this;
             self.forwardOneDay();
             self.optionDates(self.getOptionDates());
+            // Set focus control
+            $('#component-calendar-kcp006').focus();
         }
 
         /**
@@ -155,6 +157,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             let self = this;
             self.backwardOneDay();
             self.optionDates(self.getOptionDates());
+            // Set focus control
+            $('#component-calendar-kcp006').focus();
         }
 
         /**
@@ -165,9 +169,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             nts.uk.ui.block.invisible();
             // Reload calendar
             self.optionDates(self.getOptionDates());
+            // Set focus control
+            $('#component-calendar-kcp006').focus();
             service.save('empId', ko.toJS(self.patternReflection)).always(() => {
                 nts.uk.ui.block.clear();
-            });;
+            });
         }
 
         /**
