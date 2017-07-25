@@ -44,9 +44,9 @@ module nts.uk.com.view.ccg.share.ccg {
             onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
             onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
             onApplyEmployee: (data: EmployeeSearchDto[]) => void;
-            isShow:  KnockoutObservable<boolean>;
-
-
+            isShow: KnockoutObservable<boolean>;
+            isFistTimeShow: boolean;
+            
             /**
              * Init screen model
              */
@@ -77,6 +77,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedTab = ko.observable('tab-1');
                 self.reloadDataSearch();
                 this.isShow = ko.observable(false);
+                self.isFistTimeShow = true;
             }
 
             /**
@@ -206,7 +207,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 $('#hor-scroll-button-hide').hide();
                 self.isShow(true);
-                $('#ccg-component').toggle("slide");
+                $('#ccg-component').toggle("slide", function() {
+                    if (self.isFistTimeShow) {
+                        self.applyDataSearch();
+                        self.isFistTimeShow = false;
+                    }
+                });
             }
 
             /**
