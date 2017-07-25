@@ -83,6 +83,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
 
         }
 
+        /**
+         * Start page event.
+         */
         public startPage(): JQueryPromise<any> {
             nts.uk.ui.block.invisible();
             let self = this;
@@ -95,6 +98,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                     weeklyWorkSetting: WeeklyWorkSetting,
                     listHoliday,
                     listWorkType) {
+
                     // Set list holiday
                     self.listHoliday = listHoliday;
 
@@ -135,17 +139,27 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * Forward button clicked
+         */
         public forward(): void {
             let self = this;
-            self.tien();
-            self.optionDates(self.getOptionDates());
-        }
-        public backward(): void {
-            let self = this;
-            self.lui();
+            self.forwardOneDay();
             self.optionDates(self.getOptionDates());
         }
 
+        /**
+         * Backward button clicked.
+         */
+        public backward(): void {
+            let self = this;
+            self.backwardOneDay();
+            self.optionDates(self.getOptionDates());
+        }
+
+        /**
+         * Event when click apply button.
+         */
         public onBtnApplySettingClicked(): void {
             let self = this;
             nts.uk.ui.block.invisible();
@@ -156,6 +170,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             });;
         }
 
+        /**
+         * Get option dates for calendar.
+         */
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
@@ -240,6 +257,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             return result;
         }
 
+        /**
+         * Get worktype name by code.
+         */
         private getWorktypeNameByCode(code: string): any {
             let self = this;
             let result = _.find(self.listWorkType(), wt => wt.workTypeCode == code);
@@ -249,6 +269,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             return '';
         }
 
+        /**
+         * Get list date of selected yearmonth.
+         */
         private getListDateOfMonth(): Array<string> {
             let self = this;
             let resultList = [];
@@ -262,6 +285,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             return resultList;
         }
 
+        /**
+         * Get work day division.
+         */
         private getWorkDayDivision(dayOfWeek: number): WorkDayDivision {
             let self = this;
             switch (dayOfWeek) {
@@ -284,38 +310,42 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             }
         }
 
+        /**
+         * Get isStatutorySetting checkbox value
+         */
         private isStatutorySettingChecked(): boolean {
             let self = this;
             return self.patternReflection.statutorySetting.useClassification();
         }
+
+        /**
+         * Get isNonStatutorySetting checkbox value
+         */
         private isNonStatutorySettingChecked(): boolean {
             let self = this;
             return self.patternReflection.nonStatutorySetting.useClassification();
         }
+
+        /**
+         * Get isHolidaySetting checkbox value
+         */
         private isHolidaySettingChecked(): boolean {
             let self = this;
             return self.patternReflection.holidaySetting.useClassification();
         }
 
         /**
-         * Check if is last day of month
-         * @param: date ('YYYY-MM-DD')
+         * Check if isFillInTheBlank radio is selected.
          */
-        private isLastDayOfMonth(d: string): boolean {
-            let d2 = moment(d);
-            let currentMonth = d2.month();
-            d2.add(1, 'days');
-            return currentMonth !== d2.month();
+        private isFillInTheBlankChecked(): boolean {
+            let self = this;
+            return ReflectionMethod.FillInTheBlank == self.patternReflection.reflectionMethod;
         }
 
-        private isFirstDayOfMonth(d: string): boolean {
-            let d2 = moment(d);
-            let currentMonth = d2.month();
-            d2.subtract(1, 'days');
-            return currentMonth !== d2.month();
-        }
-
-        private lui(): void {
+        /**
+         * Backward 1 day.
+         */
+        private backwardOneDay(): void {
             let self = this;
             let temp = self.weeklyWorkSetting.sunday;
             self.weeklyWorkSetting.sunday = self.weeklyWorkSetting.monday;
@@ -326,7 +356,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.weeklyWorkSetting.friday = self.weeklyWorkSetting.saturday;
             self.weeklyWorkSetting.saturday = temp;
         }
-        private tien(): void {
+
+        /**
+         * Forward 1 day.
+         */
+        private forwardOneDay(): void {
             let self = this;
             let temp = self.weeklyWorkSetting.monday;
             self.weeklyWorkSetting.monday = self.weeklyWorkSetting.sunday;
@@ -337,13 +371,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.weeklyWorkSetting.wednesday = self.weeklyWorkSetting.tuesday;
             self.weeklyWorkSetting.tuesday = temp;
         }
-        private isFillInTheBlankChecked(): boolean {
-            let self = this;
-            return ReflectionMethod.FillInTheBlank == self.patternReflection.reflectionMethod;
-        }
 
         /**
-         * Check if day is holiday
+         * Check if the day is holiday
          * @param: day
          */
         private isHoliday(day: moment.Moment): boolean {
