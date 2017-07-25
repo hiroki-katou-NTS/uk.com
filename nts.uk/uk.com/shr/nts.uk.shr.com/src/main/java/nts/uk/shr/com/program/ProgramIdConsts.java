@@ -3,7 +3,35 @@ package nts.uk.shr.com.program;
 public class ProgramIdConsts {
 	
 	public static final String Ccg001d = "Ccg001d";
-
+	
+	public static final String CCG008A = "CCG008A";
+	
+	public static final String CCG008B = "CCG008B";
+	
+	public static final String CCG008C = "CCG008C";
+	
+	public static final String CCG008D = "CCG008D";
+	
+	public static final String CCG013A = "CCG013A";
+	
+	public static final String CCG013B = "CCG013B";
+	
+	public static final String CCG013C = "CCG013C";
+	
+	public static final String CCG013D = "CCG013D";
+	
+	public static final String CCG013E = "CCG013E";
+	
+	public static final String CCG013G = "CCG013G";
+	
+	public static final String CCG013F = "CCG013F";
+	
+	public static final String CCG013I = "CCG013I";
+	
+	public static final String CCG013J = "CCG013J";
+	
+	public static final String CCG013K = "CCG013K";
+	
 	public static final String CCG015A = "CCG015A";
 	
 	public static final String CCG015B = "CCG015B";
@@ -13,6 +41,10 @@ public class ProgramIdConsts {
 	public static final String CCG014A = "CCG014A";
 	
 	public static final String CCG014B = "CCG014B";
+	
+	public static final String CCG018A = "CCG013A";
+	
+	public static final String CCG018B = "CCG013B";
 	
 	public static final String CCG030A = "CCG030A";
 	
@@ -56,6 +88,7 @@ public class ProgramIdConsts {
 	
 	public static final String KSM004D = "KSM004D";
 
+	public static final String CMM044A = "CMM044A";
 	
-	
+	public static final String KSU001A = "KSU001A";
 }
