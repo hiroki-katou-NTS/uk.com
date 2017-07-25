@@ -5,5 +5,7 @@ __viewContext.ready(function() {
     };
     viewModel.viewModelA.start().done(() => {
     __viewContext.bind(viewModel);
+        //set tab index 
+        $(".ntsCheckBox").attr("tabindex",5);
     });
 });
