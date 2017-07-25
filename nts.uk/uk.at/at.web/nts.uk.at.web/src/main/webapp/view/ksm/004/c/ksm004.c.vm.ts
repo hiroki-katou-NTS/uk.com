@@ -7,10 +7,8 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         filterHolidays: KnockoutObservableArray<PublicHoliday>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
-
         // Holiday Details
         selectedPublicHoliday: KnockoutObservable<PublicHolidayObs>;
-
         // UI
         isCreate: KnockoutObservable<boolean>;
         constructor() {
@@ -20,8 +18,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                 self.findPublicHolidayByYear(newValue);
                 self.selectHolidayByIndex(0);
                 nts.uk.ui.errors.clearAll();
-                  $("#date").focus();
-                
+                $("#date").focus();
             });
             //Grid List
             self.allHolidays = ko.observableArray([]);
@@ -187,10 +184,10 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                         index = _.min([self.filterHolidays().length - 2, index]);
                         self.getAllData().done(() => {
                             self.selectHolidayByIndex(index);
+                            _.delay(() => { nts.uk.ui.errors.clearAll(); }, 2);
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                 self.focusByMode();
                             });
-                            nts.uk.ui.errors.clearAll();
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
