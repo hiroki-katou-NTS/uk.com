@@ -5,7 +5,8 @@ module nts.uk.at.view.ksm005.e {
         var paths = {
             findAllWorkType : "at/share/worktype/findAll",
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
-            checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate"
+            checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
+            getUserInfo: "ctx/at/schedule/pattern/work/weekly/setting/userinfo"
         }
         
         /**
@@ -28,16 +29,22 @@ module nts.uk.at.view.ksm005.e {
             return nts.uk.request.ajax('at', paths.checkWeeklyWorkSetting, baseDate);
         }
         
+        /**
+         * call service get user info
+         */
+        export function getUserInfo(): JQueryPromise<model.UserInfoDto> {
+            return nts.uk.request.ajax('at', paths.getUserInfo);
+        }
         
         /**
          * save to client service MonthlyPatternSettingBatch
          */
-        export function saveMonthlyPatternSettingBatch(businessDayClassification: model.BusinessDayClassification,data: model.MonthlyPatternSettingBatch): void {
-            nts.uk.characteristics.save(model.KeyMonthlyPatternSettingBatch.KEY+businessDayClassification, data);
+        export function saveMonthlyPatternSettingBatch(key: model.KeyMonthlyPatternSettingBatch,data: model.MonthlyPatternSettingBatch): void {
+            nts.uk.characteristics.save(key, data);
         }
 
-        export function findMonthlyPatternSettingBatch(businessDayClassification: model.BusinessDayClassification): JQueryPromise<model.MonthlyPatternSettingBatch> {
-            return nts.uk.characteristics.restore(model.KeyMonthlyPatternSettingBatch.KEY+businessDayClassification);
+        export function findMonthlyPatternSettingBatch(key: model.KeyMonthlyPatternSettingBatch): JQueryPromise<model.MonthlyPatternSettingBatch> {
+            return nts.uk.characteristics.restore(key);
         }
         
         export module model {
@@ -61,8 +68,15 @@ module nts.uk.at.view.ksm005.e {
                 workdayDivision: number;    
             }
             
-            export class KeyMonthlyPatternSettingBatch{
-                static KEY = 'KEYMONTHLYPATTERNSETTINGBATCH';    
+            export interface KeyMonthlyPatternSettingBatch{
+                companyId: string;
+                employeeId: string;
+                businessDayClassification: BusinessDayClassification;
+            }
+            
+            export interface UserInfoDto{
+                companyId: string;
+                employeeId: string;    
             }
             
             // 月間パターンの一括設定

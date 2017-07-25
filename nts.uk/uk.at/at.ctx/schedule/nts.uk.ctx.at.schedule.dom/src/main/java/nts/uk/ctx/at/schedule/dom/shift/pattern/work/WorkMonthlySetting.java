@@ -23,9 +23,9 @@ public class WorkMonthlySetting extends AggregateRoot {
 	// 会社ID
 	private CompanyId companyId;
 
-	/** The work monthly setting code. */
+	/** The work type code. */
 	// 勤務種類設定コード
-	private WorkMonthlySettingCode workMonthlySettingCode;
+	private WorkTypeCode workTypeCode;
 
 	/** The sift code. */
 	// 就業時間帯コード
@@ -34,7 +34,6 @@ public class WorkMonthlySetting extends AggregateRoot {
 	/** The date. */
 	// 年月日
 	private GeneralDate date;
-	
 	
 	/** The monthly pattern code. */
 	// 月間パターンコード
@@ -48,7 +47,7 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 */
 	public WorkMonthlySetting(WorkMonthlySettingGetMemento memento){
 		this.companyId = memento.getCompanyId();
-		this.workMonthlySettingCode = memento.getWorkMonthlySettingCode();
+		this.workTypeCode = memento.getWorkTypeCode();
 		this.siftCode = memento.getSiftCode();
 		this.date = memento.getDate();
 		this.monthlyPatternCode = memento.getMonthlyPatternCode();
@@ -61,7 +60,7 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 */
 	public void saveToMemento(WorkMonthlySettingSetMemento memento){
 		memento.setCompanyId(this.companyId);
-		memento.setWorkMonthlySettingCode(this.workMonthlySettingCode);
+		memento.setWorkTypeCode(this.workTypeCode);
 		memento.setSiftCode(this.siftCode);
 		memento.setDate(this.date);
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);

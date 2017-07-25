@@ -79,7 +79,7 @@
 							<com:ko-foreach bind="menuBars">
 								<div class="menubar-container" data-bind="attr: {id: 'tab-content-' + menuBarId()}">
 									<div class="title-menu cf">
-										<div data-bind="foreach: titleMenu">
+										<div class="title-menu-container" data-bind="foreach: titleMenu">
 											<div class="title-menu-column valign-top" data-bind="attr:{id: titleMenuId}">
 												<div class="title-menu-name context-menu-title"
 													data-bind="style: {color: textColor, 'background-color': backgroundColor}, text: titleMenuName"></div>

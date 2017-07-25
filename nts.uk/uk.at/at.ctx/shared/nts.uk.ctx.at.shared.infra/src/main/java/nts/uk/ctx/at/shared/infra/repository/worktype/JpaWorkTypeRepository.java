@@ -16,11 +16,11 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KmnmtWorkTypePK;
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
 
 	private final String SELECT_FROM_WORKTYPE = "SELECT c FROM KmnmtWorkType c";
-
+	private final String SELECT_BY_WORKTYPE_CODE = "SELECT c FROM KmnmtWorkType c"
+			+ "WHERE c.kmnmtWorkTypePK.workTypeCode = : worktypeCd";
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kmnmtWorkTypePK.workTypeCode IN :lstPossible";
 
-	private final String SELECT_BY_CID = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId";
 
 	private final String SELECT_BY_CID_DISPLAY_ATR = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
@@ -41,8 +41,15 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	@Override
 	public List<WorkType> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KmnmtWorkType.class).setParameter("companyId", companyId)
+		String query = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId";
+		return this.queryProxy().query(query, KmnmtWorkType.class).setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<WorkType> findByWorktypeCode(String worktypeCode) {
+		return Optional.of(this.queryProxy().query(SELECT_BY_WORKTYPE_CODE, KmnmtWorkType.class)
+				.setParameter("worktypeCd", worktypeCode).getSingleOrNull(c -> toDomain(c)));
 	}
 
 	/**

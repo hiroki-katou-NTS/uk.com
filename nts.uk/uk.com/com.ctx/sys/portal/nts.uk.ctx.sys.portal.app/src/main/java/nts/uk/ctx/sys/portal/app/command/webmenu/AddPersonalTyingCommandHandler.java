@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,10 +28,16 @@ public class AddPersonalTyingCommandHandler extends CommandHandler<PersonTypingC
 		
 		PersonTypingCommand person = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		if(person.getWebMenuCodes().size() <= 10){
-		respository.delete(companyId, person.getEmployeeId());
-	
 		
+		//Delete personal typing
+		respository.delete(companyId, person.getEmployeeId());
+		
+		if(CollectionUtil.isEmpty(person.getWebMenuCodes()) && person.getWebMenuCodes().size() <= 10){
+			{throw new BusinessException("Msg_73");}
+		}
+		if(person.getWebMenuCodes() == null){
+			return;
+		}
 		person.getWebMenuCodes().forEach(menuCode-> {
 			PersonalTying personalTying = new PersonalTying(companyId, menuCode, person.getEmployeeId());
 			
@@ -40,7 +47,5 @@ public class AddPersonalTyingCommandHandler extends CommandHandler<PersonTypingC
 			//Add personal typing
 			respository.add(personalTying);
 		});
-	}else{throw new BusinessException("Msg_73");}
-	}
-
+}
 }

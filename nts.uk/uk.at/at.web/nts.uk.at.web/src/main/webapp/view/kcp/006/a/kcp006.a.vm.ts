@@ -72,7 +72,7 @@ module nts.uk.at.view.kcp006.a.viewmodel {
                     ]
                 }
             ]);
-            self.firstDay = 0;
+            self.firstDay = ko.observable(0);
             self.startDate = 1;
             self.endDate = 31;
             self.workplaceId = ko.observable("0");

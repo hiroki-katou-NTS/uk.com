@@ -88,6 +88,12 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		}
 		return lstHoliday;
 	}
+	/**
+	 * check Holiday: check date is holiday?
+	 * @param lstHoliday
+	 * @param date
+	 * @return
+	 */
 	public static boolean checkHoliday(List<PublicHoliday> lstHoliday, BigDecimal date){
 		boolean check = false;
 		if(lstHoliday.isEmpty()){
@@ -100,6 +106,13 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		}
 		return check;
 	}
+	/**
+	 * check Set: seting or not setting date
+	 * @param lstHoliday
+	 * @param date
+	 * @param dayofWeek
+	 * @return
+	 */
 	public boolean checkSet(List<PublicHoliday> lstHoliday,GeneralDate date,List<Integer> dayofWeek ){
 		if(lstHoliday.isEmpty() && !checkDayofWeek(date,dayofWeek)){
 			return false;
@@ -172,8 +185,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				}
 				//add item new in db
 				workplaceRepo.InsertWpSpecDate(listwpSpec);
-				date = date.addDays(1);
-				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new: xoa het caus cu, them moi
 				//delete setting old workplace
@@ -186,9 +197,9 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,dateBigDecimal,BigDecimal.valueOf(timeItemId),""));
 				}
 				workplaceRepo.InsertWpSpecDate(lstWorkplaceSpecificDate);
-				
 			}
 			date = date.addDays(1);
+			dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 		}
 	}
 	/**
@@ -248,8 +259,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				}
 				//add item new in db
 				companyRepo.addListComSpecDate(listwpSpec);
-				date = date.addDays(1);
-				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new
 				//delete setting old workplace
@@ -263,6 +272,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				companyRepo.addListComSpecDate(lstComSpecificDate);
 			}
 			date = date.addDays(1);
+			dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 		}
 	}
 

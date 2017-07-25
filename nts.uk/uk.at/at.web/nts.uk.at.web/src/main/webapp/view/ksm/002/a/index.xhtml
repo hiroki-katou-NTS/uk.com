@@ -44,7 +44,7 @@
 					<button class="proceed" data-bind="click: Register">#{i18n.getText('KSM002_6')}</button>
 					<button id="btnSpecSetting" data-bind="click: openKsm002CDialog">#{i18n.getText('KSM002_7')}</button>
 					<button data-bind="click: openKsm002DDialog">#{i18n.getText('KSM002_8')}</button>
-					<button class="danger" data-bind="click : DeleteOneMonth">#{i18n.getText('KSM002_9')}</button>
+					<button class="danger" data-bind="click : DeleteOneMonth, disable : isNew">#{i18n.getText('KSM002_9')}</button>
 				</div>
 				<div id="screenA" class="contents-area">
 					<div class="panel panel-frame">
