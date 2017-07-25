@@ -4,25 +4,24 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresults;
 
-import java.util.List;
+import java.util.Date;
 
 /**
- * The Interface ExternalBudgetLogRepository.
+ * The Interface ExecutionTimeSetMemento.
  */
-public interface ExternalBudgetLogRepository {
+public interface ExecutionTimeSetMemento {
     
     /**
-     * Adds the.
+     * Sets the start date.
      *
-     * @param domain the domain
+     * @param startDate the new start date
      */
-    void add(ExternalBudgetLog domain);
-    
+    void setStartDate(Date startDate);
+
     /**
-     * Find all by company id.
+     * Sets the end date.
      *
-     * @param companyId the company id
-     * @return the list
+     * @param endDate the new end date
      */
-    List<ExternalBudgetLog> findAllByCompanyId(String companyId);
+    void setEndDate(Date endDate);
 }

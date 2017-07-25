@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.ws.budget.external;
 
 import java.io.File;
@@ -18,6 +22,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCo
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresults.ExtBudgetDataPreviewDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresults.ExternalBudgetLogDto;
 
 @Path("at/schedule/budget/external")
 @Produces("application/json")
@@ -68,5 +73,16 @@ public class ExternalBudgetWebService extends WebService {
     @Path("find/preview")
     public ExtBudgetDataPreviewDto findDataPreview(File fileUpload) {
         return this.find.findDataPreview(fileUpload);
+    }
+    
+    /**
+     * Find all external budget log.
+     *
+     * @return the list
+     */
+    @POST
+    @Path("findAll/log")
+    public List<ExternalBudgetLogDto> findAllExternalBudgetLog() {
+        return this.find.findAllExternalBudgetLog();
     }
 }
