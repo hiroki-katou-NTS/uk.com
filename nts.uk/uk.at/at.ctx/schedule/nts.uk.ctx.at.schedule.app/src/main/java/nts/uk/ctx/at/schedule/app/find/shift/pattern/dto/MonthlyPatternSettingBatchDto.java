@@ -21,7 +21,4 @@ public class MonthlyPatternSettingBatchDto {
 	/** The working code. */
 	// 就業時間帯コード
 	private String workingCode;
-
-	/** The business day class. */
-	private int businessDayClass;
 }

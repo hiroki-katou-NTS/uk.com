@@ -7,7 +7,8 @@ module nts.uk.at.view.ksm005.e {
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
             checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
-            getUserInfo: "ctx/at/schedule/pattern/work/weekly/setting/userinfo"
+            getUserInfo: "ctx/at/schedule/pattern/work/weekly/setting/userinfo",
+            batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthy/setting/batch"
         }
         
         /**
@@ -42,7 +43,12 @@ module nts.uk.at.view.ksm005.e {
         export function checkPublicHoliday(baseDate: string): JQueryPromise<model.OptionalPublicHoliday> {
             return nts.uk.request.ajax('at', paths.checkPublicHoliday + '/' + baseDate);
         }
-        
+        /**
+         * batch monthly pattern setting call service
+         */
+        export function batchWorkMonthlySetting(command: model.MonthlyPatternSettingBatchDto): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.batchWorkMonthlySetting, command);
+        }
         /**
          * save to client service MonthlyPatternSettingBatch
          */
@@ -130,10 +136,14 @@ module nts.uk.at.view.ksm005.e {
             }
             
             export interface MonthlyPatternSettingBatchDto {
-                settings: MonthlyPatternSettingBatch[];
+                settingWorkDays: MonthlyPatternSettingBatch;
+                settingStatutoryHolidays: MonthlyPatternSettingBatch;
+                settingNoneStatutoryHolidays: MonthlyPatternSettingBatch;
+                settingPublicHolidays: MonthlyPatternSettingBatch;
                 overwrite: boolean;
                 startYearMonth: number;
                 endYearMonth: number;
+                monthlyPatternCode: string;
             }
                        
         }
