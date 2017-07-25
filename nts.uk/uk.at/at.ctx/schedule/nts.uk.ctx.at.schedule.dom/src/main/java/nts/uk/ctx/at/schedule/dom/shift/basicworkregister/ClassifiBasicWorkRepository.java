@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.basicworkregister;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,8 +41,15 @@ public interface ClassifiBasicWorkRepository {
 	 * @param classificationCode the classification code
 	 * @return the optional
 	 */
-	Optional<ClassificationBasicWork> find(String companyId, String classificationCode);
+	Optional<ClassificationBasicWork> find(String companyId, String classificationCode, Integer workdayDivision);
 	
 
-//	List<ClassificationBasicWork> findAll(String CompanyId, String classificationCode);
+	/**
+	 * Find all.
+	 *
+	 * @param CompanyId the company id
+	 * @param classificationCode the classification code
+	 * @return the list
+	 */
+	List<ClassificationBasicWork> findAll(String CompanyId, String classificationCode);
 }

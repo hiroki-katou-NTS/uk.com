@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.basicworkregister;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -25,13 +26,21 @@ public class JpaWorkplaceBasicWorkRepository implements WorkplaceBasicWorkReposi
 	@Override
 	public void remove(String workplaceId) {
 		// TODO Auto-generated method stub
-		
 	}
 
+
 	@Override
-	public Optional<WorkplaceBasicWork> find(String workplaceId) {
+	public List<WorkplaceBasicWork> findAll(String CompanyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Optional<WorkplaceBasicWork> find(String workplaceId, Integer workdayDivision) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 
 }

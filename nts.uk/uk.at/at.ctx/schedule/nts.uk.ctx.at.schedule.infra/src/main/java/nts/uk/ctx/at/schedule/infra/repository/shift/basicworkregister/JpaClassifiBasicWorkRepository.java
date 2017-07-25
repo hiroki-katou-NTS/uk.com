@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.basicworkregister;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -28,10 +29,21 @@ public class JpaClassifiBasicWorkRepository implements ClassifiBasicWorkReposito
 		
 	}
 
+	
+
 	@Override
-	public Optional<ClassificationBasicWork> find(String companyId, String classificationCode) {
+	public List<ClassificationBasicWork> findAll(String CompanyId, String classificationCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Optional<ClassificationBasicWork> find(String companyId, String classificationCode,
+			Integer workdayDivision) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 
 }
