@@ -90,11 +90,10 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
-            $.when(service.find('empId'),
-                service.findWeeklyWorkSetting(),
+            $.when(service.findWeeklyWorkSetting(),
                 service.getHolidayByListDate(self.getListDateOfMonth()),
                 service.getAllWorktype())
-                .done(function(patternReflection: service.model.PatternReflection,
+                .done(function(
                     weeklyWorkSetting: WeeklyWorkSetting,
                     listHoliday,
                     listWorkType) {
@@ -108,20 +107,6 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                     // Set weeklyWorkSetting
                     self.weeklyWorkSetting = weeklyWorkSetting;
 
-                    // Select first item if worktype code not exist.
-                    if (!patternReflection.statutorySetting.workTypeCode) {
-                        patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
-                    }
-                    if (!patternReflection.nonStatutorySetting.workTypeCode) {
-                        patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
-                    }
-                    if (!patternReflection.holidaySetting.workTypeCode) {
-                        patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
-                    }
-
-                    // Set patternReflection.
-                    self.patternReflection = new PatternReflection(patternReflection);
-
                     // Set optionDates.
                     self.optionDates(self.getOptionDates());
 
@@ -129,6 +114,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                     service.getListWorkingHour([]).done(list => {
                         self.listWorkTime(list);
                     });
+
+                    //TODO: tam thoi the da
+                    self.loadPatternReflection();
 
                     dfd.resolve();
                 }).fail(res => {
@@ -174,6 +162,31 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             service.save('empId', ko.toJS(self.patternReflection)).always(() => {
                 nts.uk.ui.block.clear();
             });
+        }
+
+        /**
+         * Load patternReflection.
+         */
+        private loadPatternReflection(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.find('empId').done(function(patternReflection: service.model.PatternReflection) {
+                 // Select first item if worktype code not exist.
+                    if (!patternReflection.statutorySetting.workTypeCode) {
+                        patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                    }
+                    if (!patternReflection.nonStatutorySetting.workTypeCode) {
+                        patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                    }
+                    if (!patternReflection.holidaySetting.workTypeCode) {
+                        patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                    }
+
+                    // Set patternReflection.
+                    self.patternReflection = new PatternReflection(patternReflection);
+            });
+            dfd.resolve();
+            return dfd.promise();
         }
 
         /**
