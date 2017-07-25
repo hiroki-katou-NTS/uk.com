@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -18,43 +18,40 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
- * The Class KmpstMonthPatternSet.
+ * The Class KwmmtWorkMonthSet.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KMPST_MONTH_PATTERN_SET")
-public class KmpstMonthPatternSet extends JpaEntity implements Serializable {
+@Table(name = "KWMMT_WORK_MONTH_SET")
+public class KwmmtWorkMonthSet extends JpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    /** The sid. */
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SID")
-    private String sid;
+    /** The kwmmt work month set PK. */
+    @EmbeddedId
+    protected KwmmtWorkMonthSetPK kwmmtWorkMonthSetPK;
     
-    /** The m pattern cd. */
+    /** The work type cd. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_PATTERN_CD")
-    private String mPatternCd;
+    @Column(name = "WORK_TYPE_CD")
+    private String workTypeCd;
+    
+    /** The working cd. */
+    @Column(name = "WORKING_CD")
+    private String workingCd;
 
-    public KmpstMonthPatternSet() {
+    public KwmmtWorkMonthSet() {
     }
 
-    public KmpstMonthPatternSet(String sid) {
-        this.sid = sid;
-    }
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.sid;
+		return this.kwmmtWorkMonthSetPK;
 	}
-
-   
+    
 }
