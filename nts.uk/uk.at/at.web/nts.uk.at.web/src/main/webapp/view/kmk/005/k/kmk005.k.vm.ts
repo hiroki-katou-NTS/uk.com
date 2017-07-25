@@ -129,11 +129,15 @@ module nts.uk.at.view.kmk005.k {
                     };
                 if (model.wtc && model.wtc !== '') {
                     block();
-                    service.saveSetting(command).done(() => {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
-                        self.start();
-                        unblock();
-                    }).fail(x => alertE(x.message).then(unblock));
+                    nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                        .ifYes(() => {
+                            service.saveSetting(command).done(() => {
+                                nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                                self.start();
+                                unblock();
+                            }).fail(x => alertE(x.message).then(unblock));
+                        
+                    }
                 }
             }
 
