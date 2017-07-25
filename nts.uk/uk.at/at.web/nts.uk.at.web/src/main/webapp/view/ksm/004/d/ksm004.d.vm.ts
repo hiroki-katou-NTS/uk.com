@@ -25,23 +25,31 @@ module ksm004.d.viewmodel {
         //classId
         classId: KnockoutObservable<string>;
         //WorkPlaceId
-        workPlaceId : KnockoutObservable<string>;
+        workPlaceId: KnockoutObservable<string>;
         //list 
         list: KnockoutObservableArray<any>;
         //list holiday
-        listHoliday : KnockoutObservableArray<Holiday>;
+        listHoliday: KnockoutObservableArray<Holiday>;
         itemHoliday: KnockoutObservable<Holiday>;
-        
+        //date value
+        dateValue: KnockoutObservable<any>;
+        startDateString: KnockoutObservable<string>;
+        endDateString: KnockoutObservable<string>;
         constructor() {
             var self = this;
             //start and end month
             //get data Form : A
-            let param :IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM')|| { classification: 0, yearMonth: 20160101,workPlaceId: null, classId: null };
+            let param: IData = nts.uk.ui.windows.getShared('KSM004_D_PARAM') || { classification: 0, yearMonth: 20170101, workPlaceId: null, classCD: null };
+            
+            //date value
+            self.dateValue = ko.observable({startDate: param.yearMonth.toString(), endDate: param.yearMonth.toString()});
+            self.startDateString = ko.observable(param.yearMonth.toString());
+            self.endDateString = ko.observable(param.yearMonth.toString());
+            
             //classId
-            self.classId = ko.observable(param.classId);
+            self.classId = ko.observable(param.classCD);
             //workPlaceId
             self.workPlaceId = ko.observable(param.workPlaceId);
-
             self.startMonth = ko.observable(param.yearMonth);
             self.endMonth = ko.observable(param.yearMonth);
             self.typeClass = ko.observable(param.classification);
@@ -52,7 +60,7 @@ module ksm004.d.viewmodel {
             //date , workingDayAtr
             self.dateId = ko.observable(0);
             self.workingDayAtr = ko.observable(0);
-            
+
             //workdayGroup
             self.workdayGroup = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText('KSM004_46') },
@@ -70,11 +78,20 @@ module ksm004.d.viewmodel {
 
             //list 
             self.list = ko.observableArray(null);
-            
+
             //list holiday
             self.listHoliday = ko.observableArray(null);
             self.itemHoliday = ko.observable(null);
 
+            self.startDateString.subscribe(function(value){
+                self.dateValue().startDate = value;
+                self.dateValue.valueHasMutated();        
+            });
+            
+            self.endDateString.subscribe(function(value){
+                self.dateValue().endDate = value;   
+                self.dateValue.valueHasMutated();      
+            });
         }//end constructor
 
         /**
@@ -93,236 +110,241 @@ module ksm004.d.viewmodel {
             let startYM = moment(self.startMonth(), 'YYYYMM');
             let endYM = moment(self.endMonth(), 'YYYYMM');
             self.getAllHoliday();
-             
+
             self.list([]);
             endYM.add(1, 'M');
             nts.uk.ui.block.invisible();
+//            if (startYM >= endYM) {
+//                $('#endYearM').ntsError('set', 'えらーです : abc');
+//                nts.uk.ui.block.clear();
+//                return;
+//            }
             $('.nts-input').trigger("validate");
             _.defer(() => {
                 if (!$('.nts-editor').ntsError("hasError")) {
-                    // startYM < endYM 
-                    while (startYM.format("YYYYMMDD") < endYM.format("YYYYMMDD")) //value : 0-11
-                    {
-                        //date of month
-                        let dateOfMonth = startYM.date(); //value : 1-31
-                        //date or week
-                        let dateOfWeek = startYM.day();   //value : 0-6
-                        let date = parseInt(startYM.format("YYYYMMDD"));
-                        
-                        // set value workingDayAtr
-                        switch (dateOfWeek) {
-                            case 0: self.workingDayAtr(self.selectedMon()); break;
-                            case 1: self.workingDayAtr(self.selectedTue()); break;
-                            case 2: self.workingDayAtr(self.selectedWed()); break;
-                            case 3: self.workingDayAtr(self.selectedThu()); break;
-                            case 4: self.workingDayAtr(self.selectedFri()); break;
-                            case 5: self.workingDayAtr(self.selectedSat()); break;
-                            case 6: self.workingDayAtr(self.selectedSun()); break;
-                            default: break;
-                        }
-                        //self.workingDayAtr()
-                        // if D3_2 : workingDayAtr = 0
-                        if (self.workingDayAtr() ==0 && self.checkHoliday()== true) {
-                            //get holiday by date in list
-                            let holiday = _.find(self.listHoliday(),function(item : Holiday){
-                                return item.date == date;
-                            });
-                            //kt xem co chon check ngay nghỉ k
-                            
-                            if(holiday){
-                                self.workingDayAtr(2);
+
+                    // startYM < endYM
+                    
+                        while (startYM.format("YYYYMMDD") < endYM.format("YYYYMMDD")) //value : 0-11
+                        {
+                            //date of month
+                            let dateOfMonth = startYM.date(); //value : 1-31
+                            //date or week
+                            let dateOfWeek = startYM.day();   //value : 0-6
+                            let date = parseInt(startYM.format("YYYYMMDD"));
+
+                            // set value workingDayAtr
+                            switch (dateOfWeek) {
+                                case 0: self.workingDayAtr(self.selectedSun()); break;
+                                case 1: self.workingDayAtr(self.selectedMon()); break;
+                                case 2: self.workingDayAtr(self.selectedTue()); break;
+                                case 3: self.workingDayAtr(self.selectedWed()); break;
+                                case 4: self.workingDayAtr(self.selectedThu()); break;
+                                case 5: self.workingDayAtr(self.selectedFri()); break;
+                                case 6: self.workingDayAtr(self.selectedSat()); break;
+                                default: break;
                             }
-                         }
-                        let objTest = {
-                               dateId: date,
+                            //self.workingDayAtr()
+                            // if D3_2 : workingDayAtr = 0
+                            if (self.workingDayAtr() == 0 && self.checkHoliday() == true) {
+                                //get holiday by date in list
+                                let holiday = _.find(self.listHoliday(), function(item: Holiday) {
+                                    return item.date == date;
+                                });
+                                //kt xem co chon check ngay nghỉ    
+                                if (holiday) {
+                                    self.workingDayAtr(2);
+                                }
+                            }
+                            let objTest = {
+                                dateId: date,
                                 workingDayAtr: self.workingDayAtr()
-                           };
-                        self.list().push(objTest);
-                        startYM.add(1, 'd');
-                    }//end while
-            
-                 nts.uk.ui.block.clear();
-                //if calendar company
-                if(self.typeClass() == 0) {
-                    //if check overwrite = true
-                    if (self.checkOverwrite() == true) {
-                        self.updateCalendarCompany(self.list());
-                    } else {
-                        self.addCalendarCompany(self.list());
+                            };
+                            self.list().push(objTest);
+                            startYM.add(1, 'd');
+                        }//end while
+                        nts.uk.ui.block.clear();
+                        //if calendar company
+                        if (self.typeClass() == 0) {
+                            //if check overwrite = true
+                            if (self.checkOverwrite() == true) {
+                                self.updateCalendarCompany(self.list());
+                            } else {
+                                self.addCalendarCompany(self.list());
+                            }
+                            //if calendar class
+                        } else if (self.typeClass() == 2) {
+                            // add classId in list
+                            _.forEach(self.list(), function(value) {
+                                value.classId = self.classId();
+                            });
+                            //if check overwrite = true
+                            if (self.checkOverwrite() == true) {
+
+                                self.updateCalendarClass(self.list());
+
+                            } else {
+                                self.addCalendarClass(self.list());
+                            }
+                            //if calendar workplace   
+                        } else if (self.typeClass() == 1) {
+                            // add workPlaceId in list
+                            _.forEach(self.list(), function(value) {
+                                value.workPlaceId = self.workPlaceId();
+                            });
+                            //if check overwrite = true
+                            if (self.checkOverwrite() == true) {
+                                self.updateCalendarWorkplace(self.list());
+                            } else {
+                                self.addCalendarWorkplace(self.list());
+                            }
+                        }
                     }
-                //if calendar class
-                } else if (self.typeClass() == 2) {
-                    // add classId in list
-                    _.forEach(self.list(), function(value) {
-                            value.classId = self.classId();    
-                        });
-                    //if check overwrite = true
-                    if (self.checkOverwrite() == true) {
-                        
-                        self.updateCalendarClass(self.list());
-                        
-                    } else {
-                        self.addCalendarClass(self.list());
-                    }
-                //if calendar workplace   
-                } else if (self.typeClass() == 1) {
-                    // add workPlaceId in list
-                    _.forEach(self.list(), function(value) {
-                            value.workPlaceId = self.workPlaceId();    
-                        });
-                    //if check overwrite = true
-                    if (self.checkOverwrite() == true) {
-                        self.updateCalendarWorkplace(self.list());
-                    } else {
-                        self.addCalendarWorkplace(self.list());
-                    }
-                }
-            }
-    
-        });
-    }//end decition
-        
+                    
+                });
+        }//end decition
+
         /**
          * get all holiday : return listHoliday
          */
-        getAllHoliday(){
+        getAllHoliday() {
             var self = this;
-             var dfd = $.Deferred<any>();
-             service.getAllHoliday().done(function(data) {
-                 self.listHoliday(data);
-                 dfd.resolve(data);
-             });
-             return dfd.promise();
+            var dfd = $.Deferred<any>();
+            service.getAllHoliday().done(function(data) {
+                self.listHoliday(data);
+                dfd.resolve(data);
+            });
+            return dfd.promise();
         }
         /**
          * add calendar company
-         */ 
-         addCalendarCompany(list) {
-             var self = this;
-             service.addCalendarCompany(list).done(function(){
-                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                 }).fail(function(res){
-                    nts.uk.ui.dialog.alert(res.mesage);    
-                 });
-         }
-    
-            /**
-             * update calendar company
-         */ 
-         updateCalendarCompany(list) {
-             var self = this;
-             service.updateCalendarCompany(list).done(function(){
-                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                 }).fail(function(res){
-                    nts.uk.ui.dialog.alert(res.mesage);    
-                 });
-         }
-    
-            /**
-             * add calendar class
-             */
-         addCalendarClass(list) {
-             var self = this;
-             service.addCalendarClass(list).done(function(){
-                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                 }).fail(function(res){
-                    nts.uk.ui.dialog.alert(res.mesage);    
-                 });
-         }
-    
-            /**
-             * update calendar class
-             */
-        updateCalendarClass(list) {
-             var self = this;
-             service.updateCalendarClass(list).done(function(){
-                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                 }).fail(function(res){
-                    nts.uk.ui.dialog.alert(res.mesage);    
-                 });
+         */
+        addCalendarCompany(list) {
+            var self = this;
+            service.addCalendarCompany(list).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.mesage);
+            });
         }
-    
-            /**
-             * add calendar workplace
-             */
-            addCalendarWorkplace(list) {
+
+        /**
+         * update calendar company
+     */
+        updateCalendarCompany(list) {
             var self = this;
-                 service.addCalendarWorkplace(list).done(function(){
-                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                 }).fail(function(res){
-                    nts.uk.ui.dialog.alert(res.mesage);    
-                 });
-            }
-    
-            /**
-             * update calendar workplace
-             */
-            updateCalendarWorkplace(list) {
+            service.updateCalendarCompany(list).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.mesage);
+            });
+        }
+
+        /**
+         * add calendar class
+         */
+        addCalendarClass(list) {
             var self = this;
-                 service.updateCalendarWorkplace(list).done(function(){
-                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                 }).fail(function(res){
-                    nts.uk.ui.dialog.alert(res.mesage);    
-                 });
-                         
-            }
-    
-            /**
-             * close dialog
-             */ 
-            closeDialog() {
-                nts.uk.ui.windows.close();
-            }
+            service.addCalendarClass(list).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.mesage);
+            });
+        }
+
+        /**
+         * update calendar class
+         */
+        updateCalendarClass(list) {
+            var self = this;
+            service.updateCalendarClass(list).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.mesage);
+            });
+        }
+
+        /**
+         * add calendar workplace
+         */
+        addCalendarWorkplace(list) {
+            var self = this;
+            service.addCalendarWorkplace(list).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.mesage);
+            });
+        }
+
+        /**
+         * update calendar workplace
+         */
+        updateCalendarWorkplace(list) {
+            var self = this;
+            service.updateCalendarWorkplace(list).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.mesage);
+            });
+
+        }
+
+        /**
+         * close dialog
+         */
+        closeDialog() {
+            nts.uk.ui.windows.close();
+        }
 
     }//end screen model
 
     //model
     export module model {
-     //class calendar company
-         export class CalendarCompany {
-             dateId: number;
-             workingDayAtr: number;
-             constructor(dateId: number, workingDayAtr: number) {
-                 this.dateId = dateId;
-                 this.workingDayAtr = workingDayAtr;
+        //class calendar company
+        export class CalendarCompany {
+            dateId: number;
+            workingDayAtr: number;
+            constructor(dateId: number, workingDayAtr: number) {
+                this.dateId = dateId;
+                this.workingDayAtr = workingDayAtr;
+            }
         }
-    }
- // class calendar class
-         export class CalendarClass {
-             classId: string;
-             dateId: number;
-             workingDayAtr: number;
-             constructor(classId: string, dateId: number, workingDayAtr: number) {
-                 this.classId = classId;
-                 this.dateId = dateId;
-                 this.workingDayAtr = workingDayAtr;
-             }
+        // class calendar class
+        export class CalendarClass {
+            classId: string;
+            dateId: number;
+            workingDayAtr: number;
+            constructor(classId: string, dateId: number, workingDayAtr: number) {
+                this.classId = classId;
+                this.dateId = dateId;
+                this.workingDayAtr = workingDayAtr;
+            }
         }
- //class calendar workplace
-         export class CalendarWorkplace {
-             workPlaceId: string;
-             dateId: number;
-             workingDayAtr: number;
-             constructor(workPlaceId: string, dateId: number, workingDayAtr: number) {
-                 this.workPlaceId = workPlaceId;
-                 this.dateId = dateId;
-                 this.workingDayAtr = workingDayAtr;
-             }
+        //class calendar workplace
+        export class CalendarWorkplace {
+            workPlaceId: string;
+            dateId: number;
+            workingDayAtr: number;
+            constructor(workPlaceId: string, dateId: number, workingDayAtr: number) {
+                this.workPlaceId = workPlaceId;
+                this.dateId = dateId;
+                this.workingDayAtr = workingDayAtr;
+            }
         }
         //class holiday
-         export class Holiday {
-             date: number;
-             holidayName: string;
-             constructor( date: number, holidayName: string) {
-                 this.date = date;
-                 this.holidayName = holidayName;
-             }
+        export class Holiday {
+            date: number;
+            holidayName: string;
+            constructor(date: number, holidayName: string) {
+                this.date = date;
+                this.holidayName = holidayName;
+            }
         }
         interface IData {
             classification: number,
             yearMonth: number,
             workPlaceId: string,
-            classId: string
+            classCD: string
         }
     }
 

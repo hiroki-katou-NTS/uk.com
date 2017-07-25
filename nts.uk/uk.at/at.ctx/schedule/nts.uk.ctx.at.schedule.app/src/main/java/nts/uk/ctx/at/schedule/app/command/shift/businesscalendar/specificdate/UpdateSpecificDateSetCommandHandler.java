@@ -26,7 +26,9 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	private CompanySpecificDateRepository companyRepo;
 	@Inject
 	private PublicHolidayRepository holidayRepo;
-	
+	/**
+	 * Update Specific Date Set 
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSpecificDateSetCommand> context) {
 		UpdateSpecificDateSetCommand data = context.getCommand();
@@ -65,6 +67,13 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		}
 		return value;
 	}
+	/**
+	 * check Selected Holiday
+	 * @param dayofWeek
+	 * @param strDate
+	 * @param endDate
+	 * @return
+	 */
 	public List<PublicHoliday> checkSelectedHoliday(List<Integer> dayofWeek, int strDate, int endDate){
 		String companyId = AppContexts.user().companyId();
 		boolean check = false;
@@ -79,6 +88,12 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		}
 		return lstHoliday;
 	}
+	/**
+	 * check Holiday: check date is holiday?
+	 * @param lstHoliday
+	 * @param date
+	 * @return
+	 */
 	public static boolean checkHoliday(List<PublicHoliday> lstHoliday, BigDecimal date){
 		boolean check = false;
 		if(lstHoliday.isEmpty()){
@@ -91,6 +106,13 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		}
 		return check;
 	}
+	/**
+	 * check Set: seting or not setting date
+	 * @param lstHoliday
+	 * @param date
+	 * @param dayofWeek
+	 * @return
+	 */
 	public boolean checkSet(List<PublicHoliday> lstHoliday,GeneralDate date,List<Integer> dayofWeek ){
 		if(lstHoliday.isEmpty() && !checkDayofWeek(date,dayofWeek)){
 			return false;
@@ -157,15 +179,12 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 						a1 = new ArrayList<>();
 					}
 				}
-				//get by list aa
 				List<WorkplaceSpecificDateItem> listwpSpec = new ArrayList<>();
 				for (Integer addNew : lstAddNew) {
 					listwpSpec.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,dateBigDecimal, BigDecimal.valueOf(addNew),""));
 				}
 				//add item new in db
 				workplaceRepo.InsertWpSpecDate(listwpSpec);
-				date = date.addDays(1);
-				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new: xoa het caus cu, them moi
 				//delete setting old workplace
@@ -178,9 +197,9 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId,dateBigDecimal,BigDecimal.valueOf(timeItemId),""));
 				}
 				workplaceRepo.InsertWpSpecDate(lstWorkplaceSpecificDate);
-				
 			}
 			date = date.addDays(1);
+			dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 		}
 	}
 	/**
@@ -217,7 +236,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				List<Integer> lstAddNew = new ArrayList<Integer>();
 				//find item not exist in db
 				if(lstAdd.size()==0){
-					//lst = lstTimeItemId
 					lstAddNew = lstTimeItemId;
 				}else{
 					List<CompanySpecificDateItem>	a1 = new ArrayList<>();
@@ -241,9 +259,6 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				}
 				//add item new in db
 				companyRepo.addListComSpecDate(listwpSpec);
-				date = date.addDays(1);
-				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
-				
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new
 				//delete setting old workplace
@@ -255,9 +270,9 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					lstComSpecificDate.add(CompanySpecificDateItem.createFromJavaType(companyId, dateBigDecimal, BigDecimal.valueOf(timeItemId),""));
 				}
 				companyRepo.addListComSpecDate(lstComSpecificDate);
-				
 			}
 			date = date.addDays(1);
+			dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
 		}
 	}
 

@@ -4,7 +4,7 @@ module ksm002.b.viewmodel {
     export class ScreenModel {
         checkBoxList: KnockoutObservableArray<CheckBoxItem> = ko.observableArray([]); 
         selectedIds: KnockoutObservableArray<number> = ko.observableArray([]); 
-        yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYY01')));
+        yearMonthPicked: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYYMM')));
         workPlaceText: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KSM002_61', [nts.uk.resource.getText('Com_Workplace')]));
         currentWorkPlace: KnockoutObservable<WorkPlaceObject> = ko.observable(new WorkPlaceObject('',''));
         rootList: Array<IWorkPlaceDto> = []; // list data from server
@@ -59,17 +59,41 @@ module ksm002.b.viewmodel {
             // calendar event handler 
             $("#calendar1").ntsCalendar("init", {
                 cellClick: function(date) {
-                    nts.uk.ui._viewModel.content.viewModelB.setListText(date);
+                    nts.uk.ui._viewModel.content.viewModelB.setListText(date, self.convertNumberToName(self.selectedIds()));
                 },
                 buttonClick: function(date) {
-                    nts.uk.ui._viewModel.content.viewModelB.openDialogE(date);
+                    let item = _.find(self.calendarPanel.optionDates(), o => o.start == date);
+                    if(nts.uk.util.isNullOrUndefined(item)){
+                        nts.uk.ui._viewModel.content.viewModelB.openDialogE({
+                            start: date,
+                            listText: []        
+                        });       
+                    } else {
+                        nts.uk.ui._viewModel.content.viewModelB.openDialogE(item);
+                    }
                 }
             });
             $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
-                self.getAllSpecDate();
-                self.getSpecDateByIsUse();
-                self.currentWorkPlace().id(_.first($('#tree-grid')['getDataList']()).workplaceId);  
+                self.start(false);    
             });
+        }
+        
+        /**
+         * get required data
+         */
+        start(value: boolean){
+            var self = this;  
+            if(value){
+                self.getSpecDateByIsUse().done(()=>{
+                    if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
+                        self.openDialogC();
+                    }
+                });  
+            } else {
+                self.getAllSpecDate().done(()=>{
+                    self.currentWorkPlace().id(_.first($('#tree-grid')['getDataList']()).workplaceId);         
+                });
+            }
         }
         
         /**
@@ -108,35 +132,52 @@ module ksm002.b.viewmodel {
          * get full selectable item
          */
         getAllSpecDate(){
+            nts.uk.ui.block.invisible();
             var self = this;
+            var dfd = $.Deferred();
             bService.getAllSpecDate().done(data=>{
                 data.forEach(item => {
                     self.fullCheckBoxItem.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
                 });   
+                nts.uk.ui.block.clear();
+                dfd.resolve();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-            });            
+                dfd.reject();
+            }); 
+            return dfd.promise();           
         }
         
         /**
          * get selectable item
          */
         getSpecDateByIsUse(){
+            nts.uk.ui.block.invisible();
             var self = this;
+            var dfd = $.Deferred();
             bService.getSpecificDateByIsUse(1).done(data=>{
-                self.checkBoxList.removeAll();
-                data.forEach(item => {
-                    self.checkBoxList.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
-                });   
+                if(!nts.uk.util.isNullOrEmpty(data)){
+                    self.checkBoxList.removeAll();
+                    let a = []
+                    data.forEach(item => {
+                        a.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
+                    });   
+                    self.checkBoxList(a);
+                }
+                nts.uk.ui.block.clear();
+                dfd.resolve();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-            });            
+                dfd.reject();
+            });   
+            return dfd.promise();          
         }
         
         /**
          * get calendar work place spec date by work place id and year month
          */
         getCalendarWorkPlaceByCode(){
+            nts.uk.ui.block.invisible();
             var self = this;
             bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked()).done(data=>{
                 self.rootList = data;
@@ -151,6 +192,7 @@ module ksm002.b.viewmodel {
                     self.isUpdate(false);
                 }
                 self.calendarPanel.optionDates(a);
+                nts.uk.ui.block.clear();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
@@ -160,10 +202,12 @@ module ksm002.b.viewmodel {
          * insert calendar work place spec date
          */
         insertCalendarWorkPlace(){
+            nts.uk.ui.block.invisible();
             var self = this;
             bService.insertCalendarWorkPlace(self.createCommand()).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.getCalendarWorkPlaceByCode();            
+                self.getCalendarWorkPlaceByCode();      
+                nts.uk.ui.block.clear();      
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
@@ -173,10 +217,12 @@ module ksm002.b.viewmodel {
          * update calendar work place spec date
          */
         updateCalendarWorkPlace(){
+            nts.uk.ui.block.invisible();
             var self = this;
             bService.updateCalendarWorkPlace(self.createCommand()).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getCalendarWorkPlaceByCode();   
+                nts.uk.ui.block.clear();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
@@ -186,13 +232,15 @@ module ksm002.b.viewmodel {
          * delete calendar work place spec date
          */
         deleteCalendarWorkPlace(){
+            nts.uk.ui.block.invisible();
             var self = this;
             bService.deleteCalendarWorkPlace({
                 workPlaceId: self.currentWorkPlace().id(),
                 yearMonth: self.yearMonthPicked()   
             }).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-               self.getCalendarWorkPlaceByCode(); 
+                self.getCalendarWorkPlaceByCode(); 
+                nts.uk.ui.block.clear();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
@@ -228,30 +276,34 @@ module ksm002.b.viewmodel {
         /**
          * open dialog E event
          */
-        openDialogE(date: string) {
+        openDialogE(item) {
             var self = this;
             nts.uk.ui.windows.setShared('KSM002_E_PARAM', 
             {
-                date: Number(moment(date).format("YYYYMMDD")),
+                date: Number(moment(item.start).format("YYYYMMDD")),
                 selectable: _.map(self.checkBoxList(), o => o.id),
-                selecteds: ko.mapping.toJS(self.selectedIds())
+                selecteds: self.convertNameToNumber(item.listText)
             });
-            nts.uk.ui.windows.sub.modal("/view/ksm/002/e/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {});  
+            nts.uk.ui.windows.sub.modal("/view/ksm/002/e/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                let param = nts.uk.ui.windows.getShared('KSM002E_VALUES');   
+                self.setListText(
+                    moment(param.date.toString()).format('YYYY-MM-DD'),
+                    self.convertNumberToName(param.selecteds)    
+                );
+            });  
         }
         
         /**
          * setting item list event
          */
-        setListText(date){
+        setListText(date, data){
             var self = this;
-            if(!nts.uk.util.isNullOrEmpty(self.selectedIds())) {
-                let dateData = self.calendarPanel.optionDates();
-                let existItem = _.find(dateData, item => item.start == date);   
-                if(existItem!=null) {
-                    existItem.changeListText(self.convertNumberToName(self.selectedIds()));   
-                } else {
-                    dateData.push(new CalendarItem(date,self.convertNumberToName(self.selectedIds())));    
-                }
+            let dateData = self.calendarPanel.optionDates();
+            let existItem = _.find(dateData, item => item.start == date);   
+            if(existItem!=null) {
+                existItem.changeListText(data);   
+            } else {
+                dateData.push(new CalendarItem(date, data));    
             }
             self.calendarPanel.optionDates.valueHasMutated();
         }
@@ -270,7 +322,7 @@ module ksm002.b.viewmodel {
             let result = 1;
             selectedUniqueCode.forEach(item => {
                 if(_.includes(selectableUniqueCode,item)){
-                    result*=0;   
+                    result*=1;   
                 } else {
                     result*=0;    
                 }    

@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.pattern;
 
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSetPK;
 

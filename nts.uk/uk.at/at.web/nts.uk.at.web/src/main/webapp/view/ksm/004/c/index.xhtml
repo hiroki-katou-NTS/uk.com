@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 850, height: 720 };</script>
+			<script>var dialogSize = { width: 770, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.HolidayName
 				</com:ValidatorScript>
@@ -30,16 +30,15 @@
 			<div id="contents-area">
 				<div class="container">
 					<div class="left-contents">
-						<div class="row1-left">
-							<div tabindex="5"
-								data-bind="ntsDatePicker: { value: year, dateFormat: 'YYYY', valueFormat: 'YYYY', showJumpButtons: true}"></div>
+						<div class="row1-left" >
+							<div tabindex="5" data-bind="ntsDatePicker: { value: year, dateFormat: 'YYYY', valueFormat: 'YYYY', showJumpButtons: true }"></div>
 							<!-- <button tabindex="6">
 								#{i18n.getText('KSM004_22')} <i class="img-icon icon-download"></i>
 							</button> -->
 						</div>
 						<table id="single-list"
 							data-bind="ntsGridList: {								
-								height: 480,
+								height: 370,
 								dataSource: filterHolidays,
 								primaryKey: 'date',
 								columns: columns,
@@ -53,13 +52,11 @@
 						</div>
 						<div class="row2-right">
 							<div id="label2" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM004_26')}</div>
-							<div id="date" tabindex="7" data-bind="ntsDatePicker: {value: date, inputFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD', enable: $parent.isCreate(), required: true}"></div>
+							<div id="date" tabindex="7" data-bind="ntsDatePicker: {name : '#[KSM004_26]', value: date, inputFormat: 'YYYY/MM/DD', valueFormat: 'YYYYMMDD', enable: $parent.isCreate(), required: true, startDate: $parent.startDate, endDate: $parent.endDate}"></div>
 						</div>
 						<div class="row3-right cf">
-							<div 
-								data-bind="ntsFormLabel: { constraint: 'HolidayName', required: true }">#{i18n.getText('KSM004_27')}</div>
-							<input id="name" tabindex="8"
-								data-bind="ntsTextEditor: {value: holidayName, constraint: 'HolidayName', required: true }" />
+							<div data-bind="ntsFormLabel: { constraint: 'HolidayName', required: true }">#{i18n.getText('KSM004_27')}</div>
+							<input id="name" tabindex="8" data-bind="ntsTextEditor: {value: holidayName, constraint: 'HolidayName', required: true , name : '#[KSM004_27]' }" />
 						</div>
 					</div>
 				</div>

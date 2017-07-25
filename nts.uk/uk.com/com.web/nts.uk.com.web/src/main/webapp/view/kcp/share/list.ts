@@ -112,12 +112,26 @@ module kcp.share.list {
         static EMPLOYEE = 4;
     }
     
+    /**
+     * Grid style
+     */
     export interface GridStyle {
         codeColumnSize: number;
         totalColumnSize: number;
         totalComponentSize: number;
         totalHeight: number;
         rowHeight: number;
+    }
+    
+    /**
+     * Tab index.
+     */
+    export interface TabIndex {
+        searchBox: number;
+        table: number;
+        baseDateInput?: number;
+        decideButton?: number;
+        selectAllButton?: number;
     }
     
     /**
@@ -139,6 +153,7 @@ module kcp.share.list {
         searchOption: any;
         targetKey: string;
         maxRows: number;
+        tabIndex: TabIndex;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -154,6 +169,8 @@ module kcp.share.list {
             var dfd = $.Deferred<void>();
             ko.cleanNode($input[0]);
             var self = this;
+            
+            // Init self data.
             self.isMultiple = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
@@ -164,6 +181,7 @@ module kcp.share.list {
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
             self.listType = data.listType;
+            self.tabIndex = this.getTabIndexByListType(data.listType);
             if (data.baseDate) {
                 self.baseDate = data.baseDate;
             } else {
@@ -231,6 +249,9 @@ module kcp.share.list {
             return dfd.promise();
         }
         
+        /**
+         * Init component.
+         */
         private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) :JQueryPromise<void>{
             var dfd = $.Deferred<void>();
             var self = this;
@@ -310,6 +331,36 @@ module kcp.share.list {
         }
         
         /**
+         * Get tab index by list type.
+         */
+        private getTabIndexByListType(listType: ListType): TabIndex {
+            switch(listType) {
+                case ListType.EMPLOYMENT, ListType.Classification:
+                    return {
+                        searchBox: 1,
+                        table: 2
+                    }
+                case ListType.JOB_TITLE:
+                    return {
+                        searchBox: 3,
+                        table: 4,
+                        baseDateInput: 1,
+                        decideButton: 2
+                    }
+                case ListType.EMPLOYEE:
+                    return {
+                        searchBox: 1,
+                        table: 2,
+                        selectAllButton: 3
+                    }
+            }
+            return {
+                searchBox: 1,
+                table: 2
+            }
+        }
+        
+        /**
          * create Global Data List.
          */
         private createGlobalVarDataList(dataList: Array<UnitModel>, $input: JQuery) {
@@ -321,6 +372,9 @@ module kcp.share.list {
             $("head").append(s);
         }
         
+        /**
+         * Add Icon to already column setting
+         */
         private addIconToAlreadyCol() {
             // Add icon to column already setting.
             var iconLink = nts.uk.request.location.siteRoot
@@ -329,6 +383,9 @@ module kcp.share.list {
             $('.icon-78').attr('style', "background: url('" + iconLink + "');width: 20px;height: 20px;background-size: 20px 20px;")
         }
         
+        /**
+         * Init default selected value.
+         */
         private initSelectedValue(data: ComponentOption, dataList: Array<UnitModel>) {
             var self = this;
             switch(data.selectType) {
@@ -382,6 +439,9 @@ module kcp.share.list {
             return data.code;
         }
         
+        /**
+         * Init Grid Style.
+         */
         private initGridStyle(data: ComponentOption) {
             var codeColumnSize: number = 50;
             var companyColumnSize: number = 0;
@@ -463,6 +523,9 @@ module kcp.share.list {
             });
         }
         
+        /**
+         * Get item name for each component type.
+         */
         public getItemNameForList(): string {
             switch(this.listType) {
                 case ListType.EMPLOYMENT:

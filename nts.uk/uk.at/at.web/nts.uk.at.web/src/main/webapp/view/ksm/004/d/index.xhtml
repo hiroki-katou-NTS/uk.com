@@ -26,22 +26,30 @@
 							<td>
 								<div>
 									<!-- D1_4 -->
+									<div id="daterangepicker" 
+										data-bind="ntsDateRangePicker: { 
+										name:'#[KSM004_61]',
+										valueFormat: 'YYYYMM',
+										required: true, 
+										value: dateValue }"></div>
 									<div tabindex="1"
 										data-bind="ntsDatePicker: { 
-									value: startMonth, 
-									dateFormat: 'yearmonth', 
-									valueFormat: 'YYYYMM', 
-									fiscalMonthsMode: true, 
-									defaultClass: 'round-orange' }">
+										name:'#[KSM004_61]',
+										value: startMonth, 
+										dateFormat: 'yearmonth', 
+										valueFormat: 'YYYYMM', 
+										defaultClass: 'round-orange',
+										required: true }">
 									</div>
 									<span>～</span>
-									<div tabindex="2"
-										data-bind="ntsDatePicker: { 
-									value: endMonth, 
-									dateFormat: 'yearmonth', 
-									valueFormat: 'YYYYMM', 
-									fiscalMonthsMode: true, 
-									defaultClass: 'round-orange' }">
+									<div id="endYearM" tabindex="2"
+										data-bind="ntsDatePicker: {
+										name:'#[KSM004_62]', 
+										value: endMonth, 
+										dateFormat: 'yearmonth', 
+										valueFormat: 'YYYYMM', 
+										defaultClass: 'round-orange',
+										required: true }">
 									</div>
 
 								</div>
