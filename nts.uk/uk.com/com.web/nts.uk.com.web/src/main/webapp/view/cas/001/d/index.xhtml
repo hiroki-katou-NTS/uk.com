@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 400,
+					height : 540
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cas001.d.style.css" />
+			<com:scriptfile path="cas001.d.service.js" />
+			<com:scriptfile path="cas001.d.start.js" />
+			<com:scriptfile path="cas001.d.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id='role'>
+				<div class='flex valign-center'>
+					<div
+						data-bind="ntsFormLabel: {required:true}" class='distane'> 
+						<label id="codeName">コード/名称</label>
+					</div>
+					<label id="roleCode">0001</label>
+					<label id="roleName"> 用設定</label>
+				</div>
+				<div data-bind="ntsFormLabel: {}" class='distane'>
+					<label id="codeName">カテゴリ利用設定</label>
+				</div>
+			</div>
+
+			<div id="contents-area" >
+				<div id='category' class="bg-green caret-background">
+					<div id="search"
+						data-bind="ntsSearchBox: {
+									searchMode: 'filter',
+									name: '#[CCG014_20]',
+									targetKey: 'roleCode',
+								    comId: 'roles',
+									items: roleList,
+									selected: currentRoleCode, 
+									selectedKey: 'roleCode', 
+									fields: ['roleCode', 'roleName'], mode: 'igGrid'}" />
+					<table id="roles" 
+						data-bind="ntsGridList: {
+							 height: 290,
+							 options: roleList,
+							 optionsValue: 'roleCode',
+							 columns: columns,
+							 value: currentRoleCode}">
+					</table>
+
+				</div>
+				<hr></hr>
+				<div id="yesOrNo">
+					<button id="registration" class="proceed x-large" data-bind='click:creatCategory'>決定</button>
+					<button id="delete" class="danger " data-bind='click: closeDialog'>キャンセル</button>
+
+				</div>
+
+			</div>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
