@@ -5,7 +5,7 @@ module nts.uk.at.view.kcp006.a.viewmodel {
         yearMonthPicked: KnockoutObservable<number>;
         cssRangerYM: any;
         optionDates: KnockoutObservableArray<any>;
-        firstDay: number;
+        firstDay: KnockoutObservable<number>;
         yearMonth: KnockoutObservable<number>;
         startDate: number;
         endDate: number;
