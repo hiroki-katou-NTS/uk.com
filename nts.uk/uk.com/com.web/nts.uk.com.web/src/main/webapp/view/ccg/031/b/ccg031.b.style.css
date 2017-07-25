@@ -8,7 +8,7 @@
 html, body {overflow: visible;}
 .label-lg,
 .label-lg > * {font-size: 1.2rem;}
-
+#contents-area{overflow: hidden }
 
 .label-area {padding: 10px;}
 .label-area .label-row {margin-left: 10px;}
