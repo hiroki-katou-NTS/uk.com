@@ -81,17 +81,6 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(false);
 
-            // Event on yearMonth changed.
-            self.yearMonthPicked.subscribe(() => {
-                service.getHolidayByListDate(self.getListDateOfMonth()).done(res => {
-                    self.listHoliday = res;
-                    self.optionDates(self.getOptionDates());
-                }).fail(res => {
-                    nts.uk.ui.dialog.alert(res.message);
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
-            });
         }
 
         public startPage(): JQueryPromise<any> {
