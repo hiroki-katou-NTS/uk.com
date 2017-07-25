@@ -5157,7 +5157,7 @@ var nts;
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
-                            $input.width(width);
+                            $input.width(width, false);
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
@@ -5318,8 +5318,6 @@ var nts;
                             $parent.css({ 'width': '100%' });
                         }
                         $input.css("box-sizing", "border-box");
-                        if (width.trim() != "")
-                            $input.width(width);
                         if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                             $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
@@ -5329,17 +5327,17 @@ var nts;
                             var unit = uk.text.getNumberUnit(this.editorOption.unitID);
                             this.editorOption.symbolChar = unit.unitText;
                             this.editorOption.symbolPosition = unit.position;
-                            this.setupUnit($input);
+                            this.setupUnit($input, width);
                         }
                         else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
-                            this.setupUnit($input);
+                            this.setupUnit($input, width);
                         }
                         if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
                             && nts.uk.util.isNullOrEmpty(data.value())) {
                             data.value(this.editorOption.defaultValue);
                         }
                     };
-                    NumberEditorProcessor.prototype.setupUnit = function ($input) {
+                    NumberEditorProcessor.prototype.setupUnit = function ($input, width) {
                         var $parent = $input.parent();
                         var padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
                         if (padding < 20) {
@@ -5349,6 +5347,9 @@ var nts;
                         $parent.attr("data-content", this.editorOption.symbolChar);
                         var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
                         $input.css(css);
+                        if (width.trim() != "") {
+                            $input.innerWidth(parseInt(width) - 2);
+                        }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
