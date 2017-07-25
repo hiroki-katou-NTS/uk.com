@@ -36,7 +36,7 @@ public class MonthlyPatternSettingDeleteCommandHandler
 		MonthlyPatternSettingDeleteCommand command = context.getCommand();
 		
 		// call repository remove
-		this.repository.remove(command.getEmployeeId(), command.getMonthlyPatternCode());
+		this.repository.remove(command.getEmployeeId());
 	}
 
 }

@@ -41,22 +41,27 @@ module ksm002.a.service {
     }
 
     /**
-     * 
+     * get start day of company
      */
     export function getCompanyStartDay(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getCompanyStartDay);
     }
-    /** Insert companySpecDate*/
+    /**
+     * Insert companySpecDate
+     */
     export function insertComSpecificDate(lstComSpecificDateItem: Array<viewmodel.CompanySpecificDateCommand>): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax("at", paths.insertComSpecDate, lstComSpecificDateItem);
     }
-    /** Update companySpecDate*/
+    /**
+     *Update companySpecDate 
+     */
     export function updateComSpecificDate(lstUpdComSpecificDateItem: Array<viewmodel.CompanySpecificDateCommand>): JQueryPromise<Array<any>> {
-        debugger;
         return nts.uk.request.ajax("at", paths.updateComSpecDate, lstUpdComSpecificDateItem);
     }
 
-    /** Insert companySpecDate*/
+    /**
+     * Insert companySpecDate
+     */
     export function deleteComSpecificDate(command): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.deleteComSpecDate, command);
     }

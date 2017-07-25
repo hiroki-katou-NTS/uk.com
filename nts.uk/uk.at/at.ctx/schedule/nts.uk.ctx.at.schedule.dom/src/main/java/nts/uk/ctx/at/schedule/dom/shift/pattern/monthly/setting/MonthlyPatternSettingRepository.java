@@ -30,9 +30,8 @@ public interface MonthlyPatternSettingRepository {
 	 * Removes the.
 	 *
 	 * @param employeeId the employee id
-	 * @param monthlyPatternCode the monthly pattern code
 	 */
-	public void remove(String employeeId, String monthlyPatternCode);
+	public void remove(String employeeId);
 		
 	/**
 	 * Find by id.

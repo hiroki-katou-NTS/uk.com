@@ -4,13 +4,11 @@ module nts.uk.at.view.ksu006.a {
          *  Service paths
          */
         var servicePath: any = {
-//            findManageDistinct: 'ctx/at/share/vacation/setting/annualpaidleave/find/managedistinct',
             findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
+            
+            findDataPreview: "at/schedule/budget/external/find/preview",
         };
         
-//        export function findManageDistinct(): JQueryPromise<any> {
-//            return nts.uk.request.ajax(servicePath.findManageDistinct);
-//        }
         export function findExternalBudgetList(): JQueryPromise<any> {
             let dfd = $.Deferred();
             nts.uk.request.ajax("at", servicePath.findExternalBudgetList).done(function(res: model.ExternalBudgetModel) {
@@ -20,8 +18,11 @@ module nts.uk.at.view.ksu006.a {
 
                 dfd.resolve(list);
             });
-
-        return dfd.promise();
+            return dfd.promise();
+        }
+        
+        export function findDataPreview(fileUpload: any): JQueryPromise<model.DataPreviewModel> {
+            return nts.uk.request.ajax(servicePath.findDataPreview, fileUpload);
         }
         
         
@@ -41,10 +42,22 @@ module nts.uk.at.view.ksu006.a {
                 }
             }
             
+            export class DataPreviewModel {
+                data: Array<ExternalBudgetValueModel>;
+                totalRecord: number;
+                
+                constructor(data: Array<ExternalBudgetValueModel>, totalRecord: number) {
+                    let self = this;
+                    self.data = data;
+                    self.totalRecord = totalRecord;
+                }
+            }
+            
             export class ExternalBudgetValueModel {
                 code: string;
                 date: string;
                 listValue: Array<any>;
+                
                 
                 constructor(code: string, date: string, listValue: Array<any>) {
                     let self = this;
