@@ -144,9 +144,8 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadUsageUnitSetting(),
-                    self.setStartMonth())
+                    self.setStartMonth(), self.onSelectCompany())
                     .done(() => {
-                        self.onSelectCompany();
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -155,8 +154,9 @@ module nts.uk.at.view.kmk004.a {
             /**
              * Event on select company.
              */
-            public onSelectCompany(): void {
+            public onSelectCompany(): JQueryPromise<void> {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 // Clear error.
                 self.clearError();
 
@@ -170,7 +170,9 @@ module nts.uk.at.view.kmk004.a {
                     self.isWorkplaceSelected(false);
                     self.isLoading(false);
                     $('#companyYearPicker').focus();
+                    dfd.resolve();
                 });
+                return dfd.promise();
             }
 
             /**
@@ -537,11 +539,12 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.getStartMonth().done(res => {
-                    self.startMonth = ko.observable(res.startMonth);
-                    dfd.resolve();
-                }).fail(() => {
-                    // Default startMonth..
-                    self.startMonth = ko.observable(1);
+                    if (res.startMonth) {
+                        self.startMonth = ko.observable(res.startMonth);
+                    } else {
+                        // Default startMonth..
+                        self.startMonth = ko.observable(1);
+                    }
                     dfd.resolve();
                 });
                 return dfd.promise();

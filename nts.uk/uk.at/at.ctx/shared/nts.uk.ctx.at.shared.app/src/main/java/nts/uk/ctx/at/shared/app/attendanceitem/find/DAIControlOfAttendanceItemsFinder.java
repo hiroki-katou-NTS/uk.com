@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.attendanceitem.DisplayAndInputControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.attendanceitem.repository.DAIControlOfAttendanceItemsRepository;
 
 @Stateless
@@ -17,15 +17,14 @@ public class DAIControlOfAttendanceItemsFinder {
 
 	public List<DAIControlOfAttendanceItemsDto> getListControlOfAttendanceItem(String workTypeCode) {
 		List<DisplayAndInputControlOfAttendanceItems> lstControlOfAttendanceItem = this.dAIControlOfAttendanceItemsRepository
-				.getListControlOfAttendanceItem(new WorkTypeCode(workTypeCode));
+				.getListControlOfAttendanceItem(new BusinessTypeCode(workTypeCode));
 		return lstControlOfAttendanceItem.stream().map(c -> toDAIControlOfAttendanceItemsDto(c))
 				.collect(Collectors.toList());
 	}
 	private DAIControlOfAttendanceItemsDto toDAIControlOfAttendanceItemsDto(
 			DisplayAndInputControlOfAttendanceItems displayAndInputControlOfAttendanceItems) {
 		return new DAIControlOfAttendanceItemsDto(displayAndInputControlOfAttendanceItems.getAttendanceItemId(),
-				displayAndInputControlOfAttendanceItems.getWorkTypeCode().v(),
-				displayAndInputControlOfAttendanceItems.getAttendanceItemName().v(),
+				displayAndInputControlOfAttendanceItems.getBusinessTypeCode().v(),
 				displayAndInputControlOfAttendanceItems.isUserCanSet(),
 				displayAndInputControlOfAttendanceItems.isYouCanChangeIt(),
 				displayAndInputControlOfAttendanceItems.isCanBeChangedByOthers(),displayAndInputControlOfAttendanceItems.isUse());

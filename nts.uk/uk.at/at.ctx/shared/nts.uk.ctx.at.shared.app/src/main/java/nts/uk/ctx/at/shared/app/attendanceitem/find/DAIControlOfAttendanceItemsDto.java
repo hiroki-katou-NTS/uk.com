@@ -8,9 +8,7 @@ import lombok.Value;
 public class DAIControlOfAttendanceItemsDto {
 	public String attendanceItemId;
 
-	public String workTypeCode;
-
-	public String attendanceItemName;
+	public String businessTypeCode;
 
 	public boolean userCanSet;
 

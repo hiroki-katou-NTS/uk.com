@@ -55,9 +55,13 @@ public class JpaWorkplaceEventRepository extends JpaRepository implements Workpl
 
 	@Override
 	public void removeEvent(WorkplaceEvent domain) {
-		this.commandProxy().remove(KsmmtWorkplaceEvent.class,
-				new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()));
-		;
+		Optional<KsmmtWorkplaceEvent> entity = this.queryProxy()
+				.find(new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()), KsmmtWorkplaceEvent.class);
+		if (entity.isPresent()) {
+			this.commandProxy().remove(KsmmtWorkplaceEvent.class,
+					new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()));
+		}
+
 	}
 
 	private WorkplaceEvent toDomain(KsmmtWorkplaceEvent entity) {

@@ -7,11 +7,11 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(10)
-public class WorkTypeCode  extends CodePrimitiveValue<WorkTypeCode>{
+public class BusinessTypeCode  extends CodePrimitiveValue<BusinessTypeCode>{
 
 	private static final long serialVersionUID = 1L;
 	
-	public WorkTypeCode(String rawValue) {
+	public BusinessTypeCode(String rawValue) {
 		super(rawValue);
 	}
 

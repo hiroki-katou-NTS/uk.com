@@ -95,7 +95,7 @@ module nts.uk.at.view.ksu006.a {
             }
             
             public openDialogLog() {
-                nts.uk.ui.windows.sub.modeless('/view/ksu/006/c/index.xhtml', { title: '外部予算実績データ受入実行ログ', dialogClass: 'no-close' });
+                nts.uk.ui.windows.sub.modal('/view/ksu/006/c/index.xhtml', { title: '外部予算実績データ受入実行ログ', dialogClass: 'no-close' });
             }
             
             private showDataPreview() {
