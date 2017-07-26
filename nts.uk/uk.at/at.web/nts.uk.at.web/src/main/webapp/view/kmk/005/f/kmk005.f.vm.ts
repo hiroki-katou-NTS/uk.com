@@ -236,14 +236,19 @@ module nts.uk.at.view.kmk005.f {
             deleteData(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
-                fService.deleteBonusPaySetting(
-                    self.createCommand(self.currentBonusPaySetting(), self.currentBonusPayTimesheets(), self.currentSpecBonusPayTimesheets())
-                ).done((data) => {
-                    self.getBonusPaySetting();
-                    nts.uk.ui.block.clear();
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-                });
+
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        fService.deleteBonusPaySetting(
+                            self.createCommand(self.currentBonusPaySetting(), self.currentBonusPayTimesheets(), self.currentSpecBonusPayTimesheets())
+                        ).done((data) => {
+                            self.getBonusPaySetting();
+                            nts.uk.ui.block.clear();
+                        }).fail((res) => {
+                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                        });
+                    });
+
             }
 
             createCommand(bonusPaySetting: BonusPaySetting, bonusPayTimesheets: Array<BonusPayTimesheet>, specBonusPayTimesheets: Array<SpecBonusPayTimesheet>): any {

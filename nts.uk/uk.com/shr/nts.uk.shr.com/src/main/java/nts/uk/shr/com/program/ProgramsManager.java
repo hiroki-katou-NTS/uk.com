@@ -22,6 +22,76 @@ public class ProgramsManager {
 	public static final Program Ccg001d = new Program(WebAppId.AT, ProgramIdConsts.Ccg001d, "PgName_Ccg001d",
 			"/view/ccg/001/d/index.xhtml");
 	/**
+	 * CCG008A
+	 */
+	public static final Program CCG008A = new Program(WebAppId.COM, ProgramIdConsts.CCG008A, "PgName_CCG008A",
+			"/view/ccg/008/a/index.xhtml");
+	/**
+	 * CCG008B
+	 */
+	public static final Program CCG008B = new Program(WebAppId.COM, ProgramIdConsts.CCG008B, "PgName_CCG008B",
+			"/view/ccg/008/b/index.xhtml");
+	/**
+	 * CCG008C
+	 */
+	public static final Program CCG008C = new Program(WebAppId.COM, ProgramIdConsts.CCG008C, "PgName_CCG008C",
+			"/view/ccg/008/c/index.xhtml");
+	/**
+	 * CCG008D
+	 */
+	public static final Program CCG008D = new Program(WebAppId.COM, ProgramIdConsts.CCG008D, "PgName_CCG008D",
+			"/view/ccg/008/d/index.xhtml");
+	/**
+	 * CCG013A
+	 */
+	public static final Program CCG013A = new Program(WebAppId.COM, ProgramIdConsts.CCG013A, "PgName_CCG013A",
+			"/view/ccg/013/a/index.xhtml");
+	/**
+	 * CCG013B
+	 */
+	public static final Program CCG013B = new Program(WebAppId.COM, ProgramIdConsts.CCG013B, "PgName_CCG013B",
+			"/view/ccg/013/b/index.xhtml");
+	/**
+	 * CCG013C
+	 */
+	public static final Program CCG013C = new Program(WebAppId.COM, ProgramIdConsts.CCG013C, "PgName_CCG013C",
+			"/view/ccg/013/c/index.xhtml");
+	/**
+	 * CCG013D
+	 */
+	public static final Program CCG013D = new Program(WebAppId.COM, ProgramIdConsts.CCG013D, "PgName_CCG013D",
+			"/view/ccg/013/d/index.xhtml");
+	/**
+	 * CCG013E
+	 */
+	public static final Program CCG013E = new Program(WebAppId.COM, ProgramIdConsts.CCG013E, "PgName_CCG013E",
+			"/view/ccg/013/e/index.xhtml");
+	/**
+	 * CCG013F
+	 */
+	public static final Program CCG013F = new Program(WebAppId.COM, ProgramIdConsts.CCG013F, "PgName_CCG013F",
+			"/view/ccg/013/f/index.xhtml");
+	/**
+	 * CCG013G
+	 */
+	public static final Program CCG013G = new Program(WebAppId.COM, ProgramIdConsts.CCG013G, "PgName_CCG013G",
+			"/view/ccg/013/g/index.xhtml");
+	/**
+	 * CCG013I
+	 */
+	public static final Program CCG013I = new Program(WebAppId.COM, ProgramIdConsts.CCG013I, "PgName_CCG013I",
+			"/view/ccg/013/i/index.xhtml");
+	/**
+	 * CCG013J
+	 */
+	public static final Program CCG013J = new Program(WebAppId.COM, ProgramIdConsts.CCG013J, "PgName_CCG013J",
+			"/view/ccg/013/j/index.xhtml");
+	/**
+	 * CCG013K
+	 */
+	public static final Program CCG013K = new Program(WebAppId.COM, ProgramIdConsts.CCG013K, "PgName_CCG013K",
+			"/view/ccg/013/k/index.xhtml");
+	/**
 	 * CCG015A
 	 */
 	public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "PgName_CCG015A",
@@ -44,7 +114,16 @@ public class ProgramsManager {
 	 */
 	public static final Program CCG014B = new Program(WebAppId.COM, ProgramIdConsts.CCG014B, "PgName_CCG014B",
 			"/view/ccg/014/b/index.xhtml");
-
+	/**
+	 * CCG018A
+	 */
+	public static final Program CCG018A = new Program(WebAppId.COM, ProgramIdConsts.CCG018A, "PgName_CCG018A",
+			"/view/ccg/018/a/index.xhtml");
+	/**
+	 * CCG018B
+	 */
+	public static final Program CCG018B = new Program(WebAppId.COM, ProgramIdConsts.CCG018B, "PgName_CCG018B",
+			"/view/ccg/018/b/index.xhtml");
 	/**
 	 * CCG030A
 	 */
@@ -72,6 +151,11 @@ public class ProgramsManager {
 	 */
 	public static final Program CCG031C = new Program(WebAppId.COM, ProgramIdConsts.CCG031C, "PgName_CCG031C",
 			"/view/ccg/031/c/index.xhtml");
+	/**
+	 * CMM044A
+	 */
+	public static final Program CMM044A = new Program(WebAppId.COM, ProgramIdConsts.CMM044A, "PgName_CMM044A",
+			"/view/cmm/044/a/index.xhtml");
 	/**
 	 * KMK011A
 	 */
@@ -161,6 +245,11 @@ public class ProgramsManager {
 	 */
 	public static final Program KSM004D = new Program(WebAppId.AT, ProgramIdConsts.KSM004D, "PgName_KSM004D",
 			"/view/ksm/004/d/index.xhtml");
+	/**
+	 * KSU001A
+	 */
+	public static final Program KSU001A = new Program(WebAppId.AT, ProgramIdConsts.KSU001A, "PgName_KSU001A",
+			"/view/ksu/001/a/index.xhtml");
 
 	// TODO: Define new programs here.
 

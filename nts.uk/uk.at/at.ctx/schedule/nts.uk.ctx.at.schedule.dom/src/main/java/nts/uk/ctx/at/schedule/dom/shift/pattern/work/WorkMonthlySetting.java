@@ -9,7 +9,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 
 /**
  * The Class WorkMonthlySetting.
@@ -23,18 +22,17 @@ public class WorkMonthlySetting extends AggregateRoot {
 	// 会社ID
 	private CompanyId companyId;
 
-	/** The work monthly setting code. */
-	// 勤務種類設定コード
-	private WorkMonthlySettingCode workMonthlySettingCode;
+	/** The work type code. */
+	// 勤務種類コード
+	private WorkTypeCode workTypeCode;
 
-	/** The sift code. */
+	/** The working code. */
 	// 就業時間帯コード
-	private SiftCode siftCode;
+	private WorkingCode workingCode;
 	
 	/** The date. */
 	// 年月日
 	private GeneralDate date;
-	
 	
 	/** The monthly pattern code. */
 	// 月間パターンコード
@@ -48,8 +46,8 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 */
 	public WorkMonthlySetting(WorkMonthlySettingGetMemento memento){
 		this.companyId = memento.getCompanyId();
-		this.workMonthlySettingCode = memento.getWorkMonthlySettingCode();
-		this.siftCode = memento.getSiftCode();
+		this.workTypeCode = memento.getWorkTypeCode();
+		this.workingCode = memento.getWorkingCode();
 		this.date = memento.getDate();
 		this.monthlyPatternCode = memento.getMonthlyPatternCode();
 	}
@@ -61,8 +59,8 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 */
 	public void saveToMemento(WorkMonthlySettingSetMemento memento){
 		memento.setCompanyId(this.companyId);
-		memento.setWorkMonthlySettingCode(this.workMonthlySettingCode);
-		memento.setSiftCode(this.siftCode);
+		memento.setWorkTypeCode(this.workTypeCode);
+		memento.setWorkingCode(this.workingCode);
 		memento.setDate(this.date);
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);
 	}

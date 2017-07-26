@@ -7,7 +7,6 @@ package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 
 public interface WorkMonthlySettingGetMemento {
 
@@ -20,19 +19,19 @@ public interface WorkMonthlySettingGetMemento {
 	
 	
 	/**
-	 * Gets the work monthly setting code.
+	 * Gets the work type code.
 	 *
-	 * @return the work monthly setting code
+	 * @return the work type code
 	 */
-	public WorkMonthlySettingCode getWorkMonthlySettingCode();
+	public WorkTypeCode getWorkTypeCode();
 	
 	
 	/**
-	 * Gets the sift code.
+	 * Gets the working code.
 	 *
-	 * @return the sift code
+	 * @return the working code
 	 */
-	public SiftCode getSiftCode();
+	public WorkingCode getWorkingCode();
 	
 	
 	/**

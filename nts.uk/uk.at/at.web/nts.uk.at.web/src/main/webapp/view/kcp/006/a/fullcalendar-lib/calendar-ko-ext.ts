@@ -63,7 +63,6 @@ module nts.uk.at.view.kcp006.a {
             eventUpdatable = ko.unwrap(data.eventUpdatable());
             holidayDisplay = ko.unwrap(data.holidayDisplay());
             cellButtonDisplay = ko.unwrap(data.cellButtonDisplay());
-            if (data.firstDay) { firstDay = data.firstDay };
             if (data.startDate) {
                 if (moment(yearMonth * 100 + data.startDate, "YYYYMMDD")._isValid) {
                     startDate = data.startDate;
@@ -94,7 +93,6 @@ module nts.uk.at.view.kcp006.a {
                     }
                 },
                 defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
-                firstDay: firstDay,
                 height: 500,
                 showNonCurrentDates: false,
                 handleWindowResize: false,
@@ -130,7 +128,7 @@ module nts.uk.at.view.kcp006.a {
             eventUpdatable = ko.unwrap(data.eventUpdatable());
             holidayDisplay = ko.unwrap(data.holidayDisplay());
             cellButtonDisplay = ko.unwrap(data.cellButtonDisplay());
-            if (data.firstDay) { firstDay = data.firstDay };
+            if (data.firstDay) { firstDay = ko.unwrap(data.firstDay()) };
             if (data.startDate) {
                 if (moment(yearMonth * 100 + data.startDate, "YYYYMMDD")._isValid) {
                     startDate = data.startDate;
@@ -198,6 +196,7 @@ module nts.uk.at.view.kcp006.a {
                 let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
                 fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
                     $(container).fullCalendar('option', {
+                        firstDay: firstDay,
                         validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
                         viewRender: function(view, element) {
                             fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
