@@ -18,8 +18,6 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.base.Strings;
-
 import nts.arc.i18n.custom.ICompanyResourceBundle;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.i18n.custom.ISessionLocale;

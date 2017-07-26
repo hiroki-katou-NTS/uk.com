@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 975,
-					height : 530
+					width : 1070,
+					height : 550
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -42,21 +42,21 @@
 						
 						<!-- BEGIN C2_3 ~ C2_6 -->
 							<div class="labelStatus" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_306')}</div>
-							<div data-bind="ntsCheckBox: {
+							<div tabindex="4" data-bind="ntsCheckBox: {
 								checked: isIncomplete,
 								enable: true,
 								text: '#{i18n.getText('KSU006_307')}'}">
 							</div>
-							<div data-bind="ntsCheckBox: {
+							<div tabindex="5" data-bind="ntsCheckBox: {
 								checked: isInterruption,
 								enable: true,
 								text: '#{i18n.getText('KSU006_308')}'}"></div>
-							<div data-bind="ntsCheckBox: {
+							<div tabindex="6" data-bind="ntsCheckBox: {
 								checked: isDone,
 								enable: true,
 								text: '#{i18n.getText('KSU006_309')}'}"></div>
 						<!-- END C2_3 ~ C2_6 -->
-						<button id="btnSearch">#{i18n.getText('KSU006_310')}</button>
+						<button id="btnSearch" tabindex="7" data-bind="click: search">#{i18n.getText('KSU006_310')}</button>
 					</div><!-- END C2_1 ~ C2_7 -->
 					
 					<!-- BEGIN C3 -->
@@ -66,7 +66,7 @@
 							columns: listColumn,
 							multiple: false,
 							value: rowSelected,
-							rows: 10}"></table></div><!-- END C3 -->
+							rows: 11}"></table></div><!-- END C3 -->
 					
 				</div>
 			</div>

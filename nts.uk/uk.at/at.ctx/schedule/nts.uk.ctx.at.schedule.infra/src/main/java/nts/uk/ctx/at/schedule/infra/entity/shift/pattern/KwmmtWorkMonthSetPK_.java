@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.entity.shift.pattern;
 
+import java.math.BigDecimal;
+
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
-
-import nts.arc.time.GeneralDate;
 
 /**
  * The Class KwmmtWorkMonthSetPK_.
@@ -22,6 +22,6 @@ public class KwmmtWorkMonthSetPK_ {
 	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, String> mPatternCd;
 	
 	/** The ymd K. */
-	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, GeneralDate> ymdK;
+	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, BigDecimal> ymdK;
 	
 }

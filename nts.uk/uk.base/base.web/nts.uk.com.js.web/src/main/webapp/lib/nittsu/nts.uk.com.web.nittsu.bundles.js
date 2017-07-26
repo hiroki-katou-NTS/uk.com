@@ -122,6 +122,41 @@ var nts;
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
             }
             util.orDefault = orDefault;
+            function getConstraintMes(primitiveValues) {
+                if (isNullOrEmpty(primitiveValues)) {
+                    return "";
+                }
+                if (!Array.isArray(primitiveValues))
+                    primitiveValues = [primitiveValues];
+                var constraintText = "";
+                _.forEach(primitiveValues, function (primitiveValue) {
+                    var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                    switch (constraint.valueType) {
+                        case 'String':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                            break;
+                        case 'Decimal':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += constraint.min + "～" + constraint.max;
+                            break;
+                        case 'Integer':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += constraint.min + "～" + constraint.max;
+                            break;
+                        default:
+                            constraintText += 'ERROR';
+                            break;
+                    }
+                });
+                return constraintText;
+            }
+            util.getConstraintMes = getConstraintMes;
+            function getConstraintLabel(primitiveValues) {
+                var constraintText = getConstraintMes(primitiveValues);
+                return "<span class='constraint-label'>(" + constraintText + ")</span>";
+            }
+            util.getConstraintLabel = getConstraintLabel;
             function isIn(actual, expects) {
                 for (var i = 0; i < expects.length; i++) {
                     if (actual === expects[i])
@@ -2157,7 +2192,7 @@ var nts;
             request.ajax = ajax;
             function syncAjax(webAppId, path, data, options) {
                 if (typeof arguments[1] !== 'string') {
-                    return ajax.apply(null, _.concat(location.currentAppId, arguments));
+                    return syncAjax.apply(null, _.concat(location.currentAppId, arguments));
                 }
                 var dfd = $.Deferred();
                 options = options || {};
@@ -3015,7 +3050,7 @@ var nts;
                             if (_this.parent !== null)
                                 _this.parent.globalContext.nts.uk.ui.block.clear();
                         });
-                        this.globalContext.location.href = uk.request.resolvePath(path);
+                        this.globalContext.location.href = path;
                     };
                     ScreenWindow.prototype.build$dialog = function (options) {
                         this.$dialog = $('<div/>')
@@ -3123,13 +3158,25 @@ var nts;
                 windows.close = close;
                 var sub;
                 (function (sub) {
-                    function modal(path, options) {
+                    function modal(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        path = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                            .mergeRelativePath(path).serialize();
                         options = options || {};
                         options.modal = true;
                         return open(path, options);
                     }
                     sub.modal = modal;
-                    function modeless(path, options) {
+                    function modeless(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        path = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                            .mergeRelativePath(path).serialize();
                         options = options || {};
                         options.modal = false;
                         return open(path, options);
@@ -4176,7 +4223,7 @@ var nts;
                             container.removeAttr("id");
                         }
                         var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
-                        container.attr("tabindex", "-1");
+                        container.removeAttr("tabindex");
                         var containerClass = container.attr('class');
                         container.removeClass(containerClass);
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
@@ -4188,12 +4235,12 @@ var nts;
                         var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
-                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px");
-                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px");
+                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
                             $input.before($prevButton).after($nextButton);
                         }
                         if (data.dateFormat === "YYYY") {
-                            var $yearType = $("<label/>").css({ "position": "absolute",
+                            var $yearType = $("<label/>").attr("for", idString).css({ "position": "absolute",
                                 "line-height": "30px",
                                 "right": "42px" });
                             var labelText = fiscalYear ? "年度" : "年";
@@ -5505,37 +5552,11 @@ var nts;
                         }
                         if (primitiveValue !== undefined) {
                             $formLabel.addClass(isInline ? 'inline' : 'broken');
-                            var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValue);
+                            var constraintText = uk.util.getConstraintMes(primitiveValue);
                             $('<i/>').text(constraintText).appendTo($formLabel);
                         }
                     };
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    };
-                    NtsFormLabelBindingHandler.buildConstraintText = function (primitiveValues) {
-                        if (!Array.isArray(primitiveValues))
-                            primitiveValues = [primitiveValues];
-                        var constraintText = "";
-                        _.forEach(primitiveValues, function (primitiveValue) {
-                            var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
-                            switch (constraint.valueType) {
-                                case 'String':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
-                                    break;
-                                case 'Decimal':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += constraint.min + "～" + constraint.max;
-                                    break;
-                                case 'Integer':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += constraint.min + "～" + constraint.max;
-                                    break;
-                                default:
-                                    constraintText += 'ERROR';
-                                    break;
-                            }
-                        });
-                        return constraintText;
                     };
                     return NtsFormLabelBindingHandler;
                 }());

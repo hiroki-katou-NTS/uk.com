@@ -86,7 +86,9 @@ module ksm002.b.viewmodel {
             });
             nts.uk.characteristics.restore("IndividualStartDay").done(function (data) { 
                 bService.getCompanyStartDay().done(startDayData => { 
-                    self.firstDay(startDayData.startDay); 
+                    if(!nts.uk.util.isNullOrUndefined(startDayData)) { 
+                        self.firstDay(startDayData.startDay); 
+                    }
                 });   
             });
             self.getSpecDateByIsUse().done(()=>{

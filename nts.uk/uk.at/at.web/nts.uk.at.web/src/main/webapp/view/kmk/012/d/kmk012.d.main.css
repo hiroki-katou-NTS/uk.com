@@ -2,10 +2,11 @@
 
 .processingDate {
 	margin-top: 20px;
-	margin-left: 50px;
 	min-width: 800px;
 }
-
+.processingDate .ntsControl{
+	margin-left: 50px;
+}
 
 #lableProcessingDate {
 	margin-top: 6px;
