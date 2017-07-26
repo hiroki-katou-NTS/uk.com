@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.repository.system.era;
+package nts.uk.ctx.basic.infra.repository.masterlistsample;
 
 import java.util.ArrayList;
 import java.util.List;
