@@ -274,7 +274,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 nts.uk.ui.windows.setShared('baseDate', self.baseDate());
                 nts.uk.ui.windows.setShared('selectedCodeWorkplace', self.selectedCodeWorkplace());
                 
-                nts.uk.ui.windows.sub.modal('/view/ccg/share/dialog/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('com','/view/ccg/share/dialog/index.xhtml').onClosed(function() {
                     self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('selectedCodeWorkplace'));
                     self.reloadDataSearch();
                     $('#workplaceList').ntsTreeComponent(self.workplaces);

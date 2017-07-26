@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "KCWST_COMPANY_WT_SET ")
+@Table(name = "KCWST_COMPANY_WT_SET")
 public class KcwstCompanyWtSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
