@@ -15,7 +15,7 @@ import lombok.Setter;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class KcsmtContCalendarSetPK.
+ * The Class KdpstDailyPatternSetPK.
  */
 
 /**
@@ -58,33 +58,33 @@ public class KdpstDailyPatternSetPK implements Serializable{
 		this.patternCd = patternCd;
 	}
 	
-//	/* (non-Javadoc)
-//     * @see java.lang.Object#hashCode()
-//     */
-//    @Override
-//    public int hashCode() {
-//        int hash = 0;
-//        hash += (cid != null ? cid.hashCode() : 0);
-//        hash += (nursingCtr != null ? nursingCtr.hashCode() : 0);
-//        return hash;
-//    }
-//
-//    /* (non-Javadoc)
-//     * @see java.lang.Object#equals(java.lang.Object)
-//     */
-//    @Override
-//    public boolean equals(Object object) {
-//        if (!(object instanceof KnlmtNursingLeaveSetPK)) {
-//            return false;
-//        }
-//        KnlmtNursingLeaveSetPK other = (KnlmtNursingLeaveSetPK) object;
-//        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-//            return false;
-//        }
-//        if ((this.nursingCtr == null && other.nursingCtr != null) || (this.nursingCtr != null
-//                && !this.nursingCtr.equals(other.nursingCtr))) {
-//            return false;
-//        }
-//        return true;
-//    }
+	/* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (cid != null ? cid.hashCode() : 0);
+        hash += (patternCd != null ? patternCd.hashCode() : 0);
+        return hash;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof KdpstDailyPatternSetPK)) {
+            return false;
+        }
+        KdpstDailyPatternSetPK other = (KdpstDailyPatternSetPK) object;
+        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+            return false;
+        }
+        if ((this.patternCd == null && other.patternCd != null) || (this.patternCd != null
+                && !this.patternCd.equals(other.patternCd))) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -19,6 +19,8 @@ import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSet;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSetPK;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSet_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -42,13 +44,13 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(KdpstDailyPatternSet_.kcsmtContCalendarSetPK).get(KdpstDailyPatternSetPK_.cid), companyId));
+				root.get(KdpstDailyPatternSet_.kdpstDailyPatternSetPK).get(KdpstDailyPatternSetPK_.cid), companyId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 		
 		// order by closure id asc
 		query.orderBy(builder
-				.asc(root.get(KdpstDailyPatternSet_.kcsmtContCalendarSetPK).get(KdpstDailyPatternSetPK_.patternCd)));
+				.asc(root.get(KdpstDailyPatternSet_.kdpstDailyPatternSetPK).get(KdpstDailyPatternSetPK_.patternCd)));
 
 		List<KdpstDailyPatternSet> result = em.createQuery(query).getResultList();
 
@@ -80,7 +82,7 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 	 * @see nts.uk.ctx.at.shared.dom.patterncalendar.PatternCalendarRepository#findByCompanyId(java.lang.String)
 	 */
 	@Override
-	public List<DailyPattern> findByCompanyId(String companyId) {
+	public List<DailyPattern> findByCompanyId(String companyId,String patternCd) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -90,7 +92,9 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(KdpstDailyPatternSet_.kcsmtContCalendarSetPK).get(KdpstDailyPatternSetPK_.cid), companyId));
+				root.get(KdpstDailyPatternSet_.kdpstDailyPatternSetPK).get(KdpstDailyPatternSetPK_.cid), companyId));
+		predicateList.add(builder.equal(
+				root.get(KdpstDailyPatternSet_.kdpstDailyPatternSetPK).get(KdpstDailyPatternSetPK_.patternCd), patternCd));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
@@ -102,7 +106,7 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 
 		// PATTERN
 		KdpstDailyPatternSet nursingSetting = this.findCalendarSetByContCalendarVal(result,
-				"1");
+				companyId);
 		listSetting.add(new DailyPattern(new JpaDailyPatternGetMemento(nursingSetting)));
 
 		return listSetting;
@@ -112,14 +116,14 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 	 * Find calendar set by cont calendar val.
 	 *
 	 * @param listSetting the list setting
-	 * @param patternCd the pattern cd
+	 * @param companyId the company id
 	 * @return the kdpst daily pattern set
 	 */
 	private KdpstDailyPatternSet findCalendarSetByContCalendarVal(List<KdpstDailyPatternSet> listSetting,
-			String patternCd) {
+			String companyId) {
 		KdpstDailyPatternSet kcsmtContCalendarSet = new KdpstDailyPatternSet();
 		kcsmtContCalendarSet = listSetting.stream()
-				.filter(entity -> entity.getKcsmtContCalendarSetPK().getPatternCd().equals(patternCd)).findFirst()
+				.filter(entity -> entity.getKdpstDailyPatternSetPK().getCid().equals(companyId)).findFirst()
 				.get();
 		return kcsmtContCalendarSet;
 	}
@@ -162,6 +166,12 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 	public void update(DailyPattern patternCalendar) {
 		this.commandProxy().update(this.toEntity(patternCalendar));
 		this.getEntityManager().flush();
+
+	}
+	
+	@Override
+	public void deleted(String cid, String patternCd) {
+		this.commandProxy().remove(KdpstDailyPatternSet.class, new KdpstDailyPatternSetPK(cid, patternCd));
 
 	}
 

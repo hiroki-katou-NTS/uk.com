@@ -31,5 +31,7 @@ public interface DailyPatternRepository {
      * @param companyId the company id
      * @return the list
      */
-    List<DailyPattern> findByCompanyId(String companyId);
+    List<DailyPattern> findByCompanyId(String companyId,String patternCd);
+    
+    void deleted(String cid, String patternCd);
 }

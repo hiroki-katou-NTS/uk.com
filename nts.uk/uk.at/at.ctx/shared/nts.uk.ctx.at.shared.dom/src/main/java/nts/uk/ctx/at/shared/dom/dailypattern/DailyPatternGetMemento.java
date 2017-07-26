@@ -8,7 +8,7 @@ import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface PatternCalendarGetMemento.
+ * The Interface DailyPatternGetMemento.
  */
 public interface DailyPatternGetMemento {
 
@@ -35,24 +35,12 @@ public interface DailyPatternGetMemento {
 	String getPatternName();
 	
 	/**
-	 * Gets the work type codes.
+	 * Gets the list daily pattern val.
 	 *
-	 * @return the work type codes
+	 * @return the list daily pattern val
 	 */
-	List<String> getWorkTypeCodes();
+	List<DailyPatternVal> getListDailyPatternVal();
 	
-	/**
-	 * Gets the work house codes.
-	 *
-	 * @return the work house codes
-	 */
-	List<String> getWorkHouseCodes();
 	
-	/**
-	 * Gets the calendar setting.
-	 *
-	 * @return the calendar setting
-	 */
-	DailyPatternSetting getCalendarSetting();
 	
 }
