@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.WorkTypeDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.WorkType;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.WorkTypeRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.WorkTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -19,10 +19,10 @@ import nts.uk.shr.com.context.LoginUserContext;
  *
  */
 @Stateless
-public class WorkTypeFinder {
+public class WorkTypesFinder {
 	
 	@Inject
-	private WorkTypeRepository workTypeRepository;
+	private WorkTypesRepository workTypeRepository;
 	
 	public List<WorkTypeDto> findAll(){
 		LoginUserContext login = AppContexts.user();

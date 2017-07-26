@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  *
  */
 @Stateless
-public class WorkTypeDetailFinder {
+public class WorkTypesDetailFinder {
 
 	@Inject
 	private WorkTypeFormatDailyRepository workTypeFormatDailyRepository;

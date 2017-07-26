@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.WorkType;
 
-public interface WorkTypeRepository {
+public interface WorkTypesRepository {
 	
 	List<WorkType> findAll(String companyId);
 

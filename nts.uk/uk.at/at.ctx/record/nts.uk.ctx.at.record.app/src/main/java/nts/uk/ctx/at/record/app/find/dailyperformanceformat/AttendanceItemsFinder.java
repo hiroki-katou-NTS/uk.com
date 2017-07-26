@@ -12,7 +12,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  *
  */
 @Stateless
-public class AttendanceItemFinder {
+public class AttendanceItemsFinder {
 	
 	public AttendanceItemDto find(){
 		LoginUserContext login = AppContexts.user();

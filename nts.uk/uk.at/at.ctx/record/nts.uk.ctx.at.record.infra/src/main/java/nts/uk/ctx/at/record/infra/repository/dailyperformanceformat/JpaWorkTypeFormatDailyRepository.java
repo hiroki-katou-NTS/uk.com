@@ -2,11 +2,14 @@ package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.WorkTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.WorkTypeFormatDailyRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KdwmtWorkTypeDaily;
 
+@Stateless
 public class JpaWorkTypeFormatDailyRepository extends JpaRepository implements WorkTypeFormatDailyRepository {
 
 	private static final String FIND;

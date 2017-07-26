@@ -2,12 +2,15 @@ package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.WorkType;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.WorkTypeRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.WorkTypesRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KdwmtWorkType;
 
-public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
+@Stateless
+public class JpaWorkTypeRepository extends JpaRepository implements WorkTypesRepository {
 
 	private static final String FIND;
 
