@@ -52,7 +52,7 @@ public class CompanySpecificDateWebService extends WebService {
 	
 	@POST
 	@Path("updatecompanyspecificdate")
-	public void UpdateCompanySpecificDate(List<CompanySpecificDateCommand> lstUpdComSpecificDateItem) {
+	public void UpdateCompanySpecificDate(List<UpdateCompanySpecificDateCommand> lstUpdComSpecificDateItem) {
 		this.updateCommand.handle(lstUpdComSpecificDateItem);
 	}
 	

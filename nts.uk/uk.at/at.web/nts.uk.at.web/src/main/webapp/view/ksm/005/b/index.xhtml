@@ -57,10 +57,10 @@
 								data-bind="ntsTextEditor: {
 								value: code,
 								constraint: 'MonthlyPatternCode',
-								option: $root.textEditorOption,
+								option: textEditorOption,
 								required: true,
 								name:'#[KSM005_17]', 
-								enable: true,
+								enable: enableMonthlyPatternCode,
 								immediate: false}" />
 								
 							<input id="inp_monthlyPatternName" 
@@ -68,7 +68,7 @@
 								data-bind="ntsTextEditor: {
 								value: name,
 								constraint: 'MonthlyPatternName',
-								option: $root.textEditorOptionName,
+								option: textEditorOptionName,
 								required: true,
 								name:'#[KSM005_18]', 
 								enable: true,

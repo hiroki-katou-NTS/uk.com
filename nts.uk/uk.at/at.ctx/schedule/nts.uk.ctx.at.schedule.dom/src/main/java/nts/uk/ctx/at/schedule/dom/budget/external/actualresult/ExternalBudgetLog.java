@@ -83,6 +83,6 @@ public class ExternalBudgetLog extends AggregateRoot {
         memento.setExecutionId(this.executionId);
         memento.setExecuteTime(this.executeTime);
         memento.setNumberSuccess(this.numberSuccess);
-        memento.setExecutionId(this.employeeId);
+        memento.setEmployeeId(this.employeeId);
     }
 }

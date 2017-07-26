@@ -14,5 +14,5 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KdpstDailyPatternSet_ {
 	
 	/** The kcsmt cont calendar set PK. */
-    public static volatile SingularAttribute<KdpstDailyPatternSet, KdpstDailyPatternSetPK> kcsmtContCalendarSetPK;
+    public static volatile SingularAttribute<KdpstDailyPatternSet, KdpstDailyPatternSetPK> kdpstDailyPatternSetPK;
 }

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.employment.statutory.worktime;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,7 +14,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class UsageUnitSettingSaveCommandHandler.
@@ -20,7 +21,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class UsageUnitSettingSaveCommandHandler
 		extends CommandHandler<UsageUnitSettingSaveCommand> {
-	
+
 	/** The repository. */
 	@Inject
 	private UsageUnitSettingRepository repository;
@@ -34,21 +35,23 @@ public class UsageUnitSettingSaveCommandHandler
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<UsageUnitSettingSaveCommand> context) {
-		
-		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// get company id
-		String companyId = loginUserContext.companyId();
-		
-		//get command
-		UsageUnitSettingSaveCommand command= context.getCommand();
-		
-		//to domain
+		String companyId = AppContexts.user().companyId();
+
+		// get command
+		UsageUnitSettingSaveCommand command = context.getCommand();
+
+		// to domain
 		UsageUnitSetting domain = command.toDomain(companyId);
-		
-		// update
-		this.repository.update(domain);
+
+		// Save
+		Optional<UsageUnitSetting> optional = this.repository.findByCompany(companyId);
+		if (optional.isPresent()) {
+			this.repository.update(domain);
+		} else {
+			this.repository.create(domain);
+		}
 	}
 
 }

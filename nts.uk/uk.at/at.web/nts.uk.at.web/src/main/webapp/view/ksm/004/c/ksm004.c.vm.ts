@@ -18,7 +18,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                 self.findPublicHolidayByYear(newValue);
                 self.selectHolidayByIndex(0);
                 nts.uk.ui.errors.clearAll();
-                $("#date").focus();
+                _.defer(() => { $("#date").focus(); });
             });
             //Grid List
             self.allHolidays = ko.observableArray([]);

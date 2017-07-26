@@ -8,7 +8,7 @@ module ksm002.c {
             constructor() {
                 var self = this;
                 self.specificDateItem = ko.observableArray([]);   
-                self.textKSM002_39 = nts.uk.resource.getText("KSM002_39",[__viewContext.primitiveValueConstraints.SpecificName.maxLength/2]);
+                self.textKSM002_39 = nts.uk.resource.getText("KSM002_39")+ '(' + nts.uk.util.getConstraintMes("SpecificName") +')';
             }
             
             /**

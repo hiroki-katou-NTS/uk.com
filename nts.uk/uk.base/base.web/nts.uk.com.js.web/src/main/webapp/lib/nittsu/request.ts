@@ -181,7 +181,7 @@ module nts.uk.request {
     export function syncAjax(webAppId: WebAppId, path: string, data?: any, options?: any) {
 
         if (typeof arguments[1] !== 'string') {
-            return ajax.apply(null, _.concat(location.currentAppId, arguments));
+            return syncAjax.apply(null, _.concat(location.currentAppId, arguments));
         }
 
         var dfd = $.Deferred();

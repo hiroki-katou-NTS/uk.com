@@ -24,7 +24,8 @@ module ksm002.e{
                 self.date = param.date;
                 self.selectedCodes = param.selecteds;
                 service.getSpecificdateByListCode(param.selectable).done(function(data){
-                    _.each(data, item => {
+                    let lstData =  _.orderBy(data, ["specificDateItemNo"], ["asc"]);
+                    _.each(lstData, item => {
                         self.dataSource.push(new SpecificDateItemDto(
                                 item.specificDateItemNo, 
                                 0,

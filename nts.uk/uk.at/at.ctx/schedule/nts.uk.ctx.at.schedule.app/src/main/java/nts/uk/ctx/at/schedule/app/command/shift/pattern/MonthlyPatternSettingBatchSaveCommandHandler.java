@@ -60,90 +60,76 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		// get command
 		MonthlyPatternSettingBatchSaveCommand command = context.getCommand();
 		
-		// validate command
-		if (validate(command)) {
-			return;
-		}
-
 		// startDate
 		Date toStartDate = this.toDate(command.getStartYearMonth() * MONTH_MUL + NEXT_DAY);
 		
 		// check by next day of begin end
-		while (this.getYearMonth(this.nextDay(toStartDate)) <= command.getEndYearMonth()) {
-			
-			System.out.println("DAY "+ this.getYearMonthDate(toStartDate));
-			
+		while (this.getYearMonth(toStartDate) <= command.getEndYearMonth()) {
+						
 			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository.getHolidaysByDate(
 					companyId, new BigDecimal(this.getYearMonthDate(toStartDate)));
-			
+
 			// find by id
 			Optional<WorkMonthlySetting> workMonthlySetting = this.workMonthlySettingRepository
 					.findById(companyId, command.getMonthlyPatternCode(),
-							this.getBaseDate(toStartDate));
+							this.getYearMonthDate(toStartDate));
 			// check day is public holiday
-			if(publicHoliday.isPresent()){
-				
+			if (publicHoliday.isPresent()) {
+
 				// check exist data
-				if(!workMonthlySetting.isPresent()){
-					this.workMonthlySettingRepository.add(command
-							.toDomainPublicHolidays(companyId, this.getBaseDate(toStartDate)));
-				}else if(command.isOverwrite()){
+				if (!workMonthlySetting.isPresent()) {
 					this.workMonthlySettingRepository.add(command.toDomainPublicHolidays(companyId,
-							this.getBaseDate(toStartDate)));
+							this.getYearMonthDate(toStartDate)));
+				} else if (command.isOverwrite()) {
+					this.workMonthlySettingRepository.update(command.toDomainPublicHolidays(companyId,
+							this.getYearMonthDate(toStartDate)));
 				}
-			}else {
+			} else {
 				WeeklyWorkSettingDto dto = this.weeklyWorkSettingFinder
 						.checkWeeklyWorkSetting(this.getBaseDate(toStartDate));
 				// is work day
 				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					if (!workMonthlySetting.isPresent()) {
-						this.workMonthlySettingRepository.add(
-								command.toDomainWorkDays(companyId, this.getBaseDate(toStartDate)));
-					} else if(command.isOverwrite()) {
-						this.workMonthlySettingRepository.update(
-								command.toDomainWorkDays(companyId, this.getBaseDate(toStartDate)));
+						this.workMonthlySettingRepository.add(command.toDomainWorkDays(companyId,
+								this.getYearMonthDate(toStartDate)));
+					} else if (command.isOverwrite()) {
+						this.workMonthlySettingRepository.update(command.toDomainWorkDays(companyId,
+								this.getYearMonthDate(toStartDate)));
 					}
 					break;
 
 				case NON_WORKINGDAY_EXTRALEGAL:
 					if (!workMonthlySetting.isPresent()) {
 						this.workMonthlySettingRepository.add(command.toDomainNoneStatutoryHolidays(
-								companyId, this.getBaseDate(toStartDate)));
+								companyId, this.getYearMonthDate(toStartDate)));
 					} else if (command.isOverwrite()) {
 						this.workMonthlySettingRepository
 								.update(command.toDomainNoneStatutoryHolidays(companyId,
-										this.getBaseDate(toStartDate)));
+										this.getYearMonthDate(toStartDate)));
 					}
 					break;
 				case NON_WORKINGDAY_INLAW:
 					if (!workMonthlySetting.isPresent()) {
 						this.workMonthlySettingRepository.add(command.toDomainStatutoryHolidays(
-								companyId, this.getBaseDate(toStartDate)));
+								companyId, this.getYearMonthDate(toStartDate)));
 					} else if (command.isOverwrite()) {
 						this.workMonthlySettingRepository.update(command.toDomainStatutoryHolidays(
-								companyId, this.getBaseDate(toStartDate)));
+								companyId, this.getYearMonthDate(toStartDate)));
 					}
 					break;
 				}
 			}
 			toStartDate = this.nextDay(toStartDate);
 		}
-		
-	}
-	
-	/**
-	 * Validate.
-	 *
-	 * @param command the command
-	 * @return true, if successful
-	 */
-	public boolean validate(MonthlyPatternSettingBatchSaveCommand command) {
-		return false;
+
 	}
 	
 	/** The Constant NEXT_DAY. */
 	public static final int NEXT_DAY = 1;
+	
+	/** The Constant BEGIN_END_MONTH. */
+	public static final int BEGIN_END_MONTH = 12;
 	
 	/** The Constant ZERO_DAY_MONTH. */
 	public static final int ZERO_DAY_MONTH = 0;
@@ -189,22 +175,10 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	public int getYearMonthDate(Date day) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(day);
-		return cal.get(Calendar.YEAR) * YEAR_MUL + cal.get(Calendar.MONTH) * MONTH_MUL
+		return cal.get(Calendar.YEAR) * YEAR_MUL + (cal.get(Calendar.MONTH) + NEXT_DAY) * MONTH_MUL
 				+ cal.get(Calendar.DAY_OF_MONTH);
 	}
-	
-	/**
-	 * Gets the base date.
-	 *
-	 * @param day the day
-	 * @return the base date
-	 */
-	public GeneralDate getBaseDate(Date day) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(day);
-		return GeneralDate.ymd(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-				cal.get(Calendar.DAY_OF_MONTH));
-	}
+
 	/**
 	 * Gets the year month.
 	 *
@@ -213,6 +187,18 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	 */
 	public int getYearMonth(Date day) {
 		return getYearMonthDate(day) / MONTH_MUL;
+	}
+	
+	/**
+	 * Gets the year month.
+	 *
+	 * @param day the day
+	 * @return the year month
+	 */
+	public GeneralDate getBaseDate(Date day) {
+		Calendar cal = Calendar.getInstance();
+		return GeneralDate.ymd(cal.get(Calendar.YEAR), (cal.get(Calendar.MONTH) + NEXT_DAY),
+				cal.get(Calendar.DAY_OF_MONTH));
 	}
 	
 	/**
@@ -225,7 +211,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	 */
 	public Date toDate(int yearMonthDate) {
 		Calendar cal = Calendar.getInstance();
-		cal.set(yearMonthDate / YEAR_MUL, (yearMonthDate % YEAR_MUL) / MONTH_MUL,
+		cal.set(yearMonthDate / YEAR_MUL, (yearMonthDate % YEAR_MUL) / MONTH_MUL - NEXT_DAY,
 				yearMonthDate % MONTH_MUL, ZERO_DAY_MONTH, ZERO_DAY_MONTH);
 		return cal.getTime();
 	}
