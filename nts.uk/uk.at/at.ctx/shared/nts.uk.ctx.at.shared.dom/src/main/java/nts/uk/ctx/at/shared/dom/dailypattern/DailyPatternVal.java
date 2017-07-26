@@ -1,17 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.dailypattern;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DailyPatternVal.
- */
-
-/**
- * Gets the days.
- *
- * @return the days
  */
 @Getter
 public class DailyPatternVal extends DomainObject{
@@ -74,6 +71,7 @@ public class DailyPatternVal extends DomainObject{
 		this.workingHoursCd = memento.getWorkingHoursCd();
 		this.days = memento.getDays();
 	}
+	
 	/**
 	 * Save to memento.
 	 *
