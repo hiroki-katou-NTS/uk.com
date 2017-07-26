@@ -55,8 +55,11 @@ module ksm002.a.service {
     /**
      *Update companySpecDate 
      */
-    export function updateComSpecificDate(lstUpdComSpecificDateItem: Array<viewmodel.CompanySpecificDateCommand>): JQueryPromise<Array<any>> {
-        return nts.uk.request.ajax("at", paths.updateComSpecDate, lstUpdComSpecificDateItem);
+//    export function updateComSpecificDate(lstUpdComSpecificDateItem: Array<viewmodel.CompanySpecificDateCommand>): JQueryPromise<Array<any>> {
+//        return nts.uk.request.ajax("at", paths.updateComSpecDate, lstUpdComSpecificDateItem);
+//    }
+    export function updateComSpecificDate(command): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.updateComSpecDate, command);
     }
 
     /**

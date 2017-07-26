@@ -28,6 +28,8 @@ module ksm002.a.viewmodel {
         holidayDisplay: KnockoutObservable<boolean>;
         cellButtonDisplay: KnockoutObservable<boolean>;
         workplaceName: KnockoutObservable<string>;
+        //data server 
+        serverSource: KnockoutObservableArray<OptionalDate>;
 
         constructor() {
             var self = this;
@@ -40,6 +42,8 @@ module ksm002.a.viewmodel {
             self.yearMonthPicked = ko.observable(moment(new Date()).format("YYYYMM"));
             self.cssRangerYM = {};
             self.optionDates = ko.observableArray([]);
+            //server
+            self.serverSource = ko.observableArray([]);
 
             self.firstDay = ko.observable(0);
             self.startDate = 1;
@@ -288,31 +292,63 @@ module ksm002.a.viewmodel {
                 if (self.isNew()) {
                     self.Insert(self.convertToCommand())
                 } else {
-                    //Update case
-                    if (_.flattenDepth(_.map(self.optionDates(), 'listId')).length > 0) {
-                        //update has data
-                        nts.uk.ui.block.invisible();
-                        service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                                self.start();
-                                nts.uk.ui.block.clear();
-                                console.timeEnd("ksm002_Register");
-                            });
-                        }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+//                    //Update case
+//                    if (_.flattenDepth(_.map(self.optionDates(), 'listId')).length > 0) {
+//                        //update has data
+//                        nts.uk.ui.block.invisible();
+//                        service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
+//                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+//                                self.start();
+//                                nts.uk.ui.block.clear();
+//                                console.timeEnd("ksm002_Register");
+//                            });
+//                        }).fail(function(res) {
+//                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+//                        });
+//                    } else {
+//                        //Delete all OLD data
+//                        nts.uk.ui.block.invisible();
+//                        service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
+//                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+//                                self.isNew(true);
+//                                nts.uk.ui.block.clear();
+//                            });
+//                        }).fail(function(res) {
+//                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+//                        });
+//                    }// update case
+                
+                //get command 
+                let a = [];
+                self.optionDates().forEach(item => {
+                    let before = _.find(self.serverSource, o => o.specificDate == Number(moment(item.start).format('YYYYMMDD')));
+                    if(nts.uk.util.isNullOrUndefined(before)){
+                        a.push({
+                            specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                            specificDateItemNo: self.convertNameToNumber(item.listText),
+                            isUpdate: false
                         });
                     } else {
-                        //Delete all OLD data
-                        nts.uk.ui.block.invisible();
-                        service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                                self.isNew(true);
-                                nts.uk.ui.block.clear();
-                            });
-                        }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-                        });
+                        let current = {
+                            specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                            specificDateItemNo: self.convertNameToNumber(item.listText)
+                        };   
+                        if(!_.isEqual(ko.mapping.toJSON(before),ko.mapping.toJSON(current))) {
+                            current["isUpdate"] = true;
+                            a.push(current);    
+                        }
                     }
+                });
+                //UDPATE  
+                service.updateComSpecificDate(a).done(function(res: Array<any>) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.start();
+                        nts.uk.ui.block.clear();
+                    });
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });  
+                    
                 }
                 return dfd.promise();
             }
