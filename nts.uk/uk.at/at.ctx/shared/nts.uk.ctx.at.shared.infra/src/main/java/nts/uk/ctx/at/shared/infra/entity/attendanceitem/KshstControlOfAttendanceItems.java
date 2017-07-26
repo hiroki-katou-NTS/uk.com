@@ -17,11 +17,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "KDWST_ATD_ITEM_CONTROL")
-public class KdwstControlOfAttendanceItems extends UkJpaEntity implements Serializable {
+@Table(name = "KSHST_ATD_ITEM_CONTROL")
+public class KshstControlOfAttendanceItems extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KdwstControlOfAttendanceItemsPK kdwstControlOfAttendanceItemsPK;
+	public KshstControlOfAttendanceItemsPK kshstControlOfAttendanceItemsPK;
 	@Column(name = "TIME_INPUT_UNIT")
 	public BigDecimal inputUnitOfTimeItem;
 	@DBCharPaddingAs(BonusPaySettingCode.class)
@@ -32,7 +32,7 @@ public class KdwstControlOfAttendanceItems extends UkJpaEntity implements Serial
 
 	@Override
 	protected Object getKey() {
-		return kdwstControlOfAttendanceItemsPK;
+		return kshstControlOfAttendanceItemsPK;
 	}
 	
 
