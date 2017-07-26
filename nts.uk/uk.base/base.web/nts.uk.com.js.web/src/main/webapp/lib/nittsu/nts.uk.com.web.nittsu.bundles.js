@@ -3807,7 +3807,6 @@ var nts;
                                 e.preventDefault();
                         });
                         container.data("tabindex", container.attr("tabindex"));
-                        container.wrap("<div class='checkbox-wrapper'/>");
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -3874,7 +3873,6 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
-                        container.wrap("<div class='multicheckbox-wrapper'/>");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
                         container.data("init", true);
@@ -6572,6 +6570,7 @@ var nts;
                         var data = valueAccessor();
                         var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var totalWidth = ko.unwrap(data.width);
+                        var disableMove = ko.unwrap(data.disableMoveButton);
                         var height = ko.unwrap(data.height);
                         var showSearchBox = ko.unwrap(data.showSearchBox);
                         var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
@@ -6725,6 +6724,14 @@ var nts;
                     };
                     NtsSwapListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
+                        var $swap = $(element);
+                        var disableMove = ko.unwrap(data.disableMoveButton);
+                        if (disableMove === true) {
+                            $swap.find(".move-button").attr("disabled", "disabled");
+                        }
+                        else {
+                            $swap.find(".move-button").removeAttr("disabled");
+                        }
                         var elementId = this.swapper.Model.$container.attr('id');
                         var primaryKey = this.swapper.Model.swapParts[0].primaryKey;
                         if (nts.uk.util.isNullOrUndefined(elementId)) {

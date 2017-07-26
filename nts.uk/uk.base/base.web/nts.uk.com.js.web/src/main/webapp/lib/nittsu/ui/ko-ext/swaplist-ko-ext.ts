@@ -38,6 +38,7 @@ module nts.uk.ui.koExtentions {
             var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
             //            var selectedValues = ko.unwrap(data.value);
             var totalWidth = ko.unwrap(data.width);
+            var disableMove = ko.unwrap(data.disableMoveButton);
             var height = ko.unwrap(data.height);
             var showSearchBox = ko.unwrap(data.showSearchBox);
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
@@ -219,6 +220,14 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
             bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
+            var $swap = $(element);
+            
+            var disableMove = ko.unwrap(data.disableMoveButton);
+            if(disableMove === true){
+                $swap.find(".move-button").attr("disabled", "disabled");      
+            }else {
+                $swap.find(".move-button").removeAttr("disabled");
+            }
             var elementId = this.swapper.Model.$container.attr('id');
             var primaryKey: string = this.swapper.Model.swapParts[0].primaryKey;
             if (nts.uk.util.isNullOrUndefined(elementId)) {
