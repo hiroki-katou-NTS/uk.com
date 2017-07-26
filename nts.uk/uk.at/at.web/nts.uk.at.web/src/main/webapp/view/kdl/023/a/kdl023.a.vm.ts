@@ -18,6 +18,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         dailyPatternSetting: DailyPatternSetting;
         weeklyWorkSetting: WeeklyWorkSetting;
         listHoliday: Array<any>;
+        isReflectionMethodEnable: KnockoutComputed<boolean>;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -77,6 +78,12 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                 self.loadWeeklyWorkSetting())
                 .done(() => self.loadPatternReflection()
                     .done(() => {
+                        // Define isReflectionMethodEnable after patternReflection is loaded.
+                        self.isReflectionMethodEnable = ko.computed(() => {
+                            return self.patternReflection.statutorySetting.useClassification() ||
+                                self.patternReflection.nonStatutorySetting.useClassification() ||
+                                self.patternReflection.holidaySetting.useClassification()
+                        });
                         self.setSelectedDailyPatternCode();
                         // Xu ly hien thi calendar.
                         self.optionDates(self.getOptionDates());
@@ -134,19 +141,32 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             let self = this;
             let dfd = $.Deferred<void>();
             service.find('empId').done(function(patternReflection: service.model.PatternReflection) {
-                // Select first item if worktype code not exist.
-                if (!patternReflection.statutorySetting.workTypeCode) {
-                    patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                let data;
+                // Co data
+                if (patternReflection) {
+                    data = patternReflection;
                 }
-                if (!patternReflection.nonStatutorySetting.workTypeCode) {
-                    patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                // Khong co data
+                else {
+                    data = {
+                        employeeId: 'empId',
+                        reflectionMethod: ReflectionMethod.Overwrite,
+                        patternClassification: 1,
+                        statutorySetting: {
+                            useClassification: false,
+                            workTypeCode: self.listWorkType()[0].workTypeCode
+                        },
+                        nonStatutorySetting: {
+                            useClassification: false,
+                            workTypeCode: self.listWorkType()[0].workTypeCode
+                        },
+                        holidaySetting: {
+                            useClassification: false,
+                            workTypeCode: self.listWorkType()[0].workTypeCode
+                        }
+                    }
                 }
-                if (!patternReflection.holidaySetting.workTypeCode) {
-                    patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
-                }
-
-                // Set patternReflection.
-                self.patternReflection = new PatternReflection(patternReflection);
+                self.patternReflection = new PatternReflection(data);
 
                 // Resolve.
                 dfd.resolve();
@@ -237,8 +257,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
-            let currentDate = moment(parsedYm);
-            let lastDateOfMonth = moment(parsedYm).endOf('month');
+            let currentDate = moment(parsedYm, 'YYYY-MM');
+            let lastDateOfMonth = moment(parsedYm, 'YYYY-MM').endOf('month');
             let result: Array<OptionDate> = [];
 
             while (currentDate.isSameOrBefore(lastDateOfMonth)) {
@@ -252,9 +272,12 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                             break;
                         }
 
+                        // is current day = day off flag.
+                        let isDayoff = false;
+
                         // Neu la holiday.
-                        let isAHoliday = self.isHoliday(currentDate);
-                        if (self.isHolidaySettingChecked() && isAHoliday) {
+                        if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
+                            isDayoff = true;
                             result.push({
                                 start: currentDate.format('YYYY-MM-DD'),
                                 textColor: 'red',
@@ -268,6 +291,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                         else {
                             // Ngay nghi theo luat
                             if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
+                                isDayoff = true;
                                 result.push({
                                     start: currentDate.format('YYYY-MM-DD'),
                                     textColor: 'red',
@@ -279,6 +303,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                             }
                             // Ngay nghi ngoai luat
                             else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
+                                isDayoff = true;
                                 result.push({
                                     start: currentDate.format('YYYY-MM-DD'),
                                     textColor: 'red',
@@ -304,10 +329,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                             }
                         }
                         dayOfPattern++;
-                        // Reserve dayOfPattern if FillInTheBlank is checked.
-                        if (self.isHolidaySettingChecked() &&
-                            isAHoliday &&
-                            self.isFillInTheBlankChecked()) {
+                        // Reserve dayOfPattern if reflection method = overwrite
+                        if (isDayoff && !self.isFillInTheBlankChecked()) {
                             dayOfPattern--;
                         }
                         // Next day on calendar.
@@ -349,8 +372,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             let self = this;
             let resultList = [];
             let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
-            let currentDate = moment(parsedYm).startOf('month');
-            let endDate = moment(parsedYm).endOf('month');
+            let currentDate = moment(parsedYm, 'YYYY-MM').startOf('month');
+            let endDate = moment(parsedYm, 'YYYY-MM').endOf('month');
             while (currentDate.isSameOrBefore(endDate)) {
                 resultList.push(currentDate.format('YYYYMMDD'));
                 currentDate.add(1, 'days');
