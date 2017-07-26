@@ -2391,7 +2391,10 @@ var nts;
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
-                    var content_height = 50 + 20;
+                    var content_height = 20;
+                    if ($("#header").length != 0) {
+                        content_height += 50;
+                    }
                     if ($("#functions-area").length != 0) {
                         content_height += 49;
                     }
