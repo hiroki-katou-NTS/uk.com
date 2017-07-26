@@ -13,6 +13,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         selectedDailyPatternCode: KnockoutObservable<string>;
         listWorkType: KnockoutObservableArray<WorkType>;
         listWorkTime: KnockoutObservableArray<WorkTime>;
+        patternStartDate: moment.Moment;
 
         patternReflection: PatternReflection;
         dailyPatternSetting: DailyPatternSetting;
@@ -86,6 +87,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                         });
                         self.setSelectedDailyPatternCode();
                         // Xu ly hien thi calendar.
+                        self.patternStartDate = moment(nts.uk.time.formatYearMonth(self.yearMonthPicked()), 'YYYY-MM').startOf('month');
                         self.optionDates(self.getOptionDates());
                         dfd.resolve();
                     })).fail(res => {
@@ -102,8 +104,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
          */
         public forward(): void {
             let self = this;
-            self.forwardOneDay();
+            self.patternStartDate.add(1, 'days');
+
+            // Reload calendar
             self.optionDates(self.getOptionDates());
+
             // Set focus control
             $('#component-calendar-kcp006').focus();
         }
@@ -113,8 +118,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
          */
         public backward(): void {
             let self = this;
-            self.backwardOneDay();
+            self.patternStartDate.subtract(1, 'days');
+
+            // Reload calendar
             self.optionDates(self.getOptionDates());
+
             // Set focus control
             $('#component-calendar-kcp006').focus();
         }
@@ -126,6 +134,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
             // Reload calendar
+            self.patternStartDate = moment(nts.uk.time.formatYearMonth(self.yearMonthPicked()), 'YYYY-MM').startOf('month');
             self.optionDates(self.getOptionDates());
             // Set focus control
             $('#component-calendar-kcp006').focus();
@@ -253,12 +262,12 @@ module nts.uk.at.view.kdl023.a.viewmodel {
 
         /**
          * Get option dates for calendar.
+         * @param: startDate (YYYYMM)
          */
         private getOptionDates(): Array<OptionDate> {
             let self = this;
-            let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
-            let currentDate = moment(parsedYm, 'YYYY-MM');
-            let lastDateOfMonth = moment(parsedYm, 'YYYY-MM').endOf('month');
+            let currentDate = moment(self.patternStartDate);
+            let lastDateOfMonth = moment(self.patternStartDate).endOf('month');
             let result: Array<OptionDate> = [];
 
             while (currentDate.isSameOrBefore(lastDateOfMonth)) {
@@ -267,11 +276,6 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                     let dayOfPattern = 1;
                     // Day of pattern loop.
                     while (dayOfPattern <= dailyPatternValue.days) {
-                        // End loop if end of month.
-                        if (currentDate.isAfter(lastDateOfMonth)) {
-                            break;
-                        }
-
                         // is current day = day off flag.
                         let isDayoff = false;
 
@@ -466,6 +470,45 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.weeklyWorkSetting.thursday = self.weeklyWorkSetting.wednesday;
             self.weeklyWorkSetting.wednesday = self.weeklyWorkSetting.tuesday;
             self.weeklyWorkSetting.tuesday = temp;
+        }
+
+        private fw(arr: Array<any>): Array<any> {
+            let self = this;
+            let lastDay = arr.pop();
+            let firstDay = arr.shift();
+            // Exchange start date.
+            let temp = lastDay.start;
+            lastDay.start = firstDay.start;
+            firstDay.start = temp;
+
+            let arr2 = arr.map(item => {
+                let d = moment(item.start);
+                d.add(1, 'days');
+                item.start = d.format('YYYY-MM-DD');
+                return item;
+            });
+            arr2.push(lastDay);
+            arr2.push(firstDay);
+            return arr2;
+        }
+        private bw(arr: Array<any>): Array<any> {
+            let self = this;
+            let lastDay = arr.pop();
+            let firstDay = arr.shift();
+            // Exchange start date.
+            let temp = lastDay.start;
+            lastDay.start = firstDay.start;
+            firstDay.start = temp;
+
+            let arr2 = arr.map(item => {
+                let d = moment(item.start);
+                d.subtract(1, 'days');
+                item.start = d.format('YYYY-MM-DD');
+                return item;
+            });
+            arr2.push(lastDay);
+            arr2.push(firstDay);
+            return arr2;
         }
 
         /**
