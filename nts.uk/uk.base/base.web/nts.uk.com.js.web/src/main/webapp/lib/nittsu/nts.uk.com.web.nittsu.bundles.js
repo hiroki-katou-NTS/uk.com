@@ -2192,7 +2192,7 @@ var nts;
             request.ajax = ajax;
             function syncAjax(webAppId, path, data, options) {
                 if (typeof arguments[1] !== 'string') {
-                    return ajax.apply(null, _.concat(location.currentAppId, arguments));
+                    return syncAjax.apply(null, _.concat(location.currentAppId, arguments));
                 }
                 var dfd = $.Deferred();
                 options = options || {};
@@ -3050,7 +3050,7 @@ var nts;
                             if (_this.parent !== null)
                                 _this.parent.globalContext.nts.uk.ui.block.clear();
                         });
-                        this.globalContext.location.href = uk.request.resolvePath(path);
+                        this.globalContext.location.href = path;
                     };
                     ScreenWindow.prototype.build$dialog = function (options) {
                         this.$dialog = $('<div/>')
@@ -3158,13 +3158,25 @@ var nts;
                 windows.close = close;
                 var sub;
                 (function (sub) {
-                    function modal(path, options) {
+                    function modal(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        path = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                            .mergeRelativePath(path).serialize();
                         options = options || {};
                         options.modal = true;
                         return open(path, options);
                     }
                     sub.modal = modal;
-                    function modeless(path, options) {
+                    function modeless(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        path = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                            .mergeRelativePath(path).serialize();
                         options = options || {};
                         options.modal = false;
                         return open(path, options);
