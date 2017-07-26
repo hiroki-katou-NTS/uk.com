@@ -39,7 +39,7 @@ module ksm002.a.viewmodel {
             self.selectedIds = ko.observableArray([]);
             self.enable = ko.observable(true);
             //Calendar
-            self.yearMonthPicked = ko.observable(moment(new Date()).format("YYYYMM"));
+            self.yearMonthPicked = ko.observable(Number(moment(new Date()).format("YYYYMM")));
             self.cssRangerYM = {};
             self.optionDates = ko.observableArray([]);
 
@@ -168,13 +168,10 @@ module ksm002.a.viewmodel {
                             };
                         });
                         arrOptionaDates.push(new OptionalDate(moment(processDay).format('YYYY-MM-DD'), arrName, arrId));
-                        //root.push()
                     };
                 }
                 //Return Array of Data in Month
                 self.serverSource = _.cloneDeep(arrOptionaDates);
-                //console.log(self.serverSource);
-                //console.log(arrOptionaDates);
                 dfd.resolve(arrOptionaDates);
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -190,7 +187,7 @@ module ksm002.a.viewmodel {
             let dfd = $.Deferred<any>();
             //get Company Start Day
             service.getCompanyStartDay().done(function(startDayComapny: any) {
-                if (nts.uk.util.isNullOrUndefined(startDayComapny)) {
+                if (!nts.uk.util.isNullOrUndefined(startDayComapny)) {
                     dfd.resolve(startDayComapny.startDay);
                 };
             }).fail(function(res) {
