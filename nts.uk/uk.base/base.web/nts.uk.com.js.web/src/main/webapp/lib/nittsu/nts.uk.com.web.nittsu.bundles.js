@@ -6764,14 +6764,10 @@ var nts;
                                 return selected[primaryKey] === item[primaryKey];
                             }) !== undefined;
                         });
-                        if (!_.isEqual(currentSource, newSources)) {
-                            this.swapper.Model.swapParts[0].bindData(newSources.slice());
-                            this.swapper.Model.transportBuilder.setFirst(newSources);
-                        }
-                        if (!_.isEqual(currentSelectedList, newSelectedList)) {
-                            this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
-                            this.swapper.Model.transportBuilder.setSecond(newSelectedList);
-                        }
+                        this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                        this.swapper.Model.transportBuilder.setFirst(newSources);
+                        this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                        this.swapper.Model.transportBuilder.setSecond(newSelectedList);
                     };
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
                         var handler = this;
