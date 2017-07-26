@@ -203,7 +203,10 @@ module ksm004.d.viewmodel {
         addCalendarCompany(list) {
             var self = this;
             service.addCalendarCompany(list).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                nts.uk.ui.windows.close();     
+                });
+                
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.mesage);
             });
@@ -215,7 +218,9 @@ module ksm004.d.viewmodel {
         updateCalendarCompany(list) {
             var self = this;
             service.updateCalendarCompany(list).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                    nts.uk.ui.windows.close();  
+                });   
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.mesage);
             });
@@ -227,7 +232,9 @@ module ksm004.d.viewmodel {
         addCalendarClass(list) {
             var self = this;
             service.addCalendarClass(list).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                    nts.uk.ui.windows.close();  
+                });   
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.mesage);
             });
@@ -239,7 +246,9 @@ module ksm004.d.viewmodel {
         updateCalendarClass(list) {
             var self = this;
             service.updateCalendarClass(list).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                    nts.uk.ui.windows.close();  
+                });   
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.mesage);
             });
@@ -251,7 +260,9 @@ module ksm004.d.viewmodel {
         addCalendarWorkplace(list) {
             var self = this;
             service.addCalendarWorkplace(list).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                    nts.uk.ui.windows.close();  
+                });   
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.mesage);
             });
@@ -263,7 +274,9 @@ module ksm004.d.viewmodel {
         updateCalendarWorkplace(list) {
             var self = this;
             service.updateCalendarWorkplace(list).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                    nts.uk.ui.windows.close();  
+                });   
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.mesage);
             });
