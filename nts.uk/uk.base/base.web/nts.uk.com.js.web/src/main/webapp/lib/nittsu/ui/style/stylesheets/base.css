@@ -458,6 +458,12 @@ div.popup-panel {
 .ui-igcombo.error {
   border-color: #ff6666;
 }
+.checkbox-wrapper.error {
+	outline: 1px solid #ff6666;
+}
+.multicheckbox-wrapper.error {
+	outline: 1px solid #ff6666;
+}
 
 /*****************************
   ErrorNotifier
@@ -1851,7 +1857,12 @@ button.nts-switch-button[disabled]:hover {
 .minimalist .ntsCheckBox-label input[type="checkbox"]:checked + span {
   background: transparent;
 }
-
+.checkbox-wrapper {
+	display: inline-block;
+}
+.multicheckbox-wrapper {
+	display: inline-block;
+}
 /* line 1, ../sass/components/_panel.scss */
 .panel {
   padding: 10px;
