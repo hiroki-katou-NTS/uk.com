@@ -27,8 +27,8 @@ public class DAIControlOfAttendanceItemsUpdateCommand extends CommandHandler<Lis
 	private DisplayAndInputControlOfAttendanceItems toDAIControlOfAttendanceItemsDomain(
 			DAIControlOfAttendanceItemsCommand dAIControlOfAttendanceItemsCommand) {
 		return DisplayAndInputControlOfAttendanceItems.createFromJavaType(
-				dAIControlOfAttendanceItemsCommand.attendanceItemId, dAIControlOfAttendanceItemsCommand.workTypeCode,
-				dAIControlOfAttendanceItemsCommand.attendanceItemName, dAIControlOfAttendanceItemsCommand.userCanSet,
+				dAIControlOfAttendanceItemsCommand.attendanceItemId,
+				dAIControlOfAttendanceItemsCommand.businessTypeCode, dAIControlOfAttendanceItemsCommand.userCanSet,
 				dAIControlOfAttendanceItemsCommand.youCanChangeIt,
 				dAIControlOfAttendanceItemsCommand.canBeChangedByOthers, dAIControlOfAttendanceItemsCommand.use);
 	}

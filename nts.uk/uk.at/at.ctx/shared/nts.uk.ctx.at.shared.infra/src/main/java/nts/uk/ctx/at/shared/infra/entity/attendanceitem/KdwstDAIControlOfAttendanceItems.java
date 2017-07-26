@@ -10,8 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.query.DBCharPaddingAs;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.AttendanceItemName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -22,9 +20,6 @@ public class KdwstDAIControlOfAttendanceItems extends UkJpaEntity implements Ser
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KdwstDAIControlOfAttendanceItemsPK kdwstDAIControlOfAttendanceItemsPK;
-	@DBCharPaddingAs(AttendanceItemName.class)
-	@Column(name = "ATTENDANCE_ITEM_NAME")
-	public String attendanceItemName;
 	@Column(name = "USER_CAN_SET")
 	public BigDecimal userCanSet;
 	@Column(name = "CHANGED_BY_YOU")

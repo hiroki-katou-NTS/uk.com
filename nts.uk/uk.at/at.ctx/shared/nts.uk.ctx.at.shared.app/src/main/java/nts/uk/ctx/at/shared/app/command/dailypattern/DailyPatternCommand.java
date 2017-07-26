@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.dailypattern.dto.DailyPatternDto;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PatternCalendarCommand.
  */

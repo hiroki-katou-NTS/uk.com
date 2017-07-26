@@ -30,15 +30,19 @@ module nts.uk.at.view.kmk012.d {
                 self.dayMonthChangeModel = new DayMonthChangeModel();
                 service.findByMasterClosureHistory(input).done(function(data) {
                     self.closureDetailModel.updateData(data);
-                    self.updateDayMonthModel();
-                    self.updateDayMonthChangeModel();
                 });
                 self.closureDetailModel.month.subscribe(function(){
+                    if (self.validateClient()) {
+                        return;
+                    }
                     self.updateDayMonthModel();
                     self.updateDayMonthChangeModel();
                 });
                 
                 self.closureDetailModel.closureDateChange.subscribe(function() {
+                    if (self.validateClient()) {
+                        return;
+                    }
                     self.updateDayMonthChangeModel();
                 });
             }

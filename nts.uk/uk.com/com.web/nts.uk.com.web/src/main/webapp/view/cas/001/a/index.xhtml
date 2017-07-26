@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="cas001.a.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cas001.a.start.js" />
+			<com:scriptfile path="cas001.a.service.js" />
+			<com:scriptfile path="cas001.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<button id="A1_001">新規</button>
+					<button id="A1_002" class="proceed">登録</button>
+					<button id="A1_003">コピー</button>
+					<button id="A1_004" class="danger">削除</button>
+					<div class="float-right">
+						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">個人情報定義へ</a>
+					</div>
+				</div>
+			</div>
+			<div id="contents-area">
+				<div id="content-left" class="bg-green">
+					<div style="margin-left: 15px;">
+						<table id="A2_001"
+							data-bind="ntsGridList: {								
+						height: 350,
+						dataSource: personRoleList ,
+						primaryKey: 'roleCode' ,
+						columns: [{ headerText: 'コード', key: 'roleCode', width: 50},
+				                { headerText: '名称', key: 'roleName', width: 170 } ] ,
+						multiple: false,
+						value: currentRoleCode,
+						rows:5 }">
+						</table>
+					</div>
+					<span id="A2_001Caret" class="caret-bottom outline"></span>
+					<div>
+						<div style="width: 270px" id="A2_007"
+							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'PersonInfoCategoryID',
+						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentRole().currentRoleCategoryCode , selectedKey: 'PersonInfoCategoryID', fields: ['PersonInfoCategoryID'], mode: 'igGrid'}" />
+						<table id="A2_008"
+							data-bind="ntsGridList: {								
+						height: 350,
+						dataSource: currentRole().RoleCategoryList ,
+						primaryKey: 'PersonInfoCategoryID' ,
+						columns: [{ headerText: 'コード', key: 'PersonInfoCategoryID', width: 200 ,hidden:true},
+								{ headerText: 'コード', key: 'PersonInfoCategoryName', width: 200},
+				                { headerText: '名称', key: 'AllowPersonReference', width: 45 , formatter :makeIcon } ] ,
+						multiple: false,
+						value: currentRole().currentRoleCategoryCode,
+						rows:10 }">
+						</table>
+					</div>
+				</div>
+				<div id="content-right">
+					<div id="roleConfigArea" data-bind="with:currentRole">
+						<div class="div_line" style="margin-top: 0px;">
+							<div data-bind="ntsFormLabel: { required:true }">コード/名称</div>
+							<span data-bind="text:roleCode"></span> <span
+								data-bind="text:roleName"></span>
+						</div>
+						<div class="div_line">
+							<div class="toggle_div" id="A3_toggle">
+								<div class="div_line toggle_div_header">
+									<div data-bind="ntsFormLabel: { required:true }">ファイル権限設定</div>
+									<span class="expand_symbol" data-bind="html:ExpandSymbolGen()"></span>
+								</div>
+								<div class="div_line">
+									<table id="role_table">
+										<tr>
+											<th></th>
+											<th style="width: 150px">アップロード</th>
+											<th style="width: 150px">参照</th>
+										</tr>
+										<tr>
+											<th>ファイル名称</th>
+											<td><div id="A3_012" class="cf"
+													data-bind="ntsSwitchButton: {
+													options: $parent.roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowMapBrowsing,
+													enable: true }"></div>
+											</td>
+											<td>
+												<div id="A3_013" class="cf"
+													data-bind="ntsSwitchButton: {
+													options: $parent.roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowMapUpLoad,
+													enable: true }"></div>
+											</td>
+										</tr>
+										<tr>
+											<th>ファイル名称</th>
+											<td><div id="A3_014" class="cf"
+													data-bind="ntsSwitchButton: {
+													options: $parent.roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowDocumentUpload,
+													enable: true }"></div>
+											</td>
+											<td>
+												<div id="A3_015" class="cf"
+													data-bind="ntsSwitchButton: {
+													options: $parent.roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowDocumentReference,
+													enable: true }"></div>
+											</td>
+										</tr>
+										<tr>
+											<th>ファイル名称</th>
+											<td><div id="A3_016" class="cf"
+													data-bind="ntsSwitchButton: {
+													options: $parent.roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowAvatarUpload,
+													enable: true }"></div>
+											</td>
+											<td>
+												<div id="A3_017" class="cf"
+													data-bind="ntsSwitchButton: {
+													options: $parent.roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowAvatarReference,
+													enable: true }"></div>
+											</td>
+										</tr>
+									</table>
+								</div>
+
+							</div>
+							<hr />
+						</div>
+						<div id="category_config_arena" data-bind="with:currentCategory">
+							<div class="div_line">
+								<div class="float_left">
+									<div id="A4_001" data-bind="ntsFormLabel: { required:true }">カテゴリ名</div>
+									<span id="A4_002" data-bind="text:PersonInfoCategoryName"></span>
+								</div>
+								<div style="padding-left: 130px" class="float_left">
+									<div id="A4_003" data-bind="ntsFormLabel: { required:true }">情報種類</div>
+									<span id="A4_004" data-bind="text:PersonInfoCategoryName"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

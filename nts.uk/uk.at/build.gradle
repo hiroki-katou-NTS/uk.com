@@ -106,9 +106,9 @@ subprojects {
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.24.1'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.7'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.9'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.4'
 	}
 }
 
@@ -236,6 +236,9 @@ project (':at.screen:nts.uk.screen.at.app') {
 project (':at.screen:nts.uk.screen.at.infra') {
 	dependencies {
 		compile project (':at.screen:nts.uk.screen.at.app')
+		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
+		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 	}
 }
 //=========================at:screen↑=====================================

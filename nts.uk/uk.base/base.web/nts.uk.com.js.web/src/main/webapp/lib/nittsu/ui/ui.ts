@@ -88,9 +88,9 @@ module nts.uk.ui {
 
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
-                    
+
                     options.title = '※ダイアログタイトルは基盤で自動化予定';
-                    
+
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
                         height: options.height || this.globalContext.dialogSize.height,
@@ -102,42 +102,42 @@ module nts.uk.ui {
                             of: window,
                             collision: "none"
                         },
-                        open: function () {
-                        	if ($(this).parent().height() >= $(window).height()) {
-	                    		$(this).dialog("option", "position", {my: "center top", at: "center top", of: window, collision: "none"})
-	                    		$(this).parent().css("position","absolute");
-                        	}
-                            
+                        open: function() {
+                            if ($(this).parent().height() >= $(window).height()) {
+                                $(this).dialog("option", "position", { my: "center top", at: "center top", of: window, collision: "none" })
+                                $(this).parent().css("position", "absolute");
+                            }
+
                             var $dialogDocument = $(this).parent();
                             let $dialogContentDoc = $(this.lastElementChild.contentDocument);
-                            
+
                             // catch press tab key in close button of dialog.
-                            $dialogDocument.on("keydown", ":tabbable", function (evt) {
-                                 var code = evt.which || evt.keyCode;
-                                 if (code.toString() === "9") {
-                                     var focusableElements = $dialogContentDoc.find(":tabbable");
-                                     if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false){
-                                        focusableElements.first().focus();
-                                        evt.preventDefault();       
-                                     }  else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true){
-                                        focusableElements.last().focus();
-                                        evt.preventDefault();       
-                                     }
-                                 }
-                            });
-                            // catch press tab key for component in dialog.
-                            $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
-                                 var code = evt.which || evt.keyCode;
-                                 if (code.toString() === "9") {
-                                     var focusableElements = $dialogContentDoc.find(":tabbable");
-                                     if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                            $dialogDocument.on("keydown", ":tabbable", function(evt) {
+                                var code = evt.which || evt.keyCode;
+                                if (code.toString() === "9") {
+                                    var focusableElements = $dialogContentDoc.find(":tabbable");
+                                    if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
                                         focusableElements.first().focus();
                                         evt.preventDefault();
-                                     } else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                    } else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
                                         focusableElements.last().focus();
-                                        evt.preventDefault(); 
-                                     }
-                                 }
+                                        evt.preventDefault();
+                                    }
+                                }
+                            });
+                            // catch press tab key for component in dialog.
+                            $dialogContentDoc.on("keydown", ":tabbable", function(evt) {
+                                var code = evt.which || evt.keyCode;
+                                if (code.toString() === "9") {
+                                    var focusableElements = $dialogContentDoc.find(":tabbable");
+                                    if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                                        focusableElements.first().focus();
+                                        evt.preventDefault();
+                                    } else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                        focusableElements.last().focus();
+                                        evt.preventDefault();
+                                    }
+                                }
                             });
                         },
                         beforeClose: function() {
@@ -147,12 +147,12 @@ module nts.uk.ui {
                     //remove focus on tab key press on the close button on jquery dialog
                     $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
                     if (this.parent !== null)
-                    	this.parent.globalContext.nts.uk.ui.block.clear();
-//                    var widget= this.$dialog.dialog("widget");
-//                    widget.draggable("option","containment",false);
+                        this.parent.globalContext.nts.uk.ui.block.clear();
+                    //                    var widget= this.$dialog.dialog("widget");
+                    //                    widget.draggable("option","containment",false);
                 });
 
-                this.globalContext.location.href = request.resolvePath(path);
+                this.globalContext.location.href = path;
             }
 
             build$dialog(options: any) {
@@ -284,21 +284,33 @@ module nts.uk.ui {
         }
 
         export module sub {
-
-            export function modal(path: string, options?: any) {
+            export function modal(path: string, options?: any);
+            export function modal(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
+                if (typeof arguments[1] !== 'string') {
+                    return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                }
+                path = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(path).serialize();
                 options = options || {};
                 options.modal = true;
                 return open(path, options);
             }
-
-            export function modeless(path: string, options?: any) {
+            export function modeless(path: string, options?: any)
+            export function modeless(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
+                 if (typeof arguments[1] !== 'string') {
+                    return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                }
+                path = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(path).serialize();
                 options = options || {};
                 options.modal = false;
                 return open(path, options);
             }
 
             export function open(path: string, options?: any) {
-            	nts.uk.ui.block.invisible();
+                nts.uk.ui.block.invisible();
                 return windows.container.createDialog(path, options, selfId);
             }
         }
@@ -325,7 +337,7 @@ module nts.uk.ui {
             let overlayElements = parent.$(".ui-widget-overlay");
             var max = 120000;
             if (overlayElements.length > 0) {
-                let zIndexs = _.map(overlayElements,function(element){return parseInt($(element).css("z-index"));});
+                let zIndexs = _.map(overlayElements, function(element) { return parseInt($(element).css("z-index")); });
                 var temp = _.max(zIndexs);
                 max = temp > max ? temp : max;
             }
@@ -365,8 +377,8 @@ module nts.uk.ui {
                     closeOnEscape: false,
                     buttons: buttons,
                     open: function() {
-                        $(this).closest('.ui-dialog').css('z-index', getMaxZIndex()+2);
-                        $('.ui-widget-overlay').last().css('z-index', getMaxZIndex()+1);
+                        $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
+                        $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
                         $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                         $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
 
@@ -380,7 +392,7 @@ module nts.uk.ui {
                     },
                     close: function(event) {
                         window.parent.$(this).dialog('destroy');
-                         window.parent.$(event.target).remove();
+                        window.parent.$(event.target).remove();
                     }
                 });
             //add header text if it has
@@ -822,16 +834,16 @@ module nts.uk.ui {
     export function confirmSaveDisable() {
         $(window).unbind('beforeunload');
     };
-    
+
     /**
      * Block UI Module
      * Using for blocking UI when action in progress
      */
     export module block {
-        
+
         export function invisible() {
             let rect = calcRect();
-            
+
             (<any>$).blockUI({
                 message: null,
                 overlayCSS: { opacity: 0 },
@@ -841,10 +853,10 @@ module nts.uk.ui {
                 }
             });
         }
-        
+
         export function grayout() {
             let rect = calcRect();
-            
+
             (<any>$).blockUI({
                 message: '<div class="block-ui-message">お待ちください</div>',
                 fadeIn: 200,
@@ -854,13 +866,13 @@ module nts.uk.ui {
                 }
             });
         }
-        
+
         export function clear() {
             (<any>$).unblockUI({
                 fadeOut: 200
             });
         }
-        
+
         function calcRect() {
             let width = 220;
             let left = ($(window).width() - width) / 2;
@@ -952,13 +964,13 @@ module nts.uk.ui {
             }
         }
     }
-    
+
     module smallExtensions {
-        
+
         $(() => {
             $('.limited-label').on('mouseenter', e => {
                 let $label = $(e.target);
-                
+
                 // Check if contents is overflow
                 if ($label.outerWidth() < $label[0].scrollWidth) {
                     let $view = $('<div />').addClass('limited-label-view')
@@ -970,7 +982,7 @@ module nts.uk.ui {
                             of: $label,
                             collision: 'flip'
                         });
-                    
+
                     $label.bind('mouseleave.limitedlabel', () => {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();

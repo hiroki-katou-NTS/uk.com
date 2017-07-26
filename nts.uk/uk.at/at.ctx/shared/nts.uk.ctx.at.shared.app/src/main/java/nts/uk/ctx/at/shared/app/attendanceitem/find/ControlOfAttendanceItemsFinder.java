@@ -25,6 +25,6 @@ public class ControlOfAttendanceItemsFinder {
 			ControlOfAttendanceItems controlOfAttendanceItems) {
 		return new ControlOfAttendanceItemsDto(controlOfAttendanceItems.getAttandanceTimeId(),
 				controlOfAttendanceItems.getInputUnitOfTimeItem().value,
-				controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v());
+				controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v(),controlOfAttendanceItems.getNameLineFeedPosition());
 	}
 }

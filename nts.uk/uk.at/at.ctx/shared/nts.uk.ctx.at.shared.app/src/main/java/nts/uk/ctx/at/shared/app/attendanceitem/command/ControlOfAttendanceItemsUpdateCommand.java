@@ -25,7 +25,7 @@ public class ControlOfAttendanceItemsUpdateCommand extends CommandHandler<Contro
 			ControlOfAttendanceItemsCommand controlOfAttendanceItemsCommand) {
 		return ControlOfAttendanceItems.createFromJavaType(controlOfAttendanceItemsCommand.attandanceTimeId,
 				controlOfAttendanceItemsCommand.inputUnitOfTimeItem,
-				controlOfAttendanceItemsCommand.headerBackgroundColorOfDailyPerformance);
+				controlOfAttendanceItemsCommand.headerBackgroundColorOfDailyPerformance,controlOfAttendanceItemsCommand.nameLineFeedPosition);
 	}
 
 }
