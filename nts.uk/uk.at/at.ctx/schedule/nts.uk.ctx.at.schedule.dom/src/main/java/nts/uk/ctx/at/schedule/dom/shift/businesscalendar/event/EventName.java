@@ -4,15 +4,12 @@
 package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * @author hungnm
  *
  */
-@StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(20)
 public class EventName extends StringPrimitiveValue<EventName> {
 	/** The Constant serialVersionUID. */
