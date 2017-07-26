@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
@@ -13,6 +14,9 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class KcbmtClassifyWorkSetPK.
+ */
 @Setter
 @Getter
 @Embeddable
@@ -30,6 +34,12 @@ public class KcbmtClassifyWorkSetPK implements Serializable {
 	@NotNull
 	@Column(name = "CLSCD")
 	private String classifyCode;
+	
+	/** The workday division. */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "WORKDAY_DIVISION")
+	private Integer	workdayDivision;
 
 	/**
 	 * Instantiates a new kcbmt classify work set PK.
@@ -43,11 +53,13 @@ public class KcbmtClassifyWorkSetPK implements Serializable {
 	 *
 	 * @param cid the cid
 	 * @param classifyCode the classify code
+	 * @param workdayDivision the workday division
 	 */
-	public KcbmtClassifyWorkSetPK(String cid, String classifyCode) {
+	public KcbmtClassifyWorkSetPK(String cid, String classifyCode, Integer workdayDivision) {
 		super();
 		this.cid = cid;
 		this.classifyCode = classifyCode;
+		this.workdayDivision = workdayDivision;
 	}
 
 	/* (non-Javadoc)
@@ -59,6 +71,7 @@ public class KcbmtClassifyWorkSetPK implements Serializable {
 		int result = 1;
 		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
 		result = prime * result + ((classifyCode == null) ? 0 : classifyCode.hashCode());
+		result = prime * result + ((workdayDivision == null) ? 0 : workdayDivision.hashCode());
 		return result;
 	}
 
@@ -84,7 +97,14 @@ public class KcbmtClassifyWorkSetPK implements Serializable {
 				return false;
 		} else if (!classifyCode.equals(other.classifyCode))
 			return false;
+		if (workdayDivision == null) {
+			if (other.workdayDivision != null)
+				return false;
+		} else if (!workdayDivision.equals(other.workdayDivision))
+			return false;
 		return true;
 	}
+
+	
 
 }

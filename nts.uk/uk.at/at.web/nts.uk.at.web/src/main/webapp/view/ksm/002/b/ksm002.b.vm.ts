@@ -10,10 +10,11 @@ module ksm002.b.viewmodel {
         rootList: Array<IWorkPlaceDto> = []; // list data from server
         isUpdate: KnockoutObservableArray<boolean> = ko.observableArray(false);
         fullCheckBoxItem: Array<CheckBoxItem> = [];
+        firstDay: KnockoutObservable<number> = ko.observable(0);
         calendarPanel: ICalendarPanel = {
             optionDates: ko.observableArray([]),
             yearMonth: this.yearMonthPicked,
-            firstDay: 0,
+            firstDay: this.firstDay,
             startDate: 1,
             endDate: 31,
             workplaceId: this.currentWorkPlace().id,
@@ -31,13 +32,12 @@ module ksm002.b.viewmodel {
             isShowAlreadySet: true,
             isShowSelectButton: false,
             baseDate: ko.observable(new Date()),
-            selectedWorkplaceId: undefined,
+            selectedWorkplaceId: this.currentWorkPlace().id,
             alreadySettingList: ko.observableArray([])
         };
         
         constructor() {
             var self = this;
-            self.kcpTreeGrid.selectedWorkplaceId = self.currentWorkPlace().id;
             
             // get new data when year month change
             self.yearMonthPicked.subscribe(value => {
@@ -73,9 +73,7 @@ module ksm002.b.viewmodel {
                     }
                 }
             });
-            $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
-                self.start(false);    
-            });
+            $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid);
         }
         
         /**
@@ -83,17 +81,21 @@ module ksm002.b.viewmodel {
          */
         start(value: boolean){
             var self = this;  
-            if(value){
-                self.getSpecDateByIsUse().done(()=>{
-                    if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
-                        self.openDialogC();
+            self.getAllSpecDate().done(()=>{
+                self.currentWorkPlace().id(_.first($('#tree-grid')['getDataList']()).workplaceId);         
+            });
+            nts.uk.characteristics.restore("IndividualStartDay").done(function (data) { 
+                bService.getCompanyStartDay().done(startDayData => { 
+                    if(!nts.uk.util.isNullOrUndefined(startDayData)) { 
+                        self.firstDay(startDayData.startDay); 
                     }
-                });  
-            } else {
-                self.getAllSpecDate().done(()=>{
-                    self.currentWorkPlace().id(_.first($('#tree-grid')['getDataList']()).workplaceId);         
-                });
-            }
+                });   
+            });
+            self.getSpecDateByIsUse().done(()=>{
+                if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
+                    self.openDialogC();
+                }
+            });
         }
         
         /**
@@ -192,6 +194,7 @@ module ksm002.b.viewmodel {
                     self.isUpdate(false);
                 }
                 self.calendarPanel.optionDates(a);
+                self.calendarPanel.optionDates.valueHasMutated();
                 nts.uk.ui.block.clear();
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});

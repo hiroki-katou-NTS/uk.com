@@ -47,6 +47,8 @@ module ccg013.a.viewmodel {
                 var index = _.findIndex(self.listWebMenu(), function(item: WebMenuModel) {
                     return item.webMenuCode == newValue;
                 });
+
+
                 self.index(index);
                 service.findWebMenu(newValue).done(function(res: service.WebMenuDto) {
                     nts.uk.ui.errors.clearAll();
@@ -151,7 +153,7 @@ module ccg013.a.viewmodel {
                     service.deleteWebMenu(webMenuCode).done(function() {
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         self.getWebMenu().done(() => {
-                            if self.listWebMenu().length == 0) {
+                            if (self.listWebMenu().length == 0) {
                                 self.cleanForm();
                             } else if (self.index() == self.listWebMenu().length) {
                                 self.currentWebMenuCode(self.listWebMenu()[self.index() - 1].webMenuCode);
@@ -172,9 +174,25 @@ module ccg013.a.viewmodel {
         /** Remove menu bar */
         private removeMenuBar(menuBarId: string): void {
             let self = this;
+
+            var menubarIndex = _.findIndex(self.currentWebMenu().menuBars(), function(item: MenuBar) {
+                return item.menuBarId() == menuBarId;
+            });
+
             self.currentWebMenu().menuBars.remove((item) => {
                 return item.menuBarId() == menuBarId;
             });
+            if(self.currentMenuBar().menuBarId() == menuBarId){
+                if (menubarIndex == self.currentWebMenu().menuBars().length) {
+                    var id = self.currentWebMenu().menuBars()[menubarIndex - 1].menuBarId();
+                    $("#menubar-tabs li#" + id + " a").trigger('click');
+
+                } else {
+                    var id = self.currentWebMenu().menuBars()[menubarIndex].menuBarId();
+                    $("#menubar-tabs li#" + id + " a").trigger('click');
+                }
+            }
+
             self.calculateMenuBarOrder();
         }
 

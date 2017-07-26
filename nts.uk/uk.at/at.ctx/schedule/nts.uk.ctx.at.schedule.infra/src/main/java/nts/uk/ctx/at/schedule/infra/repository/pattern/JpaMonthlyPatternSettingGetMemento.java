@@ -7,7 +7,6 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.KmpstMonthPatternSetPK;
 
 /**
  * The Class JpaMonthlyPatternSettingGetMemento.
@@ -23,31 +22,29 @@ public class JpaMonthlyPatternSettingGetMemento implements MonthlyPatternSetting
 	 * @param monthlyPatternSeting the monthly pattern seting
 	 */
 	public JpaMonthlyPatternSettingGetMemento(KmpstMonthPatternSet monthlyPatternSeting) {
-		if(monthlyPatternSeting.getKmpstMonthPatternSetPK() == null){
-			monthlyPatternSeting.setKmpstMonthPatternSetPK(new KmpstMonthPatternSetPK());
-		}
 		this.monthlyPatternSeting = monthlyPatternSeting;
 	}
 	
-	/**
-	 * Gets the monthly pattern code.
-	 *
-	 * @return the monthly pattern code
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.
+	 * MonthlyPatternSettingGetMemento#getMonthlyPatternCode()
 	 */
 	@Override
 	public MonthlyPatternCode getMonthlyPatternCode() {
-		return new MonthlyPatternCode(
-				this.monthlyPatternSeting.getKmpstMonthPatternSetPK().getMonthPatternCd());
+		return new MonthlyPatternCode(this.monthlyPatternSeting.getMPatternCd());
 	}
 
-	/**
-	 * Gets the employee id.
-	 *
-	 * @return the employee id
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.
+	 * MonthlyPatternSettingGetMemento#getEmployeeId()
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.monthlyPatternSeting.getKmpstMonthPatternSetPK().getSid();
+		return this.monthlyPatternSeting.getSid();
 	}
 
 }

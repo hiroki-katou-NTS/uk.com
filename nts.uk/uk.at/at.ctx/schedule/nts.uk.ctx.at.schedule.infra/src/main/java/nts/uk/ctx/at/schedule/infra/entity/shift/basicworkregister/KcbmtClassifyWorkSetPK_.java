@@ -18,4 +18,7 @@ public class KcbmtClassifyWorkSetPK_ {
 
 	/** The classify code. */
 	public static volatile SingularAttribute<KcbmtClassifyWorkSetPK, String> classifyCode;
+	
+	/** The workday division. */
+	public static volatile SingularAttribute<KcbmtClassifyWorkSetPK, Integer> workdayDivision;
 }

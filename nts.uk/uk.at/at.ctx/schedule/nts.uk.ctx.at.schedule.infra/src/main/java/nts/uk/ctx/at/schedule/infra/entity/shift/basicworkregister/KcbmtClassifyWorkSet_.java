@@ -16,21 +16,11 @@ public class KcbmtClassifyWorkSet_ {
 	/** The kcbmt classify work set PK. */
 	public static volatile SingularAttribute<KcbmtClassifyWorkSet, KcbmtClassifyWorkSetPK> kcbmtClassifyWorkSetPK;
 
-	/** The wd work type code. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSet, String> wdWorkTypeCode;
+	/** The worktype code. */
+	public static volatile SingularAttribute<KcbmtClassifyWorkSet, String> worktypeCode;
 
-	/** The wd working code. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSet, String> wdWorkingCode;
+	/** The working code. */
+	public static volatile SingularAttribute<KcbmtClassifyWorkSet, String> workingCode;
 
-	/** The nwd law work type code. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSet, String> nwdLawWorkTypeCode;
-
-	/** The nwd law working code. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSet, String> nwdLawWorkingCode;
-
-	/** The nwd ext work type code. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSet, String> nwdExtWorkTypeCode;
-
-	/** The nwd ext working code. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSet, String> nwdExtWorkingCode;
+	
 }

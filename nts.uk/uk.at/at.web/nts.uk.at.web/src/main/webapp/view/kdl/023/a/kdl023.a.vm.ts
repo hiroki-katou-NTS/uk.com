@@ -4,14 +4,18 @@ module nts.uk.at.view.kdl023.a.viewmodel {
     import WeeklyWorkSetting = service.model.WeeklyWorkSetting;
     import PublicHoliday = service.model.PublicHoliday;
     import ReflectionMethod = service.model.ReflectionMethod;
+    import WorkType = service.model.WorkType;
+    import WorkTime = service.model.WorkTime;
+    import DailyPatternSetting = service.model.DailyPatternSetting;
 
     export class ScreenModel {
-        itemList: KnockoutObservableArray<ItemModelCbb1>;
-        selectedCode: KnockoutObservable<string>;
-        listWorkType: KnockoutObservableArray<ItemModelCbb1>;
+        dailyPatternList: KnockoutObservableArray<DailyPatternSetting>;
+        selectedDailyPatternCode: KnockoutObservable<string>;
+        listWorkType: KnockoutObservableArray<WorkType>;
+        listWorkTime: KnockoutObservableArray<WorkTime>;
 
         patternReflection: PatternReflection;
-        dailyPatternSetting: service.model.DailyPatternSetting;
+        dailyPatternSetting: DailyPatternSetting;
         weeklyWorkSetting: WeeklyWorkSetting;
         listHoliday: Array<any>;
 
@@ -34,37 +38,13 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         constructor() {
             let self = this;
             self.listHoliday = [];
-            self.itemList = ko.observableArray([
-                new ItemModelCbb1('1', '基本給'),
-                new ItemModelCbb1('2', '役職手当'),
-                new ItemModelCbb1('3', '基本給')
-            ]);
-            self.listWorkType = ko.observableArray([
-                new ItemModelCbb1('1', 'aaaaa'),
-                new ItemModelCbb1('2', 'bbbb'),
-                new ItemModelCbb1('3', 'cccc')
-            ]);
-            self.selectedCode = ko.observable('1');
-
-            self.dailyPatternSetting = {};
-            self.dailyPatternSetting.patternCode = 'code';
-            self.dailyPatternSetting.patternName = 'name';
-            self.dailyPatternSetting.workPatterns = [{
-                dispOrder: 1,
-                workTypeCode: 'đi làm vì đam mê',
-                workingHoursCode: '',
-                days: 1,
-            }, {
-                    dispOrder: 2,
-                    workTypeCode: 'đi làm cho vui',
-                    workingHoursCode: '',
-                    days: 2,
-                }, {
-                    dispOrder: 3,
-                    workTypeCode: 'hư hỏng',
-                    workingHoursCode: 'đi làm cho đỡ',
-                    days: 3,
-                }];
+            self.dailyPatternList = ko.observableArray<DailyPatternSetting>([]);
+            self.listWorkType = ko.observableArray<WorkType>([]);
+            self.listWorkTime = ko.observableArray<WorkTime>([]);
+            self.selectedDailyPatternCode = ko.observable('');
+            self.selectedDailyPatternCode.subscribe(code => {
+                self.loadDailyPatternDetail(code);
+            });
 
             // Calendar component
             self.yearMonthPicked = ko.observable(201707);
@@ -83,62 +63,177 @@ module nts.uk.at.view.kdl023.a.viewmodel {
 
         }
 
+        /**
+         * Start page event.
+         */
         public startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
-            nts.uk.ui.block.invisible();
-            $.when(service.find('empId'), service.findWeeklyWorkSetting(), service.getHolidayByListDate(self.getListDateOfMonth()))
-                .done(function(patternReflection: service.model.PatternReflection, weeklyWorkSetting: WeeklyWorkSetting, listHoliday) {
-                    // Set list holiday
-                    self.listHoliday = listHoliday;
-
-                    // Set weeklyWorkSetting
-                    self.weeklyWorkSetting = weeklyWorkSetting;
-
-                    // Select first item if worktype code not exist.
-                    if(!patternReflection.statutorySetting.workTypeCode) {
-                        patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].code;
-                    }
-                    if(!patternReflection.nonStatutorySetting.workTypeCode) {
-                        patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].code;
-                    }
-                    if(!patternReflection.holidaySetting.workTypeCode) {
-                        patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].code;
-                    }
-
-                    // Set patternReflection.
-                    self.patternReflection = new PatternReflection(patternReflection);
-
-                    // Set optionDates.
-                    self.optionDates(self.getOptionDates());
-
-                    dfd.resolve();
-                }).fail(res => {
-                    nts.uk.ui.dialog.alert(res.message);
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });;
+            $.when(self.loadHolidayList(),
+                self.loadWorktypeList(),
+                self.loadWorktimeList(),
+                self.loadDailyPatternHeader(),
+                self.loadWeeklyWorkSetting())
+                .done(() => self.loadPatternReflection()
+                    .done(() => {
+                        self.setSelectedDailyPatternCode();
+                        // Xu ly hien thi calendar.
+                        self.optionDates(self.getOptionDates());
+                        dfd.resolve();
+                    })).fail(res => {
+                        console.log(res);
+                        nts.uk.ui.dialog.alert(res.message);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
             return dfd.promise();
         }
 
+        /**
+         * Forward button clicked
+         */
         public forward(): void {
             let self = this;
-            self.tien();
+            self.forwardOneDay();
             self.optionDates(self.getOptionDates());
+            // Set focus control
+            $('#component-calendar-kcp006').focus();
         }
+
+        /**
+         * Backward button clicked.
+         */
         public backward(): void {
             let self = this;
-            self.lui();
+            self.backwardOneDay();
             self.optionDates(self.getOptionDates());
+            // Set focus control
+            $('#component-calendar-kcp006').focus();
         }
 
+        /**
+         * Event when click apply button.
+         */
         public onBtnApplySettingClicked(): void {
             let self = this;
+            nts.uk.ui.block.invisible();
             // Reload calendar
             self.optionDates(self.getOptionDates());
-            service.save('empId', ko.toJS(self.patternReflection));
+            // Set focus control
+            $('#component-calendar-kcp006').focus();
+            service.save('empId', ko.toJS(self.patternReflection)).always(() => {
+                nts.uk.ui.block.clear();
+            });
         }
 
+        /**
+         * Load patternReflection.
+         */
+        private loadPatternReflection(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.find('empId').done(function(patternReflection: service.model.PatternReflection) {
+                // Select first item if worktype code not exist.
+                if (!patternReflection.statutorySetting.workTypeCode) {
+                    patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                }
+                if (!patternReflection.nonStatutorySetting.workTypeCode) {
+                    patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                }
+                if (!patternReflection.holidaySetting.workTypeCode) {
+                    patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                }
+
+                // Set patternReflection.
+                self.patternReflection = new PatternReflection(patternReflection);
+
+                // Resolve.
+                dfd.resolve();
+            }).fail(() => {
+                console.log('failed. trinh duyet chua luu setting nao.');
+                dfd.fail();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Load daily pattern.
+         */
+        private loadDailyPatternHeader(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.findAllPattern().done(function(list: Array<DailyPatternSetting>) {
+                self.dailyPatternList(list);
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Load daily pattern detail.
+         */
+        private loadDailyPatternDetail(code: string): void {
+            let self = this;
+            self.dailyPatternSetting = _.find(self.dailyPatternList(), item => item.patternCode == code);
+        }
+
+        /**
+         * Load weekly work setting.
+         */
+        private loadWeeklyWorkSetting(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.findWeeklyWorkSetting().done(function(weeklyWorkSetting: WeeklyWorkSetting) {
+                self.weeklyWorkSetting = weeklyWorkSetting;
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Load holiday list.
+         */
+        private loadHolidayList(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.getHolidayByListDate(self.getListDateOfMonth()).done(function(list: Array<PublicHoliday>) {
+                self.listHoliday = list;
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+
+        /**
+         * Load worktype list.
+         */
+        private loadWorktypeList(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.getAllWorkType().done(function(list: Array<WorkType>) {
+                self.listWorkType(list);
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Load work time list.
+         */
+        private loadWorktimeList(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.getAllWorkTime().done(function(list: Array<WorkTime>) {
+                self.listWorkTime(list);
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Get option dates for calendar.
+         */
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
@@ -202,8 +297,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                                     textColor: 'blue',
                                     backgroundColor: 'white',
                                     listText: [
-                                        dailyPatternValue.workTypeCode,
-                                        dailyPatternValue.workingHoursCode
+                                        self.getWorktypeNameByCode(dailyPatternValue.workTypeCode),
+                                        self.getWorktimeNameByCode(dailyPatternValue.workingHoursCode)
                                     ]
                                 });
                             }
@@ -223,11 +318,33 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             return result;
         }
 
+        /**
+         * Get worktype name by code.
+         */
         private getWorktypeNameByCode(code: string): any {
             let self = this;
-            return _.find(self.listWorkType(), wt => wt.code == code).name;
+            let result = _.find(self.listWorkType(), wt => wt.workTypeCode == code);
+            if (result) {
+                return result.name;
+            }
+            return '';
         }
 
+        /**
+         * Get worktime name by code.
+         */
+        private getWorktimeNameByCode(code: string): any {
+            let self = this;
+            let result = _.find(self.listWorkTime(), wt => wt.code == code);
+            if (result) {
+                return result.name;
+            }
+            return '';
+        }
+
+        /**
+         * Get list date of selected yearmonth.
+         */
         private getListDateOfMonth(): Array<string> {
             let self = this;
             let resultList = [];
@@ -241,6 +358,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             return resultList;
         }
 
+        /**
+         * Get work day division.
+         */
         private getWorkDayDivision(dayOfWeek: number): WorkDayDivision {
             let self = this;
             switch (dayOfWeek) {
@@ -263,38 +383,42 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             }
         }
 
+        /**
+         * Get isStatutorySetting checkbox value
+         */
         private isStatutorySettingChecked(): boolean {
             let self = this;
             return self.patternReflection.statutorySetting.useClassification();
         }
+
+        /**
+         * Get isNonStatutorySetting checkbox value
+         */
         private isNonStatutorySettingChecked(): boolean {
             let self = this;
             return self.patternReflection.nonStatutorySetting.useClassification();
         }
+
+        /**
+         * Get isHolidaySetting checkbox value
+         */
         private isHolidaySettingChecked(): boolean {
             let self = this;
             return self.patternReflection.holidaySetting.useClassification();
         }
 
         /**
-         * Check if is last day of month
-         * @param: date ('YYYY-MM-DD')
+         * Check if isFillInTheBlank radio is selected.
          */
-        private isLastDayOfMonth(d: string): boolean {
-            let d2 = moment(d);
-            let currentMonth = d2.month();
-            d2.add(1, 'days');
-            return currentMonth !== d2.month();
+        private isFillInTheBlankChecked(): boolean {
+            let self = this;
+            return ReflectionMethod.FillInTheBlank == self.patternReflection.reflectionMethod;
         }
 
-        private isFirstDayOfMonth(d: string): boolean {
-            let d2 = moment(d);
-            let currentMonth = d2.month();
-            d2.subtract(1, 'days');
-            return currentMonth !== d2.month();
-        }
-
-        private lui(): void {
+        /**
+         * Backward 1 day.
+         */
+        private backwardOneDay(): void {
             let self = this;
             let temp = self.weeklyWorkSetting.sunday;
             self.weeklyWorkSetting.sunday = self.weeklyWorkSetting.monday;
@@ -305,7 +429,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.weeklyWorkSetting.friday = self.weeklyWorkSetting.saturday;
             self.weeklyWorkSetting.saturday = temp;
         }
-        private tien(): void {
+
+        /**
+         * Forward 1 day.
+         */
+        private forwardOneDay(): void {
             let self = this;
             let temp = self.weeklyWorkSetting.monday;
             self.weeklyWorkSetting.monday = self.weeklyWorkSetting.sunday;
@@ -316,13 +444,9 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.weeklyWorkSetting.wednesday = self.weeklyWorkSetting.tuesday;
             self.weeklyWorkSetting.tuesday = temp;
         }
-        private isFillInTheBlankChecked(): boolean {
-            let self = this;
-            return ReflectionMethod.FillInTheBlank == self.patternReflection.reflectionMethod;
-        }
 
         /**
-         * Check if day is holiday
+         * Check if the day is holiday
          * @param: day
          */
         private isHoliday(day: moment.Moment): boolean {
@@ -332,6 +456,23 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                 return true;
             }
             return false;
+        }
+
+        /**
+         * Get param from parent screen.
+         */
+        private setSelectedDailyPatternCode(): void {
+            let self = this;
+            // Get pattern code tu man hinh cha.
+            let selectedCode = nts.uk.ui.windows.getShared("patternCode");
+            if (selectedCode) {
+                self.selectedDailyPatternCode(selectedCode);
+            }
+            else
+            // Select first item.
+            {
+                self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
+            }
         }
     }
 

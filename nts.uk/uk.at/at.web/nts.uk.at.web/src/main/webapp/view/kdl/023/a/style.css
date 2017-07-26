@@ -1,10 +1,14 @@
 #contents-area {
 	padding: 20px;
 }
+#calendar-reflect-pattern {
+	width: 1110px;
+}
 .reflect-setting {
 	padding: 20px;
 	width:420px;
-	height: 600px;
+	height: 550px;
+	margin-right: 50px;
 }
 
 .margin-left-50 {
@@ -20,9 +24,6 @@
 	padding-right: 30px;
 	margin-top: 30px;
 	margin-right: 20px;
-}
-.nts-calendar-container {
-	padding-left: 50px;
 }
 .priority {
 	margin-bottom: 20px;

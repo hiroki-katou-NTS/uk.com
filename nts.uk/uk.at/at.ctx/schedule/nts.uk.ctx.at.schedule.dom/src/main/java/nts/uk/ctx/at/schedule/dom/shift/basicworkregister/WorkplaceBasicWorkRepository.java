@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.basicworkregister;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -38,8 +39,14 @@ public interface WorkplaceBasicWorkRepository {
 	 * @param workplaceId the workplace id
 	 * @return the optional
 	 */
-	Optional<WorkplaceBasicWork> find(String workplaceId);
+	Optional<WorkplaceBasicWork> find(String workplaceId, Integer workdayDivision);
 	
 
-//	List<WorkplaceBasicWork> findAll(String CompanyId);
+	/**
+	 * Find all.
+	 *
+	 * @param CompanyId the company id
+	 * @return the list
+	 */
+	List<WorkplaceBasicWork> findAll(String CompanyId);
 }

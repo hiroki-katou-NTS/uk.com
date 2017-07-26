@@ -47,7 +47,7 @@ module ksm002.a.viewmodel {
             self.workplaceId = ko.observable("0");
             self.workplaceName = ko.observable("");
             self.eventDisplay = ko.observable(true);
-            self.eventUpdatable = ko.observable(true);
+            self.eventUpdatable = ko.observable(false);
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(true);
 
@@ -56,8 +56,10 @@ module ksm002.a.viewmodel {
                     self.openKsm002EDialog(date);
                 },
                 cellClick: function(date) {
+                    console.time("ksm002_CellClick");
                     let param: IData = { date: date, selectable: _.map(self.boxItemList(), 'id'), selecteds: self.selectedIds() };
                     self.setSpecificItemToSelectedDate(param);
+                    console.timeEnd("ksm002_CellClick");
                 }
             });
             //Side bar tab change
@@ -74,13 +76,16 @@ module ksm002.a.viewmodel {
             //Change Month 
             self.yearMonthPicked.subscribe(function(value) {
                 let arrOptionaDates: Array<OptionalDate> = [];
+                console.time("ksm002_ChangeMonth");
                 self.getDataToOneMonth(value).done(function(arrOptionaDates) {
                     self.optionDates(arrOptionaDates);
+                    self.optionDates.valueHasMutated();
                     if (arrOptionaDates.length > 0) {
                         self.isNew(false);
                     } else {
                         self.isNew(true);
                     }
+                    console.timeEnd("ksm002_ChangeMonth");
                 })
             })
         }
@@ -95,24 +100,31 @@ module ksm002.a.viewmodel {
             let arrOptionaDates: Array<OptionalDate> = [];
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
+                    console.time("ksm002_LoadData")
                     //getAll SpecDate
                     self.getAllSpecDate();
                     //Set Start Day of Company
-                    self.getComStartDay().done(function(startDay: number) {
-                        self.firstDay(startDay);
+                    nts.uk.characteristics.restore('IndividualStartDay').done(function (data) { 
+                        if(nts.uk.util.isNullOrEmpty(data)){
+                            self.getComStartDay().done(function(startDay: number) {
+                                self.firstDay(startDay);
+                            });
+                        } else {
+                            self.firstDay(data);
+                        }
                     });
                     //set parameter to calendar
                     let lstBoxCheck: Array<BoxModel> = [];
                     _.forEach(lstSpecifiDate, function(item) {
                         lstBoxCheck.push(new BoxModel(item.specificDateItemNo, item.specificName));
                     });
-                    _.orderBy(lstBoxCheck, ['id'], ['desc']);
-                    self.boxItemList(lstBoxCheck);
+                    self.boxItemList(_.orderBy(lstBoxCheck, ['id'], ['asc']));
                     //Set data to calendar
                     self.getDataToOneMonth(self.yearMonthPicked()).done(function(arrOptionaDates) {
                         if (arrOptionaDates.length > 0) {
                             self.optionDates(arrOptionaDates);
                             self.isNew(false);
+                            console.timeEnd("ksm002_LoadData");
                         }
                     })
                 } else {
@@ -170,9 +182,10 @@ module ksm002.a.viewmodel {
         getComStartDay(): JQueryPromise<number> {
             let dfd = $.Deferred<any>();
             //get Company Start Day
-            service.getCompanyStartDay().done(function(startDayComapny: number) {
-                //self.firstDay();
-                dfd.resolve(startDayComapny.startDay);
+            service.getCompanyStartDay().done(function(startDayComapny: any) {
+                 if(startDayComapny != undefined){
+                    dfd.resolve(startDayComapny.startDay);
+                 };
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject();
@@ -219,9 +232,12 @@ module ksm002.a.viewmodel {
          */
         Insert(lstComSpecificDateCommand: Array<ICompanySpecificDateCommand>) {
             var self = this;
+            nts.uk.ui.block.invisible();
             service.insertComSpecificDate(lstComSpecificDateCommand).done(function(res: Array<any>) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.start();
+                    console.timeEnd("ksm002_Register");
+                    nts.uk.ui.block.clear();
                 });
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -234,19 +250,27 @@ module ksm002.a.viewmodel {
         DeleteOneMonth() {
             let dfd = $.Deferred<any>();
             var self = this;
-            //delete
-            service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                    //Set dataSource to Null
-                    self.optionDates([]);
-                    self.isNew(true);
+            nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                nts.uk.ui.block.invisible();
+                //delete
+                console.time("ksm002_DeleteOneMonth");
+                service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                        //Set dataSource to Null
+                        self.optionDates([]);
+                        self.isNew(true);
+                        console.timeEnd("ksm002_DeleteOneMonth");
+                    });
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    dfd.reject();
                 });
-                dfd.resolve();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-                dfd.reject();
+                return dfd.promise();
+            }).ifNo(function() {
+                // do nothing           
             });
-            return dfd.promise();
         }
 
         /**
@@ -260,24 +284,30 @@ module ksm002.a.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });
             } else {
                 //New case
+                console.time("ksm002_Register");
                 if (self.isNew()) {
                     self.Insert(self.convertToCommand())
                 } else {
                     //Update case
                     if (_.flattenDepth(_.map(self.optionDates(), 'listId')).length > 0) {
                         //update has data
+                        nts.uk.ui.block.invisible();
                         service.updateComSpecificDate(self.convertToCommand()).done(function(res: Array<any>) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 self.start();
+                                nts.uk.ui.block.clear();
+                                console.timeEnd("ksm002_Register");
                             });
                         }).fail(function(res) {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                         });
                     } else {
                         //Delete all OLD data
+                        nts.uk.ui.block.invisible();
                         service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 self.isNew(true);
+                                nts.uk.ui.block.clear();
                             });
                         }).fail(function(res) {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -370,7 +400,7 @@ module ksm002.a.viewmodel {
                     endDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').endOf('month').format('YYYYMMDD'))
                 });
             nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-
+                self.start();
             });
         }
         
@@ -389,9 +419,9 @@ module ksm002.a.viewmodel {
                 selectedOptionalDate = new OptionalDate();
             }
             //get list id selectable
-            let arrSelectable: Array<string> = _.map(self.boxItemList(), 'id');
+            //let arrSelectable: Array<string> = ;
 
-            setShared('KSM002_E_PARAM', { date: moment(selectedDate).format('YYYY/MM/DD'), selectable: arrSelectable, selecteds: arrSelecteds });
+            setShared('KSM002_E_PARAM', { date: moment(selectedDate).format('YYYY/MM/DD'), selectable: _.map(self.boxItemList(), 'id'), selecteds: arrSelecteds });
             nts.uk.ui.windows.sub.modal('/view/ksm/002/e/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function() {
                 let param: IData = getShared('KSM002E_VALUES');
                 //console.log(param);

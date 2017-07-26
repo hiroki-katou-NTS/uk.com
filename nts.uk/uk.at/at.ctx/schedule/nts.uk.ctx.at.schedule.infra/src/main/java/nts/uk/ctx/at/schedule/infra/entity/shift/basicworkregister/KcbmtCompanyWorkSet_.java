@@ -12,26 +12,14 @@ import javax.persistence.metamodel.StaticMetamodel;
  */
 @StaticMetamodel(KcbmtCompanyWorkSet.class)
 public class KcbmtCompanyWorkSet_ {
+	
+	/** The kcbmt company work set PK. */
+	public static volatile SingularAttribute<KcbmtCompanyWorkSet, KcbmtCompanyWorkSetPK> kcbmtCompanyWorkSetPK;
+	
+	/** The work type code. */
+	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> worktypeCode;
 
-	/** The cid. */
-	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> cid;
-
-	/** The wd work type code. */
-	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> wdWorkTypeCode;
-
-	/** The wd working code. */
-	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> wdWorkingCode;
-
-	/** The nwd law work type code. */
-	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> nwdLawWorkTypeCode;
-
-	/** The nwd law working code. */
-	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> nwdLawWorkingCode;
-
-	/** The nwd ext work type code. */
-	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> nwdExtWorkTypeCode;
-
-	/** The nwd ext working code. */
-	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> nwdExtWorkingCode;
+	/** The working code. */
+	public static volatile SingularAttribute<KcbmtCompanyWorkSet, String> workingCode;
 
 }

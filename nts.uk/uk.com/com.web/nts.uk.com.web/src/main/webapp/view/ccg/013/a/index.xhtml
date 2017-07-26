@@ -53,7 +53,7 @@
 				<div class="right-content">
 					<div class="control-group" data-bind="with: currentWebMenu">
 						<div style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: ['WebMenuCode','WebMenuName'],required: true}">#{i18n.getText('CCG013_11')}</div>
-						<span><input style="width: 40px" id="webMenuCode"
+						<span><input style="width: 40px;margin-left: 45px;" id="webMenuCode"
 							data-bind="ntsTextEditor: {value: webMenuCode,name: '#[CCG013_49]',constraint: 'WebMenuCode', required: true, enable: $parent.checkDisabled}" /></span>
 						<span><input style="width: 180px" id="webMenuName"
 							data-bind="ntsTextEditor: {value: webMenuName,name: '#[CCG013_50]',constraint: 'WebMenuName', required: true}" /></span>

@@ -12,6 +12,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KCBST_CLASSIFY_WORK_SET")
+@Table(name = "KCBMT_CLASSIFY_WORK_SET")
 public class KcbmtClassifyWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -33,38 +34,18 @@ public class KcbmtClassifyWorkSet extends UkJpaEntity implements Serializable {
 	/** The wd work type code. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "WD_WORK_TYPE_CD")
-	private String wdWorkTypeCode;
+	@Column(name = "WORK_TYPE_CD")
+	private String worktypeCode;
 
 	/** The wd working code. */
 	@Basic(optional = false)
-	@NotNull
-	@Column(name = "WD_WORKING_CD")
-	private String wdWorkingCode;
+	@Null
+	@Column(name = "WORKING_CD")
+	private String workingCode;
 
-	/** The nwd law work type code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NWDLAW_WORK_TYPE_CD")
-	private String nwdLawWorkTypeCode;
+	
 
-	/** The nwd law working code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NWDLAW_WORKING_CD")
-	private String nwdLawWorkingCode;
-
-	/** The nwd ext work type code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NWDEXT_WORK_TYPE_CD")
-	private String nwdExtWorkTypeCode;
-
-	/** The nwd ext working code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NWDEXT_WORKING_CD")
-	private String nwdExtWorkingCode;
+	
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
