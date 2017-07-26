@@ -1,0 +1,82 @@
+@import url("base.css");
+
+#A1_004 {
+	margin-left: 15px !important;
+}
+
+#A1_001 {
+	margin-left: 25px !important;
+}
+
+#functions-area button {
+	width: 70px;
+}
+
+#content-left {
+	width: 270px;
+}
+
+#content-right {
+	margin-left: 30px;
+	float: left;
+	width: 800px;
+}
+
+#A2_001_container {
+	margin-left: 15px;
+}
+
+#content-left>.caret-bottom:after {
+	color: #97d155;
+	font-size: 20px;
+	border-right: 1.7em solid transparent;
+	border-left: 1.6em solid transparent;
+	margin-left: 0.6em;
+}
+
+#content-left>.caret-bottom {
+	margin-left: 50px;
+	font-size: 20px;
+}
+
+#content-left>.caret-bottom:before {
+	border-right: 2.2em solid transparent;
+	border-left: 2.2em solid transparent;
+	color: #C8EECF;
+}
+
+#role_table {
+	border-collapse: separate;
+	border-radius: 2px;
+	padding: 5px 5px;
+}
+
+#role_table td, #role_table th {
+	border: 1px solid #CCC;
+	height: 1.6em;
+}
+
+#role_table td {
+	background: white;
+	padding: 1px 0px 0px 25px;
+}
+
+#role_table th {
+	color: #000;
+	background-color: #CFF1A5;
+	padding: 0 2px;
+	font-weight: bold;
+}
+
+#role_table .nts-switch-button {
+	width: 50px;
+}
+
+#A3_toggle {
+	width: 430px;
+	margin-bottom: 30px;
+	clear: both;
+}
+#A4_002 , #A4_004{
+	padding-left: 20px;
+}
