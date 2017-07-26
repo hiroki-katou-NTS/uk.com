@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.WorkTypesRepos
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KdwmtWorkType;
 
 @Stateless
-public class JpaWorkTypeRepository extends JpaRepository implements WorkTypesRepository {
+public class JpaWorkTypesRepository extends JpaRepository implements WorkTypesRepository {
 
 	private static final String FIND;
 
