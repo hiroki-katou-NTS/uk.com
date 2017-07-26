@@ -13,22 +13,25 @@ public class ControlOfAttendanceItems extends AggregateRoot {
 
 	private TimeInputUnit inputUnitOfTimeItem;
 
+	private int nameLineFeedPosition;
+
 	private HeaderBackgroundColor headerBackgroundColorOfDailyPerformance;
 
 	public ControlOfAttendanceItems(String attandanceTimeId, TimeInputUnit inputUnitOfTimeItem,
-			HeaderBackgroundColor headerBackgroundColorOfDailyPerformance) {
+			HeaderBackgroundColor headerBackgroundColorOfDailyPerformance, int nameLineFeedPosition) {
 		super();
 		this.attandanceTimeId = attandanceTimeId;
 		this.inputUnitOfTimeItem = inputUnitOfTimeItem;
 		this.headerBackgroundColorOfDailyPerformance = headerBackgroundColorOfDailyPerformance;
+		this.nameLineFeedPosition = nameLineFeedPosition;
 	}
 
 	public static ControlOfAttendanceItems createFromJavaType(String attandanceTimeId, int inputUnitOfTimeItem,
-			String headerBackgroundColorOfDailyPerformance) {
+			String headerBackgroundColorOfDailyPerformance,int nameLineFeedPosition) {
 
 		return new ControlOfAttendanceItems(attandanceTimeId,
 				EnumAdaptor.valueOf(inputUnitOfTimeItem, TimeInputUnit.class),
-				new HeaderBackgroundColor(headerBackgroundColorOfDailyPerformance));
+				new HeaderBackgroundColor(headerBackgroundColorOfDailyPerformance),nameLineFeedPosition);
 	}
 
 }

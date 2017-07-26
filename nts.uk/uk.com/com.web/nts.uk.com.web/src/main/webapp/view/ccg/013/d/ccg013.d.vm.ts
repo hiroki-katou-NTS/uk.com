@@ -105,6 +105,7 @@
                 self.disableSwapButton();
                 
                 dfd.resolve();   
+                $("#combo-box").focus();
             }).fail(function() {
                 dfd.reject();    
             });

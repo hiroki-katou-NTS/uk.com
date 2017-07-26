@@ -27,6 +27,8 @@ public class KdwstControlOfAttendanceItems extends UkJpaEntity implements Serial
 	@DBCharPaddingAs(BonusPaySettingCode.class)
 	@Column(name = "HEADER_BACKGROUND_COLOR")
 	public String headerBackgroundColorOfDailyPerformance;
+	@Column(name = "LINE_BREAK_POSITION")
+	public BigDecimal nameLineFeedPosition;
 
 	@Override
 	protected Object getKey() {

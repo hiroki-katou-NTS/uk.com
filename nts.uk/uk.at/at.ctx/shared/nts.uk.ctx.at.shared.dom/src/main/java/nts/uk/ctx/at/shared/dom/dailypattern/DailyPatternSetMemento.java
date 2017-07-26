@@ -4,7 +4,7 @@ import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface PatternCalendarSetMemento.
+ * The Interface DailyPatternSetMemento.
  */
 public interface DailyPatternSetMemento {
 	
@@ -30,23 +30,11 @@ public interface DailyPatternSetMemento {
 	void  setPatternName(String setPatternName);
 	
 	/**
-	 * Sets the work type codes.
+	 * Sets the list daily pattern val.
 	 *
-	 * @param setWorkTypeCodes the new work type codes
+	 * @param setListDailyPatternVal the new list daily pattern val
 	 */
-	void  setWorkTypeCodes(List<String> setWorkTypeCodes);
+	void  setListDailyPatternVal(List<DailyPatternVal> setListDailyPatternVal);
 	
-	/**
-	 * Sets the work house codes.
-	 *
-	 * @param setWorkHouseCodes the new work house codes
-	 */
-	void  setWorkHouseCodes(List<String> setWorkHouseCodes);
 	
-	/**
-	 * Sets the calendar setting.
-	 *
-	 * @param setCalendarSetting the new calendar setting
-	 */
-	void  setCalendarSetting(DailyPatternSetting setCalendarSetting);
 }

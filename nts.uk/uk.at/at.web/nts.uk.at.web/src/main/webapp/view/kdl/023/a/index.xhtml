@@ -28,14 +28,14 @@
 							<div tabindex="1" id="cbb-daily-work-pattern" class="pull-left" style="margin-left: 36px"
 								data-bind="ntsComboBox: {
 										name: '#[KDL023_4]',
-										options: itemList,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedCode,
+										options: dailyPatternList,
+										optionsValue: 'patternCode',
+										optionsText: 'patternName',
+										value: selectedDailyPatternCode,
 										enable: true,
 										columns: [
-											{ prop: 'code', length: 3 },
-											{ prop: 'name', length: 5 },
+											{ prop: 'patternCode', length: 3 },
+											{ prop: 'patternName', length: 5 },
 										]}">
 							</div>
 						</div>
@@ -104,14 +104,14 @@
 								<div class="control-group">
 									<label class="ntsRadioBox"><input type="radio"
 										name="textRadio"
-										data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: reflectionMethod, enable: true" />
+										data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
 									</label>
 								</div>
 								<div class="control-group">
 									<label class="ntsRadioBox"><input type="radio"
 										name="textRadio"
-										data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: reflectionMethod, enable: true" />
+										data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
 									</label>
 								</div>

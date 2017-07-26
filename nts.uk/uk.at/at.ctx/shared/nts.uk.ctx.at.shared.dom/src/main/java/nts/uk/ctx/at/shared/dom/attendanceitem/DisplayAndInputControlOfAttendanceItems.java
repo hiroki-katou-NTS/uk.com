@@ -2,17 +2,14 @@ package nts.uk.ctx.at.shared.dom.attendanceitem;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.AttendanceItemName;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
 
 @Getter
 public class DisplayAndInputControlOfAttendanceItems extends AggregateRoot {
 
 	private String attendanceItemId;
 
-	private WorkTypeCode workTypeCode;
-
-	private AttendanceItemName attendanceItemName;
+	private BusinessTypeCode businessTypeCode;
 
 	private boolean userCanSet;
 
@@ -22,13 +19,12 @@ public class DisplayAndInputControlOfAttendanceItems extends AggregateRoot {
 
 	private boolean use;
 
-	public DisplayAndInputControlOfAttendanceItems(String attendanceItemId, WorkTypeCode workTypeCode,
-			AttendanceItemName attendanceItemName, boolean userCanSet, boolean youCanChangeIt,
+	public DisplayAndInputControlOfAttendanceItems(String attendanceItemId, BusinessTypeCode businessTypeCode,
+			 boolean userCanSet, boolean youCanChangeIt,
 			boolean canBeChangedByOthers, boolean use) {
 		super();
 		this.attendanceItemId = attendanceItemId;
-		this.workTypeCode = workTypeCode;
-		this.attendanceItemName = attendanceItemName;
+		this.businessTypeCode = businessTypeCode;
 		this.userCanSet = userCanSet;
 		this.youCanChangeIt = youCanChangeIt;
 		this.canBeChangedByOthers = canBeChangedByOthers;
@@ -36,10 +32,9 @@ public class DisplayAndInputControlOfAttendanceItems extends AggregateRoot {
 	}
 
 	public static DisplayAndInputControlOfAttendanceItems createFromJavaType(String attendanceItemId,
-			String workTypeCode, String attendanceItemName, boolean userCanSet, boolean youCanChangeIt,
+			String businessTypeCode, boolean userCanSet, boolean youCanChangeIt,
 			boolean canBeChangedByOthers, boolean use) {
-		return new DisplayAndInputControlOfAttendanceItems(attendanceItemId, new WorkTypeCode(workTypeCode),
-				new AttendanceItemName(attendanceItemName), userCanSet, youCanChangeIt, canBeChangedByOthers, use);
+		return new DisplayAndInputControlOfAttendanceItems(attendanceItemId, new BusinessTypeCode(businessTypeCode), userCanSet, youCanChangeIt, canBeChangedByOthers, use);
 
 	}
 

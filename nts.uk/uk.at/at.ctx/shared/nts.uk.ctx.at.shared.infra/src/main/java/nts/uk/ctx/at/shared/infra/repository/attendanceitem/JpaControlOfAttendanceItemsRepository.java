@@ -35,6 +35,7 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 					.getHeaderBackgroundColorOfDailyPerformance().v();
 			kdwstControlOfAttendanceItems.inputUnitOfTimeItem = new BigDecimal(
 					controlOfAttendanceItems.getInputUnitOfTimeItem().value);
+			kdwstControlOfAttendanceItems.nameLineFeedPosition = new BigDecimal(controlOfAttendanceItems.getNameLineFeedPosition());
 			this.commandProxy().update(kdwstControlOfAttendanceItems);
 		} else {
 			this.commandProxy().insert(this.toControlOfAttendanceItemsEntity(controlOfAttendanceItems));
@@ -47,7 +48,7 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 		return ControlOfAttendanceItems.createFromJavaType(
 				kdwstControlOfAttendanceItems.kdwstControlOfAttendanceItemsPK.attandanceTimeId,
 				kdwstControlOfAttendanceItems.inputUnitOfTimeItem.intValue(),
-				kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance);
+				kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance,kdwstControlOfAttendanceItems.nameLineFeedPosition.intValue()  );
 	}
 
 	private KdwstControlOfAttendanceItems toControlOfAttendanceItemsEntity(
@@ -55,7 +56,7 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 		return new KdwstControlOfAttendanceItems(
 				new KdwstControlOfAttendanceItemsPK(controlOfAttendanceItems.getAttandanceTimeId()),
 				new BigDecimal(controlOfAttendanceItems.getInputUnitOfTimeItem().value),
-				controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v());
+				controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v(),new BigDecimal(controlOfAttendanceItems.getNameLineFeedPosition()));
 
 	}
 
