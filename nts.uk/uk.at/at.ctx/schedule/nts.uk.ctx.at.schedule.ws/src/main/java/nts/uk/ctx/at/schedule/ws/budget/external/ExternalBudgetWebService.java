@@ -21,8 +21,8 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCo
 import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresults.ExtBudgetDataPreviewDto;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresults.ExternalBudgetLogDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
 
 @Path("at/schedule/budget/external")
 @Produces("application/json")
