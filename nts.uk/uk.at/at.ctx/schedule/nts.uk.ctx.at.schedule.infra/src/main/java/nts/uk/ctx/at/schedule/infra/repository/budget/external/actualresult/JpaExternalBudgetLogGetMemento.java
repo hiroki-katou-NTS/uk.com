@@ -37,7 +37,7 @@ public class JpaExternalBudgetLogGetMemento implements ExternalBudgetLogGetMemen
      */
     @Override
     public String getCompanyId() {
-        return this.entity.getKbldtExtBudgetLogPK().getCid();
+        return this.entity.getCid();
     }
 
     /*
@@ -92,7 +92,7 @@ public class JpaExternalBudgetLogGetMemento implements ExternalBudgetLogGetMemen
      */
     @Override
     public String getExecutionId() {
-        return this.entity.getKbldtExtBudgetLogPK().getExeId();
+        return this.entity.getExeId();
     }
 
     /*
