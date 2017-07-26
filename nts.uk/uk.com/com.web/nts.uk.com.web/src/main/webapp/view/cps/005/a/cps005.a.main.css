@@ -1,0 +1,19 @@
+#contents-area {
+	
+}
+
+#contents-area-right{
+	width: 380px;
+	height: 520px;
+	float: left;
+	clear: right;
+	margin-left: 10px;
+}
+
+#contents-area-left{
+	width: 900px;
+	height: 520px;
+	float: left;
+	clear: right;
+	background: red;
+}

@@ -183,8 +183,9 @@ module ksm002.a.viewmodel {
             let dfd = $.Deferred<any>();
             //get Company Start Day
             service.getCompanyStartDay().done(function(startDayComapny: any) {
-                
-                dfd.resolve(startDayComapny.startDay);
+                 if(nts.uk.util.isNullOrEmpty(startDayComapny)){
+                    dfd.resolve(startDayComapny.startDay);
+                 };
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject();
