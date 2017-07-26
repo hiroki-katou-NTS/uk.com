@@ -13,6 +13,8 @@ public interface CalendarWorkPlaceRepository {
 	 */
 	List<CalendarWorkplace> getAllCalendarWorkplace(String workPlaceId);
 	
+	List<Integer> getCalendarWorkPlaceSetByYear(String workPlaceId, String year);
+	
 	List<CalendarWorkplace> getCalendarWorkPlaceByYearMonth(String workPlaceId, String yearMonth);
 	
 	/**

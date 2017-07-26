@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.daycalendar;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarCompany;
@@ -62,6 +64,18 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 		return this.queryProxy().query(SELECT_ALL_WORKPLACE,KsmmtCalendarWorkplace.class)
 				.setParameter("workPlaceId", workPlaceId)
 				.getList(c->toDomainCalendarWorkplace(c));
+	}
+	
+	@Override
+	public List<Integer> getCalendarWorkPlaceSetByYear(String workPlaceId, String year) {
+		List<Integer> monthSet =  new ArrayList<>();
+		for(int i=1;i<=12;i++){
+			List<CalendarWorkplace> result = getCalendarWorkPlaceByYearMonth(workPlaceId, String.format(year+"%02d",i));
+			if(!result.isEmpty()){
+				monthSet.add(i);
+			}
+		}
+		return monthSet;
 	}
 
 	/**
@@ -128,4 +142,5 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 				.executeUpdate();
 		
 	}
+	
 }
