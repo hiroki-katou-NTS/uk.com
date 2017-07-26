@@ -10,21 +10,16 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.query.DBCharPaddingAs;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.AttendanceItemName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "KDWST_ATD_ITEM_SET")
-public class KdwstDAIControlOfAttendanceItems extends UkJpaEntity implements Serializable {
+@Table(name = "KSHST_ATD_ITEM_SET")
+public class KshstDAIControlOfAttendanceItems extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KdwstDAIControlOfAttendanceItemsPK kdwstDAIControlOfAttendanceItemsPK;
-	@DBCharPaddingAs(AttendanceItemName.class)
-	@Column(name = "ATTENDANCE_ITEM_NAME")
-	public String attendanceItemName;
+	public KshstDAIControlOfAttendanceItemsPK kshstDAIControlOfAttendanceItemsPK;
 	@Column(name = "USER_CAN_SET")
 	public BigDecimal userCanSet;
 	@Column(name = "CHANGED_BY_YOU")
@@ -36,7 +31,7 @@ public class KdwstDAIControlOfAttendanceItems extends UkJpaEntity implements Ser
 	
 	@Override
 	protected Object getKey() {
-		return kdwstDAIControlOfAttendanceItemsPK;
+		return kshstDAIControlOfAttendanceItemsPK;
 	}
 
 }

@@ -8,15 +8,15 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.attendanceitem.ControlOfAttendanceItems;
 import nts.uk.ctx.at.shared.dom.attendanceitem.repository.ControlOfAttendanceItemsRepository;
-import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KdwstControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KdwstControlOfAttendanceItemsPK;
+import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstControlOfAttendanceItems;
+import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstControlOfAttendanceItemsPK;
 @Stateless
 public class JpaControlOfAttendanceItemsRepository extends JpaRepository implements ControlOfAttendanceItemsRepository {
 
 	@Override
 	public Optional<ControlOfAttendanceItems> getControlOfAttendanceItem(String attendanceItemId) {
-		Optional<KdwstControlOfAttendanceItems> kdwstControlOfAttendanceItemsOptional = this.queryProxy()
-				.find(new KdwstControlOfAttendanceItemsPK(attendanceItemId), KdwstControlOfAttendanceItems.class);
+		Optional<KshstControlOfAttendanceItems> kdwstControlOfAttendanceItemsOptional = this.queryProxy()
+				.find(new KshstControlOfAttendanceItemsPK(attendanceItemId), KshstControlOfAttendanceItems.class);
 		if (kdwstControlOfAttendanceItemsOptional.isPresent()) {
 			return Optional
 					.ofNullable(this.toControlOfAttendanceItemsDomain(kdwstControlOfAttendanceItemsOptional.get()));
@@ -26,15 +26,16 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 
 	@Override
 	public void updateControlOfAttendanceItem(ControlOfAttendanceItems controlOfAttendanceItems) {
-		Optional<KdwstControlOfAttendanceItems> kdwstControlOfAttendanceItemsOptional = this.queryProxy().find(
-				new KdwstControlOfAttendanceItemsPK(controlOfAttendanceItems.getAttandanceTimeId()),
-				KdwstControlOfAttendanceItems.class);
+		Optional<KshstControlOfAttendanceItems> kdwstControlOfAttendanceItemsOptional = this.queryProxy().find(
+				new KshstControlOfAttendanceItemsPK(controlOfAttendanceItems.getAttandanceTimeId()),
+				KshstControlOfAttendanceItems.class);
 		if (kdwstControlOfAttendanceItemsOptional.isPresent()) {
-			KdwstControlOfAttendanceItems kdwstControlOfAttendanceItems = kdwstControlOfAttendanceItemsOptional.get();
+			KshstControlOfAttendanceItems kdwstControlOfAttendanceItems = kdwstControlOfAttendanceItemsOptional.get();
 			kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance = controlOfAttendanceItems
 					.getHeaderBackgroundColorOfDailyPerformance().v();
 			kdwstControlOfAttendanceItems.inputUnitOfTimeItem = new BigDecimal(
 					controlOfAttendanceItems.getInputUnitOfTimeItem().value);
+			kdwstControlOfAttendanceItems.nameLineFeedPosition = new BigDecimal(controlOfAttendanceItems.getNameLineFeedPosition());
 			this.commandProxy().update(kdwstControlOfAttendanceItems);
 		} else {
 			this.commandProxy().insert(this.toControlOfAttendanceItemsEntity(controlOfAttendanceItems));
@@ -43,19 +44,19 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 	}
 
 	private ControlOfAttendanceItems toControlOfAttendanceItemsDomain(
-			KdwstControlOfAttendanceItems kdwstControlOfAttendanceItems) {
+			KshstControlOfAttendanceItems kdwstControlOfAttendanceItems) {
 		return ControlOfAttendanceItems.createFromJavaType(
-				kdwstControlOfAttendanceItems.kdwstControlOfAttendanceItemsPK.attandanceTimeId,
+				kdwstControlOfAttendanceItems.kshstControlOfAttendanceItemsPK.attandanceTimeId,
 				kdwstControlOfAttendanceItems.inputUnitOfTimeItem.intValue(),
-				kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance);
+				kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance,kdwstControlOfAttendanceItems.nameLineFeedPosition.intValue()  );
 	}
 
-	private KdwstControlOfAttendanceItems toControlOfAttendanceItemsEntity(
+	private KshstControlOfAttendanceItems toControlOfAttendanceItemsEntity(
 			ControlOfAttendanceItems controlOfAttendanceItems) {
-		return new KdwstControlOfAttendanceItems(
-				new KdwstControlOfAttendanceItemsPK(controlOfAttendanceItems.getAttandanceTimeId()),
+		return new KshstControlOfAttendanceItems(
+				new KshstControlOfAttendanceItemsPK(controlOfAttendanceItems.getAttandanceTimeId()),
 				new BigDecimal(controlOfAttendanceItems.getInputUnitOfTimeItem().value),
-				controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v());
+				controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v(),new BigDecimal(controlOfAttendanceItems.getNameLineFeedPosition()));
 
 	}
 

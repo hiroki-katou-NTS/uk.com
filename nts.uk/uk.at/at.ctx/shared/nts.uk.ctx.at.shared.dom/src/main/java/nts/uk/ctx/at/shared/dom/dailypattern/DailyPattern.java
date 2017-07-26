@@ -6,9 +6,13 @@ import nts.arc.layer.dom.AggregateRoot;
 
 // TODO: Auto-generated Javadoc
 /**
- * Gets the calendar setting.
+ * The Class DailyPattern.
+ */
+
+/**
+ * Gets the days.
  *
- * @return the calendar setting
+ * @return the days
  */
 @Getter
 public class DailyPattern extends AggregateRoot{
@@ -22,34 +26,25 @@ public class DailyPattern extends AggregateRoot{
 	/** The pattern name. */
 	private String patternName;
 	
-	/** The work type codes. */
-	private List<String> workTypeCodes;
-	
-	/** The work house codes. */
-	private List<String> workHouseCodes;
-	
-	/** The calendar setting. */
-	private DailyPatternSetting calendarSetting;
+	private List<DailyPatternVal> listDailyPatternVal;
 
 	/**
-	 * Instantiates a new pattern calendar.
+	 * Instantiates a new daily pattern.
 	 */
 	public DailyPattern(){
 		
 	}
 	
 	/**
-	 * Instantiates a new pattern calendar.
+	 * Instantiates a new daily pattern.
 	 *
 	 * @param memento the memento
 	 */
-	public DailyPattern(DailyPatternGetMemento memento) {
+	public DailyPattern(DailyPatternGetMemento memento ) {
 		this.companyId = memento.getCompanyId();
 		this.patternCode = memento.getPatternCode();
 		this.patternName = memento.getPatternName();
-		this.workTypeCodes = memento.getWorkTypeCodes();
-		this.workHouseCodes = memento.getWorkHouseCodes();
-		this.calendarSetting = memento.getCalendarSetting();
+		this.listDailyPatternVal = memento.getListDailyPatternVal();
 	}
 
 	/**
@@ -61,15 +56,7 @@ public class DailyPattern extends AggregateRoot{
 		memento.setCompanyId(this.companyId);
 		memento.setPatternCode(this.patternCode);
 		memento.setPatternName(this.patternName);
-		memento.setWorkTypeCodes(this.workTypeCodes);
-		memento.setWorkHouseCodes(this.workHouseCodes);
-		memento.setCalendarSetting(new DailyPatternSetting(new DailyPatternSettingGetMemento() {
-			
-			@Override
-			public NumberDayDaily getNumberDayCalendar() {
-				return new NumberDayDaily(1);
-			}
-		}));
+		memento.setListDailyPatternVal(this.listDailyPatternVal);
 	}
 	
 }

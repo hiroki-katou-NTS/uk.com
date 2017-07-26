@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.dailypattern;
 
 import java.util.List;
@@ -12,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.dailypattern.DailyPattern;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DailyPatternFinder.
  */
@@ -51,7 +54,9 @@ public class DailyPatternFinder {
 	 */
 	public List<DailyPatternDto> findPatternCalendarByCompanyId() {
 		String companyId = AppContexts.user().companyId();
-		List<DailyPattern> listSetting = this.pattCalendarRepo.findByCompanyId(companyId);
+		//Fake
+		String patternCd = "1";
+		List<DailyPattern> listSetting = this.pattCalendarRepo.findByCompanyId(companyId,patternCd);
 		if (CollectionUtil.isEmpty(listSetting)) {
 			return null;
 		}
@@ -61,6 +66,12 @@ public class DailyPatternFinder {
 			data.saveToMemento(patternCalendarDto);
 			return patternCalendarDto;
 		}).collect(Collectors.toList());
+	}
+	
+	
+	public void deleted(String patternCd){
+		String companyId = AppContexts.user().companyId();
+		pattCalendarRepo.deleted(companyId, patternCd);
 	}
 
 }

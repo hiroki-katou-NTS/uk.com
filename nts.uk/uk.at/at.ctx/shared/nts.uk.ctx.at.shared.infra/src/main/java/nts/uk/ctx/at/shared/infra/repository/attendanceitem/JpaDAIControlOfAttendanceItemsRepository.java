@@ -8,20 +8,20 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.attendanceitem.DisplayAndInputControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.attendanceitem.repository.DAIControlOfAttendanceItemsRepository;
-import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KdwstDAIControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KdwstDAIControlOfAttendanceItemsPK;
+import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstDAIControlOfAttendanceItems;
+import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstDAIControlOfAttendanceItemsPK;
 
 @Stateless
 public class JpaDAIControlOfAttendanceItemsRepository extends JpaRepository
 		implements DAIControlOfAttendanceItemsRepository {
-	private final String SELECT_BY_WORKTYPECODE = "SELECT c FROM KdwstDAIControlOfAttendanceItems c WHERE c.kdwstDAIControlOfAttendanceItemsPK.workTypeCode = :workTypeCode";
+	private final String SELECT_BY_WORKTYPECODE = "SELECT c FROM KdwstDAIControlOfAttendanceItems c WHERE c.kshstDAIControlOfAttendanceItemsPK.workTypeCode = :workTypeCode";
 
 	@Override
-	public List<DisplayAndInputControlOfAttendanceItems> getListControlOfAttendanceItem(WorkTypeCode workTypeCode) {
-		return this.queryProxy().query(SELECT_BY_WORKTYPECODE, KdwstDAIControlOfAttendanceItems.class)
-				.setParameter("workTypeCode", workTypeCode, WorkTypeCode.class)
+	public List<DisplayAndInputControlOfAttendanceItems> getListControlOfAttendanceItem(BusinessTypeCode workTypeCode) {
+		return this.queryProxy().query(SELECT_BY_WORKTYPECODE, KshstDAIControlOfAttendanceItems.class)
+				.setParameter("workTypeCode", workTypeCode, BusinessTypeCode.class)
 				.getList(x -> this.toDAIControlOfAttendanceItemsDomain(x));
 	}
 
@@ -29,17 +29,17 @@ public class JpaDAIControlOfAttendanceItemsRepository extends JpaRepository
 	public void updateListControlOfAttendanceItem(
 			List<DisplayAndInputControlOfAttendanceItems> lstDisplayAndInputControlOfAttendanceItems) {
 		lstDisplayAndInputControlOfAttendanceItems.forEach(c -> {
-			Optional<KdwstDAIControlOfAttendanceItems> kdwstDAIControlOfAttendanceItemsOptional = this.queryProxy()
-					.find(new KdwstDAIControlOfAttendanceItemsPK(c.getWorkTypeCode().v(), c.getAttendanceItemId()),
-							KdwstDAIControlOfAttendanceItems.class);
+			Optional<KshstDAIControlOfAttendanceItems> kdwstDAIControlOfAttendanceItemsOptional = this.queryProxy()
+					.find(new KshstDAIControlOfAttendanceItemsPK(c.getBusinessTypeCode().v(), c.getAttendanceItemId()),
+							KshstDAIControlOfAttendanceItems.class);
 			if (kdwstDAIControlOfAttendanceItemsOptional.isPresent()) {
-				KdwstDAIControlOfAttendanceItems kdwstDAIControlOfAttendanceItems = kdwstDAIControlOfAttendanceItemsOptional
+				KshstDAIControlOfAttendanceItems kdwstDAIControlOfAttendanceItems = kdwstDAIControlOfAttendanceItemsOptional
 						.get();
-				kdwstDAIControlOfAttendanceItems.attendanceItemName = c.getAttendanceItemName().v();
 				kdwstDAIControlOfAttendanceItems.canBeChangedByOthers = new BigDecimal(
 						c.isCanBeChangedByOthers() ? 1 : 0);
 				kdwstDAIControlOfAttendanceItems.userCanSet = new BigDecimal(c.isUserCanSet() ? 1 : 0);
 				kdwstDAIControlOfAttendanceItems.youCanChangeIt = new BigDecimal(c.isYouCanChangeIt() ? 1 : 0);
+				kdwstDAIControlOfAttendanceItems.use = new BigDecimal(c.isUse() ? 1 : 0);
 				this.commandProxy().update(kdwstDAIControlOfAttendanceItems);
 			} else {
 				this.commandProxy().insert(this.toDAIControlOfAttendanceItemsEntity(c));
@@ -49,23 +49,21 @@ public class JpaDAIControlOfAttendanceItemsRepository extends JpaRepository
 	}
 
 	private DisplayAndInputControlOfAttendanceItems toDAIControlOfAttendanceItemsDomain(
-			KdwstDAIControlOfAttendanceItems kdwstDAIControlOfAttendanceItems) {
+			KshstDAIControlOfAttendanceItems kdwstDAIControlOfAttendanceItems) {
 		return DisplayAndInputControlOfAttendanceItems.createFromJavaType(
-				kdwstDAIControlOfAttendanceItems.kdwstDAIControlOfAttendanceItemsPK.attendanceItemId,
-				kdwstDAIControlOfAttendanceItems.kdwstDAIControlOfAttendanceItemsPK.workTypeCode,
-				kdwstDAIControlOfAttendanceItems.attendanceItemName,
+				kdwstDAIControlOfAttendanceItems.kshstDAIControlOfAttendanceItemsPK.attendanceItemId,
+				kdwstDAIControlOfAttendanceItems.kshstDAIControlOfAttendanceItemsPK.businessTypeCode,
 				kdwstDAIControlOfAttendanceItems.userCanSet.intValue() == 1 ? true : false,
 				kdwstDAIControlOfAttendanceItems.youCanChangeIt.intValue() == 1 ? true : false,
 				kdwstDAIControlOfAttendanceItems.canBeChangedByOthers.intValue() == 1 ? true : false,
 				kdwstDAIControlOfAttendanceItems.use.intValue() == 1 ? true : false);
 	}
 
-	private KdwstDAIControlOfAttendanceItems toDAIControlOfAttendanceItemsEntity(
+	private KshstDAIControlOfAttendanceItems toDAIControlOfAttendanceItemsEntity(
 			DisplayAndInputControlOfAttendanceItems displayAndInputControlOfAttendanceItems) {
-		return new KdwstDAIControlOfAttendanceItems(
-				new KdwstDAIControlOfAttendanceItemsPK(displayAndInputControlOfAttendanceItems.getWorkTypeCode().v(),
+		return new KshstDAIControlOfAttendanceItems(
+				new KshstDAIControlOfAttendanceItemsPK(displayAndInputControlOfAttendanceItems.getBusinessTypeCode().v(),
 						displayAndInputControlOfAttendanceItems.getAttendanceItemId()),
-				displayAndInputControlOfAttendanceItems.getAttendanceItemName().v(),
 				new BigDecimal(displayAndInputControlOfAttendanceItems.isUserCanSet() ? 1 : 0),
 				new BigDecimal(displayAndInputControlOfAttendanceItems.isYouCanChangeIt() ? 1 : 0),
 				new BigDecimal(displayAndInputControlOfAttendanceItems.isCanBeChangedByOthers() ? 1 : 0),

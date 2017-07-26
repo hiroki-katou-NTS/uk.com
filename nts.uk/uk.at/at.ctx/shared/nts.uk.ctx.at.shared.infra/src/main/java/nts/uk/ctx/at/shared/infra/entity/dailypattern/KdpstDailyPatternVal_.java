@@ -3,16 +3,17 @@
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.dailypattern;
+
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class KdpstDailyPatternSet_.
+ * The Class KdpstDailyPatternVal_.
  */
-@StaticMetamodel(KdpstDailyPatternSet.class)
-public class KdpstDailyPatternSet_ {
-	
-	/** The kcsmt cont calendar set PK. */
-    public static volatile SingularAttribute<KdpstDailyPatternSet, KdpstDailyPatternSetPK> kdpstDailyPatternSetPK;
+@StaticMetamodel(KdpstDailyPatternVal.class)
+public class KdpstDailyPatternVal_ {
+	  
+  	/** The knlmt nursing work type PK. */
+    public static volatile SingularAttribute<KdpstDailyPatternVal, KdpstDailyPatternValPK> kdpstDailyPatternValPK;
 }

@@ -35,6 +35,18 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.
+	 * UsageUnitSettingRepository#create(nts.uk.ctx.at.shared.dom.employment.
+	 * statutory.worktime.UsageUnitSetting)
+	 */
+	@Override
+	public void create(UsageUnitSetting setting) {
+		this.commandProxy().insert(this.toEntitỵ̣̣(setting));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.
 	 * UsageUnitSettingRepository#find(java.lang.String)
 	 */
 	@Override
