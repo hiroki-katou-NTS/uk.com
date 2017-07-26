@@ -4211,7 +4211,7 @@ var nts;
                             container.removeAttr("id");
                         }
                         var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
-                        container.attr("tabindex", "-1");
+                        container.removeAttr("tabindex");
                         var containerClass = container.attr('class');
                         container.removeClass(containerClass);
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
@@ -4223,12 +4223,12 @@ var nts;
                         var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
-                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px");
-                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px");
+                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
                             $input.before($prevButton).after($nextButton);
                         }
                         if (data.dateFormat === "YYYY") {
-                            var $yearType = $("<label/>").css({ "position": "absolute",
+                            var $yearType = $("<label/>").attr("for", idString).css({ "position": "absolute",
                                 "line-height": "30px",
                                 "right": "42px" });
                             var labelText = fiscalYear ? "年度" : "年";
