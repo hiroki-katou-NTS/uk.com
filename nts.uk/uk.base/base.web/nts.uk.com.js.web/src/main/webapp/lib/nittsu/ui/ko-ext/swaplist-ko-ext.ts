@@ -720,18 +720,41 @@ module nts.uk.ui.koExtentions {
             selectedRows.sort(function(one, two) {
                 return one.index - two.index; 
             });
+            
+            var firstSelected = selectedRows[0];
+            
             var selectedIds = selectedRows.map(function(row) { return row.id; });
             this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
                     .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
-            this.swapParts[0].bindData(this.transportBuilder.getFirst());
-            this.swapParts[1].bindData(this.transportBuilder.getSecond());
-            value(this.transportBuilder.getSecond());
+            
+            var firstSource = this.transportBuilder.getFirst();
+            var secondSource = this.transportBuilder.getSecond();
+            
+            this.swapParts[0].bindData(firstSource);
+            this.swapParts[1].bindData(secondSource);
+            value(secondSource);
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
+            
+            var primaryKey = this.transportBuilder.primaryKey;
+            if (forward){
+                var selectIndex = firstSource.length === 0 ? -1 
+                    : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index); 
+            } else {
+                var selectIndex = secondSource.length === 0 ? -1  
+                    : (secondSource.length - 1 < firstSelected.index ? secondSource.length - 1 : firstSelected.index);    
+            }
+            
             setTimeout(function() {
-                $source.igGrid("virtualScrollTo", sourceList.length - 1 === selectedRows[0].index 
-                                   ? selectedRows[0].index - 1 : selectedRows[0].index + 1);
+                $source.igGrid("virtualScrollTo", selectIndex);
                 $dest.igGrid("virtualScrollTo", destList.length - 1);
+                
+                if(selectIndex >= 0){
+                    $source.igGridSelection("selectRowById", forward ? firstSource[selectIndex][primaryKey] : secondSource[selectIndex][primaryKey]);    
+                } 
+                if(!forward){
+                    $dest.ntsGridList("setSelected", selectedIds);    
+                }
             }, 10);
         }
     }
