@@ -47,11 +47,11 @@ public interface ExternalBudgetErrorSetMemento {
     void setWorkPlaceCode(ExtBudgetWorkplaceCode workPlaceCode);
 
     /**
-     * Sets the excution id.
+     * Sets the execution id.
      *
-     * @param excutionId the new excution id
+     * @param excutionId the new execution id
      */
-    void setExcutionId(String excutionId);
+    void setExecutionId(String executionId);
 
     /**
      * Sets the number line.

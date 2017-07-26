@@ -5,7 +5,7 @@ module nts.uk.at.view.kcp006.a.viewmodel {
         yearMonthPicked: KnockoutObservable<number>;
         cssRangerYM: any;
         optionDates: KnockoutObservableArray<any>;
-        firstDay: number;
+        firstDay: KnockoutObservable<number>;
         yearMonth: KnockoutObservable<number>;
         startDate: number;
         endDate: number;
@@ -72,7 +72,7 @@ module nts.uk.at.view.kcp006.a.viewmodel {
                     ]
                 }
             ]);
-            self.firstDay = 0;
+            self.firstDay = ko.observable(0);
             self.startDate = 1;
             self.endDate = 31;
             self.workplaceId = ko.observable("0");

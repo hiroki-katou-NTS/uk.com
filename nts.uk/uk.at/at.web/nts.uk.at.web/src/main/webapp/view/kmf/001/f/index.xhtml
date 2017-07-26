@@ -23,8 +23,8 @@
 
 		<ui:define name="sidebar">
 			<ul tabindex="1" class="navigator">
-				<li><a href="#company-tab" role="tab-navigator" data-bind="click: switchToCompanyTab" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#employment-tab" role="tab-navigator"
+				<li><a tabindex="-1" href="#company-tab" role="tab-navigator" data-bind="click: switchToCompanyTab" class="active">#{i18n.getText('Com_Company')}</a></li>
+				<li><a tabindex="-1" href="#employment-tab" role="tab-navigator"
 					data-bind="click: switchToEmploymentTab" >#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>

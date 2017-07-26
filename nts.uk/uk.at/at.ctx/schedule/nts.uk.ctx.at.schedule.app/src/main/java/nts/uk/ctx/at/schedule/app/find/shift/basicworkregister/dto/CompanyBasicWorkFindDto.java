@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +14,12 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkSetMem
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
 
 
+/**
+ * The Class CompanyBasicWorkFindDto.
+ */
 @Getter
 @Setter
-public class CompanyBasicWorkFindDto implements CompanyBasicWorkSetMemento{
+public class CompanyBasicWorkFindDto implements CompanyBasicWorkSetMemento {
 
 	/** The company id. */
 	private String companyId;
@@ -23,14 +27,30 @@ public class CompanyBasicWorkFindDto implements CompanyBasicWorkSetMemento{
 	/** The basic work setting. */
 	private List<BasicWorkSettingFindDto> basicWorkSetting;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
+	 * CompanyBasicWorkSetMemento#setCompanyId(nts.uk.ctx.at.schedule.dom.shift.
+	 * basicworkregister.CompanyId)
+	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		this.companyId = companyId.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
+	 * CompanyBasicWorkSetMemento#setBasicWorkSetting(java.util.List)
+	 */
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
-		// TODO Auto-generated method stub
-		
+		basicWorkSetting.stream().map(item -> {
+			BasicWorkSettingFindDto basicWorkSettingFindDto = new BasicWorkSettingFindDto();
+			item.saveToMemento(basicWorkSettingFindDto);
+			return basicWorkSettingFindDto;
+		}).collect(Collectors.toList());
 	}
 }

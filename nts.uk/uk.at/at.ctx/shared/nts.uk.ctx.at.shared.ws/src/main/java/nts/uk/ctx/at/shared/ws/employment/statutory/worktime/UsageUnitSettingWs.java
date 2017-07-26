@@ -10,10 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.command.UsageUnitSettingSaveCommand;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.command.UsageUnitSettingSaveCommandHandler;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.find.UsageUnitSettingDto;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.find.UsageUnitSettingFinder;
+import nts.uk.ctx.at.shared.app.command.employment.statutory.worktime.UsageUnitSettingSaveCommand;
+import nts.uk.ctx.at.shared.app.command.employment.statutory.worktime.UsageUnitSettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.employment.statutory.worktime.UsageUnitSettingDto;
+import nts.uk.ctx.at.shared.app.find.employment.statutory.worktime.UsageUnitSettingFinder;
 
 /**
  * The Class UsageUnitSettingWs.

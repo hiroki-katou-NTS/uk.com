@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresults;
 
-import java.sql.Date;
+import java.util.Date;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -23,4 +23,25 @@ public class ExecutionTime extends DomainObject {
     /** The end date. */
     // 終了日時
     private Date endDate;
+    
+    /**
+     * Instantiates a new execution time.
+     *
+     * @param memento the memento
+     */
+    public ExecutionTime(ExecutionTimeGetMemento memento) {
+        super();
+        this.startDate = memento.getStartDate();
+        this.endDate = memento.getEndDate();
+    }
+    
+    /**
+     * Save to memento.
+     *
+     * @param memento the memento
+     */
+    public void saveToMemento(ExecutionTimeSetMemento memento) {
+        memento.setStartDate(this.startDate);
+        memento.setEndDate(this.endDate);
+    }
 }

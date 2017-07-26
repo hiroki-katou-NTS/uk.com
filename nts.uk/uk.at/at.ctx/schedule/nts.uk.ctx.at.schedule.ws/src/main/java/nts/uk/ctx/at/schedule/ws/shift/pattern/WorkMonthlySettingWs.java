@@ -14,6 +14,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternSettingBatchSaveCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternSettingBatchSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.WorkMonthlySettingFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 
@@ -27,6 +29,10 @@ public class WorkMonthlySettingWs {
 	/** The finder. */
 	@Inject
 	private WorkMonthlySettingFinder finder;
+	
+	/** The batch. */
+	@Inject
+	private MonthlyPatternSettingBatchSaveCommandHandler batch;
 
 	/**
 	 * Find by id.
@@ -39,6 +45,17 @@ public class WorkMonthlySettingWs {
 	public List<WorkMonthlySettingDto> findById(
 			@PathParam("monthlyPatternCode") String monthlyPatternCode) {
 		return this.finder.findById(monthlyPatternCode);
+	}
+	
+	/**
+	 * Sets the ting batch.
+	 *
+	 * @param command the new ting batch
+	 */
+	@POST
+	@Path("batch")
+	public void settingBatch(MonthlyPatternSettingBatchSaveCommand command){
+		this.batch.handle(command);
 	}
 	
 }

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresults;
 
+import java.util.List;
+
 /**
  * The Interface ExternalBudgetErrorRepository.
  */
@@ -22,4 +24,12 @@ public interface ExternalBudgetErrorRepository {
      * @param domain the domain
      */
     void update(ExternalBudgetError domain);
+    
+    /**
+     * Find by execution id.
+     *
+     * @param executionId the execution id
+     * @return the list
+     */
+    List<ExternalBudgetError> findByExecutionId(String executionId);
 }

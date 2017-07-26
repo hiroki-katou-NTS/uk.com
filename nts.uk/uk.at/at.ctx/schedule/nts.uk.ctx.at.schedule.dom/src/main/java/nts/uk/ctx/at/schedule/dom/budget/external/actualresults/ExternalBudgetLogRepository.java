@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresults;
 
+import java.util.List;
+
 /**
  * The Interface ExternalBudgetLogRepository.
  */
@@ -17,9 +19,10 @@ public interface ExternalBudgetLogRepository {
     void add(ExternalBudgetLog domain);
     
     /**
-     * Update.
+     * Find all by company id.
      *
-     * @param domain the domain
+     * @param companyId the company id
+     * @return the list
      */
-    void update(ExternalBudgetLog domain);
+    List<ExternalBudgetLog> findAllByCompanyId(String companyId);
 }

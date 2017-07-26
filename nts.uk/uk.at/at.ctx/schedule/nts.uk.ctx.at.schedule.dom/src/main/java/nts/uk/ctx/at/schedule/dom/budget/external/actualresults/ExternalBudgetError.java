@@ -35,9 +35,9 @@ public class ExternalBudgetError extends AggregateRoot {
     // 受入値職場コート
     private ExtBudgetWorkplaceCode workplaceCode;
     
-    /** The excution id. */
+    /** The execution id. */
     // 実行ID
-    private String excutionId;
+    private String executionId;
     
     /** The number line. */
     // 行番号
@@ -55,7 +55,7 @@ public class ExternalBudgetError extends AggregateRoot {
         this.actualValue = memento.getActualValue();
         this.acceptedDate = memento.getAcceptedDate();
         this.workplaceCode = memento.getWorkPlaceCode();
-        this.excutionId = memento.getExcutionId();
+        this.executionId = memento.getExecutionId();
         this.numberLine = memento.getNumberLine();
     }
     
@@ -70,7 +70,7 @@ public class ExternalBudgetError extends AggregateRoot {
         memento.setActualValue(this.actualValue);
         memento.setAcceptedDate(this.acceptedDate);
         memento.setWorkPlaceCode(this.workplaceCode);
-        memento.setExcutionId(this.excutionId);
+        memento.setExecutionId(this.executionId);
         memento.setNumberLine(this.numberLine);
     }
 }
