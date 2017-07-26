@@ -236,6 +236,9 @@ project (':at.screen:nts.uk.screen.at.app') {
 project (':at.screen:nts.uk.screen.at.infra') {
 	dependencies {
 		compile project (':at.screen:nts.uk.screen.at.app')
+		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
+		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 	}
 }
 //=========================at:screen↑=====================================
