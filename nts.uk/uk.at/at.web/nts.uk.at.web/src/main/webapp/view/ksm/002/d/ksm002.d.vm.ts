@@ -22,10 +22,12 @@ module ksm002.d{
             countItem: KnockoutObservable<number>;
             // data receive from mother screen
             param: IData;
+            //date value
+            dateValue: KnockoutObservable<any>;
             constructor() {
                 let self=this;
-                self.startMonth = ko.observable(null);
-                self.endMonth = ko.observable(null);
+//                self.startMonth = ko.observable(null);
+//                self.endMonth = ko.observable(null);
                 self.specificDateItem = ko.observableArray([]);
                 self.dayInWeek = ko.observableArray([]);
                 self.enable = ko.observable(false);
@@ -38,14 +40,18 @@ module ksm002.d{
                 self.workPlace = ko.observable("");
                 self.countDay = ko.observable(0);
                 self.countItem = ko.observable(0);
-                self.param = null; 
+                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null}; 
+                 //date value
+                self.dateValue = ko.observable({startDate: self.param.startDate.toString(), endDate: self.param.endDate.toString()});
+                self.startMonth = ko.observable(self.dateValue().startDate);
+                self.endMonth = ko.observable(self.dateValue().startDate);
             }
             /** get data when start dialog **/
             startPage(): JQueryPromise<any> {
                 nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred();
-                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
+//                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
                 self.endMonth(self.param.endDate);
                 self.startMonth(self.param.startDate);
                 // label to display work place D1_2
