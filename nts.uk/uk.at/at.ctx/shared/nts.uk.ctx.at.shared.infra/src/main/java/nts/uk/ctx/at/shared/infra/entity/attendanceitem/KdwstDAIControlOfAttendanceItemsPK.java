@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.query.DBCharPaddingAs;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
 @Setter
 @Getter
 @Embeddable
@@ -19,9 +19,9 @@ import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.WorkTypeCode;
 public class KdwstDAIControlOfAttendanceItemsPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@DBCharPaddingAs(WorkTypeCode.class)
-	@Column(name = "WORK_TYPE_CD")
-	public String workTypeCode;
+	@DBCharPaddingAs(BusinessTypeCode.class)
+	@Column(name = "BUSINESS_TYPE_CD")
+	public String businessTypeCode;
 	@Column(name = "ATTENDANCE_ITEM_ID")
 	public String attendanceItemId;
 }

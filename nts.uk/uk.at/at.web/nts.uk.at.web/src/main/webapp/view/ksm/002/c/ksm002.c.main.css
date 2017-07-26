@@ -47,7 +47,7 @@ body {
 	background-color: #EDFAC2;
 }
 #specific-set-tbl-b th:FIRST-CHILD {
-	width: 80px;
+	width: 20px;
 }
 #specific-set-tbl-b th:NTH-CHILD(2) {
 	width: 200px;
@@ -61,7 +61,4 @@ body {
 button.nts-switch-button {
 	height: 30px;
 	width: 93px;
-}
-#functions-area-bottom > button {
-	margin-right: 10px;
 }

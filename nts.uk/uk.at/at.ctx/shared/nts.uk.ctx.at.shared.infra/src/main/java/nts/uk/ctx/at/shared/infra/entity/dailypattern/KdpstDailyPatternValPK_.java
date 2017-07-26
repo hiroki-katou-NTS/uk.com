@@ -3,16 +3,23 @@
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.dailypattern;
+
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class KdpstDailyPatternSet_.
+ * The Class KdpstDailyPatternValPK_.
  */
-@StaticMetamodel(KdpstDailyPatternSet.class)
-public class KdpstDailyPatternSet_ {
-	
-	/** The kcsmt cont calendar set PK. */
-    public static volatile SingularAttribute<KdpstDailyPatternSet, KdpstDailyPatternSetPK> kdpstDailyPatternSetPK;
+@StaticMetamodel(KdpstDailyPatternValPK.class)
+public class KdpstDailyPatternValPK_ {
+	   
+   	/** The cid. */
+    public static volatile SingularAttribute<KdpstDailyPatternValPK, String> cid;
+    
+    /** The pattern cd. */
+    public static volatile SingularAttribute<KdpstDailyPatternValPK, String> patternCd;
+    
+    /** The disp order. */
+    public static volatile SingularAttribute<KdpstDailyPatternValPK, Integer> dispOrder;
 }

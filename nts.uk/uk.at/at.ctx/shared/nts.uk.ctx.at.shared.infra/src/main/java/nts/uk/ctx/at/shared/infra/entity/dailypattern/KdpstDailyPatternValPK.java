@@ -13,7 +13,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KcvmtContCalendarValPK.
+ * The Class KdpstDailyPatternValPK.
+ */
+
+/**
+ * Sets the cid.
+ *
+ * @param cid the new cid
  */
 @Setter
 @Getter
@@ -23,12 +29,12 @@ public class KdpstDailyPatternValPK implements Serializable {
 	 /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The patternCd. */
+    /** The pattern cd. */
     @Basic(optional = false)
     @Column(name = "PATTERN_CD")
     private String patternCd;
     
-    /** The order number. */
+    /** The disp order. */
     @Basic(optional = false)
     @Column(name = "DISP_ORDER")
     private Integer dispOrder;
@@ -39,16 +45,17 @@ public class KdpstDailyPatternValPK implements Serializable {
 	private String cid;
     
     /**
-     * Instantiates a new kcvmt work type PK.
+     * Instantiates a new kdpst daily pattern val PK.
      */
     public KdpstDailyPatternValPK(){
     }
 
 	/**
-	 * Instantiates a new kcvmt work type PK.
-	 * @param patternCd
-	 * @param dispOrder
-	 * @param cid
+	 * Instantiates a new kdpst daily pattern val PK.
+	 *
+	 * @param patternCd the pattern cd
+	 * @param dispOrder the disp order
+	 * @param cid the cid
 	 */
 	public KdpstDailyPatternValPK(String patternCd, Integer dispOrder, String cid) {
 		this.patternCd = patternCd;
@@ -57,38 +64,38 @@ public class KdpstDailyPatternValPK implements Serializable {
 	}
 
     
-//	/* (non-Javadoc)
-//     * @see java.lang.Object#hashCode()
-//     */
-//    @Override
-//    public int hashCode() {
-//        int hash = 0;
-//        hash += (cid != null ? cid.hashCode() : 0);
-//        hash += (nursingCtr != null ? nursingCtr.hashCode() : 0);
-//        hash += (orderNumber != null ? orderNumber.hashCode() : 0);
-//        return hash;
-//    }
-//
-//    /* (non-Javadoc)
-//     * @see java.lang.Object#equals(java.lang.Object)
-//     */
-//    @Override
-//    public boolean equals(Object object) {
-//        if (!(object instanceof KnlmtNursingWorkTypePK)) {
-//            return false;
-//        }
-//        KnlmtNursingWorkTypePK other = (KnlmtNursingWorkTypePK) object;
-//        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-//            return false;
-//        }
-//        if ((this.nursingCtr == null && other.nursingCtr != null) || (this.nursingCtr != null
-//                && !this.nursingCtr.equals(other.nursingCtr))) {
-//            return false;
-//        }
-//        if ((this.orderNumber == null && other.orderNumber != null) || (this.orderNumber != null
-//                && !this.orderNumber.equals(other.orderNumber))) {
-//            return false;
-//        }
-//        return true;
-//    }
+	/* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (cid != null ? cid.hashCode() : 0);
+        hash += (patternCd != null ? patternCd.hashCode() : 0);
+        hash += (dispOrder != null ? dispOrder.hashCode() : 0);
+        return hash;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof KdpstDailyPatternValPK)) {
+            return false;
+        }
+        KdpstDailyPatternValPK other = (KdpstDailyPatternValPK) object;
+        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+            return false;
+        }
+        if ((this.patternCd == null && other.patternCd != null) || (this.patternCd != null
+                && !this.patternCd.equals(other.patternCd))) {
+            return false;
+        }
+        if ((this.dispOrder == null && other.dispOrder != null) || (this.dispOrder != null
+                && !this.dispOrder.equals(other.dispOrder))) {
+            return false;
+        }
+        return true;
+    }
 }

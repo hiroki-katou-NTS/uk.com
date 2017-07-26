@@ -34,7 +34,8 @@
 					class="button separate-button fix-button">#{i18n.getText('KSM003_35')}</button>
 				<!-- B1_4: Button Delete -->
 				<button tabindex="4" id="btn_004"
-					class="button danger separate-button fix-button">#{i18n.getText('KSM003_22')}</button>
+					class="button danger separate-button fix-button"
+					data-bind="click:deleteDivReason,enable: $root.errors.isEmpty">#{i18n.getText('KSM003_22')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"
@@ -94,9 +95,9 @@
 						<table tabindex="8" id="single-list"
 							data-bind="ntsGridList:{
 								width: 630,
-								height: 650,
-								options: dataSource,
-								optionsValue: 'divReasonCode',
+								height: 500,
+								options: dailyPatternVal,
+								optionsValue: 'dispOrder',
 								columns: columnsWork,
 								multiple: false,
 								value: currentCode,
