@@ -104,14 +104,14 @@
 								<div class="control-group">
 									<label class="ntsRadioBox"><input type="radio"
 										name="textRadio"
-										data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: reflectionMethod, enable: true" />
+										data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
 									</label>
 								</div>
 								<div class="control-group">
 									<label class="ntsRadioBox"><input type="radio"
 										name="textRadio"
-										data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: reflectionMethod, enable: true" />
+										data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
 									</label>
 								</div>
