@@ -6,15 +6,16 @@ module nts.uk.at.view.kdl023.a.viewmodel {
     import ReflectionMethod = service.model.ReflectionMethod;
     import WorkType = service.model.WorkType;
     import WorkTime = service.model.WorkTime;
+    import DailyPatternSetting = service.model.DailyPatternSetting;
 
     export class ScreenModel {
-        itemList: KnockoutObservableArray<ItemModelCbb1>;
-        selectedCode: KnockoutObservable<string>;
+        dailyPatternList: KnockoutObservableArray<DailyPatternSetting>;
+        selectedDailyPatternCode: KnockoutObservable<string>;
         listWorkType: KnockoutObservableArray<WorkType>;
         listWorkTime: KnockoutObservableArray<WorkTime>;
 
         patternReflection: PatternReflection;
-        dailyPatternSetting: service.model.DailyPatternSetting;
+        dailyPatternSetting: DailyPatternSetting;
         weeklyWorkSetting: WeeklyWorkSetting;
         listHoliday: Array<any>;
 
@@ -37,34 +38,13 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         constructor() {
             let self = this;
             self.listHoliday = [];
-            self.itemList = ko.observableArray([
-                new ItemModelCbb1('1', '基本給'),
-                new ItemModelCbb1('2', '役職手当'),
-                new ItemModelCbb1('3', '基本給')
-            ]);
-            self.listWorkType = ko.observableArray([]);
-            self.listWorkTime = ko.observableArray([]);
-            self.selectedCode = ko.observable('1');
-
-            self.dailyPatternSetting = {};
-            self.dailyPatternSetting.patternCode = 'code';
-            self.dailyPatternSetting.patternName = 'name';
-            self.dailyPatternSetting.workPatterns = [{
-                dispOrder: 1,
-                workTypeCode: 'đi làm vì đam mê',
-                workingHoursCode: '',
-                days: 1,
-            }, {
-                    dispOrder: 2,
-                    workTypeCode: 'đi làm cho vui',
-                    workingHoursCode: '',
-                    days: 2,
-                }, {
-                    dispOrder: 3,
-                    workTypeCode: 'hư hỏng',
-                    workingHoursCode: 'đi làm cho đỡ',
-                    days: 3,
-                }];
+            self.dailyPatternList = ko.observableArray<DailyPatternSetting>([]);
+            self.listWorkType = ko.observableArray<WorkType>([]);
+            self.listWorkTime = ko.observableArray<WorkTime>([]);
+            self.selectedDailyPatternCode = ko.observable('');
+            self.selectedDailyPatternCode.subscribe(code => {
+                self.loadDailyPatternDetail(code);
+            });
 
             // Calendar component
             self.yearMonthPicked = ko.observable(201707);
@@ -90,40 +70,23 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
-            $.when(service.findWeeklyWorkSetting(),
-                service.getHolidayByListDate(self.getListDateOfMonth()),
-                service.getAllWorktype())
-                .done(function(
-                    weeklyWorkSetting: WeeklyWorkSetting,
-                    listHoliday,
-                    listWorkType) {
-
-                    // Set list holiday
-                    self.listHoliday = listHoliday;
-
-                    // Set list worktype.
-                    self.listWorkType(listWorkType);
-
-                    // Set weeklyWorkSetting
-                    self.weeklyWorkSetting = weeklyWorkSetting;
-
-                    // Set optionDates.
-                    self.optionDates(self.getOptionDates());
-
-                    // Set list working hours.
-                    service.getListWorkingHour([]).done(list => {
-                        self.listWorkTime(list);
+            $.when(self.loadHolidayList(),
+                self.loadWorktypeList(),
+                self.loadWorktimeList(),
+                self.loadDailyPatternHeader(),
+                self.loadWeeklyWorkSetting())
+                .done(() => self.loadPatternReflection()
+                    .done(() => {
+                        self.setSelectedDailyPatternCode();
+                        // Xu ly hien thi calendar.
+                        self.optionDates(self.getOptionDates());
+                        dfd.resolve();
+                    })).fail(res => {
+                        console.log(res);
+                        nts.uk.ui.dialog.alert(res.message);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
-
-                    //TODO: tam thoi the da
-                    self.loadPatternReflection();
-
-                    dfd.resolve();
-                }).fail(res => {
-                    nts.uk.ui.dialog.alert(res.message);
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
             return dfd.promise();
         }
 
@@ -171,21 +134,100 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             let self = this;
             let dfd = $.Deferred<void>();
             service.find('empId').done(function(patternReflection: service.model.PatternReflection) {
-                 // Select first item if worktype code not exist.
-                    if (!patternReflection.statutorySetting.workTypeCode) {
-                        patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
-                    }
-                    if (!patternReflection.nonStatutorySetting.workTypeCode) {
-                        patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
-                    }
-                    if (!patternReflection.holidaySetting.workTypeCode) {
-                        patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
-                    }
+                // Select first item if worktype code not exist.
+                if (!patternReflection.statutorySetting.workTypeCode) {
+                    patternReflection.statutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                }
+                if (!patternReflection.nonStatutorySetting.workTypeCode) {
+                    patternReflection.nonStatutorySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                }
+                if (!patternReflection.holidaySetting.workTypeCode) {
+                    patternReflection.holidaySetting.workTypeCode = self.listWorkType()[0].workTypeCode;
+                }
 
-                    // Set patternReflection.
-                    self.patternReflection = new PatternReflection(patternReflection);
+                // Set patternReflection.
+                self.patternReflection = new PatternReflection(patternReflection);
+
+                // Resolve.
+                dfd.resolve();
+            }).fail(() => {
+                console.log('failed. trinh duyet chua luu setting nao.');
+                dfd.fail();
             });
-            dfd.resolve();
+            return dfd.promise();
+        }
+
+        /**
+         * Load daily pattern.
+         */
+        private loadDailyPatternHeader(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.findAllPattern().done(function(list: Array<DailyPatternSetting>) {
+                self.dailyPatternList(list);
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Load daily pattern detail.
+         */
+        private loadDailyPatternDetail(code: string): void {
+            let self = this;
+            self.dailyPatternSetting = _.find(self.dailyPatternList(), item => item.patternCode == code);
+        }
+
+        /**
+         * Load weekly work setting.
+         */
+        private loadWeeklyWorkSetting(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.findWeeklyWorkSetting().done(function(weeklyWorkSetting: WeeklyWorkSetting) {
+                self.weeklyWorkSetting = weeklyWorkSetting;
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Load holiday list.
+         */
+        private loadHolidayList(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.getHolidayByListDate(self.getListDateOfMonth()).done(function(list: Array<PublicHoliday>) {
+                self.listHoliday = list;
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+
+        /**
+         * Load worktype list.
+         */
+        private loadWorktypeList(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.getAllWorkType().done(function(list: Array<WorkType>) {
+                self.listWorkType(list);
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Load work time list.
+         */
+        private loadWorktimeList(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            service.getAllWorkTime().done(function(list: Array<WorkTime>) {
+                self.listWorkTime(list);
+                dfd.resolve();
+            });
             return dfd.promise();
         }
 
@@ -255,8 +297,8 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                                     textColor: 'blue',
                                     backgroundColor: 'white',
                                     listText: [
-                                        'di lam',
-                                        //self.getWorktypeNameByCode(dailyPatternValue.workTypeCode),
+                                        self.getWorktypeNameByCode(dailyPatternValue.workTypeCode),
+                                        self.getWorktimeNameByCode(dailyPatternValue.workingHoursCode)
                                     ]
                                 });
                             }
@@ -282,6 +324,18 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         private getWorktypeNameByCode(code: string): any {
             let self = this;
             let result = _.find(self.listWorkType(), wt => wt.workTypeCode == code);
+            if (result) {
+                return result.name;
+            }
+            return '';
+        }
+
+        /**
+         * Get worktime name by code.
+         */
+        private getWorktimeNameByCode(code: string): any {
+            let self = this;
+            let result = _.find(self.listWorkTime(), wt => wt.code == code);
             if (result) {
                 return result.name;
             }
@@ -402,6 +456,23 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                 return true;
             }
             return false;
+        }
+
+        /**
+         * Get param from parent screen.
+         */
+        private setSelectedDailyPatternCode(): void {
+            let self = this;
+            // Get pattern code tu man hinh cha.
+            let selectedCode = nts.uk.ui.windows.getShared("patternCode");
+            if (selectedCode) {
+                self.selectedDailyPatternCode(selectedCode);
+            }
+            else
+            // Select first item.
+            {
+                self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
+            }
         }
     }
 
