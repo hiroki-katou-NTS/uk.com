@@ -21,7 +21,6 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdateCompanySpecificDateCommand>> context) {
 		String companyId = AppContexts.user().companyId();
-		
 		for(UpdateCompanySpecificDateCommand updateSpecificDateCommand :  context.getCommand()){
 			if(updateSpecificDateCommand.isUpdate()) {
 				companyRepo.deleteComSpecByDate(companyId,updateSpecificDateCommand.getSpecificDate().intValue());
