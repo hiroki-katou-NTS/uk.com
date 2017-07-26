@@ -9,13 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.infra.data.query.DBCharPaddingAs;
+import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
 @Setter
 @Getter
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KdwstControlOfAttendanceItemsPK  implements Serializable {
+public class KshstDAIControlOfAttendanceItemsPK implements Serializable {
+
 	private static final long serialVersionUID = 1L;
+	@DBCharPaddingAs(BusinessTypeCode.class)
+	@Column(name = "BUSINESS_TYPE_CD")
+	public String businessTypeCode;
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	public String attandanceTimeId;
+	public String attendanceItemId;
 }
