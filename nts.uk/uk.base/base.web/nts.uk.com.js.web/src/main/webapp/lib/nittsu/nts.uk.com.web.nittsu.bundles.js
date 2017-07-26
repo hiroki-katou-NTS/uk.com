@@ -3807,6 +3807,7 @@ var nts;
                                 e.preventDefault();
                         });
                         container.data("tabindex", container.attr("tabindex"));
+                        container.wrap("<div class='checkbox-wrapper'/>");
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -3873,6 +3874,7 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
+                        container.wrap("<div class='multicheckbox-wrapper'/>");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
                         container.data("init", true);

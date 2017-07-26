@@ -139,7 +139,7 @@ div.popup-panel {
 }
 
 /*****************************
-  NtsEditor
+  NtsError
 *****************************/
 .ntsControl.error {
 	.nts-editor, .ntsDatepicker, .sp-replacer {
@@ -150,7 +150,12 @@ div.popup-panel {
 .ui-igcombo.error {
 	border-color:#ff6666;
 }
-
+.checkbox-wrapper.error {
+	border: 1px solid #ff6666;
+}
+.multicheckbox-wrapper.error {
+	border: 1px solid #ff6666;
+}
 /*****************************
   ErrorNotifier
 *****************************/
