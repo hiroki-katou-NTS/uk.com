@@ -1,9 +1,8 @@
 
 #D_BTN_001 {
 	margin-top: 2px;
-	margin-left: 35px;
+	margin-left: 23px;
 	width: 90px;
-	margin-left: 45px;
 }
 
 #D_BTN_002 {
@@ -12,7 +11,7 @@
 }
 #label-d1-003{
 	margin-top: 20px;
-	margin-left: 40px;
+	margin-left: 19px;
 }
 .table-container {
 	margin-top: 42px;
@@ -25,10 +24,10 @@
 	width: 16px;
 }
 .table1 .fixed-width-3{
-	width: 190px;
+	width: 202px;
 }
 .table1 {
-	margin-left: 40px;
+	margin-left: 20px;
     margin-top: 30px;
 }
 .table1 thead{display:block;}
@@ -61,7 +60,7 @@
 }
 
 .ntsDateRange_Container{
-	margin-left: 95px;
+	margin-left: 80px;
     margin-top: -34px;
 }
 

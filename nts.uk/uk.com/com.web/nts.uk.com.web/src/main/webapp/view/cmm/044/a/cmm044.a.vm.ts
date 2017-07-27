@@ -401,7 +401,7 @@ module cmm044.a.viewmodel {
         openDDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.setShared('cmm044_DataPerson', self.empItems());
+            nts.uk.ui.windows.setShared('CMM044_TABS', self.tabs());
             nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
                 nts.uk.ui.block.clear();
             });
