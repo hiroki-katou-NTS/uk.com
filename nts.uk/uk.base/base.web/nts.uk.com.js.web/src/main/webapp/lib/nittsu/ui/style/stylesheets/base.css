@@ -428,7 +428,13 @@ div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
 }
-
+.constraint-label {
+	display: block;
+	margin-top: 1px;
+	font-size: 12px;
+	font-weight: normal;
+	color: #777777;
+}
 /*****************************
   NtsPopupPanel
 *****************************/
@@ -454,6 +460,12 @@ div.popup-panel {
 /* line 150, ../sass/components/_commons.scss */
 .ui-igcombo.error {
   border-color: #ff6666;
+}
+.checkbox-wrapper.error {
+	outline: 1px solid #ff6666;
+}
+.multicheckbox-wrapper.error {
+	outline: 1px solid #ff6666;
 }
 
 /*****************************
@@ -792,6 +804,10 @@ button .icon {
 .ui-accordion .ui-accordion-content {
   border-top-width: 1px;
   border-color: #999;
+}
+/* line 43, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-content.nts-accordion-content {
+  display: block !important;
 }
 
 /* line 3, ../sass/components/_editor.scss */
@@ -1844,7 +1860,12 @@ button.nts-switch-button[disabled]:hover {
 .minimalist .ntsCheckBox-label input[type="checkbox"]:checked + span {
   background: transparent;
 }
-
+.checkbox-wrapper {
+	display: inline-block;
+}
+.multicheckbox-wrapper {
+	display: inline-block;
+}
 /* line 1, ../sass/components/_panel.scss */
 .panel {
   padding: 10px;
@@ -3387,6 +3408,7 @@ button.nts-switch-button[disabled]:hover {
   height: 35px;
 }
 
+/* line 135, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }

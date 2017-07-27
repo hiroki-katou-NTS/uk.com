@@ -8,7 +8,7 @@ module ksm002.c {
             constructor() {
                 var self = this;
                 self.specificDateItem = ko.observableArray([]);   
-                self.textKSM002_39 = nts.uk.resource.getText("KSM002_39",[__viewContext.primitiveValueConstraints.SpecificName.maxLength/2]);
+                self.textKSM002_39 = nts.uk.resource.getText("KSM002_39")+ '(' + nts.uk.util.getConstraintMes("SpecificName") +')';
             }
             
             /**
@@ -29,11 +29,15 @@ module ksm002.c {
                                 item.specificName
                             ));
                     });
+                    //insert new item when data in db <10 items
+                    let itemNo =self.specificDateItem().length;
                     while(self.specificDateItem().length<10){
                         self.specificDateItem.push(
-                                new SpecificDateItem('',1,0,''));
+                                new SpecificDateItem('',1,itemNo+1,''));
+                        itemNo = itemNo + 1;
                     }
                     self.rootList = _.clone(ko.mapping.toJS(self.specificDateItem()));
+                    //check dk: 全ての使用区分が使用しないを選択されている場合
                     self.allUse = ko.pureComputed(function(){
                         let x: number = 0;
                         self.specificDateItem().forEach(function(item) { 
@@ -49,29 +53,17 @@ module ksm002.c {
                     });
                 return dfd.promise();
             }
-            checkUse(lstSpecificDateItem: Array<SpecificDateItem>): boolean{
-                let check = false;
-                let item: SpecificDateItem  = _.find(lstSpecificDateItem, function(obj: SpecificDateItem) {
-                    return obj.useAtr() == 1;
-                })
-                if(item!=null){
-                    check = true;
-                }
-                return check;
-            }
-            
             /**
              * save data and close dialog
              */
             submitAndCloseDialog(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
-                if(!self.checkUse(self.specificDateItem())){
+                if(self.allUse==0){
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_135' }).then(function(){nts.uk.ui.block.clear();});
                     return;
                 }
                 let lstSpecificDateItem : Array<SpecificDateItemCommand> = [];
-                let rootLists = self.rootList;
                 $(".specificName").trigger("validate");
                 ko.utils.arrayForEach(self.specificDateItem(), function(item, index) { 
                     lstSpecificDateItem.push(new SpecificDateItemCommand(item.timeItemId(),item.useAtr(),item.specificDateItemNo(),item.specificName()));

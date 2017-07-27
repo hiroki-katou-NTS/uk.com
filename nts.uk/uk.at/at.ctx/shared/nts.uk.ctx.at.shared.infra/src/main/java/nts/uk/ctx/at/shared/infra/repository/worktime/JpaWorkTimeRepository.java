@@ -38,8 +38,10 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	private final String findWorkTimeByList = "SELECT a FROM KwtmtWorkTime a "
 			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID " + "AND a.kwtmpWorkTimePK.siftCD IN :siftCDs";
 
-	private final String FIND_BY_CID_AND_DISPLAY_ATR = "SELECT a FROM KwtmtWorkTime a "
-			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID AND a.displayAtr = :displayAtr";
+	private final String FIND_BY_CID_AND_DISPLAY_ATR = "SELECT a FROM KwtmtWorkTime a JOIN KodstOrder b ON a.kwtmpWorkTimePK.siftCD = b.kodspOrderPK.workTimeCd "
+			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID "
+			+ "AND a.displayAtr = :displayAtr "
+			+ "ORDER BY b.sortOrder ASC";
 
 	@Override
 	public List<WorkTime> findByCompanyID(String companyID) {
@@ -92,6 +94,7 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 
 	/**
 	 * get list WorkTime by CompanyId and DisplayAtr = DISPLAY
+	 * Join with table ORDER to sort workTimeCd
 	 */
 	@Override
 	public List<WorkTime> findByCIdAndDisplayAtr(String companyID, int displayAtr) {

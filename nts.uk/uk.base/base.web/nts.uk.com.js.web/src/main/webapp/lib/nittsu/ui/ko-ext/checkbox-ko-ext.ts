@@ -33,6 +33,7 @@ module nts.uk.ui.koExtentions {
             
             container.data("tabindex", container.attr("tabindex"));
 
+            container.wrap("<div class='checkbox-wrapper'/>");
             if (textId) {
                 checkBoxText = textId;
             } else {
@@ -112,6 +113,8 @@ module nts.uk.ui.koExtentions {
             container.addClass("ntsControl").on("click", (e) => {
                 if (container.data("readonly") === true) e.preventDefault();
             });
+            
+            container.wrap("<div class='multicheckbox-wrapper'/>");
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             container.data("enable", _.clone(enable));
             container.data("init", true);

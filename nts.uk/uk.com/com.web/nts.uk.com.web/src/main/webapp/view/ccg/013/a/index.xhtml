@@ -24,18 +24,23 @@
 					<button id="A_BTN_001" data-bind="click: cleanForm">#{i18n.getText('CCG013_1')}</button>
 					<button id="A_BTN_002" class="proceed"
 						data-bind="click: addWebMenu,enable: $root.errors.isEmpty">#{i18n.getText('CCG013_2')}</button>
-					<button id="A_BTN_005" data-bind="click: optionEDialog,enable: !isCreated() ">#{i18n.getText('CCG013_3')}</button>
+					<button id="A_BTN_005"
+						data-bind="click: optionEDialog,enable: !isCreated() ">#{i18n.getText('CCG013_3')}</button>
 					<button id="A_BTN_009" data-bind="click: optionFDialog">#{i18n.getText('CCG013_4')}</button>
 					<button id="A_BTN_006" data-bind="click: optionGDialog">#{i18n.getText('CCG013_5')}</button>
 					<button id="A_BTN_008" data-bind="click: openKdialog">#{i18n.getText('CCG013_103')}</button>
-					<button id="A_BTN_003" data-bind="click: removeWebMenu,enable: !isCreated() " class="danger">#{i18n.getText('CCG013_6')}</button>
+					<button id="A_BTN_003"
+						data-bind="click: removeWebMenu,enable: !isCreated() "
+						class="danger">#{i18n.getText('CCG013_6')}</button>
 					<div class="pull-right">
-						<a class="goout" data-bind="ntsLinkButton: { jump: '/view/ccg/014/a/index.xhtml' }">#{i18n.getText('CCG013_7')}</a>
+						<a class="goout"
+							data-bind="ntsLinkButton: { jump: '/view/ccg/014/a/index.xhtml' }">#{i18n.getText('CCG013_7')}</a>
 					</div>
 				</div>
 			</div>
 			<div id="contents-area">
-				<div id="left-content" class="bg-green caret-right caret-background cf"
+				<div id="left-content"
+					class="bg-green caret-right caret-background cf"
 					style="width: 340px; height: 335px;">
 					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
 						<table id="single-list"
@@ -52,8 +57,10 @@
 				</div>
 				<div class="right-content">
 					<div class="control-group" data-bind="with: currentWebMenu">
-						<div style="vertical-align: middle" data-bind="ntsFormLabel: {constraint: ['WebMenuCode','WebMenuName'],required: true}">#{i18n.getText('CCG013_11')}</div>
-						<span><input style="width: 40px" id="webMenuCode"
+						<div style="vertical-align: middle"
+							data-bind="ntsFormLabel: {constraint: ['WebMenuCode','WebMenuName'],required: true}">#{i18n.getText('CCG013_11')}</div>
+						<span><input style="width: 40px; margin-left: 45px;"
+							id="webMenuCode"
 							data-bind="ntsTextEditor: {value: webMenuCode,name: '#[CCG013_49]',constraint: 'WebMenuCode', required: true, enable: $parent.checkDisabled}" /></span>
 						<span><input style="width: 180px" id="webMenuName"
 							data-bind="ntsTextEditor: {value: webMenuName,name: '#[CCG013_50]',constraint: 'WebMenuName', required: true}" /></span>
@@ -67,33 +74,48 @@
 					</div>
 					<div class="label warning">#{i18n.getText('CCG013_13')}</div>
 					<div id="menu_container">
-						<div id="menubar-tabs" data-bind="with: currentWebMenu, style: { 'width': widthTab()}">
+						<div id="menubar-tabs" data-bind="with: currentWebMenu">
 							<ul class="menubar-navigation cf" data-bind="foreach: menuBars">
 								<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
-									<a data-bind="attr: {href: targetContent}, style: {color: textColor, 'background-color': backgroundColor}, text: menuBarName"></a>
+									<a
+									data-bind="attr: {href: targetContent}, style: {color: textColor, 'background-color': backgroundColor}, text: menuBarName"></a>
 								</li>
 							</ul>
-							<button class="button-add" data-bind="click: $parent.openBdialog.bind($parent)">
+							<button class="button-add button-add-menubar"
+								data-bind="click: $parent.openBdialog.bind($parent)">
+								<img id="add-icon"
+									src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAApCAMAAAEHe6tsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAnUExURf///+7u7hISEgAAABEREe3t7RMTE/7+/mFhYVpaWgcHBwYGBgAAABImP5cAAAANdFJOU////////////////wA96CKGAAAACXBIWXMAABcRAAAXEQHKJvM/AAAArElEQVQ4T82S0Q6DIAxFS+RB//+HR9sDlgS2SNzcMZZyuVhKFJEtlyDbpm+B6EqLGiz6qseo2+hmhdR8BqrVUqokks5d71P/kDJJg7fwMVXKlJ0BE9tJYSh6dfJwlJOxWNHJsND6kbKKiUnlD0TyK7fE2HFBhL463NHRzSIkW1TyxAHBiDJh5YsPGlEae8eBrXA0dn2GP8GIJ410AbEZJKD3yk8vvOerpdeMIi9SewpQGpFI9QAAAABJRU5ErkJggg==" />
 								#{i18n.getText('CCG013_14')}
 							</button>
 							<com:ko-foreach bind="menuBars">
-								<div class="menubar-container" data-bind="attr: {id: 'tab-content-' + menuBarId()}">
+								<div class="menubar-container"
+									data-bind="attr: {id: 'tab-content-' + menuBarId()}">
 									<div class="title-menu cf">
-										<div data-bind="foreach: titleMenu">
-											<div class="title-menu-column valign-top" data-bind="attr:{id: titleMenuId}">
+										<div class="title-menu-container"
+											data-bind="foreach: titleMenu">
+											<div class="title-menu-column valign-top"
+												data-bind="attr:{id: titleMenuId}">
 												<div class="title-menu-name context-menu-title"
 													data-bind="style: {color: textColor, 'background-color': backgroundColor}, text: titleMenuName"></div>
 												<span class="caret-bottom"></span>
-												<ul class="tree-menu" data-bind="foreach: {data: treeMenu}">
-													<li class="context-menu-tree" data-bind="attr:{id: treeMenuId},text: name"></li>
+												<ul class="tree-menu cf"
+													data-bind="foreach: {data: treeMenu}">
+													<li class="context-menu-tree"
+														data-bind="attr:{id: treeMenuId},text: name"></li>
 												</ul>
-												<button class="button-add button-add-treemenu" data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
+												<button class="button-add-treemenu"
+													data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
+													<img id="add-icon-treemenu"
+														src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAApCAMAAAEHe6tsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAnUExURf///+7u7hISEgAAABEREe3t7RMTE/7+/mFhYVpaWgcHBwYGBgAAABImP5cAAAANdFJOU////////////////wA96CKGAAAACXBIWXMAABcRAAAXEQHKJvM/AAAArElEQVQ4T82S0Q6DIAxFS+RB//+HR9sDlgS2SNzcMZZyuVhKFJEtlyDbpm+B6EqLGiz6qseo2+hmhdR8BqrVUqokks5d71P/kDJJg7fwMVXKlJ0BE9tJYSh6dfJwlJOxWNHJsND6kbKKiUnlD0TyK7fE2HFBhL463NHRzSIkW1TyxAHBiDJh5YsPGlEae8eBrXA0dn2GP8GIJ410AbEZJKD3yk8vvOerpdeMIi9SewpQGpFI9QAAAABJRU5ErkJggg==" />
 													#{i18n.getText('CCG013_16')}
 												</button>
 											</div>
 										</div>
 										<div class="unsortable">
-											<button class="button-add" data-bind="click: $parents[1].openCdialog.bind($parents[1], $data)">
+											<button class="button-add"
+												data-bind="click: $parents[1].openCdialog.bind($parents[1], $data)">
+												<img id="add-icon"
+													src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAApCAMAAAEHe6tsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAnUExURf///+7u7hISEgAAABEREe3t7RMTE/7+/mFhYVpaWgcHBwYGBgAAABImP5cAAAANdFJOU////////////////wA96CKGAAAACXBIWXMAABcRAAAXEQHKJvM/AAAArElEQVQ4T82S0Q6DIAxFS+RB//+HR9sDlgS2SNzcMZZyuVhKFJEtlyDbpm+B6EqLGiz6qseo2+hmhdR8BqrVUqokks5d71P/kDJJg7fwMVXKlJ0BE9tJYSh6dfJwlJOxWNHJsND6kbKKiUnlD0TyK7fE2HFBhL463NHRzSIkW1TyxAHBiDJh5YsPGlEae8eBrXA0dn2GP8GIJ410AbEZJKD3yk8vvOerpdeMIi9SewpQGpFI9QAAAABJRU5ErkJggg==" />
 												#{i18n.getText('CCG013_15')}
 											</button>
 										</div>

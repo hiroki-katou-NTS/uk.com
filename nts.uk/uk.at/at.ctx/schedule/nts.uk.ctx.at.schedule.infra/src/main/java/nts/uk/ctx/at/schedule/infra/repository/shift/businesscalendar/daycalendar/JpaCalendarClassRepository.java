@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.daycalendar;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClassRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClass;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClassPK;
 
@@ -61,6 +63,18 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 				.setParameter("classId", classId)
 				.getList(c->toDomainCalendarClass(c));
 	}
+	
+	@Override
+	public List<Integer> getCalendarClassSetByYear(String companyId, String classId, String year) {
+		List<Integer> monthSet =  new ArrayList<>();
+		for(int i=1;i<=12;i++){
+			List<CalendarClass> result = getCalendarClassByYearMonth(companyId, classId, String.format(year+"%02d",i));
+			if(!result.isEmpty()){
+				monthSet.add(i);
+			}
+		}
+		return monthSet;
+	}
 
 	@Override
 	public void addCalendarClass(CalendarClass calendarClass) {
@@ -105,10 +119,12 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 	}
 	@Override
 	public void deleteCalendarClassByYearMonth(String companyId, String classId, String yearMonth) {
-		this.queryProxy().query(DELETE_BY_YEAR_MONTH, KsmmtCalendarClass.class)
+		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
 				.setParameter("companyId", companyId)
 				.setParameter("classId", classId)
 				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
-				.setParameter("endYM", Integer.valueOf(yearMonth+"31"));
+				.setParameter("endYM", Integer.valueOf(yearMonth+"31"))
+				.executeUpdate();
 	}
+	
 }

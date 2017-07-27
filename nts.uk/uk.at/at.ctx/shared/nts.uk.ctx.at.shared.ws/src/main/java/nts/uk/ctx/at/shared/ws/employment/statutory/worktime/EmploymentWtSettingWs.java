@@ -13,13 +13,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.employment.command.EmploymentWtSettingRemoveCommand;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.employment.command.EmploymentWtSettingRemoveCommandHandler;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.employment.command.EmploymentWtSettingSaveCommand;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.employment.command.EmploymentWtSettingSaveCommandHandler;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.employment.find.EmploymentWtSettingDto;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.employment.find.EmploymentWtSettingFinder;
-import nts.uk.ctx.at.shared.app.employment.statutory.worktime.employment.find.EmploymentWtSettingRequest;
+import nts.uk.ctx.at.shared.app.command.employment.statutory.worktime.employment.EmploymentWtSettingRemoveCommand;
+import nts.uk.ctx.at.shared.app.command.employment.statutory.worktime.employment.EmploymentWtSettingRemoveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.employment.statutory.worktime.employment.EmploymentWtSettingSaveCommand;
+import nts.uk.ctx.at.shared.app.command.employment.statutory.worktime.employment.EmploymentWtSettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.employment.statutory.worktime.employment.EmploymentWtSettingDto;
+import nts.uk.ctx.at.shared.app.find.employment.statutory.worktime.employment.EmploymentWtSettingFinder;
+import nts.uk.ctx.at.shared.app.find.employment.statutory.worktime.employment.EmploymentWtSettingRequest;
 
 /**
  * The Class CompanySettingWs.

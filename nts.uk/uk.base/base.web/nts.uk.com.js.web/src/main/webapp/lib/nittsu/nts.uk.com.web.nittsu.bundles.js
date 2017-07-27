@@ -122,6 +122,41 @@ var nts;
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
             }
             util.orDefault = orDefault;
+            function getConstraintMes(primitiveValues) {
+                if (isNullOrEmpty(primitiveValues)) {
+                    return "";
+                }
+                if (!Array.isArray(primitiveValues))
+                    primitiveValues = [primitiveValues];
+                var constraintText = "";
+                _.forEach(primitiveValues, function (primitiveValue) {
+                    var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                    switch (constraint.valueType) {
+                        case 'String':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                            break;
+                        case 'Decimal':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += constraint.min + "～" + constraint.max;
+                            break;
+                        case 'Integer':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += constraint.min + "～" + constraint.max;
+                            break;
+                        default:
+                            constraintText += 'ERROR';
+                            break;
+                    }
+                });
+                return constraintText;
+            }
+            util.getConstraintMes = getConstraintMes;
+            function getConstraintLabel(primitiveValues) {
+                var constraintText = getConstraintMes(primitiveValues);
+                return "<span class='constraint-label'>(" + constraintText + ")</span>";
+            }
+            util.getConstraintLabel = getConstraintLabel;
             function isIn(actual, expects) {
                 for (var i = 0; i < expects.length; i++) {
                     if (actual === expects[i])
@@ -2157,7 +2192,7 @@ var nts;
             request.ajax = ajax;
             function syncAjax(webAppId, path, data, options) {
                 if (typeof arguments[1] !== 'string') {
-                    return ajax.apply(null, _.concat(location.currentAppId, arguments));
+                    return syncAjax.apply(null, _.concat(location.currentAppId, arguments));
                 }
                 var dfd = $.Deferred();
                 options = options || {};
@@ -2356,7 +2391,10 @@ var nts;
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
-                    var content_height = 50 + 20;
+                    var content_height = 20;
+                    if ($("#header").length != 0) {
+                        content_height += 50;
+                    }
                     if ($("#functions-area").length != 0) {
                         content_height += 49;
                     }
@@ -2716,6 +2754,7 @@ var nts;
                         this.occurs = ko.computed(function () { return _this.errors().length !== 0 || _this.gridErrors().length !== 0; });
                         this.allResolved = $.Callbacks();
                         this.allCellsResolved = $.Callbacks();
+                        this.option.show.extend({ notify: "always" });
                         this.errors.subscribe(function () {
                             if (_this.errors().length === 0) {
                                 _this.allResolved.fire();
@@ -2734,6 +2773,7 @@ var nts;
                         });
                     }
                     ErrorsViewModel.prototype.closeButtonClicked = function () {
+                        this.option.show(false);
                     };
                     ErrorsViewModel.prototype.open = function () {
                         this.option.show(true);
@@ -2958,11 +2998,13 @@ var nts;
                         this.build$dialog(options);
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
-                            options.title = '※ダイアログタイトルは基盤で自動化予定';
+                            var dialogName = _this.globalContext.__viewContext["program"]["programName"];
+                            var title = nts.uk.util.isNullOrEmpty(dialogName)
+                                || path !== _this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
-                                title: options.title || "dialog",
+                                title: title,
                                 resizable: options.resizable,
                                 position: {
                                     my: "center",
@@ -2975,14 +3017,45 @@ var nts;
                                         $(this).dialog("option", "position", { my: "center top", at: "center top", of: window, collision: "none" });
                                         $(this).parent().css("position", "absolute");
                                     }
+                                    var $dialogDocument = $(this).parent();
+                                    var $dialogContentDoc = $(this.lastElementChild.contentDocument);
+                                    $dialogDocument.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
+                                    $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
                                 },
                                 beforeClose: function () {
                                 }
                             }).dialog('open');
+                            $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
                             if (_this.parent !== null)
                                 _this.parent.globalContext.nts.uk.ui.block.clear();
                         });
-                        this.globalContext.location.href = uk.request.resolvePath(path);
+                        this.globalContext.location.href = path;
                     };
                     ScreenWindow.prototype.build$dialog = function (options) {
                         this.$dialog = $('<div/>')
@@ -3090,13 +3163,25 @@ var nts;
                 windows.close = close;
                 var sub;
                 (function (sub) {
-                    function modal(path, options) {
+                    function modal(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        path = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                            .mergeRelativePath(path).serialize();
                         options = options || {};
                         options.modal = true;
                         return open(path, options);
                     }
                     sub.modal = modal;
-                    function modeless(path, options) {
+                    function modeless(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        path = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                            .mergeRelativePath(path).serialize();
                         options = options || {};
                         options.modal = false;
                         return open(path, options);
@@ -3774,6 +3859,7 @@ var nts;
                                 e.preventDefault();
                         });
                         container.data("tabindex", container.attr("tabindex"));
+                        container.wrap("<div class='checkbox-wrapper'/>");
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -3840,6 +3926,7 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
+                        container.wrap("<div class='multicheckbox-wrapper'/>");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
                         container.data("init", true);
@@ -4143,7 +4230,7 @@ var nts;
                             container.removeAttr("id");
                         }
                         var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
-                        container.attr("tabindex", "-1");
+                        container.removeAttr("tabindex");
                         var containerClass = container.attr('class');
                         container.removeClass(containerClass);
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
@@ -4155,12 +4242,12 @@ var nts;
                         var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
-                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px");
-                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px");
+                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
+                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
                             $input.before($prevButton).after($nextButton);
                         }
                         if (data.dateFormat === "YYYY") {
-                            var $yearType = $("<label/>").css({ "position": "absolute",
+                            var $yearType = $("<label/>").attr("for", idString).css({ "position": "absolute",
                                 "line-height": "30px",
                                 "right": "42px" });
                             var labelText = fiscalYear ? "年度" : "年";
@@ -5088,6 +5175,8 @@ var nts;
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+                        var tabIndex = $input.attr("tabindex");
+                        $input.data("tabindex", tabIndex);
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
                         var value = data.value;
@@ -5106,11 +5195,23 @@ var nts;
                             $input.attr('disabled', 'disabled');
                             new nts.uk.util.value.DefaultValue().applyReset($input, value);
                         }
-                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
+                        if (readonly === false) {
+                            $input.removeAttr('readonly');
+                            if ($input.data("tabindex") !== undefined) {
+                                $input.attr("tabindex", $input.data("tabindex"));
+                            }
+                            else {
+                                $input.removeAttr("tabindex");
+                            }
+                        }
+                        else {
+                            $input.attr('readonly', 'readonly');
+                            $input.attr("tabindex", -1);
+                        }
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
-                            $input.width(width);
+                            $input.width(width, false);
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
@@ -5192,6 +5293,8 @@ var nts;
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+                        var tabIndex = $input.attr("tabindex");
+                        $input.data("tabindex", tabIndex);
                     };
                     TextEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
@@ -5269,8 +5372,6 @@ var nts;
                             $parent.css({ 'width': '100%' });
                         }
                         $input.css("box-sizing", "border-box");
-                        if (width.trim() != "")
-                            $input.width(width);
                         if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                             $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
@@ -5280,17 +5381,17 @@ var nts;
                             var unit = uk.text.getNumberUnit(this.editorOption.unitID);
                             this.editorOption.symbolChar = unit.unitText;
                             this.editorOption.symbolPosition = unit.position;
-                            this.setupUnit($input);
+                            this.setupUnit($input, width);
                         }
                         else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
-                            this.setupUnit($input);
+                            this.setupUnit($input, width);
                         }
                         if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
                             && nts.uk.util.isNullOrEmpty(data.value())) {
                             data.value(this.editorOption.defaultValue);
                         }
                     };
-                    NumberEditorProcessor.prototype.setupUnit = function ($input) {
+                    NumberEditorProcessor.prototype.setupUnit = function ($input, width) {
                         var $parent = $input.parent();
                         var padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
                         if (padding < 20) {
@@ -5300,6 +5401,9 @@ var nts;
                         $parent.attr("data-content", this.editorOption.symbolChar);
                         var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
                         $input.css(css);
+                        if (width.trim() != "") {
+                            $input.innerWidth(parseInt(width) - 2);
+                        }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
@@ -5456,37 +5560,11 @@ var nts;
                         }
                         if (primitiveValue !== undefined) {
                             $formLabel.addClass(isInline ? 'inline' : 'broken');
-                            var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValue);
+                            var constraintText = uk.util.getConstraintMes(primitiveValue);
                             $('<i/>').text(constraintText).appendTo($formLabel);
                         }
                     };
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    };
-                    NtsFormLabelBindingHandler.buildConstraintText = function (primitiveValues) {
-                        if (!Array.isArray(primitiveValues))
-                            primitiveValues = [primitiveValues];
-                        var constraintText = "";
-                        _.forEach(primitiveValues, function (primitiveValue) {
-                            var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
-                            switch (constraint.valueType) {
-                                case 'String':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
-                                    break;
-                                case 'Decimal':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += constraint.min + "～" + constraint.max;
-                                    break;
-                                case 'Integer':
-                                    constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += constraint.min + "～" + constraint.max;
-                                    break;
-                                default:
-                                    constraintText += 'ERROR';
-                                    break;
-                            }
-                        });
-                        return constraintText;
                     };
                     return NtsFormLabelBindingHandler;
                 }());
@@ -6690,14 +6768,10 @@ var nts;
                                 return selected[primaryKey] === item[primaryKey];
                             }) !== undefined;
                         });
-                        if (!_.isEqual(currentSource, newSources)) {
-                            this.swapper.Model.swapParts[0].bindData(newSources.slice());
-                            this.swapper.Model.transportBuilder.setFirst(newSources);
-                        }
-                        if (!_.isEqual(currentSelectedList, newSelectedList)) {
-                            this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
-                            this.swapper.Model.transportBuilder.setSecond(newSelectedList);
-                        }
+                        this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                        this.swapper.Model.transportBuilder.setFirst(newSources);
+                        this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                        this.swapper.Model.transportBuilder.setSecond(newSelectedList);
                     };
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
                         var handler = this;
@@ -12835,6 +12909,93 @@ var nts;
                     };
                 })(ntsFileUpload || (ntsFileUpload = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_20) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsAccordionBindingHandler = (function () {
+                    function NtsAccordionBindingHandler() {
+                    }
+                    NtsAccordionBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
+                        var realActive = (nts.uk.ntsNumber.isNumber(ko.unwrap(active))) ? Number(ko.unwrap(active)) : ko.unwrap(active);
+                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
+                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
+                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
+                        var header = (data.header !== undefined) ? ko.unwrap(data.header) : "> li > :first-child,> :not(li):even";
+                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var activate = (data.activate !== undefined) ? (data.activate) : function (event, ui) { };
+                        var create = (data.create !== undefined) ? (data.create) : function (event, ui) { };
+                        var container = $(element);
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
+                        container.accordion({
+                            active: realActive,
+                            animate: animate,
+                            collapsible: collapsible,
+                            event: event,
+                            header: header,
+                            heightStyle: heightStyle,
+                            disabled: !enable,
+                            beforeActivate: function (event, ui) {
+                                ui.newPanel.removeClass("disappear");
+                                ui.newPanel.stop(false, false);
+                            },
+                            activate: function (event, ui) {
+                                if (ko.isObservable(active))
+                                    active(container.accordion("option", "active"));
+                                ui.oldPanel.addClass("disappear");
+                                ui.newPanel.removeClass("disappear");
+                                activate.call(this, event, ui);
+                            },
+                            create: function (event, ui) {
+                                container.find(".nts-accordion-content").addClass("disappear");
+                                ui.panel.removeClass("disappear");
+                                create.call(this, event, ui);
+                            },
+                            icons: { "header": "ui-icon-caret-1-s", "activeHeader": "ui-icon-caret-1-n" },
+                            classes: {
+                                "ui-accordion": "ntsAccordion",
+                                "ui-accordion-content": "ui-corner-bottom nts-accordion-content"
+                            }
+                        });
+                    };
+                    NtsAccordionBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
+                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
+                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
+                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
+                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var container = $(element);
+                        var currentOption = container.accordion("option");
+                        if (ko.isObservable(active) && currentOption.active !== ko.unwrap(active))
+                            container.accordion("option", "active", Number(ko.unwrap(active)));
+                        if (currentOption.animate != animate)
+                            container.accordion("option", "animate", animate);
+                        if (currentOption.collapsible != collapsible)
+                            container.accordion("option", "collapsible", collapsible);
+                        if (currentOption.event != event)
+                            container.accordion("option", "event", event);
+                        if (currentOption.heightStyle != heightStyle)
+                            container.accordion("option", "heightStyle", heightStyle);
+                        if (currentOption.disabled != !enable)
+                            container.accordion("option", "disabled", !enable);
+                    };
+                    return NtsAccordionBindingHandler;
+                }());
+                ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
+            })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

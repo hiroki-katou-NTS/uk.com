@@ -44,9 +44,9 @@ module nts.uk.com.view.ccg.share.ccg {
             onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
             onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
             onApplyEmployee: (data: EmployeeSearchDto[]) => void;
-            isShow:  KnockoutObservable<boolean>;
-
-
+            isShow: KnockoutObservable<boolean>;
+            isFistTimeShow: boolean;
+            
             /**
              * Init screen model
              */
@@ -77,6 +77,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedTab = ko.observable('tab-1');
                 self.reloadDataSearch();
                 this.isShow = ko.observable(false);
+                self.isFistTimeShow = true;
             }
 
             /**
@@ -163,10 +164,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
                     self.applyDataSearch();
-                    $(".accordion").accordion({
-                        active: false,
-                        collapsible: true
-                    });
                     dfd.resolve();
                 });
                 
@@ -210,7 +207,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 $('#hor-scroll-button-hide').hide();
                 self.isShow(true);
-                $('#ccg-component').toggle("slide");
+                $('#ccg-component').toggle("slide", function() {
+                    if (self.isFistTimeShow) {
+                        self.applyDataSearch();
+                        self.isFistTimeShow = false;
+                    }
+                });
             }
 
             /**
@@ -218,6 +220,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             searchAllEmployee(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchAllEmployee(self.baseDate()).done(data => {
                     self.onSearchAllClicked(data);
                 }).fail(function(error) {
@@ -245,6 +250,9 @@ module nts.uk.com.view.ccg.share.ccg {
             applyDataSearch(): void {
                 var self = this;
                 // call service search by base date
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data) {
                     self.selectedCodeWorkplace(data);
                     self.reloadDataSearch();
@@ -272,7 +280,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 nts.uk.ui.windows.setShared('baseDate', self.baseDate());
                 nts.uk.ui.windows.setShared('selectedCodeWorkplace', self.selectedCodeWorkplace());
                 
-                nts.uk.ui.windows.sub.modal('/view/ccg/share/dialog/index.xhtml').onClosed(function() {
+                nts.uk.ui.windows.sub.modal('com','/view/ccg/share/dialog/index.xhtml').onClosed(function() {
                     self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('selectedCodeWorkplace'));
                     self.reloadDataSearch();
                     $('#workplaceList').ntsTreeComponent(self.workplaces);
@@ -284,6 +292,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             searchDataEmployee(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchModeEmployee(self.toEmployeeDto()).done(data => {
                     self.employeeinfo.employeeInputList(self.toUnitModelList(data));
                 }).fail(function(error){
@@ -292,13 +303,34 @@ module nts.uk.com.view.ccg.share.ccg {
 
             }
 
+            /**
+             * clear validate client
+             */
+            clearValiate() {
+                $('#inp_baseDate').ntsError('clear');
 
+            }
+
+            /**
+             * validate client
+             */
+            validateClient(): boolean {
+                $("#inp_baseDate").ntsEditor("validate");
+
+                if ($('#inp_baseDate').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
 
             /**
              * function click by button employee login
              */
             getEmployeeLogin(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchEmployeeByLogin(self.baseDate()).done(data => {
                     if (data.length > 0) {
                         self.onSearchOnlyClicked(data[0]);
@@ -313,6 +345,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             searchOfWorkplace(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchOfWorkplace(self.baseDate()).done(data => {
                     self.onSearchOfWorkplaceClicked(data);
                 }).fail(function(error) {
@@ -325,6 +360,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             searchWorkplaceChild(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchWorkplaceChild(self.baseDate()).done(data => {
                     self.onSearchOfWorkplaceClicked(data);
                 }).fail(function(error) {
@@ -337,6 +375,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             applyEmployee(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 if (self.isSelectAllEmployee) {
                     service.searchModeEmployee(self.toEmployeeDto()).done(data => {
                         self.onApplyEmployee(data);
@@ -360,6 +401,9 @@ module nts.uk.com.view.ccg.share.ccg {
             
             public getSelectedCodeEmployee(): string[]{
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 if(self.isMultiple){
                     return self.selectedCodeEmployee();    
                 }

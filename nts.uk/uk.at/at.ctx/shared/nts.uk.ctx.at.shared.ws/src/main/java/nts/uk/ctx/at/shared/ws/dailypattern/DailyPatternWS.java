@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.ws.dailypattern;
 
 import java.util.List;
@@ -5,15 +9,15 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.dailypattern.command.DailyPatternCommand;
-import nts.uk.ctx.at.shared.app.dailypattern.command.DailyPatternCommandHandler;
-import nts.uk.ctx.at.shared.app.dailypattern.find.DailyPatternFinder;
-import nts.uk.ctx.at.shared.app.dailypattern.find.dto.DailyPatternDto;
+import nts.uk.ctx.at.shared.app.command.dailypattern.DailyPatternCommand;
+import nts.uk.ctx.at.shared.app.command.dailypattern.DailyPatternCommandHandler;
+import nts.uk.ctx.at.shared.app.find.dailypattern.DailyPatternFinder;
+import nts.uk.ctx.at.shared.app.find.dailypattern.dto.DailyPatternDto;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DailyPatternWS.
  */
@@ -60,5 +64,16 @@ public class DailyPatternWS extends WebService {
 	@Path("find/setting")
 	public List<DailyPatternDto> findByCompanyId() {
 		return this.patternCalendarFinder.findPatternCalendarByCompanyId();
+	}
+	/**
+	 * deleted bypattern cd.
+	 *
+	 * @param patternCd the pattern cd
+	 * @return the list
+	 */
+	@POST
+	@Path("deleted/pattern/{patternCd}")
+	public void deledtedBypatternCd(@PathParam("patternCd") String patternCd) {
+		this.patternCalendarFinder.deleted(patternCd);
 	}
 }

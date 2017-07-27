@@ -41,15 +41,15 @@
             self.dataItems = ko.observableArray([]);
             
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key:'code', width: 55 },
-                { headerText: nts.uk.resource.getText("CCG013_50"), prop: 'name', key:'name', width: 167 },
+                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key:'code', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_50"), prop: 'name', key:'name', width: 167, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key:'primaryKey', width: 1, hidden: true }
             ]);
             
             self.newColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 55 },
-                { headerText: nts.uk.resource.getText("CCG013_52"), prop: 'targetItem', width: 160 },
-                { headerText: nts.uk.resource.getText("CCG013_53"), prop: 'name', width: 160 },
+                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_52"), prop: 'targetItem', width: 160, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_53"), prop: 'name', width: 160, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key:'primaryKey', width: 1, hidden: true }
             ]);
             
@@ -94,7 +94,7 @@
                         }); 
                         if (standardMenu) {
                             var order = self.newItems().length + 1;
-                            var primaryKey = standardMenu.primaryKey;
+                            var primaryKey = nts.uk.util.randomId();
                             var data = new ItemModel(primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system);
                             self.newItems.push(data);
                             self.tempItems.push(data);
@@ -105,6 +105,7 @@
                 self.disableSwapButton();
                 
                 dfd.resolve();   
+                $("#combo-box").focus();
             }).fail(function() {
                 dfd.reject();    
             });
@@ -118,7 +119,7 @@
         disableSwapButton(): void{
             var self = this;
             
-            if(self.newItems().count() === 0){
+            if(self.newItems().length === 0){
                 self.disableSwap(false);
             } else {
                 self.disableSwap(true);
@@ -157,7 +158,7 @@
             var list001: Array<ItemModel> = [];
             var index = 0;
             _.forEach(self.allItems(), function(item: ItemModel) {
-                if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.トップページ) || (item.system == 0 && item.menu_cls == Menu_Cls.トップページ)) {
+                if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
                     var id = nts.uk.util.randomId();
                     list001.push(new ItemModel(id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                     index++;
@@ -177,7 +178,7 @@
             _.forEach(self.items(), function(item: ItemModel) {
                 if (_.indexOf(self.currentCodeList(), item.primaryKey) !== -1) {
                     item.order = self.newItems().length + 1;
-                    item.primaryKey = item.code + item.order;
+                    item.primaryKey = nts.uk.util.randomId();
                     self.newItems.push(new ItemModel(item.primaryKey, item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system));
                 } 
             })
@@ -193,9 +194,7 @@
         remove(): void{
             var self = this;
             var newItems = self.newItems();
-            var countItems = self.newCurrentCodeList().length;
-            var indexRemoved = _.findIndex(newItems, function(currentObject: ItemModel) { return _.indexOf(self.newCurrentCodeList(), currentObject.primaryKey) !== -1; });
-            
+                                   
             _.remove(newItems, function(currentObject: ItemModel) {
                 return _.indexOf(self.newCurrentCodeList(), currentObject.primaryKey) !== -1;
             });
@@ -206,41 +205,7 @@
                 self.newItems.push(item);
             })   
             
-            self.newCurrentCodeList.removeAll();
-            //Set focus for an item or multiple items
-            if(countItems == 1){
-                self.setFocusItem(newItems, indexRemoved);
-            } else if(countItems > 0 && countItems >= 2) {
-                self.setFocusItems();
-            }
-            
             self.disableSwapButton();
-        }
-        
-        /**
-         * Set focus for an item
-         */
-        setFocusItem(newItems, itemOrder: number): void{
-            var self = this;
-            if (newItems.length == 0) {
-                return;    
-            }
-            
-            if (itemOrder == newItems.length) {
-                self.newCurrentCodeList.push(newItems[itemOrder - 1].primaryKey);
-            } else if (newItems.length > itemOrder) {
-                self.newCurrentCodeList.push(newItems[itemOrder].primaryKey);   
-            } else {
-                self.newCurrentCodeList.push(newItems[itemOrder + 1].primaryKey);       
-            }
-        }
-        
-        /**
-         * Set focus for multiple items
-         */
-        setFocusItems(): void{
-            var self = this;
-            
         }
                 
         /**
@@ -252,7 +217,7 @@
                         
             nts.uk.ui.windows.setShared("CCG013D_MENUS", self.newItems());
             
-            self.closeDialog();
+            nts.uk.ui.windows.close();
         }
         
         /**
@@ -299,14 +264,14 @@
     }
      
     enum Menu_Cls {
-        標準 = 0,
-        任意項目申請,
-        携帯,
-        タブレット,
-        コード名称,
-        グループ会社メニュー,
-        カスタマイズ,
-        オフィスヘルパー稟議書,
-        トップページ
+        Standard = 0,
+        OptionalItemApplication,
+        MobilePhone,
+        Tablet,
+        CodeName,
+        GroupCompanyMenu,
+        Customize,
+        OfficeHelper,
+        TopPage
     }
  }

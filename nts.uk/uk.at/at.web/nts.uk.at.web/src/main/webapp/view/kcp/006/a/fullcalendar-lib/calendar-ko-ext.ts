@@ -23,7 +23,7 @@ module nts.uk.at.view.kcp006.a {
                 event.preventDefault();
                 event.stopPropagation();
                 var choosenDate = $(this).attr("data-date");
-                if (choosenDate){
+                if (choosenDate) {
                     setting.cellClick.call(this, choosenDate);
                 }
             });
@@ -63,7 +63,6 @@ module nts.uk.at.view.kcp006.a {
             eventUpdatable = ko.unwrap(data.eventUpdatable());
             holidayDisplay = ko.unwrap(data.holidayDisplay());
             cellButtonDisplay = ko.unwrap(data.cellButtonDisplay());
-            if (data.firstDay) { firstDay = data.firstDay };
             if (data.startDate) {
                 if (moment(yearMonth * 100 + data.startDate, "YYYYMMDD")._isValid) {
                     startDate = data.startDate;
@@ -83,7 +82,7 @@ module nts.uk.at.view.kcp006.a {
             // Container
             let container = $(element);
             //set width
-            container.css("width", "600px");
+            container.css("width", "700px");
             $(container).fullCalendar({
                 header: false,
                 defaultView: 'customMonth',
@@ -93,8 +92,11 @@ module nts.uk.at.view.kcp006.a {
                         duration: { months: 3 }
                     }
                 },
+                eventLimitText: function(countMore) {
+                    return '。。。';
+                },
+                eventOrder: '',
                 defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
-                firstDay: firstDay,
                 height: 500,
                 showNonCurrentDates: false,
                 handleWindowResize: false,
@@ -130,7 +132,7 @@ module nts.uk.at.view.kcp006.a {
             eventUpdatable = ko.unwrap(data.eventUpdatable());
             holidayDisplay = ko.unwrap(data.holidayDisplay());
             cellButtonDisplay = ko.unwrap(data.cellButtonDisplay());
-            if (data.firstDay) { firstDay = data.firstDay };
+            if (data.firstDay) { firstDay = ko.unwrap(data.firstDay()) };
             if (data.startDate) {
                 if (moment(yearMonth * 100 + data.startDate, "YYYYMMDD")._isValid) {
                     startDate = data.startDate;
@@ -197,6 +199,7 @@ module nts.uk.at.view.kcp006.a {
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
             fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
                 $(container).fullCalendar('option', {
+                    firstDay: firstDay,
                     validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
                     viewRender: function(view, element) {
                         fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
@@ -339,7 +342,6 @@ module nts.uk.at.view.kcp006.a {
         eventAfterAllRender(currentCalendar, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable): void {
             // no display more event
             $("#" + currentCalendar + " .fc-more").prop('onclick', null).off('click');
-            $("#" + currentCalendar + " .fc-more").html("。。。");
             // add div td-container
             let lstTdHeader = $("#" + currentCalendar + " .fc-day-top");
             for (let i = 0; i < lstTdHeader.length; i++) {
@@ -407,6 +409,7 @@ module nts.uk.at.view.kcp006.a {
                 $(numberRow[i]).addClass("holiday");
                 $(headers[i]).append(numberRow[i]);
             }
+            $("#" + currentCalendar + " .holiday td span").addClass("limited-label");
             $("#" + currentCalendar + " .holiday td span").html("");
             //update holiday cell
             for (let i = 0; i < lstHoliday.length; i++) {

@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.basic.dom.organization.department.DepartmentCode
+					nts.uk.ctx.basic.dom.organization.department.DepartmentName
+					nts.uk.ctx.basic.dom.organization.department.DepartmentGenericName
+					nts.uk.shr.com.primitive.Memo
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cps008.a.style.css" />
+			<com:scriptfile path="cps008.a.service.js" />
+			<com:scriptfile path="cps008.a.vm.js" />
+			<com:scriptfile path="cps008.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" >
+				<button id="A_BTN_NEW" 
+					data-bind=" enable: $root.errors.isEmpty" >#{i18n.getText('CPS008_3')}</button>
+				<button id="A_BTN_REGISTER"  class="proceed">#{i18n.getText('CPS008_4')}</button>
+				<button id="A_BTN_COPPY" data-bind = "click : openDialogCoppy">#{i18n.getText('CPS008_5')}</button>
+				<button id="A_BTN_DELETE"  class="danger">#{i18n.getText('CPS008_6')}</button>
+				<a class="goout" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('CPS008_7')}</a>
+			</div>
+			<div id="contents-area">
+				<div id="left-content" class="relative bg-green caret-right caret-background">
+					<i class="icon icon-searchbox"></i>
+					<div class="cf">
+						<div style="float:left">
+		 					<div style="width: 380px" data-bind="ntsSearchBox: {targetKey: 'code', comId: 'multi-list',  
+		 						items: items, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />		 
+							<table id="multi-list" data-bind="ntsGridList: {
+									height: 320,
+									options: items,
+									optionsValue: 'code',
+									columns: columns,
+									multiple: false,
+									value: currentCode}">
+							</table>
+						</div>
+					</div>
+				</div>
+				
+				
+				<div id="right-content">
+					<div id="right-content">
+					<table class="table_content">
+						<colgroup>
+							<col width="220px" />
+							<col width="*" />
+						</colgroup>
+
+						<tr>
+							<td class="row_1">
+								<div
+									data-bind="ntsFormLabel: { constraint: ['DepartmentCode','DepartmentName'] , required: true }">
+									コード/名称</div>
+							</td>
+							<td class="valign-center">
+								<div>
+									<div class="input_002 input_code">
+										<input id="A_INP_CODE" style="width: 80px"
+											data-bind="ntsTextEditor: {
+											value: A_INP_LAYOUT_CODE,
+											enable: A_INP_LAYOUT_CODE_ENABLE}" />
+									</div>
+
+									<div class="input_002 input_name">
+										<input id="A_INP_DEPNAME" style="width: 180px"
+											data-bind="ntsTextEditor: {
+											value: A_INP_LAYOUT_NAME,
+											enable: A_INP_LAYOUT_NAME_ENABLE
+											}" />
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+					
+					<div>
+						<button class="x-large">#{i18n.getText('CPS008_42')}</button>
+					</div>
+				</div>
+				</div>
+				<div></div>
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

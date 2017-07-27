@@ -196,7 +196,7 @@ module nts.uk.at.view.ksm005.c {
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
-                    maxRows: 17
+                    maxRows: 15
                 }; 
                 
             }
@@ -243,7 +243,7 @@ module nts.uk.at.view.ksm005.c {
                         self.enableSystemChange(true);
                     } else {
                         self.monthlyPatternCode = '';
-                        self.monthlyPatternSetting('');
+                        self.monthlyPatternSetting(nts.uk.resource.getText("KSM005_43"));
                         self.enableSave(true);
                         self.enableDelete(false);
                         self.enableSystemChange(true);

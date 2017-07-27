@@ -19,12 +19,12 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KcsmtContCalendarSet.
+ * The Class KdpstDailyPatternSet.
  */
 @Setter
 @Getter
 @Entity
-@Table(name = "KDPST_DAILY_PATTERN_SET")
+@Table(name = "KDPMT_DAILY_PATTERN_SET")
 public class KdpstDailyPatternSet extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
@@ -32,7 +32,7 @@ public class KdpstDailyPatternSet extends UkJpaEntity implements Serializable {
 	
     /** The kcsmtContCalendarSetPK. */
     @EmbeddedId
-    private KdpstDailyPatternSetPK kcsmtContCalendarSetPK;
+    private KdpstDailyPatternSetPK kdpstDailyPatternSetPK;
 	
     /** The pattern name. */
     @Basic(optional = false)
@@ -43,46 +43,47 @@ public class KdpstDailyPatternSet extends UkJpaEntity implements Serializable {
     @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
             @JoinColumn(name = "PATTERN_CD", referencedColumnName = "PATTERN_CD", insertable = true, updatable = true)})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    public List<KdpstDailyPatternVal> listContCalender;
+    public List<KdpstDailyPatternVal> listKdpstDailyPatternVal;
     
     /**
      * Instantiates a new kcsmt cont calendar set.
      */
     public KdpstDailyPatternSet() {
+    	super();
     }
-//    
-//    /* (non-Javadoc)
-//     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
-//     */
-//    @Override
-//    public int hashCode() {
-//        int hash = 0;
-//        hash += (knlmtNursingLeaveSetPK != null ? knlmtNursingLeaveSetPK.hashCode() : 0);
-//        return hash;
-//    }
-//
-//    /* (non-Javadoc)
-//     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
-//     */
-//    @Override
-//    public boolean equals(Object object) {
-//        if (!(object instanceof KnlmtNursingLeaveSet)) {
-//            return false;
-//        }
-//        KnlmtNursingLeaveSet other = (KnlmtNursingLeaveSet) object;
-//        if ((this.knlmtNursingLeaveSetPK == null && other.knlmtNursingLeaveSetPK != null)
-//                || (this.knlmtNursingLeaveSetPK != null && !this.knlmtNursingLeaveSetPK.equals(
-//                        other.knlmtNursingLeaveSetPK))) {
-//            return false;
-//        }
-//        return true;
-//    }
+    
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (kdpstDailyPatternSetPK != null ? kdpstDailyPatternSetPK.hashCode() : 0);
+        return hash;
+    }
+
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof KdpstDailyPatternSet)) {
+            return false;
+        }
+        KdpstDailyPatternSet other = (KdpstDailyPatternSet) object;
+        if ((this.kdpstDailyPatternSetPK == null && other.kdpstDailyPatternSetPK != null)
+                || (this.kdpstDailyPatternSetPK != null && !this.kdpstDailyPatternSetPK.equals(
+                        other.kdpstDailyPatternSetPK))) {
+            return false;
+        }
+        return true;
+    }
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
      */
     @Override
     protected Object getKey() {
-        return this.kcsmtContCalendarSetPK;
+        return this.kdpstDailyPatternSetPK;
     }
 
 }

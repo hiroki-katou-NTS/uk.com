@@ -46,8 +46,14 @@ public class ClassifiBWSaveCommandHandler extends CommandHandler<ClassifiBWSaveC
 		// Get Classification Code
 		String classifiCode = command.getClassifiBasicWork().getClassificationCode();
 		
+//		// Get Worktype Code
+//		String worktypeCode = command.getClassifiBasicWork().getBasicWorkSetting().get(0).getWorkTypeCode();
+		
+		// Get workdayDivision
+		Integer workdayDivision = command.getClassifiBasicWork().getBasicWorkSetting().get(0).getWorkDayDivision();
+		
 		// Find if exist
-		Optional<ClassificationBasicWork> optional = this.repository.find(companyId, classifiCode);
+		Optional<ClassificationBasicWork> optional = this.repository.find(companyId, classifiCode, workdayDivision);
 
 		// Convert to Domain
 		ClassificationBasicWork classifiBasicWork = command.toDomain();

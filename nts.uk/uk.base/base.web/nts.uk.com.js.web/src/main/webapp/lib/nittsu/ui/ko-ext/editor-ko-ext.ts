@@ -77,6 +77,9 @@ module nts.uk.ui.koExtentions {
             }));
                
             new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+            
+            let tabIndex = $input.attr("tabindex");
+            $input.data("tabindex", tabIndex);
         }
 
         update($input: JQuery, data: any) {
@@ -96,11 +99,21 @@ module nts.uk.ui.koExtentions {
                $input.attr('disabled', 'disabled');
                new nts.uk.util.value.DefaultValue().applyReset($input, value);
             }
-            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
+            if (readonly === false) {
+                $input.removeAttr('readonly'); 
+                if ($input.data("tabindex") !== undefined){
+                    $input.attr("tabindex", $input.data("tabindex"));        
+                } else {
+                    $input.removeAttr("tabindex");    
+                }
+            } else {
+                $input.attr('readonly', 'readonly');
+                $input.attr("tabindex", -1);
+            }
             $input.attr('placeholder', placeholder);
             $input.css('text-align', textalign);
             if (width.trim() != "")
-                $input.width(width);
+                $input.width(width, false);
             // Format value
             var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
             $input.val(formatted);
@@ -190,6 +203,9 @@ module nts.uk.ui.koExtentions {
             }));
                 
             new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+            
+            let tabIndex = $input.attr("tabindex");
+            $input.data("tabindex", tabIndex);
         }
 
         update($input: JQuery, data: any) {
@@ -279,8 +295,7 @@ module nts.uk.ui.koExtentions {
                 $parent.css({ 'width': '100%' });
             }
             $input.css("box-sizing", "border-box");
-            if (width.trim() != "")
-                $input.width(width);
+            
             if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                 $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                 var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
@@ -289,9 +304,9 @@ module nts.uk.ui.koExtentions {
                 let unit = text.getNumberUnit(this.editorOption.unitID);
                 this.editorOption.symbolChar = unit.unitText;
                 this.editorOption.symbolPosition = unit.position;
-                this.setupUnit($input);
+                this.setupUnit($input, width);
             } else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
-                this.setupUnit($input);
+                this.setupUnit($input,　width);
             }
             if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 
                 && nts.uk.util.isNullOrEmpty(data.value())){
@@ -299,17 +314,22 @@ module nts.uk.ui.koExtentions {
             }
         }
         
-        setupUnit ($input: JQuery) {
+        setupUnit ($input: JQuery, width: string) {
             let $parent = $input.parent();
             let padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
             if (padding < 20 ){
                 padding = 20;        
             }
+            
             $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
             $parent.attr("data-content", this.editorOption.symbolChar);
             
             let css = this.editorOption.symbolPosition === 'right' ? {"padding-right": padding + "px"} : {"padding-left": padding + "px"};
             $input.css(css);        
+            
+            if (width.trim() != "") {
+                $input.innerWidth(parseInt(width) - 2);//　-　$input.innerWidth() + $input.width()) - ($input.outerWidth() - $input.innerWidth());
+            }
         }
 
         getDefaultOption(): any {

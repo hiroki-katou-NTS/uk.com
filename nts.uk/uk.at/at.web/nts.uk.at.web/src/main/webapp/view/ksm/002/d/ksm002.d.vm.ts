@@ -22,10 +22,10 @@ module ksm002.d{
             countItem: KnockoutObservable<number>;
             // data receive from mother screen
             param: IData;
+            //date value
+            dateValue: KnockoutObservable<any>;
             constructor() {
                 let self=this;
-                self.startMonth = ko.observable(null);
-                self.endMonth = ko.observable(null);
                 self.specificDateItem = ko.observableArray([]);
                 self.dayInWeek = ko.observableArray([]);
                 self.enable = ko.observable(false);
@@ -38,16 +38,22 @@ module ksm002.d{
                 self.workPlace = ko.observable("");
                 self.countDay = ko.observable(0);
                 self.countItem = ko.observable(0);
-                self.param = null; 
+                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null}; 
+                 //date value
+                self.dateValue = ko.observable({startDate: self.param.startDate.toString(), endDate: self.param.endDate.toString()});
+                self.startMonth = ko.observable(self.dateValue().startDate);
+                self.endMonth = ko.observable(self.dateValue().startDate);
+                self.enable.subscribe(function(code){
+                    if(code==true){
+                        $('#day_0').ntsError('clear');
+                    }
+                });
             }
-    
-            
-    
             /** get data when start dialog **/
             startPage(): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred();
-                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
                 self.endMonth(self.param.endDate);
                 self.startMonth(self.param.startDate);
                 // label to display work place D1_2
@@ -72,6 +78,7 @@ module ksm002.d{
                     if(self.specificDateItem().length==0){
                         nts.uk.ui.dialog.info({ messageId: "Msg_135" }).then(function(){nts.uk.ui.windows.close();});
                     }
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
@@ -98,15 +105,18 @@ module ksm002.d{
             }
             /** submit dialog **/
             submitDialog(){
+                nts.uk.ui.block.invisible();
                 let self = this;
                 let listDayToUpdate: Array<number> = [];
                 let listTimeItemToUpdate: Array<number> =[];
                 self.countDay(0);
                 self.countItem(0);
+                let update = 1;
                  nts.uk.ui.errors.clearAll();
                 // check start date <= end date
                 if(self.startMonth() > self.endMonth()){
                     $('#startMonth').ntsError('set', {messageId:"Msg_136"});
+                    update = 0;
                 }
                 // check not choose any day in a week
                 _.each(self.dayInWeek(), function(obj: viewmodel.DayInWeekItem) {
@@ -116,6 +126,7 @@ module ksm002.d{
                 });
                 if(self.countDay() == self.dayInWeek().length && self.enable() == false){
                     $('#day_0').ntsError('set', {messageId:"Msg_137"});
+                    update = 0;
                 }
                 // check not choose any item
                 _.each(self.specificDateItem(), function(obj1: viewmodel.SpecificDateItem) {
@@ -128,6 +139,7 @@ module ksm002.d{
                 });
                 if(self.countItem() == self.specificDateItem().length){
                     $('#item_0').ntsError('set', {messageId:"Msg_138"});
+                    update = 0;
                 }
                 for(let i = 0; i < self.dayInWeek().length; i++){
                     if(self.dayInWeek()[i].choose()==1){
@@ -137,13 +149,21 @@ module ksm002.d{
                 if(self.enable()==true){
                     listDayToUpdate.push(0);     
                 }
-                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), self.param.workplaceObj.id);
-                service.updateSpecificDateSet(object).done(function(data) {
-                    nts.uk.ui.windows.close(); 
-                }).fail(function(res) { 
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-                    dfd.reject(res); 
-                    });
+                if(self.param.workplaceObj==null || self.param.workplaceObj === undefined){
+                   let id = '';
+                }else{
+                    let id = self.param.workplaceObj.id;
+                }
+                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), id);
+                if(update ==1){
+                    service.updateSpecificDateSet(object).done(function(data) {
+                        nts.uk.ui.windows.close(); 
+                    }).fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});
+                        dfd.reject(res); 
+                        });
+                }
+                nts.uk.ui.block.clear();
             }
         }
         // item for radio button
@@ -167,6 +187,11 @@ module ksm002.d{
                 this.useAtr = ko.observable(useAtr);
                 this.specificDateItemNo = ko.observable(specificDateItemNo);
                 this.specificName = ko.observable(specificName);
+                this.useAtr.subscribe(function(code){
+                    if(code ==1 ){ 
+                        $('#item_0').ntsError('clear');
+                    }
+                });
             }
         }
         // A day in a week D1_7
@@ -176,6 +201,11 @@ module ksm002.d{
             constructor(day: string, choose: number){
                 this.day = ko.observable(day);
                 this.choose = ko.observable(choose);
+                this.choose.subscribe(function(code){
+                    if(code ==1 ){
+                        $('#day_0').ntsError('clear');
+                    }
+                });
             }
         }
         // A object to update 
@@ -200,7 +230,7 @@ module ksm002.d{
         // a object was received from mother screen
         interface IData {
             util: number,
-            workplaceObj: any,
+            workplaceObj?: any,
             startDate: number,
             endDate: number
         }

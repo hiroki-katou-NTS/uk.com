@@ -1,75 +1,57 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.dailypattern;
+
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
-// TODO: Auto-generated Javadoc
 /**
- * Gets the calendar setting.
- *
- * @return the calendar setting
+ * The Class DailyPattern.
  */
 @Getter
-public class DailyPattern extends AggregateRoot{
-	
+public class DailyPattern extends AggregateRoot {
+
 	/** The company id. */
-	private String companyId;
-	
+	private CompanyId companyId;
+
 	/** The pattern code. */
-	private String patternCode;
-	
+	private PatternCode patternCode;
+
 	/** The pattern name. */
-	private String patternName;
-	
-	/** The work type codes. */
-	private List<String> workTypeCodes;
-	
-	/** The work house codes. */
-	private List<String> workHouseCodes;
-	
-	/** The calendar setting. */
-	private DailyPatternSetting calendarSetting;
+	private PatternName patternName;
+
+	/** The list daily pattern val. */
+	private List<DailyPatternVal> listDailyPatternVal;
 
 	/**
-	 * Instantiates a new pattern calendar.
-	 */
-	public DailyPattern(){
-		
-	}
-	
-	/**
-	 * Instantiates a new pattern calendar.
+	 * Instantiates a new daily pattern.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public DailyPattern(DailyPatternGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.patternCode = memento.getPatternCode();
 		this.patternName = memento.getPatternName();
-		this.workTypeCodes = memento.getWorkTypeCodes();
-		this.workHouseCodes = memento.getWorkHouseCodes();
-		this.calendarSetting = memento.getCalendarSetting();
+		this.listDailyPatternVal = memento.getListDailyPatternVal();
 	}
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(DailyPatternSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setPatternCode(this.patternCode);
 		memento.setPatternName(this.patternName);
-		memento.setWorkTypeCodes(this.workTypeCodes);
-		memento.setWorkHouseCodes(this.workHouseCodes);
-		memento.setCalendarSetting(new DailyPatternSetting(new DailyPatternSettingGetMemento() {
-			
-			@Override
-			public NumberDayDaily getNumberDayCalendar() {
-				return new NumberDayDaily(1);
-			}
-		}));
+		memento.setListDailyPatternVal(this.listDailyPatternVal);
 	}
-	
+
 }

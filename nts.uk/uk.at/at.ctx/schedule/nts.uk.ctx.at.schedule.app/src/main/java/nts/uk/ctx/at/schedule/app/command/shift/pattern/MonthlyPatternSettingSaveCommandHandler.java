@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSetting;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSetting;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
 
 /**
  * The Class MonthlyPatternSettingAddCommandHandler.
@@ -47,8 +47,8 @@ public class MonthlyPatternSettingSaveCommandHandler
 		
 		// check exist data
 		if (monthlyPatternSetting.isPresent()) {
-			this.repository.remove(monthlyPatternSetting.get().getEmployeeId(),
-					monthlyPatternSetting.get().getMonthlyPatternCode().v());
+			this.repository.update(domain);
+			return;
 		}
 		// add data if not exist data
 		this.repository.add(domain);

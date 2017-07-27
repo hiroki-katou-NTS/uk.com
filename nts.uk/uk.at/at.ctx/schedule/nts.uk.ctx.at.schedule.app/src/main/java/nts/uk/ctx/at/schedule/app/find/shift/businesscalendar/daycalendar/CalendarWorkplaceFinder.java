@@ -21,6 +21,10 @@ public class CalendarWorkplaceFinder {
 		return list;
 	}
 	
+	public List<Integer> getCalendarWorkPlaceSetByYear(String workPlaceId, String yearMonth){
+		return this.calendarWorkPlaceRepository.getCalendarWorkPlaceSetByYear(workPlaceId, yearMonth.substring(0, 4));
+	}
+	
 	public List<CalendarWorkplaceDto> getWorkplaceByYearMonth(String workPlaceId, String yearMonth){
 		return this.calendarWorkPlaceRepository.getCalendarWorkPlaceByYearMonth(workPlaceId, yearMonth)
 				.stream()

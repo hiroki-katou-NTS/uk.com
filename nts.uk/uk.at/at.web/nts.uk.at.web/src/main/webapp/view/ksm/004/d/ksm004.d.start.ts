@@ -3,6 +3,8 @@ module ksm004.d {
         var screenModel = new ksm004.d.viewmodel.ScreenModel();
 
             __viewContext.bind(screenModel);
-            //$("#itemname").focus();
+            //forcus start range date picker
+            $(".ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component").focus();
+
     });
-}
+}   

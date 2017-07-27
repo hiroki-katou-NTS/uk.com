@@ -19,6 +19,13 @@ public interface UsageUnitSettingRepository {
 	void update(UsageUnitSetting setting);
 
 	/**
+	 * Creates the.
+	 *
+	 * @param setting the setting
+	 */
+	void create(UsageUnitSetting setting);
+
+	/**
 	 * Find by company.
 	 *
 	 * @param companyId the company id

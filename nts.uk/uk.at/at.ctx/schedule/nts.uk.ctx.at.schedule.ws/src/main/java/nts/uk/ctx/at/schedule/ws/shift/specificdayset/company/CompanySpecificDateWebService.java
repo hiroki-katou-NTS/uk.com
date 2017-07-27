@@ -38,10 +38,10 @@ public class CompanySpecificDateWebService extends WebService {
 	}
 
 	@POST
-	@Path("getcompanyspecificdaysetbydatewithname/{processDate}/{useatr}")
+	@Path("getcompanyspecificdaysetbydatewithname/{processDate}")
 	public List<CompanySpecificDateDto> getCompanySpecificDateByCompanyWithName(
-			@PathParam("processDate") String processDate, @PathParam("useatr") int useatr) {
-		return this.find.getComSpecByDateWithName(processDate, useatr);
+			@PathParam("processDate") String processDate) {
+		return this.find.getComSpecByDateWithName(processDate);
 	}
 	
 	@POST
@@ -52,7 +52,7 @@ public class CompanySpecificDateWebService extends WebService {
 	
 	@POST
 	@Path("updatecompanyspecificdate")
-	public void UpdateCompanySpecificDate(List<CompanySpecificDateCommand> lstUpdComSpecificDateItem) {
+	public void UpdateCompanySpecificDate(List<UpdateCompanySpecificDateCommand> lstUpdComSpecificDateItem) {
 		this.updateCommand.handle(lstUpdComSpecificDateItem);
 	}
 	

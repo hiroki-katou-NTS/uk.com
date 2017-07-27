@@ -30,15 +30,19 @@ module nts.uk.at.view.kmk012.d {
                 self.dayMonthChangeModel = new DayMonthChangeModel();
                 service.findByMasterClosureHistory(input).done(function(data) {
                     self.closureDetailModel.updateData(data);
-                    self.updateDayMonthModel();
-                    self.updateDayMonthChangeModel();
                 });
                 self.closureDetailModel.month.subscribe(function(){
+                    if (self.validateClient()) {
+                        return;
+                    }
                     self.updateDayMonthModel();
                     self.updateDayMonthChangeModel();
                 });
                 
                 self.closureDetailModel.closureDateChange.subscribe(function() {
+                    if (self.validateClient()) {
+                        return;
+                    }
                     self.updateDayMonthChangeModel();
                 });
             }
@@ -116,6 +120,7 @@ module nts.uk.at.view.kmk012.d {
                 dto.endDate = 999912;
                 dto.startDate = self.closureDetailModel.month();
                 dto.closureDate = self.closureDetailModel.closureDateChange();
+                dto.closureName = self.closureDetailModel.closureName();
                 return dto;
             }
             
@@ -169,9 +174,6 @@ module nts.uk.at.view.kmk012.d {
 
         export class ClosureDetailModel {
 
-            /** The history id. */
-            historyId: KnockoutObservable<string>;
-
             /** The closure id. */
             closureId: KnockoutObservable<number>;
 
@@ -200,7 +202,6 @@ module nts.uk.at.view.kmk012.d {
             constructor() {
                 this.closureId = ko.observable(0);
                 this.useClassification = ko.observable(0)
-                this.historyId = ko.observable('');
                 this.closureName = ko.observable('');
                 this.closureDate = ko.observable(0);
                 this.closureDateChange = ko.observable(0);
@@ -212,7 +213,6 @@ module nts.uk.at.view.kmk012.d {
             updateData(dto: ClosureDetailDto) {
                 this.closureId(dto.closureId);
                 this.useClassification(dto.useClassification);
-                this.historyId(dto.historyId);
                 this.closureName(dto.closureName);
                 this.closureDate(dto.closureDate);
                 this.closureDateChange(dto.closureDate);

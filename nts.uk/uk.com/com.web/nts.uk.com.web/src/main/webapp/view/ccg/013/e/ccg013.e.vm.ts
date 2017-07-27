@@ -39,8 +39,11 @@
                 currentWebMenuCode: self.currentWebMenuCode(),
                 allowOverwrite: allowOverwrite,
                 webMenuCode: code,
-                webMenuName: name    
+                webMenuName: name
             }
+            
+            $("#web-code").trigger("validate");
+            $("#web-name").trigger("validate");
             
             if(nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
@@ -50,7 +53,7 @@
             service.copy(data).done(function() {
                 nts.uk.ui.windows.setShared("CCG013E_WEB_CODE_COPY", code);
                 nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(() => {
-                    self.closeDialog();
+                    nts.uk.ui.windows.close();
                 });
                 
             }).fail(function(error) {

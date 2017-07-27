@@ -2,51 +2,39 @@ package nts.uk.ctx.at.shared.dom.dailypattern;
 
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
 /**
- * The Interface PatternCalendarSetMemento.
+ * The Interface DailyPatternSetMemento.
  */
 public interface DailyPatternSetMemento {
-	
+
 	/**
 	 * Sets the company id.
 	 *
 	 * @param setCompanyId the new company id
 	 */
-	void  setCompanyId(String setCompanyId);
-	
+	void  setCompanyId(CompanyId setCompanyId);
+
 	/**
 	 * Sets the pattern code.
 	 *
 	 * @param setPatternCode the new pattern code
 	 */
-	void  setPatternCode(String setPatternCode);
-	
+	void  setPatternCode(PatternCode setPatternCode);
+
 	/**
 	 * Sets the pattern name.
 	 *
 	 * @param setPatternName the new pattern name
 	 */
-	void  setPatternName(String setPatternName);
-	
+	void  setPatternName(PatternName setPatternName);
+
 	/**
-	 * Sets the work type codes.
+	 * Sets the list daily pattern val.
 	 *
-	 * @param setWorkTypeCodes the new work type codes
+	 * @param setListDailyPatternVal the new list daily pattern val
 	 */
-	void  setWorkTypeCodes(List<String> setWorkTypeCodes);
-	
-	/**
-	 * Sets the work house codes.
-	 *
-	 * @param setWorkHouseCodes the new work house codes
-	 */
-	void  setWorkHouseCodes(List<String> setWorkHouseCodes);
-	
-	/**
-	 * Sets the calendar setting.
-	 *
-	 * @param setCalendarSetting the new calendar setting
-	 */
-	void  setCalendarSetting(DailyPatternSetting setCalendarSetting);
+	void  setListDailyPatternVal(List<DailyPatternVal> setListDailyPatternVal);
+
 }

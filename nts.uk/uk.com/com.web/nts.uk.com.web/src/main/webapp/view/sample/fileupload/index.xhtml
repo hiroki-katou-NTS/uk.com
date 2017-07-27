@@ -173,8 +173,16 @@ liveviewcontainer.append($("<iframe/>").attr("src",nts.uk.request.liveView(FILEI
 		"temporary":boolean
 	}
 });
-]]></pre>
-
+]]></pre>		
+				<h1>get uploaded file content as inputstream by file id</h1>
+				<![CDATA[
+				@Inject 
+				StoredFileStreamService file;
+				
+				//public InputStream getFileContent(String fileId){
+					return file.takeOutFromFileId(fileId);
+				}
+				]]>
 				</div>
 
 			</div>

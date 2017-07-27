@@ -10,6 +10,7 @@ module nts.uk.at.view.ksm004.e.viewmodel {
         currentCode: KnockoutObservable<any>;
         //check box
         checkOverwritting: KnockoutObservable<boolean>;
+        year: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
@@ -24,13 +25,16 @@ module nts.uk.at.view.ksm004.e.viewmodel {
             self.currentCode = ko.observable(null);
             //Check box
             self.checkOverwritting = ko.observable(false);
+            //Year
+            self.year = ko.observable(null);
+            self.year = nts.uk.ui.windows.getShared("yearPicker");
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             var publicHoliday = nts.uk.ui.windows.getShared("filterHoliday");
-            var currentCode = nts.uk.ui.windows.getShared("currentCode");
+            
             $.getJSON("https://www.googleapis.com/calendar/v3/calendars/" + CALENDAR_ID + "/events?key=" + API_KEY).done((lstHolidayGG) => {
                 for (let id = 0; id < lstHolidayGG.items.length; id++) {
                     self.filterHolidays.push(new PublicHoliday(id, moment(lstHolidayGG.items[id].start.date, 'YYYY-MM-DD').format('MM月DD日'), '', lstHolidayGG.items[id].summary));
@@ -52,6 +56,10 @@ module nts.uk.at.view.ksm004.e.viewmodel {
         cancel_Dialog(): any {
             nts.uk.ui.windows.close();
         }
+        submit(){
+            var self = this;
+            
+            }
     }
     export class PublicHoliday {
         id: number;

@@ -1,4 +1,4 @@
-module nts.uk.pr.view.ksm006.a {
+module nts.uk.at.view.ksm006.a {
     export module service {
         /**
          *  Service paths

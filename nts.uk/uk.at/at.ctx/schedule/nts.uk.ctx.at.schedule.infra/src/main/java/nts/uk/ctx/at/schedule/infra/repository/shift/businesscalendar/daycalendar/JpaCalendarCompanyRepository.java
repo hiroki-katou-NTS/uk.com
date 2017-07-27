@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.daycalendar;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,16 +9,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClass;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarClassPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarCompany;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarCompanyPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarWorkplace;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarWorkplacePK;
 
 @Stateless
 public class JpaCalendarCompanyRepository  extends JpaRepository implements CalendarCompanyRepository {
@@ -59,6 +54,18 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 												domain.getDateId());
 		entity.workingDayAtr = domain.getWorkingDayAtr().value;
 		return entity;
+	}
+	
+	@Override
+	public List<Integer> getCalendarCompanySetByYear(String companyId, String year) {
+		List<Integer> monthSet =  new ArrayList<>();
+		for(int i=1;i<=12;i++){
+			List<CalendarCompany> result = getCalendarCompanyByYearMonth(companyId, String.format(year+"%02d",i));
+			if(!result.isEmpty()){
+				monthSet.add(i);
+			}
+		}
+		return monthSet;
 	}
 	
 	/**
@@ -130,5 +137,6 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 			.setParameter("startDate", Integer.valueOf(yearMonth+"01"))
 			.setParameter("endDate", Integer.valueOf(yearMonth+"31")).executeUpdate();
 	}
+	
 
 }

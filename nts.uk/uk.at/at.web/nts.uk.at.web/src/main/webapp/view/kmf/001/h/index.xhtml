@@ -16,10 +16,10 @@
 		</ui:define>
 
 		<ui:define name="sidebar">
-			<ul class="navigator">
-				<li><a tabindex="1" href="#tabpanel-1" role="tab-navigator"
+			<ul tabindex="1" class="navigator">
+				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator"
 					class="active"> #{i18n.getText('Com_Company')} </a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator"
+				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator"
 					data-bind="click: checkComManaged">
 						#{i18n.getText('Com_Employment')} </a></li>
 			</ul>

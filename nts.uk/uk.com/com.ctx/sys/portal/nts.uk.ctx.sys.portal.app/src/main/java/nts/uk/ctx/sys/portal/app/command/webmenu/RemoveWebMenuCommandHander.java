@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.webmenu.DefaultMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -20,6 +21,9 @@ public class RemoveWebMenuCommandHander extends CommandHandler<RemoveWebMenuComm
 	
 	@Inject
 	private WebMenuRepository webMenuRepository;
+	
+	@Inject
+	private JobTitleTyingRepository jobTitleTyingRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<RemoveWebMenuCommand> context) {
@@ -37,6 +41,8 @@ public class RemoveWebMenuCommandHander extends CommandHandler<RemoveWebMenuComm
 		}
 		
 		webMenuRepository.remove(companyId, command.getWebMenuCd());
+		
+		jobTitleTyingRepository.removeByMenuCode(companyId, command.getWebMenuCd());
 	}
 	
 

@@ -4,14 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.shift.pattern.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkMonthlySettingCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkMonthlySettingSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkTypeCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkingCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 
 /**
  * The Class WorkMonthlySettingDto.
@@ -21,17 +22,14 @@ import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 @Setter
 public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 
-
 	/** The work monthly setting code. */
-	private String code;
+	private String workTypeCode;
 
-	/** The sift code. */
-	private String siftCode;
-	
+	/** The working code. */
+	private String workingCode;
 	
 	/** The date. */
-	private GeneralDate date;
-	
+	private int ymdk;
 	
 	/** The monthly pattern code. */
 	private String monthlyPatternCode;
@@ -57,8 +55,8 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	 * WorkMonthlySettingCode)
 	 */
 	@Override
-	public void setWorkMonthlySettingCode(WorkMonthlySettingCode workMonthlySettingCode) {
-		this.code = workMonthlySettingCode.v();
+	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+		this.workTypeCode = workTypeCode.v();
 	}
 
 	/*
@@ -69,8 +67,8 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	 * setSiftCode(nts.uk.ctx.at.shared.dom.worktime.SiftCode)
 	 */
 	@Override
-	public void setSiftCode(SiftCode siftCode) {
-		this.siftCode = siftCode.v();
+	public void setWorkingCode(WorkingCode workingCode) {
+		this.workingCode = workingCode.v();
 	}
 
 	/*
@@ -81,8 +79,8 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	 * setDate(nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public void setDate(GeneralDate date) {
-		this.date = date;
+	public void setYmdK(BigDecimal ymdk) {
+		this.ymdk = ymdk.intValue();
 	}
 
 	/*

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternSettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
 
 /**
  * The Class MonthlyPatternSettingAddCommandHandler.
@@ -36,7 +36,7 @@ public class MonthlyPatternSettingDeleteCommandHandler
 		MonthlyPatternSettingDeleteCommand command = context.getCommand();
 		
 		// call repository remove
-		this.repository.remove(command.getEmployeeId(), command.getMonthlyPatternCode());
+		this.repository.remove(command.getEmployeeId());
 	}
 
 }

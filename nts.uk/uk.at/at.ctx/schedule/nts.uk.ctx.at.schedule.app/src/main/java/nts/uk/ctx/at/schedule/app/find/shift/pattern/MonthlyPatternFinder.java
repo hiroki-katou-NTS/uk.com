@@ -12,8 +12,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPattern;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
