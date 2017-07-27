@@ -13,5 +13,5 @@ public class RegisterBasicScheduleCommand {
 	private String employeeId;
 	private GeneralDate date;
 	private String workTypeCd;
-	private String siftCd;
+	private String workTimeCd;
 }

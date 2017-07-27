@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl023.a.service {
+module nts.uk.at.view.kdl023.base.service {
 
     let servicePath: any = {
         getHoliday: 'at/schedule/holiday/getHolidayByListDate',
