@@ -1,0 +1,114 @@
+#functions-area .ntsControl {
+	margin-left: 720px;
+}
+
+.control-group {
+	margin-top: 10px;
+	padding-left: 10px;
+}
+
+.form-group {
+	margin-bottom: 10px;
+}
+
+.ntsControl .ntsRadioBox {
+	padding-right: 5px;
+}
+
+#contents-area .left-area, #contents-area .right-area {
+	float: left;
+}
+
+#contents-area .left-area {
+	margin-right: 15px;
+}
+
+#contents-area .left-area .ntsControl.radio-wrapper {
+	width: 100%;
+	padding-bottom: 3px;
+}
+
+#contents-area .left-area .ntsSearchBox.nts-editor.ntsSearchBox_Component
+	{
+	width: 178px !important;
+}
+
+#contents-area .left-area .ntsControl.radio-wrapper .ntsRadioBox {
+	width: 50%;
+	box-sizing: border-box;
+}
+
+#contents-area .right-area .add-buttons, #contents-area .right-area .drag-panel
+	{
+	float: left;
+}
+
+#contents-area .right-area .add-buttons {
+	margin-right: 15px;
+	padding-top: 220px;
+}
+
+#contents-area .right-area .drag-panel {
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	width: 600px;
+	height: 600px;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+#contents-area .right-area .drag-panel>div {
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	padding-right: 10px;
+	box-sizing: border-box;
+}
+
+#contents-area .right-area .drag-panel .item-classification {
+	padding: 3px;
+	position: relative;
+	box-sizing: border-box;
+	background-color: #fff;
+	border: 1px dashed transparent;
+}
+
+#contents-area .right-area .drag-panel .item-classification.ui-sortable-placeholder
+	{
+	border: 1px dashed #ddd;
+	visibility: visible !important;
+}
+
+#contents-area .right-area .drag-panel .item-classification:hover,
+	#contents-area .right-area .drag-panel .item-classification.selected {
+	background-color: #eee;
+	border: 1px dashed #aaa;
+}
+
+#contents-area .right-area .drag-panel .item-classification>* {
+	display: inline-block;
+}
+
+#contents-area .right-area .drag-panel .item-classification .form-label {
+	width: 100px;
+}
+
+#contents-area .right-area .drag-panel .item-classification>.close-btn {
+	display: none;
+}
+
+#contents-area .right-area .drag-panel .item-classification>.close-btn:hover
+	{
+	color: #f00;
+}
+
+#contents-area .right-area .drag-panel .item-classification:hover>.close-btn
+	{
+	position: absolute;
+	top: 0;
+	right: 5px;
+	display: block;
+	right: 5px;
+	display: block;
+	cursor: pointer;
+}
