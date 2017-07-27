@@ -95,6 +95,7 @@ module ksm002.b.viewmodel {
          */
         start(value: boolean){
             var self = this;  
+            $('#tree-grid').focusTreeGridComponent();
             nts.uk.ui.block.invisible();
             $.when(
                 self.getAllSpecDate(), 
