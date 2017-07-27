@@ -22,12 +22,10 @@ module ksm002.d{
             countItem: KnockoutObservable<number>;
             // data receive from mother screen
             param: IData;
-            //date value
-            dateValue: KnockoutObservable<any>;
             constructor() {
                 let self=this;
-//                self.startMonth = ko.observable(null);
-//                self.endMonth = ko.observable(null);
+                self.startMonth = ko.observable(null);
+                self.endMonth = ko.observable(null);
                 self.specificDateItem = ko.observableArray([]);
                 self.dayInWeek = ko.observableArray([]);
                 self.enable = ko.observable(false);
@@ -50,6 +48,7 @@ module ksm002.d{
                         $('#day_0').ntsError('clear');
                     }
                 });
+                self.param = null; 
             }
             /** get data when start dialog **/
             startPage(): JQueryPromise<any> {

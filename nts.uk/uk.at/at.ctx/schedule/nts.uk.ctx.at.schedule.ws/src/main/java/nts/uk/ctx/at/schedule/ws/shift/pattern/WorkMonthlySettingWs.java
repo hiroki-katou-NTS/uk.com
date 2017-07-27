@@ -10,7 +10,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -18,6 +17,7 @@ import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternSettingBat
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.MonthlyPatternSettingBatchSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.WorkMonthlySettingFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingFindDto;
 
 /**
  * The Class WorkMonthlySettingWs.
@@ -35,16 +35,15 @@ public class WorkMonthlySettingWs {
 	private MonthlyPatternSettingBatchSaveCommandHandler batch;
 
 	/**
-	 * Find by id.
+	 * Find by month.
 	 *
-	 * @param monthlyPatternCode the monthly pattern code
+	 * @param input the input
 	 * @return the list
 	 */
 	@POST
-	@Path("findById/{monthlyPatternCode}")
-	public List<WorkMonthlySettingDto> findById(
-			@PathParam("monthlyPatternCode") String monthlyPatternCode) {
-		return this.finder.findById(monthlyPatternCode);
+	@Path("findByMonth")
+	public List<WorkMonthlySettingDto> findByMonth(WorkMonthlySettingFindDto input) {
+		return this.finder.findByMonth(input.getMonthlyPatternCode(), input.getYearMonth());
 	}
 	
 	/**

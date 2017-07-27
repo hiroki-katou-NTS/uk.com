@@ -9,8 +9,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -31,9 +31,16 @@ public class KbldtExtBudgetLog extends UkJpaEntity implements Serializable {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The kbldt ext budget log PK. */
-    @EmbeddedId
-    protected KbldtExtBudgetLogPK kbldtExtBudgetLogPK;
+    /** The exe id. */
+    @Id
+    @Basic(optional = false)
+    @Column(name = "EXE_ID")
+    private String exeId;
+    
+    /** The cid. */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    private String cid;
 
     /** The file name. */
     @Basic(optional = false)
@@ -83,28 +90,6 @@ public class KbldtExtBudgetLog extends UkJpaEntity implements Serializable {
     public KbldtExtBudgetLog() {
     }
 
-    /**
-     * Instantiates a new kbldt ext budget log.
-     *
-     * @param kbldtExtBudgetLogPK
-     *            the kbldt ext budget log PK
-     */
-    public KbldtExtBudgetLog(KbldtExtBudgetLogPK kbldtExtBudgetLogPK) {
-        this.kbldtExtBudgetLogPK = kbldtExtBudgetLogPK;
-    }
-
-    /**
-     * Instantiates a new kbldt ext budget log.
-     *
-     * @param cid
-     *            the cid
-     * @param exeId
-     *            the exe id
-     */
-    public KbldtExtBudgetLog(String cid, String exeId) {
-        this.kbldtExtBudgetLogPK = new KbldtExtBudgetLogPK(cid, exeId);
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -113,7 +98,7 @@ public class KbldtExtBudgetLog extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kbldtExtBudgetLogPK != null ? kbldtExtBudgetLogPK.hashCode() : 0);
+        hash += (exeId != null ? exeId.hashCode() : 0);
         return hash;
     }
 
@@ -129,8 +114,8 @@ public class KbldtExtBudgetLog extends UkJpaEntity implements Serializable {
             return false;
         }
         KbldtExtBudgetLog other = (KbldtExtBudgetLog) object;
-        if ((this.kbldtExtBudgetLogPK == null && other.kbldtExtBudgetLogPK != null)
-                || (this.kbldtExtBudgetLogPK != null && !this.kbldtExtBudgetLogPK.equals(other.kbldtExtBudgetLogPK))) {
+        if ((this.exeId == null && other.exeId != null)
+                || (this.exeId != null && !this.exeId.equals(other.exeId))) {
             return false;
         }
         return true;
@@ -143,7 +128,7 @@ public class KbldtExtBudgetLog extends UkJpaEntity implements Serializable {
      */
     @Override
     protected Object getKey() {
-        return this.getKbldtExtBudgetLogPK();
+        return this.exeId;
     }
 
 }

@@ -7,8 +7,11 @@ package nts.uk.ctx.at.shared.infra.repository.dailypattern;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternSetMemento;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternVal;
+import nts.uk.ctx.at.shared.dom.dailypattern.PatternCode;
+import nts.uk.ctx.at.shared.dom.dailypattern.PatternName;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSet;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSetPK;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternVal;
@@ -39,8 +42,8 @@ public class JpaDailyPatternSetMemento implements DailyPatternSetMemento {
 	 * setCompanyId(java.lang.String)
 	 */
 	@Override
-	public void setCompanyId(String setCompanyId) {
-		this.patternCalendar.getKdpstDailyPatternSetPK().setCid(setCompanyId);
+	public void setCompanyId(CompanyId companyId) {
+		this.patternCalendar.getKdpstDailyPatternSetPK().setCid(companyId.v());
 	}
 
 	/*
@@ -50,8 +53,8 @@ public class JpaDailyPatternSetMemento implements DailyPatternSetMemento {
 	 * setPatternCode(java.lang.String)
 	 */
 	@Override
-	public void setPatternCode(String setPatternCode) {
-		this.patternCalendar.getKdpstDailyPatternSetPK().setPatternCd(setPatternCode);
+	public void setPatternCode(PatternCode patternCode) {
+		this.patternCalendar.getKdpstDailyPatternSetPK().setPatternCd(patternCode.v());
 	}
 
 	/*
@@ -61,8 +64,8 @@ public class JpaDailyPatternSetMemento implements DailyPatternSetMemento {
 	 * setPatternName(java.lang.String)
 	 */
 	@Override
-	public void setPatternName(String setPatternName) {
-		this.patternCalendar.setPatternName(setPatternName);
+	public void setPatternName(PatternName patternName) {
+		this.patternCalendar.setPatternName(patternName.v());
 	}
 
 	/*
@@ -73,11 +76,12 @@ public class JpaDailyPatternSetMemento implements DailyPatternSetMemento {
 	 */
 	@Override
 	public void setListDailyPatternVal(List<DailyPatternVal> setListDailyPatternVal) {
-		this.patternCalendar.setListKdpstDailyPatternVal(setListDailyPatternVal.stream().map(domain -> {
-			KdpstDailyPatternVal entity = new KdpstDailyPatternVal();
-			domain.saveToMemento(new JpaDailyPatternValSetMemento(entity));
-			return entity;
-		}).collect(Collectors.toList()));
+		this.patternCalendar
+				.setListKdpstDailyPatternVal(setListDailyPatternVal.stream().map(domain -> {
+					KdpstDailyPatternVal entity = new KdpstDailyPatternVal();
+					domain.saveToMemento(new JpaDailyPatternValSetMemento(entity));
+					return entity;
+				}).collect(Collectors.toList()));
 	}
 
 }

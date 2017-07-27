@@ -4,7 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
-import nts.arc.time.GeneralDate;
+import java.math.BigDecimal;
+
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -38,11 +39,11 @@ public interface WorkMonthlySettingSetMemento {
 	
 	
 	/**
-	 * Sets the date.
+	 * Sets the ymd K.
 	 *
-	 * @param date the new date
+	 * @param ymdk the new ymd K
 	 */
-	public void setDate(GeneralDate date);
+	public void setYmdK(BigDecimal ymdk);
 	
 	
 	/**

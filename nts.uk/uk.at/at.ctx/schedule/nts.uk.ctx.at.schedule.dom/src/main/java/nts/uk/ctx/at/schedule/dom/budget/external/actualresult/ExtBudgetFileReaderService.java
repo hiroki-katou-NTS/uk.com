@@ -8,9 +8,9 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * The Interface ExternalBudgetFileReader.
+ * The Interface ExtBudgetFileReaderService.
  */
-public interface ExternalBudgetFileReader {
+public interface ExtBudgetFileReaderService {
     
     /**
      * Find data preview.

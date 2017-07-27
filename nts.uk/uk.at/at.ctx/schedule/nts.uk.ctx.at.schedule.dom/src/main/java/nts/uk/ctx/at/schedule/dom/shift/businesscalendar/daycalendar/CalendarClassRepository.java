@@ -13,6 +13,8 @@ public interface CalendarClassRepository {
 	 */
 	List<CalendarClass> getAllCalendarClass(String companyId,String classId);
 	
+	List<Integer> getCalendarClassSetByYear(String companyId, String classId, String year);
+	
 	List<CalendarClass> getCalendarClassByYearMonth(String companyId, String classId, String yearMonth);
 	
 	/**

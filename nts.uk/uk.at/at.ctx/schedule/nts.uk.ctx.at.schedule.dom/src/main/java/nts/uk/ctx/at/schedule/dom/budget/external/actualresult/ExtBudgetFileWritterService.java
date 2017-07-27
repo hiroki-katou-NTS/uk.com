@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
 /**
- * The Interface ExternalBudgetFileWritter.
+ * The Interface ExtBudgetFileWritterService.
  */
-public interface ExternalBudgetFileWritter {
+public interface ExtBudgetFileWritterService {
     
     /**
      * Write.

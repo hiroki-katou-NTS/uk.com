@@ -6,21 +6,21 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLog;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLogPK_;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLog_;
 
 /**
@@ -44,11 +44,13 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
     /*
      * (non-Javadoc)
      * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresults.
-     * ExternalBudgetLogRepository#findAllByCompanyId(java.lang.String)
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetLogRepository#findExternalBudgetLog(java.lang.String,
+     * java.lang.String, nts.arc.time.GeneralDate)
      */
     @Override
-    public List<ExternalBudgetLog> findAllByCompanyId(String companyId) {
+    public List<ExternalBudgetLog> findExternalBudgetLog(String companyId, String employeeId, GeneralDate startDate,
+            List<Integer> listState) {
         EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -57,15 +59,20 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
 
         List<Predicate> predicateList = new ArrayList<>();
 
-        predicateList.add(builder.equal(root.get(KbldtExtBudgetLog_.kbldtExtBudgetLogPK).get(KbldtExtBudgetLogPK_.cid),
-                companyId));
+        predicateList.add(builder.equal(root.get(KbldtExtBudgetLog_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KbldtExtBudgetLog_.sid), employeeId));
+        predicateList.add(builder.lessThanOrEqualTo(root.get(KbldtExtBudgetLog_.strD), startDate));
+        predicateList.add(builder.greaterThanOrEqualTo(root.get(KbldtExtBudgetLog_.endD), startDate));
+        
+        Expression<Integer> exp = root.get(KbldtExtBudgetLog_.completionAtr);
+        predicateList.add(exp.in(listState));
 
         query.where(predicateList.toArray(new Predicate[] {}));
+        query.orderBy(builder.desc(root.get(KbldtExtBudgetLog_.strD)));
 
         return em.createQuery(query).getResultList().stream()
-                .map(entity -> {
-                    return new ExternalBudgetLog(new JpaExternalBudgetLogGetMemento((KbldtExtBudgetLog) entity));
-                }).collect(Collectors.toList());
+                .map(entity -> new ExternalBudgetLog(new JpaExternalBudgetLogGetMemento((KbldtExtBudgetLog) entity)))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -76,14 +83,7 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
      * @return the kbldt ext budget log
      */
     private KbldtExtBudgetLog toEntity(ExternalBudgetLog domain) {
-        Optional<KbldtExtBudgetLog> optinal = this.queryProxy()
-                .find(new KbldtExtBudgetLog(domain.getCompanyId(), domain.getEmployeeId()), KbldtExtBudgetLog.class);
-        KbldtExtBudgetLog entity = null;
-        if (optinal.isPresent()) {
-            entity = optinal.get();
-        } else {
-            entity = new KbldtExtBudgetLog();
-        }
+        KbldtExtBudgetLog entity = new KbldtExtBudgetLog();
         JpaExternalBudgetLogSetMemento memento = new JpaExternalBudgetLogSetMemento(entity);
         domain.saveToMemento(memento);
         return entity;
