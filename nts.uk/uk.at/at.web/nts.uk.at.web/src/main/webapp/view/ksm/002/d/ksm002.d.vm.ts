@@ -45,13 +45,17 @@ module ksm002.d{
                 self.dateValue = ko.observable({startDate: self.param.startDate.toString(), endDate: self.param.endDate.toString()});
                 self.startMonth = ko.observable(self.dateValue().startDate);
                 self.endMonth = ko.observable(self.dateValue().startDate);
+                self.enable.subscribe(function(code){
+                    if(code==true){
+                        $('#day_0').ntsError('clear');
+                    }
+                });
             }
             /** get data when start dialog **/
             startPage(): JQueryPromise<any> {
                 nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred();
-//                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
                 self.endMonth(self.param.endDate);
                 self.startMonth(self.param.startDate);
                 // label to display work place D1_2
@@ -185,6 +189,11 @@ module ksm002.d{
                 this.useAtr = ko.observable(useAtr);
                 this.specificDateItemNo = ko.observable(specificDateItemNo);
                 this.specificName = ko.observable(specificName);
+                this.useAtr.subscribe(function(code){
+                    if(code ==1 ){ 
+                        $('#item_0').ntsError('clear');
+                    }
+                });
             }
         }
         // A day in a week D1_7
@@ -194,6 +203,11 @@ module ksm002.d{
             constructor(day: string, choose: number){
                 this.day = ko.observable(day);
                 this.choose = ko.observable(choose);
+                this.choose.subscribe(function(code){
+                    if(code ==1 ){
+                        $('#day_0').ntsError('clear');
+                    }
+                });
             }
         }
         // A object to update 

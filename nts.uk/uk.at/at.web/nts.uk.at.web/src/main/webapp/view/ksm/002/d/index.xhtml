@@ -14,7 +14,6 @@
 			<com:stylefile path="ksm002.d.main.css" />
 			<com:scriptfile path="ksm002.d.service.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
 				<table class="table">
@@ -27,57 +26,45 @@
 						<td ><label id="D1_2" data-bind="text: workPlace()"></label></td>		
 						
 					</tr>
-					
 					<tr>
-						<td><div style="margin-top:13px; margin-left:20px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_43')}</div></td>
+						<td>
+							<div style="margin-top:13px; margin-left:20px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_43')}</div>
+						</td>
 						<td>
 							<div  id="startMonth" tabindex="1" style="margin-top:10px" data-bind="ntsDateRangePicker: { 
 									value: dateValue, 
 									name: '#[KSM002_43]',
 									required: true }">
-								</div>		
-<!-- 								<span>～</span> -->
-<!-- 								<div tabindex="2" style="margin-top:10px" data-bind="ntsDatePicker: {  -->
-<!-- 									value: endMonth,  -->
-<!-- 									dateFormat: 'date',  -->
-<!-- 									valueFormat: 'YYYYMMDD',  -->
-<!-- 									fiscalMonthsMode: true,  -->
-<!-- 									defaultClass: 'round-orange', -->
-<!-- 									name: '#[KSM002_43]', -->
-<!-- 									required: true }"> -->
-<!-- 								</div>  -->
+							</div>		
 						</td>
 					</tr>
-					
 					<tr>
 						<td class="cell"><div style="margin-top:20px; margin-left:20px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_44')}</div></td>
 						<td style="float: left">
 							<div>
 								<div style = "margin-top: 15px" data-bind = "foreach: dayInWeek">
-								<div class = "DayInWeekItem" data-bind="ntsCheckBox: { 
-											checked: choose,
-											text: day()},
-											attr:{id: 'day'+'_'+$index()}"></div>
-								</div>
+									<div class = "DayInWeekItem" data-bind="ntsCheckBox: { 
+												checked: choose,
+												text: day()},
+												attr:{id: 'day'+'_'+$index()}"></div>
+									</div>
 							</div> 
 						</td>
 					</tr>
-					
 					<tr>
 						<td></td>
 						<td><div data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KSM002_52')}</div></td>
 					</tr>
-					
 					<tr>
 						<td  class="cell"><div style="margin-top:13px; margin-left:20px" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KSM002_53')}</div></td>
 						<td style="float: left">
 							<div>
 								<div style = "margin-top: 15px" data-bind = "foreach: specificDateItem">
-								<div class = "itemName" data-bind="ntsCheckBox: { 
-											checked: useAtr,
-											text: specificName()},
-											attr:{id: 'item'+'_'+$index()}"></div>
-								</div>
+									<div class = "itemName" data-bind="ntsCheckBox: { 
+												checked: useAtr,
+												text: specificName()},
+												attr:{id: 'item'+'_'+$index()}"></div>
+									</div>
 							</div> 
 						</td>
 					</tr>
