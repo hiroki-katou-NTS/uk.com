@@ -58,10 +58,8 @@ module ksm002.a.viewmodel {
                     self.openKsm002EDialog(date);
                 },
                 cellClick: function(date) {
-                    console.time("ksm002_CellClick");
                     let param: IData = { date: date, selectable: _.map(self.boxItemList(), 'id'), selecteds: self.selectedIds() };
                     self.setSpecificItemToSelectedDate(param);
-                    console.timeEnd("ksm002_CellClick");
                 }
             });
             //Side bar tab change
@@ -78,7 +76,6 @@ module ksm002.a.viewmodel {
             //Change Month 
             self.yearMonthPicked.subscribe(function(value) {
                 let arrOptionaDates: Array<OptionalDate> = [];
-                console.time("ksm002_ChangeMonth");
                 self.getDataToOneMonth(value).done(function(arrOptionaDates) {
                     self.optionDates(arrOptionaDates);
                     self.optionDates.valueHasMutated();
@@ -87,7 +84,6 @@ module ksm002.a.viewmodel {
                     } else {
                         self.isNew(true);
                     }
-                    console.timeEnd("ksm002_ChangeMonth");
                 })
             })
         }
@@ -102,7 +98,6 @@ module ksm002.a.viewmodel {
             let arrOptionaDates: Array<OptionalDate> = [];
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
-                    console.time("ksm002_LoadData")
                     //getAll SpecDate
                     self.getAllSpecDate();
                     //Set Start Day of Company
@@ -126,7 +121,6 @@ module ksm002.a.viewmodel {
                         if (arrOptionaDates.length > 0) {
                             self.optionDates(arrOptionaDates);
                             self.isNew(false);
-                            console.timeEnd("ksm002_LoadData");
                         }
                     })
                 } else {
@@ -298,6 +292,8 @@ module ksm002.a.viewmodel {
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
                 }
+                //focus the first CheckBox
+                $(".chkBox ").find("label").eq(0).focus();
                 return dfd.promise();
             }
         }
@@ -395,6 +391,9 @@ module ksm002.a.viewmodel {
             var self = this;
             nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                 self.start();
+                nts.uk.ui._viewModel.bind(content).done(function(){
+                    $(".ntsCheckBox").attr("tabindex",5);
+                })      
             })
         }
 
@@ -489,8 +488,8 @@ module ksm002.a.viewmodel {
         }
     }
     export class ICompanySpecificDateCommand {
-        specificDate: number,
-        specificDateNo: number,
+        specificDate: number;
+        specificDateNo: number;
         isUpdate?: boolean;
     }
 

@@ -428,17 +428,20 @@ div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
 }
+
+/* line 130, ../sass/components/_commons.scss */
 .constraint-label {
-	display: block;
-	margin-top: 1px;
-	font-size: 12px;
-	font-weight: normal;
-	color: #777777;
+  display: block;
+  margin-top: 1px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #777777;
 }
+
 /*****************************
   NtsPopupPanel
 *****************************/
-/* line 133, ../sass/components/_commons.scss */
+/* line 140, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -450,31 +453,36 @@ div.popup-panel {
 }
 
 /*****************************
-  NtsEditor
+  NtsError
 *****************************/
-/* line 145, ../sass/components/_commons.scss */
+/* line 152, ../sass/components/_commons.scss */
 .ntsControl.error .nts-editor, .ntsControl.error .ntsDatepicker, .ntsControl.error .sp-replacer {
   border-color: #ff6666;
 }
 
-/* line 150, ../sass/components/_commons.scss */
+/* line 157, ../sass/components/_commons.scss */
 .ui-igcombo.error {
   border-color: #ff6666;
 }
+
+/* line 160, ../sass/components/_commons.scss */
 .checkbox-wrapper.error {
-	outline: 1px solid #ff6666;
+  border: 1px solid #ff6666;
 }
+
+/* line 163, ../sass/components/_commons.scss */
 .multicheckbox-wrapper.error {
-	outline: 1px solid #ff6666;
+  border: 1px solid #ff6666;
 }
 
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 157, ../sass/components/_commons.scss */
+/* line 169, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
-  display: none;
+  display: inline-block;
+  visibility: hidden;
   z-index: 10;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -488,46 +496,46 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 171, ../sass/components/_commons.scss */
+/* line 184, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 177, ../sass/components/_commons.scss */
+/* line 190, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
-  display: inline-block;
+  visibility: visible;
 }
 
 /*****************************
   Label
 *****************************/
-/* line 186, ../sass/components/_commons.scss */
+/* line 199, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 190, ../sass/components/_commons.scss */
+/* line 203, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 197, ../sass/components/_commons.scss */
+/* line 210, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 203, ../sass/components/_commons.scss */
+/* line 216, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 209, ../sass/components/_commons.scss */
+/* line 222, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -1141,18 +1149,21 @@ button.auto-height {
 
 /* line 226, ../sass/components/_button.scss */
 #functions-area,
-#functions-area-bottom {
+#functions-area-bottom,
+.sidebar-content-header {
   font-size: 0;
 }
-/* line 229, ../sass/components/_button.scss */
+/* line 230, ../sass/components/_button.scss */
 #functions-area button,
-#functions-area-bottom button {
+#functions-area-bottom button,
+.sidebar-content-header button {
   margin-left: 15px;
   min-width: 65px;
 }
-/* line 233, ../sass/components/_button.scss */
+/* line 234, ../sass/components/_button.scss */
 #functions-area button.danger,
-#functions-area-bottom button.danger {
+#functions-area-bottom button.danger,
+.sidebar-content-header button.danger {
   margin-left: 45px;
   margin-right: 30px;
 }
@@ -1860,12 +1871,17 @@ button.nts-switch-button[disabled]:hover {
 .minimalist .ntsCheckBox-label input[type="checkbox"]:checked + span {
   background: transparent;
 }
+
+/* line 134, ../sass/components/_checkbox.scss */
 .checkbox-wrapper {
-	display: inline-block;
+  display: inline-block;
 }
+
+/* line 137, ../sass/components/_checkbox.scss */
 .multicheckbox-wrapper {
-	display: inline-block;
+  display: inline-block;
 }
+
 /* line 1, ../sass/components/_panel.scss */
 .panel {
   padding: 10px;
