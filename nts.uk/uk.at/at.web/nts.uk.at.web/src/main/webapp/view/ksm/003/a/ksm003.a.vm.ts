@@ -7,7 +7,7 @@ module nts.uk.at.view.ksm003.a {
         export class ScreenModel {
             //A_label_x
             columns: KnockoutObservableArray<any>;
-            columnsWork: KnockoutObservableArray<any>;
+            columnsWork: KnockoutObservableArray<any>[];
             dailyPatternVal: KnockoutObservableArray<DailyPatternVal>;
             lstPattern: KnockoutObservableArray<model.Item>;
             currentCode: KnockoutObservable<string>;
@@ -36,7 +36,7 @@ module nts.uk.at.view.ksm003.a {
                     { headerText: '', key: 'btOpenWorkSelection', template: "<button class=\"button separate-button fix-button\">" + nts.uk.resource.getText('KSM003_34') + " </button>", formatter: _.escape, width: 100 },
                     { headerText: nts.uk.resource.getText('KSM003_30'), key: 'workTypeSetCd', formatter: _.escape, width: 180 },
                     { headerText: nts.uk.resource.getText('KSM003_31'), key: 'workingHoursCd', formatter: _.escape, width: 150 },
-                    { headerText: nts.uk.resource.getText('KSM003_32'), template: "<input type=\"text\" value=\"${days}\" data-id=\"${days}\" />", key: 'days', formatter: _.escape, width: 30 }
+                    { headerText: nts.uk.resource.getText('KSM003_32'), template: "<input type=\"text\" style=\"width: 100px;\" value=\"${days}\" data-id=\"${days}\" >" + nts.uk.resource.getText('KSM003_33') + " </input>", key: 'days', formatter: _.escape, width: 60 }
                     //                   <input class=\"nts-input\" data-bind=\"ntsTextEditor: { name: '#[KSM003_32]', value: \"${days}\" , constraint: 'DiverdenceReasonCode', enable:enableCode, required: true}\" />
                 ]);
                 //               template: "<input type=\"text\" value=\"${days}\" data-id=\"${days}\" />"
