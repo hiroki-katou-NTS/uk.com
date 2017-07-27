@@ -26,8 +26,6 @@ module ksm002.d{
             dateValue: KnockoutObservable<any>;
             constructor() {
                 let self=this;
-//                self.startMonth = ko.observable(null);
-//                self.endMonth = ko.observable(null);
                 self.specificDateItem = ko.observableArray([]);
                 self.dayInWeek = ko.observableArray([]);
                 self.enable = ko.observable(false);
