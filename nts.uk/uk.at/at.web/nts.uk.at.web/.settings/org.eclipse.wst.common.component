@@ -58,5 +58,14 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.record.ws/nts.uk.ctx.at.record.ws">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.screen.at.ws/nts.uk.screen.at.ws">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.screen.at.app/nts.uk.screen.at.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.screen.at.infra/nts.uk.screen.at.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
 	</wb-module>
 </project-modules>

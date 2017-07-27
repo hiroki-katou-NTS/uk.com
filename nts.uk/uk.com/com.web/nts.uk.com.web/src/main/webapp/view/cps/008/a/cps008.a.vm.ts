@@ -1,7 +1,7 @@
 module cps008.a.viewmodel {
 
 
-    export class ScreenModel {
+    export class ViewModel {
 
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
@@ -39,8 +39,6 @@ module cps008.a.viewmodel {
         openDialogCoppy() {
             var self = this;
             nts.uk.ui.windows.sub.modal('/view/cps/008/c/index.xhtml', { title: '他のレイアウトへ複製' }).onClosed(function(): any {
-                
-
             });
         }
     }

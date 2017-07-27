@@ -15,18 +15,16 @@ public interface ExtBudgetFileReaderService {
     /**
      * Find data preview.
      *
-     * @param file the file
-     * @return the map
      */
-    Map<String, Object> findDataPreview(File file);
+    Map<String, Object> findDataPreview();
     
     /**
-     * Read.
+     * Execute.
      *
      * @param externalBudgetCode the external budget code
      * @param file the file
      */
-    void read(String externalBudgetCode, File file);
+    void execute(String externalBudgetCode, File file);
     
     /**
      * Close.

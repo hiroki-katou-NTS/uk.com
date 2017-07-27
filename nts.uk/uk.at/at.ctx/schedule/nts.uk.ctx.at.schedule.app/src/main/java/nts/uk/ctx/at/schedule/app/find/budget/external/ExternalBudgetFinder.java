@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.budget.external;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,9 +12,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetFileReaderServiceImpl;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetQuery;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetValDto;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,6 +31,10 @@ public class ExternalBudgetFinder {
 	/** The ext budget log repo. */
 	@Inject
     private ExternalBudgetLogRepository extBudgetLogRepo;
+	
+	/** The file stream service. */
+    @Inject 
+    StoredFileStreamService fileStreamService;
 
 	/*
 	 * get All List iTem of external Budget
@@ -46,9 +53,16 @@ public class ExternalBudgetFinder {
 	 * @param file the file
 	 * @return the ext budget data preview dto
 	 */
-	public ExtBudgetDataPreviewDto findDataPreview(File file) {
-	    // TODO: find data preview
-	    return null;
+	@SuppressWarnings("unchecked")
+    public ExtBudgetDataPreviewDto findDataPreview(String fileId) {
+	    InputStream inputStream = fileStreamService.takeOutFromFileId(fileId);
+	    ExtBudgetFileReaderServiceImpl fileReader = new ExtBudgetFileReaderServiceImpl(inputStream);
+	    
+	    Map<String, Object> mapData = fileReader.findDataPreview();
+	    return ExtBudgetDataPreviewDto.builder()
+	            .data((List<ExternalBudgetValDto>) mapData.get(ExtBudgetFileReaderServiceImpl.DATA_PREVIEW))
+	            .totalRecord((Integer) mapData.get(ExtBudgetFileReaderServiceImpl.TOTAL_RECORD))
+	            .build();
 	}
 	
 	/**
