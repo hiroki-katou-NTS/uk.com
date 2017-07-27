@@ -5,12 +5,12 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 300,
-					height : 200
+					width :650,
+					height :450
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,6 +22,76 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="contents-area">
+				<div class="cf">
+					<div></div>
+					<br /> <br /> <br />
+					<table class="table_content">
+						<colgroup>
+							<col width="150px" />
+							<col width="150px" />
+							<col width="350px" />
+						</colgroup>
+						<tr>
+							<td class="row_1">
+								<div>#{i18n.getText('CPS008_32')}</div>
+							</td>
+							<td class="row_1">
+								<div data-bind="ntsFormLabel: {}">
+									#{i18n.getText('CPS008_33')}</div>
+							</td>
+
+							<td class="row_1">
+								<span data-bind="text: layoutCode"></span>
+								<span style="margin-left: 76px" data-bind="text: layoutName"></span></td>
+						</tr>
+
+						<tr>
+							<td class="row_2">
+								<div>#{i18n.getText('CPS008_34')}</div>
+							</td>
+							<td class="row_2">
+								<div data-bind="ntsFormLabel: {}">
+									 #{i18n.getText('CPS008_35')}</div>
+							</td>
+
+							<td class="row_2">
+								<div>
+									<div class="input_002 input_code">
+										<input id="A_INP_CODE" style="width: 80px"
+											data-bind="ntsTextEditor: {
+											value: A_INP_LAYOUT_CODE,
+											enable: A_INP_LAYOUT_CODE_ENABLE}" />
+									</div>
+
+									<div class="input_002 input_name">
+										<input id="A_INP_DEPNAME" style="width: 180px"
+											data-bind="ntsTextEditor: {
+											value: A_INP_LAYOUT_NAME,
+											enable: A_INP_LAYOUT_NAME_ENABLE
+											}" />
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td><hr></hr></td>
+							<td><hr></hr></td>
+							<td><hr></hr></td>
+							
+						</tr>
+					</table>
+					<div style="margin-left: 148px" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CPS008_43')}' }"></div>
+				</div>
+				<br />
+				
+				
+				<div class="bottomStype">
+					<button class="x-large proceed" id="BTN_DECIDE">決定</button>
+					<button class="large" id="BTN_CANCEL">キャンセル</button>
+					<br />
+				</div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
