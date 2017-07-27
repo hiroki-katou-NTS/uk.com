@@ -1,5 +1,10 @@
 package nts.uk.ctx.at.shared.dom.dailypattern;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
+/**
+ * The Interface DailyPatternValGetMemento.
+ */
 public interface DailyPatternValGetMemento {
 	
 	/**
@@ -7,40 +12,40 @@ public interface DailyPatternValGetMemento {
 	 *
 	 * @return the company id
 	 */
-	String getCompanyId();
+	CompanyId getCompanyId();
 	
 	/**
 	 * Gets the pattern code.
 	 *
 	 * @return the pattern code
 	 */
-	String getPatternCode();
+	PatternCode getPatternCode();
 	
 	/**
 	 * Gets the disp order.
 	 *
 	 * @return the disp order
 	 */
-	Integer getDispOrder();
+	DispOrder getDispOrder();
 
 	/**
 	 * Gets the work type set cd.
 	 *
 	 * @return the work type set cd
 	 */
-	String getWorkTypeSetCd();
+	WorkTypeCode getWorkTypeSetCd();
 	
 	/**
 	 * Gets the working hours cd.
 	 *
 	 * @return the working hours cd
 	 */
-	String getWorkingHoursCd();
+	WorkingCode getWorkingHoursCd();
 	
 	/**
 	 * Gets the days.
 	 *
 	 * @return the days
 	 */
-	Integer getDays();
+	Days getDays();
 }

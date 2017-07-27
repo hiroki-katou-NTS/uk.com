@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.shr.com.program;
 
 import java.lang.reflect.Field;
@@ -245,12 +249,65 @@ public class ProgramsManager {
 	 */
 	public static final Program KSM004D = new Program(WebAppId.AT, ProgramIdConsts.KSM004D, "PgName_KSM004D",
 			"/view/ksm/004/d/index.xhtml");
+
 	/**
 	 * KSU001A
 	 */
 	public static final Program KSU001A = new Program(WebAppId.AT, ProgramIdConsts.KSU001A, "PgName_KSU001A",
 			"/view/ksu/001/a/index.xhtml");
 
+	/** The Constant KDL003. */
+	public static final Program KDL003 = new Program(WebAppId.AT, ProgramIdConsts.KDL003, "PgName_KDL003",
+			"/view/kdl/003/a/index.xhtml");
+	
+	/** The Constant KSM006. */
+	public static final Program KSM006 = new Program(WebAppId.AT, ProgramIdConsts.KSM006, "PgName_KSM006",
+			"/view/ksm/003/a/index.xhtml");
+	
+	/** The Constant KSM003. */
+	public static final Program KSM003= new Program(WebAppId.AT, ProgramIdConsts.KSM003, "PgName_KSM003",
+			"/view/ksm/003/a/index.xhtml");
+	
+	/** The Constant KSM005A. */
+	public static final Program KSM005A= new Program(WebAppId.AT, ProgramIdConsts.KSM005A, "PgName_KSM005A",
+			"/view/ksm/005/a/index.xhtml");
+	
+	/** The Constant KSM005B. */
+	public static final Program KSM005B= new Program(WebAppId.AT, ProgramIdConsts.KSM005B, "PgName_KSM005B",
+			"/view/ksm/005/b/index.xhtml");
+	
+	/** The Constant KSM005C. */
+	public static final Program KSM005C= new Program(WebAppId.AT, ProgramIdConsts.KSM005C, "PgName_KSM005C",
+			"/view/ksm/005/c/index.xhtml");
+	
+	/** The Constant KSM005E. */
+	public static final Program KSM005E= new Program(WebAppId.AT, ProgramIdConsts.KSM005E, "PgName_KSM005E",
+			"/view/ksm/005/e/index.xhtml");
+	
+	/** The Constant KSM005F. */
+	public static final Program KSM005F= new Program(WebAppId.AT, ProgramIdConsts.KSM005F, "PgName_KSM005F",
+			"/view/ksm/005/f/index.xhtml");
+	
+	/** The Constant KDL023. */
+	public static final Program KDL023= new Program(WebAppId.AT, ProgramIdConsts.KDL023, "PgName_KDL023",
+			"/view/kdl/023/a/index.xhtml");
+	
+	/** The Constant KSM001. */
+	public static final Program KSM001= new Program(WebAppId.AT, ProgramIdConsts.KSM001, "PgName_KSM001",
+			"/view/ksm/001/a/index.xhtml");
+	
+	/** The Constant KMK009. */
+	public static final Program KMK009= new Program(WebAppId.AT, ProgramIdConsts.KMK009, "PgName_KMK009",
+			"/view/kmk/009/a/index.xhtml");
+	
+	/** The Constant KSU006. */
+	public static final Program KSU006= new Program(WebAppId.AT, ProgramIdConsts.KSU006, "PgName_KSU006",
+			"/view/ksu/006/a/index.xhtml");
+	
+	/** The Constant CCG007. */
+	public static final Program CCG007= new Program(WebAppId.COM, ProgramIdConsts.CCG007, "PgName_CCG007",
+			"/view/ccg/007/a/index.xhtml");
+	
 	// TODO: Define new programs here.
 
 	/**
