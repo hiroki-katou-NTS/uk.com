@@ -105,24 +105,35 @@ module nts.uk.at.view.ksu006.a {
                 self.firstRecord(null);
                 self.remainData([]);
                 
-                // TODO: pending wait method get content file in server.
-                service.findDataPreview(null).done((res: DataPreviewModel) => {
-                    self.enableDataPreview(true);
-                     // fake data
-                    let listValue: Array<any> = [];
-                    for (let i=1; i<49; i++) {
-                        listValue.push(i * 1000000);
-                    }
-                    self.dataPreview.push(new ExternalBudgetValueModel('1000000001', '20170721', listValue));
-                    self.dataPreview.push(new ExternalBudgetValueModel('1000000002', '20170721', listValue));
-                    self.dataPreview.push(new ExternalBudgetValueModel('1000000003', '20170721', listValue));
-                    
-                    self.firstRecord(self.dataPreview()[0]);
-                    self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
-                    
-                    self.totalRecord(res.totalRecord);
-//                    self.totalRecord(nts.uk.resource.getText("KSU006_123", [res.totalRecord]));
-                });
+                if (!self.fileName()) {
+                    nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_158" ));
+                    return;
+                }
+                
+                $("#file-upload").ntsFileUpload({stereoType:"any"}).done(function(inforFileUpload) {
+                    let fileId: string = inforFileUpload[0].id;
+                    service.findDataPreview(fileId).done((res: DataPreviewModel) => {
+                        self.enableDataPreview(true);
+                         // fake data
+                        let listValue: Array<any> = [];
+                        for (let i=1; i<49; i++) {
+                            listValue.push(i * 1000000);
+                        }
+                        self.dataPreview.push(new ExternalBudgetValueModel('1000000001', '20170721', listValue));
+                        self.dataPreview.push(new ExternalBudgetValueModel('1000000002', '20170721', listValue));
+                        self.dataPreview.push(new ExternalBudgetValueModel('1000000003', '20170721', listValue));
+                        
+                        self.firstRecord(self.dataPreview()[0]);
+                        self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
+                        
+                        self.totalRecord(res.totalRecord);
+    //                    self.totalRecord(nts.uk.resource.getText("KSU006_123", [res.totalRecord]));
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    });
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });  
             }
             
             private initNameId() {
@@ -143,6 +154,8 @@ module nts.uk.at.view.ksu006.a {
                 service.findExternalBudgetList().done(function(res: Array<ExternalBudgetModel>) {
                     self.externalBudgetList(res);
                     dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }

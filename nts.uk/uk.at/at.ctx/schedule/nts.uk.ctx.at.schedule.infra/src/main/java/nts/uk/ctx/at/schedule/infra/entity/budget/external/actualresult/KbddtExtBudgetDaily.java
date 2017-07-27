@@ -35,11 +35,16 @@ public class KbddtExtBudgetDaily extends UkJpaEntity implements Serializable {
     @EmbeddedId
     protected KbddtExtBudgetDailyPK kbddtExtBudgetDailyPK;
 
+    /** The budget atr. */
+    @Basic(optional = false)
+    @Column(name = "BUDGET_ATR")
+    private int budgetAtr;
+    
     /** The actual val. */
     @Basic(optional = false)
     @Column(name = "ACTUAL_VAL")
     private Long actualVal;
-
+    
     /** The ext budget cd. */
     @Basic(optional = false)
     @Column(name = "EXT_BUDGET_CD")
