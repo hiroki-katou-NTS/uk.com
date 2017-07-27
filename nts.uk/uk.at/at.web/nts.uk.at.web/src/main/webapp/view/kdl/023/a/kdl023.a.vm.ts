@@ -14,6 +14,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         listWorkType: KnockoutObservableArray<WorkType>;
         listWorkTime: KnockoutObservableArray<WorkTime>;
         patternStartDate: moment.Moment;
+        patternEndDate: moment.Moment;
 
         patternReflection: PatternReflection;
         dailyPatternSetting: DailyPatternSetting;
@@ -87,7 +88,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
                         });
                         self.setSelectedDailyPatternCode();
                         // Xu ly hien thi calendar.
-                        self.patternStartDate = moment(nts.uk.time.formatYearMonth(self.yearMonthPicked()), 'YYYY-MM').startOf('month');
+                        self.setPatternRange();
                         self.optionDates(self.getOptionDates());
                         dfd.resolve();
                     })).fail(res => {
@@ -134,7 +135,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
             // Reload calendar
-            self.patternStartDate = moment(nts.uk.time.formatYearMonth(self.yearMonthPicked()), 'YYYY-MM').startOf('month');
+            self.setPatternRange();
             self.optionDates(self.getOptionDates());
             // Set focus control
             $('#component-calendar-kcp006').focus();
@@ -267,7 +268,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             let currentDate = moment(self.patternStartDate);
-            let lastDateOfMonth = moment(self.patternStartDate).endOf('month');
+            let lastDateOfMonth = moment(self.patternEndDate);
             let result: Array<OptionDate> = [];
 
             while (currentDate.isSameOrBefore(lastDateOfMonth)) {
@@ -470,6 +471,16 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             self.weeklyWorkSetting.thursday = self.weeklyWorkSetting.wednesday;
             self.weeklyWorkSetting.wednesday = self.weeklyWorkSetting.tuesday;
             self.weeklyWorkSetting.tuesday = temp;
+        }
+
+        /**
+         * Set pattern range.
+         */
+        private setPatternRange(): void {
+            let self = this;
+            let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
+            self.patternStartDate = moment(parsedYm, 'YYYY-MM').startOf('month');
+            self.patternEndDate = moment(parsedYm, 'YYYY-MM').endOf('month');
         }
 
         private fw(arr: Array<any>): Array<any> {
