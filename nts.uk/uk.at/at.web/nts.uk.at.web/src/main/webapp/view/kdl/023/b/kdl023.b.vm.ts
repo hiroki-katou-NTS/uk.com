@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl023.a.viewmodel {
+module nts.uk.at.view.kdl023.b.viewmodel {
 
     import BaseScreenModel = kdl023.base.viewmodel.BaseScreenModel;
 
