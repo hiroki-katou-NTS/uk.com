@@ -68,13 +68,12 @@ module nts.uk.ui.jqueryExtentions {
         			oldTab: control.find("#sidebar-area .navigator a.active").closest("li"),
         			newTab: $(this).closest("li")
             	};
-                settings.beforeActivate.call(this, event, info);
-                if ($(this).attr("disabled") !== "true" &&
-                    $(this).attr("disabled") !== "disabled" &&
-                    $(this).attr("href") !== undefined) {
-                    active(control, $(this).closest("li").index());
+                if ($(this).attr("disabled") !== "true" && $(this).attr("disabled") !== "disabled") {
+                    settings.beforeActivate.call(this, event, info);
+                    if ($(this).attr("href") !== undefined)
+                        active(control, $(this).closest("li").index());
+                    settings.activate.call(this, event, info);
                 }
-                settings.activate.call(this, event, info);
             });
             
             active(control, settings.active);
@@ -85,7 +84,11 @@ module nts.uk.ui.jqueryExtentions {
             control.find("#sidebar-area .navigator a").removeClass("active");
             control.find("#sidebar-area .navigator a").eq(index).addClass("active");
             control.find("div[role=tabpanel]").addClass("disappear");
-            $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).removeClass("disappear");
+            var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
+            if ($displayPanel.length > 0) {
+                $displayPanel.removeClass("disappear");
+                $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+            }
             return control;
         }
 

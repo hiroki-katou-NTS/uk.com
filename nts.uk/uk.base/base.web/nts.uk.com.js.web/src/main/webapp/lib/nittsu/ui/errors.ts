@@ -198,7 +198,8 @@ module nts.uk.ui.errors {
     }
 
     export function clearAll(): void {
-        errorsViewModel().clearError();
+        if (nts.uk.ui._viewModel !== undefined)
+            errorsViewModel().clearError();
     }
 
     export function removeByElement($control: JQuery): void {

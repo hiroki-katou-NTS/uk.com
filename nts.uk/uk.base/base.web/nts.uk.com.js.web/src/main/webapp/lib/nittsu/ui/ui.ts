@@ -291,9 +291,14 @@ module nts.uk.ui {
                 if (typeof arguments[1] !== 'string') {
                     return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                path = nts.uk.request.location.siteRoot
+                if(webAppId==nts.uk.request.location.currentAppId){
+                    path = nts.uk.request.resolvePath(path);
+                }else{
+                    path = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(path).serialize();
+                }
+                
                 options = options || {};
                 options.modal = true;
                 return open(path, options);
@@ -303,9 +308,13 @@ module nts.uk.ui {
                  if (typeof arguments[1] !== 'string') {
                     return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                path = nts.uk.request.location.siteRoot
+                if(webAppId==nts.uk.request.location.currentAppId){
+                    path = nts.uk.request.resolvePath(path);
+                }else{
+                    path = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(path).serialize();
+                }
                 options = options || {};
                 options.modal = false;
                 return open(path, options);

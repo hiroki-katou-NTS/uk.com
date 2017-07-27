@@ -39,11 +39,12 @@
 				</div>
 				<div class="contents-area">
 					Content 1<br />
-					<div data-bind="ntsCheckBox: { checked: show }">Show Item
-						"操作"</div>
+					<input data-bind="ntsTextEditor: {value: ko.observable('')}"></input>
+					<button id="set-error" data-bind="click: setError">Set Error</button>
+					<button id="clear-error" data-bind="click: clearError">Clear Error</button>
+					<div data-bind="ntsCheckBox: { checked: show }">Show Item "操作"</div>
 					<br />
-					<div data-bind="ntsCheckBox: { checked: enable }">Enable Item
-						"1 &amp; 2"</div>
+					<div data-bind="ntsCheckBox: { checked: enable }">Enable Item "1 &amp; 2"</div>
 				</div>
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
@@ -55,6 +56,9 @@
 					<button>接続を切断しました</button>
 				</div>
 				<div class="contents-area">
+					<input data-bind="ntsTextEditor: {value: ko.observable('')}"></input>
+					<button id="set-error" data-bind="click: setError">Set Error</button>
+					<button id="clear-error" data-bind="click: clearError">Clear Error</button>
 					<table id="multi-list" data-bind="ntsGridList: {
 							height: 350,
 							options: items,
@@ -74,6 +78,9 @@
 					<button>接続を切断しました</button>
 				</div>
 				<div class="contents-area">
+					<input data-bind="ntsTextEditor: {value: ko.observable('')}"></input>
+					<button id="set-error" data-bind="click: setError">Set Error</button>
+					<button id="clear-error" data-bind="click: clearError">Clear Error</button>
                     <table id="grid"></table>
 				</div>
 			</div>

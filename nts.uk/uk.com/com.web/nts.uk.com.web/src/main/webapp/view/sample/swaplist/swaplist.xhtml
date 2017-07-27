@@ -22,10 +22,12 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>SwapList </h1>
+						<div data-bind="ntsCheckBox: { checked: disableMoveButton, text: 'Disable Move Button' }"></div>
 						<div><div style="display: inline-block;"><div id="swap-list" data-bind="ntsSwapList: {
 								showSearchBox: { showLeft : true, showRight: true},
 								height: 300,
 								dataSource: itemsSwap,
+								disableMoveButton: disableMoveButton,
 								primaryKey: 'code',
 								columns: columns,
 								value: currentCodeListSwap,
@@ -63,6 +65,7 @@
 	showSearchBox: { showLeft : true, showRight: true},
 	height: 300,
 	dataSource: itemsSwap,
+	disableMoveButton: disableMoveButton,
 	primaryKey: 'code',
 	columns: columns,
 	value: currentCodeListSwap,
@@ -186,6 +189,13 @@
 													<i>null:</i> Will stretch vertically to fit data.<br/>
 													<i>string:</i> The widget height can be set in pixels (px) and percentage (%).<br/>
 													<i>number:</i> The height can be set as a number in pixels.
+												</td>
+											</tr>
+											<tr>
+												<td>disableMoveButton</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													Disable move button for swap list
 												</td>
 											</tr>
 											<tr>
