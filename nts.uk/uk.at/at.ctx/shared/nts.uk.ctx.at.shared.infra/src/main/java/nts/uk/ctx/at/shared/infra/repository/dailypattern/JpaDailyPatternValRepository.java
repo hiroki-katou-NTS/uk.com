@@ -18,8 +18,6 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternVal;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValRepository;
-import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSet_;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternVal;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternValPK_;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternVal_;

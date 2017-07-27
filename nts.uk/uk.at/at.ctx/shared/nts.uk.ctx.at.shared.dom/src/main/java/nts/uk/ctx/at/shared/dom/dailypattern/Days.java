@@ -7,12 +7,11 @@ package nts.uk.ctx.at.shared.dom.dailypattern;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class NumberDayCalendar.
  */
 @IntegerRange(max = 31, min = 1)
-public class NumberDayDaily extends IntegerPrimitiveValue<NumberDayDaily> {
+public class Days extends IntegerPrimitiveValue<Days> {
 
 	/** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -22,7 +21,7 @@ public class NumberDayDaily extends IntegerPrimitiveValue<NumberDayDaily> {
      *
      * @param rawValue the raw value
      */
-    public NumberDayDaily(Integer rawValue) {
+    public Days(Integer rawValue) {
         super(rawValue);
     }
     
