@@ -285,6 +285,9 @@ module ksm002.a.viewmodel {
                     // UDPATE  
                     service.updateComSpecificDate(self.getUpdateCommand()).done(function(res: Array<any>) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            if(_.flattenDeep(_.map(self.optionDates(), o => o.listId)).length == 0){
+                                self.isNew(true);    
+                            };
                             self.start();
                             nts.uk.ui.block.clear();
                         });
@@ -389,7 +392,7 @@ module ksm002.a.viewmodel {
          */
         openKsm002CDialog() {
             var self = this;
-            nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml',{ title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function(): any {
                 self.start();
                 nts.uk.ui._viewModel.bind(content).done(function(){
                     $(".ntsCheckBox").attr("tabindex",5);
@@ -492,5 +495,4 @@ module ksm002.a.viewmodel {
         specificDateNo: number;
         isUpdate?: boolean;
     }
-
 }

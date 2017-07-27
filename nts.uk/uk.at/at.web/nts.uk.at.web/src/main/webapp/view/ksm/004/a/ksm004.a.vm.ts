@@ -53,7 +53,7 @@ module nts.uk.at.view.ksm004.a {
             }
             kcpTreeGrid: ITreeGrid = {
                 treeType: 1,
-                selectType: 1,
+                selectType: 3,
                 isDialog: false,
                 isMultiSelect: false,
                 isShowAlreadySet: false,
@@ -64,7 +64,7 @@ module nts.uk.at.view.ksm004.a {
             };
             kcpGridlist: IGridList = {
                 listType: 2,
-                selectType: 2,
+                selectType: 3,
                 isDialog: false,
                 isMultiSelect: false,
                 isShowAlreadySet: false,
@@ -148,9 +148,7 @@ module nts.uk.at.view.ksm004.a {
                         .done(()=>{ nts.uk.ui.block.clear(); })
                         .fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                        });    
-                        self.currentCalendarWorkPlace().key(_.first($('#tree-grid')['getDataList']()).workplaceId);   
-                        self.currentCalendarClass().key(_.first($('#classification-list-setting')['getDataList']()).code);  
+                        });     
                         self.currentCalendarWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);   
                         self.currentCalendarClass().name(_.first($('#classification-list-setting')['getDataList']()).name);
                         
@@ -173,16 +171,16 @@ module nts.uk.at.view.ksm004.a {
                         
                         // get new Data when gridlist Class key change
                         self.currentCalendarClass().key.subscribe(value => {
-                            nts.uk.ui.block.invisible();
+                            // nts.uk.ui.block.invisible();   // error when use block ???
                             let data: Array<any> = $('#classification-list-setting')['getDataList']();
                             let item = _.find(data, m => m.code == value);
                             if (item) {
                                 self.currentCalendarClass().name(item.name);
                             } else {
                                 self.currentCalendarClass().name('');
-                            }    
+                            }   
                             self.getCalendarClassById(value)
-                            .done(()=>{ nts.uk.ui.block.clear(); })
+                            .done(()=>{nts.uk.ui.block.clear();})
                             .fail((res) => {
                                 nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                             });
@@ -392,7 +390,7 @@ module nts.uk.at.view.ksm004.a {
                                 break;
                         }  
                     }).ifNo(function(){
-                        // do nothing           
+                        nts.uk.ui.block.clear();           
                     });
                 }
             }
