@@ -13,7 +13,7 @@
 			<hr class="hrInfoB"></hr>
 			<div class="panel panel-frame">
 				<label class="info">#{i18n.getText('KSM002_10')}</label><BR />
-				<div data-bind="ntsMultiCheckBox: {
+				<div class="multiCheckPanel" data-bind="ntsMultiCheckBox: {
 								options: checkBoxList,
 								optionsValue: 'id',
 								optionsText: 'name',
@@ -30,7 +30,8 @@
 							dateFormat: 'yearmonth', 
 							valueFormat: 'YYYYMM', 
 							defaultClass: 'round-orange',
-							showJumpButtons: true}"></div>
+							showJumpButtons: true,
+							required: true}"></div>
 						</div>
 						<div data-bind="with: calendarPanel">
 							<div id="calendar1" data-bind="ntsCalendar: {
