@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.dailypattern.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +27,7 @@ public class DailyPatternDto implements DailyPatternSetMemento {
 	private String patternName;
 
 	/** The list daily pattern val. */
-	private List<DailyPatternVal> listDailyPatternVal;
+	private List<DailyPatternValDto> listDailyPatternVal;
 
 	/*
 	 * (non-Javadoc)
@@ -69,7 +71,15 @@ public class DailyPatternDto implements DailyPatternSetMemento {
 	 */
 	@Override
 	public void setListDailyPatternVal(List<DailyPatternVal> setListDailyPatternVal) {
-		this.listDailyPatternVal = setListDailyPatternVal;
+		List<DailyPatternValDto> listDailyPatternValDto = new ArrayList<>();
+		setListDailyPatternVal.forEach(new Consumer<DailyPatternVal>() {
+			public void accept(DailyPatternVal t) {
+				DailyPatternValDto d = new DailyPatternValDto( t.getPatternCd().v(),
+						t.getDispOrder().v(), t.getWorkTypeSetCd().v(), t.getWorkingHoursCd().v(), t.getDays().v());
+				listDailyPatternValDto.add(d);
+			};
+		});
+		this.listDailyPatternVal = listDailyPatternValDto;
 	}
 
 }

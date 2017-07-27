@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class Priority.
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
-@StringMaxLength(3)
+@StringMaxLength(2)
 public class PatternCode extends StringPrimitiveValue<PatternCode> {
 
 	/** The Constant serialVersionUID. */

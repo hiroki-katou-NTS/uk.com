@@ -1,47 +1,77 @@
 package nts.uk.ctx.at.shared.infra.repository.dailypattern;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValGetMemento;
+import nts.uk.ctx.at.shared.dom.dailypattern.Days;
+import nts.uk.ctx.at.shared.dom.dailypattern.DispOrder;
+import nts.uk.ctx.at.shared.dom.dailypattern.PatternCode;
+import nts.uk.ctx.at.shared.dom.dailypattern.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.dailypattern.WorkingCode;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternVal;
 
+/**
+ * The Class JpaDailyPatternValGetMemento.
+ */
 public class JpaDailyPatternValGetMemento implements DailyPatternValGetMemento{
 
+	/** The pattern calendar. */
 	private KdpstDailyPatternVal patternCalendar;
 	
 	/**
-	 * @param patternCalendar
+	 * Instantiates a new jpa daily pattern val get memento.
+	 *
+	 * @param patternCalendar the pattern calendar
 	 */
 	public JpaDailyPatternValGetMemento(KdpstDailyPatternVal patternCalendar) {
 		this.patternCalendar = patternCalendar;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValGetMemento#getCompanyId()
+	 */
 	@Override
-	public String getCompanyId() {
-		return patternCalendar.getKdpstDailyPatternValPK().getCid();
+	public CompanyId getCompanyId() {
+		return new CompanyId(patternCalendar.getKdpstDailyPatternValPK().getCid());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValGetMemento#getPatternCode()
+	 */
 	@Override
-	public String getPatternCode() {
-		return patternCalendar.getKdpstDailyPatternValPK().getPatternCd();
+	public PatternCode getPatternCode() {
+		return new PatternCode(patternCalendar.getKdpstDailyPatternValPK().getPatternCd());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValGetMemento#getDispOrder()
+	 */
 	@Override
-	public Integer getDispOrder() {
-		return patternCalendar.getKdpstDailyPatternValPK().getDispOrder();
+	public DispOrder getDispOrder() {
+		return new DispOrder(patternCalendar.getKdpstDailyPatternValPK().getDispOrder());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValGetMemento#getWorkTypeSetCd()
+	 */
 	@Override
-	public String getWorkTypeSetCd() {
-		return patternCalendar.getWorkTypeSetCd();
+	public WorkTypeCode getWorkTypeSetCd() {
+		return new WorkTypeCode(patternCalendar.getWorkTypeSetCd());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValGetMemento#getWorkingHoursCd()
+	 */
 	@Override
-	public String getWorkingHoursCd() {
-		return patternCalendar.getWorkingHoursCd();
+	public WorkingCode getWorkingHoursCd() {
+		return new WorkingCode(patternCalendar.getWorkingHoursCd());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValGetMemento#getDays()
+	 */
 	@Override
-	public Integer getDays() {
-		return patternCalendar.getDays();
+	public Days getDays() {
+		return new Days(patternCalendar.getDays());
 	}
 
 }

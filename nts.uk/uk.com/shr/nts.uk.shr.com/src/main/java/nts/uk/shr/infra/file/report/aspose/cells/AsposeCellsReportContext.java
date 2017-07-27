@@ -53,6 +53,21 @@ public class AsposeCellsReportContext implements AutoCloseable {
 		if (!items.isEmpty()) this.setDataSource("I18N", new SingleMapDataSource(items));
 	}
 	
+	public AsposeCellsReportContext(String reportId) {
+		
+		try {
+			this.templateFile = null;
+			this.workbook = new Workbook();
+			this.designer = new WorkbookDesigner(this.workbook);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		
+		IInternationalization i18n = CDI.current().select(IInternationalization.class).get();
+		Map<String, Object> items = i18n.getReportItems(reportId);
+		if (!items.isEmpty()) this.setDataSource("I18N", new SingleMapDataSource(items));
+	}
+	
 	public void setDataSource(String nameOfVariable, ICellsDataTable dataTable) {
 		this.designer.setDataSource(nameOfVariable, dataTable);
 	}
@@ -87,7 +102,9 @@ public class AsposeCellsReportContext implements AutoCloseable {
 
 	@Override
 	public void close() throws Exception {
-		this.templateFile.close();
+		if(this.templateFile != null){
+			this.templateFile.close();	
+		}
 	}
 	
 }
