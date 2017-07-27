@@ -23,7 +23,7 @@
 }
 
 .control-group-margin-custom button.nts-switch-button {
-	min-width: 85px !important;
+	min-width: 100px !important;
 }
 
 .control-group-margin-custom {
@@ -32,4 +32,16 @@
 
 #group-item-setting {
 	padding-top: 20px;
+}
+
+#item-info-list_container {
+	border: 1px solid #999999 !important;
+}
+
+#item-setting-button {
+	margin-bottom: 10px;
+}
+
+.ntsHelpButton {
+	margin-left: 15px !important;	
 }
