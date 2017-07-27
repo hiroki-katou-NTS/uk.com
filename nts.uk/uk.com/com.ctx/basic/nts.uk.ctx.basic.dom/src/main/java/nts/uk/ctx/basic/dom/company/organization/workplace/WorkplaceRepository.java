@@ -63,11 +63,11 @@ public interface WorkplaceRepository {
 	
 	
 	/**
-	 * Gets the all workplace of company.
+	 * Find all workplace of company.
 	 *
 	 * @param companyId the company id
 	 * @param baseDate the base date
-	 * @return the all workplace of company
+	 * @return the list
 	 */
-	List<Workplace> getAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
+	List<Workplace> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
 }

@@ -21,6 +21,15 @@ public interface AffJobTitleHistoryRepository {
 	 * @return the list
 	 */
 	List<AffJobTitleHistory> searchJobTitleHistory(GeneralDate baseDate, List<String> positionIds);
+	
+	/**
+	 * Find all job title history.
+	 *
+	 * @param baseDate the base date
+	 * @param employeeIds the employee ids
+	 * @return the list
+	 */
+	List<AffJobTitleHistory> findAllJobTitleHistory(GeneralDate baseDate, List<String> employeeIds);
 
 	/**
 	 * Search job title history.

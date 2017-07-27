@@ -19,6 +19,7 @@ import nts.uk.ctx.basic.app.find.company.organization.employee.EmployeeDto;
 import nts.uk.ctx.basic.app.find.company.organization.employee.EmployeeFinder;
 import nts.uk.ctx.basic.app.query.employee.EmployeeSearchQueryProcessor;
 import nts.uk.ctx.basic.app.query.employee.EmployeeSearchData;
+import nts.uk.ctx.basic.app.query.employee.EmployeeSearchListData;
 import nts.uk.ctx.basic.app.query.employee.EmployeeSearchListQuery;
 import nts.uk.ctx.basic.app.query.employee.EmployeeSearchQuery;
 
@@ -140,5 +141,17 @@ public class EmployeeWebService extends WebService {
 	@Path("getoffselect")
 	public List<EmployeeSearchData> getOfSelectedEmployee(EmployeeSearchListQuery input){
 		return this.employeeQueryProcessor.getOfSelectedEmployee(input);
+	}
+	
+	/**
+	 * Search list data.
+	 *
+	 * @param input the input
+	 * @return the list
+	 */
+	@POST
+	@Path("search")
+	public List<EmployeeSearchListData> searchListData(EmployeeSearchListQuery input){
+		return this.employeeQueryProcessor.searchEmployees(input);
 	}
 }
