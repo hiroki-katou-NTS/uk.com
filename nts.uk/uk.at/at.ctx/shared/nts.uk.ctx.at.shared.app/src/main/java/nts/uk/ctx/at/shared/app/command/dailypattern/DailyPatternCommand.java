@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.command.dailypattern;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class DailyPatternCommand {
 	private String patternName;
 
 	/** The list daily pattern val. */
-	private List<DailyPatternVal> listDailyPatternVal;
+	private List<DailyPatternValDto> listDailyPatternVal;
 
 	/**
 	 * To domain.
@@ -110,7 +111,8 @@ public class DailyPatternCommand {
 		 */
 		@Override
 		public List<DailyPatternVal> getListDailyPatternVal() {
-			return this.command.getListDailyPatternVal();
+			return this.command.getListDailyPatternVal().stream()
+					.map(item -> item.toDomain(companyId, command.getPatternCode())).collect(Collectors.toList());
 		}
 
 	}

@@ -1,4 +1,5 @@
 module cmm044.d.viewmodel {
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     export class ScreenModel {
         date: KnockoutObservable<string>;
         yearMonth: KnockoutObservable<number>;
@@ -79,7 +80,6 @@ module cmm044.d.viewmodel {
             });
             return dfd.promise();
         }
-
     }
 
     export module model {
@@ -100,6 +100,26 @@ module cmm044.d.viewmodel {
         }
 
 
+    }
+    interface IPersonModel {
+        personId: string;
+        code: string;
+        name: string;
+        baseDate?: number;
+    }
+
+    class PersonModel {
+        personId: string;
+        code: string;
+        name: string;
+        baseDate: number;
+
+        constructor(param: IPersonModel) {
+            this.personId = param.personId;
+            this.code = param.code;
+            this.name = param.name;
+            this.baseDate = param.baseDate || 20170104;
+        }
     }
 
     export class AgentData {

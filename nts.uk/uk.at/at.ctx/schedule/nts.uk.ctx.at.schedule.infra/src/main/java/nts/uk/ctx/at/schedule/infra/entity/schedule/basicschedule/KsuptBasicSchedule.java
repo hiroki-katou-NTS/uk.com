@@ -25,16 +25,16 @@ public class KsuptBasicSchedule extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KsuptBasicSchedulePK ksuptBSchedulePK;
+	public KsuppBasicSchedulePK ksuppBSchedulePK;
 
 	@Column(name = "WORK_TYPE_CD")
 	public String workTypeCd;
 
-	@Column(name = "SIFT_CD")
-	public String siftCd;
+	@Column(name = "WORK_TIME_CD")
+	public String workTimeCd;
 
 	@Override
 	protected Object getKey() {
-		return this.ksuptBSchedulePK;
+		return this.ksuppBSchedulePK;
 	}
 }

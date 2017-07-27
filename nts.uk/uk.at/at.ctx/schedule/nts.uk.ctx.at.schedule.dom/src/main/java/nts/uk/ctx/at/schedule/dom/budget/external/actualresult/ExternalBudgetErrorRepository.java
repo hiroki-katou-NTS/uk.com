@@ -19,13 +19,6 @@ public interface ExternalBudgetErrorRepository {
     void add(ExternalBudgetError domain);
     
     /**
-     * Update.
-     *
-     * @param domain the domain
-     */
-    void update(ExternalBudgetError domain);
-    
-    /**
      * Find by execution id.
      *
      * @param executionId the execution id

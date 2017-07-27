@@ -23,9 +23,9 @@ public class BasicSchedule {
 
 	private WorkTypeCode workTypeCd;
 
-	private SiftCode siftCd;
+	private SiftCode workTimeCd;
 
-	public static BasicSchedule createFromJavaType(String sId, GeneralDate date, String workTypeCd, String siftCd) {
-		return new BasicSchedule(sId, date, new WorkTypeCode(workTypeCd), new SiftCode(siftCd));
+	public static BasicSchedule createFromJavaType(String sId, GeneralDate date, String workTypeCd, String workTimeCd) {
+		return new BasicSchedule(sId, date, new WorkTypeCode(workTypeCd), new SiftCode(workTimeCd));
 	}
 }

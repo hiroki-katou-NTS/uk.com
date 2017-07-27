@@ -39,7 +39,11 @@ public class KmpmtMonthPattern extends JpaEntity implements Serializable {
     @Column(name = "M_PATTERN_NAME")
     private String mPatternName;
 
+    /**
+     * Instantiates a new kmpmt month pattern.
+     */
     public KmpmtMonthPattern() {
+    	super();
     }
 
     public KmpmtMonthPattern(KmpmtMonthPatternPK kmpmtMonthPatternPK) {

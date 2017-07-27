@@ -118,6 +118,7 @@ module nts.uk.at.view.kmk012.d {
             
             export class ClosureHistoryAddDto{
                 
+                closureName: string;
                 /** The closure id. */
                 // 締めＩＤ
                 closureId: number;

@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.dailypatternval.find.DailyPatternValFinder;
-import nts.uk.ctx.at.shared.app.dailypatternval.find.dto.DailyPatternValDto;
+import nts.uk.ctx.at.shared.app.find.dailypattern.dto.DailyPatternValDto;
 
 /**
  * The Class DailyPatternValWS.

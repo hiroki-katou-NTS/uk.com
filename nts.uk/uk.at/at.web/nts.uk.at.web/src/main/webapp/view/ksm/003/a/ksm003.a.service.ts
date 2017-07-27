@@ -4,11 +4,6 @@ module nts.uk.at.view.ksm003.a {
             getAllPattCalender: "ctx/at/share/vacation/setting/patterncalendar/getallpattcal",
             addPattCalender: "ctx/at/share/vacation/setting/patterncalendar/addpattcal",
             getPatternValByPatternCd: "ctx/at/share/vacation/setting/patternval/find/patternval",
-            //        save: 'ctx/at/share/vacation/setting/nursingleave/save',
-            //        findSetting: 'ctx/at/share/vacation/setting/nursingleave/find/setting'
-            //         getAllDivReason: "ctx/at/share/vacation/setting/patterncalendar/addpattcal/",
-            //         addDivReason: "at/record/divergencetime/adddivreason",
-            //         updateDivReason: "at/record/divergencetime/updatedivreason",
             deleteDailyPattern: "ctx/at/share/vacation/setting/patterncalendar/deleted/pattern"
         }
 
@@ -22,7 +17,7 @@ module nts.uk.at.view.ksm003.a {
         * add Patt Calender
         */
         export function addPattCalender(dto: model.PatternCalendarDto): JQueryPromise<Array<viewmodel.model.Item>> {
-            return nts.uk.request.ajax("at", paths.addPattCalender, { patternCalendarDto: dto });
+            return nts.uk.request.ajax("at", paths.addPattCalender, dto);
         }
 
         /**
@@ -31,18 +26,9 @@ module nts.uk.at.view.ksm003.a {
         export function getPatternValByPatternCd(patternCd: string): JQueryPromise<model.DailyPatternVal[]> {
             return nts.uk.request.ajax("at", paths.getPatternValByPatternCd + '/' + patternCd);
         }
-        //        export function addPattCalender(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>> {
-        //            return nts.uk.request.ajax("at", paths.addPattCalender, divReason);
-        //        }
-        //    /**
-        //    * update divergence reason
-        //    */ 
-        //    export function updateDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>>{
-        //        return nts.uk.request.ajax("at", paths.updateDivReason,divReason);
-        //    }
-        //    /**
-        //    * delete divergence reason
-        //    */ 
+        /**
+         * delete divergence reason
+        */ 
         export function deleteDailyPattern(patternCd: string): JQueryPromise<Array<viewmodel.model.Item>>{
            return nts.uk.request.ajax("at", paths.deleteDailyPattern + '/' + patternCd);
         }

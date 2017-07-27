@@ -25,6 +25,10 @@ public class CalendarClassFinder {
 		return list;
 	}
 	
+	public List<Integer> getCalendarClassSetByYear(String classId, String yearMonth){
+		return this.calendarClassRepository.getCalendarClassSetByYear(companyId, classId, yearMonth.substring(0, 4));
+	}
+	
 	public List<CalendarClassDto> getCalendarClassByYearMonth(String classId, String yearMonth){
 		String companyId = AppContexts.user().companyId();
 		return this.calendarClassRepository.getCalendarClassByYearMonth(companyId, classId, yearMonth)

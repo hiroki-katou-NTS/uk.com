@@ -16,7 +16,7 @@ __viewContext.ready(function () {
             self.numbereditor = {
                 value: ko.observable(),
                 constraint: 'CommonAmount',
-                option:{ width: "200",
+                option:{ width: "50",
                     defaultValue: 2 },
                 required: ko.observable(true),
                 enable: ko.observable(true),
@@ -27,9 +27,10 @@ __viewContext.ready(function () {
                 value: ko.observable(12),
                 constraint: 'CommonAmount',
                 option: ko.mapping.fromJS({
+                     width: "50",
                     grouplength: 3,
                     decimallength: 2,
-                    unitID: 'FIS_MONTH'}),
+                    unitID: 'JPY'}),
                 required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)

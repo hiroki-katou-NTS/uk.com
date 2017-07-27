@@ -96,12 +96,13 @@ module ccg013.g.viewmodel {
 
             self.showinfoSelectedEmployee = ko.observable(false);
             self.baseDate = ko.observable(new Date());
+            
         }
         start() {
             let self = this;
             self.initCCG001();
         }
-
+        
         addPersonType() {
             var self = this;
             var items = []
@@ -116,10 +117,10 @@ module ccg013.g.viewmodel {
                     }
                         service.addPerson(dataTranfer).done(function(res) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        $(".nts-editor").find(".nts-input").focus();
-                    }).fail(function(res) {
+                    }
+                            ).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
-                    })    
+                    })  
                 } else { nts.uk.ui.dialog.info({ messageId: "Msg_73" }); }
             }
             return;

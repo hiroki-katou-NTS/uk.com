@@ -7,5 +7,7 @@ __viewContext.ready(function() {
     __viewContext.bind(viewModel);
         //set tab index 
         $(".ntsCheckBox").attr("tabindex",5);
+        //set focus
+        $(".chkBox ").find("label").eq(0).focus();
     });
 });
