@@ -91,4 +91,31 @@ public class ProgramIdConsts {
 	public static final String CMM044A = "CMM044A";
 	
 	public static final String KSU001A = "KSU001A";
+	
+	public static final String KDL003 = "KDL003";
+	
+	public static final String KSM006 = "KSM006";
+	
+	public static final String KSM003 = "KSM003";
+	
+	public static final String KSM005A = "KSM005A";
+	
+	public static final String KSM005B = "KSM005B";
+	
+	public static final String KSM005C = "KSM005C";
+	
+	public static final String KSM005E = "KSM005E";
+	
+	public static final String KSM005F = "KSM005F";
+	
+	public static final String KDL023 = "KDL023";
+	
+	public static final String KSM001 = "KSM001";
+	
+	public static final String KMK009 = "KMK009";
+	
+	public static final String KSU006 = "KSU006";
+	
+	public static final String CCG007 = "CCG007";
+	
 }
