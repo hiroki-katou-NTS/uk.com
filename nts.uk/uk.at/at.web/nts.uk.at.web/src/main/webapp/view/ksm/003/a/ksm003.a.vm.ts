@@ -7,18 +7,15 @@ module nts.uk.at.view.ksm003.a {
         export class ScreenModel {
             //A_label_x
             columns: KnockoutObservableArray<any>;
-            columnsWork: KnockoutObservableArray<any>;
+            columnsWork: KnockoutObservableArray<any>[];
             dailyPatternVal: KnockoutObservableArray<DailyPatternVal>;
             lstPattern: KnockoutObservableArray<model.Item>;
             currentCode: KnockoutObservable<string>;
             enableCode: KnockoutObservable<boolean>;
-            //f
             itemPatternCal: KnockoutObservable<model.Item>;
-
             objectOld: any;
             enableDel: KnockoutObservable<boolean>;
             checkModel: KnockoutObservable<boolean>;
-
             patternCalendar: KnockoutObservable<model.Item>;
             patternCode: KnockoutObservable<string>;
             patternName: KnockoutObservable<string>;
@@ -37,20 +34,18 @@ module nts.uk.at.view.ksm003.a {
                 ]);
                 self.columnsWork = ko.observableArray([
                     { headerText: '', key: 'btOpenWorkSelection', template: "<button class=\"button separate-button fix-button\">" + nts.uk.resource.getText('KSM003_34') + " </button>", formatter: _.escape, width: 100 },
-                    { headerText: nts.uk.resource.getText('KSM003_30'), key: 'workTypeSetCd', formatter: _.escape, width: 150 },
+                    { headerText: nts.uk.resource.getText('KSM003_30'), key: 'workTypeSetCd', formatter: _.escape, width: 180 },
                     { headerText: nts.uk.resource.getText('KSM003_31'), key: 'workingHoursCd', formatter: _.escape, width: 150 },
-                    { headerText: nts.uk.resource.getText('KSM003_32'), template: "<input type=\"text\" value=\"${days}\" data-id=\"${days}\" />", key: 'days', formatter: _.escape, width: 30 }
-//                    data-bind=\"ntsTextEditor: {value: days, constraint: 'DivergenceReasonContent', required: true}\" />
-                    ]);
+                    { headerText: nts.uk.resource.getText('KSM003_32'), template: "<input type=\"text\" style=\"width: 100px;\" value=\"${days}\" data-id=\"${days}\" >" + nts.uk.resource.getText('KSM003_33') + " </input>", key: 'days', formatter: _.escape, width: 60 }
+                    //                   <input class=\"nts-input\" data-bind=\"ntsTextEditor: { name: '#[KSM003_32]', value: \"${days}\" , constraint: 'DiverdenceReasonCode', enable:enableCode, required: true}\" />
+                ]);
+                //               template: "<input type=\"text\" value=\"${days}\" data-id=\"${days}\" />"
                 self.lstPattern = ko.observableArray([]);
                 self.enableCode = ko.observable(false);
-                //f
                 self.itemPatternCal = ko.observable(null);
 
                 self.enableDel = ko.observable(true);
                 self.checkModel = ko.observable(true);
-
-
                 self.patternCode = ko.observable(null);
                 self.patternName = ko.observable('');
                 self.itemDailyPatternVal = ko.observableArray([]);
@@ -62,7 +57,6 @@ module nts.uk.at.view.ksm003.a {
                 self.currentCode.subscribe(function(codeChanged: string) {
 
                     console.log(codeChanged);
-                    //                var t0 = performance.now();   
                     self.clearError();
                     self.itemPatternCal(self.findItemPatternCal(codeChanged));
                     if (self.itemPatternCal() === undefined || self.itemPatternCal() == null) {
@@ -79,8 +73,8 @@ module nts.uk.at.view.ksm003.a {
                     }
                     $("#inpPattern").focus();
                 });
-                
-                self.dailyPatternVal.subscribe(function(dataRes: DailyPatternVal[]){
+
+                self.dailyPatternVal.subscribe(function(dataRes: DailyPatternVal[]) {
                     console.log('Change');
                     console.log(dataRes);
                 });
@@ -119,9 +113,9 @@ module nts.uk.at.view.ksm003.a {
 
 
 
-            //        /**
-            //         * find item Pattern Cal is selected
-            //         */
+            /**
+            * find item Pattern Cal is selected
+            */
             findItemPatternCal(value: string): any {
                 let self = this;
                 var itemModel = null;
@@ -157,7 +151,7 @@ module nts.uk.at.view.ksm003.a {
                         if (self.enableCode() == false) {
                             self.addDivReason();
                         } else
-                            if (self.enableCode() == true) {//add divergence
+                            if (self.enableCode() == true) {
                                 self.addDivReason();
                             }
                     }
@@ -181,24 +175,6 @@ module nts.uk.at.view.ksm003.a {
                 });
             }
 
-
-
-
-//            updateDivReason() {
-//                var self = this;
-//                var dfd = $.Deferred();
-//                var divReason = new model.Item(self.patternCode(), self.patternName(), self.itemDailyPatternVal());
-//                service.addPattCalender(self.collectData()).done(function() {
-//                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-//                        self.getAllDivReasonNew();
-//                        nts.uk.ui.block.clear();
-//                    });;
-//                }).fail(function(res) {
-//                    nts.uk.ui.dialog.alert(res.message);
-//                    dfd.reject(res);
-//                    nts.uk.ui.block.clear();
-//                });
-//            }
 
 
             //get all divergence reason new
@@ -226,8 +202,8 @@ module nts.uk.at.view.ksm003.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                               let patternCal = self.itemPatternCal();
-                               service.deleteDailyPattern(patternCal.patternCode).done(function() {
+                    let patternCal = self.itemPatternCal();
+                    service.deleteDailyPattern(patternCal.patternCode).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             nts.uk.ui.block.clear();
                             self.getDivReasonList_afterDelete();
@@ -247,28 +223,28 @@ module nts.uk.at.view.ksm003.a {
                 self.dailyPatternVal();
                 self.getAllDivReasonNew();
                 $("#inpPattern").focus();
-                nts.uk.ui.block.clear(); 
+                nts.uk.ui.block.clear();
                 dfd.resolve();
                 return dfd.promise();
-               }
+            }
 
 
 
-     //        closeDialog
-           closeDialog() {
-               nts.uk.ui.windows.close();
-           }
+            //        closeDialog
+            closeDialog() {
+                nts.uk.ui.windows.close();
+            }
 
             public collectData(): PatternCalendarDto {
-               var self = this;
-               var dto: PatternCalendarDto;
-               dto = {
-                patternCode: self.patternCode(),
-                           patternName: self.patternName(),
-                           listDailyPatternVal: self.dailyPatternVal()
-                       };
-                    console.log(dto);
-                   return dto; 
+                var self = this;
+                var dto: PatternCalendarDto;
+                dto = {
+                    patternCode: self.patternCode(),
+                    patternName: self.patternName(),
+                    listDailyPatternVal: self.dailyPatternVal()
+                };
+                console.log(dto);
+                return dto;
             }
 
             /**
@@ -276,37 +252,37 @@ module nts.uk.at.view.ksm003.a {
              */
 
             public getPatternValByPatternCd(patternCode: string) {
-               var self = this;
-               service.getPatternValByPatternCd(patternCode).done(function(dataRes) {
-                   console.log(dataRes);
-                   self.dailyPatternVal([]);
-                if (dataRes === undefined || dataRes == null) {
-                    return;
-                } else {
-                    
-                               self.dailyPatternVal(dataRes);
-                               self.patternCode(patternCode);
-                        }
+                var self = this;
+                service.getPatternValByPatternCd(patternCode).done(function(dataRes) {
+                    console.log(dataRes);
+                    self.dailyPatternVal([]);
+                    if (dataRes === undefined || dataRes == null) {
+                        return;
+                    } else {
+
+                        self.dailyPatternVal(dataRes);
+                        self.patternCode(patternCode);
+                    }
                 });
-              }
+            }
 
 
 
         }
         export module model {
             export class Item {
-                   patternCode: string;
+                patternCode: string;
 
-                   patternName: string;
+                patternName: string;
 
-                   itemDailyPatternVal: ItemDailyPatternVal[];
+                itemDailyPatternVal: ItemDailyPatternVal[];
 
-                   constructor(patternCode: string, patternName: string, itemDailyPatternVal: ItemDailyPatternVal[]) {
-                       this.patternCode = patternCode;
-                       this.patternName = patternName;
-                       this.itemDailyPatternVal = itemDailyPatternVal;
-                   }
-      }
+                constructor(patternCode: string, patternName: string, itemDailyPatternVal: ItemDailyPatternVal[]) {
+                    this.patternCode = patternCode;
+                    this.patternName = patternName;
+                    this.itemDailyPatternVal = itemDailyPatternVal;
+                }
+            }
 
         }
     }

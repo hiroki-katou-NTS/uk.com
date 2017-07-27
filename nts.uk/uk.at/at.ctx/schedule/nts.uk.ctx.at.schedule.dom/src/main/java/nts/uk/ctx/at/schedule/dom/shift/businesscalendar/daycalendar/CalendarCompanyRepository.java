@@ -12,6 +12,8 @@ public interface CalendarCompanyRepository {
 	 */
 	List<CalendarCompany> getAllCalendarCompany(String companyId);
 	
+	List<Integer> getCalendarCompanySetByYear(String companyId, String year);
+	
 	List<CalendarCompany> getCalendarCompanyByYearMonth(String companyId, String yearMonth);
 	
 	/**

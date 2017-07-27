@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KDPST_DAILY_PATTERN_VAL")
+@Table(name = "KDPMT_DAILY_PATTERN_VAL")
 public class KdpstDailyPatternVal extends UkJpaEntity implements Serializable{
 	
 	 /** The Constant serialVersionUID. */

@@ -12,6 +12,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommandHandler;
@@ -23,6 +25,8 @@ import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetQuery;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
 
 @Path("at/schedule/budget/external")
 @Produces("application/json")
@@ -75,6 +79,18 @@ public class ExternalBudgetWebService extends WebService {
         return this.find.findDataPreview(fileUpload);
     }
     
+    
+    /**
+     * Find completion list.
+     *
+     * @return the list
+     */
+    @POST
+    @Path("find/completionenum")
+    public List<EnumConstant> findCompletionList() {
+        return EnumAdaptor.convertToValueNameList(CompletionState.class);
+    }
+    
     /**
      * Find all external budget log.
      *
@@ -82,7 +98,7 @@ public class ExternalBudgetWebService extends WebService {
      */
     @POST
     @Path("findAll/log")
-    public List<ExternalBudgetLogDto> findAllExternalBudgetLog() {
-        return this.find.findAllExternalBudgetLog();
+    public List<ExternalBudgetLogDto> findAllExternalBudgetLog(ExternalBudgetQuery query) {
+        return this.find.findExternalBudgetLog(query);
     }
 }

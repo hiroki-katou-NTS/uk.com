@@ -4,9 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.pattern;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingBatchDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
@@ -19,30 +20,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class MonthlyPatternSettingBatchSaveCommand.
  */
 
-/**
- * Gets the end year month.
- *
- * @return the end year month
- */
-
-/**
- * Gets the end year month.
- *
- * @return the end year month
- */
 @Getter
-
-/**
- * Sets the end year month.
- *
- * @param endYearMonth the new end year month
- */
-
-/**
- * Sets the end year month.
- *
- * @param endYearMonth the new end year month
- */
 @Setter
 public class MonthlyPatternSettingBatchSaveCommand {
 
@@ -74,49 +52,48 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	 * To domain work days.
 	 *
 	 * @param companyId the company id
-	 * @param baseDate the base date
+	 * @param ymdk the ymdk
 	 * @return the work monthly setting
 	 */
-	public WorkMonthlySetting toDomainWorkDays(String companyId, GeneralDate baseDate) {
+	public WorkMonthlySetting toDomainWorkDays(String companyId, int ymdk) {
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingWorkDays,
-				companyId, baseDate, monthlyPatternCode));
+				companyId, ymdk, monthlyPatternCode));
 	}
 
 	/**
 	 * To domain statutory holidays.
 	 *
 	 * @param companyId the company id
-	 * @param baseDate the base date
+	 * @param ymdk the ymdk
 	 * @return the work monthly setting
 	 */
-	public WorkMonthlySetting toDomainStatutoryHolidays(String companyId, GeneralDate baseDate) {
+	public WorkMonthlySetting toDomainStatutoryHolidays(String companyId, int ymdk) {
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingStatutoryHolidays,
-				companyId, baseDate, monthlyPatternCode));
+				companyId, ymdk, monthlyPatternCode));
 	}
 
 	/**
 	 * To domain none statutory holidays.
 	 *
 	 * @param companyId the company id
-	 * @param baseDate the base date
+	 * @param ymdk the ymdk
 	 * @return the work monthly setting
 	 */
-	public WorkMonthlySetting toDomainNoneStatutoryHolidays(String companyId,
-			GeneralDate baseDate) {
+	public WorkMonthlySetting toDomainNoneStatutoryHolidays(String companyId, int ymdk) {
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(
-				settingNoneStatutoryHolidays, companyId, baseDate, monthlyPatternCode));
+				settingNoneStatutoryHolidays, companyId, ymdk, monthlyPatternCode));
 	}
 
 	/**
 	 * To domain public holidays.
 	 *
 	 * @param companyId the company id
-	 * @param baseDate the base date
+	 * @param ymdk the ymdk
 	 * @return the work monthly setting
 	 */
-	public WorkMonthlySetting toDomainPublicHolidays(String companyId, GeneralDate baseDate) {
+	public WorkMonthlySetting toDomainPublicHolidays(String companyId, int ymdk) {
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingPublicHolidays,
-				companyId, baseDate, monthlyPatternCode));
+				companyId, ymdk, monthlyPatternCode));
 	}
 	
 		/**
@@ -131,7 +108,7 @@ public class MonthlyPatternSettingBatchSaveCommand {
 		private String companyId;
 		
 		/** The base date. */
-		private GeneralDate baseDate;
+		private int ymdk;
 		
 		/** The monthly pattern code. */
 		private String monthlyPatternCode;
@@ -145,10 +122,10 @@ public class MonthlyPatternSettingBatchSaveCommand {
 		 * @param monthlyPatternCode the monthly pattern code
 		 */
 		public WorkMonthlySettingGetMementoImpl(MonthlyPatternSettingBatchDto dto, String companyId,
-				GeneralDate baseDate, String monthlyPatternCode) {
+				int ymdk, String monthlyPatternCode) {
 			this.dto = dto;
 			this.companyId = companyId;
-			this.baseDate = baseDate;
+			this.ymdk = ymdk;
 			this.monthlyPatternCode = monthlyPatternCode;
 		}
 		/*
@@ -191,8 +168,8 @@ public class MonthlyPatternSettingBatchSaveCommand {
 		 * WorkMonthlySettingGetMemento#getDate()
 		 */
 		@Override
-		public GeneralDate getDate() {
-			return this.baseDate;
+		public BigDecimal getYmdK() {
+			return BigDecimal.valueOf(this.ymdk);
 		}
 
 		/*

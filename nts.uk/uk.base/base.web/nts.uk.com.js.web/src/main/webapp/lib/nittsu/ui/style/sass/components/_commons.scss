@@ -150,7 +150,7 @@ div.popup-panel {
 }
 
 /*****************************
-  NtsEditor
+  NtsError
 *****************************/
 .ntsControl.error {
 	.nts-editor, .ntsDatepicker, .sp-replacer {
@@ -161,13 +161,19 @@ div.popup-panel {
 .ui-igcombo.error {
 	border-color:#ff6666;
 }
-
+.checkbox-wrapper.error {
+	border: 1px solid #ff6666;
+}
+.multicheckbox-wrapper.error {
+	border: 1px solid #ff6666;
+}
 /*****************************
   ErrorNotifier
 *****************************/
 #func-notifier-errors {
 	position: absolute;
-	display: none;
+	display: inline-block;
+	visibility: hidden;
 	z-index:10;
 	
 	@include border-radius(5px);
@@ -186,7 +192,7 @@ div.popup-panel {
 	}
 	
 	&.shown {
-		display: inline-block;
+		visibility: visible;
 	}
 }
 

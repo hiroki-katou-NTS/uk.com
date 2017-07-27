@@ -243,7 +243,7 @@ module nts.uk.at.view.ksm005.c {
                         self.enableSystemChange(true);
                     } else {
                         self.monthlyPatternCode = '';
-                        self.monthlyPatternSetting('');
+                        self.monthlyPatternSetting(nts.uk.resource.getText("KSM005_43"));
                         self.enableSave(true);
                         self.enableDelete(false);
                         self.enableSystemChange(true);

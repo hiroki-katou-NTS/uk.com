@@ -2,18 +2,34 @@
 	
 }
 
-#contents-area-right{
-	width: 380px;
+#contents-area-right {
+	width: 360px;
 	height: 520px;
 	float: left;
 	clear: right;
 	margin-left: 10px;
 }
 
-#contents-area-left{
+#contents-area-left {
 	width: 900px;
 	height: 520px;
 	float: left;
 	clear: right;
-	background: red;
+	padding-left: 50px;
+}
+
+.margin-right-FormLabel {
+	width: 140px !important;
+}
+
+.control-group-margin-custom button.nts-switch-button {
+	min-width: 85px !important;
+}
+
+.control-group-margin-custom {
+	margin-bottom: 20px !important;
+}
+
+#group-item-setting {
+	padding-top: 20px;
 }

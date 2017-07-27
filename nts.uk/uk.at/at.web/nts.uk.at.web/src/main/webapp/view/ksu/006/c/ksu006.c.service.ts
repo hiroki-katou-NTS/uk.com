@@ -4,27 +4,62 @@ module nts.uk.pr.view.ksu006.c {
          *  Service paths
          */
         var paths: any = {
-//            updateAcquisitionRule: 'ctx/at/share/vacation/setting/acquisitionrule/update',
+            findCompletionList: "at/schedule/budget/external/find/completionenum",
+            
             findAllExternalBudgetLog: "at/schedule/budget/external/findAll/log",
         };
         
-        export function findAllExternalBudgetLog(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findAllExternalBudgetLog);
+        export function findCompletionList(): JQueryPromise<Array<model.EnumerationModel>> {
+            return nts.uk.request.ajax(paths.findCompletionList);
+        }
+        
+        export function findAllExternalBudgetLog(query: any): JQueryPromise<Array<model.ExternalBudgetLogModel>> {
+            return nts.uk.request.ajax(paths.findAllExternalBudgetLog, query);
         }
 
         export module model {
             
-            export interface ExternalBudgetLogModel {
+            export class EnumerationModel {
+                value: number;
+                fieldName: string;
+                localizedName: string;
+
+                constructor(value: number, fieldName: string, localizedName: string) {
+                    let self = this;
+                    self.value = value;
+                    self.fieldName = fieldName;
+                    self.localizedName = localizedName;
+                }
+            }
+            
+            export class ExternalBudgetLogModel {
                 executeId: string;
-                startDate: Date;
-                endDate: Date;
-                target: string;
+                startDate: string;
+                endDate: string;
+                extBudgetName: string;
                 fileName: string;
-                status: string;
+                statusVal: number;
+                statusDes: string;
                 numberSuccess: number;
                 numberFail: number;
                 download: string;
+                
+                constructor(executeId: string, startDate: string, endDate: string, extBudgetName: string,
+                    fileName: string, statusVal: number, statusDes: string, numberSuccess: number, numberFail: number) {
+                    let self = this;
+                    self.executeId = executeId;
+                    self.startDate = startDate;
+                    self.endDate = endDate;
+                    self.extBudgetName = extBudgetName;
+                    self.fileName = fileName;
+                    self.statusVal = statusVal;
+                    self.statusDes = statusDes;
+                    self.numberSuccess = numberSuccess;
+                    self.numberFail = numberFail;
+                    self.download = null;
+                }
             }
+            
         }
 
     }

@@ -26,9 +26,6 @@ public class JpaExternalBudgetLogSetMemento implements ExternalBudgetLogSetMemen
      *            the entity
      */
     public JpaExternalBudgetLogSetMemento(KbldtExtBudgetLog entity) {
-        if (entity == null) {
-            entity = new KbldtExtBudgetLog();
-        }
         this.entity = entity;
     }
 
@@ -40,7 +37,7 @@ public class JpaExternalBudgetLogSetMemento implements ExternalBudgetLogSetMemen
      */
     @Override
     public void setCompanyId(String companyId) {
-        this.entity.getKbldtExtBudgetLogPK().setCid(companyId);
+        this.entity.setCid(companyId);
     }
 
     /**
@@ -95,7 +92,7 @@ public class JpaExternalBudgetLogSetMemento implements ExternalBudgetLogSetMemen
      */
     @Override
     public void setExecutionId(String executionId) {
-        this.entity.getKbldtExtBudgetLogPK().setExeId(executionId);
+        this.entity.setExeId(executionId);
     }
 
     /**

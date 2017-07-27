@@ -7,11 +7,13 @@ package nts.uk.ctx.at.shared.infra.repository.dailypattern;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternGetMemento;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternVal;
+import nts.uk.ctx.at.shared.dom.dailypattern.PatternCode;
+import nts.uk.ctx.at.shared.dom.dailypattern.PatternName;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSet;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaDailyPatternGetMemento.
  */
@@ -21,7 +23,9 @@ public class JpaDailyPatternGetMemento implements DailyPatternGetMemento {
 	private KdpstDailyPatternSet patternCalendar;
 
 	/**
-	 * @param patternCalendar
+	 * Instantiates a new jpa daily pattern get memento.
+	 *
+	 * @param patternCalendar the pattern calendar
 	 */
 	public JpaDailyPatternGetMemento(KdpstDailyPatternSet patternCalendar) {
 		this.patternCalendar = patternCalendar;
@@ -34,8 +38,8 @@ public class JpaDailyPatternGetMemento implements DailyPatternGetMemento {
 	 * getCompanyId()
 	 */
 	@Override
-	public String getCompanyId() {
-		return patternCalendar.getKdpstDailyPatternSetPK().getCid();
+	public CompanyId getCompanyId() {
+		return new CompanyId(patternCalendar.getKdpstDailyPatternSetPK().getCid());
 	}
 
 	/*
@@ -45,8 +49,8 @@ public class JpaDailyPatternGetMemento implements DailyPatternGetMemento {
 	 * getPatternCode()
 	 */
 	@Override
-	public String getPatternCode() {
-		return patternCalendar.getKdpstDailyPatternSetPK().getPatternCd();
+	public PatternCode getPatternCode() {
+		return new PatternCode(patternCalendar.getKdpstDailyPatternSetPK().getPatternCd());
 	}
 
 	/*
@@ -56,14 +60,18 @@ public class JpaDailyPatternGetMemento implements DailyPatternGetMemento {
 	 * getPatternName()
 	 */
 	@Override
-	public String getPatternName() {
-		return patternCalendar.getPatternName();
+	public PatternName getPatternName() {
+		return new PatternName(patternCalendar.getPatternName());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternGetMemento#getListDailyPatternVal()
+	 */
 	@Override
 	public List<DailyPatternVal> getListDailyPatternVal() {
 		return this.patternCalendar.getListKdpstDailyPatternVal().stream()
-				.map(entity -> new DailyPatternVal(new JpaDailyPatternValGetMemento(entity))).collect(Collectors.toList());
+				.map(entity -> new DailyPatternVal(new JpaDailyPatternValGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 }

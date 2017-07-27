@@ -4,9 +4,9 @@ class ProfileHandler implements KnockoutBindingHandler {
         if (params.enable == undefined) {
             params.enable = true;
         }
-        
+
         if (params.showTxtEmployee == undefined) {
-            params.showTxtEmployee = true;    
+            params.showTxtEmployee = true;
         }
 
         let container1: HTMLElement = document.createElement('div'),
@@ -38,11 +38,13 @@ class ProfileHandler implements KnockoutBindingHandler {
                 }
             };
         }
-        
+
         if (!params.showTxtEmployee) {
-           input.setAttribute("style", "display: none;");   
+            input.setAttribute("style", "display: none;");
         }
 
+        input.id = "profile-input";
+        input.setAttribute("tabindex", '0');
         input.setAttribute('type', 'text');
         input.classList.add("nts-editor");
         input.classList.add("nts-input");

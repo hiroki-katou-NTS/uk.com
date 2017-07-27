@@ -1,9 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.dailypattern;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DailyPatternVal.
  */
@@ -17,22 +21,22 @@ import nts.arc.layer.dom.DomainObject;
 public class DailyPatternVal extends DomainObject{
 	
 	/** The cid. */
-	private String cid;
+	private CompanyId cid;
 	
     /** The pattern cd. */
-    private String patternCd;
+    private PatternCode patternCd;
     
     /** The disp order. */
-    private Integer dispOrder;
+    private DispOrder dispOrder;
     
     /** The work type set cd. */
-    private String workTypeSetCd;
+    private WorkTypeCode workTypeSetCd;
     
     /** The working hours cd. */
-    private String workingHoursCd;
+    private WorkingCode workingHoursCd;
     
     /** The days. */
-    private Integer days;
+    private Days days;
 
 	/**
 	 * Instantiates a new daily pattern val.
@@ -40,27 +44,6 @@ public class DailyPatternVal extends DomainObject{
 	public DailyPatternVal() {
 	}
 
-	/**
-	 * Instantiates a new daily pattern val.
-	 *
-	 * @param cid the cid
-	 * @param patternCd the pattern cd
-	 * @param dispOrder the disp order
-	 * @param workTypeSetCd the work type set cd
-	 * @param workingHoursCd the working hours cd
-	 * @param days the days
-	 */
-	public DailyPatternVal(String cid, String patternCd, Integer dispOrder, String workTypeSetCd, String workingHoursCd,
-			Integer days) {
-		this.cid = cid;
-		this.patternCd = patternCd;
-		this.dispOrder = dispOrder;
-		this.workTypeSetCd = workTypeSetCd;
-		this.workingHoursCd = workingHoursCd;
-		this.days = days;
-	}
-    
-	
 	/**
 	 * Instantiates a new daily pattern val.
 	 *
@@ -74,6 +57,7 @@ public class DailyPatternVal extends DomainObject{
 		this.workingHoursCd = memento.getWorkingHoursCd();
 		this.days = memento.getDays();
 	}
+	
 	/**
 	 * Save to memento.
 	 *

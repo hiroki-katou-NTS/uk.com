@@ -1,0 +1,11 @@
+#button1{
+	display: inline-block;
+	margin-left: 14px;
+}
+#returnLink {
+	display: inline-block;
+    margin: 14px 10px 10px 17px;
+}
+#functions-area {
+    height: 67px;
+}

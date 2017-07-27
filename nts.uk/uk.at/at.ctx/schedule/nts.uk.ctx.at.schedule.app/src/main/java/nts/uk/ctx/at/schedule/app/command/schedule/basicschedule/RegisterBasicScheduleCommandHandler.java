@@ -60,31 +60,30 @@ public class RegisterBasicScheduleCommandHandler
 			}
 
 			// Check WorkTime
-			// SiftCd = "000" : it is day off
-			if (bSchedule.getSiftCd() != "000") {
-				Optional<WorkTime> workTime = workTimeRepo.findByCode(companyId, bSchedule.getSiftCd());
+			// WorkTimeCd = "000" : it is day off
+			if (bSchedule.getWorkTimeCd() != "000") {
+				Optional<WorkTime> workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCd());
 				if (!workTime.isPresent()) {
 					// Set error to list
-					errList.add("WorkTimeCode " + bSchedule.getSiftCd() + " doesn't exist!");
+					errList.add("WorkTimeCode " + bSchedule.getWorkTimeCd() + " doesn't exist!");
 
 					continue;
 				}
 
 				if (workTime.get().getDispAtr().value != DisplayAtr.DisplayAtr_Display.value) {
 					// Set error to list
-					errList.add("WorkTimeCode " + bSchedule.getSiftCd() + " doesn't exist!");
+					errList.add("WorkTimeCode " + bSchedule.getWorkTimeCd() + " doesn't exist!");
 
 					continue;
 				}
-			} else {
-				// to-do
-				// Check workType-workTime
 			}
+			
+			// Check workType-workTime
 
 			// Insert/Update
 			BasicSchedule basicScheduleObj = BasicSchedule.createFromJavaType(bSchedule.getEmployeeId(),
-					bSchedule.getDate(), bSchedule.getWorkTypeCd(), bSchedule.getSiftCd());
-
+					bSchedule.getDate(), bSchedule.getWorkTypeCd(), bSchedule.getWorkTimeCd());
+			// Check exist of basicSchedule
 			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.getByPK(bSchedule.getEmployeeId(),
 					bSchedule.getDate());
 			if (basicSchedule.isPresent()) {

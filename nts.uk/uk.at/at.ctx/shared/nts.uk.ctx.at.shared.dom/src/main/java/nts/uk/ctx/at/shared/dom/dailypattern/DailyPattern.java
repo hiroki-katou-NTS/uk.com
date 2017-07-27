@@ -1,46 +1,40 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.dailypattern;
+
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DailyPattern.
  */
-
-/**
- * Gets the days.
- *
- * @return the days
- */
 @Getter
-public class DailyPattern extends AggregateRoot{
-	
+public class DailyPattern extends AggregateRoot {
+
 	/** The company id. */
-	private String companyId;
-	
+	private CompanyId companyId;
+
 	/** The pattern code. */
-	private String patternCode;
-	
+	private PatternCode patternCode;
+
 	/** The pattern name. */
-	private String patternName;
-	
+	private PatternName patternName;
+
+	/** The list daily pattern val. */
 	private List<DailyPatternVal> listDailyPatternVal;
 
 	/**
 	 * Instantiates a new daily pattern.
-	 */
-	public DailyPattern(){
-		
-	}
-	
-	/**
-	 * Instantiates a new daily pattern.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public DailyPattern(DailyPatternGetMemento memento ) {
+	public DailyPattern(DailyPatternGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.patternCode = memento.getPatternCode();
 		this.patternName = memento.getPatternName();
@@ -50,7 +44,8 @@ public class DailyPattern extends AggregateRoot{
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(DailyPatternSetMemento memento) {
 		memento.setCompanyId(this.companyId);
@@ -58,5 +53,5 @@ public class DailyPattern extends AggregateRoot{
 		memento.setPatternName(this.patternName);
 		memento.setListDailyPatternVal(this.listDailyPatternVal);
 	}
-	
+
 }

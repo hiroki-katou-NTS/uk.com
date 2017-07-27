@@ -38,6 +38,7 @@ module nts.uk.ui.koExtentions {
             var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
             //            var selectedValues = ko.unwrap(data.value);
             var totalWidth = ko.unwrap(data.width);
+            var disableMove = ko.unwrap(data.disableMoveButton);
             var height = ko.unwrap(data.height);
             var showSearchBox = ko.unwrap(data.showSearchBox);
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
@@ -119,12 +120,13 @@ module nts.uk.ui.koExtentions {
             var $grid2 = $swap.find(grid2Id); 
 
             var features = [{ name: 'Selection', multipleSelection: true },
-                            { name: 'Sorting', type: 'local' },
+//                            { name: 'Sorting', type: 'local' },
                             { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
           
             $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
             
             var criterion = _.map(columns(), c => { return c.key === undefined ? c.prop : c.key; });
+            
             var swapParts: Array<SwapPart> = new Array<SwapPart>();
             swapParts.push(new GridSwapPart().listControl($grid1)
                                 .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn")) 
@@ -138,21 +140,24 @@ module nts.uk.ui.koExtentions {
                                 .setInnerDrop((data.innerDrag && data.innerDrag.left !== undefined) ? data.innerDrag.left : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
                                 .build());
+            
             swapParts.push(new GridSwapPart().listControl($grid2)
                                 .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn")) 
                                 .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .setDataSource(data.value())
-                                .setSearchCriterion(data.searchCriterion || criterion)
+                                .setSearchCriterion(data.searchCriterion || criterion) 
                                 .setSearchMode(data.searchMode || "highlight")
-                                .setColumns(columns())
+                                .setColumns(columns())  
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.right !== undefined) ? data.outerDrag.right : true)
                                 .build());
+            
             this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
+            
             $grid1.igGrid({
-                width: gridWidth + CHECKBOX_WIDTH,
+                width: gridWidth + CHECKBOX_WIDTH, 
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
                 columns: iggridColumns,
@@ -219,6 +224,14 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
             bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
+            var $swap = $(element);
+            
+            var disableMove = ko.unwrap(data.disableMoveButton);
+            if(disableMove === true){
+                $swap.find(".move-button").attr("disabled", "disabled");      
+            }else {
+                $swap.find(".move-button").removeAttr("disabled");
+            }
             var elementId = this.swapper.Model.$container.attr('id');
             var primaryKey: string = this.swapper.Model.swapParts[0].primaryKey;
             if (nts.uk.util.isNullOrUndefined(elementId)) {
@@ -236,15 +249,15 @@ module nts.uk.ui.koExtentions {
                     return selected[primaryKey] === item[primaryKey];
                 }) !== undefined;
             });
-            if (!_.isEqual(currentSource, newSources)) {
+//            if (!_.isEqual(currentSource, newSources)) {
                 this.swapper.Model.swapParts[0].bindData(newSources.slice());
                 this.swapper.Model.transportBuilder.setFirst(newSources);
-            }
+//            }
 
-            if (!_.isEqual(currentSelectedList, newSelectedList)) {
+//            if (!_.isEqual(currentSelectedList, newSelectedList)) {
                 this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
                 this.swapper.Model.transportBuilder.setSecond(newSelectedList);
-            }
+//            }
         }
         
         /**
@@ -720,18 +733,41 @@ module nts.uk.ui.koExtentions {
             selectedRows.sort(function(one, two) {
                 return one.index - two.index; 
             });
+            
+            var firstSelected = selectedRows[0];
+            
             var selectedIds = selectedRows.map(function(row) { return row.id; });
             this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
                     .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
-            this.swapParts[0].bindData(this.transportBuilder.getFirst());
-            this.swapParts[1].bindData(this.transportBuilder.getSecond());
-            value(this.transportBuilder.getSecond());
+            
+            var firstSource = this.transportBuilder.getFirst();
+            var secondSource = this.transportBuilder.getSecond();
+            
+            this.swapParts[0].bindData(firstSource);
+            this.swapParts[1].bindData(secondSource);
+            value(secondSource);
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
+            
+            var primaryKey = this.transportBuilder.primaryKey;
+            if (forward){
+                var selectIndex = firstSource.length === 0 ? -1 
+                    : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index); 
+            } else {
+                var selectIndex = secondSource.length === 0 ? -1  
+                    : (secondSource.length - 1 < firstSelected.index ? secondSource.length - 1 : firstSelected.index);    
+            }
+            
             setTimeout(function() {
-                $source.igGrid("virtualScrollTo", sourceList.length - 1 === selectedRows[0].index 
-                                   ? selectedRows[0].index - 1 : selectedRows[0].index + 1);
+                $source.igGrid("virtualScrollTo", selectIndex);
                 $dest.igGrid("virtualScrollTo", destList.length - 1);
+                
+                if(selectIndex >= 0){
+                    $source.igGridSelection("selectRowById", forward ? firstSource[selectIndex][primaryKey] : secondSource[selectIndex][primaryKey]);    
+                } 
+                if(!forward){
+                    $dest.ntsGridList("setSelected", selectedIds);    
+                }
             }, 10);
         }
     }
