@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 /**
+ * Get data DB BASIC_SCHEDULE, not through dom layer
  * 
  * @author sonnh1
  *

@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.schedule.basicschedule;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -20,13 +19,4 @@ public interface BasicScheduleScreenRepository {
 	 * @return
 	 */
 	List<BasicScheduleScreenDto> getByListSidAndDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
-
-	/**
-	 * Get BasicSchedule by primary key
-	 * 
-	 * @param sId
-	 * @param date
-	 * @return Optional BasicSchedule
-	 */
-	Optional<BasicScheduleScreenDto> getByPK(String sId, GeneralDate date);
 }
