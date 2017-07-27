@@ -365,7 +365,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * convertToWorkplace(java.lang.String, java.util.List)
 	 */
 	@Override
-	public List<Workplace> getAllWorkplaceOfCompany(String companyId, GeneralDate baseDate) {
+	public List<Workplace> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate) {
 		
 		// get entity manager
 		EntityManager em = this.getEntityManager();

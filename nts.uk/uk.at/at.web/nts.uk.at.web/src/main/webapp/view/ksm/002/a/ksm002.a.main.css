@@ -40,3 +40,9 @@
 .chkBox{
 	margin-top:10px;
 }
+.contents-area {
+	width: 1150px;
+}
+#sidebar-area {
+	min-width: 60px;
+}
