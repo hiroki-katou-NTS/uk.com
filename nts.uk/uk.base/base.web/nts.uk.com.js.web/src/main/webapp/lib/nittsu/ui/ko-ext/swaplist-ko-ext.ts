@@ -120,12 +120,13 @@ module nts.uk.ui.koExtentions {
             var $grid2 = $swap.find(grid2Id); 
 
             var features = [{ name: 'Selection', multipleSelection: true },
-                            { name: 'Sorting', type: 'local' },
+//                            { name: 'Sorting', type: 'local' },
                             { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
           
             $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
             
             var criterion = _.map(columns(), c => { return c.key === undefined ? c.prop : c.key; });
+            
             var swapParts: Array<SwapPart> = new Array<SwapPart>();
             swapParts.push(new GridSwapPart().listControl($grid1)
                                 .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn")) 
@@ -139,21 +140,24 @@ module nts.uk.ui.koExtentions {
                                 .setInnerDrop((data.innerDrag && data.innerDrag.left !== undefined) ? data.innerDrag.left : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
                                 .build());
+            
             swapParts.push(new GridSwapPart().listControl($grid2)
                                 .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn")) 
                                 .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .setDataSource(data.value())
-                                .setSearchCriterion(data.searchCriterion || criterion)
+                                .setSearchCriterion(data.searchCriterion || criterion) 
                                 .setSearchMode(data.searchMode || "highlight")
-                                .setColumns(columns())
+                                .setColumns(columns())  
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.right !== undefined) ? data.outerDrag.right : true)
                                 .build());
+            
             this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
+            
             $grid1.igGrid({
-                width: gridWidth + CHECKBOX_WIDTH,
+                width: gridWidth + CHECKBOX_WIDTH, 
                 height: (gridHeight) + "px",
                 primaryKey: primaryKey,
                 columns: iggridColumns,
