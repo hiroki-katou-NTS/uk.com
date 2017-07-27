@@ -33,8 +33,8 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	private static PpemtPersonCategoryAuth toEntity(PersonInfoCategoryAuth domain) {
 		PpemtPersonCategoryAuth entity = new PpemtPersonCategoryAuth();
-		entity.ppemtPersonCategoryAuthPk = new PpemtPersonCategoryAuthPk(domain.getRoleId().v(),
-				domain.getPersonInfoCategoryAuthId().v());
+		entity.ppemtPersonCategoryAuthPk = new PpemtPersonCategoryAuthPk(domain.getRoleId(),
+				domain.getPersonInfoCategoryAuthId());
 		entity.allowOtherCompanyRef = domain.getAllowOtherCompanyRef().value;
 		entity.allowOtherRef = domain.getAllowOtherRef().value;
 		entity.allowPersonRef = domain.getAllowPersonRef().value;

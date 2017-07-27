@@ -33,8 +33,8 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
 		PpemtPersonItemAuth entity = new PpemtPersonItemAuth();
-		entity.ppemtPersonItemAuthPk = new PpemtPersonItemAuthPk(domain.getRoleId().v(),
-				domain.getPersonCategoryAuthId().v(), domain.getPersonItemDefId().v());
+		entity.ppemtPersonItemAuthPk = new PpemtPersonItemAuthPk(domain.getRoleId(),
+				domain.getPersonCategoryAuthId(), domain.getPersonItemDefId());
 		entity.otherPersonAuth = domain.getOtherAuth().value;
 		entity.selfAuthType = domain.getSelfAuth().value;
 		return entity;

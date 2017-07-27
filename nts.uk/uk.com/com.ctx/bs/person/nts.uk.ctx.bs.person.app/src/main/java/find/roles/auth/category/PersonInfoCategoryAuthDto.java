@@ -40,7 +40,7 @@ public class PersonInfoCategoryAuthDto {
 	int otherAllowDelMulti;
 	public static PersonInfoCategoryAuthDto fromDomain(PersonInfoCategoryAuth domain) {
 		return new PersonInfoCategoryAuthDto(
-				domain.getRoleId().v(),domain.getPersonInfoCategoryAuthId().v(),
+				domain.getRoleId(),domain.getPersonInfoCategoryAuthId(),
 				domain.getAllowPersonRef().value, domain.getAllowOtherRef().value,
 				domain.getAllowOtherCompanyRef().value,
 				domain.getSelfFutureHisAuth().value, domain.getSelfPastHisAuth().value,

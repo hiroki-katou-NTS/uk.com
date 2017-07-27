@@ -27,8 +27,8 @@ public class JpaPersonInfoRoleRepository extends JpaRepository implements Person
 
 	private static PpemtPersonRole toEntity(PersonInforRole domain) {
 		PpemtPersonRole entity = new PpemtPersonRole();
-		entity.ppemtPersonRolePk = new PpemtPersonRolePk(domain.getRoleId().v());
-		entity.companyId = domain.getCompanyId().v();
+		entity.ppemtPersonRolePk = new PpemtPersonRolePk(domain.getRoleId());
+		entity.companyId = domain.getCompanyId();
 		entity.roleCode = domain.getRoleCode().v();
 		entity.roleName = domain.getRoleName().v();
 		return entity;

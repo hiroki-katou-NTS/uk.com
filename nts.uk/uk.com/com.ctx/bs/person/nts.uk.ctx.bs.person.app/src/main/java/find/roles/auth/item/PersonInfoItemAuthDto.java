@@ -12,7 +12,7 @@ public class PersonInfoItemAuthDto {
 	int otherAuth;
 
 	public static PersonInfoItemAuthDto fromDomain(PersonInfoItemAuth domain) {
-		return new PersonInfoItemAuthDto(domain.getRoleId().v(), domain.getPersonCategoryAuthId().v(),
-				domain.getPersonItemDefId().v(), domain.getSelfAuth().value, domain.getOtherAuth().value);
+		return new PersonInfoItemAuthDto(domain.getRoleId(), domain.getPersonCategoryAuthId(),
+				domain.getPersonItemDefId(), domain.getSelfAuth().value, domain.getOtherAuth().value);
 	}
 }

@@ -28,7 +28,7 @@ public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements Pe
 
 	private static PpemtPersonRoleAuth toEntity(PersonInfoRoleAuth domain) {
 		PpemtPersonRoleAuth entity = new PpemtPersonRoleAuth();
-		entity.ppemtPersonRoleAuthPk = new PpemtPersonRoleAuthPk(domain.getRoleId().v());
+		entity.ppemtPersonRoleAuthPk = new PpemtPersonRoleAuthPk(domain.getRoleId());
 		entity.allowMapBrowse = domain.getAllowMapBrowse().value;
 		entity.allowMapUpload = domain.getAllowMapUpload().value;
 		entity.allowDocRef = domain.getAllowDocRef().value;
