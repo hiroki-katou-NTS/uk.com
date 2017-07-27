@@ -16,6 +16,9 @@ public class ClosureHistoryAddDto implements Serializable{
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
+	/** The closure name. */
+	private String closureName;
+	
 	/** The closure id. */
 	// 締めＩＤ
 	private int closureId;
