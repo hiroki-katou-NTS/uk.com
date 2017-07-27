@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.schedule.app.find.schedule.basicschedule;
+package nts.uk.screen.at.app.schedule.basicschedule;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -10,8 +10,8 @@ import nts.arc.time.GeneralDate;
  * @author sonnh1
  *
  */
-@Value
-public class BasicScheduleParams {
+@Data
+public class BasicScheduleScreenParams {
 	public List<String> sId;
 	public GeneralDate startDate;
 	public GeneralDate endDate;
