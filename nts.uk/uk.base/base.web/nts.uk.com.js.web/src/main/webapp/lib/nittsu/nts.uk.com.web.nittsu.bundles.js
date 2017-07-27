@@ -2391,7 +2391,10 @@ var nts;
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
-                    var content_height = 50 + 20;
+                    var content_height = 20;
+                    if ($("#header").length != 0) {
+                        content_height += 50;
+                    }
                     if ($("#functions-area").length != 0) {
                         content_height += 49;
                     }
@@ -2995,11 +2998,13 @@ var nts;
                         this.build$dialog(options);
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
-                            options.title = '※ダイアログタイトルは基盤で自動化予定';
+                            var dialogName = _this.globalContext.__viewContext["program"]["programName"];
+                            var title = nts.uk.util.isNullOrEmpty(dialogName)
+                                || path !== _this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
-                                title: options.title || "dialog",
+                                title: title,
                                 resizable: options.resizable,
                                 position: {
                                     my: "center",
@@ -3854,6 +3859,7 @@ var nts;
                                 e.preventDefault();
                         });
                         container.data("tabindex", container.attr("tabindex"));
+                        container.wrap("<div class='checkbox-wrapper'/>");
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -3920,6 +3926,7 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
+                        container.wrap("<div class='multicheckbox-wrapper'/>");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
                         container.data("init", true);
@@ -5204,7 +5211,7 @@ var nts;
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
-                            $input.width(width);
+                            $input.width(width, false);
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
@@ -5365,8 +5372,6 @@ var nts;
                             $parent.css({ 'width': '100%' });
                         }
                         $input.css("box-sizing", "border-box");
-                        if (width.trim() != "")
-                            $input.width(width);
                         if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                             $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
@@ -5376,17 +5381,17 @@ var nts;
                             var unit = uk.text.getNumberUnit(this.editorOption.unitID);
                             this.editorOption.symbolChar = unit.unitText;
                             this.editorOption.symbolPosition = unit.position;
-                            this.setupUnit($input);
+                            this.setupUnit($input, width);
                         }
                         else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
-                            this.setupUnit($input);
+                            this.setupUnit($input, width);
                         }
                         if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
                             && nts.uk.util.isNullOrEmpty(data.value())) {
                             data.value(this.editorOption.defaultValue);
                         }
                     };
-                    NumberEditorProcessor.prototype.setupUnit = function ($input) {
+                    NumberEditorProcessor.prototype.setupUnit = function ($input, width) {
                         var $parent = $input.parent();
                         var padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
                         if (padding < 20) {
@@ -5396,6 +5401,9 @@ var nts;
                         $parent.attr("data-content", this.editorOption.symbolChar);
                         var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
                         $input.css(css);
+                        if (width.trim() != "") {
+                            $input.innerWidth(parseInt(width) - 2);
+                        }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
@@ -6760,14 +6768,10 @@ var nts;
                                 return selected[primaryKey] === item[primaryKey];
                             }) !== undefined;
                         });
-                        if (!_.isEqual(currentSource, newSources)) {
-                            this.swapper.Model.swapParts[0].bindData(newSources.slice());
-                            this.swapper.Model.transportBuilder.setFirst(newSources);
-                        }
-                        if (!_.isEqual(currentSelectedList, newSelectedList)) {
-                            this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
-                            this.swapper.Model.transportBuilder.setSecond(newSelectedList);
-                        }
+                        this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                        this.swapper.Model.transportBuilder.setFirst(newSources);
+                        this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                        this.swapper.Model.transportBuilder.setSecond(newSelectedList);
                     };
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
                         var handler = this;
