@@ -11,9 +11,6 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.schedule.basicschedule.BasicScheduleDto;
-import nts.uk.ctx.at.schedule.app.find.schedule.basicschedule.BasicScheduleFinder;
-import nts.uk.ctx.at.schedule.app.find.schedule.basicschedule.BasicScheduleParams;
 
 /**
  * 
@@ -25,16 +22,8 @@ import nts.uk.ctx.at.schedule.app.find.schedule.basicschedule.BasicScheduleParam
 public class BasicScheduleWebService extends WebService {
 
 	@Inject
-	private BasicScheduleFinder bScheduleFinder;
-
-	@Inject
 	private RegisterBasicScheduleCommandHandler registerBScheduleCommandHandler;
 
-	@POST
-	@Path("getData")
-	public List<BasicScheduleDto> getData(BasicScheduleParams params) {
-		return this.bScheduleFinder.getByListSidAndDate(params);
-	}
 
 	@POST
 	@Path("register")

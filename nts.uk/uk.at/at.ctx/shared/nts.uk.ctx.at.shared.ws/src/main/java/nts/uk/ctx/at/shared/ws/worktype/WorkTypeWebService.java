@@ -28,12 +28,17 @@ public class WorkTypeWebService extends WebService {
 		return this.find.getPossibleWorkType(lstPossible);
 	}
 
+	/**
+	 * Find by CID and DisplayAtr = display (added by sonnh1)
+	 * 
+	 * @return list WorkTypeDto
+	 */
 	@POST
 	@Path("getByCIdAndDisplayAtr")
 	public List<WorkTypeDto> getByCIdAndDisplayAtr() {
 		return this.find.findByCIdAndDisplayAtr();
 	}
-	
+
 	/**
 	 * Find all.
 	 *

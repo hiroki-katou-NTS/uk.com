@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule;
 
-import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -19,7 +18,7 @@ public interface BasicScheduleRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<BasicSchedule> getByListSidAndDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
+//	List<BasicSchedule> getByListSidAndDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 
 	/**
 	 * Get BasicSchedule by primary key
