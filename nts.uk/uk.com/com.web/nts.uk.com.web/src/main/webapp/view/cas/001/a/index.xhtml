@@ -17,12 +17,12 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="A1_001">新規</button>
-					<button id="A1_002" class="proceed">登録</button>
-					<button id="A1_003">コピー</button>
-					<button id="A1_004" class="danger">削除</button>
+					<!-- <button id="A1_001">#{i18n.getText('CAS001_2')}</button> -->
+					<button id="A1_002" class="proceed">#{i18n.getText('CAS001_3')}</button>
+					<button id="A1_003">#{i18n.getText('CAS001_4')}</button>
+					<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button>
 					<div class="float-right">
-						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">個人情報定義へ</a>
+						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">#{i18n.getText('CAS001_6')}</a>
 					</div>
 				</div>
 			</div>
@@ -53,7 +53,7 @@
 						primaryKey: 'PersonInfoCategoryID' ,
 						columns: [{ headerText: 'コード', key: 'PersonInfoCategoryID', width: 200 ,hidden:true},
 								{ headerText: 'コード', key: 'PersonInfoCategoryName', width: 200},
-				                { headerText: '名称', key: 'AllowPersonReference', width: 45 , formatter :makeIcon } ] ,
+				                {headerText: '名称', key: 'IsConfig', width: 45 , formatter :makeIcon } ] ,
 						multiple: false,
 						value: currentRole().currentRoleCategoryCode,
 						rows:10 }">
@@ -74,7 +74,7 @@
 									<span class="expand_symbol" data-bind="html:ExpandSymbolGen()"></span>
 								</div>
 								<div class="div_line">
-									<table id="role_table">
+									<table id="roleAuTable" class="auth_table">
 										<tr>
 											<th></th>
 											<th style="width: 150px">アップロード</th>
@@ -146,6 +146,7 @@
 							</div>
 							<hr />
 						</div>
+						<!-- 	category area -->
 						<div id="category_config_arena" data-bind="with:currentCategory">
 							<div class="div_line">
 								<div class="float_left">
@@ -154,12 +155,219 @@
 								</div>
 								<div style="padding-left: 130px" class="float_left">
 									<div id="A4_003" data-bind="ntsFormLabel: { required:true }">情報種類</div>
-									<span id="A4_004" data-bind="text:PersonInfoCategoryName"></span>
+									<span id="A4_004" data-bind="text:PersonRoleType().name"></span>
 								</div>
 							</div>
+							<div class="div_line">
+								<div class="toggle_div" id="A4_toggle">
+									<div class="div_line toggle_div_header">
+										<div id="" data-bind="ntsFormLabel: { required:true }">ファイル権限設定</div>
+										<span class="expand_symbol"
+											data-bind="html:$parent.ExpandSymbolGen()"></span>
+									</div>
+									<div id="file_permission_settings">
+										<div>
+											<span id="A4_007">他人の情報利用</span>
+											<div id="A4_008" class="cf"
+												data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowPersonReference ,
+													enable: true }"></div>
+										</div>
+										<div>
+											<span id="A4_009">本人の情報利用 </span>
+											<div id="A4_010" class="cf"
+												data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowOthersReference ,
+													enable: true }"></div>
+										</div>
+										<div>
+											<span id="A4_011">別会社の情報利用 </span>
+											<div id="A4_012" class="cf"
+												data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowAnotherCompanyReference ,
+													enable: true }"></div>
+										</div>
+									</div>
+									<div id="auth_group_table">
+										<com:ko-if bind="PersonRoleType().code === 1">
+											<table id="history_auth_table" class="auth_table">
+												<tr>
+													<th></th>
+													<th style="width: 150px;">履歴追加</th>
+													<th style="width: 150px;">履歴削除</th>
+													<th style="width: 150px;">未来履歴</th>
+													<th style="width: 150px;">過去履歴</th>
+												</tr>
+												<tr>
+													<th>他人</th>
+													<td><div id="A4_012" class="cf"
+															data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowDeleteHistory ,
+													enable: true }"></div></td>
+													<td><div id="A4_012" class="cf"
+															data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowAddHistory ,
+													enable: true }"></div></td>
+													<td><div id="A4_022"
+															data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: PastHistoryAuthority ,
+														optionsText: 'name',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+													<td><div id="A4_023"
+															data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: FutureHistoryAuthority,
+														optionsText: 'name',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+												</tr>
+												<tr>
+													<th>本人</th>
+													<td><div id="A4_012" class="cf"
+															data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: OtherAllowDeleteHistory ,
+													enable: true }"></div></td>
+													<td><div id="A4_012" class="cf"
+															data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: OtherAllowAddHistory ,
+													enable: true }"></div></td>
+													<td><div id="A4_026"
+															data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: OtherPastHistoryAuthority ,
+														optionsText: 'name',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+													<td><div id="A4_027"
+															data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: OtherFutureHistoryAuthority ,
+														optionsText: 'name',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+												</tr>
+											</table>
+										</com:ko-if>
+										<com:ko-if bind="PersonRoleType().code === 2">
+											<table id="multi_auth_table" class="auth_table">
+												<tr>
+													<th></th>
+													<th style="width: 150px;">情報追加</th>
+													<th style="width: 150px;">情報削除</th>
+												</tr>
+												<tr>
+													<th>他人</th>
+													<td><div id="A4_012" class="cf"
+															data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowDeleteMulti ,
+													enable: true }"></div></td>
+													<td><div id="A4_012" class="cf"
+															data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowAddMulti ,
+													enable: true }"></div></td>
+												</tr>
+												<tr>
+													<th>本人</th>
+													<td><div id="A4_012" class="cf"
+															data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowOtherDeleteMulti ,
+													enable: true }"></div></td>
+													<td><div id="A4_012" class="cf"
+															data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: AllowOtherAddMulti ,
+													enable: true }"></div></td>
+												</tr>
+											</table>
+										</com:ko-if>
+									</div>
+								</div>
+							</div>
+							<!-- item area -->
+							<table class="auth_table" id="item_role_table_head">
+								<tr>
+									<th><div data-bind="ntsCheckBox: { checked: $parents[1].checkBoxSelectedAll }"></div></th>
+									<th>設定</th>
+									<th style="width: 250px;">項目</th>
+									<th>他人の情報利用権限設定
+										<div id="auth_of_info_selected_all"
+											data-bind="ntsSwitchButton: {
+										options: $parents[1].itemListCbb,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $parents[1].anotherSelectedAll,
+										enable: true }"></div>
+										<span id="selected_all_caret" class="caret-bottom outline"></span>
+									</th>
+									<th>本人の情報利用権限設定
+										<div id="auth_of_info_selected_all"
+											data-bind="ntsSwitchButton: {
+										options: $parents[1].itemListCbb,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $parents[1].seftSelectedAll,
+										enable: true }"></div>
+										<span id="selected_all_caret" class="caret-bottom outline"></span>
+									</th>
+									<th></th>
+								</tr>
+							</table>
 						</div>
 					</div>
-
+					<div id="item_role_table_body_cover" >
+						<table id="item_role_table_body">
+						</table>
+					</div>
 				</div>
 			</div>
 		</ui:define>

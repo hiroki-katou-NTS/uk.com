@@ -40,6 +40,11 @@ public class KbtdtExtBudgetTimeVal extends UkJpaEntity implements Serializable {
     @Column(name = "PERIOD_TIME_NO")
     private int periodTimeNo;
 
+    /** The budget atr. */
+    @Basic(optional = false)
+    @Column(name = "BUDGET_ATR")
+    private int budgetAtr;
+    
     /** The actual val. */
     @Basic(optional = false)
     @Column(name = "ACTUAL_VAL")
