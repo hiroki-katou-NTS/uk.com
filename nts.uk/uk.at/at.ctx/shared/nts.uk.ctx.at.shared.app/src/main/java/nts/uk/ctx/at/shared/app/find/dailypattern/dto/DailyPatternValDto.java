@@ -1,5 +1,11 @@
-package nts.uk.ctx.at.shared.infra.repository.dailypattern;
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.app.find.dailypattern.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValSetMemento;
 import nts.uk.ctx.at.shared.dom.dailypattern.Days;
@@ -7,27 +13,53 @@ import nts.uk.ctx.at.shared.dom.dailypattern.DispOrder;
 import nts.uk.ctx.at.shared.dom.dailypattern.PatternCode;
 import nts.uk.ctx.at.shared.dom.dailypattern.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.dailypattern.WorkingCode;
-import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternVal;
-import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternValPK;
 
 /**
- * The Class JpaDailyPatternValSetMemento.
+ * The Class DailyPatternValDto.
  */
-public class JpaDailyPatternValSetMemento implements DailyPatternValSetMemento {
+@Getter
+@Setter
+public class DailyPatternValDto implements DailyPatternValSetMemento  {
 
-	/** The pattern calendar. */
-	private KdpstDailyPatternVal patternCalendar;
+	
+    /** The pattern cd. */
+    private String patternCode;
+    
+    /** The disp order. */
+    private Integer dispOrder;
+    
+    /** The work type set cd. */
+    private String workTypeSetCd;
+    
+    /** The working hours cd. */
+    private String workingHoursCd;
+    
+    /** The days. */
+    private Integer days;
 
 	/**
-	 * Instantiates a new jpa daily pattern val set memento.
-	 *
-	 * @param patternCalendar the pattern calendar
+	 * Instantiates a new daily pattern val dto.
 	 */
-	public JpaDailyPatternValSetMemento(KdpstDailyPatternVal patternCalendar) {
-		if (patternCalendar.getKdpstDailyPatternValPK() == null) {
-			patternCalendar.setKdpstDailyPatternValPK(new KdpstDailyPatternValPK());
-		}
-		this.patternCalendar = patternCalendar;
+	public DailyPatternValDto() {
+	}
+    
+	/**
+	 * Instantiates a new daily pattern val dto.
+	 *
+	 * @param cid the cid
+	 * @param patternCode the pattern code
+	 * @param dispOrder the disp order
+	 * @param workTypeSetCd the work type set cd
+	 * @param workingHoursCd the working hours cd
+	 * @param days the days
+	 */
+	public DailyPatternValDto( String patternCode, Integer dispOrder, String workTypeSetCd,
+			String workingHoursCd, Integer days) {
+		this.patternCode = patternCode;
+		this.dispOrder = dispOrder;
+		this.workTypeSetCd = workTypeSetCd;
+		this.workingHoursCd = workingHoursCd;
+		this.days = days;
 	}
 
 	/* (non-Javadoc)
@@ -35,7 +67,7 @@ public class JpaDailyPatternValSetMemento implements DailyPatternValSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId setCompanyId) {
-		this.patternCalendar.getKdpstDailyPatternValPK().setCid(setCompanyId.v());
+		// Do nothing
 	}
 
 	/* (non-Javadoc)
@@ -43,7 +75,7 @@ public class JpaDailyPatternValSetMemento implements DailyPatternValSetMemento {
 	 */
 	@Override
 	public void setPatternCode(PatternCode setPatternCode) {
-		this.patternCalendar.getKdpstDailyPatternValPK().setPatternCd(setPatternCode.v());
+		this.patternCode = setPatternCode.v();
 	}
 
 	/* (non-Javadoc)
@@ -51,15 +83,15 @@ public class JpaDailyPatternValSetMemento implements DailyPatternValSetMemento {
 	 */
 	@Override
 	public void setDispOrder(DispOrder setDispOrder) {
-		this.patternCalendar.getKdpstDailyPatternValPK().setDispOrder(setDispOrder.v());
+		this.dispOrder = setDispOrder.v();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValSetMemento#setWorkTypeCodes(nts.uk.ctx.at.shared.dom.dailypattern.WorkTypeCode)
 	 */
 	@Override
 	public void setWorkTypeCodes(WorkTypeCode setWorkTypeCodes) {
-		this.patternCalendar.setWorkTypeSetCd(setWorkTypeCodes.v());
+		this.workTypeSetCd = setWorkTypeCodes.v() ;
 	}
 
 	/* (non-Javadoc)
@@ -67,15 +99,16 @@ public class JpaDailyPatternValSetMemento implements DailyPatternValSetMemento {
 	 */
 	@Override
 	public void setWorkHouseCodes(WorkingCode setWorkHouseCodes) {
-		this.patternCalendar.setWorkingHoursCd(setWorkHouseCodes.v());
+		this.workingHoursCd = setWorkHouseCodes.v() ;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternValSetMemento#setDays(nts.uk.ctx.at.shared.dom.dailypattern.Days)
 	 */
 	@Override
 	public void setDays(Days setDays) {
-		this.patternCalendar.setDays(setDays.v());
+		this.days = setDays.v();
 	}
+
 
 }
