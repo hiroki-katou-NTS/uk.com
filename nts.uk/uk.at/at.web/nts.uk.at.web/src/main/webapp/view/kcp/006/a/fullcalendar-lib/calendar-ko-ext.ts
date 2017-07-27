@@ -406,6 +406,7 @@ module nts.uk.at.view.kcp006.a {
                 $(numberRow[i]).addClass("holiday");
                 $(headers[i]).append(numberRow[i]);
             }
+            $("#" + currentCalendar + " .holiday td span").addClass("limited-label");
             $("#" + currentCalendar + " .holiday td span").html("");
             //update holiday cell
             for (let i = 0; i < lstHoliday.length; i++) {

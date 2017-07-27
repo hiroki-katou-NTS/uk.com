@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.dailypattern;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Interface DailyPatternGetMemento.
@@ -18,21 +20,21 @@ public interface DailyPatternGetMemento {
 	 *
 	 * @return the company id
 	 */
-	String getCompanyId();
+	CompanyId getCompanyId();
 	
 	/**
 	 * Gets the pattern code.
 	 *
 	 * @return the pattern code
 	 */
-	String getPatternCode();
+	PatternCode getPatternCode();
 	
 	/**
 	 * Gets the pattern name.
 	 *
 	 * @return the pattern name
 	 */
-	String getPatternName();
+	PatternName getPatternName();
 	
 	/**
 	 * Gets the list daily pattern val.
