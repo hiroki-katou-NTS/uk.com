@@ -8392,13 +8392,15 @@ var nts;
                         var dateType = ko.unwrap(data.type);
                         var maxRange = ko.unwrap(data.maxRange);
                         var value = data.value;
-                        var dataName = ko.unwrap(data.name);
+                        var rangeName = ko.unwrap(data.name);
+                        var startName = ko.unwrap(data.startName);
+                        var endName = ko.unwrap(data.endName);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
                         var required = ko.unwrap(data.required);
                         var id = nts.uk.util.randomId();
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
-                        $container.attr("tabindex", "-1");
+                        $container.removeAttr("tabindex");
                         $container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
                         var $datePickerArea = $container.find(".ntsDateRange_Container");
                         $datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" +
@@ -8486,24 +8488,14 @@ var nts;
                             format: ISOFormat,
                             autoHide: true,
                         });
-                        dataName = nts.uk.util.isNullOrUndefined(dataName) ? "月日入力フォーム" : nts.uk.resource.getControlName(dataName);
-                        var validator = new ui_13.validation.TimeValidator(dataName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                        rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
+                        startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
+                        endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
                         var $ntsDateRange = $container.find(".ntsRangeLabel");
-                        $input.on("change", function (e) {
-                            var $target = $(e.target);
-                            var newText = $target.val();
-                            $target.ntsError('clear');
-                            $ntsDateRange.ntsError("clear");
-                            var result = validator.validate(newText);
-                            var oldValue = value();
-                            if ($target.hasClass("ntsStartDatePicker")) {
-                                oldValue.startDate = result.isValid ? result.parsedValue : newText;
-                            }
-                            else {
-                                oldValue.endDate = result.isValid ? result.parsedValue : newText;
-                            }
+                        var getMessage = nts.uk.resource.getMessage;
+                        var validateProcess = function (newText, $target, isStart, oldValue, result) {
                             if (nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true) {
-                                $target.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
+                                $target.ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]));
                             }
                             else if (!result.isValid) {
                                 $target.ntsError('set', result.errorMessage);
@@ -8512,24 +8504,66 @@ var nts;
                                 var startDate = moment(oldValue.startDate, dateFormat);
                                 var endDate = moment(oldValue.endDate, dateFormat);
                                 if (endDate.isBefore(startDate)) {
-                                    $ntsDateRange.ntsError('set', "期間誤り");
+                                    $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]));
                                 }
                                 else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
-                                    var start = parseInt(startDate.format("YYYYMMDD"));
-                                    var end = parseInt(endDate.format("YYYYMMDD"));
-                                    if (end - start > 31 || end - start < 0) {
-                                        $ntsDateRange.ntsError('set', "最長期間違反");
+                                    var maxDate = startDate.add(1, "months");
+                                    if (endDate.isAfter(maxDate)) {
+                                        $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]));
+                                    }
+                                }
+                                else if (maxRange === "oneYear") {
+                                    var maxDate = _.cloneDeep(startDate);
+                                    if (dateFormat === "YYYY/MM/DD") {
+                                        var currentDate = startDate.date();
+                                        var isEndMonth = currentDate === startDate.endOf("months").date();
+                                        var isStartMonth = currentDate === 1;
+                                        maxDate = maxDate.date(1).add(1, 'year');
+                                        if (isStartMonth) {
+                                            maxDate = maxDate.month(maxDate.month() - 1).endOf("months");
+                                        }
+                                        else if (isEndMonth) {
+                                            maxDate = maxDate.endOf("months").add(-1, "days");
+                                        }
+                                        else {
+                                            maxDate = maxDate.date(currentDate - 1);
+                                        }
+                                    }
+                                    else {
+                                        maxDate = maxDate.add(1, 'year').add(-1, "months");
+                                    }
+                                    if (endDate.isAfter(maxDate)) {
+                                        $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]));
                                     }
                                 }
                             }
+                        };
+                        $input.on("change", function (e) {
+                            var $target = $(e.target);
+                            var newText = $target.val();
+                            $target.ntsError('clear');
+                            $ntsDateRange.ntsError("clear");
+                            var isStart = $target.hasClass("ntsStartDatePicker");
+                            var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var result = validator.validate(newText);
+                            var oldValue = value();
+                            if ($target.hasClass("ntsStartDatePicker")) {
+                                oldValue.startDate = result.isValid ? result.parsedValue : newText;
+                            }
+                            else {
+                                oldValue.endDate = result.isValid ? result.parsedValue : newText;
+                            }
+                            validateProcess(newText, $target, isStart, oldValue, result);
                             value(oldValue);
                         });
                         $input.on("blur", function (e) {
+                            var isStart = $(e.target).hasClass("ntsStartDatePicker");
                             var newText = $(e.target).val();
                             if (nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true) {
-                                $(e.target).ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
+                                $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]));
                             }
                             else {
+                                var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                                 var result = validator.validate(newText);
                                 if (!result.isValid) {
                                     $(e.target).ntsError('set', result.errorMessage);
@@ -8539,30 +8573,13 @@ var nts;
                         $input.on('validate', (function (e) {
                             var $target = $(e.target);
                             var newText = $target.val();
+                            var isStart = $target.hasClass("ntsStartDatePicker");
+                            var oldValue = value();
+                            var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
-                            if (nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true) {
-                                $target.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
-                            }
-                            else if (!result.isValid) {
-                                $target.ntsError('set', result.errorMessage);
-                            }
-                            else if (!nts.uk.util.isNullOrEmpty(newText)) {
-                                $ntsDateRange.ntsError("clear");
-                                var startDate = moment(oldValue.startDate, dateFormat);
-                                var endDate = moment(oldValue.endDate, dateFormat);
-                                if (endDate.isBefore(startDate)) {
-                                    $ntsDateRange.ntsError('set', "期間誤り");
-                                }
-                                else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
-                                    var start = parseInt(startDate.format("YYYYMMDD"));
-                                    var end = parseInt(endDate.format("YYYYMMDD"));
-                                    if (end - start > 31 || end - start < 0) {
-                                        $ntsDateRange.ntsError('set', "最長期間違反");
-                                    }
-                                }
-                            }
+                            validateProcess(newText, $target, isStart, oldValue, result);
                         }));
                         $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
                     };
