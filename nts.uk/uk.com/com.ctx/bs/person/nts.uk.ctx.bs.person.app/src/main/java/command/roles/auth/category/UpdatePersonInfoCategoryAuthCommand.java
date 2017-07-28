@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class PersonInfoCategoryAuthCommand {
+public class UpdatePersonInfoCategoryAuthCommand {
 	private String roleId;
 	
 	private String personInfoCategoryAuthId;
