@@ -180,43 +180,83 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 /* line 18, ../sass/components/_color.scss */
+.color-schedule-saturday {
+  color: #0000FF;
+}
+
+/* line 19, ../sass/components/_color.scss */
+.color-schedule-sunday {
+  color: #FF0000;
+}
+
+/* line 20, ../sass/components/_color.scss */
 .bg-schedule-support {
   background-color: #fedfe6;
 }
 
-/* line 19, ../sass/components/_color.scss */
+/* line 21, ../sass/components/_color.scss */
 .bg-schedule-no-empl-insurance {
   background-color: #ef7f7f;
 }
 
-/* line 20, ../sass/components/_color.scss */
+/* line 22, ../sass/components/_color.scss */
 .bg-schedule-no-health-insurance {
   background-color: #acfe2f;
 }
 
-/* line 21, ../sass/components/_color.scss */
+/* line 23, ../sass/components/_color.scss */
 .bg-schedule-no-empl-health-insurance {
   background-color: #fea400;
 }
 
-/* line 22, ../sass/components/_color.scss */
+/* line 24, ../sass/components/_color.scss */
 .bg-schedule-fixed {
   background-color: #eccefb;
 }
 
-/* line 23, ../sass/components/_color.scss */
+/* line 25, ../sass/components/_color.scss */
 .bg-schedule-uncorrectable {
   background-color: #ddddd2;
 }
 
-/* line 24, ../sass/components/_color.scss */
+/* line 26, ../sass/components/_color.scss */
 .bg-schedule-work-by-dow {
   background-color: #FFFF69;
 }
 
-/* line 25, ../sass/components/_color.scss */
+/* line 27, ../sass/components/_color.scss */
 .bg-schedule-shift-work {
   background-color: #FFE699;
+}
+
+/* line 28, ../sass/components/_color.scss */
+.bg-schedule-saturday {
+  background-color: #8bd8ff;
+}
+
+/* line 29, ../sass/components/_color.scss */
+.bg-schedule-sunday {
+  background-color: #fabf8f;
+}
+
+/* line 30, ../sass/components/_color.scss */
+.bg-schedule-specific-date {
+  background-color: #ffc0cb;
+}
+
+/* line 31, ../sass/components/_color.scss */
+.bg-schedule-that-day {
+  background-color: #ffff00;
+}
+
+/* line 32, ../sass/components/_color.scss */
+.bg-schedule-focus {
+  background-color: #ffffcc;
+}
+
+/* line 34, ../sass/components/_color.scss */
+.bg-calendar-ym-set {
+  background-color: #BFEA60;
 }
 
 /*****************************
