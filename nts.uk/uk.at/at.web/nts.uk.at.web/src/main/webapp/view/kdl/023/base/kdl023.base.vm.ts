@@ -86,7 +86,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 self.patternReflection.nonStatutorySetting.useClassification() ||
                                 self.patternReflection.holidaySetting.useClassification()
                         });
-                        self.setSelectedDailyPatternCode();
+                        self.getParamFromCaller();
                         // Xu ly hien thi calendar.
                         self.setPatternRange();
                         self.optionDates(self.getOptionDates());
@@ -98,6 +98,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         nts.uk.ui.block.clear();
                     });
             return dfd.promise();
+        }
+
+        /**
+         * Close dialog
+         */
+        public closeDialog(): void {
+            nts.uk.ui.windows.close();
         }
 
         /**
@@ -196,6 +203,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             service.findAllPattern().done(function(list: Array<DailyPatternSetting>) {
                 self.dailyPatternList(list);
                 dfd.resolve();
+            }).fail(() => {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_37'));
+                self.closeDialog();
             });
             return dfd.promise();
         }
@@ -244,6 +254,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             service.getAllWorkType().done(function(list: Array<WorkType>) {
                 self.listWorkType(list);
                 dfd.resolve();
+            }).fail(() => {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_37'));
+                self.closeDialog();
             });
             return dfd.promise();
         }
@@ -549,18 +562,20 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
-         * Get param from parent screen.
+         * Get param from caller (parent) screen.
          */
-        private setSelectedDailyPatternCode(): void {
+        private getParamFromCaller(): void {
             let self = this;
-            // Get pattern code tu man hinh cha.
+            // Get param from caller screen.
             let selectedCode = nts.uk.ui.windows.getShared("patternCode");
+            let startDate = nts.uk.ui.windows.getShared("startDate");
+            let endDate = nts.uk.ui.windows.getShared("endDate");
+
             if (selectedCode) {
                 self.selectedDailyPatternCode(selectedCode);
             }
-            else
             // Select first item.
-            {
+            else {
                 self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
             }
         }
