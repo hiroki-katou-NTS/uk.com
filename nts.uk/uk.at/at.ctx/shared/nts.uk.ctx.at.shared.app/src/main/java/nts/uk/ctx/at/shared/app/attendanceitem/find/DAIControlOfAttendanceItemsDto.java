@@ -6,11 +6,9 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class DAIControlOfAttendanceItemsDto {
-	public String attendanceItemId;
+	public int attendanceItemId;
 
 	public String businessTypeCode;
-
-	public boolean userCanSet;
 
 	public boolean youCanChangeIt;
 

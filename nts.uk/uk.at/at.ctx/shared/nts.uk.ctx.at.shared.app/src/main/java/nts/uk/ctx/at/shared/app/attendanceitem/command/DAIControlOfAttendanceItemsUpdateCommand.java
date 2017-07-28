@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.attendanceitem.command;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,8 @@ public class DAIControlOfAttendanceItemsUpdateCommand extends CommandHandler<Lis
 	private DisplayAndInputControlOfAttendanceItems toDAIControlOfAttendanceItemsDomain(
 			DAIControlOfAttendanceItemsCommand dAIControlOfAttendanceItemsCommand) {
 		return DisplayAndInputControlOfAttendanceItems.createFromJavaType(
-				dAIControlOfAttendanceItemsCommand.attendanceItemId,
-				dAIControlOfAttendanceItemsCommand.businessTypeCode, dAIControlOfAttendanceItemsCommand.userCanSet,
+				new BigDecimal(dAIControlOfAttendanceItemsCommand.attendanceItemId),
+				dAIControlOfAttendanceItemsCommand.businessTypeCode, 
 				dAIControlOfAttendanceItemsCommand.youCanChangeIt,
 				dAIControlOfAttendanceItemsCommand.canBeChangedByOthers, dAIControlOfAttendanceItemsCommand.use);
 	}
