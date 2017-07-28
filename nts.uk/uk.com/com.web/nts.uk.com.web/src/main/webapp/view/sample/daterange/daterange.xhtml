@@ -33,6 +33,12 @@
 							<div>End date: <label data-bind="text: dateValue().endDate"></label> <input data-bind="ntsTimeEditor: {value: endDateString}"/></div>
 						</div>
 						<div id="daterangepicker" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>
+						<br/>
+						<br/>
+						<div id="daterangepicker2" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear'}"/>
+						<br/>
+						<br/>
+						<div id="daterangepicker2" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear', type: 'yearmonth'}"/>
 						<br />					
 						<article class="cf">
 							<div class="tabs">
@@ -89,6 +95,20 @@
 												<td>
 													<b>Type:</b> string<br/>
 													name for date range picker
+												</td>
+											</tr>
+											<tr>
+												<td>startName</td>
+												<td>
+													<b>Type:</b> string<br/>
+													name for start date of date range picker
+												</td>
+											</tr>
+											<tr>
+												<td>endName</td>
+												<td>
+													<b>Type:</b> string<br/>
+													name for end date of date range picker
 												</td>
 											</tr>
 											<tr>

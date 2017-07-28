@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.dailypattern;
 
-// TODO: Auto-generated Javadoc
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
 /**
  * The Interface DailyPatternValSetMemento.
  */
@@ -11,42 +12,42 @@ public interface DailyPatternValSetMemento {
 	 *
 	 * @param setCompanyId the new company id
 	 */
-	void  setCompanyId(String setCompanyId);
+	void  setCompanyId(CompanyId setCompanyId);
 	
 	/**
 	 * Sets the pattern code.
 	 *
 	 * @param setPatternCode the new pattern code
 	 */
-	void  setPatternCode(String setPatternCode);
+	void  setPatternCode(PatternCode setPatternCode);
 	
 	/**
 	 * Sets the disp order.
 	 *
 	 * @param setDispOrder the new disp order
 	 */
-	void  setDispOrder(Integer setDispOrder);
+	void  setDispOrder(DispOrder setDispOrder);
 	
 	/**
 	 * Sets the work type codes.
 	 *
 	 * @param setWorkTypeCodes the new work type codes
 	 */
-	void  setWorkTypeCodes(String setWorkTypeCodes);
+	void  setWorkTypeCodes(WorkTypeCode setWorkTypeCodes);
 	
 	/**
 	 * Sets the work house codes.
 	 *
 	 * @param setWorkHouseCodes the new work house codes
 	 */
-	void  setWorkHouseCodes(String setWorkHouseCodes);
+	void  setWorkHouseCodes(WorkingCode setWorkHouseCodes);
 	
 	/**
 	 * Sets the days.
 	 *
 	 * @param setDays the new days
 	 */
-	void  setDays(Integer setDays);
+	void  setDays(Days setDays);
 	
 	
 }

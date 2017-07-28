@@ -50,7 +50,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             });
 
             // Calendar component
-            self.yearMonthPicked = ko.observable(201707);
+            self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // current system date.
             self.cssRangerYM = {
             };
             self.optionDates = ko.observableArray<OptionDate>([]);
@@ -444,36 +444,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
-         * Backward 1 day.
-         */
-        private backwardOneDay(): void {
-            let self = this;
-            let temp = self.weeklyWorkSetting.sunday;
-            self.weeklyWorkSetting.sunday = self.weeklyWorkSetting.monday;
-            self.weeklyWorkSetting.monday = self.weeklyWorkSetting.tuesday;
-            self.weeklyWorkSetting.tuesday = self.weeklyWorkSetting.wednesday;
-            self.weeklyWorkSetting.wednesday = self.weeklyWorkSetting.thursday;
-            self.weeklyWorkSetting.thursday = self.weeklyWorkSetting.friday;
-            self.weeklyWorkSetting.friday = self.weeklyWorkSetting.saturday;
-            self.weeklyWorkSetting.saturday = temp;
-        }
-
-        /**
-         * Forward 1 day.
-         */
-        private forwardOneDay(): void {
-            let self = this;
-            let temp = self.weeklyWorkSetting.monday;
-            self.weeklyWorkSetting.monday = self.weeklyWorkSetting.sunday;
-            self.weeklyWorkSetting.sunday = self.weeklyWorkSetting.saturday;
-            self.weeklyWorkSetting.saturday = self.weeklyWorkSetting.friday;
-            self.weeklyWorkSetting.friday = self.weeklyWorkSetting.thursday;
-            self.weeklyWorkSetting.thursday = self.weeklyWorkSetting.wednesday;
-            self.weeklyWorkSetting.wednesday = self.weeklyWorkSetting.tuesday;
-            self.weeklyWorkSetting.tuesday = temp;
-        }
-
-        /**
          * Set pattern range.
          */
         private setPatternRange(): void {
@@ -481,45 +451,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
             self.patternStartDate = moment(parsedYm, 'YYYY-MM').startOf('month');
             self.patternEndDate = moment(parsedYm, 'YYYY-MM').endOf('month');
-        }
-
-        private fw(arr: Array<any>): Array<any> {
-            let self = this;
-            let lastDay = arr.pop();
-            let firstDay = arr.shift();
-            // Exchange start date.
-            let temp = lastDay.start;
-            lastDay.start = firstDay.start;
-            firstDay.start = temp;
-
-            let arr2 = arr.map(item => {
-                let d = moment(item.start);
-                d.add(1, 'days');
-                item.start = d.format('YYYY-MM-DD');
-                return item;
-            });
-            arr2.push(lastDay);
-            arr2.push(firstDay);
-            return arr2;
-        }
-        private bw(arr: Array<any>): Array<any> {
-            let self = this;
-            let lastDay = arr.pop();
-            let firstDay = arr.shift();
-            // Exchange start date.
-            let temp = lastDay.start;
-            lastDay.start = firstDay.start;
-            firstDay.start = temp;
-
-            let arr2 = arr.map(item => {
-                let d = moment(item.start);
-                d.subtract(1, 'days');
-                item.start = d.format('YYYY-MM-DD');
-                return item;
-            });
-            arr2.push(lastDay);
-            arr2.push(firstDay);
-            return arr2;
         }
 
         /**
@@ -553,15 +484,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
     }
 
-    class ItemModelCbb1 {
-        code: string;
-        name: string;
-
-        constructor(codeCbb1: string, nameCbb1: string) {
-            this.code = codeCbb1;
-            this.name = nameCbb1;
-        }
-    }
     class PatternReflection {
         employeeId: string;
         reflectionMethod: ReflectionMethod;

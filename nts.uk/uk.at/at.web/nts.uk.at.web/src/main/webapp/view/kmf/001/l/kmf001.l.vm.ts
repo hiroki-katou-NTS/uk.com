@@ -18,7 +18,7 @@ module nts.uk.pr.view.kmf001.l {
             constructor() {
                 let self = this;
                 self.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    width: "30",
+                    width: "60",
                     textalign: "center",
                     unitID: "DAYS"
                 }));

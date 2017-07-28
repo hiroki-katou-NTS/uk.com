@@ -301,6 +301,9 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeEmployment(): void {
                 let self = this;
+                if ($('#employmentYearPicker').ntsError('hasError')) {
+                    return;
+                }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let empt = self.employmentWTSetting;
                     let command = { year: empt.year(), employmentCode: empt.employmentCode() }
@@ -318,6 +321,8 @@ module nts.uk.at.view.kmk004.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(error => {
                         nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        self.clearError();
                     });
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();
@@ -330,6 +335,9 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeWorkplace(): void {
                 let self = this;
+                if ($('#workplaceYearPicker').ntsError('hasError')) {
+                    return;
+                }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let workplace = self.workplaceWTSetting;
                     let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
@@ -348,6 +356,8 @@ module nts.uk.at.view.kmk004.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(error => {
                         nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        self.clearError();
                     });
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();
@@ -360,6 +370,9 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeCompanySetting(): void {
                 let self = this;
+                if ($('#companyYearPicker').ntsError('hasError')) {
+                    return;
+                }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let selectedYear = self.companyWTSetting.year();
                     let command = { year: selectedYear }
@@ -374,6 +387,8 @@ module nts.uk.at.view.kmk004.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).fail(error => {
                         nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        self.clearError();
                     });
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();

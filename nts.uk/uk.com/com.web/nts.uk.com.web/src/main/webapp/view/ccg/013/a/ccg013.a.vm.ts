@@ -533,6 +533,7 @@ module ccg013.a.viewmodel {
                 let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");
                 self.getWebMenu().done(() => {
                     if (newWebMenuCode != undefined) {
+                        self.currentWebMenuCode("");
                         self.currentWebMenuCode(newWebMenuCode);
                     };
                 });

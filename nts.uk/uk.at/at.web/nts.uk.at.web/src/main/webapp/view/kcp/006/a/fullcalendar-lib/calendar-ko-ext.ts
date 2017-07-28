@@ -82,7 +82,7 @@ module nts.uk.at.view.kcp006.a {
             // Container
             let container = $(element);
             //set width
-            container.css("width", "600px");
+            container.css("width", "700px");
             $(container).fullCalendar({
                 header: false,
                 defaultView: 'customMonth',
@@ -92,6 +92,10 @@ module nts.uk.at.view.kcp006.a {
                         duration: { months: 3 }
                     }
                 },
+                eventLimitText: function(countMore) {
+                    return '。。。';
+                },
+                eventOrder: '',
                 defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
                 height: 500,
                 showNonCurrentDates: false,
@@ -201,7 +205,7 @@ module nts.uk.at.view.kcp006.a {
                         fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     },
                     eventAfterAllRender: function(view) {
-                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
+                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
                     }
                 });
                 $(container).fullCalendar('removeEvents');
@@ -335,10 +339,9 @@ module nts.uk.at.view.kcp006.a {
             }
         }
 
-        eventAfterAllRender(currentCalendar, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable): void {
+        eventAfterAllRender(currentCalendar, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates): void {
             // no display more event
             $("#" + currentCalendar + " .fc-more").prop('onclick', null).off('click');
-            $("#" + currentCalendar + " .fc-more").html("。。。");
             // add div td-container
             let lstTdHeader = $("#" + currentCalendar + " .fc-day-top");
             for (let i = 0; i < lstTdHeader.length; i++) {
@@ -374,6 +377,12 @@ module nts.uk.at.view.kcp006.a {
             }, function() {
                 $("#" + currentCalendar + " .event-note").hide();
             });
+            //change header background color each option day
+            for (let i = 0; i < optionDates.length; i++) {
+                if (optionDates[i].headerBackgroundColor) {
+                    $("#" + currentCalendar + " .fc-day-top[data-date='" + optionDates[i].start + "']").attr("style", 'background-color: ' + optionDates[i].headerBackgroundColor + '!important');
+                }
+            }
         }
 
         viewRender(currentCalendar, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {

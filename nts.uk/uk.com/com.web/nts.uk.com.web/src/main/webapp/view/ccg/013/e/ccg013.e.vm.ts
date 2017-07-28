@@ -39,8 +39,11 @@
                 currentWebMenuCode: self.currentWebMenuCode(),
                 allowOverwrite: allowOverwrite,
                 webMenuCode: code,
-                webMenuName: name    
+                webMenuName: name
             }
+            
+            $("#web-code").trigger("validate");
+            $("#web-name").trigger("validate");
             
             if(nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();

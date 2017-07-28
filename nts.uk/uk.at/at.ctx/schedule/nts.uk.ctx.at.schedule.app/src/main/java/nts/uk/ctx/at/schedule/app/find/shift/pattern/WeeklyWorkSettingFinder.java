@@ -28,7 +28,7 @@ public class WeeklyWorkSettingFinder {
 
 	/** The repository. */
 	@Inject
-	WeeklyWorkSettingRepository repository;
+	private WeeklyWorkSettingRepository repository;
 	
 	
 	/**

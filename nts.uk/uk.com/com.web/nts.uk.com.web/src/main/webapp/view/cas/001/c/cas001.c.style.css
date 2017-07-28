@@ -1,0 +1,42 @@
+#contents-area{
+	padding-right:0px !important;
+	padding-left:0px !important;
+	height:310px !important;
+}
+#label_copy {
+	width: 100px;
+}
+
+#label_code {
+	width: 150px;
+}
+
+#roleCode {
+	width: 50px;
+}
+
+#roleCodeOld {
+	width: 50px;
+	vertical-align: left;
+}
+
+#roleNameOld {
+	margin-left: 45px;
+	width: 150px;
+}
+#registration{
+	margin-left: 200px;
+	margin-top: 5px;
+}
+#copy{
+	margin-left: 5px;
+}
+.bg-yellow {
+	width: 200px;
+	height: 28px;
+	margin-top: 4px;
+}
+#copyCheck{
+	margin-left: 150px;
+	margin-top: 3px !important;
+}

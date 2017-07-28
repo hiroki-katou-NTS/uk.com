@@ -18,18 +18,18 @@ module ksm002.b.viewmodel {
             startDate: 1,
             endDate: 31,
             workplaceId: this.currentWorkPlace().id,
-            workplaceName: ko.observable(""),
+            workplaceName: this.currentWorkPlace().name,
             eventDisplay: ko.observable(true),
-            eventUpdatable: ko.observable(true),
+            eventUpdatable: ko.observable(false),
             holidayDisplay: ko.observable(true),
             cellButtonDisplay: ko.observable(true)
         }
         kcpTreeGrid: ITreeGrid = {
             treeType: 1,
-            selectType: 1,
+            selectType: 3,
             isDialog: false,
             isMultiSelect: false,
-            isShowAlreadySet: true,
+            isShowAlreadySet: false,
             isShowSelectButton: false,
             baseDate: ko.observable(new Date()),
             selectedWorkplaceId: this.currentWorkPlace().id,
@@ -41,19 +41,14 @@ module ksm002.b.viewmodel {
             
             // get new data when year month change
             self.yearMonthPicked.subscribe(value => {
-                self.getCalendarWorkPlaceByCode();        
-            });
-            
-            // get new data when Work Place Code change
-            self.currentWorkPlace().id.subscribe(value => {
-                let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
-                let item = _.find(data, m => m.workplaceId == value);
-                if (item) {
-                    self.currentWorkPlace().name(item.name);
-                } else {
-                    self.currentWorkPlace().name('');
-                }    
-                self.getCalendarWorkPlaceByCode();
+                if(!nts.uk.util.isNullOrEmpty(value)){
+                    nts.uk.ui.block.invisible();
+                    self.getCalendarWorkPlaceByCode()
+                    .done(()=>{ nts.uk.ui.block.clear(); })
+                    .fail((res) => {
+                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                    });
+                }        
             });
             
             // calendar event handler 
@@ -73,7 +68,26 @@ module ksm002.b.viewmodel {
                     }
                 }
             });
-            $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid);
+            $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(()=>{
+                self.currentWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);  
+                      
+                // get new data when Work Place Code change
+                self.currentWorkPlace().id.subscribe(value => {
+                    nts.uk.ui.block.invisible();
+                    let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
+                    let item = _.find(data, m => m.workplaceId == value);
+                    if (item) {
+                        self.currentWorkPlace().name(item.name);
+                    } else {
+                        self.currentWorkPlace().name('');
+                    }    
+                    self.getCalendarWorkPlaceByCode()
+                    .done(()=>{ nts.uk.ui.block.clear(); })
+                    .fail((res) => {
+                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                    });
+                });
+            });
         }
         
         /**
@@ -81,20 +95,24 @@ module ksm002.b.viewmodel {
          */
         start(value: boolean){
             var self = this;  
-            self.getAllSpecDate().done(()=>{
-                self.currentWorkPlace().id(_.first($('#tree-grid')['getDataList']()).workplaceId);         
-            });
-            nts.uk.characteristics.restore("IndividualStartDay").done(function (data) { 
-                bService.getCompanyStartDay().done(startDayData => { 
-                    if(!nts.uk.util.isNullOrUndefined(startDayData)) { 
-                        self.firstDay(startDayData.startDay); 
-                    }
-                });   
-            });
-            self.getSpecDateByIsUse().done(()=>{
+            $('#tree-grid').focusTreeGridComponent();
+            nts.uk.ui.block.invisible();
+            $.when(
+                self.getAllSpecDate(), 
+                nts.uk.characteristics.restore("IndividualStartDay"),
+                bService.getCompanyStartDay(),
+                self.getSpecDateByIsUse(),
+                self.getCalendarWorkPlaceByCode()
+            ).done((data1, data2, data3, data4, data5)=>{
+                if(!nts.uk.util.isNullOrUndefined(data3)) { 
+                    self.firstDay(data3.startDay); 
+                }
                 if(nts.uk.util.isNullOrEmpty(self.checkBoxList())){
                     self.openDialogC();
                 }
+                nts.uk.ui.block.clear(); 
+            }).fail((res1,res2,res3,res4,res5) => {
+                nts.uk.ui.dialog.alertError(res1.message+res2.message+res3.message+res4.message+res4.message).then(()=>{nts.uk.ui.block.clear();});
             });
         }
         
@@ -103,17 +121,29 @@ module ksm002.b.viewmodel {
          */
         submitEventHandler(){
             var self = this;
-            if(nts.uk.util.isNullOrEmpty(self.selectedIds())){
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_339" });     
-            } else {
-                if(!self.checkItemUse()) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
+            $(".yearMonthPicker").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                if(nts.uk.util.isNullOrEmpty(self.selectedIds())){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_339" });     
                 } else {
-                    if(self.isUpdate()){
-                        self.updateCalendarWorkPlace();
+                    if(!self.checkItemUse()) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_139" });       
                     } else {
-                        self.insertCalendarWorkPlace();
-                    }    
+                        nts.uk.ui.block.invisible();
+                        if(self.isUpdate()){
+                            self.updateCalendarWorkPlace().done(()=>{
+                                nts.uk.ui.block.clear();        
+                            }).fail((res)=>{
+                                nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                            }); 
+                        } else {
+                            self.insertCalendarWorkPlace().done(()=>{
+                                nts.uk.ui.block.clear();        
+                            }).fail((res)=>{
+                                nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                            }); 
+                        }    
+                    }
                 }
             }
         }
@@ -123,29 +153,34 @@ module ksm002.b.viewmodel {
          */
         removeEventHandler(){
             var self = this;
-            nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function(){
-                self.deleteCalendarWorkPlace();        
-            }).ifNo(function(){
-                // do nothing           
-            });
+            $(".yearMonthPicker").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function(){
+                    nts.uk.ui.block.invisible();
+                    self.deleteCalendarWorkPlace().done(()=>{
+                        nts.uk.ui.block.clear();        
+                    }).fail((res)=>{
+                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                    });        
+                }).ifNo(function(){
+                    // do nothing           
+                });
+            }
         }
         
         /**
          * get full selectable item
          */
-        getAllSpecDate(){
-            nts.uk.ui.block.invisible();
+        getAllSpecDate(): JQueryPromise<any>{
             var self = this;
             var dfd = $.Deferred();
             bService.getAllSpecDate().done(data=>{
                 data.forEach(item => {
                     self.fullCheckBoxItem.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
                 });   
-                nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(res => {
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-                dfd.reject();
+                dfd.reject(res);
             }); 
             return dfd.promise();           
         }
@@ -153,24 +188,22 @@ module ksm002.b.viewmodel {
         /**
          * get selectable item
          */
-        getSpecDateByIsUse(){
-            nts.uk.ui.block.invisible();
+        getSpecDateByIsUse(): JQueryPromise<any>{
             var self = this;
             var dfd = $.Deferred();
             bService.getSpecificDateByIsUse(1).done(data=>{
                 if(!nts.uk.util.isNullOrEmpty(data)){
                     self.checkBoxList.removeAll();
+                    let sortData = _.sortBy(data, o => o.specificDateItemNo);
                     let a = []
-                    data.forEach(item => {
+                    sortData.forEach(item => {
                         a.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
                     });   
                     self.checkBoxList(a);
                 }
-                nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(res => {
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-                dfd.reject();
+                dfd.reject(res);
             });   
             return dfd.promise();          
         }
@@ -178,9 +211,9 @@ module ksm002.b.viewmodel {
         /**
          * get calendar work place spec date by work place id and year month
          */
-        getCalendarWorkPlaceByCode(){
-            nts.uk.ui.block.invisible();
+        getCalendarWorkPlaceByCode(): JQueryPromise<any>{
             var self = this;
+            var dfd = $.Deferred();
             bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked()).done(data=>{
                 self.rootList = data;
                 self.calendarPanel.optionDates.removeAll();
@@ -195,58 +228,59 @@ module ksm002.b.viewmodel {
                 }
                 self.calendarPanel.optionDates(a);
                 self.calendarPanel.optionDates.valueHasMutated();
-                nts.uk.ui.block.clear();
+                dfd.resolve();
             }).fail(res => {
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                dfd.reject(res);
             });
+            return dfd.promise();
         }
         
         /**
          * insert calendar work place spec date
          */
-        insertCalendarWorkPlace(){
-            nts.uk.ui.block.invisible();
+        insertCalendarWorkPlace(): JQueryPromise<any>{
             var self = this;
+            var dfd = $.Deferred();
             bService.insertCalendarWorkPlace(self.createCommand()).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.getCalendarWorkPlaceByCode();      
-                nts.uk.ui.block.clear();      
+                self.getCalendarWorkPlaceByCode().done(()=>{dfd.resolve();}).fail((res)=>{dfd.reject(res);});
             }).fail(res => {
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                dfd.reject(res);
             });
+            return dfd.promise();
         }
         
         /**
          * update calendar work place spec date
          */
-        updateCalendarWorkPlace(){
-            nts.uk.ui.block.invisible();
+        updateCalendarWorkPlace(): JQueryPromise<any>{
             var self = this;
+            var dfd = $.Deferred();
             bService.updateCalendarWorkPlace(self.createCommand()).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                self.getCalendarWorkPlaceByCode();   
-                nts.uk.ui.block.clear();
+                self.getCalendarWorkPlaceByCode().done(()=>{dfd.resolve();}).fail((res)=>{dfd.reject(res);});   
             }).fail(res => {
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                dfd.reject(res);
             });
+            return dfd.promise();
         }
         
         /**
          * delete calendar work place spec date
          */
-        deleteCalendarWorkPlace(){
-            nts.uk.ui.block.invisible();
+        deleteCalendarWorkPlace(): JQueryPromise<any>{
             var self = this;
+            var dfd = $.Deferred();
             bService.deleteCalendarWorkPlace({
                 workPlaceId: self.currentWorkPlace().id(),
                 yearMonth: self.yearMonthPicked()   
             }).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                self.getCalendarWorkPlaceByCode(); 
-                nts.uk.ui.block.clear();
+                self.getCalendarWorkPlaceByCode().done(()=>{dfd.resolve();}).fail((res)=>{dfd.reject(res);});  
             }).fail(res => {
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                dfd.reject(res);
             });
+            return dfd.promise();
         }
         
         /**
@@ -255,7 +289,13 @@ module ksm002.b.viewmodel {
         openDialogC() {
             var self = this;
             nts.uk.ui.windows.sub.modal("/view/ksm/002/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                self.getSpecDateByIsUse();    
+                self.selectedIds([]);
+                nts.uk.ui.block.invisible();
+                self.getSpecDateByIsUse().done(()=>{
+                    nts.uk.ui.block.clear();        
+                }).fail((res)=>{
+                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                });    
             });  
         }
         
@@ -272,7 +312,12 @@ module ksm002.b.viewmodel {
                 endDate: Number(moment(self.yearMonthPicked().toString(),'YYYYMM').endOf('month').format('YYYYMMDD'))
             });
             nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                self.getCalendarWorkPlaceByCode();    
+                nts.uk.ui.block.invisible();
+                self.getCalendarWorkPlaceByCode().done(()=>{
+                    nts.uk.ui.block.clear();        
+                }).fail((res)=>{
+                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});  
+                });  
             });  
         }
         

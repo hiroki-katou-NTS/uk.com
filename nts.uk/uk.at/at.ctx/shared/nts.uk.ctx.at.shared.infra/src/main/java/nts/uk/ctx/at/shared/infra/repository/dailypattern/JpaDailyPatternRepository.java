@@ -19,10 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSet;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSetPK;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.dailypattern.KdpstDailyPatternSet_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaDailyPatternRepository.
  */

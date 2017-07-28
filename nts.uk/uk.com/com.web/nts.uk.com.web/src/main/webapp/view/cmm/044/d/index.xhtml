@@ -54,8 +54,13 @@
 							<td class="fixed-width" data-bind="text: $data.startDate"></td>
 							<td class="fixed-width" data-bind="text: $data.endDate"></td>
 							<td class="fixed-width" data-bind="text: $data.agentTarget"></td>
-							<td class="fixed-width" data-bind="text: $data.agentCode"></td>
-							<td class="fixed-width" data-bind="text: $data.agentName"></td>
+							<com:ko-if bind="$data.hasColSpan">
+								<td class="fixed-width" colspan="2" data-bind="text: $data.agentCode"></td>
+							</com:ko-if>
+							<com:ko-if bind="!$data.hasColSpan()">
+								<td class="fixed-width" data-bind="text: $data.agentCode"></td>
+								<td class="fixed-width" data-bind="text: $data.agentName"></td>
+							</com:ko-if>
 						</tr>
 					</tbody>
 				</table>

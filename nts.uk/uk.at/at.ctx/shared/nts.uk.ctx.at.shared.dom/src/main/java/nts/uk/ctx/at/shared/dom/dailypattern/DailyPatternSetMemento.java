@@ -4,7 +4,6 @@ import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface DailyPatternSetMemento.
  */

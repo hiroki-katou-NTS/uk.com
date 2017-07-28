@@ -23,7 +23,9 @@ public class JpaDailyPatternGetMemento implements DailyPatternGetMemento {
 	private KdpstDailyPatternSet patternCalendar;
 
 	/**
-	 * @param patternCalendar
+	 * Instantiates a new jpa daily pattern get memento.
+	 *
+	 * @param patternCalendar the pattern calendar
 	 */
 	public JpaDailyPatternGetMemento(KdpstDailyPatternSet patternCalendar) {
 		this.patternCalendar = patternCalendar;
@@ -62,6 +64,9 @@ public class JpaDailyPatternGetMemento implements DailyPatternGetMemento {
 		return new PatternName(patternCalendar.getPatternName());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.dailypattern.DailyPatternGetMemento#getListDailyPatternVal()
+	 */
 	@Override
 	public List<DailyPatternVal> getListDailyPatternVal() {
 		return this.patternCalendar.getListKdpstDailyPatternVal().stream()
