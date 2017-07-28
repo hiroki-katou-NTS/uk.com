@@ -155,7 +155,7 @@ module ksm002.a.viewmodel {
                         arrName = [];
                         arrId = [];
                         //Loop in each Day
-                        _.forEach(lstComSpecDate, function(comItem) {
+                        _.forEach(_.orderBy(lstComSpecDate,'specificDateItemNo','asc'), function(comItem) {
                             if (comItem.specificDate == processDay) {
                                 arrName.push(comItem.specificDateItemName);
                                 arrId.push(comItem.specificDateItemNo);
