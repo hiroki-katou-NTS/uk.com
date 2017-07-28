@@ -17,15 +17,15 @@ module nts.uk.com.view.cas001.d.viewmodel {
             $("#grid").igGrid({
                 columns: [
                     {
-                        headerText: "<input id='selfAuth' type='checkbox' checked='true' tabindex='-1' >他人</input>", key: 'selfAuth', width: "80px",height:"40px", formatter: function(evt: any, row: any) {
-                            let cb = $("<input  class = 'checkRow selfAuth' type='checkbox'/>");
+                        headerText: "<input id='selfAuth' type='checkbox' checked='true' tabindex='2' >他人</input>", key: 'selfAuth', width: "80px",height:"40px", formatter: function(evt: any, row: any) {
+                            let cb = $("<input  class = 'checkRow selfAuth' type='checkbox' tabindex='4'/>");
                             cb.attr("data-id", row.roleCode);
                             return cb[0].outerHTML;
                         }
                     },
                     {
-                        headerText: "<input id='otherAuth' type='checkbox' checked='true' tabindex='-1'>本人</input>", key: 'otherAuth', width: "80px", height:"40px",formatter: function(evt: any, row: any) {
-                            let cb = $("<input  class = 'checkRow otherAuth' type='checkbox'/>");
+                        headerText: "<input id='otherAuth' type='checkbox' checked='true' tabindex='3'>本人</input>", key: 'otherAuth', width: "80px", height:"40px",formatter: function(evt: any, row: any) {
+                            let cb = $("<input  class = 'checkRow otherAuth' type='checkbox' tabindex='5'/>");
                             cb.attr("data-id", row.roleCode);
                             return cb[0].outerHTML;
                         }
@@ -39,7 +39,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
                 autoGenerateColumns: false,
                 autoCommit: true,
                 dataSource: self.roleList(),
-                width: "700px",
+                width: "300px",
                 height: "310px",
                 features: [
                     {

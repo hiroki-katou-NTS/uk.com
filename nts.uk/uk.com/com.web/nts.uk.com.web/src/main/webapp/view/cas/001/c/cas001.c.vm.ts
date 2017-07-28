@@ -5,9 +5,6 @@ module nts.uk.com.view.cas001.c.viewmodel {
 
     export class ScreenModel {
         roleList: KnockoutObservableArray<any>;
-        categoryList: KnockoutObservableArray<CategoryAuth>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        currentRoleCode: KnockoutObservableArray<string>;
         companyCode: KnockoutObservable<string>;
         itemSetting: KnockoutObservableArray<any>;
         selectItemCode: any;
@@ -18,7 +15,8 @@ module nts.uk.com.view.cas001.c.viewmodel {
             $("#roles").igGrid({
                 columns: [
                     {
-                        headerText: resource.getText('#CAS001_7'), key: 'selfAuth', width: "40px", height: "40px", template: "<input type='checkbox' checked='${selfAuth}'/>" }
+                        headerText: resource.getText('#CAS001_7'), key: 'selfAuth', width: "40px", height: "40px", template: "<input type='checkbox' checked='${selfAuth} tabindex='1''/>"
+                    }
                     ,
                     { headerText: resource.getText('#CAS001_8'), key: "roleCode", dataType: "string", width: "90px", height: "40px" },
                     { headerText: resource.getText('#CAS001_9'), key: "roleName", dataType: "string", width: "120px", height: "40px" },
@@ -50,14 +48,6 @@ module nts.uk.com.view.cas001.c.viewmodel {
         init(): void {
             var self = this;
             self.roleList = ko.observableArray([new PersonRole({ roleCode: "1", roleName: 'A2', selfAuth: true, otherAuth: true }), new PersonRole({ roleCode: '2', roleName: 'B', selfAuth: true, otherAuth: false })]);
-            self.categoryList = ko.observableArray([]);
-            self.currentRoleCode = ko.observableArray([]);
-            self.columns = ko.observableArray([
-                { headerText: resource.getText('#CAS001_8'), key: 'roleCode', width: 90 },
-                { headerText: resource.getText('#CAS001_9'), key: 'roleName', width: 145 },
-                { headerText: resource.getText('#CAS001_7'), key: 'description', width: 50, hidden: true }
-
-            ]);
             self.companyCode = ko.observable('');
             self.itemSetting = ko.observableArray([
                 { code: '1', name: '非表示' },

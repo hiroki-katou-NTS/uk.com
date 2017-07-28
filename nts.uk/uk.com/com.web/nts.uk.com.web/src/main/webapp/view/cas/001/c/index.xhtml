@@ -23,39 +23,28 @@
 		<ui:define name="content">
 			<div id='role'>
 				<div class='flex valign-center'>
-					<div
-						data-bind="ntsFormLabel: {required:true}" class='distane'> 
+					<div class='distane'> 
 						<label id="codeName">#{i18n.getText('#CAS001_63')}</label>
 					</div>
 					<label id="roleCode">0001</label>
 					<label id="roleName"> 用設定</label>
 				</div>
-				<div data-bind="ntsFormLabel: {}" class='distane'>
+				<div class='distane'>
 					<label id="codeName">#{i18n.getText('#CAS001_64')}</label>
 				</div>
 			</div>
 
 			<div id="contents-area" >
-				<div id='category' class="bg-green caret-background">
-					<div id="search"
-						data-bind="ntsSearchBox: {
-									searchMode: 'filter',
-									name: '#[CCG014_20]',
-									targetKey: 'roleCode',
-								    comId: 'roles',
-									items: roleList,
-									selected: currentRoleCode, 
-									selectedKey: 'roleCode', 
-									fields: ['roleCode', 'roleName'], mode: 'igGrid'}" />
+				<div id='category'>
 					<table id="roles">
 					</table>
 
 				</div>
 				<hr></hr>
 				<div id="yesOrNo">
-					<button id="registration" class="proceed x-large" data-bind='click:creatCategory' tabindex="4">#{i18n.getText('#CAS001_61')}
+					<button id="registration" class="proceed x-large" data-bind='click:creatCategory' tabindex="2">#{i18n.getText('#CAS001_61')}
 </button>
-					<button id="delete" class="danger " data-bind='click: closeDialog' tabindex="5">#{i18n.getText('#CAS001_62')}</button>
+					<button id="delete" class="danger " data-bind='click: closeDialog' tabindex="3">#{i18n.getText('#CAS001_62')}</button>
 
 				</div>
 
