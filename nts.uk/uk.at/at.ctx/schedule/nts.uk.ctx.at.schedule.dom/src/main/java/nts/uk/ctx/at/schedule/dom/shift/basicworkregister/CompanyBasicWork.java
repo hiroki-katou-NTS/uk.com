@@ -38,8 +38,8 @@ public class CompanyBasicWork extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(CompanyBasicWorkSetMemento memento) {
-		memento.setCompanyId(this.companyId);
 		memento.setBasicWorkSetting(this.basicWorkSetting);
+		memento.setCompanyId(this.companyId);
 	}
 
 	@Override

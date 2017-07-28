@@ -34,7 +34,7 @@ public class KwbmtWorkplaceWorkSetPK implements Serializable {
 	/** The workday division. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "WORKDAY_DIVISION")
+	@Column(name = "WORK_DAY_ATR")
 	private Integer workdayDivision;
 
 	/* (non-Javadoc)

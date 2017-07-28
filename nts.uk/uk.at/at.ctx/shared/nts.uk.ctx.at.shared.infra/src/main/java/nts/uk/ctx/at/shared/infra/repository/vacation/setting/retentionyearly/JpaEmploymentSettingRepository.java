@@ -43,7 +43,6 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		KmfmtRetentionEmpCtr entity = new KmfmtRetentionEmpCtr();
 		emptYearlyRetentionSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
 		this.commandProxy().insert(entity);
-		
 	}
 
 	/*

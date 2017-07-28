@@ -32,7 +32,7 @@ public interface WorkTypeRepository {
 	 * @param worktypeCode the worktype code
 	 * @return the optional
 	 */
-	Optional<WorkType> findByWorktypeCode(String worktypeCode);
+	List<WorkType> findByWorktypeCodeList(String companyId, List<String> worktypeCode);
 
 	/**
 	 * Find by companyId and displayAtr.
