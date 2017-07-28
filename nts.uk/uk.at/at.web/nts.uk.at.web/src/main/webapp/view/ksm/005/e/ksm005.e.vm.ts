@@ -169,14 +169,14 @@ module nts.uk.at.view.ksm005.e {
                 if (self.checkMonthlyPatternSettingBatch()) {
                     return;
                 }
-                self.monthlyPatternSettingBatchWorkDays().workTypeCode = '009';
-                self.monthlyPatternSettingBatchWorkDays().workingCode = '001';
-                self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = '009';
-                self.monthlyPatternSettingBatchStatutoryHolidays().workingCode = '002';
-                self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = '009';
-                self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode = '003';
-                self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = '009';
-                self.monthlyPatternSettingBatchPublicHolidays().workingCode = '004';
+                self.monthlyPatternSettingBatchWorkDays().workTypeCode = '001';
+                self.monthlyPatternSettingBatchWorkDays().workingCode = '002';
+                self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = '001';
+                self.monthlyPatternSettingBatchStatutoryHolidays().workingCode = '001';
+                self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = '001';
+                self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode = '001';
+                self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = '001';
+                self.monthlyPatternSettingBatchPublicHolidays().workingCode = '001';
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.WORK_DAYS, self.monthlyPatternSettingBatchWorkDays());
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.STATUTORY_HOLIDAYS, self.monthlyPatternSettingBatchStatutoryHolidays());
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.NONE_STATUTORY_HOLIDAYS, self.monthlyPatternSettingBatchNoneStatutoryHolidays());
