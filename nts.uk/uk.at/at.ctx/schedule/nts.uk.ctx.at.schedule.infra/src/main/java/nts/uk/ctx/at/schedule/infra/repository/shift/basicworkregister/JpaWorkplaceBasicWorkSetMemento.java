@@ -8,43 +8,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkSetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSet;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplaceWorkSet;
 
 /**
- * The Class JpaCompanyBasicWorkSetMemento.
+ * The Class JpaWorkplaceBasicWorkSetMemento.
  */
-public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento {
+public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMemento {
 
 	/** The type value. */
-	private List<KcbmtCompanyWorkSet> typeValue;
+	private List<KwbmtWorkplaceWorkSet> typeValue;
 
 	/**
-	 * Instantiates a new jpa company basic work set memento.
+	 * Instantiates a new jpa workplace basic work set memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCompanyBasicWorkSetMemento(List<KcbmtCompanyWorkSet> typeValue) {
+	public JpaWorkplaceBasicWorkSetMemento(List<KwbmtWorkplaceWorkSet> typeValue) {
 		super();
+		this.typeValue = typeValue;
 		if (this.typeValue == null) {
 			this.typeValue = new ArrayList<>();
 		}
-		this.typeValue = typeValue;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
-	 * CompanyBasicWorkSetMemento#setCompanyId(nts.uk.ctx.at.schedule.dom.shift.
-	 * basicworkregister.CompanyId)
+	 * WorkplaceBasicWorkSetMemento#setWorkPlaceId(nts.uk.ctx.at.schedule.dom.
+	 * shift.basicworkregister.WorkplaceId)
 	 */
 	@Override
-	public void setCompanyId(CompanyId companyId) {
+	public void setWorkPlaceId(WorkplaceId workplaceId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKcbmtCompanyWorkSetPK().setCid(companyId.v());
+			item.getKwbmtWorkplaceWorkSetPK().setWorkplaceId(workplaceId.v());
 		});
 	}
 
@@ -52,13 +52,13 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
-	 * CompanyBasicWorkSetMemento#setBasicWorkSetting(java.util.List)
+	 * WorkplaceBasicWorkSetMemento#setBasicWorkSetting(java.util.List)
 	 */
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
-			KcbmtCompanyWorkSet entity = new KcbmtCompanyWorkSet();
-			entity.getKcbmtCompanyWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
+			KwbmtWorkplaceWorkSet entity = new KwbmtWorkplaceWorkSet();
+			entity.getKwbmtWorkplaceWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());
 			this.typeValue.add(entity);

@@ -1,5 +1,5 @@
 module nts.uk.at.view.ksm006.a {
-
+ import CompanyBasicWorkDto = service.model.CompanyBasicWorkDto;
     export module viewmodel {
         export class ScreenModel {
             isShowEmployment : KnockoutObservable<boolean>;
@@ -28,6 +28,10 @@ module nts.uk.at.view.ksm006.a {
             classifyBWWorkingDay: KnockoutObservable<BasicWorkModel>;
             classifyBWNonInLaw: KnockoutObservable<BasicWorkModel>;
             classifyBWNonExtra: KnockoutObservable<BasicWorkModel>;
+            
+            isShowCompanyTab: KnockoutObservable<boolean>;
+            isShowWorkplaceTab: KnockoutObservable<boolean>;
+            isShowClassifyTab: KnockoutObservable<boolean>;
             
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -97,6 +101,10 @@ module nts.uk.at.view.ksm006.a {
                 self.classifyBWNonExtra = ko.observable<BasicWorkModel>(
                     { division: WorkingDayDivision.NON_WORK_EXTR, worktypeCode: 'WorkTypeCode3', worktypeDisplayName: 'WorkTypeName3', workingCode: 'workingCode3', workingDisplayName: 'WorkingDisplayName3' }
                 );
+                
+                self.isShowCompanyTab = ko.observable(true);
+                self.isShowWorkplaceTab = ko.observable(false);
+                self.isShowClassifyTab = ko.observable(false);
 
             }
             
@@ -104,16 +112,61 @@ module nts.uk.at.view.ksm006.a {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                dfd.resolve();
-                $('#workplace-list').ntsTreeComponent(self.workplaceGrid);
-                $('#classification-list').ntsListComponent(self.classificationGrid);
+                
+                self.findCompanyBasicWork().done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                
+//                $('#workplace-list').ntsTreeComponent(self.workplaceGrid);
+//                $('#classification-list').ntsListComponent(self.classificationGrid);
 
                 return dfd.promise();
             }
-            registerWholeCompany(){}
-            switchToCompanyTab(){}
-            switchToWorkplaceTab(){}
-            switchToClassTab(){}
+            
+            
+            // Find CompanyBasicWork
+            private findCompanyBasicWork(): JQueryPromise<any>  {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findCompanyBasicWork().done(function(data: CompanyBasicWorkDto) {
+                    if (data == null) {
+                        self.companyBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                        self.companyBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                        self.companyBWNonExtra(new BasicWorkModel(null, null, null, null));
+                    } else {
+                        data.basicWorkSetting.forEach(function(item, index) {                            
+                            switch (item.workDayDivision) {
+                                case WorkingDayDivision.WORKING_DAY:
+                                    self.companyBWWorkingDay(new BasicWorkModel(item.workTypeCode, 
+                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                                    break;
+                                    
+                                case WorkingDayDivision.NON_WORK_INLAW:
+                                    self.companyBWNonInLaw(new BasicWorkModel(item.workTypeCode, 
+                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                                    break;
+                                    
+                                case WorkingDayDivision.NON_WORK_EXTR: 
+                                    self.companyBWNonExtra(new BasicWorkModel(item.workTypeCode, 
+                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                                    break;
+                            }
+                        });
+                    }
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+            
+
+            registerByCompany() { }
+            switchToCompanyTab() { }
+            switchToWorkplaceTab() { }
+            switchToClassTab() { }
             
             private gotoDialog(): void {
                 var self = this;
@@ -128,6 +181,13 @@ module nts.uk.at.view.ksm006.a {
             worktypeDisplayName: string;
             workingCode: string;
             workingDisplayName: string;
+            
+            constructor (worktypeCode: string, worktypeDisplayName: string, workingCode: string, workingDisplayName: string) {
+                this.worktypeCode = worktypeCode;
+                this.worktypeDisplayName = worktypeDisplayName;
+                this.workingCode = workingCode;
+                this.workingDisplayName = workingDisplayName;
+            }
         }
         
         export class WorkingDayDivision {

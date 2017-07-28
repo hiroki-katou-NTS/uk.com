@@ -194,8 +194,9 @@ module ksm002.b.viewmodel {
             bService.getSpecificDateByIsUse(1).done(data=>{
                 if(!nts.uk.util.isNullOrEmpty(data)){
                     self.checkBoxList.removeAll();
+                    let sortData = _.sortBy(data, o => o.specificDateItemNo);
                     let a = []
-                    data.forEach(item => {
+                    sortData.forEach(item => {
                         a.push(new CheckBoxItem(item.specificDateItemNo, item.specificName));    
                     });   
                     self.checkBoxList(a);

@@ -4,55 +4,54 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.shift.basicworkregister;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSet;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplaceWorkSet;
 
 /**
- * The Class JpaCompanyBasicWorkGetMemento.
+ * The Class JpaWorkplaceBasicWorkGetMemento.
  */
-public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento {
+public class JpaWorkplaceBasicWorkGetMemento implements WorkplaceBasicWorkGetMemento {
 
 	/** The type value. */
-	private List<KcbmtCompanyWorkSet> typeValue;
+	private List<KwbmtWorkplaceWorkSet> typeValue;
 
 	/**
-	 * Instantiates a new jpa company basic work get memento.
+	 * Instantiates a new jpa workplace basic work get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCompanyBasicWorkGetMemento(List<KcbmtCompanyWorkSet> typeValue) {
+	public JpaWorkplaceBasicWorkGetMemento(List<KwbmtWorkplaceWorkSet> typeValue) {
 		super();
-		this.typeValue = typeValue;	
+		this.typeValue = typeValue;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
-	 * CompanyBasicWorkGetMemento#getCompanyId()
+	 * WorkplaceBasicWorkGetMemento#getWorkPlaceId()
 	 */
 	@Override
-	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.get(0).getKcbmtCompanyWorkSetPK().getCid());
+	public WorkplaceId getWorkPlaceId() {
+		return new WorkplaceId(this.typeValue.get(0).getKwbmtWorkplaceWorkSetPK().getWorkplaceId());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
-	 * CompanyBasicWorkGetMemento#getBasicWorkSetting()
+	 * WorkplaceBasicWorkGetMemento#getBasicWorkSetting()
 	 */
 	@Override
 	public List<BasicWorkSetting> getBasicWorkSetting() {
 		return this.typeValue.stream().map(entity -> {
-			return new BasicWorkSetting(new JpaBWSettingComGetMemento(entity));
+			return new BasicWorkSetting(new JpaBWSettingWorkplaceGetMemento(entity));
 		}).collect(Collectors.toList());
 	}
 

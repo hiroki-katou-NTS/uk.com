@@ -27,10 +27,10 @@ public class KsuptBasicSchedule extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KsuppBasicSchedulePK ksuppBSchedulePK;
 
-	@Column(name = "WORK_TYPE_CD")
+	@Column(name = "WORKTYPE_CD")
 	public String workTypeCd;
 
-	@Column(name = "WORK_TIME_CD")
+	@Column(name = "WORKTIME_CD")
 	public String workTimeCd;
 
 	@Override
