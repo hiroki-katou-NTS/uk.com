@@ -5,8 +5,6 @@ package nts.uk.ctx.bs.person.dom.person.maintenancelayout;
 
 import java.util.Optional;
 
-import nts.uk.ctx.bs.person.dom.person.newlayout.LayoutID;
-
 /**
  * @author laitv
  *
@@ -17,8 +15,8 @@ public interface MaintenanceLayoutRepository {
 	
 	void update(MaintenanceLayout maintenanceLayout);
 	
-	void remove(LayoutID maintenanceLayoutID);
+	void remove(String maintenanceLayoutID);
 	
-	Optional<MaintenanceLayout> findSingleLayout(LayoutID layoutID);
+	Optional<MaintenanceLayout> findSingleLayout(String layoutID);
 	
 }

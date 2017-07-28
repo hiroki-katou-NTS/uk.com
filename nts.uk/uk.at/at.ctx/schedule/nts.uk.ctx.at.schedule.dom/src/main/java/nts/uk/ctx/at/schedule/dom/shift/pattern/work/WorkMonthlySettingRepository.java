@@ -21,11 +21,27 @@ public interface WorkMonthlySettingRepository  {
 	
 	
 	/**
+	 * Adds the all.
+	 *
+	 * @param workMonthlySettings the work monthly settings
+	 */
+	public void addAll(List<WorkMonthlySetting> workMonthlySettings);
+	
+	
+	/**
 	 * Update.
 	 *
 	 * @param workMonthlySetting the work monthly setting
 	 */
 	public void update(WorkMonthlySetting workMonthlySetting);
+	
+	
+	/**
+	 * Update all.
+	 *
+	 * @param workMonthlySettings the work monthly settings
+	 */
+	public void updateAll(List<WorkMonthlySetting> workMonthlySettings);
 	
 	
 	/**
@@ -51,5 +67,4 @@ public interface WorkMonthlySettingRepository  {
 	 */
 	public List<WorkMonthlySetting> findByStartEndDate(String companyId, String monthlyPatternCode,
 			int startDate, int endDate);
-
 }
