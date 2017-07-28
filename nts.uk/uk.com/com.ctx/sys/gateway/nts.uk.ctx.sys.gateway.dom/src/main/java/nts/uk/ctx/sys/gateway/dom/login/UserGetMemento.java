@@ -16,7 +16,7 @@ public interface UserGetMemento {
 	 *
 	 * @return the user id
 	 */
-	public UserId getUserId();
+	public String getUserId();
 
     /**
      * Gets the password.
