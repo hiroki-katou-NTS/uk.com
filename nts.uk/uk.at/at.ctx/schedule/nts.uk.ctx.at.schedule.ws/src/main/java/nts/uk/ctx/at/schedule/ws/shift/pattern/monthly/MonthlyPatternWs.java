@@ -26,7 +26,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 /**
  * The Class MonthlyPatternWs.
  */
-@Path("ctx/at/schedule/pattern/monthy")
+@Path("ctx/at/schedule/pattern/monthly")
 @Produces(MediaType.APPLICATION_JSON)
 public class MonthlyPatternWs extends WebService{
 

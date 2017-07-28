@@ -22,7 +22,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingFindD
 /**
  * The Class WorkMonthlySettingWs.
  */
-@Path("ctx/at/schedule/pattern/work/monthy/setting")
+@Path("ctx/at/schedule/pattern/work/monthly/setting")
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkMonthlySettingWs {
 	

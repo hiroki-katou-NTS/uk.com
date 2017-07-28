@@ -7,7 +7,7 @@ module nts.uk.at.view.ksm005.e {
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
             checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
-            batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthy/setting/batch"
+            batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/batch"
         }
         
         /**
