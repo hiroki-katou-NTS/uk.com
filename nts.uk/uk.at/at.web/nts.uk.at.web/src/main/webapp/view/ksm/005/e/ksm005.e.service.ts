@@ -7,7 +7,6 @@ module nts.uk.at.view.ksm005.e {
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
             checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
-            getUserInfo: "ctx/at/schedule/pattern/work/weekly/setting/userinfo",
             batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthy/setting/batch"
         }
         
@@ -31,12 +30,6 @@ module nts.uk.at.view.ksm005.e {
             return nts.uk.request.ajax('at', paths.checkWeeklyWorkSetting, baseDate);
         }
         
-        /**
-         * call service get user info
-         */
-        export function getUserInfo(): JQueryPromise<model.UserInfoDto> {
-            return nts.uk.request.ajax('at', paths.getUserInfo);
-        }
         /**
          * check public holiday by date (YYYYMMDD)
          */

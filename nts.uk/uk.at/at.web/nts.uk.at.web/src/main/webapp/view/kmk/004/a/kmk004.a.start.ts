@@ -4,6 +4,7 @@ module nts.uk.at.view.kmk004.a {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             $('#companyYearPicker').focus();
+            screenModel.initNextTabFeature();
         });
     });
 }

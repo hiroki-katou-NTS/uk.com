@@ -10,11 +10,17 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class User.
  */
+
+/**
+ * Gets the associated employee id.
+ *
+ * @return the associated employee id
+ */
 @Getter
 public class User {
 
 	/** The user id. */
-	private UserId userId;
+	private String userId;
 
 	/** The password. */
 	private HashPassword password;
@@ -34,7 +40,7 @@ public class User {
 	/** The multi company concurrent. */
 	private boolean multiCompanyConcurrent;
 
-	/** The Mail address. */
+	/** The mail address. */
 	private MailAddress mailAddress;
 
 	/** The user name. */
@@ -44,16 +50,9 @@ public class User {
 	private String associatedEmployeeId;
 
 	/**
-	 * @param userId
-	 * @param password
-	 * @param loginId
-	 * @param contractCode
-	 * @param expirationDate
-	 * @param specialUser
-	 * @param multiCompanyConcurrent
-	 * @param mailAddress
-	 * @param userName
-	 * @param associatedEmployeeId
+	 * Instantiates a new user.
+	 *
+	 * @param memento the memento
 	 */
 	public User(UserGetMemento memento) {
 		this.userId = memento.getUserId();
@@ -68,6 +67,11 @@ public class User {
 		this.associatedEmployeeId = memento.getAssociatedEmployeeId();
 	}
 
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
 	public void saveToMemento(UserSetMemento memento) {
 		memento.setUserId(this.userId);
 		memento.setPassword(this.password);
