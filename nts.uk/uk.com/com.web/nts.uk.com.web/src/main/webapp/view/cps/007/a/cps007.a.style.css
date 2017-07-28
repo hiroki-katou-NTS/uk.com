@@ -8,7 +8,7 @@
 }
 
 .form-group {
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 .ntsControl .ntsRadioBox {
@@ -52,16 +52,16 @@
 	border: 1px solid #ccc;
 	border-radius: 10px;
 	width: 600px;
-	height: 600px;
+	min-height: 600px;
 	padding: 10px;
 	box-sizing: border-box;
 }
 
 #contents-area .right-area .drag-panel>div {
-	height: 100%;
-	overflow-x: hidden;
+	max-height: 94%;
+	/*overflow-x: hidden;
 	overflow-y: scroll;
-	padding-right: 10px;
+	padding-right: 10px;*/
 	box-sizing: border-box;
 }
 
@@ -79,14 +79,29 @@
 	visibility: visible !important;
 }
 
+#contents-area .right-area .drag-panel .item-classification.ui-sortable-helper{
+	cursor: pointer;
+}
+
 #contents-area .right-area .drag-panel .item-classification:hover,
 	#contents-area .right-area .drag-panel .item-classification.selected {
 	background-color: #eee;
 	border: 1px dashed #aaa;
 }
 
-#contents-area .right-area .drag-panel .item-classification>* {
+#contents-area .right-area .drag-panel .item-classification>*:not(hr) {
+	vertical-align: top;
 	display: inline-block;
+}
+#contents-area .right-area .drag-panel .item-classification>hr {
+    padding: 0;
+	margin: 6px 0;
+    margin-right: 20px;
+}
+
+#contents-area .right-area .drag-panel .item-classification textarea.nts-editor {
+	width: 280px;
+	height: 70px;
 }
 
 #contents-area .right-area .drag-panel .item-classification .form-label {

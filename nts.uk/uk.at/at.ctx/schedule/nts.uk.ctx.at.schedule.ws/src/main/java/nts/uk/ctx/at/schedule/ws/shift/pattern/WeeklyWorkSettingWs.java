@@ -15,7 +15,6 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.WeeklyWorkSettingFinder;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.UserInfoDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
 
 /**
@@ -51,16 +50,5 @@ public class WeeklyWorkSettingWs extends WebService {
 	@Path("findAll")
 	public List<WeeklyWorkSettingDto> findAll(){
 		return this.finder.findAll();
-	}
-	
-	/**
-	 * Gets the user info.
-	 *
-	 * @return the user info
-	 */
-	@POST
-	@Path("userinfo")
-	public UserInfoDto getUserInfo(){
-		return this.finder.getUserInfo();
 	}
 }

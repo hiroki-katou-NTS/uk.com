@@ -25,42 +25,35 @@
 				<div class='flex valign-center'>
 					<div
 						data-bind="ntsFormLabel: {required:true}" class='distane'> 
-						<label id="codeName">コード/名称</label>
+						<label id="codeName">#{i18n.getText('#CAS001_12')}</label>
 					</div>
 					<label id="roleCode">0001</label>
 					<label id="roleName"> 用設定</label>
 				</div>
 				<div data-bind="ntsFormLabel: {}" class='distane'>
-					<label id="codeName">カテゴリ利用設定</label>
+					<label id="codeName">#{i18n.getText('#CAS001_57')}</label>
 				</div>
 			</div>
 
 			<div id="contents-area" >
 				<div id='category' class="bg-green caret-background">
-					<div id="search"
+					<div id="search" tabindex="1"
 						data-bind="ntsSearchBox: {
 									searchMode: 'filter',
-									name: '#[CCG014_20]',
 									targetKey: 'roleCode',
 								    comId: 'roles',
 									items: roleList,
 									selected: currentRoleCode, 
 									selectedKey: 'roleCode', 
 									fields: ['roleCode', 'roleName'], mode: 'igGrid'}" />
-					<table id="roles" 
-						data-bind="ntsGridList: {
-							 height: 290,
-							 options: roleList,
-							 optionsValue: 'roleCode',
-							 columns: columns,
-							 value: currentRoleCode}">
+					<table id="grid" >
 					</table>
 
 				</div>
 				<hr></hr>
 				<div id="yesOrNo">
-					<button id="registration" class="proceed x-large" data-bind='click:creatCategory'>決定</button>
-					<button id="delete" class="danger " data-bind='click: closeDialog'>キャンセル</button>
+					<button id="registration" class="proceed x-large" data-bind='click:creatCategory' tabindex="6">#{i18n.getText('#CAS001_61')}</button>
+					<button id="delete" class="danger " data-bind='click: closeDialog' tabindex="7">#{i18n.getText('#CAS001_62')}</button>
 
 				</div>
 

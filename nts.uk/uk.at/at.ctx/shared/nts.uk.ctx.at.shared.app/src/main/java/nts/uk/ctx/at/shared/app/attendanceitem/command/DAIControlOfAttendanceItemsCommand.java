@@ -9,8 +9,6 @@ public class DAIControlOfAttendanceItemsCommand {
 
 		public String businessTypeCode;
 
-		public boolean userCanSet;
-
 		public boolean youCanChangeIt;
 
 		public boolean canBeChangedByOthers;

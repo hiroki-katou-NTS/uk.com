@@ -24,7 +24,7 @@ public class KsuppBasicSchedulePK implements Serializable {
 	@Column(name = "SID")
 	public String sId;
 
-	@Column(name = "DATE")
+	@Column(name = "YMD")
 	public GeneralDate date;
 
 }

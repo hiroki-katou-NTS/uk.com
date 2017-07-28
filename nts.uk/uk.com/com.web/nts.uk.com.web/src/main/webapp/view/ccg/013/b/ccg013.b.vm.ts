@@ -101,6 +101,9 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             $(".ntsColorPicker_Container").trigger("validate");
             var menuCls = null;
             var code = null;
+            
+            validateNameInput($(".menu-bar-name"),'#[CCG013_18]', self.nameMenuBar().trim(), 'MenuBarName');
+            
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }

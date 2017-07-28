@@ -323,7 +323,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 			return buildLayoutMyPage(layout.get(), placements);
 		}
 		
-		return null;
+		return new LayoutForMyPageDto(employeeId, mPage.get().getLayoutId(), PGType.MYPAGE.value, false, null, null);
 	}
 
 	/**

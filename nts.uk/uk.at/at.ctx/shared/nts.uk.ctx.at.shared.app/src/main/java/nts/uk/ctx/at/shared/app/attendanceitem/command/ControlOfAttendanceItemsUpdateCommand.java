@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.attendanceitem.command;
 
+import java.math.BigDecimal;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -23,7 +25,7 @@ public class ControlOfAttendanceItemsUpdateCommand extends CommandHandler<Contro
 
 	private ControlOfAttendanceItems toControlOfAttendanceItemsDomain(
 			ControlOfAttendanceItemsCommand controlOfAttendanceItemsCommand) {
-		return ControlOfAttendanceItems.createFromJavaType(controlOfAttendanceItemsCommand.attandanceTimeId,
+		return ControlOfAttendanceItems.createFromJavaType(  new BigDecimal(controlOfAttendanceItemsCommand.attandanceTimeId) ,
 				controlOfAttendanceItemsCommand.inputUnitOfTimeItem,
 				controlOfAttendanceItemsCommand.headerBackgroundColorOfDailyPerformance,controlOfAttendanceItemsCommand.nameLineFeedPosition);
 	}

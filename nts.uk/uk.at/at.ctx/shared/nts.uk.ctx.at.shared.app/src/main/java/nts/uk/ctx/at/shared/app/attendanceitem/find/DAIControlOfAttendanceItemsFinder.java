@@ -23,9 +23,8 @@ public class DAIControlOfAttendanceItemsFinder {
 	}
 	private DAIControlOfAttendanceItemsDto toDAIControlOfAttendanceItemsDto(
 			DisplayAndInputControlOfAttendanceItems displayAndInputControlOfAttendanceItems) {
-		return new DAIControlOfAttendanceItemsDto(displayAndInputControlOfAttendanceItems.getAttendanceItemId(),
+		return new DAIControlOfAttendanceItemsDto(displayAndInputControlOfAttendanceItems.getAttendanceItemId().intValue(),
 				displayAndInputControlOfAttendanceItems.getBusinessTypeCode().v(),
-				displayAndInputControlOfAttendanceItems.isUserCanSet(),
 				displayAndInputControlOfAttendanceItems.isYouCanChangeIt(),
 				displayAndInputControlOfAttendanceItems.isCanBeChangedByOthers(),displayAndInputControlOfAttendanceItems.isUse());
 	}

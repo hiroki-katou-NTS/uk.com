@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.attendanceitem.find;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,8 +14,8 @@ public class ControlOfAttendanceItemsFinder {
 	@Inject
 	private ControlOfAttendanceItemsRepository controlOfAttendanceItemsRepository;
 
-	public ControlOfAttendanceItemsDto getControlOfAttendanceItem(String attendanceItemId) {
-		Optional<ControlOfAttendanceItems> controlOfAttendanceItemsOptional = this.controlOfAttendanceItemsRepository.getControlOfAttendanceItem(attendanceItemId);
+	public ControlOfAttendanceItemsDto getControlOfAttendanceItem(int attendanceItemId) {
+		Optional<ControlOfAttendanceItems> controlOfAttendanceItemsOptional = this.controlOfAttendanceItemsRepository.getControlOfAttendanceItem(new BigDecimal(attendanceItemId));
 		if (controlOfAttendanceItemsOptional.isPresent()) {
 			return this.toControlOfAttendanceItemsDto(controlOfAttendanceItemsOptional.get());
 		}
@@ -23,7 +24,7 @@ public class ControlOfAttendanceItemsFinder {
 
 	private ControlOfAttendanceItemsDto toControlOfAttendanceItemsDto(
 			ControlOfAttendanceItems controlOfAttendanceItems) {
-		return new ControlOfAttendanceItemsDto(controlOfAttendanceItems.getAttandanceTimeId(),
+		return new ControlOfAttendanceItemsDto(controlOfAttendanceItems.getAttandanceTimeId().intValue(),
 				controlOfAttendanceItems.getInputUnitOfTimeItem().value,
 				controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v(),controlOfAttendanceItems.getNameLineFeedPosition());
 	}
