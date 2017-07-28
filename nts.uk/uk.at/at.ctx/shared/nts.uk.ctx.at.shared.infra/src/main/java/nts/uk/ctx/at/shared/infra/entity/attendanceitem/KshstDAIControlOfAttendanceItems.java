@@ -21,8 +21,6 @@ public class KshstDAIControlOfAttendanceItems extends UkJpaEntity implements Ser
 	@EmbeddedId
 	public KshstDAIControlOfAttendanceItemsPK kshstDAIControlOfAttendanceItemsPK;
 	@Column(name = "USER_CAN_SET")
-	public BigDecimal userCanSet;
-	@Column(name = "CHANGED_BY_YOU")
 	public BigDecimal youCanChangeIt;
 	@Column(name = "CHANGED_BY_OTHERS")
 	public BigDecimal canBeChangedByOthers;

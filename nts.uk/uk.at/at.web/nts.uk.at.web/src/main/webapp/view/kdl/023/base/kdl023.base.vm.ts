@@ -86,7 +86,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 self.patternReflection.nonStatutorySetting.useClassification() ||
                                 self.patternReflection.holidaySetting.useClassification()
                         });
-                        self.setSelectedDailyPatternCode();
+                        self.getParamFromCaller();
                         // Xu ly hien thi calendar.
                         self.setPatternRange();
                         self.optionDates(self.getOptionDates());
@@ -98,6 +98,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         nts.uk.ui.block.clear();
                     });
             return dfd.promise();
+        }
+
+        /**
+         * Close dialog
+         */
+        public closeDialog(): void {
+            nts.uk.ui.windows.close();
         }
 
         /**
@@ -139,7 +146,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.optionDates(self.getOptionDates());
             // Set focus control
             $('#component-calendar-kcp006').focus();
-            service.save('empId', ko.toJS(self.patternReflection)).always(() => {
+            service.save(self.getDomainKey(), ko.toJS(self.patternReflection)).always(() => {
                 nts.uk.ui.block.clear();
             });
         }
@@ -150,7 +157,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private loadPatternReflection(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            service.find('empId').done(function(patternReflection: service.model.PatternReflection) {
+            service.find(self.getDomainKey()).done(function(patternReflection: service.model.PatternReflection) {
                 let data;
                 // Co data
                 if (patternReflection) {
@@ -158,34 +165,25 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 }
                 // Khong co data
                 else {
-                    data = {
-                        employeeId: 'empId',
-                        reflectionMethod: ReflectionMethod.Overwrite,
-                        patternClassification: 1,
-                        statutorySetting: {
-                            useClassification: false,
-                            workTypeCode: self.listWorkType()[0].workTypeCode
-                        },
-                        nonStatutorySetting: {
-                            useClassification: false,
-                            workTypeCode: self.listWorkType()[0].workTypeCode
-                        },
-                        holidaySetting: {
-                            useClassification: false,
-                            workTypeCode: self.listWorkType()[0].workTypeCode
-                        }
-                    }
+                    data = self.getDefaultPatternReflection();
                 }
                 self.patternReflection = new PatternReflection(data);
 
                 // Resolve.
                 dfd.resolve();
-            }).fail(() => {
-                console.log('failed. trinh duyet chua luu setting nao.');
-                dfd.fail();
             });
             return dfd.promise();
         }
+
+        /**
+         * Get key
+         */
+        abstract getDomainKey(): string;
+
+        /**
+         * Get default PatternReflection
+         */
+        abstract getDefaultPatternReflection(): service.model.PatternReflection;
 
         /**
          * Load daily pattern.
@@ -196,6 +194,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             service.findAllPattern().done(function(list: Array<DailyPatternSetting>) {
                 self.dailyPatternList(list);
                 dfd.resolve();
+            }).fail(() => {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_37'));
+                self.closeDialog();
             });
             return dfd.promise();
         }
@@ -244,6 +245,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             service.getAllWorkType().done(function(list: Array<WorkType>) {
                 self.listWorkType(list);
                 dfd.resolve();
+            }).fail(() => {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_37'));
+                self.closeDialog();
             });
             return dfd.promise();
         }
@@ -268,12 +272,95 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             let currentDate = moment(self.patternStartDate);
+            let firstDateOfMonth = moment(self.patternEndDate).startOf('month');
             let lastDateOfMonth = moment(self.patternEndDate);
             let result: Array<OptionDate> = [];
 
+            // Chay nguoc
+            if (currentDate.isAfter(firstDateOfMonth, 'day')) {
+                // Previous day on calendar.
+                currentDate = currentDate.subtract(1, 'days');
+                while (currentDate.isSameOrAfter(firstDateOfMonth, 'day')) {
+                    // Work patterns reverse loop.
+                    self.dailyPatternSetting.listDailyPatternVal.slice().reverse().forEach(dailyPatternValue => {
+                        let dayOfPattern = 1;
+                        // Day of pattern loop.
+                        while (dayOfPattern <= dailyPatternValue.days) {
+                            // is current day = day off flag.
+                            let isDayoff = false;
+
+                            // Neu la holiday.
+                            if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
+                                isDayoff = true;
+                                result.push({
+                                    start: currentDate.format('YYYY-MM-DD'),
+                                    textColor: 'red',
+                                    backgroundColor: 'white',
+                                    listText: [
+                                        self.getWorktypeNameByCode(self.patternReflection.holidaySetting.workTypeCode())
+                                    ]
+                                });
+                            }
+                            // Neu khong phai la holiday
+                            else {
+                                // Ngay nghi theo luat
+                                if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
+                                    isDayoff = true;
+                                    result.push({
+                                        start: currentDate.format('YYYY-MM-DD'),
+                                        textColor: 'red',
+                                        backgroundColor: 'white',
+                                        listText: [
+                                            self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
+                                        ]
+                                    });
+                                }
+                                // Ngay nghi ngoai luat
+                                else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
+                                    isDayoff = true;
+                                    result.push({
+                                        start: currentDate.format('YYYY-MM-DD'),
+                                        textColor: 'red',
+                                        backgroundColor: 'white',
+                                        listText: [
+                                            self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
+                                        ]
+                                    });
+                                }
+                                // Ngay di lam
+                                else {
+                                    let noSetting = nts.uk.resource.getText('KSM005_43');
+                                    let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
+                                    let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
+                                    result.push({
+                                        start: currentDate.format('YYYY-MM-DD'),
+                                        textColor: 'blue',
+                                        backgroundColor: 'white',
+                                        listText: [
+                                            worktype ? worktype : noSetting,
+                                            worktime ? worktime : noSetting
+                                        ]
+                                    });
+                                }
+                            }
+                            dayOfPattern++;
+                            // Reserve dayOfPattern if reflection method = overwrite
+                            if (isDayoff && !self.isFillInTheBlankChecked()) {
+                                dayOfPattern--;
+                            }
+                            // Previous day on calendar.
+                            currentDate = currentDate.subtract(1, 'days');
+                        }
+                    });
+                }
+                // Reset current date to pattern start date.
+                currentDate = moment(self.patternStartDate);
+            }
+
+            // Chay xuoi
             while (currentDate.isSameOrBefore(lastDateOfMonth)) {
                 // Work patterns loop.
-                self.dailyPatternSetting.workPatterns.forEach(dailyPatternValue => {
+                self.dailyPatternSetting.listDailyPatternVal.forEach(dailyPatternValue => {
                     let dayOfPattern = 1;
                     // Day of pattern loop.
                     while (dayOfPattern <= dailyPatternValue.days) {
@@ -320,15 +407,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             }
                             // Ngay di lam
                             else {
-                                // In ra worktype va worktime trong domain neu co data.
-                                // Neu khong thi in ra KSM005_43
+                                let noSetting = nts.uk.resource.getText('KSM005_43');
+                                let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
+                                let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
                                 result.push({
                                     start: currentDate.format('YYYY-MM-DD'),
                                     textColor: 'blue',
                                     backgroundColor: 'white',
                                     listText: [
-                                        self.getWorktypeNameByCode(dailyPatternValue.workTypeCode),
-                                        self.getWorktimeNameByCode(dailyPatternValue.workingHoursCode)
+                                        worktype ? worktype : noSetting,
+                                        worktime ? worktime : noSetting
                                     ]
                                 });
                             }
@@ -467,18 +555,20 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
-         * Get param from parent screen.
+         * Get param from caller (parent) screen.
          */
-        private setSelectedDailyPatternCode(): void {
+        private getParamFromCaller(): void {
             let self = this;
-            // Get pattern code tu man hinh cha.
+            // Get param from caller screen.
             let selectedCode = nts.uk.ui.windows.getShared("patternCode");
+            let startDate = nts.uk.ui.windows.getShared("startDate");
+            let endDate = nts.uk.ui.windows.getShared("endDate");
+
             if (selectedCode) {
                 self.selectedDailyPatternCode(selectedCode);
             }
-            else
             // Select first item.
-            {
+            else {
                 self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
             }
         }

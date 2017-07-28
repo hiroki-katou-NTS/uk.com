@@ -5,12 +5,15 @@
 package nts.uk.ctx.at.schedule.app.command.shift.pattern;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
@@ -49,6 +52,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<MonthlyPatternSettingBatchSaveCommand> context) {
 		
 		// get login user
@@ -63,66 +67,98 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		// startDate
 		Date toStartDate = this.toDate(command.getStartYearMonth() * MONTH_MUL + NEXT_DAY);
 		
+		// data update setting batch
+		List<WorkMonthlySetting> updateWorkMonthlySettings = new ArrayList<>();
+		
+		// data insert setting batch
+		List<WorkMonthlySetting> addWorkMonthlySettings = new ArrayList<>();
+		
+		
 		// check by next day of begin end
 		while (this.getYearMonth(toStartDate) <= command.getEndYearMonth()) {
-						
-			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository.getHolidaysByDate(
-					companyId, new BigDecimal(this.getYearMonthDate(toStartDate)));
+			
+			// get ymd to day
+			int ymdk = this.getYearMonthDate(toStartDate);
+			
+			// check public holiday by base date
+			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository
+					.getHolidaysByDate(companyId, new BigDecimal(ymdk));
 
 			// find by id
 			Optional<WorkMonthlySetting> workMonthlySetting = this.workMonthlySettingRepository
-					.findById(companyId, command.getMonthlyPatternCode(),
-							this.getYearMonthDate(toStartDate));
+					.findById(companyId, command.getMonthlyPatternCode(), ymdk);
+			
 			// check day is public holiday
 			if (publicHoliday.isPresent()) {
 
+				// data public holiday setting
+				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, ymdk);
+				
 				// check exist data
 				if (!workMonthlySetting.isPresent()) {
-					this.workMonthlySettingRepository.add(command.toDomainPublicHolidays(companyId,
-							this.getYearMonthDate(toStartDate)));
+					addWorkMonthlySettings.add(dataPublic);
 				} else if (command.isOverwrite()) {
-					this.workMonthlySettingRepository.update(command.toDomainPublicHolidays(companyId,
-							this.getYearMonthDate(toStartDate)));
+					updateWorkMonthlySettings.add(dataPublic);
 				}
 			} else {
 				WeeklyWorkSettingDto dto = this.weeklyWorkSettingFinder
 						.checkWeeklyWorkSetting(this.getBaseDate(toStartDate));
+				
 				// is work day
 				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
 				case WORKINGDAYS:
+					// data working day setting
+					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, ymdk);
+					
+					// check exist data
 					if (!workMonthlySetting.isPresent()) {
-						this.workMonthlySettingRepository.add(command.toDomainWorkDays(companyId,
-								this.getYearMonthDate(toStartDate)));
+						addWorkMonthlySettings.add(dataWorking);
 					} else if (command.isOverwrite()) {
-						this.workMonthlySettingRepository.update(command.toDomainWorkDays(companyId,
-								this.getYearMonthDate(toStartDate)));
+						updateWorkMonthlySettings.add(dataWorking);
 					}
+					
 					break;
-
+					
+					// is none statutory holiday
 				case NON_WORKINGDAY_EXTRALEGAL:
+					
+					// data none statutory holiday setting
+					WorkMonthlySetting dataNoneStatutory = command
+							.toDomainNoneStatutoryHolidays(companyId, ymdk);
+					
+					// check exist data
 					if (!workMonthlySetting.isPresent()) {
-						this.workMonthlySettingRepository.add(command.toDomainNoneStatutoryHolidays(
-								companyId, this.getYearMonthDate(toStartDate)));
+						addWorkMonthlySettings.add(dataNoneStatutory);
 					} else if (command.isOverwrite()) {
-						this.workMonthlySettingRepository
-								.update(command.toDomainNoneStatutoryHolidays(companyId,
-										this.getYearMonthDate(toStartDate)));
+						updateWorkMonthlySettings.add(dataNoneStatutory);
 					}
+					
 					break;
+					
+					// is statutory holiday
 				case NON_WORKINGDAY_INLAW:
+					
+					// data none statutory holiday setting
+					WorkMonthlySetting dataStatutory = command.toDomainStatutoryHolidays(companyId,
+							ymdk);
+					
+					// check exist data
 					if (!workMonthlySetting.isPresent()) {
-						this.workMonthlySettingRepository.add(command.toDomainStatutoryHolidays(
-								companyId, this.getYearMonthDate(toStartDate)));
+						addWorkMonthlySettings.add(dataStatutory);
 					} else if (command.isOverwrite()) {
-						this.workMonthlySettingRepository.update(command.toDomainStatutoryHolidays(
-								companyId, this.getYearMonthDate(toStartDate)));
+						updateWorkMonthlySettings.add(dataStatutory);
 					}
+					
 					break;
 				}
 			}
 			toStartDate = this.nextDay(toStartDate);
 		}
-
+		// add all data setting
+		this.workMonthlySettingRepository.addAll(addWorkMonthlySettings);
+		
+		// update all data setting
+		this.workMonthlySettingRepository.updateAll(updateWorkMonthlySettings);
 	}
 	
 	/** The Constant NEXT_DAY. */

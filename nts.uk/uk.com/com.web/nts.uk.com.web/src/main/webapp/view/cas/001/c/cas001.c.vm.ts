@@ -5,32 +5,50 @@ module nts.uk.com.view.cas001.c.viewmodel {
 
     export class ScreenModel {
         roleList: KnockoutObservableArray<any>;
-        categoryList: KnockoutObservableArray<CategoryAuth>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        currentRoleCode: KnockoutObservable<string>;
-        roleName: KnockoutObservable<string>;
+        companyCode: KnockoutObservable<string>;
         itemSetting: KnockoutObservableArray<any>;
         selectItemCode: any;
 
         constructor() {
             var self = this;
             self.init();
+            $("#roles").igGrid({
+                columns: [
+                    {
+                        headerText: resource.getText('#CAS001_7'), key: 'selfAuth', width: "40px", height: "40px", template: "<input type='checkbox' checked='${selfAuth} tabindex='1''/>"
+                    }
+                    ,
+                    { headerText: resource.getText('#CAS001_8'), key: "roleCode", dataType: "string", width: "90px", height: "40px" },
+                    { headerText: resource.getText('#CAS001_9'), key: "roleName", dataType: "string", width: "120px", height: "40px" },
+                    { headerText: '説明', key: 'description', width: "35px", hidden: true, height: "40px" },
 
+                ],
+                primaryKey: 'roleCode',
+                autoGenerateColumns: false,
+                autoCommit: true,
+                dataSource: self.roleList(),
+                width: "300px",
+                height: "300px",
+                features: [
+                    {
+                        name: "Updating",
+                        enableAddRow: false,
+                        editMode: "row",
+                        enableDeleteRow: false,
+                        columnSettings: [
+                            { columnKey: "selfAuth", readOnly: true },
+                            { columnKey: "roleCode", readOnly: true },
+                            { columnKey: "roleName", readOnly: true },
+                            { columnKey: "description", readOnly: true },
+                        ]
+                    }]
+            });
 
         }
         init(): void {
             var self = this;
             self.roleList = ko.observableArray([new PersonRole({ roleCode: "1", roleName: 'A2', selfAuth: true, otherAuth: true }), new PersonRole({ roleCode: '2', roleName: 'B', selfAuth: true, otherAuth: false })]);
-            self.categoryList = ko.observableArray([]);
-            self.currentRoleCode = ko.observable('');
-            self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'roleCode', width: 100, hidden: true },
-                { headerText: '他人', key: 'selfAuth', width: 50, template: "<input type='checkbox' checked='${selfAuth}'/>" },
-                { headerText: '本人', key: 'otherAuth', width: 50, template: "<input type='checkbox' checked='${otherAuth}'/>" },
-                { headerText: 'カテゴリ名', key: 'roleName', width: 200 },
-                { headerText: '説明', key: 'description', width: 50, hidden: true }
-            ]);
-            self.roleName = ko.observable('');
+            self.companyCode = ko.observable('');
             self.itemSetting = ko.observableArray([
                 { code: '1', name: '非表示' },
                 { code: '2', name: '参照のみ' },

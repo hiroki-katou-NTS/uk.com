@@ -24,7 +24,7 @@
 	width: 16px;
 }
 .table1 .fixed-width-3{
-	width: 202px;
+	width: 214px;
 }
 .table1 {
 	margin-left: 20px;
@@ -34,8 +34,8 @@
 /*.table1 thead tr{display:block;}*/
 .table1 th{
 	background-color: #E0F59E;
-	padding: 5px 3px;
-	width: 95px;
+	padding: 5px 0;	
+	width:101px;
 	border: 1px solid #ccc;
 	text-align: center;
 	box-sizing:border-box;
@@ -50,13 +50,15 @@
 }*/
 .table1 td{
 	border: 1px solid #ccc;
-	padding: 5px 0;
+	padding: 5px 3px;
 	width: 94px;
 }
-.table1 .fixed-width{
-}
+
 .table1 .fixed-width-2{
-	width: 202px;
+	width: 214px;
+}
+.proceed{
+	margin-left: 25px !important;
 }
 
 .ntsDateRange_Container{

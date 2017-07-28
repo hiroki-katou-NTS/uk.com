@@ -37,7 +37,6 @@ public class JpaDAIControlOfAttendanceItemsRepository extends JpaRepository
 						.get();
 				kdwstDAIControlOfAttendanceItems.canBeChangedByOthers = new BigDecimal(
 						c.isCanBeChangedByOthers() ? 1 : 0);
-				kdwstDAIControlOfAttendanceItems.userCanSet = new BigDecimal(c.isUserCanSet() ? 1 : 0);
 				kdwstDAIControlOfAttendanceItems.youCanChangeIt = new BigDecimal(c.isYouCanChangeIt() ? 1 : 0);
 				kdwstDAIControlOfAttendanceItems.use = new BigDecimal(c.isUse() ? 1 : 0);
 				this.commandProxy().update(kdwstDAIControlOfAttendanceItems);
@@ -53,7 +52,6 @@ public class JpaDAIControlOfAttendanceItemsRepository extends JpaRepository
 		return DisplayAndInputControlOfAttendanceItems.createFromJavaType(
 				kdwstDAIControlOfAttendanceItems.kshstDAIControlOfAttendanceItemsPK.attendanceItemId,
 				kdwstDAIControlOfAttendanceItems.kshstDAIControlOfAttendanceItemsPK.businessTypeCode,
-				kdwstDAIControlOfAttendanceItems.userCanSet.intValue() == 1 ? true : false,
 				kdwstDAIControlOfAttendanceItems.youCanChangeIt.intValue() == 1 ? true : false,
 				kdwstDAIControlOfAttendanceItems.canBeChangedByOthers.intValue() == 1 ? true : false,
 				kdwstDAIControlOfAttendanceItems.use.intValue() == 1 ? true : false);
@@ -64,7 +62,6 @@ public class JpaDAIControlOfAttendanceItemsRepository extends JpaRepository
 		return new KshstDAIControlOfAttendanceItems(
 				new KshstDAIControlOfAttendanceItemsPK(displayAndInputControlOfAttendanceItems.getBusinessTypeCode().v(),
 						displayAndInputControlOfAttendanceItems.getAttendanceItemId()),
-				new BigDecimal(displayAndInputControlOfAttendanceItems.isUserCanSet() ? 1 : 0),
 				new BigDecimal(displayAndInputControlOfAttendanceItems.isYouCanChangeIt() ? 1 : 0),
 				new BigDecimal(displayAndInputControlOfAttendanceItems.isCanBeChangedByOthers() ? 1 : 0),
 				new BigDecimal(displayAndInputControlOfAttendanceItems.isUse() ? 1 : 0));

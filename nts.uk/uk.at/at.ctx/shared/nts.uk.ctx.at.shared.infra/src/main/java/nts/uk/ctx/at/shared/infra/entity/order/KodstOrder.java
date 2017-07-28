@@ -23,8 +23,8 @@ public class KodstOrder extends UkJpaEntity {
 	@EmbeddedId
 	public KodspOrderPK kodspOrderPK;
 
-	@Column(name = "SORT_ORDER")
-	public int sortOrder;
+	@Column(name = "DISPORDER")
+	public int dispOrder;
 
 	@Override
 	protected Object getKey() {
