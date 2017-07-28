@@ -15,8 +15,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
         ]);
         anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
         seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
-
-        //        checkBoxSelectedAll: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.currentRoleCode.subscribe(function(newRoleCode) {
@@ -24,12 +22,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 newPersonRole.loadRoleCategories(newPersonRole.roleCode);
                 self.currentRole(newPersonRole);
             });
-            //            self.checkBoxSelectedAll.subscribe(function(newValue) {
-            //                for (let item of self.currentRole().currentCategory().roleItemList()) {
-            //                    item.IsSelected = newValue;
-            //                }
-            //                $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
-            //            });
             self.seftSelectedAll.subscribe(function(newValue) {
                 for (let item of self.currentRole().currentCategory().roleItemList()) {
                     item.SelfAuthority = newValue;
