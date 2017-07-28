@@ -34,7 +34,7 @@
 /*.table1 thead tr{display:block;}*/
 .table1 th{
 	background-color: #E0F59E;
-	padding: 5px 0;	
+	padding: 5px 3px;
 	width: 95px;
 	border: 1px solid #ccc;
 	text-align: center;
