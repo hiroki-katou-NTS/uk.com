@@ -167,7 +167,7 @@ module nts.uk.at.view.ksm005.e {
                 var self = this;
                 // check error
                 if (self.checkMonthlyPatternSettingBatch()) {
-                    return;
+                    //return;
                 }
                 self.monthlyPatternSettingBatchWorkDays().workTypeCode = '001';
                 self.monthlyPatternSettingBatchWorkDays().workingCode = '002';

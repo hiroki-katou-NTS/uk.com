@@ -20,6 +20,7 @@ module nts.uk.at.view.kcp006.a.viewmodel {
             var self = this;
             self.yearMonthPicked = ko.observable(200005);
             self.cssRangerYM = {
+                2000: [5,10]
             };
             self.optionDates = ko.observableArray([
                 {
