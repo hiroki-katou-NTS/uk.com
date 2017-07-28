@@ -146,7 +146,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.optionDates(self.getOptionDates());
             // Set focus control
             $('#component-calendar-kcp006').focus();
-            service.save('empId', ko.toJS(self.patternReflection)).always(() => {
+            service.save(self.getDomainKey(), ko.toJS(self.patternReflection)).always(() => {
                 nts.uk.ui.block.clear();
             });
         }
@@ -157,7 +157,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private loadPatternReflection(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            service.find('empId').done(function(patternReflection: service.model.PatternReflection) {
+            service.find(self.getDomainKey()).done(function(patternReflection: service.model.PatternReflection) {
                 let data;
                 // Co data
                 if (patternReflection) {
@@ -165,34 +165,25 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 }
                 // Khong co data
                 else {
-                    data = {
-                        employeeId: 'empId',
-                        reflectionMethod: ReflectionMethod.Overwrite,
-                        patternClassification: 1,
-                        statutorySetting: {
-                            useClassification: false,
-                            workTypeCode: self.listWorkType()[0].workTypeCode
-                        },
-                        nonStatutorySetting: {
-                            useClassification: false,
-                            workTypeCode: self.listWorkType()[0].workTypeCode
-                        },
-                        holidaySetting: {
-                            useClassification: false,
-                            workTypeCode: self.listWorkType()[0].workTypeCode
-                        }
-                    }
+                    data = self.getDefaultPatternReflection();
                 }
                 self.patternReflection = new PatternReflection(data);
 
                 // Resolve.
                 dfd.resolve();
-            }).fail(() => {
-                console.log('failed. trinh duyet chua luu setting nao.');
-                dfd.fail();
             });
             return dfd.promise();
         }
+
+        /**
+         * Get key
+         */
+        abstract getDomainKey(): string;
+
+        /**
+         * Get default PatternReflection
+         */
+        abstract getDefaultPatternReflection(): service.model.PatternReflection;
 
         /**
          * Load daily pattern.
@@ -291,7 +282,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 currentDate = currentDate.subtract(1, 'days');
                 while (currentDate.isSameOrAfter(firstDateOfMonth, 'day')) {
                     // Work patterns reverse loop.
-                    self.dailyPatternSetting.workPatterns.slice().reverse().forEach(dailyPatternValue => {
+                    self.dailyPatternSetting.listDailyPatternVal.slice().reverse().forEach(dailyPatternValue => {
                         let dayOfPattern = 1;
                         // Day of pattern loop.
                         while (dayOfPattern <= dailyPatternValue.days) {
@@ -338,15 +329,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 }
                                 // Ngay di lam
                                 else {
-                                    // In ra worktype va worktime trong domain neu co data.
-                                    // Neu khong thi in ra KSM005_43
+                                    let noSetting = nts.uk.resource.getText('KSM005_43');
+                                    let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
+                                    let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
                                     result.push({
                                         start: currentDate.format('YYYY-MM-DD'),
                                         textColor: 'blue',
                                         backgroundColor: 'white',
                                         listText: [
-                                            self.getWorktypeNameByCode(dailyPatternValue.workTypeCode),
-                                            self.getWorktimeNameByCode(dailyPatternValue.workingHoursCode)
+                                            worktype ? worktype : noSetting,
+                                            worktime ? worktime : noSetting
                                         ]
                                     });
                                 }
@@ -368,7 +360,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Chay xuoi
             while (currentDate.isSameOrBefore(lastDateOfMonth)) {
                 // Work patterns loop.
-                self.dailyPatternSetting.workPatterns.forEach(dailyPatternValue => {
+                self.dailyPatternSetting.listDailyPatternVal.forEach(dailyPatternValue => {
                     let dayOfPattern = 1;
                     // Day of pattern loop.
                     while (dayOfPattern <= dailyPatternValue.days) {
@@ -415,15 +407,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             }
                             // Ngay di lam
                             else {
-                                // In ra worktype va worktime trong domain neu co data.
-                                // Neu khong thi in ra KSM005_43
+                                let noSetting = nts.uk.resource.getText('KSM005_43');
+                                let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
+                                let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
                                 result.push({
                                     start: currentDate.format('YYYY-MM-DD'),
                                     textColor: 'blue',
                                     backgroundColor: 'white',
                                     listText: [
-                                        self.getWorktypeNameByCode(dailyPatternValue.workTypeCode),
-                                        self.getWorktimeNameByCode(dailyPatternValue.workingHoursCode)
+                                        worktype ? worktype : noSetting,
+                                        worktime ? worktime : noSetting
                                     ]
                                 });
                             }
