@@ -149,8 +149,9 @@ public class WorkTimeFinder {
 		if (workTimeItems.isEmpty() || workTimeSetItems.isEmpty()) {
 			workTimeDtos = Collections.emptyList();
 		} else {
-			for (WorkTimeSet item : workTimeSetItems) {
-				int index = workTimeSetItems.indexOf(item);
+			for (WorkTime item : workTimeItems) {
+				
+				int index = workTimeItems.indexOf(item);
 				WorkTime currentWorkTime = workTimeItems.get(index);
 				WorkTimeSet currentWorkTimeSet = workTimeSetItems.get(index);
 				if ((currentWorkTimeSet.getWorkTimeDay1() == null) && (currentWorkTimeSet.getWorkTimeDay2() == null)) {
@@ -178,6 +179,8 @@ public class WorkTimeFinder {
 							workTimeMethodSet[currentWorkTime.getWorkTimeDivision().getWorkTimeMethodSet().value],
 							currentWorkTime.getNote().v()));
 				}
+				
+				
 			}
 			;
 		}
