@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KWWST_WEEKLY_WORK_SET")
+@Table(name = "KSCMT_WEEKLY_WORK_SET")
 public class KwwstWeeklyWorkSet extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
