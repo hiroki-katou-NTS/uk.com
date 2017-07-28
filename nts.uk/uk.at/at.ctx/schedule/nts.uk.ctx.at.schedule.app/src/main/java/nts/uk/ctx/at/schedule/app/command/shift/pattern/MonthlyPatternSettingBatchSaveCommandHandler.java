@@ -76,21 +76,23 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// check by next day of begin end
 		while (this.getYearMonth(toStartDate) <= command.getEndYearMonth()) {
-						
+			
+			// get ymd to day
+			int ymdk = this.getYearMonthDate(toStartDate);
+			
 			// check public holiday by base date
-			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository.getHolidaysByDate(
-					companyId, new BigDecimal(this.getYearMonthDate(toStartDate)));
+			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository
+					.getHolidaysByDate(companyId, new BigDecimal(ymdk));
 
 			// find by id
 			Optional<WorkMonthlySetting> workMonthlySetting = this.workMonthlySettingRepository
-					.findById(companyId, command.getMonthlyPatternCode(),
-							this.getYearMonthDate(toStartDate));
+					.findById(companyId, command.getMonthlyPatternCode(), ymdk);
+			
 			// check day is public holiday
 			if (publicHoliday.isPresent()) {
 
 				// data public holiday setting
-				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId,
-						this.getYearMonth(toStartDate));
+				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, ymdk);
 				
 				// check exist data
 				if (!workMonthlySetting.isPresent()) {
@@ -106,8 +108,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
-					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId,
-							this.getYearMonthDate(toStartDate));
+					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, ymdk);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {
@@ -122,8 +123,8 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				case NON_WORKINGDAY_EXTRALEGAL:
 					
 					// data none statutory holiday setting
-					WorkMonthlySetting dataNoneStatutory = command.toDomainNoneStatutoryHolidays(
-							companyId, this.getYearMonthDate(toStartDate));
+					WorkMonthlySetting dataNoneStatutory = command
+							.toDomainNoneStatutoryHolidays(companyId, ymdk);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {
@@ -138,8 +139,8 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				case NON_WORKINGDAY_INLAW:
 					
 					// data none statutory holiday setting
-					WorkMonthlySetting dataStatutory = command.toDomainStatutoryHolidays(
-							companyId, this.getYearMonthDate(toStartDate));
+					WorkMonthlySetting dataStatutory = command.toDomainStatutoryHolidays(companyId,
+							ymdk);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {
@@ -153,7 +154,6 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 			}
 			toStartDate = this.nextDay(toStartDate);
 		}
-
 		// add all data setting
 		this.workMonthlySettingRepository.addAll(addWorkMonthlySettings);
 		

@@ -11,29 +11,12 @@ import java.util.Optional;
  * The Interface WorkMonthlySettingRepository.
  */
 public interface WorkMonthlySettingRepository  {
-	
-	/**
-	 * Adds the.
-	 *
-	 * @param workMonthlySetting the work monthly setting
-	 */
-	public void add(WorkMonthlySetting workMonthlySetting);
-	
-	
 	/**
 	 * Adds the all.
 	 *
 	 * @param workMonthlySettings the work monthly settings
 	 */
 	public void addAll(List<WorkMonthlySetting> workMonthlySettings);
-	
-	
-	/**
-	 * Update.
-	 *
-	 * @param workMonthlySetting the work monthly setting
-	 */
-	public void update(WorkMonthlySetting workMonthlySetting);
 	
 	
 	/**

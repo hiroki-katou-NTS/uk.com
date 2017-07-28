@@ -38,18 +38,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 	/** The Constant INDEX_ONE. */
 	public static final int INDEX_ONE = 1;
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.shift.pattern.work.
-	 * WorkMonthlySettingRepository#add(nts.uk.ctx.at.schedule.dom.shift.pattern
-	 * .work.WorkMonthlySetting)
-	 */
-	@Override
-	public void add(WorkMonthlySetting workMonthlySetting) {
-		this.commandProxy().insert(this.toEntity(workMonthlySetting));
-		
-	}
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -59,26 +48,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 */
 	@Override
 	public void addAll(List<WorkMonthlySetting> workMonthlySettings) {
-		List<KwmmtWorkMonthSet> entitys = workMonthlySettings.stream()
-				.map(domain -> this.toEntity(domain)).collect(Collectors.toList());
-		entitys.forEach(entity->{
-			System.out.println(entity.getKwmmtWorkMonthSetPK().getYmdK());
-		});
-		this.commandProxy().insertAll(entitys);
+		this.commandProxy().insertAll( workMonthlySettings.stream()
+				.map(domain -> this.toEntity(domain)).collect(Collectors.toList()));
 		
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.shift.pattern.work.
-	 * WorkMonthlySettingRepository#update(nts.uk.ctx.at.schedule.dom.shift.
-	 * pattern.work.WorkMonthlySetting)
-	 */
-	@Override
-	public void update(WorkMonthlySetting workMonthlySetting) {
-		this.commandProxy().update(this.toEntityUpdate(workMonthlySetting));
-	}
-
 
 
 	/*
@@ -205,24 +178,6 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		return entity;
 	}
 	
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kwmmt work month set
-	 */
-	private KwmmtWorkMonthSet toEntityUpdate(WorkMonthlySetting domain){
-		
-		Optional<KwmmtWorkMonthSet> optionalEntity = this.queryProxy()
-				.find(new KwmmtWorkMonthSetPK(domain.getCompanyId().v(),
-						domain.getMonthlyPatternCode().v(), domain.getYmdk()),
-						KwmmtWorkMonthSet.class);
-		
-		KwmmtWorkMonthSet entity = optionalEntity.get();
-		domain.saveToMemento(new JpaWorkMonthlySettingSetMemento(entity));
-		return entity;
-	}
-
 	/**
 	 * To entity update all.
 	 *
