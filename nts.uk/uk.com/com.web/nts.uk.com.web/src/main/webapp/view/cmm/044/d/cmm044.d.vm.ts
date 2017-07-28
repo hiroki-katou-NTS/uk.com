@@ -36,13 +36,13 @@ module cmm044.d.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
-        
+
         findEmployee(employeeIds): JQueryPromise<any> {
             var self = this,
                 dfd = $.Deferred();
             var option = {
-                basteDate : new Date(),
-                employeeIds : employeeIds    
+                basteDate: new Date(),
+                employeeIds: employeeIds
             };
             service.findEmployees(option).done(function(res: Array<service.EmployeeResult>) {
                 self.dataPerson(res);
@@ -59,110 +59,108 @@ module cmm044.d.viewmodel {
             var dfd = $.Deferred();
             self.personList.removeAll();
             service.findAgentByDate(self.dateValue().startDate, self.dateValue().endDate).done(function(agent_arr: Array<model.AgentDto>) {
-                if(agent_arr.length == 0){
+                if (agent_arr.length == 0) {
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7"));
-                }else{
-                _.each(agent_arr, x => {
-                    if (x.employeeId == x.agentSid1 || x.employeeId == x.agentSid2 || x.employeeId == x.agentSid3 || x.employeeId == x.agentSid4) { 
+                } else {
+                    _.each(agent_arr, x => {
                         employeeIds.push(x.employeeId);
-                    } else {
                         if (x.agentSid1) {
-                             employeeIds.push(x.agentSid1);   
-                        } 
-                        
+                            employeeIds.push(x.agentSid1);
+                        }
+
                         if (x.agentSid2) {
-                             employeeIds.push(x.agentSid2);   
+                            employeeIds.push(x.agentSid2);
                         }
-                        
+
                         if (x.agentSid3) {
-                             employeeIds.push(x.agentSid3);   
+                            employeeIds.push(x.agentSid3);
                         }
-                        
+
                         if (x.agentSid4) {
-                             employeeIds.push(x.agentSid4);   
+                            employeeIds.push(x.agentSid4);
                         }
-                    }
-                    
-                });
-                    
-                self.findEmployee(employeeIds).done(function() {
-                    _.forEach(agent_arr, function(agent: model.AgentDto) {
-                         var employee = _.find(self.dataPerson() , function(e: service.EmployeeResult) {
-                            return e.employeeId == agent.employeeId;
-                         });
-                         
-                        self.personList.push(new AgentData(employee.employeeCode, employee.employeeName, employee.workplaceCode, employee.workplaceName, employee.jobTitleName, agent.startDate, agent.endDate, self.tabs()[0].title, self.getAgentAppType(agent.agentAppType1, agent.agentSid1), self.getEmpNameAgentAppType(agent.agentAppType1, agent.agentSid1), self.getColSpanAgentAppType(agent.agentAppType1)));
-                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[1].title, self.getAgentAppType(agent.agentAppType2, agent.agentSid2), self.getEmpNameAgentAppType(agent.agentAppType2, agent.agentSid2), self.getColSpanAgentAppType(agent.agentAppType2)));
-                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[2].title, self.getAgentAppType(agent.agentAppType3, agent.agentSid3), self.getEmpNameAgentAppType(agent.agentAppType3, agent.agentSid3), self.getColSpanAgentAppType(agent.agentAppType3)));
-                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[3].title, self.getAgentAppType(agent.agentAppType4, agent.agentSid4), self.getEmpNameAgentAppType(agent.agentAppType4, agent.agentSid4), self.getColSpanAgentAppType(agent.agentAppType4)));
                     });
-                });
-                                
-                dfd.resolve();
-                    }
+
+                    var employeUniqIds = _.uniq(employeeIds);
+
+                    self.findEmployee(employeUniqIds).done(function() {
+                        _.forEach(agent_arr, function(agent: model.AgentDto) {
+                            var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                                return e.employeeId == agent.employeeId;
+                            });
+
+                            self.personList.push(new AgentData(employee.employeeCode, employee.employeeName, employee.workplaceCode, employee.workplaceName, employee.jobTitleName, agent.startDate, agent.endDate, self.tabs()[0].title, self.getAgentAppType(agent.agentAppType1, agent.agentSid1), self.getEmpNameAgentAppType(agent.agentAppType1, agent.agentSid1), self.getColSpanAgentAppType(agent.agentAppType1)));
+                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[1].title, self.getAgentAppType(agent.agentAppType2, agent.agentSid2), self.getEmpNameAgentAppType(agent.agentAppType2, agent.agentSid2), self.getColSpanAgentAppType(agent.agentAppType2)));
+                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[2].title, self.getAgentAppType(agent.agentAppType3, agent.agentSid3), self.getEmpNameAgentAppType(agent.agentAppType3, agent.agentSid3), self.getColSpanAgentAppType(agent.agentAppType3)));
+                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[3].title, self.getAgentAppType(agent.agentAppType4, agent.agentSid4), self.getEmpNameAgentAppType(agent.agentAppType4, agent.agentSid4), self.getColSpanAgentAppType(agent.agentAppType4)));
+                        });
+                    });
+
+                    dfd.resolve();
+                }
             }).fail(function(error) {
                 alert(error.message);
                 dfd.reject(error);
             });
             return dfd.promise();
         }
-        
+
         getAgentAppType(agentAppType: number, agentSID): string {
             var self = this;
             var result = "";
-            switch(agentAppType) {
-                case model.AgentAppType.SUBSTITUTE_DESIGNATION: 
-                    var employee = _.find(self.dataPerson() , function(e: service.EmployeeResult) {
-                            return e.employeeId == agentSID;
-                         });
+            switch (agentAppType) {
+                case model.AgentAppType.SUBSTITUTE_DESIGNATION:
+                    var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                        return e.employeeId == agentSID;
+                    });
                     result = employee.employeeCode; //convert to employeeCode
                     break;
-                case model.AgentAppType.PATH: 
+                case model.AgentAppType.PATH:
                     result = nts.uk.resource.getText("CMM044_17");
                     break;
-                case model.AgentAppType.NO_SETTINGS: 
+                case model.AgentAppType.NO_SETTINGS:
                     result = nts.uk.resource.getText("CMM044_18");
                     break;
-            }    
-            
+            }
+
             return result;
         }
-        
+
         getEmpNameAgentAppType(agentAppType: number, agentSID): string {
             var self = this;
             var result = "";
-            switch(agentAppType) {
-                case model.AgentAppType.SUBSTITUTE_DESIGNATION: 
-                    var employee = _.find(self.dataPerson() , function(e: service.EmployeeResult) {
-                            return e.employeeId == agentSID;
-                         });
+            switch (agentAppType) {
+                case model.AgentAppType.SUBSTITUTE_DESIGNATION:
+                    var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                        return e.employeeId == agentSID;
+                    });
                     result = employee.employeeName;
                     break;
-                case model.AgentAppType.PATH: 
+                case model.AgentAppType.PATH:
                     result = "";
                     break;
-                case model.AgentAppType.NO_SETTINGS: 
+                case model.AgentAppType.NO_SETTINGS:
                     result = "";
                     break;
-            }    
-            
+            }
+
             return result;
         }
-        
+
         getColSpanAgentAppType(agentAppType: number): boolean {
             var result = false;
-            switch(agentAppType) {
-                case model.AgentAppType.SUBSTITUTE_DESIGNATION: 
+            switch (agentAppType) {
+                case model.AgentAppType.SUBSTITUTE_DESIGNATION:
                     result = false;
                     break;
-                case model.AgentAppType.PATH: 
+                case model.AgentAppType.PATH:
                     result = false;
                     break;
-                case model.AgentAppType.NO_SETTINGS: 
+                case model.AgentAppType.NO_SETTINGS:
                     result = true;
                     break;
-            }    
-            
+            }
+
             return result;
         }
     }
