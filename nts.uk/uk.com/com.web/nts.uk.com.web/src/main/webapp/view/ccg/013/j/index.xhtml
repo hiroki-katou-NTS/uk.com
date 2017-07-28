@@ -28,19 +28,19 @@
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_93')}</div></td>
 						<td colspan="2"><input id="title-bar-name" tabindex="1"
 							data-name="#{i18n.getText('CCG013_50')}"
-							data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName', required: true}, hasfocus: true" /></td>
+							data-bind="ntsTextEditor: {name:'#[CCG013_93]', value: nameTitleBar, constraint: 'TitleBarName', required: true}, hasfocus: true" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_94')}</div></td>
 						<td colspan="2"><div id="colorpicker1" tabindex="2"
 								data-name="#{i18n.getText('CCG013_19')} "
-								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50,required: true}" /></td>
+								data-bind="ntsColorPicker: {name:'#[CCG013_94]',value: letterColor, enable: true, width: 50,required: true}" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_95')}</div></td>
 						<td colspan="2"><div id="colorpicker2" tabindex="4"
 								data-name="#{i18n.getText('CCG013_23')}"
-								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50,required: true}" /></td>
+								data-bind="ntsColorPicker: {name:'#[CCG013_95]',value: backgroundColor, enable: true, width: 50,required: true}" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_96')}</div></td>
