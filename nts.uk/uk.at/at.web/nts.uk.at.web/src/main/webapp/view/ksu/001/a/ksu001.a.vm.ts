@@ -31,13 +31,13 @@ module ksu001.a.viewmodel {
         
         //Switch
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
+        selectedRuleCode: KnockoutObservable<number>;
         
         roundingRules1: KnockoutObservableArray<any>;
-        selectedRuleCode1: any;
+        selectedRuleCode1: KnockoutObservable<number>;
         
         roundingRules2: KnockoutObservableArray<any>;
-        selectedRuleCode2: any;
+        selectedRuleCode2: KnockoutObservable<number>;
 
         constructor() {
             let self = this;
@@ -71,20 +71,20 @@ module ksu001.a.viewmodel {
             }));
             //Switch button
             self.roundingRules = ko.observableArray([
-            { code: '1', name: '抽出' },
-            { code: '2', name: '２８日' },
-            { code: '3', name: '末日' }]);
+            { code: 1, name: '抽出' },
+            { code: 2, name: '２８日' },
+            { code: 3, name: '末日' }]);
             self.selectedRuleCode = ko.observable(1);
             
             self.roundingRules1 = ko.observableArray([
-            { code: '1', name: '略名' },
-            { code: '2', name: '時刻' },
-            { code: '3', name: '記号' }]);
-            self.selectedRuleCode1 = ko.observable(1);
+            { code: 1, name: '略名' },
+            { code: 2, name: '時刻' },
+            { code: 3, name: '記号' }]);
+            self.selectedRuleCode1 = ko.observable(null);
             
             self.roundingRules2 = ko.observableArray([
-            { code: '1', name: '予定' },
-            { code: '2', name: '実績' }]);
+            { code: 1, name: '予定' },
+            { code: 2, name: '実績' }]);
             self.selectedRuleCode2 = ko.observable(1);
             
             //popup 1
@@ -151,11 +151,25 @@ module ksu001.a.viewmodel {
 //            $('.setting-button').click(function() {
 //                $('#popup-area6').toggle();
 //            });
+            
+            self.selectedRuleCode1.subscribe(function(newValue){
+                var area = $("#oViewModel"); 
+                    area.html("");
+                if (newValue == 1) {
+                    area.load("../o/index.xhtml", function() {
+                        var oViewModel = new o.viewmodel.ScreenModel();  
+                        ko.applyBindings(oViewModel, area.children().get(0));
+                    });
+                }
+            });
         }
         start() {
             let self = this;
             var dfd = $.Deferred();
             self.initCCG001();
+            
+            self.selectedRuleCode1(1);
+            
             dfd.resolve();
             return dfd.promise();
         }
@@ -237,6 +251,16 @@ module ksu001.a.viewmodel {
         }
     }
     
+      class TimeModel{
+          dateTimePrev: string;
+          dateTimeAfter: string;
+          text: string;
+           constructor(dateTimePrev: string, dateTimeAfter: string, text: string) {
+            this.dateTimePrev = dateTimePrev;
+            this.dateTimePrev = dateTimeAfter;
+            this.text = dateTimePrev + dateTimeAfter;
+        }
+      }
       class ItemModel {
         code: string;
         name: string;

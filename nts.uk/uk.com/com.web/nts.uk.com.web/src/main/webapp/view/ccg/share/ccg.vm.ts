@@ -249,10 +249,17 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             applyDataSearch(): void {
                 var self = this;
+                
                 // call service search by base date
+                if (!self.baseDate()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_374' });
+                    return;
+                }
+                
                 if (self.validateClient()) {
                     return;
                 }
+                
                 service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data) {
                     self.selectedCodeWorkplace(data);
                     self.reloadDataSearch();

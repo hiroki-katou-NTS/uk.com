@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstControlOfAttendance
 public class JpaControlOfAttendanceItemsRepository extends JpaRepository implements ControlOfAttendanceItemsRepository {
 
 	@Override
-	public Optional<ControlOfAttendanceItems> getControlOfAttendanceItem(String attendanceItemId) {
+	public Optional<ControlOfAttendanceItems> getControlOfAttendanceItem(BigDecimal attendanceItemId) {
 		Optional<KshstControlOfAttendanceItems> kdwstControlOfAttendanceItemsOptional = this.queryProxy()
 				.find(new KshstControlOfAttendanceItemsPK(attendanceItemId), KshstControlOfAttendanceItems.class);
 		if (kdwstControlOfAttendanceItemsOptional.isPresent()) {

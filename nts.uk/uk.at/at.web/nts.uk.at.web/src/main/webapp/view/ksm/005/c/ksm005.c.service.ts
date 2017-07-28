@@ -41,6 +41,7 @@ module nts.uk.at.view.ksm005.c {
         export function findByIdMonthlyPattern(monthlyPatternCode: string):  JQueryPromise<model.MonthlyPatternDto>{
             return nts.uk.request.ajax('at', paths.findByIdMonthlyPattern + "/" + monthlyPatternCode);
         }
+        
         export module model {
 
             export interface MonthlyPatternDto {

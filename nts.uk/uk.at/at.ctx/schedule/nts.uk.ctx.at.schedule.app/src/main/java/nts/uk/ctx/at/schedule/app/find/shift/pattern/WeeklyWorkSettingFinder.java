@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.UserInfoDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
@@ -28,7 +27,7 @@ public class WeeklyWorkSettingFinder {
 
 	/** The repository. */
 	@Inject
-	WeeklyWorkSettingRepository repository;
+	private WeeklyWorkSettingRepository repository;
 	
 	
 	/**
@@ -82,25 +81,4 @@ public class WeeklyWorkSettingFinder {
 		}).collect(Collectors.toList());
 	}
 	
-	/**
-	 * Gets the user info.
-	 *
-	 * @return the user info
-	 */
-	public UserInfoDto getUserInfo() {
-		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get company id
-		String companyId = loginUserContext.companyId();
-
-		// get employee id
-		String employeeId = loginUserContext.employeeId();
-
-		// data return
-		UserInfoDto dto = new UserInfoDto();
-		dto.setCompanyId(companyId);
-		dto.setEmployeeId(employeeId);
-		return dto;
-	}
 }

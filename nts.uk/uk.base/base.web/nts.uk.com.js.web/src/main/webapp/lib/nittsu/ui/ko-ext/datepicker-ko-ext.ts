@@ -72,8 +72,9 @@ module nts.uk.ui.koExtentions {
                 $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
                 $input.before($prevButton).after($nextButton);
             }
-            if (data.dateFormat === "YYYY") {
-                let $yearType = $("<label/>").attr("for", idString).css({ "position": "absolute",
+            if (data.dateFormat === "YYYY") {                
+                let $yearType = $("<label/>").attr("for", idString)
+                                                .css({ "position": "absolute",
                                                       "line-height": "30px",
                                                       "right": "42px"});
                 let labelText = fiscalYear ? "年度" : "年"; 
@@ -95,11 +96,9 @@ module nts.uk.ui.koExtentions {
                 startDate: startDate,
                 endDate: endDate,
                 autoHide: autoHide,
-            });
-            
-            DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
+            }).data("dateNormalizer", DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
                                 .fiscalMonthsMode(data.fiscalMonthsMode)
-                                .setDefaultCss(data.defaultClass || "");
+                                .setDefaultCss(data.defaultClass || ""));
 
             name = nts.uk.resource.getControlName(name);
             var validator = new validation.TimeValidator(name, constraintName, {required: required, 
@@ -118,7 +117,7 @@ module nts.uk.ui.koExtentions {
                     }
                     value(result.parsedValue);
                 }
-                else {
+                else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode);
                     value(newText);
                 }
@@ -162,8 +161,14 @@ module nts.uk.ui.koExtentions {
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
-
+            
             var container = $(element); 
+            let dateNormalizer = container.find("input").data("dateNormalizer");
+            if (dateNormalizer) {
+                if (data.cssRanger) {
+                    dateNormalizer.setCssRanger(ko.unwrap(data.cssRanger));
+                }
+            }
             var init = container.data("init");
             var $input: any = container.find(".nts-input");
             var $label: any = container.find(".dayofweek-label");

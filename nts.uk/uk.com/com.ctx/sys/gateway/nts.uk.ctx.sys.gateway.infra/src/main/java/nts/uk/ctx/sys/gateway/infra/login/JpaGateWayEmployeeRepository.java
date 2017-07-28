@@ -1,0 +1,23 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.sys.gateway.infra.login;
+
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.gateway.dom.login.Employee;
+import nts.uk.ctx.sys.gateway.dom.login.GateWayEmployeeRepository;
+@Stateless
+public class JpaGateWayEmployeeRepository extends JpaRepository implements GateWayEmployeeRepository{
+
+	@Override
+	public Optional<Employee> getByEmployeeCode(String employeeCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -17,7 +17,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private final String SELECT_FROM_WORKTYPE = "SELECT c FROM KmnmtWorkType c";
 	private final String SELECT_BY_WORKTYPE_CODE = "SELECT c FROM KmnmtWorkType c"
-			+ "WHERE c.kmnmtWorkTypePK.workTypeCode = : worktypeCd";
+			+ "WHERE c.kmnmtWorkTypePK.workTypeCode IN :worktypeCd";
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kmnmtWorkTypePK.workTypeCode IN :lstPossible";
 
@@ -47,9 +47,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	@Override
-	public Optional<WorkType> findByWorktypeCode(String worktypeCode) {
-		return Optional.of(this.queryProxy().query(SELECT_BY_WORKTYPE_CODE, KmnmtWorkType.class)
-				.setParameter("worktypeCd", worktypeCode).getSingleOrNull(c -> toDomain(c)));
+	public List<WorkType> findByWorktypeCodeList(String companyId, List<String> worktypeCode) {
+		return this.queryProxy().query(SELECT_BY_WORKTYPE_CODE, KmnmtWorkType.class)
+				.setParameter("worktypeCd", worktypeCode).getList(c -> toDomain(c));
 	}
 
 	/**

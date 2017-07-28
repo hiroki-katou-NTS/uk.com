@@ -20,8 +20,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLog;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLog_;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog_;
 
 /**
  * The Class JpaExternalBudgetLogRepository.
@@ -54,24 +54,24 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
         EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KbldtExtBudgetLog> query = builder.createQuery(KbldtExtBudgetLog.class);
-        Root<KbldtExtBudgetLog> root = query.from(KbldtExtBudgetLog.class);
+        CriteriaQuery<KscdtExtBudgetLog> query = builder.createQuery(KscdtExtBudgetLog.class);
+        Root<KscdtExtBudgetLog> root = query.from(KscdtExtBudgetLog.class);
 
         List<Predicate> predicateList = new ArrayList<>();
 
-        predicateList.add(builder.equal(root.get(KbldtExtBudgetLog_.cid), companyId));
-        predicateList.add(builder.equal(root.get(KbldtExtBudgetLog_.sid), employeeId));
-        predicateList.add(builder.lessThanOrEqualTo(root.get(KbldtExtBudgetLog_.strD), startDate));
-        predicateList.add(builder.greaterThanOrEqualTo(root.get(KbldtExtBudgetLog_.endD), startDate));
+        predicateList.add(builder.equal(root.get(KscdtExtBudgetLog_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KscdtExtBudgetLog_.sid), employeeId));
+        predicateList.add(builder.lessThanOrEqualTo(root.get(KscdtExtBudgetLog_.strD), startDate));
+        predicateList.add(builder.greaterThanOrEqualTo(root.get(KscdtExtBudgetLog_.endD), startDate));
         
-        Expression<Integer> exp = root.get(KbldtExtBudgetLog_.completionAtr);
+        Expression<Integer> exp = root.get(KscdtExtBudgetLog_.completionAtr);
         predicateList.add(exp.in(listState));
 
         query.where(predicateList.toArray(new Predicate[] {}));
-        query.orderBy(builder.desc(root.get(KbldtExtBudgetLog_.strD)));
+        query.orderBy(builder.desc(root.get(KscdtExtBudgetLog_.strD)));
 
         return em.createQuery(query).getResultList().stream()
-                .map(entity -> new ExternalBudgetLog(new JpaExternalBudgetLogGetMemento((KbldtExtBudgetLog) entity)))
+                .map(entity -> new ExternalBudgetLog(new JpaExternalBudgetLogGetMemento((KscdtExtBudgetLog) entity)))
                 .collect(Collectors.toList());
     }
 
@@ -82,8 +82,8 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
      *            the domain
      * @return the kbldt ext budget log
      */
-    private KbldtExtBudgetLog toEntity(ExternalBudgetLog domain) {
-        KbldtExtBudgetLog entity = new KbldtExtBudgetLog();
+    private KscdtExtBudgetLog toEntity(ExternalBudgetLog domain) {
+        KscdtExtBudgetLog entity = new KscdtExtBudgetLog();
         JpaExternalBudgetLogSetMemento memento = new JpaExternalBudgetLogSetMemento(entity);
         domain.saveToMemento(memento);
         return entity;

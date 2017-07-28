@@ -11,21 +11,20 @@ import java.util.Optional;
  * The Interface WorkMonthlySettingRepository.
  */
 public interface WorkMonthlySettingRepository  {
+	/**
+	 * Adds the all.
+	 *
+	 * @param workMonthlySettings the work monthly settings
+	 */
+	public void addAll(List<WorkMonthlySetting> workMonthlySettings);
+	
 	
 	/**
-	 * Adds the.
+	 * Update all.
 	 *
-	 * @param workMonthlySetting the work monthly setting
+	 * @param workMonthlySettings the work monthly settings
 	 */
-	public void add(WorkMonthlySetting workMonthlySetting);
-	
-	
-	/**
-	 * Update.
-	 *
-	 * @param workMonthlySetting the work monthly setting
-	 */
-	public void update(WorkMonthlySetting workMonthlySetting);
+	public void updateAll(List<WorkMonthlySetting> workMonthlySettings);
 	
 	
 	/**
@@ -51,5 +50,4 @@ public interface WorkMonthlySettingRepository  {
 	 */
 	public List<WorkMonthlySetting> findByStartEndDate(String companyId, String monthlyPatternCode,
 			int startDate, int endDate);
-
 }
