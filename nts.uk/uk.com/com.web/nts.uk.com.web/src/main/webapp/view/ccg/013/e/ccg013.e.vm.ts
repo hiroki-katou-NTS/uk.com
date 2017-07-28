@@ -31,6 +31,8 @@
             var self = this;
             nts.uk.ui.block.invisible();
             
+            validateNameInput($("#web-name"),'#[CCG013_50]', self.name().trim(), 'WebMenuName');
+            
             var code = self.code();
             var name = self.name();
             var allowOverwrite = self.allowOverwrite();

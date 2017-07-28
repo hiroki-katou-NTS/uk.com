@@ -6,18 +6,18 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div id="functions-area" class="sidebar-content-header">
+		<div class="sidebar-content-header">
 			<span class="title">#{i18n.getText('Com_Company')}</span>
 			<span class="action-bar">
-			<button tabindex="1" data-bind="click: saveCompanySetting, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
-			<button tabindex="3" class="danger" data-bind="click: removeCompanySetting, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
-			<button tabindex="4" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
+			<button tabindex="2" data-bind="click: saveCompanySetting, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
+			<button tabindex="4" class="danger" data-bind="click: removeCompanySetting, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
+			<button tabindex="5" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
 			</span>
 		</div>
 		<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
 			<com:ko tag="with" bind="companyWTSetting">
 				<div class="control-group">
-					<div tabindex="1" id="companyYearPicker" 
+					<div tabindex="6" id="companyYearPicker" 
 						data-bind="ntsDatePicker: {name:'#[KMK004_31]', 
 												value: year, 
 												dateFormat: 'YYYY', 
@@ -26,7 +26,7 @@
 												showJumpButtons: true}">
 					</div>
 				</div>
-				<div tabindex="2" id="tab-panel" class="pull-left"
+				<div tabindex="7" id="tab-panel" class="pull-left"
 					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
 
 					<!-- NORMAL WORK TIME SETTING START -->
@@ -34,7 +34,7 @@
 						<com:ko tag="with" bind="normalSetting">
 						<div class="control-group">
 							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
-							<div tabindex="3" class="cbb-weekstart"
+							<div tabindex="8" class="cbb-weekstart"
 								id="combo-box"
 								data-bind="ntsComboBox: {name:'#[KMK004_6]',
 												options: $parents[1].itemList,
@@ -46,27 +46,27 @@
 							<com:ko tag="with" bind="statutorySetting">
 								<div class="control-group">
 									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
-									<table tabindex="4" class="border-all tbl-daily">
+									<table class="border-all tbl-daily">
 										<tr class="bg-dark-green">
 											<td></td>
 											<td>#{i18n.getText('KMK004_8')}</td>
 										</tr>
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
-											<td><input tabindex="5"
+											<td><input tabindex="9"
 												data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: daily, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
-											<td><input tabindex="6"
+											<td><input tabindex="10"
 												data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: weekly, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</table>
 								</div>
 								<div class="control-group">
-									<table tabindex="7" class="border-all tbl-monthly">
+									<table class="border-all tbl-monthly">
 										<tr class="bg-dark-green">
 											<td>#{i18n.getText('KMK004_13')}</td>
 											<td>#{i18n.getText('KMK004_8')}</td>
@@ -76,7 +76,7 @@
 												<td class="bg-green">
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
-												<td><input tabindex="8"
+												<td><input tabindex="11"
 													data-bind="ntsTimeEditor: {name: normal, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
@@ -93,7 +93,7 @@
 						<com:ko tag="with" bind="flexSetting">
 							<div class="control-group">
 								<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
-								<table tabindex="10" class="border-all tbl-daily">
+								<table class="border-all tbl-daily">
 									<tr class="bg-dark-green">
 										<td></td>
 										<td>#{i18n.getText('KMK004_16')}</td>
@@ -101,17 +101,17 @@
 									</tr>
 									<tr data-bind="with: flexDaily">
 										<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
-										<td><input tabindex="11"
+										<td><input tabindex="23"
 											data-bind="ntsTimeEditor: {name:'#[KMK004_17]', value: specifiedTime, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 										</td>
-										<td><input tabindex="12"
+										<td><input tabindex="24"
 											data-bind="ntsTimeEditor: {name:'#[KMK004_18]', value: statutoryTime, constraint:'DailyTime',inputFormat: 'time', mode: 'time', required: true}" />
 										</td>
 									</tr>
 								</table>
 							</div>
 							<div class="control-group">
-								<table tabindex="13" class="border-all tbl-monthly">
+								<table class="border-all tbl-monthly">
 									<tr class="bg-dark-green">
 										<td>#{i18n.getText('KMK004_13')}</td>
 										<td>#{i18n.getText('KMK004_17')}</td>
@@ -122,10 +122,10 @@
 											<td class="bg-green">
 												<div data-bind="text: month()+'月度'"></div>
 											</td>
-											<td><input tabindex="16"
+											<td><input tabindex="25"
 												data-bind="ntsTimeEditor: {name: speName, value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
-											<td><input tabindex="16"
+											<td><input tabindex="37"
 												data-bind="ntsTimeEditor: {name: staName, value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
@@ -142,7 +142,7 @@
 						<com:ko tag="with" bind="deformationLaborSetting">
 						<div class="control-group">
 							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
-							<div tabindex="18" class="cbb-weekstart"
+							<div tabindex="49" class="cbb-weekstart"
 								id="combo-box"
 								data-bind="ntsComboBox: {name:'#[KMK004_23]',
 												options: $parents[1].itemList,
@@ -154,27 +154,27 @@
 							<com:ko tag="with" bind="statutorySetting">
 								<div class="control-group">
 									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
-									<table tabindex="19" class="border-all tbl-daily">
+									<table class="border-all tbl-daily">
 										<tr class="bg-dark-green">
 											<td></td>
 											<td>#{i18n.getText('KMK004_8')}</td>
 										</tr>
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
-											<td><input tabindex="20"
+											<td><input tabindex="50"
 												data-bind="ntsTimeEditor: {name:'#[KMK004_24]',value: daily, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
-											<td><input tabindex="21"
+											<td><input tabindex="51"
 												data-bind="ntsTimeEditor: {name:'#[KMK004_25]',value: weekly, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</table>
 								</div>
 								<div class="control-group">
-									<table tabindex="22" class="border-all tbl-monthly">
+									<table class="border-all tbl-monthly">
 										<tr class="bg-dark-green">
 											<td>#{i18n.getText('KMK004_13')}</td>
 											<td>#{i18n.getText('KMK004_8')}</td>
@@ -184,7 +184,7 @@
 												<td class="bg-green">
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
-												<td><input tabindex="23"
+												<td><input tabindex="52"
 													data-bind="ntsTimeEditor: {name: deformed, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>

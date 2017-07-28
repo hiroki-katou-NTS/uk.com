@@ -268,9 +268,91 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             let currentDate = moment(self.patternStartDate);
+            let firstDateOfMonth = moment(self.patternEndDate).startOf('month');
             let lastDateOfMonth = moment(self.patternEndDate);
             let result: Array<OptionDate> = [];
 
+            // Chay nguoc
+            if (currentDate.isAfter(firstDateOfMonth, 'day')) {
+                // Previous day on calendar.
+                currentDate = currentDate.subtract(1, 'days');
+                while (currentDate.isSameOrAfter(firstDateOfMonth, 'day')) {
+                    // Work patterns reverse loop.
+                    self.dailyPatternSetting.workPatterns.slice().reverse().forEach(dailyPatternValue => {
+                        let dayOfPattern = 1;
+                        // Day of pattern loop.
+                        while (dayOfPattern <= dailyPatternValue.days) {
+                            // is current day = day off flag.
+                            let isDayoff = false;
+
+                            // Neu la holiday.
+                            if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
+                                isDayoff = true;
+                                result.push({
+                                    start: currentDate.format('YYYY-MM-DD'),
+                                    textColor: 'red',
+                                    backgroundColor: 'white',
+                                    listText: [
+                                        self.getWorktypeNameByCode(self.patternReflection.holidaySetting.workTypeCode())
+                                    ]
+                                });
+                            }
+                            // Neu khong phai la holiday
+                            else {
+                                // Ngay nghi theo luat
+                                if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
+                                    isDayoff = true;
+                                    result.push({
+                                        start: currentDate.format('YYYY-MM-DD'),
+                                        textColor: 'red',
+                                        backgroundColor: 'white',
+                                        listText: [
+                                            self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
+                                        ]
+                                    });
+                                }
+                                // Ngay nghi ngoai luat
+                                else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
+                                    isDayoff = true;
+                                    result.push({
+                                        start: currentDate.format('YYYY-MM-DD'),
+                                        textColor: 'red',
+                                        backgroundColor: 'white',
+                                        listText: [
+                                            self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
+                                        ]
+                                    });
+                                }
+                                // Ngay di lam
+                                else {
+                                    // In ra worktype va worktime trong domain neu co data.
+                                    // Neu khong thi in ra KSM005_43
+                                    result.push({
+                                        start: currentDate.format('YYYY-MM-DD'),
+                                        textColor: 'blue',
+                                        backgroundColor: 'white',
+                                        listText: [
+                                            self.getWorktypeNameByCode(dailyPatternValue.workTypeCode),
+                                            self.getWorktimeNameByCode(dailyPatternValue.workingHoursCode)
+                                        ]
+                                    });
+                                }
+                            }
+                            dayOfPattern++;
+                            // Reserve dayOfPattern if reflection method = overwrite
+                            if (isDayoff && !self.isFillInTheBlankChecked()) {
+                                dayOfPattern--;
+                            }
+                            // Previous day on calendar.
+                            currentDate = currentDate.subtract(1, 'days');
+                        }
+                    });
+                }
+                // Reset current date to pattern start date.
+                currentDate = moment(self.patternStartDate);
+            }
+
+            // Chay xuoi
             while (currentDate.isSameOrBefore(lastDateOfMonth)) {
                 // Work patterns loop.
                 self.dailyPatternSetting.workPatterns.forEach(dailyPatternValue => {
