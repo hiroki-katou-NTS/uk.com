@@ -124,6 +124,7 @@ module nts.uk.at.view.ksm004.a {
                         });  
                     }
                 });
+                
                 // calendar cell click event handler
                 $("#calendar").ntsCalendar("init", {
                     cellClick: function(date) {
@@ -145,13 +146,18 @@ module nts.uk.at.view.ksm004.a {
                     $('#classification-list-setting').ntsListComponent(self.kcpGridlist).done(() => {
                         nts.uk.ui.block.invisible();
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                        .done(()=>{ nts.uk.ui.block.clear(); })
+                        .done(()=>{
+                            nts.uk.ui.block.clear(); 
+                        })
                         .fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                         });     
-                        self.currentCalendarWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);   
-                        self.currentCalendarClass().name(_.first($('#classification-list-setting')['getDataList']()).name);
-                        
+                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())){
+                            self.currentCalendarWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);   
+                        }
+                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())){
+                            self.currentCalendarClass().name(_.first($('#classification-list-setting')['getDataList']()).name);
+                        }
                         // get new Data when treegrid Work Place key change
                         self.currentCalendarWorkPlace().key.subscribe(value => {
                             nts.uk.ui.block.invisible();
@@ -184,7 +190,8 @@ module nts.uk.at.view.ksm004.a {
                             .fail((res) => {
                                 nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                             });
-                        });       
+                        });    
+                          
                     });
                 });
                 
@@ -254,6 +261,28 @@ module nts.uk.at.view.ksm004.a {
             submitCalendar(value){
                 var self = this;
                 $(".yearMonthPicker").trigger("validate");
+                switch(value) {
+                    case 1: // select tab Work Place
+                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())) {
+                            $('#tree-grid').ntsError('set', 'えらーです');
+                        }
+                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel1.optionDates())) {
+                            $('#calendar1').ntsError('set', 'えらーです');
+                        }
+                        break;
+                    case 2: // select tab Class
+                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())) {
+                            $('#classification-list-setting').ntsError('set', 'えらーです');
+                        }
+                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel2.optionDates())) {
+                            $('#calendar2').ntsError('set', 'えらーです');
+                        }
+                        break;
+                    default: // select tab Company
+                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel.optionDates())) {
+                            $('#calendar').ntsError('set', 'えらーです');
+                        }
+                }
                 if (!nts.uk.ui.errors.hasError()) {
                     let dayOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").daysInMonth(); 
                     let daySetnumber = 0;
@@ -354,6 +383,28 @@ module nts.uk.at.view.ksm004.a {
             */
             removeCalendar(value){
                 var self = this;
+                switch(value) {
+                    case 1: // select tab Work Place
+                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())) {
+                            $('#tree-grid').ntsError('set', 'えらーです');
+                        }
+                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel1.optionDates())) {
+                            $('#calendar1').ntsError('set', 'えらーです');
+                        }
+                        break;
+                    case 2: // select tab Class
+                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())) {
+                            $('#classification-list-setting').ntsError('set', 'えらーです');
+                        }
+                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel2.optionDates())) {
+                            $('#calendar2').ntsError('set', 'えらーです');
+                        }
+                        break;
+                    default: // select tab Company
+                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel.optionDates())) {
+                            $('#calendar').ntsError('set', 'えらーです');
+                        }
+                }
                 $(".yearMonthPicker").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
                     nts.uk.ui.block.invisible();
@@ -389,7 +440,7 @@ module nts.uk.at.view.ksm004.a {
                                 });;
                                 break;
                         }  
-                    }).ifNo(function(){
+                    }).ifNo(function(){ 
                         nts.uk.ui.block.clear();           
                     });
                 }
@@ -404,6 +455,8 @@ module nts.uk.at.view.ksm004.a {
                         a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM(a);
+                        $("#yearMonthPicker1").datepicker("hide");
+                        $("#yearMonthPicker1").datepicker("show");
                     }
                     dfd.resolve(); 
                 }).fail(res => {
@@ -421,6 +474,8 @@ module nts.uk.at.view.ksm004.a {
                         a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM1(a);
+                        $("#yearMonthPicker2").datepicker("hide");
+                        $("#yearMonthPicker2").datepicker("show");
                     }
                     dfd.resolve(); 
                 }).fail(res => {
@@ -438,6 +493,8 @@ module nts.uk.at.view.ksm004.a {
                         a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM2(a);
+                        $("#yearMonthPicker3").datepicker("hide");
+                        $("#yearMonthPicker3").datepicker("show");
                     }
                     dfd.resolve(); 
                 }).fail(res => {
