@@ -29,6 +29,7 @@
 							<div class="nts-calendar-header">
 								<div data-bind="ntsDatePicker: {
 								value: yearMonthPicked, 
+								required: true,
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
 								cssRanger: cssRangerYM,
@@ -68,11 +69,12 @@
 <pre><![CDATA[<div class="nts-calendar-container">
 	<div class="nts-calendar-header">
 		<div data-bind="ntsDatePicker: {
-		value: yearMonthPicked, 
+		value: yearMonthPicked,
+		required: true, 
 		dateFormat: 'yearmonth', 
 		valueFormat: 'YYYYMM', 
 		cssRanger: cssRangerYM,
-		defaultClass: 'round-orange',
+		defaultClass: 'bg-calendar-ym-set',
 		showJumpButtons: true}"></div>
 	</div>
 	<div id="calendar" data-bind="ntsCalendar: {
@@ -113,8 +115,6 @@
 										</tbody>
 									</table>
 									<h2>API</h2>
-									<i>Only for the calendar, for yearmonth picker please see more in following link:</i>
-									<a href="http://localhost:8080/nts.uk.com.web/view/sample/customdatepicker/customdatepicker.xhtml">Yearmonth picker's API</a><br/>
 									<table>
 										<colgroup>
 											<col width="200px" />
@@ -126,6 +126,25 @@
 											</tr>
 										</thead>
 										<tbody>
+											<tr>
+												<td>cssRanger(ntsDatePicker)</td>
+												<td>
+													<b>Type:</b>object<br/>
+													CSS ranges for specified months.<br/>
+													Example:<br/>
+													<pre><![CDATA[{ 2000: [{ 1: "round-green" }, { 5: "round-yellow" }],
+  2002: [ 1, { 5: "round-gray" }]}]]></pre>
+												</td>
+											</tr>
+											<tr>
+												<td>defaultClass(ntsDatePicker)</td>
+												<td>
+													<b>Type:</b>string<br/>
+													Default CSS class for dates whose CSS class hasn't been specified in cssRanger.<br/>
+													For the calender component, using: <br/>
+													<pre><![CDATA[defaultClass: 'bg-calendar-ym-set']]></pre>
+												</td>
+											</tr>
 											<tr>
 												<td>optionDates</td>
 												<td>
@@ -287,6 +306,7 @@
             var self = this;
             self.yearMonthPicked = ko.observable(200005);
             self.cssRangerYM = {
+                2000: [5,10]
             };
             self.optionDates = ko.observableArray([
                 {

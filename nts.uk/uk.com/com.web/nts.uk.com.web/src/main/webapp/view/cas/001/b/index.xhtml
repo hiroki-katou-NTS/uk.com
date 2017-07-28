@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 450,
-					height : 620
+					width : 1280,
+					height : 700
 				};
 			</script>
 			<com:ValidatorScript>
@@ -57,14 +57,7 @@
 									selected: currentRoleCode, 
 									selectedKey: 'roleCode', 
 									fields: ['roleCode', 'roleName'], mode: 'igGrid'}" />
-					<table id="roles"
-						data-bind="ntsGridList: {
-							 height: 310,
-							 options: roleList,
-							 optionsValue: 'roleCode',
-							 columns: columns,
-							 value: currentRoleCode}">
-					</table>
+
 
 				</div>
 				<div id="note">
@@ -89,7 +82,8 @@
 					<button id="delete" class="danger " data-bind='click: closeDialog'>キャンセル</button>
 
 				</div>
-
+					<table id="grid">
+					</table>
 			</div>
 
 		</ui:define>
