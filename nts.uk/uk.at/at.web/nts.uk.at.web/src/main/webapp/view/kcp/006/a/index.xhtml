@@ -29,6 +29,7 @@
 							<div class="nts-calendar-header">
 								<div data-bind="ntsDatePicker: {
 								value: yearMonthPicked, 
+								required: true,
 								dateFormat: 'yearmonth', 
 								valueFormat: 'YYYYMM', 
 								cssRanger: cssRangerYM,
@@ -68,7 +69,8 @@
 <pre><![CDATA[<div class="nts-calendar-container">
 	<div class="nts-calendar-header">
 		<div data-bind="ntsDatePicker: {
-		value: yearMonthPicked, 
+		value: yearMonthPicked,
+		required: true, 
 		dateFormat: 'yearmonth', 
 		valueFormat: 'YYYYMM', 
 		cssRanger: cssRangerYM,
