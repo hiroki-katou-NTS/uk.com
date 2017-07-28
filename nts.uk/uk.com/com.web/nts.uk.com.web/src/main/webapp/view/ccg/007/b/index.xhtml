@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="ccg007.b.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ccg007.b.start.js" />
+			<com:scriptfile path="ccg007.b.service.js" />
+			<com:scriptfile path="ccg007.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div data-bind="text: '#{i18n.getText('CCG007_4')}'"></div>
+				<div>
+					<input
+						data-bind="ntsTextEditor: {
+							value: loginId,
+							required: true,
+							enable: true,
+							readonly: false}" />
+				</div>
+				<div data-bind="text: '#{i18n.getText('CCG007_2')}'"></div>
+				<div>
+					<input
+						data-bind="ntsTextEditor: {
+							value: password,
+							required: true,
+							enable: true,
+							readonly: false}" />
+				</div>
+				<button data-bind="click: openContractAuthDialog" class="proceed">ログイン</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
