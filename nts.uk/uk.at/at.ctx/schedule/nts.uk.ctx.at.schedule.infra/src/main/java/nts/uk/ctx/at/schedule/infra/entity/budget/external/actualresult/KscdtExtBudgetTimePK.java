@@ -14,12 +14,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KbddtExtBudgetDailyPK.
+ * The Class KbtdtExtBudgetTimePK.
  */
 @Embeddable
 @Setter
 @Getter
-public class KbddtExtBudgetDailyPK implements Serializable {
+public class KscdtExtBudgetTimePK implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -35,20 +35,20 @@ public class KbddtExtBudgetDailyPK implements Serializable {
     private String wkpid;
 
     /**
-     * Instantiates a new kbddt ext budget daily PK.
+     * Instantiates a new kbtdt ext budget time PK.
      */
-    public KbddtExtBudgetDailyPK() {
+    public KscdtExtBudgetTimePK() {
     }
 
     /**
-     * Instantiates a new kbddt ext budget daily PK.
+     * Instantiates a new kbtdt ext budget time PK.
      *
      * @param cid
      *            the cid
      * @param wkpid
      *            the wkpid
      */
-    public KbddtExtBudgetDailyPK(String cid, String wkpid) {
+    public KscdtExtBudgetTimePK(String cid, String wkpid) {
         this.cid = cid;
         this.wkpid = wkpid;
     }
@@ -73,10 +73,10 @@ public class KbddtExtBudgetDailyPK implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KbddtExtBudgetDailyPK)) {
+        if (!(object instanceof KscdtExtBudgetTimePK)) {
             return false;
         }
-        KbddtExtBudgetDailyPK other = (KbddtExtBudgetDailyPK) object;
+        KscdtExtBudgetTimePK other = (KscdtExtBudgetTimePK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

@@ -25,15 +25,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KBDDT_EXT_BUDGET_DAILY")
-public class KbddtExtBudgetDaily extends UkJpaEntity implements Serializable {
+@Table(name = "KSCDT_EXT_BUDGET_DAILY")
+public class KscdtExtBudgetDaily extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     /** The kbddt ext budget daily PK. */
     @EmbeddedId
-    protected KbddtExtBudgetDailyPK kbddtExtBudgetDailyPK;
+    protected KscdtExtBudgetDailyPK kbddtExtBudgetDailyPK;
 
     /** The budget atr. */
     @Basic(optional = false)
@@ -59,7 +59,7 @@ public class KbddtExtBudgetDaily extends UkJpaEntity implements Serializable {
     /**
      * Instantiates a new kbddt ext budget daily.
      */
-    public KbddtExtBudgetDaily() {
+    public KscdtExtBudgetDaily() {
     }
 
     /**
@@ -67,7 +67,7 @@ public class KbddtExtBudgetDaily extends UkJpaEntity implements Serializable {
      *
      * @param kbddtExtBudgetDailyPK the kbddt ext budget daily PK
      */
-    public KbddtExtBudgetDaily(KbddtExtBudgetDailyPK kbddtExtBudgetDailyPK) {
+    public KscdtExtBudgetDaily(KscdtExtBudgetDailyPK kbddtExtBudgetDailyPK) {
         this.kbddtExtBudgetDailyPK = kbddtExtBudgetDailyPK;
     }
 
@@ -77,8 +77,8 @@ public class KbddtExtBudgetDaily extends UkJpaEntity implements Serializable {
      * @param cid the cid
      * @param wkpid the wkpid
      */
-    public KbddtExtBudgetDaily(String cid, String wkpid) {
-        this.kbddtExtBudgetDailyPK = new KbddtExtBudgetDailyPK(cid, wkpid);
+    public KscdtExtBudgetDaily(String cid, String wkpid) {
+        this.kbddtExtBudgetDailyPK = new KscdtExtBudgetDailyPK(cid, wkpid);
     }
 
     /*
@@ -100,10 +100,10 @@ public class KbddtExtBudgetDaily extends UkJpaEntity implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KbddtExtBudgetDaily)) {
+        if (!(object instanceof KscdtExtBudgetDaily)) {
             return false;
         }
-        KbddtExtBudgetDaily other = (KbddtExtBudgetDaily) object;
+        KscdtExtBudgetDaily other = (KscdtExtBudgetDaily) object;
         if ((this.kbddtExtBudgetDailyPK == null && other.kbddtExtBudgetDailyPK != null)
                 || (this.kbddtExtBudgetDailyPK != null
                         && !this.kbddtExtBudgetDailyPK.equals(other.kbddtExtBudgetDailyPK))) {

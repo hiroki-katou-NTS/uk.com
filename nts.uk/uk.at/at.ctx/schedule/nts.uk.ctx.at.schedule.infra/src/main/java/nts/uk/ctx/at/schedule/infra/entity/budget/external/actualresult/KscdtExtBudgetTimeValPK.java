@@ -19,7 +19,7 @@ import lombok.Setter;
 @Embeddable
 @Setter
 @Getter
-public class KbtdtExtBudgetTimeValPK implements Serializable {
+public class KscdtExtBudgetTimeValPK implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ public class KbtdtExtBudgetTimeValPK implements Serializable {
     /**
      * Instantiates a new kbtdt ext budget time val PK.
      */
-    public KbtdtExtBudgetTimeValPK() {
+    public KscdtExtBudgetTimeValPK() {
     }
 
     /**
@@ -48,7 +48,7 @@ public class KbtdtExtBudgetTimeValPK implements Serializable {
      * @param wkpid
      *            the wkpid
      */
-    public KbtdtExtBudgetTimeValPK(String cid, String wkpid) {
+    public KscdtExtBudgetTimeValPK(String cid, String wkpid) {
         this.cid = cid;
         this.wkpid = wkpid;
     }
@@ -73,10 +73,10 @@ public class KbtdtExtBudgetTimeValPK implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KbtdtExtBudgetTimeValPK)) {
+        if (!(object instanceof KscdtExtBudgetTimeValPK)) {
             return false;
         }
-        KbtdtExtBudgetTimeValPK other = (KbtdtExtBudgetTimeValPK) object;
+        KscdtExtBudgetTimeValPK other = (KscdtExtBudgetTimeValPK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

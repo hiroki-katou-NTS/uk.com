@@ -25,8 +25,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KBLDT_EXT_BUDGET_LOG")
-public class KbldtExtBudgetLog extends UkJpaEntity implements Serializable {
+@Table(name = "KSCDT_EXT_BUDGET_LOG")
+public class KscdtExtBudgetLog extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -87,7 +87,7 @@ public class KbldtExtBudgetLog extends UkJpaEntity implements Serializable {
     /**
      * Instantiates a new kbldt ext budget log.
      */
-    public KbldtExtBudgetLog() {
+    public KscdtExtBudgetLog() {
     }
 
     /*
@@ -110,10 +110,10 @@ public class KbldtExtBudgetLog extends UkJpaEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // not set
-        if (!(object instanceof KbldtExtBudgetLog)) {
+        if (!(object instanceof KscdtExtBudgetLog)) {
             return false;
         }
-        KbldtExtBudgetLog other = (KbldtExtBudgetLog) object;
+        KscdtExtBudgetLog other = (KscdtExtBudgetLog) object;
         if ((this.exeId == null && other.exeId != null)
                 || (this.exeId != null && !this.exeId.equals(other.exeId))) {
             return false;

@@ -8,7 +8,7 @@ import java.util.Date;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTimeSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLog;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
 
 /**
  * The Class JpaExecutionTimeSetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExt
 public class JpaExecutionTimeSetMemento implements ExecutionTimeSetMemento {
     
     /** The entity parent. */
-    private KbldtExtBudgetLog entityParent;
+    private KscdtExtBudgetLog entityParent;
     
     /**
      * Instantiates a new jpa execution time set memento.
      *
      * @param entityParent the entity parent
      */
-    public JpaExecutionTimeSetMemento(KbldtExtBudgetLog entityParent) {
+    public JpaExecutionTimeSetMemento(KscdtExtBudgetLog entityParent) {
         this.entityParent = entityParent;
     }
     
