@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KbddtExtBudgetDaily_.
  */
-@StaticMetamodel(KbddtExtBudgetDaily.class)
-public class KbddtExtBudgetDaily_ {
+@StaticMetamodel(KscdtExtBudgetDaily.class)
+public class KscdtExtBudgetDaily_ {
     
     /** The kbddt ext budget daily PK. */
-    public static volatile SingularAttribute<KbddtExtBudgetDaily, KbddtExtBudgetDailyPK> kbddtExtBudgetDailyPK;
+    public static volatile SingularAttribute<KscdtExtBudgetDaily, KscdtExtBudgetDailyPK> kbddtExtBudgetDailyPK;
 }

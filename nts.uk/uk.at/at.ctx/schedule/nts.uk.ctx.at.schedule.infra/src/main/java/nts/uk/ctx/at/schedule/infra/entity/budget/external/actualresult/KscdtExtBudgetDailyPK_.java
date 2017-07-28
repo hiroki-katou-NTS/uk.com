@@ -8,11 +8,14 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KbedtExtBudgetError_.
+ * The Class KbddtExtBudgetDailyPK_.
  */
-@StaticMetamodel(KbedtExtBudgetError.class)
-public class KbedtExtBudgetError_ {
+@StaticMetamodel(KscdtExtBudgetDailyPK.class)
+public class KscdtExtBudgetDailyPK_ {
     
     /** The cid. */
-    public static volatile SingularAttribute<KbedtExtBudgetError, String> exeId;
+    public static volatile SingularAttribute<KscdtExtBudgetDailyPK, String> cid;
+    
+    /** The wkpid. */
+    public static volatile SingularAttribute<KscdtExtBudgetDailyPK, String> wkpid;
 }

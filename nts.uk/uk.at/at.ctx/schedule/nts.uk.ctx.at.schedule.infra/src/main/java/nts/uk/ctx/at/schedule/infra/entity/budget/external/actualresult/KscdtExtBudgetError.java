@@ -22,8 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KBEDT_EXT_BUDGET_ERROR")
-public class KbedtExtBudgetError extends UkJpaEntity implements Serializable {
+@Table(name = "KSCDT_EXT_BUDGET_ERROR")
+public class KscdtExtBudgetError extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -67,7 +67,7 @@ public class KbedtExtBudgetError extends UkJpaEntity implements Serializable {
     /**
      * Instantiates a new kbedt ext budget error.
      */
-    public KbedtExtBudgetError() {
+    public KscdtExtBudgetError() {
     }
 
     /**
@@ -76,7 +76,7 @@ public class KbedtExtBudgetError extends UkJpaEntity implements Serializable {
      * @param exeId
      *            the exe id
      */
-    public KbedtExtBudgetError(String exeId) {
+    public KscdtExtBudgetError(String exeId) {
         this.exeId = exeId;
     }
 
@@ -100,10 +100,10 @@ public class KbedtExtBudgetError extends UkJpaEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // not set
-        if (!(object instanceof KbedtExtBudgetError)) {
+        if (!(object instanceof KscdtExtBudgetError)) {
             return false;
         }
-        KbedtExtBudgetError other = (KbedtExtBudgetError) object;
+        KscdtExtBudgetError other = (KscdtExtBudgetError) object;
         if ((this.exeId == null && other.exeId != null) || (this.exeId != null && !this.exeId.equals(other.exeId))) {
             return false;
         }

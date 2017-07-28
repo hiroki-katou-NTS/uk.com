@@ -25,15 +25,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KBTDT_EXT_BUDGET_TIME_VAL")
-public class KbtdtExtBudgetTimeVal extends UkJpaEntity implements Serializable {
+@Table(name = "KSCDT_EXT_BUDGET_TIME_VAL")
+public class KscdtExtBudgetTimeVal extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     /** The kbtdt ext budget time val PK. */
     @EmbeddedId
-    protected KbtdtExtBudgetTimeValPK kbtdtExtBudgetTimeValPK;
+    protected KscdtExtBudgetTimeValPK kbtdtExtBudgetTimeValPK;
 
     /** The period time no. */
     @Basic(optional = false)
@@ -57,12 +57,12 @@ public class KbtdtExtBudgetTimeVal extends UkJpaEntity implements Serializable {
                 updatable = false),
             @JoinColumn(name = "WKPID", referencedColumnName = "KBTDT_EXT_BUDGET_TIME.WKPID", insertable = false,
                 updatable = false) })
-    private KbtdtExtBudgetTime kbtdtExtBudgetTime;
+    private KscdtExtBudgetTime kbtdtExtBudgetTime;
 
     /**
      * Instantiates a new kbtdt ext budget time val.
      */
-    public KbtdtExtBudgetTimeVal() {
+    public KscdtExtBudgetTimeVal() {
     }
 
     /**
@@ -71,7 +71,7 @@ public class KbtdtExtBudgetTimeVal extends UkJpaEntity implements Serializable {
      * @param kbtdtExtBudgetTimeValPK
      *            the kbtdt ext budget time val PK
      */
-    public KbtdtExtBudgetTimeVal(KbtdtExtBudgetTimeValPK kbtdtExtBudgetTimeValPK) {
+    public KscdtExtBudgetTimeVal(KscdtExtBudgetTimeValPK kbtdtExtBudgetTimeValPK) {
         this.kbtdtExtBudgetTimeValPK = kbtdtExtBudgetTimeValPK;
     }
 
@@ -83,8 +83,8 @@ public class KbtdtExtBudgetTimeVal extends UkJpaEntity implements Serializable {
      * @param wkpid
      *            the wkpid
      */
-    public KbtdtExtBudgetTimeVal(String cid, String wkpid) {
-        this.kbtdtExtBudgetTimeValPK = new KbtdtExtBudgetTimeValPK(cid, wkpid);
+    public KscdtExtBudgetTimeVal(String cid, String wkpid) {
+        this.kbtdtExtBudgetTimeValPK = new KscdtExtBudgetTimeValPK(cid, wkpid);
     }
 
     /*
@@ -106,10 +106,10 @@ public class KbtdtExtBudgetTimeVal extends UkJpaEntity implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KbtdtExtBudgetTimeVal)) {
+        if (!(object instanceof KscdtExtBudgetTimeVal)) {
             return false;
         }
-        KbtdtExtBudgetTimeVal other = (KbtdtExtBudgetTimeVal) object;
+        KscdtExtBudgetTimeVal other = (KscdtExtBudgetTimeVal) object;
         if ((this.kbtdtExtBudgetTimeValPK == null && other.kbtdtExtBudgetTimeValPK != null)
                 || (this.kbtdtExtBudgetTimeValPK != null
                         && !this.kbtdtExtBudgetTimeValPK.equals(other.kbtdtExtBudgetTimeValPK))) {

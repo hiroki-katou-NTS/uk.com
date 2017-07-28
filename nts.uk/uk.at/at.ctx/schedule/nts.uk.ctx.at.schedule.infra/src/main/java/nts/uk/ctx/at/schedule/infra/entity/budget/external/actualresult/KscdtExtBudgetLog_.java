@@ -12,25 +12,25 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class KbldtExtBudgetLog_.
  */
-@StaticMetamodel(KbldtExtBudgetLog.class)
-public class KbldtExtBudgetLog_ {
+@StaticMetamodel(KscdtExtBudgetLog.class)
+public class KscdtExtBudgetLog_ {
     
     /** The cid. */
-    public static volatile SingularAttribute<KbldtExtBudgetLog, String> cid;
+    public static volatile SingularAttribute<KscdtExtBudgetLog, String> cid;
     
     /** The exe id. */
-    public static volatile SingularAttribute<KbldtExtBudgetLog, String> exeId;
+    public static volatile SingularAttribute<KscdtExtBudgetLog, String> exeId;
     
     /** The str D. */
-    public static volatile SingularAttribute<KbldtExtBudgetLog, GeneralDate> strD;
+    public static volatile SingularAttribute<KscdtExtBudgetLog, GeneralDate> strD;
     
     /** The end D. */
-    public static volatile SingularAttribute<KbldtExtBudgetLog, GeneralDate> endD;
+    public static volatile SingularAttribute<KscdtExtBudgetLog, GeneralDate> endD;
     
     /** The sid. */
-    public static volatile SingularAttribute<KbldtExtBudgetLog, String> sid;
+    public static volatile SingularAttribute<KscdtExtBudgetLog, String> sid;
     
     /** The completion atr. */
-    public static volatile SingularAttribute<KbldtExtBudgetLog, Integer> completionAtr;
+    public static volatile SingularAttribute<KscdtExtBudgetLog, Integer> completionAtr;
     
 }

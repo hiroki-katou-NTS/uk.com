@@ -28,15 +28,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KBTDT_EXT_BUDGET_TIME")
-public class KbtdtExtBudgetTime extends UkJpaEntity implements Serializable {
+@Table(name = "KSCDT_EXT_BUDGET_TIME")
+public class KscdtExtBudgetTime extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     /** The kbtdt ext budget time PK. */
     @EmbeddedId
-    protected KbtdtExtBudgetTimePK kbtdtExtBudgetTimePK;
+    protected KscdtExtBudgetTimePK kbtdtExtBudgetTimePK;
 
     /** The ext budget cd. */
     @Basic(optional = false)
@@ -51,12 +51,12 @@ public class KbtdtExtBudgetTime extends UkJpaEntity implements Serializable {
     
     /** The list value. */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kbtdtExtBudgetTime", orphanRemoval = true)
-    private List<KbtdtExtBudgetTimeVal> listValue;
+    private List<KscdtExtBudgetTimeVal> listValue;
 
     /**
      * Instantiates a new kbtdt ext budget time.
      */
-    public KbtdtExtBudgetTime() {
+    public KscdtExtBudgetTime() {
     }
 
     /**
@@ -64,7 +64,7 @@ public class KbtdtExtBudgetTime extends UkJpaEntity implements Serializable {
      *
      * @param kbtdtExtBudgetTimePK the kbtdt ext budget time PK
      */
-    public KbtdtExtBudgetTime(KbtdtExtBudgetTimePK kbtdtExtBudgetTimePK) {
+    public KscdtExtBudgetTime(KscdtExtBudgetTimePK kbtdtExtBudgetTimePK) {
         this.kbtdtExtBudgetTimePK = kbtdtExtBudgetTimePK;
     }
 
@@ -74,8 +74,8 @@ public class KbtdtExtBudgetTime extends UkJpaEntity implements Serializable {
      * @param cid the cid
      * @param wkpid the wkpid
      */
-    public KbtdtExtBudgetTime(String cid, String wkpid) {
-        this.kbtdtExtBudgetTimePK = new KbtdtExtBudgetTimePK(cid, wkpid);
+    public KscdtExtBudgetTime(String cid, String wkpid) {
+        this.kbtdtExtBudgetTimePK = new KscdtExtBudgetTimePK(cid, wkpid);
     }
 
     /*
@@ -97,10 +97,10 @@ public class KbtdtExtBudgetTime extends UkJpaEntity implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KbtdtExtBudgetTime)) {
+        if (!(object instanceof KscdtExtBudgetTime)) {
             return false;
         }
-        KbtdtExtBudgetTime other = (KbtdtExtBudgetTime) object;
+        KscdtExtBudgetTime other = (KscdtExtBudgetTime) object;
         if ((this.kbtdtExtBudgetTimePK == null && other.kbtdtExtBudgetTimePK != null)
                 || (this.kbtdtExtBudgetTimePK != null
                         && !this.kbtdtExtBudgetTimePK.equals(other.kbtdtExtBudgetTimePK))) {

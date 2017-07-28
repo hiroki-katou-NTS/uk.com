@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgTimeZoneValSetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbtdtExtBudgetTimeVal;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTimeVal;
 
 /**
  * The Class JpaExtBudgTimeZoneValSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbtdtExt
 public class JpaExtBudgTimeZoneValSetMemento<T> implements ExtBudgTimeZoneValSetMemento<T> {
 
     /** The entity. */
-    private KbtdtExtBudgetTimeVal entity;
+    private KscdtExtBudgetTimeVal entity;
 
     /**
      * Instantiates a new jpa ext budg time zone val set memento.
@@ -25,7 +25,7 @@ public class JpaExtBudgTimeZoneValSetMemento<T> implements ExtBudgTimeZoneValSet
      * @param entity
      *            the entity
      */
-    public JpaExtBudgTimeZoneValSetMemento(KbtdtExtBudgetTimeVal entity) {
+    public JpaExtBudgTimeZoneValSetMemento(KscdtExtBudgetTimeVal entity) {
         this.entity = entity;
     }
 
