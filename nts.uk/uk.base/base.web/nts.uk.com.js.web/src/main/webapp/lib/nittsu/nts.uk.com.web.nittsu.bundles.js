@@ -4230,7 +4230,7 @@ var nts;
                             container.removeAttr("id");
                         }
                         var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
-                        container.removeAttr("tabindex");
+                        container.attr("tabindex", "-1");
                         var containerClass = container.attr('class');
                         container.removeClass(containerClass);
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
@@ -4242,12 +4242,12 @@ var nts;
                         var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
                         var $prevButton, $nextButton;
                         if (jumpButtonsDisplay) {
-                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
-                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
+                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px");
+                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px");
                             $input.before($prevButton).after($nextButton);
                         }
                         if (data.dateFormat === "YYYY") {
-                            var $yearType = $("<label/>").attr("for", idString).css({ "position": "absolute",
+                            var $yearType = $("<label/>").css({ "position": "absolute",
                                 "line-height": "30px",
                                 "right": "42px" });
                             var labelText = fiscalYear ? "年度" : "年";
@@ -4266,10 +4266,9 @@ var nts;
                             startDate: startDate,
                             endDate: endDate,
                             autoHide: autoHide,
-                        });
-                        DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
+                        }).data("dateNormalizer", DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
                             .fiscalMonthsMode(data.fiscalMonthsMode)
-                            .setDefaultCss(data.defaultClass || "");
+                            .setDefaultCss(data.defaultClass || ""));
                         name = nts.uk.resource.getControlName(name);
                         var validator = new ui.validation.TimeValidator(name, constraintName, { required: required,
                             outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType });
@@ -4287,7 +4286,7 @@ var nts;
                                 value(result.parsedValue);
                             }
                             else {
-                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                $input.ntsError('set', result.errorMessage);
                                 value(newText);
                             }
                         });
@@ -4295,7 +4294,7 @@ var nts;
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                $input.ntsError('set', result.errorMessage);
                             }
                         });
                         $input.on('validate', (function (e) {
@@ -4303,7 +4302,7 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                $input.ntsError('set', result.errorMessage);
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
@@ -4323,6 +4322,12 @@ var nts;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
                         var container = $(element);
+                        var dateNormalizer = container.find("input").data("dateNormalizer");
+                        if (dateNormalizer) {
+                            if (data.cssRanger) {
+                                dateNormalizer.setCssRanger(ko.unwrap(data.cssRanger));
+                            }
+                        }
                         var init = container.data("init");
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
