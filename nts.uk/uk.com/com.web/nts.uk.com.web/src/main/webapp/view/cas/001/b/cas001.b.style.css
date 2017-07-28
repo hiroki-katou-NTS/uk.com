@@ -40,7 +40,7 @@ button.search-btn,button.clear-btn{
 	margin-top:10px;
 	width: 30px !important;
 }
-#roles{
+#grid{
 	width: 450px;	
 }
 #roles_container{
@@ -65,4 +65,29 @@ button.search-btn,button.clear-btn{
 }
 #delete{
 	margin-top: 15px;
+}
+.selfAuth{
+	
+}
+.otherAuth{
+	
+}
+.ui-widget-header {
+	border: none;
+	background: none;
+}
+
+.ui-iggrid .ui-iggrid-toolbar .ui-iggrid-results {
+	margin-right: 85px;
+	padding-right: 0px;
+}
+
+.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header,
+	.ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active,
+	.ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus,
+	.ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header,
+	.ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active,
+	.ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus
+	{
+	border: 1px solid rgba(25, 24, 24, 0.26);
 }
