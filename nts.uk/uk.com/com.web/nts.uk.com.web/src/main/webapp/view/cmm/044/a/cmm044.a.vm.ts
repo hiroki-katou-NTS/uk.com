@@ -131,12 +131,12 @@ module cmm044.a.viewmodel {
                         self.isEnableDelete(true);
                         self.isEnableAdd(true);
                         var currentName1 = _.find(self.empItems(), ['personId', self.currentItem().agentSid1()]);
-                        if (currentName2) {
+                        if (currentName1) {
                             self.employeeNameScreen1(currentName1.name);
                         }
                         var currentName2 = _.find(self.empItems(), ['personId', self.currentItem().agentSid2()]);
                         if (currentName2) {
-                            self.employeeNameScreen1(currentName2.name);
+                            self.employeeNameScreen2(currentName2.name);
                         }
                         var currentName3 = _.find(self.empItems(), ['personId', self.currentItem().agentSid3()]);
                         if (currentName3) {
@@ -401,8 +401,8 @@ module cmm044.a.viewmodel {
         openDDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.setShared('cmm044_DataPerson', self.empItems());
-            nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.setShared('CMM044_TABS', self.tabs());
+            nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml', { title: '代行リスト', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
                 nts.uk.ui.block.clear();
             });
 

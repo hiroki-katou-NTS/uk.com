@@ -129,11 +129,11 @@ module ccg013.a.viewmodel {
 
             service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                self.isCreated(false);
                 self.getWebMenu().done(() => {
                     self.currentWebMenuCode(webMenu.webMenuCode());
                 });
-            }).fail(function(error) {
-                self.isCreated(false);
+            }).fail(function(error) {             
                 self.isDefaultMenu(true);
                 nts.uk.ui.dialog.alertError(error.message);
             }).always(function() {
@@ -533,6 +533,7 @@ module ccg013.a.viewmodel {
                 let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");
                 self.getWebMenu().done(() => {
                     if (newWebMenuCode != undefined) {
+                        self.currentWebMenuCode("");
                         self.currentWebMenuCode(newWebMenuCode);
                     };
                 });

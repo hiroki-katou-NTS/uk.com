@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgTimeZoneGetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneVal;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbtdtExtBudgetTime;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTime;
 
 /**
  * The Class JpaExtBudgTimeZoneGetMemento.
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbtdtExt
 public class JpaExtBudgTimeZoneGetMemento<T> implements ExtBudgTimeZoneGetMemento<T> {
 
     /** The entity. */
-    private KbtdtExtBudgetTime entity;
+    private KscdtExtBudgetTime entity;
 
     /**
      * Instantiates a new jpa ext budg time zone get memento.
@@ -30,7 +30,7 @@ public class JpaExtBudgTimeZoneGetMemento<T> implements ExtBudgTimeZoneGetMement
      * @param entity
      *            the entity
      */
-    public JpaExtBudgTimeZoneGetMemento(KbtdtExtBudgetTime entity) {
+    public JpaExtBudgTimeZoneGetMemento(KscdtExtBudgetTime entity) {
         this.entity = entity;
     }
 

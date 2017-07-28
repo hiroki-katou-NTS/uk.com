@@ -27,6 +27,7 @@ public class KcbmtCompanyWorkSetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
+	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CID")
 	private String cid;
@@ -34,8 +35,10 @@ public class KcbmtCompanyWorkSetPK implements Serializable {
 	/** The workday division. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "WORKDAY_DIVISION")
+	@Column(name = "WORK_DAY_ATR")
 	private Integer workdayDivision;
+	
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -72,6 +75,19 @@ public class KcbmtCompanyWorkSetPK implements Serializable {
 		} else if (!workdayDivision.equals(other.workdayDivision))
 			return false;
 		return true;
+	}
+
+	public KcbmtCompanyWorkSetPK(String cid, Integer workdayDivision) {
+		super();
+		this.cid = cid;
+		this.workdayDivision = workdayDivision;
+	}
+	
+	/**
+	 * Instantiates a new kcbmt company work set PK.
+	 */
+	public KcbmtCompanyWorkSetPK() {
+		super();
 	}
 	
 	

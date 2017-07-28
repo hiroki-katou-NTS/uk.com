@@ -24,7 +24,7 @@
 		</ui:define>
 		<ui:define name="sidebar" id="left-sidebar" tabindex="1">
 			<ul class="navigator">
-				<li><a href="#companyWide-tab" role="tab-navigator" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#companyWide-tab" role="tab-navigator" tabindex="-1" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
 				<li><a href="#workplace-tab" role="tab-navigator" data-bind="click: switchToWorkplaceTab">#{i18n.getText('Com_Workplace')}</a></li>
 				<li><a href="#classification-tab" role="tab-navigator" data-bind="click: switchToClassTab">#{i18n.getText('Com_Class')}</a></li>
 			</ul>
@@ -34,8 +34,8 @@
 			<div id="companyWide-tab" role="tabpanel">
 				<div id="functions-area" class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-					<button class="proceed" data-bind="click: registerWholeCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
-					<button class="danger" data-bind="click: registerWholeCompany, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
+					<button class="proceed" data-bind="click: registerByCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+					<!-- <button class="danger" data-bind="click: registerByCompany,, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button> -->
 				</div>
 
 
@@ -108,9 +108,9 @@
 				<div id="functions-area" class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
 					<button class="proceed"
-						data-bind="click: registerWholeCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+						data-bind="click: registerByCompany,, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
 					<button class="danger"
-						data-bind="click: registerWholeCompany, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
+						data-bind="click: registerByCompany,, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
 				</div>
 
 				<div id="workplace-content">
@@ -206,9 +206,9 @@
 				<div id="functions-area" class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Class')}</span>
 					<button class="proceed"
-						data-bind="click: registerWholeCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+						data-bind="click: registerByCompany,, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
 					<button class="danger"
-						data-bind="click: registerWholeCompany, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
+						data-bind="click: registerByCompany,, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
 				</div>
 
 				<div id="classification-content">

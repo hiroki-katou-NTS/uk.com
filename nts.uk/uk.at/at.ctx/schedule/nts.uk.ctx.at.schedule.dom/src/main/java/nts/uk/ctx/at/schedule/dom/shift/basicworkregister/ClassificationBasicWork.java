@@ -31,9 +31,9 @@ public class ClassificationBasicWork extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public ClassificationBasicWork(ClassifiBasicWorkGetMemento memento) {
+		this.basicWorkSetting = memento.getBasicWorkSetting();
 		this.companyId = memento.getCompanyId();
 		this.classificationCode = memento.getClassificationCode();
-		this.basicWorkSetting = memento.getBasicWorkSetting();
 	}
 
 	/**
