@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
-import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenFinder;
+import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 
 /**
@@ -21,11 +21,11 @@ import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 public class Ksu001Webservice {
 	
 	@Inject
-	private BasicScheduleScreenFinder bScheduleScreenFinder;
+	private BasicScheduleScreenProcessor bScheduleScreenProces;
 	
 	@POST
 	@Path("getData")
 	public List<BasicScheduleScreenDto> getData(BasicScheduleScreenParams params) {
-		return this.bScheduleScreenFinder.getByListSidAndDate(params);
+		return this.bScheduleScreenProces.getByListSidAndDate(params);
 	}
 }

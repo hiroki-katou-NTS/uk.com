@@ -42,7 +42,7 @@ module ksm002.d{
                  //date value
                 self.dateValue = ko.observable({startDate: self.param.startDate.toString(), endDate: self.param.endDate.toString()});
                 self.startMonth = ko.observable(self.dateValue().startDate);
-                self.endMonth = ko.observable(self.dateValue().startDate);
+                self.endMonth = ko.observable(self.dateValue().endDate);
                 self.enable.subscribe(function(code){
                     if(code==true){
                         $('#day_0').ntsError('clear');
@@ -54,8 +54,6 @@ module ksm002.d{
                 nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred();
-                self.endMonth(self.param.endDate);
-                self.startMonth(self.param.startDate);
                 // label to display work place D1_2
                 if(self.param.util == 1){
                     self.workPlace(nts.uk.resource.getText('Com_Company'))    
@@ -154,6 +152,8 @@ module ksm002.d{
                 }else{
                     let id = self.param.workplaceObj.id;
                 }
+                self.startMonth(Number(moment(self.dateValue().startDate).format('YYYYMMDD')));
+                self.endMonth(Number(moment(self.dateValue().endDate).format('YYYYMMDD')));
                 let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), id);
                 if(update ==1){
                     service.updateSpecificDateSet(object).done(function(data) {

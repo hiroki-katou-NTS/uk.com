@@ -131,12 +131,12 @@ module cmm044.a.viewmodel {
                         self.isEnableDelete(true);
                         self.isEnableAdd(true);
                         var currentName1 = _.find(self.empItems(), ['personId', self.currentItem().agentSid1()]);
-                        if (currentName2) {
+                        if (currentName1) {
                             self.employeeNameScreen1(currentName1.name);
                         }
                         var currentName2 = _.find(self.empItems(), ['personId', self.currentItem().agentSid2()]);
                         if (currentName2) {
-                            self.employeeNameScreen1(currentName2.name);
+                            self.employeeNameScreen2(currentName2.name);
                         }
                         var currentName3 = _.find(self.empItems(), ['personId', self.currentItem().agentSid3()]);
                         if (currentName3) {
