@@ -240,7 +240,10 @@ module nts.uk.at.view.kmk004.a {
              */
             public gotoE(): void {
                 let self = this;
-                nts.uk.ui.windows.sub.modal("/view/kmk/004/e/index.xhtml").onClosed(() => self.loadUsageUnitSetting());
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/e/index.xhtml").onClosed(() => {
+                    self.loadUsageUnitSetting();
+                    $('#companyYearPicker').focus();
+                });
             }
 
             /**

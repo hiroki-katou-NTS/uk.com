@@ -220,7 +220,8 @@ module ksm002.b.viewmodel {
                 let a = [];
                 if(!nts.uk.util.isNullOrEmpty(data)) {
                     data.forEach(item => {
-                        a.push(new CalendarItem(item.specificDate, self.convertNumberToName(item.specificDateItemNo)))                    
+                        let sortItemNumber = _.sortBy(item.specificDateItemNo, o => o);
+                        a.push(new CalendarItem(item.specificDate, self.convertNumberToName(sortItemNumber)))                    
                     });   
                     self.isUpdate(true);
                 } else {
@@ -346,14 +347,16 @@ module ksm002.b.viewmodel {
          */
         setListText(date, data){
             var self = this;
-            let dateData = self.calendarPanel.optionDates();
-            let existItem = _.find(dateData, item => item.start == date);   
-            if(existItem!=null) {
-                existItem.changeListText(data);   
-            } else {
-                dateData.push(new CalendarItem(date, data));    
+            if(!nts.uk.util.isNullOrEmpty(data)) {
+                let dateData = self.calendarPanel.optionDates();
+                let existItem = _.find(dateData, item => item.start == date);   
+                if(existItem!=null) {
+                    existItem.changeListText(data);   
+                } else {
+                    dateData.push(new CalendarItem(date, data));    
+                }
+                self.calendarPanel.optionDates.valueHasMutated();
             }
-            self.calendarPanel.optionDates.valueHasMutated();
         }
         
         /**

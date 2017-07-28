@@ -46,7 +46,22 @@ module nts.uk.at.view.kmk012.d {
                     self.updateDayMonthChangeModel();
                 });
             }
-            
+            /**
+             * start page
+             */
+            public startPage(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                service.getDayMonth(self.convertDayIn()).done(function(resDay) {
+                    service.getDayMonthChange(self.convertDayChangeIn()).done(function(resChangeDay){
+                        self.dayMonthModel.updateData(resDay);
+                        self.dayMonthChangeModel.updateData(resChangeDay);
+                        dfd.resolve(self);
+                    });
+                });
+                return dfd.promise();
+            }
+        
             /**
              * update day month to call service => update view model
              */
@@ -205,7 +220,7 @@ module nts.uk.at.view.kmk012.d {
                 this.closureName = ko.observable('');
                 this.closureDate = ko.observable(0);
                 this.closureDateChange = ko.observable(0);
-                this.month = ko.observable(0);
+                this.month = ko.observable(201705);
                 this.endDate = ko.observable(0);
                 this.startDate = ko.observable(0);
             }

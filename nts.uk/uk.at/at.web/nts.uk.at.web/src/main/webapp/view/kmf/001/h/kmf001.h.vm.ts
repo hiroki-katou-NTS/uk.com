@@ -231,6 +231,7 @@ module nts.uk.pr.view.kmf001.h {
                 this.service.saveComSetting(self.settingModel().toSubstVacationSettingDto()).done(function() {
                     // Msg_15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.loadComSettingDetails();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
                     });

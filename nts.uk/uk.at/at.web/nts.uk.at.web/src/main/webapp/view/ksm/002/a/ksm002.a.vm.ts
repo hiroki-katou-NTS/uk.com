@@ -155,7 +155,7 @@ module ksm002.a.viewmodel {
                         arrName = [];
                         arrId = [];
                         //Loop in each Day
-                        _.forEach(lstComSpecDate, function(comItem) {
+                        _.forEach(_.orderBy(lstComSpecDate,'specificDateItemNo','asc'), function(comItem) {
                             if (comItem.specificDate == processDay) {
                                 arrName.push(comItem.specificDateItemName);
                                 arrId.push(comItem.specificDateItemNo);
@@ -393,10 +393,10 @@ module ksm002.a.viewmodel {
         openKsm002CDialog() {
             var self = this;
             nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml',{ title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function(): any {
-                self.start();
-                nts.uk.ui._viewModel.bind(content).done(function(){
+                self.start().done(function(){
                     $(".ntsCheckBox").attr("tabindex",5);
-                })      
+                    $(".chkBox ").find("label").eq(0).focus();
+                });
             })
         }
 
@@ -476,7 +476,7 @@ module ksm002.a.viewmodel {
             this.backgroundColor = 'white';
             this.textColor = '#31859C';
             self.listText = listText;
-            self.listId = listId;
+            self.listId = _.cloneDeep(listId);
         }
     }
 

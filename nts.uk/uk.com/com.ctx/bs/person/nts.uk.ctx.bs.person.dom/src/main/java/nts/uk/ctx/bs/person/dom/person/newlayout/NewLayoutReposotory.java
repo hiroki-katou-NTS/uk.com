@@ -16,8 +16,8 @@ public interface NewLayoutReposotory {
 	
 	void update(NewLayout newLayout);
 	
-	void remove(LayoutID layoutID);
+	void remove(String layoutID);
 	
-	Optional<NewLayout> findSingleLayout(LayoutID layoutID);
+	Optional<NewLayout> findSingleLayout(String layoutID);
 
 }

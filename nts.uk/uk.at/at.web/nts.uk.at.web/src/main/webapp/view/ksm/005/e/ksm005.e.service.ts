@@ -53,14 +53,22 @@ module nts.uk.at.view.ksm005.e {
          * save to client service MonthlyPatternSettingBatch
          */
         export function saveMonthlyPatternSettingBatch(key: model.KeyMonthlyPatternSettingBatch,data: model.MonthlyPatternSettingBatch): void {
-            nts.uk.characteristics.save(key, data);
+            nts.uk.characteristics.save(service.toKey(key), data);
         }
 
         /**
          * find data client service MonthlyPatternSettingBatch
          */
         export function findMonthlyPatternSettingBatch(key: model.KeyMonthlyPatternSettingBatch): JQueryPromise<model.MonthlyPatternSettingBatch> {
-            return nts.uk.characteristics.restore(key);
+            console.log(service.toKey(key));
+            return nts.uk.characteristics.restore(service.toKey(key));
+        }
+        
+        /**
+         * convert object key to string
+         */
+        export function toKey(key: model.KeyMonthlyPatternSettingBatch): string {
+            return key.companyId + '_' + key.employeeId + '_' + key.businessDayClassification;
         }
         
         export module model {

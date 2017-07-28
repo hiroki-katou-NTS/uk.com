@@ -95,7 +95,7 @@ module nts.uk.at.view.kcp006.a {
                 eventLimitText: function(countMore) {
                     return '。。。';
                 },
-                eventOrder: '',
+                eventOrder: 'id',
                 defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
                 height: 500,
                 showNonCurrentDates: false,
@@ -177,6 +177,7 @@ module nts.uk.at.view.kcp006.a {
                     let lstEvent = [];
                     for (let i = 0; i < option.listText.length; i++) {
                         lstEvent.push({
+                            id: i,
                             title: option.listText[i],
                             start: option.start,
                             textColor: option.textColor,

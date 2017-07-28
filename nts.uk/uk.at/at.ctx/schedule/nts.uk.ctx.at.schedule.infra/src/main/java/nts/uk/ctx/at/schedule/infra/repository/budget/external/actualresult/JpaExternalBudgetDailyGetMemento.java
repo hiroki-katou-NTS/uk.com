@@ -9,7 +9,7 @@ import java.util.Date;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyGetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbddtExtBudgetDaily;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDaily;
 
 /**
  * The Class JpaExternalBudgetDailyGetMemento.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbddtExt
 public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyGetMemento<T> {
 
     /** The entity. */
-    private KbddtExtBudgetDaily entity;
+    private KscdtExtBudgetDaily entity;
 
     /**
      * Instantiates a new jpa external budget daily get memento.
@@ -28,7 +28,7 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
      * @param entity
      *            the entity
      */
-    public JpaExternalBudgetDailyGetMemento(KbddtExtBudgetDaily entity) {
+    public JpaExternalBudgetDailyGetMemento(KscdtExtBudgetDaily entity) {
         this.entity = entity;
     }
 
