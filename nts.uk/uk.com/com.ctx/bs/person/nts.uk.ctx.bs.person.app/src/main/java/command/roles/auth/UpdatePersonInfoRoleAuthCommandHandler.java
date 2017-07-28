@@ -33,7 +33,7 @@ public class UpdatePersonInfoRoleAuthCommandHandler extends CommandHandler<Updat
 					p_RoleDestination.getAllowDocUpload().value, p_RoleDestination.getAllowMapBrowse().value,
 					p_RoleDestination.getAllowDocUpload().value, p_RoleDestination.getAllowDocRef().value,
 					p_RoleDestination.getAllowAvatarUpload().value, p_RoleDestination.getAllowAvatarRef().value);
-			this.personRoleAuthRepository.update(insert);
+			this.personRoleAuthRepository.add(insert);
 		});
 	}
 
