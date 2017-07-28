@@ -15,31 +15,6 @@ module nts.uk.com.view.cps005.a {
                 let self = this,
                     dataModel = new DataModel(null);
                 self.currentData = ko.observable(dataModel);
-
-                dataModel.perInfoCategorySelectCode.subscribe(newCategoryCode => {
-                    let cateType;
-                    if (textUK.isNullOrEmpty(newCategoryCode)) return;
-                    self.currentData().currentCategorySelected(_.find(self.currentData().perInfoCategoryList(), item => { return item.categoryCode == newCategoryCode }));
-                    self.currentData().fixedIsSelected(false);
-                    if (self.currentData().currentCategorySelected().fixedAtr == true) {
-                        self.currentData().fixedIsSelected(true);
-                    }
-                    cateType = self.currentData().currentCategorySelected().categoryType;
-                    self.currentData().historyTypesDisplay(true);
-                    if(cateType == 1 || cateType == 2){
-                         self.currentData().historyTypesDisplay(false);
-                    }
-                });
-
-                dataModel.historyClassificationSelected.subscribe(newHisClassification => {
-                    if (textUK.isNullOrEmpty(newHisClassification)) return;
-                    if (newHisClassification == 1) {
-                        self.currentData().historyTypesDisplay(true);
-                        return;
-                    }
-                    self.currentData().historyTypesDisplay(false);
-                });
-
             }
 
             startPage(): JQueryPromise<any> {
@@ -66,8 +41,8 @@ module nts.uk.com.view.cps005.a {
     export class DataModel {
         perInfoCategoryList: KnockoutObservableArray<PerInfoCategoryModel> = ko.observableArray([
             new PerInfoCategoryModel({ categoryCode: "C01", categoryName: "A1", fixedAtr: 0, categoryType: 1 }),
-            new PerInfoCategoryModel({ categoryCode: "C02", categoryName: "A2", fixedAtr: 1, categoryType: 2, categoryTypeName:nts.uk.resource.getText("CPS005_56") }),
-            new PerInfoCategoryModel({ categoryCode: "C03", categoryName: "A3", fixedAtr: 0, categoryType: 3 }),
+            new PerInfoCategoryModel({ categoryCode: "C02", categoryName: "A2", fixedAtr: 1, categoryType: 2, categoryTypeName: nts.uk.resource.getText("CPS005_56") }),
+            new PerInfoCategoryModel({ categoryCode: "C03", categoryName: "A3", fixedAtr: 0, categoryType: 5 }),
             new PerInfoCategoryModel({ categoryCode: "C04", categoryName: "A4", fixedAtr: 1, categoryType: 4, categoryTypeName: "非連続" })
         ]);
         perInfoCategorySelectCode: KnockoutObservable<string> = ko.observable("C01");
@@ -77,30 +52,33 @@ module nts.uk.com.view.cps005.a {
             { code: 1, name: nts.uk.resource.getText("CPS005_53") },
             { code: 2, name: nts.uk.resource.getText("CPS005_54") },
         ];
-        historyClassificationSelected: KnockoutObservable<number> = ko.observable(1);
         //<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
         historyTypes: Array<any> = [
             { value: 1, localizedName: "連続" },
             { value: 2, localizedName: "非連続" },
             { value: 3, localizedName: "重複" },
         ];
-        historyTypesSelected: KnockoutObservable<number> = ko.observable(1);
-
         //mapping CategoryType enum value = 1 or 2. Theo thiết kế không lấy từ enum CategoryType
         singleMultipleType: Array<any> = [
             { value: 1, name: nts.uk.resource.getText("CPS005_55") },
             { value: 2, name: nts.uk.resource.getText("CPS005_56") },
         ];
-        singleMultipleTypeSelected: KnockoutObservable<number> = ko.observable(1);
-        //all visiable
-        historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(true);
-        fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
-        //all enable
 
         constructor(data: IData) {
             let self = this;
             if (!data) return;
             self.perInfoCategoryList = ko.observableArray(_.map(data.categoryList, item => { return new PerInfoCategoryModel(item) }));
+            
+            //subscribe select category code
+            self.perInfoCategorySelectCode.subscribe(newCategoryCode => {
+                let cateType;
+                if (textUK.isNullOrEmpty(newCategoryCode)) return;
+                self.currentCategorySelected(_.find(self.perInfoCategoryList(), item => { return item.categoryCode == newCategoryCode }));
+                self.currentCategorySelected().fixedIsSelected(false);
+                if (self.currentCategorySelected().fixedAtr == true) {
+                    self.currentCategorySelected().fixedIsSelected(true);
+                }
+            });
         }
     }
 
@@ -112,8 +90,14 @@ module nts.uk.com.view.cps005.a {
         categoryNameKnockout: KnockoutObservable<string> = ko.observable("");
         fixedAtr: boolean;
         historyClassificationFixed: string = "";// tính toán app
-        categoryType: number  = 1;
+        categoryType: number = 1;
         categoryTypeName: string = "";
+        historyClassificationSelected: KnockoutObservable<number> = ko.observable(1);
+        historyTypesSelected: KnockoutObservable<number> = ko.observable(1);
+        singleMultipleTypeSelected: KnockoutObservable<number> = ko.observable(1);
+        //all visiable
+        historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(false);
+        fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
         itemNameList: KnockoutObservableArray<PerInfoItemModel> = ko.observableArray([]);
         constructor(data: IPersonInfoCategory) {
             let self = this;
@@ -128,8 +112,25 @@ module nts.uk.com.view.cps005.a {
             self.historyClassificationFixed = (data.categoryType == 1 || data.categoryType == 2) ? nts.uk.resource.getText("CPS005_54") : nts.uk.resource.getText("CPS005_53");
             self.categoryType = data.categoryType;
             self.categoryTypeName = data.categoryTypeName || "";
+            self.historyClassificationSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);
+            self.singleMultipleTypeSelected(data.categoryType || 1);
+            if (self.historyClassificationSelected() == 1) {
+                self.historyTypesSelected(data.categoryType - 2);
+                self.singleMultipleTypeSelected(1);
+                self.historyTypesDisplay(true);
+            }
+            self.fixedIsSelected(self.fixedAtr);
             //self.itemNameList(_.map(data.itemNameList, item => {return new PerInfoItemModel(item)}));
+            //subscribe select history type (1: history, 2: not history)
+            self.historyClassificationSelected.subscribe(newHisClassification => {
+                if (textUK.isNullOrEmpty(newHisClassification)) return;
+                self.historyTypesDisplay(false);
+                if (newHisClassification == 1) {
+                    self.historyTypesDisplay(true);
+                }
+            });
         }
+
     }
 
     export class PerInfoItemModel {
