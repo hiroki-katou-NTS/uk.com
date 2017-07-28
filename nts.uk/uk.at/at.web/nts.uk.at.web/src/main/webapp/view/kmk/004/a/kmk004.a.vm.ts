@@ -150,7 +150,34 @@ module nts.uk.at.view.kmk004.a {
                     });
                 return dfd.promise();
             }
+            
+            public initNextTabFeature() {
+                let self = this;
+                // Auto next tab when press tab key.
+                $("[tabindex='22']").on('keydown', function(e) {
+                    if (e.which == 9) {
+                        self.companyWTSetting.selectedTab('tab-2');
+                        self.employmentWTSetting.selectedTab('tab-2');
+                        self.workplaceWTSetting.selectedTab('tab-2');
+                    }
+                });
 
+                $("[tabindex='48']").on('keydown', function(e) {
+                    if (e.which == 9) {
+                        self.companyWTSetting.selectedTab('tab-3');
+                        self.employmentWTSetting.selectedTab('tab-3');
+                        self.workplaceWTSetting.selectedTab('tab-3');
+                    }
+                });
+                $("[tabindex='7']").on('keydown', function(e) {
+                    if (e.which == 9 && !$(e.target).parents("[tabindex='7']")[0]) {
+                        self.companyWTSetting.selectedTab('tab-1');
+                        self.employmentWTSetting.selectedTab('tab-1');
+                        self.workplaceWTSetting.selectedTab('tab-1');
+                    }
+                });
+            }
+            
             /**
              * Event on select company.
              */
@@ -201,6 +228,8 @@ module nts.uk.at.view.kmk004.a {
                     $('#employmentYearPicker').focus();
                     // Set already setting list.
                     self.setAlreadySettingEmploymentList();
+                    self.initNextTabFeature();
+                    self.employmentWTSetting.selectedTab('tab-1');
                 });
             }
 
@@ -232,6 +261,8 @@ module nts.uk.at.view.kmk004.a {
                     $('#workplaceYearPicker').focus();
                     // Set already setting list.
                     self.setAlreadySettingWorkplaceList();
+                    self.initNextTabFeature();
+                    self.workplaceWTSetting.selectedTab('tab-1');
                 });
             }
 
