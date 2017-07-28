@@ -13,7 +13,7 @@ import javax.inject.Inject;
  */
 
 @Stateless
-public class BasicScheduleScreenFinder {
+public class BasicScheduleScreenProcessor {
 	@Inject
 	private BasicScheduleScreenRepository bScheduleScreenRepo;
 
