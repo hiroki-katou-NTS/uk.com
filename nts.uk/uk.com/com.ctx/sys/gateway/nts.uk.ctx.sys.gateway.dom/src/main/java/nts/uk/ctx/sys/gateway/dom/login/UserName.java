@@ -24,6 +24,4 @@ public class UserName extends StringPrimitiveValue<UserName> {
 	public UserName(String rawValue) {
 		super(rawValue);
 	}
-
-
 }
