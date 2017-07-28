@@ -83,8 +83,8 @@
 												<td class="bg-green">
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
-												<td><input tabindex="11"
-													data-bind="ntsTimeEditor: {name: normal, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+												<td><input
+													data-bind="attr: {'tabindex': 10 + month()}, ntsTimeEditor: {name: normal, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>
@@ -129,11 +129,11 @@
 											<td class="bg-green">
 												<div data-bind="text: month()+'月度'"></div>
 											</td>
-											<td><input tabindex="25"
-												data-bind="ntsTimeEditor: {name: speName, value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+											<td><input
+												data-bind="attr: {'tabindex': 24 + month()}, ntsTimeEditor: {name: speName, value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
-											<td><input tabindex="37"
-												data-bind="ntsTimeEditor: {name: staName, value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+											<td><input
+												data-bind="attr: {'tabindex': 36 + month()}, ntsTimeEditor: {name: staName, value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</com:ko>
@@ -191,8 +191,8 @@
 												<td class="bg-green">
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
-												<td><input tabindex="52"
-													data-bind="ntsTimeEditor: {name: deformed, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+												<td><input
+													data-bind="attr: {'tabindex': 51 + month()}, ntsTimeEditor: {name: deformed, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>
