@@ -12,6 +12,7 @@
 				nts.uk.ctx.sys.portal.dom.webmenu.TitleBarName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/ccg/013/base/base.js" of="/nts.uk.com.web" />
 			<com:stylefile path="ccg013.j.style.css" />
 			<com:scriptfile path="ccg013.j.start.js" />
 			<com:scriptfile path="ccg013.j.service.js" />
@@ -25,7 +26,7 @@
 				<table class="control">
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_93')}</div></td>
-						<td colspan="2"><input tabindex="1"
+						<td colspan="2"><input id="title-bar-name" tabindex="1"
 							data-name="#{i18n.getText('CCG013_50')}"
 							data-bind="ntsTextEditor: {value: nameTitleBar, constraint: 'TitleBarName', required: true}, hasfocus: true" /></td>
 					</tr>

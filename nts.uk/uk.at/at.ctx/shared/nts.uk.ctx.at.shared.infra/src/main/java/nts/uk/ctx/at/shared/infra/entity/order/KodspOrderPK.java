@@ -18,6 +18,6 @@ public class KodspOrderPK {
 	@Column(name = "CID")
 	public String companyID;
 
-	@Column(name = "WORK_TIME_CD")
+	@Column(name = "WORKTIME_CD")
 	public String workTimeCd;
 }

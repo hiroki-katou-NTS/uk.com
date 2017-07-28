@@ -23,7 +23,7 @@ public class ControlOfAttendanceItemsWebService extends WebService {
 	@POST
 	@Path("getControlOfAttendanceItem/{attendanceItemId}")
 	public ControlOfAttendanceItemsDto getControlOfAttendanceItem(
-			@PathParam("attendanceItemId") String attendanceItemId) {
+			@PathParam("attendanceItemId") int attendanceItemId) {
 		return this.controlOfAttendanceItemsFinder.getControlOfAttendanceItem(attendanceItemId);
 	}
 	@POST

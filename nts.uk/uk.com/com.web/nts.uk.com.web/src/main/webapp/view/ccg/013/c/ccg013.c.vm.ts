@@ -140,7 +140,9 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         submit() {
             var self = this;
             $(".ntsColorPicker_Container").trigger("validate");
-            var hasError = nts.uk.ui.errors.hasError() || nts.uk.text.isNullOrEmpty(self.nameTitleBar().trim());
+            validateNameInput($("#nameTitleBar"),'#[CCG013_31]', self.nameTitleBar().trim(), 'TitleBarName');
+            
+            var hasError = nts.uk.ui.errors.hasError();
             if (hasError) {
                 return;
             }
