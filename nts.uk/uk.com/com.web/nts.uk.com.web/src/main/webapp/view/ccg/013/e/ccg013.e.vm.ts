@@ -31,6 +31,8 @@
             var self = this;
             nts.uk.ui.block.invisible();
             
+            validateNameInput($("#web-name"),'#[CCG013_50]', self.name().trim(), 'WebMenuName');
+            
             var code = self.code();
             var name = self.name();
             var allowOverwrite = self.allowOverwrite();
@@ -39,8 +41,11 @@
                 currentWebMenuCode: self.currentWebMenuCode(),
                 allowOverwrite: allowOverwrite,
                 webMenuCode: code,
-                webMenuName: name    
+                webMenuName: name
             }
+            
+            $("#web-code").trigger("validate");
+            $("#web-name").trigger("validate");
             
             if(nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();

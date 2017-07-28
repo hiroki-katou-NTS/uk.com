@@ -15,11 +15,16 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<!-- #CCG001 -->
-			<com:stylefile path="../o/index.xhtml" />
 			<com:stylefile path="ksu001.a.main.css" />
 			<com:scriptfile path="ksu001.a.start.js" />
 			<com:scriptfile path="ksu001.a.vm.js" />
 			<com:scriptfile path="ksu001.a.service.js" />
+			
+			<com:stylefile path="../o/ksu001.o.main.css" />
+			<com:scriptfile path="../o/ksu001.o.start.js" />
+			<com:scriptfile path="../o/ksu001.o.vm.js" />
+			<com:scriptfile path="../o/ksu001.o.service.js" />
+			
 			
 		</ui:define>
 		<ui:define name="content">
@@ -145,7 +150,10 @@
 					<div class="right-content">
 					</div>
 				</div>
+				<div id="oViewModel"></div>
 			</div>
+			
+			
 		</ui:define>
 	</ui:composition>
 </body>

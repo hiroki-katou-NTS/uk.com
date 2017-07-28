@@ -9,12 +9,11 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 300,
-					height : 200
+					width : 570,
+					height : 540
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-
 			<com:stylefile path="cps007.b.style.css" />
 			<com:scriptfile path="cps007.b.service.js" />
 			<com:scriptfile path="cps007.b.vm.js" />
@@ -22,6 +21,44 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS007_00')}</div>
+					</div>
+					<div class="form-group two-cols">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS007_12')}</div>
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS007_13')}</div>
+					</div>
+				</div>
+				<div class="swap-list-updown-contaier">
+					<div id="swap-list"
+						data-bind="ntsSwapList: {
+						showSearchBox: { showLeft : true, showRight: true},
+						height: 300,
+						dataSource: allItems,
+						primaryKey: 'code',
+						columns: ko.observableArray([{ headerText: 'コード', key: 'code', width: 0 },{ headerText: '#{i18n.getText('CPS007_14')}', key: 'name', width: 150 }]),
+						value: chooseItems,
+						searchCriterion: ['code'],
+						draggable: true,
+						multipleDrag: { left: true, right: false },
+						innerDrag: { left: false, right: true },
+						outerDrag: { left: true, right: true } 
+					}"></div>
+					<div id="swap-list-updown"
+						data-bind="ntsUpDown: {
+					targetSource: chooseItems,
+					primaryKey: 'code',
+					comId: '#swap-list',
+					type: 'swap',
+					swapTarget: 'right'}"></div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: pushData">#{i18n.getText('CPS007_16')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS007_17')}</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

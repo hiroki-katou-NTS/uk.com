@@ -45,8 +45,8 @@ public interface WorkplaceBasicWorkRepository {
 	/**
 	 * Find all.
 	 *
-	 * @param CompanyId the company id
+	 * @param workplaceId the company id
 	 * @return the list
 	 */
-	List<WorkplaceBasicWork> findAll(String CompanyId);
+	Optional<WorkplaceBasicWork> findAll(String workplaceId);
 }

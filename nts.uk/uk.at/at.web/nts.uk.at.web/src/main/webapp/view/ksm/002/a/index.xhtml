@@ -49,7 +49,7 @@
 				<div id="screenA" class="contents-area">
 					<div class="panel panel-frame">
 						<label class="info">#{i18n.getText('KSM002_10')}</label><BR />
-						<div
+						<div class="chkBox"
 							data-bind="ntsMultiCheckBox: {
 							options: boxItemList,
 							optionsValue: 'id',
@@ -94,10 +94,10 @@
 			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewModelB">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
-					<button class="proceed" data-bind="click: submitEventHandler">#{i18n.getText('KSM002_6')}</button>
-					<button data-bind="click: openDialogC">#{i18n.getText('KSM002_7')}</button>
-					<button data-bind="click: openDialogD">#{i18n.getText('KSM002_8')}</button>
-					<button class="danger" data-bind="click: removeEventHandler, enable: isUpdate">#{i18n.getText('KSM002_9')}</button>
+					<button class="proceed" data-bind="click: submitEventHandler, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_6')}</button>
+					<button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_7')}</button>
+					<button data-bind="click: openDialogD, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_8')}</button>
+					<button class="danger" data-bind="click: removeEventHandler, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty())">#{i18n.getText('KSM002_9')}</button>
 				</div>
 				<div id="screenB" class="contents-area">
 					<ui:include src="../b/index.xhtml" />

@@ -42,7 +42,7 @@ module ksm004.d.viewmodel {
             //date value
             self.dateValue = ko.observable({startDate: param.yearMonth.toString(), endDate: param.yearMonth.toString()});
             self.startMonth = ko.observable(self.dateValue().startDate);
-            self.endMonth = ko.observable(self.dateValue().startDate);
+            self.endMonth = ko.observable(self.dateValue().endDate);
             
             //classId
             self.classId = ko.observable(param.classCD);
@@ -92,7 +92,8 @@ module ksm004.d.viewmodel {
          */
         decition() {
             var self = this;
-
+            self.startMonth(self.dateValue().startDate);
+            self.endMonth(self.dateValue().endDate);
             let startYM = moment(self.startMonth(), 'YYYYMM');
             let endYM = moment(self.endMonth(), 'YYYYMM');
             self.getAllHoliday().done(function(){

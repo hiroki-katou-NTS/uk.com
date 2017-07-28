@@ -22,29 +22,48 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('com', servicePath.searchAllEmployee, baseDate);
         }
 
-        // get person by login employee code
+        /**
+         * call service get employee by login
+         */
+        
         export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, baseDate);
         }
 
+        /**
+         *search employee of work place 
+         */
+         
         export function searchOfWorkplace(baseDate: Date): JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchOfWorkplace, baseDate);
         }
+        /**
+         * search employee of work place child
+         */
         export function searchWorkplaceChild(baseDate: Date): JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchWorkplaceChild, baseDate);
         }
 
+        /**
+         * search data mode employee
+         */
         export function searchModeEmployee(input: model.EmployeeSearchInDto)
             : JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.searchModeEmployee, input);
         }
 
+        /**
+         * search data of employee
+         */
         export function searchWorkplaceOfEmployee(baseDate: Date): JQueryPromise<string[]> {
             return nts.uk.request.ajax('com', servicePath.searchWorkplaceOfEmployee, baseDate);
         }
         
-        export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]){
-              return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, {baseDate: baseDate, employeeIds: employeeIds});  
+        /**
+         * search data of employee
+         */
+        export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]): JQueryPromise<model.EmployeeSearchDto[]> {
+            return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, { baseDate: baseDate, employeeIds: employeeIds });
         }
         
         

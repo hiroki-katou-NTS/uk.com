@@ -7,10 +7,14 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<!-- 	<script>var dialogSize = { width: 960, height: 520 };</script> -->
 			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
-				nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
+				nts.uk.ctx.at.shared.dom.dailypattern.PatternCode
+				nts.uk.ctx.at.shared.dom.dailypattern.PatternName
+				nts.uk.ctx.at.shared.dom.dailypattern.Days
+				nts.uk.ctx.at.shared.dom.dailypattern.DispOrder
+				nts.uk.ctx.at.shared.dom.dailypattern.WorkingCode
+				nts.uk.ctx.at.shared.dom.dailypattern.WorkTypeCode
+				
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm003.a.main.css" />
@@ -67,23 +71,25 @@
 							<td>
 								<!-- B3_1: Label -->
 								<div
-									data-bind="ntsFormLabel: {required: true,constraint:['DiverdenceReasonCode','DivergenceReasonContent'] }">#{i18n.getText('KSM003_31')}</div>
+									data-bind="ntsFormLabel: {required: true,constraint:['PatternCode','PatternName'] }">#{i18n.getText('KSM003_31')}</div>
 							</td>
 							<td>
-								<!-- B3_2: Divergence Reason Code --> <input tabindex="6"
+								<!-- B3_2: Pattern code -->
+								<input tabindex="6"
 								class="nts-input" id="inpCode"
 								data-bind="ntsTextEditor: {
-										name: '#[KMK011_22]',
+										  name: '#[KMK011_22]',
                                           value: patternCode,
-                                          constraint: 'DiverdenceReasonCode',
+                                          constraint: 'PatternCode',
                                           enable:enableCode, 
                                           required: true}" />
-								<!-- B3_3:Divergence Reason Content--> <input tabindex="7"
+								<!-- B3_3:Pattern Name--> 
+								<input tabindex="7"
 								class="nts-input" id="inpPattern"
 								data-bind="ntsTextEditor: {
-										name: '#[KMK011_23]',
+										  name: '#[KMK011_23]',
                                           value: patternName,
-                                          constraint: 'DivergenceReasonContent',
+                                          constraint: 'PatternName',
                                           required: true}" />
 							</td>
 						</tr>

@@ -2391,7 +2391,10 @@ var nts;
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
-                    var content_height = 50 + 20;
+                    var content_height = 20;
+                    if ($("#header").length != 0) {
+                        content_height += 50;
+                    }
                     if ($("#functions-area").length != 0) {
                         content_height += 49;
                     }
@@ -2890,7 +2893,8 @@ var nts;
                 }
                 errors.hasError = hasError;
                 function clearAll() {
-                    errorsViewModel().clearError();
+                    if (nts.uk.ui._viewModel !== undefined)
+                        errorsViewModel().clearError();
                 }
                 errors.clearAll = clearAll;
                 function removeByElement($control) {
@@ -2995,11 +2999,13 @@ var nts;
                         this.build$dialog(options);
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
-                            options.title = '※ダイアログタイトルは基盤で自動化予定';
+                            var dialogName = _this.globalContext.__viewContext["program"]["programName"];
+                            var title = nts.uk.util.isNullOrEmpty(dialogName)
+                                || path !== _this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
-                                title: options.title || "dialog",
+                                title: title,
                                 resizable: options.resizable,
                                 position: {
                                     my: "center",
@@ -3162,9 +3168,14 @@ var nts;
                         if (typeof arguments[1] !== 'string') {
                             return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
-                        path = nts.uk.request.location.siteRoot
-                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                            .mergeRelativePath(path).serialize();
+                        if (webAppId == nts.uk.request.location.currentAppId) {
+                            path = nts.uk.request.resolvePath(path);
+                        }
+                        else {
+                            path = nts.uk.request.location.siteRoot
+                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                                .mergeRelativePath(path).serialize();
+                        }
                         options = options || {};
                         options.modal = true;
                         return open(path, options);
@@ -3174,9 +3185,14 @@ var nts;
                         if (typeof arguments[1] !== 'string') {
                             return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
-                        path = nts.uk.request.location.siteRoot
-                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                            .mergeRelativePath(path).serialize();
+                        if (webAppId == nts.uk.request.location.currentAppId) {
+                            path = nts.uk.request.resolvePath(path);
+                        }
+                        else {
+                            path = nts.uk.request.location.siteRoot
+                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                                .mergeRelativePath(path).serialize();
+                        }
                         options = options || {};
                         options.modal = false;
                         return open(path, options);
@@ -3209,7 +3225,7 @@ var nts;
                 dialog.Message = Message;
                 function getMaxZIndex() {
                     var overlayElements = parent.$(".ui-widget-overlay");
-                    var max = 120002;
+                    var max = 120000;
                     if (overlayElements.length > 0) {
                         var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
                         var temp = _.max(zIndexs);
@@ -3854,6 +3870,7 @@ var nts;
                                 e.preventDefault();
                         });
                         container.data("tabindex", container.attr("tabindex"));
+                        container.wrap("<div class='checkbox-wrapper'/>");
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -3920,6 +3937,7 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
+                        container.wrap("<div class='multicheckbox-wrapper'/>");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
                         container.data("init", true);
@@ -4240,7 +4258,8 @@ var nts;
                             $input.before($prevButton).after($nextButton);
                         }
                         if (data.dateFormat === "YYYY") {
-                            var $yearType = $("<label/>").attr("for", idString).css({ "position": "absolute",
+                            var $yearType = $("<label/>").attr("for", idString)
+                                .css({ "position": "absolute",
                                 "line-height": "30px",
                                 "right": "42px" });
                             var labelText = fiscalYear ? "年度" : "年";
@@ -4259,10 +4278,9 @@ var nts;
                             startDate: startDate,
                             endDate: endDate,
                             autoHide: autoHide,
-                        });
-                        DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
+                        }).data("dateNormalizer", DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
                             .fiscalMonthsMode(data.fiscalMonthsMode)
-                            .setDefaultCss(data.defaultClass || "");
+                            .setDefaultCss(data.defaultClass || ""));
                         name = nts.uk.resource.getControlName(name);
                         var validator = new ui.validation.TimeValidator(name, constraintName, { required: required,
                             outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType });
@@ -4316,6 +4334,12 @@ var nts;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
                         var container = $(element);
+                        var dateNormalizer = container.find("input").data("dateNormalizer");
+                        if (dateNormalizer) {
+                            if (data.cssRanger) {
+                                dateNormalizer.setCssRanger(ko.unwrap(data.cssRanger));
+                            }
+                        }
                         var init = container.data("init");
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
@@ -5204,7 +5228,7 @@ var nts;
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
-                            $input.width(width);
+                            $input.width(width, false);
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
@@ -5365,8 +5389,6 @@ var nts;
                             $parent.css({ 'width': '100%' });
                         }
                         $input.css("box-sizing", "border-box");
-                        if (width.trim() != "")
-                            $input.width(width);
                         if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                             $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
@@ -5376,17 +5398,17 @@ var nts;
                             var unit = uk.text.getNumberUnit(this.editorOption.unitID);
                             this.editorOption.symbolChar = unit.unitText;
                             this.editorOption.symbolPosition = unit.position;
-                            this.setupUnit($input);
+                            this.setupUnit($input, width);
                         }
                         else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
-                            this.setupUnit($input);
+                            this.setupUnit($input, width);
                         }
                         if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
                             && nts.uk.util.isNullOrEmpty(data.value())) {
                             data.value(this.editorOption.defaultValue);
                         }
                     };
-                    NumberEditorProcessor.prototype.setupUnit = function ($input) {
+                    NumberEditorProcessor.prototype.setupUnit = function ($input, width) {
                         var $parent = $input.parent();
                         var padding = nts.uk.text.countHalf(this.editorOption.symbolChar) * 8;
                         if (padding < 20) {
@@ -5396,6 +5418,9 @@ var nts;
                         $parent.attr("data-content", this.editorOption.symbolChar);
                         var css = this.editorOption.symbolPosition === 'right' ? { "padding-right": padding + "px" } : { "padding-left": padding + "px" };
                         $input.css(css);
+                        if (width.trim() != "") {
+                            $input.innerWidth(parseInt(width) - 2);
+                        }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
@@ -6591,6 +6616,7 @@ var nts;
                         var data = valueAccessor();
                         var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var totalWidth = ko.unwrap(data.width);
+                        var disableMove = ko.unwrap(data.disableMoveButton);
                         var height = ko.unwrap(data.height);
                         var showSearchBox = ko.unwrap(data.showSearchBox);
                         var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
@@ -6659,7 +6685,6 @@ var nts;
                         var $grid1 = $swap.find(grid1Id);
                         var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
-                            { name: 'Sorting', type: 'local' },
                             { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
                         $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
                         var criterion = _.map(columns(), function (c) { return c.key === undefined ? c.prop : c.key; });
@@ -6744,6 +6769,14 @@ var nts;
                     };
                     NtsSwapListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
+                        var $swap = $(element);
+                        var disableMove = ko.unwrap(data.disableMoveButton);
+                        if (disableMove === true) {
+                            $swap.find(".move-button").attr("disabled", "disabled");
+                        }
+                        else {
+                            $swap.find(".move-button").removeAttr("disabled");
+                        }
                         var elementId = this.swapper.Model.$container.attr('id');
                         var primaryKey = this.swapper.Model.swapParts[0].primaryKey;
                         if (nts.uk.util.isNullOrUndefined(elementId)) {
@@ -6760,14 +6793,10 @@ var nts;
                                 return selected[primaryKey] === item[primaryKey];
                             }) !== undefined;
                         });
-                        if (!_.isEqual(currentSource, newSources)) {
-                            this.swapper.Model.swapParts[0].bindData(newSources.slice());
-                            this.swapper.Model.transportBuilder.setFirst(newSources);
-                        }
-                        if (!_.isEqual(currentSelectedList, newSelectedList)) {
-                            this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
-                            this.swapper.Model.transportBuilder.setSecond(newSelectedList);
-                        }
+                        this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                        this.swapper.Model.transportBuilder.setFirst(newSources);
+                        this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                        this.swapper.Model.transportBuilder.setSecond(newSelectedList);
                     };
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
                         var handler = this;
@@ -7181,18 +7210,35 @@ var nts;
                         selectedRows.sort(function (one, two) {
                             return one.index - two.index;
                         });
+                        var firstSelected = selectedRows[0];
                         var selectedIds = selectedRows.map(function (row) { return row.id; });
                         this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
                             .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
-                        this.swapParts[0].bindData(this.transportBuilder.getFirst());
-                        this.swapParts[1].bindData(this.transportBuilder.getSecond());
-                        value(this.transportBuilder.getSecond());
+                        var firstSource = this.transportBuilder.getFirst();
+                        var secondSource = this.transportBuilder.getSecond();
+                        this.swapParts[0].bindData(firstSource);
+                        this.swapParts[1].bindData(secondSource);
+                        value(secondSource);
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
+                        var primaryKey = this.transportBuilder.primaryKey;
+                        if (forward) {
+                            var selectIndex = firstSource.length === 0 ? -1
+                                : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index);
+                        }
+                        else {
+                            var selectIndex = secondSource.length === 0 ? -1
+                                : (secondSource.length - 1 < firstSelected.index ? secondSource.length - 1 : firstSelected.index);
+                        }
                         setTimeout(function () {
-                            $source.igGrid("virtualScrollTo", sourceList.length - 1 === selectedRows[0].index
-                                ? selectedRows[0].index - 1 : selectedRows[0].index + 1);
+                            $source.igGrid("virtualScrollTo", selectIndex);
                             $dest.igGrid("virtualScrollTo", destList.length - 1);
+                            if (selectIndex >= 0) {
+                                $source.igGridSelection("selectRowById", forward ? firstSource[selectIndex][primaryKey] : secondSource[selectIndex][primaryKey]);
+                            }
+                            if (!forward) {
+                                $dest.ntsGridList("setSelected", selectedIds);
+                            }
                         }, 10);
                     };
                     return GridSwapList;
@@ -8362,13 +8408,15 @@ var nts;
                         var dateType = ko.unwrap(data.type);
                         var maxRange = ko.unwrap(data.maxRange);
                         var value = data.value;
-                        var dataName = ko.unwrap(data.name);
+                        var rangeName = ko.unwrap(data.name);
+                        var startName = ko.unwrap(data.startName);
+                        var endName = ko.unwrap(data.endName);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
                         var required = ko.unwrap(data.required);
                         var id = nts.uk.util.randomId();
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
-                        $container.attr("tabindex", "-1");
+                        $container.removeAttr("tabindex");
                         $container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
                         var $datePickerArea = $container.find(".ntsDateRange_Container");
                         $datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" +
@@ -8456,24 +8504,14 @@ var nts;
                             format: ISOFormat,
                             autoHide: true,
                         });
-                        dataName = nts.uk.util.isNullOrUndefined(dataName) ? "月日入力フォーム" : nts.uk.resource.getControlName(dataName);
-                        var validator = new ui_13.validation.TimeValidator(dataName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                        rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
+                        startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
+                        endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
                         var $ntsDateRange = $container.find(".ntsRangeLabel");
-                        $input.on("change", function (e) {
-                            var $target = $(e.target);
-                            var newText = $target.val();
-                            $target.ntsError('clear');
-                            $ntsDateRange.ntsError("clear");
-                            var result = validator.validate(newText);
-                            var oldValue = value();
-                            if ($target.hasClass("ntsStartDatePicker")) {
-                                oldValue.startDate = result.isValid ? result.parsedValue : newText;
-                            }
-                            else {
-                                oldValue.endDate = result.isValid ? result.parsedValue : newText;
-                            }
+                        var getMessage = nts.uk.resource.getMessage;
+                        var validateProcess = function (newText, $target, isStart, oldValue, result) {
                             if (nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true) {
-                                $target.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
+                                $target.ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]));
                             }
                             else if (!result.isValid) {
                                 $target.ntsError('set', result.errorMessage);
@@ -8482,24 +8520,66 @@ var nts;
                                 var startDate = moment(oldValue.startDate, dateFormat);
                                 var endDate = moment(oldValue.endDate, dateFormat);
                                 if (endDate.isBefore(startDate)) {
-                                    $ntsDateRange.ntsError('set', "期間誤り");
+                                    $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]));
                                 }
                                 else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
-                                    var start = parseInt(startDate.format("YYYYMMDD"));
-                                    var end = parseInt(endDate.format("YYYYMMDD"));
-                                    if (end - start > 31 || end - start < 0) {
-                                        $ntsDateRange.ntsError('set', "最長期間違反");
+                                    var maxDate = startDate.add(1, "months");
+                                    if (endDate.isAfter(maxDate)) {
+                                        $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]));
+                                    }
+                                }
+                                else if (maxRange === "oneYear") {
+                                    var maxDate = _.cloneDeep(startDate);
+                                    if (dateFormat === "YYYY/MM/DD") {
+                                        var currentDate = startDate.date();
+                                        var isEndMonth = currentDate === startDate.endOf("months").date();
+                                        var isStartMonth = currentDate === 1;
+                                        maxDate = maxDate.date(1).add(1, 'year');
+                                        if (isStartMonth) {
+                                            maxDate = maxDate.month(maxDate.month() - 1).endOf("months");
+                                        }
+                                        else if (isEndMonth) {
+                                            maxDate = maxDate.endOf("months").add(-1, "days");
+                                        }
+                                        else {
+                                            maxDate = maxDate.date(currentDate - 1);
+                                        }
+                                    }
+                                    else {
+                                        maxDate = maxDate.add(1, 'year').add(-1, "months");
+                                    }
+                                    if (endDate.isAfter(maxDate)) {
+                                        $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]));
                                     }
                                 }
                             }
+                        };
+                        $input.on("change", function (e) {
+                            var $target = $(e.target);
+                            var newText = $target.val();
+                            $target.ntsError('clear');
+                            $ntsDateRange.ntsError("clear");
+                            var isStart = $target.hasClass("ntsStartDatePicker");
+                            var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var result = validator.validate(newText);
+                            var oldValue = value();
+                            if ($target.hasClass("ntsStartDatePicker")) {
+                                oldValue.startDate = result.isValid ? result.parsedValue : newText;
+                            }
+                            else {
+                                oldValue.endDate = result.isValid ? result.parsedValue : newText;
+                            }
+                            validateProcess(newText, $target, isStart, oldValue, result);
                             value(oldValue);
                         });
                         $input.on("blur", function (e) {
+                            var isStart = $(e.target).hasClass("ntsStartDatePicker");
                             var newText = $(e.target).val();
                             if (nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true) {
-                                $(e.target).ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
+                                $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]));
                             }
                             else {
+                                var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                                 var result = validator.validate(newText);
                                 if (!result.isValid) {
                                     $(e.target).ntsError('set', result.errorMessage);
@@ -8509,30 +8589,13 @@ var nts;
                         $input.on('validate', (function (e) {
                             var $target = $(e.target);
                             var newText = $target.val();
+                            var isStart = $target.hasClass("ntsStartDatePicker");
+                            var oldValue = value();
+                            var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
-                            if (nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true) {
-                                $target.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]));
-                            }
-                            else if (!result.isValid) {
-                                $target.ntsError('set', result.errorMessage);
-                            }
-                            else if (!nts.uk.util.isNullOrEmpty(newText)) {
-                                $ntsDateRange.ntsError("clear");
-                                var startDate = moment(oldValue.startDate, dateFormat);
-                                var endDate = moment(oldValue.endDate, dateFormat);
-                                if (endDate.isBefore(startDate)) {
-                                    $ntsDateRange.ntsError('set', "期間誤り");
-                                }
-                                else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
-                                    var start = parseInt(startDate.format("YYYYMMDD"));
-                                    var end = parseInt(endDate.format("YYYYMMDD"));
-                                    if (end - start > 31 || end - start < 0) {
-                                        $ntsDateRange.ntsError('set', "最長期間違反");
-                                    }
-                                }
-                            }
+                            validateProcess(newText, $target, isStart, oldValue, result);
                         }));
                         $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
                     };
@@ -9370,13 +9433,12 @@ var nts;
                                 oldTab: control.find("#sidebar-area .navigator a.active").closest("li"),
                                 newTab: $(this).closest("li")
                             };
-                            settings.beforeActivate.call(this, event, info);
-                            if ($(this).attr("disabled") !== "true" &&
-                                $(this).attr("disabled") !== "disabled" &&
-                                $(this).attr("href") !== undefined) {
-                                active(control, $(this).closest("li").index());
+                            if ($(this).attr("disabled") !== "true" && $(this).attr("disabled") !== "disabled") {
+                                settings.beforeActivate.call(this, event, info);
+                                if ($(this).attr("href") !== undefined)
+                                    active(control, $(this).closest("li").index());
+                                settings.activate.call(this, event, info);
                             }
-                            settings.activate.call(this, event, info);
                         });
                         active(control, settings.active);
                         return control;
@@ -9385,7 +9447,11 @@ var nts;
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
                         control.find("div[role=tabpanel]").addClass("disappear");
-                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).removeClass("disappear");
+                        var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
+                        if ($displayPanel.length > 0) {
+                            $displayPanel.removeClass("disappear");
+                            $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                        }
                         return control;
                     }
                     function enable(control, index) {

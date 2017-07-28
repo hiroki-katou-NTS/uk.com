@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.company.organization.jobtitle;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.basic.dom.common.history.Period;
 
 /**
  * 職位.
  */
+@Getter
 public class JobTitle extends AggregateRoot {
 
 	/** 職位ID. */

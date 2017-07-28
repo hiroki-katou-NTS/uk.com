@@ -220,6 +220,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             searchAllEmployee(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchAllEmployee(self.baseDate()).done(data => {
                     self.onSearchAllClicked(data);
                 }).fail(function(error) {
@@ -246,7 +249,17 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             applyDataSearch(): void {
                 var self = this;
+                
                 // call service search by base date
+                if (!self.baseDate()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_374' });
+                    return;
+                }
+                
+                if (self.validateClient()) {
+                    return;
+                }
+                
                 service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data) {
                     self.selectedCodeWorkplace(data);
                     self.reloadDataSearch();
@@ -286,6 +299,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             searchDataEmployee(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchModeEmployee(self.toEmployeeDto()).done(data => {
                     self.employeeinfo.employeeInputList(self.toUnitModelList(data));
                 }).fail(function(error){
@@ -294,13 +310,34 @@ module nts.uk.com.view.ccg.share.ccg {
 
             }
 
+            /**
+             * clear validate client
+             */
+            clearValiate() {
+                $('#inp_baseDate').ntsError('clear');
 
+            }
+
+            /**
+             * validate client
+             */
+            validateClient(): boolean {
+                $("#inp_baseDate").ntsEditor("validate");
+
+                if ($('#inp_baseDate').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
 
             /**
              * function click by button employee login
              */
             getEmployeeLogin(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchEmployeeByLogin(self.baseDate()).done(data => {
                     if (data.length > 0) {
                         self.onSearchOnlyClicked(data[0]);
@@ -315,6 +352,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             searchOfWorkplace(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchOfWorkplace(self.baseDate()).done(data => {
                     self.onSearchOfWorkplaceClicked(data);
                 }).fail(function(error) {
@@ -327,6 +367,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             searchWorkplaceChild(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 service.searchWorkplaceChild(self.baseDate()).done(data => {
                     self.onSearchOfWorkplaceClicked(data);
                 }).fail(function(error) {
@@ -339,6 +382,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             applyEmployee(): void {
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 if (self.isSelectAllEmployee) {
                     service.searchModeEmployee(self.toEmployeeDto()).done(data => {
                         self.onApplyEmployee(data);
@@ -362,6 +408,9 @@ module nts.uk.com.view.ccg.share.ccg {
             
             public getSelectedCodeEmployee(): string[]{
                 var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
                 if(self.isMultiple){
                     return self.selectedCodeEmployee();    
                 }

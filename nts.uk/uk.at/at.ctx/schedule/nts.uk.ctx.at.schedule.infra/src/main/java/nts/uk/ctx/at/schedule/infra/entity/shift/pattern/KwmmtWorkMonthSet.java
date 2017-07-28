@@ -23,7 +23,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KWMMT_WORK_MONTH_SET")
+@Table(name = "KSCMT_WORK_MONTH_SET")
 public class KwmmtWorkMonthSet extends JpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

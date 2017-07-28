@@ -5,11 +5,12 @@ __viewContext.ready(function() {
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
         test: KnockoutObservableArray<any>;
+        disableMoveButton: KnockoutObservable<boolean>;
 
         constructor() {
 
             this.itemsSwap = ko.observableArray([]);
-            
+            this.disableMoveButton = ko.observable(false);
             var array = [];
             this.itemsSwap(array);
 

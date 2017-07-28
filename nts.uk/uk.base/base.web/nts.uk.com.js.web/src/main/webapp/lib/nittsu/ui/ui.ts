@@ -85,16 +85,18 @@ module nts.uk.ui {
                 };
 
                 this.build$dialog(options);
-
+                
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
-                    options.title = '※ダイアログタイトルは基盤で自動化予定';
-
+                    let dialogName = this.globalContext.__viewContext["program"]["programName"];
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　
+                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
+                
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
                         height: options.height || this.globalContext.dialogSize.height,
-                        title: options.title || "dialog",
+                        title: title,
                         resizable: options.resizable,
                         position: {
                             my: "center",
@@ -289,9 +291,14 @@ module nts.uk.ui {
                 if (typeof arguments[1] !== 'string') {
                     return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                path = nts.uk.request.location.siteRoot
+                if(webAppId==nts.uk.request.location.currentAppId){
+                    path = nts.uk.request.resolvePath(path);
+                }else{
+                    path = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(path).serialize();
+                }
+                
                 options = options || {};
                 options.modal = true;
                 return open(path, options);
@@ -301,9 +308,13 @@ module nts.uk.ui {
                  if (typeof arguments[1] !== 'string') {
                     return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                path = nts.uk.request.location.siteRoot
+                if(webAppId==nts.uk.request.location.currentAppId){
+                    path = nts.uk.request.resolvePath(path);
+                }else{
+                    path = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(path).serialize();
+                }
                 options = options || {};
                 options.modal = false;
                 return open(path, options);

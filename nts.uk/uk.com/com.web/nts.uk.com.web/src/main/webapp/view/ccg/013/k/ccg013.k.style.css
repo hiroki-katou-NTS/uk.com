@@ -1,22 +1,5 @@
-#functions-area {
-	height: 70px !important;
-}
-#btnSave{
-	font-size: 15px;
-	height: 30px;
-	margin-left: 10px;
-}
 
-#btnCancel{
-	font-size: 15px;
-	height: 30px;
-	margin-left: 15px;
-}
 
-#process{
-	padding-bottom: 20px;
-	padding-top: 15px;
-}
 
 #table{
 	margin-top:20px;
@@ -30,13 +13,18 @@
 
 #caret-bottom{
 	margin-left: 170px;
-	margin-top: 10px;
+	margin-top: 5px;
 }
 
 #search{
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
-
+.ui-iggrid.ui-widget.ui-helper-clearfix.ui-corner-all.nts-gridlist{
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height: 324px;
+	width: 430px !important;
+}
 
 
 

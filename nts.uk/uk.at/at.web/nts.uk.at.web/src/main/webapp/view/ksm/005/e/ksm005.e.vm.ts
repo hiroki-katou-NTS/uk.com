@@ -169,14 +169,14 @@ module nts.uk.at.view.ksm005.e {
                 if (self.checkMonthlyPatternSettingBatch()) {
                     return;
                 }
-                self.monthlyPatternSettingBatchWorkDays().workTypeCode = '009';
-                self.monthlyPatternSettingBatchWorkDays().workingCode = '001';
-                self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = '009';
-                self.monthlyPatternSettingBatchStatutoryHolidays().workingCode = '002';
-                self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = '009';
-                self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode = '003';
-                self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = '009';
-                self.monthlyPatternSettingBatchPublicHolidays().workingCode = '004';
+                self.monthlyPatternSettingBatchWorkDays().workTypeCode = '001';
+                self.monthlyPatternSettingBatchWorkDays().workingCode = '002';
+                self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = '001';
+                self.monthlyPatternSettingBatchStatutoryHolidays().workingCode = '001';
+                self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = '001';
+                self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode = '001';
+                self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = '001';
+                self.monthlyPatternSettingBatchPublicHolidays().workingCode = '001';
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.WORK_DAYS, self.monthlyPatternSettingBatchWorkDays());
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.STATUTORY_HOLIDAYS, self.monthlyPatternSettingBatchStatutoryHolidays());
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.NONE_STATUTORY_HOLIDAYS, self.monthlyPatternSettingBatchNoneStatutoryHolidays());
@@ -201,12 +201,12 @@ module nts.uk.at.view.ksm005.e {
              */
             public getMonthlyPatternSettingBatch(businessDayClassification: BusinessDayClassification): JQueryPromise<MonthlyPatternSettingBatch> {
                 var dfd = $.Deferred();
-                service.getUserInfo().done(function(userinfo: UserInfoDto) {
-                    var key: KeyMonthlyPatternSettingBatch;
-                    key = {companyId: userinfo.companyId, employeeId: userinfo.employeeId, businessDayClassification: businessDayClassification};
-                    service.findMonthlyPatternSettingBatch(key).done(function(dataRes){
-                        dfd.resolve(dataRes);
-                    });
+                var self = this;
+                var userinfo: UserInfoDto = self.getUserLogin();
+                var key: KeyMonthlyPatternSettingBatch;
+                key = { companyId: userinfo.companyId, employeeId: userinfo.employeeId, businessDayClassification: businessDayClassification };
+                service.findMonthlyPatternSettingBatch(key).done(function(dataRes) {
+                    dfd.resolve(dataRes);
                 });
                 return dfd.promise();
             }
@@ -215,10 +215,10 @@ module nts.uk.at.view.ksm005.e {
              * call service save monthly pattern setting batch
              */
             public saveMonthlyPatternSettingBatchService(businessDayClassification: BusinessDayClassification, data: MonthlyPatternSettingBatch): void {
-                service.getUserInfo().done(function(userinfo: UserInfoDto) {
-                    var key: KeyMonthlyPatternSettingBatch = {companyId: userinfo.companyId, employeeId: userinfo.employeeId, businessDayClassification: businessDayClassification};
-                    service.saveMonthlyPatternSettingBatch(key ,data);
-                });
+                var self = this;
+                var userinfo: UserInfoDto = self.getUserLogin();
+                var key: KeyMonthlyPatternSettingBatch = {companyId: userinfo.companyId, employeeId: userinfo.employeeId, businessDayClassification: businessDayClassification};
+                service.saveMonthlyPatternSettingBatch(key ,data);
             }
             
             /**
@@ -245,7 +245,14 @@ module nts.uk.at.view.ksm005.e {
             public cancelSaveMonthlyPatternSetting(): void{
                 nts.uk.ui.windows.close();    
             }
-        }
+            /**
+             * get user login
+             */
+            public getUserLogin(): UserInfoDto {
+                var userinfo: UserInfoDto = { companyId: '000000000000-0001', employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a' };
+                return userinfo;
 
+            }
+        }
     }
 }

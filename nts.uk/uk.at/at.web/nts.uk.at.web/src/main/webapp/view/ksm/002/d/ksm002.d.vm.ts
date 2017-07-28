@@ -22,10 +22,10 @@ module ksm002.d{
             countItem: KnockoutObservable<number>;
             // data receive from mother screen
             param: IData;
+            //date value
+            dateValue: KnockoutObservable<any>;
             constructor() {
                 let self=this;
-                self.startMonth = ko.observable(null);
-                self.endMonth = ko.observable(null);
                 self.specificDateItem = ko.observableArray([]);
                 self.dayInWeek = ko.observableArray([]);
                 self.enable = ko.observable(false);
@@ -38,16 +38,22 @@ module ksm002.d{
                 self.workPlace = ko.observable("");
                 self.countDay = ko.observable(0);
                 self.countItem = ko.observable(0);
-                self.param = null; 
+                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null}; 
+                 //date value
+                self.dateValue = ko.observable({startDate: self.param.startDate.toString(), endDate: self.param.endDate.toString()});
+                self.startMonth = ko.observable(self.dateValue().startDate);
+                self.endMonth = ko.observable(self.dateValue().endDate);
+                self.enable.subscribe(function(code){
+                    if(code==true){
+                        $('#day_0').ntsError('clear');
+                    }
+                });
             }
             /** get data when start dialog **/
             startPage(): JQueryPromise<any> {
                 nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred();
-                self.param = getShared('KSM002_D_PARAM') || { util: 0, workplaceObj: null, startDate: null, endDate: null};
-                self.endMonth(self.param.endDate);
-                self.startMonth(self.param.startDate);
                 // label to display work place D1_2
                 if(self.param.util == 1){
                     self.workPlace(nts.uk.resource.getText('Com_Company'))    
@@ -146,6 +152,8 @@ module ksm002.d{
                 }else{
                     let id = self.param.workplaceObj.id;
                 }
+                self.startMonth(Number(moment(self.dateValue().startDate).format('YYYYMMDD')));
+                self.endMonth(Number(moment(self.dateValue().endDate).format('YYYYMMDD')));
                 let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), id);
                 if(update ==1){
                     service.updateSpecificDateSet(object).done(function(data) {
@@ -179,6 +187,11 @@ module ksm002.d{
                 this.useAtr = ko.observable(useAtr);
                 this.specificDateItemNo = ko.observable(specificDateItemNo);
                 this.specificName = ko.observable(specificName);
+                this.useAtr.subscribe(function(code){
+                    if(code ==1 ){ 
+                        $('#item_0').ntsError('clear');
+                    }
+                });
             }
         }
         // A day in a week D1_7
@@ -188,6 +201,11 @@ module ksm002.d{
             constructor(day: string, choose: number){
                 this.day = ko.observable(day);
                 this.choose = ko.observable(choose);
+                this.choose.subscribe(function(code){
+                    if(code ==1 ){
+                        $('#day_0').ntsError('clear');
+                    }
+                });
             }
         }
         // A object to update 

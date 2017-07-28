@@ -76,7 +76,7 @@ public class ClosureHistoryAddCommand {
 		 */
 		@Override
 		public ClosureName getClosureName() {
-			return new ClosureName(null);
+			return new ClosureName(command.getClosureHistoryAdd().getClosureName());
 		}
 
 		/* (non-Javadoc)

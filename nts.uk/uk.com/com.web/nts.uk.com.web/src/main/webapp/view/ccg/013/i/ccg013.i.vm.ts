@@ -38,7 +38,10 @@
         submit() {
             var self = this;
             $(".ntsColorPicker_Container").trigger("validate");
-             var hasError = nts.uk.ui.errors.hasError() || nts.uk.text.isNullOrEmpty(self.nameMenuBar().trim());
+            
+            validateNameInput($("#menu-bar-name"),'#[CCG013_87]', self.nameMenuBar().trim(), 'MenuBarName');
+            
+            var hasError = nts.uk.ui.errors.hasError();
             if (hasError) {
                 return;
             }

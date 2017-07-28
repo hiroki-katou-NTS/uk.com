@@ -9,7 +9,7 @@
 	
 }
 
-#single-list > tbody > tr > td:first-child {
+#single-list>tbody>tr>td:first-child {
 	text-align: center;
 }
 
@@ -81,8 +81,9 @@ button.search-btn {
 .button-add {
 	border-radius: 5px;
 	height: 50px;
-	width: 134px;
+	width: 145px;
 }
+
 
 #menu_container {
 	width: 940px;
@@ -148,7 +149,8 @@ button.search-btn {
 	width: 140px;
 	height: 48px;
 	padding: 15px 0px;
-	margin: -1px; text-align : center;
+	margin: -1px;
+	text-align: center;
 	box-sizing: border-box;
 	overflow: hidden;
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2) inset;
@@ -180,11 +182,13 @@ button.search-btn {
 	border-radius: 10px;
 	z-index: 1;
 }
+
 #menubar-tabs .menubar-container .title-menu .title-menu-container {
 	font-size: 0;
 	white-space: nowrap;
 	display: inline-block;
 }
+
 #menubar-tabs .title-menu .title-menu-column {
 	display: inline-block;
 	width: 140px;
@@ -208,7 +212,8 @@ button.search-btn {
 	padding: 10px 3px;
 	height: 40px;
 	width: 100%;
-	float: left; margin-top : -1px;
+	float: left;
+	margin-top: -1px;
 	background-color: #e2efda;
 	border: 1px solid #80a468;
 	white-space: nowrap;
@@ -228,6 +233,9 @@ button.search-btn {
 
 #menubar-tabs .title-menu .title-menu-column .button-add-treemenu {
 	margin: 4px 0px;
+	border-radius: 5px;
+	height: 50px;
+	width: 134px;
 }
 
 .unsortable {
@@ -269,4 +277,15 @@ div.label {
 
 .text-align {
 	text-align: center;
+}
+
+#add-icon-treemenu {
+	width: 12px;
+	margin-left: -8px;
+	margin-right: 3px;
+}
+
+#add-icon {
+	width: 12px;
+	margin-right: -2px;
 }

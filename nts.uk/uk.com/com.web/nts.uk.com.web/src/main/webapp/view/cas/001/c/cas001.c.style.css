@@ -1,0 +1,46 @@
+#role{
+	margin-left: 15px;
+	margin-top: 5px;
+}
+#category{
+	margin-left: 10px;
+	width: 340px;
+	margin-bottom: 10px;
+}
+#search{
+	margin-left: 5px;
+}
+input.ntsSearchBox {
+	width: 180px !important;
+	margin-left: 3px;
+	margin-top:10px;
+}
+button.search-btn,button.clear-btn{
+	margin-top:10px;
+	width: 30px !important;
+}
+#registration {
+	margin-left: 100px;
+	margin-right: 5px;
+}
+.distane{
+	margin-bottom: 5px;
+}
+#roles_container{
+	margin-left: 18px!important;
+}
+
+#roles{
+	height: initial !important;
+	width: 300px;
+} 
+#roles_scroll{
+	height: 260px!important;
+}
+#roleCode{
+	margin-left: 10px;
+	width:90px;
+}
+#roleName{
+	width:100px;
+}

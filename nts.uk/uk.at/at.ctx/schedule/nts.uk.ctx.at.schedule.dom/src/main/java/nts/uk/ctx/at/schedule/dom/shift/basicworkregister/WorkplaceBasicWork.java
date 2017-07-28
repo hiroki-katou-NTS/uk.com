@@ -28,8 +28,8 @@ public class WorkplaceBasicWork extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public WorkplaceBasicWork(WorkplaceBasicWorkGetMemento memento) {
-		this.workplaceId = memento.getWorkPlaceId();
 		this.basicWorkSetting = memento.getBasicWorkSetting();
+		this.workplaceId = memento.getWorkPlaceId();		
 	}
 	
 	/**

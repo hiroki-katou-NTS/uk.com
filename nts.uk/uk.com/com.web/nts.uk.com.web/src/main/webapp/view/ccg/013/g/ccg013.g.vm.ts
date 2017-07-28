@@ -15,20 +15,16 @@ module ccg013.g.viewmodel {
         empSelectedItem: KnockoutObservable<any>;
         infoList: KnockoutObservable<any>;
         items: KnockoutObservableArray<ItemModel>;
-        newItems: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
         newColumns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         newCurrentCodeList: KnockoutObservableArray<any>;
-
-
         //CGG001
         ccgcomponent: GroupOption;
         selectedCode: KnockoutObservableArray<string>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         // Options
-        baseDate: KnockoutObservable<Date>;
         isQuickSearchTab: KnockoutObservable<boolean>;
         isAdvancedSearchTab: KnockoutObservable<boolean>;
         isAllReferableEmployee: KnockoutObservable<boolean>;
@@ -41,26 +37,16 @@ module ccg013.g.viewmodel {
 
         constructor() {
             let self = this;
-
             self.empItems = ko.observableArray([]);
             self.items = ko.observableArray([]);
-            self.newItems = ko.observableArray([]);
-
             self.infoList = nts.uk.ui.windows.getShared("CCG013G_WEB_MENU");
             self.empSelectedItem = ko.observable();
             self.empSelectedItem.subscribe(function(value: any) {
                 self.currentCodeList.removeAll();
                 self.items.removeAll();
-                
                 _.forEach(self.infoList, function(item: ItemModel) {
-                    item.order = self.newItems().length + 1;
                     item.primaryKey = item.webMenuCode + item.order;
-                    if(nts.uk.util.isNullOrUndefined(self.empSelectedItem())){
-                        self.items.removeAll()
-                        self.currentCodeList.removeAll()}
-                    else{self.items.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));}                     
-                })
-
+                   self.items.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));})
                 if (value && value.personId) {
                     service.findPerson(value.personId).done(function(data) {
                         if (data && data.length > 0) {
@@ -68,40 +54,36 @@ module ccg013.g.viewmodel {
                                 var webPerson = _.find(self.items(), function(currentItem: ItemModel) {
                                     return currentItem.webMenuCode == item.webMenuCode;
                                 });
-
-                                self.currentCodeList.push(webPerson);
-                            })
+                                if (webPerson) {
+                                    self.currentCodeList.push(webPerson); 
+                                }
+                            });
                         }
                     });
                 }
-
             });
-
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG013_76"), prop: 'webMenuCode', key: 'webMenuCode', width: 55 },
                 { headerText: nts.uk.resource.getText("CCG013_77"), prop: 'webMenuName', key: 'webMenuName', width: 167 },
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
             ]);
-
             self.newColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG013_79"), prop: 'webMenuCode', width: 55 },
                 { headerText: nts.uk.resource.getText("CCG013_80"), prop: 'webMenuName', width: 160 },
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
             ]);
-
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
             self.newCurrentCodeList = ko.observableArray([]);
             self.selectedEmployee = ko.observableArray([]);
-
             self.showinfoSelectedEmployee = ko.observable(false);
-            self.baseDate = ko.observable(new Date());
+            
         }
         start() {
             let self = this;
             self.initCCG001();
         }
-
+        
         addPersonType() {
             var self = this;
             var items = []
@@ -116,10 +98,10 @@ module ccg013.g.viewmodel {
                     }
                         service.addPerson(dataTranfer).done(function(res) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        $(".nts-editor").find(".nts-input").focus();
-                    }).fail(function(res) {
+                    }
+                            ).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
-                    })    
+                    })  
                 } else { nts.uk.ui.dialog.info({ messageId: "Msg_73" }); }
             }
             return;

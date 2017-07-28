@@ -76,8 +76,7 @@ public class JpaDailyPatternSetMemento implements DailyPatternSetMemento {
 	 */
 	@Override
 	public void setListDailyPatternVal(List<DailyPatternVal> setListDailyPatternVal) {
-		this.patternCalendar
-				.setListKdpstDailyPatternVal(setListDailyPatternVal.stream().map(domain -> {
+		this.patternCalendar.setListKdpstDailyPatternVal(setListDailyPatternVal.stream().map(domain -> {
 					KdpstDailyPatternVal entity = new KdpstDailyPatternVal();
 					domain.saveToMemento(new JpaDailyPatternValSetMemento(entity));
 					return entity;
