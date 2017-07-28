@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 import java.util.Date;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTimeGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLog;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
 
 /**
  * The Class JpaExecutionTimeGetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExt
 public class JpaExecutionTimeGetMemento implements ExecutionTimeGetMemento {
 
     /** The entity parent. */
-    private KbldtExtBudgetLog entityParent;
+    private KscdtExtBudgetLog entityParent;
 
     /**
      * Instantiates a new jpa execution time get memento.
@@ -23,7 +23,7 @@ public class JpaExecutionTimeGetMemento implements ExecutionTimeGetMemento {
      * @param entityParent
      *            the entity parent
      */
-    public JpaExecutionTimeGetMemento(KbldtExtBudgetLog entityParent) {
+    public JpaExecutionTimeGetMemento(KscdtExtBudgetLog entityParent) {
         this.entityParent = entityParent;
     }
 

@@ -98,7 +98,10 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
 
         submit() {
             var self = this;
+            
             $(".ntsColorPicker_Container").trigger("validate");
+            validateNameInput($("#title-bar-name"),'#[CCG013_93]', self.nameTitleBar().trim(), 'TitleBarName');
+            
             if (nts.uk.ui.errors.hasError() !== true) {
                 var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.fileID(), self.imageName(), self.imageSize());
                 windows.setShared("CCG013J_ToMain_TitleBar", titleBar);

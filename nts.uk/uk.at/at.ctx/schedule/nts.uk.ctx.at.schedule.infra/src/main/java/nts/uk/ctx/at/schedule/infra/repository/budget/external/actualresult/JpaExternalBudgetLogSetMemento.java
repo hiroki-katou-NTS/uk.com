@@ -9,7 +9,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetFileName;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLog;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
 
 /**
  * The Class JpaExternalBudgetLogSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExt
 public class JpaExternalBudgetLogSetMemento implements ExternalBudgetLogSetMemento {
 
     /** The entity. */
-    private KbldtExtBudgetLog entity;
+    private KscdtExtBudgetLog entity;
 
     /**
      * Instantiates a new jpa external budget log set memento.
@@ -25,7 +25,7 @@ public class JpaExternalBudgetLogSetMemento implements ExternalBudgetLogSetMemen
      * @param entity
      *            the entity
      */
-    public JpaExternalBudgetLogSetMemento(KbldtExtBudgetLog entity) {
+    public JpaExternalBudgetLogSetMemento(KscdtExtBudgetLog entity) {
         this.entity = entity;
     }
 

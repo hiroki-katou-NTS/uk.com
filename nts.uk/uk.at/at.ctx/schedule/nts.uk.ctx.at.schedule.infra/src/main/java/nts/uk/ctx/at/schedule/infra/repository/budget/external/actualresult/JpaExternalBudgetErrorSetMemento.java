@@ -9,7 +9,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetAccDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetActualValue;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetErrorContent;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbedtExtBudgetError;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError;
 
 /**
  * The Class JpaExternalBudgetErrorSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbedtExt
 public class JpaExternalBudgetErrorSetMemento implements ExternalBudgetErrorSetMemento {
 
     /** The entity. */
-    private KbedtExtBudgetError entity;
+    private KscdtExtBudgetError entity;
 
     /**
      * Instantiates a new jpa external budget error set memento.
@@ -25,7 +25,7 @@ public class JpaExternalBudgetErrorSetMemento implements ExternalBudgetErrorSetM
      * @param entity
      *            the entity
      */
-    public JpaExternalBudgetErrorSetMemento(KbedtExtBudgetError entity) {
+    public JpaExternalBudgetErrorSetMemento(KscdtExtBudgetError entity) {
         this.entity = entity;
     }
 

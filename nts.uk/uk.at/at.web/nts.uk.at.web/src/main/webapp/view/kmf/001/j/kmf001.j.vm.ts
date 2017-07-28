@@ -236,6 +236,7 @@ module nts.uk.pr.view.kmf001.j {
                 this.service.saveComSetting(self.settingModel().toSixtyHourVacationSettingDto()).done(function() {
                     // Msg_15
                     nts.uk.ui.dialog.alert(nts.uk.ui.dialog.info({ messageId: "Msg_15" }));
+                    self.loadComSettingDetails();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);

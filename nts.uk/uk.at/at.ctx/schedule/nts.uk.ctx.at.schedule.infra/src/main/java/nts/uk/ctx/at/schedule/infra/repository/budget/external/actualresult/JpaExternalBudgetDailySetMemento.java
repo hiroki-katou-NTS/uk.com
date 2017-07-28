@@ -6,16 +6,16 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailySetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbddtExtBudgetDaily;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbddtExtBudgetDailyPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDaily;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDailyPK;
 
 public class JpaExternalBudgetDailySetMemento<T> implements ExternalBudgetDailySetMemento<T> {
     
-    private KbddtExtBudgetDaily entity;
+    private KscdtExtBudgetDaily entity;
     
-    public JpaExternalBudgetDailySetMemento(KbddtExtBudgetDaily entity) {
+    public JpaExternalBudgetDailySetMemento(KscdtExtBudgetDaily entity) {
         if (entity != null && entity.getKbddtExtBudgetDailyPK() == null) {
-            entity.setKbddtExtBudgetDailyPK(new KbddtExtBudgetDailyPK());
+            entity.setKbddtExtBudgetDailyPK(new KscdtExtBudgetDailyPK());
         }
         this.entity = entity;
     }

@@ -17,7 +17,8 @@
 			<span>2017/07/31</span>
 		</ui:define>
 		<ui:define name="extended-function">
-			<button id="btnDecide" class="x-large proceed">#{i18n.getText('KDL023_16')}</button>
+			<button id="btnDecide" class="x-large proceed" data-bind="click: decide">#{i18n.getText('KDL023_21')}</button>
+			<button id="btnCancel" class="large" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
 		</ui:define>
 	</ui:composition>
 </body>

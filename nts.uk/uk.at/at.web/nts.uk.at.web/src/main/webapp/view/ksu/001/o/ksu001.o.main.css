@@ -24,7 +24,7 @@
 #combo-box2{
 	top:9px;
 	margin-left: 30px;
-	min-width: 590px !important; 
+	min-width: 516px !important; 
 }
 #combo-box1{
 	min-width: 335px !important; 
@@ -44,6 +44,9 @@
 .undo-button{
 	margin-right: 170px;
 }
-.nts-switch-button{
-	width: 96px;
+.cf1 .nts-switch-button{
+	width: 96px !important;
+}
+.form-label{
+	margin-left: 58px;
 }
