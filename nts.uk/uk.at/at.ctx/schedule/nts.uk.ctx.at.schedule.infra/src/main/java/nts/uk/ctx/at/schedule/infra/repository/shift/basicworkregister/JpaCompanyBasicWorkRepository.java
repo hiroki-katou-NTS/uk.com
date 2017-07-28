@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.shift.basicworkregister;
 
 import java.util.ArrayList;
@@ -14,32 +18,44 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSet_;
 
+/**
+ * The Class JpaCompanyBasicWorkRepository.
+ */
 @Stateless
 public class JpaCompanyBasicWorkRepository extends JpaRepository implements CompanyBasicWorkRepository {
 
 	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository#insert(nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork)
+	 */
 	@Override
 	public void insert(CompanyBasicWork companyBasicWork) {
-		// TODO Auto-generated method stub
-		
-	}
+		List<KcbmtCompanyWorkSet> entities = this.toEntity(companyBasicWork);
+		commandProxy().insertAll(entities);
+	}	
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository#update(nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork)
+	 */
 	@Override
 	public void update(CompanyBasicWork companyBasicWork) {
-		// TODO Auto-generated method stub
-		
+		List<KcbmtCompanyWorkSet> entities = this.toEntity(companyBasicWork);
+		commandProxy()
+				.updateAll(entities);
 	}
 
-
-	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository#findAll(java.lang.String)
+	 */
 	@Override
-	public List<CompanyBasicWork> findAll(String companyId) {
+	public Optional<CompanyBasicWork> findAll(String companyId) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
@@ -51,25 +67,59 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(KcbmtCompanyWorkSet_.kcbmtCompanyWorkSetPK).get(KcbmtCompanyWorkSetPK_.cid), companyId));
+		root.get(KcbmtCompanyWorkSet_.kcbmtCompanyWorkSetPK).get(KcbmtCompanyWorkSetPK_.cid), companyId));
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
 		TypedQuery<KcbmtCompanyWorkSet> query = em.createQuery(cq);
 		
-		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		if (CollectionUtil.isEmpty(query.getResultList())) {
+			return Optional.empty();
+		}
 		
+//		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		List<KcbmtCompanyWorkSet> entities = query.getResultList();
+		return Optional.of(this.toDomain(entities));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository#find(java.lang.String, java.lang.Integer)
+	 */
 	@Override
 	public Optional<CompanyBasicWork> find(String companyId, Integer workdayDivision) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	private CompanyBasicWork toDomain(KcbmtCompanyWorkSet entity) {
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the company basic work
+	 */
+	private CompanyBasicWork toDomain(List<KcbmtCompanyWorkSet> entity) {
 		return new CompanyBasicWork(new JpaCompanyBasicWorkGetMemento(entity));
 	}
+	
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the list
+	 */
+	private List<KcbmtCompanyWorkSet> toEntity(CompanyBasicWork domain) {
+		return domain.getBasicWorkSetting().stream().map(basic -> {
+			KcbmtCompanyWorkSet entity = new KcbmtCompanyWorkSet();
+			basic.saveToMemento(new JpaBWSettingComSetMemento(entity));
+			return entity;
+		}).collect(Collectors.toList());
+	}
+	
+//	private KcbmtCompanyWorkSet updateEntity(KcbmtCompanyWorkSet entity) {
+//		KcbmtCompanyWorkSet entityToUpdate = this.queryProxy()
+//				.find(entity.getKcbmtCompanyWorkSetPK(), KcbmtCompanyWorkSet.class).get();
+//		entityToUpdate.set
+//	}
 
 }
