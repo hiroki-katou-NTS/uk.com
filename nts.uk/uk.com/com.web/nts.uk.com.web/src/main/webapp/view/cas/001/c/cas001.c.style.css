@@ -1,42 +1,46 @@
-#contents-area{
-	padding-right:0px !important;
-	padding-left:0px !important;
-	height:310px !important;
-}
-#label_copy {
-	width: 100px;
-}
-
-#label_code {
-	width: 150px;
-}
-
-#roleCode {
-	width: 50px;
-}
-
-#roleCodeOld {
-	width: 50px;
-	vertical-align: left;
-}
-
-#roleNameOld {
-	margin-left: 45px;
-	width: 150px;
-}
-#registration{
-	margin-left: 200px;
+#role{
+	margin-left: 15px;
 	margin-top: 5px;
 }
-#copy{
+#category{
+	margin-left: 10px;
+	width: 340px;
+	margin-bottom: 10px;
+}
+#search{
 	margin-left: 5px;
 }
-.bg-yellow {
-	width: 200px;
-	height: 28px;
-	margin-top: 4px;
+input.ntsSearchBox {
+	width: 180px !important;
+	margin-left: 3px;
+	margin-top:10px;
 }
-#copyCheck{
-	margin-left: 150px;
-	margin-top: 3px !important;
+button.search-btn,button.clear-btn{
+	margin-top:10px;
+	width: 30px !important;
+}
+#registration {
+	margin-left: 100px;
+	margin-right: 5px;
+}
+.distane{
+	margin-bottom: 5px;
+}
+#roles_container{
+	margin-left: 18px!important;
+}
+
+#roles{
+	height: initial !important;
+	width: 300px;
+} 
+#roles_scroll{
+	height: 260px!important;
+}
+#roleCode{
+	margin-left: 10px;
+	width:90px;
+}
+#roleName{
+	width:100px;
 }

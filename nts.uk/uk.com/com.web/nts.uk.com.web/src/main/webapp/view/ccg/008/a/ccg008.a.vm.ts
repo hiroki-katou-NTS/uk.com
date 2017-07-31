@@ -4,7 +4,8 @@
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
         flowmenu: KnockoutObservable<model.Placement>;
-        placements: KnockoutObservableArray<model.Placement>;
+        placementsTopPage: KnockoutObservableArray<model.Placement>;
+        placementsMyPage: KnockoutObservableArray<model.Placement>;
         visibleMyPage: KnockoutObservable<boolean>;
         dataSource: KnockoutObservable<model.LayoutAllDto>;
         displayButton: boolean;
@@ -16,7 +17,8 @@
             self.dataSource = ko.observable(null);
             self.visibleMyPage = ko.observable(true);
             self.flowmenu = ko.observable(null);
-            self.placements = ko.observableArray([]);
+            self.placementsTopPage = ko.observableArray([]);
+            self.placementsMyPage = ko.observableArray([]);
             self.tabs = ko.observableArray([
                 {id: 'tab-1', title: nts.uk.resource.getText("CCG008_1"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
                 {id: 'tab-2', title: nts.uk.resource.getText("CCG008_4"), content: '.tab-content-2', enable: ko.observable(true), visible: self.visibleMyPage}
@@ -24,11 +26,11 @@
             self.selectedTab = ko.observable(null);
             self.selectedTab.subscribe(function(codeChange){
                 if(codeChange=='tab-1'){//display data top page
-                    self.placements([]);
+                    self.placementsTopPage([]);
                     self.showToppage(self.dataSource().topPage);
                 }
                 if(codeChange=='tab-2'){//display data my page
-                    self.placements([]);
+                    self.placementsMyPage([]);
                  self.showMypage(self.dataSource().myPage);   
                 }
             });
@@ -99,7 +101,11 @@
             }
             listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
             if (listPlacement !== undefined) {
-                self.placements(listPlacement);
+                if (model.MYPAGE == pgType) { 
+                    self.placementsMyPage(listPlacement);
+                } else {
+                    self.placementsTopPage(listPlacement);    
+                }
             } 
             _.defer(() => { self.setupPositionAndSizeAll(pgType); });
         }
@@ -123,13 +129,16 @@
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
                     self.showMypage(self.dataSource().myPage); 
+                    self.showToppage(self.dataSource().topPage);
                 });    
             });
         }
         /** Setup position and size for all Placements */
         private setupPositionAndSizeAll(name: string): void {
             var self = this;
-            _.forEach(self.placements(), (placement, index) => {
+            var placements = model.MYPAGE == name ? self.placementsMyPage() : self.placementsTopPage();
+            
+            _.forEach(placements, (placement, index) => {
                 self.setupPositionAndSize(name, placement, index);
             });
         }

@@ -1,12 +1,12 @@
 module nts.uk.at.view.ksm005.b {
     export module service {
         var paths = {
-            findAllMonthlyPattern : "ctx/at/schedule/pattern/monthy/findAll",
-            findByIdMonthlyPattern: "ctx/at/schedule/pattern/monthy/findById",
-            addMonthlyPattern: "ctx/at/schedule/pattern/monthy/add",
-            updateMonthlyPattern: "ctx/at/schedule/pattern/monthy/update",
-            deleteMonthlyPattern: "ctx/at/schedule/pattern/monthy/delete",
-            findByMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthy/setting/findByMonth",
+            findAllMonthlyPattern : "ctx/at/schedule/pattern/monthly/findAll",
+            findByIdMonthlyPattern: "ctx/at/schedule/pattern/monthly/findById",
+            addMonthlyPattern: "ctx/at/schedule/pattern/monthly/add",
+            updateMonthlyPattern: "ctx/at/schedule/pattern/monthly/update",
+            deleteMonthlyPattern: "ctx/at/schedule/pattern/monthly/delete",
+            findByMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/findByMonth",
             findAllWorkType : "at/share/worktype/findAll",
             findAllWorkTime: "at/shared/worktime/findByCompanyID"
         }
