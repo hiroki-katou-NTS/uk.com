@@ -18,20 +18,20 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
- * The Class KmpmtMonthPattern.
+ * The Class KscmtMonthPattern.
  */
 @Getter
 @Setter
 @Entity
 @Table(name = "KSCMT_MONTH_PATTERN")
-public class KmpmtMonthPattern extends JpaEntity implements Serializable {
+public class KscmtMonthPattern extends JpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kmpmt month pattern PK. */
+    /** The kscmt month pattern PK. */
     @EmbeddedId
-    protected KmpmtMonthPatternPK kmpmtMonthPatternPK;
+    protected KscmtMonthPatternPK kscmtMonthPatternPK;
     
     /** The m pattern name. */
     @Basic(optional = false)
@@ -42,12 +42,12 @@ public class KmpmtMonthPattern extends JpaEntity implements Serializable {
     /**
      * Instantiates a new kmpmt month pattern.
      */
-    public KmpmtMonthPattern() {
+    public KscmtMonthPattern() {
     	super();
     }
 
-    public KmpmtMonthPattern(KmpmtMonthPatternPK kmpmtMonthPatternPK) {
-        this.kmpmtMonthPatternPK = kmpmtMonthPatternPK;
+    public KscmtMonthPattern(KscmtMonthPatternPK kmpmtMonthPatternPK) {
+        this.kscmtMonthPatternPK = kmpmtMonthPatternPK;
     }
 
 	/* (non-Javadoc)
@@ -55,7 +55,7 @@ public class KmpmtMonthPattern extends JpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kmpmtMonthPatternPK;
+		return this.kscmtMonthPatternPK;
 	}
     
 }

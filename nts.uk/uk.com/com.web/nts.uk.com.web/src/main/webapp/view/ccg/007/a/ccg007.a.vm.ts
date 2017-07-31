@@ -1,5 +1,6 @@
 module nts.uk.pr.view.ccg007.a {
     export module viewmodel {
+        import ContractDto = service.ContractDto;
         export class ScreenModel {
             contractCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -21,6 +22,9 @@ module nts.uk.pr.view.ccg007.a {
             }
             private AuthContract() {
                 var self = this;
+                service.submitForm({ contractCode: self.contractCode(), password: self.password() }).done(function() { 
+                alert();
+                });
             }
         }
     }

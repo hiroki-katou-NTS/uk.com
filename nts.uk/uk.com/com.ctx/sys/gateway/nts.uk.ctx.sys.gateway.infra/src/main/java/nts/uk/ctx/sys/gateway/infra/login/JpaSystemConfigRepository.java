@@ -17,7 +17,7 @@ public class JpaSystemConfigRepository extends JpaRepository implements SystemCo
 	@Override
 	public Optional<SystemConfig> getSystemConfig() {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 }

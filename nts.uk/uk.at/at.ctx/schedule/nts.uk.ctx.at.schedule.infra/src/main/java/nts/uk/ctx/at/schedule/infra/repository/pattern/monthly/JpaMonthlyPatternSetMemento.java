@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern.monthly;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KmpmtMonthPattern;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KmpmtMonthPatternPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KscmtMonthPattern;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KscmtMonthPatternPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -17,16 +17,16 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaMonthlyPatternSetMemento implements MonthlyPatternSetMemento {
 	
 	/** The mothly pattern. */
-	private KmpmtMonthPattern mothlyPattern;
+	private KscmtMonthPattern mothlyPattern;
 	
 	/**
 	 * Instantiates a new jpa monthly pattern set memento.
 	 *
 	 * @param mothlyPattern the mothly pattern
 	 */
-	public JpaMonthlyPatternSetMemento(KmpmtMonthPattern mothlyPattern) {
-		if(mothlyPattern.getKmpmtMonthPatternPK() == null){
-			mothlyPattern.setKmpmtMonthPatternPK(new KmpmtMonthPatternPK());
+	public JpaMonthlyPatternSetMemento(KscmtMonthPattern mothlyPattern) {
+		if(mothlyPattern.getKscmtMonthPatternPK() == null){
+			mothlyPattern.setKscmtMonthPatternPK(new KscmtMonthPatternPK());
 		}
 		this.mothlyPattern = mothlyPattern;
 	}
@@ -39,7 +39,7 @@ public class JpaMonthlyPatternSetMemento implements MonthlyPatternSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.mothlyPattern.getKmpmtMonthPatternPK().setCid(companyId.v());
+		this.mothlyPattern.getKscmtMonthPatternPK().setCid(companyId.v());
 	}
 
 	/*
@@ -51,7 +51,7 @@ public class JpaMonthlyPatternSetMemento implements MonthlyPatternSetMemento {
 	 */
 	@Override
 	public void setMonthlyPatternCode(MonthlyPatternCode monthlyPatternCode) {
-		this.mothlyPattern.getKmpmtMonthPatternPK().setMPatternCd(monthlyPatternCode.v());
+		this.mothlyPattern.getKscmtMonthPatternPK().setMPatternCd(monthlyPatternCode.v());
 	}
 
 	/*

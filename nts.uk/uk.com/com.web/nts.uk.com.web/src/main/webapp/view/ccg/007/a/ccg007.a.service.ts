@@ -4,23 +4,19 @@ module nts.uk.pr.view.ccg007.a {
 
         // Service paths.
         var servicePath = {
-            copyPath: ""
+            submitContract: "ctx/sys/gateway/login/submitcontract"
         }
 
         /**
           * Function is used to copy new Top Page.
           */
-        export function copyTopPage(data: TopPageDto): JQueryPromise<TopPageDto> {
-            return nts.uk.request.ajax(servicePath.copyPath, data);
+        export function submitForm(data: ContractDto): JQueryPromise<ContractDto> {
+            return nts.uk.request.ajax(servicePath.submitContract, data);
         }
         
-        export interface TopPageDto {
-            topPageCode: string;
-            topPageName: string;
-            layoutId: string;
-            languageNumber: number;
-            isCheckOverwrite: boolean;
-            copyCode: string;
+        export interface ContractDto {
+            contractCode: string;
+            password: string;
         }
     }
 }

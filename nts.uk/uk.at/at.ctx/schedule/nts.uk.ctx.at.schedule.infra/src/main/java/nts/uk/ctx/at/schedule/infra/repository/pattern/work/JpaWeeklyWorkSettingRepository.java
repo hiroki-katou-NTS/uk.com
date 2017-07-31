@@ -20,10 +20,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwwstWeeklyWorkSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwwstWeeklyWorkSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwwstWeeklyWorkSetPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwwstWeeklyWorkSet_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSet_;
 
 /**
  * The Class JpaWeeklyWorkSettingRepository.
@@ -43,7 +43,7 @@ public class JpaWeeklyWorkSettingRepository extends JpaRepository
 	@Override
 	public Optional<WeeklyWorkSetting> findById(String companyId, int dayOfWeek) {
 		return this.queryProxy()
-				.find(new KwwstWeeklyWorkSetPK(companyId, dayOfWeek), KwwstWeeklyWorkSet.class)
+				.find(new KscmtWeeklyWorkSetPK(companyId, dayOfWeek), KscmtWeeklyWorkSet.class)
 				.map(c -> this.toDomain(c));
 	}
 	
@@ -53,7 +53,7 @@ public class JpaWeeklyWorkSettingRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the weekly work setting
 	 */
-	private WeeklyWorkSetting toDomain(KwwstWeeklyWorkSet entity){
+	private WeeklyWorkSetting toDomain(KscmtWeeklyWorkSet entity){
 		return new WeeklyWorkSetting(new JpaWeeklyWorkSettingGetMemento(entity));
 	}
 
@@ -71,11 +71,11 @@ public class JpaWeeklyWorkSettingRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KWWST_WEEKLY_WORK_SET (KwwstWeeklyWorkSet SQL)
-		CriteriaQuery<KwwstWeeklyWorkSet> cq = criteriaBuilder
-				.createQuery(KwwstWeeklyWorkSet.class);
+		CriteriaQuery<KscmtWeeklyWorkSet> cq = criteriaBuilder
+				.createQuery(KscmtWeeklyWorkSet.class);
 
 		// root data
-		Root<KwwstWeeklyWorkSet> root = cq.from(KwwstWeeklyWorkSet.class);
+		Root<KscmtWeeklyWorkSet> root = cq.from(KscmtWeeklyWorkSet.class);
 
 		// select root
 		cq.select(root);
@@ -85,14 +85,14 @@ public class JpaWeeklyWorkSettingRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwwstWeeklyWorkSet_.kwwstWeeklyWorkSetPK).get(KwwstWeeklyWorkSetPK_.cid),
+				root.get(KscmtWeeklyWorkSet_.kscmtWeeklyWorkSetPK).get(KscmtWeeklyWorkSetPK_.cid),
 				companyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KwwstWeeklyWorkSet> query = em.createQuery(cq);
+		TypedQuery<KscmtWeeklyWorkSet> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))

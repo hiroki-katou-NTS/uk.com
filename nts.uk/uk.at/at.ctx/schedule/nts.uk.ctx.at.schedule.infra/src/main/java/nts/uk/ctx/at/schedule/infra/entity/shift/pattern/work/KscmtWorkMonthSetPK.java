@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -15,13 +16,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KwwstWeeklyWorkSetPK.
+ * The Class KscmtWorkMonthSetPK.
  */
+
 @Getter
 @Setter
 @Embeddable
-public class KwwstWeeklyWorkSetPK implements Serializable {
-    
+public class KscmtWorkMonthSetPK implements Serializable {
+
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
@@ -31,19 +33,36 @@ public class KwwstWeeklyWorkSetPK implements Serializable {
     @Column(name = "CID")
     private String cid;
     
-    /** The day of week. */
+    /** The m pattern cd. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "DAY_OF_WEEK")
-    private Integer dayOfWeek;
+    @Column(name = "M_PATTERN_CD")
+    private String mPatternCd;
+    
+    /** The ymd K. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "YMD_K")
+    private BigDecimal ymdK;
 
-    public KwwstWeeklyWorkSetPK() {
+    /**
+     * Instantiates a new kwmmt work month set PK.
+     */
+    public KscmtWorkMonthSetPK() {
     }
 
-	public KwwstWeeklyWorkSetPK(String cid, Integer dayOfWeek) {
+	/**
+	 * Instantiates a new kwmmt work month set PK.
+	 *
+	 * @param cid the cid
+	 * @param mPatternCd the m pattern cd
+	 * @param ymdK the ymd K
+	 */
+	public KscmtWorkMonthSetPK(String cid, String mPatternCd, BigDecimal ymdK) {
 		super();
 		this.cid = cid;
-		this.dayOfWeek = dayOfWeek;
+		this.mPatternCd = mPatternCd;
+		this.ymdK = ymdK;
 	}
     
 }
