@@ -15,6 +15,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         listWorkTime: KnockoutObservableArray<WorkTime>;
         patternStartDate: moment.Moment;
         patternEndDate: moment.Moment;
+        calendarStartDate: moment.Moment;
+        calendarEndDate: moment.Moment;
 
         patternReflection: PatternReflection;
         dailyPatternSetting: DailyPatternSetting;
@@ -52,13 +54,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.isOnScreenA = ko.observable(true);
 
             // Calendar component
-            self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // current system date.
+            self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
             self.cssRangerYM = {
             };
             self.optionDates = ko.observableArray<OptionDate>([]);
-            self.firstDay = 0; // sunday.
-            self.startDate = 1;
-            self.endDate = 31;
+            self.firstDay = 0; // default: sunday.
+            self.startDate = 1; // default: first date of month.
+            self.endDate = 31; // default: last date of month.
             self.workplaceId = ko.observable("0");
             self.workplaceName = ko.observable("");
             self.eventDisplay = ko.observable(false);
@@ -274,8 +276,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             let currentDate = moment(self.patternStartDate);
-            let firstDateOfMonth = moment(self.patternEndDate).startOf('month');
-            let lastDateOfMonth = moment(self.patternEndDate);
+            let firstDateOfMonth = moment(self.calendarStartDate);
+            let lastDateOfMonth = moment(self.calendarEndDate);
             let result: Array<OptionDate> = [];
 
             // Chay nguoc
@@ -288,6 +290,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         let dayOfPattern = 1;
                         // Day of pattern loop.
                         while (dayOfPattern <= dailyPatternValue.days) {
+                            // Break loop.
+                            if (currentDate.isBefore(firstDateOfMonth, 'day')) {
+                                break;
+                            }
                             // is current day = day off flag.
                             let isDayoff = false;
 
@@ -360,12 +366,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
 
             // Chay xuoi
-            while (currentDate.isSameOrBefore(lastDateOfMonth)) {
+            while (currentDate.isSameOrBefore(lastDateOfMonth, 'day')) {
                 // Work patterns loop.
                 self.dailyPatternSetting.listDailyPatternVal.forEach(dailyPatternValue => {
                     let dayOfPattern = 1;
                     // Day of pattern loop.
                     while (dayOfPattern <= dailyPatternValue.days) {
+                        // Break loop.
+                        if (currentDate.isAfter(lastDateOfMonth, 'day')) {
+                            break;
+                        }
                         // is current day = day off flag.
                         let isDayoff = false;
 
@@ -542,6 +552,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
                 self.patternStartDate = moment(parsedYm, 'YYYY-MM').startOf('month');
                 self.patternEndDate = moment(parsedYm, 'YYYY-MM').endOf('month');
+                self.calendarStartDate = moment(self.patternStartDate); 
+                self.calendarEndDate = moment(self.patternEndDate); 
             }
         }
 
@@ -579,8 +591,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Is on screen B.
             if (startDate && endDate) {
                 self.isOnScreenA(false);
-                self.patternStartDate = moment(startDate, 'YYYY-MM-DD');
-                self.patternEndDate = moment(endDate, 'YYYY-MM-DD');
+                self.calendarStartDate = moment(startDate, 'YYYY-MM-DD'); //TODO: man hinh cha tra ve theo format nao?
+                self.calendarEndDate = moment(endDate, 'YYYY-MM-DD');
+                self.startDate = self.calendarStartDate.date();
+                self.endDate = self.calendarEndDate.date();
             }
         }
 
