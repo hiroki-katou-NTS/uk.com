@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.bs.person.dom.person.newlayout;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,6 +19,8 @@ public interface NewLayoutReposotory {
 	
 	void remove(String layoutID);
 	
-	Optional<NewLayout> findSingleLayout(String layoutID);
+	Optional<NewLayout> getDetailNewLayout(String layoutID);
+	
+	List<NewLayout> getAllNewLayout();
 
 }
