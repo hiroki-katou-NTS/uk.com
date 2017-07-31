@@ -84,13 +84,15 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 		// Create Query
 		TypedQuery<KcbmtCompanyWorkSet> query = em.createQuery(cq);
 
-		if (CollectionUtil.isEmpty(query.getResultList())) {
+		List<KcbmtCompanyWorkSet> entities = query.getResultList();
+
+		if (CollectionUtil.isEmpty(entities)) {
 			return Optional.empty();
 		}
 
 		// return query.getResultList().stream().map(item ->
 		// this.toDomain(item)).collect(Collectors.toList());
-		List<KcbmtCompanyWorkSet> entities = query.getResultList();
+		
 		return Optional.of(this.toDomain(entities));
 	}
 
