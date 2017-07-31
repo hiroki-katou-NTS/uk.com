@@ -15,11 +15,11 @@ module nts.uk.com.view.cas001.c.viewmodel {
             $("#roles").igGrid({
                 columns: [
                     {
-                        headerText: resource.getText('#CAS001_7'), key: 'selfAuth', width: "40px", height: "40px", template: "<input type='checkbox' checked='${selfAuth} tabindex='1''/>"
+                        headerText: resource.getText('CAS001_7'), key: 'selfAuth', width: "40px", height: "40px", template: "<input type='checkbox' checked='${selfAuth} tabindex='1''/>"
                     }
                     ,
-                    { headerText: resource.getText('#CAS001_8'), key: "roleCode", dataType: "string", width: "90px", height: "40px" },
-                    { headerText: resource.getText('#CAS001_9'), key: "roleName", dataType: "string", width: "120px", height: "40px" },
+                    { headerText: resource.getText('CAS001_8'), key: "roleCode", dataType: "string", width: "90px", height: "40px" },
+                    { headerText: resource.getText('CAS001_9'), key: "roleName", dataType: "string", width: "120px", height: "40px" },
                     { headerText: '説明', key: 'description', width: "35px", hidden: true, height: "40px" },
 
                 ],
