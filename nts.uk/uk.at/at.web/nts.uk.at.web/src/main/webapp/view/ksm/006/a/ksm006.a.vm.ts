@@ -184,8 +184,8 @@ module nts.uk.at.view.ksm006.a {
                             }
                         });
                         self.companyId = data.companyId;
-                        $('#focus-btn').focus();                        
                     }
+                    $('#focus-btn').focus();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -332,7 +332,7 @@ module nts.uk.at.view.ksm006.a {
                 self.isShowClassifyTab(false);
                 self.isShowWorkplaceTab(false);
                 self.findCompanyBasicWork();
-//                $('#focus-btn').focus();
+                $('#focus-btn').focus();
             }
             
             // SwitchTo Workplace Tab
@@ -346,7 +346,6 @@ module nts.uk.at.view.ksm006.a {
                     for (var i = 0; i < data.length; i++) {
                         self.workplaceAlreadySetList.push(new UnitAlreadySettingModel(data[i], true));
                     }
-//                    self.workplaceAlreadySetList(data);
                 });
                  
                 // Selected Item subscribe
@@ -356,17 +355,13 @@ module nts.uk.at.view.ksm006.a {
                         service.findWorkplaceBasicWork(data).done(function(data1: WorkplaceBasicWorkFindDto) {
                             if (data != undefined) {
                                 self.bindWorkplaceBasicWork(data1);
-                                // Focus on WorkplaceList
-                                $('#workplace-list').focus();
                             }
                         });
                     }
 
                 });
                 // Reload Workplace List
-                $('#workplace-list').ntsTreeComponent(self.workplaceGrid);
-                // Focus on WorkplaceList
-                $('#workplace-list').focus();
+                $('#workplace-list').ntsTreeComponent(self.workplaceGrid).done(() => $('#workplace-list').focus());
             }
             
             // Switch To Classification Tab
@@ -384,7 +379,7 @@ module nts.uk.at.view.ksm006.a {
 //                    self.classifiAlreadySetList(data);
                 })
                 // Reload Classification List
-                $('#classification-list').ntsListComponent(self.classificationGrid);
+                $('#classification-list').ntsListComponent(self.classificationGrid).done(() => $('#classification-list').focus());
                 
                 // SelectedClassification Subscribe
                 self.selectedClassifi.subscribe(function(data: string) {
