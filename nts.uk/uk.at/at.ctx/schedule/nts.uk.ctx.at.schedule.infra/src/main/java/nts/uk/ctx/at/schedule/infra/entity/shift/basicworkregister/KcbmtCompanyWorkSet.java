@@ -6,13 +6,10 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,14 +32,10 @@ public class KcbmtCompanyWorkSet extends UkJpaEntity implements Serializable {
 	protected KcbmtCompanyWorkSetPK kcbmtCompanyWorkSetPK;
 
 	/** The worktype code. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "WORK_TYPE_CD")
 	private String worktypeCode;
 	
 	/** The working code. */
-	@Basic(optional = false)
-	@Null
 	@Column(name = "WORKING_CD")
 	private String workingCode;
 

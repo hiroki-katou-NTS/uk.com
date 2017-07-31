@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSet;
 
 /**
@@ -29,7 +28,10 @@ public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento
 	 */
 	public JpaCompanyBasicWorkGetMemento(List<KcbmtCompanyWorkSet> typeValue) {
 		super();
-		this.typeValue = typeValue;	
+		this.typeValue = typeValue;
+		if (this.typeValue == null) {
+			this.typeValue = new ArrayList<>();
+		}	
 	}
 
 	/*
@@ -39,8 +41,8 @@ public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento
 	 * CompanyBasicWorkGetMemento#getCompanyId()
 	 */
 	@Override
-	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.get(0).getKcbmtCompanyWorkSetPK().getCid());
+	public String getCompanyId() {
+		return this.typeValue.get(0).getKcbmtCompanyWorkSetPK().getCid();
 	}
 
 	/*
