@@ -191,8 +191,10 @@ module kcp.share.tree {
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
                             self.addAlreadySettingAttr(self.backupItemList(), newAlreadySettings);
-                            self.itemList(self.backupItemList());
                             
+                            // filter data, not change selected workplace id
+                            let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
+                            self.itemList(subItemList);
                         });
                     }
                     
@@ -429,10 +431,8 @@ module kcp.share.tree {
                 
                 // find sub list unit model by level
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
-                if (subItemList.length > 0) {
+//                if (subItemList.length > 0) {
                     self.itemList(subItemList);
-//                    self.selectedWorkplaceIds(self.isMultiple ? [subItemList[0].workplaceId] : subItemList[0]
-//                        .workplaceId);
                     self.initSelectedValue(self.itemList());
                     if (!data || !$input) {
                         return;
@@ -442,7 +442,7 @@ module kcp.share.tree {
                             $('#combo-box-tree-component').focus();
                         });
                     });
-                }
+//                }
             }
         }
         
