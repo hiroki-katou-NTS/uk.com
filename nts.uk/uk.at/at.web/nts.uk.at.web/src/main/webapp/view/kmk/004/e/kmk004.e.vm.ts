@@ -19,10 +19,12 @@ module nts.uk.at.view.kmk004.e {
                    if(val){
                         self.usageUnitSettingModel.employment(val);    
                         self.checkValueCompanySetting(1);
+                        $('#radio-group-display-setting').attr('tabindex', '2');
                    } else {
                        self.checkValueCompanySetting(3);
                        self.usageUnitSettingModel.workPlace(false);
                        self.usageUnitSettingModel.employment(false);
+                       $('#radio-group-display-setting').attr('tabindex', '-1');
                    }
                 });
                 self.checkValueCompanySetting.subscribe(function(val: number){
