@@ -23,41 +23,219 @@
 
 			<div id="functions-area">
 				<div id="functions-area-content">
-					<button class="large" data-bind="click : setNewMode">#{i18n.getText('KMK008_40')}</button>
-					<button class="large proceed button-margin-left"
-						data-bind="click : addOrUpdateClick, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
-					<button class="large danger"
-						data-bind="click: removeData, enable: deleteEnable">#{i18n.getText('KMK008_16')}</button>
-					<button class="large" data-bind="click: closeDialogK">#{i18n.getText('KMK008_41')}</button>
+					<button tabindex="1" data-bind="click : register">#{i18n.getText('CPS005_10')}</button>
+					<button tabindex="2" class="proceed"
+						data-bind="click : addUpdateData, enable: $root.errors.isEmpty">#{i18n.getText('CPS005_11')}</button>
+					<button tabindex="3" class="danger" data-bind="click: removeData">#{i18n.getText('CPS005_58')}</button>
+					<button tabindex="4" data-bind="click: closedDialog">#{i18n.getText('CPS005_14')}</button>
 				</div>
 			</div>
 
-			<div id="contents-area">
-				<div id="contents-area-label">
-					<!-- <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',
-						['#Com_Person'])}</div>
-					<span class="label" data-bind="text: employeeCode"></span> <span
-						class="label" data-bind="text: employeeName"></span> -->
+			<div id="contents-area" data-bind="with: currentItemData">
+				<div id="contents-area-right">
+					<div
+						data-bind="ntsPanel:{width: '300px', height: '480px', direction: 'right', showIcon: false, visible: true}">
+						<div tabindex="5" style="width: 300px"
+							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'itemCode', comId: 'item-info-list', 
+									items: personInfoItemList, selected: perInfoItemSelectCode, selectedKey: 'itemCode', fields: ['itemName'], mode: 'igGrid'}" />
+						<table id="item-info-list"
+							data-bind="ntsGridList: {								
+								height: 430,
+								name: '#[CPS005_28]',
+								dataSource: personInfoItemList,
+								primaryKey: 'itemCode',
+								columns: [
+									 { headerText: '', key: 'itemCode', hidden: true },
+                					 { headerText: '#{i18n.getText('CPS005_13')}', key: 'itemName', width: 283 }, 
+								],
+								multiple: false,
+								value: perInfoItemSelectCode
+							}">
+						</table>
+					</div>
 				</div>
-				<div class="contents-area-show-data">
+				<div id="contents-area-left">
+					<div data-bind="with: currentItemSelected">
+						<!-- Start perInfoItem selection is not fixed -->
+						<div data-bind="visible: !fixedIsSelected() ">
+							<div
+								class="valign-center control-group control-group-margin-custom">
+								<div data-bind="ntsFormLabel: { required: true }"
+									class="margin-right-FormLabel">
+									<span data-bind="text: '#{i18n.getText('CPS005_13')}' "></span>
+								</div>
+								<input tabindex="6"
+									data-bind="ntsTextEditor: {
+										name: '#[CPS005_13]',
+										value: itemNameKnockout,
+										constraint: '',
+										option: {
+							            	textmode: 'text',
+							            	placeholder: '',
+							            	width: '250px',
+							            	textalign: 'left'
+							            },
+										required: true,
+										enable: true,
+										readonly: false,
+										immediate: false}" />
+							</div>
 
-					<!-- <div class="valign-center control-group">
-						<div id="year-alarm-time-label"
-							data-bind="ntsFormLabel: { required: true }">
-							<span data-bind="text: $parent.yearAlarmTimeLabel"></span>
+							<div
+								class="valign-center control-group control-group-margin-custom">
+								<div data-bind="ntsFormLabel: { required: true }"
+									class="margin-right-FormLabel">
+									<span data-bind="text: '#{i18n.getText('CPS005_15')}' "></span>
+								</div>
+								<div tabindex="7" id="combo-box"
+									data-bind="ntsComboBox: {
+									name: '#[CPS005_15]',
+									options: $parent.dataTypeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 6,
+									value: dataType,
+									optionsText: 'localizedName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+								</div>
+							</div>
+
+							<!-- Start dataTypeEnum is selected value 1 - 文字列(String) -->
+							<div id="data-type-value-string">
+								<div
+									class="valign-center control-group control-group-margin-custom">
+									<div data-bind="ntsFormLabel: { required: true }"
+										class="margin-right-FormLabel">
+										<span data-bind="text: '#{i18n.getText('CPS005_16')}' "></span>
+									</div>
+									<div tabindex="8" id="combo-box"
+										data-bind="ntsComboBox: {
+									name: '#[CPS005_16]',
+									options: $parent.stringItemTypeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 5,
+									value: stringItemType,
+									optionsText: 'localizedName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</div>
+
+								<div
+									class="valign-center control-group control-group-margin-custom">
+									<div data-bind="ntsFormLabel: { required: true }"
+										class="margin-right-FormLabel">
+										<span data-bind="text: '#{i18n.getText('CPS005_17')}' "></span>
+									</div>
+									<input tabindex="9"
+										data-bind="ntsTextEditor: {
+											name: '#[CPS005_17]',
+											value: stringItemLeng,
+											constraint: '',
+											option: {
+								            	textmode: 'text',
+								            	placeholder: '',
+								            	width: '175px',
+								            	textalign: 'left'
+								            },
+											required: true,
+											enable: true,
+											readonly: false,
+											immediate: false}" />
+								</div>
+								<div class="valign-center control-group control-group-margin-custom">
+									<div data-bind="ntsFormLabel: { required: false }"
+										class="margin-right-FormLabel">
+										<span data-bind="text: '#{i18n.getText('CPS005_8')}' "></span>
+									</div>
+									<div tabindex="10"
+										data-bind="ntsSwitchButton: {
+										name: '#[CPS005_8]',
+										options: $parent.stringItemDataTypeEnum,
+										optionsValue: 'value',
+										optionsText: 'localizedName',
+										value: stringItemDataType,
+										enable: true }">
+									</div>
+									<button tabindex="11"
+										data-bind="ntsHelpButton: {image: '../image/data-type.png', position: 'right top', enable: true }">?</button>
+								</div>
+							</div>
+							<!-- End dataTypeEnum is selected value 1 - 文字列(String) -->
+							
+							<!-- Start dataType is selected value 2 - 数値(Numeric) -->
+							<div id="data-type-value-numeric">
+								<div
+									class="valign-center control-group control-group-margin-custom">
+									<div data-bind="ntsFormLabel: { required: true }"
+										class="margin-right-FormLabel">
+										<span data-bind="text: '#{i18n.getText('CPS005_18')}' "></span>
+									</div>
+									<div tabindex="12"
+										data-bind="ntsSwitchButton: {
+										name: '#[CPS005_18]',
+										options: $parent.numericItemAmountAtrEnum,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: numericItemAmountAtr,
+										enable: true }">
+									</div>
+								</div>
+								<div
+									class="valign-center control-group control-group-margin-custom">
+									<div data-bind="ntsFormLabel: { required: true }"
+										class="margin-right-FormLabel">
+										<span data-bind="text: '#{i18n.getText('CPS005_18')}' "></span>
+									</div>
+									<div tabindex="12"
+										data-bind="ntsSwitchButton: {
+										name: '#[CPS005_18]',
+										options: $parent.numericItemAmountAtrEnum,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: numericItemAmountAtr,
+										enable: true }">
+									</div>
+								</div>
+								<div
+									class="valign-center control-group control-group-margin-custom">
+									<div data-bind="ntsFormLabel: { required: true }"
+										class="margin-right-FormLabel">
+										<span data-bind="text: '#{i18n.getText('CPS005_17')}' "></span>
+									</div>
+									<input tabindex="9"
+										data-bind="ntsTextEditor: {
+											name: '#[CPS005_17]',
+											value: stringItemLeng,
+											constraint: '',
+											option: {
+								            	textmode: 'text',
+								            	placeholder: '',
+								            	width: '175px',
+								            	textalign: 'left'
+								            },
+											required: true,
+											enable: true,
+											readonly: false,
+											immediate: false}" />
+								</div>
+								
+							</div>
+							<!-- End dataType is selected value 2 - 数値(Numeric) -->
+							
+							
 						</div>
-						<input id="txt-year-error-time"
-							data-bind="ntsTimeEditor: {
-								name: '#[KMK008_43]',
-								constraint: $parent.constraintAlarmTime,
-								value:alarmOneYearOrYearMonth,
-								inputFormat: 'time',
-								mode: 'time',
-								enable: true,
-								readonly: false,
-								required: false }" />
-					</div> -->
-					
+						<!-- End perInfoItem selection is not fixed -->
+						
+						
+
+					</div>
 				</div>
 			</div>
 		</ui:define>
