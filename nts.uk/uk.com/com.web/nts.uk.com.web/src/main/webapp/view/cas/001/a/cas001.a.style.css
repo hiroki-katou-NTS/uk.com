@@ -76,20 +76,12 @@
 	width: 50px;
 }
 
-#A3_toggle {
-	width: 430px;
-	margin-bottom: 30px;
-	clear: both;
-}
-
 #padding_left_20 {
 	padding-left: 20px;
 }
 
-#A4_toggle {
-	width: 750px;
-	margin-top: 10px;
-	clear: both;
+#file_permission_settings_cover {
+	width: 820px;
 }
 
 #file_permission_settings {
@@ -156,6 +148,10 @@
 	clear: both;
 	margin: 15px 0px 0px 15px;
 	float: left;
+}
+
+#role_auth_cover {
+	width: 550px;
 }
 
 #A3_004 {
