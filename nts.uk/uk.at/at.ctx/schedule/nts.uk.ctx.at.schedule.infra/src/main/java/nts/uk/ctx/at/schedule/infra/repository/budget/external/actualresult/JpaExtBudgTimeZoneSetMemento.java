@@ -6,16 +6,14 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgTimeZoneSetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneVal;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTime;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTimePK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTimeVal;
 
 /**
  * The Class JpaExtBudgTimeZoneSetMemento.
@@ -26,7 +24,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExt
 public class JpaExtBudgTimeZoneSetMemento<T> implements ExtBudgTimeZoneSetMemento<T> {
 
     /** The entity. */
-    private KscdtExtBudgetTime entity;
+    private List<KscdtExtBudgetTime> lstEntity;
 
     /**
      * Instantiates a new jpa ext budg time zone set memento.
@@ -34,22 +32,8 @@ public class JpaExtBudgTimeZoneSetMemento<T> implements ExtBudgTimeZoneSetMement
      * @param entity
      *            the entity
      */
-    public JpaExtBudgTimeZoneSetMemento(KscdtExtBudgetTime entity) {
-        if (entity != null && entity.getKbtdtExtBudgetTimePK() == null) {
-            entity.setKbtdtExtBudgetTimePK(new KscdtExtBudgetTimePK());
-        }
-        this.entity = entity;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
-     * ExtBudgTimeZoneSetMemento#setCompanyId(java.lang.String)
-     */
-    @Override
-    public void setCompanyId(String companyId) {
-        this.entity.getKbtdtExtBudgetTimePK().setCid(companyId);
+    public JpaExtBudgTimeZoneSetMemento(List<KscdtExtBudgetTime> lstEntity) {
+        this.lstEntity = lstEntity;
     }
 
     /*
@@ -60,22 +44,15 @@ public class JpaExtBudgTimeZoneSetMemento<T> implements ExtBudgTimeZoneSetMement
      */
     @Override
     public void setActualValues(List<ExternalBudgetTimeZoneVal<T>> actualValues) {
-        List<KscdtExtBudgetTimeVal> listValue = this.entity.getListValue();
-        if (CollectionUtil.isEmpty(listValue)) {
-            listValue = actualValues.stream().map(domain -> {
-                KscdtExtBudgetTimeVal entityVal = new KscdtExtBudgetTimeVal();
-                JpaExtBudgTimeZoneValSetMemento<T> memento = new JpaExtBudgTimeZoneValSetMemento<T>(entityVal);
-                domain.saveToMememto(memento);
-                return entityVal;
-            }).collect(Collectors.toList());
-        } else {
-            for (int i = 0; i < listValue.size(); i++) {
-                ExternalBudgetTimeZoneVal<T> objectVal = actualValues.get(i);
-                KscdtExtBudgetTimeVal entityVal = listValue.get(i);
-                JpaExtBudgTimeZoneValSetMemento<T> memento = new JpaExtBudgTimeZoneValSetMemento<T>(entityVal);
-                objectVal.saveToMememto(memento);
-            }
-        }
+        // convert list entity to map(key: PeriodTimeNo, value: KscdtExtBudgetTime)
+        Map<Integer, KscdtExtBudgetTime> mapEntity = lstEntity.stream().collect(
+                Collectors.toMap(entity -> entity.getKscdtExtBudgetTimePK().getPeriodTimeNo(), entity -> entity));
+        
+        actualValues.forEach(object -> {
+            JpaExtBudgTimeZoneValSetMemento<T> memento = new JpaExtBudgTimeZoneValSetMemento<T>(
+                    mapEntity.get(object.getTimePeriod()));
+            object.saveToMememto(memento);
+        });
     }
 
     /*
@@ -87,18 +64,16 @@ public class JpaExtBudgTimeZoneSetMemento<T> implements ExtBudgTimeZoneSetMement
      */
     @Override
     public void setExtBudgetCode(ExternalBudgetCd extBudgetCode) {
-        this.entity.setExtBudgetCd(extBudgetCode.v());
+        this.lstEntity.forEach(entity -> {
+            entity.getKscdtExtBudgetTimePK().setExtBudgetCd(extBudgetCode.v());
+        });
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
-     * ExtBudgTimeZoneSetMemento#setProcessDate(java.util.Date)
-     */
     @Override
-    public void setProcessDate(Date processDate) {
-        this.entity.setProcessD(GeneralDate.legacyDate(processDate));
+    public void setActualDate(Date actualDate) {
+        this.lstEntity.forEach(entity -> {
+            entity.getKscdtExtBudgetTimePK().setActualDate(GeneralDate.legacyDate(actualDate));
+        });
     }
 
     /*
@@ -109,7 +84,9 @@ public class JpaExtBudgTimeZoneSetMemento<T> implements ExtBudgTimeZoneSetMement
      */
     @Override
     public void setWorkplaceId(String workplaceId) {
-        this.entity.getKbtdtExtBudgetTimePK().setWkpid(workplaceId);
+        this.lstEntity.forEach(entity -> {
+            entity.getKscdtExtBudgetTimePK().setWkpid(workplaceId);
+        });
     }
 
 }

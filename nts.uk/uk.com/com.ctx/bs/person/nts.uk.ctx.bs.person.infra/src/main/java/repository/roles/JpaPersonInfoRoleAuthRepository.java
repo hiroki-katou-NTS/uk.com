@@ -14,7 +14,7 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
 
 @Stateless
 public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements PersonInfoRoleAuthRepository {
-	private final String SEL_NO_WHERE = "SELECT C FROM PpemtPersonRoleAuth c";
+	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonRoleAuth c";
 
 	private final String SEL_1 = SEL_NO_WHERE
 			+ " WHERE c.ppemtPersonRoleAuthPk.roleId =:roleId";

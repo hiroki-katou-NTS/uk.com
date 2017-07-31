@@ -10,13 +10,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
  * The Interface ExternalBudgetLogSetMemento.
  */
 public interface ExternalBudgetLogSetMemento {
-    
-    /**
-     * Sets the company id.
-     *
-     * @param companyId the new company id
-     */
-    void setCompanyId(String companyId);
 
     /**
      * Sets the external budget file name.

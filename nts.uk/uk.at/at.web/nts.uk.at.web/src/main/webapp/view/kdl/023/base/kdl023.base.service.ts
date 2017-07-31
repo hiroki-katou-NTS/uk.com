@@ -5,7 +5,7 @@ module nts.uk.at.view.kdl023.base.service {
         getWorkTime: 'at/shared/worktime/findByCompanyID',
         getWorkType: 'at/share/worktype/findAll',
         getAllPattern: 'ctx/at/share/vacation/setting/patterncalendar/getallpattcal',
-        getWeeklyWorkSetting: 'ctx/at/schedule/pattern/work/weekly/setting/findall'
+        getWeeklyWorkSetting: 'ctx/at/schedule/pattern/work/weekly/setting/findAll'
     }
 
     export function save(key: any, data: model.PatternReflection): JQueryPromise<void> {
@@ -28,18 +28,7 @@ module nts.uk.at.view.kdl023.base.service {
         return nts.uk.request.ajax(servicePath.getWorkTime);
     }
     export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
-        let dfd = $.Deferred();
-        // default la working day.
-        dfd.resolve({
-            monday: 0,
-            tuesday: 0,
-            wednesday: 2,
-            thursday: 0,
-            friday: 0,
-            saturday: 1,
-            sunday: 2,
-        });
-        return dfd.promise();
+        return nts.uk.request.ajax(servicePath.getWeeklyWorkSetting);
     }
 
     export module model {

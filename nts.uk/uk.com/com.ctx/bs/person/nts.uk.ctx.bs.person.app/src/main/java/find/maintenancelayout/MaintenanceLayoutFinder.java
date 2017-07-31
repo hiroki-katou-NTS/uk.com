@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
@@ -16,6 +17,7 @@ import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutReposi
  * @author laitv
  *
  */
+@Stateless
 public class MaintenanceLayoutFinder {
 
 	@Inject

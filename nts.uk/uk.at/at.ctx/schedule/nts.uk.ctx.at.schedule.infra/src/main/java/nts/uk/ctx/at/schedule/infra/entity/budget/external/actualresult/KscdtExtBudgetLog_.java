@@ -15,9 +15,6 @@ import nts.arc.time.GeneralDate;
 @StaticMetamodel(KscdtExtBudgetLog.class)
 public class KscdtExtBudgetLog_ {
     
-    /** The cid. */
-    public static volatile SingularAttribute<KscdtExtBudgetLog, String> cid;
-    
     /** The exe id. */
     public static volatile SingularAttribute<KscdtExtBudgetLog, String> exeId;
     

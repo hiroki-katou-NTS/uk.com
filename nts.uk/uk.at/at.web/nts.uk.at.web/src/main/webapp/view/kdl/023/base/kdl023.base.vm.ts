@@ -15,6 +15,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         listWorkTime: KnockoutObservableArray<WorkTime>;
         patternStartDate: moment.Moment;
         patternEndDate: moment.Moment;
+        calendarStartDate: moment.Moment;
+        calendarEndDate: moment.Moment;
 
         patternReflection: PatternReflection;
         dailyPatternSetting: DailyPatternSetting;
@@ -52,13 +54,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.isOnScreenA = ko.observable(true);
 
             // Calendar component
-            self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // current system date.
+            self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
             self.cssRangerYM = {
             };
             self.optionDates = ko.observableArray<OptionDate>([]);
-            self.firstDay = 0; // sunday.
-            self.startDate = 1;
-            self.endDate = 31;
+            self.firstDay = 0; // default: sunday.
+            self.startDate = 1; // default: first date of month.
+            self.endDate = 31; // default: last date of month.
             self.workplaceId = ko.observable("0");
             self.workplaceName = ko.observable("");
             self.eventDisplay = ko.observable(false);
@@ -75,6 +77,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
+
+            // Get param from parent screen.
+            self.getParamFromCaller();
+
+            // Set pattern range.
+            self.setPatternRange();
+
+            // Load data.
             $.when(self.loadHolidayList(),
                 self.loadWorktypeList(),
                 self.loadWorktimeList(),
@@ -82,19 +92,25 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.loadWeeklyWorkSetting())
                 .done(() => self.loadPatternReflection()
                     .done(() => {
+
+                        // Select first daily pattern if none selected.
+                        if (!self.selectedDailyPatternCode()) {
+                            self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
+                        }
+
                         // Define isReflectionMethodEnable after patternReflection is loaded.
                         self.isReflectionMethodEnable = ko.computed(() => {
                             return self.patternReflection.statutorySetting.useClassification() ||
                                 self.patternReflection.nonStatutorySetting.useClassification() ||
                                 self.patternReflection.holidaySetting.useClassification()
                         });
-                        self.getParamFromCaller();
+
                         // Xu ly hien thi calendar.
-                        self.setPatternRange();
                         self.optionDates(self.getOptionDates());
+
+                        // Resolve.
                         dfd.resolve();
                     })).fail(res => {
-                        console.log(res);
                         nts.uk.ui.dialog.alert(res.message);
                     }).always(() => {
                         nts.uk.ui.block.clear();
@@ -143,11 +159,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         public onBtnApplySettingClicked(): void {
             let self = this;
             nts.uk.ui.block.invisible();
+
             // Reload calendar
             self.setPatternRange();
             self.optionDates(self.getOptionDates());
+
             // Set focus control
             $('#component-calendar-kcp006').focus();
+
+            // Save pattern reflection domain.
             service.save(self.getDomainKey(), ko.toJS(self.patternReflection)).always(() => {
                 nts.uk.ui.block.clear();
             });
@@ -161,14 +181,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let dfd = $.Deferred<void>();
             service.find(self.getDomainKey()).done(function(patternReflection: service.model.PatternReflection) {
                 let data;
-                // Co data
+                // Data found.
                 if (patternReflection) {
                     data = patternReflection;
                 }
-                // Khong co data
+                // Data not found
                 else {
-                    data = self.getDefaultPatternReflection();
+                    data = self.getDefaultPatternReflection(); // Set default data.
                 }
+
+                // Init patternReflection
                 self.patternReflection = new PatternReflection(data);
 
                 // Resolve.
@@ -178,12 +200,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
-         * Get key
+         * Abstract method get key
          */
         abstract getDomainKey(): string;
 
         /**
-         * Get default PatternReflection
+         * Abstract method get default PatternReflection
          */
         abstract getDefaultPatternReflection(): service.model.PatternReflection;
 
@@ -230,7 +252,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private loadHolidayList(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            service.getHolidayByListDate(self.getListDateOfMonth()).done(function(list: Array<PublicHoliday>) {
+            service.getHolidayByListDate(self.getListDateOnCalendar()).done(function(list: Array<PublicHoliday>) {
                 self.listHoliday = list;
                 dfd.resolve();
             });
@@ -274,11 +296,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             let currentDate = moment(self.patternStartDate);
-            let firstDateOfMonth = moment(self.patternEndDate).startOf('month');
-            let lastDateOfMonth = moment(self.patternEndDate);
+            let firstDateOfMonth = moment(self.calendarStartDate);
+            let lastDateOfMonth = moment(self.calendarEndDate);
             let result: Array<OptionDate> = [];
 
-            // Chay nguoc
+            // Backward processing
             if (currentDate.isAfter(firstDateOfMonth, 'day')) {
                 // Previous day on calendar.
                 currentDate = currentDate.subtract(1, 'days');
@@ -288,10 +310,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         let dayOfPattern = 1;
                         // Day of pattern loop.
                         while (dayOfPattern <= dailyPatternValue.days) {
+                            // Break loop.
+                            if (currentDate.isBefore(firstDateOfMonth, 'day')) {
+                                break;
+                            }
                             // is current day = day off flag.
                             let isDayoff = false;
 
-                            // Neu la holiday.
+                            // Is holiday
                             if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
                                 isDayoff = true;
                                 result.push({
@@ -303,9 +329,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                     ]
                                 });
                             }
-                            // Neu khong phai la holiday
+                            // Is not holiday
                             else {
-                                // Ngay nghi theo luat
+                                // Is statutory holiday
                                 if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
                                     isDayoff = true;
                                     result.push({
@@ -317,7 +343,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                         ]
                                     });
                                 }
-                                // Ngay nghi ngoai luat
+                                // Is non-statutory holiday
                                 else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
                                     isDayoff = true;
                                     result.push({
@@ -329,9 +355,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                         ]
                                     });
                                 }
-                                // Ngay di lam
+                                // Is working day.
                                 else {
-                                    let noSetting = nts.uk.resource.getText('KSM005_43');
+                                    let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
                                     let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
                                     let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
                                     result.push({
@@ -359,17 +385,21 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 currentDate = moment(self.patternStartDate);
             }
 
-            // Chay xuoi
-            while (currentDate.isSameOrBefore(lastDateOfMonth)) {
+            // Forward processing
+            while (currentDate.isSameOrBefore(lastDateOfMonth, 'day')) {
                 // Work patterns loop.
                 self.dailyPatternSetting.listDailyPatternVal.forEach(dailyPatternValue => {
                     let dayOfPattern = 1;
                     // Day of pattern loop.
                     while (dayOfPattern <= dailyPatternValue.days) {
+                        // Break loop.
+                        if (currentDate.isAfter(lastDateOfMonth, 'day')) {
+                            break;
+                        }
                         // is current day = day off flag.
                         let isDayoff = false;
 
-                        // Neu la holiday.
+                        // Is holiday
                         if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
                             isDayoff = true;
                             result.push({
@@ -381,9 +411,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 ]
                             });
                         }
-                        // Neu khong phai la holiday
+                        // Is not holiday
                         else {
-                            // Ngay nghi theo luat
+                            // Is statutory holiday
                             if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
                                 isDayoff = true;
                                 result.push({
@@ -395,7 +425,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                     ]
                                 });
                             }
-                            // Ngay nghi ngoai luat
+                            // Is non-statutory holiday
                             else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
                                 isDayoff = true;
                                 result.push({
@@ -407,7 +437,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                     ]
                                 });
                             }
-                            // Ngay di lam
+                            // Is working day
                             else {
                                 let noSetting = nts.uk.resource.getText('KSM005_43');
                                 let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
@@ -461,15 +491,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
-         * Get list date of selected yearmonth.
+         * Get list date displaying on calendar.
          */
-        private getListDateOfMonth(): Array<string> {
+        private getListDateOnCalendar(): Array<string> {
             let self = this;
             let resultList = [];
-            let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
-            let currentDate = moment(parsedYm, 'YYYY-MM').startOf('month');
-            let endDate = moment(parsedYm, 'YYYY-MM').endOf('month');
-            while (currentDate.isSameOrBefore(endDate)) {
+            let currentDate = moment(self.calendarStartDate);
+            while (currentDate.isSameOrBefore(self.calendarEndDate)) {
                 resultList.push(currentDate.format('YYYYMMDD'));
                 currentDate.add(1, 'days');
             }
@@ -540,8 +568,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             if (self.isOnScreenA()) {
                 let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
+
+                // Set pattern range.
                 self.patternStartDate = moment(parsedYm, 'YYYY-MM').startOf('month');
                 self.patternEndDate = moment(parsedYm, 'YYYY-MM').endOf('month');
+
+                // Set calendar range.
+                self.calendarStartDate = moment(self.patternStartDate);
+                self.calendarEndDate = moment(self.patternEndDate);
             }
         }
 
@@ -571,16 +605,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if (selectedCode) {
                 self.selectedDailyPatternCode(selectedCode);
             }
-            // Select first item.
-            else {
-                self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
-            }
 
             // Is on screen B.
             if (startDate && endDate) {
                 self.isOnScreenA(false);
-                self.patternStartDate = moment(startDate, 'YYYY-MM-DD');
-                self.patternEndDate = moment(endDate, 'YYYY-MM-DD');
+                self.calendarStartDate = moment(startDate, 'YYYY-MM-DD'); //TODO: man hinh cha tra ve theo format nao?
+                self.calendarEndDate = moment(endDate, 'YYYY-MM-DD');
+                self.startDate = self.calendarStartDate.date();
+                self.endDate = self.calendarEndDate.date();
             }
         }
 

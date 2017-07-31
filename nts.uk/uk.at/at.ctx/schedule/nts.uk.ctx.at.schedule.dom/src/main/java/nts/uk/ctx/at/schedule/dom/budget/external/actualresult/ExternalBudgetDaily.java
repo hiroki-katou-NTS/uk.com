@@ -17,10 +17,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 @Getter
 public class ExternalBudgetDaily<T> extends AggregateRoot {
 
-    /** The company id. */
-    // 会社ID
-    private String companyId;
-    
     /** The actual value. */
     // 外部予算実績値
     private ExternalBudgetVal<T> actualValue;
@@ -44,7 +40,6 @@ public class ExternalBudgetDaily<T> extends AggregateRoot {
      */
     public ExternalBudgetDaily(ExternalBudgetDailyGetMemento<T> memento) {
         super();
-        this.companyId = memento.getCompanyId();
         this.actualValue = memento.getActualValue();
         this.extBudgetCode = memento.getExtBudgetCode();
         this.processDate = memento.getProcessDate();
@@ -57,7 +52,6 @@ public class ExternalBudgetDaily<T> extends AggregateRoot {
      * @param memento the memento
      */
     public void saveToMemento(ExternalBudgetDailySetMemento<T> memento) {
-        memento.setCompanyId(this.companyId);
         memento.setActualValue(this.actualValue);
         memento.setExtBudgetCode(this.extBudgetCode);
         memento.setProcessDate(this.processDate);

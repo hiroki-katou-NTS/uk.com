@@ -17,13 +17,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 public interface ExtBudgTimeZoneSetMemento<T> {
     
     /**
-     * Sets the company id.
-     *
-     * @param companyId the new company id
-     */
-    void setCompanyId(String companyId);
-
-    /**
      * Sets the actual values.
      *
      * @param actualValues the new actual values
@@ -38,11 +31,11 @@ public interface ExtBudgTimeZoneSetMemento<T> {
     void setExtBudgetCode(ExternalBudgetCd extBudgetCode);
 
     /**
-     * Sets the process date.
+     * Sets the actual date.
      *
-     * @param processDate the new process date
+     * @param actualDate the new actual date
      */
-    void setProcessDate(Date processDate);
+    void setActualDate(Date actualDate);
 
     /**
      * Sets the workplace id.

@@ -16,7 +16,7 @@ public interface ClassifiBasicWorkGetMemento {
 	 *
 	 * @return the company id
 	 */
-	CompanyId getCompanyId();
+	String getCompanyId();
 	
 	/**
 	 * Gets the classification code.

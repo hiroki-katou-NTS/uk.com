@@ -74,6 +74,16 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         update() {
             let self = this;
             self.selectedErrorAlarm().boldAtr() ? self.selectedErrorAlarm().boldAtr(1) : self.selectedErrorAlarm().boldAtr(0);
+            if(self.selectedErrorAlarm().name().trim() == ''){
+                self.selectedErrorAlarm().name('');
+                $("#errorAlarmWorkRecordName").focus();
+                return;
+            }
+            if(self.selectedErrorAlarm().displayMessage().trim() == ''){
+                self.selectedErrorAlarm().displayMessage('');
+                $("#messageDisplay").focus();
+                return;
+            }
             service.update(ko.mapping.toJS(self.selectedErrorAlarm)).done(() => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 let currentItem = self.selectedErrorAlarmCode();
