@@ -10,5 +10,5 @@
 #colorpicker {margin-left: 47px;}
 #messageDisplay {margin-left: 10px;}
 .settingTab {width: 515px;}
-#messageDisplay{vertical-align: top;height: 120px;width: 230px;margin-top: -15px;}
+#messageDisplay{vertical-align: text-top;height: 120px;width: 230px;margin-top: -15px;}
 #boldAtr{margin-left: 136px;}
