@@ -16,7 +16,7 @@ public interface UserSetMemento {
 	 *
 	 * @param userId the new user id
 	 */
-	public void setUserId(UserId userId);
+	public void setUserId(String userId);
 
     /**
      * Sets the password.

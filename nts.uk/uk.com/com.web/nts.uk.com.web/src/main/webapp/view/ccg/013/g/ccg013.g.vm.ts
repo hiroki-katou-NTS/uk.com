@@ -54,8 +54,13 @@ module ccg013.g.viewmodel {
                                 var webPerson = _.find(self.items(), function(currentItem: ItemModel) {
                                     return currentItem.webMenuCode == item.webMenuCode;
                                 });
-                                self.currentCodeList.push(webPerson); })}
-                    });}
+                                if (webPerson) {
+                                    self.currentCodeList.push(webPerson); 
+                                }
+                            });
+                        }
+                    });
+                }
             });
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG013_76"), prop: 'webMenuCode', key: 'webMenuCode', width: 55 },
