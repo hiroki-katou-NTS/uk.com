@@ -2,50 +2,48 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting;
+package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
 
 import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KmpstMonthPatternSet.
+ * The Class KscmtWeeklyWorkSet.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_MONTH_PATTERN_SET")
-public class KmpstMonthPatternSet extends JpaEntity implements Serializable {
-
+@Table(name = "KSCMT_WEEKLY_WORK_SET")
+public class KscmtWeeklyWorkSet extends UkJpaEntity implements Serializable {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The sid. */
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SID")
-    private String sid;
+    /** The kscmt weekly work set PK. */
+    @EmbeddedId
+    protected KscmtWeeklyWorkSetPK kscmtWeeklyWorkSetPK;
     
-    /** The m pattern cd. */
+    /** The work day div. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_PATTERN_CD")
-    private String mPatternCd;
+    @Column(name = "WORK_DAY_ATR")
+    private int workDayAtr;
 
-    public KmpstMonthPatternSet() {
+    public KscmtWeeklyWorkSet() {
     }
 
-    public KmpstMonthPatternSet(String sid) {
-        this.sid = sid;
+    public KscmtWeeklyWorkSet(KscmtWeeklyWorkSetPK kwwstWeeklyWorkSetPK) {
+        this.kscmtWeeklyWorkSetPK = kwwstWeeklyWorkSetPK;
     }
 
 	/* (non-Javadoc)
@@ -53,8 +51,7 @@ public class KmpstMonthPatternSet extends JpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.sid;
+		return this.kscmtWeeklyWorkSetPK;
 	}
-
-   
+    
 }

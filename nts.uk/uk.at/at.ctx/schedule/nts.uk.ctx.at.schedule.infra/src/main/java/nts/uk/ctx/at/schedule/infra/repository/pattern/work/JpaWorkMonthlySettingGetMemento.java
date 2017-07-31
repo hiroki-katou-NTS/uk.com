@@ -10,8 +10,8 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkingCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwmmtWorkMonthSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwmmtWorkMonthSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -20,16 +20,16 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaWorkMonthlySettingGetMemento implements WorkMonthlySettingGetMemento{
 
 	/** The entity. */
-	private KwmmtWorkMonthSet entity;
+	private KscmtWorkMonthSet entity;
 	
 	/**
 	 * Instantiates a new jpa work monthly setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkMonthlySettingGetMemento(KwmmtWorkMonthSet entity) {
-		if (entity.getKwmmtWorkMonthSetPK() == null) {
-			entity.setKwmmtWorkMonthSetPK(new KwmmtWorkMonthSetPK());
+	public JpaWorkMonthlySettingGetMemento(KscmtWorkMonthSet entity) {
+		if (entity.getKscmtWorkMonthSetPK() == null) {
+			entity.setKscmtWorkMonthSetPK(new KscmtWorkMonthSetPK());
 		}
 		this.entity = entity;
 	}
@@ -42,7 +42,7 @@ public class JpaWorkMonthlySettingGetMemento implements WorkMonthlySettingGetMem
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKwmmtWorkMonthSetPK().getCid());
+		return new CompanyId(this.entity.getKscmtWorkMonthSetPK().getCid());
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class JpaWorkMonthlySettingGetMemento implements WorkMonthlySettingGetMem
 	 */
 	@Override
 	public BigDecimal getYmdK() {
-		return this.entity.getKwmmtWorkMonthSetPK().getYmdK();
+		return this.entity.getKscmtWorkMonthSetPK().getYmdK();
 	}
 
 	/*
@@ -86,7 +86,7 @@ public class JpaWorkMonthlySettingGetMemento implements WorkMonthlySettingGetMem
 	 */
 	@Override
 	public MonthlyPatternCode getMonthlyPatternCode() {
-		return new MonthlyPatternCode(this.entity.getKwmmtWorkMonthSetPK().getMPatternCd());
+		return new MonthlyPatternCode(this.entity.getKscmtWorkMonthSetPK().getMPatternCd());
 	}
 
 }
