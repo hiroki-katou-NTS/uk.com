@@ -35,7 +35,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button class="proceed" data-bind="click: function(){submitCalendar(0)}, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_1')}</button>
-					<button data-bind="click: openDialogD, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_2')}</button>
+					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_2')}</button>
 					<button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_3')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(0)}, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty())">#{i18n.getText('KSM004_4')}</button>
 				</div>
@@ -89,7 +89,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
 					<button class="proceed" data-bind="click: function(){submitCalendar(1)}">#{i18n.getText('KSM004_1')}</button>
-					<button data-bind="click: openDialogD">#{i18n.getText('KSM004_2')}</button>
+					<button data-bind="click: function(){openDialogD(1)}">#{i18n.getText('KSM004_2')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(1)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 				</div>
 				<div class="contents-area">
@@ -146,7 +146,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Class')}</span>
 					<button class="proceed" data-bind="click: function(){submitCalendar(2)}">#{i18n.getText('KSM004_1')}</button>
-					<button data-bind="click: openDialogD">#{i18n.getText('KSM004_2')}</button>
+					<button data-bind="click: function(){openDialogD(2)}">#{i18n.getText('KSM004_2')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(2)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 				</div>
 				<div class="contents-area">
