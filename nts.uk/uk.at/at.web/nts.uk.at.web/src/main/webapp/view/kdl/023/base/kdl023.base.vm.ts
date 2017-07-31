@@ -21,6 +21,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         weeklyWorkSetting: WeeklyWorkSetting;
         listHoliday: Array<any>;
         isReflectionMethodEnable: KnockoutComputed<boolean>;
+        isOnScreenA: KnockoutObservable<boolean>;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -48,6 +49,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.selectedDailyPatternCode.subscribe(code => {
                 self.loadDailyPatternDetail(code);
             });
+            self.isOnScreenA = ko.observable(true);
 
             // Calendar component
             self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // current system date.
@@ -536,9 +538,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private setPatternRange(): void {
             let self = this;
-            let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
-            self.patternStartDate = moment(parsedYm, 'YYYY-MM').startOf('month');
-            self.patternEndDate = moment(parsedYm, 'YYYY-MM').endOf('month');
+            if (self.isOnScreenA()) {
+                let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
+                self.patternStartDate = moment(parsedYm, 'YYYY-MM').startOf('month');
+                self.patternEndDate = moment(parsedYm, 'YYYY-MM').endOf('month');
+            }
         }
 
         /**
@@ -571,7 +575,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             else {
                 self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
             }
+
+            // Is on screen B.
+            if (startDate && endDate) {
+                self.isOnScreenA(false);
+                self.patternStartDate = moment(startDate, 'YYYY-MM-DD');
+                self.patternEndDate = moment(endDate, 'YYYY-MM-DD');
+            }
         }
+
     }
 
     class PatternReflection {
