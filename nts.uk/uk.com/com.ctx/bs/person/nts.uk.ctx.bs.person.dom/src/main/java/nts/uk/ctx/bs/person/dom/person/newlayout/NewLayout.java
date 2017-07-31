@@ -1,19 +1,27 @@
 package nts.uk.ctx.bs.person.dom.person.newlayout;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
-public class NewLayout extends AggregateRoot{
-	
-	String companyId;
-	LayoutID newLayoutID;
-	LayoutCode layoutCode;
-	LayoutName layoutName;
-	
-	public NewLayout(String companyId, LayoutID newLayoutID, LayoutCode layoutCode, LayoutName layoutName) {
-		super();
-		this.companyId = companyId;
-		this.newLayoutID = newLayoutID;
-		this.layoutCode = layoutCode;
-		this.layoutName = layoutName;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class NewLayout extends AggregateRoot {
+
+	private String companyId;
+
+	private String layoutID;
+
+	private LayoutCode layoutCode;
+
+	private LayoutName layoutName;
+
+	public static NewLayout createFromJavaType(String companyId, String layoutID, String layoutCode,
+			String layoutName) {
+		return new NewLayout(companyId, layoutID, new LayoutCode(layoutCode), new LayoutName(layoutName));
 	}
 }

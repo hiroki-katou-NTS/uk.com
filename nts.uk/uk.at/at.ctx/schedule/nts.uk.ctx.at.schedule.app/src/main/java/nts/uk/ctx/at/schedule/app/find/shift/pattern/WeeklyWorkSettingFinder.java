@@ -7,13 +7,12 @@ package nts.uk.ctx.at.schedule.app.find.shift.pattern;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.UserInfoDto;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingAllDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
@@ -60,13 +59,14 @@ public class WeeklyWorkSettingFinder {
 		return dto;
 	}
 	
+		
 	
 	/**
 	 * Find all.
 	 *
 	 * @return the list
 	 */
-	public List<WeeklyWorkSettingDto> findAll() {
+	public WeeklyWorkSettingAllDto findAll() {
 
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -74,33 +74,41 @@ public class WeeklyWorkSettingFinder {
 		// get company id
 		String companyId = loginUserContext.companyId();
 
-		// return data
-		return this.repository.findAll(companyId).stream().map(domain -> {
-			WeeklyWorkSettingDto dto = new WeeklyWorkSettingDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
-	}
-	
-	/**
-	 * Gets the user info.
-	 *
-	 * @return the user info
-	 */
-	public UserInfoDto getUserInfo() {
-		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
+		// data all company
+		List<WeeklyWorkSetting> weeklyWorkSettings = this.repository.findAll(companyId);
+		
+		WeeklyWorkSettingAllDto dto = new WeeklyWorkSettingAllDto();
+		
+		weeklyWorkSettings.forEach(weekly -> {
 
-		// get company id
-		String companyId = loginUserContext.companyId();
-
-		// get employee id
-		String employeeId = loginUserContext.employeeId();
-
-		// data return
-		UserInfoDto dto = new UserInfoDto();
-		dto.setCompanyId(companyId);
-		dto.setEmployeeId(employeeId);
+			switch (weekly.getDayOfWeek()) {
+			case MONDAY:
+				dto.setMonday(weekly.getWorkdayDivision().value);
+				break;
+			case TUESDAY:
+				dto.setTuesday(weekly.getWorkdayDivision().value);
+				break;
+			case WEDNESDAY:
+				dto.setWednesday(weekly.getWorkdayDivision().value);
+				break;
+			case THURSDAY:
+				dto.setThursday(weekly.getWorkdayDivision().value);
+				break;
+			case FRIDAY:
+				dto.setFriday(weekly.getWorkdayDivision().value);
+				break;
+			case SATURDAY:
+				dto.setSaturday(weekly.getWorkdayDivision().value);
+				break;
+			case SUNDAY:
+				dto.setSunday(weekly.getWorkdayDivision().value);
+				break;
+			default:
+				break;
+			}
+		});
+		
 		return dto;
 	}
+	
 }

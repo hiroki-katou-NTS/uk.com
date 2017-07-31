@@ -9,7 +9,7 @@ import java.util.Date;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyGetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbddtExtBudgetDaily;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDaily;
 
 /**
  * The Class JpaExternalBudgetDailyGetMemento.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbddtExt
 public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyGetMemento<T> {
 
     /** The entity. */
-    private KbddtExtBudgetDaily entity;
+    private KscdtExtBudgetDaily entity;
 
     /**
      * Instantiates a new jpa external budget daily get memento.
@@ -28,19 +28,8 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
      * @param entity
      *            the entity
      */
-    public JpaExternalBudgetDailyGetMemento(KbddtExtBudgetDaily entity) {
+    public JpaExternalBudgetDailyGetMemento(KscdtExtBudgetDaily entity) {
         this.entity = entity;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
-     * ExternalBudgetDailyGetMemento#getCompanyId()
-     */
-    @Override
-    public String getCompanyId() {
-        return this.entity.getKbddtExtBudgetDailyPK().getCid();
     }
 
     /*
@@ -52,30 +41,6 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
     @Override
     public ExternalBudgetVal<T> getActualValue() {
         return new ExternalBudgetVal<T>(this.entity.getActualVal());
-//        
-//        
-//        ExternalBudgetVal<T> a = new ExternalBudgetVal<T>();
-//        a.set
-//        
-//        switch (budgetAtr) {
-//        case TIME:
-//            ExtBudgetTime rawTimeVal = new ExtBudgetTime(this.entity.getActualVal());
-//            return new ExternalBudgetVal<ExtBudgetTime>(rawTimeVal);
-//        case PEOPLE:
-//            ExtBudgetNumberPerson rawPersonVal = new ExtBudgetNumberPerson(this.entity.getActualVal().intValue());
-//            return new ExternalBudgetVal<ExtBudgetNumberPerson>(rawPersonVal);
-//        case MONEY:
-//            ExtBudgetMoney rawMoneyVal = new ExtBudgetMoney(this.entity.getActualVal().intValue());
-//            return new ExternalBudgetVal<ExtBudgetMoney>(rawMoneyVal);
-//        case NUMERICAL:
-//            ExtBudgetNumericalVal rawNumericalVal = new ExtBudgetNumericalVal(this.entity.getActualVal().intValue());
-//            return new ExternalBudgetVal<ExtBudgetNumericalVal>(rawNumericalVal);
-//        case PRICE:
-//            ExtBudgetUnitPrice rawPriceVal = new ExtBudgetUnitPrice(this.entity.getActualVal().intValue());
-//            return new ExternalBudgetVal<ExtBudgetUnitPrice>(rawPriceVal);
-//        default:
-//            throw new RuntimeException("Not external budget attribute");
-//        }
     }
 
     /*
@@ -86,7 +51,7 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
      */
     @Override
     public ExternalBudgetCd getExtBudgetCode() {
-        return new ExternalBudgetCd(this.entity.getExtBudgetCd());
+        return new ExternalBudgetCd(this.entity.getKscdtExtBudgetDailyPK().getExtBudgetCd());
     }
 
     /*
@@ -97,7 +62,7 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
      */
     @Override
     public Date getProcessDate() {
-        return this.entity.getProcessD().date();
+        return this.entity.getKscdtExtBudgetDailyPK().getProcessD().date();
     }
 
     /*
@@ -108,7 +73,7 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
      */
     @Override
     public String getWorkplaceId() {
-        return this.entity.getKbddtExtBudgetDailyPK().getWkpid();
+        return this.entity.getKscdtExtBudgetDailyPK().getWkpid();
     }
 
 }

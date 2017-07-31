@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KCBMT_CLASSIFY_WORK_SET")
+@Table(name = "KSCMT_CLASSIFY_WORK_SET")
 public class KcbmtClassifyWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

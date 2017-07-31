@@ -191,9 +191,10 @@ module kcp.share.tree {
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
                             self.addAlreadySettingAttr(self.backupItemList(), newAlreadySettings);
-                            self.itemList(self.backupItemList());
                             
-                            //self.filterData(data, $input);
+                            // filter data, not change selected workplace id
+                            let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
+                            self.itemList(subItemList);
                         });
                     }
                     
@@ -212,9 +213,6 @@ module kcp.share.tree {
                 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
                    self.addIconToAlreadyCol();
-                   $('.tree-component-node-text-col').tooltip({
-                       track: true
-                   });
                 });
                 // defined function focus
                 $.fn.focusTreeGridComponent = function() {
@@ -252,7 +250,7 @@ module kcp.share.tree {
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string",
-                    template: "<td class='tree-component-node-text-col' title='${nodeText}'>${nodeText}</td>"}
+                    template: "<td class='tree-component-node-text-col'>${nodeText}</td>"}
             ];
             // If show Already setting.
             if (data.isShowAlreadySet) {
@@ -433,10 +431,8 @@ module kcp.share.tree {
                 
                 // find sub list unit model by level
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
-                if (subItemList.length > 0) {
+//                if (subItemList.length > 0) {
                     self.itemList(subItemList);
-//                    self.selectedWorkplaceIds(self.isMultiple ? [subItemList[0].workplaceId] : subItemList[0]
-//                        .workplaceId);
                     self.initSelectedValue(self.itemList());
                     if (!data || !$input) {
                         return;
@@ -446,7 +442,7 @@ module kcp.share.tree {
                             $('#combo-box-tree-component').focus();
                         });
                     });
-                }
+//                }
             }
         }
         

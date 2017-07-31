@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KCBMT_COMPANY_WORK_SET")
+@Table(name = "KSCMT_COMPANY_WORK_SET")
 public class KcbmtCompanyWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

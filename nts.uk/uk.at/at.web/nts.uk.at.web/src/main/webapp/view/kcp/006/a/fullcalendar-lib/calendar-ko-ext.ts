@@ -92,10 +92,11 @@ module nts.uk.at.view.kcp006.a {
                         duration: { months: 3 }
                     }
                 },
+                dateAlignment: "1",
                 eventLimitText: function(countMore) {
                     return '。。。';
                 },
-                eventOrder: '',
+                eventOrder: 'id',
                 defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
                 height: 500,
                 showNonCurrentDates: false,
@@ -177,6 +178,7 @@ module nts.uk.at.view.kcp006.a {
                     let lstEvent = [];
                     for (let i = 0; i < option.listText.length; i++) {
                         lstEvent.push({
+                            id: i,
                             title: option.listText[i],
                             start: option.start,
                             textColor: option.textColor,
@@ -205,7 +207,7 @@ module nts.uk.at.view.kcp006.a {
                         fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     },
                     eventAfterAllRender: function(view) {
-                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable);
+                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
                     }
                 });
                 $(container).fullCalendar('removeEvents');
@@ -339,7 +341,7 @@ module nts.uk.at.view.kcp006.a {
             }
         }
 
-        eventAfterAllRender(currentCalendar, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable): void {
+        eventAfterAllRender(currentCalendar, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates): void {
             // no display more event
             $("#" + currentCalendar + " .fc-more").prop('onclick', null).off('click');
             // add div td-container
@@ -377,6 +379,12 @@ module nts.uk.at.view.kcp006.a {
             }, function() {
                 $("#" + currentCalendar + " .event-note").hide();
             });
+            //change header background color each option day
+            for (let i = 0; i < optionDates.length; i++) {
+                if (optionDates[i].headerBackgroundColor) {
+                    $("#" + currentCalendar + " .fc-day-top[data-date='" + optionDates[i].start + "']").attr("style", 'background-color: ' + optionDates[i].headerBackgroundColor + '!important');
+                }
+            }
         }
 
         viewRender(currentCalendar, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay): void {
@@ -412,11 +420,11 @@ module nts.uk.at.view.kcp006.a {
             $("#" + currentCalendar + " .holiday td span").addClass("limited-label");
             $("#" + currentCalendar + " .holiday td span").html("");
             //update holiday cell
-            for (let i = 0; i < lstHoliday.length; i++) {
-                //update css
-                $("#" + currentCalendar + " .fc-day-top[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header");
-                $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
-                if (holidayDisplay) {
+            if (holidayDisplay) {
+                for (let i = 0; i < lstHoliday.length; i++) {
+                    //update css
+                    $("#" + currentCalendar + " .fc-day-top[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header");
+                    $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
                     //fill holiday name
                     $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
                 }

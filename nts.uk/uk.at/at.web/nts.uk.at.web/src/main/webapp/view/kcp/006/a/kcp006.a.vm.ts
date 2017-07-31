@@ -14,12 +14,14 @@ module nts.uk.at.view.kcp006.a.viewmodel {
         eventUpdatable: KnockoutObservable<boolean>;
         holidayDisplay: KnockoutObservable<boolean>;
         cellButtonDisplay: KnockoutObservable<boolean>;
+        showCalendarHeader: KnockoutObservable<boolean>;
         workplaceName: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
             self.yearMonthPicked = ko.observable(200005);
             self.cssRangerYM = {
+                2000: [5,10]
             };
             self.optionDates = ko.observableArray([
                 {
@@ -81,6 +83,7 @@ module nts.uk.at.view.kcp006.a.viewmodel {
             self.eventUpdatable = ko.observable(true);
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(true);
+            self.showCalendarHeader = ko.observable(true);
             $("#calendar").ntsCalendar("init", {
                 buttonClick: function(date) {
                     alert(date);

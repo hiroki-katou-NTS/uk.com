@@ -9,7 +9,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetAccDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetActualValue;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetErrorContent;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbedtExtBudgetError;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError;
 
 /**
  * The Class JpaExternalBudgetErrorGetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbedtExt
 public class JpaExternalBudgetErrorGetMemento implements ExternalBudgetErrorGetMemento {
 
     /** The entity. */
-    private KbedtExtBudgetError entity;
+    private KscdtExtBudgetError entity;
 
     /**
      * Instantiates a new jpa external budget error get memento.
@@ -25,7 +25,7 @@ public class JpaExternalBudgetErrorGetMemento implements ExternalBudgetErrorGetM
      * @param entity
      *            the entity
      */
-    public JpaExternalBudgetErrorGetMemento(KbedtExtBudgetError entity) {
+    public JpaExternalBudgetErrorGetMemento(KscdtExtBudgetError entity) {
         this.entity = entity;
     }
 
@@ -46,7 +46,7 @@ public class JpaExternalBudgetErrorGetMemento implements ExternalBudgetErrorGetM
      */
     @Override
     public int getNumberColumn() {
-        return this.entity.getColumnNo();
+        return this.entity.getKscdtExtBudgetErrorPK().getColumnNo();
     }
 
     /**
@@ -86,7 +86,7 @@ public class JpaExternalBudgetErrorGetMemento implements ExternalBudgetErrorGetM
      */
     @Override
     public String getExecutionId() {
-        return this.entity.getExeId();
+        return this.entity.getKscdtExtBudgetErrorPK().getExeId();
     }
 
     /**
@@ -96,7 +96,7 @@ public class JpaExternalBudgetErrorGetMemento implements ExternalBudgetErrorGetM
      */
     @Override
     public int getNumberLine() {
-        return this.entity.getLineNo();
+        return this.entity.getKscdtExtBudgetErrorPK().getLineNo();
     }
 
 }

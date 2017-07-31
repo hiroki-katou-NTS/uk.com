@@ -6,15 +6,18 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyRepository;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbddtExtBudgetDaily;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbddtExtBudgetDailyPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDaily;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDailyPK;
 
 /**
  * The Class JpaExternalBudgetDailyRepository.
  */
+@Stateless
 public class JpaExternalBudgetDailyRepository extends JpaRepository implements ExternalBudgetDailyRepository {
 
     /*
@@ -50,14 +53,15 @@ public class JpaExternalBudgetDailyRepository extends JpaRepository implements E
      *            the domain
      * @return the kbddt ext budget daily
      */
-    private <T> KbddtExtBudgetDaily toEntity(ExternalBudgetDaily<T> domain) {
-        Optional<KbddtExtBudgetDaily> optinal = this.queryProxy().find(
-                new KbddtExtBudgetDailyPK(domain.getCompanyId(), domain.getWorkplaceId()), KbddtExtBudgetDaily.class);
-        KbddtExtBudgetDaily entity = null;
-        if (optinal.isPresent()) {
-            entity = optinal.get();
+    private <T> KscdtExtBudgetDaily toEntity(ExternalBudgetDaily<T> domain) {
+        Optional<KscdtExtBudgetDaily> optional = this.queryProxy().find(
+                new KscdtExtBudgetDailyPK(domain.getWorkplaceId(), domain.getExtBudgetCode().v()),
+                KscdtExtBudgetDaily.class);
+        KscdtExtBudgetDaily entity = null;
+        if (optional.isPresent()) {
+            entity = optional.get();
         } else {
-            entity = new KbddtExtBudgetDaily();
+            entity = new KscdtExtBudgetDaily();
         }
         JpaExternalBudgetDailySetMemento<T> memento = new JpaExternalBudgetDailySetMemento<T>(entity);
         domain.saveToMemento(memento);

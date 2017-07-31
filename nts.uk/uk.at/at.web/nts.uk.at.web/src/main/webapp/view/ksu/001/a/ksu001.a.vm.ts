@@ -17,27 +17,27 @@ module ksu001.a.viewmodel {
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
         isShow: KnockoutObservable<boolean>;
-        
+
         //Grid list A2_4
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentCodeList: KnockoutObservableArray<any>;
         count: number = 100;
         switchOptions: KnockoutObservableArray<any>;
-        
+
         //Date time
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
-        
+
         //Switch
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-        
+        selectedRuleCode: KnockoutObservable<number>;
+
         roundingRules1: KnockoutObservableArray<any>;
-        selectedRuleCode1: any;
-        
+        selectedRuleCode1: KnockoutObservable<number>;
+
         roundingRules2: KnockoutObservableArray<any>;
-        selectedRuleCode2: any;
+        selectedRuleCode2: KnockoutObservable<number>;
 
         constructor() {
             let self = this;
@@ -50,19 +50,19 @@ module ksu001.a.viewmodel {
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
             self.items = ko.observableArray([]);
-            
+
             //Date time
             self.dateTimePrev = ko.observable('2017/04/01');
             self.dateTimeAfter = ko.observable('2017/04/01');
-            
+
             //Grid list
-            for(let i = 1; i <= 12; i++) {
+            for (let i = 1; i <= 12; i++) {
                 self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
             }
-            self.columns = ko.observableArray([ 
+            self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KSU001_19"), key: 'code', width: 50 },
                 { headerText: nts.uk.resource.getText("KSU001_20"), key: 'name', width: 150 },
-                { headerText: 'コード', key: 'id', width: 50, hidden: true }, 
+                { headerText: 'コード', key: 'id', width: 50, hidden: true },
             ]);
             self.currentCodeList = ko.observableArray([]);
             // Fire event.
@@ -71,22 +71,22 @@ module ksu001.a.viewmodel {
             }));
             //Switch button
             self.roundingRules = ko.observableArray([
-            { code: '1', name: '抽出' },
-            { code: '2', name: '２８日' },
-            { code: '3', name: '末日' }]);
+                { code: 1, name: '抽出' },
+                { code: 2, name: '２８日' },
+                { code: 3, name: '末日' }]);
             self.selectedRuleCode = ko.observable(1);
-            
+
             self.roundingRules1 = ko.observableArray([
-            { code: '1', name: '略名' },
-            { code: '2', name: '時刻' },
-            { code: '3', name: '記号' }]);
-            self.selectedRuleCode1 = ko.observable(1);
-            
+                { code: 1, name: '略名' },
+                { code: 2, name: '時刻' },
+                { code: 3, name: '記号' }]);
+            self.selectedRuleCode1 = ko.observable(null);
+
             self.roundingRules2 = ko.observableArray([
-            { code: '1', name: '予定' },
-            { code: '2', name: '実績' }]);
+                { code: 1, name: '予定' },
+                { code: 2, name: '実績' }]);
             self.selectedRuleCode2 = ko.observable(1);
-            
+
             //popup 1
             $('#popup-area2').ntsPopup({
                 position: {
@@ -99,7 +99,7 @@ module ksu001.a.viewmodel {
             $('.create').click(function() {
                 $('#popup-area2').toggle();
             });
-            
+
             //popup 2
             $('#popup-area3').ntsPopup({
                 position: {
@@ -112,7 +112,7 @@ module ksu001.a.viewmodel {
             $('.check').click(function() {
                 $('#popup-area3').toggle();
             });
-            
+
             //popup 3
             $('#popup-area4').ntsPopup({
                 position: {
@@ -125,7 +125,7 @@ module ksu001.a.viewmodel {
             $('.vacation').click(function() {
                 $('#popup-area4').toggle();
             });
-            
+
             //popup 4
             $('#popup-area5').ntsPopup({
                 position: {
@@ -138,24 +138,25 @@ module ksu001.a.viewmodel {
             $('.setting').click(function() {
                 $('#popup-area5').toggle();
             });
-            
-            //popup 5
-//            $('#popup-area6').ntsPopup({
-//                position: {
-//                    my: 'left top',
-//                    at: 'left bottom',
-//                    of: $('.setting-button')
-//                }
-//            });
-//
-//            $('.setting-button').click(function() {
-//                $('#popup-area6').toggle();
-//            });
+
+            self.selectedRuleCode1.subscribe(function(newValue) {
+                var area = $("#oViewModel");
+                area.html("");
+                if (newValue == 1) {
+                    area.load("../o/index.xhtml", function() {
+                        var oViewModel = new o.viewmodel.ScreenModel();
+                        ko.applyBindings(oViewModel, area.children().get(0));
+                    });
+                }
+            });
         }
         start() {
             let self = this;
             var dfd = $.Deferred();
             self.initCCG001();
+
+            self.selectedRuleCode1(1);
+
             dfd.resolve();
             return dfd.promise();
         }
@@ -203,6 +204,7 @@ module ksu001.a.viewmodel {
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
         }
+        
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             var self = this;
             self.empItems.removeAll();
@@ -236,8 +238,18 @@ module ksu001.a.viewmodel {
             this.baseDate = param.baseDate || 20170104;
         }
     }
-    
-      class ItemModel {
+
+    class TimeModel {
+        dateTimePrev: string;
+        dateTimeAfter: string;
+        text: string;
+        constructor(dateTimePrev: string, dateTimeAfter: string, text: string) {
+            this.dateTimePrev = dateTimePrev;
+            this.dateTimePrev = dateTimeAfter;
+            this.text = dateTimePrev + dateTimeAfter;
+        }
+    }
+    class ItemModel {
         code: string;
         name: string;
         description: string;

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetFileName;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExtBudgetLog;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
 
 /**
  * The Class JpaExternalBudgetLogGetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbldtExt
 public class JpaExternalBudgetLogGetMemento implements ExternalBudgetLogGetMemento {
 
     /** The entity. */
-    private KbldtExtBudgetLog entity;
+    private KscdtExtBudgetLog entity;
 
     /**
      * Instantiates a new jpa external budget log get memento.
@@ -25,19 +25,8 @@ public class JpaExternalBudgetLogGetMemento implements ExternalBudgetLogGetMemen
      * @param entity
      *            the entity
      */
-    public JpaExternalBudgetLogGetMemento(KbldtExtBudgetLog entity) {
+    public JpaExternalBudgetLogGetMemento(KscdtExtBudgetLog entity) {
         this.entity = entity;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresults.
-     * ExternalBudgetLogGetMemento#getCompanyId()
-     */
-    @Override
-    public String getCompanyId() {
-        return this.entity.getCid();
     }
 
     /*

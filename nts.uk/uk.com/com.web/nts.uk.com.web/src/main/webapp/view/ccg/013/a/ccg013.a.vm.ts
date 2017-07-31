@@ -129,11 +129,11 @@ module ccg013.a.viewmodel {
 
             service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                self.isCreated(false);
                 self.getWebMenu().done(() => {
                     self.currentWebMenuCode(webMenu.webMenuCode());
                 });
-            }).fail(function(error) {
-                self.isCreated(false);
+            }).fail(function(error) {             
                 self.isDefaultMenu(true);
                 nts.uk.ui.dialog.alertError(error.message);
             }).always(function() {
@@ -151,7 +151,7 @@ module ccg013.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.deleteWebMenu(webMenuCode).done(function() {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));                       
                         self.getWebMenu().done(() => {
                             if (self.listWebMenu().length == 0) {
                                 self.cleanForm();
@@ -351,28 +351,28 @@ module ccg013.a.viewmodel {
         private setupContextMenu(): void {
             var self = this;
             new contextMenu(".context-menu-bar", [
-                new menu("edit", "メニューバーの編集(U)", (ui) => {
+                new menu("edit", nts.uk.resource.getText('CCG013_122'), (ui) => {
                     let li = $(ui).parent('li');
                     self.openIdialog(li.attr('id'));
                 }),
-                new menu("delete", "メニューバーの削除(D)", (ui) => {
+                new menu("delete", nts.uk.resource.getText('CCG013_123'), (ui) => {
                     let element = $(ui).parent();
                     self.removeMenuBar(element.attr("id"));
                 })
             ]);
             new contextMenu(".context-menu-title", [
-                new menu("edit", "タイトルメニューの編集(U)", (ui) => {
+                new menu("edit", nts.uk.resource.getText('CCG013_124'), (ui) => {
                     let div = $(ui).parent('div');
                     self.openJdialog(div.attr('id'));
                 }),
-                new menu("delete", "タイトルメニューの削除(D)", (ui) => {
+                new menu("delete", nts.uk.resource.getText('CCG013_125'), (ui) => {
                     let element = $(ui).parent();
                     let id = element.attr('id');
                     self.removeTitleBar(id);
                 })
             ]);
             new contextMenu(".context-menu-tree", [
-                new menu("delete", "メニューの削除(D)", (ui) => {
+                new menu("delete", nts.uk.resource.getText('CCG013_126'), (ui) => {
                     self.removeTreeMenu($(ui));
                 })
             ]);

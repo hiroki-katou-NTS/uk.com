@@ -64,7 +64,7 @@ public class WebMenuFinder {
 	}
 	
 	/**
-	 * 
+	 * Find all item web menu
 	 * @return
 	 */
 	public List<WebMenuDto> findAll() {
@@ -87,6 +87,10 @@ public class WebMenuFinder {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public EditMenuBarDto getEditMenuBarDto() {
 		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class, internationalization);
 		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, internationalization);

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,12 +18,14 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetError;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorRepository;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbedtExtBudgetError;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KbedtExtBudgetError_;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetErrorPK_;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError_;
 
 /**
  * The Class JpaExternalBudgetErrorRepository.
  */
+@Stateless
 public class JpaExternalBudgetErrorRepository extends JpaRepository implements ExternalBudgetErrorRepository {
 
     /*
@@ -48,17 +51,18 @@ public class JpaExternalBudgetErrorRepository extends JpaRepository implements E
         EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KbedtExtBudgetError> query = builder.createQuery(KbedtExtBudgetError.class);
-        Root<KbedtExtBudgetError> root = query.from(KbedtExtBudgetError.class);
+        CriteriaQuery<KscdtExtBudgetError> query = builder.createQuery(KscdtExtBudgetError.class);
+        Root<KscdtExtBudgetError> root = query.from(KscdtExtBudgetError.class);
 
         List<Predicate> predicateList = new ArrayList<>();
 
-        predicateList.add(builder.equal(root.get(KbedtExtBudgetError_.exeId), executionId));
+        predicateList.add(builder.equal(
+                root.get(KscdtExtBudgetError_.kscdtExtBudgetErrorPK).get(KscdtExtBudgetErrorPK_.exeId), executionId));
 
         query.where(predicateList.toArray(new Predicate[] {}));
 
         return em.createQuery(query).getResultList().stream().map(
-                entity -> new ExternalBudgetError(new JpaExternalBudgetErrorGetMemento((KbedtExtBudgetError) entity)))
+                entity -> new ExternalBudgetError(new JpaExternalBudgetErrorGetMemento((KscdtExtBudgetError) entity)))
                 .collect(Collectors.toList());
     }
 
@@ -69,8 +73,8 @@ public class JpaExternalBudgetErrorRepository extends JpaRepository implements E
      *            the domain
      * @return the kbedt ext budget error
      */
-    private KbedtExtBudgetError toEntity(ExternalBudgetError domain) {
-        KbedtExtBudgetError entity = new KbedtExtBudgetError();
+    private KscdtExtBudgetError toEntity(ExternalBudgetError domain) {
+        KscdtExtBudgetError entity = new KscdtExtBudgetError();
         JpaExternalBudgetErrorSetMemento memento = new JpaExternalBudgetErrorSetMemento(entity);
         domain.saveToMemento(memento);
         return entity;

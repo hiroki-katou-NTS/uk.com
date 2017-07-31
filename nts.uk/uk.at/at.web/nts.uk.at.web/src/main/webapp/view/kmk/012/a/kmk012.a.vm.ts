@@ -291,7 +291,7 @@ module nts.uk.at.view.kmk012.a {
                 var self = this;
                 nts.uk.ui.windows.setShared('closureId', self.closureModel.closureId());
                 nts.uk.ui.windows.setShared('startDate', self.closureHistoryModel.startDate());
-                nts.uk.ui.windows.sub.modal('/view/kmk/012/d/index.xhtml', 
+                nts.uk.ui.windows.sub.modeless('/view/kmk/012/d/index.xhtml', 
                 { title: '締め期間確認 ', dialogClass: 'no-close' }).onClosed(function(){
                     self.reloadPage(self.closureModel.closureId(), self.closureHistoryModel.startDate());    
                 });

@@ -1,43 +1,36 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="ksu001.o.main.css" />
-			<com:scriptfile path="ksu001.o.start.js" />
-			<com:scriptfile path="ksu001.o.vm.js" />
-		</ui:define>
-		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area">
-				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
-				<div id="combo-box1"
-					data-bind="ntsComboBox: {
-				options: itemList,
-				optionsValue: 'code',
-				value: selectedCode,
-				optionsText: 'name',
-				editable:  false,
-				enable: true,
-				columns: [
-					{ prop: 'code', length: 4 },
-					{ prop: 'name', length: 10 },]}">
-				</div>
-				<div id= "button-top">
-				<button class="04_1" style ="top: -3px;">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-				<button class="04_2" style ="top: -3px;">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-				<button class="undo-button"><img src="undo.png" style="width: 20px;" /></button>
-				<button class="04_4" style ="top: -3px;">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-				</div>
-				<div id="bot-sky">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
-					<input id="time-edit1" data-name="Time Editor"
-						data-bind="ntsTimeEditor: {
+	<div id="contents-area cf">
+		<div id="set-work-type">
+			<div id="label" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div>
+			<div id="combo-box1"
+				data-bind="ntsComboBox: {
+								options: listWorkType,
+								optionsValue: 'workTypeCode',
+								value: selectedWorkTypeCode,
+								optionsText: 'labelDisplay',
+								editable:  false,
+								enable: true,
+								columns: [
+									{ prop: 'labelDisplay', length: 30 }]}">
+			</div>
+			<div id="group-button">
+				<button>#{i18n.getText('KSU001_69')}</button>
+				<button>#{i18n.getText('KSU001_70')}</button>
+				<button id="undo-button">
+					<img src="undo.png" style="width: 15px;" />
+				</button>
+				<button></button>
+			</div>
+		</div>
+		<div id="set-work-time">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
+			<input id="time-edit1" data-name="Time Editor"
+				data-bind="ntsTimeEditor: {
 										name: 'Duration', 
 										constraint: 'SampleTimeDuration',
 										value: time1, 
@@ -45,9 +38,10 @@
 										mode: 'time1', 
 										enable: true, 
 										required: true}"
-						class="nts-editor nts-input reset-element"></input><span id = "spelcial">~</span>
-					<input id="time-edit2" data-name="Time Editor"
-						data-bind="ntsTimeEditor: {
+				class="nts-editor nts-input reset-element"></input><span
+				id="spelcial">~</span> <input id="time-edit2"
+				data-name="Time Editor"
+				data-bind="ntsTimeEditor: {
 										name: 'Duration', 
 										constraint: 'SampleTimeDuration',
 										value: time2, 
@@ -55,38 +49,31 @@
 										mode: 'time2', 
 										enable: true, 
 										required: true}"
-						class="nts-editor nts-input reset-element"></input>
-						<!-- KSU001_67 -->
-					<button class="reserved">#{i18n.getText('検索')}</button>
-						<!-- KSU001_68 -->
-					<button class="reserved1">#{i18n.getText('解除')}</button>
-					<div id="combo-box2"
-						data-bind="ntsComboBox: {
-				options: itemList,
-				optionsValue: 'code',
-				value: selectedCode,
-				optionsText: 'name',
-				editable:  false,
-				enable: true,
-				columns: [
-					{ prop: 'code', length: 4 },
-					{ prop: 'name', length: 10 },]}">
-					</div>
-					
-					<div class="cf" data-bind="ntsSwitchButton: {
-								options: roundingRules,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: selectedRuleCode}">
-								</div>
-				</div>
-
+				class="nts-editor nts-input reset-element"></input>
+			<!-- KSU001_67 -->
+			<button class="reserved">#{i18n.getText('検索')}</button>
+			<!-- KSU001_68 -->
+			<button>#{i18n.getText('解除')}</button>
+			<div id="combo-box2"
+				data-bind="ntsComboBox: {
+										options: listWorkTime,
+										optionsValue: 'workTimeCode',
+										value: selectedWorkTimeCode,
+										optionsText: 'labelDisplay', 
+										editable:  false,
+										enable: true,
+										columns: [
+											{ prop: 'labelDisplay', length: 50 },]}">
 			</div>
 
+			<div id="switch-o" class="cf1"
+				data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode}">
+			</div>
+		</div>
+	</div>
 
-
-
-		</ui:define>
-	</ui:composition>
-</body>
-</html>
+</ui:composition>

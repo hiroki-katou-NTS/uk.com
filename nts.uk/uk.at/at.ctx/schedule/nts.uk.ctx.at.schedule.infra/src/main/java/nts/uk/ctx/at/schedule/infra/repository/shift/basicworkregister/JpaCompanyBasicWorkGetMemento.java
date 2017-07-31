@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.shift.basicworkregister;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
