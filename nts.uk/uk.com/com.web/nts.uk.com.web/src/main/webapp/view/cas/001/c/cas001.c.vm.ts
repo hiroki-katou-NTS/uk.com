@@ -55,6 +55,11 @@ module nts.uk.com.view.cas001.c.viewmodel {
                 { code: '3', name: '更新' }
             ]);
             self.selectItemCode = ko.observable(1);
+            service.getAllPersonRole().done(function(data) {
+                console.log(data);
+            }).fail(function(mess) {
+                console.log("failed");
+            })
 
         }
         creatCategory() {
