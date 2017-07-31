@@ -19,8 +19,8 @@
 			</ui:define>
 			<ui:define name="content">
 				<div class="contents">
-					<div class="monthlyPatternContents">
-						<table id="lstMonthlyPattern" 
+					<div  tabindex="-1" class="monthlyPatternContents">
+						<table  tabindex="-1" id="lstMonthlyPattern" 
 							data-bind="ntsGridList: {								
 							height: 250,
 							dataSource: lstMonthlyPattern,
@@ -33,8 +33,8 @@
 				</div>
 				
 				<div id="functions-area-bottom">
-					<button tabindex="1" class="proceed x-large" data-bind="click: saveMonthlyPatternSetting">#{i18n.getText('KSM005_25')}</button>
-					<button tabindex="2" class="large">#{i18n.getText('KSM005_26')}</button>
+					<button tabindex="8" class="proceed x-large" data-bind="click: saveMonthlyPatternSetting">#{i18n.getText('KSM005_25')}</button>
+					<button tabindex="9" class="large">#{i18n.getText('KSM005_26')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>
