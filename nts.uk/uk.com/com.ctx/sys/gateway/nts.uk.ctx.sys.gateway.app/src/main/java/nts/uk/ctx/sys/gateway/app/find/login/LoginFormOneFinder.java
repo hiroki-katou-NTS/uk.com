@@ -10,9 +10,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.gateway.app.find.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
-import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
 import nts.uk.ctx.sys.gateway.dom.login.Period;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
@@ -32,21 +32,22 @@ public class LoginFormOneFinder {
 	@Inject
 	ContractRepository contractRepository;
 
-	public String getStartStatus() {
+	public CheckContractDto getStartStatus() {
 		String savedContractPassword = "TODO";// get from client
 		SystemConfig systemConfig = this.getSystemConfig();
 		// case Cloud
-		if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
-			if (this.isShowContract(savedContractPassword)) {
-				return "show contract";
-			} else {
-				return "not show contract";
-			}
-		}
-		// case OnPre
-		else {
-			return "not show contract";
-		}
+//		if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
+//			if (this.isShowContract(savedContractPassword)) {
+//				return "show contract";
+//			} else {
+//				return "not show contract";
+//			}
+//		}
+//		// case OnPre
+//		else {
+//			return "not show contract";
+//		}
+		return new CheckContractDto("show contract");
 	}
 
 	private boolean isShowContract(String savedContractPassword) {
