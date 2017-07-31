@@ -232,6 +232,8 @@ module nts.uk.at.view.kmk008.g {
                     service.getMonth(employmentCategoryCode).done(function(monthData: Array<model.MonthDto>) {
                         if (monthData) {
                             self.items2([]);
+                            monthData = _.sortBy(monthData, item => { return monthData.yearMonthValue });
+                            monthData.reverse();
                             _.forEach(monthData, function(value) {
                                 self.items2.push(new ItemModel(nts.uk.time.parseYearMonth(value.yearMonthValue).format(), nts.uk.time.parseTime(value.errorOneMonth, true).format(), nts.uk.time.parseTime(value.alarmOneMonth, true).format()));
                             });
@@ -245,6 +247,8 @@ module nts.uk.at.view.kmk008.g {
                     service.getYear(employmentCategoryCode).done(function(yearData: Array<model.YearDto>) {
                         if (yearData) {
                             self.items([]);
+                            yearData = _.sortBy(yearData, item => { return yearData.yearValue });
+                            yearData.reverse();
                             _.forEach(yearData, function(value) {
                                 self.items.push(new ItemModel(value.yearValue, nts.uk.time.parseTime(value.errorOneYear, true).format(), nts.uk.time.parseTime(value.alarmOneYear, true).format()));
                             });

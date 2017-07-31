@@ -16,12 +16,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
         anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
         seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
         constructor() {
+            let text =  nts.uk.resource.getText('CAS001_20');
+            console.log(text);
             let self = this;
             self.currentRoleCode.subscribe(function(newRoleCode) {
                 let newPersonRole = _.find(self.personRoleList(), function(role) { return role.roleCode === newRoleCode });
                 newPersonRole.loadRoleCategories(newPersonRole.roleCode);
                 self.currentRole(newPersonRole);
-             
+
             });
             self.seftSelectedAll.subscribe(function(newValue) {
                 for (let item of self.currentRole().currentCategory().roleItemList()) {
@@ -80,7 +82,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         });
                 },
                 columns: [
-                    //                    { headerText: 'FLAG', key: 'IsSelected', dataType: 'boolean', width: '34px', ntsControl: 'Checkbox' },
                     { headerText: nts.uk.resource.getText('CAS001_69'), key: 'IsConfig', dataType: 'string', width: '48px', formatter: makeIcon },
                     { headerText: 'IsRequired', key: 'IsRequired', dataType: 'string', width: '34px', hidden: true },
                     { headerText: nts.uk.resource.getText('CAS001_47'), key: 'ItemName', dataType: 'string', width: '255px' },
@@ -114,7 +115,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             var dfd = $.Deferred();
             self.InitializationItemGrid();
             self.loadPersonRoleList().done(function() {
-                
+
                 dfd.resolve();
             });
             return dfd.promise();
@@ -145,9 +146,50 @@ module nts.uk.com.view.cas001.a.viewmodel {
         saveData() {
             let self = this;
             let item = self.currentRole().currentCategory().roleItemList()[0];
-            //            console.log(item.IsSelected);
             console.log(item.OtherPeopleAuthority);
         }
+    }
+    export interface IPersonRole {
+        roleCode: string;
+        roleName: string;
+        AllowMapBrowsing: number;
+        AllowMapUpLoad: number;
+        AllowDocumentUpload: number;
+        AllowDocumentReference: number;
+        AllowAvatarUpload: number;
+        AllowAvatarReference: number;
+    }
+    export interface IPersonRoleCategory {
+        PersonInfoCategoryID: string;
+        PersonInfoCategoryName: string;
+        IsConfig: number;
+        PersonRoleType: any;
+        AllowPersonReference: number;
+        AllowOthersReference: number;
+        AllowAnotherCompanyReference: number;
+        PastHistoryAuthority: number;
+        FutureHistoryAuthority: number;
+        AllowDeleteHistory: number;
+        AllowAddHistory: number;
+        OtherPastHistoryAuthority: number;
+        OtherFutureHistoryAuthority: number;
+        OtherAllowDeleteHistory: number;
+        OtherAllowAddHistory: number;
+        AllowDeleteMulti: number;
+        AllowAddMulti: number;
+        AllowOtherDeleteMulti: number;
+        AllowOtherAddMulti: number;
+
+    }
+    export interface IPersonRoleItem {
+        PersonInfoItemDefinitionID: string;
+        IsConfig: number;
+        IsRequired: number;
+        ItemName: string;
+        PersonInfoItemAuthorityID: string;
+        PersonInfoCategoryID: string;
+        OtherPeopleAuthority: number;
+        SelfAuthority: number;
     }
     export class PersonRole {
         roleCode: string;
@@ -161,7 +203,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
         currentCategory: KnockoutObservable<PersonRoleCategory> = ko.observable(new PersonRoleCategory(null));
         currentRoleCategoryCode: KnockoutObservable<string> = ko.observable('');
-        constructor(param: service.IPersonRole) {
+        constructor(param: IPersonRole) {
             let self = this;
             self.roleCode = param ? param.roleCode : '';
             self.roleName = param ? param.roleName : '';
@@ -244,7 +286,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         roleItemList: KnockoutObservableArray<PersonRoleItem> = ko.observableArray([]);
         currentItem: KnockoutObservable<PersonRoleItem> = ko.observable(new PersonRoleItem(null));
         currentItemCodes: KnockoutObservableArray<string> = ko.observableArray([]);
-        constructor(param: service.IPersonRoleCategory) {
+        constructor(param: IPersonRoleCategory) {
             let self = this;
             self.PersonInfoCategoryID = param ? param.PersonInfoCategoryID : '';
             self.PersonInfoCategoryName = param ? param.PersonInfoCategoryName : '';
@@ -301,7 +343,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         PersonInfoCategoryID: string;
         OtherPeopleAuthority: number;
         SelfAuthority: number;
-        constructor(param: service.IPersonRoleItem) {
+        constructor(param: IPersonRoleItem) {
             let self = this;
             self.PersonInfoItemDefinitionID = param ? param.PersonInfoItemDefinitionID : '';
             self.IsConfig = param ? param.IsConfig : 0;
@@ -314,6 +356,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         }
 
     }
+
 }
 function makeIcon(value, row) {
     if (value == 1)
