@@ -47,13 +47,12 @@
 							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'PersonInfoCategoryID',
 						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentRole().currentRoleCategoryCode , selectedKey: 'PersonInfoCategoryID', fields: ['PersonInfoCategoryID'], mode: 'igGrid'}" />
 						<table id="A2_008"
-							data-bind="ntsGridList: {								
-						height: 350,
+							data-bind="ntsGridList: {	
 						dataSource: currentRole().RoleCategoryList ,
 						primaryKey: 'PersonInfoCategoryID' ,
 						columns: [{ headerText: 'コード', key: 'PersonInfoCategoryID', width: 200 ,hidden:true},
-								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'PersonInfoCategoryName', width: 200},
-				                {headerText: '#{i18n.getText('CAS001_69')}', key: 'IsConfig', width: 45 , formatter :makeIcon } ] ,
+								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'PersonInfoCategoryName', width: 165},
+				                {headerText: '#{i18n.getText('CAS001_69')}', key: 'IsConfig', width: 80 , formatter :makeIcon } ] ,
 						multiple: false,
 						value: currentRole().currentRoleCategoryCode,
 						rows:10 }">

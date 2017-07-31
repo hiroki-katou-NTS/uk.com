@@ -1,4 +1,43 @@
 #contents-area {
-
+	
 }
 
+#contents-area-right {
+	width: 360px;
+	height: 520px;
+	float: left;
+	clear: right;
+	margin-left: 10px;
+}
+
+#contents-area-left {
+	width: 900px;
+	height: 520px;
+	float: left;
+	clear: right;
+	padding-left: 50px;
+}
+
+.margin-right-FormLabel {
+	width: 140px !important;
+}
+
+.control-group-margin-custom button.nts-switch-button {
+	min-width: 100px !important;
+}
+
+.control-group-margin-custom {
+	margin-bottom: 20px !important;
+}
+
+#group-item-setting {
+	padding-top: 20px;
+}
+
+#item-setting-button {
+	margin-bottom: 10px;
+}
+
+.ntsHelpButton {
+	margin-left: 15px !important;	
+}

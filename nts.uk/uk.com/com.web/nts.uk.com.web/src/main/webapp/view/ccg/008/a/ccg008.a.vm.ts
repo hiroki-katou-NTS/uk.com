@@ -129,6 +129,7 @@
                 service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                     self.dataSource(data);
                     self.showMypage(self.dataSource().myPage); 
+                    self.showToppage(self.dataSource().topPage);
                 });    
             });
         }
