@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern.monthly;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KmpmtMonthPattern;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KmpmtMonthPatternPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KscmtMonthPattern;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KscmtMonthPatternPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -17,16 +17,16 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaMonthlyPatternGetMemento implements MonthlyPatternGetMemento{
 	
 	/** The monthly pattern. */
-	private KmpmtMonthPattern monthlyPattern;
+	private KscmtMonthPattern monthlyPattern;
 	
 	/**
 	 * Instantiates a new jpa monthly pattern get memento.
 	 *
 	 * @param monthlyPattern the monthly pattern
 	 */
-	public JpaMonthlyPatternGetMemento(KmpmtMonthPattern monthlyPattern) {
-		if(monthlyPattern.getKmpmtMonthPatternPK() == null){
-			monthlyPattern.setKmpmtMonthPatternPK(new KmpmtMonthPatternPK());
+	public JpaMonthlyPatternGetMemento(KscmtMonthPattern monthlyPattern) {
+		if(monthlyPattern.getKscmtMonthPatternPK() == null){
+			monthlyPattern.setKscmtMonthPatternPK(new KscmtMonthPatternPK());
 		}
 		this.monthlyPattern = monthlyPattern;
 	}
@@ -36,7 +36,7 @@ public class JpaMonthlyPatternGetMemento implements MonthlyPatternGetMemento{
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.monthlyPattern.getKmpmtMonthPatternPK().getCid());
+		return new CompanyId(this.monthlyPattern.getKscmtMonthPatternPK().getCid());
 	}
 
 	/*
@@ -47,7 +47,7 @@ public class JpaMonthlyPatternGetMemento implements MonthlyPatternGetMemento{
 	 */
 	@Override
 	public MonthlyPatternCode getMonthlyPatternCode() {
-		return new MonthlyPatternCode(this.monthlyPattern.getKmpmtMonthPatternPK().getMPatternCd());
+		return new MonthlyPatternCode(this.monthlyPattern.getKscmtMonthPatternPK().getMPatternCd());
 	}
 
 	/*

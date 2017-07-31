@@ -15,43 +15,43 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
- * The Class KwwstWeeklyWorkSet.
+ * The Class KscmtWorkMonthSet.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_WEEKLY_WORK_SET")
-public class KwwstWeeklyWorkSet extends UkJpaEntity implements Serializable {
-    
-    /** The Constant serialVersionUID. */
+@Table(name = "KSCMT_WORK_MONTH_SET")
+public class KscmtWorkMonthSet extends JpaEntity implements Serializable {
+
     private static final long serialVersionUID = 1L;
     
-    /** The kwwst weekly work set PK. */
+    /** The kwmmt work month set PK. */
     @EmbeddedId
-    protected KwwstWeeklyWorkSetPK kwwstWeeklyWorkSetPK;
+    protected KscmtWorkMonthSetPK kscmtWorkMonthSetPK;
     
-    /** The work day div. */
+    /** The work type cd. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "WORK_DAY_DIV")
-    private Integer workDayDiv;
+    @Column(name = "WORK_TYPE_CD")
+    private String workTypeCd;
+    
+    /** The working cd. */
+    @Column(name = "WORKING_CD")
+    private String workingCd;
 
-    public KwwstWeeklyWorkSet() {
+    public KscmtWorkMonthSet() {
     }
 
-    public KwwstWeeklyWorkSet(KwwstWeeklyWorkSetPK kwwstWeeklyWorkSetPK) {
-        this.kwwstWeeklyWorkSetPK = kwwstWeeklyWorkSetPK;
-    }
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kwwstWeeklyWorkSetPK;
+		return this.kscmtWorkMonthSetPK;
 	}
     
 }
