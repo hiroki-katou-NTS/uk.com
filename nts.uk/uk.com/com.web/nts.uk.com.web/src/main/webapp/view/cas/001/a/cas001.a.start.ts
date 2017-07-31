@@ -3,8 +3,9 @@ module nts.uk.com.view.cas001.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
-             let helpButton = "<button data-bind=\"ntsHelpButton: {image: \'test-image.png\', position: \'right top\', enable: true }\">?</button>";
-               nts.uk.ui.ig.grid.header.getCell('A2_008', 'IsConfig').append($(helpButton));
+            let helpButton = $("<button data-bind=\"ntsHelpButton: {image: \'test-image.png\', position: \'right top\', enable: true }\">?</button>");
+            ko.applyBindingsToNode(helpButton[0], screenModel);
+            nts.uk.ui.ig.grid.header.getCell('A2_008', 'IsConfig').append($(helpButton)[0]);
         });
 
     });
