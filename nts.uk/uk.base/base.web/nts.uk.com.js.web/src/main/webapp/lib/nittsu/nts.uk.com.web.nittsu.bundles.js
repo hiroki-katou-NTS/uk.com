@@ -7538,7 +7538,10 @@ var nts;
                         var container = $(element);
                         var activeTab = tabs.filter(function (tab) { return tab.id == data.active(); })[0];
                         var indexActive = tabs.indexOf(activeTab);
-                        container.tabs("option", "active", indexActive);
+                        var oldIndexActive = container.tabs("option", "active");
+                        if (oldIndexActive !== indexActive) {
+                            container.tabs("option", "active", indexActive);
+                        }
                         tabs.forEach(function (tab) {
                             if (tab.enable()) {
                                 container.tabs("enable", '#' + tab.id);
@@ -7557,6 +7560,7 @@ var nts;
                                 container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
                             }
                         });
+                        _.defer(function () { container.children('ul').children('li').attr("tabindex", "-1"); });
                     };
                     return TabPanelBindingHandler;
                 }());
