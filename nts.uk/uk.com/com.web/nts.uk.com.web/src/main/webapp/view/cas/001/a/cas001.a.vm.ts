@@ -21,6 +21,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 let newPersonRole = _.find(self.personRoleList(), function(role) { return role.roleCode === newRoleCode });
                 newPersonRole.loadRoleCategories(newPersonRole.roleCode);
                 self.currentRole(newPersonRole);
+             
             });
             self.seftSelectedAll.subscribe(function(newValue) {
                 for (let item of self.currentRole().currentCategory().roleItemList()) {
@@ -113,6 +114,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             var dfd = $.Deferred();
             self.InitializationItemGrid();
             self.loadPersonRoleList().done(function() {
+                
                 dfd.resolve();
             });
             return dfd.promise();

@@ -3,35 +3,27 @@
  */
 package nts.uk.ctx.bs.person.dom.person.groupitem.definition;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * @author laitv
  *
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PersonInfoItemDefGroup extends AggregateRoot{
 	
-	@Getter
+	
 	private String personInfoItemDefGroupID;
-	@Getter
 	private String personInfoItemGroupID;
-	@Getter
 	private String companyID;
 
-	/**
-	 * @param personInfoItemDefGroupID
-	 * @param personInfoItemGroupID
-	 * @param companyID
-	 */
-	public PersonInfoItemDefGroup(String personInfoItemDefGroupID,
-			String personInfoItemGroupID, String companyID) {
-		super();
-		this.personInfoItemDefGroupID = personInfoItemDefGroupID;
-		this.personInfoItemGroupID = personInfoItemGroupID;
-		this.companyID = companyID;
-	}
-	
 	
 	 
 }

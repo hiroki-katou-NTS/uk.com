@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.bs.person.dom.person.maintenancelayout;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -10,13 +11,15 @@ import java.util.Optional;
  *
  */
 public interface MaintenanceLayoutRepository {
-	
+
 	void add(MaintenanceLayout maintenanceLayout);
-	
+
 	void update(MaintenanceLayout maintenanceLayout);
-	
+
 	void remove(String maintenanceLayoutID);
-	
-	Optional<MaintenanceLayout> findSingleLayout(String layoutID);
-	
+
+	Optional<MaintenanceLayout> getDetailMaintenanceLayout(String layoutID);
+
+	List<MaintenanceLayout> getAllMaintenanceLayout();
+
 }
