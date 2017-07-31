@@ -3,7 +3,10 @@
  */
 package nts.uk.ctx.bs.person.dom.person.maintenancelayout;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.person.dom.person.newlayout.LayoutCode;
 import nts.uk.ctx.bs.person.dom.person.newlayout.LayoutName;
@@ -12,31 +15,16 @@ import nts.uk.ctx.bs.person.dom.person.newlayout.LayoutName;
  * @author laitv
  *
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MaintenanceLayout extends AggregateRoot {
 
-	@Getter
 	private String companyId;
-	@Getter
-	private LayoutCode layoutCode;
-	@Getter
-	private LayoutName layoutName;
-	@Getter
 	private String maintenanceLayoutID;
-
-	/**
-	 * @param companyId
-	 * @param maintenanceLayoutID
-	 * @param layoutCode
-	 * @param layoutName
-	 */
-	public MaintenanceLayout(String companyId, String maintenanceLayoutID, LayoutCode layoutCode,
-			LayoutName layoutName) {
-		super();
-		this.companyId = companyId;
-		this.layoutCode = layoutCode;
-		this.layoutName = layoutName;
-		this.maintenanceLayoutID = maintenanceLayoutID;
-	}
+	private LayoutCode layoutCode;
+	private LayoutName layoutName;
 
 	public static MaintenanceLayout createFromJavaType(String companyId, String maintenanceLayoutID, String layoutCode,
 			String layoutName) {

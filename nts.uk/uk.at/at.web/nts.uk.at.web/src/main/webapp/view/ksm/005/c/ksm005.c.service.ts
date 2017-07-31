@@ -1,11 +1,11 @@
 module nts.uk.at.view.ksm005.c {
     export module service {
         var paths = {
-            findByIdMonthlyPatternSetting: "ctx/at/schedule/pattern/monthy/setting/findById",
-            findAllMonthlyPatternSetting: "ctx/at/schedule/pattern/monthy/setting/findAll",
-            saveMonthlyPatternSetting: "ctx/at/schedule/pattern/monthy/setting/save",
-            deleteMonthlyPatternSetting: "ctx/at/schedule/pattern/monthy/setting/delete",
-            findByIdMonthlyPattern: "ctx/at/schedule/pattern/monthy/findById"
+            findByIdMonthlyPatternSetting: "ctx/at/schedule/pattern/monthly/setting/findById",
+            findAllMonthlyPatternSetting: "ctx/at/schedule/pattern/monthly/setting/findAll",
+            saveMonthlyPatternSetting: "ctx/at/schedule/pattern/monthly/setting/save",
+            deleteMonthlyPatternSetting: "ctx/at/schedule/pattern/monthly/setting/delete",
+            findByIdMonthlyPattern: "ctx/at/schedule/pattern/monthly/findById"
         }
         
         /**

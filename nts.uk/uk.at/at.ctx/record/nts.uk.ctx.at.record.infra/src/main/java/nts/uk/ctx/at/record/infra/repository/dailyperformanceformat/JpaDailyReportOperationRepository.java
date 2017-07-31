@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.DailyReportOperation;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.DailyReportOperationRepository;
-import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KdwmtDailyReportOperation;
+import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcstDailyRecordOperation;
 
 @Stateless
 public class JpaDailyReportOperationRepository extends JpaRepository implements DailyReportOperationRepository {
@@ -24,14 +24,15 @@ public class JpaDailyReportOperationRepository extends JpaRepository implements 
 
 	@Override
 	public Optional<DailyReportOperation> getSettingUnit(String companyId) {
-		return this.queryProxy().query(FIND, KdwmtDailyReportOperation.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(FIND, KrcstDailyRecordOperation.class).setParameter("companyId", companyId)
 				.getSingle(f -> toDomain(f));
 	}
 
-	private static DailyReportOperation toDomain(KdwmtDailyReportOperation kmkmtAgreementMonthSet) {
+	private static DailyReportOperation toDomain(KrcstDailyRecordOperation krcstDailyRecordOperation) {
 
 		DailyReportOperation dailyReportOperation = DailyReportOperation.createFromJavaType(
-				kmkmtAgreementMonthSet.kdwmtDailyReportOperationPK.companyId, kmkmtAgreementMonthSet.settingUnit.intValue());
+				krcstDailyRecordOperation.krcstDailyRecordOperationPK.companyId,
+				krcstDailyRecordOperation.settingUnit.intValue());
 
 		return dailyReportOperation;
 	}
