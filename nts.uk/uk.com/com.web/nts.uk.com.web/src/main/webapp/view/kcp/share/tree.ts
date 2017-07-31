@@ -193,7 +193,6 @@ module kcp.share.tree {
                             self.addAlreadySettingAttr(self.backupItemList(), newAlreadySettings);
                             self.itemList(self.backupItemList());
                             
-                            //self.filterData(data, $input);
                         });
                     }
                     
@@ -212,9 +211,6 @@ module kcp.share.tree {
                 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
                    self.addIconToAlreadyCol();
-                   $('.tree-component-node-text-col').tooltip({
-                       track: true
-                   });
                 });
                 // defined function focus
                 $.fn.focusTreeGridComponent = function() {
@@ -252,7 +248,7 @@ module kcp.share.tree {
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string",
-                    template: "<td class='tree-component-node-text-col' title='${nodeText}'>${nodeText}</td>"}
+                    template: "<td class='tree-component-node-text-col'>${nodeText}</td>"}
             ];
             // If show Already setting.
             if (data.isShowAlreadySet) {
