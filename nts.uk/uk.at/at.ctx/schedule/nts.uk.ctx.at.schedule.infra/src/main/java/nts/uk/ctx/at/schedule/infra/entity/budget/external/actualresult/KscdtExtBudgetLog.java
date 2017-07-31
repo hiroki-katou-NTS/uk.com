@@ -20,7 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KbldtExtBudgetLog.
+ * The Class KscdtExtBudgetLog.
  */
 @Entity
 @Setter
@@ -37,31 +37,11 @@ public class KscdtExtBudgetLog extends UkJpaEntity implements Serializable {
     @Column(name = "EXE_ID")
     private String exeId;
     
-    /** The cid. */
+    /** The sid. */
     @Basic(optional = false)
-    @Column(name = "CID")
-    private String cid;
-
-    /** The file name. */
-    @Basic(optional = false)
-    @Column(name = "FILE_NAME")
-    private String fileName;
-
-    /** The ext budget cd. */
-    @Basic(optional = false)
-    @Column(name = "EXT_BUDGET_CD")
-    private String extBudgetCd;
-
-    /** The failure cnt. */
-    @Basic(optional = false)
-    @Column(name = "FAILURE_CNT")
-    private int failureCnt;
-
-    /** The completion atr. */
-    @Basic(optional = false)
-    @Column(name = "COMPLETION_ATR")
-    private int completionAtr;
-
+    @Column(name = "SID")
+    private String sid;
+    
     /** The str D. */
     @Basic(optional = false)
     @Column(name = "STR_D")
@@ -73,19 +53,34 @@ public class KscdtExtBudgetLog extends UkJpaEntity implements Serializable {
     @Column(name = "END_D")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endD;
+    
+    /** The ext budget cd. */
+    @Basic(optional = false)
+    @Column(name = "EXT_BUDGET_CD")
+    private String extBudgetCd;
+    
+    /** The file name. */
+    @Basic(optional = false)
+    @Column(name = "FILE_NAME")
+    private String fileName;
+    
+    /** The completion atr. */
+    @Basic(optional = false)
+    @Column(name = "COMPLETION_ATR")
+    private int completionAtr;
 
     /** The success cnt. */
     @Basic(optional = false)
     @Column(name = "SUCCESS_CNT")
     private int successCnt;
-
-    /** The sid. */
+    
+    /** The failure cnt. */
     @Basic(optional = false)
-    @Column(name = "SID")
-    private String sid;
+    @Column(name = "FAILURE_CNT")
+    private int failureCnt;
 
     /**
-     * Instantiates a new kbldt ext budget log.
+     * Instantiates a new kscdt ext budget log.
      */
     public KscdtExtBudgetLog() {
     }

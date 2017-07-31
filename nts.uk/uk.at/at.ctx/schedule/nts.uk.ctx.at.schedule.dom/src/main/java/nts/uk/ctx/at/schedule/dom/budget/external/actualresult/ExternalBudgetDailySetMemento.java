@@ -16,13 +16,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 public interface ExternalBudgetDailySetMemento<T> {
 
     /**
-     * Sets the company id.
-     *
-     * @param companyId the new company id
-     */
-    void setCompanyId(String companyId);
-
-    /**
      * Sets the actual value.
      *
      * @param <T> the generic type

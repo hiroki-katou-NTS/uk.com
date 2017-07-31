@@ -9,7 +9,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
@@ -24,6 +23,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCo
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetExtractCondition;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetQuery;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
@@ -70,13 +70,13 @@ public class ExternalBudgetWebService extends WebService {
     /**
      * Find data preview.
      *
-     * @param file the file
+     * @param extractCondition the extract condition
      * @return the ext budget data preview dto
      */
     @POST
-    @Path("find/preview/{fileId}")
-    public ExtBudgetDataPreviewDto findDataPreview(@PathParam("fileId") String fileId) {
-        return this.find.findDataPreview(fileId);
+    @Path("find/preview")
+    public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
+        return this.find.findDataPreview(extractCondition);
     }
     
     

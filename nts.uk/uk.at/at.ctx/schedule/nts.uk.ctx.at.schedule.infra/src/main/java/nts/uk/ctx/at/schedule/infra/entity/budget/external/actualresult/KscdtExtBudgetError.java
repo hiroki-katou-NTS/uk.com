@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -17,7 +17,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KbedtExtBudgetError.
+ * The Class KscdtExtBudgetError.
  */
 @Entity
 @Setter
@@ -28,56 +28,43 @@ public class KscdtExtBudgetError extends UkJpaEntity implements Serializable {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The exe id. */
-    @Id
-    @Basic(optional = false)
-    @Column(name = "EXE_ID")
-    private String exeId;
-
-    /** The err content. */
-    @Basic(optional = false)
-    @Column(name = "ERR_CONTENT")
-    private String errContent;
-
-    /** The column no. */
-    @Basic(optional = false)
-    @Column(name = "COLUMN_NO")
-    private int columnNo;
-
-    /** The accepted val. */
-    @Basic(optional = false)
-    @Column(name = "ACCEPTED_VAL")
-    private String acceptedVal;
-
-    /** The accepted D. */
-    @Basic(optional = false)
-    @Column(name = "ACCEPTED_D")
-    private String acceptedD;
+    /** The kscdt ext budget error PK. */
+    @EmbeddedId
+    private KscdtExtBudgetErrorPK kscdtExtBudgetErrorPK;
 
     /** The accepted wkpcd. */
     @Basic(optional = false)
     @Column(name = "ACCEPTED_WKPCD")
     private String acceptedWkpcd;
-
-    /** The line no. */
+    
+    /** The accepted D. */
     @Basic(optional = false)
-    @Column(name = "LINE_NO")
-    private int lineNo;
+    @Column(name = "ACCEPTED_D")
+    private String acceptedD;
+    
+    /** The accepted val. */
+    @Basic(optional = false)
+    @Column(name = "ACCEPTED_VAL")
+    private String acceptedVal;
+    
+    /** The err content. */
+    @Basic(optional = false)
+    @Column(name = "ERR_CONTENT")
+    private String errContent;
 
     /**
-     * Instantiates a new kbedt ext budget error.
+     * Instantiates a new kscdt ext budget error.
      */
     public KscdtExtBudgetError() {
     }
 
     /**
-     * Instantiates a new kbedt ext budget error.
+     * Instantiates a new kscdt ext budget error.
      *
-     * @param exeId
-     *            the exe id
+     * @param kscdtExtBudgetErrorPK the kscdt ext budget error PK
      */
-    public KscdtExtBudgetError(String exeId) {
-        this.exeId = exeId;
+    public KscdtExtBudgetError(KscdtExtBudgetErrorPK kscdtExtBudgetErrorPK) {
+        this.kscdtExtBudgetErrorPK = kscdtExtBudgetErrorPK;
     }
 
     /*
@@ -88,7 +75,7 @@ public class KscdtExtBudgetError extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (exeId != null ? exeId.hashCode() : 0);
+        hash += (kscdtExtBudgetErrorPK != null ? kscdtExtBudgetErrorPK.hashCode() : 0);
         return hash;
     }
 
@@ -104,7 +91,9 @@ public class KscdtExtBudgetError extends UkJpaEntity implements Serializable {
             return false;
         }
         KscdtExtBudgetError other = (KscdtExtBudgetError) object;
-        if ((this.exeId == null && other.exeId != null) || (this.exeId != null && !this.exeId.equals(other.exeId))) {
+        if ((this.kscdtExtBudgetErrorPK == null && other.kscdtExtBudgetErrorPK != null)
+                || (this.kscdtExtBudgetErrorPK != null
+                        && !this.kscdtExtBudgetErrorPK.equals(other.kscdtExtBudgetErrorPK))) {
             return false;
         }
         return true;
@@ -117,6 +106,6 @@ public class KscdtExtBudgetError extends UkJpaEntity implements Serializable {
      */
     @Override
     protected Object getKey() {
-        return this.getExeId();
+        return this.getKscdtExtBudgetErrorPK();
     }
 }

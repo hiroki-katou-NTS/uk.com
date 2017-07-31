@@ -49,7 +49,7 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
      * java.lang.String, nts.arc.time.GeneralDate)
      */
     @Override
-    public List<ExternalBudgetLog> findExternalBudgetLog(String companyId, String employeeId, GeneralDate startDate,
+    public List<ExternalBudgetLog> findExternalBudgetLog(String employeeId, GeneralDate startDate,
             List<Integer> listState) {
         EntityManager em = this.getEntityManager();
 
@@ -59,7 +59,6 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
 
         List<Predicate> predicateList = new ArrayList<>();
 
-        predicateList.add(builder.equal(root.get(KscdtExtBudgetLog_.cid), companyId));
         predicateList.add(builder.equal(root.get(KscdtExtBudgetLog_.sid), employeeId));
         predicateList.add(builder.lessThanOrEqualTo(root.get(KscdtExtBudgetLog_.strD), startDate));
         predicateList.add(builder.greaterThanOrEqualTo(root.get(KscdtExtBudgetLog_.endD), startDate));

@@ -7,15 +7,20 @@ package nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+import nts.arc.time.GeneralDate;
+
 /**
- * The Class KbddtExtBudgetDailyPK_.
+ * The Class KscdtExtBudgetDailyPK_.
  */
 @StaticMetamodel(KscdtExtBudgetDailyPK.class)
 public class KscdtExtBudgetDailyPK_ {
     
-    /** The cid. */
-    public static volatile SingularAttribute<KscdtExtBudgetDailyPK, String> cid;
-    
     /** The wkpid. */
     public static volatile SingularAttribute<KscdtExtBudgetDailyPK, String> wkpid;
+    
+    /** The process D. */
+    public static volatile SingularAttribute<KscdtExtBudgetDailyPK, GeneralDate> processD;
+    
+    /** The ext budget cd. */
+    public static volatile SingularAttribute<KscdtExtBudgetDailyPK, String> extBudgetCd;
 }
