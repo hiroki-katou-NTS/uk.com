@@ -152,10 +152,10 @@ module nts.uk.at.view.ksm004.a {
                         .fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                         });     
-                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())){
+                        if(!nts.uk.util.isNullOrUndefined(self.currentCalendarWorkPlace().key())){
                             self.currentCalendarWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);   
                         }
-                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())){
+                        if(!nts.uk.util.isNullOrUndefined(self.currentCalendarClass().key())){
                             self.currentCalendarClass().name(_.first($('#classification-list-setting')['getDataList']()).name);
                         }
                         // get new Data when treegrid Work Place key change
@@ -260,55 +260,43 @@ module nts.uk.at.view.ksm004.a {
             */
             submitCalendar(value){
                 var self = this;
-                $(".yearMonthPicker").trigger("validate");
-                switch(value) {
-                    case 1: // select tab Work Place
-                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())) {
-                            $('#tree-grid').ntsError('set', 'えらーです');
+                if(value==1){
+                    if(nts.uk.util.isNullOrUndefined(self.currentCalendarWorkPlace().key())){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});      
+                    }    
+                } else if(value==2){
+                    if(nts.uk.util.isNullOrUndefined(self.currentCalendarClass().key())){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});   
+                    }  
+                } else {
+                    $(".yearMonthPicker").trigger("validate");
+                    if (!nts.uk.ui.errors.hasError()) {
+                        let dayOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").daysInMonth(); 
+                        let daySetnumber = 0;
+                        switch(value) {
+                            case 1:
+                                // select tab Work Place
+                                daySetnumber = self.calendarPanel1.optionDates().length;
+                                break;
+                            case 2:
+                                // select tab Class
+                                daySetnumber = self.calendarPanel2.optionDates().length;
+                                break;
+                            default:
+                                // select tab Company
+                                daySetnumber = self.calendarPanel.optionDates().length;
                         }
-                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel1.optionDates())) {
-                            $('#calendar1').ntsError('set', 'えらーです');
+                        if(daySetnumber<dayOfMonth){
+                            // when at least 1 day is not select
+                            // confirm auto fill data 
+                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_140' }).ifYes(function(){ 
+                                self.processData(value, true);    
+                            }).ifNo(function(){
+                                // do nothing    
+                            });
+                        } else {
+                            self.processData(value, false);
                         }
-                        break;
-                    case 2: // select tab Class
-                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())) {
-                            $('#classification-list-setting').ntsError('set', 'えらーです');
-                        }
-                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel2.optionDates())) {
-                            $('#calendar2').ntsError('set', 'えらーです');
-                        }
-                        break;
-                    default: // select tab Company
-                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel.optionDates())) {
-                            $('#calendar').ntsError('set', 'えらーです');
-                        }
-                }
-                if (!nts.uk.ui.errors.hasError()) {
-                    let dayOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").daysInMonth(); 
-                    let daySetnumber = 0;
-                    switch(value) {
-                        case 1:
-                            // select tab Work Place
-                            daySetnumber = self.calendarPanel1.optionDates().length;
-                            break;
-                        case 2:
-                            // select tab Class
-                            daySetnumber = self.calendarPanel2.optionDates().length;
-                            break;
-                        default:
-                            // select tab Company
-                            daySetnumber = self.calendarPanel.optionDates().length;
-                    }
-                    if(daySetnumber<dayOfMonth){
-                        // when at least 1 day is not select
-                        // confirm auto fill data 
-                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_140' }).ifYes(function(){ 
-                            self.processData(value, true);    
-                        }).ifNo(function(){
-                            // do nothing    
-                        });
-                    } else {
-                        self.processData(value, false);
                     }
                 }
             }
@@ -383,28 +371,6 @@ module nts.uk.at.view.ksm004.a {
             */
             removeCalendar(value){
                 var self = this;
-                switch(value) {
-                    case 1: // select tab Work Place
-                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())) {
-                            $('#tree-grid').ntsError('set', 'えらーです');
-                        }
-                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel1.optionDates())) {
-                            $('#calendar1').ntsError('set', 'えらーです');
-                        }
-                        break;
-                    case 2: // select tab Class
-                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())) {
-                            $('#classification-list-setting').ntsError('set', 'えらーです');
-                        }
-                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel2.optionDates())) {
-                            $('#calendar2').ntsError('set', 'えらーです');
-                        }
-                        break;
-                    default: // select tab Company
-                        if(!nts.uk.util.isNullOrEmpty(self.calendarPanel.optionDates())) {
-                            $('#calendar').ntsError('set', 'えらーです');
-                        }
-                }
                 $(".yearMonthPicker").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
                     nts.uk.ui.block.invisible();
@@ -864,61 +830,71 @@ module nts.uk.at.view.ksm004.a {
             /*
                 open Dialog D, set param = {classification,yearMonth,workPlaceId,classCD}
             */
-            openDialogD() {
+            openDialogD(value) {
                 nts.uk.ui.block.invisible()
                 var self = this;
-                let yearMonthParam = 0;
-                switch($("#sidebar").ntsSideBar("getCurrent")) {
-                    case 1:
-                        // select tab Work Place
-                        yearMonthParam = self.yearMonthPicked1();
-                        break;
-                    case 2:
-                        // select tab Class
-                        yearMonthParam = self.yearMonthPicked2();
-                        break;
-                    default:
-                        // select tab Company
-                        yearMonthParam = self.yearMonthPicked();
-                }
-                nts.uk.ui.windows.setShared('KSM004_D_PARAM', 
-                {
-                    classification: $("#sidebar").ntsSideBar("getCurrent"),
-                    yearMonth: yearMonthParam,
-                    workPlaceId: self.currentCalendarWorkPlace().key(),
-                    classCD: self.currentCalendarClass().key()
-                });
-                nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                if(value==1){
+                    if(nts.uk.util.isNullOrUndefined(self.currentCalendarWorkPlace().key())){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});      
+                    }    
+                } else if(value==2){
+                    if(nts.uk.util.isNullOrUndefined(self.currentCalendarClass().key())){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});  
+                    }  
+                } else {
+                    let yearMonthParam = 0;
                     switch($("#sidebar").ntsSideBar("getCurrent")) {
                         case 1:
                             // select tab Work Place
-                            $.when(
-                                self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
-                                self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
-                            ).done(()=>{ nts.uk.ui.block.clear(); })
-                            .fail((res) => {
-                                nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                            });
+                            yearMonthParam = self.yearMonthPicked1();
                             break;
                         case 2:
                             // select tab Class
-                            $.when(
-                                self.getCalendarClassSet(self.currentCalendarClass().key()),
-                                self.getCalendarClassById(self.currentCalendarClass().key())
-                            ).done(()=>{ nts.uk.ui.block.clear(); })
-                            .fail((res) => {
-                                nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                            });  
+                            yearMonthParam = self.yearMonthPicked2();
                             break;
                         default:
                             // select tab Company
-                            $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                            .done(()=>{ nts.uk.ui.block.clear(); })
-                            .fail((res) => {
-                                nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                            });
+                            yearMonthParam = self.yearMonthPicked();
                     }
-                }); 
+                    nts.uk.ui.windows.setShared('KSM004_D_PARAM', 
+                    {
+                        classification: $("#sidebar").ntsSideBar("getCurrent"),
+                        yearMonth: yearMonthParam,
+                        workPlaceId: self.currentCalendarWorkPlace().key(),
+                        classCD: self.currentCalendarClass().key()
+                    });
+                    nts.uk.ui.windows.sub.modal("/view/ksm/004/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                        switch($("#sidebar").ntsSideBar("getCurrent")) {
+                            case 1:
+                                // select tab Work Place
+                                $.when(
+                                    self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
+                                    self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
+                                ).done(()=>{ nts.uk.ui.block.clear(); })
+                                .fail((res) => {
+                                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                                });
+                                break;
+                            case 2:
+                                // select tab Class
+                                $.when(
+                                    self.getCalendarClassSet(self.currentCalendarClass().key()),
+                                    self.getCalendarClassById(self.currentCalendarClass().key())
+                                ).done(()=>{ nts.uk.ui.block.clear(); })
+                                .fail((res) => {
+                                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                                });  
+                                break;
+                            default:
+                                // select tab Company
+                                $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
+                                .done(()=>{ nts.uk.ui.block.clear(); })
+                                .fail((res) => {
+                                    nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                                });
+                        }
+                    }); 
+                }
             }
         }
         
