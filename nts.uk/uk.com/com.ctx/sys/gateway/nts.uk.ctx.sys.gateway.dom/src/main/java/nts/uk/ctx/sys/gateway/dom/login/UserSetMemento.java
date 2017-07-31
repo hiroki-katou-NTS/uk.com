@@ -75,9 +75,9 @@ public interface UserSetMemento {
     public void setUserName(UserName userName);
 
     /**
-     * Sets the associated employee id.
+     * Sets the associated person id.
      *
-     * @param associatedEmployeeId the new associated employee id
+     * @param associatedPersonId the new associated person id
      */
-    public void setAssociatedEmployeeId(String associatedEmployeeId);
+    public void setAssociatedPersonId(String associatedPersonId);
 }

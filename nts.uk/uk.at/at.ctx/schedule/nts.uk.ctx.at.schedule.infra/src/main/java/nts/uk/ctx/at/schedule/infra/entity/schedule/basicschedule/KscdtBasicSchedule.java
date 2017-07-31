@@ -19,13 +19,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "KSUPT_BASIC_SCHEDULE")
-public class KsuptBasicSchedule extends UkJpaEntity implements Serializable {
+@Table(name = "KSCDT_BASIC_SCHEDULE")
+public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KsuppBasicSchedulePK ksuppBSchedulePK;
+	public KscdpBasicSchedulePK kscdpBSchedulePK;
 
 	@Column(name = "WORKTYPE_CD")
 	public String workTypeCd;
@@ -35,6 +35,6 @@ public class KsuptBasicSchedule extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return this.ksuppBSchedulePK;
+		return this.kscdpBSchedulePK;
 	}
 }

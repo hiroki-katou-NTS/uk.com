@@ -419,11 +419,11 @@ module nts.uk.at.view.kcp006.a {
             $("#" + currentCalendar + " .holiday td span").addClass("limited-label");
             $("#" + currentCalendar + " .holiday td span").html("");
             //update holiday cell
-            for (let i = 0; i < lstHoliday.length; i++) {
-                //update css
-                $("#" + currentCalendar + " .fc-day-top[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header");
-                $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
-                if (holidayDisplay) {
+            if (holidayDisplay) {
+                for (let i = 0; i < lstHoliday.length; i++) {
+                    //update css
+                    $("#" + currentCalendar + " .fc-day-top[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header");
+                    $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").addClass("holiday-header holiday-name");
                     //fill holiday name
                     $("#" + currentCalendar + " .holiday td[data-date='" + lstHoliday[i].start + "']").find("span").html(lstHoliday[i].holidayName);
                 }

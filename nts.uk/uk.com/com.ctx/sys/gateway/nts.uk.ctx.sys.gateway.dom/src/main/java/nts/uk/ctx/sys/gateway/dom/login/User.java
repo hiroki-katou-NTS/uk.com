@@ -47,7 +47,7 @@ public class User {
 	private UserName userName;
 
 	/** The associated employee id. */
-	private String associatedEmployeeId;
+	private String associatedPersonId;
 
 	/**
 	 * Instantiates a new user.
@@ -64,7 +64,7 @@ public class User {
 		this.multiCompanyConcurrent = memento.isMultiCompanyConcurrent();
 		this.mailAddress = memento.getMailAddress();
 		this.userName = memento.getUserName();
-		this.associatedEmployeeId = memento.getAssociatedEmployeeId();
+		this.associatedPersonId = memento.getAssociatedPersonId();
 	}
 
 	/**
@@ -82,6 +82,6 @@ public class User {
 		memento.setMultiCompanyConcurrent(this.multiCompanyConcurrent);
 		memento.setMailAddress(this.mailAddress);
 		memento.setUserName(this.userName);
-		memento.setAssociatedEmployeeId(this.associatedEmployeeId);
+		memento.setAssociatedPersonId(this.associatedPersonId);
 	}
 }
