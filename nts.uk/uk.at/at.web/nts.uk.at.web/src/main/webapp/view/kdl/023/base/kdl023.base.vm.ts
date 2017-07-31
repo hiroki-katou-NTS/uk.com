@@ -77,6 +77,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
+
+            // Get param from parent screen.
+            self.getParamFromCaller();
+
+            // Set pattern range.
+            self.setPatternRange();
+
+            // Load data.
             $.when(self.loadHolidayList(),
                 self.loadWorktypeList(),
                 self.loadWorktimeList(),
@@ -85,6 +93,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 .done(() => self.loadPatternReflection()
                     .done(() => {
 
+                        // Select first daily pattern if none selected.
+                        if (!self.selectedDailyPatternCode()) {
+                            self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
+                        }
+
                         // Define isReflectionMethodEnable after patternReflection is loaded.
                         self.isReflectionMethodEnable = ko.computed(() => {
                             return self.patternReflection.statutorySetting.useClassification() ||
@@ -92,11 +105,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 self.patternReflection.holidaySetting.useClassification()
                         });
 
-                        // Get param from parent screen.
-                        self.getParamFromCaller();
-
                         // Xu ly hien thi calendar.
-                        self.setPatternRange();
                         self.optionDates(self.getOptionDates());
 
                         // Resolve.
@@ -559,8 +568,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             if (self.isOnScreenA()) {
                 let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
+
+                // Set pattern range.
                 self.patternStartDate = moment(parsedYm, 'YYYY-MM').startOf('month');
                 self.patternEndDate = moment(parsedYm, 'YYYY-MM').endOf('month');
+
+                // Set calendar range.
                 self.calendarStartDate = moment(self.patternStartDate);
                 self.calendarEndDate = moment(self.patternEndDate);
             }
@@ -591,10 +604,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
             if (selectedCode) {
                 self.selectedDailyPatternCode(selectedCode);
-            }
-            // Select first item if not specified.
-            else {
-                self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
             }
 
             // Is on screen B.
