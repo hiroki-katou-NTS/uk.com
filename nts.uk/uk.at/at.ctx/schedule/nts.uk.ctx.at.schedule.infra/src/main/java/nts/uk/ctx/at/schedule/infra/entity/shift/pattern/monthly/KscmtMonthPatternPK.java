@@ -2,10 +2,9 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
+package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,15 +15,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KwmmtWorkMonthSetPK.
+ * The Class KmpmtMonthPatternPK.
  */
-
 @Getter
 @Setter
 @Embeddable
-public class KwmmtWorkMonthSetPK implements Serializable {
-
-    /** The Constant serialVersionUID. */
+public class KscmtMonthPatternPK implements Serializable {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
 	/** The cid. */
@@ -38,31 +36,23 @@ public class KwmmtWorkMonthSetPK implements Serializable {
     @NotNull
     @Column(name = "M_PATTERN_CD")
     private String mPatternCd;
-    
-    /** The ymd K. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "YMD_K")
-    private BigDecimal ymdK;
 
     /**
-     * Instantiates a new kwmmt work month set PK.
+     * Instantiates a new kmpmt month pattern PK.
      */
-    public KwmmtWorkMonthSetPK() {
+    public KscmtMonthPatternPK() {
     }
 
 	/**
-	 * Instantiates a new kwmmt work month set PK.
+	 * Instantiates a new kmpmt month pattern PK.
 	 *
 	 * @param cid the cid
 	 * @param mPatternCd the m pattern cd
-	 * @param ymdK the ymd K
 	 */
-	public KwmmtWorkMonthSetPK(String cid, String mPatternCd, BigDecimal ymdK) {
+	public KscmtMonthPatternPK(String cid, String mPatternCd) {
 		super();
 		this.cid = cid;
 		this.mPatternCd = mPatternCd;
-		this.ymdK = ymdK;
-	}
+	}    
     
 }
