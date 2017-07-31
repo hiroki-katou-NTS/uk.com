@@ -19,8 +19,7 @@ public class NewLayoutDto {
 	String layoutName;
 
 	public static NewLayoutDto fromDomain(NewLayout domain) {
-		return new NewLayoutDto(domain.getCompanyId(), domain.getNewLayoutID(), domain.getLayoutCode().v(),
+		return new NewLayoutDto(domain.getCompanyId(), domain.getLayoutID(), domain.getLayoutCode().v(),
 				domain.getLayoutName().v());
 	}
-
 }
