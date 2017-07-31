@@ -24,6 +24,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         listHoliday: Array<any>;
         isReflectionMethodEnable: KnockoutComputed<boolean>;
         isOnScreenA: KnockoutObservable<boolean>;
+        isMasterDataUnregisterd: KnockoutObservable<boolean>;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -52,6 +53,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.loadDailyPatternDetail(code);
             });
             self.isOnScreenA = ko.observable(true);
+            self.isMasterDataUnregisterd = ko.observable(false);
 
             // Calendar component
             self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
@@ -97,6 +99,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         if (!self.selectedDailyPatternCode()) {
                             self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
                         }
+                        // Load daily pattern detail.
+                        self.loadDailyPatternDetail(self.selectedDailyPatternCode());
 
                         // Define isReflectionMethodEnable after patternReflection is loaded.
                         self.isReflectionMethodEnable = ko.computed(() => {
@@ -295,6 +299,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private getOptionDates(): Array<OptionDate> {
             let self = this;
+            // Reset flag.
+            self.isMasterDataUnregisterd(false);
+
             let currentDate = moment(self.patternStartDate);
             let firstDateOfMonth = moment(self.calendarStartDate);
             let lastDateOfMonth = moment(self.calendarEndDate);
@@ -360,6 +367,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                     let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
                                     let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
                                     let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
+                                    if (!worktype || !worktime) {
+                                        self.isMasterDataUnregisterd(true);
+                                    }
                                     result.push({
                                         start: currentDate.format('YYYY-MM-DD'),
                                         textColor: 'blue',
@@ -442,6 +452,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 let noSetting = nts.uk.resource.getText('KSM005_43');
                                 let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
                                 let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
+                                if (!worktype || !worktime) {
+                                    self.isMasterDataUnregisterd(true);
+                                }
                                 result.push({
                                     start: currentDate.format('YYYY-MM-DD'),
                                     textColor: 'blue',
