@@ -14,21 +14,21 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author sonnh1
  *
  */
-@Table(name = "KODST_ORDER")
+@Table(name = "KSHMT_WORKTIME_ORDER")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class KodstOrder extends UkJpaEntity {
+public class KshmtWorkTimeOrder extends UkJpaEntity {
 
 	@EmbeddedId
-	public KodspOrderPK kodspOrderPK;
+	public KshmpWorkTimeOrderPK kshmpWorkTimeOrderPK;
 
 	@Column(name = "DISPORDER")
 	public int dispOrder;
 
 	@Override
 	protected Object getKey() {
-		return this.kodspOrderPK;
+		return this.kshmpWorkTimeOrderPK;
 	}
 
 }

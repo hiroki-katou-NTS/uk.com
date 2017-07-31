@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KsuppBasicSchedulePK implements Serializable {
+public class KscdpBasicSchedulePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
