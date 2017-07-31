@@ -9,15 +9,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KwwstWeeklyWorkSet_.
+ * The Class KscmtWeeklyWorkSet_.
  */
-@StaticMetamodel(KwwstWeeklyWorkSet.class)
-public class KwwstWeeklyWorkSet_ {
+@StaticMetamodel(KscmtWeeklyWorkSet.class)
+public class KscmtWeeklyWorkSet_ {
 
-	/** The kwwst weekly work set PK. */
-	public static volatile SingularAttribute<KwwstWeeklyWorkSet, KwwstWeeklyWorkSetPK> kwwstWeeklyWorkSetPK;
+	/** The kscmt weekly work set PK. */
+	public static volatile SingularAttribute<KscmtWeeklyWorkSet, KscmtWeeklyWorkSetPK> kscmtWeeklyWorkSetPK;
 
 	/** The work day div. */
-	public static volatile SingularAttribute<KwwstWeeklyWorkSet, Integer> workDayDiv;
+	public static volatile SingularAttribute<KscmtWeeklyWorkSet, Integer> workDayDiv;
 
 }

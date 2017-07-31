@@ -2,21 +2,21 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting;
+package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly;
 
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KmpstMonthPatternSet_.
+ * The Class KscmtMonthPatternPK_.
  */
-@StaticMetamodel(KmpstMonthPatternSet.class)
-public class KmpstMonthPatternSet_ {
+@StaticMetamodel(KscmtMonthPatternPK.class)
+public class KscmtMonthPatternPK_ {
 
-	/** The sid. */
-	public static volatile SingularAttribute<KmpstMonthPatternSet, String> sid;
+	/** The cid. */
+	public static volatile SingularAttribute<KscmtMonthPatternPK, String> cid;
 	
 	/** The m pattern cd. */
-	public static volatile SingularAttribute<KmpstMonthPatternSet, String> mPatternCd;
-	
+	public static volatile SingularAttribute<KscmtMonthPatternPK, String> mPatternCd;
+
 }

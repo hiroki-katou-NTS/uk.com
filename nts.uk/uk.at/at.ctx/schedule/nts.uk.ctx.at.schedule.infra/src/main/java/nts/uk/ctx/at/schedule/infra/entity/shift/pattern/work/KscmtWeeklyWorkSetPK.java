@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly;
+package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
 
 import java.io.Serializable;
 
@@ -15,14 +15,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KmpmtMonthPatternPK.
+ * The Class KwwstWeeklyWorkSetPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KmpmtMonthPatternPK implements Serializable {
-	
-	/** The Constant serialVersionUID. */
+public class KscmtWeeklyWorkSetPK implements Serializable {
+    
+    /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
 	/** The cid. */
@@ -31,28 +31,19 @@ public class KmpmtMonthPatternPK implements Serializable {
     @Column(name = "CID")
     private String cid;
     
-    /** The m pattern cd. */
+    /** The day of week. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_PATTERN_CD")
-    private String mPatternCd;
+    @Column(name = "DAY_OF_WEEK")
+    private Integer dayOfWeek;
 
-    /**
-     * Instantiates a new kmpmt month pattern PK.
-     */
-    public KmpmtMonthPatternPK() {
+    public KscmtWeeklyWorkSetPK() {
     }
 
-	/**
-	 * Instantiates a new kmpmt month pattern PK.
-	 *
-	 * @param cid the cid
-	 * @param mPatternCd the m pattern cd
-	 */
-	public KmpmtMonthPatternPK(String cid, String mPatternCd) {
+	public KscmtWeeklyWorkSetPK(String cid, Integer dayOfWeek) {
 		super();
 		this.cid = cid;
-		this.mPatternCd = mPatternCd;
-	}    
+		this.dayOfWeek = dayOfWeek;
+	}
     
 }

@@ -1,27 +1,23 @@
+
 /******************************************************************
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
 
-import java.math.BigDecimal;
-
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KwmmtWorkMonthSetPK_.
+ * The Class KscmtWeeklyWorkSetPK_.
  */
-@StaticMetamodel(KwmmtWorkMonthSetPK.class)
-public class KwmmtWorkMonthSetPK_ {
+@StaticMetamodel(KscmtWeeklyWorkSetPK.class)
+public class KscmtWeeklyWorkSetPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, String> cid;
-	
-	/** The m pattern cd. */
-	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, String> mPatternCd;
-	
-	/** The ymd K. */
-	public static volatile SingularAttribute<KwmmtWorkMonthSetPK, BigDecimal> ymdK;
-	
+	public static volatile SingularAttribute<KscmtWeeklyWorkSetPK, String> cid;
+
+	/** The day of week. */
+	public static volatile SingularAttribute<KscmtWeeklyWorkSetPK, Integer> dayOfWeek;
+
 }

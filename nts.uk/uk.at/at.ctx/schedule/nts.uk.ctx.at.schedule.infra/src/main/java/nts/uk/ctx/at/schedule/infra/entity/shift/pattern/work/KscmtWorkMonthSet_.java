@@ -10,16 +10,16 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KwmmtWorkMonthSet_.
  */
-@StaticMetamodel(KwmmtWorkMonthSet.class)
-public class KwmmtWorkMonthSet_ {
+@StaticMetamodel(KscmtWorkMonthSet.class)
+public class KscmtWorkMonthSet_ {
 
-	/** The kwmmt work month set PK. */
-	public static volatile SingularAttribute<KwmmtWorkMonthSet, KwmmtWorkMonthSetPK> kwmmtWorkMonthSetPK;
+	/** The kscmt work month set PK. */
+	public static volatile SingularAttribute<KscmtWorkMonthSet, KscmtWorkMonthSetPK> kscmtWorkMonthSetPK;
 	
 	/** The work type cd. */
-	public static volatile SingularAttribute<KwmmtWorkMonthSet, String> workTypeCd;
+	public static volatile SingularAttribute<KscmtWorkMonthSet, String> workTypeCd;
 	
 	/** The working cd. */
-	public static volatile SingularAttribute<KwmmtWorkMonthSet, String> workingCd;
+	public static volatile SingularAttribute<KscmtWorkMonthSet, String> workingCd;
 	
 }

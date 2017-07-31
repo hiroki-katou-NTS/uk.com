@@ -8,8 +8,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwwstWeeklyWorkSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwwstWeeklyWorkSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -19,16 +19,16 @@ public class JpaWeeklyWorkSettingGetMemento implements WeeklyWorkSettingGetMemen
 
 	
 	/** The entity. */
-	private KwwstWeeklyWorkSet entity;
+	private KscmtWeeklyWorkSet entity;
 	
 	/**
 	 * Instantiates a new jpa weekly work setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWeeklyWorkSettingGetMemento(KwwstWeeklyWorkSet entity) {
-		if(entity.getKwwstWeeklyWorkSetPK() == null){
-			entity.setKwwstWeeklyWorkSetPK(new KwwstWeeklyWorkSetPK());
+	public JpaWeeklyWorkSettingGetMemento(KscmtWeeklyWorkSet entity) {
+		if(entity.getKscmtWeeklyWorkSetPK() == null){
+			entity.setKscmtWeeklyWorkSetPK(new KscmtWeeklyWorkSetPK());
 		}
 		this.entity = entity;
 	}
@@ -41,7 +41,7 @@ public class JpaWeeklyWorkSettingGetMemento implements WeeklyWorkSettingGetMemen
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKwwstWeeklyWorkSetPK().getCid());
+		return new CompanyId(this.entity.getKscmtWeeklyWorkSetPK().getCid());
 	}
 
 	/*
@@ -53,7 +53,7 @@ public class JpaWeeklyWorkSettingGetMemento implements WeeklyWorkSettingGetMemen
 	 */
 	@Override
 	public DayOfWeek getDayOfWeek() {
-		return EnumAdaptor.valueOf(this.entity.getKwwstWeeklyWorkSetPK().getDayOfWeek(),
+		return EnumAdaptor.valueOf(this.entity.getKscmtWeeklyWorkSetPK().getDayOfWeek(),
 				DayOfWeek.class);
 	}
 
@@ -66,7 +66,7 @@ public class JpaWeeklyWorkSettingGetMemento implements WeeklyWorkSettingGetMemen
 	 */
 	@Override
 	public WorkdayDivision getWorkdayDivision() {
-		return EnumAdaptor.valueOf(this.entity.getWorkDayDiv(), WorkdayDivision.class);
+		return EnumAdaptor.valueOf(this.entity.getWorkDayAtr(), WorkdayDivision.class);
 	}
 
 }
