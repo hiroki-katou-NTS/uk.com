@@ -24,13 +24,12 @@ public class MaintenanceLayoutFinder {
 	private MaintenanceLayoutRepository maintenanceLayoutRepository;
 
 	public List<MaintenanceLayoutDto> getAllLayout() {
-		return this.maintenanceLayoutRepository.getAllMaintenanceLayout()
-				.stream()
+		return this.maintenanceLayoutRepository.getAllMaintenanceLayout().stream()
 				.map(item -> MaintenanceLayoutDto.fromDomain(item)).collect(Collectors.toList());
 	}
-	
-	public Optional<MaintenanceLayoutDto> getDetailLayout(String layoutId){
-		return this.maintenanceLayoutRepository.getDetailMaintenanceLayout(layoutId)
+
+	public Optional<MaintenanceLayoutDto> checkExit(String layoutId) {
+		return this.maintenanceLayoutRepository.checkExit(layoutId)
 				.map(item -> MaintenanceLayoutDto.fromDomain(item));
 	}
 
