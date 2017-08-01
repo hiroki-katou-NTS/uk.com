@@ -224,11 +224,6 @@ module kcp.share.tree {
                 }
             });
             
-            // defined function get data list.
-            $.fn.getDataList = function(): Array<kcp.share.tree.UnitModel> {
-                return self.backupItemList();
-            }
-            
             // define function get row selected
             $.fn.getRowSelected = function(): Array<any> {
                 let listModel = self.findUnitModelByListWorkplaceId(self.backupItemList());
