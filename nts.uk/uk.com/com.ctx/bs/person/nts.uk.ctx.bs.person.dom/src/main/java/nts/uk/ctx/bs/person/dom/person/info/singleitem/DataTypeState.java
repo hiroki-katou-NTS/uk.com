@@ -1,29 +1,43 @@
 package nts.uk.ctx.bs.person.dom.person.info.singleitem;
 
-import lombok.AllArgsConstructor;
-import nts.arc.primitive.constraint.IntegerRange;
+import java.math.BigDecimal;
 
-@AllArgsConstructor
-@IntegerRange(max = 6, min = 1)
-public enum DataTypeState {
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
+import nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItem;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItem;
+import nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItem;
+import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
 
-	// 1:文字列(String)
-	STRING(1),
+public class DataTypeState extends AggregateRoot {
 
-	// 2:数値(Numeric)
-	NUMERIC(2),
+	protected DataTypeValue dataTypeValue;
 
-	// 3:日付(Date)
-	DATE(3),
+	public static DataTypeState createTimeItem(long max, long min) {
+		return TimeItem.createFromJavaType(max, min);
+	}
 
-	// 4:時間(Time)
-	TIME(4),
+	public static DataTypeState createStringItem(int stringItemLeng, int stringItemType, int stringItemDataType) {
+		return StringItem.createFromJavaType(stringItemLeng, stringItemType, stringItemDataType);
+	}
 
-	// 5:時刻(TimePoint)
-	TIMEPOINT(5),
+	public static DataTypeState createTimePointItem(int dayTypeMin, long timePointMin, int dayTypeMax,
+			long timePointMax) {
+		return TimePointItem.createFromJavaType(dayTypeMin, timePointMin, dayTypeMax, timePointMax);
+	}
 
-	// 6:選択(Selection)
-	SELECTION(6);
-	
-	public final int value;
+	public static DataTypeState createDateItem(int dateItemType) {
+		return DateItem.createFromJavaType(dateItemType);
+	}
+
+	public static DataTypeState createNumericItem(int numericItemMinus, int numericItemAmount, int integerPart,
+			int decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
+		return NumericItem.createFromJavaType(numericItemMinus, numericItemAmount, integerPart, decimalPart,
+				numericItemMin, numericItemMax);
+	}
+
+	public static DataTypeState createSelectionItem() {
+		return SelectionItem.createFromJavaType();
+	}
 }

@@ -1,8 +1,11 @@
 package nts.uk.ctx.bs.person.dom.person.info.item;
 
-import lombok.Builder;
+import java.util.List;
+
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsUsed;
 
@@ -16,29 +19,42 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private IsUsed isUsed;
 	private IsFixed isFixed;
 	private IsRequired isRequired;
-	private SystemRequired SystemRequired;
+	private SystemRequired systemRequired;
 	private RequireChangable requireChangable;
 	private ItemTypeState itemTypeState;
 
-	private PersonInfoItemDefinition(String personInfoCategoryId, ItemCode itemCode, ItemCode itemParentCode,
-			ItemName itemName, IsUsed isUsed, IsFixed isFixed, IsRequired isRequired,
-			nts.uk.ctx.bs.person.dom.person.info.item.SystemRequired systemRequired, RequireChangable requireChangable,
-			ItemTypeState itemTypeState) {
+	private PersonInfoItemDefinition(String personInfoCategoryId, String itemCode, String itemParentCode,
+			String itemName, int isUsed, int isFixed, int isRequired, int systemRequired, int requireChangable) {
 		super();
+		this.personInfoItemDefinitionId = IdentifierUtil.randomUniqueId();
 		this.personInfoCategoryId = personInfoCategoryId;
-		this.itemCode = itemCode;
-		this.itemParentCode = itemParentCode;
-		this.itemName = itemName;
-		this.isUsed = isUsed;
-		this.isFixed = isFixed;
-		this.isRequired = isRequired;
-		this.SystemRequired = systemRequired;
-		this.requireChangable = requireChangable;
+		this.itemCode = new ItemCode(itemCode);
+		this.itemParentCode = new ItemCode(itemParentCode);
+		this.itemName = new ItemName(itemName);
+		this.isUsed = EnumAdaptor.valueOf(isUsed, IsUsed.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.isRequired = EnumAdaptor.valueOf(isRequired, IsRequired.class);
+		this.systemRequired = EnumAdaptor.valueOf(systemRequired, SystemRequired.class);
+		this.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
+	}
+
+	public static PersonInfoItemDefinition createFromJavaType(String personInfoCategoryId, String itemCode,
+			String itemParentCode, String itemName, int isUsed, int isFixed, int isRequired, int systemRequired,
+			int requireChangable) {
+		return new PersonInfoItemDefinition(personInfoCategoryId, itemCode, itemParentCode, itemName, isUsed, isFixed,
+				isRequired, systemRequired, requireChangable);
+	}
+
+	private void setItemTypeState(ItemTypeState itemTypeState) {
 		this.itemTypeState = itemTypeState;
 	}
 
-	public static PersonInfoItemDefinition createFromJavaType() {
-		return null;
-	}
+	public void setSetItem(List<String> items) {
+		setItemTypeState(ItemTypeState.createSetItem(items));
+	};
+
+	public void setSingleItem() {
+		setItemTypeState(ItemTypeState.createSingleItem());
+	};
 
 }
