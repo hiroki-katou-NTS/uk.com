@@ -24,5 +24,4 @@ public class MaintenanceLayoutDto {
 		return new MaintenanceLayoutDto(domain.getCompanyId(), domain.getLayoutCode().v(), domain.getLayoutName().v(),
 				domain.getMaintenanceLayoutID());
 	}
-
 }
