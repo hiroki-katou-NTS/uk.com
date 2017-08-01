@@ -55,6 +55,18 @@ public class LoginWs extends WebService {
 	public void submitContract(SubmitContractFormCommand command) {
 		this.submitContract.handle(command);
 	}
+	
+	/**
+	 * Find.
+	 *
+	 * @return the string
+	 */
+	@POST
+	@Path("getcompany")
+	public void getAllCompany() {
+		//TODO wait QA
+//		return null;
+	}
 
 	/**
 	 * Find.

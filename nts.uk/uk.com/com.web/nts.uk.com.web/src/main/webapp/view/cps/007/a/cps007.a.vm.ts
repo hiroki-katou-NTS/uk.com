@@ -1,16 +1,17 @@
 module cps007.a.vm {
     let __viewContext: any = window['__viewContext'] || {};
     export class ViewModel {
+        layout: KnockoutObservable<Layout> = ko.observable(new Layout({ layoutID: '', layoutCode: '', layoutName: '' }));
         showMode: KnockoutObservable<number> = ko.observable(0);
         category: KnockoutObservable<string> = ko.observable('');
-        items: KnockoutObservableArray<any> = ko.observableArray([]);
+        items: KnockoutObservableArray<IItemClassification> = ko.observableArray([]);
         item: KnockoutObservable<any> = ko.observable(undefined);
-
+        editable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
 
             for (let i = 1; i < 10; i++) {
-                self.items.push({ id: i, name: '000' + i, 'type': !!(i % 2) });
+                self.items.push({ cid: i.toString(), cname: '000' + i, typeID: 1, dispOrder: 1 });
             }
         }
 
@@ -22,8 +23,8 @@ module cps007.a.vm {
                 items = self.items();
 
             // add new line to list item
-            if (!_.last(items).type) {
-                self.items.push({ id: items.length + 1, name: '000' + items.length + 1, 'type': true });
+            if (!_.last(items).typeID) {
+                self.items.push({ cid: (items.length + 1).toString(), cname: '000' + items.length + 1, typeID: 1, dispOrder: 1 });
             }
         }
 
@@ -31,7 +32,7 @@ module cps007.a.vm {
             let self = this,
                 items = self.items();
 
-            self.items.remove(x => x.id == item.id);
+            self.items.remove(x => x.cid == item.cid);
             self.items.valueHasMutated();
         }
 
@@ -40,7 +41,7 @@ module cps007.a.vm {
                 index = data.targetIndex,
                 source = data.targetParent();
 
-            if (item.type == source[index].type) {
+            if (item.typeID == source[index].typeID) {
                 data.cancelDrop = true;
             }
         }
@@ -50,13 +51,57 @@ module cps007.a.vm {
         }
     }
 
-    interface IItemClassification {
-        cid: string;
-        dispOrder: number;
-
+    interface IItemDefinition {
+        catId: string;
+        id: string;
+        name: string;
+        code: string;
+        sysReq: boolean;
+        reqChang: boolean;
+        isFixed: boolean;
+        typeState: number;
     }
 
-    interface IItemDefinition {
-        
+    interface IPersonInfoCategory {
+        catId: string;
+        code: string;
+        name: string;
+        isUsed?: boolean;
+        isFixed: boolean;
+        empType: number;
+        parrentId: string;
+    }
+
+    interface IItemClassification {
+        cid: string;
+        cname: string;
+        dispOrder: number;
+        typeID: number;
+        itemsDefinition?: Array<IItemDefinition>;
+    }
+
+    interface ILayout {
+        layoutID: string;
+        layoutCode: string;
+        layoutName: string;
+        itemsClassification?: Array<IItemClassification>;
+    }
+
+    class Layout {
+        layoutID: KnockoutObservable<string> = ko.observable('');
+        layoutCode: KnockoutObservable<string> = ko.observable('');
+        layoutName: KnockoutObservable<string> = ko.observable('');
+        itemsClassification: KnockoutObservableArray<IItemClassification> = ko.observableArray([]);
+
+        constructor(param: ILayout) {
+            let self = this;
+
+            self.layoutID(param.layoutID);
+            self.layoutCode(param.layoutCode);
+            self.layoutName(param.layoutName);
+
+            // replace x by class that implement this interface
+            self.itemsClassification(param.itemsClassification || []);
+        }
     }
 }

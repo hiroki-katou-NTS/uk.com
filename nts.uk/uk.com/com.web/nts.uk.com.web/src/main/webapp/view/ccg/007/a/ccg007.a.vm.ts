@@ -23,7 +23,7 @@ module nts.uk.pr.view.ccg007.a {
             private AuthContract() {
                 var self = this;
                 service.submitForm({ contractCode: self.contractCode(), password: self.password() }).done(function() { 
-                alert();
+                nts.uk.ui.windows.close();
                 });
             }
         }

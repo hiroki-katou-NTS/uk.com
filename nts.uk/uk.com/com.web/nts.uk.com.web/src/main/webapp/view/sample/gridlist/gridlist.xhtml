@@ -76,6 +76,16 @@
 								rows: 5
 							}"></table>
 						<br />
+						<table id="draggable-list" data-bind="ntsGridList: {
+							height: 300,
+							dataSource: dragItems,
+							optionsValue: 'code',
+							columns: columns,
+							enable: true,
+							multiple: true,
+							value: codeList,
+							itemDraggable: true
+						}"></table>
 						<button data-bind="click: addDeleteButton">Add Delete Button</button>
 						currentCodeList: <span data-bind="text: currentCodeList"></span>
 						<article class="cf">

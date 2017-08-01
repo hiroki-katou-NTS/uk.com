@@ -3,10 +3,12 @@ module nts.uk.ui.gridlist {
     
         class ScreenModel {
             items: KnockoutObservableArray<ItemModel>;
+            dragItems: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<NtsGridListColumn>;
             columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
+            codeList: KnockouObservableArray<any>;
             count: number = 100;
             switchOptions: KnockoutObservableArray<any>;
             enable: KnockoutObservable<boolean>;
@@ -14,9 +16,11 @@ module nts.uk.ui.gridlist {
                 
                 this.enable = ko.observable(false);
                 this.items = ko.observableArray([]);
+                this.dragItems = ko.observableArray([]);
                 
                 for(let i = 1; i < 15; i++) {
                     this.items.push(new ItemModel('00' + i, '基本給 基本給  基本給 基本給 基本給 基本給 基本給 基本給 基本給 基本給基本給基本給基本給 v基本給基本給 基本給', "description " + i, i%3 === 0, "2010/1/1"));
+                    this.dragItems.push(new ItemModel('00' + i, '基本給 ', "description " + i, i%3 === 0, "2010/1/1"));
                 }
                 
                 this.columns = ko.observableArray([
@@ -41,6 +45,7 @@ module nts.uk.ui.gridlist {
                 ]);
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
+                this.codeList = ko.observableArray([]);
                 // Fire event.
                 $("#multi-list").on('itemDeleted', (function(e: Event) {
                     alert("Item is deleted in multi grid is " + e["detail"]["target"]);
