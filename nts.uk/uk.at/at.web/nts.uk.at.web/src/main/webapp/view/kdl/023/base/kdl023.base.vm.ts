@@ -116,6 +116,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         dfd.resolve();
                     })).fail(res => {
                         nts.uk.ui.dialog.alert(res.message);
+                        dfd.fail();
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
@@ -220,11 +221,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             let dfd = $.Deferred<void>();
             service.findAllPattern().done(function(list: Array<DailyPatternSetting>) {
-                self.dailyPatternList(list);
-                dfd.resolve();
+                if (list && list.length > 0) {
+                    self.dailyPatternList(list);
+                    dfd.resolve();
+                } else {
+                    self.showErrorThenCloseDialog();
+                    dfd.fail();
+                }
             }).fail(() => {
-                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_37'));
-                self.closeDialog();
+                self.showErrorThenCloseDialog();
+                dfd.fail();
             });
             return dfd.promise();
         }
@@ -271,11 +277,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             let dfd = $.Deferred<void>();
             service.getAllWorkType().done(function(list: Array<WorkType>) {
-                self.listWorkType(list);
+                if (list && list.length > 0) {
+                    self.listWorkType(list);
+                } else {
+                    self.showErrorThenCloseDialog();
+                }
                 dfd.resolve();
             }).fail(() => {
-                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_37'));
-                self.closeDialog();
+                self.showErrorThenCloseDialog();
+                dfd.fail();
             });
             return dfd.promise();
         }
@@ -603,6 +613,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 return true;
             }
             return false;
+        }
+
+        /**
+         * Show error then close dialog.
+         */
+        private showErrorThenCloseDialog(): void {
+            let self = this;
+            nts.uk.ui.dialog.alertError({ messageId: "Msg_37" }).then(() => {
+                self.closeDialog();
+            });
         }
 
         /**

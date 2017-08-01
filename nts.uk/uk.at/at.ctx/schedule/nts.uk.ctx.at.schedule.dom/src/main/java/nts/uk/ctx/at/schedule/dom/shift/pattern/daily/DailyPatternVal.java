@@ -6,6 +6,8 @@ package nts.uk.ctx.at.schedule.dom.shift.pattern.daily;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
