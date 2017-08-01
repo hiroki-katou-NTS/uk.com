@@ -6,12 +6,12 @@ package nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternValSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.Days;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DispOrder;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.WorkTypeCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.WorkingCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
