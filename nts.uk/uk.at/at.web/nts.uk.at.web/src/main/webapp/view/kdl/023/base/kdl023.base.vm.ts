@@ -642,10 +642,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Is on screen B.
             if (startDate && endDate) {
                 self.isOnScreenA(false);
+
+                // Set calendar range.
                 self.calendarStartDate = moment(startDate, 'YYYY-MM-DD'); //TODO: man hinh cha tra ve theo format nao?
                 self.calendarEndDate = moment(endDate, 'YYYY-MM-DD');
                 self.startDate = self.calendarStartDate.date();
                 self.endDate = self.calendarEndDate.date();
+
+                // Set pattern range.
+                self.patternStartDate = moment(self.calendarStartDate);
+                self.patternEndDate = moment(self.calendarEndDate);
             }
         }
 
