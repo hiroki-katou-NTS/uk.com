@@ -272,9 +272,6 @@ module kcp.share.list {
             // Remove No select row.
             self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             
-            // Set default value when init component.
-            self.initSelectedValue(data, self.itemList());
-            
             // Check is show no select row.
             if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
@@ -302,6 +299,9 @@ module kcp.share.list {
                 $input.find('table').attr('id', self.componentGridId);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
+                
+                // Set default value when init component.
+                self.initSelectedValue(data, self.itemList());
                 dfd.resolve();
             });
             

@@ -49,9 +49,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.listWorkType = ko.observableArray<WorkType>([]);
             self.listWorkTime = ko.observableArray<WorkTime>([]);
             self.selectedDailyPatternCode = ko.observable('');
-            self.selectedDailyPatternCode.subscribe(code => {
-                self.loadDailyPatternDetail(code);
-            });
             self.isOnScreenA = ko.observable(true);
             self.isMasterDataUnregisterd = ko.observable(false);
 
@@ -80,40 +77,47 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-            // Get param from parent screen.
-            self.getParamFromCaller();
-
-            // Set pattern range.
-            self.setPatternRange();
-
             // Load data.
-            $.when(self.loadHolidayList(),
-                self.loadWorktypeList(),
-                self.loadWorktimeList(),
-                self.loadDailyPatternHeader(),
-                self.loadWeeklyWorkSetting())
-                .done(() => self.loadPatternReflection()
+            $.when(self.getParamFromCaller(), // Get param from parent screen.
+                self.loadWorktypeList(), // Load worktype list.
+                self.loadWorktimeList(), // Load worktime list.
+                self.loadDailyPatternHeader(), // Load daily pattern header.
+                self.loadWeeklyWorkSetting()) // Load weekly work setting.
+                .done(() => self.loadPatternReflection() // Load pattern reflection.
                     .done(() => {
 
                         // Select first daily pattern if none selected.
                         if (!self.selectedDailyPatternCode()) {
                             self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
                         }
+
                         // Load daily pattern detail.
-                        self.loadDailyPatternDetail(self.selectedDailyPatternCode());
+                        self.loadDailyPatternDetail(self.selectedDailyPatternCode()).done(() => {
+                            // Xu ly hien thi calendar.
+                            self.optionDates(self.getOptionDates());
+                            dfd.resolve();
+                        });
+
+                        // Init subscribe.
+                        self.selectedDailyPatternCode.subscribe(code => {
+                            self.loadDailyPatternDetail(code);
+                        });
 
                         // Define isReflectionMethodEnable after patternReflection is loaded.
                         self.isReflectionMethodEnable = ko.computed(() => {
                             return self.patternReflection.statutorySetting.useClassification() ||
                                 self.patternReflection.nonStatutorySetting.useClassification() ||
-                                self.patternReflection.holidaySetting.useClassification()
+                                self.patternReflection.holidaySetting.useClassification();
+                        });
+                        // Set tabindex.
+                        self.isReflectionMethodEnable.subscribe(val => {
+                            if (val) {
+                                $('#reflection-method-radio-group').attr('tabindex', '5');
+                            } else {
+                                $('#reflection-method-radio-group').attr('tabindex', '-1');
+                            }
                         });
 
-                        // Xu ly hien thi calendar.
-                        self.optionDates(self.getOptionDates());
-
-                        // Resolve.
-                        dfd.resolve();
                     })).fail(res => {
                         nts.uk.ui.dialog.alert(res.message);
                         dfd.fail();
@@ -166,16 +170,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             nts.uk.ui.block.invisible();
 
             // Reload calendar
-            self.setPatternRange();
-            self.optionDates(self.getOptionDates());
+            self.setPatternRange().done(() => {
+                self.optionDates(self.getOptionDates());
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+
+            // Save pattern reflection domain.
+            service.save(self.getDomainKey(), ko.toJS(self.patternReflection));
 
             // Set focus control
             $('#component-calendar-kcp006').focus();
 
-            // Save pattern reflection domain.
-            service.save(self.getDomainKey(), ko.toJS(self.patternReflection)).always(() => {
-                nts.uk.ui.block.clear();
-            });
         }
 
         /**
@@ -238,9 +244,17 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Load daily pattern detail.
          */
-        private loadDailyPatternDetail(code: string): void {
+        private loadDailyPatternDetail(code: string): JQueryPromise<void> {
+            nts.uk.ui.block.invisible();
             let self = this;
-            self.dailyPatternSetting = _.find(self.dailyPatternList(), item => item.patternCode == code);
+            let dfd = $.Deferred<void>();
+            service.findPatternByCode(code).done(res => {
+                self.dailyPatternSetting = res;
+                dfd.resolve();
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });;
+            return dfd.promise();
         }
 
         /**
@@ -587,8 +601,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Set pattern range.
          */
-        private setPatternRange(): void {
+        private setPatternRange(): JQueryPromise<void> {
             let self = this;
+            let dfd = $.Deferred<void>();
             if (self.isOnScreenA()) {
                 let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
 
@@ -599,7 +614,17 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Set calendar range.
                 self.calendarStartDate = moment(self.patternStartDate);
                 self.calendarEndDate = moment(self.patternEndDate);
+
+                // Load holiday list.
+                self.loadHolidayList().done(() => {
+                    dfd.resolve();
+                });
             }
+            // Do nothing if is on screen B.
+            else {
+                dfd.resolve();
+            }
+            return dfd.promise();
         }
 
         /**
@@ -628,8 +653,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Get param from caller (parent) screen.
          */
-        private getParamFromCaller(): void {
+        private getParamFromCaller(): JQueryPromise<void> {
             let self = this;
+            let dfd = $.Deferred<void>();
             // Get param from caller screen.
             let selectedCode = nts.uk.ui.windows.getShared("patternCode");
             let startDate = nts.uk.ui.windows.getShared("startDate");
@@ -653,7 +679,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Set pattern range.
                 self.patternStartDate = moment(self.calendarStartDate);
                 self.patternEndDate = moment(self.calendarEndDate);
+                self.loadHolidayList().done(() => dfd.resolve()
+                );
+
             }
+            // Is on screen A
+            else {
+                self.setPatternRange().done(() => dfd.resolve());
+            }
+            return dfd.promise();
         }
 
     }

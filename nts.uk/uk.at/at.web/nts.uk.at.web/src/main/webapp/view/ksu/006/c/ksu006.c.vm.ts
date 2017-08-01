@@ -42,7 +42,7 @@ module nts.uk.pr.view.ksu006.c {
                     { headerText: nts.uk.resource.getText("KSU006_317"), key: 'numberFail', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_318"), key: 'download', width: 100, dataType: 'string', formatter: _.escape,
                         template: "{{if(${numberFail}) > 0}} <span style='text-decoration: underline;color: blue;'"
-                            + "data-bind='click: downloadDetailError(${executeId})'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
+                            + "data-bind='click: downloadDetailError(${executeId})' tabindex='7'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
                 ]);
                 self.rowSelected = ko.observable('');
                 
@@ -104,9 +104,14 @@ module nts.uk.pr.view.ksu006.c {
                 let query: any = {};
                 if (!isSearchMode) {
                     query.startDate = self.dateRange().startDate;
+                    query.endDate = self.dateRange().endDate;
                     query.listState = [0, 1, 2];
                 } else {
-                    query.startDate = new Date(self.dateRange().startDate);
+                    let objStartDate: any = self.getComponentDate(self.dateRange().startDate);
+                    let objEndDate: any = self.getComponentDate(self.dateRange().startDate);
+                    
+                    query.startDate = new Date(Date.UTC(objStartDate.year, objStartDate.month, objStartDate.day));
+                    query.endDate = new Date(Date.UTC(objEndDate.year, objEndDate.month, objEndDate.day));
                     query.listState = listState;
                 }
                 service.findAllExternalBudgetLog(query).done(function(res: Array<ExternalBudgetLogModel>) {
@@ -128,6 +133,15 @@ module nts.uk.pr.view.ksu006.c {
                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
+            }
+            
+            private getComponentDate(date: string): any {
+                let lstComponent: Array<string> = date.split('/');
+                return {
+                    year: parseInt(lstComponent[0]),
+                    month: parseInt(lstComponent[1]) - 1,
+                    day: parseInt(lstComponent[2]),
+                }
             }
         }
     }

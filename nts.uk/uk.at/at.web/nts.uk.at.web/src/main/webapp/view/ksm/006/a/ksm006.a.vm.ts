@@ -41,6 +41,8 @@ module nts.uk.at.view.ksm006.a {
             companyId: string;
             isUpdateModeWorkplace: KnockoutObservable<boolean>;
             isUpdateModeClassify: KnockoutObservable<boolean>;
+            workplaceName: KnockoutObservable<string>;
+            classificationName: KnockoutObservable<string>;
             
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -136,6 +138,8 @@ module nts.uk.at.view.ksm006.a {
                     }
                 });
                 
+                self.workplaceName = ko.observable(null);
+                self.classificationName = ko.observable(null);
 
             }
             
@@ -153,6 +157,19 @@ module nts.uk.at.view.ksm006.a {
                 return dfd.promise();
             }
             
+            private setWorkplaceName(treeData: Array<any>, workPlaceId: string) {
+                let self = this;
+                for (let data of treeData) {
+                    // Found!
+                    if (data.workplaceId == workPlaceId) {
+                        self.workplaceName(data.name);
+                    }
+                    // Continue to find in childs.
+                    if (data.childs.length > 0) {
+                        this.setWorkplaceName(data.childs, workPlaceId);
+                    }
+                }
+            }
             
             // Find CompanyBasicWork
             private findCompanyBasicWork(): JQueryPromise<any> {
@@ -350,13 +367,17 @@ module nts.uk.at.view.ksm006.a {
                  
                 // Selected Item subscribe
                 self.selectedWorkplaceId.subscribe(function(data: string) {
+                    
                     if (data) {
-                        // Find EmploymentSetting By employment
+                        // Find WorkplaceBasicWork by WorkplaceId
                         service.findWorkplaceBasicWork(data).done(function(data1: WorkplaceBasicWorkFindDto) {
                             if (data != undefined) {
                                 self.bindWorkplaceBasicWork(data1);
                             }
                         });
+                        // Set Workplace Name.
+                        let tree = $('#workplace-list').getDataList();
+                        self.setWorkplaceName(tree, self.selectedWorkplaceId());
                     }
 
                 });
@@ -390,8 +411,14 @@ module nts.uk.at.view.ksm006.a {
                                 self.bindClassifyBasicWork(data1);
                             }
                         });
+                        
+                        // Set Classification Name
+                        var classifyDataList = $('#classification-list').getDataList();
+                        var classify = classifyDataList.filter((item) => {
+                                return item.code == self.selectedClassifi();
+                            })[0];
+                        self.classificationName(classify.name);
                     }
-                    
                 });
                 
             }
@@ -474,8 +501,8 @@ module nts.uk.at.view.ksm006.a {
 //                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, self.companyBWNonExtra().worktypeCode, self.companyBWNonExtra().workingCode));
                 
                 basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, '004', '004'));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, '002', '002'));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, '003', '003'));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, '002', '002'));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, '003', '003'));
                 dto.basicWorkSetting = basicWorkSettingArray;
                 return dto;
             }

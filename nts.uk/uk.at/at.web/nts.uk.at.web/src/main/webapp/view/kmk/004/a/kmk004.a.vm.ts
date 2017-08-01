@@ -731,7 +731,7 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 let list = $('#list-employment').getDataList();
                 if (list) {
-                    let empt = list.filter(item => item.code == code)[0];
+                    let empt = _.find(list, item => item.code == code);
                     self.employmentWTSetting.employmentName(empt.name);
                 }
             }
