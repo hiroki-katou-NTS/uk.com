@@ -36,12 +36,21 @@ module ccg018.a1.viewmodel {
                 return !nts.uk.ui.errors.hasError();    
             });
 
+            self.checkCategorySet();
             $('#A2-2').focus();
         }
 
         start(): any {
             let self = this;
             self.searchByDate();
+        }
+        
+        checkCategorySet() : void {
+            let self = this;
+            if (!self.categorySet()) {
+                self.categorySet(1);
+                self.openDialogC();    
+            }    
         }
 
         /**

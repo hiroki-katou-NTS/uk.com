@@ -78,11 +78,11 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		CcgptTopPageJobSetPK pk = new CcgptTopPageJobSetPK(topPageJobSet.getCompanyId(), topPageJobSet.getJobId());
 		CcgptTopPageJobSet entity = this.queryProxy().find(pk, CcgptTopPageJobSet.class).get();
 		entity.ccgptTopPageJobSetPK = pk;
-		entity.loginMenuCd = topPageJobSet.getLoginMenuCode().v();
+		entity.loginMenuCd = StringUtil.isNullOrEmpty(topPageJobSet.getLoginMenuCode().v(), true) ? "    " : topPageJobSet.getLoginMenuCode().v();
 		entity.loginMenuCls = topPageJobSet.getMenuClassification().value;
 		entity.personPermissionSet = topPageJobSet.getPersonPermissionSet().value;
 		entity.system = topPageJobSet.getLoginSystem().value;
-		entity.topMenuCd = topPageJobSet.getTopMenuCode().v();
+		entity.topMenuCd = StringUtil.isNullOrEmpty(topPageJobSet.getTopMenuCode().v(), true) ? "    " : topPageJobSet.getTopMenuCode().v();
 		this.commandProxy().update(entity);
 	}
 
