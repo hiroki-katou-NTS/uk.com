@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+#comboTargetYear {
+	width: 100px;
+	margin-left: 10px;
+}
+
+#targetYear {
+	margin-top: 20px;
+	margin-left: 20px;
+	display: inline-flex;
+}
