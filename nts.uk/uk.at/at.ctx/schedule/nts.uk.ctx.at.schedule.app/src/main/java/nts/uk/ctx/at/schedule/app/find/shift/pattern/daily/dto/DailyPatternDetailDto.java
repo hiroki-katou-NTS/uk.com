@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 @Getter
 @Setter
-public class DailyPatternDto implements DailyPatternSetMemento {
+public class DailyPatternDetailDto implements DailyPatternSetMemento {
 
 	/** The pattern code. */
 	private String patternCode;
@@ -48,8 +47,8 @@ public class DailyPatternDto implements DailyPatternSetMemento {
 	 * setPatternCode(java.lang.String)
 	 */
 	@Override
-	public void setPatternCode(PatternCode setPatternCode) {
-		this.patternCode = setPatternCode.v();
+	public void setPatternCode(PatternCode patternCode) {
+		this.patternCode = patternCode.v();
 	}
 
 	/*
@@ -59,8 +58,8 @@ public class DailyPatternDto implements DailyPatternSetMemento {
 	 * setPatternName(java.lang.String)
 	 */
 	@Override
-	public void setPatternName(PatternName setPatternName) {
-		this.patternName = setPatternName.v();
+	public void setPatternName(PatternName patternName) {
+		this.patternName = patternName.v();
 	}
 
 	/*
@@ -71,15 +70,11 @@ public class DailyPatternDto implements DailyPatternSetMemento {
 	 */
 	@Override
 	public void setListDailyPatternVal(List<DailyPatternVal> setListDailyPatternVal) {
-		List<DailyPatternValDto> listDailyPatternValDto = new ArrayList<>();
-		setListDailyPatternVal.forEach(new Consumer<DailyPatternVal>() {
-			public void accept(DailyPatternVal t) {
-				DailyPatternValDto d = new DailyPatternValDto( t.getPatternCd().v(),
-						t.getDispOrder().v(), t.getWorkTypeSetCd().v(), t.getWorkingHoursCd().v(), t.getDays().v());
-				listDailyPatternValDto.add(d);
-			};
-		});
-		this.listDailyPatternVal = listDailyPatternValDto;
+		this.listDailyPatternVal = setListDailyPatternVal.stream()
+				.map(item -> new DailyPatternValDto(item.getDispOrder().v(),
+						item.getWorkTypeSetCd().v(), item.getWorkingHoursCd().v(),
+						item.getDays().v()))
+				.collect(Collectors.toList());
 	}
 
 }
