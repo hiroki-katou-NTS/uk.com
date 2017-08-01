@@ -7,6 +7,7 @@ module ksu001.a.viewmodel {
     import formatym = nts.uk.time.parseYearMonthDate;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    import blockUI = nts.uk.ui.block;
 
     export class ScreenModel {
 
@@ -16,23 +17,25 @@ module ksu001.a.viewmodel {
         selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
-        isShow: KnockoutObservable<boolean>;
+//        isShow: KnockoutObservable<boolean>;
 
         //Grid list A2_4 (pop-up)
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentCodeList: KnockoutObservableArray<any>;
-        count: number = 100;
-        switchOptions: KnockoutObservableArray<any>;
+//        count: number = 100;
+//        switchOptions: KnockoutObservableArray<any>;
 
         //Date time
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
+        dtPrev: KnockoutObservable<Date>;
+        dtAft: KnockoutObservable<Date>;
 
         //Switch
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: KnockoutObservable<number>;
-        
+
         modeDisplay: KnockoutObservableArray<any>;
         selectedModeDisplay: KnockoutObservable<number>;
 
@@ -45,15 +48,24 @@ module ksu001.a.viewmodel {
             self.selectedCode = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(true);
             self.selectedEmployee = ko.observableArray([]);
-            self.isShow = ko.observable(false);
+//            self.isShow = ko.observable(false);
             //Employee 
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
             self.items = ko.observableArray([]);
 
             //Date time
-            self.dateTimePrev = ko.observable('2017/04/01');
-            self.dateTimeAfter = ko.observable('2017/04/01');
+            self.dtPrev = ko.observable(new Date('2017/01/01'));
+            self.dtAft = ko.observable(new Date('2017/01/31'));
+            self.dateTimePrev = ko.observable(moment(self.dtPrev()).format('YYYY/MM/DD'));
+            self.dateTimeAfter = ko.observable(moment(self.dtAft()).format('YYYY/MM/DD'));
+
+            self.dtPrev.subscribe(() => {
+                self.dateTimePrev(moment(self.dtPrev()).format('YYYY/MM/DD'));
+            });
+            self.dtAft.subscribe(() => {
+                self.dateTimeAfter(moment(self.dtAft()).format('YYYY/MM/DD'));
+            });
 
             //Grid list for pop-up
             for (let i = 1; i <= 12; i++) {
@@ -143,13 +155,13 @@ module ksu001.a.viewmodel {
                 var area = $("#oViewModel");
                 area.html("");
                 if (newValue == 1) {
-                    $('#oViewModel').addClass('oViewModelDisplay');    
+                    $('#oViewModel').addClass('oViewModelDisplay');
                     area.load("../o/index.xhtml", function() {
                         var oViewModel = new o.viewmodel.ScreenModel();
                         ko.applyBindings(oViewModel, area.children().get(0));
                     });
-                }else{
-                    $('#oViewModel').removeClass('oViewModelDisplay');    
+                } else {
+                    $('#oViewModel').removeClass('oViewModelDisplay');
                 }
             });
         }
@@ -162,6 +174,32 @@ module ksu001.a.viewmodel {
             self.initExTable();
             dfd.resolve();
             return dfd.promise();
+        }
+
+        /**
+         * next one month
+         */
+        nextMonth(): void {
+            let self = this;
+            let dtMoment = moment(self.dtAft());
+            dtMoment.add(1, 'days');
+            self.dtPrev(dtMoment.toDate());
+            dtMoment = dtMoment.add(1, 'months');
+            dtMoment.subtract(1, 'days');
+            self.dtAft(dtMoment.toDate());
+        }
+
+        /**
+         * come back a month
+         */
+        prevMonth(): void {
+            let self = this;
+            let dtMoment = moment(self.dtPrev());
+            dtMoment.subtract(1, 'days');
+            self.dtAft(dtMoment.toDate());
+            dtMoment = dtMoment.subtract(1, 'months');
+            dtMoment.add(1, 'days');
+            self.dtPrev(dtMoment.toDate());
         }
 
         initCCG001() {
@@ -308,22 +346,23 @@ module ksu001.a.viewmodel {
 
             let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [];
 
-
+            //dataSource
             for (let i = 0; i < 300; i++) {
+                //leftMost dataSource
                 leftmostDs.push({ empId: i.toString(), empName: "社員名" + i });
-
+                //middle dataSource
                 middleDs.push({ empId: i.toString(), cert: "★", over1: "207:00", over2: "23.0" });
                 if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
                 else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green"));
-
+                //detail dataSource
                 if (i % 7 === 0) detailContentDeco.push(new CellColor("_3", i.toString(), "cell-light-green", 0));
-
                 detailContentDs.push(new ExItem(i.toString()));
                 if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
-
+                //vertSumContent dataSource
                 vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
             }
-
+            
+            
             for (let i = 0; i < 10; i++) {
                 horzSumContentDs.push({
                     itemId: i.toString(), empId: "", __25: "1.0", __26: "1.4", __27: "0.3", __28: "0.9", __29: "1.0", __30: "1.0", __31: "3.3",
