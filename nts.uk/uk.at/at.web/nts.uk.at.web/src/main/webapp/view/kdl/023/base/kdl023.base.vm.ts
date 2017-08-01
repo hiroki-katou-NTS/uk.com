@@ -77,19 +77,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-            // Get param from parent screen.
-            self.getParamFromCaller();
-
-            // Set pattern range.
-            self.setPatternRange();
-
             // Load data.
-            $.when(self.loadHolidayList(),
-                self.loadWorktypeList(),
-                self.loadWorktimeList(),
-                self.loadDailyPatternHeader(),
-                self.loadWeeklyWorkSetting())
-                .done(() => self.loadPatternReflection()
+            $.when(self.setPatternRange(), // Set pattern range.
+                self.getParamFromCaller(), // Get param from parent screen.
+                self.loadWorktypeList(), // Load worktype list.
+                self.loadWorktimeList(), // Load worktime list.
+                self.loadDailyPatternHeader(), // Load daily pattern header.
+                self.loadWeeklyWorkSetting()) // Load weekly work setting.
+                .done(() => self.loadPatternReflection() // Load pattern reflection.
                     .done(() => {
 
                         // Select first daily pattern if none selected.
@@ -176,16 +171,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             nts.uk.ui.block.invisible();
 
             // Reload calendar
-            self.setPatternRange();
-            self.optionDates(self.getOptionDates());
+            self.setPatternRange().done(() => {
+                self.optionDates(self.getOptionDates());
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+
+            // Save pattern reflection domain.
+            service.save(self.getDomainKey(), ko.toJS(self.patternReflection));
 
             // Set focus control
             $('#component-calendar-kcp006').focus();
 
-            // Save pattern reflection domain.
-            service.save(self.getDomainKey(), ko.toJS(self.patternReflection)).always(() => {
-                nts.uk.ui.block.clear();
-            });
         }
 
         /**
@@ -605,8 +602,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Set pattern range.
          */
-        private setPatternRange(): void {
+        private setPatternRange(): JQueryPromise<void> {
             let self = this;
+            let dfd = $.Deferred<void>();
             if (self.isOnScreenA()) {
                 let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
 
@@ -617,7 +615,17 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Set calendar range.
                 self.calendarStartDate = moment(self.patternStartDate);
                 self.calendarEndDate = moment(self.patternEndDate);
+
+                // Load holiday list.
+                self.loadHolidayList().done(() => {
+                    dfd.resolve();
+                });
             }
+            // Do nothing if is on screen B.
+            else {
+                dfd.resolve();
+            }
+            return dfd.promise();
         }
 
         /**
@@ -646,8 +654,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Get param from caller (parent) screen.
          */
-        private getParamFromCaller(): void {
+        private getParamFromCaller(): JQueryPromise<void> {
             let self = this;
+            let dfd = $.Deferred<void>();
             // Get param from caller screen.
             let selectedCode = nts.uk.ui.windows.getShared("patternCode");
             let startDate = nts.uk.ui.windows.getShared("startDate");
@@ -671,7 +680,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Set pattern range.
                 self.patternStartDate = moment(self.calendarStartDate);
                 self.patternEndDate = moment(self.calendarEndDate);
+                self.loadHolidayList().done(() => dfd.resolve()
+                );
+
             }
+            // Is on screen A
+            else {
+                self.setPatternRange().done(() => dfd.resolve());
+            }
+            return dfd.promise();
         }
 
     }
