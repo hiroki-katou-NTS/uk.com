@@ -13,7 +13,12 @@ module nts.uk.at.view.kdw008.c {
 
                 var array = [];
                 for (var i = 0; i < 13; i++) {
-                    array.push(new ItemModel("test" + i,"test" + i, '基本給'));
+                    var x = {
+                        id: "test"+i,
+                        code: "test"+i,
+                        name: '基本給'
+                    };
+                    array.push(new ItemModel(x));
                 }
                 this.itemsSwap(array);
 
@@ -24,12 +29,28 @@ module nts.uk.at.view.kdw008.c {
                 this.testSingle = ko.observable(null);
             }
 
+            findAll(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                var idList = this.idList();
+                service.findAll(idList).done(function(data) {
+                    //Convert list Object from server to list UnitPrice view model
+                    let items = _.map(data, item => {
+                        return new ItemModel(item);
+                    });
+                    self.itemsSwap(items);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
             update(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 var idList = this.idList();
                 var itemsSwap = this.itemsSwap();
                 service.update(new UpdateData(idList, itemsSwap)).done(function(data) {
+                    self.findAll();
                     nts.uk.ui.dialog.info({ messageId: "Msg_3" });
                     dfd.resolve();
                 });
@@ -39,6 +60,9 @@ module nts.uk.at.view.kdw008.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+//                $.when(self.findAll()).done(function() {
+//                    dfd.resolve();
+//                });
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -57,11 +81,23 @@ module nts.uk.at.view.kdw008.c {
             id: string;
             code: string;
             name: string;
-            constructor(id: string, code: string, name: string) {
-                this.id = id;
-                this.code = code;
-                this.name = name;
+            constructor(x:ItemModelInterface) {
+                if(x){
+                    this.id = x.id;
+                    this.code = x.code;
+                    this.name = x.name;
+                }else{
+                    this.id ='';
+                    this.code = '';
+                    this.name = '';
+                }    
             }
+        }
+        
+        export interface ItemModelInterface{
+            id: string;
+            code: string;
+            name: string;
         }
     }
 }
