@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern.work;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwwstWeeklyWorkSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwwstWeeklyWorkSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -17,16 +17,16 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaWeeklyWorkSettingSetMemento implements WeeklyWorkSettingSetMemento{
 	
 	/** The entity. */
-	private KwwstWeeklyWorkSet entity;
+	private KscmtWeeklyWorkSet entity;
 	
 	/**
 	 * Instantiates a new jpa weekly work setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWeeklyWorkSettingSetMemento(KwwstWeeklyWorkSet entity) {
-		if(entity.getKwwstWeeklyWorkSetPK() == null){
-			entity.setKwwstWeeklyWorkSetPK(new KwwstWeeklyWorkSetPK());
+	public JpaWeeklyWorkSettingSetMemento(KscmtWeeklyWorkSet entity) {
+		if(entity.getKscmtWeeklyWorkSetPK() == null){
+			entity.setKscmtWeeklyWorkSetPK(new KscmtWeeklyWorkSetPK());
 		}
 		this.entity = entity;
 	}
@@ -40,7 +40,7 @@ public class JpaWeeklyWorkSettingSetMemento implements WeeklyWorkSettingSetMemen
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKwwstWeeklyWorkSetPK().setCid(companyId.v());
+		this.entity.getKscmtWeeklyWorkSetPK().setCid(companyId.v());
 	}
 
 	/*
@@ -52,7 +52,7 @@ public class JpaWeeklyWorkSettingSetMemento implements WeeklyWorkSettingSetMemen
 	 */
 	@Override
 	public void setDayOfWeek(DayOfWeek dayOfWeek) {
-		this.entity.getKwwstWeeklyWorkSetPK().setDayOfWeek(dayOfWeek.value);
+		this.entity.getKscmtWeeklyWorkSetPK().setDayOfWeek(dayOfWeek.value);
 
 	}
 
@@ -66,7 +66,7 @@ public class JpaWeeklyWorkSettingSetMemento implements WeeklyWorkSettingSetMemen
 	 */
 	@Override
 	public void setWorkdayDivision(WorkdayDivision workdayDivision) {
-		this.entity.setWorkDayDiv(workdayDivision.value);
+		this.entity.setWorkDayAtr(workdayDivision.value);
 	}
 
 }

@@ -17,22 +17,19 @@
 			<com:scriptfile path="ksm006.a.service.js" />
 			<com:scriptfile path="ksm006.a.vm.js" />
 			<com:scriptfile path="ksm006.a.start.js" />
-			<!-- <com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkTypeCode
-				
-			</com:ValidatorScript> -->
+			
 		</ui:define>
-		<ui:define name="sidebar" id="left-sidebar" tabindex="1">
+		<ui:define name="sidebar" id="left-sidebar">
 			<ul class="navigator">
-				<li><a href="#companyWide-tab" role="tab-navigator" tabindex="-1" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#workplace-tab" role="tab-navigator" data-bind="click: switchToWorkplaceTab">#{i18n.getText('Com_Workplace')}</a></li>
-				<li><a href="#classification-tab" role="tab-navigator" data-bind="click: switchToClassTab">#{i18n.getText('Com_Class')}</a></li>
+				<li><a href="#companyWide-tab" role="tab-navigator" class="active" data-bind="click: switchToCompanyTab" tabindex="-1">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#workplace-tab" role="tab-navigator" data-bind="click: switchToWorkplaceTab"  tabindex="-1">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#classification-tab" role="tab-navigator" data-bind="click: switchToClassTab"  tabindex="-1">#{i18n.getText('Com_Class')}</a></li>
 			</ul>
 		</ui:define>
 
 		<ui:define name="sidebar-content">
-			<div id="companyWide-tab" role="tabpanel">
-				<div id="functions-area" class="sidebar-content-header">
+			<div id="companyWide-tab" role="tabpanel" data-bind="if: isShowCompanyTab()">
+				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button class="proceed" data-bind="click: registerByCompany, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
 					<!-- <button class="danger" data-bind="click: registerByCompany,, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button> -->
@@ -48,8 +45,8 @@
 								<tr class="tr-heigh">
 									<td style="width: 150px"><div
 											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_6')}</div></td>
-									<td class="td-width-100"><button style="width: 70px"
-											tabindex="2">#{i18n.getText('KSM006_11')}</button></td>
+									<td class="td-width-100"><button id="focus-btn" style="width: 70px"
+											tabindex="3" >#{i18n.getText('KSM006_11')}</button></td>
 									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeDisplayName"></span></td>
@@ -68,7 +65,7 @@
 									<td style="width: 150px"><div
 											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_7')}</div></td>
 									<td class="td-width-100"><button style="width: 70px"
-											tabindex="3">#{i18n.getText('KSM006_11')}</button></td>
+											tabindex="4">#{i18n.getText('KSM006_11')}</button></td>
 									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeDisplayName"></span></td>
@@ -86,7 +83,7 @@
 									<td style="width: 150px"><div
 											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_8')}</div></td>
 									<td class="td-width-100"><button style="width: 70px"
-											tabindex="4">#{i18n.getText('KSM006_11')}</button></td>
+											tabindex="5">#{i18n.getText('KSM006_11')}</button></td>
 									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeDisplayName"></span></td>
@@ -104,20 +101,20 @@
 				</div>
 			</div>
 
-			<div id="workplace-tab" role="tabpanel">
-				<div id="functions-area" class="sidebar-content-header">
+			<div id="workplace-tab" role="tabpanel" data-bind="if: isShowWorkplaceTab()">
+				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
 					<button class="proceed"
-						data-bind="click: registerByCompany,, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+						data-bind="click: registerByWorkplace, enable: true" tabindex="-1">#{i18n.getText('KSM006_2')}</button>
 					<button class="danger"
-						data-bind="click: registerByCompany,, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
+						data-bind="click: removeByWorkplace, enable: isUpdateModeWorkplace()" tabindex="-1">#{i18n.getText('KSM006_3')}</button>
 				</div>
 
 				<div id="workplace-content">
 					<table style="margin: 50px">
 						<tr>
 							<td style="width: 500px">
-								<div id="workplace-list"></div>
+								<div id="workplace-list" tabindex="-1"></div>
 							</td>
 
 							<td class="right-content">
@@ -202,20 +199,20 @@
 				</div>
 			</div>
 
-			<div id="classification-tab" role="tabpanel">
-				<div id="functions-area" class="sidebar-content-header">
+			<div id="classification-tab" role="tabpanel" data-bind="if: isShowClassifyTab()">
+				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Class')}</span>
 					<button class="proceed"
-						data-bind="click: registerByCompany,, enable: true" tabindex="1">#{i18n.getText('KSM006_2')}</button>
+						data-bind="click: registerByClassification, enable: true" tabindex="-1">#{i18n.getText('KSM006_2')}</button>
 					<button class="danger"
-						data-bind="click: registerByCompany,, enable: true" tabindex="2">#{i18n.getText('KSM006_3')}</button>
+						data-bind="click: removeByClassification, enable: isUpdateModeClassify()" tabindex="-1">#{i18n.getText('KSM006_3')}</button>
 				</div>
 
 				<div id="classification-content">
 					<table style="margin: 50px">
 						<tr>
 							<td style="width: 500px">
-								<div id="classification-list"></div>
+								<div id="classification-list" tabindex="-1"></div>
 							</td>
 
 							<td class="right-content">

@@ -33,14 +33,6 @@ public interface WorkplaceBasicWorkRepository {
 	 */
 	void remove(String workplaceId);
 	
-	/**
-	 * Find.
-	 *
-	 * @param workplaceId the workplace id
-	 * @return the optional
-	 */
-	Optional<WorkplaceBasicWork> find(String workplaceId, Integer workdayDivision);
-	
 
 	/**
 	 * Find all.
@@ -48,5 +40,14 @@ public interface WorkplaceBasicWorkRepository {
 	 * @param workplaceId the company id
 	 * @return the list
 	 */
-	Optional<WorkplaceBasicWork> findAll(String workplaceId);
+	Optional<WorkplaceBasicWork> findById(String workplaceId);
+	
+	/**
+	 * Find workplace.
+	 *
+	 * @return the list
+	 */
+	List<WorkplaceId> findSetting();
+	
+//	List<WorkplaceBasicWork> findAll();
 }

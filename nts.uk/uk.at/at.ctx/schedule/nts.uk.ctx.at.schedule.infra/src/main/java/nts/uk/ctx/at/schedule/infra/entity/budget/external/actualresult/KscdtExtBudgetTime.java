@@ -5,25 +5,20 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KbtdtExtBudgetTime.
+ * The Class KscdtExtBudgetTime.
  */
 @Entity
 @Setter
@@ -34,48 +29,62 @@ public class KscdtExtBudgetTime extends UkJpaEntity implements Serializable {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The kbtdt ext budget time PK. */
+    /** The kscdt ext budget time PK. */
     @EmbeddedId
-    protected KscdtExtBudgetTimePK kbtdtExtBudgetTimePK;
-
-    /** The ext budget cd. */
-    @Basic(optional = false)
-    @Column(name = "EXT_BUDGET_CD")
-    private String extBudgetCd;
-
-    /** The process D. */
-    @Basic(optional = false)
-    @Column(name = "PROCESS_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate processD;
+    protected KscdtExtBudgetTimePK kscdtExtBudgetTimePK;
     
-    /** The list value. */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kbtdtExtBudgetTime", orphanRemoval = true)
-    private List<KscdtExtBudgetTimeVal> listValue;
+    /** The actual val. */
+    @Basic(optional = false)
+    @Column(name = "ACTUAL_VAL")
+    private Long actualVal;
 
     /**
-     * Instantiates a new kbtdt ext budget time.
+     * Instantiates a new kscdt ext budget time.
      */
     public KscdtExtBudgetTime() {
     }
 
     /**
-     * Instantiates a new kbtdt ext budget time.
+     * Instantiates a new kscdt ext budget time.
      *
-     * @param kbtdtExtBudgetTimePK the kbtdt ext budget time PK
+     * @param kscdtExtBudgetTimePK the kscdt ext budget time PK
      */
-    public KscdtExtBudgetTime(KscdtExtBudgetTimePK kbtdtExtBudgetTimePK) {
-        this.kbtdtExtBudgetTimePK = kbtdtExtBudgetTimePK;
+    public KscdtExtBudgetTime(KscdtExtBudgetTimePK kscdtExtBudgetTimePK) {
+        this.kscdtExtBudgetTimePK = kscdtExtBudgetTimePK;
     }
 
     /**
-     * Instantiates a new kbtdt ext budget time.
+     * Instantiates a new kscdt ext budget time.
      *
-     * @param cid the cid
      * @param wkpid the wkpid
+     * @param actualDate the actual date
+     * @param extBudgetCd the ext budget cd
+     * @param periodTimeNo the period time no
      */
-    public KscdtExtBudgetTime(String cid, String wkpid) {
-        this.kbtdtExtBudgetTimePK = new KscdtExtBudgetTimePK(cid, wkpid);
+    public KscdtExtBudgetTime(String wkpid, GeneralDate actualDate, String extBudgetCd, Integer periodTimeNo) {
+        this.kscdtExtBudgetTimePK = new KscdtExtBudgetTimePK(wkpid, actualDate, extBudgetCd, periodTimeNo);
+    }
+    
+    /**
+     * Instantiates a new kscdt ext budget time.
+     *
+     * @param wkpid the wkpid
+     * @param actualDate the actual date
+     * @param extBudgetCd the ext budget cd
+     */
+    public KscdtExtBudgetTime(String wkpid, GeneralDate actualDate, String extBudgetCd) {
+        this.kscdtExtBudgetTimePK = new KscdtExtBudgetTimePK(wkpid, actualDate, extBudgetCd);
+    }
+    
+    /**
+     * Creates the entity.
+     *
+     * @param other the other
+     * @return the kscdt ext budget time
+     */
+    public static KscdtExtBudgetTime createEntity(KscdtExtBudgetTime other) {
+        return new KscdtExtBudgetTime(new KscdtExtBudgetTimePK(other.getKscdtExtBudgetTimePK().getWkpid(),
+                other.getKscdtExtBudgetTimePK().getActualDate(), other.getKscdtExtBudgetTimePK().getExtBudgetCd()));
     }
 
     /*
@@ -86,7 +95,7 @@ public class KscdtExtBudgetTime extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kbtdtExtBudgetTimePK != null ? kbtdtExtBudgetTimePK.hashCode() : 0);
+        hash += (kscdtExtBudgetTimePK != null ? kscdtExtBudgetTimePK.hashCode() : 0);
         return hash;
     }
 
@@ -101,9 +110,9 @@ public class KscdtExtBudgetTime extends UkJpaEntity implements Serializable {
             return false;
         }
         KscdtExtBudgetTime other = (KscdtExtBudgetTime) object;
-        if ((this.kbtdtExtBudgetTimePK == null && other.kbtdtExtBudgetTimePK != null)
-                || (this.kbtdtExtBudgetTimePK != null
-                        && !this.kbtdtExtBudgetTimePK.equals(other.kbtdtExtBudgetTimePK))) {
+        if ((this.kscdtExtBudgetTimePK == null && other.kscdtExtBudgetTimePK != null)
+                || (this.kscdtExtBudgetTimePK != null
+                        && !this.kscdtExtBudgetTimePK.equals(other.kscdtExtBudgetTimePK))) {
             return false;
         }
         return true;
@@ -116,7 +125,7 @@ public class KscdtExtBudgetTime extends UkJpaEntity implements Serializable {
      */
     @Override
     protected Object getKey() {
-        return this.getKbtdtExtBudgetTimePK();
+        return this.getKscdtExtBudgetTimePK();
     }
 
 }

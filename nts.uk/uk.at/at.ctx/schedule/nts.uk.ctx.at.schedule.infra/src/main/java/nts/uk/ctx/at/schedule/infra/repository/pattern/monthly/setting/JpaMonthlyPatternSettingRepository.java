@@ -21,8 +21,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KmpstMonthPatternSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KmpstMonthPatternSet_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KscmtMonthPatternSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KscmtMonthPatternSet_;
 
 /**
  * The Class JpaMonthlyPatternSettingRepository.
@@ -70,7 +70,7 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String employeeId) {
-		this.commandProxy().remove(KmpstMonthPatternSet.class, employeeId);
+		this.commandProxy().remove(KscmtMonthPatternSet.class, employeeId);
 	}
 
 	/*
@@ -87,11 +87,11 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMPST_MONTH_PATTERN_SET (KmpstMonthPatternSet SQL)
-		CriteriaQuery<KmpstMonthPatternSet> cq = criteriaBuilder
-				.createQuery(KmpstMonthPatternSet.class);
+		CriteriaQuery<KscmtMonthPatternSet> cq = criteriaBuilder
+				.createQuery(KscmtMonthPatternSet.class);
 
 		// root data
-		Root<KmpstMonthPatternSet> root = cq.from(KmpstMonthPatternSet.class);
+		Root<KscmtMonthPatternSet> root = cq.from(KscmtMonthPatternSet.class);
 
 		// select root
 		cq.select(root);
@@ -101,16 +101,16 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 
 		// equal employee id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KmpstMonthPatternSet_.sid), employeeId));
+				.add(criteriaBuilder.equal(root.get(KscmtMonthPatternSet_.sid), employeeId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KmpstMonthPatternSet> query = em.createQuery(cq).setMaxResults(FIRST_LENGTH);
+		TypedQuery<KscmtMonthPatternSet> query = em.createQuery(cq).setMaxResults(FIRST_LENGTH);
 
 		// exclude select
-		List<KmpstMonthPatternSet> resData = query.getResultList();
+		List<KscmtMonthPatternSet> resData = query.getResultList();
 
 		if (CollectionUtil.isEmpty(resData)) {
 			return Optional.empty();
@@ -139,11 +139,11 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMPST_MONTH_PATTERN_SET (KmpstMonthPatternSet SQL)
-		CriteriaQuery<KmpstMonthPatternSet> cq = criteriaBuilder
-				.createQuery(KmpstMonthPatternSet.class);
+		CriteriaQuery<KscmtMonthPatternSet> cq = criteriaBuilder
+				.createQuery(KscmtMonthPatternSet.class);
 
 		// root data
-		Root<KmpstMonthPatternSet> root = cq.from(KmpstMonthPatternSet.class);
+		Root<KscmtMonthPatternSet> root = cq.from(KscmtMonthPatternSet.class);
 
 		// select root
 		cq.select(root);
@@ -153,13 +153,13 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 
 		// equal employee id
 		lstpredicateWhere
-				.add(criteriaBuilder.and(root.get(KmpstMonthPatternSet_.sid).in(employeeIds)));
+				.add(criteriaBuilder.and(root.get(KscmtMonthPatternSet_.sid).in(employeeIds)));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KmpstMonthPatternSet> query = em.createQuery(cq);
+		TypedQuery<KscmtMonthPatternSet> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
@@ -172,7 +172,7 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the monthly pattern setting
 	 */
-	private MonthlyPatternSetting toDomain(KmpstMonthPatternSet entity){
+	private MonthlyPatternSetting toDomain(KscmtMonthPatternSet entity){
 		return new MonthlyPatternSetting(new JpaMonthlyPatternSettingGetMemento(entity));
 	}
 	
@@ -182,8 +182,8 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kmpst month pattern set
 	 */
-	private KmpstMonthPatternSet toEntity(MonthlyPatternSetting domain){
-		KmpstMonthPatternSet entity = new KmpstMonthPatternSet();
+	private KscmtMonthPatternSet toEntity(MonthlyPatternSetting domain){
+		KscmtMonthPatternSet entity = new KscmtMonthPatternSet();
 		domain.saveToMemento(new JpaMonthlyPatternSettingSetMemento(entity));
 		return entity;
 	}

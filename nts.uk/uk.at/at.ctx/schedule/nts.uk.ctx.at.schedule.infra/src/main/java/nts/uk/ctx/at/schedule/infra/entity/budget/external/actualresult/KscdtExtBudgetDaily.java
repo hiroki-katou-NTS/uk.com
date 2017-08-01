@@ -8,77 +8,60 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KbddtExtBudgetDaily.
+ * The Class KscdtExtBudgetDaily.
  */
+@Entity
 @Setter
 @Getter
-@Entity
 @Table(name = "KSCDT_EXT_BUDGET_DAILY")
 public class KscdtExtBudgetDaily extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The kbddt ext budget daily PK. */
+    /** The kscdt ext budget daily PK. */
     @EmbeddedId
-    protected KscdtExtBudgetDailyPK kbddtExtBudgetDailyPK;
+    protected KscdtExtBudgetDailyPK kscdtExtBudgetDailyPK;
 
-    /** The budget atr. */
-    @Basic(optional = false)
-    @Column(name = "BUDGET_ATR")
-    private int budgetAtr;
-    
     /** The actual val. */
     @Basic(optional = false)
     @Column(name = "ACTUAL_VAL")
     private Long actualVal;
     
-    /** The ext budget cd. */
-    @Basic(optional = false)
-    @Column(name = "EXT_BUDGET_CD")
-    private String extBudgetCd;
-
-    /** The process D. */
-    @Basic(optional = false)
-    @Column(name = "PROCESS_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate processD;
-
     /**
-     * Instantiates a new kbddt ext budget daily.
+     * Instantiates a new kscdt ext budget daily.
      */
     public KscdtExtBudgetDaily() {
     }
 
     /**
-     * Instantiates a new kbddt ext budget daily.
+     * Instantiates a new kscdt ext budget daily.
      *
      * @param kbddtExtBudgetDailyPK the kbddt ext budget daily PK
      */
     public KscdtExtBudgetDaily(KscdtExtBudgetDailyPK kbddtExtBudgetDailyPK) {
-        this.kbddtExtBudgetDailyPK = kbddtExtBudgetDailyPK;
+        this.kscdtExtBudgetDailyPK = kbddtExtBudgetDailyPK;
     }
 
     /**
-     * Instantiates a new kbddt ext budget daily.
+     * Instantiates a new kscdt ext budget daily.
      *
-     * @param cid the cid
      * @param wkpid the wkpid
+     * @param processD the process D
+     * @param extBudgetCd the ext budget cd
      */
-    public KscdtExtBudgetDaily(String cid, String wkpid) {
-        this.kbddtExtBudgetDailyPK = new KscdtExtBudgetDailyPK(cid, wkpid);
+    public KscdtExtBudgetDaily(String wkpid, GeneralDate processD, String extBudgetCd) {
+        this.kscdtExtBudgetDailyPK = new KscdtExtBudgetDailyPK(wkpid, processD, extBudgetCd);
     }
 
     /*
@@ -89,7 +72,7 @@ public class KscdtExtBudgetDaily extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kbddtExtBudgetDailyPK != null ? kbddtExtBudgetDailyPK.hashCode() : 0);
+        hash += (kscdtExtBudgetDailyPK != null ? kscdtExtBudgetDailyPK.hashCode() : 0);
         return hash;
     }
 
@@ -104,9 +87,9 @@ public class KscdtExtBudgetDaily extends UkJpaEntity implements Serializable {
             return false;
         }
         KscdtExtBudgetDaily other = (KscdtExtBudgetDaily) object;
-        if ((this.kbddtExtBudgetDailyPK == null && other.kbddtExtBudgetDailyPK != null)
-                || (this.kbddtExtBudgetDailyPK != null
-                        && !this.kbddtExtBudgetDailyPK.equals(other.kbddtExtBudgetDailyPK))) {
+        if ((this.kscdtExtBudgetDailyPK == null && other.kscdtExtBudgetDailyPK != null)
+                || (this.kscdtExtBudgetDailyPK != null
+                        && !this.kscdtExtBudgetDailyPK.equals(other.kscdtExtBudgetDailyPK))) {
             return false;
         }
         return true;
@@ -117,7 +100,7 @@ public class KscdtExtBudgetDaily extends UkJpaEntity implements Serializable {
      */
     @Override
     protected Object getKey() {
-        return this.getKbddtExtBudgetDailyPK();
+        return this.getKscdtExtBudgetDailyPK();
     }
 
 }

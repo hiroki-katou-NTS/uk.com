@@ -8,13 +8,16 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 /**
- * The Class KbddtExtBudgetDailyPK.
+ * The Class KscdtExtBudgetDailyPK.
  */
 @Embeddable
 @Setter
@@ -24,33 +27,50 @@ public class KscdtExtBudgetDailyPK implements Serializable {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The cid. */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    private String cid;
-
     /** The wkpid. */
     @Basic(optional = false)
     @Column(name = "WKPID")
     private String wkpid;
+    
+    /** The process D. */
+    @Basic(optional = false)
+    @Column(name = "YMD")
+    @Convert(converter = GeneralDateToDBConverter.class)
+    private GeneralDate processD;
+    
+    /** The ext budget cd. */
+    @Basic(optional = false)
+    @Column(name = "EXT_BUDGET_CD")
+    private String extBudgetCd;
 
     /**
-     * Instantiates a new kbddt ext budget daily PK.
+     * Instantiates a new kscdt ext budget daily PK.
      */
     public KscdtExtBudgetDailyPK() {
     }
 
     /**
-     * Instantiates a new kbddt ext budget daily PK.
+     * Instantiates a new kscdt ext budget daily PK.
      *
-     * @param cid
-     *            the cid
-     * @param wkpid
-     *            the wkpid
+     * @param wkpid the wkpid
+     * @param processD the process D
+     * @param extBudgetCd the ext budget cd
      */
-    public KscdtExtBudgetDailyPK(String cid, String wkpid) {
-        this.cid = cid;
+    public KscdtExtBudgetDailyPK(String wkpid, GeneralDate processD, String extBudgetCd) {
         this.wkpid = wkpid;
+        this.processD = processD;
+        this.extBudgetCd = extBudgetCd;
+    }
+    
+    /**
+     * Instantiates a new kscdt ext budget daily PK.
+     *
+     * @param wkpid the wkpid
+     * @param extBudgetCd the ext budget cd
+     */
+    public KscdtExtBudgetDailyPK(String wkpid, String extBudgetCd) {
+        this.wkpid = wkpid;
+        this.extBudgetCd = extBudgetCd;
     }
 
     /*
@@ -61,8 +81,9 @@ public class KscdtExtBudgetDailyPK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
         hash += (wkpid != null ? wkpid.hashCode() : 0);
+        hash += (processD != null ? processD.hashCode() : 0);
+        hash += (extBudgetCd != null ? extBudgetCd.hashCode() : 0);
         return hash;
     }
 
@@ -77,10 +98,15 @@ public class KscdtExtBudgetDailyPK implements Serializable {
             return false;
         }
         KscdtExtBudgetDailyPK other = (KscdtExtBudgetDailyPK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+        if ((this.wkpid == null && other.wkpid != null) || (this.wkpid != null && !this.wkpid.equals(other.wkpid))) {
             return false;
         }
-        if ((this.wkpid == null && other.wkpid != null) || (this.wkpid != null && !this.wkpid.equals(other.wkpid))) {
+        if ((this.processD == null && other.processD != null)
+                || (this.processD != null && !this.processD.equals(other.processD))) {
+            return false;
+        }
+        if ((this.extBudgetCd == null && other.extBudgetCd != null)
+                || (this.extBudgetCd != null && !this.extBudgetCd.equals(other.extBudgetCd))) {
             return false;
         }
         return true;

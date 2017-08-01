@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import java.util.Date;
@@ -9,40 +13,74 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDaily;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDailyPK;
 
+/**
+ * The Class JpaExternalBudgetDailySetMemento.
+ *
+ * @param <T>
+ *            the generic type
+ */
 public class JpaExternalBudgetDailySetMemento<T> implements ExternalBudgetDailySetMemento<T> {
-    
+
+    /** The entity. */
     private KscdtExtBudgetDaily entity;
-    
+
+    /**
+     * Instantiates a new jpa external budget daily set memento.
+     *
+     * @param entity
+     *            the entity
+     */
     public JpaExternalBudgetDailySetMemento(KscdtExtBudgetDaily entity) {
-        if (entity != null && entity.getKbddtExtBudgetDailyPK() == null) {
-            entity.setKbddtExtBudgetDailyPK(new KscdtExtBudgetDailyPK());
+        if (entity != null && entity.getKscdtExtBudgetDailyPK() == null) {
+            entity.setKscdtExtBudgetDailyPK(new KscdtExtBudgetDailyPK());
         }
         this.entity = entity;
     }
-    
-    @Override
-    public void setCompanyId(String companyId) {
-        this.entity.getKbddtExtBudgetDailyPK().setCid(companyId);
-    }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetDailySetMemento#setActualValue(nts.uk.ctx.at.schedule.dom.
+     * budget.external.actualresult.ExternalBudgetVal)
+     */
     @Override
     public void setActualValue(ExternalBudgetVal<T> actualValue) {
         this.entity.setActualVal(actualValue.getRawValue());
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetDailySetMemento#setExtBudgetCode(nts.uk.ctx.at.schedule.dom
+     * .budget.external.ExternalBudgetCd)
+     */
     @Override
     public void setExtBudgetCode(ExternalBudgetCd extBudgetCode) {
-        this.entity.setExtBudgetCd(extBudgetCode.v());
+        this.entity.getKscdtExtBudgetDailyPK().setExtBudgetCd(extBudgetCode.v());
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetDailySetMemento#setProcessDate(java.util.Date)
+     */
     @Override
     public void setProcessDate(Date processDate) {
-        this.entity.setProcessD(GeneralDate.legacyDate(processDate));
+        this.entity.getKscdtExtBudgetDailyPK().setProcessD(GeneralDate.legacyDate(processDate));
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetDailySetMemento#setWorkplaceId(java.lang.String)
+     */
     @Override
     public void setWorkplaceId(String workplaceId) {
-        this.entity.getKbddtExtBudgetDailyPK().setWkpid(workplaceId);
+        this.entity.getKscdtExtBudgetDailyPK().setWkpid(workplaceId);
     }
 
 }

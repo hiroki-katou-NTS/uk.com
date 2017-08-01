@@ -21,26 +21,26 @@
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
-					<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
+					<a tabindex="-1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
-					<button class="proceed" data-bind="click: saveMonthlyPatternSetting, enable: enableSave">#{i18n.getText('KSM005_9')}</button>
-					<button class="danger" data-bind="click: deleteMonthlyPatternSetting, enable: enableDelete">#{i18n.getText('KSM005_12')}</button>
+					<button tabindex="1" class="proceed" data-bind="click: saveMonthlyPatternSetting, enable: enableSave">#{i18n.getText('KSM005_9')}</button>
+					<button tabindex="3" class="danger" data-bind="click: deleteMonthlyPatternSetting, enable: enableDelete">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">
-					<div id="ccgcomponent"></div>
-					<div id="component-items-list" class="pull-left contentkcp005"></div>
+					<div id="ccgcomponent" tabindex="6"></div>
+					<div id="component-items-list" tabindex="7" class="pull-left contentkcp005"></div>
 					<div class="pull-left contentDetail">
-						<div class="lableData" data-bind="ntsFormLabel: {}">
+						<div tabindex="-1" class="lableData" data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KSM005_21')}</label>
 						</div>
-						<label  data-bind="text: employeeName"></label>
+						<label tabindex="-1" data-bind="text: employeeName"></label>
 						<br />
 						<br />
-						<div class="lableData"
+						<div tabindex="-1" class="lableData"
 							data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KSM005_22')}</label>
 						</div>
-						<button data-bind="click: onpenDialogSystemChange, enable: enableSystemChange">#{i18n.getText('KSM005_23')}</button>
+						<button tabindex="4" data-bind="click: onpenDialogSystemChange, enable: enableSystemChange">#{i18n.getText('KSM005_23')}</button>
 						<label  data-bind="text: monthlyPatternSetting"></label>
 					</div>
 				</div>

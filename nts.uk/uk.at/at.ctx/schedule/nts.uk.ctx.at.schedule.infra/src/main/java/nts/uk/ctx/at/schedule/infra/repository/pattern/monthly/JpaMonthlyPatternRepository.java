@@ -20,10 +20,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KmpmtMonthPattern;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KmpmtMonthPatternPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KmpmtMonthPatternPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KmpmtMonthPattern_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KscmtMonthPattern;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KscmtMonthPatternPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KscmtMonthPatternPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.KscmtMonthPattern_;
 
 /**
  * The Class JpaMonthlyPatternRepository.
@@ -69,10 +69,10 @@ public class JpaMonthlyPatternRepository extends JpaRepository implements Monthl
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMPMT_MONTH_PATTERN (KmpmtMonthPattern SQL)
-		CriteriaQuery<KmpmtMonthPattern> cq = criteriaBuilder.createQuery(KmpmtMonthPattern.class);
+		CriteriaQuery<KscmtMonthPattern> cq = criteriaBuilder.createQuery(KscmtMonthPattern.class);
 
 		// root data
-		Root<KmpmtMonthPattern> root = cq.from(KmpmtMonthPattern.class);
+		Root<KscmtMonthPattern> root = cq.from(KscmtMonthPattern.class);
 
 		// select root
 		cq.select(root);
@@ -82,18 +82,18 @@ public class JpaMonthlyPatternRepository extends JpaRepository implements Monthl
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KmpmtMonthPattern_.kmpmtMonthPatternPK).get(KmpmtMonthPatternPK_.cid),
+				root.get(KscmtMonthPattern_.kscmtMonthPatternPK).get(KscmtMonthPatternPK_.cid),
 				companyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by closure id asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KmpmtMonthPattern_.kmpmtMonthPatternPK)
-				.get(KmpmtMonthPatternPK_.mPatternCd)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KscmtMonthPattern_.kscmtMonthPatternPK)
+				.get(KscmtMonthPatternPK_.mPatternCd)));
 
 		// create query
-		TypedQuery<KmpmtMonthPattern> query = em.createQuery(cq);
+		TypedQuery<KscmtMonthPattern> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(item -> this.toDomain(item))
@@ -108,8 +108,8 @@ public class JpaMonthlyPatternRepository extends JpaRepository implements Monthl
 	 */
 	@Override
 	public Optional<MonthlyPattern> findById(String companyId, String monthlyPatternCode) {
-		return this.queryProxy().find(new KmpmtMonthPatternPK(companyId, monthlyPatternCode),
-				KmpmtMonthPattern.class).map(c -> this.toDomain(c));
+		return this.queryProxy().find(new KscmtMonthPatternPK(companyId, monthlyPatternCode),
+				KscmtMonthPattern.class).map(c -> this.toDomain(c));
 
 	}
 
@@ -122,8 +122,8 @@ public class JpaMonthlyPatternRepository extends JpaRepository implements Monthl
 	 */
 	@Override
 	public void remove(String companyId, String monthlyPatternCode) {
-		this.commandProxy().remove(KmpmtMonthPattern.class,
-				new KmpmtMonthPatternPK(companyId, monthlyPatternCode));
+		this.commandProxy().remove(KscmtMonthPattern.class,
+				new KscmtMonthPatternPK(companyId, monthlyPatternCode));
 	}
 	
 	/**
@@ -132,7 +132,7 @@ public class JpaMonthlyPatternRepository extends JpaRepository implements Monthl
 	 * @param entity the entity
 	 * @return the monthly pattern
 	 */
-	private MonthlyPattern toDomain(KmpmtMonthPattern entity){
+	private MonthlyPattern toDomain(KscmtMonthPattern entity){
 		return new MonthlyPattern(new JpaMonthlyPatternGetMemento(entity));
 	}
 	
@@ -143,8 +143,8 @@ public class JpaMonthlyPatternRepository extends JpaRepository implements Monthl
 	 * @param domain the domain
 	 * @return the kmpst month pattern
 	 */
-	private KmpmtMonthPattern toEntity(MonthlyPattern domain){
-		KmpmtMonthPattern entity = new KmpmtMonthPattern();
+	private KscmtMonthPattern toEntity(MonthlyPattern domain){
+		KscmtMonthPattern entity = new KscmtMonthPattern();
 		domain.saveToMemento(new JpaMonthlyPatternSetMemento(entity));
 		return entity;
 	}
@@ -155,12 +155,12 @@ public class JpaMonthlyPatternRepository extends JpaRepository implements Monthl
 	 * @param domain the domain
 	 * @return the kmpst month pattern
 	 */
-	private KmpmtMonthPattern toEntityUpdate(MonthlyPattern domain){
+	private KscmtMonthPattern toEntityUpdate(MonthlyPattern domain){
 		// find by id => optional data
-		Optional<KmpmtMonthPattern> optionalEntity = this.queryProxy()
-				.find(new KmpmtMonthPatternPK(domain.getCompanyId().v(),
-						domain.getMonthlyPatternCode().v()), KmpmtMonthPattern.class);
-		KmpmtMonthPattern entity = new KmpmtMonthPattern();
+		Optional<KscmtMonthPattern> optionalEntity = this.queryProxy()
+				.find(new KscmtMonthPatternPK(domain.getCompanyId().v(),
+						domain.getMonthlyPatternCode().v()), KscmtMonthPattern.class);
+		KscmtMonthPattern entity = new KscmtMonthPattern();
 		// check exist data find by id
 		if(optionalEntity.isPresent()){
 			entity = optionalEntity.get();

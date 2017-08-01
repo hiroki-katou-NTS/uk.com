@@ -4,20 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.budget.external;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetExtractCondition;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetFileReaderServiceImpl;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetQuery;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetValDto;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,10 +33,6 @@ public class ExternalBudgetFinder {
 	@Inject
     private ExternalBudgetLogRepository extBudgetLogRepo;
 	
-	/** The file stream service. */
-    @Inject 
-    StoredFileStreamService fileStreamService;
-
 	/*
 	 * get All List iTem of external Budget
 	 */
@@ -54,10 +51,14 @@ public class ExternalBudgetFinder {
 	 * @return the ext budget data preview dto
 	 */
 	@SuppressWarnings("unchecked")
-    public ExtBudgetDataPreviewDto findDataPreview(String fileId) {
-	    InputStream inputStream = fileStreamService.takeOutFromFileId(fileId);
-	    ExtBudgetFileReaderServiceImpl fileReader = new ExtBudgetFileReaderServiceImpl(inputStream);
-	    
+    public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
+	    String companyId = AppContexts.user().companyId();
+        Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
+                extractCondition.getExternalBudgetCode());
+        if (!extBudgetOptional.isPresent()) {
+            throw new RuntimeException("Not external budget setting.");
+        }
+	    ExtBudgetFileReaderServiceImpl fileReader = new ExtBudgetFileReaderServiceImpl(extractCondition);
 	    Map<String, Object> mapData = fileReader.findDataPreview();
 	    return ExtBudgetDataPreviewDto.builder()
 	            .data((List<ExternalBudgetValDto>) mapData.get(ExtBudgetFileReaderServiceImpl.DATA_PREVIEW))
@@ -77,7 +78,7 @@ public class ExternalBudgetFinder {
 	    Map<String, String> mapBudget = this.externalBudgetRepo.findAll(companyId).stream()
 	            .collect(Collectors.toMap(item -> item.getExternalBudgetCd().v(),
 	                    item -> item.getExternalBudgetName().v()));
-	    return this.extBudgetLogRepo.findExternalBudgetLog(companyId, employeeIdLogin, query.getStartDate(),
+	    return this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin, query.getStartDate(),
 	            query.getListState()).stream()
 	            .map(domain -> {
 	                ExternalBudgetLogDto dto = new ExternalBudgetLogDto();
@@ -89,4 +90,5 @@ public class ExternalBudgetFinder {
 	            })
 	            .collect(Collectors.toList());
 	}
+	
 }

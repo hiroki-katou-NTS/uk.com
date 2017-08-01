@@ -6,27 +6,27 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern.work;
 
 import java.math.BigDecimal;
 
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingSetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkTypeCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkingCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwmmtWorkMonthSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwmmtWorkMonthSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMemento {
 	
 	/** The entity. */
-	private KwmmtWorkMonthSet entity;
+	private KscmtWorkMonthSet entity;
 
 	/**
 	 * Instantiates a new jpa work monthly setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkMonthlySettingSetMemento(KwmmtWorkMonthSet entity) {
-		if (entity.getKwmmtWorkMonthSetPK() == null) {
-			entity.setKwmmtWorkMonthSetPK(new KwmmtWorkMonthSetPK());
+	public JpaWorkMonthlySettingSetMemento(KscmtWorkMonthSet entity) {
+		if (entity.getKscmtWorkMonthSetPK() == null) {
+			entity.setKscmtWorkMonthSetPK(new KscmtWorkMonthSetPK());
 		}
 		this.entity = entity;
 	}
@@ -39,7 +39,7 @@ public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMem
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKwmmtWorkMonthSetPK().setCid(companyId.v());
+		this.entity.getKscmtWorkMonthSetPK().setCid(companyId.v());
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMem
 	 */
 	@Override
 	public void setYmdK(BigDecimal ymdk) {
-		this.entity.getKwmmtWorkMonthSetPK().setYmdK(ymdk);
+		this.entity.getKscmtWorkMonthSetPK().setYmdK(ymdk);
 	}
 
 	/*
@@ -87,7 +87,7 @@ public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMem
 	 */
 	@Override
 	public void setMonthlyPatternCode(MonthlyPatternCode monthlyPatternCode) {
-		this.entity.getKwmmtWorkMonthSetPK().setMPatternCd(monthlyPatternCode.v());
+		this.entity.getKscmtWorkMonthSetPK().setMPatternCd(monthlyPatternCode.v());
 	}
 
 }

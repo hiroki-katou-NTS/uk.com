@@ -71,20 +71,21 @@ public class CompanyBasicWorkFinder {
 			// Save to Memento
 			companyBasicWork.get().saveToMemento(outputData);
 		}
+		// List BasicWorkSetting
 		List<BasicWorkSettingFindDto> basicWorkSettingFindDto = outputData.getBasicWorkSetting();
 		
 		// List worktypeCode
 		List<String> worktypeCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkTypeCode();
-		}).collect(Collectors.toList());
+		}).distinct().collect(Collectors.toList());
 		
 		// Find WorkType
-		List<WorkType> worktypeList = this.worktypeRepo.findByWorktypeCodeList(companyId, worktypeCodeList);
+		List<WorkType> worktypeList = this.worktypeRepo.getPossibleWorkType(companyId, worktypeCodeList);
 				
 		// List workingCode
 		List<String> workingCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkingCode();
-		}).collect(Collectors.toList());
+		}).distinct().collect(Collectors.toList());
 		
 		// Find WorkTime
 		List<WorkTime> workingList = this.worktimeRepo.findByCodeList(companyId, workingCodeList);
@@ -92,11 +93,12 @@ public class CompanyBasicWorkFinder {
 		basicWorkSettingFindDto.stream().forEach(item -> {
 			// Get WorkType
 			WorkType worktype = worktypeList.stream().filter(a-> {
-				return a.getWorkTypeCode().equals(item.getWorkingCode());
+				return a.getWorkTypeCode().equals(item.getWorkTypeCode());
 			}).findFirst().orElse(null);
 			// Set WorkTypeDisplayName to Dto
 			if (worktype == null) {
-				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+//				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+				item.setWorkTypeDisplayName("something");
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
@@ -108,9 +110,10 @@ public class CompanyBasicWorkFinder {
 			
 			// Set WorkingDisplayName
 			if (worktime == null) {
-				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+//				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+				item.setWorkingDisplayName("something");
 			} else {
-				item.setWorkTypeDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
+				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}
 		});
 		

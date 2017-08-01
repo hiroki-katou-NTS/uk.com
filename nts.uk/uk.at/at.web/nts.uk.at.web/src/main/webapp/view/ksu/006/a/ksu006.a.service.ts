@@ -21,8 +21,8 @@ module nts.uk.at.view.ksu006.a {
             return dfd.promise();
         }
         
-        export function findDataPreview(fileId: string): JQueryPromise<model.DataPreviewModel> {
-            return nts.uk.request.ajax(servicePath.findDataPreview + "/" + fileId);
+        export function findDataPreview(extractCondition: any): JQueryPromise<model.DataPreviewModel> {
+            return nts.uk.request.ajax(servicePath.findDataPreview, extractCondition);
         }
         
         

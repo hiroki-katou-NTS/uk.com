@@ -20,16 +20,18 @@ module nts.uk.pr.view.ccg007.b {
                 var dfd = $.Deferred<void>();
                 //get system config
                 service.getLoginForm().done(function(data: any) {
-                    if (data) {
+                    if (data.showContract != "show contract") {
                         self.loginId(data);
                     }
                     else {
                         self.openContractAuthDialog();
                     }
+                    dfd.resolve();
                 }).fail(function() {
+                    alert();
+                    dfd.resolve();
                     //TODO システムエラー画面へ遷移する    
                 });
-                dfd.resolve();
                 return dfd.promise();
             }
 
@@ -43,11 +45,11 @@ module nts.uk.pr.view.ccg007.b {
                 }).onClosed(() => {
                 });
             }
-            
-            private submitLogin(){
+
+            private submitLogin() {
                 var self = this;
-                service.submitLogin({loginId: self.loginId(),password: self.password()}).done(function(){
-                //TODO check login    
+                service.submitLogin({ loginId: self.loginId(), password: self.password() }).done(function() {
+                    //TODO check login    
                 });
             }
         }

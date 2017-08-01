@@ -16,13 +16,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 public interface ExternalBudgetDailyGetMemento<T> {
     
     /**
-     * Gets the company id.
-     *
-     * @return the company id
-     */
-    String getCompanyId();
-
-    /**
      * Gets the actual value.
      *
      * @return the actual value

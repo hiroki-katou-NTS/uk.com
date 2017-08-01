@@ -20,10 +20,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 @Getter
 public class ExternalBudgetTimeZone<T> extends AggregateRoot {
     
-    /** The company id. */
-    // 会社ID
-    private String companyId;
-    
     /** The actual value. */
     // 外部予算実績時間帯値
     private List<ExternalBudgetTimeZoneVal<T>> actualValues;
@@ -32,9 +28,9 @@ public class ExternalBudgetTimeZone<T> extends AggregateRoot {
     // 外部予算実績項目コード
     private ExternalBudgetCd extBudgetCode;
     
-    /** The process date. */
+    /** The actual date. */
     // 年月日
-    private Date processDate;
+    private Date actualDate;
     
     /** The workplace id. */
     // 職場ID
@@ -47,10 +43,9 @@ public class ExternalBudgetTimeZone<T> extends AggregateRoot {
      */
     public ExternalBudgetTimeZone(ExtBudgTimeZoneGetMemento<T> memento) {
         super();
-        this.companyId = memento.getCompanyId();
         this.actualValues = memento.getActualValues();
         this.extBudgetCode = memento.getExtBudgetCode();
-        this.processDate = memento.getProcessDate();
+        this.actualDate = memento.getActualDate();
         this.workplaceId = memento.getWorkplaceId();
     }
     
@@ -60,10 +55,9 @@ public class ExternalBudgetTimeZone<T> extends AggregateRoot {
      * @param memento the memento
      */
     public void saveToMemento(ExtBudgTimeZoneSetMemento<T> memento) {
-        memento.setCompanyId(this.companyId);
         memento.setActualValues(this.actualValues);
         memento.setExtBudgetCode(this.extBudgetCode);
-        memento.setProcessDate(this.processDate);
+        memento.setActualDate(this.actualDate);
         memento.setWorkplaceId(this.workplaceId);
     }
 }

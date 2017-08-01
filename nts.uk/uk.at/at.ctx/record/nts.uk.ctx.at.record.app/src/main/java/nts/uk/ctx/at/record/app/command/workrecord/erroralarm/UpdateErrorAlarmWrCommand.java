@@ -48,14 +48,14 @@ public class UpdateErrorAlarmWrCommand {
 	private int cancelableAtr;
 
 	/* エラー表示項目 */
-	private int errorDisplayItem;
+	private BigDecimal errorDisplayItem;
 
 	public UpdateErrorAlarmWrCommand() {
 		super();
 	}
 
 	public UpdateErrorAlarmWrCommand(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem) {
+			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, BigDecimal errorDisplayItem) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
@@ -74,7 +74,7 @@ public class UpdateErrorAlarmWrCommand {
 		return ErrorAlarmWorkRecord.createFromJavaType(this.companyId, this.code, this.name,
 				this.fixedAtr == 1 ? true : false, this.useAtr == 1 ? true : false, this.typeAtr, this.displayMessage,
 				this.boldAtr == 1 ? true : false, this.messageColor, this.cancelableAtr == 1 ? true : false,
-				new BigDecimal(this.errorDisplayItem));
+				this.errorDisplayItem);
 	}
 
 }

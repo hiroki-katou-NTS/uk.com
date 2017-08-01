@@ -8,11 +8,11 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KbddtExtBudgetDaily_.
+ * The Class KscdtExtBudgetDaily_.
  */
 @StaticMetamodel(KscdtExtBudgetDaily.class)
 public class KscdtExtBudgetDaily_ {
     
-    /** The kbddt ext budget daily PK. */
-    public static volatile SingularAttribute<KscdtExtBudgetDaily, KscdtExtBudgetDailyPK> kbddtExtBudgetDailyPK;
+    /** The kscdt ext budget daily PK. */
+    public static volatile SingularAttribute<KscdtExtBudgetDaily, KscdtExtBudgetDailyPK> kscdtExtBudgetDailyPK;
 }

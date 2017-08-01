@@ -24,10 +24,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwmmtWorkMonthSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwmmtWorkMonthSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwmmtWorkMonthSetPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KwmmtWorkMonthSet_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet_;
 
 /**
  * The Class JpaWorkMonthlySettingRepository.
@@ -64,17 +64,17 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	public void updateAll(List<WorkMonthlySetting> workMonthlySettings) {
 		
 		// get by input work monthly setting
-		List<KwmmtWorkMonthSet> entitys = this.toEntityUpdateAll(workMonthlySettings);
+		List<KscmtWorkMonthSet> entitys = this.toEntityUpdateAll(workMonthlySettings);
 		
 		// convert to map entity
-		Map<BigDecimal, KwmmtWorkMonthSet> mapEntity = entitys.stream()
+		Map<BigDecimal, KscmtWorkMonthSet> mapEntity = entitys.stream()
 				.collect(Collectors.toMap((entity) -> {
-					return entity.getKwmmtWorkMonthSetPK().getYmdK();
+					return entity.getKscmtWorkMonthSetPK().getYmdK();
 				}, Function.identity()));
 		
 		// update all entity
 		this.commandProxy().updateAll(workMonthlySettings.stream().map(domain -> {
-			KwmmtWorkMonthSet entity = new KwmmtWorkMonthSet();
+			KscmtWorkMonthSet entity = new KscmtWorkMonthSet();
 			if (mapEntity.containsKey(domain.getYmdk())) {
 				entity = mapEntity.get(domain.getYmdk());
 			}
@@ -93,8 +93,8 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	public Optional<WorkMonthlySetting> findById(String companyId, String monthlyPatternCode,
 			int baseDate) {
 		return this.queryProxy()
-				.find(new KwmmtWorkMonthSetPK(companyId, monthlyPatternCode,
-						BigDecimal.valueOf(baseDate)), KwmmtWorkMonthSet.class)
+				.find(new KscmtWorkMonthSetPK(companyId, monthlyPatternCode,
+						BigDecimal.valueOf(baseDate)), KscmtWorkMonthSet.class)
 				.map(c -> this.toDomain(c));
 	}
 	/*
@@ -112,10 +112,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KWMMT_WORK_MONTH_SET (KwmmtWorkMonthSet SQL)
-		CriteriaQuery<KwmmtWorkMonthSet> cq = criteriaBuilder.createQuery(KwmmtWorkMonthSet.class);
+		CriteriaQuery<KscmtWorkMonthSet> cq = criteriaBuilder.createQuery(KscmtWorkMonthSet.class);
 
 		// root data
-		Root<KwmmtWorkMonthSet> root = cq.from(KwmmtWorkMonthSet.class);
+		Root<KscmtWorkMonthSet> root = cq.from(KscmtWorkMonthSet.class);
 
 		// select root
 		cq.select(root);
@@ -125,21 +125,21 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK).get(KwmmtWorkMonthSetPK_.cid),
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.cid),
 				companyId));
 		
 		// equal monthly pattern code
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK)
-				.get(KwmmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
+				.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
 		
 		// greater than or equal start date
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK).get(KwmmtWorkMonthSetPK_.ymdK),
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK),
 				BigDecimal.valueOf(startDate)));
 		
 		// less than or equal end date
 		lstpredicateWhere.add(criteriaBuilder.lessThan(
-				root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK).get(KwmmtWorkMonthSetPK_.ymdK),
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK),
 				BigDecimal.valueOf(endDate)));
 				
 		// set where to SQL
@@ -147,10 +147,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		
 		// order by ymdk id asc
 		cq.orderBy(criteriaBuilder.asc(
-				root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK).get(KwmmtWorkMonthSetPK_.ymdK)));
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
 
 		// create query
-		TypedQuery<KwmmtWorkMonthSet> query = em.createQuery(cq);
+		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(item -> this.toDomain(item))
@@ -162,7 +162,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the work monthly setting
 	 */
-	private WorkMonthlySetting toDomain(KwmmtWorkMonthSet entity) {
+	private WorkMonthlySetting toDomain(KscmtWorkMonthSet entity) {
 		return new WorkMonthlySetting(new JpaWorkMonthlySettingGetMemento(entity));
 	}
 	
@@ -172,8 +172,8 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kwmmt work month set
 	 */
-	private KwmmtWorkMonthSet toEntity(WorkMonthlySetting domain){
-		KwmmtWorkMonthSet entity = new KwmmtWorkMonthSet();
+	private KscmtWorkMonthSet toEntity(WorkMonthlySetting domain){
+		KscmtWorkMonthSet entity = new KscmtWorkMonthSet();
 		domain.saveToMemento(new JpaWorkMonthlySettingSetMemento(entity));
 		return entity;
 	}
@@ -184,7 +184,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 * @param workMonthlySettings the work monthly settings
 	 * @return the list
 	 */
-	private List<KwmmtWorkMonthSet> toEntityUpdateAll(List<WorkMonthlySetting> workMonthlySettings){
+	private List<KscmtWorkMonthSet> toEntityUpdateAll(List<WorkMonthlySetting> workMonthlySettings){
 		
 		// check exist data by input
 		if(CollectionUtil.isEmpty(workMonthlySettings)){
@@ -202,10 +202,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KWMMT_WORK_MONTH_SET (KwmmtWorkMonthSet SQL)
-		CriteriaQuery<KwmmtWorkMonthSet> cq = criteriaBuilder.createQuery(KwmmtWorkMonthSet.class);
+		CriteriaQuery<KscmtWorkMonthSet> cq = criteriaBuilder.createQuery(KscmtWorkMonthSet.class);
 
 		// root data
-		Root<KwmmtWorkMonthSet> root = cq.from(KwmmtWorkMonthSet.class);
+		Root<KscmtWorkMonthSet> root = cq.from(KscmtWorkMonthSet.class);
 
 		// select root
 		cq.select(root);
@@ -215,16 +215,16 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK).get(KwmmtWorkMonthSetPK_.cid),
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.cid),
 				companyId));
 
 		// equal monthly pattern code
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK)
-				.get(KwmmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
+				.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
 
 		// in base date data list
-		lstpredicateWhere.add(criteriaBuilder.and(root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK)
-				.get(KwmmtWorkMonthSetPK_.ymdK).in(workMonthlySettings.stream()
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
+				.get(KscmtWorkMonthSetPK_.ymdK).in(workMonthlySettings.stream()
 						.map(setting -> setting.getYmdk()).collect(Collectors.toList()))));
 		
 		// set where to SQL
@@ -232,10 +232,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 		// order by ymdk id asc
 		cq.orderBy(criteriaBuilder.asc(
-				root.get(KwmmtWorkMonthSet_.kwmmtWorkMonthSetPK).get(KwmmtWorkMonthSetPK_.ymdK)));
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
 
 		// create query
-		TypedQuery<KwmmtWorkMonthSet> query = em.createQuery(cq);
+		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList();

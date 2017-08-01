@@ -4,8 +4,8 @@ module nts.uk.pr.view.ccg007.b {
 
         // Service paths.
         var servicePath = {
-            getContractAuth: "ctx/at/shared/login/find",
-            submitLogin: "ctx/at/shared/login/submit"
+            getContractAuth: "ctx/sys/gateway/login/checkcontract1",
+            submitLogin: "ctx/sys/gateway/login/submit/form1"
         }
 
         /**

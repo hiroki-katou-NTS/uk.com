@@ -14,7 +14,7 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 @Setter
 public class WorkplaceBWSaveCommand {
 	
-	/** The dto. */
+	/** The workplace basic work. */
 	private WorkplaceBasicWorkDto workplaceBasicWork;
 	
 	/**
