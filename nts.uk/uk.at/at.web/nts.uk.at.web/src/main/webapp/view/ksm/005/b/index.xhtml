@@ -26,15 +26,15 @@
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
-					<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
+					<a tabindex="-1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
-					<button data-bind="click: resetData">#{i18n.getText('KSM005_8')}</button>
-					<button class="proceed" data-bind="click: saveDataMonthlyPattern">#{i18n.getText('KSM005_9')}</button>
-					<button data-bind="click: openBatchSettingDialog">#{i18n.getText('KSM005_10')}</button>
-					<button class="danger" data-bind="click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
+					<button tabindex="1" data-bind="click: resetData">#{i18n.getText('KSM005_8')}</button>
+					<button tabindex="2" class="proceed" data-bind="click: saveDataMonthlyPattern">#{i18n.getText('KSM005_9')}</button>
+					<button tabindex="3" data-bind="click: openBatchSettingDialog">#{i18n.getText('KSM005_10')}</button>
+					<button tabindex="5" class="danger" data-bind="click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">
-					<div class="pull-left monthlyPatternContents caret-right caret-background bg-green">
+					<div tabindex="-1" class="pull-left monthlyPatternContents caret-right caret-background bg-green">
 						<table id="lstMonthlyPattern" 
 							data-bind="ntsGridList: {								
 							height: 350,
@@ -52,7 +52,7 @@
 								data-bind="ntsFormLabel: {required: true, constraint:['MonthlyPatternCode','MonthlyPatternName']}">
 								<label>#{i18n.getText('KSM005_16')}</label>
 							</div>
-							<input id="inp_monthlyPatternCode" 
+							<input tabindex="6" id="inp_monthlyPatternCode" 
 								class="nts-input"
 								data-bind="ntsTextEditor: {
 								value: code,
@@ -63,7 +63,7 @@
 								enable: enableMonthlyPatternCode,
 								immediate: false}" />
 								
-							<input id="inp_monthlyPatternName" 
+							<input tabindex="7" id="inp_monthlyPatternName" 
 								class="nts-input" 
 								data-bind="ntsTextEditor: {
 								value: name,
@@ -76,7 +76,7 @@
 						</div>
 						<br/>
 						<br/>
-						<div class="nts-calendar-container">
+						<div tabindex="9" class="nts-calendar-container">
 							<div class="nts-calendar-header">
 								<div data-bind="ntsDatePicker: {
 								value: yearMonthPicked, 

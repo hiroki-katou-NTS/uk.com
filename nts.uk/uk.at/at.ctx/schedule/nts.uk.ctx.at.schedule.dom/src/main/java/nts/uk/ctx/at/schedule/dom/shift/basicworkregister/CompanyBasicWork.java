@@ -17,7 +17,7 @@ import nts.arc.layer.dom.AggregateRoot;
 public class CompanyBasicWork extends AggregateRoot {
 
 	/** The company id. */
-	private CompanyId companyId;
+	private String companyId;
 
 	/** The basic work setting. */
 	private List<BasicWorkSetting> basicWorkSetting;

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtClassifyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtClassifyWorkSetPK;
 
 /**
  * The Class JpaBWSettingClassifySetMemento.
@@ -17,6 +18,16 @@ public class JpaBWSettingClassifySetMemento implements BasicWorkSettingSetMement
 
 	/** The type value. */
 	private KcbmtClassifyWorkSet typeValue;
+	
+	
+
+	public JpaBWSettingClassifySetMemento(KcbmtClassifyWorkSet typeValue) {
+		super();
+		if(typeValue.getKcbmtClassifyWorkSetPK() == null){
+			typeValue.setKcbmtClassifyWorkSetPK(new KcbmtClassifyWorkSetPK());
+		}
+		this.typeValue = typeValue;
+	}
 
 	/*
 	 * (non-Javadoc)

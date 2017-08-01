@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkSetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
 
 
 /**
@@ -35,8 +34,8 @@ public class CompanyBasicWorkFindDto implements CompanyBasicWorkSetMemento {
 	 * basicworkregister.CompanyId)
 	 */
 	@Override
-	public void setCompanyId(CompanyId companyId) {
-		this.companyId = companyId.v();
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
 	}
 
 	/*
@@ -47,7 +46,7 @@ public class CompanyBasicWorkFindDto implements CompanyBasicWorkSetMemento {
 	 */
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
-		basicWorkSetting.stream().map(item -> {
+		this.basicWorkSetting = basicWorkSetting.stream().map(item -> {
 			BasicWorkSettingFindDto basicWorkSettingFindDto = new BasicWorkSettingFindDto();
 			item.saveToMemento(basicWorkSettingFindDto);
 			return basicWorkSettingFindDto;

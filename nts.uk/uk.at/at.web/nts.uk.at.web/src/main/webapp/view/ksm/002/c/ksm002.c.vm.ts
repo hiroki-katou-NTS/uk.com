@@ -64,8 +64,10 @@ module ksm002.c {
                     return;
                 }
                 let lstSpecificDateItem : Array<SpecificDateItemCommand> = [];
-                $(".specificName").trigger("validate");
                 ko.utils.arrayForEach(self.specificDateItem(), function(item, index) { 
+                    if(item.useAtr()==1){
+                        $("#specificName"+index).trigger("validate");
+                    }
                     lstSpecificDateItem.push(new SpecificDateItemCommand(item.timeItemId(),item.useAtr(),item.specificDateItemNo(),item.specificName()));
                 });
                 self.specificDateItem

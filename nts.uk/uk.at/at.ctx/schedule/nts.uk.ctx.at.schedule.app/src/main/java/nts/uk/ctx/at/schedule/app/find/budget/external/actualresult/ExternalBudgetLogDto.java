@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+\ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult;
@@ -45,16 +45,6 @@ public class ExternalBudgetLogDto implements ExternalBudgetLogSetMemento {
 
     /** The number fail. */
     public int numberFail;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
-     * ExternalBudgetLogSetMemento#setCompanyId(java.lang.String)
-     */
-    @Override
-    public void setCompanyId(String companyId) {
-    }
 
     /*
      * (non-Javadoc)

@@ -16,7 +16,7 @@ public interface CompanyBasicWorkGetMemento {
 	 *
 	 * @return the company id
 	 */
-	CompanyId getCompanyId();
+	String getCompanyId();
 
 	/**
 	 * Gets the basic work setting.

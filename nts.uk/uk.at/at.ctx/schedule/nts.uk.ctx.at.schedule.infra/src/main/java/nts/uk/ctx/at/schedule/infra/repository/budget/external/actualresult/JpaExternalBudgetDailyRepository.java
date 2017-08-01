@@ -6,6 +6,8 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyRepository;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExt
 /**
  * The Class JpaExternalBudgetDailyRepository.
  */
+@Stateless
 public class JpaExternalBudgetDailyRepository extends JpaRepository implements ExternalBudgetDailyRepository {
 
     /*
@@ -51,11 +54,12 @@ public class JpaExternalBudgetDailyRepository extends JpaRepository implements E
      * @return the kbddt ext budget daily
      */
     private <T> KscdtExtBudgetDaily toEntity(ExternalBudgetDaily<T> domain) {
-        Optional<KscdtExtBudgetDaily> optinal = this.queryProxy().find(
-                new KscdtExtBudgetDailyPK(domain.getCompanyId(), domain.getWorkplaceId()), KscdtExtBudgetDaily.class);
+        Optional<KscdtExtBudgetDaily> optional = this.queryProxy().find(
+                new KscdtExtBudgetDailyPK(domain.getWorkplaceId(), domain.getExtBudgetCode().v()),
+                KscdtExtBudgetDaily.class);
         KscdtExtBudgetDaily entity = null;
-        if (optinal.isPresent()) {
-            entity = optinal.get();
+        if (optional.isPresent()) {
+            entity = optional.get();
         } else {
             entity = new KscdtExtBudgetDaily();
         }

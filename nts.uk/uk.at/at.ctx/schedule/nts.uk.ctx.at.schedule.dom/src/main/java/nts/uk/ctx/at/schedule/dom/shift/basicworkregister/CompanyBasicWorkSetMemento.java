@@ -16,7 +16,7 @@ public interface CompanyBasicWorkSetMemento {
 	 *
 	 * @param companyId the new company id
 	 */
-	void setCompanyId(CompanyId companyId);
+	void setCompanyId(String companyId);
 	
 	/**
 	 * Sets the basic work setting.

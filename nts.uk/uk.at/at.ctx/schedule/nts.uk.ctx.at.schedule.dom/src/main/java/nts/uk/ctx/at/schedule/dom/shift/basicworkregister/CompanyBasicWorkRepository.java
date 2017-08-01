@@ -24,17 +24,6 @@ public interface CompanyBasicWorkRepository {
 	 * @param companyBasicWork the company basic work
 	 */
 	void update(CompanyBasicWork companyBasicWork);
-	
-	
-//	void remove(String companyId, String workTypeCode);
-	
-	/**
- * Find.
- *
- * @param companyId the company id
- * @return the optional
- */
-	Optional<CompanyBasicWork> find(String companyId, Integer workdayDivision);
 
 	/**
 	 * Find all.
