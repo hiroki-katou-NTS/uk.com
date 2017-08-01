@@ -11,7 +11,7 @@ module nts.uk.at.view.kdl023.viewmodel {
             self.patternCode = ko.observable('');
             self.start = ko.observable('');
             self.end = ko.observable('');
-            self.returnedList = ko.observableArray([{ start: '', listText: [] }]);
+            self.returnedList = ko.observableArray([{ start: 'test', listText: ['test'] }]);
         }
 
         private startPage(): JQueryPromise<any> {

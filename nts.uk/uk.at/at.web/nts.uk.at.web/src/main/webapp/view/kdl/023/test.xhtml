@@ -9,6 +9,9 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile path="test.vm.js" />
 			<com:scriptfile path="test.start.js" />
+			<style>
+				#returned-list td {border: solid grey 1px; padding: 5px;}
+			</style>
 		</ui:define>
 
 		<ui:define name="content">
@@ -22,21 +25,30 @@
 					<tr>
 						<td>Pattern code:</td>
 						<td><input data-bind="ntsTextEditor: {value: patternCode}" /></td>
-						<td><span data-bind="text: patternCode" /></td>
 					</tr>
 					<tr>
 						<td>Start date:</td>
 						<td><div data-bind="ntsDatePicker: {value: start, dateFormat: 'YYYY-MM-DD'}"></div></td>
-						<td><span data-bind="text: start" /></td>
 					</tr>
 					<tr>
 						<td>End date:</td>
 						<td><div data-bind="ntsDatePicker: {value: end, dateFormat: 'YYYY-MM-DD'}"></div></td>
-						<td><span data-bind="text: end" /></td>
 					</tr>
 				</table>
-				Returned list: <div data-bind="foreach: returnedList"><span data-bind="text: ' '+start+' '"/><span data-bind="text: listText"/></div>
-				</div>
+				Returned list: <span data-bind="text: returnedList().length"/>
+				<table id='returned-list'>
+					<tr>
+						<td>Date</td>
+						<td>Text</td>
+					</tr>
+					<com:ko tag="foreach" bind="returnedList">
+						<tr>
+							<td style="padding: 5px; border: solid grey 1px" data-bind="text: start"></td>
+							<td data-bind="text: listText"></td>
+						</tr>
+					</com:ko>
+				</table>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
