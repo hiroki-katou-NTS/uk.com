@@ -184,9 +184,6 @@ module kcp.share.tree {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
                     
-                    // Set default value when initial component.
-                    self.initSelectedValue(res);
-                    
                     if (data.isShowAlreadySet) { 
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
@@ -208,6 +205,9 @@ module kcp.share.tree {
                     $('#combo-box-tree-component').on('mousedown', function() {
                         $('#combo-box-tree-component').focus();
                     });
+                    // Set default value when initial component.
+                    self.initSelectedValue(res);
+                    
                     dfd.resolve();
                 })
                 
