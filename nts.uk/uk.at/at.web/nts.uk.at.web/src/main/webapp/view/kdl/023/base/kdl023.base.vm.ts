@@ -49,9 +49,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.listWorkType = ko.observableArray<WorkType>([]);
             self.listWorkTime = ko.observableArray<WorkTime>([]);
             self.selectedDailyPatternCode = ko.observable('');
-            self.selectedDailyPatternCode.subscribe(code => {
-                self.loadDailyPatternDetail(code);
-            });
             self.isOnScreenA = ko.observable(true);
             self.isMasterDataUnregisterd = ko.observable(false);
 
@@ -99,8 +96,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         if (!self.selectedDailyPatternCode()) {
                             self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
                         }
+
                         // Load daily pattern detail.
-                        self.loadDailyPatternDetail(self.selectedDailyPatternCode());
+                        self.loadDailyPatternDetail(self.selectedDailyPatternCode()).done(() => {
+                            // Xu ly hien thi calendar.
+                            self.optionDates(self.getOptionDates());
+                            dfd.resolve();
+                        });
+
+                        // Init subscribe.
+                        self.selectedDailyPatternCode.subscribe(code => {
+                            self.loadDailyPatternDetail(code);
+                        });
 
                         // Define isReflectionMethodEnable after patternReflection is loaded.
                         self.isReflectionMethodEnable = ko.computed(() => {
@@ -117,11 +124,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             }
                         });
 
-                        // Xu ly hien thi calendar.
-                        self.optionDates(self.getOptionDates());
-
-                        // Resolve.
-                        dfd.resolve();
                     })).fail(res => {
                         nts.uk.ui.dialog.alert(res.message);
                         dfd.fail();
@@ -246,9 +248,17 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Load daily pattern detail.
          */
-        private loadDailyPatternDetail(code: string): void {
+        private loadDailyPatternDetail(code: string): JQueryPromise<void> {
+            nts.uk.ui.block.invisible();
             let self = this;
-            self.dailyPatternSetting = _.find(self.dailyPatternList(), item => item.patternCode == code);
+            let dfd = $.Deferred<void>();
+            service.findPatternByCode(code).done(res => {
+                self.dailyPatternSetting = res;
+                dfd.resolve();
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });;
+            return dfd.promise();
         }
 
         /**
