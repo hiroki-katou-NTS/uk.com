@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto.ClassificationBasicWorkDto;
 
 
 /**
@@ -15,12 +16,7 @@ import lombok.Setter;
 @Setter
 public class ClassifiBWRemoveCommand {
 
-	/** The company id. */
-	private String companyId;
-
-	/** The classification code. */
-	private String classificationCode;
-
-	/** The work type code. */
-	private String workTypeCode;
+	
+	/** The classifi basic work. */
+	private ClassificationBasicWorkDto classifiBasicWork;
 }

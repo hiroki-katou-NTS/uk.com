@@ -14,7 +14,6 @@ import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
 
 
 @Getter
@@ -60,8 +59,8 @@ public class CompanyBasicWorkDto {
 		 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento#getCompanyId()
 		 */
 		@Override
-		public CompanyId getCompanyId() {
-			return new CompanyId(dto.companyId);
+		public String getCompanyId() {
+			return dto.getCompanyId();
 		}
 
 		/* (non-Javadoc)
@@ -69,7 +68,7 @@ public class CompanyBasicWorkDto {
 		 */
 		@Override
 		public List<BasicWorkSetting> getBasicWorkSetting() {
-			return this.dto.basicWorkSetting.stream().map(dto -> dto.toDomain())
+			return this.dto.getBasicWorkSetting().stream().map(dto -> dto.toDomain())
 					.collect(Collectors.toList());
 		}
 	}

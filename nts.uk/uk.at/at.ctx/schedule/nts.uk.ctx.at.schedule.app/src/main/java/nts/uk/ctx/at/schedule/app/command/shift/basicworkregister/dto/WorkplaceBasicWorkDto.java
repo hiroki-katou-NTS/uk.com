@@ -64,7 +64,7 @@ public class WorkplaceBasicWorkDto {
 		 */
 		@Override
 		public WorkplaceId getWorkPlaceId() {
-			return new WorkplaceId(dto.workplaceId);
+			return new WorkplaceId(dto.getWorkplaceId());
 		}
 
 		/* (non-Javadoc)
@@ -72,7 +72,7 @@ public class WorkplaceBasicWorkDto {
 		 */
 		@Override
 		public List<BasicWorkSetting> getBasicWorkSetting() {
-			return dto.basicWorkSetting.stream().map(item -> item.toDomain())
+			return dto.getBasicWorkSetting().stream().map(item -> item.toDomain())
 					.collect(Collectors.toList());
 		}
 

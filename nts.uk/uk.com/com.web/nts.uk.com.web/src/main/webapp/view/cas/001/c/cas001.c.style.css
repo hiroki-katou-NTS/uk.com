@@ -20,7 +20,7 @@ button.search-btn,button.clear-btn{
 	width: 30px !important;
 }
 #registration {
-	margin-left: 100px;
+	margin-left: 90px !important;
 	margin-right: 5px;
 }
 .distane{
@@ -34,13 +34,13 @@ button.search-btn,button.clear-btn{
 	height: initial !important;
 	width: 300px;
 } 
-#roles_scroll{
-	height: 260px!important;
-}
 #roleCode{
 	margin-left: 10px;
 	width:90px;
 }
 #roleName{
 	width:100px;
+}
+#functions-area {
+  border-bottom:none !important;
 }

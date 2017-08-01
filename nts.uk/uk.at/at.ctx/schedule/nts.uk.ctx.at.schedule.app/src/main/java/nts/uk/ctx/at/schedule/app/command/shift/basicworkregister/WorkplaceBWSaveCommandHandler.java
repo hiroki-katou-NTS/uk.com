@@ -34,15 +34,16 @@ public class WorkplaceBWSaveCommandHandler extends CommandHandler<WorkplaceBWSav
 //		String worktypeCode = command.getWorkplaceBasicWork().getBasicWorkSetting().get(0).getWorkTypeCode();
 		
 		// Get workdayDivision
-		Integer workdayDivision = command.getWorkplaceBasicWork().getBasicWorkSetting().get(0).getWorkDayDivision();
+//		Integer workdayDivision = command.getWorkplaceBasicWork().getBasicWorkSetting().get(0).getWorkDayDivision();
 		
-		Optional<WorkplaceBasicWork> optional = this.repository.find(workplaceId, workdayDivision);
+//		Optional<WorkplaceBasicWork> optional = this.repository.findAll(workplaceId, workdayDivision);
+		Optional<WorkplaceBasicWork> optional = this.repository.findById(workplaceId);
 		
 		// Convert to Domain
 		WorkplaceBasicWork workplaceBasicWork = command.toDomain();
 		
 		// Validate 
-		workplaceBasicWork.validate();
+//		workplaceBasicWork.validate();
 		
 		// Check if exist
 		if(optional.isPresent()) {

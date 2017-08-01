@@ -23,12 +23,11 @@ public interface ExternalBudgetLogRepository {
     /**
      * Find external budget log.
      *
-     * @param companyId the company id
      * @param employeeId the employee id
      * @param startDate the start date
      * @param listState the list state
      * @return the list
      */
-    List<ExternalBudgetLog> findExternalBudgetLog(String companyId, String employeeId, GeneralDate startDate,
+    List<ExternalBudgetLog> findExternalBudgetLog(String employeeId, GeneralDate startDate,
             List<Integer> listState);
 }

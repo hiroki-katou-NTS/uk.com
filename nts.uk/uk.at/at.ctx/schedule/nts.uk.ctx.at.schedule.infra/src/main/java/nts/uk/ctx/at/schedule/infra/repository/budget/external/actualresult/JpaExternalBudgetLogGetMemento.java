@@ -33,17 +33,6 @@ public class JpaExternalBudgetLogGetMemento implements ExternalBudgetLogGetMemen
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresults.
-     * ExternalBudgetLogGetMemento#getCompanyId()
-     */
-    @Override
-    public String getCompanyId() {
-        return this.entity.getCid();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresults.
      * ExternalBudgetLogGetMemento#getExternalBudgetFileName()
      */
     @Override

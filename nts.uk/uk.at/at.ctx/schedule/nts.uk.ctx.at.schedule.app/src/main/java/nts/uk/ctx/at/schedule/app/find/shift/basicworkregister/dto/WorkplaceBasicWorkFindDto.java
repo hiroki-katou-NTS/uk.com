@@ -26,7 +26,7 @@ public class WorkplaceBasicWorkFindDto implements WorkplaceBasicWorkSetMemento {
 
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
-		basicWorkSetting.stream().map(item -> {
+		this.basicWorkSetting = basicWorkSetting.stream().map(item -> {
 			BasicWorkSettingFindDto basicWorkSettingFindDto = new BasicWorkSettingFindDto();
 			item.saveToMemento(basicWorkSettingFindDto);
 			return basicWorkSettingFindDto;

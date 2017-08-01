@@ -9,8 +9,14 @@ module nts.uk.at.view.kdl023.b.viewmodel {
          */
         public decide(): void {
             let self = this;
-            nts.uk.ui.windows.setShared('listDateSetting', self.optionDates());
-            self.closeDialog();
+            if (self.isMasterDataUnregisterd()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_340" }).then(() => {
+                    self.closeDialog();
+                });
+            } else {
+                nts.uk.ui.windows.setShared('listDateSetting', self.optionDates());
+                self.closeDialog();
+            }
         }
 
         /**

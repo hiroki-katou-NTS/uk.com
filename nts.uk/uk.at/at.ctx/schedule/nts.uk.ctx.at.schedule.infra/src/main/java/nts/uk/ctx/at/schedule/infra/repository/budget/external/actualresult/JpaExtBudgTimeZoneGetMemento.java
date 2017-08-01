@@ -21,8 +21,10 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExt
  */
 public class JpaExtBudgTimeZoneGetMemento<T> implements ExtBudgTimeZoneGetMemento<T> {
 
-    /** The entity. */
-    private KscdtExtBudgetTime entity;
+    private static final Integer FIRST_ELEMENT = 0;
+    
+    /** The lst entity. */
+    private List<KscdtExtBudgetTime> lstEntity;
 
     /**
      * Instantiates a new jpa ext budg time zone get memento.
@@ -30,19 +32,8 @@ public class JpaExtBudgTimeZoneGetMemento<T> implements ExtBudgTimeZoneGetMement
      * @param entity
      *            the entity
      */
-    public JpaExtBudgTimeZoneGetMemento(KscdtExtBudgetTime entity) {
-        this.entity = entity;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
-     * ExtBudgTimeZoneGetMemento#getCompanyId()
-     */
-    @Override
-    public String getCompanyId() {
-        return this.entity.getKbtdtExtBudgetTimePK().getCid();
+    public JpaExtBudgTimeZoneGetMemento(List<KscdtExtBudgetTime> lstEntity) {
+        this.lstEntity = lstEntity;
     }
 
     /*
@@ -53,7 +44,7 @@ public class JpaExtBudgTimeZoneGetMemento<T> implements ExtBudgTimeZoneGetMement
      */
     @Override
     public List<ExternalBudgetTimeZoneVal<T>> getActualValues() {
-        return this.entity.getListValue().stream()
+        return this.lstEntity.stream()
                 .map(entity -> new ExternalBudgetTimeZoneVal<T>(new JpaExtBudgTimeZoneValGetMemento<T>(entity)))
                 .collect(Collectors.toList());
     }
@@ -66,7 +57,7 @@ public class JpaExtBudgTimeZoneGetMemento<T> implements ExtBudgTimeZoneGetMement
      */
     @Override
     public ExternalBudgetCd getExtBudgetCode() {
-        return new ExternalBudgetCd(this.entity.getExtBudgetCd());
+        return new ExternalBudgetCd(this.lstEntity.get(FIRST_ELEMENT).getKscdtExtBudgetTimePK().getExtBudgetCd());
     }
 
     /*
@@ -76,8 +67,8 @@ public class JpaExtBudgTimeZoneGetMemento<T> implements ExtBudgTimeZoneGetMement
      * ExtBudgTimeZoneGetMemento#getProcessDate()
      */
     @Override
-    public Date getProcessDate() {
-        return this.entity.getProcessD().date();
+    public Date getActualDate() {
+        return this.lstEntity.get(FIRST_ELEMENT).getKscdtExtBudgetTimePK().getActualDate().date();
     }
 
     /*
@@ -88,7 +79,7 @@ public class JpaExtBudgTimeZoneGetMemento<T> implements ExtBudgTimeZoneGetMement
      */
     @Override
     public String getWorkplaceId() {
-        return this.entity.getKbtdtExtBudgetTimePK().getWkpid();
+        return this.lstEntity.get(FIRST_ELEMENT).getKscdtExtBudgetTimePK().getWkpid();
     }
 
 }

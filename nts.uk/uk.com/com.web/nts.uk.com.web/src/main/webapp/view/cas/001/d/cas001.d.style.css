@@ -1,39 +1,47 @@
-#role{
+#role {
 	margin-left: 15px;
 	margin-top: 5px;
 }
-#category{
+
+#category {
 	margin-left: 10px;
 	width: 340px;
 }
-#search{
+
+#search {
 	margin-left: 5px;
 }
+
 input.ntsSearchBox {
 	width: 180px !important;
 	margin-left: 3px;
-	margin-top:10px;
+	margin-top: 10px;
 }
-button.search-btn,button.clear-btn{
-	margin-top:10px;
+
+button.search-btn, button.clear-btn {
+	margin-top: 10px;
 	width: 30px !important;
 }
+
 #registration {
-	margin-left: 100px;
+	margin-left: 100px !important;
 	margin-right: 5px;
 }
-.distane{
+
+.distane {
 	margin-bottom: 5px;
 }
-#grid_container{
-	margin-left: 12px!important;
+
+#grid_container {
+	margin-left: 12px !important;
 	width: 300px !important;
 }
-#grid{
+
+#grid {
 	height: initial !important;
 	width: 300px;
-	
 }
+
 .ui-widget-header {
 	border: none;
 	background: none;
@@ -53,6 +61,11 @@ button.search-btn,button.clear-btn{
 	{
 	border: 1px solid rgba(25, 24, 24, 0.26);
 }
-.ui-iggrid table tr td{
-	    height: 35px !important;
+
+.ui-iggrid table tr td {
+	height: 35px !important;
+}
+
+#functions-area {
+	border-bottom: none !important;
 }
