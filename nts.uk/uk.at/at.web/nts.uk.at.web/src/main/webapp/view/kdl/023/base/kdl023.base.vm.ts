@@ -78,8 +78,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let dfd = $.Deferred();
 
             // Load data.
-            $.when(self.setPatternRange(), // Set pattern range.
-                self.getParamFromCaller(), // Get param from parent screen.
+            $.when(self.getParamFromCaller(), // Get param from parent screen.
                 self.loadWorktypeList(), // Load worktype list.
                 self.loadWorktimeList(), // Load worktime list.
                 self.loadDailyPatternHeader(), // Load daily pattern header.
