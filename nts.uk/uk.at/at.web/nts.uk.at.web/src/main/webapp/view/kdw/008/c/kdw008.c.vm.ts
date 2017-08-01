@@ -50,6 +50,7 @@ module nts.uk.at.view.kdw008.c {
                 var idList = this.idList();
                 var itemsSwap = this.itemsSwap();
                 service.update(new UpdateData(idList, itemsSwap)).done(function(data) {
+                    self.findAll();
                     nts.uk.ui.dialog.info({ messageId: "Msg_3" });
                     dfd.resolve();
                 });
