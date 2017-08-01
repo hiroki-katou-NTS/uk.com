@@ -469,9 +469,13 @@ module nts.uk.at.view.ksm006.a {
                 var dto: CompanyBasicWorkDto = new CompanyBasicWorkDto();
 //                dto.companyId = self.companyId;                
                 var basicWorkSettingArray: Array<BasicWorkSettingDto> =[];
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, self.companyBWWorkingDay().worktypeCode, self.companyBWWorkingDay().workingCode));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, self.companyBWNonInLaw().worktypeCode, self.companyBWNonInLaw().workingCode));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, self.companyBWNonExtra().worktypeCode, self.companyBWNonExtra().workingCode));
+//                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, self.companyBWWorkingDay().worktypeCode, self.companyBWWorkingDay().workingCode));
+//                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, self.companyBWNonInLaw().worktypeCode, self.companyBWNonInLaw().workingCode));
+//                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, self.companyBWNonExtra().worktypeCode, self.companyBWNonExtra().workingCode));
+                
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, '004', '004'));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, '002', '002'));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, '003', '003'));
                 dto.basicWorkSetting = basicWorkSettingArray;
                 return dto;
             }
@@ -504,9 +508,9 @@ module nts.uk.at.view.ksm006.a {
 //                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, self.classifyBWNonInLaw().worktypeCode, self.classifyBWNonInLaw().workingCode));
 //                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, self.classifyBWNonExtra().worktypeCode, self.classifyBWNonExtra().workingCode));
                 
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, '001', '001'));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, '002', '002'));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, '003', '003'));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, '004', '004'));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, '005', '005'));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, '006', '006'));
                 dto.basicWorkSetting = basicWorkSettingArray;
                 return dto;
             }
