@@ -94,7 +94,8 @@ module nts.uk.at.view.kdl003.a {
                     }
                 )
                 
-                service.findByCodeList(self.parentData().canSelectSiftCodes.split(','))
+                var canSelectSiftCodes = (self.parentData().canSelectSiftCodes != null && self.parentData().canSelectSiftCodes.length > 0) ? self.parentData().canSelectSiftCodes.split(',') : [];
+                service.findByCodeList(canSelectSiftCodes)
                     .done(function(data) {
                         self.rootList = data;
                         //add itemã€€ã�ªã�—
