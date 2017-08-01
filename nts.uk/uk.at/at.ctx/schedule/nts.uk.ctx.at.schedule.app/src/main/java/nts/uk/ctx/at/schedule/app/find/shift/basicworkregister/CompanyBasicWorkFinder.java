@@ -97,7 +97,8 @@ public class CompanyBasicWorkFinder {
 			}).findFirst().orElse(null);
 			// Set WorkTypeDisplayName to Dto
 			if (worktype == null) {
-				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+//				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+				item.setWorkTypeDisplayName("something");
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}

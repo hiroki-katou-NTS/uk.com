@@ -3,7 +3,7 @@ module cps008.a.viewmodel {
 
     export class ViewModel {
 
-        items: KnockoutObservableArray<ItemModel>;
+        items: KnockoutObservableArray<MaintenanceLayout>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         A_INP_LAYOUT_CODE: KnockoutObservable<string>;
@@ -15,12 +15,9 @@ module cps008.a.viewmodel {
             var self = this;
             self.items = ko.observableArray([]);
 
-            for (let i = 1; i < 100; i++) {
-                self.items.push(new ItemModel('00' + i, '基本給'));
-            }
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 120, hidden: false },
-                { headerText: '名称', key: 'name', width: 171, hidden: false }
+                { headerText: 'コード', key: 'layoutCode', width: 120, hidden: false },
+                { headerText: '名称', key: 'layoutName', width: 171, hidden: false }
             ]);
 
             self.currentCode = ko.observable();
@@ -28,12 +25,57 @@ module cps008.a.viewmodel {
             self.A_INP_LAYOUT_NAME = ko.observable(null);
             self.A_INP_LAYOUT_CODE_ENABLE = ko.observable(true);
             self.A_INP_LAYOUT_NAME_ENABLE = ko.observable(true);
+
+            self.currentCode.subscribe((function(codeChanged) {
+                //self.currentItem(self.findObj(codeChanged));
+                if (codeChanged == null) {
+                    return;
+                }
+
+                let obj = self.findObj(codeChanged);
+                self.A_INP_LAYOUT_CODE(obj.layoutCode);
+                self.A_INP_LAYOUT_NAME(obj.layoutName);
+            }));
         }
+
+
+        findObj(value: string): any {
+            let self = this;
+            var itemModel = null;
+            _.find(self.items(), function(obj: viewmodel.MaintenanceLayout) {
+                if (obj.layoutCode == value) {
+                    itemModel = obj;
+                }
+            })
+            return itemModel;
+        }
+
 
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            return null;
+            service.getAllMaintenanceLayout().done(function(layout_arr: Array<viewmodel.MaintenanceLayout>) {
+                if (layout_arr) {
+                    self.items(layout_arr);
+                    self.currentCode(layout_arr[0].layoutCode);
+                }
+
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        newMode() {
+            var self = this;
+            
+        }
+
+        register() {
+            var self = this;
+            
         }
 
         openDialogCoppy() {
@@ -43,14 +85,17 @@ module cps008.a.viewmodel {
         }
     }
 
-    class ItemModel {
-        code: string;
-        name: string;
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
 
-
+    export class MaintenanceLayout {
+        companyId: string;
+        layoutCode: string;
+        layoutName: string;
+        maintenanceLayoutID: string;
+        constructor(companyId?: string, layoutCode?: string, layoutName?: string, maintenanceLayoutID?: string) {
+            this.companyId = companyId;
+            this.layoutCode = layoutCode;
+            this.layoutName = layoutName;
+            this.maintenanceLayoutID = maintenanceLayoutID;
         }
     }
 }

@@ -6,31 +6,19 @@ package nts.uk.ctx.at.schedule.app.command.shift.pattern.daily;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternVal;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternValGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.Days;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DispOrder;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.WorkTypeCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.WorkingCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * The Class DailyPatternValDto.
  */
-
-/**
- * Gets the days.
- *
- * @return the days
- */
 @Getter
-
-/**
- * Sets the days.
- *
- * @param days the new days
- */
 @Setter
 public class DailyPatternValDto {
 	

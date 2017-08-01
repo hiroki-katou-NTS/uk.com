@@ -2,32 +2,32 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
+package nts.uk.ctx.at.schedule.dom.shift.pattern;
 
+import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
-import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * The Class WorkTypeCode.
+ * The Class WorkingCode.
  */
-// 勤務種類設定コード
-@StringCharType(CharType.NUMERIC)
+// 就業時間帯コード
+@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(3)
-public class WorkTypeCode extends CodePrimitiveValue<WorkTypeCode>{
-
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+public class WorkingCode extends StringPrimitiveValue<WorkingCode>{
 	
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 4042037564670742671L;
+
 	/**
-	 * Instantiates a new work type code.
+	 * Instantiates a new working code.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public WorkTypeCode(String rawValue) {
+	public WorkingCode(String rawValue) {
 		super(rawValue);
 	}
-	
 
 }
+
