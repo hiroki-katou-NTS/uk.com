@@ -97,10 +97,10 @@ module nts.uk.at.view.kdl003.a {
                 service.findByCodeList(self.parentData().canSelectSiftCodes.split(','))
                     .done(function(data) {
                         self.rootList = data;
-                        //add item　なし
+                        //add itemã€€ã�ªã�—
                         data.unshift({
                             code: "000",
-                            name: "なし",
+                            name: "ã�ªã�—",
                             workTime1: "",
                             workTime2: "",
                             workAtr: "",
