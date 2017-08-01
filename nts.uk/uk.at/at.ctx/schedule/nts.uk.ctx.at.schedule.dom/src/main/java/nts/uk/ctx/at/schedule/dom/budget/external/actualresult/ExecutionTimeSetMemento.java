@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
-import java.util.Date;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Interface ExecutionTimeSetMemento.
@@ -14,14 +14,14 @@ public interface ExecutionTimeSetMemento {
     /**
      * Sets the start date.
      *
-     * @param startDate the new start date
+     * @param startDateTime the new start date
      */
-    void setStartDate(Date startDate);
+    void setStartDateTime(GeneralDateTime startDateTime);
 
     /**
      * Sets the end date.
      *
-     * @param endDate the new end date
+     * @param endDateTime the new end date
      */
-    void setEndDate(Date endDate);
+    void setEndDateTime(GeneralDateTime endDateTime);
 }

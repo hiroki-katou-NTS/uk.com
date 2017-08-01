@@ -17,16 +17,13 @@
 			<com:scriptfile path="ksm006.a.service.js" />
 			<com:scriptfile path="ksm006.a.vm.js" />
 			<com:scriptfile path="ksm006.a.start.js" />
-			<!-- <com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkTypeCode
-				
-			</com:ValidatorScript> -->
+			
 		</ui:define>
 		<ui:define name="sidebar" id="left-sidebar">
 			<ul class="navigator">
-				<li><a href="#companyWide-tab" role="tab-navigator" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#workplace-tab" role="tab-navigator" data-bind="click: switchToWorkplaceTab">#{i18n.getText('Com_Workplace')}</a></li>
-				<li><a href="#classification-tab" role="tab-navigator" data-bind="click: switchToClassTab">#{i18n.getText('Com_Class')}</a></li>
+				<li><a href="#companyWide-tab" role="tab-navigator" class="active" data-bind="click: switchToCompanyTab" tabindex="-1">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#workplace-tab" role="tab-navigator" data-bind="click: switchToWorkplaceTab"  tabindex="-1">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#classification-tab" role="tab-navigator" data-bind="click: switchToClassTab"  tabindex="-1">#{i18n.getText('Com_Class')}</a></li>
 			</ul>
 		</ui:define>
 
@@ -108,16 +105,16 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
 					<button class="proceed"
-						data-bind="click: registerByWorkplace, enable: true">#{i18n.getText('KSM006_2')}</button>
+						data-bind="click: registerByWorkplace, enable: true" tabindex="-1">#{i18n.getText('KSM006_2')}</button>
 					<button class="danger"
-						data-bind="click: removeByWorkplace, enable: isUpdateModeWorkplace()">#{i18n.getText('KSM006_3')}</button>
+						data-bind="click: removeByWorkplace, enable: isUpdateModeWorkplace()" tabindex="-1">#{i18n.getText('KSM006_3')}</button>
 				</div>
 
 				<div id="workplace-content">
 					<table style="margin: 50px">
 						<tr>
 							<td style="width: 500px">
-								<div id="workplace-list" tabindex="99"></div>
+								<div id="workplace-list" tabindex="-1"></div>
 							</td>
 
 							<td class="right-content">
@@ -206,16 +203,16 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Class')}</span>
 					<button class="proceed"
-						data-bind="click: registerByClassification, enable: true">#{i18n.getText('KSM006_2')}</button>
+						data-bind="click: registerByClassification, enable: true" tabindex="-1">#{i18n.getText('KSM006_2')}</button>
 					<button class="danger"
-						data-bind="click: removeByClassification, enable: isUpdateModeClassify()">#{i18n.getText('KSM006_3')}</button>
+						data-bind="click: removeByClassification, enable: isUpdateModeClassify()" tabindex="-1">#{i18n.getText('KSM006_3')}</button>
 				</div>
 
 				<div id="classification-content">
 					<table style="margin: 50px">
 						<tr>
 							<td style="width: 500px">
-								<div id="classification-list" tabindex="100"></div>
+								<div id="classification-list" tabindex="-1"></div>
 							</td>
 
 							<td class="right-content">

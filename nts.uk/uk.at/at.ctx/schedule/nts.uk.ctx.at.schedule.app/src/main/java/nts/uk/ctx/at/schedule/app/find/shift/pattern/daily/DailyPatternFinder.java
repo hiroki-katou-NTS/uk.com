@@ -5,16 +5,20 @@
 package nts.uk.ctx.at.schedule.app.find.shift.pattern.daily;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternDto;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternDetailDto;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternItemDto;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternValDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class DailyPatternFinder.
@@ -22,56 +26,88 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DailyPatternFinder {
 
-	/** The patt calendar repo. */
+	/** The daily pattern repo. */
 	@Inject
-	private DailyPatternRepository pattCalendarRepo;
+	private DailyPatternRepository dailyPatternRepo;
 
 	/**
 	 * Gets the all patt calendar.
 	 *
 	 * @return the all patt calendar
 	 */
-	public List<DailyPatternDto> getAllPattCalendar() {
+	public List<DailyPatternItemDto> getAllPattCalendar() {
 		String companyId = AppContexts.user().companyId();
-		List<DailyPattern> listSetting = this.pattCalendarRepo.getAllPattCalendar(companyId);
+
+		List<DailyPattern> listSetting = this.dailyPatternRepo.getAllPattCalendar(companyId);
+
 		if (CollectionUtil.isEmpty(listSetting)) {
 			return null;
 		}
-		// Pattern Calendar
 
-		return listSetting.stream().map(data -> {
-			DailyPatternDto patternCalendarDto = new DailyPatternDto();
-			data.saveToMemento(patternCalendarDto);
-			return patternCalendarDto;
+		// Pattern Calendar
+		return listSetting.stream().map(data -> new DailyPatternItemDto(data.getPatternCode().v(),
+				data.getPatternName().v())).collect(Collectors.toList());
+	}
+
+	/**
+	 * Find pattern val by pattern cd.
+	 *
+	 * @param patternCd
+	 *            the pattern cd
+	 * @return the list
+	 */
+	public List<DailyPatternValDto> findPatternValByPatternCd(String patternCd) {
+
+		LoginUserContext loginUserContext = AppContexts.user();
+		String companyId = loginUserContext.companyId();
+		Optional<DailyPattern> optDailyPattern = this.dailyPatternRepo.findByCode(companyId,
+				patternCd);
+
+		if (!optDailyPattern.isPresent()) {
+			return null;
+		}
+
+		// PATTERN Val
+		return optDailyPattern.get().getListDailyPatternVal().stream().map(data -> {
+			DailyPatternValDto patternValDto = new DailyPatternValDto();
+			data.saveToMemento(patternValDto);
+			return patternValDto;
 		}).collect(Collectors.toList());
 
 	}
 
 	/**
-	 * Find pattern calendar by company id.
+	 * Find by code.
 	 *
+	 * @param patternCd
+	 *            the pattern cd
 	 * @return the list
 	 */
-	public List<DailyPatternDto> findPatternCalendarByCompanyId() {
+	public DailyPatternDetailDto findByCode(String patternCd) {
 		String companyId = AppContexts.user().companyId();
-		//Fake
-		String patternCd = "1";
-		List<DailyPattern> listSetting = this.pattCalendarRepo.findByCompanyId(companyId,patternCd);
-		if (CollectionUtil.isEmpty(listSetting)) {
+
+		Optional<DailyPattern> optDailyPattern = this.dailyPatternRepo.findByCode(companyId,
+				patternCd);
+
+		if (!optDailyPattern.isPresent()) {
 			return null;
 		}
+
 		// PATTERN
-		return listSetting.stream().map(data -> {
-			DailyPatternDto patternCalendarDto = new DailyPatternDto();
-			data.saveToMemento(patternCalendarDto);
-			return patternCalendarDto;
-		}).collect(Collectors.toList());
+		DailyPatternDetailDto patternCalendarDto = new DailyPatternDetailDto();
+		optDailyPattern.get().saveToMemento(patternCalendarDto);
+		return patternCalendarDto;
 	}
-	
-	
-	public void deleted(String patternCd){
+
+	/**
+	 * Deleted.
+	 *
+	 * @param patternCd
+	 *            the pattern cd
+	 */
+	public void deleteByCode(String patternCd) {
 		String companyId = AppContexts.user().companyId();
-		pattCalendarRepo.delete(companyId, patternCd);
+		dailyPatternRepo.delete(companyId, patternCd);
 	}
 
 }

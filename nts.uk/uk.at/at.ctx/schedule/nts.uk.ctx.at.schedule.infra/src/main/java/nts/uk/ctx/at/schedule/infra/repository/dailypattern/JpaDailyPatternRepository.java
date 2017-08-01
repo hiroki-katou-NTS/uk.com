@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.dailypattern;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,12 @@ import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternSet_;
  */
 @Stateless
 public class JpaDailyPatternRepository extends JpaRepository implements DailyPatternRepository {
+
+	/** The Constant FIRST_DATA. */
+	public static final int FIRST_DATA = 0;
+
+	/** The Constant FIRST_LENGTH. */
+	public static final int FIRST_LENGTH = 1;
 
 	/*
 	 * (non-Javadoc)
@@ -55,27 +62,12 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 		List<KdpstDailyPatternSet> result = em.createQuery(query).getResultList();
 
 		if (result.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		return result.stream().map(entity -> {
 			return new DailyPattern(new JpaDailyPatternGetMemento(entity));
 		}).collect(Collectors.toList());
-		/*
-		 * }
-		 * 
-		 * ) List<PatternCalendar> listSetting = new ArrayList<>();
-		 * 
-		 * PatternCalendar patternCalendar = new PatternCalendar();
-		 * 
-		 * KcsmtContCalendarSet calenderSetting =
-		 * this.findCalendarSetByContCalendarVal(result,"1");
-		 * 
-		 * listSetting.add(new PatternCalendar(new
-		 * JpaPatternCalendarGetMemento(calenderSetting)) );
-		 * 
-		 * return listSetting;
-		 */
 	}
 
 	/*
@@ -85,7 +77,8 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 	 * findByCompanyId(java.lang.String)
 	 */
 	@Override
-	public List<DailyPattern> findByCompanyId(String companyId, String patternCd) {
+	public Optional<DailyPattern> findByCode(String companyId, String patternCd) {
+
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -103,34 +96,10 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 
 		List<KdpstDailyPatternSet> result = em.createQuery(query).getResultList();
 		if (result.isEmpty()) {
-			return null;
+			return Optional.empty();
 		}
-		List<DailyPattern> listSetting = new ArrayList<>();
 
-		// PATTERN
-		KdpstDailyPatternSet nursingSetting = this.findCalendarSetByContCalendarVal(result,
-				companyId);
-		listSetting.add(new DailyPattern(new JpaDailyPatternGetMemento(nursingSetting)));
-
-		return listSetting;
-	}
-
-	/**
-	 * Find calendar set by cont calendar val.
-	 *
-	 * @param listSetting
-	 *            the list setting
-	 * @param companyId
-	 *            the company id
-	 * @return the kdpst daily pattern set
-	 */
-	private KdpstDailyPatternSet findCalendarSetByContCalendarVal(
-			List<KdpstDailyPatternSet> listSetting, String companyId) {
-		KdpstDailyPatternSet kcsmtContCalendarSet = new KdpstDailyPatternSet();
-		kcsmtContCalendarSet = listSetting.stream()
-				.filter(entity -> entity.getKdpstDailyPatternSetPK().getCid().equals(companyId))
-				.findFirst().get();
-		return kcsmtContCalendarSet;
+		return Optional.of(new DailyPattern(new JpaDailyPatternGetMemento(result.get(FIRST_DATA))));
 	}
 
 	/**

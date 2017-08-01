@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.budget.external;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +13,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
+import nts.arc.layer.infra.file.storage.StoredFileStreamService;
+import nts.arc.system.ServerSystemProperties;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetExtractCondition;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetFileReaderServiceImpl;
@@ -33,6 +37,12 @@ public class ExternalBudgetFinder {
 	@Inject
     private ExternalBudgetLogRepository extBudgetLogRepo;
 	
+	@Inject
+	private StoredFileInfoRepository fileInfoRepository;
+	
+	@Inject
+    private StoredFileStreamService fileStreamService;
+	
 	/*
 	 * get All List iTem of external Budget
 	 */
@@ -52,13 +62,37 @@ public class ExternalBudgetFinder {
 	 */
 	@SuppressWarnings("unchecked")
     public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
-	    String companyId = AppContexts.user().companyId();
+	    System.out.println(new File(ServerSystemProperties.fileStoragePath()).toPath().resolve(extractCondition.getFileId()).toString());
+//	    InputStream inputStream = null;
+//	    try {
+//            inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
+//        } catch (BusinessException businessException) {
+//            throw new BusinessException("Msg_158");
+//        }
+//	    
+//	    Optional<StoredFileInfo> optional = this.fileInfoRepository.find(extractCondition.getFileId());
+//        if(!optional.isPresent()){
+//            new RuntimeException("stored file info is not found.");
+//        }
+//        StoredFileInfo storagedFileInfor = optional.get();
+//        
+//        // check file extension
+//        List<String> FILE_EXTENSION_ARR = Arrays.asList("text, csv");
+//        if (!FILE_EXTENSION_ARR.contains(storagedFileInfor.getFileType().toLowerCase())) {
+//            throw new BusinessException("Msg_159"); 
+//        }
+//	    
+        
+        String companyId = AppContexts.user().companyId();
         Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
                 extractCondition.getExternalBudgetCode());
         if (!extBudgetOptional.isPresent()) {
             throw new RuntimeException("Not external budget setting.");
         }
-	    ExtBudgetFileReaderServiceImpl fileReader = new ExtBudgetFileReaderServiceImpl(extractCondition);
+        
+        ExternalBudget externalBudget = extBudgetOptional.get();
+        ExtBudgetFileReaderServiceImpl fileReader = new ExtBudgetFileReaderServiceImpl(extractCondition, externalBudget,
+                this.fileInfoRepository, this.fileStreamService);
 	    Map<String, Object> mapData = fileReader.findDataPreview();
 	    return ExtBudgetDataPreviewDto.builder()
 	            .data((List<ExternalBudgetValDto>) mapData.get(ExtBudgetFileReaderServiceImpl.DATA_PREVIEW))
@@ -78,7 +112,7 @@ public class ExternalBudgetFinder {
 	    Map<String, String> mapBudget = this.externalBudgetRepo.findAll(companyId).stream()
 	            .collect(Collectors.toMap(item -> item.getExternalBudgetCd().v(),
 	                    item -> item.getExternalBudgetName().v()));
-	    return this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin, query.getStartDate(),
+	    return this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin, query.getStartDate(), query.getEndDate(),
 	            query.getListState()).stream()
 	            .map(domain -> {
 	                ExternalBudgetLogDto dto = new ExternalBudgetLogDto();

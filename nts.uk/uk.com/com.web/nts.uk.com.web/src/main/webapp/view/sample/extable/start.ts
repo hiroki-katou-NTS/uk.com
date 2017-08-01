@@ -371,10 +371,10 @@ __viewContext.ready(function () {
     new nts.uk.ui.exTable.ExTable($("#extable"), { 
             headerHeight: "60px", bodyRowHeight: "50px", bodyHeight: "400px", 
             horizontalSumHeaderHeight: "60px", horizontalSumBodyHeight: "200px",
-            horizontalSumBodyRowHeight: "20px"
+            horizontalSumBodyRowHeight: "20px",
             areaResize: true, 
             bodyHeightMode: "dynamic",
-            windowOccupation: 800,
+            windowOccupation: 900,
             updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,

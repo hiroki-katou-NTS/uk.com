@@ -17,7 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
@@ -28,6 +28,9 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExt
  */
 @Stateless
 public class JpaExternalBudgetLogRepository extends JpaRepository implements ExternalBudgetLogRepository {
+    
+    private static final int HOUR_FIRST_DAY = 0;
+    private static final int HOUR_LAST_DAY = 23;
 
     /*
      * (non-Javadoc)
@@ -49,8 +52,8 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
      * java.lang.String, nts.arc.time.GeneralDate)
      */
     @Override
-    public List<ExternalBudgetLog> findExternalBudgetLog(String employeeId, GeneralDate startDate,
-            List<Integer> listState) {
+    public List<ExternalBudgetLog> findExternalBudgetLog(String employeeId, GeneralDateTime startDateTime,
+            GeneralDateTime endDateTime, List<Integer> listState) {
         EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -60,14 +63,16 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
         List<Predicate> predicateList = new ArrayList<>();
 
         predicateList.add(builder.equal(root.get(KscdtExtBudgetLog_.sid), employeeId));
-        predicateList.add(builder.lessThanOrEqualTo(root.get(KscdtExtBudgetLog_.strD), startDate));
-        predicateList.add(builder.greaterThanOrEqualTo(root.get(KscdtExtBudgetLog_.endD), startDate));
+        predicateList.add(builder.greaterThanOrEqualTo(root.get(KscdtExtBudgetLog_.strDateTime),
+                this.getGeneralDateTime(startDateTime, HOUR_FIRST_DAY)));
+        predicateList.add(builder.lessThanOrEqualTo(root.get(KscdtExtBudgetLog_.strDateTime),
+                this.getGeneralDateTime(endDateTime, HOUR_LAST_DAY)));
         
         Expression<Integer> exp = root.get(KscdtExtBudgetLog_.completionAtr);
         predicateList.add(exp.in(listState));
 
         query.where(predicateList.toArray(new Predicate[] {}));
-        query.orderBy(builder.desc(root.get(KscdtExtBudgetLog_.strD)));
+        query.orderBy(builder.desc(root.get(KscdtExtBudgetLog_.strDateTime)));
 
         return em.createQuery(query).getResultList().stream()
                 .map(entity -> new ExternalBudgetLog(new JpaExternalBudgetLogGetMemento((KscdtExtBudgetLog) entity)))
@@ -86,5 +91,20 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
         JpaExternalBudgetLogSetMemento memento = new JpaExternalBudgetLogSetMemento(entity);
         domain.saveToMemento(memento);
         return entity;
+    }
+    
+    /**
+     * Gets the general date time.
+     *
+     * @param dateTime the date time
+     * @param hour the hour
+     * @return the general date time
+     */
+    private GeneralDateTime getGeneralDateTime(GeneralDateTime dateTime, Integer hour) {
+        int minute = 0, second = 0;
+        if (hour > 0) {
+            minute = 59;
+        }
+        return GeneralDateTime.ymdhms(dateTime.year(), dateTime.month(), dateTime.day(), hour, minute, second);
     }
 }

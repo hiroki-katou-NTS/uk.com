@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Interface ExternalBudgetLogRepository.
@@ -24,10 +24,11 @@ public interface ExternalBudgetLogRepository {
      * Find external budget log.
      *
      * @param employeeId the employee id
-     * @param startDate the start date
+     * @param startDateTime the start date
+     * @param endDateTime the end date
      * @param listState the list state
      * @return the list
      */
-    List<ExternalBudgetLog> findExternalBudgetLog(String employeeId, GeneralDate startDate,
-            List<Integer> listState);
+    List<ExternalBudgetLog> findExternalBudgetLog(String employeeId, GeneralDateTime startDateTime,
+            GeneralDateTime endDateTime, List<Integer> listState);
 }
