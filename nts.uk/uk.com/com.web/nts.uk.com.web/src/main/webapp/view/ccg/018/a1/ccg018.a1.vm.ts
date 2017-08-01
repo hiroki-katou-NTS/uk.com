@@ -61,38 +61,36 @@ module ccg018.a1.viewmodel {
             let dfd = $.Deferred();
             self.items.removeAll();
             service.findDataOfTopPageJobSet(listJobId)
-                .done(function(data) {
-                    if (data.length > 0) {
-                        _.forEach(listJobId, function(x) {
-                            let dataObj: any = _.find(data, ['jobId', x]),
-                                jobTitle = _.find(self.listJobTitle(), ['id', x]);
+                .done(function(data) {                    
+                    _.forEach(listJobId, function(x) {
+                        let dataObj: any = _.find(data, ['jobId', x]),
+                            jobTitle = _.find(self.listJobTitle(), ['id', x]);
 
-                            if (dataObj) {
-                                self.items.push(new TopPageJobSet({
-                                    code: jobTitle.code,
-                                    name: jobTitle.name,
-                                    loginMenuCd: dataObj.loginMenuCode,
-                                    topMenuCd: dataObj.topMenuCode,
-                                    personPermissionSet: dataObj.personPermissionSet,
-                                    jobId: x,
-                                    system: dataObj.loginSystem,
-                                    menuClassification: dataObj.menuClassification
-                                }));
-                            } else {
-                                self.items.push(new TopPageJobSet({
-                                    code: jobTitle.code,
-                                    name: jobTitle.name,
-                                    loginMenuCd: '',
-                                    topMenuCd: '',
-                                    personPermissionSet: 0,
-                                    jobId: x,
-                                    system: 0,
-                                    menuClassification: 0
-                                }));
-                            }
-                        });
-                        dfd.resolve();
-                    }
+                        if (dataObj) {
+                            self.items.push(new TopPageJobSet({
+                                code: jobTitle.code,
+                                name: jobTitle.name,
+                                loginMenuCd: dataObj.loginMenuCode,
+                                topMenuCd: dataObj.topMenuCode,
+                                personPermissionSet: dataObj.personPermissionSet,
+                                jobId: x,
+                                system: dataObj.loginSystem,
+                                menuClassification: dataObj.menuClassification
+                            }));
+                        } else {
+                            self.items.push(new TopPageJobSet({
+                                code: jobTitle.code,
+                                name: jobTitle.name,
+                                loginMenuCd: '',
+                                topMenuCd: '',
+                                personPermissionSet: 0,
+                                jobId: x,
+                                system: 0,
+                                menuClassification: 0
+                            }));
+                        }
+                    });
+                    dfd.resolve();
                 }).fail(function() {
                     dfd.reject();
                 });

@@ -8,19 +8,12 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * The Class DailyPatternVal.
  */
 @Getter
 public class DailyPatternVal extends DomainObject {
-
-	/** The cid. */
-	private CompanyId cid;
-
-	/** The pattern cd. */
-	private PatternCode patternCd;
 
 	/** The disp order. */
 	private DispOrder dispOrder;
@@ -41,8 +34,6 @@ public class DailyPatternVal extends DomainObject {
 	 *            the memento
 	 */
 	public DailyPatternVal(DailyPatternValGetMemento memento) {
-		this.cid = memento.getCompanyId();
-		this.patternCd = memento.getPatternCode();
 		this.dispOrder = memento.getDispOrder();
 		this.workTypeSetCd = memento.getWorkTypeSetCd();
 		this.workingHoursCd = memento.getWorkingHoursCd();
@@ -56,8 +47,6 @@ public class DailyPatternVal extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(DailyPatternValSetMemento memento) {
-		memento.setCompanyId(this.cid);
-		memento.setPatternCode(this.patternCd);
 		memento.setDispOrder(this.dispOrder);
 		memento.setWorkTypeCodes(this.workTypeSetCd);
 		memento.setWorkHouseCodes(this.workingHoursCd);

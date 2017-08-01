@@ -648,6 +648,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.calendarEndDate = moment(endDate, 'YYYY-MM-DD');
                 self.startDate = self.calendarStartDate.date();
                 self.endDate = self.calendarEndDate.date();
+                self.yearMonthPicked(parseInt(self.calendarStartDate.format('YYYYMM')));
 
                 // Set pattern range.
                 self.patternStartDate = moment(self.calendarStartDate);

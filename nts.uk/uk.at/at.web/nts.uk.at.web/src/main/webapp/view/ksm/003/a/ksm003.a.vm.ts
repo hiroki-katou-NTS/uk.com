@@ -1,13 +1,11 @@
 module nts.uk.at.view.ksm003.a {
     import PatternCalendarDto = service.model.PatternCalendarDto;
     import DailyPatternVal = service.model.DailyPatternVal;
-
-
     export module viewmodel {
         export class ScreenModel {
             //A_label_x
             columns: KnockoutObservableArray<any>;
-            columnsWork: KnockoutObservableArray<any>[];
+            columnsWork: KnockoutObservableArray<any>;
             dailyPatternVal: KnockoutObservableArray<DailyPatternVal>;
             lstPattern: KnockoutObservableArray<model.Item>;
             currentCode: KnockoutObservable<string>;
@@ -137,6 +135,7 @@ module nts.uk.at.view.ksm003.a {
                     $('.nts-input').ntsError('clear');
                 }
             }
+            
             registrationDivReason() {
                 var self = this;
                 if(self.patternCode == null || self.patternCode === undefined || self.patternCode() == ""){

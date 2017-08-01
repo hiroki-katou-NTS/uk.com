@@ -1,7 +1,8 @@
 module nts.uk.at.view.ksm003.a {
     export module service {
         var paths = {
-            getAllPattCalender: "ctx/at/share/vacation/setting/patterncalendar/getallpattcal",
+            getAllPattCalender: "ctx/at/schedule/shift/pattern/daily/getall",
+
             addPattCalender: "ctx/at/share/vacation/setting/patterncalendar/addpattcal",
             getPatternValByPatternCd: "ctx/at/share/vacation/setting/patternval/find/patternval",
             deleteDailyPattern: "ctx/at/share/vacation/setting/patterncalendar/deleted/pattern"
@@ -10,63 +11,48 @@ module nts.uk.at.view.ksm003.a {
         /**
         * get all Patt Calender
         */
-        export function getAllPattCalender(): JQueryPromise<Array<viewmodel.model.Item>> {
+        export function getAllPattCalender(): JQueryPromise<Array<model.DailyPatternItemDto>> {
             return nts.uk.request.ajax("at", paths.getAllPattCalender);
         }
         /**
         * add Patt Calender
         */
-        export function addPattCalender(dto: model.PatternCalendarDto): JQueryPromise<Array<viewmodel.model.Item>> {
+        export function addPattCalender(dto: model.DailyPatternDetailDto): JQueryPromise<Array<model.DailyPatternDetailDto>> {
             return nts.uk.request.ajax("at", paths.addPattCalender, dto);
         }
 
         /**
       * get Patt Val
       */
-        export function getPatternValByPatternCd(patternCd: string): JQueryPromise<model.DailyPatternVal[]> {
+        export function getPatternValByPatternCd(patternCd: string): JQueryPromise<model.DailyPatternDetailDto> {
             return nts.uk.request.ajax("at", paths.getPatternValByPatternCd + '/' + patternCd);
         }
         /**
          * delete divergence reason
-        */ 
-        export function deleteDailyPattern(patternCd: string): JQueryPromise<Array<viewmodel.model.Item>>{
-           return nts.uk.request.ajax("at", paths.deleteDailyPattern + '/' + patternCd);
+        */
+        export function deleteDailyPattern(patternCd: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.deleteDailyPattern + '/' + patternCd);
         }
 
         export module model {
 
-            export interface PatternCalendarDto {
-                /** The pattern code. */
+            export interface DailyPatternItemDto {
                 patternCode: string;
-
-                /** The pattern name. */
                 patternName: string;
-
-                listDailyPatternVal: DailyPatternVal[];
-
             }
 
-            export interface DailyPatternVal {
-                /** The pattern code. */
-                cid: string;
-
-                /** The pattern name. */
+            export interface DailyPatternDetailDto {
                 patternCode: string;
-
-                /** The pattern name. */
-                dispOrder: number;
-
-                /** The work type codes. */
-                workTypeSetCd: string;
-
-                /** The work house codes. */
-                workingHoursCd: string;
-
-                /** The pattern name. */
-                days: number;
-
+                patternName: string;
+                itemDailyPatternVal: Array<DailyPatternValDto>;
             }
 
+            export interface DailyPatternValDto {
+                dispOrder: number;
+                workTypeSetCd: string;
+                workingHoursCd: string;
+                days: number;
+            }
         }
     }
 }

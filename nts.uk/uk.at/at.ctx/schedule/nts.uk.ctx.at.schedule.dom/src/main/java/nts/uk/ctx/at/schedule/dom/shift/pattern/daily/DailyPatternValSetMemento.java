@@ -2,26 +2,11 @@ package nts.uk.ctx.at.schedule.dom.shift.pattern.daily;
 
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * The Interface DailyPatternValSetMemento.
  */
 public interface DailyPatternValSetMemento {
-
-	/**
-	 * Sets the company id.
-	 *
-	 * @param setCompanyId the new company id
-	 */
-	void  setCompanyId(CompanyId setCompanyId);
-
-	/**
-	 * Sets the pattern code.
-	 *
-	 * @param setPatternCode the new pattern code
-	 */
-	void  setPatternCode(PatternCode setPatternCode);
 
 	/**
 	 * Sets the disp order.
