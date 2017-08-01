@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="ccg007.d.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ccg007.d.start.js" />
+			<com:scriptfile path="ccg007.d.service.js" />
+			<com:scriptfile path="ccg007.d.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td><div data-bind="text: '#{i18n.getText('CCG007_7')}'"></div></td>
+					</tr>
+					<tr>
+						<td>
+							<div id="combo-box"
+								data-bind="ntsComboBox: {
+										options: companyList,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: selectedCompanyCode,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'code', length: 4 },
+											{ prop: 'name', length: 10 },
+										]}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td><div data-bind="text: '#{i18n.getText('CCG007_8')}'"></div></td>
+					</tr>
+					<tr>
+						<td><div>
+								<input
+									data-bind="ntsTextEditor: {
+										value: employeeCode,
+										required: true,
+										enable: true,
+										readonly: false}" />
+							</div></td>
+					</tr>
+					<tr>
+						<td><div data-bind="text: '#{i18n.getText('CCG007_2')}'"></div></td>
+					</tr>
+					<tr>
+						<td><div>
+								<input
+									data-bind="ntsTextEditor: {
+										value: password,
+										required: true,
+										enable: true,
+										readonly: false}" />
+							</div></td>
+					</tr>
+					<tr>
+						<td><div data-bind="ntsCheckBox: { checked: true }"></div> <label
+							data-bind="text: '#{i18n.getText('CCG007_5')}'"></label></td>
+					</tr>
+					<tr>
+						<td><button data-bind="click: openContractAuthDialog"
+								class="proceed">
+								<div data-bind="text: '#{i18n.getText('CCG007_3')}'"></div>
+							</button></td>
+					</tr>
+					<tr>
+						<td><a data-bind="text: '#{i18n.getText('CCG007_6')}'"
+							class="hyperlink" href="#"></a></td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
