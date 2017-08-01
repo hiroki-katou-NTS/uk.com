@@ -69,9 +69,11 @@ module nts.uk.at.view.kdl003.a {
 
                 self.lstTimeDayAtrEnum = ko.observableArray([]);
                 self.selectedSiftCode.subscribe((code) => {
-                    service.findAllRestTime(code).done(function(data) {
-                        self.bindRestTime(data);
-                    });
+                    if (code != null && code != undefined) {
+                        service.findAllRestTime(code).done(function(data) {
+                            self.bindRestTime(data);
+                        });
+                    }
                 });
                 self.selectedWorkTypeCode.subscribe(function(data, data2) {
 
@@ -82,12 +84,16 @@ module nts.uk.at.view.kdl003.a {
                 var self = this;
                 var dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
+                //                var command = self.parentData().canSelectWorkTypeCodes.length > 0 ? self.parentData().canSelectWorkTypeCodes.split(',') : null)
+                //                              , self.getTimeDayAtrEnum();
+                
                 //find all worktype
-                $.when(service.findAllWorkType(self.parentData().canSelectWorkTypeCodes.length > 0 ? self.parentData().canSelectWorkTypeCodes.split(',') : null), self.getTimeDayAtrEnum()).done(
+                $.when(service.findAllWorkType()).done(
                     function(workTypeData: Array<WorkType>) {
                         self.lstWorkType(workTypeData);
                     }
-                );
+                )
+                
                 service.findByCodeList(self.parentData().canSelectSiftCodes.split(','))
                     .done(function(data) {
                         self.rootList = data;
@@ -137,7 +143,8 @@ module nts.uk.at.view.kdl003.a {
                 );
                 return dfd.promise();
             }
-            search() {
+
+            public search() {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
@@ -164,7 +171,7 @@ module nts.uk.at.view.kdl003.a {
                     });
             }
 
-            returnData() {
+            private returnData() {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 self.startTimeOption(1);
@@ -228,7 +235,8 @@ module nts.uk.at.view.kdl003.a {
                 item.endTime = nts.uk.time.parseTime(item.endTime, true).format();
                 return item;
             }
-            submitAndCloseDialog() {
+
+            public submitAndCloseDialog() {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 self.getWorkTypeName(self.selectedWorkTypeCode());
