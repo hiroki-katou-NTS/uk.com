@@ -53,7 +53,6 @@ module nts.uk.at.view.ksm005.e {
          * find data client service MonthlyPatternSettingBatch
          */
         export function findMonthlyPatternSettingBatch(key: model.KeyMonthlyPatternSettingBatch): JQueryPromise<model.MonthlyPatternSettingBatch> {
-            console.log(service.toKey(key));
             return nts.uk.characteristics.restore(service.toKey(key));
         }
         
