@@ -7,7 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
-import nts.uk.ctx.bs.person.dom.person.info.category.IsUsed;
+import nts.uk.ctx.bs.person.dom.person.info.category.IsAbolition;
 
 @Getter
 public class PersonInfoItemDefinition extends AggregateRoot {
@@ -16,7 +16,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private ItemCode itemCode;
 	private ItemCode itemParentCode;
 	private ItemName itemName;
-	private IsUsed isUsed;
+	private IsAbolition isAbolition;
 	private IsFixed isFixed;
 	private IsRequired isRequired;
 	private SystemRequired systemRequired;
@@ -24,14 +24,14 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private ItemTypeState itemTypeState;
 
 	private PersonInfoItemDefinition(String personInfoCategoryId, String itemCode, String itemParentCode,
-			String itemName, int isUsed, int isFixed, int isRequired, int systemRequired, int requireChangable) {
+			String itemName, int isAbolition, int isFixed, int isRequired, int systemRequired, int requireChangable) {
 		super();
 		this.personInfoItemDefinitionId = IdentifierUtil.randomUniqueId();
 		this.personInfoCategoryId = personInfoCategoryId;
 		this.itemCode = new ItemCode(itemCode);
 		this.itemParentCode = new ItemCode(itemParentCode);
 		this.itemName = new ItemName(itemName);
-		this.isUsed = EnumAdaptor.valueOf(isUsed, IsUsed.class);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 		this.isRequired = EnumAdaptor.valueOf(isRequired, IsRequired.class);
 		this.systemRequired = EnumAdaptor.valueOf(systemRequired, SystemRequired.class);
@@ -39,9 +39,9 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	}
 
 	public static PersonInfoItemDefinition createFromJavaType(String personInfoCategoryId, String itemCode,
-			String itemParentCode, String itemName, int isUsed, int isFixed, int isRequired, int systemRequired,
+			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired, int systemRequired,
 			int requireChangable) {
-		return new PersonInfoItemDefinition(personInfoCategoryId, itemCode, itemParentCode, itemName, isUsed, isFixed,
+		return new PersonInfoItemDefinition(personInfoCategoryId, itemCode, itemParentCode, itemName, isAbolition, isFixed,
 				isRequired, systemRequired, requireChangable);
 	}
 

@@ -22,9 +22,8 @@ public class DataTypeState extends AggregateRoot {
 		return StringItem.createFromJavaType(stringItemLeng, stringItemType, stringItemDataType);
 	}
 
-	public static DataTypeState createTimePointItem(int dayTypeMin, long timePointMin, int dayTypeMax,
-			long timePointMax) {
-		return TimePointItem.createFromJavaType(dayTypeMin, timePointMin, dayTypeMax, timePointMax);
+	public static DataTypeState createTimePointItem(long timePointItemMin, long timePointItemMax) {
+		return TimePointItem.createFromJavaType(timePointItemMin, timePointItemMax);
 	}
 
 	public static DataTypeState createDateItem(int dateItemType) {

@@ -32,8 +32,8 @@ public class SingleItem extends ItemTypeState {
 		setDataTypeState(DataTypeState.createStringItem(stringItemLeng, stringItemType, stringItemDataType));
 	}
 
-	public void setTimePointItem(int dayTypeMin, long timePointMin, int dayTypeMax, long timePointMax) {
-		setDataTypeState(DataTypeState.createTimePointItem(dayTypeMin, timePointMin, dayTypeMax, timePointMax));
+	public void setTimePointItem(long timePointItemMin, long timePointItemMax) {
+		setDataTypeState(DataTypeState.createTimePointItem(timePointItemMin, timePointItemMax));
 	}
 
 	public void setDateItem(int dateItemType) {
