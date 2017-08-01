@@ -106,7 +106,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         self.isReflectionMethodEnable = ko.computed(() => {
                             return self.patternReflection.statutorySetting.useClassification() ||
                                 self.patternReflection.nonStatutorySetting.useClassification() ||
-                                self.patternReflection.holidaySetting.useClassification()
+                                self.patternReflection.holidaySetting.useClassification();
+                        });
+                        // Set tabindex.
+                        self.isReflectionMethodEnable.subscribe(val => {
+                            if (val) {
+                                $('#reflection-method-radio-group').attr('tabindex', '5');
+                            } else {
+                                $('#reflection-method-radio-group').attr('tabindex', '-1');
+                            }
                         });
 
                         // Xu ly hien thi calendar.
