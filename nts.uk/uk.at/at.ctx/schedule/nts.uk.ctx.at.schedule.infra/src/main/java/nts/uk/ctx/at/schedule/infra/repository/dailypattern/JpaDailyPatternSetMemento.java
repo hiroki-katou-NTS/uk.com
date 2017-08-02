@@ -14,6 +14,7 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternName;
 import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternSet;
 import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternVal;
+import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternValPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -77,10 +78,19 @@ public class JpaDailyPatternSetMemento implements DailyPatternSetMemento {
 	@Override
 	public void setListDailyPatternVal(List<DailyPatternVal> setListDailyPatternVal) {
 		this.patternCalendar.setListKdpstDailyPatternVal(setListDailyPatternVal.stream().map(domain -> {
-					KdpstDailyPatternVal entity = new KdpstDailyPatternVal();
-					domain.saveToMemento(new JpaDailyPatternValSetMemento(entity));
-					return entity;
-				}).collect(Collectors.toList()));
+			KdpstDailyPatternVal entity = new KdpstDailyPatternVal();
+
+			// Get pk info.
+			KdpstDailyPatternSetPK dailyPatternSetPK = this.patternCalendar.getKdpstDailyPatternSetPK();
+
+			KdpstDailyPatternValPK kdpstDailyPatternValPK = new KdpstDailyPatternValPK(dailyPatternSetPK.getCid(),
+					dailyPatternSetPK.getPatternCd(), domain.getDispOrder().v());
+			entity.setKdpstDailyPatternValPK(kdpstDailyPatternValPK);
+
+			domain.saveToMemento(new JpaDailyPatternValSetMemento(entity));
+			
+			return entity;
+		}).collect(Collectors.toList()));
 	}
 
 }
