@@ -5,13 +5,23 @@ module nts.uk.at.view.kdl023.viewmodel {
         start: KnockoutObservable<string>;
         end: KnockoutObservable<string>;
         returnedList: KnockoutObservableArray<any>;
+        enableB: KnockoutComputed<boolean>;
 
         constructor() {
             let self = this;
             self.patternCode = ko.observable('');
             self.start = ko.observable('');
             self.end = ko.observable('');
-            self.returnedList = ko.observableArray([{ start: 'test', listText: ['test'] }]);
+            self.enableB = ko.computed(() => {
+                if (self.start() && self.end()) {
+                    if ($('.nts-input').ntsError('hasError')) {
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            });
+            self.returnedList = ko.observableArray([{ start: 'NONE', listText: ['NONE'] }]);
         }
 
         private startPage(): JQueryPromise<any> {
@@ -37,7 +47,7 @@ module nts.uk.at.view.kdl023.viewmodel {
                 if (abc) {
                     self.returnedList(abc);
                 } else {
-                    self.returnedList([{ start: 'NONE', listText: [] }]);
+                    self.returnedList([{ start: 'NONE', listText: ['NONE'] }]);
                 }
             });
         }
