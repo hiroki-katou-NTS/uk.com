@@ -16,6 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "PPEMT_PER_INFO_CTG")
+
 public class PpemtPerInfoCtg extends UkJpaEntity implements Serializable {
 
 	public static final long serialVersionUID = 1L;
@@ -38,11 +39,9 @@ public class PpemtPerInfoCtg extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "ABOLITION_ATR")
 	public int abolitionAtr;
-	
+
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoCtgPK;
 	}
-	
-	
 }
