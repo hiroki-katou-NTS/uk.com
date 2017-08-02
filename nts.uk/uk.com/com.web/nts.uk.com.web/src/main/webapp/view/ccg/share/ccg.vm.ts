@@ -130,6 +130,23 @@ module nts.uk.com.view.ccg.share.ccg {
                 // res none tab
                 return '';
             }
+
+            /**
+             * init next tab
+             */
+            public initNextTabFeature() {
+                var self = this;
+                // Auto next tab when press tab key.
+                $("[tabindex='6']").on('keydown', function(e) {
+                    if (e.which == 9 && self.isAdvancedSearchTab) {
+                        self.selectedTab('tab-2');
+                        //$('#employmentList').focus();
+                    }
+                });
+
+                
+            }
+
             
             /**
              * Init component.
@@ -164,6 +181,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
                     self.applyDataSearch();
+                    self.initNextTabFeature();
                     dfd.resolve();
                 });
                 
@@ -439,7 +457,7 @@ module nts.uk.com.view.ccg.share.ccg {
              * function reload page (init tab 2)
              */
 
-            reloadDataSearch() {
+            public reloadDataSearch(): void {
                 var self = this;
                 if (self.isAdvancedSearchTab) {
                     self.employments = {
