@@ -4,14 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.pattern.daily;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -20,11 +19,11 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class PatternCalendarCommandHandler.
  */
 @Stateless
-public class DailyPatternCommandHandler extends CommandHandler<DailyPatternCommand> {
+public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternCommand> {
 
 	/** The pattern calendar repository. */
 	@Inject
-	private DailyPatternRepository patternCalendarRepository;
+	private DailyPatternRepository dailyPatternRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -38,16 +37,15 @@ public class DailyPatternCommandHandler extends CommandHandler<DailyPatternComma
 		String companyId = AppContexts.user().companyId();
 		DailyPatternCommand command = context.getCommand();
 		String patternCd = command.getPatternCode();
-		
-		List<DailyPattern> result = this.patternCalendarRepository.findByCompanyId(companyId,
-				patternCd);
+
+		Optional<DailyPattern> result = this.dailyPatternRepo.findByCode(companyId, patternCd);
 
 		DailyPattern dailyPattern = command.toDomain(companyId);
 
-		if (CollectionUtil.isEmpty(result)) {
-			this.patternCalendarRepository.add(dailyPattern);
+		if (!result.isPresent()) {
+			this.dailyPatternRepo.add(dailyPattern);
 		} else {
-			this.patternCalendarRepository.update(dailyPattern);
+			this.dailyPatternRepo.update(dailyPattern);
 		}
 	}
 

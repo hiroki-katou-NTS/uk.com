@@ -12,6 +12,9 @@ module nts.uk.at.view.ksm005.b {
             selectMonthlyPattern: KnockoutObservable<string>;
             modeMonthlyPattern: KnockoutObservable<number>;
             monthlyPatternModel: KnockoutObservable<MonthlyPatternModel>;
+            lstWorkMonthlySetting: KnockoutObservableArray<WorkMonthlySettingDto>;
+            lstWorkType: KnockoutObservableArray<WorkTypeDto>;
+            lstWorkTime: KnockoutObservableArray<WorkTimeDto>;
 
             calendarData: KnockoutObservable<any>;
             yearMonthPicked: KnockoutObservable<number>;
@@ -35,7 +38,9 @@ module nts.uk.at.view.ksm005.b {
                     { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
                     { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 }
                 ]);
-
+                self.lstWorkMonthlySetting = ko.observableArray([]);
+                self.lstWorkType = ko.observableArray([]);
+                self.lstWorkTime = ko.observableArray([]);
                 self.lstMonthlyPattern = ko.observableArray([]);
                 self.selectMonthlyPattern = ko.observable('');
                 self.monthlyPatternModel = ko.observable(new MonthlyPatternModel());
@@ -50,57 +55,7 @@ module nts.uk.at.view.ksm005.b {
                 });
                 self.cssRangerYM = {
                 };
-                self.optionDates = ko.observableArray([
-                    {
-                        start: '2017-07-01',
-                        textColor: 'red',
-                        backgroundColor: 'white',
-                        listText: [
-                            "Sleep",
-                            "Study"
-                        ]
-                    },
-                    {
-                        start: '2017-07-05',
-                        textColor: '#31859C',
-                        backgroundColor: 'white',
-                        listText: [
-                            "Sleepaaaa",
-                            "Study",
-                            "Eating",
-                            "Woman"
-                        ]
-                    },
-                    {
-                        start: '2017-07-10',
-                        textColor: '#31859C',
-                        backgroundColor: 'white',
-                        listText: [
-                            "Sleep",
-                            "Study"
-                        ]
-                    },
-                    {
-                        start: '2017-07-20',
-                        textColor: 'blue',
-                        backgroundColor: 'white',
-                        listText: [
-                            "Sleep",
-                            "Study",
-                            "Play"
-                        ]
-                    },
-                    {
-                        start: '2017-07-22',
-                        textColor: 'blue',
-                        backgroundColor: 'red',
-                        listText: [
-                            "Sleep",
-                            "Study",
-                            "Play"
-                        ]
-                    }
-                ]);
+                self.optionDates = ko.observableArray([]);
                 self.firstDay = 0;
                 self.startDate = 1;
                 self.endDate = 31;
@@ -111,8 +66,8 @@ module nts.uk.at.view.ksm005.b {
                 self.holidayDisplay = ko.observable(true);
                 self.cellButtonDisplay = ko.observable(true);
                 $("#calendar").ntsCalendar("init", {
-                    buttonClick: function(date: Date) {
-                        alert(date);
+                    buttonClick: function(date: string) {
+                        self.openDialogByFindDate(date);
                     }
                 });
             }
@@ -285,6 +240,9 @@ module nts.uk.at.view.ksm005.b {
                                 self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
                                 self.monthlyPatternModel().updateEnable(false);
                                 self.updateWorkMothlySetting(data, dataWorkType, dataWorkTime);
+                                self.lstWorkType(dataWorkType);
+                                self.lstWorkTime(dataWorkTime);
+                                self.lstWorkMonthlySetting(data);
                             });
                         });
                     });
@@ -316,6 +274,72 @@ module nts.uk.at.view.ksm005.b {
                 }
                 return y+'-'+mm+'-'+dd;
             }
+            
+            /**
+             * convert date to number
+             */
+            public convertDate(date: string): number{
+                date = date.replace('-','');
+                date = date.replace('-','');
+                return Number(date);    
+            }
+            
+            /**
+             * find data work monthly setting by date
+             */
+            public findByDate(date: string): WorkMonthlySettingDto{
+                var self = this;
+               var workMonthlySetting : WorkMonthlySettingDto= _.find(self.lstWorkMonthlySetting(), function(item) {
+                    return item.ymdk == self.convertDate(date);
+                });
+                if (!workMonthlySetting) {
+                    return  null;
+                }
+                return workMonthlySetting;
+            }
+            
+            /**
+             * open dialog KDL003 by find date
+             */
+            public openDialogByFindDate(date: string): void {
+                var self = this;
+                var dto : WorkMonthlySettingDto = self.findByDate(date);
+                if (dto != null) {
+                    nts.uk.ui.windows.setShared('parentCodes', {
+                        selectWorkTypeCode: dto.workTypeCode,
+                        selectSiftCode: dto.workingCode
+                    }, true);
+
+                    nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
+                        var childData = nts.uk.ui.windows.getShared('childData');
+                        dto.workTypeCode = childData.selectedWorkTimeCode;
+                        dto.workingCode = childData.selectedSiftCode;
+                        self.updateWorkMonthlySettingClose(dto);
+                    });
+                }
+                else {
+                    alert(date);                    
+                }
+                
+            }
+            
+            /**
+             * update work monthly setting by close dialog KDL003
+             */
+            public updateWorkMonthlySettingClose(setting: WorkMonthlySettingDto): void{
+                var self = this;
+                var dataUpdate: WorkMonthlySettingDto[] = [];
+                for(var item: WorkMonthlySettingDto of self.lstWorkMonthlySetting()){
+                    if(item.ymdk == setting.ymdk){
+                        dataUpdate.push(setting);
+                    }    
+                    else {
+                        dataUpdate.push(item);    
+                    }
+                }    
+                self.lstWorkMonthlySetting(dataUpdate);
+                self.updateWorkMothlySetting(dataUpdate ,self.lstWorkType(),self.lstWorkTime());
+            } 
              /**
              * clear validate client
              */
@@ -350,11 +374,16 @@ module nts.uk.at.view.ksm005.b {
                 // check mode ADD
                 if(self.modeMonthlyPattern() == ModeMonthlyPattern.ADD){
                     service.addMonthlyPattern(self.monthlyPatternModel().toDto()).done(function(){
+                        
+                        // save monthly setting work
+                        service.saveMonthWorkMonthlySetting(self.lstWorkMonthlySetting()).done(function() {
                         // show message 15
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            // reload page
-                            self.reloadPage(self.monthlyPatternModel().code(), false); 
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                // reload pa    
+                                self.reloadPage(self.monthlyPatternModel().code(), false);
+                            });
                         });
+                        
                     }).fail(function(error){
                         nts.uk.ui.dialog.alertError(error).then(function(){
                               self.reloadPage(self.selectMonthlyPattern(), false); 
@@ -363,10 +392,13 @@ module nts.uk.at.view.ksm005.b {
                 }else {
                     // mode UPDATE
                     service.updateMonthlyPattern(self.monthlyPatternModel().toDto()).done(function(){
-                          // show message 15
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                            // reload page
-                            self.reloadPage(self.monthlyPatternModel().code(), false); 
+                         // save monthly setting work
+                        service.saveMonthWorkMonthlySetting(self.lstWorkMonthlySetting()).done(function() {
+                        // show message 15
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                // reload pa    
+                                self.reloadPage(self.monthlyPatternModel().code(), false);
+                            });
                         });
                     }).fail(function(error){
                         nts.uk.ui.dialog.alertError(error).then(function(){

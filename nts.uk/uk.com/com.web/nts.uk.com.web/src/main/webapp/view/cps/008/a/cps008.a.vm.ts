@@ -10,6 +10,8 @@ module cps008.a.viewmodel {
         A_INP_LAYOUT_NAME: KnockoutObservable<string>;
         A_INP_LAYOUT_CODE_ENABLE: KnockoutObservable<boolean>;
         A_INP_LAYOUT_NAME_ENABLE: KnockoutObservable<boolean>;
+        enableBtnCoppy: KnockoutObservable<boolean>;
+        enableBtnDelete: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -23,8 +25,10 @@ module cps008.a.viewmodel {
             self.currentCode = ko.observable();
             self.A_INP_LAYOUT_CODE = ko.observable(null);
             self.A_INP_LAYOUT_NAME = ko.observable(null);
-            self.A_INP_LAYOUT_CODE_ENABLE = ko.observable(true);
+            self.A_INP_LAYOUT_CODE_ENABLE = ko.observable(false);
             self.A_INP_LAYOUT_NAME_ENABLE = ko.observable(true);
+            self.enableBtnCoppy = ko.observable(true);
+            self.enableBtnDelete = ko.observable(true);
 
             self.currentCode.subscribe((function(codeChanged) {
                 //self.currentItem(self.findObj(codeChanged));
@@ -49,17 +53,20 @@ module cps008.a.viewmodel {
             })
             return itemModel;
         }
+        
+        
 
 
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
             service.getAllMaintenanceLayout().done(function(layout_arr: Array<viewmodel.MaintenanceLayout>) {
-                if (layout_arr) {
+                if (layout_arr.length > 0) {
                     self.items(layout_arr);
                     self.currentCode(layout_arr[0].layoutCode);
+                }else{
+                    self.newModeBtn();
                 }
-
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
@@ -68,14 +75,23 @@ module cps008.a.viewmodel {
             return dfd.promise();
         }
 
-        newMode() {
+        newModeBtn() {
+            var self = this;
+            self.enableBtnCoppy(false);
+            self.enableBtnDelete(false);
+            self.A_INP_LAYOUT_CODE_ENABLE(true);
+            self.A_INP_LAYOUT_CODE("");
+            self.A_INP_LAYOUT_NAME("");
+            $("#A_INP_CODE").focus();
+        }
+
+        registerBtn() {
             var self = this;
             
         }
-
-        register() {
-            var self = this;
-            
+        
+        deleteBtn() {
+            var self = this;    
         }
 
         openDialogCoppy() {

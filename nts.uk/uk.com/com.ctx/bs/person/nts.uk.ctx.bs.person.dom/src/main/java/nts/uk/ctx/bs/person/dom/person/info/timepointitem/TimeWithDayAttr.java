@@ -3,12 +3,12 @@ package nts.uk.ctx.bs.person.dom.person.info.timepointitem;
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
-@TimeRange(max = "72：00", min = "－24：00")
-public class TimePoint extends TimeDurationPrimitiveValue<TimePoint> {
+@TimeRange(max = "71：59", min = "－12：00")
+public class TimeWithDayAttr extends TimeDurationPrimitiveValue<TimeWithDayAttr> {
 
 	private static final long serialVersionUID = 1L;
 
-	public TimePoint(Long rawValue) {
+	public TimeWithDayAttr(Long rawValue) {
 		super(rawValue);
 	}
 }

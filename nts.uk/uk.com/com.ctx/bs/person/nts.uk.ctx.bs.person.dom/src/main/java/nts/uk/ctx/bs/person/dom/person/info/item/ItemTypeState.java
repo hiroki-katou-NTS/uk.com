@@ -11,10 +11,10 @@ public class ItemTypeState extends AggregateRoot {
 	protected ItemType itemType;
 
 	public static ItemTypeState createSetItem(List<String> items) {
-		return new SetItem(items);
+		return SetItem.createFromJavaType(items);
 	};
 
 	public static ItemTypeState createSingleItem() {
-		return new SingleItem();
+		return SingleItem.createFromJavaType();
 	};
 }

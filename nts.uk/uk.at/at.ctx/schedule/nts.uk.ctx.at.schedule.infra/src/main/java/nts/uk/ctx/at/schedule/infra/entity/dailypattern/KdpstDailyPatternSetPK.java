@@ -13,7 +13,6 @@ import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class KdpstDailyPatternSetPK.
  */

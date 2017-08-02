@@ -68,3 +68,7 @@ table.bottom_tbl td {
 	border-width: 15px 100px;
 	margin-top: -10px;
 }
+
+#contents-area {
+	overflow: hidden;
+}

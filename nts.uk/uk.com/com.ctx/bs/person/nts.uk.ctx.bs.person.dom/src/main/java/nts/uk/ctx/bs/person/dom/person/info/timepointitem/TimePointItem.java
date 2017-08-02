@@ -1,21 +1,23 @@
 package nts.uk.ctx.bs.person.dom.person.info.timepointitem;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeObject;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeValue;
 
-@AllArgsConstructor
 @Getter
-public class TimePointItem extends DataTypeObject {
-	private ItemDefTimePoint timePointItemMin;
-	private ItemDefTimePoint timePointItemMax;
+public class TimePointItem extends DataTypeState {
+	private TimeWithDayAttr timePointItemMin;
+	private TimeWithDayAttr timePointItemMax;
 
-	public TimePointItem(int dayTypeMin, long timePointMin, int dayTypeMax, long timePointMax) {
+	private TimePointItem(long timePointItemMin, long timePointItemMax) {
 		super();
-		this.dataTypeState = DataTypeState.TIMEPOINT;
-		this.timePointItemMin = ItemDefTimePoint.createFromJavaType(dayTypeMin, timePointMin);
-		this.timePointItemMax = ItemDefTimePoint.createFromJavaType(dayTypeMax, timePointMax);
+		this.dataTypeValue = DataTypeValue.TIMEPOINT;
+		this.timePointItemMin = new TimeWithDayAttr(timePointItemMin);
+		this.timePointItemMax = new TimeWithDayAttr(timePointItemMax);
+	}
+
+	public static TimePointItem createFromJavaType(long timePointItemMin, long timePointItemMax) {
+		return new TimePointItem(timePointItemMin, timePointItemMax);
 	}
 
 }

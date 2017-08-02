@@ -1,97 +1,81 @@
 module nts.uk.com.view.cas001.c.viewmodel {
-    import windows = nts.uk.ui.windows;
-    import errors = nts.uk.ui.errors;
-    import resource = nts.uk.resource;
+    import error = nts.uk.ui.errors;
+    import text = nts.uk.resource.getText;
+    import close = nts.uk.ui.windows.close;
+    import alert = nts.uk.ui.dialog.alert;
 
     export class ScreenModel {
-        roleList: KnockoutObservableArray<any>;
-        companyCode: KnockoutObservable<string>;
-        itemSetting: KnockoutObservableArray<any>;
-        selectItemCode: any;
+        roleList: KnockoutObservableArray<any> = ko.observableArray([]);
+        roleCodeArray = [];
+        roleCopy: KnockoutObservable<PersonRole> = ko.observable(new PersonRole("99900000-0000-0000-0000-000000000001", "0001", "A"));
 
         constructor() {
             var self = this;
-            self.init();
 
+            self.roleList.subscribe(data => {
+                if (data) {
+                    $("#roles").igGrid("option", "dataSource", data);
+                }
+            });
+
+            self.start();
         }
-        init(): void {
-            var self = this;
-            self.roleList = ko.observableArray([]);
-            self.companyCode = ko.observable('');
 
-
-        }
-        
-        start(): JQueryPromise<any> {
-            var dfd = $.Deferred();
+        start() {
             let self = this;
+            self.roleList.removeAll();
+
             service.getAllPersonRole().done(function(data: Array<any>) {
                 if (data.length > 0) {
                     _.each(data, function(c) {
-                        self.roleList.push(new PersonRole({ checkAll: true, roleCode: c.roleCode, roleName: c.roleName }));
+                        self.roleList.push(new PersonRole(c.roleId, c.roleCode, c.roleName));
                     });
-                    $("#roles").igGrid({
-                        columns: [
-                            {
-                                headerText: resource.getText('CAS001_7'), key: 'checkAll', width: "40px", height: "40px",
-                                template: "<input type='checkbox'  checked='${checkAll} tabindex='1''/>"
-                            }
-                            ,
-                            { headerText: resource.getText('CAS001_8'), key: "roleCode", dataType: "string", width: "90px", height: "40px" },
-                            { headerText: resource.getText('CAS001_9'), key: "roleName", dataType: "string", width: "120px", height: "40px" },
-                        ],
-                        primaryKey: 'roleCode',
-                        autoGenerateColumns: false,
-                        autoCommit: true,
-                        dataSource: self.roleList(),
-                        width: "300px",
-                        height: "300px",
-                        features: [
-                            {
-                                name: "Updating",
-                                enableAddRow: false,
-                                editMode: "row",
-                                enableDeleteRow: false,
-                                columnSettings: [
-                                    { columnKey: "checkAll", readOnly: true },
-                                    { columnKey: "roleCode", readOnly: true },
-                                    { columnKey: "roleName", readOnly: true }
-                                ]
-                            }]
-                    });
-
-                    console.log(self.roleList());
                 }
-            }).fail(function(mess) {
-                dfd.resolve();
-            })
-            return dfd.promise();
+            });
+        }
+
+        createCategory() {
+            let data = (__viewContext["viewModel"].roleList());
+            let self = this;
+            self.roleCodeArray = [];
+            _.find(data, function(role) {
+                if (role.selected === true) {
+                    self.roleCodeArray.push(role.roleId);
+                }
+            });
+            if (self.roleCodeArray.length > 0) {
+                nts.uk.ui.dialog.confirm(text('Msg_64')).ifYes(() => {
+                    let roleObj = { roleIdDestination: self.roleCopy().roleId, roleIds: self.roleCodeArray };
+                    service.update(roleObj).done(function(obj) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
+                            close();
+                        });
+                    }).fail(function(res: any) {
+                        alert(res.message);
+                    })
+
+                }).ifCancel(function() {
+                })
+            }else{
+                alert(text('Msg_365'));
+            }
 
         }
-        creatCategory() {
-
-            windows.close();
-        }
+        
         closeDialog() {
-            service.update(null).done(function(data){
-              console.log(data);  
-            })
-            windows.close();
+            close();
         }
     }
-    interface IPersonRole {
-        checkAll: boolean;
-        roleCode: string;
-        roleName: string;
-    }
+
     export class PersonRole {
-        checkAll: boolean = false;
+        check: boolean = false;
+        roleId: string;
         roleCode: string;
         roleName: string;
-        constructor(params: IPersonRole) {
-            this.roleCode = params.roleCode;
-            this.roleName = params.roleName;
-            this.checkAll = params.checkAll || false;
+        constructor(roleId: string, roleCode: string, roleName: string) {
+            this.roleId = roleId;
+            this.roleCode = roleCode;
+            this.roleName = roleName;
         }
     }
 }

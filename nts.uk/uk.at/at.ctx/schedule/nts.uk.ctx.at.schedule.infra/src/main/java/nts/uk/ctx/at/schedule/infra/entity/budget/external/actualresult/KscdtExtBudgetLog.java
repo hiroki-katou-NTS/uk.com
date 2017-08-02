@@ -15,8 +15,8 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
-import nts.arc.time.GeneralDate;
+import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -42,17 +42,17 @@ public class KscdtExtBudgetLog extends UkJpaEntity implements Serializable {
     @Column(name = "SID")
     private String sid;
     
-    /** The str D. */
+    /** The str date time. */
     @Basic(optional = false)
     @Column(name = "STR_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate strD;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime strDateTime;
 
-    /** The end D. */
+    /** The end date time. */
     @Basic(optional = false)
     @Column(name = "END_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate endD;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime endDateTime;
     
     /** The ext budget cd. */
     @Basic(optional = false)
