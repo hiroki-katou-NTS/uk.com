@@ -299,6 +299,47 @@ module nts.uk.ui.validation {
             return result;
         }
     }
+    
+    export class TimeWithDayValidator implements IValidator {
+        name: string;
+        constraint: any;
+        required: boolean; 
+        constructor(name: string, primitiveValueName: string, option?: any) {
+            this.name = name;
+            this.constraint = getConstraint(primitiveValueName);
+            this.required = (option && option.required) ? option.required : false;
+        }
+
+        validate(inputText: string): any {
+            var result = new ValidationResult();
+            inputText = time.TimeWithDayAttr.cutDayDivision(inputText);
+            // Check required
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required === true) {
+                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
+                    return result;
+                } else {
+                    result.success("");
+                    return result;
+                }
+            }
+            let minStr, maxStr;
+            if(!util.isNullOrUndefined(this.constraint)){
+                minStr = time.parseTime(this.constraint.min, true).format();
+                maxStr = time.parseTime(this.constraint.max, true).format();            
+            }
+            
+            let parseValue = time.parseTime(inputText);
+            
+            if (!parseValue.success || (parseValue.toValue() < this.constraint.min || parseValue.toValue() > this.constraint.max)) {
+                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]), "FND_E_TIME");     
+            } else {
+                result.success(parseValue.toValue());    
+            }
+            
+            return result;
+        }
+    }
 
     export function getConstraint(primitiveValueName: string) {
         var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];

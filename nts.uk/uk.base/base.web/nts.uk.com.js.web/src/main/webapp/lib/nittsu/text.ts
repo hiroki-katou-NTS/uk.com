@@ -605,6 +605,24 @@
             }
         }
         
+        export class TimeWithDayFormatter implements format.IFormatter {
+            option: any;
+
+            constructor(option: any) {
+                this.option = option;
+            }
+
+            format(source: any): string {
+                let parseValue = time.parseTime(source, true);
+                let timeWithDay = new time.TimeWithDayAttr(parseValue.toValue());
+                if (this.option.timeWithDay) {
+                    return timeWithDay.getDayDivision().text + " " + timeWithDay.getTime();            
+                }
+                
+                return timeWithDay.getRawTime();
+            }
+        }
+        
         export class NumberUnit {
             unitID: string;
             unitText: string;

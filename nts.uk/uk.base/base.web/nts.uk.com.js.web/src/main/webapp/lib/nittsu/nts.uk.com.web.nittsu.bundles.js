@@ -1122,6 +1122,21 @@ var nts;
                 return TimeFormatter;
             }());
             text_3.TimeFormatter = TimeFormatter;
+            var TimeWithDayFormatter = (function () {
+                function TimeWithDayFormatter(option) {
+                    this.option = option;
+                }
+                TimeWithDayFormatter.prototype.format = function (source) {
+                    var parseValue = uk.time.parseTime(source, true);
+                    var timeWithDay = new uk.time.TimeWithDayAttr(parseValue.toValue());
+                    if (this.option.timeWithDay) {
+                        return timeWithDay.getDayDivision().text + " " + timeWithDay.getTime();
+                    }
+                    return timeWithDay.getRawTime();
+                };
+                return TimeWithDayFormatter;
+            }());
+            text_3.TimeWithDayFormatter = TimeWithDayFormatter;
             var NumberUnit = (function () {
                 function NumberUnit(unitID, unitText, position, language) {
                     this.unitID = unitID;
@@ -2041,6 +2056,76 @@ var nts;
                 return false;
             }
             time_1.isEndOfMonth = isEndOfMonth;
+            var TimeWithDayAttr = (function () {
+                function TimeWithDayAttr(rawValue) {
+                    this.MAX_HOUR = 24;
+                    this.MAX_MS = 60;
+                    this.rawValue = rawValue;
+                    if (rawValue < 0) {
+                        this.dayDivision = DayDivision.THE_PREVIOUS_DAY;
+                        this.time = rawValue * -1;
+                    }
+                    else {
+                        this.dayDivision = this.checkDayDivision(rawValue);
+                        this.time = this.getTimeDuration(rawValue);
+                    }
+                }
+                TimeWithDayAttr.prototype.getDayDivision = function () {
+                    return this.dayDivision;
+                };
+                TimeWithDayAttr.prototype.getTime = function () {
+                    var minutes = uk.ntsNumber.trunc(this.time % 60);
+                    return uk.ntsNumber.trunc(this.time / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
+                };
+                TimeWithDayAttr.prototype.getRawTime = function () {
+                    var minutes = uk.ntsNumber.trunc(this.rawValue % 60);
+                    return uk.ntsNumber.trunc(this.rawValue / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
+                };
+                TimeWithDayAttr.prototype.getTimeDuration = function (value) {
+                    if (this.dayDivision.value === DayDivision.THE_PRESENT_DAY.value) {
+                        return value;
+                    }
+                    return value - (this.dayDivision.value - 1) * this.MAX_HOUR * this.MAX_MS;
+                };
+                TimeWithDayAttr.prototype.checkDayDivision = function (value) {
+                    var days = uk.ntsNumber.trunc(value / (this.MAX_HOUR * this.MAX_MS));
+                    switch (days) {
+                        case 0:
+                            return DayDivision.THE_PRESENT_DAY;
+                        case 1:
+                            return DayDivision.THE_NEXT_DAY;
+                        case 2:
+                            return DayDivision.TWO_DAY_LATER;
+                        default:
+                            return DayDivision.NONE;
+                    }
+                };
+                TimeWithDayAttr.cutDayDivision = function (input) {
+                    var dayDivisions = _.forEach(_.values(DayDivision), function (dd) {
+                        if (input.indexOf(dd.text) >= 0) {
+                            input = input.replace(dd.text, "").trim();
+                        }
+                    });
+                    return input;
+                };
+                return TimeWithDayAttr;
+            }());
+            time_1.TimeWithDayAttr = TimeWithDayAttr;
+            var DayAttr = (function () {
+                function DayAttr(value, text) {
+                    this.value = value;
+                    this.text = text;
+                }
+                return DayAttr;
+            }());
+            time_1.DayAttr = DayAttr;
+            var DayDivision = {
+                NONE: new DayAttr(-1, ""),
+                THE_PREVIOUS_DAY: new DayAttr(0, "前日"),
+                THE_PRESENT_DAY: new DayAttr(1, "当日"),
+                THE_NEXT_DAY: new DayAttr(2, "翌日"),
+                TWO_DAY_LATER: new DayAttr(3, "翌々日")
+            };
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -2722,6 +2807,42 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
+                var TimeWithDayValidator = (function () {
+                    function TimeWithDayValidator(name, primitiveValueName, option) {
+                        this.name = name;
+                        this.constraint = getConstraint(primitiveValueName);
+                        this.required = (option && option.required) ? option.required : false;
+                    }
+                    TimeWithDayValidator.prototype.validate = function (inputText) {
+                        var result = new ValidationResult();
+                        inputText = uk.time.TimeWithDayAttr.cutDayDivision(inputText);
+                        if (util.isNullOrEmpty(inputText)) {
+                            if (this.required === true) {
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
+                                return result;
+                            }
+                            else {
+                                result.success("");
+                                return result;
+                            }
+                        }
+                        var minStr, maxStr;
+                        if (!util.isNullOrUndefined(this.constraint)) {
+                            minStr = uk.time.parseTime(this.constraint.min, true).format();
+                            maxStr = uk.time.parseTime(this.constraint.max, true).format();
+                        }
+                        var parseValue = uk.time.parseTime(inputText);
+                        if (!parseValue.success || (parseValue.toValue() < this.constraint.min || parseValue.toValue() > this.constraint.max)) {
+                            result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
+                        }
+                        else {
+                            result.success(parseValue.toValue());
+                        }
+                        return result;
+                    };
+                    return TimeWithDayValidator;
+                }());
+                validation.TimeWithDayValidator = TimeWithDayValidator;
                 function getConstraint(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     if (constraint === undefined)
@@ -3837,6 +3958,18 @@ var nts;
                     return MultilineEditorOption;
                 }(EditorOptionBase));
                 option_1.MultilineEditorOption = MultilineEditorOption;
+                var TimeWithDayAttrEditorOption = (function (_super) {
+                    __extends(TimeWithDayAttrEditorOption, _super);
+                    function TimeWithDayAttrEditorOption(option) {
+                        _super.call(this);
+                        this.timeWithDay = (option !== undefined && option.timeWithDay !== undefined) ? option.timeWithDay : true;
+                        this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
+                        this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
+                        this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
+                    }
+                    return TimeWithDayAttrEditorOption;
+                }(EditorOptionBase));
+                option_1.TimeWithDayAttrEditorOption = TimeWithDayAttrEditorOption;
                 var currenryPosition = {
                     "JPY": "left",
                     "USD": "right"
@@ -5480,6 +5613,41 @@ var nts;
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
+                var TimeWithDayAttrEditorProcessor = (function (_super) {
+                    __extends(TimeWithDayAttrEditorProcessor, _super);
+                    function TimeWithDayAttrEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    TimeWithDayAttrEditorProcessor.prototype.init = function ($input, data) {
+                        _super.prototype.init.call(this, $input, data);
+                        $input.focus(function () {
+                            if (!$input.attr('readonly')) {
+                                var selectionType = document.getSelection().type;
+                                var parsed = uk.time.parseTime(data.value(), true);
+                                var value = parsed.success ? parsed.format() : data.value();
+                                $input.val(value);
+                                if (selectionType === 'Range') {
+                                    $input.select();
+                                }
+                            }
+                        });
+                    };
+                    TimeWithDayAttrEditorProcessor.prototype.getDefaultOption = function () {
+                        return new nts.uk.ui.option.TimeWithDayAttrEditorOption();
+                    };
+                    TimeWithDayAttrEditorProcessor.prototype.getFormatter = function (data) {
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        return new uk.text.TimeWithDayFormatter(option);
+                    };
+                    TimeWithDayAttrEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
+                        name = nts.uk.resource.getControlName(name);
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        return new validation.TimeWithDayValidator(name, constraintName, { required: required });
+                    };
+                    return TimeWithDayAttrEditorProcessor;
+                }(EditorProcessor));
                 var NtsEditorBindingHandler = (function () {
                     function NtsEditorBindingHandler() {
                     }
@@ -5539,10 +5707,24 @@ var nts;
                     };
                     return NtsMultilineEditorBindingHandler;
                 }(NtsEditorBindingHandler));
+                var NtsTimeWithDayAttrEditorBindingHandler = (function (_super) {
+                    __extends(NtsTimeWithDayAttrEditorBindingHandler, _super);
+                    function NtsTimeWithDayAttrEditorBindingHandler() {
+                        _super.apply(this, arguments);
+                    }
+                    NtsTimeWithDayAttrEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new TimeWithDayAttrEditorProcessor().init($(element), valueAccessor());
+                    };
+                    NtsTimeWithDayAttrEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new TimeWithDayAttrEditorProcessor().update($(element), valueAccessor());
+                    };
+                    return NtsTimeWithDayAttrEditorBindingHandler;
+                }(NtsEditorBindingHandler));
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
                 ko.bindingHandlers['ntsMultilineEditor'] = new NtsMultilineEditorBindingHandler();
+                ko.bindingHandlers['ntsTimeWithDayEditor'] = new NtsTimeWithDayAttrEditorBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -9450,9 +9632,19 @@ var nts;
                         var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
                         if ($displayPanel.length > 0) {
                             $displayPanel.removeClass("disappear");
-                            $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                            setErrorPosition($displayPanel);
                         }
                         return control;
+                    }
+                    function setErrorPosition($displayPanel) {
+                        setTimeout(function () {
+                            if ($displayPanel.find(".sidebar-content-header") > 0) {
+                                $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                            }
+                            else {
+                                setErrorPosition($displayPanel);
+                            }
+                        }, 10);
                     }
                     function enable(control, index) {
                         control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
