@@ -2,10 +2,9 @@ module nts.uk.at.view.ksm003.a {
     export module service {
         var paths = {
             getAllPattCalender: "ctx/at/schedule/shift/pattern/daily/getall",
-
-            addPattCalender: "ctx/at/share/vacation/setting/patterncalendar/addpattcal",
-            getPatternValByPatternCd: "ctx/at/share/vacation/setting/patternval/find/patternval",
-            deleteDailyPattern: "ctx/at/share/vacation/setting/patterncalendar/deleted/pattern"
+            addPattCalender: "ctx/at/schedule/shift/pattern/daily/save",
+            getPatternValByPatternCd: "ctx/at/schedule/shift/pattern/daily/find",
+            deleteDailyPattern: "ctx/at/schedule/shift/pattern/daily/delete"
         }
 
         /**

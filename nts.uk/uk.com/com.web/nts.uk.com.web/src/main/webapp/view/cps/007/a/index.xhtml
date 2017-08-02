@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
+			<title>#{i18n.getText('CPS007_1')}</title>
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="cps007.a.style.css" />
@@ -23,10 +24,10 @@
 				<a class="goout"
 					data-bind="ntsLinkButton: { jump: '../../008/a/index.xhtml' }">#{i18n.getText('CPS007_4')}</a>
 			</div>
-			<div id="contents-area" class="cf">
+			<div id="contents-area" class="cf" data-bind="with: layout">
 				<div
 					data-bind="ntsLayoutControl: { 
-					data: items,
+					data: itemsClassification,
 					editAble: editable }"></div>
 			</div>
 		</ui:define>
