@@ -382,9 +382,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Next day of pattern.
                 dayOfPattern++;
 
-                // Reserve dayOfPattern if reflection method = overwrite
+                // Reserve dayOfPattern if reflection method = fill in the blank
                 if (optionDate.textColor == 'red' // Is holiday 
-                    && !self.isFillInTheBlankChecked()) {
+                    && self.isFillInTheBlankChecked()) {
                     dayOfPattern--;
                 }
 
@@ -420,9 +420,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Next day of pattern.
                 dayOfPattern++;
 
-                // Reserve dayOfPattern if reflection method = overwrite
+                // Reserve dayOfPattern if reflection method = fill in the blank
                 if (optionDate.textColor == 'red' // Is holiday 
-                    && !self.isFillInTheBlankChecked()) {
+                    && self.isFillInTheBlankChecked()) {
                     dayOfPattern--;
                 }
 
