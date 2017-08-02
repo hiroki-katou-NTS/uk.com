@@ -23,10 +23,10 @@
 		<ui:define name="content">
 			<div id="functions-area" >
 				<button id="A_BTN_NEW" 
-					data-bind=" enable: $root.errors.isEmpty , click : newMode" >#{i18n.getText('CPS008_3') }</button>
-				<button id="A_BTN_REGISTER"  class="proceed , click : register">#{i18n.getText('CPS008_4')}</button>
-				<button id="A_BTN_COPPY" data-bind = "click : openDialogCoppy">#{i18n.getText('CPS008_5')}</button>
-				<button id="A_BTN_DELETE"  class="danger">#{i18n.getText('CPS008_6')}</button>
+					data-bind=" enable: $root.errors.isEmpty , click : newModeBtn" >#{i18n.getText('CPS008_3') }</button>
+				<button id="A_BTN_REGISTER"  class="proceed , click : registerBtn">#{i18n.getText('CPS008_4')}</button>
+				<button id="A_BTN_COPPY" data-bind = "click : openDialogCoppy , enable: enableBtnCoppy">#{i18n.getText('CPS008_5')}</button>
+				<button id="A_BTN_DELETE"  class="danger" data-bind = "click : deleteBtn , enable : enableBtnDelete">#{i18n.getText('CPS008_6')}</button>
 				<a class="goout" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('CPS008_7')}</a>
 			</div>
 			<div id="contents-area">

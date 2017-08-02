@@ -120,7 +120,7 @@
 							<td class="right-content">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM006_12',["#Com_Workplace"])}</div>
 								<div style="display: inline-block; padding-left: 10px">
-									<span>対象職場</span>
+									<span data-bind="text: workplaceName()"></span>
 								</div>
 								<div class="ruledLine2" style=""></div>
 								<div>
@@ -218,7 +218,7 @@
 							<td class="right-content">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM006_12',["#Com_Class"])}</div>
 								<div style="display: inline-block; padding-left: 10px">
-									<span>対象分類</span>
+									<span data-bind="text: classificationName()"></span>
 								</div>
 								<div class="ruledLine2" style=""></div>
 								<div>

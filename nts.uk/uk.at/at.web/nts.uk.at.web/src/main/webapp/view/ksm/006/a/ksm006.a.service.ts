@@ -20,7 +20,6 @@ module nts.uk.at.view.ksm006.a {
             removeClassifyBasicWork: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/remove',
             findClassifySetting: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/findSetting'
             
-            
         };
 
 // Cpmpany        

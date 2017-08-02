@@ -84,7 +84,7 @@
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
 												<td><input
-													data-bind="attr: {'tabindex': 10 + month()}, ntsTimeEditor: {name: normal, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+													data-bind="attr: {'tabindex': 11 + $index()}, ntsTimeEditor: {name: normal, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>
@@ -130,10 +130,10 @@
 												<div data-bind="text: month()+'月度'"></div>
 											</td>
 											<td><input
-												data-bind="attr: {'tabindex': 24 + month()}, ntsTimeEditor: {name: speName, value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="attr: {'tabindex': 25 + $index()}, ntsTimeEditor: {name: speName, value: specifiedTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 											<td><input
-												data-bind="attr: {'tabindex': 36 + month()}, ntsTimeEditor: {name: staName,value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="attr: {'tabindex': 37 + $index()}, ntsTimeEditor: {name: staName, value: statutoryTime, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</com:ko>
@@ -192,7 +192,7 @@
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
 												<td><input
-													data-bind="attr: {'tabindex': 51 + month()}, ntsTimeEditor: {name: deformed, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
+													data-bind="attr: {'tabindex': 52 + $index()}, ntsTimeEditor: {name: deformed, value: time, constraint:'MonthlyTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>

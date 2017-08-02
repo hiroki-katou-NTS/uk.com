@@ -19,7 +19,4 @@ public interface LayoutPersonInfoClsRepository {
 	
 	Optional<LayoutPersonInfoClassification> getDetailLayoutPerInfoClassification(String layoutID , DisPOrder disPOrder);
 	
-	
-	
-
 }
