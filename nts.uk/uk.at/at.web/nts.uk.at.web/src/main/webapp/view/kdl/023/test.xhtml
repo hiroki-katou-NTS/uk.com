@@ -10,7 +10,8 @@
 			<com:scriptfile path="test.vm.js" />
 			<com:scriptfile path="test.start.js" />
 			<style>
-				#returned-list td {border: solid grey 1px; padding: 5px;}
+				#returned-list td {border: solid grey 1px}
+				td {padding: 5px;}
 			</style>
 		</ui:define>
 
@@ -18,24 +19,24 @@
 			<div id="functions-area">
 				<button tabindex="99" id="asdv" class="large"
 					data-bind="click: gotoA">dialog A</button>
-				<button class="large" data-bind="click: gotoB">dialog B</button>
+				<button class="large" data-bind="click: gotoB, enable: enableB">dialog B</button>
 			</div>
 			<div id="contents-area">
 				<table>
 					<tr>
 						<td>Pattern code:</td>
-						<td><input data-bind="ntsTextEditor: {value: patternCode}" /></td>
+						<td><input data-bind="ntsTextEditor: {value: patternCode}" /> (Optional)</td>
 					</tr>
 					<tr>
 						<td>Start date:</td>
-						<td><div data-bind="ntsDatePicker: {value: start, dateFormat: 'YYYY-MM-DD'}"></div></td>
+						<td><div data-bind="ntsDatePicker: {value: start, dateFormat: 'YYYY-MM-DD'}"></div> (Required for dialog B)</td>
 					</tr>
 					<tr>
 						<td>End date:</td>
-						<td><div data-bind="ntsDatePicker: {value: end, dateFormat: 'YYYY-MM-DD'}"></div></td>
+						<td><div data-bind="ntsDatePicker: {value: end, dateFormat: 'YYYY-MM-DD'}"></div> (Required for dialog B)</td>
 					</tr>
-				</table>
-				Returned list: <span data-bind="text: returnedList().length"/>
+				</table><br/>
+				Returned list: <span data-bind="text: returnedList().length"/><br/><br/>
 				<table id='returned-list'>
 					<tr>
 						<td>Date</td>

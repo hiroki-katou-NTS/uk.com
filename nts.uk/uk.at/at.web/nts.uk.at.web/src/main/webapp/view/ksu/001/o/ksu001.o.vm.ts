@@ -62,7 +62,7 @@ module ksu001.o.viewmodel {
                             displayAtr: wT.displayAtr
                         }));
                     });
-//                    self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
+                    //                    self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -90,7 +90,7 @@ module ksu001.o.viewmodel {
                             note: wT.note,
                         }));
                     });
-//                    self.selectedWorkTimeCode(self.listWorkTime()[0].siftCd);
+                    //                    self.selectedWorkTimeCode(self.listWorkTime()[0].siftCd);
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -108,16 +108,6 @@ module ksu001.o.viewmodel {
         abbreviationName: string,
         memo: string,
         displayAtr: number
-    }
-
-    interface IWorkTime {
-        siftCd: string,
-        name: string,
-        abName: string,
-        dailyWorkAtr: number,
-        methodAtr: number,
-        displayAtr: number,
-        note: string
     }
 
     class WorkType {
@@ -140,6 +130,16 @@ module ksu001.o.viewmodel {
             this.displayAtr = params.displayAtr;
             this.labelDisplay = '  ' + this.workTypeCode + '  ' + this.abbreviationName + '  ' + this.name + ' ( ' + this.memo + ' )';
         }
+    }
+
+    interface IWorkTime {
+        siftCd: string,
+        name: string,
+        abName: string,
+        dailyWorkAtr: number,
+        methodAtr: number,
+        displayAtr: number,
+        note: string
     }
 
     class WorkTime {
