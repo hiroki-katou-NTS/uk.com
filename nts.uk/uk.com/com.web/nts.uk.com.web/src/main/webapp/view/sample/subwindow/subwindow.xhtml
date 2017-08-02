@@ -11,9 +11,12 @@
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 800, height: 800 };</script>
 
+				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
+				<com:scriptfile path="../../language/select/languagemasterselect-jquery-ext.js" />
+				<com:stylefile path="../../language/select/languagemasterselect.css" />
             </ui:define>
             
             <ui:define name="content">
@@ -29,6 +32,8 @@
 						<br/><br/>
 						<button onclick="openDialog()">Functions Area on Top</button>
 						<button onclick="openDialogB()">Functions Area on Bottom</button>
+						<button onclick="openDialogC()">Create Switch Language Button</button>
+						<div id="switch-language"/>
 						<br/><br/>
 						<div class="cf">
 							<note class="pull-left" style="width:400px;"><b>Don't style functions-area on your own</b><br/>
