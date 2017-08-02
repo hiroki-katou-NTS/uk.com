@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.daily.dto.DailyPatternValDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternVal;
@@ -111,8 +112,8 @@ public class DailyPatternCommand {
 		 */
 		@Override
 		public List<DailyPatternVal> getListDailyPatternVal() {
-			return this.command.getListDailyPatternVal().stream()
-					.map(item -> item.toDomain(companyId, command.getPatternCode())).collect(Collectors.toList());
+			return this.command.getListDailyPatternVal().stream().map(item -> item.toDomain())
+					.collect(Collectors.toList());
 		}
 
 	}

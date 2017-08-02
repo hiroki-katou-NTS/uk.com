@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class Priority.
  */
-@StringMaxLength(20)
+@StringMaxLength(12)
 public class PatternName extends StringPrimitiveValue<PatternName> {
 
 	/** The Constant serialVersionUID. */

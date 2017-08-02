@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.pattern.daily;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface DailyPatternRepository.
@@ -40,7 +41,7 @@ public interface DailyPatternRepository {
      * @param patternCd the pattern cd
      * @return the list
      */
-    List<DailyPattern> findByCompanyId(String companyId,String patternCd);
+    Optional<DailyPattern> findByCode(String companyId,String patternCd);
 
 	/**
      * Deleted.

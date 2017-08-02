@@ -20,7 +20,7 @@
 
 #set-work-time {
 	float: left;
-	margin-top: 10px;
+	margin-top: 2px;
 }
 
 .reserved {
@@ -47,13 +47,10 @@
 
 #group-button>button:last-child {
 	width: 20px;
-	top: -11px;
+	top: -5px;
 	height: 20px;
 }
 
-#group-button>* {
-	top: -6px
-}
 
 #spelcial, #time-edit2 {
 	margin-left: 10px;

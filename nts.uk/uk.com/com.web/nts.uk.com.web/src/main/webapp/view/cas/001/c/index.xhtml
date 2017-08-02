@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 400,
+					width : 390,
 					height : 480
 				};
 			</script>
@@ -21,34 +21,31 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id='role'>
-				<div class='flex valign-center'>
-					<div class='distane'> 
+			<div id="contents-area">
+				<div class='flex valign-center' data-bind="with: roleCopy">
+					<div class='distane'>
 						<label id="codeName">#{i18n.getText('CAS001_63')}</label>
 					</div>
-					<label id="roleCode">0001</label>
-					<label id="roleName"> 用設定</label>
+					<label id="roleCode" data-bind="text: roleCode"></label> 
+					<label id="roleName" data-bind="text: roleName"></label>
 				</div>
 				<div class='distane'>
 					<label id="codeName">#{i18n.getText('CAS001_64')}</label>
 				</div>
-			</div>
-
-			<div id="contents-area" >
 				<div id='category'>
 					<table id="roles">
 					</table>
-
-				</div>
-				<hr></hr>
-				<div id="functions-area">
-					<button id="registration" class="proceed x-large" data-bind='click:creatCategory' tabindex="2">#{i18n.getText('CAS001_61')}
-</button>
-					<button id="delete" class="danger " data-bind='click: closeDialog' tabindex="3">#{i18n.getText('CAS001_62')}</button>
-
 				</div>
 
 			</div>
+				<div id='functions-area-bottom'>
+					<button id="registration" class="proceed x-large"
+						data-bind='click: createCategory' tabindex="2">#{i18n.getText('CAS001_61')}
+					</button>
+					<button id="delete" class="danger " data-bind='click: closeDialog'
+						tabindex="3">#{i18n.getText('CAS001_62')}</button>
+
+				</div>
 
 		</ui:define>
 	</ui:composition>

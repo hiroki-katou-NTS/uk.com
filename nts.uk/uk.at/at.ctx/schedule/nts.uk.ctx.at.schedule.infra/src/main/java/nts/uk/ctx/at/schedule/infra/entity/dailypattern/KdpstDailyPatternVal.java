@@ -15,7 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class KdpstDailyPatternVal.
  */

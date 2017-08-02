@@ -16,7 +16,7 @@ module nts.uk.at.view.ksu006.a {
             extensionFileList: KnockoutObservableArray<string>;
             
             encodingList: KnockoutObservableArray<any>;
-            selectedEncoding: KnockoutObservable<string>;
+            selectedEncoding: KnockoutObservable<number>;
             
             startLine: KnockoutObservable<number>;
             isOverride: KnockoutObservable<boolean>;
@@ -45,8 +45,8 @@ module nts.uk.at.view.ksu006.a {
                 self.fileName = ko.observable("");
                 self.extensionFileList = ko.observableArray([".txt",'.csv']);
                 
-                self.encodingList = ko.observableArray([{code: 'Shift JIS', name: 'Shift JIS'}]);
-                self.selectedEncoding = ko.observable("Shift JIS");
+                self.encodingList = ko.observableArray([{code: 1, name: 'Shift JIS'}]);
+                self.selectedEncoding = ko.observable(1);
                 
                 self.startLine = ko.observable(1);
                 self.isOverride = ko.observable(true);
@@ -111,8 +111,14 @@ module nts.uk.at.view.ksu006.a {
                 }
                 
                 $("#file-upload").ntsFileUpload({stereoType:"any"}).done(function(inforFileUpload) {
-                    let fileId: string = inforFileUpload[0].id;
-                    service.findDataPreview(fileId).done((res: DataPreviewModel) => {
+                    let extractCondition: any = {
+                        externalBudgetCode: null,
+                        fileId: inforFileUpload[0].id,
+                        encoding: self.selectedEncoding(),
+                        startLine: self.startLine(),
+                        isOverride: null
+                    };
+                    service.findDataPreview(extractCondition).done((res: DataPreviewModel) => {
                         self.enableDataPreview(true);
                          // fake data
                         let listValue: Array<any> = [];

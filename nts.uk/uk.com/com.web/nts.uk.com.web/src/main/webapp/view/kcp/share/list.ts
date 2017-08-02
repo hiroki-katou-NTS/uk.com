@@ -203,13 +203,13 @@ module kcp.share.list {
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
-                        template: "<td class='list-component-name-col' title='${code}'>${code}</td>",});
+                        template: "<td class='list-component-name-col'>${code}</td>",});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170,
-                        template: "<td class='list-component-name-col' title='${name}'>${name}</td>",});
+                        template: "<td class='list-component-name-col'>${name}</td>",});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
                 self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150,
-                        template: "<td class='list-component-name-col' title='${workplaceName}'>${workplaceName}</td>"});
+                        template: "<td class='list-component-name-col'>${workplaceName}</td>"});
             }
             
             // If show Already setting.
@@ -272,9 +272,6 @@ module kcp.share.list {
             // Remove No select row.
             self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             
-            // Set default value when init component.
-            self.initSelectedValue(data, self.itemList());
-            
             // Check is show no select row.
             if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
@@ -302,14 +299,14 @@ module kcp.share.list {
                 $input.find('table').attr('id', self.componentGridId);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
+                
+                // Set default value when init component.
+                self.initSelectedValue(data, self.itemList());
                 dfd.resolve();
             });
             
             $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
                 self.addIconToAlreadyCol();
-                $('.list-component-name-col').tooltip({
-                    track: true
-                });
             });
             
             // defined function get data list.

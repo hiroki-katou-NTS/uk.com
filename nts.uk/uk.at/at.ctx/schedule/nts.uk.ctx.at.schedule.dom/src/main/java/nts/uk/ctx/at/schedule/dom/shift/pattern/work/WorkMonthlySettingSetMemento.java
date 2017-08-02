@@ -6,6 +6,8 @@ package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
 import java.math.BigDecimal;
 
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto.WorkplaceBasicWorkDto;
 
 
 /**
@@ -15,9 +16,6 @@ import lombok.Setter;
 @Setter
 public class WorkplaceBWRemoveCommand {
 
-	/** The workplace id. */
-	private String workplaceId;
-	
-	/** The work type code. */
-	private String workTypeCode;
+	/** The workplace basic work. */
+	private WorkplaceBasicWorkDto workplaceBasicWork;
 }

@@ -24,22 +24,28 @@ public class PpemtPersonRoleAuth extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "CID")
 	public String companyId;
-
+	
+	@Basic(optional = false)
 	@Column(name = "ALLOW_MAP_UPLOAD_ATR")
 	public int allowMapUpload;
-
+	
+	@Basic(optional = false)
 	@Column(name = "ALLOW_MAP_BROWSE_ATR")
 	public int allowMapBrowse;
 	
+	@Basic(optional = false)	
 	@Column(name = "ALLOW_DOC_UPLOAD_ATR")
 	public int allowDocUpload;
 	
+	@Basic(optional = false)
 	@Column(name = "ALLOW_DOC_REF_ATR")
 	public int allowDocRef;
 	
+	@Basic(optional = false)
 	@Column(name = "ALLOW_AVT_UPLOAD_ATR")
 	public int allowAvatarUpload;
 	
+	@Basic(optional = false)
 	@Column(name = "ALLOW_AVT_REF_ATR")
 	public int allowAvatarRef;
 

@@ -9,7 +9,6 @@ import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkSetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSet;
 
 /**
@@ -42,9 +41,9 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	 * basicworkregister.CompanyId)
 	 */
 	@Override
-	public void setCompanyId(CompanyId companyId) {
+	public void setCompanyId(String companyId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKcbmtCompanyWorkSetPK().setCid(companyId.v());
+			item.getKcbmtCompanyWorkSetPK().setCid(companyId);
 		});
 	}
 

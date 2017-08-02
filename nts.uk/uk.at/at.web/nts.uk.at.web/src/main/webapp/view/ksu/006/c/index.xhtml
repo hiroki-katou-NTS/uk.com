@@ -32,7 +32,9 @@
 						<!-- BEGIN C2_1 ~ C2_2 -->
 							<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_302')}</div>
 							<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: {
-									name: '#[KSU006_303, KSU006_304, KSU006_305]',
+									name: '#[KSU006_303]',
+									startName: '#[KSU006_304]',
+									endName: '#[KSU006_305]',
 									required: true,
 									enable: true,
 									showNextPrevious: false,
@@ -42,21 +44,21 @@
 						
 						<!-- BEGIN C2_3 ~ C2_6 -->
 							<div class="labelStatus" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_306')}</div>
-							<div tabindex="4" data-bind="ntsCheckBox: {
+							<div tabindex="3" data-bind="ntsCheckBox: {
 								checked: isIncomplete,
 								enable: true,
 								text: '#{i18n.getText('KSU006_307')}'}">
 							</div>
-							<div tabindex="5" data-bind="ntsCheckBox: {
+							<div tabindex="4" data-bind="ntsCheckBox: {
 								checked: isInterruption,
 								enable: true,
 								text: '#{i18n.getText('KSU006_308')}'}"></div>
-							<div tabindex="6" data-bind="ntsCheckBox: {
+							<div tabindex="5" data-bind="ntsCheckBox: {
 								checked: isDone,
 								enable: true,
 								text: '#{i18n.getText('KSU006_309')}'}"></div>
 						<!-- END C2_3 ~ C2_6 -->
-						<button id="btnSearch" tabindex="7" data-bind="click: search">#{i18n.getText('KSU006_310')}</button>
+						<button id="btnSearch" tabindex="6" data-bind="click: search">#{i18n.getText('KSU006_310')}</button>
 					</div><!-- END C2_1 ~ C2_7 -->
 					
 					<!-- BEGIN C3 -->
@@ -72,7 +74,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<div id="process">
-					<button class="large" data-bind="click: closeDialog">#{i18n.getText('KSU006_320')}</button>
+					<button class="large" data-bind="click: closeDialog" tabindex="8">#{i18n.getText('KSU006_320')}</button>
 				</div>
 			</div>
 		</ui:define>

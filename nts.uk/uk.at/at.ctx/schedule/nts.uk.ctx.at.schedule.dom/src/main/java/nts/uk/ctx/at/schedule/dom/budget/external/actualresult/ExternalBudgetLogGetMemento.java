@@ -12,13 +12,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 public interface ExternalBudgetLogGetMemento {
 
     /**
-     * Gets the company id.
-     *
-     * @return the company id
-     */
-    String getCompanyId();
-
-    /**
      * Gets the external budget file name.
      *
      * @return the external budget file name

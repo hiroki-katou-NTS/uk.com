@@ -4,19 +4,22 @@ module nts.uk.at.view.kdl023.base.service {
         getHoliday: 'at/schedule/holiday/getHolidayByListDate',
         getWorkTime: 'at/shared/worktime/findByCompanyID',
         getWorkType: 'at/share/worktype/findAll',
-        getAllPattern: 'ctx/at/share/vacation/setting/patterncalendar/getallpattcal',
-        getWeeklyWorkSetting: 'ctx/at/schedule/pattern/work/weekly/setting/findall'
+        getAllPattern: 'ctx/at/schedule/shift/pattern/daily/getall',
+        findPatternByCode: 'ctx/at/schedule/shift/pattern/daily/find',
+        getWeeklyWorkSetting: 'ctx/at/schedule/pattern/work/weekly/setting/findAll'
     }
 
     export function save(key: any, data: model.PatternReflection): JQueryPromise<void> {
         return nts.uk.characteristics.save(key, data);
     }
-
     export function find(key: string): JQueryPromise<model.PatternReflection> {
         return nts.uk.characteristics.restore(key);
     }
     export function findAllPattern(): JQueryPromise<Array<model.DailyPatternSetting>> {
         return nts.uk.request.ajax(servicePath.getAllPattern);
+    }
+    export function findPatternByCode(code: string): JQueryPromise<model.DailyPatternSetting> {
+        return nts.uk.request.ajax(servicePath.findPatternByCode + '/' + code);
     }
     export function getHolidayByListDate(dates: Array<string>): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax(servicePath.getHoliday, dates);
@@ -28,18 +31,7 @@ module nts.uk.at.view.kdl023.base.service {
         return nts.uk.request.ajax(servicePath.getWorkTime);
     }
     export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
-        let dfd = $.Deferred();
-        // default la working day.
-        dfd.resolve({
-            monday: 0,
-            tuesday: 0,
-            wednesday: 2,
-            thursday: 0,
-            friday: 0,
-            saturday: 1,
-            sunday: 2,
-        });
-        return dfd.promise();
+        return nts.uk.request.ajax(servicePath.getWeeklyWorkSetting);
     }
 
     export module model {

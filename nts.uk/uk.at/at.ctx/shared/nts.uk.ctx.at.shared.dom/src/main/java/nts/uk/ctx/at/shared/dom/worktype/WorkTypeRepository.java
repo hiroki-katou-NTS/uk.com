@@ -26,13 +26,6 @@ public interface WorkTypeRepository {
 	 */
 	List<WorkType> findByCompanyId(String companyId);
 
-	/**
-	 * Find by worktype code.
-	 *
-	 * @param worktypeCode the worktype code
-	 * @return the optional
-	 */
-	List<WorkType> findByWorktypeCodeList(String companyId, List<String> worktypeCode);
 
 	/**
 	 * Find by companyId and displayAtr.

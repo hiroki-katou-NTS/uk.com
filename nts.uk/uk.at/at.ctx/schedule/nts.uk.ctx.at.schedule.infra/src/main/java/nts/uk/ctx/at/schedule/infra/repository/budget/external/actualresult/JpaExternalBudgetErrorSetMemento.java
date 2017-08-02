@@ -48,7 +48,7 @@ public class JpaExternalBudgetErrorSetMemento implements ExternalBudgetErrorSetM
      */
     @Override
     public void setNumberColumn(int numberColumn) {
-        this.entity.setColumnNo(numberColumn);
+        this.entity.getKscdtExtBudgetErrorPK().setColumnNo(numberColumn);
     }
 
     /**
@@ -92,7 +92,7 @@ public class JpaExternalBudgetErrorSetMemento implements ExternalBudgetErrorSetM
      */
     @Override
     public void setExecutionId(String executionId) {
-        this.entity.setExeId(executionId);
+        this.entity.getKscdtExtBudgetErrorPK().setExeId(executionId);
     }
 
     /**
@@ -103,7 +103,7 @@ public class JpaExternalBudgetErrorSetMemento implements ExternalBudgetErrorSetM
      */
     @Override
     public void setNumberLine(int numberLine) {
-        this.entity.setLineNo(numberLine);
+        this.entity.getKscdtExtBudgetErrorPK().setLineNo(numberLine);
     }
 
 }

@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting.MonthlyPatternSettingBatchSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting.MonthlyPatternSettingBatchSaveCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.work.WorkMonthlySettingBatchSaveCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.work.WorkMonthlySettingBatchSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.WorkMonthlySettingFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingFindDto;
@@ -33,6 +35,10 @@ public class WorkMonthlySettingWs {
 	/** The batch. */
 	@Inject
 	private MonthlyPatternSettingBatchSaveCommandHandler batch;
+	
+	/** The save month. */
+	@Inject
+	private WorkMonthlySettingBatchSaveCommandHandler saveMonth;
 
 	/**
 	 * Find by month.
@@ -55,6 +61,17 @@ public class WorkMonthlySettingWs {
 	@Path("batch")
 	public void settingBatch(MonthlyPatternSettingBatchSaveCommand command){
 		this.batch.handle(command);
+	}
+	
+	/**
+	 * Save month.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("saveMonth")
+	public void saveMonth(WorkMonthlySettingBatchSaveCommand command){
+		this.saveMonth.handle(command);
 	}
 	
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,11 +19,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetError;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetErrorPK_;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError_;
 
 /**
  * The Class JpaExternalBudgetErrorRepository.
  */
+@Stateless
 public class JpaExternalBudgetErrorRepository extends JpaRepository implements ExternalBudgetErrorRepository {
 
     /*
@@ -53,7 +56,8 @@ public class JpaExternalBudgetErrorRepository extends JpaRepository implements E
 
         List<Predicate> predicateList = new ArrayList<>();
 
-        predicateList.add(builder.equal(root.get(KscdtExtBudgetError_.exeId), executionId));
+        predicateList.add(builder.equal(
+                root.get(KscdtExtBudgetError_.kscdtExtBudgetErrorPK).get(KscdtExtBudgetErrorPK_.exeId), executionId));
 
         query.where(predicateList.toArray(new Predicate[] {}));
 
