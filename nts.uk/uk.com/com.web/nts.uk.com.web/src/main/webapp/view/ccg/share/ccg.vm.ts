@@ -140,7 +140,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 $("[tabindex='6']").on('keydown', function(e) {
                     if (e.which == 9 && self.isAdvancedSearchTab) {
                         self.selectedTab('tab-2');
-                        //$('#employmentList').focus();
+                        $('#employmentList').focus();
                     }
                 });
 
