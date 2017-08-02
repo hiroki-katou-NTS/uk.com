@@ -371,11 +371,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Day of pattern loop.
             while (dayOfPattern <= dailyPatternValue.days) {
 
-                // Break loop.
+                // Break loop if current date reach calendar's start date.
                 if (currentDate.isBefore(self.calendarStartDate, 'day')) {
                     break;
                 }
 
+                // Get display text and push to option date list.
                 let optionDate = self.getDisplayText(dailyPatternValue, currentDate);
                 result.push(optionDate);
 
@@ -405,15 +406,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Day of pattern loop.
             while (dayOfPattern <= dailyPatternValue.days) {
 
-                //  When on screen B
-                if (!self.isOnScreenA()) {
-                    // Break loop if current date is out of calendar's range.
-                    if (currentDate.isBefore(self.calendarStartDate, 'day') || currentDate.isAfter(self.calendarEndDate, 'day')) {
-                        currentDate = currentDate.add(1, 'days'); // Next day on calendar.
-                        break;
-                    }
-                }
-
+                // Get display text and push to option date list.
                 let optionDate = self.getDisplayText(dailyPatternValue, currentDate);
                 result.push(optionDate);
 
@@ -428,6 +421,20 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                 // Next day on calendar.
                 currentDate = currentDate.add(1, 'days');
+
+                //  When on screen B
+                if (!self.isOnScreenA()) {
+
+                    // Break loop if current date reach calendar's end date.
+                    if (currentDate.isAfter(self.calendarEndDate, 'day')) {
+                        break;
+                    }
+
+                    // Skip to next day if current date is before calendar's start date.
+                    if (currentDate.isSameOrBefore(self.calendarStartDate, 'day')) {
+                        _.remove(result, item => item === optionDate);
+                    }
+                }
             }
             return result;
         }
