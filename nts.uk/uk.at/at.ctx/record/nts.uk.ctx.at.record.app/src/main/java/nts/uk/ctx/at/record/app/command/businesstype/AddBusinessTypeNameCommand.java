@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.bysinesstype;
+package nts.uk.ctx.at.record.app.command.businesstype;
 
 import lombok.Getter;
 import lombok.Setter;
