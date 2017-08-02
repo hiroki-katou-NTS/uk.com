@@ -9,28 +9,13 @@ public class SelectionItem extends DataTypeState {
 
 	private ReferenceTypeState referenceTypeState;
 
-	private SelectionItem() {
+	private SelectionItem(ReferenceTypeState referenceTypeState) {
 		super();
 		this.dataTypeValue = DataTypeValue.SELECTION;
-	}
-
-	public static SelectionItem createFromJavaType() {
-		return new SelectionItem();
-	}
-
-	private void setReferenceTypeState(ReferenceTypeState referenceTypeState) {
 		this.referenceTypeState = referenceTypeState;
 	}
 
-	public void setMasterReferenceCondition(String masterType) {
-		setReferenceTypeState(ReferenceTypeState.createMasterReferenceCondition(masterType));
-	}
-
-	public void setCodeNameReferenceType(String typeCode) {
-		setReferenceTypeState(ReferenceTypeState.createCodeNameReferenceType(typeCode));
-	}
-
-	public void setEnumReferenceCondition(String enumName) {
-		setReferenceTypeState(ReferenceTypeState.createEnumReferenceCondition(enumName));
+	public static SelectionItem createFromJavaType(ReferenceTypeState referenceTypeState) {
+		return new SelectionItem(referenceTypeState);
 	}
 }

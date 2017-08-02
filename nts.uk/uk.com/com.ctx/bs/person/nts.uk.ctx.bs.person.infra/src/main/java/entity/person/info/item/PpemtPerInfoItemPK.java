@@ -18,7 +18,7 @@ public class PpemtPerInfoItemPK implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "PER_INFO_ITEM_DEFINITION_ID")
-    public String perInfoItemDefinitionId;
+    public String perInfoItemDefId;
     
 
 }

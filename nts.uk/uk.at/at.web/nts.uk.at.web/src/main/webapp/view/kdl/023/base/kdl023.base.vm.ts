@@ -7,6 +7,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import WorkType = service.model.WorkType;
     import WorkTime = service.model.WorkTime;
     import DailyPatternSetting = service.model.DailyPatternSetting;
+    import DailyPatternValue = service.model.DailyPatternValue;
 
     export abstract class BaseScreenModel {
         dailyPatternList: KnockoutObservableArray<DailyPatternSetting>;
@@ -109,6 +110,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 self.patternReflection.nonStatutorySetting.useClassification() ||
                                 self.patternReflection.holidaySetting.useClassification();
                         });
+
                         // Set tabindex.
                         self.isReflectionMethodEnable.subscribe(val => {
                             if (val) {
@@ -327,92 +329,19 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.isMasterDataUnregisterd(false);
 
             let currentDate = moment(self.patternStartDate);
-            let firstDateOfMonth = moment(self.calendarStartDate);
-            let lastDateOfMonth = moment(self.calendarEndDate);
             let result: Array<OptionDate> = [];
 
             // Backward processing
-            if (currentDate.isAfter(firstDateOfMonth, 'day')) {
+            if (currentDate.isAfter(self.calendarStartDate, 'day')) {
                 // Previous day on calendar.
                 currentDate = currentDate.subtract(1, 'days');
-                while (currentDate.isSameOrAfter(firstDateOfMonth, 'day')) {
-                    // Work patterns reverse loop.
-                    self.dailyPatternSetting.listDailyPatternVal.slice().reverse().forEach(dailyPatternValue => {
-                        let dayOfPattern = 1;
-                        // Day of pattern loop.
-                        while (dayOfPattern <= dailyPatternValue.days) {
-                            // Break loop.
-                            if (currentDate.isBefore(firstDateOfMonth, 'day')) {
-                                break;
-                            }
-                            // is current day = day off flag.
-                            let isDayoff = false;
 
-                            // Is holiday
-                            if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
-                                isDayoff = true;
-                                result.push({
-                                    start: currentDate.format('YYYY-MM-DD'),
-                                    textColor: 'red',
-                                    backgroundColor: 'white',
-                                    listText: [
-                                        self.getWorktypeNameByCode(self.patternReflection.holidaySetting.workTypeCode())
-                                    ]
-                                });
-                            }
-                            // Is not holiday
-                            else {
-                                // Is statutory holiday
-                                if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
-                                    isDayoff = true;
-                                    result.push({
-                                        start: currentDate.format('YYYY-MM-DD'),
-                                        textColor: 'red',
-                                        backgroundColor: 'white',
-                                        listText: [
-                                            self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
-                                        ]
-                                    });
-                                }
-                                // Is non-statutory holiday
-                                else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
-                                    isDayoff = true;
-                                    result.push({
-                                        start: currentDate.format('YYYY-MM-DD'),
-                                        textColor: 'red',
-                                        backgroundColor: 'white',
-                                        listText: [
-                                            self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
-                                        ]
-                                    });
-                                }
-                                // Is working day.
-                                else {
-                                    let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
-                                    let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
-                                    let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
-                                    if (!worktype || !worktime) {
-                                        self.isMasterDataUnregisterd(true);
-                                    }
-                                    result.push({
-                                        start: currentDate.format('YYYY-MM-DD'),
-                                        textColor: 'blue',
-                                        backgroundColor: 'white',
-                                        listText: [
-                                            worktype ? worktype : noSetting,
-                                            worktime ? worktime : noSetting
-                                        ]
-                                    });
-                                }
-                            }
-                            dayOfPattern++;
-                            // Reserve dayOfPattern if reflection method = overwrite
-                            if (isDayoff && !self.isFillInTheBlankChecked()) {
-                                dayOfPattern--;
-                            }
-                            // Previous day on calendar.
-                            currentDate = currentDate.subtract(1, 'days');
-                        }
+                while (currentDate.isSameOrAfter(self.calendarStartDate, 'day')) { // Loop until reach calendar start date.
+                    // Work patterns reverse loop.
+                    self.dailyPatternSetting.listDailyPatternVal.slice().reverse().some(dailyPatternValue => {
+                        result = result.concat(self.loopBackwardPatternDays(dailyPatternValue, currentDate));
+                        let isLoopEnd = currentDate.isBefore(self.calendarStartDate, 'day');
+                        return isLoopEnd;
                     });
                 }
                 // Reset current date to pattern start date.
@@ -420,87 +349,156 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
 
             // Forward processing
-            while (currentDate.isSameOrBefore(lastDateOfMonth, 'day')) {
+            while (currentDate.isSameOrBefore(self.calendarEndDate, 'day')) { // Loop until reach calendar end date.
                 // Work patterns loop.
-                self.dailyPatternSetting.listDailyPatternVal.forEach(dailyPatternValue => {
-                    let dayOfPattern = 1;
-                    // Day of pattern loop.
-                    while (dayOfPattern <= dailyPatternValue.days) {
-                        // Break loop.
-                        if (currentDate.isAfter(lastDateOfMonth, 'day')) {
-                            break;
-                        }
-                        // is current day = day off flag.
-                        let isDayoff = false;
-
-                        // Is holiday
-                        if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
-                            isDayoff = true;
-                            result.push({
-                                start: currentDate.format('YYYY-MM-DD'),
-                                textColor: 'red',
-                                backgroundColor: 'white',
-                                listText: [
-                                    self.getWorktypeNameByCode(self.patternReflection.holidaySetting.workTypeCode())
-                                ]
-                            });
-                        }
-                        // Is not holiday
-                        else {
-                            // Is statutory holiday
-                            if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
-                                isDayoff = true;
-                                result.push({
-                                    start: currentDate.format('YYYY-MM-DD'),
-                                    textColor: 'red',
-                                    backgroundColor: 'white',
-                                    listText: [
-                                        self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
-                                    ]
-                                });
-                            }
-                            // Is non-statutory holiday
-                            else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
-                                isDayoff = true;
-                                result.push({
-                                    start: currentDate.format('YYYY-MM-DD'),
-                                    textColor: 'red',
-                                    backgroundColor: 'white',
-                                    listText: [
-                                        self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
-                                    ]
-                                });
-                            }
-                            // Is working day
-                            else {
-                                let noSetting = nts.uk.resource.getText('KSM005_43');
-                                let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
-                                let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
-                                if (!worktype || !worktime) {
-                                    self.isMasterDataUnregisterd(true);
-                                }
-                                result.push({
-                                    start: currentDate.format('YYYY-MM-DD'),
-                                    textColor: 'blue',
-                                    backgroundColor: 'white',
-                                    listText: [
-                                        worktype ? worktype : noSetting,
-                                        worktime ? worktime : noSetting
-                                    ]
-                                });
-                            }
-                        }
-                        dayOfPattern++;
-                        // Reserve dayOfPattern if reflection method = overwrite
-                        if (isDayoff && !self.isFillInTheBlankChecked()) {
-                            dayOfPattern--;
-                        }
-                        // Next day on calendar.
-                        currentDate = currentDate.add(1, 'days');
-                    }
+                self.dailyPatternSetting.listDailyPatternVal.some(dailyPatternValue => {
+                    result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
+                    let isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
+                    return isLoopEnd;
                 });
             }
             return result;
+        }
+
+        /**
+         * Loop backward daily pattern days.
+         */
+        private loopBackwardPatternDays(dailyPatternValue: DailyPatternValue, currentDate: moment.Moment): Array<OptionDate> {
+            let self = this;
+            let result = [];
+            let dayOfPattern = 1;
+
+            // Day of pattern loop.
+            while (dayOfPattern <= dailyPatternValue.days) {
+
+                // Break loop if current date reach calendar's start date.
+                if (currentDate.isBefore(self.calendarStartDate, 'day')) {
+                    break;
+                }
+
+                // Get display text and push to option date list.
+                let optionDate = self.getDisplayText(dailyPatternValue, currentDate);
+                result.push(optionDate);
+
+                // Next day of pattern.
+                dayOfPattern++;
+
+                // Reserve dayOfPattern if reflection method = fill in the blank
+                if (optionDate.textColor == 'red' // Is holiday 
+                    && self.isFillInTheBlankChecked()) {
+                    dayOfPattern--;
+                }
+
+                // Previous day on calendar.
+                currentDate = currentDate.subtract(1, 'days');
+            }
+            return result;
+        }
+
+        /**
+         * Loop forward daily pattern days.
+         */
+        private loopForwardPatternDays(dailyPatternValue: DailyPatternValue, currentDate: moment.Moment): Array<OptionDate> {
+            let self = this;
+            let result = [];
+            let dayOfPattern = 1;
+
+            // Day of pattern loop.
+            while (dayOfPattern <= dailyPatternValue.days) {
+
+                // Get display text and push to option date list.
+                let optionDate = self.getDisplayText(dailyPatternValue, currentDate);
+                result.push(optionDate);
+
+                // Next day of pattern.
+                dayOfPattern++;
+
+                // Reserve dayOfPattern if reflection method = fill in the blank
+                if (optionDate.textColor == 'red' // Is holiday 
+                    && self.isFillInTheBlankChecked()) {
+                    dayOfPattern--;
+                }
+
+                // Next day on calendar.
+                currentDate = currentDate.add(1, 'days');
+
+                //  When on screen B
+                if (!self.isOnScreenA()) {
+
+                    // Break loop if current date reach calendar's end date.
+                    if (currentDate.isAfter(self.calendarEndDate, 'day')) {
+                        break;
+                    }
+
+                    // Skip to next day if current date is before calendar's start date.
+                    if (currentDate.isSameOrBefore(self.calendarStartDate, 'day')) {
+                        _.remove(result, item => item === optionDate);
+                    }
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Get display text.
+         */
+        private getDisplayText(dailyPatternValue: DailyPatternValue, currentDate: moment.Moment): OptionDate {
+            let self = this;
+
+            // Is holiday
+            if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
+                return {
+                    start: currentDate.format('YYYY-MM-DD'),
+                    textColor: 'red',
+                    backgroundColor: 'white',
+                    listText: [
+                        self.getWorktypeNameByCode(self.patternReflection.holidaySetting.workTypeCode())
+                    ]
+                };
+            }
+            // Is not holiday
+            else {
+                // Is statutory holiday
+                if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
+                    return {
+                        start: currentDate.format('YYYY-MM-DD'),
+                        textColor: 'red',
+                        backgroundColor: 'white',
+                        listText: [
+                            self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
+                        ]
+                    };
+                }
+                // Is non-statutory holiday
+                else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
+                    return {
+                        start: currentDate.format('YYYY-MM-DD'),
+                        textColor: 'red',
+                        backgroundColor: 'white',
+                        listText: [
+                            self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
+                        ]
+                    };
+                }
+                // Is working day.
+                else {
+                    let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
+                    let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
+                    let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
+                    if (!worktype || !worktime) {
+                        self.isMasterDataUnregisterd(true);
+                    }
+                    return {
+                        start: currentDate.format('YYYY-MM-DD'),
+                        textColor: 'blue',
+                        backgroundColor: 'white',
+                        listText: [
+                            worktype ? worktype : noSetting,
+                            worktime ? worktime : noSetting
+                        ]
+                    };
+                }
+            }
         }
 
         /**
@@ -620,8 +618,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     dfd.resolve();
                 });
             }
-            // Do nothing if is on screen B.
+            // Is on screen B.
             else {
+                // Reset pattern range.
+                self.patternStartDate = moment(self.calendarStartDate);
+                self.patternEndDate = moment(self.calendarEndDate);
                 dfd.resolve();
             }
             return dfd.promise();
@@ -677,14 +678,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.yearMonthPicked(parseInt(self.calendarStartDate.format('YYYYMM')));
 
                 // Set pattern range.
-                self.patternStartDate = moment(self.calendarStartDate);
-                self.patternEndDate = moment(self.calendarEndDate);
-                self.loadHolidayList().done(() => dfd.resolve()
-                );
+                self.setPatternRange();
+
+                // Load holiday list.
+                self.loadHolidayList().done(() => dfd.resolve());
 
             }
             // Is on screen A
             else {
+                self.isOnScreenA(true);
                 self.setPatternRange().done(() => dfd.resolve());
             }
             return dfd.promise();

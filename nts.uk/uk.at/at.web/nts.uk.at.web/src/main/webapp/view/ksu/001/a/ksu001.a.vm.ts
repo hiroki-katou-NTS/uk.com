@@ -13,18 +13,19 @@ module ksu001.a.viewmodel {
 
         empItems: KnockoutObservableArray<PersonModel>;
         empSelectedItem: KnockoutObservable<any>;
+        dataSource: KnockoutObservableArray<BasicSchedule>;
         ccgcomponent: GroupOption;
         selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
-//        isShow: KnockoutObservable<boolean>;
+        //        isShow: KnockoutObservable<boolean>;
 
         //Grid list A2_4 (pop-up)
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentCodeList: KnockoutObservableArray<any>;
-//        count: number = 100;
-//        switchOptions: KnockoutObservableArray<any>;
+        //        count: number = 100;
+        //        switchOptions: KnockoutObservableArray<any>;
 
         //Date time
         dateTimePrev: KnockoutObservable<string>;
@@ -42,13 +43,21 @@ module ksu001.a.viewmodel {
         roundingRules2: KnockoutObservableArray<any>;
         selectedRuleCode2: KnockoutObservable<number>;
 
+        //
+        oViewModel: any;
+        arrTime: Time[] = [];
+        listSid: any = ["00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004",
+            "00000000-0000-0000-0000-000000000005", "00000000-0000-0000-0000-000000000006", "00000000-0000-0000-0000-000000000007", "00000000-0000-0000-0000-000000000008",
+            "00000000-0000-0000-0000-000000000009", "00000000-0000-0000-0000-000000000010"];
+
         constructor() {
             let self = this;
             self.ccgcomponent = ko.observable();
             self.selectedCode = ko.observableArray([]);
+            self.dataSource = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(true);
             self.selectedEmployee = ko.observableArray([]);
-//            self.isShow = ko.observable(false);
+            //            self.isShow = ko.observable(false);
             //Employee 
             self.empItems = ko.observableArray([]);
             self.empSelectedItem = ko.observable();
@@ -56,9 +65,18 @@ module ksu001.a.viewmodel {
 
             //Date time
             self.dtPrev = ko.observable(new Date('2017/01/01'));
-            self.dtAft = ko.observable(new Date('2017/01/31'));
+            self.dtAft = ko.observable(new Date('2017/01/15'));
             self.dateTimePrev = ko.observable(moment(self.dtPrev()).format('YYYY/MM/DD'));
             self.dateTimeAfter = ko.observable(moment(self.dtAft()).format('YYYY/MM/DD'));
+
+            var currentD = new Date(self.dtPrev().toString());
+            while (currentD <= self.dtAft()) {
+                self.arrTime.push(new Time(currentD.toString()));
+                //                self.arrMonth.push(moment(currentD).format('M'));
+                //                self.arrDay.push(moment(currentD).format('D'));
+                currentD.setDate(currentD.getDate() + 1);
+            }
+
 
             self.dtPrev.subscribe(() => {
                 self.dateTimePrev(moment(self.dtPrev()).format('YYYY/MM/DD'));
@@ -77,10 +95,12 @@ module ksu001.a.viewmodel {
                 { headerText: 'コード', key: 'id', width: 50, hidden: true },
             ]);
             self.currentCodeList = ko.observableArray([]);
+
             // Fire event.
             $("#multi-list").on('itemDeleted', (function(e: Event) {
                 alert("Item is deleted in multi grid is " + e["detail"]["target"]);
             }));
+
             //Switch button
             self.roundingRules = ko.observableArray([
                 { code: 1, name: '抽出' },
@@ -151,14 +171,15 @@ module ksu001.a.viewmodel {
                 $('#popup-area5').toggle();
             });
 
+            //Diplay screen O
             self.selectedModeDisplay.subscribe(function(newValue) {
                 var area = $("#oViewModel");
                 area.html("");
                 if (newValue == 1) {
                     $('#oViewModel').addClass('oViewModelDisplay');
                     area.load("../o/index.xhtml", function() {
-                        var oViewModel = new o.viewmodel.ScreenModel();
-                        ko.applyBindings(oViewModel, area.children().get(0));
+                        self.oViewModel = new o.viewmodel.ScreenModel();
+                        ko.applyBindings(self.oViewModel, area.children().get(0));
                     });
                 } else {
                     $('#oViewModel').removeClass('oViewModelDisplay');
@@ -166,13 +187,38 @@ module ksu001.a.viewmodel {
             });
         }
 
-        start() {
+        start(): JQueryPromise<any> {
             let self = this;
-            var dfd = $.Deferred();
+            let dfd = $.Deferred();
             self.initCCG001();
             self.selectedModeDisplay(1);
-            self.initExTable();
+            $.when(self.getDataBasicSchedule()).done(function() {
+                self.initExTable();
+            });
             dfd.resolve();
+            return dfd.promise();
+        }
+
+        /**
+         * Get data Basic_Schedule
+         */
+        getDataBasicSchedule(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            //obj is fixed
+            let obj = {
+                sId: self.listSid,
+                startDate: self.dtPrev(),
+                endDate: self.dtAft()
+            };
+            service.getDataBasicSchedule(obj).done(function(data: any) {
+                if (data) {
+                    self.dataSource(data);
+                }
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
@@ -258,111 +304,52 @@ module ksu001.a.viewmodel {
             let middleContentDeco = [];
 
             let detailHeaderDeco = [new CellColor("empId", 1, "ultra-small-font-size")];
-            for (let i = -6; i < 32; i++) {
-                if (i <= 0) {
-                    let d = 31 + i;
-                    detailHeaderDeco.push(new CellColor("__" + d, 1, "ultra-small-font-size"))
-                } else {
-                    detailHeaderDeco.push(new CellColor("_" + i, 1, "ultra-small-font-size"));
+            for (let i = 0; i < self.arrTime.length; i++) {
+                if (self.arrTime[i].weekDay == '日' || self.arrTime[i].weekDay == 　'土') {
+                    detailHeaderDeco.push(new CellColor("_" + self.arrTime[i].day, 1, "cell-red"));
                 }
             }
             let detailContentDeco = [];
             let detailHeaderDs = [];
             let detailContentDs = [];
-            detailHeaderDs.push(new ExItem(undefined, true));
+            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrTime));
             detailHeaderDs.push({
                 empId: "", __25: "over", __26: "", __27: "", __28: "", __29: "", __30: "", __31: "",
                 _1: "セール", _2: "", _3: "", _4: "", _5: "", _6: "", _7: "", _8: "", _9: "特別", _10: "",
                 _11: "", _12: "", _13: "", _14: "", _15: "", _16: "Oouch", _17: "", _18: "", _19: "", _20: "", _21: "", _22: "", _23: "",
                 _24: "", _25: "", _26: "設定", _27: "", _28: "", _29: "", _30: "", _31: "",
             });
+
+            //define the detailColumns
             let detailColumns = [{
                 key: "empId", width: "50px", headerText: "ABC", visible: false
-            }, {
-                    //            key: "empName", width: "120px"
-                    //        }, {
-                    key: "_1", width: "100px", handlerType: "Input", dataType: "text/duration", min: "9:00", max: "19:00"
-                }, {
-                    key: "_2", width: "100px", handlerType: "Input", dataType: "text/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
-                }, {
-                    key: "_3", width: "100px", handlerType: "Input", dataType: "text/time"
-                }, {
-                    key: "_4", width: "100px", handlerType: "input", dataType: "text/time"
-                }, {
-                    key: "_5", width: "100px", handlerType: "input", dataType: "text"
-                }, {
-                    key: "_6", width: "100px", handlerType: "input", dataType: "text", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
-                }, {
-                    key: "_7", width: "100px", dataType: "text"
-                }, {
-                    key: "_8", width: "100px"
-                }, {
-                    key: "_9", width: "100px"
-                }, {
-                    key: "_10", width: "100px"
-                }, {
-                    key: "_11", width: "100px"
-                }, {
-                    key: "_12", width: "100px"
-                }, {
-                    key: "_13", width: "100px"
-                }, {
-                    key: "_14", width: "100px"
-                }, {
-                    key: "_15", width: "100px"
-                }, {
-                    key: "_16", width: "100px"
-                }, {
-                    key: "_17", width: "100px"
-                }, {
-                    key: "_18", width: "100px"
-                }, {
-                    key: "_19", width: "100px"
-                }, {
-                    key: "_20", width: "100px"
-                }, {
-                    key: "_21", width: "100px"
-                }, {
-                    key: "_22", width: "100px"
-                }, {
-                    key: "_23", width: "100px"
-                }, {
-                    key: "_24", width: "100px"
-                }, {
-                    key: "_25", width: "100px"
-                }, {
-                    key: "_26", width: "100px"
-                }, {
-                    key: "_27", width: "100px"
-                }, {
-                    key: "_28", width: "100px"
-                }, {
-                    key: "_29", width: "100px"
-                }, {
-                    key: "_30", width: "100px"
-                }, {
-                    key: "_31", width: "100px"
-                }];
+            }];
+
+            _.each(self.arrTime, (x: Time) => {
+                detailColumns.push({
+                    key: "_" + x.day, width: "100px", headerText: "a", visible: true
+                });
+            });
+
+            //            detailColumns.push({
+            //                  key: "_9", width: "100px"  
+            //            });
 
             let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [];
 
             //dataSource
-            for (let i = 0; i < 300; i++) {
+            _.each(self.listSid, (x) => {
                 //leftMost dataSource
-                leftmostDs.push({ empId: i.toString(), empName: "社員名" + i });
+                leftmostDs.push({ empId: x, empName: "社員名" });
                 //middle dataSource
-                middleDs.push({ empId: i.toString(), cert: "★", over1: "207:00", over2: "23.0" });
-                if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
-                else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green"));
+                middleDs.push({ empId: x, cert: "★", over1: "207:00", over2: "23.0" });
                 //detail dataSource
-                if (i % 7 === 0) detailContentDeco.push(new CellColor("_3", i.toString(), "cell-light-green", 0));
-                detailContentDs.push(new ExItem(i.toString()));
-                if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
+                let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
+                detailContentDs.push(new ExItem(x, dsOfSid, self.oViewModel.listWorkType(), self.oViewModel.listWorkTime(), false, self.arrTime));
                 //vertSumContent dataSource
-                vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
-            }
-            
-            
+                vertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
+            });
+
             for (let i = 0; i < 10; i++) {
                 horzSumContentDs.push({
                     itemId: i.toString(), empId: "", __25: "1.0", __26: "1.4", __27: "0.3", __28: "0.9", __29: "1.0", __30: "1.0", __31: "3.3",
@@ -603,7 +590,28 @@ module ksu001.a.viewmodel {
             this.personId = param.personId;
             this.code = param.code;
             this.name = param.name;
-            this.baseDate = param.baseDate || 20170104;
+            this.baseDate = param.baseDate;
+        }
+    }
+
+    interface IBasicSchedule {
+        date: string,
+        sid: string,
+        workTimeCd: string,
+        workTypeCd: string
+    }
+
+    class BasicSchedule {
+        date: string;
+        sid: string;
+        workTimeCd: string;
+        workTypeCd: string;
+
+        constructor(params: IBasicSchedule) {
+            this.date = params.date;
+            this.sid = params.sid;
+            this.workTimeCd = params.workTimeCd;
+            this.workTypeCd = params.workTypeCd;
         }
     }
 
@@ -657,16 +665,83 @@ module ksu001.a.viewmodel {
         }
     }
 
+    class Time {
+        ymd: string;
+        month: string;
+        day: string;
+        weekDay: string;
+
+        constructor(ymd: string) {
+            this.ymd = ymd;
+            this.month = moment(this.ymd).format('M');
+            this.day = moment(this.ymd).format('D');
+            this.weekDay = moment(this.ymd).format('dd');
+        }
+    }
+
+    interface IWorkType {
+        workTypeCode: string,
+        sortOrder: number,
+        symbolicName: string,
+        name: string,
+        abbreviationName: string,
+        memo: string,
+        displayAtr: number
+    }
+
+    class WorkType {
+        workTypeCode: string;
+        sortOrder: number;
+        symbolicName: string;
+        name: string;
+        abbreviationName: string;
+        memo: string;
+        displayAtr: number;
+
+        constructor(params: IWorkType) {
+            this.workTypeCode = params.workTypeCode;
+            this.sortOrder = params.sortOrder;
+            this.symbolicName = params.symbolicName;
+            this.name = params.name;
+            this.abbreviationName = params.abbreviationName;
+            this.memo = params.memo;
+            this.displayAtr = params.displayAtr;
+        }
+    }
+
+    interface IWorkTime {
+        siftCd: string,
+        name: string,
+        abName: string,
+        dailyWorkAtr: number,
+        methodAtr: number,
+        displayAtr: number,
+        note: string
+    }
+
+    class WorkTime {
+        siftCd: string;
+        name: string;
+        abName: string;
+        dailyWorkAtr: number;
+        methodAtr: number;
+        displayAtr: number;
+        note: string;
+
+        constructor(params: IWorkTime) {
+            this.siftCd = params.siftCd;
+            this.name = params.name;
+            this.abName = params.abName;
+            this.dailyWorkAtr = params.dailyWorkAtr;
+            this.methodAtr = params.methodAtr;
+            this.displayAtr = params.displayAtr;
+            this.note = params.note;
+        }
+    }
+
     class ExItem {
         empId: string;
         empName: string;
-        __25: string;
-        __26: string;
-        __27: string;
-        __28: string;
-        __29: string;
-        __30: string;
-        __31: string;
         _1: any;
         _2: string;
         _3: string;
@@ -699,29 +774,32 @@ module ksu001.a.viewmodel {
         _30: string;
         _31: string;
 
-        constructor(empId: string, manual?: boolean) {
+        constructor(empId: string, dsOfSid: BasicSchedule[], listWorkType: WorkType[], listWorkTime: WorkTime[], manual: boolean, arrTime: Time[]) {
             this.empId = empId;
             this.empName = empId;
+            // create detailHeader (ex: 4/1 | 4/2)
             if (manual) {
-                for (let i = -6; i <= 31; i++) {
-                    if (i <= 0) {
-                        let d = 31 + i;
-                        this["__" + d] = d;
-                    } else {
-                        this["_" + i] = "4/" + i;
-                    }
+                for (let i = 0; i < arrTime.length; i++) {
+                    this['_' + arrTime[i].day] = arrTime[i].month + '/' + arrTime[i].day + ' ' + arrTime[i].weekDay;
                 }
                 return;
             }
-            for (let i = -6; i <= 31; i++) {
-                if (i <= 0) {
-                    let d = 31 + i;
-                    this["__" + d] = "前";
-                } else if (i === 1) this["_" + i] = ["出勤", "8:30"];
-                else if (i === 2) this["_" + i] = ["出勤B", "16:00"];
-                else if (i === 3) this["_" + i] = ["出勤C", "20:00"];
-                else if (i === 4) this["_" + i] = ["出勤D", "19:00"];
-                else this["_" + i] = "通" + i;
+            //create detailContent (ex: [workType, workTime] : ["出勤", "通常４ｈ "])
+            for (let i = 0; i < arrTime.length; i++) {
+                let obj: BasicSchedule = _.find(dsOfSid, (x) => {
+                    return moment(x.date).format('D') == arrTime[i].day;
+                });
+                //holiday
+                if (arrTime[i].weekDay == '日' || arrTime[i].weekDay == '土') {
+                    this['_' + arrTime[i].day] = ['休日', ''];
+                } else if (obj) {
+                    //get name of workType and workTime
+                    let workTypeName = _.find(listWorkType, ['workTypeCode', obj.workTypeCd]).abbreviationName;
+                    let workTimeName = _.find(listWorkTime, ['siftCd', obj.workTimeCd]).abName;
+                    this['_' + arrTime[i].day] = [workTypeName, workTimeName];
+                } else {
+                    this['_' + arrTime[i].day] = 'なし';
+                }
             }
         }
     }
