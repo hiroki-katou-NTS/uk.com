@@ -24,6 +24,8 @@ module nts.uk.at.view.kdl023.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('patternCode', self.patternCode());
             nts.uk.ui.windows.sub.modal('/view/kdl/023/a/index.xhtml');
+            nts.uk.ui.windows.setShared('startDate', undefined);
+            nts.uk.ui.windows.setShared('endDate', undefined);
         }
         public gotoB(): void {
             let self = this;
@@ -34,7 +36,6 @@ module nts.uk.at.view.kdl023.viewmodel {
                 let abc = nts.uk.ui.windows.getShared("listDateSetting");
                 if (abc) {
                     self.returnedList(abc);
-                    console.log(abc);
                 } else {
                     self.returnedList([{ start: 'NONE', listText: [] }]);
                 }
