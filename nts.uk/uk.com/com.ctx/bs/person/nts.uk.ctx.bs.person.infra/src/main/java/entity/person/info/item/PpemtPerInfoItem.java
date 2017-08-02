@@ -17,31 +17,31 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "PPEMT_PER_INFO_ITEM")
 public class PpemtPerInfoItem extends UkJpaEntity implements Serializable {
-	
-    private static final long serialVersionUID = 1L;
-    
-    @EmbeddedId
-    protected PpemtPerInfoItemPK ppemtPerInfoItemPK;
-    
-    @Basic(optional = false)
-    @Column(name = "PER_INFO_CTG_ID")
-    public String perInfoCtgId;
-    
-    @Basic(optional = false)
-    @Column(name = "ITEM_CD")
-    public String itemCd;
-    
-    @Basic(optional = false)
-    @Column(name = "ITEM_NAME")
-    public String itemName;
-    
+
+	private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
+	protected PpemtPerInfoItemPK ppemtPerInfoItemPK;
+
+	@Basic(optional = false)
+	@Column(name = "PER_INFO_CTG_ID")
+	public String perInfoCtgId;
+
+	@Basic(optional = false)
+	@Column(name = "ITEM_CD")
+	public String itemCd;
+
+	@Basic(optional = false)
+	@Column(name = "ITEM_NAME")
+	public String itemName;
+
 	@Basic(optional = false)
 	@Column(name = "ABOLITION_ATR")
 	public int abolitionAtr;
-    
-    @Basic(optional = false)
-    @Column(name = "REQUIRED_ATR")
-    public int requiredAtr;
+
+	@Basic(optional = false)
+	@Column(name = "REQUIRED_ATR")
+	public int requiredAtr;
 
 	@Override
 	protected Object getKey() {

@@ -6,9 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -41,13 +38,6 @@ public class PpemtPerInfoCtg extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "ABOLITION_ATR")
 	public int abolitionAtr;
-	
-	@OneToOne
-	@JoinColumns({
-	    @JoinColumn(name="CATEGORY_CD", referencedColumnName="CATEGORY_CD"),
-	    @JoinColumn(name="CID", referencedColumnName="CID")
-	})
-	public PpemtPerInfoCtgCm ppemtPerInfoCtgCm;
 	
 	@Override
 	protected Object getKey() {
