@@ -1,5 +1,7 @@
 package command.roles.auth;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -19,22 +21,25 @@ public class UpdatePersonInfoRoleAuthCommandHandler extends CommandHandler<Updat
 	private PersonInfoRoleAuthRepository personRoleAuthRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdatePersonInfoRoleAuthCommand> context) {
+	public void handle(CommandHandlerContext<UpdatePersonInfoRoleAuthCommand> context) {
 		UpdatePersonInfoRoleAuthCommand update = context.getCommand();
-		if(update.getRoleIds().size() <= 0){
+		if (update.getRoleIds().size() <= 0) {
 			throw new BusinessException(new RawErrorMessage("Msg_365"));
 		}
 		String companyId = AppContexts.user().companyId();
-		PersonInfoRoleAuth p_RoleDestination = this.personRoleAuthRepository
-				.getDetailPersonRoleAuth(update.getRoleIdDestination()).get();
-		update.getRoleIds().forEach(c -> {
-			this.personRoleAuthRepository.delete(c);
-			PersonInfoRoleAuth insert = PersonInfoRoleAuth.createFromJavaType(c, companyId,
-					p_RoleDestination.getAllowDocUpload().value, p_RoleDestination.getAllowMapBrowse().value,
-					p_RoleDestination.getAllowDocUpload().value, p_RoleDestination.getAllowDocRef().value,
-					p_RoleDestination.getAllowAvatarUpload().value, p_RoleDestination.getAllowAvatarRef().value);
-			this.personRoleAuthRepository.add(insert);
-		});
+		Optional<PersonInfoRoleAuth> p_RoleDestination = this.personRoleAuthRepository
+				.getDetailPersonRoleAuth(update.getRoleIdDestination());
+		if (p_RoleDestination.isPresent()) {
+			update.getRoleIds().forEach(c -> {
+				this.personRoleAuthRepository.delete(c);
+				PersonInfoRoleAuth insert = PersonInfoRoleAuth.createFromJavaType(c, companyId,
+						p_RoleDestination.get().getAllowDocUpload().value, p_RoleDestination.get().getAllowMapBrowse().value,
+						p_RoleDestination.get().getAllowDocUpload().value, p_RoleDestination.get().getAllowDocRef().value,
+						p_RoleDestination.get().getAllowAvatarUpload().value, p_RoleDestination.get().getAllowAvatarRef().value);
+				this.personRoleAuthRepository.add(insert);
+			});
+		}
+
 	}
 
 }
