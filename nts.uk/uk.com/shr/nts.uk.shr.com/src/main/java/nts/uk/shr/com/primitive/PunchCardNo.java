@@ -5,11 +5,11 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.constraint.StringRegEx;
 
-@StringMaxLength(value = 10)
-@StringRegEx("^[a-zA-Z0-9_-]{1,10}$")
-public class WorkplaceCode extends CodePrimitiveValue<WorkplaceCode> {
+@StringMaxLength(20)
+@StringRegEx("^[a-zA-Z0-9\"#\\$%&\\(~\\|\\{\\}\\[\\]@:`\\*\\+\\?;\\/_\\-><\\)]{1,20}$")
+public class PunchCardNo extends CodePrimitiveValue<PunchCardNo> {
 
-	public WorkplaceCode(String rawValue) {
+	public PunchCardNo(String rawValue) {
 		super(rawValue);
 	}
 
