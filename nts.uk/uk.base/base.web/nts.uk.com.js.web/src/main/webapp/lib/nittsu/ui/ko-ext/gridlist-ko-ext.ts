@@ -117,7 +117,6 @@ module nts.uk.ui.koExtentions {
                 
                 $grid.addClass("row-limited");
             }
-            
             $grid.data("height", height);
 
             $grid.igGrid({
@@ -130,6 +129,10 @@ module nts.uk.ui.koExtentions {
                 features: features,
                 tabIndex: -1
             });
+            
+            if (data.itemDraggable) {
+                new SwapHandler().setModel(new GridSwapList($grid, optionsValue)).enableDragDrop(data.dataSource);
+            }
 
             if (isDeleteButton) {
                 var sources = (data.dataSource !== undefined ? data.dataSource : data.options);
@@ -239,4 +242,198 @@ module nts.uk.ui.koExtentions {
     }
     
     ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
+    
+    class SwapHandler {
+        private model: SwapModel;
+        constructor() {
+        }
+        setModel(model: SwapModel) {
+            this.model = model;
+            return this;
+        }
+        get Model() {
+            return this.model;
+        }
+        
+        private handle(value: (param?: any) => any) {
+            var self = this;
+            var model = this.model;
+            var options = {
+                                items: "tbody > tr",
+                                containment: this.model.$grid,
+                                cursor: "move",
+                                connectWith: this.model.$grid,
+                                placeholder: "ui-state-highlight",
+                                helper: this._createHelper,
+                                appendTo: this.model.$grid,
+                                start: function(evt, ui) {
+                                    self.model.transportBuilder.setList(self.model.$grid.igGrid("option", "dataSource"));
+                                },
+                                beforeStop: function(evt, ui) {
+                                    self._beforeStop.call(this, model, evt, ui);
+                                },
+                                update: function(evt, ui) {
+                                    self._update.call(this, model, evt, ui, value);
+                                }
+                            };
+            this.model.$grid.sortable(options).disableSelection();
+        }
+        
+        private _createHelper(evt: any, ui: any): void {
+            var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
+            // Set the orders same as on grid
+            selectedRowElms.sort(function(one, two) {
+                return one.index - two.index;
+            });
+            var $helper;
+            if ($(evt.currentTarget).hasClass("multiple-drag") && selectedRowElms.length > 1) {
+                $helper = $("<div><table><tbody></tbody></table></div>").addClass("select-drag");
+                var rowId = ui.data("row-idx");
+                var selectedItems: Array<JQuery> = selectedRowElms.map(function(elm) { return elm.element; });
+                var height = 0;
+                $.each(selectedItems, function() {
+                    $helper.find("tbody").append($(this).clone()); 
+                    height += $(this).outerHeight();
+                    if (rowId !== this.data("row-idx")) $(this).hide(); 
+                });
+                $helper.height(height);
+                $helper.find("tr").first().children().each(function(idx) {
+                    $(this).width(ui.children().eq(idx).width());
+                });
+            } else {
+                $helper = ui.clone();
+                $helper.children().each(function(idx) {
+                    $(this).width(ui.children().eq(idx).width());
+                });
+            }
+            return $helper[0];
+        }
+        
+        private _beforeStop(model:any, evt: any, ui: any): void {
+            model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+            // In case of multiple selections
+            if (ui.helper.hasClass("select-drag")) {
+                var rowsInHelper = ui.helper.find("tr");
+                var rows = rowsInHelper.toArray();
+                $(this).sortable("cancel");
+                for (var idx in rows) {
+                    model.$grid.find("tbody").children().eq($(rows[idx]).data("row-idx")).show();
+                }
+            } 
+        }
+        
+        private _update(model: any, evt: any, ui: any, value: (param?: any) => any) {
+            if (ui.item.closest("table").length === 0) return;
+            model.transportBuilder.update();
+            model.$grid.igGrid("option", "dataSource", model.transportBuilder.getList());
+            value(model.transportBuilder.getList());
+            setTimeout(function() { model.dropDone(); }, 0);
+        }
+        
+        enableDragDrop(value: (param?: any) => any) {
+            this.model.enableDrag(this, value, this.handle);
+        }
+    }
+    
+    abstract class SwapModel {
+        $grid: JQuery;
+        primaryKey: any;
+        transportBuilder: ListItemTransporter;
+        
+        constructor($grid: JQuery, primaryKey: any) {
+            this.$grid = $grid;
+            this.primaryKey = primaryKey;
+            this.transportBuilder = new ListItemTransporter().primary(this.primaryKey);
+        }
+        
+        abstract target(param: any): any;
+        abstract neighbor(param: any): string;
+        abstract dropDone(): void;
+        abstract enableDrag(ctx: any, value: (param?: any) => any, cb: (value: (param?: any) => any) => void): void;
+    }
+    
+    class GridSwapList extends SwapModel {
+        
+        target(opts): any {
+            if (opts.helper !== undefined && opts.helper.hasClass("select-drag")) {
+                return opts.helper.find("tr").map(function() {
+                    return $(this).data("id");
+                });
+            } 
+            return [opts.item.data("id")];
+        }
+        
+        neighbor(opts): any {
+            return opts.item.prev().length === 0 ? "ceil" : opts.item.prev().data("id");
+        }
+        
+        dropDone(): void {
+            var self = this; 
+            self.$grid.igGridSelection("clearSelection");
+            setTimeout(function() {
+                self.$grid.igGrid("virtualScrollTo", self.transportBuilder.incomeIndex);
+            }, 0); 
+        }
+        
+        enableDrag(ctx: any, value: (param?: any) => any, cb: (value: (param?: any) => any) => void): void {
+            var self = this;
+            this.$grid.on("iggridrowsrendered", function(evt, ui) {
+                cb.call(ctx, value);
+            });
+        }
+    }
+    
+    class ListItemTransporter {
+        list: Array<any>;
+        primaryKey: string;
+        targetIds: Array<any>;
+        adjacentIncomeId: any;
+        outcomeIndex: number;
+        incomeIndex: number;
+        
+        primary(primaryKey: string) : ListItemTransporter {
+            this.primaryKey = primaryKey;
+            return this;
+        }
+        
+        target(targetIds: Array<any>) : ListItemTransporter {
+            this.targetIds = targetIds;
+            return this;
+        }
+        
+        toAdjacent(adjId: any) : ListItemTransporter {
+            if (adjId === null) adjId = "ceil";
+            this.adjacentIncomeId = adjId;
+            return this;
+        }
+        
+        indexOf(list: Array<any>, targetId: any) {
+            return _.findIndex(list, elm => elm[this.primaryKey].toString() === targetId.toString());
+        }
+        
+        update() : void {
+            for (var i = 0; i < this.targetIds.length; i++) { 
+                this.outcomeIndex = this.indexOf(this.list, this.targetIds[i]);
+                if (this.outcomeIndex === -1) return;
+                var target = this.list.splice(this.outcomeIndex, 1);
+                this.incomeIndex = this.indexOf(this.list, this.adjacentIncomeId) + 1;
+                if (this.incomeIndex === 0) {
+                    if (this.adjacentIncomeId === "ceil") this.incomeIndex = 0;
+                    else if (target !== undefined) {
+                        this.list.splice(this.outcomeIndex, 0, target[0]);
+                        return;
+                    }
+                }
+                this.list.splice(this.incomeIndex + i, 0, target[0]);
+            }
+        }
+        
+        getList() : Array<any> {
+            return this.list;
+        }
+        
+        setList(list: Array<any>) {
+            this.list = list;        
+        }
+    }
 }

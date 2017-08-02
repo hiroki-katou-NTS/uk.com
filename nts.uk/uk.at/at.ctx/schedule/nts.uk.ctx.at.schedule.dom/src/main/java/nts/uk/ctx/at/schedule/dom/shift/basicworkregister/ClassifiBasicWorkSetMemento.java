@@ -16,7 +16,7 @@ public interface ClassifiBasicWorkSetMemento {
 	 *
 	 * @param companyId the new company id
 	 */
-	void setCompanyId(CompanyId companyId);
+	void setCompanyId(String companyId);
 	
 	/**
 	 * Sets the classification code.

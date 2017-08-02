@@ -14,24 +14,25 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.daily.DailyPatternCommand;
-import nts.uk.ctx.at.schedule.app.command.shift.pattern.daily.DailyPatternCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.daily.SaveDailyPatternCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.DailyPatternFinder;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternDto;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternDetailDto;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternItemDto;
 
 /**
  * The Class DailyPatternWS.
  */
-@Path("ctx/at/share/vacation/setting/patterncalendar/")
+@Path("ctx/at/schedule/shift/pattern/daily")
 @Produces("application/json")
 public class DailyPatternWS extends WebService {
 
 	/** The pattern calendar finder. */
 	@Inject
-	private DailyPatternFinder patternCalendarFinder;
+	private DailyPatternFinder dailyPatternFinder;
 
 	/** The patterb handler. */
 	@Inject
-	private DailyPatternCommandHandler patterbHandler;
+	private SaveDailyPatternCommandHandler patternCommandHandler;
 
 	/**
 	 * Gets the allpatt calendar.
@@ -39,20 +40,21 @@ public class DailyPatternWS extends WebService {
 	 * @return the allpatt calendar
 	 */
 	@POST
-	@Path("getallpattcal")
-	public List<DailyPatternDto> getAllpattCalendar() {
-		return this.patternCalendarFinder.getAllPattCalendar();
+	@Path("getall")
+	public List<DailyPatternItemDto> getAllpattCalendar() {
+		return this.dailyPatternFinder.getAllPattCalendar();
 	}
 
 	/**
 	 * Save.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
-	@Path("addpattcal")
+	@Path("save")
 	public void save(DailyPatternCommand command) {
-		this.patterbHandler.handle(command);
+		this.patternCommandHandler.handle(command);
 	}
 
 	/**
@@ -61,19 +63,21 @@ public class DailyPatternWS extends WebService {
 	 * @return the list
 	 */
 	@POST
-	@Path("find/setting")
-	public List<DailyPatternDto> findByCompanyId() {
-		return this.patternCalendarFinder.findPatternCalendarByCompanyId();
+	@Path("find/{patternCd}")
+	public DailyPatternDetailDto getDetailByCode(@PathParam("patternCd") String patternCd) {
+		return this.dailyPatternFinder.findByCode(patternCd);
 	}
+
 	/**
 	 * deleted bypattern cd.
 	 *
-	 * @param patternCd the pattern cd
+	 * @param patternCd
+	 *            the pattern cd
 	 * @return the list
 	 */
 	@POST
-	@Path("deleted/pattern/{patternCd}")
-	public void deledtedBypatternCd(@PathParam("patternCd") String patternCd) {
-		this.patternCalendarFinder.deleted(patternCd);
+	@Path("delete/{patternCd}")
+	public void deledteByPatternCd(@PathParam("patternCd") String patternCd) {
+		this.dailyPatternFinder.deleteByCode(patternCd);
 	}
 }

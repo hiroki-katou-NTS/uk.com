@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
-import java.util.Date;
-
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTimeSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
 
@@ -27,24 +25,26 @@ public class JpaExecutionTimeSetMemento implements ExecutionTimeSetMemento {
         this.entityParent = entityParent;
     }
     
-    /**
-     * Sets the start date.
-     *
-     * @param startDate the new start date
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExecutionTimeSetMemento#setStartDateTime(nts.arc.time.GeneralDateTime)
      */
     @Override
-    public void setStartDate(Date startDate) {
-        this.entityParent.setStrD(GeneralDate.legacyDate(startDate));
+    public void setStartDateTime(GeneralDateTime startDateTime) {
+        this.entityParent.setStrDateTime(startDateTime);
     }
 
-    /**
-     * Sets the end date.
-     *
-     * @param endDate the new end date
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExecutionTimeSetMemento#setEndDateTime(nts.arc.time.GeneralDateTime)
      */
     @Override
-    public void setEndDate(Date endDate) {
-        this.entityParent.setEndD(GeneralDate.legacyDate(endDate));
+    public void setEndDateTime(GeneralDateTime endDateTime) {
+        this.entityParent.setEndDateTime(endDateTime);
     }
 
 }

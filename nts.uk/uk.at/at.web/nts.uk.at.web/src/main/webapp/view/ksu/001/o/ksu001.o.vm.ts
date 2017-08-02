@@ -27,18 +27,18 @@ module ksu001.o.viewmodel {
             self.selectedRuleCode = ko.observable(1);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedWorkTypeCode = ko.observable('1');
-            self.selectedWorkTimeCode = ko.observable('1');
+            self.selectedWorkTypeCode = ko.observable('');
+            self.selectedWorkTimeCode = ko.observable('');
             self.time1 = ko.observable('12:00');
             self.time2 = ko.observable('15:00');
 
             self.findWorkType();
+            self.findWorkTime();
         }
 
         start() {
             let self = this;
             var dfd = $.Deferred();
-
             dfd.resolve();
             return dfd.promise();
         }
@@ -62,6 +62,7 @@ module ksu001.o.viewmodel {
                             displayAtr: wT.displayAtr
                         }));
                     });
+//                    self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -70,6 +71,33 @@ module ksu001.o.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * find data in DB WORK_TIME
+         */
+        findWorkTime(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.getWorkTime().done(function(data) {
+                if (data) {
+                    _.each(data, function(wT) {
+                        self.listWorkTime.push(new WorkTime({
+                            siftCd: wT.siftCd,
+                            name: wT.name,
+                            abName: wT.abName,
+                            dailyWorkAtr: wT.dailyWorkAtr,
+                            methodAtr: wT.methodAtr,
+                            displayAtr: wT.dailyWorkAtr,
+                            note: wT.note,
+                        }));
+                    });
+//                    self.selectedWorkTimeCode(self.listWorkTime()[0].siftCd);
+                }
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
     }
 
     interface IWorkType {
@@ -86,7 +114,6 @@ module ksu001.o.viewmodel {
         siftCd: string,
         name: string,
         abName: string,
-        symbol: string,
         dailyWorkAtr: number,
         methodAtr: number,
         displayAtr: number,
@@ -119,7 +146,6 @@ module ksu001.o.viewmodel {
         siftCd: string;
         name: string;
         abName: string;
-        symbol: string;
         dailyWorkAtr: number;
         methodAtr: number;
         displayAtr: number;
@@ -130,12 +156,11 @@ module ksu001.o.viewmodel {
             this.siftCd = params.siftCd;
             this.name = params.name;
             this.abName = params.abName;
-            this.symbol = params.symbol;
             this.dailyWorkAtr = params.dailyWorkAtr;
             this.methodAtr = params.methodAtr;
             this.displayAtr = params.displayAtr;
             this.note = params.note;
-            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1 + timeZone2 ' + this.note;
+            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1 + timeZone2 ' + '( ' + this.note + ' )';
         }
     }
 }

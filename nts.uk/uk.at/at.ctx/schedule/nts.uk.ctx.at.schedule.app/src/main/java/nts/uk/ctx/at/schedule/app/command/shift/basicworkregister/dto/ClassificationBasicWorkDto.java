@@ -15,7 +15,6 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
 
 
 @Getter
@@ -64,8 +63,8 @@ public class ClassificationBasicWorkDto {
 		 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkGetMemento#getCompanyId()
 		 */
 		@Override
-		public CompanyId getCompanyId() {
-			return new CompanyId(dto.companyId);
+		public String getCompanyId() {
+			return dto.getCompanyId();
 		}
 
 		/* (non-Javadoc)
@@ -73,7 +72,7 @@ public class ClassificationBasicWorkDto {
 		 */
 		@Override
 		public ClassificationCode getClassificationCode() {
-			return new ClassificationCode(dto.classificationCode);
+			return new ClassificationCode(dto.getClassificationCode());
 		}
 
 		/* (non-Javadoc)
@@ -81,7 +80,7 @@ public class ClassificationBasicWorkDto {
 		 */
 		@Override
 		public List<BasicWorkSetting> getBasicWorkSetting() {
-			return dto.basicWorkSetting.stream().map(item -> item.toDomain())
+			return dto.getBasicWorkSetting().stream().map(item -> item.toDomain())
 					.collect(Collectors.toList());
 		}
 

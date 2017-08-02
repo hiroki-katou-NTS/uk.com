@@ -1,3 +1,13 @@
+#extable {
+	top: 10px;
+	left: 85px;
+}
+
+table th, table td {
+    padding: 5px 5px;
+    border: 1px solid #ccc;
+}
+
 #functions-area>button {
 	height: 30px;
 	margin-left: 5px;
@@ -12,7 +22,6 @@
 	margin-left: 100px !important;
 }
 
-/***not fix****/
 .generally, .simulation, .capture {
 	width: 95px;
 }
@@ -50,8 +59,7 @@
 #top-area {
 	border-bottom: 1px solid #B1B1B1;
 	margin-left: 80px;
-	margin-top: 10px;
-	padding-bottom: 6px;
+	padding-bottom: 7px;
 }
 
 .img-icon {
@@ -60,11 +68,13 @@
 }
 
 #top-area div:first-child {
-	height: 25px
+	height: 20px
 }
 
-#oViewModel {
-	margin-left: 80px
+.oViewModelDisplay {
+	margin-left: 80px;
+	margin-top: 5px;
+	height: 85px
 }
 
 .setting-button {
@@ -128,4 +138,3 @@
 #alarm-check-explanation {
 	margin-left: 7px;
 }
-

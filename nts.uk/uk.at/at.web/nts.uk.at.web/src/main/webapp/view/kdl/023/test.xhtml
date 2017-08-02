@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="test.vm.js" />
+			<com:scriptfile path="test.start.js" />
+			<style>
+				#returned-list td {border: solid grey 1px; padding: 5px;}
+			</style>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="99" id="asdv" class="large"
+					data-bind="click: gotoA">dialog A</button>
+				<button class="large" data-bind="click: gotoB">dialog B</button>
+			</div>
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td>Pattern code:</td>
+						<td><input data-bind="ntsTextEditor: {value: patternCode}" /></td>
+					</tr>
+					<tr>
+						<td>Start date:</td>
+						<td><div data-bind="ntsDatePicker: {value: start, dateFormat: 'YYYY-MM-DD'}"></div></td>
+					</tr>
+					<tr>
+						<td>End date:</td>
+						<td><div data-bind="ntsDatePicker: {value: end, dateFormat: 'YYYY-MM-DD'}"></div></td>
+					</tr>
+				</table>
+				Returned list: <span data-bind="text: returnedList().length"/>
+				<table id='returned-list'>
+					<tr>
+						<td>Date</td>
+						<td>Text</td>
+					</tr>
+					<com:ko tag="foreach" bind="returnedList">
+						<tr>
+							<td style="padding: 5px; border: solid grey 1px" data-bind="text: start"></td>
+							<td data-bind="text: listText"></td>
+						</tr>
+					</com:ko>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

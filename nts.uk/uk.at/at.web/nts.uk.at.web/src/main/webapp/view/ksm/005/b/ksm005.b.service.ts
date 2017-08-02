@@ -7,6 +7,7 @@ module nts.uk.at.view.ksm005.b {
             updateMonthlyPattern: "ctx/at/schedule/pattern/monthly/update",
             deleteMonthlyPattern: "ctx/at/schedule/pattern/monthly/delete",
             findByMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/findByMonth",
+            saveMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/saveMonth",
             findAllWorkType : "at/share/worktype/findAll",
             findAllWorkTime: "at/shared/worktime/findByCompanyID"
         }
@@ -62,6 +63,13 @@ module nts.uk.at.view.ksm005.b {
         export function findAllWorkTime(): JQueryPromise<model.WorkTimeDto[]> {
             return nts.uk.request.ajax('at', paths.findAllWorkTime);
         }
+        
+        /**
+         * call service save all work monthly setting by month
+         */
+        export function saveMonthWorkMonthlySetting(settings: model.WorkMonthlySettingDto[]): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.saveMonthWorkMonthlySetting, {workMonthlySetting: settings});
+        }
         export module model {
 
             export interface MonthlyPatternDto {
@@ -83,7 +91,7 @@ module nts.uk.at.view.ksm005.b {
                 code: string;
                 name: string;
             }
-            
+                        
         }
 
     }

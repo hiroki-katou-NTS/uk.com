@@ -10,7 +10,8 @@
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="cps007.a.style.css" />
-			<!-- <com:scriptfile path="sortable-ko-ext.js" /> -->
+			<com:scriptfile path="sortable-ko-ext.js" />
+			<com:scriptfile path="layout-control-ko-ext.js" />
 			<com:scriptfile path="cps007.a.service.js" />
 			<com:scriptfile path="cps007.a.vm.js" />
 			<com:scriptfile path="cps007.a.start.js" />
@@ -23,105 +24,10 @@
 					data-bind="ntsLinkButton: { jump: '../../008/a/index.xhtml' }">#{i18n.getText('CPS007_4')}</a>
 			</div>
 			<div id="contents-area" class="cf">
-				<div class="left-area">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS007_5')}</div>
-					<div class="control-group">
-						<div class="form-group">
-							<div
-								data-bind="ntsRadioBoxGroup: {
-								enable: true,
-								options: [{id: 0, name: '#{i18n.getText('CPS007_6')}'}, {id: 1, name: '#{i18n.getText('CPS007_7')}'}],
-								value: showMode,
-								optionsValue: 'id',
-								optionsText: 'name'}"></div>
-						</div>
-						<div class="form-group">
-							<div
-								data-bind="ntsComboBox: {
-								enable: !showMode(),
-								editable: false,
-								options: [{id: 0, name: '#{i18n.getText('CPS007_6')}'}, {id: 1, name: '#{i18n.getText('CPS007_7')}'}],
-								value: category,
-								optionsValue: 'id',
-								optionsText: 'name',
-								columns: [{prop:'name', length: 15}]}">
-							</div>
-						</div>
-						<div class="form-group">
-							<div
-								data-bind="ntsSearchBox: {
-								targetKey: 'id', 
-								mode: 'igGrid', 
-								comId: 'grid', 
-								items: items,
-								selected: item, 
-								selectedKey: 'id', 
-								fields: ['name']}">
-							</div>
-						</div>
-						<div id="cps007_lst_control"
-							data-bind="ntsListBox: {
-							enable: true,
-							multiple: false,
-							rows: 15,
-							options: items,
-							value: item,
-							optionsValue: 'id',
-							optionsText: 'name',
-							columns: [{ key: 'name', length: 15}]}"></div>
-					</div>
-				</div>
-				<div class="right-area cf">
-					<div class="add-buttons">
-						<button type="button" data-bind="click: showDialogB">#{i18n.getText('CPS007_11')}</button>
-						<button type="button" class="hidden">#{i18n.getText('CPS007_20')}</button>
-					</div>
-					<div class="drag-panel">
-						<div
-							data-bind="ntsSortable: { 
-							data: items, 
-							isEnabled: true,
-							beforeMove: preventStopSort }">
-							<div class="form-group item-classification">
-								<com:ko-if bind="type">
-									<hr />
-								</com:ko-if>
-								<com:ko-if bind="!type">
-									<com:ko-if bind="id == 4">
-										<div data-bind="ntsFormLabel: {}">
-											<span data-bind="text: name"></span>
-										</div>
-										<textarea
-											data-bind="ntsMultilineEditor: {
-												value: ko.observable(''),
-												constraint: '',
-												option: {},
-												enable: true,
-												readonly: false,
-												immediate: false}" />
-									</com:ko-if>
-									<com:ko-if bind="id != 4">
-										<div data-bind="ntsFormLabel: {}">
-											<span data-bind="text: name"></span>
-										</div>
-										<input
-											data-bind="ntsTextEditor: {
-													value: ko.observable(''),
-													constraint: '',
-													option: {},
-													required: false,
-													enable: true,
-													readonly: false,
-													immediate: false}" />
-									</com:ko-if>
-								</com:ko-if>
-								<span class="close-btn"
-									data-bind="click: $parent.removeItem.bind($parent, $data)">✖</span>
-							</div>
-						</div>
-						<button data-bind="click: addLine">#{i18n.getText('CPS007_19')}</button>
-					</div>
-				</div>
+				<div
+					data-bind="ntsLayoutControl: { 
+					data: items,
+					editAble: editable }"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

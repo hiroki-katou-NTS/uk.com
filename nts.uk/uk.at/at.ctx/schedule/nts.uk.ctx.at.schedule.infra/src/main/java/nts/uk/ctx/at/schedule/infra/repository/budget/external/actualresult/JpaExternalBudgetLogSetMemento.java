@@ -30,17 +30,6 @@ public class JpaExternalBudgetLogSetMemento implements ExternalBudgetLogSetMemen
     }
 
     /**
-     * Sets the company id.
-     *
-     * @param companyId
-     *            the new company id
-     */
-    @Override
-    public void setCompanyId(String companyId) {
-        this.entity.setCid(companyId);
-    }
-
-    /**
      * Sets the external budget file name.
      *
      * @param externalBudgetFileName

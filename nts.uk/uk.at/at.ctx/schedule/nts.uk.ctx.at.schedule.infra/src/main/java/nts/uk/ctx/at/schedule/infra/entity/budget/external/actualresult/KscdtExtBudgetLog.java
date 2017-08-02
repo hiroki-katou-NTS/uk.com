@@ -15,12 +15,12 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
-import nts.arc.time.GeneralDate;
+import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KbldtExtBudgetLog.
+ * The Class KscdtExtBudgetLog.
  */
 @Entity
 @Setter
@@ -37,55 +37,50 @@ public class KscdtExtBudgetLog extends UkJpaEntity implements Serializable {
     @Column(name = "EXE_ID")
     private String exeId;
     
-    /** The cid. */
+    /** The sid. */
     @Basic(optional = false)
-    @Column(name = "CID")
-    private String cid;
-
-    /** The file name. */
+    @Column(name = "SID")
+    private String sid;
+    
+    /** The str date time. */
     @Basic(optional = false)
-    @Column(name = "FILE_NAME")
-    private String fileName;
+    @Column(name = "STR_D")
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime strDateTime;
 
+    /** The end date time. */
+    @Basic(optional = false)
+    @Column(name = "END_D")
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime endDateTime;
+    
     /** The ext budget cd. */
     @Basic(optional = false)
     @Column(name = "EXT_BUDGET_CD")
     private String extBudgetCd;
-
-    /** The failure cnt. */
+    
+    /** The file name. */
     @Basic(optional = false)
-    @Column(name = "FAILURE_CNT")
-    private int failureCnt;
-
+    @Column(name = "FILE_NAME")
+    private String fileName;
+    
     /** The completion atr. */
     @Basic(optional = false)
     @Column(name = "COMPLETION_ATR")
     private int completionAtr;
 
-    /** The str D. */
-    @Basic(optional = false)
-    @Column(name = "STR_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate strD;
-
-    /** The end D. */
-    @Basic(optional = false)
-    @Column(name = "END_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate endD;
-
     /** The success cnt. */
     @Basic(optional = false)
     @Column(name = "SUCCESS_CNT")
     private int successCnt;
-
-    /** The sid. */
+    
+    /** The failure cnt. */
     @Basic(optional = false)
-    @Column(name = "SID")
-    private String sid;
+    @Column(name = "FAILURE_CNT")
+    private int failureCnt;
 
     /**
-     * Instantiates a new kbldt ext budget log.
+     * Instantiates a new kscdt ext budget log.
      */
     public KscdtExtBudgetLog() {
     }

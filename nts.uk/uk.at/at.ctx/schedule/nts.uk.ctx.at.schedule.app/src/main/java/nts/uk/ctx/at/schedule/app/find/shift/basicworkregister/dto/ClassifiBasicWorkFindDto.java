@@ -12,7 +12,6 @@ import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyId;
 
 /**
  * The Class ClassifiBasicWorkFindDto.
@@ -38,8 +37,8 @@ public class ClassifiBasicWorkFindDto implements ClassifiBasicWorkSetMemento {
 	 * .basicworkregister.CompanyId)
 	 */
 	@Override
-	public void setCompanyId(CompanyId companyId) {
-		this.companyId = companyId.v();
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
 	}
 
 	/*
@@ -62,7 +61,7 @@ public class ClassifiBasicWorkFindDto implements ClassifiBasicWorkSetMemento {
 	 */
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
-		basicWorkSetting.stream().map(item -> {
+		this.basicWorkSetting = basicWorkSetting.stream().map(item -> {
 			BasicWorkSettingFindDto basicWorkSettingFindDto = new BasicWorkSettingFindDto();
 			item.saveToMemento(basicWorkSettingFindDto);
 			return basicWorkSettingFindDto;

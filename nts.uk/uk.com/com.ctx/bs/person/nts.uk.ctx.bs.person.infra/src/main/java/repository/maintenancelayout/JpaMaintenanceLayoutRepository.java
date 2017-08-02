@@ -68,8 +68,8 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements Mai
 	}
 
 	@Override
-	public Optional<MaintenanceLayout> getDetailMaintenanceLayout(String layoutID) {
-		// TODO Auto-generated method stub
+	public Optional<MaintenanceLayout> checkExit(String layoutID) {
+		
 		return null;
 	}
 

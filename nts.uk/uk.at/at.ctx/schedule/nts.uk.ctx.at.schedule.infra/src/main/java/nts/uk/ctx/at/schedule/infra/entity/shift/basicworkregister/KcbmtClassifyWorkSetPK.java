@@ -6,10 +6,8 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,18 +24,14 @@ public class KcbmtClassifyWorkSetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
-	@NotNull
 	@Column(name = "CID")
 	private String cid;
 
 	/** The classify code. */
-	@NotNull
 	@Column(name = "CLSCD")
 	private String classifyCode;
 	
 	/** The workday division. */
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "WORK_DAY_ATR")
 	private Integer	workdayDivision;
 

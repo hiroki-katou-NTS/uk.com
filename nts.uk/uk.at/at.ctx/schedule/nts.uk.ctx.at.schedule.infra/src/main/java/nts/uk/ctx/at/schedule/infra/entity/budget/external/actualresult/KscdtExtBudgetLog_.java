@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Class KbldtExtBudgetLog_.
@@ -15,17 +15,14 @@ import nts.arc.time.GeneralDate;
 @StaticMetamodel(KscdtExtBudgetLog.class)
 public class KscdtExtBudgetLog_ {
     
-    /** The cid. */
-    public static volatile SingularAttribute<KscdtExtBudgetLog, String> cid;
-    
     /** The exe id. */
     public static volatile SingularAttribute<KscdtExtBudgetLog, String> exeId;
     
-    /** The str D. */
-    public static volatile SingularAttribute<KscdtExtBudgetLog, GeneralDate> strD;
+    /** The str date time. */
+    public static volatile SingularAttribute<KscdtExtBudgetLog, GeneralDateTime> strDateTime;
     
-    /** The end D. */
-    public static volatile SingularAttribute<KscdtExtBudgetLog, GeneralDate> endD;
+    /** The end date time. */
+    public static volatile SingularAttribute<KscdtExtBudgetLog, GeneralDateTime> endDateTime;
     
     /** The sid. */
     public static volatile SingularAttribute<KscdtExtBudgetLog, String> sid;

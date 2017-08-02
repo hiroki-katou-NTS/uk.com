@@ -69,7 +69,9 @@ module ksm002.b.viewmodel {
                 }
             });
             $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(()=>{
-                self.currentWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);  
+                if(!nts.uk.util.isNullOrUndefined(self.currentWorkPlace().id())&&!nts.uk.util.isNullOrEmpty(self.currentWorkPlace().id())){
+                    self.currentWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);  
+                }
                       
                 // get new data when Work Place Code change
                 self.currentWorkPlace().id.subscribe(value => {
@@ -121,7 +123,7 @@ module ksm002.b.viewmodel {
          */
         submitEventHandler(){
             var self = this;
-            if(nts.uk.util.isNullOrUndefined(self.currentWorkPlace().id())){
+            if(nts.uk.util.isNullOrUndefined(self.currentWorkPlace().id())||nts.uk.util.isNullOrEmpty(self.currentWorkPlace().id())){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});      
             } else {
                 $(".yearMonthPicker").trigger("validate");
@@ -218,25 +220,27 @@ module ksm002.b.viewmodel {
         getCalendarWorkPlaceByCode(): JQueryPromise<any>{
             var self = this;
             var dfd = $.Deferred();
-            bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked()).done(data=>{
-                self.rootList = data;
-                self.calendarPanel.optionDates.removeAll();
-                let a = [];
-                if(!nts.uk.util.isNullOrEmpty(data)) {
-                    data.forEach(item => {
-                        let sortItemNumber = _.sortBy(item.specificDateItemNo, o => o);
-                        a.push(new CalendarItem(item.specificDate, self.convertNumberToName(sortItemNumber)))                    
-                    });   
-                    self.isUpdate(true);
-                } else {
-                    self.isUpdate(false);
-                }
-                self.calendarPanel.optionDates(a);
-                self.calendarPanel.optionDates.valueHasMutated();
-                dfd.resolve();
-            }).fail(res => {
-                dfd.reject(res);
-            });
+            if(!nts.uk.util.isNullOrUndefined(self.currentWorkPlace().id())&&!nts.uk.util.isNullOrEmpty(self.currentWorkPlace().id())){
+                bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked()).done(data=>{
+                    self.rootList = data;
+                    self.calendarPanel.optionDates.removeAll();
+                    let a = [];
+                    if(!nts.uk.util.isNullOrEmpty(data)) {
+                        data.forEach(item => {
+                            let sortItemNumber = _.sortBy(item.specificDateItemNo, o => o);
+                            a.push(new CalendarItem(item.specificDate, self.convertNumberToName(sortItemNumber)))                    
+                        });   
+                        self.isUpdate(true);
+                    } else {
+                        self.isUpdate(false);
+                    }
+                    self.calendarPanel.optionDates(a);
+                    self.calendarPanel.optionDates.valueHasMutated();
+                    dfd.resolve();
+                }).fail(res => {
+                    dfd.reject(res);
+                });
+            } else dfd.resolve();
             return dfd.promise();
         }
         
