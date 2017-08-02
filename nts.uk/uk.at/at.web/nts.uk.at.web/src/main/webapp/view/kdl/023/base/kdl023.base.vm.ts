@@ -611,8 +611,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     dfd.resolve();
                 });
             }
-            // Do nothing if is on screen B.
+            // Is on screen B.
             else {
+                // Reset pattern range.
+                self.patternStartDate = moment(self.calendarStartDate);
+                self.patternEndDate = moment(self.calendarEndDate);
                 dfd.resolve();
             }
             return dfd.promise();
@@ -668,10 +671,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.yearMonthPicked(parseInt(self.calendarStartDate.format('YYYYMM')));
 
                 // Set pattern range.
-                self.patternStartDate = moment(self.calendarStartDate);
-                self.patternEndDate = moment(self.calendarEndDate);
-                self.loadHolidayList().done(() => dfd.resolve()
-                );
+                self.setPatternRange();
+
+                // Load holiday list.
+                self.loadHolidayList().done(() => dfd.resolve());
 
             }
             // Is on screen A
