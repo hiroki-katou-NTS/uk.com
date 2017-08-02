@@ -22,7 +22,6 @@ public class StandardMenuFinder {
 
 	/**
 	 * find all StandardMenu by companyID
-	 * 
 	 * @param conpanyID
 	 * @return List
 	 */
