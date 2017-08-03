@@ -31,7 +31,7 @@ module nts.uk.at.view.ksm003.a {
                     { headerText: nts.uk.resource.getText('KSM003_27'), key: 'patternName', formatter: _.escape, width: 200 }
                 ]);
                 self.columnsWork = ko.observableArray([
-                    { headerText: "", key: 'dispOrder', template: "<button id=\"buttonEvent-${dispOrder}\" style=\" margin: 10px 10px 10px 23px;\" data-dispOrderData='${dispOrder}' >" + nts.uk.resource.getText('KSM003_34') + " </button>", formatter: _.escape, width: 100 },
+                    { headerText: "", key: 'dispOrder', template: "<button id=\"button-event-${dispOrder}\" style=\" margin: 10px 10px 10px 23px;\" data-dispOrderData='${dispOrder}' >" + nts.uk.resource.getText('KSM003_34') + " </button>", formatter: _.escape, width: 100 },
                     { headerText: nts.uk.resource.getText('KSM003_30'), key: 'workTypeSetCd', formatter: _.escape, width: 180 },
                     { headerText: nts.uk.resource.getText('KSM003_31'), key: 'workingHoursCd', formatter: _.escape, width: 180 },
                     { headerText: nts.uk.resource.getText('KSM003_32'), template: "<input type=\"text\" style=\"width: 80px;\" value=\"${days}\" data-id=\"${days}\" >" + nts.uk.resource.getText('KSM003_33') + " </input>", key: 'days', formatter: _.escape, width: 60 }
@@ -71,8 +71,24 @@ module nts.uk.at.view.ksm003.a {
                         return;
                     }
                     $("#inpPattern").focus();
-                    self.eventButton();
                 });
+                
+                // Create Customs handle For event rened nts grid.
+                (<any>ko.bindingHandlers).rended = {
+                    update: function(element: any,
+                        valueAccessor: () => any,
+                        allBindings: KnockoutAllBindingsAccessor,
+                        viewModel: ScreenModel,
+                        bindingContext: KnockoutBindingContext) {
+                        var code = valueAccessor();
+                        viewModel.dailyPatternVal().forEach(item => {
+                            $('#button-event-' + item.dispOrder).on('click', function() {
+                                let id = $(this).data('disporderdata');
+                                self.openDialogWorkDays(id);
+                            });
+                        });
+                    }
+                };
 
             }
 
@@ -104,15 +120,6 @@ module nts.uk.at.view.ksm003.a {
                 return dfd.promise();
             }
 
-           public eventButton() : void {
-               let self = this;
-               self.dailyPatternVal().forEach(item => {
-                   $('#buttonEvent-' + item.dispOrder).on('click', function() {
-                       let id = $(this).data('disporderdata');
-                       self.openDialogWorkDays(id);
-                   });
-               })
-            }
                 
              /**
              * open dialog KDL003 by Work Days
