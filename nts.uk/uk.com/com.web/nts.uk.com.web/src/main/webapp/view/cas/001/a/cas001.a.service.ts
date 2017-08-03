@@ -1,33 +1,18 @@
 module nts.uk.com.view.cas001.a.service {
     import ajax = nts.uk.request.ajax;
     var paths = {
-        getAllItem: "ctx/bs/person/roles/auth/item/findAllItem/{0}",
-        getAllCategory: "ctx/bs/person/roles/auth/category/findAllCategory/{0}"
+        getPersonRoleList: "/ctx/bs/person/roles/findAll",
+        getPersonRoleAuth: "/ctx/bs/person/roles/auth/find/{0}",
+        getAllPersonCategoryAuthByRoleId: "ctx/bs/person/roles/auth/category/find/{0}"
     }
-    export function getAllItem(personCategory:string): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-         var _path = nts.uk.text.format(paths.getAllItem, personCategory);
-        nts.uk.request.ajax(_path)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function getPersonRoleList(): JQueryPromise<any> {
+        return ajax(paths.getPersonRoleList);
     }
-
-    export function getAllCategory(roleId: string): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-         var _path = nts.uk.text.format(paths.getAllCategory, roleId);
-        nts.uk.request.ajax(_path)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function getPersonRoleAuth(roleID): JQueryPromise<any> {
+        return ajax(nts.uk.text.format(paths.getPersonRoleAuth, roleID));
+    }
+    export function getAllPersonCategoryAuthByRoleId(roleID): JQueryPromise<any> {
+        return ajax(nts.uk.text.format(paths.getAllPersonCategoryAuthByRoleId, roleID));
     }
 
 
