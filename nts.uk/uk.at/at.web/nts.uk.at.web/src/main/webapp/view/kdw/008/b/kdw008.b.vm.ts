@@ -2,11 +2,16 @@ module nts.uk.at.view.kdw008.b {
     export module viewmodel {
         export class ScreenModel {
 
-            //swap list
-            itemsSwap: KnockoutObservableArray<ItemModel>;
-            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            currentCodeListSwap: KnockoutObservableArray<any>;
-            test: KnockoutObservableArray<any>;
+            //combobox select sheetNo
+            itemListCbb2: KnockoutObservableArray<ItemModelCbb2>;
+            itemNameCbb2: KnockoutObservable<string>;
+            currentCodeCbb2: KnockoutObservable<number>
+            selectedCodeCbb2: KnockoutObservable<string>;
+
+            //swap list tab 2
+            itemsSwap2: KnockoutObservableArray<ItemModel2>;
+            columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            currentCodeListSwap2: KnockoutObservableArray<any>;
 
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
@@ -37,6 +42,33 @@ module nts.uk.at.view.kdw008.b {
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
+                //combobox select sheetNo
+                self.itemListCbb2 = ko.observableArray([
+                    new ItemModelCbb2('基本給'),
+                    new ItemModelCbb2('役職手当'),
+                    new ItemModelCbb2('基本給2')
+                ]);
+                self.selectedCodeCbb2 = ko.observable('基本給');
+
+                //swaplist 2
+                this.itemsSwap2 = ko.observableArray([]);
+                
+                //sample swaplist 2
+                let array = [];
+                for (var i = 0; i < 10000; i++) {
+                    array.push(new ItemModel(i, '基本給', "description"));
+                }
+                self.itemsSwap2(array);
+
+                this.columns2 = ko.observableArray([
+                    { headerText: 'コード', key: 'code', width: 100 },
+                    { headerText: '名称', key: 'name', width: 150 }
+                ]);
+                var x = [];
+                this.currentCodeListSwap2 = ko.observableArray(x);
+                this.currentCodeListSwap2.subscribe(function(value) {
+                    console.log(value);
+                });
             }
 
             startPage(): JQueryPromise<any> {
@@ -54,6 +86,28 @@ module nts.uk.at.view.kdw008.b {
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+
+        export class ItemModelCbb2 {
+            nameCbb2: string;
+            labelCbb2: string;
+            constructor(nameCbb2: string) {
+                this.nameCbb2 = nameCbb2;
+                this.labelCbb2 = nameCbb2;
+            }
+        }
+
+        class ItemModel2 {
+            code: number;
+            name: string;
+            description: string;
+            deletable: boolean;
+            constructor(code: number, name: string, description: string) {
+                this.code = code;
+                this.name = name;
+                this.description = description;
+                this.deletable = code % 3 === 0;
             }
         }
     }

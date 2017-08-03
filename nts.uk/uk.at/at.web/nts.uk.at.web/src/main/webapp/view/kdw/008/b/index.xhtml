@@ -14,7 +14,7 @@
 					height : 630
 				};
 			</script>
-			
+
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw008.b.main.css" />
 			<com:scriptfile path="kdw008.b.start.js" />
@@ -24,21 +24,21 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<a id="button1" class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KDW008_30')}</a>
-				
+				<a id="button1" class="goback"
+					data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KDW008_30')}</a>
+
 				<span id="button2">
 					<button class="proceed">#{i18n.getText('KDW008_3')}</button>
-				</span>
-				
-				<span id="button3">
+				</span> <span id="button3">
 					<button class="proceed">並び順の設定</button>
 				</span>
 			</div>
-			
+
 			<div id="contents-area">
 				<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW008_25')}</div>
-				
-				<table id="single-list" data-bind="ntsGridList: {								
+
+				<table id="single-list"
+					data-bind="ntsGridList: {								
 					height: 240,
 					dataSource: items,
 					primaryKey: 'code',
@@ -48,23 +48,51 @@
 				}"></table>
 				<div>
 					<span id="label2" class="label">#{i18n.getText('KDW008_7')}</span>
-				
-					<span id="label3" class="label">001</span>
-					
-					<span id="label4" class="label">#{i18n.getText('KDW008_8')}</span>
-					
-					<span id="label5" class="label">営業職</span>	
+
+					<span id="label3" class="label">001</span> <span id="label4"
+						class="label">#{i18n.getText('KDW008_8')}</span> <span id="label5"
+						class="label">営業職</span>
 				</div>
-				
-				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+
+				<div id="tab-panel"
+					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 					<div class="tab-content-1">
-						<span>Tab Content 1</span><br/>
+						<span>Tab Content 1</span><br />
 					</div>
-					<div class="tab-content-2">
-						<span>Tab Content 2</span><br/>
+					<div class="tab-content-2" style="height: 500px">
+						<div>
+							<span id="label2" class="label">#{i18n.getText('KDW008_23')}</span>
+							<div id="A_SEL_002"
+								data-bind="ntsComboBox: {
+													options: itemListCbb2,
+													optionsValue: 'nameCbb2',
+													value: selectedCodeCbb2,
+													optionsText: 'nameCbb2',
+													enable: true,
+													columns: [
+														{ prop: 'nameCbb2', length: 4 }
+													]}">
+							</div>
+							<span id="label2" class="label">#{i18n.getText('KDW008_8')}</span>
+							<input ></input>
+						</div>
+						<div style="height: 450px" id="swap-list" data-bind="ntsSwapList: {
+							showSearchBox: { showLeft : true, showRight: true},
+							height: 300,
+							dataSource: itemsSwap2,
+							primaryKey: 'code',
+							columns: columns2,
+							value: currentCodeListSwap2,
+							searchMode: 'filter',
+							searchCriterion: ['code'],
+							draggable: true,
+							multipleDrag: { left: true, right: false },
+							innerDrag: { left: false, right: true },
+							outerDrag: { left: true, right: true } 
+						}"></div>
 					</div>
-				</div> 
-					
+				</div>
+
 			</div>
 		</ui:define>
 
