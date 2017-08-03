@@ -80,9 +80,9 @@ module nts.uk.ui.koExtentions {
         search (searchKey: string, selectedItems: Array<any>): SearchResult{
             let result = new SearchResult();   
             
-            let filted = this.seachBox.search(searchKey);
+            let filtered = this.seachBox.search(searchKey);
             
-            if(!nts.uk.util.isNullOrEmpty(filted)){
+            if(!nts.uk.util.isNullOrEmpty(filtered)){
                 let key = this.key;
                 if(this.mode === "highlight"){     
                     result.options = this.seachBox.getDataSource();
@@ -90,7 +90,7 @@ module nts.uk.ui.koExtentions {
                     if (!nts.uk.util.isNullOrEmpty(selectedItems)) {
                         let firstItemValue = $.isArray(selectedItems) 
                             ? selectedItems[0]["id"].toString(): selectedItems["id"].toString();
-                        index = _.findIndex(filted, function(item: any){
+                        index = _.findIndex(filtered, function(item: any){
                             return item[key].toString() === firstItemValue;           
                         });   
                         if(!nts.uk.util.isNullOrUndefined(index)){
@@ -98,11 +98,11 @@ module nts.uk.ui.koExtentions {
                         }                 
                     }  
                     if(index >= 0){
-                        result.selectItems = [filted[index >= filted.length ? 0 : index]];        
+                        result.selectItems = [filtered[index >= filtered.length ? 0 : index]];        
                     }
                 } else if (this.mode === "filter") {
-                    result.options = filted;   
-                    let selectItem = _.filter(filted, function (itemFilterd: any){
+                    result.options = filtered;   
+                    let selectItem = _.filter(filtered, function (itemFilterd: any){
                         return _.find(selectedItems, function (item: any){
                             let itemVal = itemFilterd[key];
                             return itemVal === item["id"];        
@@ -134,7 +134,7 @@ module nts.uk.ui.koExtentions {
             var fields = ko.unwrap(data.fields);
             var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
             var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
-            var selected = data.selected;
+
             var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
             var enable = ko.unwrap(data.enable);
             var selectedKey = null;
@@ -212,6 +212,7 @@ module nts.uk.ui.koExtentions {
                     }
                     let isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection') 
                         : component.igTreeGridSelection('option', 'multipleSelection')
+                    
                     let selectedProperties = _.map(result.selectItems, primaryKey);
                     let selectedValue;
                     if(selectedKey !== null){
@@ -226,15 +227,24 @@ module nts.uk.ui.koExtentions {
                         if(searchMode === "filter"){
                             $container.data("filteredSrouce", result.options); 
                             component.attr("filtered", true);   
-                            selected(selectedValue);
-                            selected.valueHasMutated();
+                            //selected(selectedValue);
+                            //selected.valueHasMutated();
+                            let source = _.filter(dataSource, function (item: any){
+                                             return _.find(result.options, function (itemFilterd: any){
+                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                             return oldItem[primaryKey] === item[primaryKey];        
+                                            }) === undefined;            
+                            });
+                            component.igGrid("option", "dataSource", source);  
+                            component.igGrid("dataBind");  
                         } else {
-                            selected(selectedValue);    
+                            //selected(selectedValue);    
                         }
                         component.ntsGridList("setSelected", selectedProperties);
                     } else if (targetMode == 'igTree') {
                         component.ntsTreeView("setSelected", selectedProperties);
-                        selected(selectedValue);
+                        //selected(selectedValue);
                     }
                     _.defer(function() {
                         component.trigger("selectChange");    
@@ -279,7 +289,6 @@ module nts.uk.ui.koExtentions {
             
             var searchMode = ko.unwrap(data.searchMode);
             let primaryKey = ko.unwrap(data.targetKey);
-            let selectedValue = ko.unwrap(data.selected);
             let enable = ko.unwrap(data.enable);
             let targetMode = data.mode;
             let component;
@@ -291,20 +300,6 @@ module nts.uk.ui.koExtentions {
             }
             let srhX: SearchPub= $searchBox.data("searchObject");
             
-            if(searchMode === "filter" && (component.attr("filtered") === true || component.attr("filtered") === "true")){
-                let filteds: Array<any> = $searchBox.data("filteredSrouce");   
-                if(!nts.uk.util.isNullOrUndefined(filteds)) {
-                    let source = _.filter(arr, function (item: any){
-                        return _.find(filteds, function (itemFilterd: any){
-                            return itemFilterd[primaryKey] === item[primaryKey];        
-                        }) !== undefined || _.find(srhX.getDataSource(), function (oldItem: any){
-                            return oldItem[primaryKey] === item[primaryKey];        
-                        }) === undefined;            
-                    });
-                    component.igGrid("option", "dataSource", source);  
-                    component.igGrid("dataBind");         
-                } 
-            }
             srhX.setDataSource(arr);
             
             if(enable === false){
