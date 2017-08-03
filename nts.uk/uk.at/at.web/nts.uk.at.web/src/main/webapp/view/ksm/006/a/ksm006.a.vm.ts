@@ -165,7 +165,7 @@ module nts.uk.at.view.ksm006.a {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findCompanyBasicWork().done(function(data: CompanyBasicWorkFindDto) {
-                    if (data == null) {
+                    if (!data) {
                         self.companyBWWorkingDay(new BasicWorkModel(null, null, null, null));
                         self.companyBWNonInLaw(new BasicWorkModel(null, null, null, null));
                         self.companyBWNonExtra(new BasicWorkModel(null, null, null, null));
@@ -210,7 +210,7 @@ module nts.uk.at.view.ksm006.a {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findWorkplaceBasicWork(workplaceId).done(function(data: WorkplaceBasicWorkFindDto) {
-                    if (data == null) {
+                    if (!data) {
                         self.companyBWWorkingDay(new BasicWorkModel(null, null, null, null));
                         self.companyBWNonInLaw(new BasicWorkModel(null, null, null, null));
                         self.companyBWNonExtra(new BasicWorkModel(null, null, null, null));
@@ -450,32 +450,33 @@ module nts.uk.at.view.ksm006.a {
              */
             private bindClassifyBasicWork(data: ClassifiBasicWorkFindDto): void {
                 var self = this;
-                if (data) {
-                    data.basicWorkSetting.forEach(function(item, index) {
-                        switch (item.workDayDivision) {
-                            case WorkingDayDivision.WORKING_DAY:
-                                self.classifyBWWorkingDay(new BasicWorkModel(item.workTypeCode,
-                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
-                                break;
-
-                            case WorkingDayDivision.NON_WORK_INLAW:
-                                self.classifyBWNonInLaw(new BasicWorkModel(item.workTypeCode,
-                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
-                                break;
-
-                            case WorkingDayDivision.NON_WORK_EXTR:
-                                self.classifyBWNonExtra(new BasicWorkModel(item.workTypeCode,
-                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
-                                break;
-                        }
-                    });
-                    self.selectedClassifi(data.classificationCode);
+                if (!data) {
+                    // If data is null
+                    self.classifyBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                    self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                    self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
                     return;
                 }
-                // If data is null
-                self.classifyBWWorkingDay(new BasicWorkModel(null, null, null, null));
-                self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
-                self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
+                // If data is not null
+                data.basicWorkSetting.forEach(function(item, index) {
+                    switch (item.workDayDivision) {
+                        case WorkingDayDivision.WORKING_DAY:
+                            self.classifyBWWorkingDay(new BasicWorkModel(item.workTypeCode,
+                                item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                            break;
+
+                        case WorkingDayDivision.NON_WORK_INLAW:
+                            self.classifyBWNonInLaw(new BasicWorkModel(item.workTypeCode,
+                                item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                            break;
+
+                        case WorkingDayDivision.NON_WORK_EXTR:
+                            self.classifyBWNonExtra(new BasicWorkModel(item.workTypeCode,
+                                item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                            break;
+                    }
+                });
+                self.selectedClassifi(data.classificationCode);
                 return;
             }
             
@@ -485,31 +486,32 @@ module nts.uk.at.view.ksm006.a {
              */
             private bindWorkplaceBasicWork(data: WorkplaceBasicWorkFindDto): void {
                 var self = this;
-                if (data) {
-                    data.basicWorkSetting.forEach(function(item, index) {
-                        switch (item.workDayDivision) {
-                            case WorkingDayDivision.WORKING_DAY:
-                                self.workplaceBWWorkingDay(new BasicWorkModel(item.workTypeCode,
-                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
-                                break;
-
-                            case WorkingDayDivision.NON_WORK_INLAW:
-                                self.workplaceBWNonInLaw(new BasicWorkModel(item.workTypeCode,
-                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
-                                break;
-
-                            case WorkingDayDivision.NON_WORK_EXTR:
-                                self.workplaceBWNonExtra(new BasicWorkModel(item.workTypeCode,
-                                    item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
-                                break;
-                        }
-                    });
-                    self.selectedWorkplaceId(data.workplaceId);
+                if (!data) {
+                    self.workplaceBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                    self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                    self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
                     return;
                 }
-                self.workplaceBWWorkingDay(new BasicWorkModel(null, null, null, null));
-                self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
-                self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
+                // If Data is not null
+                data.basicWorkSetting.forEach(function(item, index) {
+                    switch (item.workDayDivision) {
+                        case WorkingDayDivision.WORKING_DAY:
+                            self.workplaceBWWorkingDay(new BasicWorkModel(item.workTypeCode,
+                                item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                            break;
+
+                        case WorkingDayDivision.NON_WORK_INLAW:
+                            self.workplaceBWNonInLaw(new BasicWorkModel(item.workTypeCode,
+                                item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                            break;
+
+                        case WorkingDayDivision.NON_WORK_EXTR:
+                            self.workplaceBWNonExtra(new BasicWorkModel(item.workTypeCode,
+                                item.workTypeDisplayName, item.workingCode, item.workingDisplayName));
+                            break;
+                    }
+                });
+                self.selectedWorkplaceId(data.workplaceId);
                 return;
             }
             
