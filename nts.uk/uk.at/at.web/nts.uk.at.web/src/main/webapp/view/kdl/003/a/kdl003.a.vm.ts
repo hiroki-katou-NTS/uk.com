@@ -36,7 +36,7 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
                     { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 },
-                    { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 120 },
+                    { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
@@ -56,7 +56,7 @@ module nts.uk.at.view.kdl003.a {
                 self.workTypeColumns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'workTypeCode', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
-                    { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'memo', width: 200 }
+                    { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'memo', width: 130 }
                 ]);
 
                 //parent data
