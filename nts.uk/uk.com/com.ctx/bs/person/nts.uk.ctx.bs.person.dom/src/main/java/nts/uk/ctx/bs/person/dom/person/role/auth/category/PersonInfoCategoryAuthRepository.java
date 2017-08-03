@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.person.dom.person.role.auth.category;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public interface PersonInfoCategoryAuthRepository {
 	List<PersonInfoCategoryAuth> getAllPersonCategoryAuth();

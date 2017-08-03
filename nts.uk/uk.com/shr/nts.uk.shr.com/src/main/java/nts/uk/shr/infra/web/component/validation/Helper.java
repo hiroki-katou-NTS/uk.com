@@ -107,7 +107,7 @@ class Helper {
 	
 	static String getAnnotationParametersString(String representationOfAnnotation) {
     	int start = representationOfAnnotation.indexOf("(") + 1;
-    	int end = representationOfAnnotation.indexOf(")");
+    	int end = representationOfAnnotation.lastIndexOf(")");
 		return representationOfAnnotation.substring(start, end);
 	}
 	

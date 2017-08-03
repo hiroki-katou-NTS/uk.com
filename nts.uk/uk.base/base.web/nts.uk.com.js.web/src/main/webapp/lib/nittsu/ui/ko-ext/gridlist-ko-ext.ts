@@ -9,7 +9,7 @@ module nts.uk.ui.koExtentions {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             let HEADER_HEIGHT = 27;
-            let ROW_HEIGHT = 21;
+            let ROW_HEIGHT = 23;
             
             var $grid = $(element);
             let gridId = $grid.attr('id');
@@ -79,7 +79,7 @@ module nts.uk.ui.koExtentions {
                             $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
                         });  
                         
-                        ROW_HEIGHT = 32;
+                        ROW_HEIGHT = 30;
                     }       
                 }
                 return c; 
@@ -91,7 +91,7 @@ module nts.uk.ui.koExtentions {
             let height = data.height;
             if(!nts.uk.util.isNullOrEmpty(rows)){
                 if (isDeleteButton){
-                    ROW_HEIGHT = 32;        
+                    ROW_HEIGHT = 30;        
                 }
                 height = rows * ROW_HEIGHT + HEADER_HEIGHT;   
                 

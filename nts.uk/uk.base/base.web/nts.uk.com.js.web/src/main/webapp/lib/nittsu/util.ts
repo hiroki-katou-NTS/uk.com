@@ -5,7 +5,28 @@
     }
 
     export module util {
-
+        export function compare(obj1:any,obj2:any){
+            for(var p in obj1){
+                if(obj1.hasOwnProperty(p)!== obj2.hasOwnProperty(p)){return false;}
+                switch(typeof(obj1[p])){
+                    case "object":
+                        if(!compare(obj1[p],obj2[p])) return false;
+                        break;
+                    case "function":
+                        
+                        break;
+                    default:
+                        if(obj1[p]!==obj2[p]){
+                            return false;    
+                        }
+                }   
+            }
+            for(var p in obj2){
+                if(typeof(obj1[p])=='undefined') return false;    
+            }
+            
+            return true;
+        }
         /**
          * 常にtrueを返す関数が必要になったらこれ
          */
@@ -505,7 +526,7 @@
         setItemAsJson(key: string, value: any) {
             this.setItem(key, JSON.stringify(value));
         }
-
+        
         containsKey(key: string) {
             return this.getItem(key) !== null;
         };
@@ -715,7 +736,25 @@
          */
 
         let delayToEmulateAjax = 100;
-
+        function convertObjectToArray(key:any):string{
+            var result=[];
+            for(var p in key){
+                result.push([p,key[p]]);
+            }
+            result.sort(function(a,b){
+                return a>b;    
+            });
+            return result.toString();
+        }    
+        
+        export function saveByObjectKey(key: any, value: any){
+            return save(convertObjectToArray(key),value);
+        }
+        
+        export function restoreByObjectKey(key:any): JQueryPromise<any>{
+            return restore(convertObjectToArray(key));    
+        }
+        
         export function save(key: string, value: any) {
             let dfd = $.Deferred();
 
