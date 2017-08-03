@@ -27,10 +27,4 @@ public class MaintenanceLayoutFinder {
 		return this.maintenanceLayoutRepository.getAllMaintenanceLayout().stream()
 				.map(item -> MaintenanceLayoutDto.fromDomain(item)).collect(Collectors.toList());
 	}
-
-	public Optional<MaintenanceLayoutDto> checkExit(String layoutId) {
-		return this.maintenanceLayoutRepository.checkExit(layoutId)
-				.map(item -> MaintenanceLayoutDto.fromDomain(item));
-	}
-
 }

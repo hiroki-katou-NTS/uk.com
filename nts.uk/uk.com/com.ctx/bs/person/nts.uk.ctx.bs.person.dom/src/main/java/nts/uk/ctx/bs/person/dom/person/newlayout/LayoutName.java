@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringCharType(CharType.ALPHABET)
+@StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(20)
 public class LayoutName extends StringPrimitiveValue<LayoutName>{
 	
