@@ -15,6 +15,6 @@ public class DeleteBusinessTypeNameCommandHandler extends CommandHandler<DeleteB
 	@Override
 	protected void handle (CommandHandlerContext<DeleteBusinessTypeNameCommand> context){
 		String companyId = AppContexts.user().companyId();
-		businessRepo.deleteBusinessType(companyId, context.getCommand().getWorkTypeCode());
+		businessRepo.deleteBusinessType(companyId, context.getCommand().getBusinessTypeCode());
 	}
 }

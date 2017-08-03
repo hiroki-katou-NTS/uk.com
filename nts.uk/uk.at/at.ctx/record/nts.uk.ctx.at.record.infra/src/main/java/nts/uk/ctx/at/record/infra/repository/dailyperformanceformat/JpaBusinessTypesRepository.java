@@ -35,8 +35,8 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	 */
 	private static KrcmtBusinessType toEntity(BusinessType domain){
 		val entity = new KrcmtBusinessType();
-		entity.krcmtBusinessTypePK = new KrcmtBusinessTypePK(domain.getCompanyId(), domain.getWorkTypeCode().v());
-		entity.businessTypeName = domain.getWorkTypeName().v();
+		entity.krcmtBusinessTypePK = new KrcmtBusinessTypePK(domain.getCompanyId(), domain.getBusinessTypeCode().v());
+		entity.businessTypeName = domain.getBusinessTypeName().v();
 		return entity;
 	}
 	
@@ -78,10 +78,10 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	 * find business type by companyId and work type code
 	 */
 	@Override
-	public Optional<BusinessType> findBusinessType(String companyId, String workTypeCode) {
+	public Optional<BusinessType> findBusinessType(String companyId, String businessTypeCode) {
 		return this.queryProxy().query(FIND_BUSINESS_TYPE, KrcmtBusinessType.class)
 				.setParameter("companyId", companyId)
-				.setParameter("workTypeCode", workTypeCode)
+				.setParameter("workTypeCode", businessTypeCode)
 				.getSingle(c->toDomain(c));
 	}
 	/**
@@ -89,8 +89,8 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	 * delete business type by companyId and work type code 
 	 */
 	@Override
-	public void deleteBusinessType(String companyId, String workTypeCode) {
-		KrcmtBusinessTypePK krcmtBusinessTypePK = new KrcmtBusinessTypePK(companyId, workTypeCode);
+	public void deleteBusinessType(String companyId, String businessTypeCode) {
+		KrcmtBusinessTypePK krcmtBusinessTypePK = new KrcmtBusinessTypePK(companyId, businessTypeCode);
 		this.commandProxy().remove(KrcmtBusinessTypePK.class, krcmtBusinessTypePK);
 	}
 
