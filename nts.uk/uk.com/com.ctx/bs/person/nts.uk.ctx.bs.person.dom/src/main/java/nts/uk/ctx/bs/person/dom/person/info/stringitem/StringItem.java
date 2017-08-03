@@ -8,19 +8,19 @@ import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeValue;
 @Getter
 public class StringItem extends DataTypeState {
 
-	private StringItemLeng stringItemLeng;
+	private StringItemLeng stringItemLength;
 	private StringItemType stringItemType;
 	private StringItemDataType stringItemDataType;
 
-	private StringItem(int stringItemLeng, int stringItemType, int stringItemDataType) {
+	private StringItem(int stringItemLength, int stringItemType, int stringItemDataType) {
 		super();
 		this.dataTypeValue = DataTypeValue.STRING;
-		this.stringItemLeng = new StringItemLeng(stringItemLeng);
+		this.stringItemLength = new StringItemLeng(stringItemLength);
 		this.stringItemType = EnumAdaptor.valueOf(stringItemType, StringItemType.class);
 		this.stringItemDataType = EnumAdaptor.valueOf(stringItemDataType, StringItemDataType.class);
 	}
 
-	public static StringItem createFromJavaType(int stringItemLeng, int stringItemType, int stringItemDataType) {
-		return new StringItem(stringItemLeng, stringItemType, stringItemDataType);
+	public static StringItem createFromJavaType(int stringItemLength, int stringItemType, int stringItemDataType) {
+		return new StringItem(stringItemLength, stringItemType, stringItemDataType);
 	}
 }

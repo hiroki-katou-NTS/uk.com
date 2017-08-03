@@ -31,6 +31,20 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 	}
 
+	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
+			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
+			int isFixed) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = new CategoryCode(categoryParentCode);
+		this.categoryName = new CategoryName(categoryName);
+		this.personEmployeeType = EnumAdaptor.valueOf(personEmployeeType, PersonEmployeeType.class);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+	}
+
 	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode,
 			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
 			int isFixed) {
@@ -38,4 +52,9 @@ public class PersonInfoCategory extends AggregateRoot {
 				isAbolition, categoryType, isFixed);
 	}
 
+	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
+			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
+			int isAbolition, int categoryType, int isFixed) {
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName, personEmployeeType, isAbolition, categoryType, isFixed);
+	}
 }

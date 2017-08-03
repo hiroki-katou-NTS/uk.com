@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -28,22 +29,15 @@ public class BusinessTypesFinder {
 	 * @return
 	 */
 	public List<BusinessTypeDto> findAll() {
-		LoginUserContext login = AppContexts.user();
-		String companyId = login.companyId();
-
-		List<BusinessType> workTypes = workTypeRepository.findAll(companyId);
-
-		// process in UI
-		// if (workTypes.isEmpty()) {
-		// throw new BusinessException("Msg_242");
-		// }
-
-		List<BusinessTypeDto> workTypeDtos = workTypes.stream().map(item -> {
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeRepository.findAll(companyId).stream().map(item -> {
 			return new BusinessTypeDto(item.getWorkTypeCode().v(), item.getWorkTypeName().v());
 		}).collect(Collectors.toList());
-		workTypeDtos.sort((e2, e1) -> Integer.parseInt(e1.getWorkTypeCode()) - Integer.parseInt(e2.getWorkTypeCode()));
-
-		return workTypeDtos;
 	}
-
+	public Optional<BusinessTypeDto> findBusinessType(String workTypeCode){
+		String companyId = AppContexts.user().companyId();
+		Optional<BusinessType> businessType = workTypeRepository.findBusinessType(companyId, workTypeCode);
+		BusinessTypeDto aaa = new BusinessTypeDto(businessType.get().getWorkTypeCode().v(),businessType.get().getWorkTypeName().v());
+		return Optional.of(aaa);
+	}
 }
