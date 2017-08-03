@@ -2525,6 +2525,186 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
+                var DepartmentCodeValidator = (function () {
+                    function DepartmentCodeValidator(name, primitiveValueName, option) {
+                        this.name = name;
+                        this.constraint = getConstraint(primitiveValueName);
+                        this.charType = uk.text.getCharType(primitiveValueName);
+                        this.required = option.required;
+                    }
+                    DepartmentCodeValidator.prototype.validate = function (inputText, option) {
+                        var result = new ValidationResult();
+                        if (this.required !== undefined && this.required !== false) {
+                            if (util.isNullOrEmpty(inputText)) {
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
+                                return result;
+                            }
+                        }
+                        var validateResult;
+                        result = checkCharType(inputText, this.charType);
+                        if (!result.isValid)
+                            return result;
+                        if (this.constraint !== undefined && this.constraint !== null) {
+                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                                var maxLength = this.constraint.maxLength;
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                return result;
+                            }
+                            if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                    result.fail('This field is not valid with pattern!', '');
+                                    return result;
+                                }
+                            }
+                        }
+                        result.success(inputText);
+                        return result;
+                    };
+                    return DepartmentCodeValidator;
+                }());
+                validation.DepartmentCodeValidator = DepartmentCodeValidator;
+                function checkCharType(inputText, charType) {
+                    var result = new ValidationResult();
+                    var validateResult;
+                    if (!util.isNullOrUndefined(this.charType)) {
+                        inputText = autoConvertText(inputText, this.charType);
+                        validateResult = this.charType.validate(inputText);
+                        if (!validateResult.isValid) {
+                            result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !util.isNullOrUndefined(this.constraint)
+                                    ? (!util.isNullOrUndefined(this.constraint.maxLength)
+                                        ? this.constraint.maxLength : 9999) : 9999]), validateResult.errorCode);
+                            return result;
+                        }
+                    }
+                    result.success(inputText);
+                    return result;
+                }
+                function autoConvertText(inputText, charType) {
+                    if (this.charType.viewName === '半角英数字') {
+                        inputText = uk.text.toUpperCase(inputText);
+                    }
+                    else if (this.charType.viewName === 'カタカナ') {
+                        inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
+                    }
+                    else if (this.charType.viewName === 'カナ') {
+                        inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
+                    }
+                    return inputText;
+                }
+                var WorkplaceCodeValidator = (function () {
+                    function WorkplaceCodeValidator(name, primitiveValueName, option) {
+                        this.name = name;
+                        this.constraint = getConstraint(primitiveValueName);
+                        this.charType = uk.text.getCharType(primitiveValueName);
+                        this.required = option.required;
+                    }
+                    WorkplaceCodeValidator.prototype.validate = function (inputText, option) {
+                        var result = new ValidationResult();
+                        if (this.required !== undefined && this.required !== false) {
+                            if (util.isNullOrEmpty(inputText)) {
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
+                                return result;
+                            }
+                        }
+                        var validateResult;
+                        result = checkCharType(inputText, this.charType);
+                        if (!result.isValid)
+                            return result;
+                        if (this.constraint !== undefined && this.constraint !== null) {
+                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                                var maxLength = this.constraint.maxLength;
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                return result;
+                            }
+                            if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                    result.fail('This field is not valid with pattern!', '');
+                                    return result;
+                                }
+                            }
+                        }
+                        result.success(inputText);
+                        return result;
+                    };
+                    return WorkplaceCodeValidator;
+                }());
+                validation.WorkplaceCodeValidator = WorkplaceCodeValidator;
+                var PostCodeValidator = (function () {
+                    function PostCodeValidator(name, primitiveValueName, option) {
+                        this.name = name;
+                        this.constraint = getConstraint(primitiveValueName);
+                        this.charType = uk.text.getCharType(primitiveValueName);
+                        this.required = option.required;
+                    }
+                    PostCodeValidator.prototype.validate = function (inputText, option) {
+                        var result = new ValidationResult();
+                        if (this.required !== undefined && this.required !== false) {
+                            if (util.isNullOrEmpty(inputText)) {
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
+                                return result;
+                            }
+                        }
+                        var validateResult;
+                        result = checkCharType(inputText, this.charType);
+                        if (!result.isValid)
+                            return result;
+                        if (this.constraint !== undefined && this.constraint !== null) {
+                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                                var maxLength = this.constraint.maxLength;
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                return result;
+                            }
+                            if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                    result.fail('This field is not valid with pattern!', '');
+                                    return result;
+                                }
+                            }
+                        }
+                        result.success(inputText);
+                        return result;
+                    };
+                    return PostCodeValidator;
+                }());
+                validation.PostCodeValidator = PostCodeValidator;
+                var PunchCardNoValidator = (function () {
+                    function PunchCardNoValidator(name, primitiveValueName, option) {
+                        this.name = name;
+                        this.constraint = getConstraint(primitiveValueName);
+                        this.charType = uk.text.getCharType(primitiveValueName);
+                        this.required = option.required;
+                    }
+                    PunchCardNoValidator.prototype.validate = function (inputText, option) {
+                        var result = new ValidationResult();
+                        if (this.required !== undefined && this.required !== false) {
+                            if (util.isNullOrEmpty(inputText)) {
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
+                                return result;
+                            }
+                        }
+                        var validateResult;
+                        result = checkCharType(inputText, this.charType);
+                        if (!result.isValid)
+                            return result;
+                        if (this.constraint !== undefined && this.constraint !== null) {
+                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                                var maxLength = this.constraint.maxLength;
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                return result;
+                            }
+                            if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                    result.fail('This field is not valid with pattern!', '');
+                                    return result;
+                                }
+                            }
+                        }
+                        result.success(inputText);
+                        return result;
+                    };
+                    return PunchCardNoValidator;
+                }());
+                validation.PunchCardNoValidator = PunchCardNoValidator;
                 var StringValidator = (function () {
                     function StringValidator(name, primitiveValueName, option) {
                         this.name = name;
@@ -5308,7 +5488,7 @@ var nts;
                             var code = e.keyCode || e.which;
                             if (!readonly && code.toString() !== '9') {
                                 var newText = $input.val();
-                                var result = validator.validate(newText);
+                                var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
                                 if (!result.isValid) {
                                     $input.ntsError('set', result.errorMessage, result.errorCode);
@@ -5318,7 +5498,7 @@ var nts;
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
                                 var newText = $input.val();
-                                var result = validator.validate(newText);
+                                var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
                                 if (!result.isValid) {
                                     $input.ntsError('set', result.errorMessage, result.errorCode);
@@ -5377,6 +5557,18 @@ var nts;
                         name = nts.uk.resource.getControlName(name);
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        if (data.constraint == "WorkplaceCode") {
+                            return new validation.WorkplaceCodeValidator(name, constraintName, { required: required });
+                        }
+                        if (data.constraint == "DepartmentCode") {
+                            return new validation.DepartmentCodeValidator(name, constraintName, { required: required });
+                        }
+                        if (data.constraint == "PostCode") {
+                            return new validation.PostCodeValidator(name, constraintName, { required: required });
+                        }
+                        if (data.constraint == "PunchCardNo") {
+                            return new validation.PunchCardNoValidator(name, constraintName, { required: required });
+                        }
                         return new validation.StringValidator(name, constraintName, { required: required });
                     };
                     return TextEditorProcessor;
