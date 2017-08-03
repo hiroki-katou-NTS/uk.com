@@ -21,6 +21,8 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	private final String SEL_1 = SEL_NO_WHERE + " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 	private final String SEL_2 = SEL_1
 			+ " AND  c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
+	private final String SEL_4 = SEL_NO_WHERE
+			+ " WHERE c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
 
 	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName,"
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
@@ -108,5 +110,13 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
 		return this.queryProxy().query(SEL_3, Object[].class).setParameter("roleId", roleId).getList(c -> toDomain(c));
 
+	}
+
+	@Override
+	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+		return this.queryProxy().query(SEL_4, PpemtPersonCategoryAuth.class)
+				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle().map(e -> {
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
 	}
 }
