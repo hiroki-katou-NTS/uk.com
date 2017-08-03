@@ -26,12 +26,21 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements Mai
 
 	private String getDetailLayout = getAllMaintenanceLayout + " Where c.ppemtMaintenanceLayoutPk.layoutId =: layoutId";
 
+	private static final String IS_DUPLICATE_LAYOUTCODE;
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(e)");
+		builderString.append(" FROM PpemtMaintenanceLayout e");
+		builderString.append(" WHERE e.layoutCode = :layoutCode");
+		builderString.append(" AND  e.companyId = :companyId");
+		IS_DUPLICATE_LAYOUTCODE = builderString.toString();
+	}
+
 	private static MaintenanceLayout toDomain(PpemtMaintenanceLayout entity) {
-		val domain = MaintenanceLayout.createFromJavaType(
-				entity.companyId,
-				entity.ppemtMaintenanceLayoutPk.layoutId,
-				entity.layoutCode, 
-				entity.layoutName);
+		val domain = MaintenanceLayout.createFromJavaType(entity.companyId, entity.ppemtMaintenanceLayoutPk.layoutId,
+				entity.layoutCode, entity.layoutName);
 		return domain;
 	}
 
@@ -51,8 +60,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements Mai
 
 	@Override
 	public void add(MaintenanceLayout maintenanceLayout) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().insert(toEntity(maintenanceLayout));
 	}
 
 	@Override
@@ -67,10 +75,12 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements Mai
 
 	}
 
+	
 	@Override
-	public Optional<MaintenanceLayout> checkExit(String layoutID) {
-		
-		return null;
+	public boolean checkExit(String companyId , String layoutCode) {
+		return this.queryProxy().query(IS_DUPLICATE_LAYOUTCODE, long.class)
+				.setParameter("layoutCode", layoutCode)
+				.setParameter("companyId", companyId)
+				.getSingle().get() > 0;
 	}
-
 }

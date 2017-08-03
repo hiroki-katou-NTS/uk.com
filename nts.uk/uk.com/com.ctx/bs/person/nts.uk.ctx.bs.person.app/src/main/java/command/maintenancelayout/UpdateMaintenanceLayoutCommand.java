@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * Object command to update or add Maintenance Layout
+ * 
  * @author laitv
  *
  */
@@ -14,4 +16,10 @@ import lombok.Setter;
 @Setter
 public class UpdateMaintenanceLayoutCommand {
 
+	String companyId;
+	String layoutCode_sou;
+	String layoutCode_des;
+	String layoutName;
+	String maintenanceLayoutID;
+	boolean checked;
 }
