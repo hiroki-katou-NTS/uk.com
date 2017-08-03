@@ -44,7 +44,7 @@ public class ClassifiBasicWorkFinder {
 
 	/** The internationalization. */
 	@Inject
-	IInternationalization internationalization;
+	private IInternationalization internationalization;
 	
 
 	/**

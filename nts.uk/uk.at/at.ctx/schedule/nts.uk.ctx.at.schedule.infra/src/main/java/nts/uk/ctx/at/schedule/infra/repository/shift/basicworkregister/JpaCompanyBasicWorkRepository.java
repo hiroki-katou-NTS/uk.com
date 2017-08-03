@@ -21,9 +21,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSetPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtCompanyWorkSet_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet_;
 
 /**
  * The Class JpaCompanyBasicWorkRepository.
@@ -40,7 +40,7 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 	 */
 	@Override
 	public void insert(CompanyBasicWork companyBasicWork) {
-		List<KcbmtCompanyWorkSet> entities = this.toEntity(companyBasicWork);
+		List<KscmtCompanyWorkSet> entities = this.toEntity(companyBasicWork);
 		commandProxy().insertAll(entities);
 	}
 
@@ -53,7 +53,7 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 	 */
 	@Override
 	public void update(CompanyBasicWork companyBasicWork) {
-		List<KcbmtCompanyWorkSet> entities = this.toEntity(companyBasicWork);
+		List<KscmtCompanyWorkSet> entities = this.toEntity(companyBasicWork);
 		commandProxy()
 				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
@@ -66,33 +66,33 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 	 */
 	@Override
 	public Optional<CompanyBasicWork> findAll(String companyId) {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KcbmtCompanyWorkSet> cq = bd.createQuery(KcbmtCompanyWorkSet.class);
+		CriteriaQuery<KscmtCompanyWorkSet> cq = bd.createQuery(KscmtCompanyWorkSet.class);
+		
 		// Root
-		Root<KcbmtCompanyWorkSet> root = cq.from(KcbmtCompanyWorkSet.class);
+		Root<KscmtCompanyWorkSet> root = cq.from(KscmtCompanyWorkSet.class);
 		cq.select(root);
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(KcbmtCompanyWorkSet_.kcbmtCompanyWorkSetPK).get(KcbmtCompanyWorkSetPK_.cid),
+		predicateList.add(bd.equal(root.get(KscmtCompanyWorkSet_.kscmtCompanyWorkSetPK).get(KscmtCompanyWorkSetPK_.cid),
 				companyId));
+		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
-		TypedQuery<KcbmtCompanyWorkSet> query = em.createQuery(cq);
+		TypedQuery<KscmtCompanyWorkSet> query = em.createQuery(cq);
 
-		List<KcbmtCompanyWorkSet> entities = query.getResultList();
+		List<KscmtCompanyWorkSet> entities = query.getResultList();
 
 		if (CollectionUtil.isEmpty(entities)) {
 			return Optional.empty();
 		}
 
-		// return query.getResultList().stream().map(item ->
-		// this.toDomain(item)).collect(Collectors.toList());
-		
 		return Optional.of(this.toDomain(entities));
 	}
 
@@ -104,7 +104,7 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 	 *            the entity
 	 * @return the company basic work
 	 */
-	private CompanyBasicWork toDomain(List<KcbmtCompanyWorkSet> entity) {
+	private CompanyBasicWork toDomain(List<KscmtCompanyWorkSet> entity) {
 		return new CompanyBasicWork(new JpaCompanyBasicWorkGetMemento(entity));
 	}
 
@@ -115,12 +115,11 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 	 *            the domain
 	 * @return the list
 	 */
-	private List<KcbmtCompanyWorkSet> toEntity(CompanyBasicWork domain) {
+	private List<KscmtCompanyWorkSet> toEntity(CompanyBasicWork domain) {
 		return domain.getBasicWorkSetting().stream().map(basic -> {
-			KcbmtCompanyWorkSet entity = new KcbmtCompanyWorkSet();
+			KscmtCompanyWorkSet entity = new KscmtCompanyWorkSet();
 			basic.saveToMemento(new JpaBWSettingComSetMemento(entity));
-			entity.getKcbmtCompanyWorkSetPK().setCid(domain.getCompanyId());
-//			entity.getKcbmtCompanyWorkSetPK().setWorkdayDivision(basic.getWorkdayDivision().value);
+			entity.getKscmtCompanyWorkSetPK().setCid(domain.getCompanyId());
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -132,14 +131,14 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 	 *            the entity
 	 * @return the kcbmt company work set
 	 */
-	private KcbmtCompanyWorkSet updateEntity(KcbmtCompanyWorkSet entity) {
-		KcbmtCompanyWorkSet entityToUpdate = this.queryProxy()
-				.find(entity.getKcbmtCompanyWorkSetPK(), KcbmtCompanyWorkSet.class).get();
+	private KscmtCompanyWorkSet updateEntity(KscmtCompanyWorkSet entity) {
+		KscmtCompanyWorkSet entityToUpdate = this.queryProxy()
+				.find(entity.getKscmtCompanyWorkSetPK(), KscmtCompanyWorkSet.class).get();
 		entityToUpdate.setWorktypeCode(entity.getWorktypeCode());
 		entityToUpdate.setWorkingCode(entity.getWorkingCode());
-		entityToUpdate.getKcbmtCompanyWorkSetPK()
-				.setWorkdayDivision(entity.getKcbmtCompanyWorkSetPK().getWorkdayDivision());
-		entityToUpdate.getKcbmtCompanyWorkSetPK().setCid(entity.getKcbmtCompanyWorkSetPK().getCid());
+		entityToUpdate.getKscmtCompanyWorkSetPK()
+				.setWorkdayDivision(entity.getKscmtCompanyWorkSetPK().getWorkdayDivision());
+		entityToUpdate.getKscmtCompanyWorkSetPK().setCid(entity.getKscmtCompanyWorkSetPK().getCid());
 		return entityToUpdate;
 	}
 

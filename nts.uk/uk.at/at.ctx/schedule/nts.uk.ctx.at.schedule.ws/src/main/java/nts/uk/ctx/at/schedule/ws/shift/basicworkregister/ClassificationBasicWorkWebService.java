@@ -51,6 +51,11 @@ public class ClassificationBasicWorkWebService extends WebService {
 		return this.finder.findAll(classifyCode);
 	}
 	
+	/**
+	 * Find setting.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findSetting")
 	public List<String> findSetting() {

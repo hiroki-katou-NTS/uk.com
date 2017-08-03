@@ -42,15 +42,20 @@ public class CompanyBasicWork extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((basicWorkSetting == null) ? 0 : basicWorkSetting.hashCode());
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -60,11 +65,6 @@ public class CompanyBasicWork extends AggregateRoot {
 		if (getClass() != obj.getClass())
 			return false;
 		CompanyBasicWork other = (CompanyBasicWork) obj;
-		if (basicWorkSetting == null) {
-			if (other.basicWorkSetting != null)
-				return false;
-		} else if (!basicWorkSetting.equals(other.basicWorkSetting))
-			return false;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
@@ -72,4 +72,6 @@ public class CompanyBasicWork extends AggregateRoot {
 			return false;
 		return true;
 	}
+
+	
 }

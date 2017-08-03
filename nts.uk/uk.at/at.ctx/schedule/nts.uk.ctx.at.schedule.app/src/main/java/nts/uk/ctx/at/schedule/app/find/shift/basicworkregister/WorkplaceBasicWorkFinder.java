@@ -23,12 +23,17 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class WorkplaceBasicWorkFinder.
+ */
 @Stateless
 public class WorkplaceBasicWorkFinder {
 
+	/** The repository. */
 	@Inject
 	private WorkplaceBasicWorkRepository repository;
 	
+	/** The worktype repo. */
 	@Inject
 	private WorkTypeRepository worktypeRepo;
 
@@ -38,8 +43,14 @@ public class WorkplaceBasicWorkFinder {
 
 	/** The internationalization. */
 	@Inject
-	IInternationalization internationalization;
+	private IInternationalization internationalization;
 	
+	/**
+	 * Find.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the workplace basic work find dto
+	 */
 	public WorkplaceBasicWorkFindDto find(String workplaceId) {
 		// get companyId by user login
 		String companyId = AppContexts.user().companyId();
@@ -104,7 +115,7 @@ public class WorkplaceBasicWorkFinder {
 	}
 	
 	/**
-	 * Find all.
+	 * Find setting.
 	 *
 	 * @return the list
 	 */

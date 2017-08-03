@@ -21,10 +21,14 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	private final String SEL_1 = SEL_NO_WHERE + " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 	private final String SEL_2 = SEL_1
 			+ " AND  c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
+	private final String SEL_4 = SEL_NO_WHERE
+			+ " WHERE c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
 
-	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
+	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, cm.categoryType,"
+			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " LEFT JOIN PpemtPerInfoCtgCm cm" + " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
@@ -38,17 +42,9 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
-
-		if (entity[3] == null) {
-			val domain = new PersonInfoCategoryDetail(entity[0].toString(), entity[1].toString(), entity[2].toString(),
-					false);
-			return domain;
-		} else {
-			val domain = new PersonInfoCategoryDetail(entity[0].toString(), entity[1].toString(), entity[2].toString(),
-					true);
-			return domain;
-		}
-
+		val domain = new PersonInfoCategoryDetail(entity[0].toString(), entity[1].toString(), entity[2].toString(),
+				Integer.valueOf(entity[3].toString()), Boolean.valueOf(entity[4].toString()));
+		return domain;
 	}
 
 	private static PpemtPersonCategoryAuth toEntity(PersonInfoCategoryAuth domain) {
@@ -115,5 +111,13 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
 		return this.queryProxy().query(SEL_3, Object[].class).setParameter("roleId", roleId).getList(c -> toDomain(c));
 
+	}
+
+	@Override
+	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+		return this.queryProxy().query(SEL_4, PpemtPersonCategoryAuth.class)
+				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle().map(e -> {
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
 	}
 }

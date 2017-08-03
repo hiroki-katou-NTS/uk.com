@@ -52,6 +52,11 @@ public class WorkplaceBasicWorkWebService extends WebService {
 		return this.finder.find(workplaceId);
 	}
 	
+	/**
+	 * Find setting.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findSetting")
 	public List<String> findSetting() {
