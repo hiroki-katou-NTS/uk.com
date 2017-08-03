@@ -19,14 +19,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Table(name = "KSCMT_CLASSIFY_WORK_SET")
-public class KcbmtClassifyWorkSet extends UkJpaEntity implements Serializable {
+public class KscmtClassifyWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The kcbmt classify work set PK. */
 	@EmbeddedId
-	protected KcbmtClassifyWorkSetPK kcbmtClassifyWorkSetPK;
+	protected KscmtClassifyWorkSetPK kscmtClassifyWorkSetPK;
 
 	/** The wd work type code. */
 	@Column(name = "WORK_TYPE_CD")
@@ -45,7 +45,7 @@ public class KcbmtClassifyWorkSet extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kcbmtClassifyWorkSetPK;
+		return this.kscmtClassifyWorkSetPK;
 	}
 
 	/* (non-Javadoc)
@@ -56,7 +56,7 @@ public class KcbmtClassifyWorkSet extends UkJpaEntity implements Serializable {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((kcbmtClassifyWorkSetPK == null) ? 0 : kcbmtClassifyWorkSetPK.hashCode());
+				+ ((kscmtClassifyWorkSetPK == null) ? 0 : kscmtClassifyWorkSetPK.hashCode());
 		return result;
 	}
 
@@ -71,11 +71,11 @@ public class KcbmtClassifyWorkSet extends UkJpaEntity implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KcbmtClassifyWorkSet other = (KcbmtClassifyWorkSet) obj;
-		if (kcbmtClassifyWorkSetPK == null) {
-			if (other.kcbmtClassifyWorkSetPK != null)
+		KscmtClassifyWorkSet other = (KscmtClassifyWorkSet) obj;
+		if (kscmtClassifyWorkSetPK == null) {
+			if (other.kscmtClassifyWorkSetPK != null)
 				return false;
-		} else if (!kcbmtClassifyWorkSetPK.equals(other.kcbmtClassifyWorkSetPK))
+		} else if (!kscmtClassifyWorkSetPK.equals(other.kscmtClassifyWorkSetPK))
 			return false;
 		return true;
 	}
