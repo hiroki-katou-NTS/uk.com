@@ -33,12 +33,9 @@ public class ClassifiBWRemoveCommandHandler extends CommandHandler<ClassifiBWRem
 
 		// Get Command
 		ClassifiBWRemoveCommand command = context.getCommand();
-		
-		// Set CompanyId
-		command.getClassifiBasicWork().setCompanyId(companyId);
 
 		// Remove
-		this.repository.remove(companyId, command.getClassifiBasicWork().getClassificationCode());
+		this.repository.remove(companyId, command.getClassificationCode());
 	}
 
 }

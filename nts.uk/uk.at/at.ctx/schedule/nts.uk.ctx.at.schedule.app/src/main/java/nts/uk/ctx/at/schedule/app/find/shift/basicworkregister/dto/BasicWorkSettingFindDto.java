@@ -12,6 +12,9 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
 
 
+/**
+ * The Class BasicWorkSettingFindDto.
+ */
 @Getter
 @Setter
 public class BasicWorkSettingFindDto implements BasicWorkSettingSetMemento {

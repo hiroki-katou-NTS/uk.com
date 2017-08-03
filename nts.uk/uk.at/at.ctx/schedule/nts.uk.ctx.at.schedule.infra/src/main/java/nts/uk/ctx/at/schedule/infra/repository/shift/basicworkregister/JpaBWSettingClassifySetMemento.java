@@ -21,6 +21,11 @@ public class JpaBWSettingClassifySetMemento implements BasicWorkSettingSetMement
 	
 	
 
+	/**
+	 * Instantiates a new jpa BW setting classify set memento.
+	 *
+	 * @param typeValue the type value
+	 */
 	public JpaBWSettingClassifySetMemento(KcbmtClassifyWorkSet typeValue) {
 		super();
 		if(typeValue.getKcbmtClassifyWorkSetPK() == null){

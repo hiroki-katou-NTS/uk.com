@@ -76,7 +76,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 
 		// Root
 		Root<KcbmtClassifyWorkSet> root = cd.from(KcbmtClassifyWorkSet.class);
-//		cd.select(root);
+
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
@@ -84,6 +84,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		predicateList.add(bd.equal(
 				root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.classifyCode),
 				classificationCode));
+		
 		// Set Where clause to SQL Query
 		cd.where(predicateList.toArray(new Predicate[] {}));
 		em.createQuery(cd).executeUpdate();
@@ -97,13 +98,16 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 */
 	@Override
 	public Optional<ClassificationBasicWork> findAll(String companyId, String classificationCode) {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 		CriteriaQuery<KcbmtClassifyWorkSet> cq = bd.createQuery(KcbmtClassifyWorkSet.class);
+		
 		// Root
 		Root<KcbmtClassifyWorkSet> root = cq.from(KcbmtClassifyWorkSet.class);
 		cq.select(root);
+		
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
@@ -111,8 +115,10 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		predicateList.add(bd.equal(
 				root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.classifyCode),
 				classificationCode));
+		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		
 		// Create Query
 		TypedQuery<KcbmtClassifyWorkSet> query = em.createQuery(cq);
 
@@ -129,12 +135,15 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 */
 	@Override
 	public List<ClassificationCode> findSetting(String companyId) {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = bd.createQuery(String.class);
+		
 		// Root
 		Root<KcbmtClassifyWorkSet> root = cq.from(KcbmtClassifyWorkSet.class);
+		
 		// Select Classification Code
 		cq.select(root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.classifyCode)).distinct(true);
 		
@@ -142,6 +151,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
 				root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.cid), companyId));
+		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		

@@ -66,10 +66,12 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 	 */
 	@Override
 	public Optional<CompanyBasicWork> findAll(String companyId) {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 		CriteriaQuery<KcbmtCompanyWorkSet> cq = bd.createQuery(KcbmtCompanyWorkSet.class);
+		
 		// Root
 		Root<KcbmtCompanyWorkSet> root = cq.from(KcbmtCompanyWorkSet.class);
 		cq.select(root);
@@ -78,6 +80,7 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(root.get(KcbmtCompanyWorkSet_.kcbmtCompanyWorkSetPK).get(KcbmtCompanyWorkSetPK_.cid),
 				companyId));
+		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
@@ -90,9 +93,6 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 			return Optional.empty();
 		}
 
-		// return query.getResultList().stream().map(item ->
-		// this.toDomain(item)).collect(Collectors.toList());
-		
 		return Optional.of(this.toDomain(entities));
 	}
 
@@ -120,7 +120,6 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 			KcbmtCompanyWorkSet entity = new KcbmtCompanyWorkSet();
 			basic.saveToMemento(new JpaBWSettingComSetMemento(entity));
 			entity.getKcbmtCompanyWorkSetPK().setCid(domain.getCompanyId());
-//			entity.getKcbmtCompanyWorkSetPK().setWorkdayDivision(basic.getWorkdayDivision().value);
 			return entity;
 		}).collect(Collectors.toList());
 	}

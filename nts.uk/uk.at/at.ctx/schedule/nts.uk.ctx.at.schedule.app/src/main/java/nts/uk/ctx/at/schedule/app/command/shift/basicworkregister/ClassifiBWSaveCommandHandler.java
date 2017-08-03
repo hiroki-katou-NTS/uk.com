@@ -39,29 +39,20 @@ public class ClassifiBWSaveCommandHandler extends CommandHandler<ClassifiBWSaveC
 
 		// get company id user login
 		String companyId = loginUserContext.companyId();
-				// Get Command
+		
+		// Get Command
 		ClassifiBWSaveCommand command = context.getCommand();
-		command.getClassifiBasicWork().setCompanyId(companyId);
-
+		
 		
 		// Get Classification Code
-		String classifiCode = command.getClassifiBasicWork().getClassificationCode();
-		
-//		// Get Worktype Code
-//		String worktypeCode = command.getClassifiBasicWork().getBasicWorkSetting().get(0).getWorkTypeCode();
-		
-		// Get workdayDivision
-//		Integer workdayDivision = command.getClassifiBasicWork().getBasicWorkSetting().get(0).getWorkDayDivision();
-		
+		String classifiCode = command.getClassificationCode().v();
+
 		// Find if exist
 		Optional<ClassificationBasicWork> optional = this.repository.findAll(companyId, classifiCode);
 
 		// Convert to Domain
-		ClassificationBasicWork classifiBasicWork = command.toDomain();
-
-		// Validate
-//		classifiBasicWork.validate();
-
+		ClassificationBasicWork classifiBasicWork = new ClassificationBasicWork(command);
+		
 		// Check exist
 		if (optional.isPresent()) {
 			this.repository.update(classifiBasicWork);

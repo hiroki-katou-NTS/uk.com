@@ -4,7 +4,7 @@ module nts.uk.at.view.ksm006.a {
          *  Service paths
          */
         var paths: any = {
-            // Cpmpany
+            // Company
             findCompanyBasicWork: 'ctx/at/schedule/shift/basicworkregister/companybasicwork/find',
             saveCompanyBasicWork: 'ctx/at/schedule/shift/basicworkregister/companybasicwork/save',
             
@@ -22,28 +22,28 @@ module nts.uk.at.view.ksm006.a {
             
         };
 
-// Cpmpany        
+// Company        
         export function findCompanyBasicWork(): JQueryPromise<model.CompanyBasicWorkFindDto> {
             return nts.uk.request.ajax(paths.findCompanyBasicWork);
         }
         
-        export function saveCompanyBasicWork(command: model.CompanyBasicWorkDto): JQueryPromise<any> {
-            var data = {companyBasicWork: command};
+        export function saveCompanyBasicWork(command: Array<model.BasicWorkSettingDto>): JQueryPromise<any> {
+            var data = {basicWorkSetting: command};
             return nts.uk.request.ajax(paths.saveCompanyBasicWork, data);
         }
         
-//Workplace        
+// Workplace        
         export function findWorkplaceBasicWork(workplaceId: string): JQueryPromise<model.WorkplaceBasicWorkFindDto> {
             return nts.uk.request.ajax(paths.findWorkplaceBasicWork + "/" + workplaceId);
         }
         
         export function saveWorkplaceBasicWork(command: model.WorkplaceBasicWorkDto): JQueryPromise<any> {
-            var data = {workplaceBasicWork: command};
+            let data = {workplaceId: command.workplaceId, basicWorkSetting: command.basicWorkSetting}
             return nts.uk.request.ajax(paths.saveWorkplaceBasicWork, data);
         }
         
-        export function removeWorkplaceBasicWork(command: model.WorkplaceBasicWorkDto): JQueryPromise<any> {
-            var data = {workplaceBasicWork: command};
+        export function removeWorkplaceBasicWork(command: string): JQueryPromise<any> {
+            let data = {workplaceId: command}
             return nts.uk.request.ajax(paths.removeWorkplaceBasicWork, data);
         }
         
@@ -57,12 +57,11 @@ module nts.uk.at.view.ksm006.a {
         }
         
          export function saveClassifyBasicWork(command: model.ClassificationBasicWorkDto): JQueryPromise<any> {
-            var data = {classifiBasicWork: command};
-            return nts.uk.request.ajax(paths.saveClassifyBasicWork, data);
+            return nts.uk.request.ajax(paths.saveClassifyBasicWork, command);
         }
         
-        export function removeClassifyBasicWork(command: model.ClassificationBasicWorkDto): JQueryPromise<any> {
-            var data = {classifiBasicWork: command};
+        export function removeClassifyBasicWork(command: string): JQueryPromise<any> {
+            let data = {classificationCode: command}
             return nts.uk.request.ajax(paths.removeClassifyBasicWork, data);
         }
         
@@ -76,11 +75,18 @@ module nts.uk.at.view.ksm006.a {
         * Model namespace.
         */
         export module model {
+            
+            /**
+             * Interface CompanyBasicWorkFindDto
+             */
             export interface CompanyBasicWorkFindDto {
                 companyId: string;
                 basicWorkSetting: Array<BasicWorkSettingFindDto>;
             }
-            
+
+            /**
+             * Class BasicWorkSettingFindDto
+             */
             export class BasicWorkSettingFindDto {
                 workTypeCode: string;
                 workingCode: string;
@@ -88,42 +94,51 @@ module nts.uk.at.view.ksm006.a {
                 workTypeDisplayName: string;
                 workingDisplayName: string;
             }
-            
-            export class CompanyBasicWorkDto {
-                companyId: string;
-                basicWorkSetting: Array<BasicWorkSettingDto>;
-            }
-            
+
+            /**
+             * Class BasicWorkSettingDto
+             */
             export class BasicWorkSettingDto {
                 workTypeCode: string;
                 siftCode: string;
                 workDayDivision: number;
-                
+
                 constructor(workDayDivision: number, workTypeCode: string, siftCode: string) {
                     this.workDayDivision = workDayDivision;
                     this.workTypeCode = workTypeCode;
                     this.siftCode = siftCode;
                 }
             }
-            
+
+            /**
+             * Class WorkplaceBasicWorkFindDto
+             */
             export class WorkplaceBasicWorkFindDto {
                 workplaceId: string;
                 basicWorkSetting: Array<BasicWorkSettingFindDto>;
             }
-            
+
+            /**
+             * Class WorkplaceBasicWorkDto
+             */
             export class WorkplaceBasicWorkDto {
                 workplaceId: string;
                 basicWorkSetting: Array<BasicWorkSettingDto>;
             }
-            
+
+            /**
+             * Class ClassifiBasicWorkFindDto
+             */
             export class ClassifiBasicWorkFindDto {
                 companyId: string;
                 classificationCode: string;
                 basicWorkSetting: Array<BasicWorkSettingFindDto>;
             }
-            
+
+            /**
+             * Class ClassificationBasicWorkDto
+             */
             export class ClassificationBasicWorkDto {
-                companyId: string;
                 classificationCode: string;
                 basicWorkSetting: Array<BasicWorkSettingDto>;
             }

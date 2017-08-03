@@ -4,25 +4,44 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto.CompanyBasicWorkDto;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.Data;
+import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto.BasicWorkSettingDto;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento;
+import nts.uk.shr.com.context.AppContexts;
 
 
-@Getter
-@Setter
-public class CompanyBWSaveCommand {
+/**
+ * The Class CompanyBWSaveCommand.
+ */
+@Data
+public class CompanyBWSaveCommand implements CompanyBasicWorkGetMemento {
 
-	/** The company basic work. */
-	private CompanyBasicWorkDto companyBasicWork;
+	/** The basic work setting. */
+	private List<BasicWorkSettingDto> basicWorkSetting;
 
-	/**
-	 * To domain.
-	 *
-	 * @return the company basic work
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
+	 * CompanyBasicWorkGetMemento#getCompanyId()
 	 */
-	public CompanyBasicWork toDomain() {
-		return this.companyBasicWork.toDomain();
+	@Override
+	public String getCompanyId() {
+		return AppContexts.user().companyId();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
+	 * CompanyBasicWorkGetMemento#getBasicWorkSetting()
+	 */
+	@Override
+	public List<BasicWorkSetting> getBasicWorkSetting() {
+		return this.basicWorkSetting.stream().map(dto -> dto.toDomain()).collect(Collectors.toList());
 	}
 }
