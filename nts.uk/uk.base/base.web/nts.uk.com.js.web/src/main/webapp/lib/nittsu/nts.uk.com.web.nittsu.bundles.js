@@ -5712,6 +5712,9 @@ var nts;
                             features: features,
                             tabIndex: -1
                         });
+                        if (data.itemDraggable) {
+                            new SwapHandler().setModel(new GridSwapList($grid, optionsValue)).enableDragDrop(data.dataSource);
+                        }
                         if (isDeleteButton) {
                             var sources = (data.dataSource !== undefined ? data.dataSource : data.options);
                             $grid.ntsGridList("setupDeleteButton", {
@@ -5806,6 +5809,183 @@ var nts;
                     return NtsGridListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
+                var SwapHandler = (function () {
+                    function SwapHandler() {
+                    }
+                    SwapHandler.prototype.setModel = function (model) {
+                        this.model = model;
+                        return this;
+                    };
+                    Object.defineProperty(SwapHandler.prototype, "Model", {
+                        get: function () {
+                            return this.model;
+                        },
+                        enumerable: true,
+                        configurable: true
+                    });
+                    SwapHandler.prototype.handle = function (value) {
+                        var self = this;
+                        var model = this.model;
+                        var options = {
+                            items: "tbody > tr",
+                            containment: this.model.$grid,
+                            cursor: "move",
+                            connectWith: this.model.$grid,
+                            placeholder: "ui-state-highlight",
+                            helper: this._createHelper,
+                            appendTo: this.model.$grid,
+                            start: function (evt, ui) {
+                                self.model.transportBuilder.setList(self.model.$grid.igGrid("option", "dataSource"));
+                            },
+                            beforeStop: function (evt, ui) {
+                                self._beforeStop.call(this, model, evt, ui);
+                            },
+                            update: function (evt, ui) {
+                                self._update.call(this, model, evt, ui, value);
+                            }
+                        };
+                        this.model.$grid.sortable(options).disableSelection();
+                    };
+                    SwapHandler.prototype._createHelper = function (evt, ui) {
+                        var selectedRowElms = $(evt.currentTarget).igGrid("selectedRows");
+                        selectedRowElms.sort(function (one, two) {
+                            return one.index - two.index;
+                        });
+                        var $helper;
+                        if ($(evt.currentTarget).hasClass("multiple-drag") && selectedRowElms.length > 1) {
+                            $helper = $("<div><table><tbody></tbody></table></div>").addClass("select-drag");
+                            var rowId = ui.data("row-idx");
+                            var selectedItems = selectedRowElms.map(function (elm) { return elm.element; });
+                            var height = 0;
+                            $.each(selectedItems, function () {
+                                $helper.find("tbody").append($(this).clone());
+                                height += $(this).outerHeight();
+                                if (rowId !== this.data("row-idx"))
+                                    $(this).hide();
+                            });
+                            $helper.height(height);
+                            $helper.find("tr").first().children().each(function (idx) {
+                                $(this).width(ui.children().eq(idx).width());
+                            });
+                        }
+                        else {
+                            $helper = ui.clone();
+                            $helper.children().each(function (idx) {
+                                $(this).width(ui.children().eq(idx).width());
+                            });
+                        }
+                        return $helper[0];
+                    };
+                    SwapHandler.prototype._beforeStop = function (model, evt, ui) {
+                        model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+                        if (ui.helper.hasClass("select-drag")) {
+                            var rowsInHelper = ui.helper.find("tr");
+                            var rows = rowsInHelper.toArray();
+                            $(this).sortable("cancel");
+                            for (var idx in rows) {
+                                model.$grid.find("tbody").children().eq($(rows[idx]).data("row-idx")).show();
+                            }
+                        }
+                    };
+                    SwapHandler.prototype._update = function (model, evt, ui, value) {
+                        if (ui.item.closest("table").length === 0)
+                            return;
+                        model.transportBuilder.update();
+                        model.$grid.igGrid("option", "dataSource", model.transportBuilder.getList());
+                        value(model.transportBuilder.getList());
+                        setTimeout(function () { model.dropDone(); }, 0);
+                    };
+                    SwapHandler.prototype.enableDragDrop = function (value) {
+                        this.model.enableDrag(this, value, this.handle);
+                    };
+                    return SwapHandler;
+                }());
+                var SwapModel = (function () {
+                    function SwapModel($grid, primaryKey) {
+                        this.$grid = $grid;
+                        this.primaryKey = primaryKey;
+                        this.transportBuilder = new ListItemTransporter().primary(this.primaryKey);
+                    }
+                    return SwapModel;
+                }());
+                var GridSwapList = (function (_super) {
+                    __extends(GridSwapList, _super);
+                    function GridSwapList() {
+                        _super.apply(this, arguments);
+                    }
+                    GridSwapList.prototype.target = function (opts) {
+                        if (opts.helper !== undefined && opts.helper.hasClass("select-drag")) {
+                            return opts.helper.find("tr").map(function () {
+                                return $(this).data("id");
+                            });
+                        }
+                        return [opts.item.data("id")];
+                    };
+                    GridSwapList.prototype.neighbor = function (opts) {
+                        return opts.item.prev().length === 0 ? "ceil" : opts.item.prev().data("id");
+                    };
+                    GridSwapList.prototype.dropDone = function () {
+                        var self = this;
+                        self.$grid.igGridSelection("clearSelection");
+                        setTimeout(function () {
+                            self.$grid.igGrid("virtualScrollTo", self.transportBuilder.incomeIndex);
+                        }, 0);
+                    };
+                    GridSwapList.prototype.enableDrag = function (ctx, value, cb) {
+                        var self = this;
+                        this.$grid.on("iggridrowsrendered", function (evt, ui) {
+                            cb.call(ctx, value);
+                        });
+                    };
+                    return GridSwapList;
+                }(SwapModel));
+                var ListItemTransporter = (function () {
+                    function ListItemTransporter() {
+                    }
+                    ListItemTransporter.prototype.primary = function (primaryKey) {
+                        this.primaryKey = primaryKey;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.target = function (targetIds) {
+                        this.targetIds = targetIds;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.toAdjacent = function (adjId) {
+                        if (adjId === null)
+                            adjId = "ceil";
+                        this.adjacentIncomeId = adjId;
+                        return this;
+                    };
+                    ListItemTransporter.prototype.indexOf = function (list, targetId) {
+                        var _this = this;
+                        return _.findIndex(list, function (elm) { return elm[_this.primaryKey].toString() === targetId.toString(); });
+                    };
+                    ListItemTransporter.prototype.update = function () {
+                        for (var i = 0; i < this.targetIds.length; i++) {
+                            this.outcomeIndex = this.indexOf(this.list, this.targetIds[i]);
+                            if (this.outcomeIndex === -1)
+                                return;
+                            var target = this.list.splice(this.outcomeIndex, 1);
+                            this.incomeIndex = this.indexOf(this.list, this.adjacentIncomeId) + 1;
+                            if (this.incomeIndex === 0) {
+                                if (this.adjacentIncomeId === "ceil")
+                                    this.incomeIndex = 0;
+                                else if (target !== undefined) {
+                                    this.list.splice(this.outcomeIndex, 0, target[0]);
+                                    return;
+                                }
+                            }
+                            this.list.splice(this.incomeIndex + i, 0, target[0]);
+                        }
+                    };
+                    ListItemTransporter.prototype.getList = function () {
+                        return this.list;
+                    };
+                    ListItemTransporter.prototype.setList = function (list) {
+                        this.list = list;
+                    };
+                    return ListItemTransporter;
+                }());
             })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -6361,8 +6541,8 @@ var nts;
                     }
                     SearchPub.prototype.search = function (searchKey, selectedItems) {
                         var result = new SearchResult();
-                        var filted = this.seachBox.search(searchKey);
-                        if (!nts.uk.util.isNullOrEmpty(filted)) {
+                        var filtered = this.seachBox.search(searchKey);
+                        if (!nts.uk.util.isNullOrEmpty(filtered)) {
                             var key_1 = this.key;
                             if (this.mode === "highlight") {
                                 result.options = this.seachBox.getDataSource();
@@ -6370,7 +6550,7 @@ var nts;
                                 if (!nts.uk.util.isNullOrEmpty(selectedItems)) {
                                     var firstItemValue_1 = $.isArray(selectedItems)
                                         ? selectedItems[0]["id"].toString() : selectedItems["id"].toString();
-                                    index = _.findIndex(filted, function (item) {
+                                    index = _.findIndex(filtered, function (item) {
                                         return item[key_1].toString() === firstItemValue_1;
                                     });
                                     if (!nts.uk.util.isNullOrUndefined(index)) {
@@ -6378,12 +6558,12 @@ var nts;
                                     }
                                 }
                                 if (index >= 0) {
-                                    result.selectItems = [filted[index >= filted.length ? 0 : index]];
+                                    result.selectItems = [filtered[index >= filtered.length ? 0 : index]];
                                 }
                             }
                             else if (this.mode === "filter") {
-                                result.options = filted;
-                                var selectItem = _.filter(filted, function (itemFilterd) {
+                                result.options = filtered;
+                                var selectItem = _.filter(filtered, function (itemFilterd) {
                                     return _.find(selectedItems, function (item) {
                                         var itemVal = itemFilterd[key_1];
                                         return itemVal === item["id"];
@@ -6411,7 +6591,6 @@ var nts;
                         var fields = ko.unwrap(data.fields);
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
-                        var selected = data.selected;
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
                         var enable = ko.unwrap(data.enable);
                         var selectedKey = null;
@@ -6476,39 +6655,44 @@ var nts;
                                 else if (targetMode == 'igTree') {
                                     selectedItems = component.ntsTreeView("getSelected");
                                 }
-                                var srh = $container.data("searchObject");
-                                var result = srh.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight") {
+                                var srh_1 = $container.data("searchObject");
+                                var result_1 = srh_1.search(searchKey, selectedItems);
+                                if (nts.uk.util.isNullOrEmpty(result_1.options) && searchMode === "highlight") {
                                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
                                     return;
                                 }
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
                                     : component.igTreeGridSelection('option', 'multipleSelection');
-                                var selectedProperties = _.map(result.selectItems, primaryKey);
+                                var selectedProperties = _.map(result_1.selectItems, primaryKey);
                                 var selectedValue = void 0;
                                 if (selectedKey !== null) {
-                                    selectedValue = isMulti ? _.map(result.selectItems, selectedKey) :
-                                        result.selectItems.length > 0 ? result.selectItems[0][selectedKey] : undefined;
+                                    selectedValue = isMulti ? _.map(result_1.selectItems, selectedKey) :
+                                        result_1.selectItems.length > 0 ? result_1.selectItems[0][selectedKey] : undefined;
                                 }
                                 else {
-                                    selectedValue = isMulti ? [result.selectItems] :
-                                        result.selectItems.length > 0 ? result.selectItems[0] : undefined;
+                                    selectedValue = isMulti ? [result_1.selectItems] :
+                                        result_1.selectItems.length > 0 ? result_1.selectItems[0] : undefined;
                                 }
                                 if (targetMode === 'igGrid') {
                                     if (searchMode === "filter") {
-                                        $container.data("filteredSrouce", result.options);
+                                        $container.data("filteredSrouce", result_1.options);
                                         component.attr("filtered", true);
-                                        selected(selectedValue);
-                                        selected.valueHasMutated();
+                                        var source = _.filter(dataSource, function (item) {
+                                            return _.find(result_1.options, function (itemFilterd) {
+                                                return itemFilterd[primaryKey] === item[primaryKey];
+                                            }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
+                                                return oldItem[primaryKey] === item[primaryKey];
+                                            }) === undefined;
+                                        });
+                                        component.igGrid("option", "dataSource", source);
+                                        component.igGrid("dataBind");
                                     }
                                     else {
-                                        selected(selectedValue);
                                     }
                                     component.ntsGridList("setSelected", selectedProperties);
                                 }
                                 else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
-                                    selected(selectedValue);
                                 }
                                 _.defer(function () {
                                     component.trigger("selectChange");
@@ -6547,7 +6731,6 @@ var nts;
                         var arr = ko.unwrap(data.items);
                         var searchMode = ko.unwrap(data.searchMode);
                         var primaryKey = ko.unwrap(data.targetKey);
-                        var selectedValue = ko.unwrap(data.selected);
                         var enable = ko.unwrap(data.enable);
                         var targetMode = data.mode;
                         var component;
@@ -6559,20 +6742,6 @@ var nts;
                             component = $("#" + ko.unwrap(data.comId));
                         }
                         var srhX = $searchBox.data("searchObject");
-                        if (searchMode === "filter" && (component.attr("filtered") === true || component.attr("filtered") === "true")) {
-                            var filteds_1 = $searchBox.data("filteredSrouce");
-                            if (!nts.uk.util.isNullOrUndefined(filteds_1)) {
-                                var source = _.filter(arr, function (item) {
-                                    return _.find(filteds_1, function (itemFilterd) {
-                                        return itemFilterd[primaryKey] === item[primaryKey];
-                                    }) !== undefined || _.find(srhX.getDataSource(), function (oldItem) {
-                                        return oldItem[primaryKey] === item[primaryKey];
-                                    }) === undefined;
-                                });
-                                component.igGrid("option", "dataSource", source);
-                                component.igGrid("dataBind");
-                            }
-                        }
                         srhX.setDataSource(arr);
                         if (enable === false) {
                             $searchBox.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
