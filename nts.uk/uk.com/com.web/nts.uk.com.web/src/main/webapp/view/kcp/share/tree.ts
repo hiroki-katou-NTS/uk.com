@@ -184,9 +184,6 @@ module kcp.share.tree {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
                     
-                    // Set default value when initial component.
-                    self.initSelectedValue(res);
-                    
                     if (data.isShowAlreadySet) { 
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
@@ -208,6 +205,9 @@ module kcp.share.tree {
                     $('#combo-box-tree-component').on('mousedown', function() {
                         $('#combo-box-tree-component').focus();
                     });
+                    // Set default value when initial component.
+                    self.initSelectedValue(res);
+                    
                     dfd.resolve();
                 })
                 
@@ -223,11 +223,6 @@ module kcp.share.tree {
                     }
                 }
             });
-            
-            // defined function get data list.
-            $.fn.getDataList = function(): Array<kcp.share.tree.UnitModel> {
-                return self.backupItemList();
-            }
             
             // define function get row selected
             $.fn.getRowSelected = function(): Array<any> {

@@ -1,3 +1,6 @@
+#contents-area{
+	height:initial !important;
+}
 #role{
 	margin-left: 15px;
 	margin-top: 5px;
@@ -20,9 +23,14 @@ button.search-btn,button.clear-btn{
 	width: 30px !important;
 }
 #registration {
-	margin-left: 90px !important;
 	margin-right: 5px;
+	margin-top:10px;
+	margin-left:60px;
 }
+#delete{
+	margin-left:10px;
+}
+
 .distane{
 	margin-bottom: 5px;
 }
@@ -41,6 +49,12 @@ button.search-btn,button.clear-btn{
 #roleName{
 	width:100px;
 }
-#functions-area {
-  border-bottom:none !important;
+#functions-area-bottom{
+	height:initial !important;
+	width: initial !important;
+	padding-top: initial !important;
+	position: initial !important;
+}
+#functions-area{
+	border-bottom: none !important;
 }

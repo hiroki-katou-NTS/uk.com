@@ -44,7 +44,7 @@ public class ClassifiBasicWorkFinder {
 
 	/** The internationalization. */
 	@Inject
-	IInternationalization internationalization;
+	private IInternationalization internationalization;
 	
 
 	/**
@@ -107,7 +107,7 @@ public class ClassifiBasicWorkFinder {
 
 			// Get WorkTime
 			WorkTime worktime = workingList.stream().filter(wt -> {
-				return wt.getSiftCD().equals(item.getWorkingCode());
+				return wt.getSiftCD().v().equals(item.getWorkingCode());
 			}).findFirst().orElse(null);
 
 			// Set WorkingDisplayName

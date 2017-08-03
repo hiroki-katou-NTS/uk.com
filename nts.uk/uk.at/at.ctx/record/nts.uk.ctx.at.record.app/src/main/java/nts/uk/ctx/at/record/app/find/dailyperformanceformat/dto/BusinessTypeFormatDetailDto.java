@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 public class BusinessTypeFormatDetailDto {
 	
-	private String attendanceItemId;
+	private BigDecimal attendanceItemId;
 
 	private BigDecimal order;
 

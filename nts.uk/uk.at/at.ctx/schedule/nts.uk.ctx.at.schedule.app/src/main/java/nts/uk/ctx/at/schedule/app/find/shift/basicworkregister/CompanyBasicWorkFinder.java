@@ -43,7 +43,7 @@ public class CompanyBasicWorkFinder {
 
 	/** The internationalization. */
 	@Inject
-	IInternationalization internationalization;
+	private IInternationalization internationalization;
 
 	/**
 	 * Find.
@@ -105,7 +105,7 @@ public class CompanyBasicWorkFinder {
 			
 			// Get WorkTime
 			WorkTime worktime = workingList.stream().filter(wt -> {
-				return wt.getSiftCD().equals(item.getWorkingCode());
+				return wt.getSiftCD().v().equals(item.getWorkingCode());
 			}).findFirst().orElse(null);
 			
 			// Set WorkingDisplayName

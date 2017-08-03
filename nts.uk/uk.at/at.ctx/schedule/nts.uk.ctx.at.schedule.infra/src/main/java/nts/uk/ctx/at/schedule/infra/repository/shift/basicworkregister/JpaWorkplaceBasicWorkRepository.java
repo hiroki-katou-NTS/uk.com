@@ -23,9 +23,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplaceWorkSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplaceWorkSetPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplaceWorkSet_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet_;
 
 
 /**
@@ -43,7 +43,7 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public void insert(WorkplaceBasicWork workplaceBasicWork) {
-		List<KwbmtWorkplaceWorkSet> entities = this.toEntity(workplaceBasicWork);
+		List<KscmtWorkplaceWorkSet> entities = this.toEntity(workplaceBasicWork);
 		commandProxy().insertAll(entities);
 	}
 
@@ -56,7 +56,7 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public void update(WorkplaceBasicWork workplaceBasicWork) {
-		List<KwbmtWorkplaceWorkSet> entities = this.toEntity(workplaceBasicWork);
+		List<KscmtWorkplaceWorkSet> entities = this.toEntity(workplaceBasicWork);
 		commandProxy()
 				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
@@ -73,15 +73,15 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 
-		CriteriaDelete<KwbmtWorkplaceWorkSet> cd = bd.createCriteriaDelete(KwbmtWorkplaceWorkSet.class);
+		CriteriaDelete<KscmtWorkplaceWorkSet> cd = bd.createCriteriaDelete(KscmtWorkplaceWorkSet.class);
 
 		// Root
-		Root<KwbmtWorkplaceWorkSet> root = cd.from(KwbmtWorkplaceWorkSet.class);
-		// cd.select(root);
+		Root<KscmtWorkplaceWorkSet> root = cd.from(KscmtWorkplaceWorkSet.class);
+
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(KwbmtWorkplaceWorkSet_.kwbmtWorkplaceWorkSetPK).get(KwbmtWorkplaceWorkSetPK_.workplaceId), workplaceId));
+				root.get(KscmtWorkplaceWorkSet_.kscmtWorkplaceWorkSetPK).get(KscmtWorkplaceWorkSetPK_.workplaceId), workplaceId));
 	
 		// Set Where clause to SQL Query
 		cd.where(predicateList.toArray(new Predicate[] {}));
@@ -97,23 +97,27 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public Optional<WorkplaceBasicWork> findById(String workplaceId) {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KwbmtWorkplaceWorkSet> cq = bd.createQuery(KwbmtWorkplaceWorkSet.class);
+		CriteriaQuery<KscmtWorkplaceWorkSet> cq = bd.createQuery(KscmtWorkplaceWorkSet.class);
+		
 		// Root
-		Root<KwbmtWorkplaceWorkSet> root = cq.from(KwbmtWorkplaceWorkSet.class);
+		Root<KscmtWorkplaceWorkSet> root = cq.from(KscmtWorkplaceWorkSet.class);
 		cq.select(root);
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(KwbmtWorkplaceWorkSet_.kwbmtWorkplaceWorkSetPK).get(KwbmtWorkplaceWorkSetPK_.workplaceId),
+				root.get(KscmtWorkplaceWorkSet_.kscmtWorkplaceWorkSetPK).get(KscmtWorkplaceWorkSetPK_.workplaceId),
 				workplaceId));
+		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		
 		// Create Query
-		TypedQuery<KwbmtWorkplaceWorkSet> query = em.createQuery(cq);
+		TypedQuery<KscmtWorkplaceWorkSet> query = em.createQuery(cq);
 
 		if (CollectionUtil.isEmpty(query.getResultList())) {
 			return Optional.empty();
@@ -127,13 +131,15 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public List<WorkplaceId> findSetting() {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = bd.createQuery(String.class);
+		
 		// Root
-		Root<KwbmtWorkplaceWorkSet> root = cq.from(KwbmtWorkplaceWorkSet.class);
-		cq.select(root.get(KwbmtWorkplaceWorkSet_.kwbmtWorkplaceWorkSetPK).get(KwbmtWorkplaceWorkSetPK_.workplaceId)).distinct(true);
+		Root<KscmtWorkplaceWorkSet> root = cq.from(KscmtWorkplaceWorkSet.class);
+		cq.select(root.get(KscmtWorkplaceWorkSet_.kscmtWorkplaceWorkSetPK).get(KscmtWorkplaceWorkSetPK_.workplaceId)).distinct(true);
 		TypedQuery<String> query = em.createQuery(cq);
 		
 		return query.getResultList().stream().map(item -> {
@@ -147,7 +153,7 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 * @param entities the entity
 	 * @return the workplace basic work
 	 */
-	private WorkplaceBasicWork toDomain(List<KwbmtWorkplaceWorkSet> entities) {
+	private WorkplaceBasicWork toDomain(List<KscmtWorkplaceWorkSet> entities) {
 		return new WorkplaceBasicWork(new JpaWorkplaceBasicWorkGetMemento(entities));
 	}
 	
@@ -157,11 +163,11 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 * @param domain the domain
 	 * @return the list
 	 */
-	private List<KwbmtWorkplaceWorkSet> toEntity(WorkplaceBasicWork domain) {
+	private List<KscmtWorkplaceWorkSet> toEntity(WorkplaceBasicWork domain) {
 		return domain.getBasicWorkSetting().stream().map(basic -> {
-			KwbmtWorkplaceWorkSet entity = new KwbmtWorkplaceWorkSet();
+			KscmtWorkplaceWorkSet entity = new KscmtWorkplaceWorkSet();
 			basic.saveToMemento(new JpaBWSettingWorkplaceSetMemento(entity));
-			entity.getKwbmtWorkplaceWorkSetPK().setWorkplaceId(domain.getWorkplaceId().v());
+			entity.getKscmtWorkplaceWorkSetPK().setWorkplaceId(domain.getWorkplaceId().v());
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -172,14 +178,14 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 * @param entity the entity
 	 * @return the kwbmt workplace work set
 	 */
-	private KwbmtWorkplaceWorkSet updateEntity(KwbmtWorkplaceWorkSet entity) {
-		KwbmtWorkplaceWorkSet entityToUpdate = this.queryProxy()
-				.find(entity.getKwbmtWorkplaceWorkSetPK(), KwbmtWorkplaceWorkSet.class).get();
+	private KscmtWorkplaceWorkSet updateEntity(KscmtWorkplaceWorkSet entity) {
+		KscmtWorkplaceWorkSet entityToUpdate = this.queryProxy()
+				.find(entity.getKscmtWorkplaceWorkSetPK(), KscmtWorkplaceWorkSet.class).get();
 		entityToUpdate.setWorktypeCode(entity.getWorktypeCode());
 		entityToUpdate.setWorkingCode(entity.getWorkingCode());
-		entityToUpdate.getKwbmtWorkplaceWorkSetPK()
-				.setWorkdayDivision(entity.getKwbmtWorkplaceWorkSetPK().getWorkdayDivision());
-		entityToUpdate.getKwbmtWorkplaceWorkSetPK().setWorkplaceId(entity.getKwbmtWorkplaceWorkSetPK().getWorkplaceId());
+		entityToUpdate.getKscmtWorkplaceWorkSetPK()
+				.setWorkdayDivision(entity.getKscmtWorkplaceWorkSetPK().getWorkdayDivision());
+		entityToUpdate.getKscmtWorkplaceWorkSetPK().setWorkplaceId(entity.getKscmtWorkplaceWorkSetPK().getWorkplaceId());
 		return entityToUpdate;
 	}
 

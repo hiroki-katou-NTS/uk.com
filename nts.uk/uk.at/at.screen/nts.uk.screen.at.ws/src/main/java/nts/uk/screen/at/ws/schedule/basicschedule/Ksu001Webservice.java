@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
@@ -18,11 +19,11 @@ import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
  */
 @Path("screen/at/schedule/basicschedule")
 @Produces("application/json")
-public class Ksu001Webservice {
-	
+public class Ksu001Webservice extends WebService {
+
 	@Inject
 	private BasicScheduleScreenProcessor bScheduleScreenProces;
-	
+
 	@POST
 	@Path("getData")
 	public List<BasicScheduleScreenDto> getData(BasicScheduleScreenParams params) {

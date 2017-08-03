@@ -10,6 +10,7 @@ public interface PersonInfoItemAuthRepository {
 
 	Optional<PersonInfoItemAuth> getDetailPersonItemAuth(String roleId, String personCategoryAuthId,
 			String personItemDefId);
+	List<PersonInfoItemDetail> getAllItemDetail(String personCategoryAuthId);
 
 	void add(PersonInfoItemAuth domain);
 
