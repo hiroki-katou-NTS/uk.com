@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
+import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemDetail;
 
 /**
  * The Class PersonInfoItemAuthFinder
@@ -32,9 +33,14 @@ public class PersonInfoItemAuthFinder {
 				.collect(Collectors.toList());
 	}
 	
+	public List<PersonInfoItemDetail> getAllItemDetail(String personCategoryAuthId){
+		return this.personItemAuthRepository.getAllItemDetail(personCategoryAuthId);
+	}
+	
 	public Optional<PersonInfoItemAuthDto> getDetailPersonItemAuth(String roleId, String personCategoryAuthId,
 			String personItemDefId){
 		return this.personItemAuthRepository.getDetailPersonItemAuth(roleId, personCategoryAuthId,personItemDefId)
 				.map(item -> PersonInfoItemAuthDto.fromDomain(item));
 	}
+	
 }
