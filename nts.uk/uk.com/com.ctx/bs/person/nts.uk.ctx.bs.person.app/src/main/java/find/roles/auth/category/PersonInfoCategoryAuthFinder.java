@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
 
 /**
  * The Class PersonInfoCategoryAuthFinder
@@ -34,8 +35,13 @@ public class PersonInfoCategoryAuthFinder {
 				.collect(Collectors.toList());
 	}
 
-	public Optional<PersonInfoCategoryAuthDto> getDetailPersonCategoryAuth(String roleId, String personCategoryAuthId) {
-		return this.personCategoryAuthRepository.getDetailPersonCategoryAuth(roleId,personCategoryAuthId)
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId){
+			return  this.personCategoryAuthRepository.getAllCategory(roleId);
+	}
+
+	public Optional<PersonInfoCategoryAuthDto> getDetailPersonCategoryAuth(String roleId,
+			String personCategoryAuthId) {
+		return this.personCategoryAuthRepository.getDetailPersonCategoryAuth(roleId, personCategoryAuthId)
 				.map(c -> PersonInfoCategoryAuthDto.fromDomain(c));
 	}
 }

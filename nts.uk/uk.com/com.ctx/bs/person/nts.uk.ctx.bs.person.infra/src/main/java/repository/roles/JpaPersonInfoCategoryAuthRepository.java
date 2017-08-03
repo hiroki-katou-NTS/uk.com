@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
 
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
@@ -21,6 +22,11 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	private final String SEL_2 = SEL_1
 			+ " AND  c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
 
+	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName"
+			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p " 
+			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId";
+
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
 				entity.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, entity.allowPersonRef, entity.allowOtherRef,
@@ -28,6 +34,11 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				entity.selfAllowDelHis, entity.otherPastHisAuth, entity.otherFutureHisAuth, entity.otherAllowAddHis,
 				entity.otherAllowDelHis, entity.selfAllowAddMulti, entity.selfAllowDelMulti, entity.otherAllowAddMulti,
 				entity.otherAllowDelMulti);
+		return domain;
+	}
+
+	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
+		val domain = new PersonInfoCategoryDetail(entity[0].toString(), entity[1].toString(), entity[2].toString(),false);
 		return domain;
 	}
 
@@ -89,5 +100,13 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	public void delete(String roleId, String personCategoryAuthId) {
 		this.commandProxy().remove(PpemtPersonCategoryAuth.class,
 				new PpemtPersonCategoryAuthPk(roleId, personCategoryAuthId));
+	}
+
+	@Override
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
+		return this.queryProxy().query(SEL_3,  Object[].class)
+				.setParameter("roleId", roleId)
+				.getList( c -> toDomain(c));
+				
 	}
 }

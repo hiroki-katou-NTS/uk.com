@@ -10,6 +10,7 @@ public interface PersonInfoCategoryAuthRepository {
 
 	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuth(String roleId,
 			String personCategoryAuthId);
+	List<PersonInfoCategoryDetail> getAllCategory(String roleId);
 
 	void add(PersonInfoCategoryAuth domain);
 
