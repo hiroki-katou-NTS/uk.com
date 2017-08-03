@@ -16,7 +16,7 @@ module nts.uk.ui.jqueryExtentions {
             $container.append("<div class='switch_master_language_container'/>");
             $container.append("<div class='language_select_container'/>");
             $container.find(".switch_master_language_container").append("<button class='ntsButton auto-height ntsSwitchLanguage'>他言語切替</button>");
-            let $button = $container.find(".ntsSwitchLanguage");
+            let $button = $container.find(".ntsSwitchLanguage"); 
             let $languageSelect = $container.find(".language_select_container");
             $button.click(function(evt){       
                 $languageSelect.append("<div class='language_body'><div class='language_select_contents'/><div id='functions-area-bottom'/></div>");
