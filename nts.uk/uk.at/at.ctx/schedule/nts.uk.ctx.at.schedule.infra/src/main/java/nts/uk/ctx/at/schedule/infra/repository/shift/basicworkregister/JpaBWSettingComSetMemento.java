@@ -19,6 +19,11 @@ public class JpaBWSettingComSetMemento implements BasicWorkSettingSetMemento {
 	/** The type value. */
 	private KcbmtCompanyWorkSet typeValue;
 
+	/**
+	 * Instantiates a new jpa BW setting com set memento.
+	 *
+	 * @param typeValue the type value
+	 */
 	public JpaBWSettingComSetMemento(KcbmtCompanyWorkSet typeValue) {
 		if(typeValue.getKcbmtCompanyWorkSetPK() == null){
 			typeValue.setKcbmtCompanyWorkSetPK(new KcbmtCompanyWorkSetPK());

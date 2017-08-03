@@ -77,7 +77,7 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 
 		// Root
 		Root<KwbmtWorkplaceWorkSet> root = cd.from(KwbmtWorkplaceWorkSet.class);
-		// cd.select(root);
+
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
@@ -97,10 +97,12 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public Optional<WorkplaceBasicWork> findById(String workplaceId) {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 		CriteriaQuery<KwbmtWorkplaceWorkSet> cq = bd.createQuery(KwbmtWorkplaceWorkSet.class);
+		
 		// Root
 		Root<KwbmtWorkplaceWorkSet> root = cq.from(KwbmtWorkplaceWorkSet.class);
 		cq.select(root);
@@ -110,8 +112,10 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 		predicateList.add(bd.equal(
 				root.get(KwbmtWorkplaceWorkSet_.kwbmtWorkplaceWorkSetPK).get(KwbmtWorkplaceWorkSetPK_.workplaceId),
 				workplaceId));
+		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		
 		// Create Query
 		TypedQuery<KwbmtWorkplaceWorkSet> query = em.createQuery(cq);
 
@@ -127,10 +131,12 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 */
 	@Override
 	public List<WorkplaceId> findSetting() {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = bd.createQuery(String.class);
+		
 		// Root
 		Root<KwbmtWorkplaceWorkSet> root = cq.from(KwbmtWorkplaceWorkSet.class);
 		cq.select(root.get(KwbmtWorkplaceWorkSet_.kwbmtWorkplaceWorkSetPK).get(KwbmtWorkplaceWorkSetPK_.workplaceId)).distinct(true);
