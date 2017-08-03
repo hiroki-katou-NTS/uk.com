@@ -25,9 +25,10 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 	private final String SEL_3 = " SELECT p.ppemtPersonItemAuthPk.roleId, p.ppemtPersonItemAuthPk.personInfoCategoryAuthId,"
 			+ " p.ppemtPersonItemAuthPk.personItemDefId,"
-			+ " p.selfAuthType, p.otherPersonAuth, c.itemCd, c.itemName, c.abolitionAtr, c.requiredAtr "
-			+ "FROM PpemtPerInfoItem c " + " LEFT JOIN PpemtPersonItemAuth p"
-			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefinitionId = p.ppemtPersonItemAuthPk.personItemDefId"
+			+ " p.selfAuthType, p.otherPersonAuth, c.itemCd, c.itemName, c.abolitionAtr, c.requiredAtr,"
+			+ " CASE WHEN p.ppemtPersonItemAuthPk.personItemDefId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
+			+ " FROM PpemtPerInfoItem c " + " LEFT JOIN PpemtPersonItemAuth p"
+			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = p.ppemtPersonItemAuthPk.personItemDefId"
 			+ " AND p.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
 
 	private static PersonInfoItemAuth toDomain(PpemtPersonItemAuth entity) {
@@ -48,56 +49,28 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	}
 
 	private static PersonInfoItemDetail toDomain(Object[] entity) {
-		
+
 		val domain = new PersonInfoItemDetail();
-		if(entity[0]==null){
-			domain.setRoleId("a");
-		}else{
-			domain.setRoleId(entity[0].toString());
-		}
-		if(entity[1] == null){
-			domain.setPersonInfoCategoryAuthId("a");
-		}else{
-			domain.setPersonInfoCategoryAuthId(entity[1].toString());
-			
-		}
-		if(entity[2] == null){
-			domain.setPersonItemDefId("a");
-		}else{
-			domain.setPersonItemDefId(entity[2].toString());
-		}
-		if(entity[3] == null){
-			domain.setOtherPersonAuth(9);
-		}else{
-			domain.setOtherPersonAuth(Integer.valueOf(entity[3].toString()));
-		}
-		if(entity[4] ==null){
-			domain.setSelfAuthType(9);
-		}else{
-			domain.setSelfAuthType(Integer.valueOf(entity[4].toString()));
-		}
-		if(entity[5] ==null){
-			domain.setItemCd("a");
-		}else{
-			domain.setItemCd(entity[5].toString());
-			
-		}
-		if(entity[6]== null){
-			domain.setItemName("a");
-		}else{
-			domain.setItemName(entity[6].toString());
-		}
-		if(entity[7]==null){
-			domain.setAbolitionAtr(9);
-		}else{
-			domain.setAbolitionAtr(Integer.valueOf(entity[7].toString()));
-		}
-		if(entity[8]==null){
-			domain.setRequiredAtr(9);
-		}else{
-			domain.setRequiredAtr(Integer.valueOf(entity[8].toString()));
-			
-		}
+
+		domain.setRoleId(entity[0] == null ? "a" : entity[0].toString());
+
+		domain.setPersonInfoCategoryAuthId(entity[1] == null ? "a" : entity[1].toString());
+
+		domain.setPersonItemDefId(entity[2] == null ? "a" : entity[2].toString());
+
+		domain.setOtherPersonAuth(entity[3] == null ? 9 : Integer.valueOf(entity[3].toString()));
+
+		domain.setSelfAuthType(entity[4] == null ? 9 : Integer.valueOf(entity[4].toString()));
+
+		domain.setItemCd(entity[5] == null ? "a" : entity[5].toString());
+
+		domain.setItemName(entity[6] == null ? "a" : entity[6].toString());
+
+		domain.setAbolitionAtr(entity[7] == null ? 9 : Integer.valueOf(entity[7].toString()));
+
+		domain.setRequiredAtr(entity[8] == null ? 9 : Integer.valueOf(entity[8].toString()));
+
+		domain.setSetting(entity[9] == null ? false : Boolean.valueOf(entity[9].toString()));
 
 		return domain;
 	}
