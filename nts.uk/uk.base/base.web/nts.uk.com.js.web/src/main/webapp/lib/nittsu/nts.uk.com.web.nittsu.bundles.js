@@ -16824,7 +16824,8 @@ var nts;
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
-                        $container.attr("tabindex", "-1");
+                        $container.removeAttr("tabindex");
+                        $container.data("tabindex", tabIndex);
                         $container.addClass("ntsControl ntsMonthDays_Container");
                         $container.append("<div class='ntsMonthDays'/>");
                         var $control = $container.find(".ntsMonthDays");
@@ -16865,7 +16866,6 @@ var nts;
                                 data.value(currentMonth * 100 + currentDay);
                             }
                         });
-                        $control.find("input").attr("tabindex", tabIndex);
                     };
                     NtsMonthDaysBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
@@ -16877,10 +16877,12 @@ var nts;
                         if (enable !== false) {
                             $monthPicker.igCombo('option', 'disabled', false);
                             $dayPicker.igCombo('option', 'disabled', false);
+                            $container.find("input").attr("tabindex", $container.data("tabindex"));
                         }
                         else {
                             $monthPicker.igCombo('option', 'disabled', true);
                             $dayPicker.igCombo('option', 'disabled', true);
+                            $container.find("input").attr("tabindex", "-1");
                         }
                         if (!nts.uk.util.isNullOrUndefined(value) && nts.uk.ntsNumber.isNumber(value)) {
                             var month = nts.uk.ntsNumber.trunc(parseInt(value) / 100);
