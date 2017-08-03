@@ -15,19 +15,21 @@ public class PerInfoCategoryFinder {
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
-	public List<PerInfoCtgNewLayoutDto> getAllPerInfoCtgNewLayout() {
-		return perInfoCtgRepositoty.getAllPerInfoCategory(AppContexts.user().companyId()).stream().map(p -> {
-			return new PerInfoCtgNewLayoutDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
-					p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
-					p.getCategoryType().value, p.getIsFixed().value);
-		}).collect(Collectors.toList());
+	public List<PerInfoCategoryDto> getAllPerInfoCtg() {
+		return perInfoCtgRepositoty
+				.getAllPerInfoCategory(AppContexts.user().companyId(), AppContexts.user().contractCode()).stream()
+				.map(p -> {
+					return new PerInfoCategoryDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
+							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
+							p.getCategoryType().value, p.getIsFixed().value);
+				}).collect(Collectors.toList());
 	};
 
-	public PerInfoCtgNewLayoutDto getPerInfoCtgNewLayout(String perInfoCategoryId) {
-		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCategoryId).map(p -> {
-			return new PerInfoCtgNewLayoutDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
-					p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
-					p.getCategoryType().value, p.getIsFixed().value);
+	public PerInfoCategoryDto getPerInfoCtg(String perInfoCategoryId) {
+		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCategoryId, AppContexts.user().contractCode()).map(p -> {
+			return new PerInfoCategoryDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(), p.getCategoryName().v(),
+					p.getPersonEmployeeType().value, p.getIsAbolition().value, p.getCategoryType().value,
+					p.getIsFixed().value);
 		}).orElse(null);
 	};
 
