@@ -24,10 +24,11 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	private final String SEL_4 = SEL_NO_WHERE
 			+ " WHERE c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
 
-	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName,"
+	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, cm.categoryType,"
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " LEFT JOIN PpemtPerInfoCtgCm cm" + " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
@@ -42,7 +43,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
 		val domain = new PersonInfoCategoryDetail(entity[0].toString(), entity[1].toString(), entity[2].toString(),
-				Boolean.valueOf(entity[3].toString()));
+				Integer.valueOf(entity[3].toString()), Boolean.valueOf(entity[4].toString()));
 		return domain;
 	}
 

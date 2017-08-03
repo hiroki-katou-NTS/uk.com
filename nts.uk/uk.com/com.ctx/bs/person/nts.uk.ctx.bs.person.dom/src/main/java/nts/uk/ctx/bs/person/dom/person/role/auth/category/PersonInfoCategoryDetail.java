@@ -19,5 +19,9 @@ public class PersonInfoCategoryDetail {
 	private String categoryName;
 	@Setter
 	@Getter
+	private int categoryType;
+	@Setter
+	@Getter
 	private boolean isSetting;
+	
 }
