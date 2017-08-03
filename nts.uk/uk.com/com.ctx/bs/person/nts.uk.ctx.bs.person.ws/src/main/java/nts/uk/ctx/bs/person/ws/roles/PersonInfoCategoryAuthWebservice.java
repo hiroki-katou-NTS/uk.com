@@ -46,5 +46,11 @@ public class PersonInfoCategoryAuthWebservice extends WebService {
 			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
 		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuth(roleId, personCategoryAuthId).get();
 	}
+	@POST
+	@Path("findDetail/{personCategoryAuthId}")
+	public PersonInfoCategoryAuthDto getAuthDetailByPId(
+			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
+		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(personCategoryAuthId).get();
+	}
 
 }

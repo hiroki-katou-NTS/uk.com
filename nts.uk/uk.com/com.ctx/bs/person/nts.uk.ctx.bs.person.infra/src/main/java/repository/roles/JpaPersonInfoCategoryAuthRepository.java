@@ -21,9 +21,12 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	private final String SEL_1 = SEL_NO_WHERE + " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 	private final String SEL_2 = SEL_1
 			+ " AND  c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
+	private final String SEL_4 = SEL_NO_WHERE
+			+ " WHERE c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
 
-	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName"
-			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p " 
+	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName,"
+			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
+			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId";
 
@@ -38,7 +41,8 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
-		val domain = new PersonInfoCategoryDetail(entity[0].toString(), entity[1].toString(), entity[2].toString(),false);
+		val domain = new PersonInfoCategoryDetail(entity[0].toString(), entity[1].toString(), entity[2].toString(),
+				Boolean.valueOf(entity[3].toString()));
 		return domain;
 	}
 
@@ -104,9 +108,15 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	@Override
 	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
-		return this.queryProxy().query(SEL_3,  Object[].class)
-				.setParameter("roleId", roleId)
-				.getList( c -> toDomain(c));
-				
+		return this.queryProxy().query(SEL_3, Object[].class).setParameter("roleId", roleId).getList(c -> toDomain(c));
+
+	}
+
+	@Override
+	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+		return this.queryProxy().query(SEL_4, PpemtPersonCategoryAuth.class)
+				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle().map(e -> {
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
 	}
 }

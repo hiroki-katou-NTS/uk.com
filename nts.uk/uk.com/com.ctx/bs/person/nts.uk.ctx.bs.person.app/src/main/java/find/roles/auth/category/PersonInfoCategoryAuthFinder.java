@@ -22,26 +22,26 @@ public class PersonInfoCategoryAuthFinder {
 	private PersonInfoCategoryAuthRepository personCategoryAuthRepository;
 
 	public List<PersonInfoCategoryAuthDto> getAllPersonCategoryAuth() {
-		return this.personCategoryAuthRepository.getAllPersonCategoryAuth()
-				.stream()
-				.map(item -> PersonInfoCategoryAuthDto.fromDomain(item))
-				.collect(Collectors.toList());
+		return this.personCategoryAuthRepository.getAllPersonCategoryAuth().stream()
+				.map(item -> PersonInfoCategoryAuthDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 	public List<PersonInfoCategoryAuthDto> getAllPersonCategoryAuthByRoleId(String roleId) {
-		return this.personCategoryAuthRepository.getAllPersonCategoryAuthByRoleId(roleId)
-				.stream()
-				.map(item -> PersonInfoCategoryAuthDto.fromDomain(item))
-				.collect(Collectors.toList());
+		return this.personCategoryAuthRepository.getAllPersonCategoryAuthByRoleId(roleId).stream()
+				.map(item -> PersonInfoCategoryAuthDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
-	public List<PersonInfoCategoryDetail> getAllCategory(String roleId){
-			return  this.personCategoryAuthRepository.getAllCategory(roleId);
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
+		return this.personCategoryAuthRepository.getAllCategory(roleId);
 	}
 
-	public Optional<PersonInfoCategoryAuthDto> getDetailPersonCategoryAuth(String roleId,
-			String personCategoryAuthId) {
+	public Optional<PersonInfoCategoryAuthDto> getDetailPersonCategoryAuth(String roleId, String personCategoryAuthId) {
 		return this.personCategoryAuthRepository.getDetailPersonCategoryAuth(roleId, personCategoryAuthId)
+				.map(c -> PersonInfoCategoryAuthDto.fromDomain(c));
+	}
+
+	public Optional<PersonInfoCategoryAuthDto> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+		return this.personCategoryAuthRepository.getDetailPersonCategoryAuthByPId(personCategoryAuthId)
 				.map(c -> PersonInfoCategoryAuthDto.fromDomain(c));
 	}
 }

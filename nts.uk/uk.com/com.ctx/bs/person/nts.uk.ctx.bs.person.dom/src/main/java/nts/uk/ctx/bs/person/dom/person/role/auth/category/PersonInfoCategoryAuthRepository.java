@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.person.dom.person.role.auth.category;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface PersonInfoCategoryAuthRepository {
 	List<PersonInfoCategoryAuth> getAllPersonCategoryAuth();
@@ -17,4 +18,6 @@ public interface PersonInfoCategoryAuthRepository {
 	void update(PersonInfoCategoryAuth domain);
 
 	void delete(String roleId,String personCategoryAuthId);
+
+	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId);
 }
