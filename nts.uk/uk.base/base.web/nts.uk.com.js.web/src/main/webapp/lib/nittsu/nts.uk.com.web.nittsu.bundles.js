@@ -8,6 +8,31 @@ var nts;
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
+            function compare(obj1, obj2) {
+                for (var p in obj1) {
+                    if (obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) {
+                        return false;
+                    }
+                    switch (typeof (obj1[p])) {
+                        case "object":
+                            if (!compare(obj1[p], obj2[p]))
+                                return false;
+                            break;
+                        case "function":
+                            break;
+                        default:
+                            if (obj1[p] !== obj2[p]) {
+                                return false;
+                            }
+                    }
+                }
+                for (var p in obj2) {
+                    if (typeof (obj1[p]) == 'undefined')
+                        return false;
+                }
+                return true;
+            }
+            util.compare = compare;
             function alwaysTrue() {
                 return true;
             }
@@ -618,6 +643,24 @@ var nts;
         var characteristics;
         (function (characteristics) {
             var delayToEmulateAjax = 100;
+            function convertObjectToArray(key) {
+                var result = [];
+                for (var p in key) {
+                    result.push([p, key[p]]);
+                }
+                result.sort(function (a, b) {
+                    return a > b;
+                });
+                return result.toString();
+            }
+            function saveByObjectKey(key, value) {
+                return save(convertObjectToArray(key), value);
+            }
+            characteristics.saveByObjectKey = saveByObjectKey;
+            function restoreByObjectKey(key) {
+                return restore(convertObjectToArray(key));
+            }
+            characteristics.restoreByObjectKey = restoreByObjectKey;
             function save(key, value) {
                 var dfd = $.Deferred();
                 setTimeout(function () {
