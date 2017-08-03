@@ -10,11 +10,17 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class User.
  */
+
+/**
+ * Gets the associated employee id.
+ *
+ * @return the associated employee id
+ */
 @Getter
 public class User {
 
 	/** The user id. */
-	private UserId userId;
+	private String userId;
 
 	/** The password. */
 	private HashPassword password;
@@ -34,26 +40,19 @@ public class User {
 	/** The multi company concurrent. */
 	private boolean multiCompanyConcurrent;
 
-	/** The Mail address. */
+	/** The mail address. */
 	private MailAddress mailAddress;
 
 	/** The user name. */
 	private UserName userName;
 
 	/** The associated employee id. */
-	private String associatedEmployeeId;
+	private String associatedPersonId;
 
 	/**
-	 * @param userId
-	 * @param password
-	 * @param loginId
-	 * @param contractCode
-	 * @param expirationDate
-	 * @param specialUser
-	 * @param multiCompanyConcurrent
-	 * @param mailAddress
-	 * @param userName
-	 * @param associatedEmployeeId
+	 * Instantiates a new user.
+	 *
+	 * @param memento the memento
 	 */
 	public User(UserGetMemento memento) {
 		this.userId = memento.getUserId();
@@ -65,9 +64,14 @@ public class User {
 		this.multiCompanyConcurrent = memento.isMultiCompanyConcurrent();
 		this.mailAddress = memento.getMailAddress();
 		this.userName = memento.getUserName();
-		this.associatedEmployeeId = memento.getAssociatedEmployeeId();
+		this.associatedPersonId = memento.getAssociatedPersonId();
 	}
 
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
 	public void saveToMemento(UserSetMemento memento) {
 		memento.setUserId(this.userId);
 		memento.setPassword(this.password);
@@ -78,6 +82,6 @@ public class User {
 		memento.setMultiCompanyConcurrent(this.multiCompanyConcurrent);
 		memento.setMailAddress(this.mailAddress);
 		memento.setUserName(this.userName);
-		memento.setAssociatedEmployeeId(this.associatedEmployeeId);
+		memento.setAssociatedPersonId(this.associatedPersonId);
 	}
 }

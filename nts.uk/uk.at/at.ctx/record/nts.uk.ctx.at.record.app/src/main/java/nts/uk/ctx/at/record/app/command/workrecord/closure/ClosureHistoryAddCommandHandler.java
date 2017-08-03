@@ -65,7 +65,7 @@ public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHisto
 		if (closure.isPresent() && closureHistoryLast.isPresent()
 				&& closure.get().getClosureMonth().getProcessingDate().v() >= closureHistoryLast.get()
 						.getStartYearMonth().v()
-				&& command.getClosureHistoryAdd().getStartDate() <= closure.get().getClosureMonth()
+				&& command.getClosureHistoryAdd().getStartDate() < closure.get().getClosureMonth()
 						.getProcessingDate().v()) {
 			throw new BusinessException("Msg_180");
 		}

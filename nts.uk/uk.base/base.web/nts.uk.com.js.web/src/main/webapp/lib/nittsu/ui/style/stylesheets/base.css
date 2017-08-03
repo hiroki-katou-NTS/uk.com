@@ -3429,6 +3429,149 @@ button.nts-switch-button[disabled]:hover {
   white-space: nowrap;
 }
 
+/* line 1, ../sass/components/_extable.scss */
+.extable .xheader td {
+  color: #000;
+  background-color: #CFF1A5;
+  font-weight: bold;
+}
+
+/* line 6, ../sass/components/_extable.scss */
+.extable td.edit-cell {
+  padding: 0px;
+}
+
+/* line 9, ../sass/components/_extable.scss */
+.extable div.highlight, td.highlight {
+  background-color: aqua;
+}
+
+/* line 12, ../sass/components/_extable.scss */
+.extable div.xdet, td.xdet {
+  background-color: #D2B4DE;
+}
+
+/* line 15, ../sass/components/_extable.scss */
+.extable div.edited, td.edited {
+  background-color: #FAD7A0;
+}
+
+/* line 18, ../sass/components/_extable.scss */
+.extable div.selected, td.selected {
+  background-color: #3498DB;
+  color: #FFF;
+}
+
+/* line 22, ../sass/components/_extable.scss */
+.extable td.error, div.error {
+  border: solid 1px #FF6666 !important;
+}
+
+/* line 25, ../sass/components/_extable.scss */
+.extable td .column-icon {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  margin-top: -8px;
+}
+
+/* line 32, ../sass/components/_extable.scss */
+.top-right-tooltip:before {
+  width: 0;
+  height: 0;
+  position: absolute;
+  content: " ";
+  border-top: solid transparent 6px;
+  border-bottom: solid transparent 6px;
+  border-right-style: solid;
+  border-right-width: 14px;
+  border-right-color: inherit;
+  top: 5px;
+  left: -14px;
+}
+
+/* line 45, ../sass/components/_extable.scss */
+.top-right-tooltip {
+  background-color: #CACA1E;
+  box-shadow: 2px 2px 2px #95A5A6;
+  border-radius: 2px;
+  border: solid 1px #CACA1E;
+  display: inline-block;
+  padding-left: 4px;
+  padding-top: 4px;
+}
+
+/* line 55, ../sass/components/_extable.scss */
+.x-context-menu {
+  position: absolute;
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #aaa;
+  min-width: 150px;
+  padding: 4px 0;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* line 65, ../sass/components/_extable.scss */
+.x-context-menu li {
+  position: relative;
+  display: block;
+  list-style: none;
+  padding: 0 10px 0 30px;
+  line-height: 28px;
+  cursor: pointer;
+}
+
+/* line 73, ../sass/components/_extable.scss */
+.x-context-menu li:hover {
+  background: rgba(0, 0, 0, 0.075);
+}
+
+/* line 76, ../sass/components/_extable.scss */
+.x-context-menu li.disabled {
+  background: transparent;
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* line 81, ../sass/components/_extable.scss */
+.x-context-menu li .menu-icon {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  margin-top: -8px;
+}
+
+/* line 87, ../sass/components/_extable.scss */
+.x-context-menu .partition {
+  height: 0;
+  border-top: 1px solid #ccc;
+  padding: 0;
+  margin: 5px 0;
+}
+
+/* line 94, ../sass/components/_extable.scss */
+.x-popup-panel {
+  position: absolute;
+  display: block;
+  background-color: #fff;
+  border: solid 2px #E67E22;
+  -webkit-box-shadow: 1px 1px 5px 1px #888;
+  -moz-box-shadow: 1px 1px 5px 1px #888;
+  box-shadow: 1px 1px 5px 1px #888;
+  padding: 5px;
+}
+
+/* line 105, ../sass/components/_extable.scss */
+.x-link {
+  display: inline-block;
+  color: #0D86D1;
+  text-decoration: underline;
+  cursor: pointer;
+  user-select: none;
+}
+
 /*****************************
   Limited label
 *****************************/
@@ -3698,12 +3841,12 @@ button.nts-switch-button[disabled]:hover {
   top: 10px;
 }
 
-/* line 44, ../sass/base.scss */
+/* line 45, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 48, ../sass/base.scss */
+/* line 49, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

@@ -13,7 +13,6 @@ public class LayoutCode extends CodePrimitiveValue<LayoutCode>{
 	
 	public LayoutCode(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

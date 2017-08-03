@@ -4,13 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.shift.basicworkregister;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplaceWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet;
 
 /**
  * The Class JpaWorkplaceBasicWorkGetMemento.
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplac
 public class JpaWorkplaceBasicWorkGetMemento implements WorkplaceBasicWorkGetMemento {
 
 	/** The type value. */
-	private List<KwbmtWorkplaceWorkSet> typeValue;
+	private List<KscmtWorkplaceWorkSet> typeValue;
 
 	/**
 	 * Instantiates a new jpa workplace basic work get memento.
@@ -26,9 +27,12 @@ public class JpaWorkplaceBasicWorkGetMemento implements WorkplaceBasicWorkGetMem
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaWorkplaceBasicWorkGetMemento(List<KwbmtWorkplaceWorkSet> typeValue) {
+	public JpaWorkplaceBasicWorkGetMemento(List<KscmtWorkplaceWorkSet> typeValue) {
 		super();
 		this.typeValue = typeValue;
+		if (this.typeValue == null) {
+			this.typeValue = new ArrayList<>();
+		}
 	}
 
 	/*
@@ -39,7 +43,7 @@ public class JpaWorkplaceBasicWorkGetMemento implements WorkplaceBasicWorkGetMem
 	 */
 	@Override
 	public WorkplaceId getWorkPlaceId() {
-		return new WorkplaceId(this.typeValue.get(0).getKwbmtWorkplaceWorkSetPK().getWorkplaceId());
+		return new WorkplaceId(this.typeValue.get(0).getKscmtWorkplaceWorkSetPK().getWorkplaceId());
 	}
 
 	/*

@@ -14,7 +14,7 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
 
 @Stateless
 public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements PersonInfoRoleAuthRepository {
-	private final String SEL_NO_WHERE = "SELECT C FROM PpemtPersonRoleAuth c";
+	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonRoleAuth c";
 
 	private final String SEL_1 = SEL_NO_WHERE
 			+ " WHERE c.ppemtPersonRoleAuthPk.roleId =:roleId";
@@ -29,6 +29,7 @@ public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements Pe
 	private static PpemtPersonRoleAuth toEntity(PersonInfoRoleAuth domain) {
 		PpemtPersonRoleAuth entity = new PpemtPersonRoleAuth();
 		entity.ppemtPersonRoleAuthPk = new PpemtPersonRoleAuthPk(domain.getRoleId());
+		entity.companyId = domain.getCompanyId();
 		entity.allowMapBrowse = domain.getAllowMapBrowse().value;
 		entity.allowMapUpload = domain.getAllowMapUpload().value;
 		entity.allowDocRef = domain.getAllowDocRef().value;
@@ -68,7 +69,7 @@ public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements Pe
 	@Override
 	public void delete(String roleId) {
 		this.commandProxy().remove(PpemtPersonRoleAuth.class, new PpemtPersonRoleAuthPk(roleId));
-
+		this.getEntityManager().flush();
 	}
 
 }

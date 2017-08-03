@@ -4,59 +4,22 @@ module nts.uk.at.view.kdl023.base.service {
         getHoliday: 'at/schedule/holiday/getHolidayByListDate',
         getWorkTime: 'at/shared/worktime/findByCompanyID',
         getWorkType: 'at/share/worktype/findAll',
-        getAllPattern: 'ctx/at/share/vacation/setting/patterncalendar/getallpattcal'
+        getAllPattern: 'ctx/at/schedule/shift/pattern/daily/getall',
+        findPatternByCode: 'ctx/at/schedule/shift/pattern/daily/find',
+        getWeeklyWorkSetting: 'ctx/at/schedule/pattern/work/weekly/setting/findAll'
     }
 
     export function save(key: any, data: model.PatternReflection): JQueryPromise<void> {
         return nts.uk.characteristics.save(key, data);
     }
-
     export function find(key: string): JQueryPromise<model.PatternReflection> {
         return nts.uk.characteristics.restore(key);
     }
     export function findAllPattern(): JQueryPromise<Array<model.DailyPatternSetting>> {
-        //return nts.uk.request.ajax(servicePath.getAllPattern);
-        let dfd = $.Deferred();
-        dfd.resolve([{
-            patternCode: '1',
-            patternName: 'asdv',
-            workPatterns: [{
-                dispOrder: 1,
-                workTypeCode: '009',
-                workingHoursCode: '003',
-                days: 1,
-            }, {
-                    dispOrder: 2,
-                    workTypeCode: '008',
-                    workingHoursCode: '002',
-                    days: 2,
-                }, {
-                    dispOrder: 3,
-                    workTypeCode: '007',
-                    workingHoursCode: '001',
-                    days: 3,
-                }]
-        }, {
-                patternCode: '2',
-                patternName: 'ddddd',
-                workPatterns: [{
-                    dispOrder: 1,
-                    workTypeCode: '001',
-                    workingHoursCode: '002',
-                    days: 1,
-                }, {
-                        dispOrder: 2,
-                        workTypeCode: '003',
-                        workingHoursCode: '004',
-                        days: 2,
-                    }, {
-                        dispOrder: 3,
-                        workTypeCode: '005',
-                        workingHoursCode: '003',
-                        days: 3,
-                    }]
-            }]);
-        return dfd.promise();
+        return nts.uk.request.ajax(servicePath.getAllPattern);
+    }
+    export function findPatternByCode(code: string): JQueryPromise<model.DailyPatternSetting> {
+        return nts.uk.request.ajax(servicePath.findPatternByCode + '/' + code);
     }
     export function getHolidayByListDate(dates: Array<string>): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax(servicePath.getHoliday, dates);
@@ -68,18 +31,7 @@ module nts.uk.at.view.kdl023.base.service {
         return nts.uk.request.ajax(servicePath.getWorkTime);
     }
     export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
-        let dfd = $.Deferred();
-        // default la working day.
-        dfd.resolve({
-            monday: 0,
-            tuesday: 0,
-            wednesday: 2,
-            thursday: 0,
-            friday: 0,
-            saturday: 1,
-            sunday: 2,
-        });
-        return dfd.promise();
+        return nts.uk.request.ajax(servicePath.getWeeklyWorkSetting);
     }
 
     export module model {
@@ -94,12 +46,12 @@ module nts.uk.at.view.kdl023.base.service {
         export interface DailyPatternSetting {
             patternCode: string;
             patternName: string;
-            workPatterns: Array<DailyPatternValue>;
+            listDailyPatternVal: Array<DailyPatternValue>;
         }
         export interface DailyPatternValue {
             dispOrder: number;
-            workTypeCode: string;
-            workingHoursCode: string;
+            workTypeSetCd: string;
+            workingHoursCd: string;
             days: number;
         }
         export interface WorkType {
@@ -115,12 +67,12 @@ module nts.uk.at.view.kdl023.base.service {
             workTypeCode: string;
         }
         export enum PatternClassification {
-            Confirmation,
-            Configuration
+            Confirmation = 0,
+            Configuration = 1
         }
         export enum ReflectionMethod {
-            Overwrite,
-            FillInTheBlank
+            Overwrite = 0,
+            FillInTheBlank = 1
         }
         export enum WorkDayDivision {
             WorkingDay = 0,

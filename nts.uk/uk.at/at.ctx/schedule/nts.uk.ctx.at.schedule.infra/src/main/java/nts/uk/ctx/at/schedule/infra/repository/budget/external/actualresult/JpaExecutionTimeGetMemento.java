@@ -4,8 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
-import java.util.Date;
-
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTimeGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
 
@@ -30,23 +29,23 @@ public class JpaExecutionTimeGetMemento implements ExecutionTimeGetMemento {
     /*
      * (non-Javadoc)
      * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresults.
-     * ExecutionTimeGetMemento#getStartDate()
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExecutionTimeGetMemento#getStartDateTime()
      */
     @Override
-    public Date getStartDate() {
-        return this.entityParent.getStrD().date();
+    public GeneralDateTime getStartDateTime() {
+        return this.entityParent.getStrDateTime();
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresults.
-     * ExecutionTimeGetMemento#getEndDate()
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExecutionTimeGetMemento#getEndDateTime()
      */
     @Override
-    public Date getEndDate() {
-        return this.entityParent.getEndD().date();
+    public GeneralDateTime getEndDateTime() {
+        return this.entityParent.getEndDateTime();
     }
 
 }

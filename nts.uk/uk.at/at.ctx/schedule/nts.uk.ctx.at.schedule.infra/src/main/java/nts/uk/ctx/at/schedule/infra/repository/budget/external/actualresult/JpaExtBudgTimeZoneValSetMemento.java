@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgTimeZoneValSetMemento;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTimeVal;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTime;
 
 /**
  * The Class JpaExtBudgTimeZoneValSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExt
 public class JpaExtBudgTimeZoneValSetMemento<T> implements ExtBudgTimeZoneValSetMemento<T> {
 
     /** The entity. */
-    private KscdtExtBudgetTimeVal entity;
+    private KscdtExtBudgetTime entity;
 
     /**
      * Instantiates a new jpa ext budg time zone val set memento.
@@ -25,7 +25,7 @@ public class JpaExtBudgTimeZoneValSetMemento<T> implements ExtBudgTimeZoneValSet
      * @param entity
      *            the entity
      */
-    public JpaExtBudgTimeZoneValSetMemento(KscdtExtBudgetTimeVal entity) {
+    public JpaExtBudgTimeZoneValSetMemento(KscdtExtBudgetTime entity) {
         this.entity = entity;
     }
 
@@ -37,7 +37,7 @@ public class JpaExtBudgTimeZoneValSetMemento<T> implements ExtBudgTimeZoneValSet
      */
     @Override
     public void setTimePeriod(int timePeriod) {
-        this.entity.setPeriodTimeNo(timePeriod);
+        this.entity.getKscdtExtBudgetTimePK().setPeriodTimeNo(timePeriod);
     }
 
     /*

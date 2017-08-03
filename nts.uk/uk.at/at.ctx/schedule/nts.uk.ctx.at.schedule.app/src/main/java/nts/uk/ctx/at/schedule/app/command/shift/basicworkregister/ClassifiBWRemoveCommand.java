@@ -4,23 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 
 /**
  * The Class ClassifiBWRemoveCommand.
  */
-@Getter
-@Setter
+@Data
 public class ClassifiBWRemoveCommand {
-
-	/** The company id. */
-	private String companyId;
 
 	/** The classification code. */
 	private String classificationCode;
-
-	/** The work type code. */
-	private String workTypeCode;
 }

@@ -184,16 +184,14 @@ module kcp.share.tree {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
                     
-                    // Set default value when initial component.
-                    self.initSelectedValue(res);
-                    
                     if (data.isShowAlreadySet) { 
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
                             self.addAlreadySettingAttr(self.backupItemList(), newAlreadySettings);
-                            self.itemList(self.backupItemList());
                             
-                            //self.filterData(data, $input);
+                            // filter data, not change selected workplace id
+                            let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
+                            self.itemList(subItemList);
                         });
                     }
                     
@@ -207,14 +205,14 @@ module kcp.share.tree {
                     $('#combo-box-tree-component').on('mousedown', function() {
                         $('#combo-box-tree-component').focus();
                     });
+                    // Set default value when initial component.
+                    self.initSelectedValue(res);
+                    
                     dfd.resolve();
                 })
                 
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
                    self.addIconToAlreadyCol();
-                   $('.tree-component-node-text-col').tooltip({
-                       track: true
-                   });
                 });
                 // defined function focus
                 $.fn.focusTreeGridComponent = function() {
@@ -225,11 +223,6 @@ module kcp.share.tree {
                     }
                 }
             });
-            
-            // defined function get data list.
-            $.fn.getDataList = function(): Array<kcp.share.tree.UnitModel> {
-                return self.backupItemList();
-            }
             
             // define function get row selected
             $.fn.getRowSelected = function(): Array<any> {
@@ -252,7 +245,7 @@ module kcp.share.tree {
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true},
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: maxSizeNameCol, dataType: "string",
-                    template: "<td class='tree-component-node-text-col' title='${nodeText}'>${nodeText}</td>"}
+                    template: "<td class='tree-component-node-text-col'>${nodeText}</td>"}
             ];
             // If show Already setting.
             if (data.isShowAlreadySet) {
@@ -433,10 +426,8 @@ module kcp.share.tree {
                 
                 // find sub list unit model by level
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
-                if (subItemList.length > 0) {
+//                if (subItemList.length > 0) {
                     self.itemList(subItemList);
-//                    self.selectedWorkplaceIds(self.isMultiple ? [subItemList[0].workplaceId] : subItemList[0]
-//                        .workplaceId);
                     self.initSelectedValue(self.itemList());
                     if (!data || !$input) {
                         return;
@@ -446,7 +437,7 @@ module kcp.share.tree {
                             $('#combo-box-tree-component').focus();
                         });
                     });
-                }
+//                }
             }
         }
         

@@ -17,7 +17,7 @@ public class JpaContractRepository extends JpaRepository implements ContractRepo
 	@Override
 	public Optional<Contract> getContract() {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 }

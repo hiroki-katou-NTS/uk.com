@@ -1,52 +1,65 @@
-#combo-box1{
-	top:9px; 
+#label, #combo-box1, #group-button, #set-work-type {
+	float: left;
 }
-#time-edit1{
+
+#combo-box1 {
+	top: 2px;
+	margin-left: 20px
+}
+
+#time-edit1 {
 	text-align: center !important;
-    width: 43px !important;
+	width: 43px !important;
+	margin-left: 16px
 }
-#time-edit2{
+
+#time-edit2 {
 	text-align: center !important;
-    width: 43px !important;
+	width: 43px !important;
 }
-#bot-sky{
-	margin-top: 25px;
+
+#set-work-time {
+	float: left;
+	margin-top: 2px;
 }
-.reserved{
+
+.reserved {
 	margin-left: 10px;
 }
-.reserved{
+
+.switchButton-wrapper {
 	margin-left: 30px;
 }
-.switchButton-wrapper{
+
+#combo-box2 {
+	top: 9px;
 	margin-left: 30px;
+	min-width: 516px !important;
 }
-#combo-box2{
-	top:9px;
-	margin-left: 30px;
-	min-width: 516px !important; 
+
+#combo-box1 {
+	min-width: 335px !important;
 }
-#combo-box1{
-	min-width: 335px !important; 
+
+#group-button {
+	margin-left: 240px;
 }
-#button-top{
-	float: right;
+
+#group-button>button:last-child {
+	width: 20px;
+	top: -5px;
+	height: 20px;
 }
-#spelcial{
+
+
+#spelcial, #time-edit2 {
 	margin-left: 10px;
 }
-#time-edit2{
-	margin-left: 10px;
+
+#undo-button {
+	margin-right: 150px;
 }
-.04_1{
-	margin-top: -3px !important;
-}
-.undo-button{
-	margin-right: 170px;
-}
-.cf1 .nts-switch-button{
+
+.cf1 .nts-switch-button {
 	width: 96px !important;
-}
-.form-label{
-	margin-left: 58px;
 }

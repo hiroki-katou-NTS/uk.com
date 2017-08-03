@@ -1,9 +1,10 @@
 module nts.uk.com.view.cas001.a.viewmodel {
-
+    import alert = nts.uk.ui.dialog.alert;
+    import text = nts.uk.resource.getText;
     export class ScreenModel {
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole(null));
-        currentRoleCode: KnockoutObservable<string> = ko.observable('');
+        currentRoleId: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
             { code: '1', name: '可' },
             { code: '0', name: '不可' }
@@ -15,19 +16,16 @@ module nts.uk.com.view.cas001.a.viewmodel {
         ]);
         anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
         seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
-        checkBoxSelectedAll: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
-            self.currentRoleCode.subscribe(function(newRoleCode) {
-                let newPersonRole = _.find(self.personRoleList(), function(role) { return role.roleCode === newRoleCode });
-                newPersonRole.loadRoleCategories(newPersonRole.roleCode);
-                self.currentRole(newPersonRole);
-            });
-            self.checkBoxSelectedAll.subscribe(function(newValue) {
-                for (let item of self.currentRole().currentCategory().roleItemList()) {
-                    item.IsSelected = newValue;
-                }
-                $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
+            self.currentRoleId.subscribe(function(newRoleId) {
+                let newPersonRole = _.find(self.personRoleList(), function(role) { return role.roleId === newRoleId });
+                service.getPersonRoleAuth(newPersonRole.roleId).done(function(result: IPersonRole) {
+                    newPersonRole.loadRoleCategoriesList(newPersonRole.roleId).done(function() {
+                        newPersonRole.setRoleAuth(result);
+                        self.currentRole(newPersonRole);
+                    });
+                });
             });
             self.seftSelectedAll.subscribe(function(newValue) {
                 for (let item of self.currentRole().currentCategory().roleItemList()) {
@@ -41,43 +39,82 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     item.OtherPeopleAuthority = newValue;
                 }
                 $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
-
+            });
+        }
+        OpenDModal() {
+            nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+            });
+        }
+        OpenCModal() {
+            nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
             });
         }
         InitializationItemGrid() {
             let self = this;
             $("#item_role_table_body").ntsGrid({
-                features: [{ name: 'Resizing' }],
+                features: [{ name: 'Resizing' },
+                    {
+                        name: "RowSelectors",
+                        enableCheckBoxes: true,
+                        enableRowNumbering: false,
+                        rowSelectorColumnWidth: 34
+                    }
+                ],
                 ntsFeatures: [{ name: 'CopyPaste' }],
-                showHeader: false,
+                showHeader: true,
                 width: '800px',
                 height: '261px',
-                dataSource: self.currentRole().currentCategory().roleItemList(),
+                dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
                 primaryKey: 'ItemName',
                 virtualization: true,
                 virtualizationMode: 'continuous',
+                virtualrecordsrender: function(evt, ui) {
+                    var ds = ui.owner.dataSource.data();
+                    $(ds)
+                        .each(
+                        function(index, el: any) {
+                            let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 0, index);
+                            let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
+                            let NameCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
+                            if (el.IsRequired == '1') {
+                                $(CheckboxCell).addClass('requiredCell');
+                                $(IsConfigCell).addClass('requiredCell');
+                                $(NameCell).addClass('requiredCell');
+                            }
+                        });
+                },
                 columns: [
-                    { headerText: 'FLAG', key: 'IsSelected', dataType: 'boolean', width: '34px', ntsControl: 'Checkbox' },
-                    { headerText: 'IsConfig', key: 'IsConfig', dataType: 'string', width: '34px', formatter: makeIcon },
-                    { headerText: 'ItemName', key: 'ItemName', dataType: 'string', width: '255px' },
-                    { headerText: 'RULECODE', key: 'OtherPeopleAuthority', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
-                    { headerText: 'RULECODE', key: 'SelfAuthority', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
+                    { headerText: text('CAS001_69'), key: 'IsConfig', dataType: 'string', width: '48px', formatter: makeIcon },
+                    { headerText: 'IsRequired', key: 'IsRequired', dataType: 'string', width: '34px', hidden: true },
+                    { headerText: text('CAS001_47'), key: 'ItemName', dataType: 'string', width: '255px' },
+                    { headerText: text('CAS001_48'), key: 'OtherPeopleAuthority', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
+                    { headerText: text('CAS001_52'), key: 'SelfAuthority', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
                 ],
                 ntsControls: [
-                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     {
                         name: 'SwitchButtons', options: [{ value: '0', text: '非表示' }, { value: '1', text: '参照のみ' }, { value: '2', text: '更新' }],
                         optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
                     },
-                ]
-            });
+                ],
 
+            });
+            //add switch to table header
+
+            let switchString = "<div id=\'auth_of_info_selected_all\'"
+                + "data-bind=\"ntsSwitchButton: {options: itemListCbb"
+                + ",optionsValue:\'code\',optionsText: \'name\',value: {0},enable: true }\">"
+                + "</div><span id=\'selected_all_caret\' class=\'caret-bottom outline\'></span>"
+            let selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll');
+            let seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll');
+            nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'OtherPeopleAuthority').append($(selectedAllString));
+            nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'SelfAuthority').append($(seftSelectedAllString));
         }
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             self.InitializationItemGrid();
             self.loadPersonRoleList().done(function() {
+
                 dfd.resolve();
             });
             return dfd.promise();
@@ -86,100 +123,133 @@ module nts.uk.com.view.cas001.a.viewmodel {
         loadPersonRoleList(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            for (let i = 1; i < 100; i++) {
-                let object = {
-                    roleCode: '00' + i,
-                    roleName: '基本給' + i,
-                    AllowMapBrowsing: 1,
-                    AllowMapUpLoad: 0,
-                    AllowDocumentUpload: 1,
-                    AllowDocumentReference: 1,
-                    AllowAvatarUpload: 0,
-                    AllowAvatarReference: 1,
-                };
-                self.personRoleList.push(new PersonRole(object));
-            }
-            if (self.personRoleList().length > 0)
-                self.currentRoleCode(self.personRoleList()[0].roleCode);
-            dfd.resolve();
+            service.getPersonRoleList().done(function(result: Array<IPersonRole>) {
+                _.forEach(result, function(iPersonRole: IPersonRole) {
+                    self.personRoleList().push(new PersonRole(iPersonRole));
+                });
+                if (self.personRoleList().length > 0) {
+                    self.currentRoleId(self.personRoleList()[0].roleId);
+                }
+                else {
+                    alert(text('Msg_217'));
+                }
+                dfd.resolve();
+            });
             return dfd.promise();
         }
 
+        saveData() {
+            let self = this;
+            let item = self.currentRole().currentCategory().roleItemList()[0];
+            console.log(item.OtherPeopleAuthority);
+        }
     }
-    export class PersonRole {
+    export interface IPersonRole {
+        roleId: string;
         roleCode: string;
         roleName: string;
-        AllowMapBrowsing: KnockoutObservable<number>;
-        AllowMapUpLoad: KnockoutObservable<number>;
-        AllowDocumentUpload: KnockoutObservable<number>;
-        AllowDocumentReference: KnockoutObservable<number>;
-        AllowAvatarUpload: KnockoutObservable<number>;
-        AllowAvatarReference: KnockoutObservable<number>;
+        allowMapBrowse: number;
+        allowMapUpload: number;
+        allowDocUpload: number;
+        allowDocRef: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
+    }
+    export interface IPersonRoleCategory {
+        PersonInfoCategoryId: string;
+        PersonInfoCategoryName: string;
+        IsConfig: number;
+        PersonRoleType: any;
+        AllowPersonReference: number;
+        AllowOthersReference: number;
+        AllowAnotherCompanyReference: number;
+        PastHistoryAuthority: number;
+        FutureHistoryAuthority: number;
+        AllowDeleteHistory: number;
+        AllowAddHistory: number;
+        OtherPastHistoryAuthority: number;
+        OtherFutureHistoryAuthority: number;
+        OtherAllowDeleteHistory: number;
+        OtherAllowAddHistory: number;
+        AllowDeleteMulti: number;
+        AllowAddMulti: number;
+        AllowOtherDeleteMulti: number;
+        AllowOtherAddMulti: number;
+
+    }
+    export interface IPersonRoleItem {
+        PersonInfoItemDefinitionID: string;
+        IsConfig: number;
+        IsRequired: number;
+        ItemName: string;
+        PersonInfoItemAuthorityID: string;
+        PersonInfoCategoryID: string;
+        OtherPeopleAuthority: number;
+        SelfAuthority: number;
+    }
+    export class PersonRole {
+        roleId: string;
+        roleCode: string;
+        roleName: string;
+        allowMapBrowse: KnockoutObservable<number>;
+        allowMapUpload: KnockoutObservable<number>;
+        allowDocUpload: KnockoutObservable<number>;
+        allowDocRef: KnockoutObservable<number>;
+        allowAvatarUpload: KnockoutObservable<number>;
+        allowAvatarRef: KnockoutObservable<number>;
         RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
-        currentCategory: KnockoutObservable<PersonRoleCategory> = ko.observable(new PersonRoleCategory(null));
-        currentRoleCategoryCode: KnockoutObservable<string> = ko.observable('');
-        constructor(param: service.IPersonRole) {
+        currentCategory: KnockoutObservable<PersonRoleCategory> = ko.observable(null);
+        currentRoleCategoryId: KnockoutObservable<string> = ko.observable('');
+        constructor(param: IPersonRole) {
             let self = this;
+            self.roleId = param ? param.roleId : '';
             self.roleCode = param ? param.roleCode : '';
             self.roleName = param ? param.roleName : '';
-            self.AllowMapBrowsing = ko.observable(param ? param.AllowMapBrowsing : 0);
-            self.AllowMapUpLoad = ko.observable(param ? param.AllowMapUpLoad : 0);
-            self.AllowDocumentUpload = ko.observable(param ? param.AllowDocumentUpload : 0);
-            self.AllowDocumentReference = ko.observable(param ? param.AllowDocumentReference : 0);
-            self.AllowAvatarUpload = ko.observable(param ? param.AllowAvatarUpload : 0);
-            self.AllowAvatarReference = ko.observable(param ? param.AllowAvatarReference : 0);
+            self.allowMapBrowse = ko.observable(param ? param.allowMapBrowse : 0);
+            self.allowMapUpload = ko.observable(param ? param.allowMapUpload : 0);
+            self.allowDocUpload = ko.observable(param ? param.allowDocUpload : 0);
+            self.allowDocRef = ko.observable(param ? param.allowDocRef : 0);
+            self.allowAvatarUpload = ko.observable(param ? param.allowAvatarUpload : 0);
+            self.allowAvatarRef = ko.observable(param ? param.allowAvatarRef : 0);
 
-            self.currentRoleCategoryCode.subscribe(function(newCategoryCode) {
-                let newCategory = _.find(self.RoleCategoryList(), function(roleCategory) { return roleCategory.PersonInfoCategoryID === newCategoryCode; });
-                newCategory.loadRoleItems(newCategory.PersonInfoCategoryID);
+            self.currentRoleCategoryId.subscribe(function(newCategoryId) {
+                let newCategory = _.find(self.RoleCategoryList(), function(roleCategory) { return roleCategory.PersonInfoCategoryId === newCategoryId; });
+                newCategory.loadRoleItems(newCategory.PersonInfoCategoryId);
                 self.currentCategory(newCategory);
             });
 
         }
-        ExpandSymbolGen() {
+        setRoleAuth(param: IPersonRole) {
             let self = this;
-            //'&#8896;' : '&#8897;';
-            // return self.itemRegExpand() ? '&#8896;' : '&#8897;';
-            return '&#8896;'
+            self.allowMapBrowse = ko.observable(param ? param.allowMapBrowse : 0);
+            self.allowMapUpload = ko.observable(param ? param.allowMapUpload : 0);
+            self.allowDocUpload = ko.observable(param ? param.allowDocUpload : 0);
+            self.allowDocRef = ko.observable(param ? param.allowDocRef : 0);
+            self.allowAvatarUpload = ko.observable(param ? param.allowAvatarUpload : 0);
+            self.allowAvatarRef = ko.observable(param ? param.allowAvatarRef : 0);
         }
-        loadRoleCategories(RoleCode) {
+        loadRoleCategoriesList(RoleId): JQueryPromise<any> {
             var self = this;
+            var dfd = $.Deferred();
             self.RoleCategoryList([]);
-            for (let i = 1; i < 100; i++) {
-                let referenceNumber = i % 3;
-                let object = {
-                    PersonInfoCategoryID: 'id' + i,
-                    PersonInfoCategoryName: 'name' + i,
-                    IsConfig: i % 2,
-                    PersonRoleType: {
-                        code: referenceNumber,
-                        name: referenceNumber == 1 ? 'pika' : referenceNumber == 2 ? 'mieo' : 'chu'
-                    },
-                    AllowPersonReference: 1,
-                    AllowOthersReference: 0,
-                    AllowAnotherCompanyReference: 1,
-                    PastHistoryAuthority: 0,
-                    FutureHistoryAuthority: 1,
-                    AllowDeleteHistory: 0,
-                    AllowAddHistory: 1,
-                    OtherPastHistoryAuthority: 0,
-                    OtherFutureHistoryAuthority: 1,
-                    OtherAllowDeleteHistory: 0,
-                    OtherAllowAddHistory: 1,
-                    AllowDeleteMulti: 1,
-                    AllowAddMulti: 0,
-                    AllowOtherDeleteMulti: 1,
-                    AllowOtherAddMulti: 1,
-                };
-                self.RoleCategoryList.push(new PersonRoleCategory(object));
-            }
-            if (self.RoleCategoryList().length > 0)
-                self.currentRoleCategoryCode(self.RoleCategoryList()[0].PersonInfoCategoryID);
+            service.getAllPersonCategoryAuthByRoleId(RoleId).done(function(result: Array<IPersonRoleCategory>) {
+                _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
+                    self.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
+                });
+                if (self.RoleCategoryList().length > 0) {
+                    self.currentRoleCategoryId(self.RoleCategoryList()[0].PersonInfoCategoryId);
+                }
+                else {
+                    alert(text('Msg_217'));
+                }
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
 
     }
     export class PersonRoleCategory {
-        PersonInfoCategoryID: string;
+        PersonInfoCategoryId: string;
         PersonInfoCategoryName: string;
         IsConfig: number;
         PersonRoleType: KnockoutObservable<any>;
@@ -201,9 +271,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
         roleItemList: KnockoutObservableArray<PersonRoleItem> = ko.observableArray([]);
         currentItem: KnockoutObservable<PersonRoleItem> = ko.observable(new PersonRoleItem(null));
         currentItemCodes: KnockoutObservableArray<string> = ko.observableArray([]);
-        constructor(param: service.IPersonRoleCategory) {
+        constructor(param: IPersonRoleCategory) {
             let self = this;
-            self.PersonInfoCategoryID = param ? param.PersonInfoCategoryID : '';
+            self.PersonInfoCategoryId = param ? param.PersonInfoCategoryId : '';
             self.PersonInfoCategoryName = param ? param.PersonInfoCategoryName : '';
             self.IsConfig = param ? param.IsConfig : 0;
             self.PersonRoleType = ko.observable(param ? param.PersonRoleType : 0);
@@ -227,7 +297,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             self.roleItemList([]);
-            for (let i = 1; i < 100; i++) {
+            for (let i = 1; i < 1000; i++) {
                 let object = {
                     PersonInfoItemDefinitionID: 'id' + i,
                     IsConfig: i % 2,
@@ -240,10 +310,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 };
                 self.roleItemList().push(new PersonRoleItem(object));
             }
-            if (self.roleItemList().length > 0)
-                self.currentItemCodes([self.roleItemList()[0].PersonInfoItemDefinitionID]);
+            if (self.roleItemList().length < 1) {
+                alert(text('Msg_217'));
+            }
             $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
-
             dfd.resolve();
             return dfd.promise();
         }
@@ -253,12 +323,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
         IsConfig: number;
         IsRequired: number;
         ItemName: string;
-        IsSelected: boolean = false;
         PersonInfoItemAuthorityID: string;
         PersonInfoCategoryID: string;
         OtherPeopleAuthority: number;
         SelfAuthority: number;
-        constructor(param: service.IPersonRoleItem) {
+        constructor(param: IPersonRoleItem) {
             let self = this;
             self.PersonInfoItemDefinitionID = param ? param.PersonInfoItemDefinitionID : '';
             self.IsConfig = param ? param.IsConfig : 0;
@@ -271,6 +340,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         }
 
     }
+
 }
 function makeIcon(value, row) {
     if (value == 1)

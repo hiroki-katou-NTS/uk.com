@@ -15,10 +15,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 @Getter
 public class ExternalBudgetLog extends AggregateRoot {
     
-    /** The company id. */
-    // 会社ID
-    private String companyId;
-    
     /** The ext budget file name. */
     // 外部予算実績受入ファイル名
     private ExtBudgetFileName extBudgetFileName;
@@ -58,7 +54,6 @@ public class ExternalBudgetLog extends AggregateRoot {
      */
     public ExternalBudgetLog(ExternalBudgetLogGetMemento memento) {
         super();
-        this.companyId = memento.getCompanyId();
         this.extBudgetFileName = memento.getExternalBudgetFileName();
         this.extBudgetCode = memento.getExternalBudgetCode();
         this.numberFail = memento.getNumberFail();
@@ -75,7 +70,6 @@ public class ExternalBudgetLog extends AggregateRoot {
      * @param memento the memento
      */
     public void saveToMemento(ExternalBudgetLogSetMemento memento) {
-        memento.setCompanyId(this.companyId);
         memento.setExternalBudgetFileName(this.extBudgetFileName);
         memento.setExternalBudgetCode(this.extBudgetCode);
         memento.setNumberFail(this.numberFail);

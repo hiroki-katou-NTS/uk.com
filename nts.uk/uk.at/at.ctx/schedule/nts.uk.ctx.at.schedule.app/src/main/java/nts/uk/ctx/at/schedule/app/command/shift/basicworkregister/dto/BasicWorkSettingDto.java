@@ -6,12 +6,16 @@ package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSettingGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
 
+/**
+ * The Class BasicWorkSettingDto.
+ */
 @Getter
 @Setter
 public class BasicWorkSettingDto {
@@ -23,7 +27,7 @@ public class BasicWorkSettingDto {
 	private String siftCode;
 	
 	/** The work day division. */
-	private Integer workDayDivision;
+	private int workDayDivision;
 
 	/**
 	 * To domain.
@@ -33,6 +37,14 @@ public class BasicWorkSettingDto {
 	public BasicWorkSetting toDomain() {
 		return new BasicWorkSetting(new GetMementoImpl(this));
 	}
+
+	
+	/**
+	 * Instantiates a new basic work setting dto.
+	 */
+	public BasicWorkSettingDto() {
+	}
+
 
 	/**
 	 * The Class GetMementoImpl.
@@ -57,7 +69,7 @@ public class BasicWorkSettingDto {
 		 */
 		@Override
 		public WorktypeCode getWorkTypecode() {
-			return new WorktypeCode(dto.workTypeCode);
+			return new WorktypeCode(dto.getWorkTypeCode());
 		}
 
 		/* (non-Javadoc)
@@ -65,7 +77,7 @@ public class BasicWorkSettingDto {
 		 */
 		@Override
 		public WorkingCode getSiftCode() {
-			return new WorkingCode(dto.siftCode);
+			return new WorkingCode(dto.getSiftCode());
 		}
 
 		/* (non-Javadoc)
@@ -73,7 +85,7 @@ public class BasicWorkSettingDto {
 		 */
 		@Override
 		public WorkdayDivision getWorkDayDivision() {
-			return WorkdayDivision.valuesOf(dto.workDayDivision);
+			return  EnumAdaptor.valueOf(dto.getWorkDayDivision(), WorkdayDivision.class);
 		}
 	}
 }

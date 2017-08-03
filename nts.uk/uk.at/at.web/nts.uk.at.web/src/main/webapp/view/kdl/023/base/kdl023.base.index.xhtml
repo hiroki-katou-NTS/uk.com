@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1200, height: 700 };</script>
+				<script>var dialogSize = { width: 1200, height: 750 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
@@ -100,18 +100,18 @@
 							<div class="control-group">
 								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
 							</div>
-							<div tabindex="5" class="margin-left-100" name="#[KDL023_10]">
+							<div id="reflection-method-radio-group" tabindex="5" class="margin-left-100">
 								<div class="control-group">
 									<label class="ntsRadioBox"><input type="radio"
 										name="textRadio"
-										data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+										data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
 									</label>
 								</div>
 								<div class="control-group">
 									<label class="ntsRadioBox"><input type="radio"
 										name="textRadio"
-										data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+										data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
 									</label>
 								</div>

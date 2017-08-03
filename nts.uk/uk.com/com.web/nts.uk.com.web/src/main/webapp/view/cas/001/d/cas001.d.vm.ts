@@ -1,48 +1,26 @@
 module nts.uk.com.view.cas001.d.viewmodel {
- import windows = nts.uk.ui.windows;
+    import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
 
     export class ScreenModel {
-        roleList: KnockoutObservableArray<any>;
-        categoryList: KnockoutObservableArray<CategoryAuth>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        currentRoleCode: KnockoutObservable<string>;
-        companyCode: KnockoutObservable<string>;
-        itemSetting: KnockoutObservableArray<any>;
-        selectItemCode: any;
+        roleList: KnockoutObservableArray<any> = ko.observableArray([]);;
+        currentRoleCode: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             var self = this;
-            self.init();
-
-
-        }
-        init(): void {
-            var self = this;
-            self.roleList = ko.observableArray([new PersonRole({roleCode:"1", roleName:'A2',selfAuth:true,otherAuth:true}), new PersonRole({roleCode:'2', roleName:'B', selfAuth: true,otherAuth:false})]);
-            self.categoryList = ko.observableArray([]);
-            self.currentRoleCode = ko.observable('');
-            self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'roleCode', width: 100, hidden: true },
-                { headerText: '他人', key: 'selfAuth', width: 50,template: "<input type='checkbox' checked='${selfAuth}'/>"},
-                { headerText: '本人', key: 'otherAuth', width: 50,template: "<input type='checkbox' checked='${otherAuth}'/>"},
-                { headerText: 'カテゴリ名', key: 'roleName', width: 180 },
-                { headerText: '説明', key: 'description', width: 50, hidden: true }
-            ]);
-            self.companyCode = ko.observable('');
-            self.itemSetting = ko.observableArray([
-                { code: '1', name: '非表示' },
-                { code: '2', name: '参照のみ' },
-                { code: '3', name: '更新' }
-            ]);
-            self.selectItemCode = ko.observable(1);
+            self.roleList.subscribe(data => {
+                if (data) {
+                    $("#grid").igGrid("option", "dataSource", data);
+                }
+            });
+            self.roleList([new PersonRole({ roleCode: "1", roleName: 'A2', selfAuth: true, otherAuth: true }), new PersonRole({ roleCode: '2', roleName: 'B', selfAuth: true, otherAuth: false })]);
 
         }
-        creatCategory(){
+        creatCategory() {
             windows.close();
         }
-        closeDialog(){
+        closeDialog() {
             windows.close();
         }
     }

@@ -7,8 +7,7 @@ module nts.uk.at.view.ksm005.e {
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
             checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
-            getUserInfo: "ctx/at/schedule/pattern/work/weekly/setting/userinfo",
-            batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthy/setting/batch"
+            batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/batch"
         }
         
         /**
@@ -32,12 +31,6 @@ module nts.uk.at.view.ksm005.e {
         }
         
         /**
-         * call service get user info
-         */
-        export function getUserInfo(): JQueryPromise<model.UserInfoDto> {
-            return nts.uk.request.ajax('at', paths.getUserInfo);
-        }
-        /**
          * check public holiday by date (YYYYMMDD)
          */
         export function checkPublicHoliday(baseDate: string): JQueryPromise<model.OptionalPublicHoliday> {
@@ -60,7 +53,6 @@ module nts.uk.at.view.ksm005.e {
          * find data client service MonthlyPatternSettingBatch
          */
         export function findMonthlyPatternSettingBatch(key: model.KeyMonthlyPatternSettingBatch): JQueryPromise<model.MonthlyPatternSettingBatch> {
-            console.log(service.toKey(key));
             return nts.uk.characteristics.restore(service.toKey(key));
         }
         

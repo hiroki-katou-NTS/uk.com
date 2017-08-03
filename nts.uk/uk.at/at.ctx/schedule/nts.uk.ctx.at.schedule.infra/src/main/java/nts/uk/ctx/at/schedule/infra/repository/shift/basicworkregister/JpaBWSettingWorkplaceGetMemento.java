@@ -8,7 +8,8 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSettingGetMem
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplaceWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSetPK;
 
 /**
  * The Class JpaBWSettingWorkplaceGetMemento.
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplac
 public class JpaBWSettingWorkplaceGetMemento implements BasicWorkSettingGetMemento {
 
 	/** The type value. */
-	private KwbmtWorkplaceWorkSet typeValue;
+	private KscmtWorkplaceWorkSet typeValue;
 
 	/**
 	 * Instantiates a new jpa BW setting workplace get memento.
@@ -24,8 +25,11 @@ public class JpaBWSettingWorkplaceGetMemento implements BasicWorkSettingGetMemen
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaBWSettingWorkplaceGetMemento(KwbmtWorkplaceWorkSet typeValue) {
+	public JpaBWSettingWorkplaceGetMemento(KscmtWorkplaceWorkSet typeValue) {
 		super();
+		if(typeValue.getKscmtWorkplaceWorkSetPK() == null){
+			typeValue.setKscmtWorkplaceWorkSetPK(new KscmtWorkplaceWorkSetPK());
+		}
 		this.typeValue = typeValue;
 	}
 
@@ -59,7 +63,7 @@ public class JpaBWSettingWorkplaceGetMemento implements BasicWorkSettingGetMemen
 	 */
 	@Override
 	public WorkdayDivision getWorkDayDivision() {
-		return WorkdayDivision.valuesOf(this.typeValue.getKwbmtWorkplaceWorkSetPK().getWorkdayDivision());
+		return WorkdayDivision.valuesOf(this.typeValue.getKscmtWorkplaceWorkSetPK().getWorkdayDivision());
 	}
 
 }

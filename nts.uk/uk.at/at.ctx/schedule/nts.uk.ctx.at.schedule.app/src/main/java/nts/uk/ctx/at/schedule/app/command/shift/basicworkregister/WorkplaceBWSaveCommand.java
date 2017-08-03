@@ -4,25 +4,42 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto.WorkplaceBasicWorkDto;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.Data;
+import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto.BasicWorkSettingDto;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
 
 
-@Getter
-@Setter
-public class WorkplaceBWSaveCommand {
+/**
+ * The Class WorkplaceBWSaveCommand.
+ */
+@Data
+public class WorkplaceBWSaveCommand implements WorkplaceBasicWorkGetMemento {
 	
-	/** The dto. */
-	private WorkplaceBasicWorkDto workplaceBasicWork;
+	/** The workplace id. */
+	private String workplaceId;
 	
-	/**
-	 * To domain.
-	 *
-	 * @return the workplace basic work
+	/** The basic work setting. */
+	private List<BasicWorkSettingDto> basicWorkSetting;
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento#getWorkPlaceId()
 	 */
-	public WorkplaceBasicWork toDomain() {
-		return this.workplaceBasicWork.toDomain();
+	@Override
+	public WorkplaceId getWorkPlaceId() {
+		return new WorkplaceId(this.workplaceId);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento#getBasicWorkSetting()
+	 */
+	@Override
+	public List<BasicWorkSetting> getBasicWorkSetting() {
+		return this.basicWorkSetting.stream().map(item -> item.toDomain())
+				.collect(Collectors.toList());
 	}
 }

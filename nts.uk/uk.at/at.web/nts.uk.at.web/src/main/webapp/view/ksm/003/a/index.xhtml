@@ -8,15 +8,15 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.dailypattern.PatternCode
-				nts.uk.ctx.at.shared.dom.dailypattern.PatternName
-				nts.uk.ctx.at.shared.dom.dailypattern.Days
-				nts.uk.ctx.at.shared.dom.dailypattern.DispOrder
-				nts.uk.ctx.at.shared.dom.dailypattern.WorkingCode
-				nts.uk.ctx.at.shared.dom.dailypattern.WorkTypeCode
+				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternCode
+				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.PatternName
+				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.Days
+				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DispOrder
+				nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode
+				nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode
 				
 			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
+			<com:scriptfile set="IGNITE" />			
 			<com:stylefile path="ksm003.a.main.css" />
 			<com:scriptfile path="ksm003.a.start.js" />
 			<com:scriptfile path="ksm003.a.vm.js" />
@@ -29,17 +29,17 @@
 					class="button separate-button fix-button"
 					data-bind="click: refreshData">#{i18n.getText('KSM003_20')}</button>
 				<!-- B1_2: Button Registration -->
-				<!-- class="button proceed separate-button fix-button">#{i18n.getText('KSM003_21')} -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
-					data-bind="click:RegistrationDivReason,enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
+					data-bind="click:registrationDivReason, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
 				<!-- B1_3: Button Display pattern -->
 				<button tabindex="3" id="btn_005"
-					class="button separate-button fix-button">#{i18n.getText('KSM003_35')}</button>
+					class="button separate-button fix-button"
+					data-bind="click:openDialogWorking,enable: $root.errors.isEmpty">#{i18n.getText('KSM003_35')}</button>
 				<!-- B1_4: Button Delete -->
 				<button tabindex="4" id="btn_004"
-					class="button danger separate-button fix-button"
-					data-bind="click:deleteDivReason,enable: $root.errors.isEmpty">#{i18n.getText('KSM003_22')}</button>
+					class="button danger separate-button fix-button" 
+					data-bind="click:deleteDivReason, enable: enableDel">#{i18n.getText('KSM003_22')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"
@@ -71,14 +71,15 @@
 							<td>
 								<!-- B3_1: Label -->
 								<div
-									data-bind="ntsFormLabel: {required: true,constraint:['PatternCode','PatternName'] }">#{i18n.getText('KSM003_31')}</div>
+									data-bind="ntsFormLabel: {required: true,constraint:['PatternCode','PatternName'] }">#{i18n.getText('KSM003_28')}
+								</div>
 							</td>
 							<td>
 								<!-- B3_2: Pattern code -->
 								<input tabindex="6"
 								class="nts-input" id="inpCode"
 								data-bind="ntsTextEditor: {
-										  name: '#[KMK011_22]',
+										  name: '#[KSM003_36]',
                                           value: patternCode,
                                           constraint: 'PatternCode',
                                           enable:enableCode, 
@@ -87,7 +88,7 @@
 								<input tabindex="7"
 								class="nts-input" id="inpPattern"
 								data-bind="ntsTextEditor: {
-										  name: '#[KMK011_23]',
+										  name: '#[KSM003_37]',
                                           value: patternName,
                                           constraint: 'PatternName',
                                           required: true}" />
@@ -101,7 +102,7 @@
 						<table tabindex="8" id="single-list"
 							data-bind="ntsGridList:{
 								width: 630,
-								height: 500,
+								height: 550,
 								options: dailyPatternVal,
 								optionsValue: 'dispOrder',
 								columns: columnsWork,

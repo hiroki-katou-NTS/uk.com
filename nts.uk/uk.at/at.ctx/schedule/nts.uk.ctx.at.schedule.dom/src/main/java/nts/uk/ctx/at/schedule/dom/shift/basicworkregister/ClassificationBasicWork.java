@@ -17,7 +17,7 @@ import nts.arc.layer.dom.AggregateRoot;
 public class ClassificationBasicWork extends AggregateRoot {
 
 	/** The company id. */
-	private CompanyId companyId;
+	private String companyId;
 
 	/** The classification code. */
 	private ClassificationCode classificationCode;
@@ -47,17 +47,21 @@ public class ClassificationBasicWork extends AggregateRoot {
 		memento.setBasicWorkSetting(this.basicWorkSetting);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((basicWorkSetting == null) ? 0 : basicWorkSetting.hashCode());
-		result = prime * result
-				+ ((classificationCode == null) ? 0 : classificationCode.hashCode());
+		result = prime * result + ((classificationCode == null) ? 0 : classificationCode.hashCode());
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -67,11 +71,6 @@ public class ClassificationBasicWork extends AggregateRoot {
 		if (getClass() != obj.getClass())
 			return false;
 		ClassificationBasicWork other = (ClassificationBasicWork) obj;
-		if (basicWorkSetting == null) {
-			if (other.basicWorkSetting != null)
-				return false;
-		} else if (!basicWorkSetting.equals(other.basicWorkSetting))
-			return false;
 		if (classificationCode == null) {
 			if (other.classificationCode != null)
 				return false;
@@ -84,5 +83,7 @@ public class ClassificationBasicWork extends AggregateRoot {
 			return false;
 		return true;
 	}
+
+	
 	
 }

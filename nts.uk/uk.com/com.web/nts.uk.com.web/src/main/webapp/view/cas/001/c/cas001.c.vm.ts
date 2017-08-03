@@ -1,85 +1,81 @@
 module nts.uk.com.view.cas001.c.viewmodel {
-    import windows = nts.uk.ui.windows;
-    import errors = nts.uk.ui.errors;
-    import resource = nts.uk.resource;
+    import error = nts.uk.ui.errors;
+    import text = nts.uk.resource.getText;
+    import close = nts.uk.ui.windows.close;
+    import alert = nts.uk.ui.dialog.alert;
 
     export class ScreenModel {
-        roleList: KnockoutObservableArray<any>;
-        categoryList: KnockoutObservableArray<CategoryAuth>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        currentRoleCode: KnockoutObservable<string>;
-        roleName: KnockoutObservable<string>;
-        itemSetting: KnockoutObservableArray<any>;
-        selectItemCode: any;
+        roleList: KnockoutObservableArray<any> = ko.observableArray([]);
+        roleCodeArray = [];
+        roleCopy: KnockoutObservable<PersonRole> = ko.observable(new PersonRole("99900000-0000-0000-0000-000000000001", "0001", "A"));
 
         constructor() {
             var self = this;
-            self.init();
 
+            self.roleList.subscribe(data => {
+                if (data) {
+                    $("#roles").igGrid("option", "dataSource", data);
+                }
+            });
+
+            self.start();
+        }
+
+        start() {
+            let self = this;
+            self.roleList.removeAll();
+
+            service.getAllPersonRole().done(function(data: Array<any>) {
+                if (data.length > 0) {
+                    _.each(data, function(c) {
+                        self.roleList.push(new PersonRole(c.roleId, c.roleCode, c.roleName));
+                    });
+                }
+            });
+        }
+
+        createCategory() {
+            let data = (__viewContext["viewModel"].roleList());
+            let self = this;
+            self.roleCodeArray = [];
+            _.find(data, function(role) {
+                if (role.selected === true) {
+                    self.roleCodeArray.push(role.roleId);
+                }
+            });
+            if (self.roleCodeArray.length > 0) {
+                nts.uk.ui.dialog.confirm(text('Msg_64')).ifYes(() => {
+                    let roleObj = { roleIdDestination: self.roleCopy().roleId, roleIds: self.roleCodeArray };
+                    service.update(roleObj).done(function(obj) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
+                            close();
+                        });
+                    }).fail(function(res: any) {
+                        alert(res.message);
+                    })
+
+                }).ifCancel(function() {
+                })
+            }else{
+                alert(text('Msg_365'));
+            }
 
         }
-        init(): void {
-            var self = this;
-            self.roleList = ko.observableArray([new PersonRole({ roleCode: "1", roleName: 'A2', selfAuth: true, otherAuth: true }), new PersonRole({ roleCode: '2', roleName: 'B', selfAuth: true, otherAuth: false })]);
-            self.categoryList = ko.observableArray([]);
-            self.currentRoleCode = ko.observable('');
-            self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'roleCode', width: 100, hidden: true },
-                { headerText: '他人', key: 'selfAuth', width: 50, template: "<input type='checkbox' checked='${selfAuth}'/>" },
-                { headerText: '本人', key: 'otherAuth', width: 50, template: "<input type='checkbox' checked='${otherAuth}'/>" },
-                { headerText: 'カテゴリ名', key: 'roleName', width: 200 },
-                { headerText: '説明', key: 'description', width: 50, hidden: true }
-            ]);
-            self.roleName = ko.observable('');
-            self.itemSetting = ko.observableArray([
-                { code: '1', name: '非表示' },
-                { code: '2', name: '参照のみ' },
-                { code: '3', name: '更新' }
-            ]);
-            self.selectItemCode = ko.observable(1);
-
-        }
-        creatCategory() {
-            windows.close();
-        }
+        
         closeDialog() {
-            windows.close();
+            close();
         }
     }
-    interface IPersonRole {
-        roleCode: string;
-        roleName: string;
-        selfAuth: boolean;
-        otherAuth: boolean;
-    }
-    export class PersonRole {
-        roleCode: string;
-        roleName: string;
-        selfAuth: boolean;
-        otherAuth: boolean;
-        description: string;
 
-        constructor(params: IPersonRole) {
-            this.roleCode = params.roleCode;
-            this.roleName = params.roleName;
-            this.selfAuth = params.selfAuth;
-            this.otherAuth = params.otherAuth;
-            this.description = this.roleCode + this.roleName;
-        }
-    }
-    interface ICategoryAuth {
-        categoryCode: string;
-        categoryName: string;
-        isSetting: boolean;
-    }
-    class CategoryAuth {
-        categoryCode: string;
-        categoryName: string;
-        isSetting: boolean;
-        constructor(param: ICategoryAuth) {
-            this.categoryCode = param.categoryCode;
-            this.categoryName = param.categoryName;
-            this.isSetting = param.isSetting || false;
+    export class PersonRole {
+        check: boolean = false;
+        roleId: string;
+        roleCode: string;
+        roleName: string;
+        constructor(roleId: string, roleCode: string, roleName: string) {
+            this.roleId = roleId;
+            this.roleCode = roleCode;
+            this.roleName = roleName;
         }
     }
 }

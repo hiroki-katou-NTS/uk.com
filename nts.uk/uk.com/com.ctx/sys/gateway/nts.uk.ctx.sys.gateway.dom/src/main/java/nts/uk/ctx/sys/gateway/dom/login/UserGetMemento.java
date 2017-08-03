@@ -16,7 +16,7 @@ public interface UserGetMemento {
 	 *
 	 * @return the user id
 	 */
-	public UserId getUserId();
+	public String getUserId();
 
     /**
      * Gets the password.
@@ -75,10 +75,10 @@ public interface UserGetMemento {
     public UserName getUserName();
 
     /**
-     * Gets the associated employee id.
+     * Gets the associated person id.
      *
-     * @return the associated employee id
+     * @return the associated person id
      */
-    public String getAssociatedEmployeeId();
+    public String getAssociatedPersonId();
 
 }

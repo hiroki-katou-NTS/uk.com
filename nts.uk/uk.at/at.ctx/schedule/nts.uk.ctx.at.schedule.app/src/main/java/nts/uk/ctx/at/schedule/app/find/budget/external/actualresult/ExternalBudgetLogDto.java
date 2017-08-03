@@ -1,10 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+\ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.Date;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
@@ -45,16 +47,6 @@ public class ExternalBudgetLogDto implements ExternalBudgetLogSetMemento {
 
     /** The number fail. */
     public int numberFail;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
-     * ExternalBudgetLogSetMemento#setCompanyId(java.lang.String)
-     */
-    @Override
-    public void setCompanyId(String companyId) {
-    }
 
     /*
      * (non-Javadoc)
@@ -124,8 +116,10 @@ public class ExternalBudgetLogDto implements ExternalBudgetLogSetMemento {
     @Override
     public void setExecuteTime(ExecutionTime executeTime) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        this.startDate = simpleDateFormat.format(executeTime.getStartDate());
-        this.endDate = simpleDateFormat.format(executeTime.getEndDate());
+        this.startDate = simpleDateFormat.format(
+                Date.from(executeTime.getStartDateTime().localDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+        this.endDate = simpleDateFormat.format(
+                Date.from(executeTime.getEndDateTime().localDateTime().atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     /*

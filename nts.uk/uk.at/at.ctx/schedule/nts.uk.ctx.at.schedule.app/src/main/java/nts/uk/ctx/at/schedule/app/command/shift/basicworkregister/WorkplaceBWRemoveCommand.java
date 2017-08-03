@@ -4,20 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 
-import lombok.Getter;
-import lombok.Setter;
-
-
+import lombok.Data;
 /**
  * The Class WorkplaceBWRemoveCommand.
  */
-@Getter
-@Setter
+@Data
 public class WorkplaceBWRemoveCommand {
 
 	/** The workplace id. */
 	private String workplaceId;
-	
-	/** The work type code. */
-	private String workTypeCode;
 }

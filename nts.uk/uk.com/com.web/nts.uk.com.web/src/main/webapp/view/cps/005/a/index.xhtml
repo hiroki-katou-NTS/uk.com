@@ -55,7 +55,7 @@
 				<div id="contents-area-left">
 					<div data-bind="with: currentCategorySelected">
 						<!-- perInfoCategory selection is not fixed  -->
-						<div data-bind="visible: !$parent.fixedIsSelected() ">
+						<div data-bind="visible: !fixedIsSelected() ">
 							<div
 								class="valign-center control-group control-group-margin-custom">
 								<div data-bind="ntsFormLabel: { required: true }"
@@ -91,7 +91,7 @@
 								options: $parent.historyClassification,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: $parent.historyClassificationSelected,
+								value: historyClassificationSelected,
 								enable: true }">
 								</div>
 							</div>
@@ -99,7 +99,7 @@
 							<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
 							<div
 								class="valign-center control-group control-group-margin-custom"
-								data-bind="visible: $parent.historyTypesDisplay()">
+								data-bind="visible: historyTypesDisplay()">
 								<div data-bind="ntsFormLabel: { required: true }"
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_6')}' "></span>
@@ -110,7 +110,7 @@
 								options: $parent.historyTypes,
 								optionsValue: 'value',
 								optionsText: 'localizedName',
-								value: $parent.historyTypesSelected,
+								value: historyTypesSelected,
 								enable: true }">
 								</div>
 								<button tabindex="7"
@@ -120,7 +120,7 @@
 							<!-- mapping CategoryType enum value = 1 or 2 -->
 							<div
 								class="valign-center control-group control-group-margin-custom"
-								data-bind="visible: !$parent.historyTypesDisplay()">
+								data-bind="visible: !historyTypesDisplay()">
 								<div data-bind="ntsFormLabel: { required: true }"
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_7')}' "></span>
@@ -131,7 +131,7 @@
 								options: $parent.singleMultipleType,
 								optionsValue: 'value',
 								optionsText: 'name',
-								value: $parent.singleMultipleTypeSelected,
+								value: singleMultipleTypeSelected,
 								enable: true }">
 								</div>
 								<button tabindex="9"
@@ -140,7 +140,7 @@
 						</div>
 	
 						<!-- perInfoCategory selection is fixed  -->
-						<div data-bind="visible: $parent.fixedIsSelected() ">
+						<div data-bind="visible: fixedIsSelected() ">
 							<div
 								class="valign-center control-group control-group-margin-custom">
 								<div data-bind="ntsFormLabel: { required: false }"
@@ -162,7 +162,7 @@
 							<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
 							<div
 								class="valign-center control-group control-group-margin-custom"
-								data-bind="visible: $parent.historyTypesDisplay()">
+								data-bind="visible: historyTypesDisplay()">
 								<div data-bind="ntsFormLabel: { required: false }"
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_6')}' "></span>
@@ -175,7 +175,7 @@
 							<!-- mapping CategoryType enum value = 1 or 2 -->
 							<div
 								class="valign-center control-group control-group-margin-custom"
-								data-bind="visible: !$parent.historyTypesDisplay()">
+								data-bind="visible: !historyTypesDisplay()">
 								<div data-bind="ntsFormLabel: { required: false }"
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_7')}' "></span>

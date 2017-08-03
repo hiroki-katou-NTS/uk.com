@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.find.shift.basicworkregister;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.BasicWorkSett
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.ClassifiBasicWorkFindDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationBasicWork;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -43,7 +44,7 @@ public class ClassifiBasicWorkFinder {
 
 	/** The internationalization. */
 	@Inject
-	IInternationalization internationalization;
+	private IInternationalization internationalization;
 	
 
 	/**
@@ -55,7 +56,7 @@ public class ClassifiBasicWorkFinder {
 	 *            the worktype code
 	 * @return the classifi basic work find dto
 	 */
-	public ClassifiBasicWorkFindDto find(String classificationCode, Integer workdayDivision) {
+	public ClassifiBasicWorkFindDto findAll(String classificationCode) {
 		// get login user info
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -64,8 +65,7 @@ public class ClassifiBasicWorkFinder {
 
 		ClassifiBasicWorkFindDto outputData = new ClassifiBasicWorkFindDto();
 
-		Optional<ClassificationBasicWork> classifyBasicWork = this.repository.find(companyId, classificationCode,
-				workdayDivision);
+		Optional<ClassificationBasicWork> classifyBasicWork = this.repository.findAll(companyId, classificationCode);
 
 		if (!classifyBasicWork.isPresent()) {
 			return null;
@@ -73,34 +73,71 @@ public class ClassifiBasicWorkFinder {
 			classifyBasicWork.get().saveToMemento(outputData);
 		}
 
+		// List BasicWorkSetting
 		List<BasicWorkSettingFindDto> basicWorkSettingFindDto = outputData.getBasicWorkSetting();
 
+		// List worktypeCode
+		List<String> worktypeCodeList = basicWorkSettingFindDto.stream().map(item -> {
+			return item.getWorkTypeCode();
+		}).distinct().collect(Collectors.toList());
+
+		// Find WorkType
+		List<WorkType> worktypeList = this.worktypeRepo.getPossibleWorkType(companyId, worktypeCodeList);
+
+		// List workingCode
+		List<String> workingCodeList = basicWorkSettingFindDto.stream().map(item -> {
+			return item.getWorkingCode();
+		}).distinct().collect(Collectors.toList());
+
+		// Find WorkTime
+		List<WorkTime> workingList = this.worktimeRepo.findByCodeList(companyId, workingCodeList);
+
 		basicWorkSettingFindDto.stream().forEach(item -> {
-			
-			// Find WorkType by worktypeCode
-			Optional<WorkType> worktype = this.worktypeRepo.findByPK(companyId, item.getWorkTypeCode());
-
-			// Find WorkTime by workingCode
-			Optional<WorkTime> worktime = this.worktimeRepo.findByCode(companyId, item.getWorkingCode());
-
-			// Set WorkTypeDisplayName
-			if (worktype.isPresent()) {
-				item.setWorkTypeDisplayName(worktype.get().getName().v());				
+			// Get WorkType
+			WorkType worktype = worktypeList.stream().filter(a -> {
+				return a.getWorkTypeCode().equals(item.getWorkTypeCode());
+			}).findFirst().orElse(null);
+			// Set WorkTypeDisplayName to Dto
+			if (worktype == null) {
+//				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+				item.setWorkTypeDisplayName("something");
 			} else {
-				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
 
+			// Get WorkTime
+			WorkTime worktime = workingList.stream().filter(wt -> {
+				return wt.getSiftCD().v().equals(item.getWorkingCode());
+			}).findFirst().orElse(null);
+
 			// Set WorkingDisplayName
-			if (worktime.isPresent()) {
-				if (item.getWorkDayDivision() != WorkdayDivision.WORKINGDAYS.value) {
-					// TODO: to be continue. wait for QA #84782 workType (ko phai ngay nghi 1 ngay)
-				}
-				item.setWorkingDisplayName(worktime.get().getWorkTimeDisplayName().getWorkTimeName().v());
+			if (worktime == null) {
+				// item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
+				item.setWorkingDisplayName("something");
 			} else {
-				item.setWorkingDisplayName(internationalization.getItemName("#KSM006_13").get());
+				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}
 		});
 
 		return outputData;
+	}
+	
+	/**
+	 * Find setting.
+	 *
+	 * @return the list
+	 */
+	public List<String> findSetting() {
+		// get login user info
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get companyId by user login
+		String companyId = loginUserContext.companyId();
+		
+		// Find Classification Code List
+		List<ClassificationCode> classifyCodeList = this.repository.findSetting(companyId);
+		return classifyCodeList.stream().map(c -> {
+			return c.v(); 
+		}).collect(Collectors.toList());
 	}
 }
