@@ -27,11 +27,14 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id='role'>
-					<div class='flex valign-center'>
-						<div data-bind="ntsFormLabel: {constraint: ['RoleCode' , 'RoleName'],required:true}" class='distane'>
+					<div class='flex valign-center' data-bind="with: currentRole">
+						<div
+							data-bind="ntsFormLabel: {constraint: ['RoleCode' , 'RoleName'],required:true}"
+							class='distane'>
 							<label id="codeName">#{i18n.getText('CAS001_12')}</label>
 						</div>
-						<label id="roleCode"></label> <label id="roleName"></label>
+						<label id="roleCode" data-bind="text: roleCode"></label> 
+						<label id="roleName" data-bind="text: roleName"></label>
 					</div>
 					<div data-bind="ntsFormLabel: {}" class='distane'>
 						<label id="codeName">#{i18n.getText('CAS001_57')}</label>
@@ -41,12 +44,12 @@
 					<div id="search" tabindex="1"
 						data-bind="ntsSearchBox: {
 									searchMode: 'filter',
-									targetKey: 'roleCode',
-								    comId: 'roles',
-									items: roleList,
+									targetKey: 'categoryCode',
+								    comId: 'grid',
+									items: categoryList,
 									selected: currentRoleCode, 
-									selectedKey: 'roleCode', 
-									fields: ['roleCode', 'roleName'], mode: 'igGrid'}" />
+									selectedKey: 'categoryCode', 
+									fields: ['categoryCode', 'categoryName'], mode: 'igGrid'}" />
 					<table id="grid">
 					</table>
 
