@@ -27,7 +27,7 @@
 						<h2>Overview</h2>
 						<p>Switch Language Button is a button which click into it, a dialog for select master language will be displayed.</p>
 						<br/>
-						<button onclick="craeteButton()">Create Switch Language Button</button>
+						<button onclick="createButton()">Create Switch Language Button</button>
 						<div id="switch-language"/>
 						<br/><br/>
 						<article class="cf">
@@ -41,7 +41,7 @@
 <pre><![CDATA[$("#switch-language").ntsSwitchMasterLanguage();
     
 $("#switch-language").on( "selectionChanged", function( event, arg1, arg2 ) {
-    alert( event.detail.languageId ); // "bar"
+    alert( event.detail.languageId );
 });]]></pre>
 								</div>
 								<div id="tabs-api" class="cf">

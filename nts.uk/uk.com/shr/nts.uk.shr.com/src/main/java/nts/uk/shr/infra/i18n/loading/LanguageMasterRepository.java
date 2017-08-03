@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.uk.shr.infra.i18n.dto.LanguageMasterDto;
 
-public interface LanguageMasterLoading {
+public interface LanguageMasterRepository {
 
 	public List<LanguageMasterDto> getSystemLanguages();
 	

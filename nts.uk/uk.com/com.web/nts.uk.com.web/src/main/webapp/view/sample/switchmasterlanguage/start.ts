@@ -8,10 +8,10 @@ __viewContext.ready(function () {
 });
 
 
-function craeteButton() {
+function createButton() {
     $("#switch-language").ntsSwitchMasterLanguage();
     
     $("#switch-language").on( "selectionChanged", function( event, arg1, arg2 ) {
-        alert( event.detail.languageId ); // "bar"
+        alert( event.detail.languageId );
     });
 }
