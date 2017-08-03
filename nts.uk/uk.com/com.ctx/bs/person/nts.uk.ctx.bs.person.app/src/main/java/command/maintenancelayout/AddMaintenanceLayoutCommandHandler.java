@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayout;
 import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,14 +32,19 @@ public class AddMaintenanceLayoutCommandHandler extends CommandHandler<AddMainte
 	protected void handle(CommandHandlerContext<AddMaintenanceLayoutCommand> context) {
 
 		AddMaintenanceLayoutCommand command = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
+		String maintenanceLayoutID = IdentifierUtil.randomUniqueId();
 
-		// check exists Layout
-		Optional<MaintenanceLayout> maintenanceLayout = maintenanceLayoutRepository
-				.checkExit(command.getMaintenanceLayoutID());
-		if (maintenanceLayout.isPresent()) {
-			throw new BusinessException("ER005");
+		// check exists Layout by companyId and LayoutCOde
+		if (maintenanceLayoutRepository.checkExit(companyId, command.layoutCode)) {
+			throw new BusinessException("Msg_3");
 		}
 
+		// create from java type
+		MaintenanceLayout domain = MaintenanceLayout.createFromJavaType(companyId, maintenanceLayoutID,
+				command.getLayoutCode(), command.getLayoutName());
+
+		maintenanceLayoutRepository.add(domain);
 	}
+
 }

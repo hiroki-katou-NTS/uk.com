@@ -18,56 +18,58 @@ import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
 @Stateless
 public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoItemDefRepositoty {
 
-	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = "SELECT i.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
+	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
 			+ " ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,"
 			+ " ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,"
 			+ " ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart, ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId"
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd "
-			+ " AND c.cid LIKE '%'+ ic.ppemtPerInfoItemCmPK.contractCd AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
-			+ " WHERE i.perInfoCtgId = :perInfoCtgId";
+			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId";
 
-	private final static String SELECT_ITEM_BY_ITEM_ID_QUERY = "SELECT i.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
+	private final static String SELECT_ITEM_BY_ITEM_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
 			+ " ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,"
 			+ " ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,"
 			+ " ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart, ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId"
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd "
-			+ " AND c.cid LIKE '%'+ ic.ppemtPerInfoItemCmPK.contractCd AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
-			+ " WHERE i.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoItemDefId";
+			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoItemDefId";
 
-	private final static String SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY = "SELECT i.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
+	private final static String SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
 			+ " ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,"
 			+ " ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,"
 			+ " ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart, ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId"
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd "
-			+ " AND c.cid LIKE '%'+ ic.ppemtPerInfoItemCmPK.contractCd AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
-			+ " WHERE i.ppemtPerInfoItemPK.perInfoItemDefId IN : listItemDefId";
+			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.ppemtPerInfoItemPK.perInfoItemDefId IN : listItemDefId";
 
 	@Override
-	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId) {
+	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId,
+			String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
-				.setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
+				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
 					return createDomainFromEntity(i);
 				});
 	}
 
 	@Override
-	public Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId) {
+	public Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
-				.setParameter("perInfoItemDefId", perInfoItemDefId).getSingle(i -> {
+				.setParameter("contractCd", contractCd).setParameter("perInfoItemDefId", perInfoItemDefId)
+				.getSingle(i -> {
 					return createDomainFromEntity(i);
 				});
 	}
 
 	@Override
-	public List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId) {
+	public List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
-				.setParameter("listItemDefId", listItemDefId).getList(i -> {
+				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList(i -> {
 					return createDomainFromEntity(i);
 				});
 	}

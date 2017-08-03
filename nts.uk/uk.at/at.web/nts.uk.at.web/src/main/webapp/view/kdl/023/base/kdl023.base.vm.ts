@@ -325,6 +325,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private getOptionDates(): Array<OptionDate> {
             let self = this;
+
+            // Get calendar's range.
+            let range = self.calendarEndDate.diff(self.calendarStartDate, 'days') + 1;
+
             // Reset flag.
             self.isMasterDataUnregisterd(false);
 
@@ -337,12 +341,30 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 currentDate = currentDate.subtract(1, 'days');
 
                 while (currentDate.isSameOrAfter(self.calendarStartDate, 'day')) { // Loop until reach calendar start date.
-                    // Work patterns reverse loop.
-                    self.dailyPatternSetting.listDailyPatternVal.slice().reverse().some(dailyPatternValue => {
+                    // Reversed list dailyPatternValue loop.
+                    let listDailyPatternVal = self.dailyPatternSetting.listDailyPatternVal.slice().reverse();
+
+                    // Master data is registered.
+                    if (listDailyPatternVal && listDailyPatternVal.length > 0) {
+                        listDailyPatternVal.some(dailyPatternValue => {
+                            result = result.concat(self.loopBackwardPatternDays(dailyPatternValue, currentDate));
+
+                            // Break loop condition.
+                            let isLoopEnd = currentDate.isBefore(self.calendarStartDate, 'day');
+                            return isLoopEnd;
+                        });
+                    }
+
+                    // Master data is unregistered.
+                    else {
+                        let dailyPatternValue = {
+                            dispOrder: undefined,
+                            workTypeSetCd: undefined,
+                            workingHoursCd: undefined,
+                            days: range
+                        }
                         result = result.concat(self.loopBackwardPatternDays(dailyPatternValue, currentDate));
-                        let isLoopEnd = currentDate.isBefore(self.calendarStartDate, 'day');
-                        return isLoopEnd;
-                    });
+                    }
                 }
                 // Reset current date to pattern start date.
                 currentDate = moment(self.patternStartDate);
@@ -350,12 +372,30 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
             // Forward processing
             while (currentDate.isSameOrBefore(self.calendarEndDate, 'day')) { // Loop until reach calendar end date.
-                // Work patterns loop.
-                self.dailyPatternSetting.listDailyPatternVal.some(dailyPatternValue => {
+                // List dailyPatternValue loop.
+                let listDailyPatternVal = self.dailyPatternSetting.listDailyPatternVal;
+
+                // Master data is registered.
+                if (listDailyPatternVal && listDailyPatternVal.length > 0) {
+                    listDailyPatternVal.some(dailyPatternValue => {
+                        result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
+
+                        // Break loop condition.
+                        let isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
+                        return isLoopEnd;
+                    });
+                }
+
+                // Master data is unregistered.
+                else {
+                    let dailyPatternValue = {
+                        dispOrder: undefined,
+                        workTypeSetCd: undefined,
+                        workingHoursCd: undefined,
+                        days: range
+                    }
                     result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
-                    let isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
-                    return isLoopEnd;
-                });
+                }
             }
             return result;
         }

@@ -17,8 +17,10 @@ public interface MaintenanceLayoutRepository {
 	void update(MaintenanceLayout maintenanceLayout);
 
 	void remove(String maintenanceLayoutID);
-	
-	Optional<MaintenanceLayout> checkExit(String layoutID);
+
+	// Optional<MaintenanceLayout> checkExit( String layoutID);
+
+	boolean checkExit(String cpmpanyId , String layoutCode);
 
 	List<MaintenanceLayout> getAllMaintenanceLayout();
 

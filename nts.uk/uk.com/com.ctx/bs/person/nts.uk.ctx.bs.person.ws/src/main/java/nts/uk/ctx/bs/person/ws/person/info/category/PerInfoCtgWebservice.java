@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import find.person.info.category.PerInfoCategoryDto;
 import find.person.info.category.PerInfoCategoryFinder;
-import find.person.info.category.PerInfoCtgNewLayoutDto;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/person/info/category")
@@ -19,14 +19,14 @@ public class PerInfoCtgWebservice extends WebService {
 	private PerInfoCategoryFinder perInfoCtgFinder;
 
 	@POST
-	@Path("findAll/newLayout")
-	public List<PerInfoCtgNewLayoutDto> getAllPerInfoCtgNewLayout() {
-		return perInfoCtgFinder.getAllPerInfoCtgNewLayout();
+	@Path("findAll")
+	public List<PerInfoCategoryDto> getAllPerInfoCtg() {
+		return perInfoCtgFinder.getAllPerInfoCtg();
 	}
 	
 	@POST
-	@Path("find/newLayout/{Id}")
-	public PerInfoCtgNewLayoutDto getPerInfoCtgNewLayout(@PathParam("Id") String Id) {
-		return perInfoCtgFinder.getPerInfoCtgNewLayout(Id);
+	@Path("findby/{Id}")
+	public PerInfoCategoryDto getPerInfoCtg(@PathParam("Id") String Id) {
+		return perInfoCtgFinder.getPerInfoCtg(Id);
 	}
 }

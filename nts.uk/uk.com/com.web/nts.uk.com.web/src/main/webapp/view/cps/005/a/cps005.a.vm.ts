@@ -5,7 +5,7 @@ module nts.uk.com.view.cps005.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import service = nts.uk.com.view.cps005.a.service;
+    //import service = nts.uk.com.view.cps005.a.service;
     import textUK = nts.uk.text;
 
     export module viewmodel {
@@ -25,7 +25,21 @@ module nts.uk.com.view.cps005.a {
             }
 
             register() {
-
+                //                new service.Service().getAllPerInfoCtg().done(data =>{
+                //                    console.log(data);
+                //                });
+                //                new service.Service().getPerInfoCtg("B225B71F-31BA-4480-ADE3-0185B024FFB2").done(data =>{
+                //                    console.log(data);
+                //                });
+                new service.Service().getAllPerInfoItemDefByCtgId("B28E5649-0CFF-475B-AE87-52A21DBEB6D8").done(data => {
+                    console.log(data);
+                });
+//                new service.Service().getPerInfoItemDefById("0656D147-0C9A-4DBB-A069-8C355EF8C1F9").done(data => {
+//                    console.log(data);
+//                });
+//                new service.Service().getPerInfoItemDefByListId().done(data => {
+//                    console.log(data);
+//                });
             }
 
             addUpdateData() {
@@ -68,7 +82,7 @@ module nts.uk.com.view.cps005.a {
             let self = this;
             if (!data) return;
             self.perInfoCategoryList = ko.observableArray(_.map(data.categoryList, item => { return new PerInfoCategoryModel(item) }));
-            
+
             //subscribe select category code
             self.perInfoCategorySelectCode.subscribe(newCategoryCode => {
                 let cateType;

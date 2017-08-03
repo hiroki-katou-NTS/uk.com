@@ -155,7 +155,7 @@ module nts.uk.ui.koExtentions {
                 var code = e.keyCode || e.which;
                 if (!readonly && code.toString() !== '9') {
                     var newText = $input.val();
-                    var result = validator.validate(newText);
+                    var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
                     if (!result.isValid) {
                         $input.ntsError('set', result.errorMessage, result.errorCode);
@@ -167,7 +167,7 @@ module nts.uk.ui.koExtentions {
             $input.blur(() => {
                 if (!$input.attr('readonly')) {
                     var newText = $input.val();
-                    var result = validator.validate(newText);
+                    var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
                     if (!result.isValid) {
                         $input.ntsError('set', result.errorMessage, result.errorCode);
@@ -233,6 +233,19 @@ module nts.uk.ui.koExtentions {
             name = nts.uk.resource.getControlName(name);
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            if(data.constraint=="WorkplaceCode"){
+                return new validation.WorkplaceCodeValidator(name, constraintName, { required: required });
+            }
+            if(data.constraint=="DepartmentCode"){
+                return new validation.DepartmentCodeValidator(name, constraintName, { required: required });
+            }
+            if(data.constraint=="PostCode"){
+                return new validation.PostCodeValidator(name, constraintName, { required: required });
+            }
+            if(data.constraint=="PunchCardNo"){
+                return new validation.PunchCardNoValidator(name, constraintName, { required: required });
+            }
+
             return new validation.StringValidator(name, constraintName, { required: required });
         }
     }

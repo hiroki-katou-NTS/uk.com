@@ -47,16 +47,16 @@
 					<div>
 						<div style="width: 270px" id="A2_007"
 							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'PersonInfoCategoryID',
-						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentRole().currentRoleCategoryId , selectedKey: 'PersonInfoCategoryID', fields: ['PersonInfoCategoryID'], mode: 'igGrid'}" />
+						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentRole().personInfoCategoryAuthId , selectedKey: 'personInfoCategoryAuthId', fields: ['categoryName'], mode: 'igGrid'}" />
 						<table id="A2_008"
 							data-bind="ntsGridList: {	
 						dataSource: currentRole().RoleCategoryList ,
-						primaryKey: 'PersonInfoCategoryID' ,
-						columns: [{ headerText: 'コード', key: 'PersonInfoCategoryID', width: 200 ,hidden:true},
-								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'PersonInfoCategoryName', width: 165},
-				                {headerText: '#{i18n.getText('CAS001_69')}', key: 'IsConfig', width: 80 , formatter :makeIcon } ] ,
+						primaryKey: 'personInfoCategoryAuthId' ,
+						columns: [{ headerText: 'コード', key: 'personInfoCategoryAuthId', width: 200 ,hidden:true},
+								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'categoryName', width: 165},
+				                {headerText: '#{i18n.getText('CAS001_69')}', key: 'setting', width: 80 , formatter :makeIcon } ] ,
 						multiple: false,
-						value: currentRole().currentRoleCategoryId,
+						value: currentRoleCategoryAuthId,
 						rows:10 }">
 						</table>
 					</div>
@@ -155,12 +155,12 @@
 									<div class="float_left">
 										<div id="A4_001" data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_21')}</div>
 										<span id="A4_002" class="padding_left_20"
-											data-bind="text:PersonInfoCategoryName"></span>
+											data-bind="text:categoryName"></span>
 									</div>
 									<div style="padding-left: 130px" class="float_left">
 										<div id="A4_003" data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_22')}</div>
 										<span id="A4_004" class="padding_left_20"
-											data-bind="text:PersonRoleType().name"></span>
+											data-bind="text:categoryType"></span>
 									</div>
 								</div>
 								<div class="div_line">
@@ -176,7 +176,7 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowPersonReference ,
+													value: allowPersonRef ,
 													enable: true }"></div>
 													</div>
 													<div>
@@ -186,7 +186,7 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowOthersReference ,
+													value: allowOtherRef ,
 													enable: true }"></div>
 													</div>
 													<div>
@@ -196,12 +196,12 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowAnotherCompanyReference ,
+													value: allowOtherCompanyRef ,
 													enable: true }"></div>
 													</div>
 												</div>
 												<div id="auth_group_table">
-													<com:ko-if bind="PersonRoleType().code === 1">
+													<com:ko-if bind="categoryType === 1">
 														<table id="history_auth_table" class="auth_table">
 															<tr>
 																<th></th>
@@ -217,20 +217,20 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowDeleteHistory ,
+													value: selfAllowDelHis ,
 													enable: true }"></div></td>
 																<td><div id="A4_012" class="cf"
 																		data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowAddHistory ,
+													value: selfAllowAddHis ,
 													enable: true }"></div></td>
 																<td><div id="A4_022"
 																		data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
 														optionsValue: 'code',
-														value: PastHistoryAuthority ,
+														value: selfPastHisAuth ,
 														optionsText: 'name',
 														editable: false,
 														enable: true,
@@ -241,7 +241,7 @@
 																		data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
 														optionsValue: 'code',
-														value: FutureHistoryAuthority,
+														value: selfFutureHisAuth ,
 														optionsText: 'name',
 														editable: false,
 														enable: true,
@@ -256,20 +256,20 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: OtherAllowDeleteHistory ,
+													value: otherAllowDelHis ,
 													enable: true }"></div></td>
 																<td><div id="A4_012" class="cf"
 																		data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: OtherAllowAddHistory ,
+													value: otherAllowAddHis ,
 													enable: true }"></div></td>
 																<td><div id="A4_026"
 																		data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
 														optionsValue: 'code',
-														value: OtherPastHistoryAuthority ,
+														value: otherPastHisAuth ,
 														optionsText: 'name',
 														editable: false,
 														enable: true,
@@ -280,7 +280,7 @@
 																		data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
 														optionsValue: 'code',
-														value: OtherFutureHistoryAuthority ,
+														value: otherFutureHisAuth ,
 														optionsText: 'name',
 														editable: false,
 														enable: true,
@@ -290,7 +290,7 @@
 															</tr>
 														</table>
 													</com:ko-if>
-													<com:ko-if bind="PersonRoleType().code === 2">
+													<com:ko-if bind="categoryType === 2">
 														<table id="multi_auth_table" class="auth_table">
 															<tr>
 																<th></th>
@@ -304,14 +304,14 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowDeleteMulti ,
+													value: selfAllowDelMulti ,
 													enable: true }"></div></td>
 																<td><div id="A4_012" class="cf"
 																		data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowAddMulti ,
+													value: selfAllowAddMulti ,
 													enable: true }"></div></td>
 															</tr>
 															<tr>
@@ -321,14 +321,14 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowOtherDeleteMulti ,
+													value: otherAllowDelMulti ,
 													enable: true }"></div></td>
 																<td><div id="A4_012" class="cf"
 																		data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: AllowOtherAddMulti ,
+													value: otherAllowAddMulti ,
 													enable: true }"></div></td>
 															</tr>
 														</table>
@@ -341,13 +341,11 @@
 							</div>
 						</com:ko-if>
 					</div>
-					<com:ko-if bind="currentRole().currentCategory">
-						<div id="item_role_table_cover">
-							<!-- item area -->
-							<table id="item_role_table_body">
-							</table>
-						</div>
-					</com:ko-if>
+					<div id="item_role_table_cover">
+						<!-- item area -->
+						<table id="item_role_table_body">
+						</table>
+					</div>
 				</div>
 			</div>
 		</ui:define>
