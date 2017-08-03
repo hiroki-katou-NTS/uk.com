@@ -5838,7 +5838,7 @@ var nts;
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 21;
+                        var ROW_HEIGHT = 23;
                         var $grid = $(element);
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
@@ -5902,7 +5902,7 @@ var nts;
                                         var $tr = $element.closest("tr");
                                         $grid.ntsGridListFeature('switch', 'setValue', $tr.attr("data-id"), c["key"], selectedValue);
                                     });
-                                    ROW_HEIGHT = 32;
+                                    ROW_HEIGHT = 30;
                                 }
                             }
                             return c;
@@ -5912,7 +5912,7 @@ var nts;
                         var height = data.height;
                         if (!nts.uk.util.isNullOrEmpty(rows)) {
                             if (isDeleteButton) {
-                                ROW_HEIGHT = 32;
+                                ROW_HEIGHT = 30;
                             }
                             height = rows * ROW_HEIGHT + HEADER_HEIGHT;
                             var colSettings_1 = [];
