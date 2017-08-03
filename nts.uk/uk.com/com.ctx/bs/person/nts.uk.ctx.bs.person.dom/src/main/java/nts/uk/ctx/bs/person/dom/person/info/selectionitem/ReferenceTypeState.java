@@ -1,9 +1,10 @@
 package nts.uk.ctx.bs.person.dom.person.info.selectionitem;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 public class ReferenceTypeState extends AggregateRoot {
-
+	@Getter
 	protected ReferenceType referenceType;
 
 	public static ReferenceTypeState createMasterReferenceCondition(String masterType) {
