@@ -7,8 +7,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class PpemtPerInfoItemPK implements Serializable {
 
@@ -16,7 +18,7 @@ public class PpemtPerInfoItemPK implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "PER_INFO_ITEM_DEFINITION_ID")
-    public String perInfoItemDefinitionId;
+    public String perInfoItemDefId;
     
 
 }

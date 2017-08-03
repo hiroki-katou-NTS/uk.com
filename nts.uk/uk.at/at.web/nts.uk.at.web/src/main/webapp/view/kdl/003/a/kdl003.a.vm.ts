@@ -87,8 +87,8 @@ module nts.uk.at.view.kdl003.a {
                 //                var command = self.parentData().canSelectWorkTypeCodes.length > 0 ? self.parentData().canSelectWorkTypeCodes.split(',') : null)
                 //                              , self.getTimeDayAtrEnum();
                 
-                //find all worktype
-                $.when(service.findAllWorkType()).done(
+                // find worktype by list code.
+                $.when(service.findWorkTypeByCodes(self.parentData().canSelectWorkTypeCodes.split(','))).done(
                     function(workTypeData: Array<WorkType>) {
                         self.lstWorkType(workTypeData);
                     }
@@ -119,6 +119,7 @@ module nts.uk.at.view.kdl003.a {
                             self.selectedCodeList([]);
                             self.selectedSiftCode(null);
                         }
+                        self.selectedSiftCode(self.parentData().selectSiftCode); // Selected sift code from parent screen.
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     })
@@ -304,3 +305,4 @@ module nts.uk.at.view.kdl003.a {
             endTime: string;
         }
     }
+}

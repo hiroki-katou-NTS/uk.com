@@ -23,11 +23,11 @@ public class JpaDailyPatternValSetMemento implements DailyPatternValSetMemento {
 	 *            the pattern calendar
 	 */
 	public JpaDailyPatternValSetMemento(KdpstDailyPatternVal patternCalendar) {
-		
+
 		if (patternCalendar.getKdpstDailyPatternValPK() == null) {
 			patternCalendar.setKdpstDailyPatternValPK(new KdpstDailyPatternValPK());
 		}
-		
+
 		this.patternCalendar = patternCalendar;
 	}
 
@@ -75,5 +75,4 @@ public class JpaDailyPatternValSetMemento implements DailyPatternValSetMemento {
 	public void setDays(Days setDays) {
 		this.patternCalendar.setDays(setDays.v());
 	}
-
 }
