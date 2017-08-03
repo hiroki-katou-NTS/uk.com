@@ -8,19 +8,18 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KwbmtWorkplaceWorkSet_.
+ * The Class KscmtCompanyWorkSet_.
  */
-@StaticMetamodel(KwbmtWorkplaceWorkSet.class)
-public class KwbmtWorkplaceWorkSet_ {
-
-	/** The kwbmt workplace work set PK. */
-	public static volatile SingularAttribute<KwbmtWorkplaceWorkSet, KwbmtWorkplaceWorkSetPK> kwbmtWorkplaceWorkSetPK;
+@StaticMetamodel(KscmtCompanyWorkSet.class)
+public class KscmtCompanyWorkSet_ {
 	
-	/** The workype code. */
-	public static volatile SingularAttribute<KwbmtWorkplaceWorkSet, String> workypeCode;
+	/** The kcbmt company work set PK. */
+	public static volatile SingularAttribute<KscmtCompanyWorkSet, KscmtCompanyWorkSetPK> kscmtCompanyWorkSetPK;
+	
+	/** The work type code. */
+	public static volatile SingularAttribute<KscmtCompanyWorkSet, String> worktypeCode;
 
 	/** The working code. */
-	public static volatile SingularAttribute<KwbmtWorkplaceWorkSet, String> workingCode;
+	public static volatile SingularAttribute<KscmtCompanyWorkSet, String> workingCode;
 
-	
 }

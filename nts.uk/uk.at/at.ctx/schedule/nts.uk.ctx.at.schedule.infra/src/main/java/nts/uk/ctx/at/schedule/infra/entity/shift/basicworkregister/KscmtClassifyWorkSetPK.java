@@ -12,25 +12,49 @@ import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
-
 /**
- * The Class KwbmtWorkplaceWorkSetPK.
+ * The Class KscmtClassifyWorkSetPK.
  */
 @Setter
 @Getter
 @Embeddable
-public class KwbmtWorkplaceWorkSetPK implements Serializable {
+public class KscmtClassifyWorkSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The workplace id. */
-	@Column(name = "WKPID")
-	private String workplaceId;
+	/** The cid. */
+	@Column(name = "CID")
+	private String cid;
+
+	/** The classify code. */
+	@Column(name = "CLSCD")
+	private String classifyCode;
 	
 	/** The workday division. */
 	@Column(name = "WORK_DAY_ATR")
-	private Integer workdayDivision;
+	private Integer	workdayDivision;
+
+	/**
+	 * Instantiates a new kcbmt classify work set PK.
+	 */
+	public KscmtClassifyWorkSetPK() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new kcbmt classify work set PK.
+	 *
+	 * @param cid the cid
+	 * @param classifyCode the classify code
+	 * @param workdayDivision the workday division
+	 */
+	public KscmtClassifyWorkSetPK(String cid, String classifyCode, Integer workdayDivision) {
+		super();
+		this.cid = cid;
+		this.classifyCode = classifyCode;
+		this.workdayDivision = workdayDivision;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -39,8 +63,9 @@ public class KwbmtWorkplaceWorkSetPK implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + ((classifyCode == null) ? 0 : classifyCode.hashCode());
 		result = prime * result + ((workdayDivision == null) ? 0 : workdayDivision.hashCode());
-		result = prime * result + ((workplaceId == null) ? 0 : workplaceId.hashCode());
 		return result;
 	}
 
@@ -55,18 +80,25 @@ public class KwbmtWorkplaceWorkSetPK implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KwbmtWorkplaceWorkSetPK other = (KwbmtWorkplaceWorkSetPK) obj;
+		KscmtClassifyWorkSetPK other = (KscmtClassifyWorkSetPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (classifyCode == null) {
+			if (other.classifyCode != null)
+				return false;
+		} else if (!classifyCode.equals(other.classifyCode))
+			return false;
 		if (workdayDivision == null) {
 			if (other.workdayDivision != null)
 				return false;
 		} else if (!workdayDivision.equals(other.workdayDivision))
 			return false;
-		if (workplaceId == null) {
-			if (other.workplaceId != null)
-				return false;
-		} else if (!workplaceId.equals(other.workplaceId))
-			return false;
 		return true;
 	}
+
+	
 
 }

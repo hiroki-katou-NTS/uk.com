@@ -14,12 +14,12 @@ import lombok.Setter;
 
 
 /**
- * The Class KcbmtCompanyWorkSetPK.
+ * The Class KscmtCompanyWorkSetPK.
  */
 @Setter
 @Getter
 @Embeddable
-public class KcbmtCompanyWorkSetPK implements Serializable {
+public class KscmtCompanyWorkSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -57,7 +57,7 @@ public class KcbmtCompanyWorkSetPK implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KcbmtCompanyWorkSetPK other = (KcbmtCompanyWorkSetPK) obj;
+		KscmtCompanyWorkSetPK other = (KscmtCompanyWorkSetPK) obj;
 		if (cid == null) {
 			if (other.cid != null)
 				return false;
@@ -71,7 +71,7 @@ public class KcbmtCompanyWorkSetPK implements Serializable {
 		return true;
 	}
 
-	public KcbmtCompanyWorkSetPK(String cid, Integer workdayDivision) {
+	public KscmtCompanyWorkSetPK(String cid, Integer workdayDivision) {
 		super();
 		this.cid = cid;
 		this.workdayDivision = workdayDivision;
@@ -80,7 +80,7 @@ public class KcbmtCompanyWorkSetPK implements Serializable {
 	/**
 	 * Instantiates a new kcbmt company work set PK.
 	 */
-	public KcbmtCompanyWorkSetPK() {
+	public KscmtCompanyWorkSetPK() {
 		super();
 	}
 	

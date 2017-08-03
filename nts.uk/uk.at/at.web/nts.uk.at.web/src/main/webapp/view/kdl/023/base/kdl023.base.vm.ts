@@ -255,7 +255,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 dfd.resolve();
             }).always(() => {
                 nts.uk.ui.block.clear();
-            });;
+            });
             return dfd.promise();
         }
 
@@ -456,49 +456,47 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     ]
                 };
             }
-            // Is not holiday
-            else {
-                // Is statutory holiday
-                if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
-                    return {
-                        start: currentDate.format('YYYY-MM-DD'),
-                        textColor: 'red',
-                        backgroundColor: 'white',
-                        listText: [
-                            self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
-                        ]
-                    };
-                }
-                // Is non-statutory holiday
-                else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
-                    return {
-                        start: currentDate.format('YYYY-MM-DD'),
-                        textColor: 'red',
-                        backgroundColor: 'white',
-                        listText: [
-                            self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
-                        ]
-                    };
-                }
-                // Is working day.
-                else {
-                    let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
-                    let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
-                    let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
-                    if (!worktype || !worktime) {
-                        self.isMasterDataUnregisterd(true);
-                    }
-                    return {
-                        start: currentDate.format('YYYY-MM-DD'),
-                        textColor: 'blue',
-                        backgroundColor: 'white',
-                        listText: [
-                            worktype ? worktype : noSetting,
-                            worktime ? worktime : noSetting
-                        ]
-                    };
-                }
+
+            // Is statutory holiday
+            if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
+                return {
+                    start: currentDate.format('YYYY-MM-DD'),
+                    textColor: 'red',
+                    backgroundColor: 'white',
+                    listText: [
+                        self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
+                    ]
+                };
             }
+
+            // Is non-statutory holiday
+            if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
+                return {
+                    start: currentDate.format('YYYY-MM-DD'),
+                    textColor: 'red',
+                    backgroundColor: 'white',
+                    listText: [
+                        self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
+                    ]
+                };
+            }
+
+            // Is working day.
+            let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
+            let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
+            let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
+            if (!worktype || !worktime) {
+                self.isMasterDataUnregisterd(true);
+            }
+            return {
+                start: currentDate.format('YYYY-MM-DD'),
+                textColor: 'blue',
+                backgroundColor: 'white',
+                listText: [
+                    worktype ? worktype : noSetting,
+                    worktime ? worktime : noSetting
+                ]
+            };
         }
 
         /**
@@ -602,6 +600,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private setPatternRange(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
+
+            // Is on screen A.
             if (self.isOnScreenA()) {
                 let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
 
@@ -618,6 +618,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     dfd.resolve();
                 });
             }
+
             // Is on screen B.
             else {
                 // Reset pattern range.
@@ -625,6 +626,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.patternEndDate = moment(self.calendarEndDate);
                 dfd.resolve();
             }
+
             return dfd.promise();
         }
 
@@ -657,6 +659,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private getParamFromCaller(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
+
             // Get param from caller screen.
             let selectedCode = nts.uk.ui.windows.getShared("patternCode");
             let startDate = nts.uk.ui.windows.getShared("startDate");
@@ -684,11 +687,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.loadHolidayList().done(() => dfd.resolve());
 
             }
+
             // Is on screen A
             else {
                 self.isOnScreenA(true);
                 self.setPatternRange().done(() => dfd.resolve());
             }
+
             return dfd.promise();
         }
 
