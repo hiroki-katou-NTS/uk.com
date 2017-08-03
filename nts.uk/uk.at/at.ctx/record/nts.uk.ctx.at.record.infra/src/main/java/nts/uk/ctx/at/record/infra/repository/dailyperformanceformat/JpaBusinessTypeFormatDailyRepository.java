@@ -17,6 +17,8 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	
 	private static final String FIND_DETAIl;
 
+	private static final String UPDATE_BY_KEY;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -29,8 +31,17 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		builderString.append("UPDATE KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
-		builderString.append("WHERE a.sheetNo = :sheetNo ");
+		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		FIND_DETAIl = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("UPDATE KrcmtBusinessTypeDaily a ");
+		builderString.append("SET a.order = :order , a.columnWidth = :columnWidth ");
+		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.attendanceItemId = :attendanceItemId ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
+		UPDATE_BY_KEY = builderString.toString();
 	}
 
 	@Override
@@ -49,12 +60,25 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 				.setParameter("sheetNo", sheetNo).getList(f -> toDomain(f));
 	}
 
+	@Override
+	public void update(BusinessTypeFormatDaily businessTypeFormatDaily) {
+		this.getEntityManager().createQuery(UPDATE_BY_KEY)
+				.setParameter("companyId", businessTypeFormatDaily.getCompanyId())
+				.setParameter("businessTypeCode", businessTypeFormatDaily.getBusinessTypeCode().v())
+				.setParameter("attendanceItemId", businessTypeFormatDaily.getAttendanceItemId())
+				.setParameter("sheetNo", businessTypeFormatDaily.getSheetNo())
+				.setParameter("columnWidth", businessTypeFormatDaily.getColumnWidth())
+				.setParameter("order", businessTypeFormatDaily.getOrder()).executeUpdate();
+	}
+
 	private static BusinessTypeFormatDaily toDomain(KrcmtBusinessTypeDaily krcmtBusinessTypeDaily) {
 		BusinessTypeFormatDaily workTypeFormatDaily = BusinessTypeFormatDaily.createFromJavaType(
 				krcmtBusinessTypeDaily.krcmtBusinessTypeDailyPK.companyId,
 				krcmtBusinessTypeDaily.krcmtBusinessTypeDailyPK.businessTypeCode,
 				krcmtBusinessTypeDaily.krcmtBusinessTypeDailyPK.attendanceItemId,
-				krcmtBusinessTypeDaily.sheetNo, krcmtBusinessTypeDaily.order, krcmtBusinessTypeDaily.columnWidth);
+				krcmtBusinessTypeDaily.krcmtBusinessTypeDailyPK.sheetNo,
+				krcmtBusinessTypeDaily.order,
+				krcmtBusinessTypeDaily.columnWidth);
 		return workTypeFormatDaily;
 	}
 
