@@ -8,10 +8,8 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.basic.dom.organization.department.DepartmentCode
-					nts.uk.ctx.basic.dom.organization.department.DepartmentName
-					nts.uk.ctx.basic.dom.organization.department.DepartmentGenericName
-					nts.uk.shr.com.primitive.Memo
+					nts.uk.ctx.bs.person.dom.person.newlayout.LayoutCode
+					nts.uk.ctx.bs.person.dom.person.newlayout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps008.a.style.css" />
@@ -24,7 +22,7 @@
 			<div id="functions-area" >
 				<button id="A_BTN_NEW" 
 					data-bind=" enable: $root.errors.isEmpty , click : newModeBtn" >#{i18n.getText('CPS008_3') }</button>
-				<button id="A_BTN_REGISTER"  class="proceed , click : registerBtn">#{i18n.getText('CPS008_4')}</button>
+				<button id="A_BTN_REGISTER"  class="proceed"  data-bind = " click : registerBtn">#{i18n.getText('CPS008_4')}</button>
 				<button id="A_BTN_COPPY" data-bind = "click : openDialogCoppy , enable: enableBtnCoppy">#{i18n.getText('CPS008_5')}</button>
 				<button id="A_BTN_DELETE"  class="danger" data-bind = "click : deleteBtn , enable : enableBtnDelete">#{i18n.getText('CPS008_6')}</button>
 				<a class="goout" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('CPS008_7')}</a>
@@ -60,7 +58,7 @@
 						<tr>
 							<td class="row_1">
 								<div
-									data-bind="ntsFormLabel: { constraint: ['DepartmentCode','DepartmentName'] , required: true }">
+									data-bind="ntsFormLabel: { constraint: ['LayoutCode','LayoutName'] , required: true }">
 									コード/名称</div>
 							</td>
 							<td class="valign-center">
@@ -69,6 +67,7 @@
 										<input id="A_INP_CODE" style="width: 80px"
 											data-bind="ntsTextEditor: {
 											value: A_INP_LAYOUT_CODE,
+											constraint: 'LayoutCode',
 											enable: A_INP_LAYOUT_CODE_ENABLE}" />
 									</div>
 
@@ -76,6 +75,7 @@
 										<input id="A_INP_DEPNAME" style="width: 180px"
 											data-bind="ntsTextEditor: {
 											value: A_INP_LAYOUT_NAME,
+											constraint: 'LayoutName',
 											enable: A_INP_LAYOUT_NAME_ENABLE
 											}" />
 									</div>

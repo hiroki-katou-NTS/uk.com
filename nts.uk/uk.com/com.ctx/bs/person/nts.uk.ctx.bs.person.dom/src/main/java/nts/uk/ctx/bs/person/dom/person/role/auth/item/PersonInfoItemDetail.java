@@ -35,5 +35,8 @@ public class PersonInfoItemDetail {
 	@Setter
 	@Getter
 	private int requiredAtr;
+	@Setter
+	@Getter
+	private boolean setting;
 
 }
