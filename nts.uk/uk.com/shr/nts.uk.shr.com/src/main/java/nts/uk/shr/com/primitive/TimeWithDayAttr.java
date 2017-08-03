@@ -3,27 +3,28 @@ package nts.uk.shr.com.primitive;
 import java.lang.reflect.Constructor;
 import java.util.Optional;
 
+import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.PrimitiveValueConstraintException;
 import nts.arc.primitive.TimePrimitiveValue;
 import nts.arc.primitive.constraint.LongRange;
 import nts.gul.util.Time;
-import nts.uk.shr.com.enumcommon.DayDivision;
+import nts.uk.shr.com.enumcommon.DayAttr;
 
 
 @LongRange(max = 4319, min = -720)
-public class TimeWithDayAttr extends LongPrimitiveValue<TimeWithDayAttr> implements TimePrimitiveValue<TimeWithDayAttr>{
+public class TimeWithDayAttr extends IntegerPrimitiveValue<TimeWithDayAttr>{
 	
-	private final DayDivision dayDivision; 
+	private final DayAttr dayDivision; 
 	
-	private final Long time; 
+	private final int time; 
 	
 	private static final long serialVersionUID = 1L;
 
-	public TimeWithDayAttr(Long rawValue) {
+	public TimeWithDayAttr(int rawValue) {
 		super(rawValue);
 		if (rawValue < 0){
-			dayDivision = DayDivision.THE_PREVIOUS_DAY;
+			dayDivision = DayAttr.THE_PREVIOUS_DAY;
 			time = Math.abs(rawValue);
 		} else {
 			dayDivision = checkDayDivision(rawValue);
@@ -31,11 +32,11 @@ public class TimeWithDayAttr extends LongPrimitiveValue<TimeWithDayAttr> impleme
 		}
 	}
 	
-	public DayDivision getDayDivision (){
+	public DayAttr getDayDivision (){
 		return this.dayDivision;
 	}
 	
-	public Long getDayTime(){
+	public int getDayTime(){
 		return time;
 	}
 	
@@ -46,97 +47,52 @@ public class TimeWithDayAttr extends LongPrimitiveValue<TimeWithDayAttr> impleme
 	public String getRawTimeWithFormat(){
 		return (this.v() / 60) + ":" + (this.v() % 60);
 	}
-
-	@Override
+	
 	public int hour() {
 		return Time.getHour(this.time).intValue();
 	}
 
-	@Override
 	public int minute() {
 		return Time.getMinute(this.time).intValue();
 	}
 
-	@Override
-	public int second() {
-		return 0;
-	}
-
-	@Override
-	public double hours() {
-		return Time.toHours(this.time);
-	}
-
-	@Override
-	public double minutes() {
-		return Time.toMinutes(this.time);
-	}
-
-	@Override
-	public TimePrimitiveValue<TimeWithDayAttr> addHours(int hours) {
+	public TimeWithDayAttr addHours(int hours) {
 		return addTime(hours, Time.MAX_MS);
 	}
 
-	@Override
-	public TimePrimitiveValue<TimeWithDayAttr> addMinutes(int minutes) {
+	public TimeWithDayAttr addMinutes(int minutes) {
 		return addTime(minutes, 1);
 	}
 
-	@Override
-	public TimePrimitiveValue<TimeWithDayAttr> minusHours(int hours) {
+	public TimeWithDayAttr minusHours(int hours) {
 		return addTime(-hours, Time.MAX_MS);
 	}
 
-	@Override
-	public TimePrimitiveValue<TimeWithDayAttr> minusMinutes(int minutes) {
+	public TimeWithDayAttr minusMinutes(int minutes) {
 		return addTime(-minutes, 1);
 	}
-
-	@Override
-	@Deprecated
-	public TimePrimitiveValue<TimeWithDayAttr> addSeconds(int seconds) {
-		return null;
-	}
-
-	@Override
-	@Deprecated
-	public TimePrimitiveValue<TimeWithDayAttr> minusSeconds(int seconds) {
-		return null;
-	}
-
-	@Override
-	@Deprecated
-	public TimePrimitiveValue<TimeWithDayAttr> calculate(int value, long coeff) {
-		return null;
-	}
-
-	@Override
-	@Deprecated
-	public Optional<Constructor<TimePrimitiveValue<TimeWithDayAttr>>> getConstructor(Class<?>... types) {
-		return TimePrimitiveValue.super.getConstructor(types);
-	}
 	
-	private TimePrimitiveValue<TimeWithDayAttr> addTime(int value, int unitValue){
-		Long newValue = this.v() + value * unitValue;
+	private TimeWithDayAttr addTime(int value, int unitValue){
+		int newValue = this.v() + value * unitValue;
 		return new TimeWithDayAttr(newValue);
 	}
 	
-	private Long getTimeDuration(Long value){
-		if(this.dayDivision == DayDivision.THE_PRESENT_DAY){
+	private int getTimeDuration(int value){
+		if(this.dayDivision == DayAttr.THE_PRESENT_DAY){
 			return value;
 		}
 		return value - (this.dayDivision.value -1) * Time.MAX_HOUR * Time.MAX_MS;
 	}
 
-	private DayDivision checkDayDivision(Long value) {
-		Long days = value / (Time.MAX_HOUR*Time.MAX_MS);
-		switch (days.intValue()) {
+	private DayAttr checkDayDivision(int value) {
+		int days = value / (Time.MAX_HOUR*Time.MAX_MS);
+		switch (days) {
 			case 0:
-				return DayDivision.THE_PRESENT_DAY;
+				return DayAttr.THE_PRESENT_DAY;
 			case 1:
-				return DayDivision.THE_NEXT_DAY;
+				return DayAttr.THE_NEXT_DAY;
 			case 2:
-				return DayDivision.TWO_DAY_LATER;
+				return DayAttr.TWO_DAY_LATER;
 			default:
 				throw new PrimitiveValueConstraintException();
 		}

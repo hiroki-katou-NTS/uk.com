@@ -9632,19 +9632,9 @@ var nts;
                         var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
                         if ($displayPanel.length > 0) {
                             $displayPanel.removeClass("disappear");
-                            setErrorPosition($displayPanel);
+                            $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
                         }
                         return control;
-                    }
-                    function setErrorPosition($displayPanel) {
-                        setTimeout(function () {
-                            if ($displayPanel.find(".sidebar-content-header") > 0) {
-                                $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
-                            }
-                            else {
-                                setErrorPosition($displayPanel);
-                            }
-                        }, 10);
                     }
                     function enable(control, index) {
                         control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");

@@ -1,6 +1,6 @@
 package nts.uk.shr.com.enumcommon;
 
-public enum DayDivision {
+public enum DayAttr {
 
 
 	THE_PREVIOUS_DAY(0, "", "前日"),
@@ -14,7 +14,7 @@ public enum DayDivision {
 	
 	public final String description;
 	
-	private DayDivision(int value, String nameId, String description) {
+	private DayAttr(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
