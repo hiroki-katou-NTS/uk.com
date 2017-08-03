@@ -1,4 +1,6 @@
 module nts.uk.com.view.cas001.c.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
     var paths = {
         getAllPersonRole: "ctx/bs/person/roles/findAll",
         update: "ctx/bs/person/roles/update"
@@ -6,30 +8,14 @@ module nts.uk.com.view.cas001.c.service {
     /**
      * Get All Person Role
      */
-    export function getAllPersonRole() {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getAllPersonRole)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function getAllPersonRole(): JQueryPromise<Array<any>> {
+        return ajax(paths.getAllPersonRole);
     }
 
     /**
   *update Person Role
   */
-    export function update(object: any) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.update,object)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function update(object: any): JQueryPromise<any> {
+        return ajax(paths.update, object);
     }
 }

@@ -1,10 +1,10 @@
 package nts.uk.ctx.bs.person.dom.person.info.stringitem;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor
-@Getter
+@IntegerRange(max = 2, min = 1)
 public enum StringItemDataType {
 
 	// 1:固定長(FixedLength)
@@ -13,5 +13,5 @@ public enum StringItemDataType {
 	// 2:可変長(VariableLength)
 	VARIABLE_LENGTH(2);
 
-	private final int value;
+	public final int value;
 }

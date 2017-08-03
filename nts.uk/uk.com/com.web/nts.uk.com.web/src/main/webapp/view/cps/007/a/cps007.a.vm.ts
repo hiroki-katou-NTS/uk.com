@@ -6,9 +6,9 @@ module cps007.a.vm {
             let self = this,
                 layout = self.layout();
 
-            for (let i = 1; i < 10; i++) {
-                layout.itemsClassification.push({ id: 'ID' + i, code: 'COD' + i, name: 'Name ' + i, typeID: 1, dispOrder: 1 });
-            }
+            /*for (let i = 1; i < 10; i++) {
+                layout.itemsClassification.push({ id: 'ID' + i, code: 'COD' + i, name: 'Name ' + i, typeId: 0, dispOrder: 1 });
+            }*/
         }
 
         start() {
@@ -31,7 +31,7 @@ module cps007.a.vm {
         code: string;
         name: string;
         dispOrder: number;
-        typeID: number;
+        typeId: number;
         itemsDefinition?: Array<IItemDefinition>;
     }
 
