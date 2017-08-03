@@ -46,14 +46,24 @@
 					multiple: false,
 					value: currentCode
 				}"></table>
+				<div>
+					<span id="label2" class="label">#{i18n.getText('KDW008_7')}</span>
 				
-				<span id="label2" class="label">#{i18n.getText('KDW008_7')}</span>
+					<span id="label3" class="label">001</span>
+					
+					<span id="label4" class="label">#{i18n.getText('KDW008_8')}</span>
+					
+					<span id="label5" class="label">営業職</span>	
+				</div>
 				
-				<span id="label3" class="label">001</span>
-				
-				<span id="label4" class="label">#{i18n.getText('KDW008_8')}</span>
-				
-				<span id="label5" class="label">営業職</span> 
+				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+					<div class="tab-content-1">
+						<span>Tab Content 1</span><br/>
+					</div>
+					<div class="tab-content-2">
+						<span>Tab Content 2</span><br/>
+					</div>
+				</div> 
 					
 			</div>
 		</ui:define>
