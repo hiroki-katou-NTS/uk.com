@@ -16,39 +16,41 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KwbmtWorkplaceWorkSet.
+ * The Class KscmtCompanyWorkSet.
  */
 @Entity
 @Setter
 @Getter
-@Table(name = "KSCMT_WORKPLACE_WORK_SET")
-public class KwbmtWorkplaceWorkSet extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_COMPANY_WORK_SET")
+public class KscmtCompanyWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The kwbmt workplace work set PK. */
+	/** The kcbmt company work set PK. */
 	@EmbeddedId
-	protected KwbmtWorkplaceWorkSetPK kwbmtWorkplaceWorkSetPK;
-	
+	protected KscmtCompanyWorkSetPK kscmtCompanyWorkSetPK;
+
 	/** The worktype code. */
 	@Column(name = "WORK_TYPE_CD")
 	private String worktypeCode;
-
+	
 	/** The working code. */
 	@Column(name = "WORKING_CD")
 	private String workingCode;
 
 
-	/*
-	 * (non-Javadoc)
-	 * 
+
+	
+
+	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kwbmtWorkplaceWorkSetPK;
+		return this.kscmtCompanyWorkSetPK;
 	}
+
 
 
 	/* (non-Javadoc)
@@ -58,11 +60,10 @@ public class KwbmtWorkplaceWorkSet extends UkJpaEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((kwbmtWorkplaceWorkSetPK == null) ? 0 : kwbmtWorkplaceWorkSetPK.hashCode());
-		result = prime * result + ((workingCode == null) ? 0 : workingCode.hashCode());
-		result = prime * result + ((worktypeCode == null) ? 0 : worktypeCode.hashCode());
+		result = prime * result + ((kscmtCompanyWorkSetPK == null) ? 0 : kscmtCompanyWorkSetPK.hashCode());
 		return result;
 	}
+
 
 
 	/* (non-Javadoc)
@@ -76,26 +77,13 @@ public class KwbmtWorkplaceWorkSet extends UkJpaEntity implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KwbmtWorkplaceWorkSet other = (KwbmtWorkplaceWorkSet) obj;
-		if (kwbmtWorkplaceWorkSetPK == null) {
-			if (other.kwbmtWorkplaceWorkSetPK != null)
+		KscmtCompanyWorkSet other = (KscmtCompanyWorkSet) obj;
+		if (kscmtCompanyWorkSetPK == null) {
+			if (other.kscmtCompanyWorkSetPK != null)
 				return false;
-		} else if (!kwbmtWorkplaceWorkSetPK.equals(other.kwbmtWorkplaceWorkSetPK))
-			return false;
-		if (workingCode == null) {
-			if (other.workingCode != null)
-				return false;
-		} else if (!workingCode.equals(other.workingCode))
-			return false;
-		if (worktypeCode == null) {
-			if (other.worktypeCode != null)
-				return false;
-		} else if (!worktypeCode.equals(other.worktypeCode))
+		} else if (!kscmtCompanyWorkSetPK.equals(other.kscmtCompanyWorkSetPK))
 			return false;
 		return true;
 	}
-
-	
-	
 
 }
