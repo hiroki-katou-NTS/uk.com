@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import find.roles.auth.item.PersonInfoItemAuthDto;
 import find.roles.auth.item.PersonInfoItemAuthFinder;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemDetail;
 
 @Path("ctx/bs/person/roles/auth/item")
 @Produces("application/json")
@@ -30,6 +31,13 @@ public class PersonInfoItemAuthWebservice extends WebService {
 	public List<PersonInfoItemAuthDto> getAllPersonItemAuthByCategory(@PathParam("roleId") String roleId,
 			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
 		return personInfoItemAuthFinder.getAllPersonItemAuthByCategory(roleId, personCategoryAuthId);
+
+	}
+	
+	@POST
+	@Path("findAllItem/{personInfoCategoryAuthId}")
+	public List<PersonInfoItemDetail> getAllItemDetail(@PathParam("personInfoCategoryAuthId") String personInfoCategoryAuthId) {
+		return personInfoItemAuthFinder.getAllItemDetail(personInfoCategoryAuthId);
 
 	}
 

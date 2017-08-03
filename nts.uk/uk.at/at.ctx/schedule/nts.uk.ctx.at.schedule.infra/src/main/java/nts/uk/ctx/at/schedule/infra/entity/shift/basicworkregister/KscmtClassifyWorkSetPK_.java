@@ -8,17 +8,17 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KcbmtClassifyWorkSetPK_.
+ * The Class KscmtClassifyWorkSetPK_.
  */
-@StaticMetamodel(KcbmtClassifyWorkSetPK.class)
-public class KcbmtClassifyWorkSetPK_ {
+@StaticMetamodel(KscmtClassifyWorkSetPK.class)
+public class KscmtClassifyWorkSetPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSetPK, String> cid;
+	public static volatile SingularAttribute<KscmtClassifyWorkSetPK, String> cid;
 
 	/** The classify code. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSetPK, String> classifyCode;
+	public static volatile SingularAttribute<KscmtClassifyWorkSetPK, String> classifyCode;
 	
 	/** The workday division. */
-	public static volatile SingularAttribute<KcbmtClassifyWorkSetPK, Integer> workdayDivision;
+	public static volatile SingularAttribute<KscmtClassifyWorkSetPK, Integer> workdayDivision;
 }

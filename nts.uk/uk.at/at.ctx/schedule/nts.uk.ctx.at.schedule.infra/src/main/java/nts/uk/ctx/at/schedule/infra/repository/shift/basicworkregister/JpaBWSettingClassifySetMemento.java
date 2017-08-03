@@ -8,8 +8,8 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSettingSetMem
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtClassifyWorkSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtClassifyWorkSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSetPK;
 
 /**
  * The Class JpaBWSettingClassifySetMemento.
@@ -17,14 +17,19 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtClassify
 public class JpaBWSettingClassifySetMemento implements BasicWorkSettingSetMemento {
 
 	/** The type value. */
-	private KcbmtClassifyWorkSet typeValue;
+	private KscmtClassifyWorkSet typeValue;
 	
 	
 
-	public JpaBWSettingClassifySetMemento(KcbmtClassifyWorkSet typeValue) {
+	/**
+	 * Instantiates a new jpa BW setting classify set memento.
+	 *
+	 * @param typeValue the type value
+	 */
+	public JpaBWSettingClassifySetMemento(KscmtClassifyWorkSet typeValue) {
 		super();
-		if(typeValue.getKcbmtClassifyWorkSetPK() == null){
-			typeValue.setKcbmtClassifyWorkSetPK(new KcbmtClassifyWorkSetPK());
+		if(typeValue.getKscmtClassifyWorkSetPK() == null){
+			typeValue.setKscmtClassifyWorkSetPK(new KscmtClassifyWorkSetPK());
 		}
 		this.typeValue = typeValue;
 	}
@@ -62,6 +67,6 @@ public class JpaBWSettingClassifySetMemento implements BasicWorkSettingSetMement
 	 */
 	@Override
 	public void setWorkDayDivision(WorkdayDivision workdayDivision) {
-		this.typeValue.getKcbmtClassifyWorkSetPK().setWorkdayDivision(workdayDivision.value);
+		this.typeValue.getKscmtClassifyWorkSetPK().setWorkdayDivision(workdayDivision.value);
 	}
 }

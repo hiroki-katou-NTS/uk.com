@@ -30,10 +30,7 @@ public class WorkplaceBWRemoveCommandHandler extends CommandHandler<WorkplaceBWR
 		WorkplaceBWRemoveCommand command = context.getCommand();
 
 		// Get WorkplaceId
-		String workplaceId = command.getWorkplaceBasicWork().getWorkplaceId();
-		
-//		// Get WorkTypeCode
-//		String worktypeCode = command.getWorkTypeCode();
+		String workplaceId = command.getWorkplaceId();
 
 		// Remove
 		this.repository.remove(workplaceId);

@@ -13,6 +13,9 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
 
+/**
+ * The Class BasicWorkSettingDto.
+ */
 @Getter
 @Setter
 public class BasicWorkSettingDto {
@@ -34,6 +37,14 @@ public class BasicWorkSettingDto {
 	public BasicWorkSetting toDomain() {
 		return new BasicWorkSetting(new GetMementoImpl(this));
 	}
+
+	
+	/**
+	 * Instantiates a new basic work setting dto.
+	 */
+	public BasicWorkSettingDto() {
+	}
+
 
 	/**
 	 * The Class GetMementoImpl.
