@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.StringUtils;
-
 import entity.roles.auth.item.PpemtPersonItemAuth;
 import entity.roles.auth.item.PpemtPersonItemAuthPk;
 import lombok.val;
