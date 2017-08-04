@@ -114,7 +114,7 @@ module nts.uk.ui.koExtentions {
                 childDataKey: optionsChild,
                 initialExpandDepth: 10,
                 tabIndex: -1,
-                features: features
+                features: features 
             });
             var treeGridId = $treegrid.attr('id');
             $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
