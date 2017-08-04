@@ -1,7 +1,7 @@
 package repository.person.itemclassification.difination;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DisPOrder;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DispOrder;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutDisPOrder;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutPersonInfoClsDefRepository;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutPersonInfoClsDefinition;
@@ -21,7 +21,7 @@ public class JpaItemClassificationDifination extends JpaRepository implements La
 	}
 
 	@Override
-	public void remove(String layoutID, DisPOrder disPOrder, LayoutDisPOrder layoutDisPOrder) {
+	public void remove(String layoutID, DispOrder disPOrder, LayoutDisPOrder layoutDisPOrder) {
 		// TODO Auto-generated method stub
 		
 	}
