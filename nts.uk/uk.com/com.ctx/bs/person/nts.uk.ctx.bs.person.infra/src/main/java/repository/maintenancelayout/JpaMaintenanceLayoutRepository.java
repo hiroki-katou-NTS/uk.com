@@ -13,14 +13,14 @@ import entity.maintenencelayout.PpemtMaintenanceLayoutPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayout;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
 
 /**
  * @author laitv
  *
  */
 @Stateless
-public class JpaMaintenanceLayoutRepository extends JpaRepository implements MaintenanceLayoutRepository {
+public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMaintenanceLayoutRepository {
 
 	private String getAllMaintenanceLayout = "select c FROM  PpemtMaintenanceLayout c";
 

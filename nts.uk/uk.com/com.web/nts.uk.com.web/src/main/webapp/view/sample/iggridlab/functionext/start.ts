@@ -215,6 +215,11 @@ module nts.uk.ui.gridlist {
 //                                        { name: "Responsive",
 //                                            enableVerticalRendering: true
 //                                        },
+                                        {
+                                            name: 'Paging',
+                                            pageSize: 50,
+                                            currentPageIndex: 0
+                                        },
                                         { name: 'ColumnFixing', fixingDirection: 'left',
 //                                            syncRowHeights: true,
                                             showFixButtons: false,
@@ -317,6 +322,11 @@ module nts.uk.ui.gridlist {
                                                         { name: "sheet1", text: "Sheet 1", columns: ["time", "addressCode1", "addressCode2", "address1", "address2", "comboCode1", "combo", "header0", "comboCode2", "header01", "header02"] }, 
                                                         { name: "sheet2", text: "Sheet 2", columns: ["header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                       ]
+                                            },
+                                            {
+                                                name: "LoadOnDemand",
+                                                allKeysPath: "/sample/lazyload/keys",
+                                                pageRecordsPath: "/sample/lazyload/data",
                                             }
                                          ],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
@@ -344,14 +354,25 @@ module nts.uk.ui.gridlist {
         
         function totalNumber(data) {
             let total = 0;
-            _.forEach(data, function(d) {
-                total += parseInt(d);
+            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let startIndex = currentPageIndex * pageSize;
+            let endIndex = startIndex + pageSize;
+            _.forEach(data, function(d, i) {
+                if (i < startIndex || i >= endIndex) return;
+                let n = parseInt(d);
+                if (!isNaN(n)) total += n;
             });
             return total;
         }
         function totalTime(data) {
+            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let startIndex = currentPageIndex * pageSize;
+            let endIndex = startIndex + pageSize;
             let total = moment.duration("0");
-            _.forEach(data, function(d) {
+            _.forEach(data, function(d, i) {
+                if (i < startIndex || i >= endIndex) return;
                 total.add(moment.duration(d));
             });
             let time = total.asHours();
