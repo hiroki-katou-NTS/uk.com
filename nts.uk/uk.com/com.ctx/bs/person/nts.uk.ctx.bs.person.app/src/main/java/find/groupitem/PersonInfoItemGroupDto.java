@@ -13,14 +13,14 @@ import nts.uk.ctx.bs.person.dom.person.groupitem.PersonInfoItemGroup;
 @Value
 public class PersonInfoItemGroupDto {
 
-	String personInfoItemGroupID;
-	String companyId;
-	String fieldGroupName;
-	int disPOrder;
+	private String personInfoItemGroupID;
+	private String companyId;
+	private String fieldGroupName;
+	private int dispOrder;
 
 	public static PersonInfoItemGroupDto fromDomain(PersonInfoItemGroup domain) {
 		return new PersonInfoItemGroupDto(domain.getPersonInfoItemGroupID(), domain.getCompanyId(),
-				domain.getFieldGroupName().v(), domain.getDisPOrder().v().intValue());
+				domain.getFieldGroupName().v(), domain.getDispOrder().v().intValue());
 
 	}
 

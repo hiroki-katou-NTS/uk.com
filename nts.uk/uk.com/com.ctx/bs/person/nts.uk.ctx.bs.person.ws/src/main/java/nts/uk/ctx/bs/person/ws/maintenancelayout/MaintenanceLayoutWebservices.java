@@ -4,21 +4,16 @@
 package nts.uk.ctx.bs.person.ws.maintenancelayout;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import command.maintenancelayout.AddMaintenanceLayoutCommand;
-import command.maintenancelayout.AddMaintenanceLayoutCommandHandler;
-import command.maintenancelayout.UpdateMaintenanceLayoutCommand;
-import command.maintenancelayout.UpdateMaintenanceLayoutCommandHandler;
+import command.maintenancelayout.MaintenanceLayoutCommand;
+import command.maintenancelayout.MaintenanceLayoutCommandHandler;
 import find.maintenancelayout.MaintenanceLayoutDto;
 import find.maintenancelayout.MaintenanceLayoutFinder;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
 
 /**
  * @author laitv
@@ -29,57 +24,21 @@ import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutReposi
 public class MaintenanceLayoutWebservices {
 
 	@Inject
-	private MaintenanceLayoutFinder maintenanceLayoutFinder;
+	private MaintenanceLayoutFinder mlayoutFinder;
 
 	@Inject
-	private AddMaintenanceLayoutCommandHandler addMaintenanceLayout;
-
-	@Inject
-	private UpdateMaintenanceLayoutCommandHandler updateHandler;
+	private MaintenanceLayoutCommandHandler commandHandler;
 
 	@POST
 	@Path("findAll")
 	public List<MaintenanceLayoutDto> getAllMaintenenceLayout() {
-		return maintenanceLayoutFinder.getAllLayout();
+		return mlayoutFinder.getAllLayout();
 	}
 
 	@POST
-	@Path("coppy")
-	public void coppyMaintenenceLayout(UpdateMaintenanceLayoutCommand command) {
-		this.updateHandler.handle(command);
-	}
-
-	/**
-	 * add Maintenance Layout
-	 * 
-	 * @param command
-	 */
-	@POST
-	@Path("add")
-	public void addMaintenanceLayout(AddMaintenanceLayoutCommand command) {
-		this.addMaintenanceLayout.handle(command);
-	}
-
-	/**
-	 * update Maintenance Layout
-	 * 
-	 * @param command
-	 */
-	@POST
-	@Path("update")
-	public void updateMaintenanceLayout() {
-
-	}
-
-	/**
-	 * remove Maintenance Layout
-	 * 
-	 * @param command
-	 */
-	@POST
-	@Path("remove")
-	public void removeMaintenanceLayout() {
-
+	@Path("saveLayout")
+	public void addMaintenanceLayout(MaintenanceLayoutCommand command) {
+		this.commandHandler.handle(command);
 	}
 
 }

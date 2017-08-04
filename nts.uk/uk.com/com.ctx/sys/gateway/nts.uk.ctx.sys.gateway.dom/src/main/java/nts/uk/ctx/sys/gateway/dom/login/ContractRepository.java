@@ -14,7 +14,8 @@ public interface ContractRepository {
 	/**
 	 * Gets the contract.
 	 *
+	 * @param contractCode the contract code
 	 * @return the contract
 	 */
-	Optional<Contract> getContract();
+	Optional<Contract> getContract(String contractCode);
 }

@@ -8,8 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import find.person.info.category.PerInfoCategoryDto;
+import find.person.info.category.PerInfoCtgFullDto;
 import find.person.info.category.PerInfoCategoryFinder;
+import find.person.info.category.PerInfoCtgDataEnumDto;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/person/info/category")
@@ -20,13 +21,19 @@ public class PerInfoCtgWebservice extends WebService {
 
 	@POST
 	@Path("findAll")
-	public List<PerInfoCategoryDto> getAllPerInfoCtg() {
+	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
 		return perInfoCtgFinder.getAllPerInfoCtg();
 	}
 	
 	@POST
 	@Path("findby/{Id}")
-	public PerInfoCategoryDto getPerInfoCtg(@PathParam("Id") String Id) {
+	public PerInfoCtgFullDto getPerInfoCtg(@PathParam("Id") String Id) {
 		return perInfoCtgFinder.getPerInfoCtg(Id);
+	}
+	
+	@POST
+	@Path("findby/company")
+	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompany() {
+		return perInfoCtgFinder.getAllPerInfoCtgByCompany();
 	}
 }

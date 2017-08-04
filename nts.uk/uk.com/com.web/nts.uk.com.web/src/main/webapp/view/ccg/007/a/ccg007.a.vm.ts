@@ -22,8 +22,12 @@ module nts.uk.pr.view.ccg007.a {
             }
             private AuthContract() {
                 var self = this;
-                service.submitForm({ contractCode: self.contractCode(), password: self.password() }).done(function() { 
-                nts.uk.ui.windows.close();
+                service.submitForm({ contractCode: self.contractCode(), password: self.password() }).done(function() {
+                    nts.uk.characteristics.remove("contractInfo");
+                    nts.uk.characteristics.save("contractInfo", { contractCode: self.contractCode(), contractPassword: self.password() });
+                    nts.uk.ui.windows.close();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 });
             }
         }

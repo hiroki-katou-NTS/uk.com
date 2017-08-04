@@ -23,7 +23,7 @@ public class User {
 	private String userId;
 
 	/** The password. */
-	private HashPassword password;
+	private RawPassword password;
 
 	/** The login id. */
 	private LoginId loginId;

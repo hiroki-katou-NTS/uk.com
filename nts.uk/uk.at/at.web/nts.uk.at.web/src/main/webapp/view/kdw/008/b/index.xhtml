@@ -61,7 +61,7 @@
 					</div>
 					<div class="tab-content-2" style="height: 500px">
 						<div>
-							<span id="label2" class="label">#{i18n.getText('KDW008_23')}</span>
+							<span class="label">#{i18n.getText('KDW008_23')}</span>
 							<div id="A_SEL_002"
 								data-bind="ntsComboBox: {
 													options: itemListCbb2,
@@ -76,9 +76,11 @@
 							<span id="label2" class="label">#{i18n.getText('KDW008_8')}</span>
 							<input ></input>
 						</div>
-						<div style="height: 450px" id="swap-list" data-bind="ntsSwapList: {
+						<div id="label2"  class="label">#{i18n.getText('KDW008_24')}</div><BR />
+						<div class="label">#{i18n.getText('KDW008_29')}</div>
+						<div style="margin-top: 15px" id="swap-list" data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
-							height: 300,
+							height: 400,
 							dataSource: itemsSwap2,
 							primaryKey: 'code',
 							columns: columns2,

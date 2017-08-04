@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.login;
 
+import java.util.Optional;
+
 /**
  * The Interface EmployeeCodeSettingRepository.
  */
@@ -15,5 +17,5 @@ public interface EmployeeCodeSettingRepository {
 	 * @param companyId the company id
 	 * @return the by company id
 	 */
-	EmployeeCodeSetting getbyCompanyId(String companyId);
+	Optional<EmployeeCodeSetting> getbyCompanyId(String companyId);
 }

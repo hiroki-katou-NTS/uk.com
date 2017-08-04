@@ -4,14 +4,12 @@
 package find.maintenancelayout;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
 
 /**
  * @author laitv
@@ -21,10 +19,15 @@ import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutReposi
 public class MaintenanceLayoutFinder {
 
 	@Inject
-	private MaintenanceLayoutRepository maintenanceLayoutRepository;
+	private IMaintenanceLayoutRepository layoutRepo;
 
 	public List<MaintenanceLayoutDto> getAllLayout() {
-		return this.maintenanceLayoutRepository.getAllMaintenanceLayout().stream()
-				.map(item -> MaintenanceLayoutDto.fromDomain(item)).collect(Collectors.toList());
+		// get All Maintenance Layout
+		return this.layoutRepo.getAllMaintenanceLayout().stream().map(item -> MaintenanceLayoutDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
+
+	public MaintenanceLayoutDto getDetails(String layoutId) {
+		return null;
 	}
 }

@@ -4,26 +4,68 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.login;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.ctx.sys.gateway.entity.login.SgwmtUser;
+import nts.uk.ctx.sys.gateway.entity.login.SgwmtUser_;
+
 @Stateless
-public class JpaUserRepository extends JpaRepository implements UserRepository{
+public class JpaUserRepository extends JpaRepository implements UserRepository {
 
 	@Override
 	public Optional<User> getByLoginId(String loginId) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<SgwmtUser> query = builder.createQuery(SgwmtUser.class);
+		Root<SgwmtUser> root = query.from(SgwmtUser.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList.add(builder.equal(root.get(SgwmtUser_.loginId), loginId));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		List<SgwmtUser> result = em.createQuery(query).getResultList();
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(new User(new JpaUserGetMemento(result.get(0))));
+		}
 	}
 
 	@Override
 	public Optional<User> getByAssociatedPersonId(String associatedPersonId) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<SgwmtUser> query = builder.createQuery(SgwmtUser.class);
+		Root<SgwmtUser> root = query.from(SgwmtUser.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList.add(builder.equal(root.get(SgwmtUser_.assoSid), associatedPersonId));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		List<SgwmtUser> result = em.createQuery(query).getResultList();
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(new User(new JpaUserGetMemento(result.get(0))));
+		}
 	}
 
 }
