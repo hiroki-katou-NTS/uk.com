@@ -1,14 +1,14 @@
 package find.person.info.category;
 
+import java.util.List;
+
 import lombok.Value;
 
 @Value
-public class PerInfoCategoryDto {
-	private String Id;
-	private String categoryCode;
+public class PerInfoCtgWithItemsNameDto {
+	private String id;
 	private String categoryName;
-	private int personEmployeeType;
-	private int isAbolition;
 	private int categoryType;
 	private int isFixed;
+	private List<String> itemNameList;
 }

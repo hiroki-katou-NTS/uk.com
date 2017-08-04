@@ -2,17 +2,17 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
+package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service;
 
 /**
- * The Interface ExtBudgetFileWritterService.
+ * The Interface ExtBudgetFileCheckService.
  */
-public interface ExtBudgetFileWritterService {
-    
+public interface ExtBudgetFileCheckService {
+
     /**
-     * Write.
+     * Valid file format.
      *
-     * @param executeId the execute id
+     * @param fileId the file id
      */
-    void write(String executeId);
+    void validFileFormat(String fileId);
 }

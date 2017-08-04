@@ -3,18 +3,13 @@
  */
 package find.maintenancelayout;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.layoutitemclassification.LayoutPersonInfoClsDto;
-import find.person.info.item.PerInfoItemDefDto;
-import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClsRepository;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
 
 /**
  * @author laitv
@@ -24,7 +19,7 @@ import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutReposi
 public class MaintenanceLayoutFinder {
 
 	@Inject
-	private MaintenanceLayoutRepository layoutRepo;
+	private IMaintenanceLayoutRepository layoutRepo;
 
 	public List<MaintenanceLayoutDto> getAllLayout() {
 		// get All Maintenance Layout
@@ -34,6 +29,5 @@ public class MaintenanceLayoutFinder {
 
 	public MaintenanceLayoutDto getDetails(String layoutId) {
 		return null;
-
 	}
 }

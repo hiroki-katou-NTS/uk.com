@@ -30,17 +30,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("cid", companyId).getList(c -> {
-					String personInfoCategoryId = String.valueOf(c[0]);
-					String categoryCode = String.valueOf(c[1]);
-					String categoryName = String.valueOf(c[2]);
-					int abolitionAtr = Integer.parseInt(String.valueOf(c[3]));
-					String categoryParentCd = String.valueOf(c[4]);
-					int categoryType = Integer.parseInt(String.valueOf(c[5]));
-					int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
-					int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
-					return PersonInfoCategory.createFromEntity(personInfoCategoryId, companyId, categoryCode,
-							categoryParentCd, categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
-
+					return createDomainFromEntity(c);
 				});
 	}
 
@@ -48,17 +38,22 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	public Optional<PersonInfoCategory> getPerInfoCategory(String perInfoCategoryId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCategoryId).getSingle(c -> {
-					String personInfoCategoryId = String.valueOf(c[0]);
-					String categoryCode = String.valueOf(c[1]);
-					String categoryName = String.valueOf(c[2]);
-					int abolitionAtr = Integer.parseInt(String.valueOf(c[3]));
-					String categoryParentCd = String.valueOf(c[4]);
-					int categoryType = Integer.parseInt(String.valueOf(c[5]));
-					int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
-					int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
-					return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode,
-							categoryParentCd, categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
+					return createDomainFromEntity(c);
 				});
+	}
+
+	private PersonInfoCategory createDomainFromEntity(Object[] c) {
+		String personInfoCategoryId = String.valueOf(c[0]);
+		String categoryCode = String.valueOf(c[1]);
+		String categoryName = String.valueOf(c[2]);
+		int abolitionAtr = Integer.parseInt(String.valueOf(c[3]));
+		String categoryParentCd = (c[4] != null) ? String.valueOf(c[4]) : null;
+		int categoryType = Integer.parseInt(String.valueOf(c[5]));
+		int personEmployeeType = Integer.parseInt(String.valueOf(c[6]));
+		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
+		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
+				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
+
 	}
 
 }

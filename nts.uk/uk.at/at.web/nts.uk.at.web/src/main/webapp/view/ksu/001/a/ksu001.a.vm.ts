@@ -170,6 +170,10 @@ module ksu001.a.viewmodel {
                     $('#oViewModel').addClass('oViewModelDisplay');
                     area.load("../o/index.xhtml", function() {
                         self.oViewModel = new o.viewmodel.ScreenModel();
+                        self.oViewModel.nameWorkTimeType.subscribe(function (value) {
+                            //Paste data into cell (set-sticker-single)
+                            $("#extable").exTable("stickData", value);
+                        });
                         ko.applyBindings(self.oViewModel, area.children().get(0));
                     });
                 } else {
@@ -432,20 +436,6 @@ module ksu001.a.viewmodel {
                         decorator: detailHeaderDeco
                     }, {
                         name: "ColumnResizes"
-                    }, {
-                        name: "HeaderPopups",
-                        menu: {
-                            rows: [0],
-                            items: [
-                                { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                { id: "partition" },
-                                { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
-                            ]
-                        },
-                        popup: {
-                            rows: [1],
-                            provider: function() { return $("#popup"); }
-                        }
                     }]
             };
 
@@ -555,7 +545,7 @@ module ksu001.a.viewmodel {
             //set mode of exTable is stickMode single
             $("#extable").exTable("stickMode", "single");
             //Paste data into cell (set-sticker-single)
-            $("#extable").exTable("stickData", ["出勤", "通常１２ｈ"]);
+            $("#extable").exTable("stickData", self.oViewModel.nameWorkTimeType());
 
             //when next/back month
             let updateDetailHeader = {
@@ -601,8 +591,8 @@ module ksu001.a.viewmodel {
 
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                 $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateDetailContent);
-
-                $("#exTable").exTable("updatedCells")
+                //updateCell return arr[rowIndex, columnKey, innerIdx (là index của cell con ở trong cell lớn)]
+                $("#exTable").exTable("updatedCells");
             });
         }
     }

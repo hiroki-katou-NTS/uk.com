@@ -11,10 +11,10 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClsRepository;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.ILayoutPersonInfoClsRepository;
 
 @Stateless
-public class JpaItemClassification extends JpaRepository implements LayoutPersonInfoClsRepository {
+public class JpaItemClassification extends JpaRepository implements ILayoutPersonInfoClsRepository {
 
 	private static final String GET_ALL_ITEM_CLASSIFICATION;
 

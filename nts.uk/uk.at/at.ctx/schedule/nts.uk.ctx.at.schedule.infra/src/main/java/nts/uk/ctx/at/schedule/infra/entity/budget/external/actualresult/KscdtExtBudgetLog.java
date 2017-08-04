@@ -84,6 +84,15 @@ public class KscdtExtBudgetLog extends UkJpaEntity implements Serializable {
      */
     public KscdtExtBudgetLog() {
     }
+    
+    /**
+     * Instantiates a new kscdt ext budget log.
+     *
+     * @param exeId the exe id
+     */
+    public KscdtExtBudgetLog(String exeId) {
+        this.exeId = exeId;
+    }
 
     /*
      * (non-Javadoc)
