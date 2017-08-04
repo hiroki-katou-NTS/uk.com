@@ -19,19 +19,6 @@ public class PersonInfoCategoryAuthWebservice extends WebService {
 	@Inject
 	PersonInfoCategoryAuthFinder personInfoCategoryAuthFinder;
 
-	@POST
-	@Path("findAll")
-	public List<PersonInfoCategoryAuthDto> getAllPersonCategoryAuth() {
-		return personInfoCategoryAuthFinder.getAllPersonCategoryAuth();
-
-	}
-
-	@POST
-	@Path("find/{roleId}")
-	public List<PersonInfoCategoryAuthDto> getAllPersonCategoryAuthByRoleId(@PathParam("roleId") String roleId) {
-		return personInfoCategoryAuthFinder.getAllPersonCategoryAuthByRoleId(roleId);
-
-	}
 	
 	@POST
 	@Path("findAllCategory/{roleId}")
@@ -40,14 +27,9 @@ public class PersonInfoCategoryAuthWebservice extends WebService {
 
 	}
 
+	
 	@POST
-	@Path("find/{roleId}/{personCategoryAuthId}")
-	public PersonInfoCategoryAuthDto getPersonCategoryAuthByRoleId(@PathParam("roleId") String roleId,
-			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
-		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuth(roleId, personCategoryAuthId).get();
-	}
-	@POST
-	@Path("findDetail/{personCategoryAuthId}")
+	@Path("find/{personCategoryAuthId}")
 	public PersonInfoCategoryAuthDto getAuthDetailByPId(
 			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
 		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(personCategoryAuthId);
