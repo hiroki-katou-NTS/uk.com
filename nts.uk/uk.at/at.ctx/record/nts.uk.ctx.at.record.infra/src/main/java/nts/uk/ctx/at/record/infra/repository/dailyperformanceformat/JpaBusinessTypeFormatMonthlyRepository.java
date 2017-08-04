@@ -5,10 +5,12 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeMonthly;
+import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeMonthlyPK;
 
 @Stateless
 public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
@@ -70,7 +72,7 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 
 	@Override
 	public void add(List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds) {
-		this.commandProxy().insertAll(businessTypeFormatMonthlyAdds);		
+		businessTypeFormatMonthlyAdds.forEach(f -> this.commandProxy().insert(toEntity(f)));
 	}
 
 	private static BusinessTypeFormatMonthly toDomain(KrcmtBusinessTypeMonthly krcmtBusinessTypeMonthly) {
@@ -80,6 +82,19 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 				krcmtBusinessTypeMonthly.krcmtBusinessTypeMonthlyPK.attendanceItemId, krcmtBusinessTypeMonthly.order,
 				krcmtBusinessTypeMonthly.columnWidth);
 		return workTypeFormatMonthly;
+	}
+	
+	private KrcmtBusinessTypeMonthly toEntity(BusinessTypeFormatMonthly businessTypeFormatMonthly){
+		val entity = new KrcmtBusinessTypeMonthly();
+		
+		entity.krcmtBusinessTypeMonthlyPK = new KrcmtBusinessTypeMonthlyPK();
+		entity.krcmtBusinessTypeMonthlyPK.companyId = businessTypeFormatMonthly.getCompanyId();
+		entity.krcmtBusinessTypeMonthlyPK.attendanceItemId = businessTypeFormatMonthly.getAttendanceItemId();
+		entity.krcmtBusinessTypeMonthlyPK.businessTypeCode = businessTypeFormatMonthly.getBusinessTypeCode().v();
+		entity.columnWidth = businessTypeFormatMonthly.getColumnWidth();
+		entity.order = businessTypeFormatMonthly.getOrder();
+		
+		return entity;
 	}
 
 }
