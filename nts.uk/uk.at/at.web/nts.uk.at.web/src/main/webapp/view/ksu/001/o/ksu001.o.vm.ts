@@ -157,7 +157,7 @@ module ksu001.o.viewmodel {
             this.methodAtr = params.methodAtr;
             this.displayAtr = params.displayAtr;
             this.note = params.note;
-            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1 + timeZone2 ' + '( ' + this.note + ' )';
+            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1  timeZone2 ' + '( ' + this.note + ' )';
         }
     }
 }

@@ -43,8 +43,8 @@ module ksu001.a.viewmodel {
         roundingRules2: KnockoutObservableArray<any>;
         selectedRuleCode2: KnockoutObservable<number>;
 
-        //
         oViewModel: any;
+        selectedWorkTimeName: any;
         arrDay: Time[] = [];
         listSid: any = ["00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004",
             "00000000-0000-0000-0000-000000000005", "00000000-0000-0000-0000-000000000006", "00000000-0000-0000-0000-000000000007", "00000000-0000-0000-0000-000000000008",
@@ -164,11 +164,9 @@ module ksu001.a.viewmodel {
 
             //Diplay screen O
             self.selectedModeDisplay.subscribe(function(newValue) {
-                var area = $("#oViewModel");
+                let area = $("#oViewModel");
                 area.html("");
                 if (newValue == 1) {
-                    //set mode of exTable is stickMode single 
-                    $("#extable").exTable("stickMode", "single");
                     $('#oViewModel').addClass('oViewModelDisplay');
                     area.load("../o/index.xhtml", function() {
                         self.oViewModel = new o.viewmodel.ScreenModel();
@@ -184,6 +182,7 @@ module ksu001.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             self.initCCG001();
+            //create screen O
             self.selectedModeDisplay(1);
             $.when(self.getDataBasicSchedule()).done(function() {
                 self.initExTable();
@@ -241,6 +240,18 @@ module ksu001.a.viewmodel {
             self.dtPrev(dtMoment.toDate());
         }
 
+        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
+            var self = this;
+            self.empItems.removeAll();
+            _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
+                self.empItems.push(new PersonModel({
+                    personId: item.employeeId,
+                    code: item.employeeCode,
+                    name: item.employeeName,
+                }));
+            });
+        }
+
         initCCG001() {
             let self = this;
             self.ccgcomponent = {
@@ -282,7 +293,6 @@ module ksu001.a.viewmodel {
             }
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-
         }
 
         initExTable(): void {
@@ -296,40 +306,39 @@ module ksu001.a.viewmodel {
                 currentDay.setDate(currentDay.getDate() + 1);
             }
 
-            // creat data of some columns
-            let leftmostDs = [], middleDs = [], middleContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
+            // create data for columns
+            let leftmostDs = [], middleDs = [], middleContentDeco = [], detailHeaderDeco = [], detailContentDeco = [], detailHeaderDs = [], detailContentDs = [], objDetailHeaderDs = {};
             //Set color for detailHeader
             for (let i = 0; i < self.arrDay.length; i++) {
                 if (self.arrDay[i].weekDay == '土') {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 0, "color-blue text-color-blue"));
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 0, "color-blue text-color-blue text-align-center"));
                     detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 1, "color-blue"));
                 }
-                if (self.arrDay[i].weekDay == '日') {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 0, "color-pink text-color-red"));
+                else if (self.arrDay[i].weekDay == '日') {
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 0, "color-pink text-color-red text-align-center"));
                     detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 1, "color-pink"));
+                } else {
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 0, "text-align-center"));
                 }
                 //Set color for detailContent
                 _.each(self.listSid, (empId) => {
                     if (self.arrDay[i].weekDay == '土' || self.arrDay[i].weekDay == '日') {
-                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].day, empId, "text-color-red", 0));
+                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].day, empId, "text-color-red"));
                     } else {
                         detailContentDeco.push(new CellColor("_" + self.arrDay[i].day, empId, "text-color-blue"));
                     }
                 });
             }
 
-            let detailHeaderDs = [], detailContentDs = [], arrDetailHeaderDs = {};
             //create dataSource for detailHeader
             detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
             for (let i = 0; i < self.arrDay.length; i++) {
-                arrDetailHeaderDs['_' + self.arrDay[i].day] = '';
+                objDetailHeaderDs['_' + self.arrDay[i].day] = '';
             }
-            detailHeaderDs.push(arrDetailHeaderDs);
+            detailHeaderDs.push(objDetailHeaderDs);
 
             //define the detailColumns
-            let detailColumns = [{
-                key: "empId", width: "50px", headerText: "ABC", visible: false
-            }];
+            let detailColumns = [];
             _.each(self.arrDay, (x: Time) => {
                 detailColumns.push({
                     key: "_" + x.day, width: "100px", headerText: "", visible: true
@@ -363,11 +372,11 @@ module ksu001.a.viewmodel {
             //create leftMost Header and Content
             let leftmostColumns = [{
                 headerText: nts.uk.resource.getText("KSU001_56"), key: "empName", width: "160px", icon: "ui-icon ui-icon-contact",
-                iconWidth: "35px", control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); }
+                iconWidth: "35px", control: "link", handler: function(rData, rowIdx, key) { alert('社員名'); }
             }];
             let leftmostHeader = {
                 columns: leftmostColumns,
-                rowHeight: "60px",
+                rowHeight: "75px",
                 width: "160px"
             };
             let leftmostContent = {
@@ -377,18 +386,14 @@ module ksu001.a.viewmodel {
             };
 
             //create Middle Header and Content
-            let tts = function(rData, rowIdx, colKey) {
-                return $("<div/>").css({ width: "60px", height: "50px" }).html(rData[colKey] + rowIdx);
-            };
-
             let middleColumns = [
-                { headerText: nts.uk.resource.getText("KSU001_57"), key: "team", width: "50px", handlerType: "tooltip", supplier: tts },
-                { headerText: nts.uk.resource.getText("KSU001_58"), key: "rank", width: "50px", handlerType: "tooltip", supplier: tts },
-                { headerText: nts.uk.resource.getText("KSU001_59"), key: "qualification", width: "50px", handlerType: "tooltip", supplier: tts },
-                { headerText: nts.uk.resource.getText("KSU001_60"), key: "employmentName", width: "100px", handlerType: "tooltip", supplier: tts },
-                { headerText: nts.uk.resource.getText("KSU001_61"), key: "workplaceName", width: "150px", handlerType: "tooltip", supplier: tts },
-                { headerText: nts.uk.resource.getText("KSU001_62"), key: "classificationName", width: "100px", handlerType: "tooltip", supplier: tts },
-                { headerText: nts.uk.resource.getText("KSU001_63"), key: "positionName", width: "100px", handlerType: "tooltip", supplier: tts },
+                { headerText: nts.uk.resource.getText("KSU001_57"), key: "team", width: "50px" },
+                { headerText: nts.uk.resource.getText("KSU001_58"), key: "rank", width: "50px" },
+                { headerText: nts.uk.resource.getText("KSU001_59"), key: "qualification", width: "50px" },
+                { headerText: nts.uk.resource.getText("KSU001_60"), key: "employmentName", width: "100px" },
+                { headerText: nts.uk.resource.getText("KSU001_61"), key: "workplaceName", width: "150px" },
+                { headerText: nts.uk.resource.getText("KSU001_62"), key: "classificationName", width: "100px" },
+                { headerText: nts.uk.resource.getText("KSU001_63"), key: "positionName", width: "100px" },
             ];
 
             let middleHeader = {
@@ -396,7 +401,7 @@ module ksu001.a.viewmodel {
                 width: "100px",
                 features: [{
                     name: "HeaderRowHeight",
-                    rows: { 0: "70px" }
+                    rows: { 0: "75px" }
                 },
                     {
                         name: "ColumnResizes"
@@ -421,7 +426,7 @@ module ksu001.a.viewmodel {
                 width: "700px",
                 features: [{
                     name: "HeaderRowHeight",
-                    rows: { 0: "35px", 1: "25px" }
+                    rows: { 0: "50px", 1: "25px" }
                 }, {
                         name: "HeaderCellStyle",
                         decorator: detailHeaderDeco
@@ -473,7 +478,7 @@ module ksu001.a.viewmodel {
                 width: "200px",
                 features: [{
                     name: "HeaderRowHeight",
-                    rows: { 0: "20px", 1: "40px" }
+                    rows: { 0: "30px", 1: "45px" }
                 }]
             };
 
@@ -492,7 +497,7 @@ module ksu001.a.viewmodel {
             let leftHorzSumHeader = {
                 columns: leftHorzColumns,
                 //        dataSource: leftHorzHeaderDs,
-                rowHeight: "60px"
+                rowHeight: "75px"
             };
 
             let leftHorzSumContent = {
@@ -506,15 +511,10 @@ module ksu001.a.viewmodel {
             let horizontalSumHeader = {
                 columns: detailColumns,
                 dataSource: horzSumHeaderDs,
-                rowHeight: "60px",
+                rowHeight: "75px",
                 features: [{
-                    //            name: "HeaderRowHeight",
-                    //            rows: { 0: "35px", 1: "25px" }   
-                    //        }, {
                     name: "HeaderCellStyle",
                     decorator: detailHeaderDeco
-                    //        }, {
-                    //            name: "ColumnResize"
                 }]
             };
 
@@ -525,12 +525,12 @@ module ksu001.a.viewmodel {
             };
 
             new nts.uk.ui.exTable.ExTable($("#extable"), {
-                headerHeight: "60px", bodyRowHeight: "50px", bodyHeight: "200px",
-                horizontalSumHeaderHeight: "60px", horizontalSumBodyHeight: "200px",
+                headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "200px",
+                horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "200px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
                 bodyHeightMode: "dynamic",
-                windowOccupation: 400,
+                windowOccupation: 50,
                 updateMode: "stick",
                 pasteOverWrite: true,
                 stickOverWrite: true,
@@ -552,6 +552,11 @@ module ksu001.a.viewmodel {
                 .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
                 .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
 
+            //set mode of exTable is stickMode single
+            $("#extable").exTable("stickMode", "single");
+            //Paste data into cell (set-sticker-single)
+            $("#extable").exTable("stickData", ["出勤", "通常１２ｈ"]);
+
             //when next/back month
             let updateDetailHeader = {
                 columns: detailColumns
@@ -561,6 +566,7 @@ module ksu001.a.viewmodel {
             };
 
             $("#nextMonth").click(function() {
+                //Recalculate the time period
                 let dtMoment = moment(self.dtAft());
                 dtMoment.add(1, 'days');
                 self.dtPrev(dtMoment.toDate());
@@ -595,22 +601,8 @@ module ksu001.a.viewmodel {
 
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                 $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateDetailContent);
-            });
 
-            $("#set-sticker-single").click(function() {
-                $("#extable").exTable("stickData", ["出勤", "通常８ｈ"]);
-            });
-        }
-
-        searchEmployee(dataEmployee: EmployeeSearchDto[]) {
-            var self = this;
-            self.empItems.removeAll();
-            _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
-                self.empItems.push(new PersonModel({
-                    personId: item.employeeId,
-                    code: item.employeeCode,
-                    name: item.employeeName,
-                }));
+                $("#exTable").exTable("updatedCells")
             });
         }
     }
@@ -822,7 +814,7 @@ module ksu001.a.viewmodel {
             // create detailHeader (ex: 4/1 | 4/2)
             if (manual) {
                 for (let i = 0; i < arrDay.length; i++) {
-                    this['_' + arrDay[i].day] = [arrDay[i].month + '/' + arrDay[i].day, arrDay[i].weekDay];
+                    this['_' + arrDay[i].day] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
                 }
                 return;
             }
