@@ -5,9 +5,9 @@ import java.util.Optional;
 
 public interface PernfoItemDefRepositoty {
 
-	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId);
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
 
-	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId);
+	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd);
 	
-	List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId);
+	List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd);
 }

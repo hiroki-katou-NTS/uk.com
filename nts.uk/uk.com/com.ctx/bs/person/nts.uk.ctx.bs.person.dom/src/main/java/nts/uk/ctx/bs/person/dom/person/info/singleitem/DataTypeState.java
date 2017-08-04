@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.person.dom.person.info.singleitem;
 
 import java.math.BigDecimal;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItem;
@@ -12,7 +13,7 @@ import nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
 
 public class DataTypeState extends AggregateRoot {
-
+	@Getter
 	protected DataTypeValue dataTypeValue;
 
 	public static DataTypeState createTimeItem(long max, long min) {

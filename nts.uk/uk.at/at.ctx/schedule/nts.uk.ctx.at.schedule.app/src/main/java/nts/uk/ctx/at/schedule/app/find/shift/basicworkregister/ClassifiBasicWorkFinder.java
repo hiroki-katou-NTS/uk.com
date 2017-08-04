@@ -100,7 +100,7 @@ public class ClassifiBasicWorkFinder {
 			// Set WorkTypeDisplayName to Dto
 			if (worktype == null) {
 //				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
-				item.setWorkTypeDisplayName("something");
+				item.setWorkTypeDisplayName("Something's not right");
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
@@ -113,7 +113,7 @@ public class ClassifiBasicWorkFinder {
 			// Set WorkingDisplayName
 			if (worktime == null) {
 				// item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
-				item.setWorkingDisplayName("something");
+				item.setWorkingDisplayName("Something's not right");
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}

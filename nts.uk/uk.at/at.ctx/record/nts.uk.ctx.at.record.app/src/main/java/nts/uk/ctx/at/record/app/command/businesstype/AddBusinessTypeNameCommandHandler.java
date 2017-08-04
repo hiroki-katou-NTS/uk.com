@@ -21,9 +21,9 @@ public class AddBusinessTypeNameCommandHandler extends CommandHandler<AddBusines
 	protected void handle(CommandHandlerContext<AddBusinessTypeNameCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		BusinessType businessType = BusinessType.createFromJavaType(companyId, 
-																	context.getCommand().getWorkTypeCode(),
+																	context.getCommand().getBusinessTypeCode(),
 																	context.getCommand().getBusinessTypeName());
-		Optional<BusinessType> businessTypeOld = businessTypeRep.findBusinessType(companyId, context.getCommand().getWorkTypeCode());
+		Optional<BusinessType> businessTypeOld = businessTypeRep.findBusinessType(companyId, context.getCommand().getBusinessTypeCode());
 		if(businessTypeOld.isPresent()){
 			throw new BusinessException("Msg_3");
 		}

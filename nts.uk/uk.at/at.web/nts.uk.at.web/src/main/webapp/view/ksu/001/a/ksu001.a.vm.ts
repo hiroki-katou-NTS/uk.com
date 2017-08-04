@@ -45,7 +45,7 @@ module ksu001.a.viewmodel {
 
         //
         oViewModel: any;
-        arrTime: Time[] = [];
+        arrDay: Time[] = [];
         listSid: any = ["00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004",
             "00000000-0000-0000-0000-000000000005", "00000000-0000-0000-0000-000000000006", "00000000-0000-0000-0000-000000000007", "00000000-0000-0000-0000-000000000008",
             "00000000-0000-0000-0000-000000000009", "00000000-0000-0000-0000-000000000010"];
@@ -64,19 +64,10 @@ module ksu001.a.viewmodel {
             self.items = ko.observableArray([]);
 
             //Date time
-            self.dtPrev = ko.observable(new Date('2017/01/01'));
+            self.dtPrev = ko.observable(new Date('2016/12/29'));
             self.dtAft = ko.observable(new Date('2017/01/15'));
             self.dateTimePrev = ko.observable(moment(self.dtPrev()).format('YYYY/MM/DD'));
             self.dateTimeAfter = ko.observable(moment(self.dtAft()).format('YYYY/MM/DD'));
-
-            var currentD = new Date(self.dtPrev().toString());
-            while (currentD <= self.dtAft()) {
-                self.arrTime.push(new Time(currentD.toString()));
-                //                self.arrMonth.push(moment(currentD).format('M'));
-                //                self.arrDay.push(moment(currentD).format('D'));
-                currentD.setDate(currentD.getDate() + 1);
-            }
-
 
             self.dtPrev.subscribe(() => {
                 self.dateTimePrev(moment(self.dtPrev()).format('YYYY/MM/DD'));
@@ -176,6 +167,8 @@ module ksu001.a.viewmodel {
                 var area = $("#oViewModel");
                 area.html("");
                 if (newValue == 1) {
+                    //set mode of exTable is stickMode single 
+                    $("#extable").exTable("stickMode", "single");
                     $('#oViewModel').addClass('oViewModelDisplay');
                     area.load("../o/index.xhtml", function() {
                         self.oViewModel = new o.viewmodel.ScreenModel();
@@ -225,15 +218,15 @@ module ksu001.a.viewmodel {
         /**
          * next one month
          */
-        nextMonth(): void {
-            let self = this;
-            let dtMoment = moment(self.dtAft());
-            dtMoment.add(1, 'days');
-            self.dtPrev(dtMoment.toDate());
-            dtMoment = dtMoment.add(1, 'months');
-            dtMoment.subtract(1, 'days');
-            self.dtAft(dtMoment.toDate());
-        }
+        //        nextMonth(): void {
+        //            let self = this;
+        //            let dtMoment = moment(self.dtAft());
+        //            dtMoment.add(1, 'days');
+        //            self.dtPrev(dtMoment.toDate());
+        //            dtMoment = dtMoment.add(1, 'months');
+        //            dtMoment.subtract(1, 'days');
+        //            self.dtAft(dtMoment.toDate());
+        //        }
 
         /**
          * come back a month
@@ -296,64 +289,71 @@ module ksu001.a.viewmodel {
             let self = this;
             let timeRanges = [];
 
-            // creat data of some columns
-            let leftmostDs = [];
-
-            let middleDs = [];
-            let middleHeaderDeco = [new CellColor("over1", undefined, "small-font-size"), new CellColor("over2", undefined, "small-font-size")];
-            let middleContentDeco = [];
-
-            let detailHeaderDeco = [new CellColor("empId", 1, "ultra-small-font-size")];
-            for (let i = 0; i < self.arrTime.length; i++) {
-                if (self.arrTime[i].weekDay == '日' || self.arrTime[i].weekDay == 　'土') {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrTime[i].day, 1, "cell-red"));
-                }
+            //Get dates in time period
+            var currentDay = new Date(self.dtPrev().toString());
+            while (currentDay <= self.dtAft()) {
+                self.arrDay.push(new Time(currentDay.toString()));
+                currentDay.setDate(currentDay.getDate() + 1);
             }
-            let detailContentDeco = [];
-            let detailHeaderDs = [];
-            let detailContentDs = [];
-            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrTime));
-            detailHeaderDs.push({
-                empId: "", __25: "over", __26: "", __27: "", __28: "", __29: "", __30: "", __31: "",
-                _1: "セール", _2: "", _3: "", _4: "", _5: "", _6: "", _7: "", _8: "", _9: "特別", _10: "",
-                _11: "", _12: "", _13: "", _14: "", _15: "", _16: "Oouch", _17: "", _18: "", _19: "", _20: "", _21: "", _22: "", _23: "",
-                _24: "", _25: "", _26: "設定", _27: "", _28: "", _29: "", _30: "", _31: "",
-            });
+
+            // creat data of some columns
+            let leftmostDs = [], middleDs = [], middleContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
+            //Set color for detailHeader
+            for (let i = 0; i < self.arrDay.length; i++) {
+                if (self.arrDay[i].weekDay == '土') {
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 0, "color-blue text-color-blue"));
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 1, "color-blue"));
+                }
+                if (self.arrDay[i].weekDay == '日') {
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 0, "color-pink text-color-red"));
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].day, 1, "color-pink"));
+                }
+                //Set color for detailContent
+                _.each(self.listSid, (empId) => {
+                    if (self.arrDay[i].weekDay == '土' || self.arrDay[i].weekDay == '日') {
+                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].day, empId, "text-color-red", 0));
+                    } else {
+                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].day, empId, "text-color-blue"));
+                    }
+                });
+            }
+
+            let detailHeaderDs = [], detailContentDs = [], arrDetailHeaderDs = {};
+            //create dataSource for detailHeader
+            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            for (let i = 0; i < self.arrDay.length; i++) {
+                arrDetailHeaderDs['_' + self.arrDay[i].day] = '';
+            }
+            detailHeaderDs.push(arrDetailHeaderDs);
 
             //define the detailColumns
             let detailColumns = [{
                 key: "empId", width: "50px", headerText: "ABC", visible: false
             }];
-
-            _.each(self.arrTime, (x: Time) => {
+            _.each(self.arrDay, (x: Time) => {
                 detailColumns.push({
-                    key: "_" + x.day, width: "100px", headerText: "a", visible: true
+                    key: "_" + x.day, width: "100px", headerText: "", visible: true
                 });
             });
-
-            //            detailColumns.push({
-            //                  key: "_9", width: "100px"  
-            //            });
-
-            let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [];
+            let horzSumHeaderDs = [], horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [];
+            horzSumHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
 
             //dataSource
             _.each(self.listSid, (x) => {
                 //leftMost dataSource
                 leftmostDs.push({ empId: x, empName: "社員名" });
                 //middle dataSource
-                middleDs.push({ empId: x, cert: "★", over1: "207:00", over2: "23.0" });
+                middleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
                 //detail dataSource
                 let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
-                detailContentDs.push(new ExItem(x, dsOfSid, self.oViewModel.listWorkType(), self.oViewModel.listWorkTime(), false, self.arrTime));
+                detailContentDs.push(new ExItem(x, dsOfSid, self.oViewModel.listWorkType(), self.oViewModel.listWorkTime(), false, self.arrDay));
                 //vertSumContent dataSource
                 vertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
             });
 
             for (let i = 0; i < 10; i++) {
                 horzSumContentDs.push({
-                    itemId: i.toString(), empId: "", __25: "1.0", __26: "1.4", __27: "0.3", __28: "0.9", __29: "1.0", __30: "1.0", __31: "3.3",
-                    _1: "1.0", _2: "1.0", _3: "0.5", _4: "1.0", _5: "1.0", _6: "1.0", _7: "0.5", _8: "0.5", _9: "1.0", _10: "0.5",
+                    itemId: i.toString(), empId: "", _1: "1.0", _2: "1.0", _3: "0.5", _4: "1.0", _5: "1.0", _6: "1.0", _7: "0.5", _8: "0.5", _9: "1.0", _10: "0.5",
                     _11: "0.5", _12: "1.0", _13: "0.5", _14: "1.0", _15: "1.0", _16: "0.5", _17: "1.0", _18: "1.0", _19: "1.0", _20: "1.0", _21: "1.0", _22: "1.0", _23: "1.0",
                     _24: "0.5", _25: "0.5", _26: "1.0", _27: "1.0", _28: "1.0", _29: "0.5", _30: "1.0", _31: "1.0"
                 });
@@ -362,7 +362,7 @@ module ksu001.a.viewmodel {
 
             //create leftMost Header and Content
             let leftmostColumns = [{
-                key: "empName", headerText: "社員名", width: "160px", icon: "ui-icon ui-icon-contact",
+                headerText: nts.uk.resource.getText("KSU001_56"), key: "empName", width: "160px", icon: "ui-icon ui-icon-contact",
                 iconWidth: "35px", control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); }
             }];
             let leftmostHeader = {
@@ -378,35 +378,27 @@ module ksu001.a.viewmodel {
 
             //create Middle Header and Content
             let tts = function(rData, rowIdx, colKey) {
-                if (rowIdx % 2 === 0) {
-                    return $("<div/>").css({ width: "60px", height: "50px" }).html(rData[colKey] + rowIdx);
-                }
+                return $("<div/>").css({ width: "60px", height: "50px" }).html(rData[colKey] + rowIdx);
             };
 
             let middleColumns = [
-                { headerText: "有資格者", key: "cert", width: "50px", handlerType: "tooltip", supplier: tts },
-                {
-                    headerText: "回数集計１",
-                    group: [
-                        { headerText: "上１", key: "over1", width: "100px" },
-                        { headerText: "上２", key: "over2", width: "100px" }
-                    ]
-                }
+                { headerText: nts.uk.resource.getText("KSU001_57"), key: "team", width: "50px", handlerType: "tooltip", supplier: tts },
+                { headerText: nts.uk.resource.getText("KSU001_58"), key: "rank", width: "50px", handlerType: "tooltip", supplier: tts },
+                { headerText: nts.uk.resource.getText("KSU001_59"), key: "qualification", width: "50px", handlerType: "tooltip", supplier: tts },
+                { headerText: nts.uk.resource.getText("KSU001_60"), key: "employmentName", width: "100px", handlerType: "tooltip", supplier: tts },
+                { headerText: nts.uk.resource.getText("KSU001_61"), key: "workplaceName", width: "150px", handlerType: "tooltip", supplier: tts },
+                { headerText: nts.uk.resource.getText("KSU001_62"), key: "classificationName", width: "100px", handlerType: "tooltip", supplier: tts },
+                { headerText: nts.uk.resource.getText("KSU001_63"), key: "positionName", width: "100px", handlerType: "tooltip", supplier: tts },
             ];
 
             let middleHeader = {
                 columns: middleColumns,
-                width: "200px",
+                width: "100px",
                 features: [{
                     name: "HeaderRowHeight",
-                    rows: { 0: "35px", 1: "25px" }
-                }, {
-                        name: "HeaderCellStyle",
-                        decorator: middleHeaderDeco
-                        //            decorate: function($cell, cellData, rowData, rowIdx, columnKey) { 
-                        //                
-                        //            }
-                    }, {
+                    rows: { 0: "70px" }
+                },
+                    {
                         name: "ColumnResizes"
                     }]
             };
@@ -451,6 +443,7 @@ module ksu001.a.viewmodel {
                         }
                     }]
             };
+
             let detailContent = {
                 columns: detailColumns,
                 dataSource: detailContentDs,
@@ -474,6 +467,7 @@ module ksu001.a.viewmodel {
                     ]
                 }
             ];
+
             let vertSumHeader = {
                 columns: vertSumColumns,
                 width: "200px",
@@ -482,22 +476,25 @@ module ksu001.a.viewmodel {
                     rows: { 0: "20px", 1: "40px" }
                 }]
             };
+
             let vertSumContent = {
                 columns: vertSumColumns,
                 dataSource: vertSumContentDs,
                 primaryKey: "empId"
             };
-            //create LeftHorzSum Header and Content
 
+            //create LeftHorzSum Header and Content
             let leftHorzColumns = [
                 { headerText: "項目名", key: "itemName", width: "200px" },
                 { headerText: "合計", key: "sum", width: "100px" }
             ];
+
             let leftHorzSumHeader = {
                 columns: leftHorzColumns,
                 //        dataSource: leftHorzHeaderDs,
                 rowHeight: "60px"
             };
+
             let leftHorzSumContent = {
                 columns: leftHorzColumns,
                 dataSource: leftHorzContentDs,
@@ -508,25 +505,24 @@ module ksu001.a.viewmodel {
 
             let horizontalSumHeader = {
                 columns: detailColumns,
-                dataSource: detailHeaderDs,
-                rowHeight: "30px",
-                //        features: [{
-                //            name: "HeaderRowHeight",
-                //            rows: { 0: "35px", 1: "25px" }   
-                //        }, {
-                //            name: "HeaderCellStyle",
-                //            decorator: detailHeaderDeco
-                //        }, {
-                //            name: "ColumnResize"
-                //        }]
+                dataSource: horzSumHeaderDs,
+                rowHeight: "60px",
+                features: [{
+                    //            name: "HeaderRowHeight",
+                    //            rows: { 0: "35px", 1: "25px" }   
+                    //        }, {
+                    name: "HeaderCellStyle",
+                    decorator: detailHeaderDeco
+                    //        }, {
+                    //            name: "ColumnResize"
+                }]
             };
+
             let horizontalSumContent = {
                 columns: detailColumns,
                 dataSource: horzSumContentDs,
                 primaryKey: "itemId"
             };
-
-
 
             new nts.uk.ui.exTable.ExTable($("#extable"), {
                 headerHeight: "60px", bodyRowHeight: "50px", bodyHeight: "200px",
@@ -534,7 +530,7 @@ module ksu001.a.viewmodel {
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
                 bodyHeightMode: "dynamic",
-                windowOccupation: 800,
+                windowOccupation: 400,
                 updateMode: "stick",
                 pasteOverWrite: true,
                 stickOverWrite: true,
@@ -556,8 +552,54 @@ module ksu001.a.viewmodel {
                 .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
                 .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
 
+            //when next/back month
+            let updateDetailHeader = {
+                columns: detailColumns
+            };
+            let updateDetailContent = {
+                columns: detailColumns
+            };
 
+            $("#nextMonth").click(function() {
+                let dtMoment = moment(self.dtAft());
+                dtMoment.add(1, 'days');
+                self.dtPrev(dtMoment.toDate());
+                dtMoment = dtMoment.add(1, 'months');
+                dtMoment.subtract(1, 'days');
+                self.dtAft(dtMoment.toDate());
 
+                //Get dates in time period
+                let currentDay = new Date(self.dtPrev().toString());
+                self.arrDay = [];
+                while (currentDay <= self.dtAft()) {
+                    self.arrDay.push(new Time(currentDay.toString()));
+                    currentDay.setDate(currentDay.getDate() + 1);
+                }
+
+                //define the new detailColumns
+                let newDetailColumns = [{
+                    key: "empId", width: "50px", headerText: "ABC", visible: false
+                }];
+                _.each(self.arrDay, (x: Time) => {
+                    newDetailColumns.push({
+                        key: "_" + x.day, width: "100px", headerText: "", visible: true
+                    });
+                });
+
+                let updateDetailHeader = {
+                    columns: newDetailColumns
+                };
+                let updateDetailContent = {
+                    columns: newDetailColumns
+                };
+
+                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateDetailContent);
+            });
+
+            $("#set-sticker-single").click(function() {
+                $("#extable").exTable("stickData", ["出勤", "通常８ｈ"]);
+            });
         }
 
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
@@ -774,31 +816,31 @@ module ksu001.a.viewmodel {
         _30: string;
         _31: string;
 
-        constructor(empId: string, dsOfSid: BasicSchedule[], listWorkType: WorkType[], listWorkTime: WorkTime[], manual: boolean, arrTime: Time[]) {
+        constructor(empId: string, dsOfSid: BasicSchedule[], listWorkType: WorkType[], listWorkTime: WorkTime[], manual: boolean, arrDay: Time[]) {
             this.empId = empId;
             this.empName = empId;
             // create detailHeader (ex: 4/1 | 4/2)
             if (manual) {
-                for (let i = 0; i < arrTime.length; i++) {
-                    this['_' + arrTime[i].day] = arrTime[i].month + '/' + arrTime[i].day + ' ' + arrTime[i].weekDay;
+                for (let i = 0; i < arrDay.length; i++) {
+                    this['_' + arrDay[i].day] = [arrDay[i].month + '/' + arrDay[i].day, arrDay[i].weekDay];
                 }
                 return;
             }
             //create detailContent (ex: [workType, workTime] : ["出勤", "通常４ｈ "])
-            for (let i = 0; i < arrTime.length; i++) {
+            for (let i = 0; i < arrDay.length; i++) {
                 let obj: BasicSchedule = _.find(dsOfSid, (x) => {
-                    return moment(x.date).format('D') == arrTime[i].day;
+                    return moment(x.date).format('D') == arrDay[i].day;
                 });
                 //holiday
-                if (arrTime[i].weekDay == '日' || arrTime[i].weekDay == '土') {
-                    this['_' + arrTime[i].day] = ['休日', ''];
+                if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土') {
+                    this['_' + arrDay[i].day] = ['休日', ''];
                 } else if (obj) {
                     //get name of workType and workTime
                     let workTypeName = _.find(listWorkType, ['workTypeCode', obj.workTypeCd]).abbreviationName;
                     let workTimeName = _.find(listWorkTime, ['siftCd', obj.workTimeCd]).abName;
-                    this['_' + arrTime[i].day] = [workTypeName, workTimeName];
+                    this['_' + arrDay[i].day] = [workTypeName, workTimeName];
                 } else {
-                    this['_' + arrTime[i].day] = 'なし';
+                    this['_' + arrDay[i].day] = ['', ''];
                 }
             }
         }

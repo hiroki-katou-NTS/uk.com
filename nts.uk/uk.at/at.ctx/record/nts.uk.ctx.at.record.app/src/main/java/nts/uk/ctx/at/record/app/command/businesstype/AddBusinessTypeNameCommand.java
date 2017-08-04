@@ -12,7 +12,7 @@ public class AddBusinessTypeNameCommand {
 	/*会社ID*/
 	private String companyId;
 	/*勤務種別コード*/
-	private String workTypeCode;
+	private String businessTypeCode;
 	/*勤務種別名*/
 	private String businessTypeName;
 }

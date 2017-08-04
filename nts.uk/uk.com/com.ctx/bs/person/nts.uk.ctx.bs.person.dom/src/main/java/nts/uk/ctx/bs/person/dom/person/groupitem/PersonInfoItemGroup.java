@@ -14,8 +14,7 @@ import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DisPOrder;
 
 /**
  * @author laitv
- *
- */
+ **/
 @Getter
 @Setter
 @NoArgsConstructor

@@ -12,6 +12,7 @@ module cps008.a.viewmodel {
         A_INP_LAYOUT_NAME_ENABLE: KnockoutObservable<boolean>;
         enableBtnCoppy: KnockoutObservable<boolean>;
         enableBtnDelete: KnockoutObservable<boolean>;
+        itemsClassification: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             var self = this;
@@ -39,6 +40,11 @@ module cps008.a.viewmodel {
                 self.A_INP_LAYOUT_CODE(obj.layoutCode);
                 self.A_INP_LAYOUT_NAME(obj.layoutName);
             }));
+
+            // demo
+            for (let i = 1; i < 10; i++) {
+                self.itemsClassification.push({ id: 'ID' + i, code: 'COD' + i, name: 'Name ' + i, typeID: 1, dispOrder: 1 });
+            }
         }
 
         /**
@@ -176,11 +182,25 @@ module cps008.a.viewmodel {
         layoutCode: string;
         layoutName: string;
         maintenanceLayoutID: string;
+        listItemClsDto : Array<LayoutPersonInfoClsDto>;
         constructor(companyId?: string, layoutCode?: string, layoutName?: string, maintenanceLayoutID?: string) {
             this.companyId = companyId;
             this.layoutCode = layoutCode;
             this.layoutName = layoutName;
             this.maintenanceLayoutID = maintenanceLayoutID;
+        }
+    }
+
+    export class LayoutPersonInfoClsDto {
+        layoutID: string;
+        disPOrder: number;
+        personInfoCategoryID : string;
+        layoutItemType : number;
+        constructor(layoutID?: string, disPOrder?: number, personInfoCategoryID?: string, layoutItemType?: number) {
+            this.layoutID = layoutID;
+            this.disPOrder = disPOrder;
+            this.personInfoCategoryID = personInfoCategoryID;
+            this.layoutItemType = layoutItemType;
         }
     }
 
