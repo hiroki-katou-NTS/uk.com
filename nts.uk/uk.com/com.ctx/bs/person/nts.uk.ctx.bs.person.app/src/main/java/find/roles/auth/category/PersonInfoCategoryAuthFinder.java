@@ -1,11 +1,13 @@
 package find.roles.auth.category;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
 
 /**
@@ -26,8 +28,11 @@ public class PersonInfoCategoryAuthFinder {
 	}
 
 	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
-		return this.personCategoryAuthRepository.getDetailPersonCategoryAuthByPId(personCategoryAuthId).map(item -> {
-			return PersonInfoCategoryAuthDto.fromDomain(item);
-		}).orElse(null);
+		Optional<PersonInfoCategoryAuth> opt = this.personCategoryAuthRepository
+				.getDetailPersonCategoryAuthByPId(personCategoryAuthId);
+		if (!opt.isPresent())
+			return null;
+		return opt.map(c -> PersonInfoCategoryAuthDto.fromDomain(c)).get();
+
 	}
 }

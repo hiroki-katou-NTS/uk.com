@@ -100,9 +100,9 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	@Override
 	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
 		return this.queryProxy().query(SEL_1, PpemtPersonCategoryAuth.class)
-				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle(c -> {
-					return toDomain(c);
-				});
+				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle().map(e -> {
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
 	}
 
 	@Override
