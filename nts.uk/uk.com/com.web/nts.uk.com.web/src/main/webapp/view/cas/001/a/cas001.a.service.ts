@@ -4,8 +4,8 @@ module nts.uk.com.view.cas001.a.service {
         getPersonRoleList: "/ctx/bs/person/roles/findAll",
         getPersonRoleAuth: "/ctx/bs/person/roles/auth/find/{0}",
         getCategoryRoleList: "/ctx/bs/person/roles/auth/category/findAllCategory/{0}",
-        getAuthDetailByPId: "/ctx/bs/person/roles/auth/category/findDetail/{0}",
-        getPersonRoleItemList: "ctx/bs/person/roles/auth/item/findAllItem/{0}",
+        getAuthDetailByPId: "/ctx/bs/person/roles/auth/category/find/{0}",
+        getPersonRoleItemList: "ctx/bs/person/roles/auth/item/findAllItem/{0}/{1}",
     }
 
     export function getPersonRoleList(): JQueryPromise<any> {
@@ -24,8 +24,8 @@ module nts.uk.com.view.cas001.a.service {
         return ajax(nts.uk.text.format(paths.getAuthDetailByPId, personInfoCategoryAuthId));
     }
 
-    export function getPersonRoleItemList(personInfoCategoryAuthId): JQueryPromise<any> {
-        return ajax(nts.uk.text.format(paths.getPersonRoleItemList, personInfoCategoryAuthId));
+    export function getPersonRoleItemList(roleId, personInfoCategoryAuthId): JQueryPromise<any> {
+        return ajax(nts.uk.text.format(paths.getPersonRoleItemList, roleId, personInfoCategoryAuthId));
     }
 
 

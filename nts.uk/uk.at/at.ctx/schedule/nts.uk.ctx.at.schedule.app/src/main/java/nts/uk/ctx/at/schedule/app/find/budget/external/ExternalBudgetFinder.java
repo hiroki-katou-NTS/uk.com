@@ -4,7 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.budget.external;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,18 +18,22 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
+import org.apache.commons.csv.CSVFormat;
+
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
-import nts.arc.system.ServerSystemProperties;
+import nts.gul.csv.NtsCsvReader;
+import nts.gul.csv.NtsCsvRecord;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetExtractCondition;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetFileReaderServiceImpl;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetQuery;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetValDto;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.Encoding;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -37,11 +46,13 @@ public class ExternalBudgetFinder {
 	@Inject
     private ExternalBudgetLogRepository extBudgetLogRepo;
 	
-	@Inject
-	private StoredFileInfoRepository fileInfoRepository;
-	
+	/** The file stream service. */
 	@Inject
     private StoredFileStreamService fileStreamService;
+	
+	/** The file check service. */
+    @Inject
+    private ExtBudgetFileCheckService fileCheckService;
 	
 	/*
 	 * get All List iTem of external Budget
@@ -60,28 +71,16 @@ public class ExternalBudgetFinder {
 	 * @param file the file
 	 * @return the ext budget data preview dto
 	 */
-	@SuppressWarnings("unchecked")
     public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
-	    System.out.println(new File(ServerSystemProperties.fileStoragePath()).toPath().resolve(extractCondition.getFileId()).toString());
-//	    InputStream inputStream = null;
-//	    try {
-//            inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
-//        } catch (BusinessException businessException) {
-//            throw new BusinessException("Msg_158");
-//        }
-//	    
-//	    Optional<StoredFileInfo> optional = this.fileInfoRepository.find(extractCondition.getFileId());
-//        if(!optional.isPresent()){
-//            new RuntimeException("stored file info is not found.");
-//        }
-//        StoredFileInfo storagedFileInfor = optional.get();
-//        
-//        // check file extension
-//        List<String> FILE_EXTENSION_ARR = Arrays.asList("text, csv");
-//        if (!FILE_EXTENSION_ARR.contains(storagedFileInfor.getFileType().toLowerCase())) {
-//            throw new BusinessException("Msg_159"); 
-//        }
-//	    
+        
+        // Check valid format file.
+        this.fileCheckService.validFileFormat(extractCondition.getFileId());
+        
+        List<ExternalBudgetValDto> lstExtBudgetVal = new ArrayList<>();
+        int totalRecord = 0;
+        int INDEX_CODE = 0;
+        int INDEX_DATE = 1;
+        int MAX_RECORD_DISP = 10;
         
         String companyId = AppContexts.user().companyId();
         Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
@@ -89,14 +88,34 @@ public class ExternalBudgetFinder {
         if (!extBudgetOptional.isPresent()) {
             throw new RuntimeException("Not external budget setting.");
         }
-        
         ExternalBudget externalBudget = extBudgetOptional.get();
-        ExtBudgetFileReaderServiceImpl fileReader = new ExtBudgetFileReaderServiceImpl(extractCondition, externalBudget,
-                this.fileInfoRepository, this.fileStreamService);
-	    Map<String, Object> mapData = fileReader.findDataPreview();
+        try {
+            InputStream inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
+            Iterator<NtsCsvRecord> csvRecord = this.findRecordFile(inputStream, extractCondition.getEncoding());
+//            while(csvRecord.hasNext()) {
+                if (totalRecord < MAX_RECORD_DISP) {
+                    NtsCsvRecord record = csvRecord.next();
+                    // TODO: parse record
+                    // TODO: fake data after parse
+                    List<String> result = new ArrayList<>();
+                    result.add("");
+                    result.add("");
+                    result.add("");
+                    result.add("");
+                    lstExtBudgetVal.add(
+                            ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE), result.get(INDEX_DATE),
+                                    this.findListExtBudgetValue(result.subList(INDEX_DATE + 1, result.size()),
+                                            externalBudget.getUnitAtr())));
+                }
+                totalRecord++;
+//            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	    return ExtBudgetDataPreviewDto.builder()
-	            .data((List<ExternalBudgetValDto>) mapData.get(ExtBudgetFileReaderServiceImpl.DATA_PREVIEW))
-	            .totalRecord((Integer) mapData.get(ExtBudgetFileReaderServiceImpl.TOTAL_RECORD))
+	            .isDailyUnit(externalBudget.getUnitAtr() == UnitAtr.DAILY)
+	            .data(lstExtBudgetVal)
+	            .totalRecord(totalRecord)
 	            .build();
 	}
 	
@@ -125,4 +144,65 @@ public class ExternalBudgetFinder {
 	            .collect(Collectors.toList());
 	}
 	
+	/**
+	 * Find list ext budget value.
+	 *
+	 * @param lstRawVal the lst raw val
+	 * @param extBudgetCode the ext budget code
+	 * @return the list
+	 */
+	private List<String> findListExtBudgetValue(List<String> lstRawVal, UnitAtr unitAtr) {
+        String valEmpty = "";
+        int numberCol = 0;
+        switch (unitAtr) {
+            case DAILY:
+                numberCol = 3;
+                break;
+            case BYTIMEZONE:
+                numberCol = 47;
+                break;
+            default:
+                throw new RuntimeException("Not unit atr suitable.");
+        }
+        if (lstRawVal.size() < numberCol) {
+            do {
+                lstRawVal.add(valEmpty);
+            } while (lstRawVal.size() <= numberCol);
+        } else if (lstRawVal.size() > numberCol){
+            lstRawVal.subList(0, numberCol);
+        }
+        return lstRawVal;
+	}
+	
+	/**
+     * Find record file.
+     *
+     * @param inputStream the input stream
+     * @param encoding the encoding
+     * @return the iterator
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    private Iterator<NtsCsvRecord> findRecordFile(InputStream inputStream, Integer encoding) throws IOException {
+        Charset charset = this.getCharset(encoding);
+        String newLineCode = "\r\n"; // CR+LF
+        NtsCsvReader csvReader = NtsCsvReader.newReader().withChartSet(charset)
+                .withFormat(CSVFormat.EXCEL.withHeader("職場コード", "年月日", "値").withRecordSeparator(newLineCode));
+        return csvReader.parse(inputStream).iterator();
+    }
+    
+    /**
+     * Gets the charset.
+     *
+     * @param value the value
+     * @return the charset
+     */
+    private Charset getCharset(Integer value) {
+        Encoding encoding = Encoding.valueOf(value);
+        switch (encoding) {
+        case Shift_JIS:
+            return Charset.forName("Shift_JIS");
+        default:
+            return StandardCharsets.UTF_8;
+        }
+    }
 }

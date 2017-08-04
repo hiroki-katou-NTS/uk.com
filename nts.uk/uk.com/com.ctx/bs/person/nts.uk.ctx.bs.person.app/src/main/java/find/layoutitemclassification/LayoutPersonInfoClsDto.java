@@ -14,23 +14,16 @@ import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfo
 @Data
 public class LayoutPersonInfoClsDto {
 
-	String layoutID;
-	int disPOrder;
-	String personInfoCategoryID;
-	int layoutItemType;
-	List<PerInfoItemDefDto> listItemDfDto;
+	private String layoutID;
+	private int dispOrder;
+	private String personInfoCategoryID;
+	private int layoutItemType;
+	private List<PerInfoItemDefDto> listItemDfDto;
 
-	public LayoutPersonInfoClsDto(String layoutID, int disPOrder, String personInfoCategoryID, int layoutItemType) {
-		super();
-		this.layoutID = layoutID;
-		this.disPOrder = disPOrder;
-		this.personInfoCategoryID = personInfoCategoryID;
-		this.layoutItemType = layoutItemType;
-	}
+	public static LayoutPersonInfoClsDto fromDomain(LayoutPersonInfoClassification domain,
+			List<PerInfoItemDefDto> lst) {
 
-	public static LayoutPersonInfoClsDto fromDomain(LayoutPersonInfoClassification domain) {
-		return new LayoutPersonInfoClsDto(domain.getLayoutID(), domain.getDisPOrder().v().intValue(),
-				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value);
-
+		return new LayoutPersonInfoClsDto(domain.getLayoutID(), domain.getDispOrder().v(),
+				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value, lst);
 	}
 }

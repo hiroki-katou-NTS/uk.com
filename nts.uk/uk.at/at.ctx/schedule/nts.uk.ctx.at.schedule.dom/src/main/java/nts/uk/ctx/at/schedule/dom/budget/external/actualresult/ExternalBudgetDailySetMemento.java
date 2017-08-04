@@ -31,11 +31,11 @@ public interface ExternalBudgetDailySetMemento<T> {
     void setExtBudgetCode(ExternalBudgetCd extBudgetCode);
 
     /**
-     * Sets the process date.
+     * Sets the actual date.
      *
-     * @param processDate the new process date
+     * @param processDate the new actual date
      */
-    void setProcessDate(Date processDate);
+    void setActualDate(Date processDate);
 
     /**
      * Sets the workplace id.
