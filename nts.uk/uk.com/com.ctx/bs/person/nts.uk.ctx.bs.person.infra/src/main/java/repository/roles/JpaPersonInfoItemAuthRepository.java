@@ -24,7 +24,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	private final String SEL_2 = SEL_1 + " AND c.ppemtPersonItemAuthPk.personItemDefId =: personItemDefId";
 
 	private final String SEL_3 = " SELECT p.ppemtPersonItemAuthPk.roleId, p.ppemtPersonItemAuthPk.personInfoCategoryAuthId,"
-			+ " p.ppemtPersonItemAuthPk.personItemDefId,"
+			+ " c.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " p.selfAuthType, p.otherPersonAuth, c.itemCd, c.itemName, c.abolitionAtr, c.requiredAtr,"
 			+ " CASE WHEN p.ppemtPersonItemAuthPk.personItemDefId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoItem c " + " LEFT JOIN PpemtPersonItemAuth p"

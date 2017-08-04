@@ -14,7 +14,7 @@ public interface ContractGetMemento {
 	 *
 	 * @return the password
 	 */
-	public HashPassword getPassword();
+	public RawPassword getPassword();
 
     /**
      * Gets the contract code.

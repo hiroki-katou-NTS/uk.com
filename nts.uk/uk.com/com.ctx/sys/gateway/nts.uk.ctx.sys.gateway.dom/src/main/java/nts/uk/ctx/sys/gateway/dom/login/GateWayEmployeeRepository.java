@@ -14,8 +14,9 @@ public interface GateWayEmployeeRepository {
 	/**
 	 * Gets the by employee code.
 	 *
+	 * @param companyId the company id
 	 * @param employeeCode the employee code
 	 * @return the by employee code
 	 */
-	Optional<Employee> getByEmployeeCode(String employeeCode);
+	Optional<Employee> getByEmployeeCode(String companyId,String employeeCode);
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 /**
  * @author laitv
- *
+ * 
  */
 public interface MaintenanceLayoutRepository {
 
@@ -17,8 +17,6 @@ public interface MaintenanceLayoutRepository {
 	void update(MaintenanceLayout maintenanceLayout);
 
 	void remove(String maintenanceLayoutID);
-
-	// Optional<MaintenanceLayout> checkExit( String layoutID);
 
 	boolean checkExit(String cpmpanyId , String layoutCode);
 

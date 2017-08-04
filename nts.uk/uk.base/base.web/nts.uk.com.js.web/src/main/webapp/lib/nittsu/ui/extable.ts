@@ -546,7 +546,8 @@ module nts.uk.ui.exTable {
                         handler($td, self.options, helper.call(column.supplier, rData, rowIdx, key));
                     }
                 }
-                if (self.options.isHeader || !column.control) $td.text(data);
+                if (self.options.isHeader && helper.containsBr(data)) $td.html(data); 
+                else if (self.options.isHeader || !column.control) $td.text(data);
                 if (!self.options.isHeader) {
                     if (!util.isNullOrUndefined(column.icon)) {
                         let $icon = $("<span/>").addClass(COL_ICON_CLS + " " + column.icon);
@@ -619,6 +620,8 @@ module nts.uk.ui.exTable {
                     $tr.find("td").addClass(HIGHLIGHT_CLS);
                     let $targetContainer = $td.closest("." + self.options.containerClass);
                     let $targetHeader = $targetContainer.siblings("." + self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
+                    let $horzSumHeader = $targetContainer.siblings("." + HEADER_PRF + HORIZONTAL_SUM);
+                    let $horzSumContent = $targetContainer.siblings("." + BODY_PRF + HORIZONTAL_SUM);
                     $targetContainer.siblings("div[class*='" + BODY_PRF + "']").each(function() {
                         if ($(this).hasClass(BODY_PRF + LEFT_HORZ_SUM) || $(this).hasClass(BODY_PRF + HORIZONTAL_SUM))
                             return;
@@ -630,6 +633,14 @@ module nts.uk.ui.exTable {
                     $targetHeader.find("tr").each(function() {
                         $(this).find("td:eq(" + colIndex + ")").addClass(HIGHLIGHT_CLS); 
                     });
+                    if ($horzSumHeader.css("display") !== "none") {
+                        $horzSumHeader.find("tr").each(function() {
+                            $(this).find("td:eq(" + colIndex + ")").addClass(HIGHLIGHT_CLS);
+                        });
+                        $horzSumContent.find("tr").each(function() {
+                            $(this).find("td:eq(" + colIndex + ")").addClass(HIGHLIGHT_CLS);
+                        });
+                    }
                 });
                 
                 $td.on(events.MOUSE_OUT, function() {
@@ -640,6 +651,8 @@ module nts.uk.ui.exTable {
                     let rowIndex = $tr.index();
                     let $targetContainer = $td.closest("." + self.options.containerClass);
                     let $targetHeader = $targetContainer.siblings("." + self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
+                    let $horzSumHeader = $targetContainer.siblings("." + HEADER_PRF + HORIZONTAL_SUM);
+                    let $horzSumContent = $targetContainer.siblings("." + BODY_PRF + HORIZONTAL_SUM);
                     $targetContainer.siblings("div[class*='" + BODY_PRF + "']").each(function() {
                         if ($(this).hasClass(BODY_PRF + LEFT_HORZ_SUM) || $(this).hasClass(BODY_PRF + HORIZONTAL_SUM))
                             return;
@@ -651,6 +664,14 @@ module nts.uk.ui.exTable {
                     $targetHeader.find("tr").each(function() {
                         $(this).find("td:eq(" + colIndex + ")").removeClass(HIGHLIGHT_CLS); 
                     });
+                    if ($horzSumHeader.css("display") !== "none") {
+                        $horzSumHeader.find("tr").each(function() {
+                            $(this).find("td:eq(" + colIndex + ")").removeClass(HIGHLIGHT_CLS);
+                        });
+                        $horzSumContent.find("tr").each(function() {
+                            $(this).find("td:eq(" + colIndex + ")").removeClass(HIGHLIGHT_CLS);
+                        });
+                    }
                 });
             }
         }
@@ -670,7 +691,7 @@ module nts.uk.ui.exTable {
                 if (!util.isNullOrUndefined(cell.rowspan) && cell.rowspan > 1) $td.attr("rowspan", cell.rowspan);
                 if (!util.isNullOrUndefined(cell.colspan) && cell.colspan > 1) $td.attr("colspan", cell.colspan);
                 else if (!self.visibleColumnsMap[cell.key]) $td.hide();
-                return $td.text(text);
+                return helper.containsBr(text) ? $td.html(text) : $td.text(text);
             }
             
             rows($tbody: JQuery) {
@@ -2558,9 +2579,9 @@ module nts.uk.ui.exTable {
             let $vertSumContent = $container.find("." + BODY_PRF + VERTICAL_SUM);
             let $detailHeader = $container.find("." + HEADER_PRF + DETAIL);
             let $detailBody = $container.find("." + BODY_PRF + DETAIL);
-            let width;
+            let width = window.innerWidth - $detailHeader.offset().left;
             if ($vertSumHeader.length > 0 && $vertSumHeader.css("display") !== "none") {
-                width = window.innerWidth - parseInt($container.data(OCCUPY)) - $vertSumContent.width();    
+                width = width - parseInt($container.data(OCCUPY)) - $vertSumContent.width();    
                 $detailHeader.width(width);
                 $detailBody.width(width);
                 $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width);
@@ -2569,7 +2590,7 @@ module nts.uk.ui.exTable {
                 syncDetailAreaLine($container, $detailHeader, $detailBody);
                 return;
             }
-            width = window.innerWidth - parseInt($container.data(OCCUPY));
+            width = width - parseInt($container.data(OCCUPY));
             $detailHeader.width(width - helper.getScrollWidth()) ;
             $detailBody.width(width);
             $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width - helper.getScrollWidth());
@@ -2848,6 +2869,7 @@ module nts.uk.ui.exTable {
         export let MOUSE_MOVE = "mousemove";
         export let MOUSE_UP = "mouseup";
         export let MOUSE_OVER = "mouseover";
+        export let MOUSE_ENTER = "mouseenter";
         export let MOUSE_OUT = "mouseout";
         export let FOCUS_IN = "focusin";
         export let PASTE = "paste";
@@ -3663,6 +3685,9 @@ module nts.uk.ui.exTable {
             return function() {
                 return fn.apply(null, args);
             };
+        }
+        export function containsBr(text: string) {
+            return text && text.indexOf("<br/>") > -1;
         }
     }
     

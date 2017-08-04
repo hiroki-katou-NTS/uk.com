@@ -18,11 +18,11 @@ import nts.uk.ctx.bs.person.dom.person.groupitem.PersonInfoItemGroupRepository;
 @Stateless
 public class PersonInfoItemGroupFinder {
 
-//	@Inject
-//	private PersonInfoItemGroupRepository personInfoItemGroupRepository;
-//
-//	List<PersonInfoItemGroupDto> getAllPersonInfoGroup() {
-//		return this.personInfoItemGroupRepository.getAllPersonInfoItemGroup().stream()
-//				.map(item -> PersonInfoItemGroupDto.fromDomain(item)).collect(Collectors.toList());
-//	}
+	@Inject
+	private PersonInfoItemGroupRepository personInfoItemGroupRepository;
+
+	List<PersonInfoItemGroupDto> getAllPersonInfoGroup() {
+		return this.personInfoItemGroupRepository.getAllPersonInfoItemGroup().stream()
+				.map(item -> PersonInfoItemGroupDto.fromDomain(item)).collect(Collectors.toList());
+	}
 }
