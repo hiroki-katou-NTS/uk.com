@@ -18,11 +18,6 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonItemAuth c";
 
-	private final String SEL_1 = SEL_NO_WHERE + " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId "
-			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
-
-	private final String SEL_2 = SEL_1 + " AND c.ppemtPersonItemAuthPk.personItemDefId =: personItemDefId";
-
 	private final String SEL_3 = " SELECT p.ppemtPersonItemAuthPk.roleId, p.ppemtPersonItemAuthPk.personInfoCategoryAuthId,"
 			+ " c.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " p.selfAuthType, p.otherPersonAuth, c.itemCd, c.itemName, c.abolitionAtr, c.requiredAtr,"
@@ -30,13 +25,6 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			+ " FROM PpemtPerInfoItem c " + " LEFT JOIN PpemtPersonItemAuth p"
 			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = p.ppemtPersonItemAuthPk.personItemDefId"
 			+ " AND p.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
-
-	private static PersonInfoItemAuth toDomain(PpemtPersonItemAuth entity) {
-		val domain = PersonInfoItemAuth.createFromJavaType(entity.ppemtPersonItemAuthPk.roleId,
-				entity.ppemtPersonItemAuthPk.personInfoCategoryAuthId, entity.ppemtPersonItemAuthPk.personItemDefId,
-				entity.selfAuthType, entity.otherPersonAuth);
-		return domain;
-	}
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
 		PpemtPersonItemAuth entity = new PpemtPersonItemAuth();
@@ -73,27 +61,6 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		domain.setSetting(entity[9] == null ? false : Boolean.valueOf(entity[9].toString()));
 
 		return domain;
-	}
-
-	@Override
-	public List<PersonInfoItemAuth> getAllPersonItemAuth() {
-		return this.queryProxy().query(SEL_NO_WHERE, PpemtPersonItemAuth.class).getList(c -> toDomain(c));
-	}
-
-	@Override
-	public List<PersonInfoItemAuth> getAllPersonItemAuthByCategory(String roleId, String personCategoryAuthId) {
-		return this.queryProxy().query(SEL_1, PpemtPersonItemAuth.class).setParameter("roleId", roleId)
-				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getList(c -> toDomain(c));
-	}
-
-	@Override
-	public Optional<PersonInfoItemAuth> getDetailPersonItemAuth(String roleId, String personCategoryAuthId,
-			String personItemDefId) {
-		return this.queryProxy().query(SEL_2, PpemtPersonItemAuth.class).setParameter("roleId", roleId)
-				.setParameter("personInfoCategoryAuthId", personCategoryAuthId)
-				.setParameter("personItemDefId", personItemDefId).getSingle().map(e -> {
-					return Optional.of(toDomain(e));
-				}).orElse(Optional.empty());
 	}
 
 	@Override
