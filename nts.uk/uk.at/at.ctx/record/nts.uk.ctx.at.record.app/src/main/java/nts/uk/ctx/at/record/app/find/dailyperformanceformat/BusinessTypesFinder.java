@@ -31,13 +31,13 @@ public class BusinessTypesFinder {
 	public List<BusinessTypeDto> findAll() {
 		String companyId = AppContexts.user().companyId();
 		return this.workTypeRepository.findAll(companyId).stream().map(item -> {
-			return new BusinessTypeDto(item.getWorkTypeCode().v(), item.getWorkTypeName().v());
+			return new BusinessTypeDto(item.getBusinessTypeCode().v(), item.getBusinessTypeName().v());
 		}).collect(Collectors.toList());
 	}
-	public Optional<BusinessTypeDto> findBusinessType(String workTypeCode){
+	public Optional<BusinessTypeDto> findBusinessType(String businessTypeCode){
 		String companyId = AppContexts.user().companyId();
-		Optional<BusinessType> businessType = workTypeRepository.findBusinessType(companyId, workTypeCode);
-		BusinessTypeDto aaa = new BusinessTypeDto(businessType.get().getWorkTypeCode().v(),businessType.get().getWorkTypeName().v());
+		Optional<BusinessType> businessType = workTypeRepository.findBusinessType(companyId, businessTypeCode);
+		BusinessTypeDto aaa = new BusinessTypeDto(businessType.get().getBusinessTypeCode().v(),businessType.get().getBusinessTypeName().v());
 		return Optional.of(aaa);
 	}
 }

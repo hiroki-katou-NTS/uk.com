@@ -2,6 +2,7 @@ module nts.uk.at.view.kdl003.a {
     export module service {
         var paths: any = {
             findAllWorkType: "at/share/worktype/findAll",
+            findWorkTypeByCodes: "at/share/worktype/getpossibleworktype",
             findAllRestTime: "at/share/resttime/getresttime",
             findByCodeList: "at/shared/worktime/findByCodeList",
             findByTime: "at/shared/worktime/findByTime",
@@ -12,6 +13,9 @@ module nts.uk.at.view.kdl003.a {
 
         export function findAllWorkType(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findAllWorkType, command);
+        }
+        export function findWorkTypeByCodes(command: Array<string>): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findWorkTypeByCodes, command);
         }
 
         export function findAllRestTime(command: string): JQueryPromise<any> {

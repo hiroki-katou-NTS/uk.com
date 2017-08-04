@@ -36,7 +36,7 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
                     { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 },
-                    { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 120 },
+                    { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
@@ -56,7 +56,7 @@ module nts.uk.at.view.kdl003.a {
                 self.workTypeColumns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'workTypeCode', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
-                    { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'memo', width: 200 }
+                    { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'memo', width: 130 }
                 ]);
 
                 //parent data
@@ -87,8 +87,8 @@ module nts.uk.at.view.kdl003.a {
                 //                var command = self.parentData().canSelectWorkTypeCodes.length > 0 ? self.parentData().canSelectWorkTypeCodes.split(',') : null)
                 //                              , self.getTimeDayAtrEnum();
                 
-                //find all worktype
-                $.when(service.findAllWorkType()).done(
+                // find worktype by list code.
+                $.when(service.findWorkTypeByCodes(self.parentData().canSelectWorkTypeCodes.split(','))).done(
                     function(workTypeData: Array<WorkType>) {
                         self.lstWorkType(workTypeData);
                     }
@@ -98,10 +98,10 @@ module nts.uk.at.view.kdl003.a {
                 service.findByCodeList(canSelectSiftCodes)
                     .done(function(data) {
                         self.rootList = data;
-                        //add itemã€€ã�ªã�—
+                        //add item　なし
                         data.unshift({
                             code: "000",
-                            name: "ã�ªã�—",
+                            name: "なし",
                             workTime1: "",
                             workTime2: "",
                             workAtr: "",
@@ -119,6 +119,7 @@ module nts.uk.at.view.kdl003.a {
                             self.selectedCodeList([]);
                             self.selectedSiftCode(null);
                         }
+                        self.selectedSiftCode(self.parentData().selectSiftCode); // Selected sift code from parent screen.
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     })
@@ -243,10 +244,10 @@ module nts.uk.at.view.kdl003.a {
                 self.getWorkTypeName(self.selectedWorkTypeCode());
                 self.getSiftName(self.selectedSiftCode());
                 var sendData = {
-                    selectedWorkTimeCode: self.selectedWorkTypeCode(),
-                    selectedWorkTimeName: self.selectedWorkTypeName(),
-                    selectedSiftCode: self.selectedSiftCode(),
-                    selectedSiftName: self.selectedSiftName()
+                    selectedWorkTypeCode: self.selectedWorkTypeCode(),
+                    selectedWorkTypeName: self.selectedWorkTypeName(),
+                    selectedWorkTimeCode: self.selectedSiftCode(),
+                    selectedWorkTimeName: self.selectedSiftName()
                 };
                 nts.uk.ui.windows.setShared("childData", sendData, true);
                 nts.uk.ui.block.clear();
@@ -304,3 +305,4 @@ module nts.uk.at.view.kdl003.a {
             endTime: string;
         }
     }
+}

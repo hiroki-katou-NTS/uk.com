@@ -18,8 +18,8 @@ public class UpdateBusinessTypeNameCommandHandler extends CommandHandler<UpdateB
 	@Override
 	protected void handle (CommandHandlerContext<UpdateBusinessTypeNameCommand> context){
 		String companyId = AppContexts.user().companyId();
-		BusinessType businessTypeNew = BusinessType.createFromJavaType(companyId, context.getCommand().getWorkTypeCode(), context.getCommand().getBusinessTypeName());
-		Optional<BusinessType> businessTypeOld = businessType.findBusinessType(companyId, context.getCommand().getWorkTypeCode());
+		BusinessType businessTypeNew = BusinessType.createFromJavaType(companyId, context.getCommand().getBusinessTypeCode(), context.getCommand().getBusinessTypeName());
+		Optional<BusinessType> businessTypeOld = businessType.findBusinessType(companyId, context.getCommand().getBusinessTypeCode());
 		if(businessTypeOld.isPresent()){
 			businessType.updateBusinessTypeName(businessTypeNew);
 		}

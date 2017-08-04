@@ -66,7 +66,10 @@ module nts.uk.ui.koExtentions {
             // Select tab.
             var activeTab = tabs.filter(tab => { return tab.id == data.active(); })[0];
             var indexActive = tabs.indexOf(activeTab);
-            container.tabs("option", "active", indexActive);
+            let oldIndexActive = container.tabs("option", "active");
+            if(oldIndexActive !== indexActive){
+                container.tabs("option", "active", indexActive);
+            }
 
             // Disable & visible tab.
             tabs.forEach(tab => {
@@ -85,6 +88,8 @@ module nts.uk.ui.koExtentions {
                     container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
                 }
             });
+            
+            _.defer(() => { container.children('ul').children('li').attr("tabindex", "-1"); });
         }
     }
     

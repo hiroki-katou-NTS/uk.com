@@ -24,12 +24,13 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	private final String SEL_4 = SEL_NO_WHERE
 			+ " WHERE c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
 
-	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, cm.categoryType,"
+	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
+			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " LEFT JOIN PpemtPerInfoCtgCm cm" + " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId";
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId"
+			+ " LEFT JOIN PpemtPerInfoCtgCm cm" + " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
@@ -42,8 +43,19 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
-		val domain = new PersonInfoCategoryDetail(entity[0].toString(), entity[1].toString(), entity[2].toString(),
-				Integer.valueOf(entity[3].toString()), Boolean.valueOf(entity[4].toString()));
+		val domain = new PersonInfoCategoryDetail();
+		domain.setCategoryId(entity[0].toString());
+		domain.setCategoryCode(entity[1].toString());
+		domain.setCategoryName(entity[2].toString());
+		domain.setCategoryType(Integer.valueOf(entity[3].toString()));
+		if(entity[4] !=null){
+			domain.setAllowOtherRef(Integer.valueOf(entity[4].toString()));
+		};
+		if(entity[5]!=null){
+			
+			domain.setAllowPersonRef(Integer.valueOf(entity[5].toString()));
+		}
+		domain.setSetting(Boolean.valueOf(entity[6].toString()));
 		return domain;
 	}
 

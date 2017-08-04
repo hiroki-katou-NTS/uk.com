@@ -23,10 +23,11 @@
 					<div id="content" class="cf">
 						<h1>Month Days Picker</h1>
 						<h2>Overview</h2>
-						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
-						<input data-bind="ntsNumberEditor: {value: value}"/>
+						<span tabindex="1" data-bind="ntsCheckBox: { checked: enable }">Enable</span>
+						
 					
-						<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
+						<div id="monthdays" tabindex="2" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
+						<input tabindex="3" data-bind="ntsNumberEditor: {value: value}"/>
 						<br />					
 						<article class="cf">
 							<div class="tabs">
