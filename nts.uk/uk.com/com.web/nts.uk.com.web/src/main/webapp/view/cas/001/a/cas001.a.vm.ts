@@ -17,7 +17,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         ]);
         anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
         seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
-        currentRoleCategoryAuthId: KnockoutObservable<string> = ko.observable('');
+        currentCategoryId: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -28,10 +28,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     service.getPersonRoleAuth(newPersonRole.roleId).done(function(result: IPersonRole) {
 
                         newPersonRole.loadRoleCategoriesList(newPersonRole.roleId).done(function() {
+                            self.currentCategoryId("");
                             newPersonRole.setRoleAuth(result);
                             self.currentRole(newPersonRole);
                             if (self.currentRole().RoleCategoryList().length > 0) {
-                                self.currentRoleCategoryAuthId(self.currentRole().RoleCategoryList()[0].personInfoCategoryAuthId);
+                                self.currentCategoryId(self.currentRole().RoleCategoryList()[0].categoryId);
                             }
                             else {
                                 alert(text('Msg_217'));
@@ -42,15 +43,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
             });
 
-            self.currentRoleCategoryAuthId.subscribe(function(newCategoryAuthId) {
+            self.currentCategoryId.subscribe(function(categoryId) {
+                if (categoryId == "")
+                    return;
 
                 let newCategory = _.find(self.currentRole().RoleCategoryList(), function(roleCategory) {
-                    return roleCategory.personInfoCategoryAuthId === newCategoryAuthId;
+                    return roleCategory.categoryId === categoryId;
                 });
 
-                service.getAuthDetailByPId(newCategoryAuthId).done(function(result: IPersonRoleCategory) {
+                service.getAuthDetailByPId(categoryId).done(function(result: IPersonRoleCategory) {
 
-                    newCategory.loadRoleItems(newCategoryAuthId).done(function() {
+                    newCategory.loadRoleItems(categoryId).done(function() {
 
                         newCategory.setCategoryAuth(result);
                         self.currentRole().currentCategory(newCategory);
@@ -207,7 +210,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
         allowAvatarRef: number;
     }
     export interface IPersonRoleCategory {
-        personInfoCategoryAuthId: string;
         categoryId: string;
         categoryName: string;
         setting: number;
@@ -295,7 +297,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
     export class PersonRoleCategory {
 
-        personInfoCategoryAuthId: string;
         categoryId: string;
         categoryName: string;
         categoryType: number;
@@ -321,7 +322,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         constructor(param: IPersonRoleCategory) {
             let self = this;
-            self.personInfoCategoryAuthId = param ? param.personInfoCategoryAuthId : '';
             self.categoryId = param ? param.categoryId : '';
             self.categoryName = param ? param.categoryName : '';
             self.categoryType = param ? param.categoryType : 0;

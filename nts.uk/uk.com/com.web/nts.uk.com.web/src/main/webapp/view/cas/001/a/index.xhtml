@@ -46,17 +46,17 @@
 					<span id="A2_001Caret" class="caret-bottom outline"></span>
 					<div>
 						<div style="width: 270px" id="A2_007"
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'PersonInfoCategoryID',
-						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentRole().personInfoCategoryAuthId , selectedKey: 'personInfoCategoryAuthId', fields: ['categoryName'], mode: 'igGrid'}" />
+							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'categoryId',
+						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentCategoryId , selectedKey: 'currentCategoryId', fields: ['categoryName'], mode: 'igGrid'}" />
 						<table id="A2_008"
 							data-bind="ntsGridList: {	
 						dataSource: currentRole().RoleCategoryList ,
-						primaryKey: 'personInfoCategoryAuthId' ,
-						columns: [{ headerText: 'コード', key: 'personInfoCategoryAuthId', width: 200 ,hidden:true},
+						primaryKey: 'categoryId' ,
+						columns: [{ headerText: 'コード', key: 'categoryId', width: 200 ,hidden:true},
 								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'categoryName', width: 165},
 				                {headerText: '#{i18n.getText('CAS001_69')}', key: 'setting', width: 80 , formatter :makeIcon } ] ,
 						multiple: false,
-						value: currentRoleCategoryAuthId,
+						value: currentCategoryId ,
 						rows:10 }">
 						</table>
 					</div>

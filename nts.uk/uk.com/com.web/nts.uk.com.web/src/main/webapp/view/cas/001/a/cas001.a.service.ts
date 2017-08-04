@@ -4,7 +4,7 @@ module nts.uk.com.view.cas001.a.service {
         getPersonRoleList: "/ctx/bs/person/roles/findAll",
         getPersonRoleAuth: "/ctx/bs/person/roles/auth/find/{0}",
         getCategoryRoleList: "/ctx/bs/person/roles/auth/category/findAllCategory/{0}",
-        getAuthDetailByPId: "/ctx/bs/person/roles/auth/category/findDetail/{0}",
+        getAuthDetailByPId: "/ctx/bs/person/roles/auth/category/find/{0}",
         getPersonRoleItemList: "ctx/bs/person/roles/auth/item/findAllItem/{0}",
     }
 
