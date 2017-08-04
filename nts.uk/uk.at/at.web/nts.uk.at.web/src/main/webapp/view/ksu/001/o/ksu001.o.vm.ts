@@ -12,6 +12,7 @@ module ksu001.o.viewmodel {
         time2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
+        nameWorkTimeType: KnockoutObservable<any[]>;
 
         constructor() {
             let self = this;
@@ -34,6 +35,27 @@ module ksu001.o.viewmodel {
 
             self.findWorkType();
             self.findWorkTime();
+
+            //get name of workType and workTime
+            self.nameWorkTimeType = ko.pureComputed(() => {
+                let workTypeName, workTimeName: string;
+                if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
+                    let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
+                    if (d) {
+                        workTypeName = d.abbreviationName;
+                    } else {
+                        workTypeName = '';
+                    }
+
+                    let c = _.find(self.listWorkTime(), ['siftCd', self.selectedWorkTimeCode()]);
+                    if (c) {
+                        workTimeName = c.abName;
+                    } else {
+                        workTimeName = '';
+                    }
+                }
+                return [workTypeName, workTimeName];
+            });
 
             $("#stick-undo").click(function() {
                 $("#extable").exTable("stickUndo");
