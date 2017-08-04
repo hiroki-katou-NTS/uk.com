@@ -53,7 +53,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 service.getAuthDetailByPId(categoryId).done(function(result: IPersonRoleCategory) {
 
-                    newCategory.loadRoleItems(categoryId).done(function() {
+                    newCategory.loadRoleItems(self.currentRoleId(), categoryId).done(function() {
 
                         newCategory.setCategoryAuth(result);
                         self.currentRole().currentCategory(newCategory);
@@ -363,10 +363,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.otherAllowAddMulti = ko.observable(param ? param.otherAllowAddMulti : 0);
         }
 
-        loadRoleItems(CategoryCode): JQueryPromise<any> {
+        loadRoleItems(roleId, CategoryId): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            service.getPersonRoleItemList(CategoryCode).done(function(result: Array<IPersonRoleItem>) {
+            service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
 
                 self.roleItemList.removeAll();
                 _.forEach(result, function(iPersonRoleItem: IPersonRoleItem) {

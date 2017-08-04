@@ -58,6 +58,7 @@
 
 .auth_table td {
 	background: white;
+	height: 34px;
 }
 
 #roleAuTable td {
@@ -81,7 +82,7 @@
 }
 
 #file_permission_settings_cover {
-	width: 820px;
+	width: 835px;
 }
 
 #file_permission_settings {
