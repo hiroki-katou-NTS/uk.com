@@ -15,8 +15,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
             { code: 1, name: '参照のみ' },
             { code: 2, name: '更新' }
         ]);
-        anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
-        seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
+        anotherSelectedAll: KnockoutObservable<number> = ko.observable(0);
+        seftSelectedAll: KnockoutObservable<number> = ko.observable(0);
         currentCategoryId: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
@@ -44,11 +44,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
             });
 
             self.currentCategoryId.subscribe(function(categoryId) {
-                if (categoryId == "")
+                if (categoryId == "") {
                     return;
+                }
 
                 let newCategory = _.find(self.currentRole().RoleCategoryList(), function(roleCategory) {
+
                     return roleCategory.categoryId === categoryId;
+
                 });
 
                 service.getAuthDetailByPId(categoryId).done(function(result: IPersonRoleCategory) {
@@ -56,29 +59,35 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     newCategory.loadRoleItems(self.currentRoleId(), categoryId).done(function() {
 
                         newCategory.setCategoryAuth(result);
+
                         self.currentRole().currentCategory(newCategory);
 
                     });
                 });
             });
+            //register click change all event
+            $(function() {
+                $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
 
+                    let parrent = $(this).parent().attr('id');
 
-            self.seftSelectedAll.subscribe(function(newValue) {
-                for (let item of self.currentRole().currentCategory().roleItemList()) {
-                    item.selfAuth = newValue;
-                }
-                $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
+                    for (let item of self.currentRole().currentCategory().roleItemList()) {
+                        parrent == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
+                    }
 
-            });
+                    $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
 
-            self.anotherSelectedAll.subscribe(function(newValue) {
-                for (let item of self.currentRole().currentCategory().roleItemList()) {
-                    item.otherAuth = newValue;
-                }
-                $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
+                });
             });
         }
+        changeItemListValue(attribute) {
+            let self = this;
+            for (let item of self.currentRole().currentCategory().roleItemList()) {
+                attribute == 'other' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
+            }
 
+            $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
+        }
         OpenDModal() {
             nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
             });
@@ -148,7 +157,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             });
             //add switch to table header
-            let switchString = "<div id=\'auth_of_info_selected_all\'"
+            let switchString = "<div id=\'{0}_auth\' class=\'selected_all_auth\'"
                 + "data-bind=\"ntsSwitchButton: {options: itemListCbb"
                 + ",optionsValue:\'code\',optionsText: \'name\',value: {0},enable: true }\">"
                 + "</div><span id=\'selected_all_caret\' class=\'caret-bottom outline\'></span>"
@@ -195,7 +204,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         saveData() {
             let self = this;
-
+                
         }
     }
     export interface IPersonRole {
@@ -263,8 +272,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.allowDocRef = ko.observable(param ? param.allowDocRef : 0);
             self.allowAvatarUpload = ko.observable(param ? param.allowAvatarUpload : 0);
             self.allowAvatarRef = ko.observable(param ? param.allowAvatarRef : 0);
-
-
 
         }
 
@@ -403,10 +410,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.otherAuth = param ? param.otherAuth : 0;
             self.selfAuth = param ? param.selfAuth : 0;
         }
-
     }
-
 }
+
 function makeIcon(value, row) {
     if (value == "true")
         return '&#8226;'

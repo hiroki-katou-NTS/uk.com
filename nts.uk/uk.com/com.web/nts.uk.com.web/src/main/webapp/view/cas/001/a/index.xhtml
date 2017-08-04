@@ -20,7 +20,7 @@
 					<!-- <button id="A1_001">#{i18n.getText('CAS001_2')}</button> -->
 					<button id="A1_002" class="proceed" data-bind="click:saveData">#{i18n.getText('CAS001_3')}</button>
 					<button id="A1_003" data-bind="click:OpenCModal">#{i18n.getText('CAS001_4')}</button>
-					<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button>
+					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
 					<div class="float-right">
 						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">#{i18n.getText('CAS001_6')}</a>
 					</div>
@@ -32,12 +32,13 @@
 						<table id="A2_001"
 							data-bind="ntsGridList: {								
 						height: 350,
+						showNumbering:true,
 						dataSource: personRoleList ,
 						primaryKey: 'roleId' ,
 						columns: [
 						{ headerText: '#{i18n.getText('CAS001_8')}', key: 'roleId', width: 50, hidden : true},
 						{ headerText: '#{i18n.getText('CAS001_8')}', key: 'roleCode', width: 50},
-				        { headerText: '#{i18n.getText('CAS001_9')}', key: 'roleName', width: 170 } ] ,
+				        { headerText: '#{i18n.getText('CAS001_9')}', key: 'roleName', width: 120 } ] ,
 						multiple: false,
 						value: currentRoleId,
 						rows:5 }">
