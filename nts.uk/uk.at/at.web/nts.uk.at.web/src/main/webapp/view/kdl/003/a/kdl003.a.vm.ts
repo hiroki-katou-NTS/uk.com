@@ -244,10 +244,10 @@ module nts.uk.at.view.kdl003.a {
                 self.getWorkTypeName(self.selectedWorkTypeCode());
                 self.getSiftName(self.selectedSiftCode());
                 var sendData = {
-                    selectedWorkTimeCode: self.selectedWorkTypeCode(),
-                    selectedWorkTimeName: self.selectedWorkTypeName(),
-                    selectedSiftCode: self.selectedSiftCode(),
-                    selectedSiftName: self.selectedSiftName()
+                    selectedWorkTypeCode: self.selectedWorkTypeCode(),
+                    selectedWorkTypeName: self.selectedWorkTypeName(),
+                    selectedWorkTimeCode: self.selectedSiftCode(),
+                    selectedWorkTimeName: self.selectedSiftName()
                 };
                 nts.uk.ui.windows.setShared("childData", sendData, true);
                 nts.uk.ui.block.clear();
