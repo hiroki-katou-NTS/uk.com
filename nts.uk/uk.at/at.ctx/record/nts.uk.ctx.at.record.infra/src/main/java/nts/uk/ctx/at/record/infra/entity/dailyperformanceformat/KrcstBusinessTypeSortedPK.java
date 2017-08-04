@@ -21,3 +21,4 @@ public class KrcstBusinessTypeSortedPK implements Serializable {
 	@Column(name = "ATTENDANCE_ITEM_ID")
 	public String attendanceItemId;
 }
+	

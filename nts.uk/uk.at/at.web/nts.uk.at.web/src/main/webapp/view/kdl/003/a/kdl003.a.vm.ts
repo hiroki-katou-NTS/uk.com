@@ -3,7 +3,6 @@ module nts.uk.at.view.kdl003.a {
     export module viewmodel {
         export class ScreenModel {
             columns: KnockoutObservableArray<NtsGridListColumn>;
-            multiSelectMode: KnockoutObservable<boolean>;
             rootList: Array<WorkTimeSet>;
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
             selectedCodeList: KnockoutObservableArray<string>;
@@ -21,7 +20,7 @@ module nts.uk.at.view.kdl003.a {
 
             workTypeColumns: KnockoutObservableArray<NtsGridListColumn>;
 
-            parentData: KnockoutObservable<any>;
+            callerParameter: CallerParameter;
 
             halfDayList1: KnockoutObservableArray<RestTime>;
             halfDayList2: KnockoutObservableArray<RestTime>;
@@ -29,7 +28,7 @@ module nts.uk.at.view.kdl003.a {
             holidayList2: KnockoutObservableArray<RestTime>;
 
             lstTimeDayAtrEnum: KnockoutObservableArray<Enum>;
-            constructor(parentData: any) {
+            constructor(parentData: CallerParameter) {
                 var self = this;
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 50 },
@@ -39,9 +38,8 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
-                self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
-                self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectedCodeList'));
-                self.selectedSiftCode = ko.observable(parentData.selectSiftCode);
+                self.selectedCodeList = ko.observableArray([]);
+                self.selectedSiftCode = ko.observable('');
                 self.selectedSiftName = ko.observable("");
                 self.searchOption = ko.observable(0);
                 self.startTimeOption = ko.observable(1);
@@ -51,7 +49,7 @@ module nts.uk.at.view.kdl003.a {
                 self.selectAbleItemList = ko.observableArray([]);
 
                 self.lstWorkType = ko.observableArray([]);
-                self.selectedWorkTypeCode = ko.observable(parentData.selectWorkTypeCode);
+                self.selectedWorkTypeCode = ko.observable('');
                 self.selectedWorkTypeName = ko.observable("");
                 self.workTypeColumns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'workTypeCode', width: 50 },
@@ -60,7 +58,7 @@ module nts.uk.at.view.kdl003.a {
                 ]);
 
                 //parent data
-                self.parentData = ko.observable(parentData);
+                self.callerParameter = parentData;
 
                 self.halfDayList1 = ko.observable([]);
                 self.halfDayList2 = ko.observable([]);
@@ -84,49 +82,119 @@ module nts.uk.at.view.kdl003.a {
                 var self = this;
                 var dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
-                //                var command = self.parentData().canSelectWorkTypeCodes.length > 0 ? self.parentData().canSelectWorkTypeCodes.split(',') : null)
-                //                              , self.getTimeDayAtrEnum();
-                
-                // find worktype by list code.
-                $.when(service.findWorkTypeByCodes(self.parentData().canSelectWorkTypeCodes.split(','))).done(
-                    function(workTypeData: Array<WorkType>) {
-                        self.lstWorkType(workTypeData);
-                    }
-                )
-                
-                var canSelectSiftCodes = (self.parentData().canSelectSiftCodes != null && self.parentData().canSelectSiftCodes.length > 0) ? self.parentData().canSelectSiftCodes.split(',') : [];
-                service.findByCodeList(canSelectSiftCodes)
-                    .done(function(data) {
-                        self.rootList = data;
-                        //add itemã€€ã�ªã�—
-                        data.unshift({
-                            code: "000",
-                            name: "ã�ªã�—",
-                            workTime1: "",
-                            workTime2: "",
-                            workAtr: "",
-                            remark: ""
-                        });
-                        self.selectAbleItemList(_.clone(self.rootList));
-                        if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
-                            if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
-                                self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
-                                self.selectedSiftCode(_.first(self.selectAbleItemList()).code);
-                            } else {
-                                self.selectedSiftCode(_.first(self.selectedCodeList()));
-                            }
-                        } else {
-                            self.selectedCodeList([]);
-                            self.selectedSiftCode(null);
-                        }
-                        self.selectedSiftCode(self.parentData().selectSiftCode); // Selected sift code from parent screen.
-                        nts.uk.ui.block.clear();
+                $.when(self.loadWorkTime(),
+                    self.loadWorkType())
+                    .done(() => {
                         dfd.resolve();
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 return dfd.promise();
+            }
+
+            private loadWorkTime(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+
+                // find worktime by list code.
+                if (self.callerParameter.workTimeCodes && self.callerParameter.workTimeCodes.length > 0) {
+                    service.findByCodeList(self.callerParameter.workTimeCodes.split(','))
+                        .done(function(data) {
+                            self.hamBiAn(data);
+                            self.initWorkTimeSelection();
+                            dfd.resolve();
+                        });
+                }
+
+                // Find all work time
+                else {
+                    service.findAllWorkTime()
+                        .done(function(data) {
+                            self.hamBiAn(data);
+                            self.initWorkTimeSelection();
+                            dfd.resolve();
+                        });
+                }
+                return dfd.promise();
+            }
+
+            private loadWorkType(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+
+                // find worktype by list code.
+                if (self.callerParameter.workTypeCodes && self.callerParameter.workTypeCodes.length > 0) {
+                    service.findWorkTypeByCodes(self.callerParameter.workTypeCodes.split(','))
+                        .done(function(workTypeList: Array<WorkType>) {
+                            self.lstWorkType(workTypeList);
+                            self.initWorkTypeSelection();
+                            dfd.resolve();
+                        });
+                }
+
+                // find all work type.
+                else {
+                    service.findAllWorkType()
+                        .done(function(workTypeList: Array<WorkType>) {
+                            self.lstWorkType(workTypeList);
+                            self.initWorkTypeSelection();
+                            dfd.resolve();
+                        });
+                }
+                return dfd.promise();
+            }
+
+            private hamBiAn(data): void {
+                let self = this;
+                self.rootList = data;
+                //add item　なし
+                data.unshift({
+                    code: "000",
+                    name: "なし",
+                    workTime1: "",
+                    workTime2: "",
+                    workAtr: "",
+                    remark: ""
+                });
+                self.selectAbleItemList(_.clone(self.rootList));
+                if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
+                    if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
+                        self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
+                        self.selectedSiftCode(_.first(self.selectAbleItemList()).code);
+                    } else {
+                        self.selectedSiftCode(_.first(self.selectedCodeList()));
+                    }
+                } else {
+                    self.selectedCodeList([]);
+                    self.selectedSiftCode(null);
+                }
+            }
+
+            private initWorkTypeSelection(): void {
+                let self = this;
+                // Selected code from caller screen.
+                if (self.callerParameter.selectedWorkTypeCode) {
+                    self.selectedWorkTypeCode(self.callerParameter.selectedWorkTypeCode);
+                }
+                // Select first item.
+                else {
+                    self.selectedWorkTypeCode(_.first(self.lstWorkType()).workTypeCode);
+                }
+            }
+
+            private initWorkTimeSelection(): void {
+                let self = this;
+                // Selected code from caller screen.
+                if (self.callerParameter.selectedWorkTimeCode) {
+                    self.selectedSiftCode(self.callerParameter.selectedWorkTimeCode);
+                }
+                // Select first item.
+                else {
+                    self.selectedSiftCode(_.first(self.selectAbleItemList()).code);
+                }
             }
 
             private getTimeDayAtrEnum(): JQueryPromise<any> {
@@ -244,10 +312,10 @@ module nts.uk.at.view.kdl003.a {
                 self.getWorkTypeName(self.selectedWorkTypeCode());
                 self.getSiftName(self.selectedSiftCode());
                 var sendData = {
-                    selectedWorkTimeCode: self.selectedWorkTypeCode(),
-                    selectedWorkTimeName: self.selectedWorkTypeName(),
-                    selectedSiftCode: self.selectedSiftCode(),
-                    selectedSiftName: self.selectedSiftName()
+                    selectedWorkTypeCode: self.selectedWorkTypeCode(),
+                    selectedWorkTypeName: self.selectedWorkTypeName(),
+                    selectedWorkTimeCode: self.selectedSiftCode(),
+                    selectedWorkTimeName: self.selectedSiftName()
                 };
                 nts.uk.ui.windows.setShared("childData", sendData, true);
                 nts.uk.ui.block.clear();
@@ -303,6 +371,12 @@ module nts.uk.at.view.kdl003.a {
             startTime: string;
             endDay: string;
             endTime: string;
+        }
+        interface CallerParameter {
+            workTypeCodes: Array<string>;
+            selectedWorkTypeCode: string;
+            workTimeCodes: Array<string>;
+            selectedWorkTimeCode: string;
         }
     }
 }

@@ -23,7 +23,7 @@ public interface UserGetMemento {
      *
      * @return the password
      */
-    public HashPassword getPassword();
+    public RawPassword getPassword();
 
     /**
      * Gets the login id.

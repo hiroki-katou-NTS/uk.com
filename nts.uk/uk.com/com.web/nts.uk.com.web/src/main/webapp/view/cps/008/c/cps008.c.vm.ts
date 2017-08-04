@@ -1,8 +1,6 @@
 module cps008.c.viewmodel {
-
-
+    
     export class ViewModel {
-
         layoutCode: KnockoutObservable<string>;
         layoutName: KnockoutObservable<string>;
         A_INP_LAYOUT_CODE: KnockoutObservable<string>;

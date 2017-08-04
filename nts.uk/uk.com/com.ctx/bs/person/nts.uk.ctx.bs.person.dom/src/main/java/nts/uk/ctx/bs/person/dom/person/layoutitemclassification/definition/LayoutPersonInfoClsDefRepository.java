@@ -1,6 +1,6 @@
 package nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition;
 
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DisPOrder;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DispOrder;
 
 public interface LayoutPersonInfoClsDefRepository {
 
@@ -8,5 +8,5 @@ public interface LayoutPersonInfoClsDefRepository {
 
 	void update(LayoutPersonInfoClsDefinition layoutPersonInfoDefinition);
 
-	void remove(String layoutID, DisPOrder disPOrder, LayoutDisPOrder layoutDisPOrder);
+	void remove(String layoutID, DispOrder disPOrder, LayoutDisPOrder layoutDisPOrder);
 }

@@ -4,15 +4,15 @@ module nts.uk.pr.view.ccg007.b {
 
         // Service paths.
         var servicePath = {
-            getContractAuth: "ctx/sys/gateway/login/checkcontract1",
+            getContractAuth: "ctx/sys/gateway/login/checkcontract",
             submitLogin: "ctx/sys/gateway/login/submit/form1"
         }
 
         /**
-          * Function is used to copy new Top Page.
+          * Function is used to check contract.
           */
-        export function getLoginForm(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getContractAuth);
+        export function checkContract(data : any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getContractAuth,data);
         }
 
         /**

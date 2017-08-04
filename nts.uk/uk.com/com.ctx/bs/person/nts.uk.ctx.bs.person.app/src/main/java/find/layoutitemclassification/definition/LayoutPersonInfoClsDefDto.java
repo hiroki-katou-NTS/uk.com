@@ -5,7 +5,7 @@ package find.layoutitemclassification.definition;
 
 import lombok.Getter;
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DisPOrder;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DispOrder;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutDisPOrder;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutPersonInfoClsDefinition;
 

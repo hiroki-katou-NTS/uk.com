@@ -97,8 +97,8 @@ public class CompanyBasicWorkFinder {
 			}).findFirst().orElse(null);
 			// Set WorkTypeDisplayName to Dto
 			if (worktype == null) {
-//				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
-				item.setWorkTypeDisplayName("something");
+				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
+//				item.setWorkTypeDisplayName("Something's not right");
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
@@ -110,8 +110,8 @@ public class CompanyBasicWorkFinder {
 			
 			// Set WorkingDisplayName
 			if (worktime == null) {
-//				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
-				item.setWorkingDisplayName("something");
+				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
+//				item.setWorkingDisplayName("Something's not right");
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}
