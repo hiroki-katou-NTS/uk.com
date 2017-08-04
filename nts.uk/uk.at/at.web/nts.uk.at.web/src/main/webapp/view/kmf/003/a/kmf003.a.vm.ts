@@ -15,6 +15,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         A6_2SelectedRuleCode: any;
         A7_4Data: KnockoutObservableArray<any>;
         A7_4SelectedRuleCode: any;
+        symbols: KnockoutObservable<string>;
+        limitedValue01: KnockoutObservable<string>;
+        limitedValue02: KnockoutObservable<string>;
+        limitedValue03: KnockoutObservable<string>;
+        limitedValue04: KnockoutObservable<string>;
+        limitedValue05: KnockoutObservable<string>;
         
         //Bottom input form
         useCls02: KnockoutObservable<boolean>;
@@ -133,6 +139,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 { code: '1', name: nts.uk.resource.getText("KMF003_22") }
             ]);
             self.A7_4SelectedRuleCode = ko.observable(0);
+            self.symbols = ko.observable("%");
+            self.limitedValue01 = ko.observable("100");
+            self.limitedValue02 = ko.observable("");
+            self.limitedValue03 = ko.observable("");
+            self.limitedValue04 = ko.observable("");
+            self.limitedValue05 = ko.observable("");
             
             //Bottom input form
             self.useCls02 = ko.observable(false);
@@ -161,10 +173,31 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         conditionSettingForm() {
             var self = this;
             
+            self.A7_4SelectedRuleCode.subscribe(function(value) {
+                if(value == 0){
+                    self.symbols("%");
+                    self.limitedValue01("100");
+                    self.limitedValue02("");
+                    self.limitedValue03("");
+                    self.limitedValue04("");
+                    self.limitedValue05("");
+                    self.setConditionValueChanges();
+                } else if(value == 1) {
+                    self.symbols("日");
+                    self.limitedValue01("366");
+                    self.limitedValue02("");
+                    self.limitedValue03("");
+                    self.limitedValue04("");
+                    self.limitedValue05("");
+                    self.setConditionValueChanges();
+                }
+            });
+            
             self.useCls02.subscribe(function(value) {
                 if(value == true){
                     self.conditionValue02Enable(true);
                     self.btnSetting02Enable(true);
+                    self.setConditionValues(Number(self.conditionValue01()), 2);
                 } else {
                     self.conditionValue02Enable(false);
                     self.btnSetting02Enable(false);
@@ -175,6 +208,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 if(value == true){
                     self.conditionValue03Enable(true);
                     self.btnSetting03Enable(true);
+                    self.setConditionValues(Number(self.conditionValue02()), 3);
                 } else {
                     self.conditionValue03Enable(false);
                     self.btnSetting03Enable(false);
@@ -185,6 +219,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 if(value == true){
                     self.conditionValue04Enable(true);
                     self.btnSetting04Enable(true);
+                    self.setConditionValues(Number(self.conditionValue03()), 4);
                 } else {
                     self.conditionValue04Enable(false);
                     self.btnSetting04Enable(false);
@@ -195,11 +230,46 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 if(value == true){
                     self.conditionValue05Enable(true);
                     self.btnSetting05Enable(true);
+                    self.setConditionValues(Number(self.conditionValue04()), 5);
                 } else {
                     self.conditionValue05Enable(false);
                     self.btnSetting05Enable(false);
                 }
             });
+        }
+        
+        /**
+         * Set condition values.
+         */
+        setConditionValues(value: number, position: number) {
+            var self = this;
+            var result = value - 1;
+            
+            if(position == 2) {
+                self.limitedValue02(result.toString());
+            } else if (position == 3) {
+                self.limitedValue03(result.toString());
+            } else if (position == 4) {
+                self.limitedValue04(result.toString());
+            } else if (position == 5) {
+                self.limitedValue05(result.toString());
+            }
+        }
+        
+        /**
+         * Set condition values when change condition type.
+         */
+        setConditionValueChanges() {
+            var self = this;
+            var result02 = Number(self.conditionValue01()) - 1;
+            var result03 = Number(self.conditionValue02()) - 1;
+            var result04 = Number(self.conditionValue03()) - 1;
+            var result05 = Number(self.conditionValue04()) - 1;
+            
+            self.limitedValue02(result02 <= 0 ? "" : result02.toString());
+            self.limitedValue03(result03 <= 0 ? "" : result03.toString());
+            self.limitedValue04(result04 <= 0 ? "" : result04.toString());
+            self.limitedValue05(result05 <= 0 ? "" : result05.toString());
         }
     }
     
