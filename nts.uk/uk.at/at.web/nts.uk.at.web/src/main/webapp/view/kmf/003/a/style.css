@@ -20,14 +20,13 @@ tr {
 	width: 18px;
 }
 
-.a5_2 {
-	text-align: right;
-    width: 52px;
+.input-name {
+	width: 200px;
 }
 
 .a4_2 {
 	padding-top: 5px;
-	padding-right: 36px;
+	padding-right: 75px;
 }
 
 .a5_1 {
@@ -36,6 +35,7 @@ tr {
 
 .a5_2 {
 	margin-left: 5px;
+	margin-top: -10px;
 }
 
 .inline-display {
@@ -68,4 +68,8 @@ tr {
 .note-input {
 	width: 480px;
 	height: 100px;
+}
+
+button.nts-switch-button {
+	width: 100px;
 }

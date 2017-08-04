@@ -1,11 +1,9 @@
 module nts.uk.at.view.kmf003.a.viewmodel {
     export class ScreenModel {
         //Grid data
-        dataSource: any;     
-        singleSelectedCode: any;
-        headers: any;
+        columns: KnockoutObservable<any>;
+        singleSelectedCode: KnockoutObservableArray<any>;;
         items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         
         //Top input form
@@ -42,20 +40,25 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             
             //Grid data
-            self.dataSource = ko.observableArray([new ItemModel('01', 'qwe'),
+            self.items = ko.observableArray([
+                new ItemModel('01', 'qwe'),
                 new ItemModel('02', 'www'),
                 new ItemModel('03', 'sasdsa'),
                 new ItemModel('04', 'asdasd'),
                 new ItemModel('05', '324w'),
-                new ItemModel('06', 'bbbb')]);
-            
-            self.singleSelectedCode = ko.observable(null);
-            self.headers = ko.observableArray(["Item Value Header","Item Text Header"]);
-            self.items = ko.observableArray([]);
-            self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 230 }
+                new ItemModel('06', 'bbbb'),
+                new ItemModel('07', 'qwe'),
+                new ItemModel('08', 'www'),
+                new ItemModel('09', 'sasdsa'),
+                new ItemModel('10', 'asdasd'),
+                new ItemModel('11', '324w'),
+                new ItemModel('12', 'bbbb')
             ]);
+            self.columns = ko.observableArray([
+                { headerText: nts.uk.resource.getText("KMF003_8"), prop: 'code', width: 50 },
+                { headerText: nts.uk.resource.getText("KMF003_9"), prop: 'name', width: 200 }
+            ]);
+            self.singleSelectedCode = ko.observableArray([]);
             self.currentCode = ko.observable();
             
             //Controls display
@@ -77,16 +80,36 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             return dfd.promise();
         }
         
+        /**
+         * Clear data input on form
+         */
         cleanForm(){
             
         }
         
+        /**
+         * Save data to db
+         */
         addFunction(){
             
         }
         
+        /**
+         * Delete data by code
+         */
         deleteFunction(){
             
+        }
+        
+        /**
+         * 
+         */
+        openBDialog(conditionNo: number) {
+            let self = this;
+            nts.uk.ui.windows.setShared("KMF003_CONDITION_NO", conditionNo);
+            nts.uk.ui.windows.sub.modal("/view/kmf/003/b/index.xhtml").onClosed(() => {
+                
+            });    
         }
         
         /**
@@ -101,13 +124,13 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.useConditionCls = ko.observable(false);            
             self.grantDate = ko.observable("");            
             self.A6_2Data = ko.observableArray([
-                { code: '0', name: 'nts.uk.resource.getText("KMF003_17")' },
-                { code: '1', name: 'nts.uk.resource.getText("KMF003_18")' }
+                { code: '0', name: nts.uk.resource.getText("KMF003_17") },
+                { code: '1', name: nts.uk.resource.getText("KMF003_18") }
             ]);
             self.A6_2SelectedRuleCode = ko.observable(0);            
             self.A7_4Data = ko.observableArray([
-                { code: '0', name: 'nts.uk.resource.getText("KMF003_21")' },
-                { code: '1', name: 'nts.uk.resource.getText("KMF003_22")' }
+                { code: '0', name: nts.uk.resource.getText("KMF003_21") },
+                { code: '1', name: nts.uk.resource.getText("KMF003_22") }
             ]);
             self.A7_4SelectedRuleCode = ko.observable(0);
             

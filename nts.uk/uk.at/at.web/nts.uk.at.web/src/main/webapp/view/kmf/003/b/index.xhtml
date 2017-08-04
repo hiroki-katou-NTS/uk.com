@@ -5,8 +5,14 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 600
+				};
+			</script>
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf003.b.vm.js" />
 			<com:scriptfile path="kmf003.b.start.js" />
