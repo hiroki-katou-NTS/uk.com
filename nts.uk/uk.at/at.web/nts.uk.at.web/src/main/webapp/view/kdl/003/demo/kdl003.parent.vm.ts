@@ -33,7 +33,7 @@ module kdl003.parent.viewmodel {
                 selectSiftCode: self.selectSiftCode()
             }, true);
 
-            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml', { title: 'å‹¤å‹™å°±æ¥­é�¸æŠž', }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml', { title: '勤務就業選択', }).onClosed(function(): any {
                 //view all code of selected item 
                 var childData = nts.uk.ui.windows.getShared('childData');
                 self.childSelectWorkTypeCode(childData.selectedWorkTimeCode);

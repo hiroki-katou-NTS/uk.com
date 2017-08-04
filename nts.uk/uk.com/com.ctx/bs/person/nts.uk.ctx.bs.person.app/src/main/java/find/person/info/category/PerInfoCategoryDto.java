@@ -1,8 +1,8 @@
 package find.person.info.category;
 
-import lombok.Getter;
+import lombok.Value;
 
-@Getter
+@Value
 public class PerInfoCategoryDto {
 	private String Id;
 	private String categoryCode;

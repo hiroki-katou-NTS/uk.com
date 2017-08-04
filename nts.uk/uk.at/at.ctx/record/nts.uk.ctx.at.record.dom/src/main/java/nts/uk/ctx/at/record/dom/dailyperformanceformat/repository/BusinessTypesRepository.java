@@ -22,15 +22,14 @@ public interface BusinessTypesRepository {
 	/**
 	 * author: HoangYen
 	 * @param companyId
-	 * @param workTypeCode
-	 * @param workTypeName
+	 * @param businessTypeCode
 	 * @return
 	 */
-	Optional<BusinessType> findBusinessType(String companyId, String workTypeCode);
+	Optional<BusinessType> findBusinessType(String companyId, String businessTypeCode);
 	/**
 	 * author: HoangYen
 	 * @param companyId
-	 * @param workTypeCode
+	 * @param businessTypeCode
 	 */
-	void deleteBusinessType(String companyId, String workTypeCode);
+	void deleteBusinessType(String companyId, String businessTypeCode);
 }

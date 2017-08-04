@@ -30,10 +30,14 @@ public class LayoutPersonInfoClassification extends AggregateRoot {
 	private DisPOrder disPOrder;
 	private String personInfoCategoryID;
 	private LayoutItemType layoutItemType;
+	
+	
 
 	public static LayoutPersonInfoClassification createFromJaveType(String layoutID, int disPOrder, String personInfoCategoryID,
 			int layoutItemType) {
-		return new LayoutPersonInfoClassification(layoutID, new DisPOrder(new BigDecimal(disPOrder)), personInfoCategoryID,
-				EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class));
+		return new LayoutPersonInfoClassification(layoutID, 
+												  new DisPOrder(new BigDecimal(disPOrder)), 
+												  personInfoCategoryID,
+												  EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class));
 	}
 }

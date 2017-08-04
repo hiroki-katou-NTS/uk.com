@@ -34,13 +34,10 @@ module ksu001.o.viewmodel {
 
             self.findWorkType();
             self.findWorkTime();
-        }
 
-        start() {
-            let self = this;
-            var dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
+            $("#stick-undo").click(function() {
+                $("#extable").exTable("stickUndo");
+            });
         }
 
         /**
