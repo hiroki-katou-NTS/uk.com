@@ -13011,433 +13011,12 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-var NtsSortableBindingHandler = (function () {
-    function NtsSortableBindingHandler() {
-        var _this = this;
-        this.ITEMKEY = "ko_sortItem";
-        this.INDEXKEY = "ko_sourceIndex";
-        this.LISTKEY = "ko_sortList";
-        this.PARENTKEY = "ko_parentList";
-        this.DRAGKEY = "ko_dragItem";
-        this.dataSet = ko.utils.domData.set;
-        this.dataGet = ko.utils.domData.get;
-        this.version = $.ui && $.ui.version;
-        this.hasNestedSortableFix = function () { return _this.version && _this.version.indexOf("1.6.") && _this.version.indexOf("1.7.") && (_this.version.indexOf("1.8.") || _this.version === "1.8.24"); };
-        this.addMetaDataAfterRender = function (elements, data) {
-            var self = _this;
-            ko.utils.arrayForEach(elements, function (element) {
-                if (element.nodeType === 1) {
-                    self.dataSet(element, self.ITEMKEY, data);
-                    self.dataSet(element, self.PARENTKEY, self.dataGet(element.parentNode, self.LISTKEY));
-                }
-            });
-        };
-        this.updateIndexFromDestroyedItems = function (index, items) {
-            var self = _this, unwrapped = ko.unwrap(items);
-            if (unwrapped) {
-                for (var i = 0; i < index; i++) {
-                    if (unwrapped[i] && ko.unwrap(unwrapped[i]._destroy)) {
-                        index++;
-                    }
-                }
-            }
-            return index;
-        };
-        this.stripTemplateWhitespace = function (element, name) {
-            var self = _this, templateSource, templateElement;
-            if (name) {
-                templateElement = document.getElementById(name);
-                if (templateElement) {
-                    templateSource = new ko.templateSources.domElement(templateElement);
-                    templateSource.text($.trim(templateSource.text()));
-                }
-            }
-            else {
-                $(element).contents().each(function () {
-                    if (this && this.nodeType !== 1) {
-                        element.removeChild(this);
-                    }
-                });
-            }
-        };
-        this.prepareTemplateOptions = function (valueAccessor, dataName) {
-            var self = _this, result = {}, options = ko.unwrap(valueAccessor()) || {}, actualAfterRender;
-            if (options.data) {
-                result[dataName] = options.data;
-                result.name = options.template;
-            }
-            else {
-                result[dataName] = valueAccessor();
-            }
-            ko.utils.arrayForEach(["afterAdd", "afterRender", "as", "beforeRemove", "includeDestroyed", "templateEngine", "templateOptions", "nodes"], function (option) {
-                if (options.hasOwnProperty(option)) {
-                    result[option] = options[option];
-                }
-                else if (ko.bindingHandlers['ntsSortable'].hasOwnProperty(option)) {
-                    result[option] = ko.bindingHandlers['ntsSortable'][option];
-                }
-            });
-            if (dataName === "foreach") {
-                if (result.afterRender) {
-                    actualAfterRender = result.afterRender;
-                    result.afterRender = function (element, data) {
-                        self.addMetaDataAfterRender.call(data, element, data);
-                        actualAfterRender.call(data, element, data);
-                    };
-                }
-                else {
-                    result.afterRender = self.addMetaDataAfterRender;
-                }
-            }
-            return result;
-        };
-        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            var self = _this, $element = $(element), value = ko.unwrap(valueAccessor()) || {}, templateOptions = self.prepareTemplateOptions(valueAccessor, "foreach"), sortable = {}, startActual, updateActual;
-            self.stripTemplateWhitespace(element, templateOptions.name);
-            $.extend(true, sortable, ko.bindingHandlers['ntsSortable']);
-            if (value.options && sortable.options) {
-                ko.utils.extend(sortable.options, value.options);
-                delete value.options;
-            }
-            else {
-                sortable.options = sortable.options || {};
-                ko.utils.extend(sortable.options, {
-                    start: function () { },
-                    update: function () { }
-                });
-            }
-            ko.utils.extend(sortable, value);
-            if (sortable.connectClass && (ko.isObservable(sortable.allowDrop) || typeof sortable.allowDrop == "function")) {
-                ko.computed({
-                    read: function () {
-                        var value = ko.unwrap(sortable.allowDrop), shouldAdd = typeof value == "function" ? value.call(this, templateOptions.foreach) : value;
-                        ko.utils.toggleDomNodeCssClass(element, sortable.connectClass, shouldAdd);
-                    },
-                    disposeWhenNodeIsRemoved: element
-                }, _this);
-            }
-            else {
-                ko.utils.toggleDomNodeCssClass(element, sortable.connectClass, sortable.allowDrop);
-            }
-            ko.bindingHandlers.template.init(element, function () {
-                return templateOptions;
-            }, allBindingsAccessor, viewModel, bindingContext);
-            startActual = sortable.options.start;
-            updateActual = sortable.options.update;
-            if (!sortable.options.helper) {
-                sortable.options.helper = function (e, ui) {
-                    if (ui.is("tr")) {
-                        ui.children().each(function () {
-                            $(this).width($(this).width());
-                        });
-                    }
-                    return ui;
-                };
-            }
-            var createTimeout = setTimeout(function () {
-                var dragItem;
-                var originalReceive = sortable.options.receive;
-                $element.sortable(ko.utils.extend(sortable.options, {
-                    start: function (event, ui) {
-                        var el = ui.item[0];
-                        self.dataSet(el, self.INDEXKEY, ko.utils.arrayIndexOf(ui.item.parent().children(), el));
-                        ui.item.find("input:focus").change();
-                        if (startActual) {
-                            startActual.apply(this, arguments);
-                        }
-                    },
-                    receive: function (event, ui) {
-                        if (typeof originalReceive === "function") {
-                            originalReceive.call(this, event, ui);
-                        }
-                        dragItem = self.dataGet(ui.item[0], self.DRAGKEY);
-                        if (dragItem) {
-                            if (dragItem.clone) {
-                                dragItem = dragItem.clone();
-                            }
-                            if (sortable.dragged) {
-                                dragItem = sortable.dragged.call(this, dragItem, event, ui) || dragItem;
-                            }
-                        }
-                    },
-                    update: function (event, ui) {
-                        var sourceParent, targetParent, sourceIndex, targetIndex, arg, el = ui.item[0], parentEl = ui.item.parent()[0], item = self.dataGet(el, self.ITEMKEY) || dragItem;
-                        if (!item) {
-                            $(el).remove();
-                        }
-                        dragItem = null;
-                        if (item && (this === parentEl) || (!self.hasNestedSortableFix && $.contains(this, parentEl))) {
-                            sourceParent = self.dataGet(el, self.PARENTKEY);
-                            sourceIndex = self.dataGet(el, self.INDEXKEY);
-                            targetParent = self.dataGet(el.parentNode, self.LISTKEY);
-                            targetIndex = ko.utils.arrayIndexOf(ui.item.parent().children(), el);
-                            if (!templateOptions.includeDestroyed) {
-                                sourceIndex = self.updateIndexFromDestroyedItems(sourceIndex, sourceParent);
-                                targetIndex = self.updateIndexFromDestroyedItems(targetIndex, targetParent);
-                            }
-                            if (sortable.beforeMove || sortable.afterMove) {
-                                arg = {
-                                    item: item,
-                                    sourceParent: sourceParent,
-                                    sourceParentNode: sourceParent && ui.sender || el.parentNode,
-                                    sourceIndex: sourceIndex,
-                                    targetParent: targetParent,
-                                    targetIndex: targetIndex,
-                                    cancelDrop: false
-                                };
-                                if (sortable.beforeMove) {
-                                    sortable.beforeMove.call(this, arg, event, ui);
-                                }
-                            }
-                            if (sourceParent) {
-                                $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
-                            }
-                            else {
-                                $(el).remove();
-                            }
-                            if (arg && arg.cancelDrop) {
-                                return;
-                            }
-                            if (!sortable.hasOwnProperty("strategyMove") || sortable.strategyMove === false) {
-                                if (targetIndex >= 0) {
-                                    if (sourceParent) {
-                                        sourceParent.splice(sourceIndex, 1);
-                                        if (ko['processAllDeferredBindingUpdates']) {
-                                            ko['processAllDeferredBindingUpdates']();
-                                        }
-                                        if (ko.options && ko.options.deferUpdates) {
-                                            ko.tasks.runEarly();
-                                        }
-                                    }
-                                    targetParent.splice(targetIndex, 0, item);
-                                }
-                                self.dataSet(el, self.ITEMKEY, null);
-                            }
-                            else {
-                                if (targetIndex >= 0) {
-                                    if (sourceParent) {
-                                        if (sourceParent !== targetParent) {
-                                            sourceParent.splice(sourceIndex, 1);
-                                            targetParent.splice(targetIndex, 0, item);
-                                            self.dataSet(el, self.ITEMKEY, null);
-                                            ui.item.remove();
-                                        }
-                                        else {
-                                            var underlyingList = ko.unwrap(sourceParent);
-                                            if (sourceParent.valueWillMutate) {
-                                                sourceParent.valueWillMutate();
-                                            }
-                                            underlyingList.splice(sourceIndex, 1);
-                                            underlyingList.splice(targetIndex, 0, item);
-                                            if (sourceParent.valueHasMutated) {
-                                                sourceParent.valueHasMutated();
-                                            }
-                                        }
-                                    }
-                                    else {
-                                        targetParent.splice(targetIndex, 0, item);
-                                        self.dataSet(el, self.ITEMKEY, null);
-                                        ui.item.remove();
-                                    }
-                                }
-                            }
-                            if (ko['processAllDeferredBindingUpdates']) {
-                                ko['processAllDeferredBindingUpdates']();
-                            }
-                            if (sortable.afterMove) {
-                                sortable.afterMove.call(this, arg, event, ui);
-                            }
-                        }
-                        if (updateActual) {
-                            updateActual.apply(this, arguments);
-                        }
-                    },
-                    connectWith: false
-                }));
-                if (sortable.isEnabled !== undefined) {
-                    ko.computed({
-                        read: function () {
-                            $element.sortable(ko.unwrap(sortable.isEnabled) ? "enable" : "disable");
-                        },
-                        disposeWhenNodeIsRemoved: element
-                    });
-                }
-            }, 0);
-            ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
-                if ($element.data("ui-sortable") || $element.data("sortable")) {
-                    $element.sortable("destroy");
-                }
-                ko.utils.toggleDomNodeCssClass(element, sortable.connectClass, false);
-                clearTimeout(createTimeout);
-            });
-            return {
-                'controlsDescendantBindings': true
-            };
-        };
-        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            var self = _this, templateOptions = self.prepareTemplateOptions(valueAccessor, "foreach");
-            self.dataSet(element, self.LISTKEY, templateOptions.foreach);
-            ko.bindingHandlers['template'].update(element, function () { return templateOptions; }, allBindingsAccessor, viewModel, bindingContext);
-        };
-    }
-    return NtsSortableBindingHandler;
-}());
-ko.bindingHandlers["ntsSortable"] = new NtsSortableBindingHandler();
 var nts;
 (function (nts) {
     var uk;
     (function (uk) {
         var ui;
         (function (ui_18) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsTreeDragAndDropBindingHandler = (function () {
-                    function NtsTreeDragAndDropBindingHandler() {
-                    }
-                    NtsTreeDragAndDropBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var ROW_HEIGHT = 30;
-                        var HEADER_HEIGHT = 24;
-                        var data = valueAccessor();
-                        var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
-                        var optionsValue = ko.unwrap(data.primaryKey !== undefined ? data.primaryKey : data.optionsValue);
-                        var optionsText = ko.unwrap(data.primaryText !== undefined ? data.primaryText : data.optionsText);
-                        var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
-                        var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : false;
-                        var selectedValues = ko.unwrap(data.selectedValues);
-                        var singleValue = ko.unwrap(data.value);
-                        var rows = ko.unwrap(data.rows);
-                        var selectOnParent = data.selectOnParent != undefined ? ko.unwrap(data.selectOnParent) : false;
-                        var allowOtherTreeNode = data.receiveOtherTreeNode !== undefined ? ko.unwrap(data.receiveOtherTreeNode) : false;
-                        var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
-                        var height = ko.unwrap(data.height !== undefined ? data.height : 0);
-                        var width = ko.unwrap(data.width !== undefined ? data.width : 0);
-                        var maxDeepLeaf = ko.unwrap(data.maxDeepLeaf !== undefined ? data.maxDeepLeaf : 10);
-                        var maxChildInNode = ko.unwrap(data.maxChildInNode !== undefined ? data.maxChildInNode : 999);
-                        var customValidate = data.customValidate;
-                        if (!nts.uk.util.isNullOrEmpty(rows)) {
-                            height = rows * ROW_HEIGHT;
-                        }
-                        var $tree = $(element);
-                        $tree.igTree({
-                            width: width,
-                            height: height,
-                            dataSource: _.cloneDeep(options),
-                            initialExpandDepth: 0,
-                            tabIndex: -1,
-                            checkboxMode: !multiple ? "off" : selectOnParent ? "triState" : "biState",
-                            singleBranchExpand: false,
-                            pathSeparator: '_',
-                            bindings: {
-                                textKey: optionsText,
-                                valueKey: optionsValue,
-                                childDataProperty: optionsChild
-                            },
-                            dragAndDrop: true,
-                            dragAndDropSettings: {
-                                allowDrop: allowOtherTreeNode,
-                                customDropValidation: function (element) {
-                                    var droppableNode = $(this);
-                                    var targetNode = $tree.igTree("nodeFromElement", droppableNode);
-                                    var dragNode = $tree.igTree("nodeFromElement", element);
-                                    var targetDeep = (targetNode.path.match(/_/g) || []).length;
-                                    if (targetDeep + 1 >= maxDeepLeaf) {
-                                        return false;
-                                    }
-                                    var targetNodeChildren = $tree.igTree("children", droppableNode);
-                                    if (targetNodeChildren.length >= maxChildInNode) {
-                                        return false;
-                                    }
-                                    var customValidateResult = nts.uk.util.isNullOrUndefined(customValidate) ? true : customValidate();
-                                    if (customValidateResult === false) {
-                                        return false;
-                                    }
-                                    return true;
-                                }
-                            },
-                            selectionChanged: function (evt, ui) {
-                                if (ko.unwrap(data.multiple)) {
-                                    if (ko.isObservable(data.selectedValues)) {
-                                        var selectedNodes = $tree.igTree("checkedNodes");
-                                        var checkedNodes = _.map(selectedNodes, function (s) {
-                                            return s.data[optionsValue];
-                                        });
-                                        if (ui.selectedNodes.length > 0) {
-                                            checkedNodes.push(ui.selectedNodes[0].data[optionsValue]);
-                                        }
-                                        data.selectedValues(_.uniq(checkedNodes));
-                                    }
-                                }
-                                else {
-                                    if (ko.isObservable(data.value)) {
-                                        var selectedRows = ui.selectedNodes;
-                                        data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].data[optionsValue]);
-                                    }
-                                }
-                            },
-                            nodeCheckstateChanged: function (evt, ui) {
-                                if (ko.isObservable(data.selectedValues)) {
-                                    if (ui.newState === "on") {
-                                        var selectedNodes = $tree.igTree("checkedNodes");
-                                        data.selectedValues(_.map(selectedNodes, function (s) {
-                                            return s.data[optionsValue];
-                                        }));
-                                    }
-                                    else {
-                                        _.remove(data.selectedValues(), function (val) {
-                                            return ui.node.data[optionsValue] === val;
-                                        });
-                                        data.selectedValues.valueHasMutated();
-                                    }
-                                }
-                            }
-                        });
-                    };
-                    NtsTreeDragAndDropBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
-                        var selectedValues = ko.unwrap(data.selectedValues);
-                        var singleValue = ko.unwrap(data.value);
-                        var $tree = $(element);
-                        var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : false;
-                        var originalSource = $tree.igTree('option', 'dataSource').__ds;
-                        if (!_.isEqual(originalSource, options)) {
-                            $tree.igTree("option", "dataSource", _.cloneDeep(options));
-                            $tree.igTree("dataBind");
-                        }
-                        if (nts.uk.util.isNullOrEmpty(selectedValues) && nts.uk.util.isNullOrUndefined(singleValue)) {
-                            $tree.igTree("clearSelection");
-                            $tree.find("a").removeClass("ui-state-active");
-                        }
-                        else {
-                            if (multiple) {
-                                $tree.find("a").removeClass("ui-state-active");
-                                selectedValues.forEach(function (val) {
-                                    var $node = $tree.igTree("nodesByValue", val);
-                                    $node.find("a:first").addClass("ui-state-active");
-                                    var $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
-                                    if ($tree.igTree("checkState", $node) === "off") {
-                                        $tree.igTree("toggleCheckstate", $node);
-                                    }
-                                });
-                            }
-                            else {
-                                $tree.igTree("select", $tree.igTree("nodesByValue", singleValue));
-                            }
-                        }
-                    };
-                    return NtsTreeDragAndDropBindingHandler;
-                }());
-                ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_18.koExtentions || (ui_18.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_19) {
             var exTable;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
@@ -17457,7 +17036,7 @@ var nts;
                         return css;
                     }
                 })(widget || (widget = {}));
-            })(exTable = ui_19.exTable || (ui_19.exTable = {}));
+            })(exTable = ui_18.exTable || (ui_18.exTable = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -17466,7 +17045,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
+        (function (ui_19) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsMonthDaysBindingHandler = (function () {
@@ -17574,7 +17153,7 @@ var nts;
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
+            })(koExtentions = ui_19.koExtentions || (ui_19.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -17645,7 +17224,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
+        (function (ui_20) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsFunctionPanelBindingHandler = (function () {
@@ -17719,7 +17298,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
+            })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -17849,7 +17428,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_21) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsAccordionBindingHandler = (function () {
@@ -17927,7 +17506,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

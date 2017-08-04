@@ -2243,23 +2243,7 @@ button.nts-switch-button[disabled]:hover {
   overflow: hidden;
   padding: 1em;
 }
-.ui-igtree{
-	border: 1px solid #dddddd;
-}
-.ui-igtree .ui-igtree-root{
-	border: 0px white solid;
-}
-.ui-igtree .ui-igcheckbox-normal-on {
-	top: -2px;
-}
 
-.ui-igtree .ui-igcheckbox-normal-off {
-	top: -4px;
-    left: -2px;
-}
-.ui-igtree li{
-	list-style-type: none;
-}
 /* line 3, ../sass/components/_treegridview.scss */
 .ui-igtreegrid {
   cursor: default;
