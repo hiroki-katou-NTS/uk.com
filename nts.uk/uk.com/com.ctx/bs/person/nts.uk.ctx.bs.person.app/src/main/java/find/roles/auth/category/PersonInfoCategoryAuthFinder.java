@@ -1,12 +1,12 @@
 package find.roles.auth.category;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
 
 /**
  * The Class PersonInfoCategoryAuthFinder
@@ -19,8 +19,10 @@ public class PersonInfoCategoryAuthFinder {
 	@Inject
 	private PersonInfoCategoryAuthRepository personCategoryAuthRepository;
 
-	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
-		return this.personCategoryAuthRepository.getAllCategory(roleId);
+	public List<PersonInfoCategoryDetailDto> getAllCategory(String roleId) {
+		return this.personCategoryAuthRepository.getAllCategory(roleId).stream()
+				.map(x -> PersonInfoCategoryDetailDto.fromDomain(x)).collect(Collectors.toList());
+
 	}
 
 	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
