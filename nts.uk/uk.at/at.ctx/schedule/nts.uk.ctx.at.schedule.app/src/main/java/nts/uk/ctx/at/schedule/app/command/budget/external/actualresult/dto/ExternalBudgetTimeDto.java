@@ -1,0 +1,173 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import lombok.Builder;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgTimeZoneGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgTimeZoneValGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZone;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
+
+/**
+ * The Class ExternalBudgetTimeDto.
+ */
+@Builder
+public class ExternalBudgetTimeDto {
+
+    /** The ext budget code. */
+    public String extBudgetCode;
+
+    /** The actual date. */
+    public Date actualDate;
+
+    /** The workplace id. */
+    public String workplaceId;
+
+    /** The map value. */
+    public Map<Integer, Long> mapValue;
+
+    /**
+     * To domain.
+     *
+     * @param <T>
+     *            the generic type
+     * @return the external budget time zone
+     */
+    public <T> ExternalBudgetTimeZone<T> toDomain() {
+        return new ExternalBudgetTimeZone<T>(new ExtBudgTimeZoneGetMementoImpl<T>(this));
+    }
+
+    /**
+     * The Class ExtBudgTimeZoneGetMementoImpl.
+     *
+     * @param <T>
+     *            the generic type
+     */
+    private class ExtBudgTimeZoneGetMementoImpl<T> implements ExtBudgTimeZoneGetMemento<T> {
+
+        /** The dto. */
+        private ExternalBudgetTimeDto dto;
+
+        /**
+         * Instantiates a new ext budg time zone get memento impl.
+         *
+         * @param dto
+         *            the dto
+         */
+        public ExtBudgTimeZoneGetMementoImpl(ExternalBudgetTimeDto dto) {
+            this.dto = dto;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+         * ExtBudgTimeZoneGetMemento#getActualValues()
+         */
+        @Override
+        public List<ExternalBudgetTimeZoneVal<T>> getActualValues() {
+            List<ExternalBudgetTimeZoneVal<T>> lstValue = new ArrayList<>();
+            for (Entry<Integer, Long> entry : this.dto.mapValue.entrySet()) {
+                int periodTime = entry.getKey();
+                Long value = entry.getValue();
+                lstValue.add(new ExternalBudgetTimeZoneVal<T>(new ExternalBudgetTimeZoneValImpl<T>(periodTime, value)));
+            }
+            return lstValue;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+         * ExtBudgTimeZoneGetMemento#getExtBudgetCode()
+         */
+        @Override
+        public ExternalBudgetCd getExtBudgetCode() {
+            return new ExternalBudgetCd(this.dto.extBudgetCode);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+         * ExtBudgTimeZoneGetMemento#getActualDate()
+         */
+        @Override
+        public Date getActualDate() {
+            return this.dto.actualDate;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+         * ExtBudgTimeZoneGetMemento#getWorkplaceId()
+         */
+        @Override
+        public String getWorkplaceId() {
+            return this.dto.workplaceId;
+        }
+
+    }
+
+    /**
+     * The Class ExternalBudgetTimeZoneValImpl.
+     *
+     * @param <T>
+     *            the generic type
+     */
+    private class ExternalBudgetTimeZoneValImpl<T> implements ExtBudgTimeZoneValGetMemento<T> {
+
+        /** The period time. */
+        private Integer periodTime;
+
+        /** The value. */
+        private Long value;
+
+        /**
+         * Instantiates a new external budget time zone val impl.
+         *
+         * @param periodTime
+         *            the period time
+         * @param value
+         *            the value
+         */
+        public ExternalBudgetTimeZoneValImpl(Integer periodTime, Long value) {
+            this.periodTime = periodTime;
+            this.value = value;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+         * ExtBudgTimeZoneValGetMemento#getTimePeriod()
+         */
+        @Override
+        public int getTimePeriod() {
+            return this.periodTime;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+         * ExtBudgTimeZoneValGetMemento#getActualValue()
+         */
+        @Override
+        public ExternalBudgetVal<T> getActualValue() {
+            return new ExternalBudgetVal<T>(this.value);
+        }
+
+    }
+}

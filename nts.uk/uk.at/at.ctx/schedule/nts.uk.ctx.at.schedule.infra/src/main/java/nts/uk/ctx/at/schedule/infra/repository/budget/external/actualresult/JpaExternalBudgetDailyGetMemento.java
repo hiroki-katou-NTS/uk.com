@@ -61,7 +61,7 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
      * ExternalBudgetDailyGetMemento#getProcessDate()
      */
     @Override
-    public Date getProcessDate() {
+    public Date getActualDate() {
         return this.entity.getKscdtExtBudgetDailyPK().getProcessD().date();
     }
 
