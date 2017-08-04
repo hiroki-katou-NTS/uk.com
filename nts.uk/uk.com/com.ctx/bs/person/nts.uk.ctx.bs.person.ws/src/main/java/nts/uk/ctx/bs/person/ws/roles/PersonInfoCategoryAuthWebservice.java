@@ -50,7 +50,7 @@ public class PersonInfoCategoryAuthWebservice extends WebService {
 	@Path("findDetail/{personCategoryAuthId}")
 	public PersonInfoCategoryAuthDto getAuthDetailByPId(
 			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
-		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(personCategoryAuthId).get();
+		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(personCategoryAuthId);
 	}
 
 }

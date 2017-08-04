@@ -29,8 +29,8 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId"
-			+ " LEFT JOIN PpemtPerInfoCtgCm cm" + " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd";
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
+			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
@@ -48,11 +48,12 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		domain.setCategoryCode(entity[1].toString());
 		domain.setCategoryName(entity[2].toString());
 		domain.setCategoryType(Integer.valueOf(entity[3].toString()));
-		if(entity[4] !=null){
+		if (entity[4] != null) {
 			domain.setAllowOtherRef(Integer.valueOf(entity[4].toString()));
-		};
-		if(entity[5]!=null){
-			
+		}
+		;
+		if (entity[5] != null) {
+
 			domain.setAllowPersonRef(Integer.valueOf(entity[5].toString()));
 		}
 		domain.setSetting(Boolean.valueOf(entity[6].toString()));
@@ -128,8 +129,8 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	@Override
 	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
 		return this.queryProxy().query(SEL_4, PpemtPersonCategoryAuth.class)
-				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle().map(e -> {
-					return Optional.of(toDomain(e));
-				}).orElse(Optional.empty());
+				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle(i -> {
+					return toDomain(i);
+				});
 	}
 }

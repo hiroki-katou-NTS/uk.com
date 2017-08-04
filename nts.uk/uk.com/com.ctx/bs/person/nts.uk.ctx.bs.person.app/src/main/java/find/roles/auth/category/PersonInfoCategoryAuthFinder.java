@@ -40,8 +40,9 @@ public class PersonInfoCategoryAuthFinder {
 				.map(c -> PersonInfoCategoryAuthDto.fromDomain(c));
 	}
 
-	public Optional<PersonInfoCategoryAuthDto> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
-		return this.personCategoryAuthRepository.getDetailPersonCategoryAuthByPId(personCategoryAuthId)
-				.map(c -> PersonInfoCategoryAuthDto.fromDomain(c));
+	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+		return this.personCategoryAuthRepository.getDetailPersonCategoryAuthByPId(personCategoryAuthId).map(item -> {
+			return PersonInfoCategoryAuthDto.fromDomain(item);
+		}).orElse(null);
 	}
 }
