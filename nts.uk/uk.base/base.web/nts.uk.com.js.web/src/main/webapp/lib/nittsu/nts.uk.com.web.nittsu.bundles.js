@@ -10183,7 +10183,9 @@ var nts;
                         $(this).data(internal.SPECIAL_COL_TYPES, columnSpecialTypes);
                         sheet.load.setup($(self), options);
                         settings.build($(self), options);
-                        $(this).igGrid(options);
+                        if (!onDemand.initial($(self), options)) {
+                            $(this).igGrid(options);
+                        }
                         $(window).resize(function () {
                             settings.setGridSize($(self));
                             columnSize.load($(self));
@@ -10195,6 +10197,7 @@ var nts;
                         feature_1.SELECTION = "Selection";
                         feature_1.RESIZING = "Resizing";
                         feature_1.COLUMN_FIX = "ColumnFixing";
+                        feature_1.PAGING = "Paging";
                         feature_1.COPY_PASTE = "CopyPaste";
                         feature_1.CELL_EDIT = "CellEdit";
                         feature_1.CELL_COLOR = "CellColor";
@@ -10204,6 +10207,7 @@ var nts;
                         feature_1.HEADER_STYLES = "HeaderStyles";
                         feature_1.HIDING = "Hiding";
                         feature_1.SHEET = "Sheet";
+                        feature_1.DEMAND_LOAD = "LoadOnDemand";
                         function replaceBy(options, featureName, newFeature) {
                             var replaceId;
                             _.forEach(options.features, function (feature, id) {
@@ -11120,7 +11124,7 @@ var nts;
                             };
                             Button.prototype.draw = function (data) {
                                 var $container = $("<div/>").addClass(this.containerClass());
-                                var $button = $("<button/>").addClass("ntsButton").appendTo($container).text(data.controlDef.text || data.initValue)
+                                var $button = $("<button/>").addClass("ntsButton").css("height", "25px").appendTo($container).text(data.controlDef.text || data.initValue)
                                     .data("enable", data.enable).on("click", data.controlDef.click);
                                 $button.prop("disabled", !data.enable);
                                 return $container;
@@ -11778,6 +11782,8 @@ var nts;
                             Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
                             Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
                             Handler.CELL_CLICK = "iggridcellclick";
+                            Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
+                            Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
                             return Handler;
                         }());
                         events.Handler = Handler;
@@ -12225,13 +12231,16 @@ var nts;
                         sheet_1.Configurator = Configurator;
                         function onScroll($grid) {
                             var $scrollContainer = $("#" + $grid.attr("id") + "_scrollContainer");
-                            if ($scrollContainer.length === 0)
+                            var $displayContainer = $("#" + $grid.attr("id") + "_displayContainer");
+                            if ($scrollContainer.length === 0 || $displayContainer.length === 0)
                                 return;
                             var scrollListener = function (evt) {
                                 var sheetConfig = $grid.data(internal.SHEETS);
                                 if (uk.util.isNullOrUndefined(sheetConfig))
                                     return;
                                 sheetConfig.currentPosition = $scrollContainer.scrollTop() + "px";
+                                sheetConfig.displayScrollTop = $displayContainer.scrollTop();
+                                sheetConfig.blockId = $grid.find("tbody tr:first").data("id");
                             };
                             $scrollContainer.on(events.Handler.SCROLL, scrollListener);
                         }
@@ -12341,6 +12350,17 @@ var nts;
                                         clonedOpts.dataSource = $grid.igGrid("option", "dataSource");
                                         $grid.igGrid("destroy");
                                         $grid.off();
+                                        var pagingFt = feature.find(clonedOpts.features, feature.PAGING);
+                                        var loader = $grid.data(internal.LOADER);
+                                        if (pagingFt && loader) {
+                                            if (!uk.util.isNullOrUndefined(loader.pageIndex)) {
+                                                pagingFt.currentPageIndex = loader.pageIndex;
+                                            }
+                                            if (!uk.util.isNullOrUndefined(loader.pageSize)) {
+                                                pagingFt.pageSize = loader.pageSize;
+                                            }
+                                            feature.replaceBy(clonedOpts, feature.PAGING, pagingFt);
+                                        }
                                         $grid.ntsGrid(clonedOpts);
                                         sheetButtonsWrapper.find("button").css(normalStyles);
                                         $(this).css(selectedStyles);
@@ -12367,6 +12387,151 @@ var nts;
                             }
                         })(load = sheet_1.load || (sheet_1.load = {}));
                     })(sheet || (sheet = {}));
+                    var onDemand;
+                    (function (onDemand) {
+                        var Loader = (function () {
+                            function Loader(allKeysPath, pageRecordsPath, pageSize) {
+                                this.allKeysPath = allKeysPath;
+                                this.pageRecordsPath = pageRecordsPath;
+                                this.pageSize = pageSize;
+                            }
+                            return Loader;
+                        }());
+                        onDemand.Loader = Loader;
+                        function hidePageSizeDD($grid, options) {
+                            if (options && !feature.find(options.ntsFeatures, feature.DEMAND_LOAD))
+                                return;
+                            var $gridContainer = $($grid.igGrid("container"));
+                            if ($gridContainer.length > 0) {
+                                $gridContainer.find("div[class*='ui-iggrid-pagesizedropdowncontainer']").hide();
+                            }
+                        }
+                        onDemand.hidePageSizeDD = hidePageSizeDD;
+                        function loadKeys($grid, path) {
+                            var dfd = $.Deferred();
+                            uk.request.ajax(path).done(function (keys) {
+                                var loader = $grid.data(internal.LOADER);
+                                if (!loader.keys || loader.keys.length === 0)
+                                    loader.keys = keys;
+                                dfd.resolve(loader.keys);
+                            }).fail(function () {
+                                dfd.reject();
+                            });
+                            return dfd.promise();
+                        }
+                        onDemand.loadKeys = loadKeys;
+                        function loadLazy(path, keys, startIndex, endIndex, dataSource, primaryKey) {
+                            var dfd = $.Deferred();
+                            uk.request.ajax(path, keys).done(function (data) {
+                                _.forEach(data, function (rData, index) {
+                                    for (var i = startIndex; i < endIndex; i++) {
+                                        if (dataSource[i] && dataSource[i][primaryKey] === rData[primaryKey]) {
+                                            rData.loaded = true;
+                                            dataSource.splice(i, 1, rData);
+                                        }
+                                    }
+                                });
+                                dfd.resolve(dataSource);
+                            }).fail(function () {
+                                ;
+                                dfd.reject();
+                            });
+                            return dfd.promise();
+                        }
+                        onDemand.loadLazy = loadLazy;
+                        function initial($grid, options) {
+                            if (!options)
+                                return false;
+                            var pagingFt = feature.find(options.features, feature.PAGING);
+                            if (!pagingFt)
+                                return false;
+                            var demandLoadFt = feature.find(options.ntsFeatures, feature.DEMAND_LOAD);
+                            if (!demandLoadFt)
+                                return false;
+                            var pageSize = pagingFt.pageSize;
+                            var loader = $grid.data(internal.LOADER);
+                            if (!loader) {
+                                $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath, pagingFt.pageSize));
+                            }
+                            else if (loader.keys) {
+                                pageSize = loader.pageSize;
+                                bindPageChange($grid);
+                                return false;
+                            }
+                            loadKeys($grid, demandLoadFt.allKeysPath).done(function (keys) {
+                                var primaryKey = options.primaryKey;
+                                var ds = keys.map(function (key, index) {
+                                    var obj = {};
+                                    obj[primaryKey] = key;
+                                    obj["loaded"] = false;
+                                    return obj;
+                                });
+                                var firstRecordIndex = (pagingFt.currentPageIndex || 0) * pageSize;
+                                var lastRecordIndex = firstRecordIndex + pageSize;
+                                var firstPageItems = keys.slice(firstRecordIndex, lastRecordIndex);
+                                loadLazy(demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex, ds, primaryKey).done(function (data) {
+                                    options.dataSource = data;
+                                    $grid.igGrid(options);
+                                    bindPageChange($grid);
+                                });
+                            }).fail(function () {
+                            });
+                            return true;
+                        }
+                        onDemand.initial = initial;
+                        function bindPageChange($grid) {
+                            $grid.on(events.Handler.PAGE_INDEX_CHANGE, function (evt, ui) {
+                                var newPageIndex = ui.newPageIndex;
+                                var pageSize = ui.owner.pageSize();
+                                var startIndex = newPageIndex * pageSize;
+                                var endIndex = startIndex + pageSize;
+                                var loader = $grid.data(internal.LOADER);
+                                if (!loader || !loader.keys)
+                                    return;
+                                var dataSource = $grid.igGrid("option", "dataSource");
+                                var primaryKey = $grid.igGrid("option", "primaryKey");
+                                loader.pageIndex = ui.newPageIndex;
+                                var newKeys = loader.keys.slice(startIndex, endIndex);
+                                for (var i = endIndex - 1; i >= startIndex; i--) {
+                                    if (dataSource[i] && dataSource[i].loaded) {
+                                        newKeys.splice(i - startIndex, 1);
+                                    }
+                                }
+                                if (newKeys.length === 0)
+                                    return;
+                                loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function (data) {
+                                    $grid.igGrid("option", "dataSource", data);
+                                    ui.owner.pageIndex(ui.newPageIndex);
+                                });
+                                return false;
+                            });
+                            $grid.on(events.Handler.PAGE_SIZE_CHANGE, function (evt, ui) {
+                                var loader = $grid.data(internal.LOADER);
+                                if (!loader)
+                                    return;
+                                loader.pageSize = ui.newPageSize;
+                                loader.pageIndex = 0;
+                                var currentPageIndex = 0;
+                                var startIndex = currentPageIndex * ui.newPageSize;
+                                var endIndex = startIndex + ui.newPageSize;
+                                var newKeys = loader.keys.slice(startIndex, endIndex);
+                                var dataSource = $grid.igGrid("option", "dataSource");
+                                var primaryKey = $grid.igGrid("option", "primaryKey");
+                                for (var i = endIndex - 1; i >= startIndex; i--) {
+                                    if (dataSource[i] && dataSource[i].loaded) {
+                                        newKeys.splice(i - startIndex, 1);
+                                    }
+                                }
+                                if (newKeys.length === 0)
+                                    return;
+                                loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function (data) {
+                                    $grid.igGrid("option", "dataSource", data);
+                                    ui.owner.pageSize(ui.newPageSize);
+                                });
+                                return false;
+                            });
+                        }
+                    })(onDemand || (onDemand = {}));
                     var settings;
                     (function (settings) {
                         function build($grid, options) {
@@ -12394,6 +12559,7 @@ var nts;
                         internal.ENTER_DIRECT = "enter";
                         internal.SETTINGS = "ntsSettings";
                         internal.ERRORS_LOG = "ntsErrorsLog";
+                        internal.LOADER = "ntsLoader";
                     })(internal || (internal = {}));
                     var utils;
                     (function (utils) {
@@ -12472,6 +12638,10 @@ var nts;
                             return !uk.util.isNullOrUndefined($grid.data("igGridHiding"));
                         }
                         utils.hidable = hidable;
+                        function pageable($grid) {
+                            return !uk.util.isNullOrUndefined($grid.data("igGridPaging"));
+                        }
+                        utils.pageable = pageable;
                         function disabled($cell) {
                             return $cell.hasClass(color.Disable);
                         }
@@ -12721,6 +12891,14 @@ var nts;
                             return -1;
                         }
                         utils.getDisplayColumnIndex = getDisplayColumnIndex;
+                        function getDisplayContainer($grid) {
+                            return $("#" + $grid.attr("id") + "_displayContainer");
+                        }
+                        utils.getDisplayContainer = getDisplayContainer;
+                        function getScrollContainer($grid) {
+                            return $("#" + $grid.attr("id") + "_scrollContainer");
+                        }
+                        utils.getScrollContainer = getScrollContainer;
                         function startEdit($grid, cell) {
                             var visibleColumns = getVisibleColumns($grid);
                             for (var i = 0; i < visibleColumns.length; i++) {
