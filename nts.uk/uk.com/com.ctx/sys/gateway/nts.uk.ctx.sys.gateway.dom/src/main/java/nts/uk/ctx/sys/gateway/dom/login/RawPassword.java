@@ -5,13 +5,16 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class HashPassword.
+ * The Class RawPassword.
  */
-@StringMaxLength(44)
-public class HashPassword extends StringPrimitiveValue<HashPassword> {
+@StringMaxLength(30)
+@StringCharType(CharType.ANY_HALF_WIDTH)
+public class RawPassword extends StringPrimitiveValue<RawPassword> {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -21,7 +24,7 @@ public class HashPassword extends StringPrimitiveValue<HashPassword> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public HashPassword(String rawValue) {
+	public RawPassword(String rawValue) {
 		super(rawValue);
 	}
 }

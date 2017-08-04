@@ -12,6 +12,10 @@
 			<com:scriptfile path="ccg007.a.start.js" />
 			<com:scriptfile path="ccg007.a.service.js" />
 			<com:scriptfile path="ccg007.a.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.gateway.dom.login.ContractCode
+				nts.uk.ctx.sys.gateway.dom.login.RawPassword
+  			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
@@ -30,6 +34,8 @@
 										data-bind="ntsTextEditor: {
 											value: contractCode,
 											required: true,
+											constraint: 'ContractCode',
+											option: {textmode: 'text',width: '200px'}, 
 											enable: true,
 											readonly: false}" />
 								</div>
@@ -38,7 +44,7 @@
 						<tr>
 							<td style="width:100px; padding: 10px;">
 								<div data-bind="ntsFormLabel: {required: true}">
-									<label data-bind="text: '#{i18n.getText('CCG007_1')}'"><br /></label>
+									<label data-bind="text: '#{i18n.getText('CCG007_2')}'"><br /></label>
 								</div>
 							</td>
 							<td style="width:230px; padding: 10px;">
@@ -47,6 +53,8 @@
 										data-bind="ntsTextEditor: {
 											value: password,
 											required: true,
+											constraint: 'RawPassword',
+											option: {textmode: 'password',width: '200px'},
 											enable: true,
 											readonly: false}" />
 								</div>

@@ -51,18 +51,13 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 		// TODO edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 		// TODO get domain 社員
-		Employee em = this.getEmployee(employeeCode);
+		Employee em = this.getEmployee(companyId, employeeCode);
 		// TODO get User by associatedPersonId
 		User user = this.getUser(em.getEmployeeId().toString());// TODO
 		// check password
 		this.compareHashPassword(user, password);
 		// check time limit
 		this.checkLimitTime(user);
-
-		// TODO check save to local storage
-		// if check -> save
-		// else -> remove
-
 	}
 
 	private void checkInput(SubmitLoginFormThreeCommand command) {
@@ -82,35 +77,40 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	}
 
 	private String employeeCodeEdit(String employeeCode, String companyId) {
-		EmployeeCodeSetting employeeCodeSetting = employeeCodeSettingRepo.getbyCompanyId(companyId);
-		EmployCodeEditType editType = employeeCodeSetting.getEditType();
-		Integer addNumberDigit = employeeCodeSetting.getNumberDigit() - employeeCode.length();
-		if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
-			// not edit employeeCode
-			return employeeCode;
-		} else {
-			switch (editType) {
-			case ZeroBefore:
-				StringUtils.leftPad(employeeCode, addNumberDigit, "0");
-				break;
-			case ZeroAfter:
-				StringUtils.rightPad(employeeCode, addNumberDigit, "0");
-				break;
-			case SpaceBefore:
-				StringUtils.leftPad(employeeCode, addNumberDigit);
-				break;
-			case SpaceAfter:
-				StringUtils.rightPad(employeeCode, addNumberDigit);
-				break;
-			default:
-				break;
+		Optional<EmployeeCodeSetting> findemployeeCodeSetting = employeeCodeSettingRepo.getbyCompanyId(companyId);
+		if (findemployeeCodeSetting.isPresent()) {
+			EmployeeCodeSetting employeeCodeSetting = findemployeeCodeSetting.get();
+			EmployCodeEditType editType = employeeCodeSetting.getEditType();
+			Integer addNumberDigit = employeeCodeSetting.getNumberDigit();
+			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
+				// not edit employeeCode
+				return employeeCode;
+			} else {
+				switch (editType) {
+				case ZeroBefore:
+					employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
+					break;
+				case ZeroAfter:
+					employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit, "0");
+					break;
+				case SpaceBefore:
+					employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit);
+					break;
+				case SpaceAfter:
+					employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit);
+					break;
+				default:
+					break;
+				}
+				return employeeCode;
 			}
+		} else {
 			return employeeCode;
 		}
 	}
 
-	private Employee getEmployee(String employeeCode) {
-		Optional<Employee> em = employeeRepository.getByEmployeeCode(employeeCode);
+	private Employee getEmployee(String companyId, String employeeCode) {
+		Optional<Employee> em = employeeRepository.getByEmployeeCode(companyId, employeeCode);
 		if (em.isPresent()) {
 			return em.get();
 		} else {
@@ -129,13 +129,13 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 
 	private void compareHashPassword(User user, String password) {
 		// TODO compare hash string here
-		if (!user.getPassword().equals(password)) {
+		if (!user.getPassword().v().equals(password)) {
 			throw new BusinessException("#Msg_302");
 		}
 	}
 
 	private void checkLimitTime(User user) {
-		if (user.getExpirationDate().after(GeneralDate.today())) {
+		if (user.getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("#Msg_316");
 		}
 	}

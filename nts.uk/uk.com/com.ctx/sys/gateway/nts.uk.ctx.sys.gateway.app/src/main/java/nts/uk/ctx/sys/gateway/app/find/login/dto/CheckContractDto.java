@@ -4,14 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.find.login.dto;
 
+/**
+ * The Class CheckContractDto.
+ */
 public class CheckContractDto {
 
-	public String showContract;
+	public boolean showContract;
 
 	/**
-	 * @param showContract
+	 * Instantiates a new check contract dto.
+	 *
+	 * @param showContract the show contract
 	 */
-	public CheckContractDto(String showContract) {
+	public CheckContractDto(boolean showContract) {
 		this.showContract = showContract;
 	}
 }
