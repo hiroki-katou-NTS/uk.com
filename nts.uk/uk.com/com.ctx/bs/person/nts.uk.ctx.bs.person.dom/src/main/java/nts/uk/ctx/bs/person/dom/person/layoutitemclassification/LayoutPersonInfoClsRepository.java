@@ -3,20 +3,17 @@
  */
 package nts.uk.ctx.bs.person.dom.person.layoutitemclassification;
 
+import java.util.List;
 import java.util.Optional;
 
-/**
- * @author laitv
- *
- */
+import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+
+
 public interface LayoutPersonInfoClsRepository {
 	
-	void add(LayoutPersonInfoClassification layoutPersonInfo);
 	
-	void update(LayoutPersonInfoClassification layoutPersonInfo);
+	List<LayoutPersonInfoClassification> getAllItemCls(String layoutId);
 	
-	void remove(LayoutPersonInfoClassification layoutPersonInfo);
-	
-	Optional<LayoutPersonInfoClassification> getDetailLayoutPerInfoClassification(String layoutID , DisPOrder disPOrder);
-	
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByLayoutId(String layoutId);
+
 }

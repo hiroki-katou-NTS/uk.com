@@ -3,23 +3,30 @@
  */
 package find.layoutitemclassification;
 
-import lombok.Getter;
-import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DisPOrder;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutItemType;
+import java.util.List;
+
+import find.person.info.item.PerInfoItemDefDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
 
-/**
- * @author laitv
- *
- */
-@Value
+@AllArgsConstructor
+@Data
 public class LayoutPersonInfoClsDto {
 
 	String layoutID;
 	int disPOrder;
 	String personInfoCategoryID;
 	int layoutItemType;
+	List<PerInfoItemDefDto> listItemDfDto;
+
+	public LayoutPersonInfoClsDto(String layoutID, int disPOrder, String personInfoCategoryID, int layoutItemType) {
+		super();
+		this.layoutID = layoutID;
+		this.disPOrder = disPOrder;
+		this.personInfoCategoryID = personInfoCategoryID;
+		this.layoutItemType = layoutItemType;
+	}
 
 	public static LayoutPersonInfoClsDto fromDomain(LayoutPersonInfoClassification domain) {
 		return new LayoutPersonInfoClsDto(domain.getLayoutID(), domain.getDisPOrder().v().intValue(),
