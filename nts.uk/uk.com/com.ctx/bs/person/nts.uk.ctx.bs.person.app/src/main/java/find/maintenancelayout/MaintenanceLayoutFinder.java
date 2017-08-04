@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
 
 /**
  * @author laitv
@@ -19,7 +19,7 @@ import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutReposi
 public class MaintenanceLayoutFinder {
 
 	@Inject
-	private MaintenanceLayoutRepository layoutRepo;
+	private IMaintenanceLayoutRepository layoutRepo;
 
 	public List<MaintenanceLayoutDto> getAllLayout() {
 		// get All Maintenance Layout

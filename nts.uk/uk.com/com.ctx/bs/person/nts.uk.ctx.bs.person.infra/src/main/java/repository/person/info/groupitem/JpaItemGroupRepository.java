@@ -16,9 +16,9 @@ import nts.uk.ctx.bs.person.dom.person.groupitem.PersonInfoItemGroup;
 @Stateless
 public class JpaItemGroupRepository extends JpaRepository implements IPersonInfoItemGroupRepository {
 
-	private final String SELECT_ALL = "SELECT c FROM  PpemtPInfoItemGroup c";
+	private final static String SELECT_ALL = "SELECT c FROM  PpemtPInfoItemGroup c";
 
-	private final String SELECT_BY_KEY = SELECT_ALL + " WHERE c.ppemtPinfoItemGroupPk.groupItemId = :groupId";
+	private final static String SELECT_BY_KEY = SELECT_ALL + " WHERE c.ppemtPinfoItemGroupPk.groupItemId = :groupId";
 
 	@Override
 	public List<PersonInfoItemGroup> getAll() {
