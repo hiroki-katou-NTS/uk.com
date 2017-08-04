@@ -26,7 +26,7 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	/**
 	 * author: HoangYen
 	 */
-	private final String FIND_BUSINESS_TYPE = "SELECT a FROM KrcmtBusinessType a WHERE a.kdwmtWorkTypePK.companyId = :companyId AND a.kdwmtWorkTypePK.businessTypeCode = :businessTypeCode"; 
+	private final String FIND_BUSINESS_TYPE = "SELECT a FROM KrcmtBusinessType a WHERE a.krcmtBusinessTypePK.companyId = :companyId AND a.krcmtBusinessTypePK.businessTypeCode = :businessTypeCode"; 
 	/**
 	 * author: HoangYen
 	 * change from domain to entity
@@ -81,7 +81,7 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	public Optional<BusinessType> findBusinessType(String companyId, String businessTypeCode) {
 		return this.queryProxy().query(FIND_BUSINESS_TYPE, KrcmtBusinessType.class)
 				.setParameter("companyId", companyId)
-				.setParameter("workTypeCode", businessTypeCode)
+				.setParameter("businessTypeCode", businessTypeCode)
 				.getSingle(c->toDomain(c));
 	}
 	/**
@@ -91,7 +91,7 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	@Override
 	public void deleteBusinessType(String companyId, String businessTypeCode) {
 		KrcmtBusinessTypePK krcmtBusinessTypePK = new KrcmtBusinessTypePK(companyId, businessTypeCode);
-		this.commandProxy().remove(KrcmtBusinessTypePK.class, krcmtBusinessTypePK);
+		this.commandProxy().remove(KrcmtBusinessType.class, krcmtBusinessTypePK);
 	}
 
 }
