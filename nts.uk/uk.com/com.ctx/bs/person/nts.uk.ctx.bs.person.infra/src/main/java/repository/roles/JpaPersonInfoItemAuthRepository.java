@@ -1,7 +1,6 @@
 package repository.roles;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -16,15 +15,14 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemDetail;
 @Stateless
 public class JpaPersonInfoItemAuthRepository extends JpaRepository implements PersonInfoItemAuthRepository {
 
-	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonItemAuth c";
-
 	private final String SEL_3 = " SELECT p.ppemtPersonItemAuthPk.roleId, p.ppemtPersonItemAuthPk.personInfoCategoryAuthId,"
 			+ " c.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " p.selfAuthType, p.otherPersonAuth, c.itemCd, c.itemName, c.abolitionAtr, c.requiredAtr,"
 			+ " CASE WHEN p.ppemtPersonItemAuthPk.personItemDefId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoItem c " + " LEFT JOIN PpemtPersonItemAuth p"
 			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = p.ppemtPersonItemAuthPk.personItemDefId"
-			+ " AND p.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
+			+ " AND p.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId"
+			+ " AND p.ppemtPersonItemAuthPk.roleId =:roleId";
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
 		PpemtPersonItemAuth entity = new PpemtPersonItemAuth();
@@ -83,9 +81,10 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	}
 
 	@Override
-	public List<PersonInfoItemDetail> getAllItemDetail(String personInfoCategoryAuthId) {
+	public List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personInfoCategoryAuthId) {
 		List<PersonInfoItemDetail> x = this.queryProxy().query(SEL_3, Object[].class)
-				.setParameter("personInfoCategoryAuthId", personInfoCategoryAuthId).getList(c -> toDomain(c));
+				.setParameter("personInfoCategoryAuthId", personInfoCategoryAuthId).setParameter("roleId", roleId)
+				.getList(c -> toDomain(c));
 		return x;
 	}
 

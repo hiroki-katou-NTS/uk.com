@@ -19,8 +19,8 @@ public class PersonInfoItemAuthFinder {
 	@Inject
 	private PersonInfoItemAuthRepository personItemAuthRepository;
 
-	public List<PersonInfoItemDetailDto> getAllItemDetail(String personCategoryAuthId) {
-		return this.personItemAuthRepository.getAllItemDetail(personCategoryAuthId).stream()
+	public List<PersonInfoItemDetailDto> getAllItemDetail(String roleId, String personCategoryAuthId) {
+		return this.personItemAuthRepository.getAllItemDetail(roleId, personCategoryAuthId).stream()
 				.map(item -> PersonInfoItemDetailDto.fromDomain(item)).collect(Collectors.toList());
 	}
 

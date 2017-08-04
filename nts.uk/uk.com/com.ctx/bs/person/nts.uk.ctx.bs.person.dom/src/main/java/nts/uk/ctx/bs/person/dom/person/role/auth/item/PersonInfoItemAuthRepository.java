@@ -1,11 +1,10 @@
 package nts.uk.ctx.bs.person.dom.person.role.auth.item;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PersonInfoItemAuthRepository {
 
-	List<PersonInfoItemDetail> getAllItemDetail(String personCategoryAuthId);
+	List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personCategoryAuthId);
 
 	void add(PersonInfoItemAuth domain);
 

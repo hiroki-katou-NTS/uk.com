@@ -19,10 +19,10 @@ public class PersonInfoItemAuthWebservice extends WebService {
 	PersonInfoItemAuthFinder personInfoItemAuthFinder;
 
 	@POST
-	@Path("findAllItem/{personInfoCategoryAuthId}")
-	public List<PersonInfoItemDetailDto> getAllItemDetail(
+	@Path("findAllItem/{roleId}/{personInfoCategoryAuthId}")
+	public List<PersonInfoItemDetailDto> getAllItemDetail(@PathParam("roleId") String roleId,
 			@PathParam("personInfoCategoryAuthId") String personInfoCategoryAuthId) {
-		return personInfoItemAuthFinder.getAllItemDetail(personInfoCategoryAuthId);
+		return personInfoItemAuthFinder.getAllItemDetail(roleId, personInfoCategoryAuthId);
 
 	}
 

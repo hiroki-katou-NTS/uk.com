@@ -50,7 +50,6 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		}
 		;
 		if (entity[5] != null) {
-
 			domain.setAllowPersonRef(Integer.valueOf(entity[5].toString()));
 		}
 		domain.setSetting(Boolean.valueOf(entity[6].toString()));
@@ -99,16 +98,17 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	@Override
-	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
-		return this.queryProxy().query(SEL_1, Object[].class).setParameter("roleId", roleId).getList(c -> toDomain(c));
-
+	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+		return this.queryProxy().query(SEL_1, PpemtPersonCategoryAuth.class)
+				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle(c -> {
+					return toDomain(c);
+				});
 	}
 
 	@Override
-	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
-		return this.queryProxy().query(SEL_2, PpemtPersonCategoryAuth.class)
-				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle(i -> {
-					return toDomain(i);
-				});
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
+		return this.queryProxy().query(SEL_2, Object[].class).setParameter("roleId", roleId).getList(c -> toDomain(c));
+
 	}
+
 }
