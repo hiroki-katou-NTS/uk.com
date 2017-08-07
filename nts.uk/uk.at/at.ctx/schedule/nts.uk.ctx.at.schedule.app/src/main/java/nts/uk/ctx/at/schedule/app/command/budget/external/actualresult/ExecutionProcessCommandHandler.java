@@ -88,8 +88,6 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     
     @Inject
     private StoredFileStreamService fileStreamService;
-    
-    private TaskDataSetter setter = new TaskDataSetter();
     private static final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
     private static final Integer OPEN_DIALOG = -990;
     private static final Integer INDEX_COLUMN_CODE = 0;
@@ -100,11 +98,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     protected String handle(CommandHandlerContext<ExecutionProcessCommand> context) {
         ExecutionProcessCommand command = context.getCommand();
         String employeeId = AppContexts.user().employeeId();
+        TaskDataSetter setter = new TaskDataSetter();
         // GUID
         String executeId = IdentifierUtil.randomUniqueId();
         AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
             this.fileCheckService.validFileFormat(command.getFileId());
             setter.setData("OPEN_DIALOG", OPEN_DIALOG);
+            setter.setData("SUCCESS_CNT", 0);
+            setter.setData("FAIL_CNT", 0);
             
             // register table LOG with status: IN_COMPLETE 
             GeneralDateTime dateTimeCurrent = GeneralDateTime.now();
@@ -134,14 +135,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
             importProcess.extractCondition = command;
             
             // begin process input file
-            this.processInput(importProcess);
+            this.processInput(importProcess, setter);
         });
         task.setDataSetter(setter);
         this.managedTaskService.execute(task);
         return task.getId();
     }
     
-    private void processInput(ImportProcess importProcess) {
+    private void processInput(ImportProcess importProcess, TaskDataSetter setter) {
         try {
             Charset charset = this.getCharset(importProcess.extractCondition.getEncoding());
             String newLineCode = this.getNewLineCode();
@@ -161,8 +162,8 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 Optional<ExternalBudgetLog> optional = this.extBudgetLogRepo.findExtBudgetLogByExecuteId(importProcess.executeId);
                 if (optional.isPresent()) {
                     ExternalBudgetLog log = optional.get();
-                    setter.setData("SUCCESS_CNT", log.getNumberSuccess());
-                    setter.setData("FAIL_CNT", log.getNumberFail());
+                    setter.updateData("SUCCESS_CNT", log.getNumberSuccess());
+                    setter.updateData("FAIL_CNT", log.getNumberFail());
                 }
             }
             this.updateLog(importProcess.executeId, CompletionState.DONE);
