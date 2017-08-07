@@ -54,7 +54,7 @@ table.bottom_tbl td {
 	width: 200px;	
 }
 .pad_top_5{
-	padding-top: 5px;
+	padding-top: 10px;
 }
 .style_caret.caret-bottom:after {
 	cursor: pointer;
@@ -65,4 +65,7 @@ table.bottom_tbl td {
 
 #contents-area {
 	overflow: hidden;
+}
+.bg-green-kdl-003 {
+	background-color: #C7F391;
 }

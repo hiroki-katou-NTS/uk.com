@@ -171,18 +171,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
 
-            // Reload calendar
-            self.setPatternRange().done(() => {
-                self.optionDates(self.getOptionDates());
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
-
-            // Save pattern reflection domain.
-            service.save(self.getDomainKey(), ko.toJS(self.patternReflection));
-
-            // Set focus control
-            $('#component-calendar-kcp006').focus();
+            $.when(self.setPatternRange(), // Set pattern's range
+                service.save(self.getDomainKey(), ko.toJS(self.patternReflection))) // Save pattern reflection domain.
+                .done(() => {
+                    self.optionDates(self.getOptionDates()); // Reload calendar
+                    $('#component-calendar-kcp006').focus(); // Set focus control
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
 
         }
 

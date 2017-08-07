@@ -69,7 +69,7 @@ public class JpaExternalBudgetDailySetMemento<T> implements ExternalBudgetDailyS
      */
     @Override
     public void setActualDate(Date processDate) {
-        this.entity.getKscdtExtBudgetDailyPK().setProcessD(GeneralDate.legacyDate(processDate));
+        this.entity.getKscdtExtBudgetDailyPK().setActualDate(GeneralDate.legacyDate(processDate));
     }
 
     /*

@@ -62,7 +62,7 @@ public class CompanyBasicWorkFinder {
 		CompanyBasicWorkFindDto outputData = new CompanyBasicWorkFindDto();
 		
 		// Find CompanyBasicWork By companyId
-		Optional<CompanyBasicWork> companyBasicWork = this.repository.findAll(companyId);// findAll!!
+		Optional<CompanyBasicWork> companyBasicWork = this.repository.findAll(companyId);
 
 		// Check null
 		if (!companyBasicWork.isPresent()) {
@@ -77,41 +77,48 @@ public class CompanyBasicWorkFinder {
 		// List worktypeCode
 		List<String> worktypeCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkTypeCode();
-		}).distinct().collect(Collectors.toList());
+		}).distinct().filter(a -> {
+			return a.length() > 0;
+		}).collect(Collectors.toList());
 		
+		if (worktypeCodeList.isEmpty()) {
+			return null;
+		}
 		// Find WorkType
 		List<WorkType> worktypeList = this.worktypeRepo.getPossibleWorkType(companyId, worktypeCodeList);
 				
 		// List workingCode
 		List<String> workingCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkingCode();
-		}).distinct().collect(Collectors.toList());
+		}).distinct().filter(a -> {
+			return a.length() > 0;
+		}).collect(Collectors.toList());
 		
 		// Find WorkTime
 		List<WorkTime> workingList = this.worktimeRepo.findByCodeList(companyId, workingCodeList);
 
-		basicWorkSettingFindDto.stream().forEach(item -> {
+		basicWorkSettingFindDto.stream().filter(a -> {
+			return a.getWorkTypeCode().length() > 0;
+		}).forEach(item -> {
 			// Get WorkType
-			WorkType worktype = worktypeList.stream().filter(a-> {
+			WorkType worktype = worktypeList.stream().filter(a -> {
 				return a.getWorkTypeCode().equals(item.getWorkTypeCode());
 			}).findFirst().orElse(null);
 			// Set WorkTypeDisplayName to Dto
 			if (worktype == null) {
 				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
-//				item.setWorkTypeDisplayName("Something's not right");
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
-			
+
 			// Get WorkTime
 			WorkTime worktime = workingList.stream().filter(wt -> {
 				return wt.getSiftCD().v().equals(item.getWorkingCode());
 			}).findFirst().orElse(null);
-			
+
 			// Set WorkingDisplayName
 			if (worktime == null) {
 				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
-//				item.setWorkingDisplayName("Something's not right");
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}

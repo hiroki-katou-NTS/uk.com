@@ -26,7 +26,7 @@ public class DailyPatternDetailDto implements DailyPatternSetMemento {
 	private String patternName;
 
 	/** The list daily pattern val. */
-	private List<DailyPatternValDto> listDailyPatternVal;
+	private List<DailyPatternValDto> dailyPatternVals;
 
 	/*
 	 * (non-Javadoc)
@@ -70,7 +70,7 @@ public class DailyPatternDetailDto implements DailyPatternSetMemento {
 	 */
 	@Override
 	public void setListDailyPatternVal(List<DailyPatternVal> setListDailyPatternVal) {
-		this.listDailyPatternVal = setListDailyPatternVal.stream()
+		this.dailyPatternVals = setListDailyPatternVal.stream()
 				.map(item -> new DailyPatternValDto(item.getDispOrder().v(),
 						item.getWorkTypeSetCd().v(), item.getWorkingHoursCd().v(),
 						item.getDays().v()))

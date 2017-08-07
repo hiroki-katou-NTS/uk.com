@@ -7,7 +7,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * @author yennth
+ * delete business type name command handler
+ */
 @Stateless
 public class DeleteBusinessTypeNameCommandHandler extends CommandHandler<DeleteBusinessTypeNameCommand>{
 	@Inject

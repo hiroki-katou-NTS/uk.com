@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div class="sidebar-content-header">
+			<span class="title">#{i18n.getText('Com_Company')}</span>
+			<span class="action-bar">
+			<button tabindex="1" class="proceed">#{i18n.getText('KSM001_1')}</button>
+			<button tabindex="2" class="danger" >#{i18n.getText('KSM001_2')}</button>
+			<button tabindex="3" >#{i18n.getText('KSM001_50')}</button>
+			<button tabindex="4" >#{i18n.getText('KSM001_51')}</button>
+			</span>
+		</div>
+		<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
+			<div class="lineContent">
+				<div class="lableContent" data-bind="ntsFormLabel: {required: true}">
+					<label>#{i18n.getText('KSM001_4')}</label>
+				</div>
+				<div id="comboTargetYear"
+					data-bind="ntsComboBox: {
+				options: lstTargetYear,
+				optionsValue: 'code',
+				visibleItemsCount: 5,
+				value: selectedTargetYear,
+				optionsText: 'name',
+				editable: false,
+				enable: true,
+				columns: [
+					{ prop: 'name', length: 6 }
+				]}"></div>
+			</div>
+			<br />
+			<div id="employmentSetting"></div>
+			
+			<br />
+			<div class="lineContent">
+				<div class="lableContent" data-bind="ntsFormLabel: {required: false}">
+					<label>#{i18n.getText('KSM001_21')}</label>
+				</div>
+			</div>
+			
+			<br />
+			<div tabindex="13" id="tab-panel-001" class="pull-left"
+				data-bind="ntsTabPanel: { dataSource: employmentTabs, active: selEmploymentTab}">
+				<div class="tab-content-1">
+					<div class="control-group">
+						<div class="pull-left">
+							<div data-bind="ntsFormLabel: {required: true}">
+								<label>#{i18n.getText('KSM001_4')}</label>
+							</div>
+						</div>
+						<div class="pull-left helpButton">
+							<button data-bind="ntsHelpButton: {image: 'image/test-image.png', position: 'right top', enable: true }">?</button>
+						</div>
+						<table class="border-all tbl-monthly">
+							<tr class="bg-dark-green">
+								<td>#{i18n.getText('KSM001_30')}</td>
+								<td>#{i18n.getText('KSM001_11')}</td>
+								<td>#{i18n.getText('KSM001_12')}</td>
+								<td>#{i18n.getText('KSM001_13')}</td>
+								<td>#{i18n.getText('KSM001_14')}</td>
+								<td>#{i18n.getText('KSM001_15')}</td>
+							</tr>
+							<tr data-bind="with: beginMonthly">
+								<td class="bg-green">#{i18n.getText('KSM001_16')}</td>
+								<td>
+									<input tabindex="18" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="19" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="20" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="21" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="22" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+							</tr>
+							<com:ko tag="foreach" bind="lstMonthly">
+								<tr>
+									<td class="bg-green">
+										<div data-bind="text: month+'月度'"></div>
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 22 + $index()*5}, 
+											ntsTimeEditor: {value: time001, inputFormat: 'time', 
+											mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 23 + $index()*5},
+											ntsTimeEditor: {value: time002, inputFormat: 'time', 
+											mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 24 + $index()*5}, 
+										ntsTimeEditor: {value: time003, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 25 + $index()*5}, 
+										ntsTimeEditor: {value: time004, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 26 + $index()*5}, 
+										ntsTimeEditor: {value: time005, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+								</tr>
+							</com:ko>
+						</table>
+					</div>
+				</div>
+				<div class="tab-content-2">
+					<div class="control-group">
+						<div class="pull-left">
+							<div data-bind="ntsFormLabel: {required: true}">
+								<label>#{i18n.getText('KSM001_29')}</label>
+							</div>
+						</div>
+						<div class="pull-left helpButton">
+							<button data-bind="ntsHelpButton: {image: 'image/test-image.png', position: 'right top', enable: true }">?</button>
+						</div>
+						<table class="border-all tbl-monthly">
+							<tr class="bg-dark-green">
+								<td>#{i18n.getText('KSM001_43')}</td>
+								<td>#{i18n.getText('KSM001_11')}</td>
+								<td>#{i18n.getText('KSM001_12')}</td>
+								<td>#{i18n.getText('KSM001_13')}</td>
+								<td>#{i18n.getText('KSM001_14')}</td>
+								<td>#{i18n.getText('KSM001_15')}</td>
+							</tr>
+							<tr data-bind="with: beginMonthly">
+								<td class="bg-green">#{i18n.getText('KSM001_31')}</td>
+								<td>
+									<input tabindex="82" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="83" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="84" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="85" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="86" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+							</tr>
+							<com:ko tag="foreach" bind="lstMonthly">
+								<tr>
+									<td class="bg-green">
+										<div data-bind="text: month+'月度'"></div>
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 87 + $index()*5}, 
+											ntsTimeEditor: {value: time001, inputFormat: 'time', 
+											mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 88 + $index()*5},
+											ntsTimeEditor: {value: time002, inputFormat: 'time', 
+											mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 89 + $index()*5}, 
+										ntsTimeEditor: {value: time003, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 90 + $index()*5}, 
+										ntsTimeEditor: {value: time004, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 91 + $index()*5}, 
+										ntsTimeEditor: {value: time005, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+								</tr>
+							</com:ko>
+						</table>
+					</div>
+				</div>
+				<div class="tab-content-3">
+					<div class="control-group">
+						<div class="pull-left">
+							<div data-bind="ntsFormLabel: {required: true}">
+								<label>#{i18n.getText('KSM001_29')}</label>
+							</div>
+						</div>
+						<div class="pull-left helpButton">
+							<button data-bind="ntsHelpButton: {image: 'image/test-image.png', position: 'right top', enable: true }">?</button>
+						</div>
+						<table class="border-all tbl-monthly">
+							<tr class="bg-dark-green">
+								<td>#{i18n.getText('KSM001_44')}</td>
+								<td>#{i18n.getText('KSM001_16')}</td>
+								<td>#{i18n.getText('KSM001_17')}</td>
+								<td>#{i18n.getText('KSM001_18')}</td>
+								<td>#{i18n.getText('KSM001_19')}</td>
+								<td>#{i18n.getText('KSM001_20')}</td>
+							</tr>
+							<tr data-bind="with: beginMonthly">
+								<td class="bg-green">#{i18n.getText('KSM001_31')}</td>
+								<td>
+									<input tabindex="147" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="148" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="149" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="150" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+								<td>
+									<input tabindex="151" 
+										data-bind=" ntsTimeEditor: {value: time001, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+								</td>
+							</tr>
+							<com:ko tag="foreach" bind="lstMonthly">
+								<tr>
+									<td class="bg-green">
+										<div data-bind="text: month+'月度'"></div>
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 152 + $index()*5}, 
+											ntsTimeEditor: {value: time001, inputFormat: 'time', 
+											mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 153 + $index()*5},
+											ntsTimeEditor: {value: time002, inputFormat: 'time', 
+											mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 154 + $index()*5}, 
+										ntsTimeEditor: {value: time003, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 155 + $index()*5}, 
+										ntsTimeEditor: {value: time004, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+									<td>
+										<input data-bind="attr: {'tabindex': 156 + $index()*5}, 
+										ntsTimeEditor: {value: time005, inputFormat: 'time', 
+										mode: 'time', required: true}" />
+									</td>
+								</tr>
+							</com:ko>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>

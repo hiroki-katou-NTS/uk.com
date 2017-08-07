@@ -4,15 +4,47 @@ module nts.uk.pr.view.ksu006.b {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             $('.countdown').downCount();
+            let taskId: string = nts.uk.ui.windows.getShared("taskId");
+            nts.uk.deferred.repeat(conf => conf
+            .task(() => {
+                let dfd = $.Deferred();
+                nts.uk.request.specials.getAsyncTaskInfo(taskId).done(function(res: any) {
+                    console.log(res);
+                    if (res.running) {
+                        _.forEach(res.taskDatas, item => {
+                            if (item.key == 'SUCCESS_CNT') {
+                                screenModel.numberSuccess(item.valueAsNumber);
+                            }
+                            if (item.key == 'FAIL_CNT') {
+                                screenModel.numberFail(item.valueAsNumber);
+                            }
+                        });
+                    }
+                    dfd.resolve(res);
+                });
+                return dfd.promise();
+            }).while(info => {
+                return info.pending || info.running;
+            })
+            .pause(1000))
+            .done(function(res: any) {
+                console.log(res.finishedAt);
+                if (res.finishedAt) {
+                    screenModel.isDone(true);
+                    $('.countdown').stop();
+                }
+            });
         });
     });
 }
 interface JQuery {
 
     downCount(options, callback);
+    stop(options, callback);
 }
 
 (function($: any) {
+    let interval;
     $.fn.downCount = function(options, callback) {
         let settings = $.extend({
             date: null,
@@ -101,6 +133,13 @@ interface JQuery {
         };
 
         // start
-        let interval = setInterval(countdown, 1000);
+        interval = setInterval(countdown, 1000);
+    };
+    
+    $.fn.stop = function(options, callback) {
+         clearInterval(interval);
     };
 } (jQuery));
+
+
+
