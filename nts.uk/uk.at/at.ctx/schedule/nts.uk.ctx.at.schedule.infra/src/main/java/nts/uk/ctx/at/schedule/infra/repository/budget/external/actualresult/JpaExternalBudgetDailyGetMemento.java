@@ -40,7 +40,8 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
      */
     @Override
     public ExternalBudgetVal<T> getActualValue() {
-        return new ExternalBudgetVal<T>(this.entity.getActualVal());
+        return null;
+//        return new ExternalBudgetVal<T>(this.entity.getActualVal());
     }
 
     /*
@@ -62,7 +63,7 @@ public class JpaExternalBudgetDailyGetMemento<T> implements ExternalBudgetDailyG
      */
     @Override
     public Date getActualDate() {
-        return this.entity.getKscdtExtBudgetDailyPK().getProcessD().date();
+        return this.entity.getKscdtExtBudgetDailyPK().getActualDate().date();
     }
 
     /*

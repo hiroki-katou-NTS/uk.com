@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,11 +24,11 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.AsyncTaskService;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.csv.NtsCsvReader;
@@ -91,9 +90,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private StoredFileStreamService fileStreamService;
     
     private TaskDataSetter setter = new TaskDataSetter();
-    
-    private static final List<String> FORMAT_DATES = Arrays.asList("yyyymmdd", "yyyy/m/d", "yyyy/mm/dd");
-    
+    private static final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
     private static final Integer OPEN_DIALOG = -990;
     private static final Integer INDEX_COLUMN_CODE = 0;
     private static final Integer INDEX_COLUMN_DATE = 1;
@@ -103,12 +100,11 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     protected String handle(CommandHandlerContext<ExecutionProcessCommand> context) {
         ExecutionProcessCommand command = context.getCommand();
         String employeeId = AppContexts.user().employeeId();
+        // GUID
+        String executeId = IdentifierUtil.randomUniqueId();
         AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
             this.fileCheckService.validFileFormat(command.getFileId());
-            setter.setData("startOpenDialog", OPEN_DIALOG);
-            
-            // GUID
-            String executeId = IdentifierUtil.randomUniqueId();
+            setter.setData("OPEN_DIALOG", OPEN_DIALOG);
             
             // register table LOG with status: IN_COMPLETE 
             GeneralDateTime dateTimeCurrent = GeneralDateTime.now();
@@ -120,8 +116,6 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                     .extBudgetCode(command.getExternalBudgetCode())
                     .extBudgetFileName(command.getFileName())
                     .completionState(CompletionState.INCOMPLETE)
-                    .numberSuccess(0)
-                    .numberFail(0)
                     .build();
             this.extBudgetLogRepo.add(extBudgetLogDto.toDomain());
             
@@ -141,7 +135,6 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
             
             // begin process input file
             this.processInput(importProcess);
-            
         });
         task.setDataSetter(setter);
         this.managedTaskService.execute(task);
@@ -163,6 +156,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                  */
                 importProcess.stopLine = false;
                 this.processLine(importProcess, csvRecordIterator.next());
+                
+                // respond status client
+                Optional<ExternalBudgetLog> optional = this.extBudgetLogRepo.findExtBudgetLogByExecuteId(importProcess.executeId);
+                if (optional.isPresent()) {
+                    ExternalBudgetLog log = optional.get();
+                    setter.setData("SUCCESS_CNT", log.getNumberSuccess());
+                    setter.setData("FAIL_CNT", log.getNumberFail());
+                }
             }
             this.updateLog(importProcess.executeId, CompletionState.DONE);
         } catch (IOException e) {
@@ -200,10 +201,10 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         try {
             switch (importProcess.externalBudget.getUnitAtr()) {
             case DAILY:
-                this.addExtBudgetDaily(importProcess, result.get(INDEX_BEGIN_COL_VALUE));
+                this.addExtBudgetDaily(importProcess, result);
                 break;
             case BYTIMEZONE:
-                this.addExtBudgetTime(importProcess, result.subList(INDEX_BEGIN_COL_VALUE, result.size()));
+                this.addExtBudgetTime(importProcess, result);
                 break;
             default:
                 throw new RuntimeException("Not unit atr suitable.");
@@ -217,65 +218,63 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         }
     }
     
-    private void addExtBudgetDaily(ImportProcess importProcess, String value) {
+    private void addExtBudgetDaily(ImportProcess importProcess, List<String> result) {
         ExternalBudgetDailyDto dto = ExternalBudgetDailyDto.builder()
-                .workplaceId("abc") // TODO: find workplace id by workplace code
+                .budgetAtr(importProcess.externalBudget.getBudgetAtr())
+                .workplaceId(result.get(INDEX_COLUMN_CODE)) // TODO: find workplace id by workplace code
                 .extBudgetCode(importProcess.extractCondition.getExternalBudgetCode())
                 .actualDate(importProcess.actualDate)
-                .actualValue(Long.parseLong(value))
+                .actualValue(Long.parseLong(result.get(INDEX_BEGIN_COL_VALUE)))
                 .build();
         switch (importProcess.externalBudget.getBudgetAtr()) {
         case TIME:
-            try {
             ExternalBudgetDaily<ExtBudgetTime> domainTime = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetDailyRepo.update(domainTime);
-            } else {
-                this.extBudgetDailyRepo.add(domainTime);
-            }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            this.saveDataDaily(importProcess, domainTime);
             break;
         case PEOPLE:
             ExternalBudgetDaily<ExtBudgetNumberPerson> domainPeople = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetDailyRepo.update(domainPeople);
-            } else {
-                this.extBudgetDailyRepo.add(domainPeople);
-            }
+            this.saveDataDaily(importProcess, domainPeople);
             break;
         case MONEY:
             ExternalBudgetDaily<ExtBudgetMoney> domainMoney = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetDailyRepo.update(domainMoney);
-            } else {
-                this.extBudgetDailyRepo.add(domainMoney);
-            }
+            this.saveDataDaily(importProcess, domainMoney);
             break;
         case NUMERICAL:
             ExternalBudgetDaily<ExtBudgetNumericalVal> domainNumerical = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetDailyRepo.update(domainNumerical);
-            } else {
-                this.extBudgetDailyRepo.add(domainNumerical);
-            }
+            this.saveDataDaily(importProcess, domainNumerical);
             break;
         case PRICE:
             ExternalBudgetDaily<ExtBudgetUnitPrice> domainPrice = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetDailyRepo.update(domainPrice);
-            } else {
-                this.extBudgetDailyRepo.add(domainPrice);
-            }
+            this.saveDataDaily(importProcess, domainPrice);
             break;
         default:
             throw new RuntimeException("Not budget atr suitable.");
         }
     }
     
-    private void addExtBudgetTime(ImportProcess importProcess, List<String> lstValue) {
+    private <T> void saveDataDaily (ImportProcess importProcess, ExternalBudgetDaily<T> domain) {
+        if (!this.extBudgetDailyRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
+                domain.getExtBudgetCode().v())) {
+            this.extBudgetDailyRepo.add(domain);
+            return;
+        }
+        if (importProcess.extractCondition.getIsOverride()) {
+            this.extBudgetDailyRepo.update(domain);
+            return;
+        }
+        // insert table ERROR with message id: Msg_167
+        ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
+                .executionId(importProcess.executeId)
+                .lineNo(importProcess.startLine)
+                .columnNo(0)
+                .errorContent(this.getMessageById("Msg_167"))
+                .build();
+        this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
+    }
+    
+    private void addExtBudgetTime(ImportProcess importProcess, List<String> result) {
         Map<Integer, Long> mapValue = new HashMap<>();
+        List<String> lstValue = result.subList(INDEX_BEGIN_COL_VALUE, result.size());
         for (int i=0; i<lstValue.size(); i++) {
             mapValue.put(i, Long.parseLong(lstValue.get(i)));
         }
@@ -288,47 +287,47 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         switch (importProcess.externalBudget.getBudgetAtr()) {
         case TIME:
             ExternalBudgetTimeZone<ExtBudgetTime> domainTime = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetTimeRepo.update(domainTime);
-            } else {
-                this.extBudgetTimeRepo.add(domainTime);
-            }
+            this.saveDataTime(importProcess, domainTime);
             break;
         case PEOPLE:
             ExternalBudgetTimeZone<ExtBudgetNumberPerson> domainPeople = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetTimeRepo.update(domainPeople);
-            } else {
-                this.extBudgetTimeRepo.add(domainPeople);
-            }
+            this.saveDataTime(importProcess, domainPeople);
             break;
         case MONEY:
             ExternalBudgetTimeZone<ExtBudgetMoney> domainMoney = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetTimeRepo.update(domainMoney);
-            } else {
-                this.extBudgetTimeRepo.add(domainMoney);
-            }
+            this.saveDataTime(importProcess, domainMoney);
             break;
         case NUMERICAL:
             ExternalBudgetTimeZone<ExtBudgetNumericalVal> domainNumerical = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetTimeRepo.update(domainNumerical);
-            } else {
-                this.extBudgetTimeRepo.add(domainNumerical);
-            }
+            this.saveDataTime(importProcess, domainNumerical);
             break;
         case PRICE:
             ExternalBudgetTimeZone<ExtBudgetUnitPrice> domainPrice = dto.toDomain();
-            if (importProcess.extractCondition.getIsOverride()) {
-                this.extBudgetTimeRepo.update(domainPrice);
-            } else {
-                this.extBudgetTimeRepo.add(domainPrice);
-            }
+            this.saveDataTime(importProcess, domainPrice);
             break;
         default:
             throw new RuntimeException("Not budget atr suitable.");
         }
+    }
+    
+    private <T> void saveDataTime (ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
+        if (!this.extBudgetTimeRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
+                domain.getExtBudgetCode().v())) {
+            this.extBudgetTimeRepo.add(domain);
+            return;
+        }
+        if (importProcess.extractCondition.getIsOverride()) {
+            this.extBudgetTimeRepo.update(domain);
+            return;
+        }
+        // insert table ERROR with message id: Msg_167
+        ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
+                .executionId(importProcess.executeId)
+                .lineNo(importProcess.startLine)
+                .columnNo(0)
+                .errorContent(this.getMessageById("Msg_167"))
+                .build();
+        this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
     }
     
     private void validDataLine(ImportProcess importProcess, List<String> result) {
@@ -346,7 +345,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         
         // Check actual value by primitive
         int idxValue = INDEX_BEGIN_COL_VALUE;
-        this.validActualVal(importProcess, result.subList(idxValue, result.size()));
+//        this.validActualVal(importProcess, result.subList(idxValue, result.size()));
     }
     private void validUnitAtr(ImportProcess importProcess, int numberColInput) {
         UnitAtr unitAtr = importProcess.externalBudget.getUnitAtr();
@@ -549,7 +548,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     
     private String getMessageById(String messageId) {
         String errorContent = messageId + " is not found.";
-        Optional<String> optional = internationalization.getRawMessage(messageId);
+        Optional<String> optional = this.internationalization.getRawMessage(messageId);
         if (optional.isPresent()) {
             errorContent = optional.get();
         }

@@ -39,15 +39,9 @@ module nts.uk.pr.view.ksu006.b {
                 self.numberFailDisplay = ko.computed(() => {
                     return nts.uk.resource.getText("KSU006_220", [self.numberFail()]);
                 });
-                
+                self.isDone = ko.observable(false);
                 self.isHasError = ko.computed(() => {
-                    if (self.numberFail() == 0) {
-                        return false;
-                    }
-                    return true;
-                });
-                self.isDone = ko.computed(() => {
-                    if (self.numberFail() + self.numberSuccess() == self.totalRecord()) {
+                    if (self.numberFail() == 0 && self.isDone()) {
                         return true;
                     }
                     return false;
@@ -63,10 +57,6 @@ module nts.uk.pr.view.ksu006.b {
                     { headerText: nts.uk.resource.getText("KSU006_212"), key: 'content', width: 300, dataType: 'string'}
                 ]);
                 self.rowSelected = ko.observable('');
-                
-                
-//                self.dialogStyle = {width: '520px', height: '400px'};
-                // self.dialogStyle = {width: '880px', height: '650px'};
             }
 
             public startPage(): JQueryPromise<any> {
@@ -83,11 +73,10 @@ module nts.uk.pr.view.ksu006.b {
                 }
                 return nts.uk.resource.getText("KSU006_214");
             }
-        }
-        
-        export class DialogStyle {
-            width: string;
-            height: string;
+            
+            public closeDialog() {
+                nts.uk.ui.windows.close();
+            }
         }
     }
 }

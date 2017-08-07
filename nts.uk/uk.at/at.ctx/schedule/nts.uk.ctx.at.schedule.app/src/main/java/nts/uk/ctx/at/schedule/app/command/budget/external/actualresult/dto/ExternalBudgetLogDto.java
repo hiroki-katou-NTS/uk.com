@@ -64,7 +64,7 @@ public class ExternalBudgetLogDto {
                 .extBudgetFileName(log.getExtBudgetFileName().v())
                 .completionState(log.getCompletionState())
                 .numberSuccess(log.getNumberSuccess())
-                .numberFail(log.getNumberSuccess())
+                .numberFail(log.getNumberFail())
                 .build();
     }
     
