@@ -5,28 +5,35 @@ module nts.uk.pr.view.ccg007.b {
         export class ScreenModel {
             loginId: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
-            parentLayoutId: KnockoutObservable<string>;
-            newTopPageCode: KnockoutObservable<string>;
-            newTopPageName: KnockoutObservable<string>;
-            isDuplicateCode: KnockoutObservable<boolean>;
-            check: KnockoutObservable<boolean>;
+            isSaveLoginInfo: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
                 self.loginId = ko.observable('');
                 self.password = ko.observable('');
+                self.isSaveLoginInfo = ko.observable(true);
             }
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 //get system config
-                service.getLoginForm().done(function(data: any) {
-                    if (data.showContract != "show contract") {
-                        self.loginId(data);
-                    }
-                    else {
-                        self.openContractAuthDialog();
-                    }
-                    dfd.resolve();
+                //TODO get local contract info
+                nts.uk.characteristics.restore("contractInfo").done(function(data) {
+                    service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(data: any) {
+                        if (data.showContract) {
+                            self.openContractAuthDialog();
+                        }
+                        else {
+                            //TODO get login ID and set here
+                            nts.uk.characteristics.restore("form1LoginInfo").done(function(loginInfo) {
+                                self.loginId(loginInfo.loginId);
+                            });
+                        }
+                        dfd.resolve();
+                    }).fail(function() {
+                        alert();
+                        dfd.resolve();
+                        //TODO システムエラー画面へ遷移する    
+                    });
                 }).fail(function() {
                     alert();
                     dfd.resolve();
@@ -39,8 +46,9 @@ module nts.uk.pr.view.ccg007.b {
             private openContractAuthDialog() {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ccg/007/a/index.xhtml", {
-                    height: 320, width: 400,
-                    title: "契約認証",
+                    height: 320,
+                    width: 500,
+                    title: nts.uk.resource.getText("CCG007_9"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                 });
@@ -48,9 +56,23 @@ module nts.uk.pr.view.ccg007.b {
 
             private submitLogin() {
                 var self = this;
-                service.submitLogin({ loginId: self.loginId(), password: self.password() }).done(function() {
-                    //TODO check login    
-                });
+                if (!nts.uk.ui.errors.hasError()) {
+                    service.submitLogin({ loginId: _.escape(self.loginId()), password: _.escape(self.password()) }).done(function() {
+                        nts.uk.characteristics.remove("form1LoginInfo");
+                        if (self.isSaveLoginInfo()) {
+                            nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                                nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                            });
+                        } else {
+                            //TODO confirm kiban team promise for remove
+                            setTimeout(function() {
+                                nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                            }, 1000);
+                        }
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    });
+                }
             }
         }
     }

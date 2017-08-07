@@ -40,17 +40,30 @@ module nts.uk.at.view.ksm003.a {
                 patternName: string;
             }
 
-            export interface DailyPatternDetailDto {
+            export class DailyPatternDetailDto {
                 patternCode: string;
                 patternName: string;
-                itemDailyPatternVal: Array<DailyPatternValDto>;
+                dailyPatternVals: Array<DailyPatternValDto>;
+                
+                constructor(patternCode: string, patternName: string, dailyPatternVals: Array<DailyPatternValDto>) {
+                    this.patternCode = patternCode;
+                    this.patternName = patternName;
+                    this.dailyPatternVals = dailyPatternVals;
+                }
             }
 
-            export interface DailyPatternValDto {
+            export class DailyPatternValDto {
                 dispOrder: number;
                 workTypeSetCd: string;
                 workingHoursCd: string;
                 days: number;
+
+                constructor(dispOrder: number, workTypeSetCd: string, workingHoursCd: string, days: number) {
+                    this.dispOrder = dispOrder;
+                    this.workTypeSetCd = workTypeSetCd;
+                    this.workingHoursCd = workingHoursCd;
+                    this.days = days;
+                }
             }
         }
     }

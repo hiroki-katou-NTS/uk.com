@@ -1,9 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.info.numericitem;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
 public enum NumericItemAmount {
 	//0:しない(no)
@@ -12,5 +10,5 @@ public enum NumericItemAmount {
 	//1:する(yes)
 	YES(1);
 	
-	private final int value;
+	public final int value;
 }

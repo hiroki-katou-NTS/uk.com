@@ -150,6 +150,27 @@ module nts.uk.ui.option {
         }
     }
     
+    // TimeWithDayAttr Editor Option
+    export interface ITimeWithDayAttrEditorOption{
+        timeWithDay: boolean;
+        placeholder?: string;
+        width?: string;
+        textalign?: string;
+    }
+    
+    export class TimeWithDayAttrEditorOption extends EditorOptionBase {
+        timeWithDay: boolean;
+        
+        constructor(option?: ITimeWithDayAttrEditorOption) {
+            super();
+            // Default value
+            this.timeWithDay = (option !== undefined && option.timeWithDay !== undefined) ? option.timeWithDay : true;
+            this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
+            this.width = (option !== undefined && option.width !== undefined ) ? option.width : "";
+            this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
+        }
+    }
+    
     export type TextMode = "text" | "password";
     export type FillDirection = "left" |"right";
     export type Currency = "JPY" | "USD";

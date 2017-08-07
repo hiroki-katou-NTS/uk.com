@@ -34,6 +34,222 @@ module nts.uk.ui.validation {
         }
     }
 
+    export class DepartmentCodeValidator implements IValidator {
+        name: string;
+        constraint: any;
+        charType: nts.uk.text.CharType;
+        required: boolean;
+
+        constructor(name: string, primitiveValueName: string, option?: any) {
+            this.name = name;
+            this.constraint = getConstraint(primitiveValueName);
+            this.charType = text.getCharType(primitiveValueName);
+            this.required = option.required;
+        }
+
+        validate(inputText: string, option?: any): ValidationResult {
+            var result = new ValidationResult();
+            // Check Required
+            if (this.required !== undefined && this.required !== false) {
+                if (util.isNullOrEmpty(inputText)) {
+                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
+                    return result;
+                }
+            }
+            let validateResult;
+            // Check CharType
+            result= checkCharType(inputText,this.charType);
+            if(!result.isValid) return result;
+            // Check Constraint
+            if (this.constraint !== undefined && this.constraint !== null) {
+                if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
+                    let maxLength = this.constraint.maxLength;
+                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
+                                [ this.name, maxLength ]), validateResult.errorCode);
+                    return result;
+                }
+                
+                if (!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
+                    if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                        result.fail('This field is not valid with pattern!', '');
+                        return result;
+                    }  
+                }
+            }
+            
+            result.success(inputText);
+            return result;
+        }
+    }
+    function checkCharType(inputText:string, charType: nts.uk.text.CharType):ValidationResult{
+        var result = new ValidationResult();
+        let validateResult;
+        if (!util.isNullOrUndefined(this.charType)) { 
+                inputText = autoConvertText(inputText, this.charType);
+                validateResult = this.charType.validate(inputText); 
+                if (!validateResult.isValid) {
+                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
+                                [ this.name, !util.isNullOrUndefined(this.constraint) 
+                                ? (!util.isNullOrUndefined(this.constraint.maxLength) 
+                                    ? this.constraint.maxLength : 9999) : 9999 ]), validateResult.errorCode);
+                    return result;
+                }
+            }
+          result.success(inputText);
+          return result;
+    }
+    function autoConvertText(inputText: string, charType:nts.uk.text.CharType):string{
+        if (this.charType.viewName === '半角英数字') {
+           inputText = text.toUpperCase(inputText);
+        } else if (this.charType.viewName === 'カタカナ') {
+           inputText = text.oneByteKatakanaToTwoByte(inputText);    
+        } else if (this.charType.viewName === 'カナ') {
+           inputText = text.hiraganaToKatakana(text.oneByteKatakanaToTwoByte(inputText));
+        }
+        return inputText;
+    }
+    export class WorkplaceCodeValidator implements IValidator {
+        name: string;
+        constraint: any;
+        charType: nts.uk.text.CharType;
+        required: boolean;
+
+        constructor(name: string, primitiveValueName: string, option?: any) {
+            this.name = name;
+            this.constraint = getConstraint(primitiveValueName);
+            this.charType = text.getCharType(primitiveValueName);
+            this.required = option.required;
+        }
+
+        validate(inputText: string, option?: any): ValidationResult {
+            var result = new ValidationResult();
+            // Check Required
+            if (this.required !== undefined && this.required !== false) {
+                if (util.isNullOrEmpty(inputText)) {
+                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
+                    return result;
+                }
+            }
+            let validateResult;
+            // Check CharType
+            result= checkCharType(inputText,this.charType);
+            if(!result.isValid) return result;
+            // Check Constraint
+            if (this.constraint !== undefined && this.constraint !== null) {
+                if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
+                    let maxLength = this.constraint.maxLength;
+                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
+                                [ this.name, maxLength ]), validateResult.errorCode);
+                    return result;
+                }
+                
+                if (!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
+                    if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                        result.fail('This field is not valid with pattern!', '');
+                        return result;
+                    }  
+                }
+            }
+            
+            result.success(inputText);
+            return result;
+        }
+    }
+    export class PostCodeValidator implements IValidator {
+        name: string;
+        constraint: any;
+        charType: nts.uk.text.CharType;
+        required: boolean;
+
+        constructor(name: string, primitiveValueName: string, option?: any) {
+            this.name = name;
+            this.constraint = getConstraint(primitiveValueName);
+            this.charType = text.getCharType(primitiveValueName);
+            this.required = option.required;
+        }
+
+        validate(inputText: string, option?: any): ValidationResult {
+            var result = new ValidationResult();
+            // Check Required
+            if (this.required !== undefined && this.required !== false) {
+                if (util.isNullOrEmpty(inputText)) {
+                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
+                    return result;
+                }
+            }
+            let validateResult;
+            // Check CharType
+            result= checkCharType(inputText,this.charType);
+            if(!result.isValid) return result;
+            // Check Constraint
+            if (this.constraint !== undefined && this.constraint !== null) {
+                if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
+                    let maxLength = this.constraint.maxLength;
+                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
+                                [ this.name, maxLength ]), validateResult.errorCode);
+                    return result;
+                }
+                
+                if (!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
+                    if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                        result.fail('This field is not valid with pattern!', '');
+                        return result;
+                    }  
+                }
+            }
+            
+            result.success(inputText);
+            return result;
+        }
+    }
+    export class PunchCardNoValidator implements IValidator {
+        name: string;
+        constraint: any;
+        charType: nts.uk.text.CharType;
+        required: boolean;
+
+        constructor(name: string, primitiveValueName: string, option?: any) {
+            this.name = name;
+            this.constraint = getConstraint(primitiveValueName);
+            this.charType = text.getCharType(primitiveValueName);
+            this.required = option.required;
+        }
+
+        validate(inputText: string, option?: any): ValidationResult {
+            var result = new ValidationResult();
+            // Check Required
+            if (this.required !== undefined && this.required !== false) {
+                if (util.isNullOrEmpty(inputText)) {
+                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
+                    return result;
+                }
+            }
+            let validateResult;
+            // Check CharType
+            result= checkCharType(inputText,this.charType);
+            if(!result.isValid) return result;
+            // Check Constraint
+            if (this.constraint !== undefined && this.constraint !== null) {
+                if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
+                    let maxLength = this.constraint.maxLength;
+                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
+                                [ this.name, maxLength ]), validateResult.errorCode);
+                    return result;
+                }
+                
+                if (!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
+                    if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                        result.fail('This field is not valid with pattern!', '');
+                        return result;
+                    }  
+                }
+            }
+            
+            result.success(inputText);
+            return result;
+        }
+    }
+        
     export class StringValidator implements IValidator {
         name: string;
         constraint: any;
@@ -296,6 +512,47 @@ module nts.uk.ui.validation {
                 }
                 
             }
+            return result;
+        }
+    }
+    
+    export class TimeWithDayValidator implements IValidator {
+        name: string;
+        constraint: any;
+        required: boolean; 
+        constructor(name: string, primitiveValueName: string, option?: any) {
+            this.name = name;
+            this.constraint = getConstraint(primitiveValueName);
+            this.required = (option && option.required) ? option.required : false;
+        }
+
+        validate(inputText: string): any {
+            var result = new ValidationResult();
+            inputText = time.TimeWithDayAttr.cutDayDivision(inputText);
+            // Check required
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required === true) {
+                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
+                    return result;
+                } else {
+                    result.success("");
+                    return result;
+                }
+            }
+            let minStr, maxStr;
+            if(!util.isNullOrUndefined(this.constraint)){
+                minStr = time.parseTime(this.constraint.min, true).format();
+                maxStr = time.parseTime(this.constraint.max, true).format();            
+            }
+            
+            let parseValue = time.parseTime(inputText);
+            
+            if (!parseValue.success || (parseValue.toValue() < this.constraint.min || parseValue.toValue() > this.constraint.max)) {
+                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]), "FND_E_TIME");     
+            } else {
+                result.success(parseValue.toValue());    
+            }
+            
             return result;
         }
     }

@@ -5,8 +5,8 @@ import lombok.Value;
 @Value
 public class BusinessTypeDto {
 	
-	private String workTypeCode;
+	private String businessTypeCode;
 	
-	private String workTypeName;
+	private String businessTypeName;
 
 }

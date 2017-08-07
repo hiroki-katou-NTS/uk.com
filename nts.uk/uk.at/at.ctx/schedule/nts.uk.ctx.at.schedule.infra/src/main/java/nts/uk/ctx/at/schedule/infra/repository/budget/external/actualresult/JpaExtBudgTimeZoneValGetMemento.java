@@ -48,7 +48,8 @@ public class JpaExtBudgTimeZoneValGetMemento<T> implements ExtBudgTimeZoneValGet
      */
     @Override
     public ExternalBudgetVal<T> getActualValue() {
-        return new ExternalBudgetVal<T>(this.entity.getActualVal());
+        return null;
+//        return new ExternalBudgetVal<T>(this.entity.getActualVal());
     }
 
 }

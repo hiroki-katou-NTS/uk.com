@@ -10,16 +10,24 @@ import lombok.Setter;
 public class PersonInfoCategoryDetail {
 	@Setter
 	@Getter
-	private String personInfoCategoryAuthId;
+	private String categoryId;
 	@Setter
 	@Getter
-	private String categoryId;
+	private String categoryCode;
 	@Setter
 	@Getter
 	private String categoryName;
 	@Setter
 	@Getter
 	private int categoryType;
+	@Setter
+	@Getter
+	private int allowPersonRef;
+	
+	@Setter
+	@Getter
+	private int allowOtherRef;
+	
 	@Setter
 	@Getter
 	private boolean isSetting;

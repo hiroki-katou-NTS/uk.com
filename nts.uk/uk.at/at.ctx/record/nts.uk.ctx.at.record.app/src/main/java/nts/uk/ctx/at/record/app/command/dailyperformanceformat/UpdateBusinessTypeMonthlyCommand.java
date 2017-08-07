@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeForm
 @NoArgsConstructor
 public class UpdateBusinessTypeMonthlyCommand {
 	
-	
 	private String businesstypeCode;
 
 	private List<BusinessTypeFormatDetailDto> workTypeFormatDetailDtos;

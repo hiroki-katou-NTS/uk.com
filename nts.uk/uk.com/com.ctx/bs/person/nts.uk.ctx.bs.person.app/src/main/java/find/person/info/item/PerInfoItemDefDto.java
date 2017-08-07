@@ -4,7 +4,7 @@ import lombok.Value;
 
 @Value
 public class PerInfoItemDefDto {
-	private String Id;
+	private String id;
 	private String perInfoCtgId;
 	private String itemCode;
 	private String itemName;

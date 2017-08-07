@@ -4,7 +4,7 @@
 
 #combo-box1 {
 	top: 2px;
-	margin-left: 20px
+	margin-left: 35px
 }
 
 #time-edit1 {
@@ -38,11 +38,11 @@
 }
 
 #combo-box1 {
-	min-width: 335px !important;
+	min-width: 310px !important;
 }
 
 #group-button {
-	margin-left: 240px;
+	margin-left: 265px;
 }
 
 #group-button>button:last-child {
@@ -56,8 +56,8 @@
 	margin-left: 10px;
 }
 
-#undo-button {
-	margin-right: 150px;
+#stick-undo {
+	margin-right: 180px;
 }
 
 .cf1 .nts-switch-button {

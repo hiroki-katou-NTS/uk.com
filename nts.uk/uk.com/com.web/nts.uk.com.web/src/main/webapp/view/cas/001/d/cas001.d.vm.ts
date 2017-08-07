@@ -1,63 +1,92 @@
 module nts.uk.com.view.cas001.d.viewmodel {
-    import windows = nts.uk.ui.windows;
+    import close = nts.uk.ui.windows.close;
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
 
     export class ScreenModel {
-        roleList: KnockoutObservableArray<any> = ko.observableArray([]);;
+        categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);;
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
+        currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole({ roleId: "99900000-0000-0000-0000-000000000001", roleCode: "0001", roleName: 'A1' }));
 
         constructor() {
             var self = this;
-            self.roleList.subscribe(data => {
+            self.categoryList.subscribe(data => {
                 if (data) {
                     $("#grid").igGrid("option", "dataSource", data);
                 }
             });
-            self.roleList([new PersonRole({ roleCode: "1", roleName: 'A2', selfAuth: true, otherAuth: true }), new PersonRole({ roleCode: '2', roleName: 'B', selfAuth: true, otherAuth: false })]);
+            self.start();
 
         }
+
+        start(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.categoryList.removeAll();
+            service.getAllCategory(self.currentRole().roleCode).done(function(data: Array<any>) {
+                console.log(data);
+                if (data.length > 0) {
+                    _.each(data, function(obj) {
+                        self.categoryList.push(new CategoryAuth({
+                            categoryId: obj.categoryId,
+                            categoryCode: obj.categoryCode,
+                            categoryName: obj.categoryName,
+                            selfAuth: obj.allowPersonRef == 1 ? true : false,
+                            otherAuth: obj.allowOtherRef == 1 ? true : false
+                        }));
+                    })
+                }
+
+            });
+
+            return dfd.promise();
+
+        }
+
         creatCategory() {
-            windows.close();
+            let self = this;
+
+            close();
         }
         closeDialog() {
-            windows.close();
+            close();
         }
     }
     interface IPersonRole {
+        roleId: string;
         roleCode: string;
         roleName: string;
-        selfAuth: boolean;
-        otherAuth: boolean;
     }
     export class PersonRole {
+        roleId: string;
         roleCode: string;
         roleName: string;
-        selfAuth: boolean;
-        otherAuth: boolean;
-        description: string;
 
         constructor(params: IPersonRole) {
+            this.roleId = params.roleId;
             this.roleCode = params.roleCode;
             this.roleName = params.roleName;
-            this.selfAuth = params.selfAuth;
-            this.otherAuth = params.otherAuth;
-            this.description = this.roleCode + this.roleName;
         }
     }
     interface ICategoryAuth {
+        categoryId: string;
         categoryCode: string;
         categoryName: string;
-        isSetting: boolean;
+        selfAuth?: boolean;
+        otherAuth?: boolean;
     }
     class CategoryAuth {
+        categoryId: string;
         categoryCode: string;
         categoryName: string;
-        isSetting: boolean;
+        selfAuth: boolean;
+        otherAuth: boolean;
         constructor(param: ICategoryAuth) {
+            this.categoryId = param.categoryId;
             this.categoryCode = param.categoryCode;
             this.categoryName = param.categoryName;
-            this.isSetting = param.isSetting || false;
+            this.selfAuth = param.selfAuth;
+            this.otherAuth = param.otherAuth;
         }
     }
 }

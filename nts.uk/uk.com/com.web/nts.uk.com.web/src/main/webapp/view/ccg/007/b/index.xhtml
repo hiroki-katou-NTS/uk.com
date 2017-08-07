@@ -12,28 +12,73 @@
 			<com:scriptfile path="ccg007.b.start.js" />
 			<com:scriptfile path="ccg007.b.service.js" />
 			<com:scriptfile path="ccg007.b.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.gateway.dom.login.LoginId
+				nts.uk.ctx.sys.gateway.dom.login.RawPassword
+  			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
-				<div data-bind="text: '#{i18n.getText('CCG007_4')}'"></div>
-				<div>
-					<input
-						data-bind="ntsTextEditor: {
-							value: loginId,
-							required: true,
-							enable: true,
-							readonly: false}" />
+			<div style="background-color: lightblue;" id="contents-area">
+				<div style="position: relative; top: 30%; margin: 0 auto auto 45%;">
+					<table>
+						<tr>
+							<td colspan="2"><img src="CCG007_001.png" /></td>
+						</tr>
+						<tr>
+							<td colspan="2"><div class="pad_5"
+									data-bind="text: '#{i18n.getText('CCG007_4')}'"></div></td>
+						</tr>
+						<tr>
+							<td><img alt="" src="26.png" /></td>
+							<td><div class="pad_5">
+									<input tabindex="1" id="login-id-inp"
+										data-bind="ntsTextEditor: {
+											name: '#{i18n.getText('CCG007_4')}',
+											value: loginId,
+											required: false,
+											constraint: 'LoginId',
+											option: {textmode: 'text',width: '200px'}, 
+											enable: true,
+											readonly: false}" />
+								</div></td>
+						</tr>
+						<tr>
+							<td colspan="2"><div class="pad_5"
+									data-bind="text: '#{i18n.getText('CCG007_2')}'"></div></td>
+						</tr>
+						<tr>
+							<td><img alt="" src="72.png" /></td>
+							<td><div class="pad_5">
+									<input tabindex="2"
+										data-bind="ntsTextEditor: {
+											name: '#{i18n.getText('CCG007_2')}',
+											value: password,
+											required: false,
+											constraint: 'RawPassword',
+											option: {textmode: 'password',width: '200px'},
+											enable: true,
+											readonly: false}" />
+								</div></td>
+						</tr>
+						<tr>
+							<td><div tabindex="3"
+									data-bind="ntsCheckBox: { checked: isSaveLoginInfo}"></div></td>
+							<td><label data-bind="text: '#{i18n.getText('CCG007_5')}'"></label></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="align_center"><div class="pad_5">
+									<button tabindex="4" data-bind="click: submitLogin"
+										class="full_width proceed large">
+										<span data-bind="text: '#{i18n.getText('CCG007_3')}'"></span>
+									</button>
+								</div></td>
+						</tr>
+						<tr>
+							<td class="align_center" colspan="2"><a tabindex="4" class="hyperlink"
+								href="#" data-bind="text: '#{i18n.getText('CCG007_6')}'"></a></td>
+						</tr>
+					</table>
 				</div>
-				<div data-bind="text: '#{i18n.getText('CCG007_2')}'"></div>
-				<div>
-					<input
-						data-bind="ntsTextEditor: {
-							value: password,
-							required: true,
-							enable: true,
-							readonly: false}" />
-				</div>
-				<button data-bind="click: openContractAuthDialog" class="proceed">ログイン</button>
 			</div>
 		</ui:define>
 	</ui:composition>

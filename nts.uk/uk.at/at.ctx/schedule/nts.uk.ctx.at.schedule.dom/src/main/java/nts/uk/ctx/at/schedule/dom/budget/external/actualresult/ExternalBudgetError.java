@@ -19,9 +19,9 @@ public class ExternalBudgetError extends AggregateRoot {
     // エラー内容
     private ExtBudgetErrorContent errorContent;
     
-    /** The number column. */
+    /** The column no. */
     // 列番号
-    private int numberColumn;
+    private int columnNo;
     
     /** The actual value. */
     // 受入値
@@ -39,9 +39,9 @@ public class ExternalBudgetError extends AggregateRoot {
     // 実行ID
     private String executionId;
     
-    /** The number line. */
+    /** The line no. */
     // 行番号
-    private int numberLine;
+    private int lineNo;
     
     /**
      * Instantiates a new external budget error.
@@ -51,12 +51,12 @@ public class ExternalBudgetError extends AggregateRoot {
     public ExternalBudgetError(ExternalBudgetErrorGetMemento memento) {
         super();
         this.errorContent = memento.getErrorContent();
-        this.numberColumn = memento.getNumberColumn();
+        this.columnNo = memento.getColumnNo();
         this.actualValue = memento.getActualValue();
         this.acceptedDate = memento.getAcceptedDate();
         this.workplaceCode = memento.getWorkPlaceCode();
         this.executionId = memento.getExecutionId();
-        this.numberLine = memento.getNumberLine();
+        this.lineNo = memento.getLineNo();
     }
     
     /**
@@ -66,11 +66,11 @@ public class ExternalBudgetError extends AggregateRoot {
      */
     public void saveToMemento(ExternalBudgetErrorSetMemento memento) {
         memento.setErrorContent(this.errorContent);
-        memento.setNumberColumn(this.numberColumn);
+        memento.setColumnNo(this.columnNo);
         memento.setActualValue(this.actualValue);
         memento.setAcceptedDate(this.acceptedDate);
         memento.setWorkPlaceCode(this.workplaceCode);
         memento.setExecutionId(this.executionId);
-        memento.setNumberLine(this.numberLine);
+        memento.setLineNo(this.lineNo);
     }
 }

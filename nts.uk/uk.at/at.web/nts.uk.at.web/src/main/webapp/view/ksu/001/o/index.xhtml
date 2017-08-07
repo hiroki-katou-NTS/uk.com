@@ -21,7 +21,7 @@
 			<div id="group-button">
 				<button>#{i18n.getText('KSU001_69')}</button>
 				<button>#{i18n.getText('KSU001_70')}</button>
-				<button id="undo-button">
+				<button id="stick-undo">
 					<img src="undo.png" style="width: 15px;" />
 				</button>
 				<button></button>
@@ -29,27 +29,9 @@
 		</div>
 		<div id="set-work-time">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
-			<input id="time-edit1" data-name="Time Editor"
-				data-bind="ntsTimeEditor: {
-										name: 'Duration', 
-										constraint: 'SampleTimeDuration',
-										value: time1, 
-										inputFormat: 'time1', 
-										mode: 'time1', 
-										enable: true, 
-										required: true}"
-				class="nts-editor nts-input reset-element"></input><span
-				id="spelcial">~</span> <input id="time-edit2"
-				data-name="Time Editor"
-				data-bind="ntsTimeEditor: {
-										name: 'Duration', 
-										constraint: 'SampleTimeDuration',
-										value: time2, 
-										inputFormat: 'time2', 
-										mode: 'time2', 
-										enable: true, 
-										required: true}"
-				class="nts-editor nts-input reset-element"></input>
+			<input id="time-edit1" data-bind="ntsTimeEditor: {value: time1, inputFormat: 'time'}" /> 
+			<span id="spelcial">~</span> 
+			<input id="time-edit2" data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
 			<!-- KSU001_67 -->
 			<button class="reserved">#{i18n.getText('検索')}</button>
 			<!-- KSU001_68 -->
