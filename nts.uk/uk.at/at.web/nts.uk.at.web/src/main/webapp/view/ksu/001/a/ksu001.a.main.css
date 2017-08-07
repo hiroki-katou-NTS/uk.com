@@ -1,17 +1,21 @@
-.color-pink {
-	background-color: #FFB9B9 !important;
+.extable .xheader td.color-pink {
+	background-color: #FFB9B9;
 }
 
-.color-blue {
-	background-color: #8BD8FF !important;
+.extable .xheader td.color-blue {
+	background-color: #8BD8FF;
 }
 
-.text-color-red {
-	color: red !important;
+.extable td.text-color-red {
+	color: red ;
 }
 
-.text-color-blue {
-	color: blue !important;
+.extable td.text-color-blue {
+	color: blue ;
+}
+
+.text-align-center {
+	text-align: center;
 }
 
 #extable {

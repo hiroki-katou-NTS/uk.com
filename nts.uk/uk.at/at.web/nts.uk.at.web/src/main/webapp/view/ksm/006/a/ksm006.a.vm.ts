@@ -616,8 +616,14 @@ module nts.uk.at.view.ksm006.a {
                 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
                     var childData = nts.uk.ui.windows.getShared('childData');
+//                    self.worktypeCode(childData.selectedWorkTypeCode);
                     self.worktypeCode('003');
-                    self.workingCode('003');
+                    if (childData.selectedWorkTimeCode == '000') {
+                        self.workingCode(null);
+                    } else {
+//                        self.workingCode(childData.selectedWorkTimeCode);
+                        self.workingCode('003');
+                    }
 //                    self.worktypeDisplayName(childData.selectedWorkTypeName);
 //                    self.workingDisplayName(childData.selectedWorkTimeName);
                 });

@@ -8,6 +8,10 @@
 	margin-left: 25px !important;
 }
 
+#A1_002 {
+	margin-left: 100px !important;
+}
+
 #functions-area button {
 	width: 70px;
 }
@@ -24,6 +28,10 @@
 
 #A2_001_container {
 	margin-left: 15px;
+}
+
+#A2_001_container col:FIRST-CHILD {
+	width: 20px !important;
 }
 
 #content-left>.caret-bottom:after {
@@ -58,6 +66,7 @@
 
 .auth_table td {
 	background: white;
+	height: 34px;
 }
 
 #roleAuTable td {
@@ -81,7 +90,7 @@
 }
 
 #file_permission_settings_cover {
-	width: 820px;
+	width: 835px;
 }
 
 #file_permission_settings {
@@ -111,11 +120,11 @@
 	margin-left: 10px;
 }
 
-#auth_of_info_selected_all {
+.selected_all_auth {
 	display: block;
 }
 
-#auth_of_info_selected_all .nts-switch-button {
+.selected_all_auth .nts-switch-button {
 	width: 70px;
 	margin-left: 5px;
 }

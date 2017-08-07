@@ -30,73 +30,25 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
-									<li><a href="#tabs-methods">Methods</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: enable, width: 200}"/>]]></pre>
-									<h2>API</h2>
-									<table>
-										<colgroup>
-											<col width="200px" />
-										</colgroup>
-										<thead>
-											<tr>
-												<th><h4>Binding</h4></th>
-												<th><h4>Description</h4></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>value</td>
-												<td>
-													<b>Type:</b> string<br/>
-													color value (example: '#000000')
-												</td>
-											</tr>
-											<tr>
-												<td>width<br/><i>(optional)</i></td>
-												<td>
-													<b>Type:</b> string<br/>
-													width of color picker
-												</td>
-											</tr>
-											<tr>
-												<td>enable</td>
-												<td>
-													<b>Type:</b> boolean<br/>
-													enable for color picker
-												</td>
-											</tr>
-										</tbody>
-									</table>
+<pre><![CDATA[<button data-bind="ntsLegendButton: legendOptions"></button>]]></pre>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
-        value: KnockoutObservable<string>;
-        enable: KnockoutObservable<boolean>;
-        
-        constructor() {
-            var self = this;
-            
-            self.value = ko.observable('');
-            self.enable = ko.observable(true);
+    legendOptions: any;
+    constructor() {
+        this.legendOptions = {
+            items: [
+                { colorCode: '#ff0000', labelText: 'RED' },
+                { colorCode: '#00AA00', labelText: 'GREEN' },
+                { colorCode: '#0000FF', labelText: 'BLUE' }
+            ]
         }
-    }]]></pre>
-								</div>
-								<div id="tabs-methods" class="cf">
-									<table>
-										<colgroup>
-											<col width="350px" />
-										</colgroup>
-										<thead>
-											<tr>
-												<th><h4>Methods</h4></th>
-												<th><h4>Description</h4></th>
-											</tr>
-										</thead>
-									</table>
+    }
+}]]></pre>
 								</div>
 							</div>
 						</article>

@@ -7,6 +7,7 @@ module nts.uk.at.view.ksu006.a {
             findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
             
             findDataPreview: "at/schedule/budget/external/find/preview",
+            executeImportFile: "at/schedule/budget/external/import/execute",
         };
         
         export function findExternalBudgetList(): JQueryPromise<any> {
@@ -23,6 +24,18 @@ module nts.uk.at.view.ksu006.a {
         
         export function findDataPreview(extractCondition: any): JQueryPromise<model.DataPreviewModel> {
             return nts.uk.request.ajax(servicePath.findDataPreview, extractCondition);
+        }
+        
+        export function executeImportFile(command: any): JQueryPromise<any> {
+            let dfd = $.Deferred();
+            nts.uk.request.ajax(servicePath.executeImportFile, command).then((taskId: any) => {
+                dfd.resolve(taskId);
+            }).done((res: any) => {
+                dfd.resolve(res);
+            }).fail(res => {
+                dfd.reject(res);
+            });
+            return dfd.promise();
         }
         
         
@@ -43,11 +56,13 @@ module nts.uk.at.view.ksu006.a {
             }
             
             export class DataPreviewModel {
+                isDailyUnit: boolean;
                 data: Array<ExternalBudgetValueModel>;
                 totalRecord: number;
                 
-                constructor(data: Array<ExternalBudgetValueModel>, totalRecord: number) {
+                constructor(isDailyUnit: boolean, data: Array<ExternalBudgetValueModel>, totalRecord: number) {
                     let self = this;
+                    self.isDailyUnit = isDailyUnit;
                     self.data = data;
                     self.totalRecord = totalRecord;
                 }

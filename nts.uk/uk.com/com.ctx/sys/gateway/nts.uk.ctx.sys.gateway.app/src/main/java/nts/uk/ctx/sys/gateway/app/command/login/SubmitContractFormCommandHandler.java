@@ -35,7 +35,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	}
 
 	private void contractAccAuth(String contractCode, String password) {
-		Optional<Contract> contract = contractRepository.getContract();
+		Optional<Contract> contract = contractRepository.getContract(contractCode);
 		if (contract.isPresent()) {
 			this.checkPassword(contract, password);
 			this.checkTime(contract);
@@ -45,14 +45,13 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	}
 
 	private void checkTime(Optional<Contract> contract) {
-		if (contract.get().getContractPeriod().getStartDate().before(GeneralDate.today())
-				|| contract.get().getContractPeriod().getEndDate().after(GeneralDate.today())) {
+		if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today()) || contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
 			throw new BusinessException("#Msg_315");
 		}
 	}
 
 	private void checkPassword(Optional<Contract> contract, String password) {
-		if (!contract.get().getClass().equals(password)) {
+		if (!contract.get().getPassword().v().equals(password)) {
 			throw new BusinessException("#Msg_302");
 		}
 	}

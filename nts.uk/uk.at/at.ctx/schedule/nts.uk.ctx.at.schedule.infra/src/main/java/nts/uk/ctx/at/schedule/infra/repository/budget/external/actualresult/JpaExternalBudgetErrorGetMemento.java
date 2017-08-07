@@ -45,7 +45,7 @@ public class JpaExternalBudgetErrorGetMemento implements ExternalBudgetErrorGetM
      * @return the number column
      */
     @Override
-    public int getNumberColumn() {
+    public int getColumnNo() {
         return this.entity.getKscdtExtBudgetErrorPK().getColumnNo();
     }
 
@@ -95,7 +95,7 @@ public class JpaExternalBudgetErrorGetMemento implements ExternalBudgetErrorGetM
      * @return the number line
      */
     @Override
-    public int getNumberLine() {
+    public int getLineNo() {
         return this.entity.getKscdtExtBudgetErrorPK().getLineNo();
     }
 

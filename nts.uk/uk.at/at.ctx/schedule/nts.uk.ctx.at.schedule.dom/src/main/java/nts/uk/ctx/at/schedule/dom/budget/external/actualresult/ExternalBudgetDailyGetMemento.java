@@ -30,11 +30,11 @@ public interface ExternalBudgetDailyGetMemento<T> {
     ExternalBudgetCd getExtBudgetCode();
 
     /**
-     * Gets the process date.
+     * Gets the actual date.
      *
-     * @return the process date
+     * @return the actual date
      */
-    Date getProcessDate();
+    Date getActualDate();
 
     /**
      * Gets the workplace id.

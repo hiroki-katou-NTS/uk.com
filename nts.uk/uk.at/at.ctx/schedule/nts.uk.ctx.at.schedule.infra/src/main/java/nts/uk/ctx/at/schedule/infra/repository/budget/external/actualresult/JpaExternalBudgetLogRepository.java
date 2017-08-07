@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -42,6 +43,43 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
     @Override
     public void add(ExternalBudgetLog domain) {
         this.commandProxy().insert(this.toEntity(domain));
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetLogRepository#update(nts.uk.ctx.at.schedule.dom.budget.
+     * external.actualresult.ExternalBudgetLog)
+     */
+    @Override
+    public void update(ExternalBudgetLog domain) {
+        this.commandProxy().update(this.toEntity(domain));
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetLogRepository#findExtBudgetLogByExecuteId(java.lang.String)
+     */
+    @Override
+    public Optional<ExternalBudgetLog> findExtBudgetLogByExecuteId(String executeId) {
+        EntityManager em = this.getEntityManager();
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KscdtExtBudgetLog> query = builder.createQuery(KscdtExtBudgetLog.class);
+        Root<KscdtExtBudgetLog> root = query.from(KscdtExtBudgetLog.class);
+
+        List<Predicate> predicateList = new ArrayList<>();
+
+        predicateList.add(builder.equal(root.get(KscdtExtBudgetLog_.exeId), executeId));
+
+        query.where(predicateList.toArray(new Predicate[] {}));
+
+        return em.createQuery(query).getResultList().stream()
+                .map(entity -> new ExternalBudgetLog(new JpaExternalBudgetLogGetMemento((KscdtExtBudgetLog) entity)))
+                .findFirst();
     }
 
     /*
@@ -87,7 +125,11 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
      * @return the kbldt ext budget log
      */
     private KscdtExtBudgetLog toEntity(ExternalBudgetLog domain) {
+        Optional<KscdtExtBudgetLog> optional = this.queryProxy().find(domain.getExecutionId(), KscdtExtBudgetLog.class);
         KscdtExtBudgetLog entity = new KscdtExtBudgetLog();
+        if (optional.isPresent()) {
+            entity = optional.get();
+        }
         JpaExternalBudgetLogSetMemento memento = new JpaExternalBudgetLogSetMemento(entity);
         domain.saveToMemento(memento);
         return entity;
@@ -107,4 +149,5 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
         }
         return GeneralDateTime.ymdhms(dateTime.year(), dateTime.month(), dateTime.day(), hour, minute, second);
     }
+
 }

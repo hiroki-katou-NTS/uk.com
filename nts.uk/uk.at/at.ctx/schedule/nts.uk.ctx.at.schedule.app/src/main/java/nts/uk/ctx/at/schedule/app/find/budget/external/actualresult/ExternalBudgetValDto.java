@@ -17,8 +17,7 @@ public class ExternalBudgetValDto {
     public String date;
     
     /** The list value. */
-    @SuppressWarnings("rawtypes")
-    public List listValue;
+    public List<String> listValue;
     
     /**
      * New external budget val.
@@ -28,8 +27,7 @@ public class ExternalBudgetValDto {
      * @param listValue the list value
      * @return the external budget val dto
      */
-    @SuppressWarnings("rawtypes")
-    public static ExternalBudgetValDto newExternalBudgetVal(String code, String date, List listValue) {
+    public static ExternalBudgetValDto newExternalBudgetVal(String code, String date, List<String> listValue) {
         ExternalBudgetValDto dto = new ExternalBudgetValDto();
         dto.setCode(code);
         dto.setDate(date);
