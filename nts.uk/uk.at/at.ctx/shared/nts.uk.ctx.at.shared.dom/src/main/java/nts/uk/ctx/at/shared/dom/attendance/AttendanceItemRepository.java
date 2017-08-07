@@ -10,5 +10,7 @@ public interface AttendanceItemRepository {
 	 * @return
 	 */
 	List<AttendanceItem> getPossibleAttendanceItems(String companyId, List<Integer> lstPossible);
+	
+	List<AttendanceItem> getAttendanceItems(String companyId, int useAtr);
 
 }
