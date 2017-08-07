@@ -194,11 +194,12 @@
 									height: 250,
 									name: '#[CPS005_28]',
 									dataSource: currentCtgSelected().itemNameList,
-									primaryKey: '',
+									primaryKey: 'itemName',
 									columns: [
 	                					 { headerText: '#{i18n.getText('CPS005_13')}', key: 'itemName', width: 280 }, 
 									],
 									value: ko.observable(),
+									multiple: false,
 									enable: false,
 								}">
 							</table>

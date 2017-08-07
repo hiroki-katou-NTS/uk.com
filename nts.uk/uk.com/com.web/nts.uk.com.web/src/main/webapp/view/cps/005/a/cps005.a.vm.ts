@@ -71,10 +71,6 @@ module nts.uk.com.view.cps005.a {
                 if (textUK.isNullOrEmpty(newId)) return;
                 new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
                     self.currentCtgSelected(new PerInfoCtgModel(data));
-                    self.currentCtgSelected().fixedIsSelected(false);
-                    if (self.currentCtgSelected().fixedAtr == true) {
-                        self.currentCtgSelected().fixedIsSelected(true);
-                    }
                 });
             });
         }
@@ -85,7 +81,6 @@ module nts.uk.com.view.cps005.a {
         id: string = "";
         categoryName: string = "";
         perInfoCtgName: KnockoutObservable<string> = ko.observable("");
-        fixedAtr: boolean;
         historyFixedName: string = "";
         categoryType: number = 1;
         categoryTypeName: string = "";
@@ -93,17 +88,16 @@ module nts.uk.com.view.cps005.a {
         // historyTypesSelected and singleMulTypeSelected == categoryType
         historyTypesSelected: KnockoutObservable<number> = ko.observable(1);
         singleMulTypeSelected: KnockoutObservable<number> = ko.observable(1);
+        itemNameList: KnockoutObservableArray<PerInfoItemModel> = ko.observableArray([]);
         //all visiable
         historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(false);
         fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
-        itemNameList: KnockoutObservableArray<PerInfoItemModel> = ko.observableArray([]);
         constructor(data: IPersonInfoCtg) {
             let self = this;
             if (data) {
                 self.id = data.id || "";
                 self.categoryName = data.categoryName || "";
                 self.perInfoCtgName(data.categoryName || "");
-                self.fixedAtr = data.fixedAtr == 1 ? true : false;
                 self.itemNameList(_.map(data.itemNameList, item => { return new PerInfoItemModel(item) }));
                 self.historyFixedName = (data.categoryType == 1 || data.categoryType == 2) ? nts.uk.resource.getText("CPS005_54") : nts.uk.resource.getText("CPS005_53");
                 self.categoryType = data.categoryType;
@@ -131,7 +125,7 @@ module nts.uk.com.view.cps005.a {
                     self.singleMulTypeSelected(1);
                     self.historyTypesDisplay(true);
                 }
-                self.fixedIsSelected(self.fixedAtr);
+                self.fixedIsSelected(data.isFixed == 1 ? true : false);
             }
             //subscribe select history type (1: history, 2: not history)
             self.historyClassSelected.subscribe(newHisClassification => {
@@ -160,7 +154,7 @@ module nts.uk.com.view.cps005.a {
     interface IPersonInfoCtg {
         id: string;
         categoryName: string;
-        fixedAtr?: number;
+        isFixed?: number;
         categoryType?: number;
         itemNameList?: Array<string>;
     }

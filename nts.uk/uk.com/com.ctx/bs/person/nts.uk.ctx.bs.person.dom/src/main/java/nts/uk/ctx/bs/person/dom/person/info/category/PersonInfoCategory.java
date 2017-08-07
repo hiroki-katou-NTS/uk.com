@@ -17,20 +17,19 @@ public class PersonInfoCategory extends AggregateRoot {
 	private CategoryType categoryType;
 	private IsFixed isFixed;
 
-	private PersonInfoCategory(String companyId, String categoryCode, String categoryParentCode, String categoryName,
-			int personEmployeeType, int isAbolition, int categoryType, int isFixed) {
+	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType) {
 		super();
 		this.personInfoCategoryId = IdentifierUtil.randomUniqueId();
 		this.companyId = companyId;
 		this.categoryCode = new CategoryCode(categoryCode);
-		this.categoryParentCode = new CategoryCode(categoryParentCode);
+		this.categoryParentCode = null;
 		this.categoryName = new CategoryName(categoryName);
-		this.personEmployeeType = EnumAdaptor.valueOf(personEmployeeType, PersonEmployeeType.class);
-		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.personEmployeeType = PersonEmployeeType.EMPLOYEE;
+		this.isAbolition = IsAbolition.NOT_ABOLITION;
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
-		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.isFixed = IsFixed.NOT_FIXED;
 	}
-
+	
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
 			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
 			int isFixed) {
@@ -44,12 +43,9 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 	}
-
-	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode,
-			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
-			int isFixed) {
-		return new PersonInfoCategory(companyId, categoryCode, categoryParentCode, categoryName, personEmployeeType,
-				isAbolition, categoryType, isFixed);
+	
+	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName, int categoryType) {
+		return new PersonInfoCategory(companyId, categoryCode, categoryName, categoryType);
 	}
 
 	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
