@@ -7,7 +7,7 @@ module nts.uk.at.view.ksu006.a {
             findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
             
             findDataPreview: "at/schedule/budget/external/find/preview",
-            executeImportFile: "at/schedule/budget/external/import/execute",
+            validateFile: "at/schedule/budget/external/import/validate",
         };
         
         export function findExternalBudgetList(): JQueryPromise<any> {
@@ -26,18 +26,9 @@ module nts.uk.at.view.ksu006.a {
             return nts.uk.request.ajax(servicePath.findDataPreview, extractCondition);
         }
         
-        export function executeImportFile(command: any): JQueryPromise<any> {
-            let dfd = $.Deferred();
-            nts.uk.request.ajax(servicePath.executeImportFile, command).then((taskId: any) => {
-                dfd.resolve(taskId);
-            }).done((res: any) => {
-                dfd.resolve(res);
-            }).fail(res => {
-                dfd.reject(res);
-            });
-            return dfd.promise();
+        export function validateFile(fileId: string): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.validateFile + "/" + fileId);
         }
-        
         
         /**
         * Model namespace.

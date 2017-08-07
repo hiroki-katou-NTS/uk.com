@@ -90,36 +90,12 @@ module nts.uk.at.view.ksu006.a {
                 $('#comboExternalBudget').focus();
                 let isOpendDialog: boolean = false;
                 self.uploadFile().done(function() {
-                    service.executeImportFile(self.toJSObject()).then(function(taskId) {
-                        nts.uk.ui.windows.setShared("taskId", taskId);
+                    service.validateFile(self.fileId()).done(function() {
+                        nts.uk.ui.windows.setShared("ExtractCondition", self.toJSObject());
                         nts.uk.ui.windows.setShared("totalRecord", self.totalRecord());
                         nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml',
                             { title: '外部予算実績データ受入実行', dialogClass: 'no-close' });
-                        // Call 
-//                        return nts.uk.deferred.repeat(conf => conf
-//                            .task(() => {
-//                                let dfd = $.Deferred();
-//                                nts.uk.request.specials.getAsyncTaskInfo(taskId).done(function(res: any) {
-//                                    console.log(res);
-//                                    if (res.running) {
-//                                        if (!isOpendDialog && res.taskDatas.filter(item => item.key == 'OPEN_DIALOG').length > 0) {
-//                                            isOpendDialog = true;
-//                                            nts.uk.ui.windows.setShared("totalRecord", self.totalRecord());
-//                                            nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml',
-//                                                { title: '外部予算実績データ受入実行', dialogClass: 'no-close' });
-//                                        }
-////                                        nts.uk.ui.windows.setShared("SUCCESS_CNT", res.taskDatas[1]);
-////                                        nts.uk.ui.windows.setShared("FAIL_CNT", res.taskDatas[2]);
-//                                    }
-//                                    dfd.resolve(res);
-//                                });
-//                                return dfd.promise();
-//                            }).while(info => {
-//                                return info.pending || info.running;
-//                            })
-//                            .pause(1000));
-                    }).done(function(res: any) {
-                        console.log(res);
+
                     }).fail(function(res: any) {
                         nts.uk.ui.dialog.alertError(res.message);
                     });
