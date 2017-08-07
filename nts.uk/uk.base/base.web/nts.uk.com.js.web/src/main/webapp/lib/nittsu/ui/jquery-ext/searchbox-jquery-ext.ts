@@ -93,7 +93,7 @@ module nts.uk.ui.jqueryExtentions {
                         let scrollTo = index * 29;
                         let scrollTop = $control.scrollTop();
                         let height = $control.height();
-                        if(scrollTo < scrollTop || scrollTo > scrollTop + height){
+                        if(scrollTo < scrollTop || scrollTo > scrollTop + height - 28){
                             $control.scrollTop(scrollTo);     
                         }       
                     }

@@ -10274,7 +10274,7 @@ var nts;
                                     var scrollTo_1 = index * 29;
                                     var scrollTop = $control.scrollTop();
                                     var height = $control.height();
-                                    if (scrollTo_1 < scrollTop || scrollTo_1 > scrollTop + height) {
+                                    if (scrollTo_1 < scrollTop || scrollTo_1 > scrollTop + height - 28) {
                                         $control.scrollTop(scrollTo_1);
                                     }
                                 }
