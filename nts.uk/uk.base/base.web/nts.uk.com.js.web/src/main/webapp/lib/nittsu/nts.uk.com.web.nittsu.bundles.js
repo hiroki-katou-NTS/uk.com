@@ -9006,6 +9006,7 @@ var nts;
                         var required = ko.unwrap(data.required);
                         var id = nts.uk.util.randomId();
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+                        $container.data("tabindex", tabIndex);
                         $container.removeAttr("tabindex");
                         $container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
                         var $datePickerArea = $container.find(".ntsDateRange_Container");
@@ -9224,6 +9225,12 @@ var nts;
                                     $endDate.val("");
                                 }
                             }
+                        }
+                        if (enable === false) {
+                            $container.find(".ntsDateRange_Component").removeAttr("tabindex");
+                        }
+                        else {
+                            $container.find(".ntsDateRange_Component").attr("tabindex", $container.data("tabindex"));
                         }
                         $input.prop("disabled", !enable);
                         $container.find(".ntsDateRangeButton").prop("disabled", !enable);
