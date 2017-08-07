@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import entity.person.info.category.PpemtPerInfoCtg;
+import entity.person.info.category.PpemtPerInfoCtgCm;
+import entity.person.info.category.PpemtPerInfoCtgCmPK;
+import entity.person.info.category.PpemtPerInfoCtgPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
@@ -24,7 +28,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
-
+	
+	
+	private final static String SELECT_GET_CATEGORY_CODE_LASTEST_QUERY = "SELECT co.categoryCd PpemtPerInfoCtgCm co"
+			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd ORDER BY co.categoryCd DESC";
+	
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 
@@ -42,6 +50,24 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				});
 	}
 
+	@Override
+	public Optional<String> getPerInfoCtgCodeLastest(PersonInfoCategory perInfoCtg, String contractCd) {
+		List CtgCodeLastest =  this.getEntityManager().createQuery(this.SELECT_GET_CATEGORY_CODE_LASTEST_QUERY).setMaxResults(1).getResultList();
+		return null;
+	}
+	
+	@Override
+	public void addPerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd) {
+		this.commandProxy().insert(createPerInfoCtgFromDomain(perInfoCtg));
+		this.commandProxy().insert(createPerInfoCtgCmFromDomain(perInfoCtg, contractCd));
+	}
+
+	@Override
+	public void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd) {
+		this.commandProxy().update(createPerInfoCtgFromDomain(perInfoCtg));
+		this.commandProxy().update(createPerInfoCtgCmFromDomain(perInfoCtg, contractCd));
+	}
+
 	private PersonInfoCategory createDomainFromEntity(Object[] c) {
 		String personInfoCategoryId = String.valueOf(c[0]);
 		String categoryCode = String.valueOf(c[1]);
@@ -54,6 +80,20 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
 				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
 
+	}
+
+	private PpemtPerInfoCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
+		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
+		return new PpemtPerInfoCtg(perInfoCtgPK, perInfoCtg.getCompanyId(), perInfoCtg.getCategoryCode().v(),
+				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value);
+
+	}
+
+	private PpemtPerInfoCtgCm createPerInfoCtgCmFromDomain(PersonInfoCategory perInfoCtg, String contractCd) {
+		PpemtPerInfoCtgCmPK perInfoCtgCmPK = new PpemtPerInfoCtgCmPK(contractCd, perInfoCtg.getCategoryCode().v());
+		return new PpemtPerInfoCtgCm(perInfoCtgCmPK, perInfoCtg.getCategoryParentCode().v(),
+				perInfoCtg.getCategoryType().value, perInfoCtg.getPersonEmployeeType().value,
+				perInfoCtg.getIsFixed().value);
 	}
 
 }

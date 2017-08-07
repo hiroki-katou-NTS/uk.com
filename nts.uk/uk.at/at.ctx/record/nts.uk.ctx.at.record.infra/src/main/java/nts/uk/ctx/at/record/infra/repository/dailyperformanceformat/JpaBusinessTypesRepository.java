@@ -22,11 +22,7 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 		builderString.append("FROM KrcmtBusinessType a ");
 		builderString.append("WHERE a.krcmtBusinessTypePK.companyId = :companyId ORDER BY a.krcmtBusinessTypePK.businessTypeCode DESC ");
 		FIND = builderString.toString();
-	}
-	/**
-	 * author: HoangYen
-	 */
-	private final String FIND_BUSINESS_TYPE = "SELECT a FROM KrcmtBusinessType a WHERE a.krcmtBusinessTypePK.companyId = :companyId AND a.krcmtBusinessTypePK.businessTypeCode = :businessTypeCode"; 
+	} 
 	/**
 	 * author: HoangYen
 	 * change from domain to entity
@@ -79,10 +75,7 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	 */
 	@Override
 	public Optional<BusinessType> findBusinessType(String companyId, String businessTypeCode) {
-		return this.queryProxy().query(FIND_BUSINESS_TYPE, KrcmtBusinessType.class)
-				.setParameter("companyId", companyId)
-				.setParameter("businessTypeCode", businessTypeCode)
-				.getSingle(c->toDomain(c));
+		return this.queryProxy().find(new KrcmtBusinessTypePK(companyId, businessTypeCode), KrcmtBusinessType.class).map(c-> toDomain(c));
 	}
 	/**
 	 * author: HoangYen

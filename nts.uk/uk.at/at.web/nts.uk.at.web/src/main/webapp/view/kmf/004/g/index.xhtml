@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 500, height: 350 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmf004.g.style.css" />
+			<com:scriptfile path="kmf004.g.start.js" />
+			<com:scriptfile path="kmf004.g.vm.js" />
+			<com:scriptfile path="kmf004.g.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<button id="A_BTN_001">#{i18n.getText('CCG013_1')}</button>
+					<button id="A_BTN_002" class="proceed">#{i18n.getText('CCG013_2')}</button>
+					<button id="A_BTN_003" class="danger">#{i18n.getText('CCG013_6')}</button>
+					<button id="A_BTN_004">続柄の登録</button>
+				</div>
+			</div>
+			<div id="contents-area">
+				<div id="left-content"
+					class="bg-green caret-right caret-background cf"
+					style="width: 340px; height: 335px;">
+					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
+						<table id="single-list"
+							data-bind="ntsGridList: {	
+								width: 300,
+								height: 300,
+								dataSource: items,
+								primaryKey: 'code',
+								columns: columns,
+								multiple: false,								
+								value: currentCode
+						}"></table>
+					</div>
+				</div>
+				<div class="right-content">
+					<div class="control-group">
+						<div style="vertical-align: middle"
+							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_11')}</div>
+						<span><input style="width: 40px; margin-left: 45px;"
+							data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" /></span>
+						<span><input style="width: 180px"
+							data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" /></span>
+						<div style="vertical-align: middle;margin-left: 50px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_11')}</div>
+						<button id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
+						<div>
+						<div style="margin-top: 10px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_13')}</div>
+					　　　<button style="margin-left: 35px;" id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
+					   <span><input style="width: 500px"
+							data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" /></span>
+                       </div>
+                       <div>
+					   <div style="margin-top: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_14')}</div>
+                       <div style="margin-left: 60px;" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMF004_15')}</div>
+                       </div>
+                       <div>
+						<div style="margin-top: 10px;vertical-align: text-bottom;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_16')}</div>
+					    <input style="width: 555px;height: 50px;margin-left: 100px;"
+							id="webMenuCode"
+							data-bind="ntsTextEditor: {value: ko.observable(''),name: '#[CCG013_49]', required: true}" />
+                       </div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

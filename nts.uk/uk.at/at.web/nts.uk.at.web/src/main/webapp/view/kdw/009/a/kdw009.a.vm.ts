@@ -104,21 +104,21 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                 });
             }
             else{
-                if(foundItem){
-                    $('#inpCode').ntsError('set', {messageId:"Msg_3"});
-                    return;
-                }
                 if(self.codeObject().length<10){
                     do{
                         self.codeObject("0" + self.codeObject());
                     }while(self.codeObject().length<10);
                 }
+                code = self.codeObject();
                 self.selectedOption(null);
                 let obj = new BusinessType(self.codeObject(), self.selectedName())
                 service.insert(obj).done(function(){
-                    self.getData();
-                    self.selectedCode(code);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.getData().done(function(){
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.selectedCode(code);
+                    });
+                }).fail(function(res){
+                    $('#inpCode').ntsError('set', res.messageId);
                 });
             }            
         } 
@@ -137,17 +137,33 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             let self = this;
             let count = 0;
             for (let i = 0; i <= self.lstBusinessType().length; i++){
-                if(self.lstBusinessType()[i].businessTypeCode == self.codeObject()){
+                if(self.lstBusinessType()[i].businessTypeCode == self.selectedCode()){
                     count = i;
                     break;
                 }
             }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => { 
                 service.remove(self.selectedOption()).done(function(){
-                    self.getData();
-                    if(self.lstBusinessType().length==0){
-                        self.newMode();
-                    }
+                    self.getData().done(function(){
+                        if(self.lstBusinessType().length==0){
+                            self.newMode();
+                            return;
+                        }
+                        // delete the last item
+                        if(count == ((self.lstBusinessType().length))){
+                            self.selectedCode(self.lstBusinessType()[count-1].businessTypeCode);
+                            return;
+                        }
+                        if(count == 0 ){
+                            self.selectedCode(self.lstBusinessType()[0].businessTypeCode);
+                            return;
+                        }
+                        else if(count > 0 && count < self.lstBusinessType().length){
+                            self.selectedCode(self.lstBusinessType()[count].businessTypeCode);    
+                            return;
+                        }
+                    });
+                    
                 });
             }).ifCancel(() => { 
             }); 
