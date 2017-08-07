@@ -1,7 +1,7 @@
 /**
  * 
  */
-package entity.person.info.groupitem;
+package entity.person.info.groupitem.difination;
 
 import java.io.Serializable;
 
@@ -16,12 +16,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class PpemtPInfoItemGroupPk implements Serializable{
+public class PpemtPInfoItemGroupDfPk implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Basic(optional = false)
     @Column(name = "PER_INFO_ITEM_GROUP_ID")
 	public String groupItemId;
+	
+	
+	@Basic(optional = false)
+    @Column(name = "PER_INFO_ITEM_DEF_ID")
+	public String itemDefId;
 	
 }

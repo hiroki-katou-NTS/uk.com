@@ -19,11 +19,22 @@ public class LayoutPersonInfoClsDto {
 	private String personInfoCategoryID;
 	private int layoutItemType;
 	private List<PerInfoItemDefDto> listItemDfDto;
+	
+	
+	public LayoutPersonInfoClsDto(String layoutID, int dispOrder, String personInfoCategoryID, int layoutItemType) {
+		super();
+		this.layoutID = layoutID;
+		this.dispOrder = dispOrder;
+		this.personInfoCategoryID = personInfoCategoryID;
+		this.layoutItemType = layoutItemType;
+	}
+	
+	
 
-	public static LayoutPersonInfoClsDto fromDomain(LayoutPersonInfoClassification domain,
-			List<PerInfoItemDefDto> lst) {
+	public static LayoutPersonInfoClsDto fromDomain(LayoutPersonInfoClassification domain) {
 
 		return new LayoutPersonInfoClsDto(domain.getLayoutID(), domain.getDispOrder().v(),
-				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value, lst);
+				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value);
 	}
+
 }
