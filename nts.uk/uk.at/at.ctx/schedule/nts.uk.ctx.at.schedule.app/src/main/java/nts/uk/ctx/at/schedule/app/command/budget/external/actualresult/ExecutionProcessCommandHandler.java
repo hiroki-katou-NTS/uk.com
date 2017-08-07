@@ -279,6 +279,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
             mapValue.put(i, Long.parseLong(lstValue.get(i)));
         }
         ExternalBudgetTimeDto dto = ExternalBudgetTimeDto.builder()
+                .budgetAtr(importProcess.externalBudget.getBudgetAtr())
                 .workplaceId("") // TODO: find workplace id by workplace code
                 .extBudgetCode(importProcess.extractCondition.getExternalBudgetCode())
                 .actualDate(importProcess.actualDate)

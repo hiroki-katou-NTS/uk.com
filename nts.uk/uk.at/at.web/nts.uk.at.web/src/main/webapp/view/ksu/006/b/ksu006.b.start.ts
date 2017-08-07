@@ -31,6 +31,7 @@ module nts.uk.pr.view.ksu006.b {
                 console.log(res.finishedAt);
                 if (res.finishedAt) {
                     screenModel.isDone(true);
+                    $('.countdown').stop();
                 }
             });
         });
@@ -39,9 +40,11 @@ module nts.uk.pr.view.ksu006.b {
 interface JQuery {
 
     downCount(options, callback);
+    stop(options, callback);
 }
 
 (function($: any) {
+    let interval;
     $.fn.downCount = function(options, callback) {
         let settings = $.extend({
             date: null,
@@ -130,6 +133,13 @@ interface JQuery {
         };
 
         // start
-        let interval = setInterval(countdown, 1000);
+        interval = setInterval(countdown, 1000);
+    };
+    
+    $.fn.stop = function(options, callback) {
+         clearInterval(interval);
     };
 } (jQuery));
+
+
+
