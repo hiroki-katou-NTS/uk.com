@@ -838,4 +838,86 @@ module nts.uk.time {
         }
         return false;
     }
+    
+    export class TimeWithDayAttr {
+        dayDivision: DayAttr; 
+        time: number;
+        rawValue: number;
+        
+        MAX_HOUR = 24;
+        MAX_MS = 60;
+        
+        constructor (rawValue: number) {
+            this.rawValue = rawValue;
+            if (rawValue < 0){
+                this.dayDivision = DayDivision.THE_PREVIOUS_DAY;
+                this.time = rawValue*-1;
+            } else {
+                this.dayDivision = this.checkDayDivision(rawValue);
+                this.time = this.getTimeDuration(rawValue);
+            }
+        }    
+        
+        getDayDivision (): DayAttr{
+            return this.dayDivision;
+        }
+        
+        getTime(): string{
+            let minutes = ntsNumber.trunc(this.time % 60);
+            return ntsNumber.trunc(this.time / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes); 
+        }
+        
+        getRawTime(): string{
+            let minutes = ntsNumber.trunc(this.rawValue % 60);
+            return ntsNumber.trunc(this.rawValue / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
+        }
+        
+        getTimeDuration(value: number): number{
+            if(this.dayDivision.value === DayDivision.THE_PRESENT_DAY.value){
+                return value;
+            }
+            return value - (this.dayDivision.value - 1) * this.MAX_HOUR * this.MAX_MS;
+        }
+
+        checkDayDivision(value: number): DayAttr {
+            let days: number = ntsNumber.trunc(value / (this.MAX_HOUR* this.MAX_MS));
+            switch (days) {
+                case 0:
+                    return DayDivision.THE_PRESENT_DAY;
+                case 1:
+                    return DayDivision.THE_NEXT_DAY;
+                case 2:
+                    return DayDivision.TWO_DAY_LATER;
+                default:
+                    return DayDivision.NONE;
+            }
+        }
+        
+        static cutDayDivision(input: string): string{
+            let dayDivisions = _.forEach(_.values(DayDivision), function(dd: DayAttr){
+                if (input.indexOf(dd.text) >= 0) {
+                    input = input.replace(dd.text, "").trim();        
+                }        
+            });   
+            return input;    
+        }
+    }
+    
+    export class DayAttr {
+        value: number;
+        text: string;
+        
+        constructor (value: number, text: string){
+            this.value = value;
+            this.text = text;
+        }
+    }
+
+    let DayDivision = {
+        NONE: new DayAttr(-1, ""), 
+        THE_PREVIOUS_DAY: new DayAttr(0, "前日"),
+        THE_PRESENT_DAY: new DayAttr(1, "当日"),
+        THE_NEXT_DAY: new DayAttr(2, "翌日"), 
+        TWO_DAY_LATER: new DayAttr(3, "翌々日")
+    }
 }

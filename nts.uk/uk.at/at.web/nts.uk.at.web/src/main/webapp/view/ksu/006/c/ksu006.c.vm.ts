@@ -33,7 +33,7 @@ module nts.uk.pr.view.ksu006.c {
                 self.dataLog = ko.observableArray([]);
                 self.listColumn = ko.observableArray([
                     { headerText: "", key: 'executeId', dataType: "string", hidden: true, formatter: _.escape},
-                    { headerText: nts.uk.resource.getText("KSU006_311"), key: 'startDate', width: 175, dataType: 'date', format: 'yyyy/MM/dd HH:MM:SS'},
+                    { headerText: nts.uk.resource.getText("KSU006_311"), key: 'startDate', width: 175, dataType: 'date', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_312"), key: 'endDate', width: 175, dataType: 'date', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_313"), key: 'extBudgetName', width: 150, dataType: 'string', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_314"), key: 'fileName', width: 200, dataType: 'string', formatter: _.escape},

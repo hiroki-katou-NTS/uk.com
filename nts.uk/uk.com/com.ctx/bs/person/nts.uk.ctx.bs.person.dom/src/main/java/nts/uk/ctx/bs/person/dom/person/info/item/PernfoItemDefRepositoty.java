@@ -10,4 +10,6 @@ public interface PernfoItemDefRepositoty {
 	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd);
 	
 	List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd);
+	
+	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 }

@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class PpemtPInfoItemGroupPk implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
+	
 	@Basic(optional = false)
     @Column(name = "PER_INFO_ITEM_GROUP_ID")
 	public String groupItemId;

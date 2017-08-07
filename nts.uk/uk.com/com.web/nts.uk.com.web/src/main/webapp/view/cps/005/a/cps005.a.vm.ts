@@ -21,6 +21,9 @@ module nts.uk.com.view.cps005.a {
                     dfd = $.Deferred();
                 new service.Service().getAllPerInfoCtg().done(function(data: IData) {
                     self.currentData(new DataModel(data));
+                    if(data && data.categoryList && data.categoryList.length > 0){
+                        self.currentData().perInfoCtgSelectCode(data.categoryList[0].id);
+                    }
                     dfd.resolve();
                 }).fail(error => { });
                 return dfd.promise();
@@ -62,14 +65,11 @@ module nts.uk.com.view.cps005.a {
             if (data) {
                 self.categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
                 self.historyTypes = data.historyTypes ? data.historyTypes : [];
-                if (self.categoryList() && self.categoryList().length > 0) {
-                    self.perInfoCtgSelectCode(self.categoryList()[0].id);
-                }
             }
             //subscribe select category code
             self.perInfoCtgSelectCode.subscribe(newId => {
                 if (textUK.isNullOrEmpty(newId)) return;
-                new service.Service().getPerInfoCtg(newId).done(function(data: IPersonInfoCtg) {
+                new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
                     self.currentCtgSelected(new PerInfoCtgModel(data));
                     self.currentCtgSelected().fixedIsSelected(false);
                     if (self.currentCtgSelected().fixedAtr == true) {
@@ -90,7 +90,6 @@ module nts.uk.com.view.cps005.a {
         categoryType: number = 1;
         categoryTypeName: string = "";
         historyClassSelected: KnockoutObservable<number> = ko.observable(1);
-
         // historyTypesSelected and singleMulTypeSelected == categoryType
         historyTypesSelected: KnockoutObservable<number> = ko.observable(1);
         singleMulTypeSelected: KnockoutObservable<number> = ko.observable(1);
@@ -105,9 +104,7 @@ module nts.uk.com.view.cps005.a {
                 self.categoryName = data.categoryName || "";
                 self.perInfoCtgName(data.categoryName || "");
                 self.fixedAtr = data.fixedAtr == 1 ? true : false;
-                for (let i = 1; i < 5; i++) {
-                    self.itemNameList.push(new PerInfoItemModel(self.categoryName + i));
-                }
+                self.itemNameList(_.map(data.itemNameList, item => { return new PerInfoItemModel(item) }));
                 self.historyFixedName = (data.categoryType == 1 || data.categoryType == 2) ? nts.uk.resource.getText("CPS005_54") : nts.uk.resource.getText("CPS005_53");
                 self.categoryType = data.categoryType;
                 switch (self.categoryType) {
@@ -136,7 +133,6 @@ module nts.uk.com.view.cps005.a {
                 }
                 self.fixedIsSelected(self.fixedAtr);
             }
-            //self.itemNameList(_.map(data.itemNameList, item => {return new PerInfoItemModel(item)}));
             //subscribe select history type (1: history, 2: not history)
             self.historyClassSelected.subscribe(newHisClassification => {
                 if (textUK.isNullOrEmpty(newHisClassification)) return;

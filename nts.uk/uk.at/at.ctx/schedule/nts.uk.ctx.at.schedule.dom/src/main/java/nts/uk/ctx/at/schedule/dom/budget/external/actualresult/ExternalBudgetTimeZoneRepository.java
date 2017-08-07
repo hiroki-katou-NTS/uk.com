@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface ExternalBudgetTimeZoneRepository.
  */
@@ -24,4 +26,14 @@ public interface ExternalBudgetTimeZoneRepository {
      * @param domain the domain
      */
     <T> void update(ExternalBudgetTimeZone<T> domain);
+    
+    /**
+     * Checks if is existed.
+     *
+     * @param workplaceId the workplace id
+     * @param actualDate the actual date
+     * @param extBudgetCode the ext budget code
+     * @return true, if is existed
+     */
+    boolean isExisted(String workplaceId, GeneralDate actualDate, String extBudgetCode);
 }

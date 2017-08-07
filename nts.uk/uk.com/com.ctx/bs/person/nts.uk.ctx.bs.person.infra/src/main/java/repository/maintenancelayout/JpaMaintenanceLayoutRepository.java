@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.text.translate.NumericEntityUnescaper.OPTION;
+
 import entity.maintenencelayout.PpemtMaintenanceLayout;
 import entity.maintenencelayout.PpemtMaintenanceLayoutPk;
 import lombok.val;
@@ -36,6 +38,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 		builderString.append(" WHERE e.layoutCode = :layoutCode");
 		builderString.append(" AND  e.companyId = :companyId");
 		IS_DUPLICATE_LAYOUTCODE = builderString.toString();
+
 	}
 
 	private static MaintenanceLayout toDomain(PpemtMaintenanceLayout entity) {
@@ -75,12 +78,22 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	}
 
-	
 	@Override
-	public boolean checkExit(String companyId , String layoutCode) {
-		return this.queryProxy().query(IS_DUPLICATE_LAYOUTCODE, long.class)
-				.setParameter("layoutCode", layoutCode)
-				.setParameter("companyId", companyId)
-				.getSingle().get() > 0;
+	public boolean checkExit(String companyId, String layoutCode) {
+		return this.queryProxy().query(IS_DUPLICATE_LAYOUTCODE, long.class).setParameter("layoutCode", layoutCode)
+				.setParameter("companyId", companyId).getSingle().isPresent();
+	}
+
+	@Override
+	public Optional<MaintenanceLayout> getById(String layoutId) {
+
+		PpemtMaintenanceLayout entity = this.queryProxy().query(getDetailLayout, PpemtMaintenanceLayout.class)
+				.setParameter("layoutId", layoutId).getSingleOrNull();
+		if(entity == null) {
+			return Optional.empty();
+		}else {
+			return Optional.of(toDomain(entity));
+		}
+
 	}
 }
