@@ -224,7 +224,7 @@ module nts.uk.at.view.kdl003.a {
                     endAtr: self.endTimeOption(),
                     endTime: nts.uk.util.isNullOrEmpty(self.endTime()) ? -1 : self.endTime()
                 }
-                kdl001.a.service.findByTime(command)
+                service.findByTime(command)
                     .done(function(data) {
                         self.selectAbleItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
@@ -248,7 +248,7 @@ module nts.uk.at.view.kdl003.a {
                 self.startTime('');
                 self.endTimeOption(1);
                 self.endTime('');
-                kdl001.a.service.findByCodeList(self.selectAbleCodeList())
+                service.findByCodeList(self.callerParameter.workTimeCodes.split(','))
                     .done(function(data) {
                         self.rootList = data;
                         self.selectAbleItemList(_.clone(self.rootList));
