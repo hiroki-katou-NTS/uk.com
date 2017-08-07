@@ -43,7 +43,7 @@ module nts.uk.at.view.ksm001.a {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: self.selCodeEmployment,
                     isDialog: false,
                     isShowNoSelectRow: false,
@@ -116,9 +116,8 @@ module nts.uk.at.view.ksm001.a {
                 self.isCompanySelected(false);
                 self.isPersonSelected(false);
                 self.isEmploymentSelected(true);
-                self.isLoading(true);
+                self.isLoading(false);
                 $('#employmentSetting').ntsListComponent(self.listComponentOption);
-                console.log('HU');
             }
             /**
              * on click tab panel employment action event
