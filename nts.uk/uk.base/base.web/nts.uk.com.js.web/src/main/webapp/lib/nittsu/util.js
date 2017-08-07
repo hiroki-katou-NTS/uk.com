@@ -8,6 +8,31 @@ var nts;
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
+            function compare(obj1, obj2) {
+                for (var p in obj1) {
+                    if (obj1.hasOwnProperty(p) !== obj2.hasOwnProperty(p)) {
+                        return false;
+                    }
+                    switch (typeof (obj1[p])) {
+                        case "object":
+                            if (!compare(obj1[p], obj2[p]))
+                                return false;
+                            break;
+                        case "function":
+                            break;
+                        default:
+                            if (obj1[p] !== obj2[p]) {
+                                return false;
+                            }
+                    }
+                }
+                for (var p in obj2) {
+                    if (typeof (obj1[p]) == 'undefined')
+                        return false;
+                }
+                return true;
+            }
+            util.compare = compare;
             /**
              * 常にtrueを返す関数が必要になったらこれ
              */
@@ -169,6 +194,41 @@ var nts;
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
             }
             util.orDefault = orDefault;
+            function getConstraintMes(primitiveValues) {
+                if (isNullOrEmpty(primitiveValues)) {
+                    return "";
+                }
+                if (!Array.isArray(primitiveValues))
+                    primitiveValues = [primitiveValues];
+                var constraintText = "";
+                _.forEach(primitiveValues, function (primitiveValue) {
+                    var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                    switch (constraint.valueType) {
+                        case 'String':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                            break;
+                        case 'Decimal':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += constraint.min + "～" + constraint.max;
+                            break;
+                        case 'Integer':
+                            constraintText += (constraintText.length > 0) ? "/" : "";
+                            constraintText += constraint.min + "～" + constraint.max;
+                            break;
+                        default:
+                            constraintText += 'ERROR';
+                            break;
+                    }
+                });
+                return constraintText;
+            }
+            util.getConstraintMes = getConstraintMes;
+            function getConstraintLabel(primitiveValues) {
+                var constraintText = getConstraintMes(primitiveValues);
+                return "<span class='constraint-label'>(" + constraintText + ")</span>";
+            }
+            util.getConstraintLabel = getConstraintLabel;
             /**
              * Returns true if expects contains actual.
              */
@@ -578,7 +638,15 @@ var nts;
             function getMessage(messageId, params) {
                 var message = messages[messageId];
                 if (!message) {
-                    return messageId;
+                    var responseText_1 = "";
+                    nts.uk.request.syncAjax("com", "loadresource/getmessage/" + messageId).done(function (res) {
+                        responseText_1 = res;
+                    }).fail(function () {
+                    });
+                    if (responseText_1.length == 0 || responseText_1 === messageId) {
+                        return messageId;
+                    }
+                    message = responseText_1;
                 }
                 message = formatParams(message, params);
                 message = formatCompCustomizeResource(message);
@@ -643,6 +711,24 @@ var nts;
              * So these APIs have jQuery Deferred Interface to support asynchronous.
              */
             var delayToEmulateAjax = 100;
+            function convertObjectToArray(key) {
+                var result = [];
+                for (var p in key) {
+                    result.push([p, key[p]]);
+                }
+                result.sort(function (a, b) {
+                    return a > b;
+                });
+                return result.toString();
+            }
+            function saveByObjectKey(key, value) {
+                return save(convertObjectToArray(key), value);
+            }
+            characteristics.saveByObjectKey = saveByObjectKey;
+            function restoreByObjectKey(key) {
+                return restore(convertObjectToArray(key));
+            }
+            characteristics.restoreByObjectKey = restoreByObjectKey;
             function save(key, value) {
                 var dfd = $.Deferred();
                 setTimeout(function () {

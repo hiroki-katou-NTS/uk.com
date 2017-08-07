@@ -194,14 +194,19 @@ module nts.uk.ui.koExtentions {
             
             let search = function (searchKey: string){
                 if (targetMode) {
-                    let selectedItems;
+                    let selectedItems, isMulti;
                     if (targetMode == 'igGrid') {
                         if(component.length === 0){
                             component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
                         }
                         selectedItems = component.ntsGridList("getSelected");
+                        isMulti = component.igGridSelection('option', 'multipleSelection');
                     } else if (targetMode == 'igTree') {
                         selectedItems = component.ntsTreeView("getSelected");
+                        isMulti = component.igTreeGridSelection('option', 'multipleSelection');
+                    } else if (targetMode == 'igTreeDrag') {
+                        selectedItems = component.ntsTreeDrag("getSelected");  
+                        isMulti = component.ntsTreeDrag('option', 'isMulti') ;  
                     }
                     
                     let srh: SearchPub= $container.data("searchObject");
@@ -210,8 +215,6 @@ module nts.uk.ui.koExtentions {
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
                         return;        
                     }
-                    let isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection') 
-                        : component.igTreeGridSelection('option', 'multipleSelection')
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
                     let selectedValue;
@@ -245,6 +248,8 @@ module nts.uk.ui.koExtentions {
                     } else if (targetMode == 'igTree') {
                         component.ntsTreeView("setSelected", selectedProperties);
                         //selected(selectedValue);
+                    } else if(targetMode == 'igTreeDrag'){
+                        component.ntsTreeDrag("setSelected", selectedProperties);
                     }
                     _.defer(function() {
                         component.trigger("selectChange");    
