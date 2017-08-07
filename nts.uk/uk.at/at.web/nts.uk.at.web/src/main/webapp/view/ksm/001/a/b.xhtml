@@ -33,14 +33,8 @@
 					{ prop: 'name', length: 6 }
 				]}"></div>
 			</div>
-			
 			<br />
-			<div class="lineContent">
-				<div class="lableContent" data-bind="ntsFormLabel: {required: false}">
-					<label>#{i18n.getText('KSM001_5')}</label>
-				</div>
-				<div class="content"><label>#{i18n.getText('KSM001_5')}</label></div>
-			</div>
+			<div id="employmentSetting"></div>
 			
 			<br />
 			<div class="lineContent">
@@ -48,9 +42,10 @@
 					<label>#{i18n.getText('KSM001_21')}</label>
 				</div>
 			</div>
+			
 			<br />
-			<div tabindex="13" id="tab-panel" class="pull-left tabPanel"
-				data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+			<div tabindex="13" id="tab-panel-001" class="pull-left"
+				data-bind="ntsTabPanel: { dataSource: employmentTabs, active: selEmploymentTab}">
 				<div class="tab-content-1">
 					<div class="control-group">
 						<div class="pull-left">
