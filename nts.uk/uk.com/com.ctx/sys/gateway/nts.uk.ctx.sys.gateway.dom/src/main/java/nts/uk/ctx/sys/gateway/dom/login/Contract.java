@@ -14,12 +14,15 @@ import lombok.Getter;
 @Getter
 public class Contract {
 
+	//パスワード
 	/** The password. */
 	private RawPassword password;
 
+	//契約コード
 	/** The contract code. */
 	private ContractCode contractCode;
 
+	//契約期間
 	/** The contract period. */
 	private Period contractPeriod;
 

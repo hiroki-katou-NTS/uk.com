@@ -1,9 +1,20 @@
 package find.person.info.item;
 
-import lombok.Value;
+import lombok.Getter;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
 
-@Value
-public class EnumRefConditionDto {
-	private int referenceType;
+@Getter
+public class EnumRefConditionDto extends ReferenceTypeStateDto {
+
 	private String enumName;
+	
+	private EnumRefConditionDto(String enumName) {
+		super();
+		this.referenceType = ReferenceType.ENUM.value;
+		this.enumName = enumName;
+	}
+
+	public static EnumRefConditionDto createFromJavaType(String enumName) {
+		return new EnumRefConditionDto(enumName);
+	}
 }

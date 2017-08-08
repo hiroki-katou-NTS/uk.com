@@ -16,9 +16,6 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
 public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements PersonInfoRoleAuthRepository {
 	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonRoleAuth c";
 
-	private final String SEL_1 = SEL_NO_WHERE
-			+ " WHERE c.ppemtPersonRoleAuthPk.roleId =:roleId";
-
 	private static PersonInfoRoleAuth toDomain(PpemtPersonRoleAuth entity) {
 		val domain = PersonInfoRoleAuth.createFromJavaType(entity.ppemtPersonRoleAuthPk.roleId, entity.companyId,
 				entity.allowMapUpload, entity.allowMapBrowse, entity.allowDocUpload, entity.allowDocRef,
@@ -47,11 +44,10 @@ public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements Pe
 
 	@Override
 	public Optional<PersonInfoRoleAuth> getDetailPersonRoleAuth(String roleId) {
-		return this.queryProxy().query(SEL_1, PpemtPersonRoleAuth.class)
-				.setParameter("roleId", roleId)
-				.getSingle().map(e -> {
-					return Optional.of(toDomain(e));
-				}).orElse(Optional.empty());
+		return this.queryProxy().find(new PpemtPersonRoleAuthPk(roleId), PpemtPersonRoleAuth.class)
+				.map(e -> {
+			return Optional.of(toDomain(e));
+		}).orElse(Optional.empty());
 	}
 
 	@Override
