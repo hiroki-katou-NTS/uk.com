@@ -25,7 +25,7 @@ public class DataTypeState extends AggregateRoot {
 	}
 
 	public static DataTypeState createTimePointItem(long timePointItemMin, long timePointItemMax) {
-		return TimePointItem.createFromJavaType(timePointItemMin, timePointItemMax);
+		return null;//TimePointItem.createFromJavaType(timePointItemMin, timePointItemMax);
 	}
 
 	public static DataTypeState createDateItem(int dateItemType) {

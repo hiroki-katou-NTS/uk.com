@@ -254,9 +254,9 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 				timeItemMax = new BigDecimal(timeItem.getMax().v());
 				break;
 			case 5:
-				TimePointItem timePointItem = (TimePointItem) dataTypeState;
-				timepointItemMin = new BigDecimal(timePointItem.getTimePointItemMin().v());
-				timepointItemMax = new BigDecimal(timePointItem.getTimePointItemMax().v());
+//				TimePointItem timePointItem = (TimePointItem) dataTypeState;
+//				timepointItemMin = new BigDecimal(timePointItem.getTimePointItemMin().v());
+//				timepointItemMax = new BigDecimal(timePointItem.getTimePointItemMax().v());
 				break;
 			case 6:
 				SelectionItem selectionItem = (SelectionItem) dataTypeState;

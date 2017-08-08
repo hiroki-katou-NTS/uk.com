@@ -101,9 +101,9 @@ public class PerInfoItemDefFinder {
 			timeItem = new TimeItemDto(dataTypeValue, tItem.getMax().v(), tItem.getMin().v());
 			break;
 		case 5:
-			TimePointItem tPointItem = (TimePointItem) dataTypeState;
-			timePointItem = new TimePointItemDto(dataTypeValue, tPointItem.getTimePointItemMin().v(),
-					tPointItem.getTimePointItemMax().v());
+//			TimePointItem tPointItem = (TimePointItem) dataTypeState;
+//			timePointItem = new TimePointItemDto(dataTypeValue, tPointItem.getTimePointItemMin().v(),
+//					tPointItem.getTimePointItemMax().v());
 			break;
 		case 6:
 			SelectionItem sItem = (SelectionItem) dataTypeState;

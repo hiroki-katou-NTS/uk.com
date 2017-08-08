@@ -9,9 +9,11 @@ public interface PerInfoCategoryRepositoty {
 
 	Optional<PersonInfoCategory> getPerInfoCategory(String perInfoCategoryId, String contractCd);
 	
-    void addPerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd);
+    void addPerInfoCtgRoot(PersonInfoCategory perInfoCtg, String contractCd);
+    
+    void addPerInfoCtgWithListCompany(List<PersonInfoCategory> perInfoCtgList, String contractCd);
     
     void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd);
     
-    Optional<String> getPerInfoCtgCodeLastest(PersonInfoCategory perInfoCtg, String contractCd);
+    String getPerInfoCtgCodeLastest(PersonInfoCategory perInfoCtg, String contractCd);
 }
