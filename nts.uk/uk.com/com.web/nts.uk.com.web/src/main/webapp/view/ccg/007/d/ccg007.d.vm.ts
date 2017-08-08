@@ -61,7 +61,7 @@ module nts.uk.pr.view.ccg007.d {
                         service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
                             //get list company from server 
                             self.companyList(data);
-//                            self.companyList([new CompanyItemModel("1234", "会社1"), new CompanyItemModel("0001", "会社2"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社9"), new CompanyItemModel("0002", "会社6"), new CompanyItemModel("0002", "会社8")]);
+                            //                            self.companyList([new CompanyItemModel("1234", "会社1"), new CompanyItemModel("0001", "会社2"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社9"), new CompanyItemModel("0002", "会社6"), new CompanyItemModel("0002", "会社8")]);
                             if (data.length > 0) {
                                 self.selectedCompanyCode(self.companyList()[0].code);
                             }
@@ -84,7 +84,7 @@ module nts.uk.pr.view.ccg007.d {
                 service.submitLogin({ companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()) }).done(function() {
                     nts.uk.characteristics.remove("form3LoginInfo");
                     if (self.isSaveLoginInfo()) {
-                        nts.uk.characteristics.save("form3LoginInfo", { companyCode:_.escape( self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
+                        nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
                             nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
                         });
                     } else {
@@ -99,12 +99,9 @@ module nts.uk.pr.view.ccg007.d {
             }
         }
         export class CompanyItemModel {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
+            companyId: string;
+            companyCode: string;
+            companyName: string;
         }
     }
 }

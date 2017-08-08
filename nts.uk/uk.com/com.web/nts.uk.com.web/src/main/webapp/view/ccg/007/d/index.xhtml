@@ -31,15 +31,15 @@
 									data-bind="ntsComboBox: {
 										name: '#{i18n.getText('CCG007_7')}',
 										options: companyList,
-										optionsValue: 'code',
+										optionsValue: 'companyCode',
 										visibleItemsCount: 5,
 										value: selectedCompanyCode,
-										optionsText: 'name',
+										optionsText: 'companyName',
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'code', length: 4 },
-											{ prop: 'name', length: 10 },
+											{ prop: 'companyCode', length: 4 },
+											{ prop: 'companyName', length: 10 },
 										]}"></div>
 							</td>
 						</tr>
