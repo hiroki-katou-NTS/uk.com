@@ -58,12 +58,14 @@ module nts.uk.pr.view.ccg007.d {
                         nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                     }
                     else {
-                        service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
-                            //TODO get list company from server 
-                            //                    self.companyList(data);
-                            self.companyList([new CompanyItemModel("1234", "会社1"), new CompanyItemModel("0001", "会社2"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社9"), new CompanyItemModel("0002", "会社6"), new CompanyItemModel("0002", "会社8")]);
-                            self.selectedCompanyCode(self.companyList()[0].code);
-                            //TODO get login ID and set here
+                        service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
+                            //get list company from server 
+                            self.companyList(data);
+//                            self.companyList([new CompanyItemModel("1234", "会社1"), new CompanyItemModel("0001", "会社2"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社9"), new CompanyItemModel("0002", "会社6"), new CompanyItemModel("0002", "会社8")]);
+                            if (data.length > 0) {
+                                self.selectedCompanyCode(self.companyList()[0].code);
+                            }
+                            //get local storage info and set here
                             nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo) {
                                 if (loginInfo) {
                                     self.selectedCompanyCode(loginInfo.companyCode);
