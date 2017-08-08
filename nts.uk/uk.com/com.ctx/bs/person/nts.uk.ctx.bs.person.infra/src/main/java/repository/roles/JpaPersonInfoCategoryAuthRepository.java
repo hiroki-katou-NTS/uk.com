@@ -18,12 +18,15 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
 			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
-			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
-			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
+			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
+			+ " FROM PpemtPerInfoCtg c"
+			+ " INNER JOIN PpemtPerInfoCtgCm cm"
+			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
+			+ " LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
-			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd "
-			+ "AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd";
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId"
+			+ " WHERE c.cid = :companyId";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
@@ -104,9 +107,12 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	@Override
-	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd) {
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd,String companyId) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
-				.setParameter("roleId", roleId).setParameter("contractCd", contractCd).getList(c -> toDomain(c));
+				.setParameter("roleId", roleId)
+				.setParameter("contractCd", contractCd)
+				.setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
 
 	}
 

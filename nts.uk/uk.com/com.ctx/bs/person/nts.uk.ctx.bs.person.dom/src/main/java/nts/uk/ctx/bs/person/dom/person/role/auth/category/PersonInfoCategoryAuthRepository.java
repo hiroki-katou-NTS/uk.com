@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface PersonInfoCategoryAuthRepository {
 
-	List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd);
+	List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId);
 
 	void add(PersonInfoCategoryAuth domain);
 

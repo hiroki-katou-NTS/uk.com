@@ -23,7 +23,10 @@ public class PersonInfoCategoryAuthFinder {
 	private PersonInfoCategoryAuthRepository personCategoryAuthRepository;
 
 	public List<PersonInfoCategoryDetailDto> getAllCategory(String roleId) {
-		return this.personCategoryAuthRepository.getAllCategory(roleId, AppContexts.user().contractCode()).stream()
+		return this.personCategoryAuthRepository.getAllCategory(
+				roleId, 
+				AppContexts.user().contractCode(), 
+				AppContexts.user().companyId()).stream()
 				.map(x -> PersonInfoCategoryDetailDto.fromDomain(x)).collect(Collectors.toList());
 
 	}
