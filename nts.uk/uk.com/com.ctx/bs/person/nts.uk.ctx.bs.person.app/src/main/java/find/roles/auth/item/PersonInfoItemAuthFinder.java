@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PersonInfoItemAuthFinder
@@ -20,7 +21,8 @@ public class PersonInfoItemAuthFinder {
 	private PersonInfoItemAuthRepository personItemAuthRepository;
 
 	public List<PersonInfoItemDetailDto> getAllItemDetail(String roleId, String personCategoryAuthId) {
-		return this.personItemAuthRepository.getAllItemDetail(roleId, personCategoryAuthId).stream()
+		return this.personItemAuthRepository
+				.getAllItemDetail(roleId, personCategoryAuthId, AppContexts.user().contractCode()).stream()
 				.map(item -> PersonInfoItemDetailDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
