@@ -39,11 +39,11 @@
 							<td colspan="2" style="vertical-align: top; padding-right: 20px;">
 								<div style="width: 300px; padding-top: 5px;"
 									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'workTypeCode', comId: 'single-list', 
-									items: lstWorkType, selected: selectedWorkTypeCode, selectedKey: 'workTypeCode', fields: ['name', 'workTypeCode'], mode: 'igGrid'}" />
+									items: listWorkType, selected: selectedWorkTypeCode, selectedKey: 'workTypeCode', fields: ['name', 'workTypeCode'], mode: 'igGrid'}" />
 								<table id="single-list"
 									data-bind="ntsGridList: {
 										height: 230,
-										options: lstWorkType,
+										options: listWorkType,
 										optionsValue: 'workTypeCode',
 										columns: workTypeColumns,
 										multiple: false,
@@ -95,11 +95,11 @@
 										data-bind="ntsGridList: {
 									width: 810,
 									height: 235,
-									options: selectAbleItemList,
+									options: listWorkTime,
 									optionsValue: 'code',
 									columns: columns,
 									multiple: false,
-									value: selectedSiftCode
+									value: selectedWorkTimeCode
 								}"></table>
 								</div>
 							</td>
