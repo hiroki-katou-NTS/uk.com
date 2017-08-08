@@ -110,7 +110,9 @@ public class ProgramIdConsts {
 	
 	public static final String KSM005F = "KSM005F";
 	
-	public static final String KDL023 = "KDL023";
+	public static final String KDL023A = "KDL023A";
+	
+	public static final String KDL023B = "KDL023B";
 	
 	public static final String KSM001 = "KSM001";
 	
