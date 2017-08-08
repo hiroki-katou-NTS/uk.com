@@ -7,6 +7,7 @@ module nts.custombinding {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import close = nts.uk.ui.windows.close; // self test conflict code
 
     export class LayoutControl implements KnockoutBindingHandler {
         $tmp = $(`<div>
