@@ -20,15 +20,27 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
-
+	
 	@Override
 	protected void handle(CommandHandlerContext<AddPerInfoCtgCommand> context) {
 		AddPerInfoCtgCommand perInfoCtgCommand = context.getCommand();
-		String categoryCode = null;
-		List<String> companyIdList =  new ArrayList<>();
+		String contractCd = AppContexts.user().contractCode();
+		String categoryCode = perInfoCtgRep.getPerInfoCtgCodeLastest(contractCd);
+		String ctgNumberCode =  String.valueOf(Integer.parseInt(categoryCode.substring(2, 7)) + 1);
+		
+		String addZero = "CO";
+		for (int i = 5; i > 0; i++) {
+			if(i == ctgNumberCode.length()){
+				break;
+			}
+			addZero += "0";
+		}
+		String newCtgCode = addZero + ctgNumberCode;
+		
+		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 		PersonInfoCategory perInfoCtg = PersonInfoCategory.createFromJavaType(AppContexts.user().companyId(),
 				categoryCode, perInfoCtgCommand.getCategoryName().v(), perInfoCtgCommand.getCategoryType().value);
-		this.perInfoCtgRep.addPerInfoCtgRoot(perInfoCtg, AppContexts.user().companyId());
+		this.perInfoCtgRep.addPerInfoCtgRoot(perInfoCtg, contractCd);
 	}
-
+	
 }

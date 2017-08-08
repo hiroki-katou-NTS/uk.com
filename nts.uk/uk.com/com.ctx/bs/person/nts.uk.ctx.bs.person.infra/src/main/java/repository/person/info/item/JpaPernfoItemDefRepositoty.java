@@ -3,7 +3,6 @@ package repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -169,8 +168,8 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 				dataTypeState = DataTypeState.createTimeItem(timeItemMin.intValue(), timeItemMax.intValue());
 				break;
 			case 5:
-				dataTypeState = DataTypeState.createTimePointItem(timepointItemMin.longValue(),
-						timepointItemMax.longValue());
+				dataTypeState = DataTypeState.createTimePointItem(timepointItemMin.intValue(),
+						timepointItemMax.intValue());
 				break;
 			case 6:
 				ReferenceTypeState referenceTypeState = null;
@@ -254,9 +253,9 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 				timeItemMax = new BigDecimal(timeItem.getMax().v());
 				break;
 			case 5:
-//				TimePointItem timePointItem = (TimePointItem) dataTypeState;
-//				timepointItemMin = new BigDecimal(timePointItem.getTimePointItemMin().v());
-//				timepointItemMax = new BigDecimal(timePointItem.getTimePointItemMax().v());
+				TimePointItem timePointItem = (TimePointItem) dataTypeState;
+				timepointItemMin = new BigDecimal(timePointItem.getTimePointItemMin().v());
+				timepointItemMax = new BigDecimal(timePointItem.getTimePointItemMax().v());
 				break;
 			case 6:
 				SelectionItem selectionItem = (SelectionItem) dataTypeState;

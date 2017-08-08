@@ -15,5 +15,5 @@ public interface PerInfoCategoryRepositoty {
     
     void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd);
     
-    String getPerInfoCtgCodeLastest(PersonInfoCategory perInfoCtg, String contractCd);
+    String getPerInfoCtgCodeLastest(String contractCd);
 }

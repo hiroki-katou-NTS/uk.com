@@ -1,5 +1,23 @@
 package nts.uk.ctx.bs.person.dom.person.info.timepointitem;
 
-public class TimePointItem  {
+import lombok.Getter;
+import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.shr.com.primitive.TimeWithDayAttr;
+@Getter
+public class TimePointItem extends DataTypeState {
+	private TimeWithDayAttr timePointItemMin;
+	private TimeWithDayAttr timePointItemMax;
 	
+	private TimePointItem(int timePointItemMin, int timePointItemMax) {
+		super();
+		this.dataTypeValue = DataTypeValue.TIMEPOINT;
+		this.timePointItemMin = new TimeWithDayAttr(timePointItemMin);
+		this.timePointItemMax = new TimeWithDayAttr(timePointItemMax);
+	}
+
+	public static TimePointItem createFromJavaType(int timePointItemMin, int timePointItemMax) {
+		return new TimePointItem(timePointItemMin, timePointItemMax);
+	}
+
 }
