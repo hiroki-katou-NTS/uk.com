@@ -1,6 +1,7 @@
 module nts.uk.com.view.cas001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
-    import text = nts.uk.resource.getText;
+    import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
 
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
@@ -47,7 +48,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                         }
                         else {
-                            alert(text('Msg_217'));
+                            alert(getText('Msg_217'));
                         }
 
                     });
@@ -105,6 +106,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             let self = this;
 
+            setShared('personRole', self.currentRole());
+
             nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
 
                 self.reload();
@@ -114,6 +117,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
         OpenCModal() {
 
             let self = this;
+
+            setShared('personRole', self.currentRole());
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
 
@@ -169,12 +174,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             });
                     },
                     columns: [
-                        { headerText: text('CAS001_69'), key: 'setting', dataType: 'string', width: '48px', formatter: makeIcon },
+                        { headerText: getText('CAS001_69'), key: 'setting', dataType: 'string', width: '48px', formatter: makeIcon },
                         { headerText: '', key: 'requiredAtr', dataType: 'string', width: '34px', hidden: true },
                         { headerText: '', key: 'personItemDefId', dataType: 'string', width: '34px', hidden: true },
-                        { headerText: text('CAS001_47'), key: 'itemName', dataType: 'string', width: '255px' },
-                        { headerText: text('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
-                        { headerText: text('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
+                        { headerText: getText('CAS001_47'), key: 'itemName', dataType: 'string', width: '255px' },
+                        { headerText: getText('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
+                        { headerText: getText('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
                     ],
                     ntsControls: [
                         {
@@ -228,7 +233,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     }
                     else {
-                        alert(text('Msg_217'));
+                        alert(getText('Msg_217'));
                     }
 
                 });
@@ -255,7 +260,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
                 else {
 
-                    alert(text('Msg_217'));
+                    alert(getText('Msg_217'));
 
                 }
 
@@ -482,7 +487,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 });
 
                 if (self.roleItemList().length < 1) {
-                    alert(text('Msg_217'));
+                    alert(getText('Msg_217'));
                 }
 
                 $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
