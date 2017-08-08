@@ -105,7 +105,14 @@ module cps008.a.viewmodel {
         }
 
         openDialogD() {
+            let self = this,
+                layout: Layout = self.layout(),
+                data: ILayout = ko.toJS(self.layout);
 
+            setShared('CPS008_PARASCRD', data);
+            modal('../d/index.xhtml').onClosed(() => {
+
+            });
         }
     }
 
