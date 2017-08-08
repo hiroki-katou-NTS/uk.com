@@ -29,11 +29,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
-	
-	
+
 	private final static String SELECT_GET_CATEGORY_CODE_LASTEST_QUERY = "SELECT co.categoryCd PpemtPerInfoCtgCm co"
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd ORDER BY co.categoryCd DESC";
-	
+
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
@@ -49,22 +48,23 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					return createDomainFromEntity(c);
 				});
 	}
-	
+
 	@Override
-	public String getPerInfoCtgCodeLastest(PersonInfoCategory perInfoCtg, String contractCd) {
-		List<String> ctgCodeLastest =  this.getEntityManager().createQuery(SELECT_GET_CATEGORY_CODE_LASTEST_QUERY, String.class).setMaxResults(1).getResultList();
+	public String getPerInfoCtgCodeLastest(String contractCd) {
+		List<String> ctgCodeLastest =  this.getEntityManager().createQuery(SELECT_GET_CATEGORY_CODE_LASTEST_QUERY, String.class)
+				.setParameter("contractCd", contractCd).setMaxResults(1).getResultList();
 		if(ctgCodeLastest != null && !ctgCodeLastest.isEmpty()){
 			return ctgCodeLastest.get(0);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void addPerInfoCtgRoot(PersonInfoCategory perInfoCtg, String contractCd) {
 		this.commandProxy().insert(createPerInfoCtgCmFromDomain(perInfoCtg, contractCd));
 		this.commandProxy().insert(createPerInfoCtgFromDomain(perInfoCtg));
 	}
-	
+
 	@Override
 	public void addPerInfoCtgWithListCompany(List<PersonInfoCategory> perInfoCtgList, String contractCd) {
 		this.commandProxy().insertAll(perInfoCtgList.stream().map(p -> {

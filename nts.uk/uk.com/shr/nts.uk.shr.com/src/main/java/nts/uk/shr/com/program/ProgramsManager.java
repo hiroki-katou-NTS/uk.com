@@ -212,7 +212,13 @@ public class ProgramsManager {
 	 */
 	public static final Program KDL014B = new Program(WebAppId.AT, ProgramIdConsts.KDL014B, "PgName_KDL014B",
 			"/view/kdl/014/b/index.xhtml");
-
+	
+	/**
+	 * KDW009A
+	 */
+	public static final Program KDW009A = new Program(WebAppId.AT, ProgramIdConsts.KDW009A, "PgName_KDW009A",
+			"/view/kdw/009/a/index.xhtml");
+	
 	/**
 	 * KSM002A
 	 */
@@ -367,6 +373,84 @@ public class ProgramsManager {
 	/** The Constant KMF001L. */
 	public static final Program KMF001L  = new Program(WebAppId.AT, ProgramIdConsts.KMF001L, "PgName_KMF001L",
 			"/view/kmk/001/l/index.xhtml");
+	
+	/**
+	 * KMF003A
+	 */
+	public static final Program KMF003A  = new Program(WebAppId.AT, ProgramIdConsts.KMF003A, "PgName_KMF003A",
+			"/view/kmf/003/a/index.xhtml");
+		
+	/**
+	 * KMF003B
+	 */
+	public static final Program KMF003B  = new Program(WebAppId.AT, ProgramIdConsts.KMF003B, "PgName_KMF003B",
+			"/view/kmf/003/b/index.xhtml");
+	
+	/**
+	 * KMF004A
+	 */
+	public static final Program KMF004A  = new Program(WebAppId.AT, ProgramIdConsts.KMF004A, "PgName_KMF004A",
+			"/view/kmf/004/a/index.xhtml");
+	
+	/**
+	 * KMF004B
+	 */
+	public static final Program KMF004B  = new Program(WebAppId.AT, ProgramIdConsts.KMF004B, "PgName_KMF004B",
+			"/view/kmf/004/b/index.xhtml");
+	
+	/**
+	 * KMF004C
+	 */
+	public static final Program KMF004C  = new Program(WebAppId.AT, ProgramIdConsts.KMF004C, "PgName_KMF004C",
+			"/view/kmf/004/c/index.xhtml");
+	
+	/**
+	 * KMF004D
+	 */
+	public static final Program KMF004D  = new Program(WebAppId.AT, ProgramIdConsts.KMF004D, "PgName_KMF004D",
+			"/view/kmf/004/d/index.xhtml");
+	
+	/**
+	 * KMF004E
+	 */
+	public static final Program KMF004E  = new Program(WebAppId.AT, ProgramIdConsts.KMF004E, "PgName_KMF004E",
+			"/view/kmf/004/e/index.xhtml");
+	
+	/**
+	 * KMF004F
+	 */
+	public static final Program KMF004F  = new Program(WebAppId.AT, ProgramIdConsts.KMF004F, "PgName_KMF004F",
+			"/view/kmf/004/f/index.xhtml");
+	
+	/**
+	 * KMF004G
+	 */
+	public static final Program KMF004G  = new Program(WebAppId.AT, ProgramIdConsts.KMF004G, "PgName_KMF004G",
+			"/view/kmf/004/g/index.xhtml");
+	
+	/**
+	 * KMF004H
+	 */
+	public static final Program KMF004H  = new Program(WebAppId.AT, ProgramIdConsts.KMF004H, "PgName_KMF004H",
+			"/view/kmf/004/h/index.xhtml");
+	
+	/**
+	 * KMK007A
+	 */
+	public static final Program KMK007A  = new Program(WebAppId.AT, ProgramIdConsts.KMK007A, "PgName_KMK007A",
+			"/view/kmk/007/a/index.xhtml");
+	
+	/**
+	 * KMK007B
+	 */
+	public static final Program KMK007B  = new Program(WebAppId.AT, ProgramIdConsts.KMK007B, "PgName_KMK007B",
+			"/view/kmk/007/b/index.xhtml");
+	
+	/**
+	 * KMK007C
+	 */
+	public static final Program KMK007C  = new Program(WebAppId.AT, ProgramIdConsts.KMK007C, "PgName_KMK007C",
+			"/view/kmk/007/c/index.xhtml");
 	
 	// TODO: Define new programs here.
 
