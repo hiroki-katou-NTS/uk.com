@@ -3,9 +3,7 @@ module nts.uk.at.view.kdl003.a {
     export module viewmodel {
         export class ScreenModel {
             columns: KnockoutObservableArray<NtsGridListColumn>;
-            rootList: Array<WorkTimeSet>;
             listWorkTime: KnockoutObservableArray<WorkTimeSet>;
-            selectedCodeList: KnockoutObservableArray<string>;
             selectedWorkTimeCode: KnockoutObservable<string>;
             searchOption: KnockoutObservable<number>;
             startTimeOption: KnockoutObservable<number>;
@@ -31,7 +29,6 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
-                self.selectedCodeList = ko.observableArray([]);
                 self.selectedWorkTimeCode = ko.observable('');
                 self.searchOption = ko.observable(0);
                 self.startTimeOption = ko.observable(1);
@@ -82,7 +79,7 @@ module nts.uk.at.view.kdl003.a {
                 if (self.callerParameter.workTimeCodes && self.callerParameter.workTimeCodes.length > 0) {
                     service.findByCodeList(self.callerParameter.workTimeCodes.split(','))
                         .done(function(data) {
-                            self.hamBiAn(data);
+                            self.addFirstItem(data);
                             self.initWorkTimeSelection();
                             dfd.resolve();
                         });
@@ -92,7 +89,7 @@ module nts.uk.at.view.kdl003.a {
                 else {
                     service.findAllWorkTime()
                         .done(function(data) {
-                            self.hamBiAn(data);
+                            self.addFirstItem(data);
                             self.initWorkTimeSelection();
                             dfd.resolve();
                         });
@@ -126,9 +123,8 @@ module nts.uk.at.view.kdl003.a {
                 return dfd.promise();
             }
 
-            private hamBiAn(data): void {
+            private addFirstItem(data): void {
                 let self = this;
-                self.rootList = data;
                 //add item　なし
                 data.unshift({
                     code: "000",
@@ -138,18 +134,7 @@ module nts.uk.at.view.kdl003.a {
                     workAtr: "",
                     remark: ""
                 });
-                self.listWorkTime(_.clone(self.rootList));
-                if (!nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
-                    if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
-                        self.selectedCodeList([_.first(self.listWorkTime()).code]);
-                        self.selectedWorkTimeCode(_.first(self.listWorkTime()).code);
-                    } else {
-                        self.selectedWorkTimeCode(_.first(self.selectedCodeList()));
-                    }
-                } else {
-                    self.selectedCodeList([]);
-                    self.selectedWorkTimeCode(null);
-                }
+                self.listWorkTime(data);
             }
 
             private initWorkTypeSelection(): void {
@@ -197,7 +182,7 @@ module nts.uk.at.view.kdl003.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
-                    codelist: _.map(self.rootList, function(item) { return item.code }),
+                    codelist: _.map(self.listWorkTime, function(item) { return item.code }),
                     startAtr: self.startTimeOption(),
                     startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? -1 : self.startTime(),
                     endAtr: self.endTimeOption(),
@@ -206,17 +191,11 @@ module nts.uk.at.view.kdl003.a {
                 service.findByTime(command)
                     .done(function(data) {
                         self.listWorkTime(data);
-                        if (!nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
-                            self.selectedCodeList([_.first(self.listWorkTime()).code]);
-                            self.selectedWorkTimeCode(_.first(self.listWorkTime()).code);
-                        } else {
-                            self.selectedCodeList([]);
-                            self.selectedWorkTimeCode(null);
-                        }
-                        nts.uk.ui.block.clear();
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
             }
 
@@ -229,21 +208,13 @@ module nts.uk.at.view.kdl003.a {
                 self.endTime('');
                 service.findByCodeList(self.callerParameter.workTimeCodes.split(','))
                     .done(function(data) {
-                        self.rootList = data;
-                        self.listWorkTime(_.clone(self.rootList));
-                        if (!nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
-                            if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
-                                self.selectedCodeList([_.first(self.listWorkTime()).code]);
-                            }
-                            self.selectedWorkTimeCode(_.first(self.listWorkTime()).code);
-                        } else {
-                            self.selectedCodeList([]);
-                            self.selectedWorkTimeCode(null);
-                        }
-                        nts.uk.ui.block.clear();
+                        self.addFirstItem(data);
+                        self.initWorkTimeSelection();
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 $("#inputStartTime").focus();
             }
