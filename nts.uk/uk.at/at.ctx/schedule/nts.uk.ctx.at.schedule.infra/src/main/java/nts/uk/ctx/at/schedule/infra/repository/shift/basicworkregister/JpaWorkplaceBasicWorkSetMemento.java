@@ -10,7 +10,7 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplaceWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet;
 
 /**
  * The Class JpaWorkplaceBasicWorkSetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KwbmtWorkplac
 public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMemento {
 
 	/** The type value. */
-	private List<KwbmtWorkplaceWorkSet> typeValue;
+	private List<KscmtWorkplaceWorkSet> typeValue;
 
 	/**
 	 * Instantiates a new jpa workplace basic work set memento.
@@ -26,7 +26,7 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaWorkplaceBasicWorkSetMemento(List<KwbmtWorkplaceWorkSet> typeValue) {
+	public JpaWorkplaceBasicWorkSetMemento(List<KscmtWorkplaceWorkSet> typeValue) {
 		super();
 		this.typeValue = typeValue;
 		if (this.typeValue == null) {
@@ -44,7 +44,7 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	@Override
 	public void setWorkPlaceId(WorkplaceId workplaceId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKwbmtWorkplaceWorkSetPK().setWorkplaceId(workplaceId.v());
+			item.getKscmtWorkplaceWorkSetPK().setWorkplaceId(workplaceId.v());
 		});
 	}
 
@@ -57,8 +57,8 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
-			KwbmtWorkplaceWorkSet entity = new KwbmtWorkplaceWorkSet();
-			entity.getKwbmtWorkplaceWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
+			KscmtWorkplaceWorkSet entity = new KscmtWorkplaceWorkSet();
+			entity.getKscmtWorkplaceWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());
 			this.typeValue.add(entity);

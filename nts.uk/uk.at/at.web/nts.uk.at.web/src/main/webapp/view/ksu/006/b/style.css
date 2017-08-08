@@ -15,3 +15,32 @@ th, td {
 .pull-right-col {
 	padding-left: 50px;
 }
+
+ul.countdown {
+	list-style: none;
+	/* margin: 15px 15px;
+	padding: 0; */
+	display: block;
+	text-align: center;
+}
+
+ul.countdown li {
+	display: inline-block;
+}
+
+ul.countdown li span {
+	font-size: 18px;
+	font-weight: 20;
+	line-height: 20px;
+}
+
+ul.countdown li.seperator {
+	font-size: 18px;
+	line-height: 20px;
+	vertical-align: top;
+}
+
+ul.countdown li p {
+	color: #a7abb1;
+	font-size: 14px;
+}

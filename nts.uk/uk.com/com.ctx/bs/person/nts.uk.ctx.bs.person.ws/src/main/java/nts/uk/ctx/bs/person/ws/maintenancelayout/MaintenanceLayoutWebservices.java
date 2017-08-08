@@ -4,63 +4,41 @@
 package nts.uk.ctx.bs.person.ws.maintenancelayout;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import command.maintenancelayout.MaintenanceLayoutCommand;
+import command.maintenancelayout.MaintenanceLayoutCommandHandler;
 import find.maintenancelayout.MaintenanceLayoutDto;
 import find.maintenancelayout.MaintenanceLayoutFinder;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
 
 /**
  * @author laitv
  *
  */
-@Path("ctx/bs/person/maintenance/")
+@Path("ctx/bs/person/maintenance")
 @Produces("application/json")
 public class MaintenanceLayoutWebservices {
 
 	@Inject
-	private MaintenanceLayoutFinder maintenanceLayoutFinder;
+	private MaintenanceLayoutFinder mlayoutFinder;
 
-	
+	@Inject
+	private MaintenanceLayoutCommandHandler commandHandler;
+
 	@POST
 	@Path("findAll")
 	public List<MaintenanceLayoutDto> getAllMaintenenceLayout() {
-		return maintenanceLayoutFinder.getAllLayout();
+		return mlayoutFinder.getAllLayout();
 	}
-	
-	/**
-	 * add Maintenance Layout
-	 * @param command
-	 */
+
 	@POST
-	@Path("add")
-	public void addMaintenanceLayout() {
-		
-	}
-	
-	/**
-	 * update Maintenance Layout
-	 * @param command
-	 */
-	@POST
-	@Path("update")
-	public void updateMaintenanceLayout() {
-		
-	}
-	
-	/**
-	 * remove Maintenance Layout
-	 * @param command
-	 */
-	@POST
-	@Path("remove")
-	public void removeMaintenanceLayout() {
-		
+	@Path("saveLayout")
+	public void addMaintenanceLayout(MaintenanceLayoutCommand command) {
+		this.commandHandler.handle(command);
 	}
 
 }

@@ -44,7 +44,7 @@ public class ClassifiBasicWorkFinder {
 
 	/** The internationalization. */
 	@Inject
-	IInternationalization internationalization;
+	private IInternationalization internationalization;
 	
 
 	/**
@@ -79,7 +79,14 @@ public class ClassifiBasicWorkFinder {
 		// List worktypeCode
 		List<String> worktypeCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkTypeCode();
-		}).distinct().collect(Collectors.toList());
+		}).distinct().filter(a -> {
+			return a.length() > 0;
+		}).collect(Collectors.toList());
+		
+		// If WorktypeCodeList is null
+		if (worktypeCodeList.isEmpty()) {
+			return null;
+		}
 
 		// Find WorkType
 		List<WorkType> worktypeList = this.worktypeRepo.getPossibleWorkType(companyId, worktypeCodeList);
@@ -87,20 +94,23 @@ public class ClassifiBasicWorkFinder {
 		// List workingCode
 		List<String> workingCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkingCode();
-		}).distinct().collect(Collectors.toList());
+		}).distinct().filter(a -> {
+			return a.length() > 0;
+		}).collect(Collectors.toList());
 
 		// Find WorkTime
 		List<WorkTime> workingList = this.worktimeRepo.findByCodeList(companyId, workingCodeList);
 
-		basicWorkSettingFindDto.stream().forEach(item -> {
+		basicWorkSettingFindDto.stream().filter(a -> {
+			return a.getWorkTypeCode().length() > 0;
+		}).forEach(item -> {
 			// Get WorkType
 			WorkType worktype = worktypeList.stream().filter(a -> {
 				return a.getWorkTypeCode().equals(item.getWorkTypeCode());
 			}).findFirst().orElse(null);
 			// Set WorkTypeDisplayName to Dto
 			if (worktype == null) {
-//				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
-				item.setWorkTypeDisplayName("something");
+				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
@@ -112,8 +122,7 @@ public class ClassifiBasicWorkFinder {
 
 			// Set WorkingDisplayName
 			if (worktime == null) {
-				// item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
-				item.setWorkingDisplayName("something");
+				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}

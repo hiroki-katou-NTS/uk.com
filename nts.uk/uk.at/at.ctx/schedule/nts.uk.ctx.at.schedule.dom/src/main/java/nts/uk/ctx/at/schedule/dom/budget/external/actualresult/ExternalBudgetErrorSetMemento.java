@@ -19,11 +19,11 @@ public interface ExternalBudgetErrorSetMemento {
     void setErrorContent(ExtBudgetErrorContent errorContent);
 
     /**
-     * Sets the number column.
+     * Sets the column no.
      *
-     * @param numberColumn the new number column
+     * @param numberColumn the new column no
      */
-    void setNumberColumn(int numberColumn);
+    void setColumnNo(int numberColumn);
 
     /**
      * Sets the actual value.
@@ -54,9 +54,9 @@ public interface ExternalBudgetErrorSetMemento {
     void setExecutionId(String executionId);
 
     /**
-     * Sets the number line.
+     * Sets the line no.
      *
-     * @param numberLine the new number line
+     * @param numberLine the new line no
      */
-    void setNumberLine(int numberLine);
+    void setLineNo(int numberLine);
 }

@@ -4,8 +4,10 @@
 }
 
 #category {
-	margin-left: 10px;
+	margin-left: 40px;
 	width: 340px;
+	height: 370px;
+	
 }
 
 #search {
@@ -14,17 +16,17 @@
 
 input.ntsSearchBox {
 	width: 180px !important;
-	margin-left: 3px;
+	margin-left: 7px;
 	margin-top: 10px;
 }
 
 button.search-btn, button.clear-btn {
 	margin-top: 10px;
-	width: 30px !important;
+	width: 20px !important;
 }
 
 #registration {
-	margin-left: 100px !important;
+	margin-left: 80px !important;
 	margin-right: 5px;
 }
 
@@ -33,7 +35,7 @@ button.search-btn, button.clear-btn {
 }
 
 #grid_container {
-	margin-left: 12px !important;
+	margin-left: 20px !important;
 	width: 300px !important;
 }
 

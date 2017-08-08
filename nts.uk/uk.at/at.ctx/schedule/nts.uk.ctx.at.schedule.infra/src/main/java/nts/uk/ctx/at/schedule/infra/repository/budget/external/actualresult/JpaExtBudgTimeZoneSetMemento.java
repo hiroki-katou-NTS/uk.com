@@ -48,11 +48,11 @@ public class JpaExtBudgTimeZoneSetMemento<T> implements ExtBudgTimeZoneSetMement
         Map<Integer, KscdtExtBudgetTime> mapEntity = lstEntity.stream().collect(
                 Collectors.toMap(entity -> entity.getKscdtExtBudgetTimePK().getPeriodTimeNo(), entity -> entity));
         
-        actualValues.forEach(object -> {
+        for (ExternalBudgetTimeZoneVal<T> object : actualValues) {
             JpaExtBudgTimeZoneValSetMemento<T> memento = new JpaExtBudgTimeZoneValSetMemento<T>(
                     mapEntity.get(object.getTimePeriod()));
             object.saveToMememto(memento);
-        });
+        }
     }
 
     /*

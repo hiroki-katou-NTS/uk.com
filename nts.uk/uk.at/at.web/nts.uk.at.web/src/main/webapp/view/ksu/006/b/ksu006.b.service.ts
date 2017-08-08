@@ -3,14 +3,14 @@ module nts.uk.pr.view.ksu006.b {
         /**
          *  Service paths
          */
-        var paths: any = {
-//            updateAcquisitionRule: 'ctx/at/share/vacation/setting/acquisitionrule/update',
+        var servicePath: any = {
+            executeImportFile: "at/schedule/budget/external/import/execute",
         };
         
-//        export function updateAcquisitionRule(command: any): JQueryPromise<any> {
-//            return nts.uk.request.ajax(paths.updateAcquisitionRule, command);
-//        }
-
+        export function executeImportFile(command: any): JQueryPromise<any> {
+             return nts.uk.request.ajax(servicePath.executeImportFile, command);
+        }
+        
         export module model {
         }
 

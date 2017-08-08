@@ -15,7 +15,7 @@ import lombok.Getter;
 public class Contract {
 
 	/** The password. */
-	private HashPassword password;
+	private RawPassword password;
 
 	/** The contract code. */
 	private ContractCode contractCode;

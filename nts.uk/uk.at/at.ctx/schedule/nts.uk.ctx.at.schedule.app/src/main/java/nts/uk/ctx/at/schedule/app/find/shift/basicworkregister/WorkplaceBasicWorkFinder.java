@@ -23,12 +23,17 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class WorkplaceBasicWorkFinder.
+ */
 @Stateless
 public class WorkplaceBasicWorkFinder {
 
+	/** The repository. */
 	@Inject
 	private WorkplaceBasicWorkRepository repository;
 	
+	/** The worktype repo. */
 	@Inject
 	private WorkTypeRepository worktypeRepo;
 
@@ -38,8 +43,14 @@ public class WorkplaceBasicWorkFinder {
 
 	/** The internationalization. */
 	@Inject
-	IInternationalization internationalization;
+	private IInternationalization internationalization;
 	
+	/**
+	 * Find.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the workplace basic work find dto
+	 */
 	public WorkplaceBasicWorkFindDto find(String workplaceId) {
 		// get companyId by user login
 		String companyId = AppContexts.user().companyId();
@@ -60,7 +71,14 @@ public class WorkplaceBasicWorkFinder {
 		// List worktypeCode
 		List<String> worktypeCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkTypeCode();
-		}).distinct().collect(Collectors.toList());
+		}).distinct().filter(a -> {
+			return a.length() > 0;
+		}).collect(Collectors.toList());
+		
+		// If WorktypeCodeList is null
+		if (worktypeCodeList.isEmpty()) {
+			return null;
+		}
 
 		// Find WorkType
 		List<WorkType> worktypeList = this.worktypeRepo.getPossibleWorkType(companyId, worktypeCodeList);
@@ -68,33 +86,35 @@ public class WorkplaceBasicWorkFinder {
 		// List workingCode
 		List<String> workingCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkingCode();
-		}).distinct().collect(Collectors.toList());
+		}).distinct().filter(a -> {
+			return a.length() > 0;
+		}).collect(Collectors.toList());
 
 		// Find WorkTime
 		List<WorkTime> workingList = this.worktimeRepo.findByCodeList(companyId, workingCodeList);
 
-		basicWorkSettingFindDto.stream().forEach(item -> {
+		basicWorkSettingFindDto.stream().filter(a -> {
+			return a.getWorkTypeCode().length() > 0;
+		}).forEach(item -> {
 			// Get WorkType
 			WorkType worktype = worktypeList.stream().filter(a -> {
 				return a.getWorkTypeCode().equals(item.getWorkTypeCode());
 			}).findFirst().orElse(null);
 			// Set WorkTypeDisplayName to Dto
 			if (worktype == null) {
-//				item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
-				item.setWorkingDisplayName("something");
+				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
 
 			// Get WorkTime
-			WorkTime worktime = workingList.stream().filter(w -> {
-				return w.getSiftCD().equals(item.getWorkingCode());
+			WorkTime worktime = workingList.stream().filter(wt -> {
+				return wt.getSiftCD().v().equals(item.getWorkingCode());
 			}).findFirst().orElse(null);
 
 			// Set WorkingDisplayName
 			if (worktime == null) {
-				// item.setWorkTypeDisplayName(internationalization.getItemName("#KSM006_13").get());
-				item.setWorkingDisplayName("something");
+				item.setWorkTypeDisplayName(internationalization.getItemName("KSM006_13").get());
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}
@@ -104,7 +124,7 @@ public class WorkplaceBasicWorkFinder {
 	}
 	
 	/**
-	 * Find all.
+	 * Find setting.
 	 *
 	 * @return the list
 	 */

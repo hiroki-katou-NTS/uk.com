@@ -23,9 +23,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtClassifyWorkSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtClassifyWorkSetPK_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KcbmtClassifyWorkSet_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSetPK_;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet_;
 
 /**
  * The Class JpaClassifiBasicWorkRepository.
@@ -42,7 +42,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 */
 	@Override
 	public void insert(ClassificationBasicWork classificationBasicWork) {
-		List<KcbmtClassifyWorkSet> entities = this.toEntity(classificationBasicWork);
+		List<KscmtClassifyWorkSet> entities = this.toEntity(classificationBasicWork);
 		commandProxy().insertAll(entities);
 	}
 
@@ -55,7 +55,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 */
 	@Override
 	public void update(ClassificationBasicWork classificationBasicWork) {
-		List<KcbmtClassifyWorkSet> entities = this.toEntity(classificationBasicWork);
+		List<KscmtClassifyWorkSet> entities = this.toEntity(classificationBasicWork);
 		commandProxy()
 				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
@@ -72,18 +72,19 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 
-		CriteriaDelete<KcbmtClassifyWorkSet> cd = bd.createCriteriaDelete(KcbmtClassifyWorkSet.class);
+		CriteriaDelete<KscmtClassifyWorkSet> cd = bd.createCriteriaDelete(KscmtClassifyWorkSet.class);
 
 		// Root
-		Root<KcbmtClassifyWorkSet> root = cd.from(KcbmtClassifyWorkSet.class);
-//		cd.select(root);
+		Root<KscmtClassifyWorkSet> root = cd.from(KscmtClassifyWorkSet.class);
+
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.cid), companyId));
+				root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.cid), companyId));
 		predicateList.add(bd.equal(
-				root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.classifyCode),
+				root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.classifyCode),
 				classificationCode));
+		
 		// Set Where clause to SQL Query
 		cd.where(predicateList.toArray(new Predicate[] {}));
 		em.createQuery(cd).executeUpdate();
@@ -97,24 +98,29 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 */
 	@Override
 	public Optional<ClassificationBasicWork> findAll(String companyId, String classificationCode) {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KcbmtClassifyWorkSet> cq = bd.createQuery(KcbmtClassifyWorkSet.class);
+		CriteriaQuery<KscmtClassifyWorkSet> cq = bd.createQuery(KscmtClassifyWorkSet.class);
+		
 		// Root
-		Root<KcbmtClassifyWorkSet> root = cq.from(KcbmtClassifyWorkSet.class);
+		Root<KscmtClassifyWorkSet> root = cq.from(KscmtClassifyWorkSet.class);
 		cq.select(root);
+		
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.cid), companyId));
+				root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.cid), companyId));
 		predicateList.add(bd.equal(
-				root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.classifyCode),
+				root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.classifyCode),
 				classificationCode));
+		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		
 		// Create Query
-		TypedQuery<KcbmtClassifyWorkSet> query = em.createQuery(cq);
+		TypedQuery<KscmtClassifyWorkSet> query = em.createQuery(cq);
 
 		if (CollectionUtil.isEmpty(query.getResultList())) {
 			return Optional.empty();
@@ -129,19 +135,23 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 */
 	@Override
 	public List<ClassificationCode> findSetting(String companyId) {
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = bd.createQuery(String.class);
+		
 		// Root
-		Root<KcbmtClassifyWorkSet> root = cq.from(KcbmtClassifyWorkSet.class);
+		Root<KscmtClassifyWorkSet> root = cq.from(KscmtClassifyWorkSet.class);
+		
 		// Select Classification Code
-		cq.select(root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.classifyCode)).distinct(true);
+		cq.select(root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.classifyCode)).distinct(true);
 		
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(
-				root.get(KcbmtClassifyWorkSet_.kcbmtClassifyWorkSetPK).get(KcbmtClassifyWorkSetPK_.cid), companyId));
+				root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.cid), companyId));
+		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		
@@ -160,7 +170,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 *            the entity
 	 * @return the classification basic work
 	 */
-	private ClassificationBasicWork toDomain(List<KcbmtClassifyWorkSet> entity) {
+	private ClassificationBasicWork toDomain(List<KscmtClassifyWorkSet> entity) {
 		return new ClassificationBasicWork(new JpaClassifiBasicWorkGetMemento(entity));
 	}
 
@@ -171,12 +181,12 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 *            the domain
 	 * @return the list
 	 */
-	private List<KcbmtClassifyWorkSet> toEntity(ClassificationBasicWork domain) {
+	private List<KscmtClassifyWorkSet> toEntity(ClassificationBasicWork domain) {
 		return domain.getBasicWorkSetting().stream().map(basic -> {
-			KcbmtClassifyWorkSet entity = new KcbmtClassifyWorkSet();
+			KscmtClassifyWorkSet entity = new KscmtClassifyWorkSet();
 			basic.saveToMemento(new JpaBWSettingClassifySetMemento(entity));
-			entity.getKcbmtClassifyWorkSetPK().setCid(domain.getCompanyId());
-			entity.getKcbmtClassifyWorkSetPK().setClassifyCode(domain.getClassificationCode().v());
+			entity.getKscmtClassifyWorkSetPK().setCid(domain.getCompanyId());
+			entity.getKscmtClassifyWorkSetPK().setClassifyCode(domain.getClassificationCode().v());
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -188,16 +198,16 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 *            the entity
 	 * @return the kcbmt classify work set
 	 */
-	private KcbmtClassifyWorkSet updateEntity(KcbmtClassifyWorkSet entity) {
-		KcbmtClassifyWorkSet entityToUpdate = this.queryProxy()
-				.find(entity.getKcbmtClassifyWorkSetPK(), KcbmtClassifyWorkSet.class).get();
+	private KscmtClassifyWorkSet updateEntity(KscmtClassifyWorkSet entity) {
+		KscmtClassifyWorkSet entityToUpdate = this.queryProxy()
+				.find(entity.getKscmtClassifyWorkSetPK(), KscmtClassifyWorkSet.class).get();
 		entityToUpdate.setWorktypeCode(entity.getWorktypeCode());
 		entityToUpdate.setWorkingCode(entity.getWorkingCode());
-		entityToUpdate.getKcbmtClassifyWorkSetPK()
-				.setWorkdayDivision(entity.getKcbmtClassifyWorkSetPK().getWorkdayDivision());
-		entityToUpdate.getKcbmtClassifyWorkSetPK().setCid(entity.getKcbmtClassifyWorkSetPK().getCid());
-		entityToUpdate.getKcbmtClassifyWorkSetPK()
-				.setClassifyCode(entity.getKcbmtClassifyWorkSetPK().getClassifyCode());
+		entityToUpdate.getKscmtClassifyWorkSetPK()
+				.setWorkdayDivision(entity.getKscmtClassifyWorkSetPK().getWorkdayDivision());
+		entityToUpdate.getKscmtClassifyWorkSetPK().setCid(entity.getKscmtClassifyWorkSetPK().getCid());
+		entityToUpdate.getKscmtClassifyWorkSetPK()
+				.setClassifyCode(entity.getKscmtClassifyWorkSetPK().getClassifyCode());
 
 		return entityToUpdate;
 	}

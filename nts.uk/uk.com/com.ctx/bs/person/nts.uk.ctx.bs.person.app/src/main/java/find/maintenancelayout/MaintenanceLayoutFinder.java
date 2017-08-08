@@ -5,13 +5,14 @@ package find.maintenancelayout;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
+import find.layoutitemclassification.LayoutPersonInfoClsDto;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.ILayoutPersonInfoClsRepository;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
+import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
 
 /**
  * @author laitv
@@ -21,16 +22,35 @@ import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutReposi
 public class MaintenanceLayoutFinder {
 
 	@Inject
-	private MaintenanceLayoutRepository maintenanceLayoutRepository;
+	private IMaintenanceLayoutRepository layoutRepo;
+
+	@Inject
+	private ILayoutPersonInfoClsRepository itemClsRepo;
+	
+	
 
 	public List<MaintenanceLayoutDto> getAllLayout() {
-		return this.maintenanceLayoutRepository.getAllMaintenanceLayout().stream()
-				.map(item -> MaintenanceLayoutDto.fromDomain(item)).collect(Collectors.toList());
+		// get All Maintenance Layout
+		return this.layoutRepo.getAllMaintenanceLayout().stream().map(item -> MaintenanceLayoutDto.fromDomain(item))
+				.collect(Collectors.toList());
 	}
 
-	public Optional<MaintenanceLayoutDto> checkExit(String layoutId) {
-		return this.maintenanceLayoutRepository.checkExit(layoutId)
-				.map(item -> MaintenanceLayoutDto.fromDomain(item));
-	}
+	public MaintenanceLayoutDto getDetails(String layoutId) {
+		// get detail maintenanceLayout By Id
+		MaintenanceLayoutDto dto = this.layoutRepo.getById(layoutId).map(c -> MaintenanceLayoutDto.fromDomain(c)).get();
 
+		// Get list Classification Item by layoutID
+		List<LayoutPersonInfoClsDto> listItemCls = this.itemClsRepo.getAllItemClsById(layoutId).stream()
+				.map(item -> LayoutPersonInfoClsDto.fromDomain(item)).collect(Collectors.toList());
+
+		if (listItemCls.size() > 0) {
+			listItemCls.forEach(item -> {
+					
+			});
+		}
+
+		dto.setListItemClsDto(listItemCls);
+
+		return dto;
+	}
 }

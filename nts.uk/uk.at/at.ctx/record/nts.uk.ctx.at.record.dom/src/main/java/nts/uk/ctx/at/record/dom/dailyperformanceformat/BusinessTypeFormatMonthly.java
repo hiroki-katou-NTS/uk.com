@@ -21,13 +21,13 @@ public class BusinessTypeFormatMonthly extends AggregateRoot {
 	 */
 	private BusinessTypeCode businessTypeCode;
 
-	private String attendanceItemId;
+	private BigDecimal attendanceItemId;
 
 	private BigDecimal order;
 
 	private BigDecimal columnWidth;
 
-	public BusinessTypeFormatMonthly(String companyId, BusinessTypeCode businessTypeCode, String attendanceItemId, BigDecimal order,
+	public BusinessTypeFormatMonthly(String companyId, BusinessTypeCode businessTypeCode, BigDecimal attendanceItemId, BigDecimal order,
 			BigDecimal columnWidth) {
 		super();
 		this.companyId = companyId;
@@ -38,7 +38,7 @@ public class BusinessTypeFormatMonthly extends AggregateRoot {
 	}
 
 	public static BusinessTypeFormatMonthly createFromJavaType(String companyId, String businessTypeCode,
-			String attendanceItemId, BigDecimal order, BigDecimal columnWidth) {
+			BigDecimal attendanceItemId, BigDecimal order, BigDecimal columnWidth) {
 		return new BusinessTypeFormatMonthly(companyId, new BusinessTypeCode(businessTypeCode), attendanceItemId, order,
 				columnWidth);
 	}

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
 
 /**
@@ -20,22 +21,18 @@ public class PersonInfoCategoryAuthFinder {
 	@Inject
 	private PersonInfoCategoryAuthRepository personCategoryAuthRepository;
 
-	public List<PersonInfoCategoryAuthDto> getAllPersonCategoryAuth() {
-		return this.personCategoryAuthRepository.getAllPersonCategoryAuth()
-				.stream()
-				.map(item -> PersonInfoCategoryAuthDto.fromDomain(item))
-				.collect(Collectors.toList());
+	public List<PersonInfoCategoryDetailDto> getAllCategory(String roleId) {
+		return this.personCategoryAuthRepository.getAllCategory(roleId).stream()
+				.map(x -> PersonInfoCategoryDetailDto.fromDomain(x)).collect(Collectors.toList());
+
 	}
 
-	public List<PersonInfoCategoryAuthDto> getAllPersonCategoryAuthByRoleId(String roleId) {
-		return this.personCategoryAuthRepository.getAllPersonCategoryAuthByRoleId(roleId)
-				.stream()
-				.map(item -> PersonInfoCategoryAuthDto.fromDomain(item))
-				.collect(Collectors.toList());
-	}
+	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+		Optional<PersonInfoCategoryAuth> opt = this.personCategoryAuthRepository
+				.getDetailPersonCategoryAuthByPId(personCategoryAuthId);
+		if (!opt.isPresent())
+			return null;
+		return opt.map(c -> PersonInfoCategoryAuthDto.fromDomain(c)).get();
 
-	public Optional<PersonInfoCategoryAuthDto> getDetailPersonCategoryAuth(String roleId, String personCategoryAuthId) {
-		return this.personCategoryAuthRepository.getDetailPersonCategoryAuth(roleId,personCategoryAuthId)
-				.map(c -> PersonInfoCategoryAuthDto.fromDomain(c));
 	}
 }

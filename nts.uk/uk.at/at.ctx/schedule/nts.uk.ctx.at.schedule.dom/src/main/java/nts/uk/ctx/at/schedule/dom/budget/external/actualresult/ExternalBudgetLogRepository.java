@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDateTime;
 
@@ -19,6 +20,21 @@ public interface ExternalBudgetLogRepository {
      * @param domain the domain
      */
     void add(ExternalBudgetLog domain);
+    
+    /**
+     * Update.
+     *
+     * @param domain the domain
+     */
+    void update(ExternalBudgetLog domain);
+    
+    /**
+     * Find ext budget log by execute id.
+     *
+     * @param executeId the execute id
+     * @return the list
+     */
+    Optional<ExternalBudgetLog> findExtBudgetLogByExecuteId(String executeId);
     
     /**
      * Find external budget log.

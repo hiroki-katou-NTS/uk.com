@@ -9,7 +9,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -98,7 +97,6 @@ public class PpemtPerInfoItemCm extends UkJpaEntity implements Serializable {
 	@Column(name = "SELECTION_ITEM_REF_TYPE")
 	public BigDecimal selectionItemRefType;
 
-	@Size(max = 50)
 	@Column(name = "SELECTION_ITEM_REF_CODE")
 	public String selectionItemRefCode;
 

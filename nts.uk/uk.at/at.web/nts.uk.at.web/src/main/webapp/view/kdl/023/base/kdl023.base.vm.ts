@@ -171,18 +171,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
 
-            // Reload calendar
-            self.setPatternRange().done(() => {
-                self.optionDates(self.getOptionDates());
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
-
-            // Save pattern reflection domain.
-            service.save(self.getDomainKey(), ko.toJS(self.patternReflection));
-
-            // Set focus control
-            $('#component-calendar-kcp006').focus();
+            $.when(self.setPatternRange(), // Set pattern's range
+                service.save(self.getDomainKey(), ko.toJS(self.patternReflection))) // Save pattern reflection domain.
+                .done(() => {
+                    self.optionDates(self.getOptionDates()); // Reload calendar
+                    $('#component-calendar-kcp006').focus(); // Set focus control
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
 
         }
 
@@ -255,7 +251,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 dfd.resolve();
             }).always(() => {
                 nts.uk.ui.block.clear();
-            });;
+            });
             return dfd.promise();
         }
 
@@ -325,6 +321,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private getOptionDates(): Array<OptionDate> {
             let self = this;
+
+            // Get calendar's range.
+            let range = self.calendarEndDate.diff(self.calendarStartDate, 'days') + 1;
+
             // Reset flag.
             self.isMasterDataUnregisterd(false);
 
@@ -337,12 +337,30 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 currentDate = currentDate.subtract(1, 'days');
 
                 while (currentDate.isSameOrAfter(self.calendarStartDate, 'day')) { // Loop until reach calendar start date.
-                    // Work patterns reverse loop.
-                    self.dailyPatternSetting.listDailyPatternVal.slice().reverse().some(dailyPatternValue => {
+                    // Reversed list dailyPatternValue loop.
+                    let listDailyPatternVal = self.dailyPatternSetting.listDailyPatternVal.slice().reverse();
+
+                    // Master data is registered.
+                    if (listDailyPatternVal && listDailyPatternVal.length > 0) {
+                        listDailyPatternVal.some(dailyPatternValue => {
+                            result = result.concat(self.loopBackwardPatternDays(dailyPatternValue, currentDate));
+
+                            // Break loop condition.
+                            let isLoopEnd = currentDate.isBefore(self.calendarStartDate, 'day');
+                            return isLoopEnd;
+                        });
+                    }
+
+                    // Master data is unregistered.
+                    else {
+                        let dailyPatternValue = {
+                            dispOrder: undefined,
+                            workTypeSetCd: undefined,
+                            workingHoursCd: undefined,
+                            days: range
+                        }
                         result = result.concat(self.loopBackwardPatternDays(dailyPatternValue, currentDate));
-                        let isLoopEnd = currentDate.isBefore(self.calendarStartDate, 'day');
-                        return isLoopEnd;
-                    });
+                    }
                 }
                 // Reset current date to pattern start date.
                 currentDate = moment(self.patternStartDate);
@@ -350,12 +368,30 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
             // Forward processing
             while (currentDate.isSameOrBefore(self.calendarEndDate, 'day')) { // Loop until reach calendar end date.
-                // Work patterns loop.
-                self.dailyPatternSetting.listDailyPatternVal.some(dailyPatternValue => {
+                // List dailyPatternValue loop.
+                let listDailyPatternVal = self.dailyPatternSetting.listDailyPatternVal;
+
+                // Master data is registered.
+                if (listDailyPatternVal && listDailyPatternVal.length > 0) {
+                    listDailyPatternVal.some(dailyPatternValue => {
+                        result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
+
+                        // Break loop condition.
+                        let isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
+                        return isLoopEnd;
+                    });
+                }
+
+                // Master data is unregistered.
+                else {
+                    let dailyPatternValue = {
+                        dispOrder: undefined,
+                        workTypeSetCd: undefined,
+                        workingHoursCd: undefined,
+                        days: range
+                    }
                     result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
-                    let isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
-                    return isLoopEnd;
-                });
+                }
             }
             return result;
         }
@@ -371,11 +407,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Day of pattern loop.
             while (dayOfPattern <= dailyPatternValue.days) {
 
-                // Break loop.
+                // Break loop if current date reach calendar's start date.
                 if (currentDate.isBefore(self.calendarStartDate, 'day')) {
                     break;
                 }
 
+                // Get display text and push to option date list.
                 let optionDate = self.getDisplayText(dailyPatternValue, currentDate);
                 result.push(optionDate);
 
@@ -405,15 +442,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Day of pattern loop.
             while (dayOfPattern <= dailyPatternValue.days) {
 
-                //  When on screen B
-                if (!self.isOnScreenA()) {
-                    // Break loop if current date is out of calendar's range.
-                    if (currentDate.isBefore(self.calendarStartDate, 'day') || currentDate.isAfter(self.calendarEndDate, 'day')) {
-                        currentDate = currentDate.add(1, 'days'); // Next day on calendar.
-                        break;
-                    }
-                }
-
+                // Get display text and push to option date list.
                 let optionDate = self.getDisplayText(dailyPatternValue, currentDate);
                 result.push(optionDate);
 
@@ -428,6 +457,20 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                 // Next day on calendar.
                 currentDate = currentDate.add(1, 'days');
+
+                //  When on screen B
+                if (!self.isOnScreenA()) {
+
+                    // Break loop if current date reach calendar's end date.
+                    if (currentDate.isAfter(self.calendarEndDate, 'day')) {
+                        break;
+                    }
+
+                    // Skip to next day if current date is before calendar's start date.
+                    if (currentDate.isSameOrBefore(self.calendarStartDate, 'day')) {
+                        _.remove(result, item => item === optionDate);
+                    }
+                }
             }
             return result;
         }
@@ -449,49 +492,47 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     ]
                 };
             }
-            // Is not holiday
-            else {
-                // Is statutory holiday
-                if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
-                    return {
-                        start: currentDate.format('YYYY-MM-DD'),
-                        textColor: 'red',
-                        backgroundColor: 'white',
-                        listText: [
-                            self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
-                        ]
-                    };
-                }
-                // Is non-statutory holiday
-                else if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
-                    return {
-                        start: currentDate.format('YYYY-MM-DD'),
-                        textColor: 'red',
-                        backgroundColor: 'white',
-                        listText: [
-                            self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
-                        ]
-                    };
-                }
-                // Is working day.
-                else {
-                    let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
-                    let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
-                    let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
-                    if (!worktype || !worktime) {
-                        self.isMasterDataUnregisterd(true);
-                    }
-                    return {
-                        start: currentDate.format('YYYY-MM-DD'),
-                        textColor: 'blue',
-                        backgroundColor: 'white',
-                        listText: [
-                            worktype ? worktype : noSetting,
-                            worktime ? worktime : noSetting
-                        ]
-                    };
-                }
+
+            // Is statutory holiday
+            if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
+                return {
+                    start: currentDate.format('YYYY-MM-DD'),
+                    textColor: 'red',
+                    backgroundColor: 'white',
+                    listText: [
+                        self.getWorktypeNameByCode(self.patternReflection.statutorySetting.workTypeCode())
+                    ]
+                };
             }
+
+            // Is non-statutory holiday
+            if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
+                return {
+                    start: currentDate.format('YYYY-MM-DD'),
+                    textColor: 'red',
+                    backgroundColor: 'white',
+                    listText: [
+                        self.getWorktypeNameByCode(self.patternReflection.nonStatutorySetting.workTypeCode())
+                    ]
+                };
+            }
+
+            // Is working day.
+            let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
+            let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
+            let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
+            if (!worktype || !worktime) {
+                self.isMasterDataUnregisterd(true);
+            }
+            return {
+                start: currentDate.format('YYYY-MM-DD'),
+                textColor: 'blue',
+                backgroundColor: 'white',
+                listText: [
+                    worktype ? worktype : noSetting,
+                    worktime ? worktime : noSetting
+                ]
+            };
         }
 
         /**
@@ -595,6 +636,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private setPatternRange(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
+
+            // Is on screen A.
             if (self.isOnScreenA()) {
                 let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
 
@@ -611,6 +654,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     dfd.resolve();
                 });
             }
+
             // Is on screen B.
             else {
                 // Reset pattern range.
@@ -618,6 +662,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.patternEndDate = moment(self.calendarEndDate);
                 dfd.resolve();
             }
+
             return dfd.promise();
         }
 
@@ -650,6 +695,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private getParamFromCaller(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
+
             // Get param from caller screen.
             let selectedCode = nts.uk.ui.windows.getShared("patternCode");
             let startDate = nts.uk.ui.windows.getShared("startDate");
@@ -677,11 +723,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.loadHolidayList().done(() => dfd.resolve());
 
             }
+
             // Is on screen A
             else {
                 self.isOnScreenA(true);
                 self.setPatternRange().done(() => dfd.resolve());
             }
+
             return dfd.promise();
         }
 

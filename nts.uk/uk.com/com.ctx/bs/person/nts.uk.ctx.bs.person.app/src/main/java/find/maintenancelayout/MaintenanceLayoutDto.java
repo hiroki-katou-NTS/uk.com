@@ -3,22 +3,31 @@
  */
 package find.maintenancelayout;
 
-import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayout;
-import nts.uk.ctx.bs.person.dom.person.newlayout.LayoutCode;
-import nts.uk.ctx.bs.person.dom.person.newlayout.LayoutName;
+import java.util.List;
 
-/**
- * @author laitv
- *
- */
-@Value
+import find.layoutitemclassification.LayoutPersonInfoClsDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayout;
+
+
+@AllArgsConstructor
+@Data
 public class MaintenanceLayoutDto {
 
 	String companyId;
 	String layoutCode;
 	String layoutName;
 	String maintenanceLayoutID;
+	List<LayoutPersonInfoClsDto> listItemClsDto;
+
+	public MaintenanceLayoutDto(String companyId, String layoutCode, String layoutName, String maintenanceLayoutID) {
+		super();
+		this.companyId = companyId;
+		this.layoutCode = layoutCode;
+		this.layoutName = layoutName;
+		this.maintenanceLayoutID = maintenanceLayoutID;
+	}
 
 	public static MaintenanceLayoutDto fromDomain(MaintenanceLayout domain) {
 		return new MaintenanceLayoutDto(domain.getCompanyId(), domain.getLayoutCode().v(), domain.getLayoutName().v(),

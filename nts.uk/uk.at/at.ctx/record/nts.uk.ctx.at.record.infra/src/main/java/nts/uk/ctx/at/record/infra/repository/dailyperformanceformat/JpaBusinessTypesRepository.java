@@ -19,14 +19,10 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KdwmtWorkType a ");
-		builderString.append("WHERE a.kdwmtWorkTypePK.companyId = :companyId ");
+		builderString.append("FROM KrcmtBusinessType a ");
+		builderString.append("WHERE a.krcmtBusinessTypePK.companyId = :companyId ORDER BY a.krcmtBusinessTypePK.businessTypeCode DESC ");
 		FIND = builderString.toString();
-	}
-	/**
-	 * author: HoangYen
-	 */
-	private final String FIND_BUSINESS_TYPE = "SELECT a FROM KrcmtBusinessType a WHERE a.kdwmtWorkTypePK.companyId = :companyId AND a.kdwmtWorkTypePK.businessTypeCode = :businessTypeCode"; 
+	} 
 	/**
 	 * author: HoangYen
 	 * change from domain to entity
@@ -35,8 +31,8 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	 */
 	private static KrcmtBusinessType toEntity(BusinessType domain){
 		val entity = new KrcmtBusinessType();
-		entity.krcmtBusinessTypePK = new KrcmtBusinessTypePK(domain.getCompanyId(), domain.getWorkTypeCode().v());
-		entity.businessTypeName = domain.getWorkTypeName().v();
+		entity.krcmtBusinessTypePK = new KrcmtBusinessTypePK(domain.getCompanyId(), domain.getBusinessTypeCode().v());
+		entity.businessTypeName = domain.getBusinessTypeName().v();
 		return entity;
 	}
 	
@@ -78,20 +74,17 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	 * find business type by companyId and work type code
 	 */
 	@Override
-	public Optional<BusinessType> findBusinessType(String companyId, String workTypeCode) {
-		return this.queryProxy().query(FIND_BUSINESS_TYPE, KrcmtBusinessType.class)
-				.setParameter("companyId", companyId)
-				.setParameter("workTypeCode", workTypeCode)
-				.getSingle(c->toDomain(c));
+	public Optional<BusinessType> findBusinessType(String companyId, String businessTypeCode) {
+		return this.queryProxy().find(new KrcmtBusinessTypePK(companyId, businessTypeCode), KrcmtBusinessType.class).map(c-> toDomain(c));
 	}
 	/**
 	 * author: HoangYen
 	 * delete business type by companyId and work type code 
 	 */
 	@Override
-	public void deleteBusinessType(String companyId, String workTypeCode) {
-		KrcmtBusinessTypePK krcmtBusinessTypePK = new KrcmtBusinessTypePK(companyId, workTypeCode);
-		this.commandProxy().remove(KrcmtBusinessTypePK.class, krcmtBusinessTypePK);
+	public void deleteBusinessType(String companyId, String businessTypeCode) {
+		KrcmtBusinessTypePK krcmtBusinessTypePK = new KrcmtBusinessTypePK(companyId, businessTypeCode);
+		this.commandProxy().remove(KrcmtBusinessType.class, krcmtBusinessTypePK);
 	}
 
 }

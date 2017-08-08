@@ -12,6 +12,7 @@ module ksu001.o.viewmodel {
         time2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
+        nameWorkTimeType: KnockoutObservable<any[]>;
 
         constructor() {
             let self = this;
@@ -34,13 +35,31 @@ module ksu001.o.viewmodel {
 
             self.findWorkType();
             self.findWorkTime();
-        }
 
-        start() {
-            let self = this;
-            var dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
+            //get name of workType and workTime
+            self.nameWorkTimeType = ko.pureComputed(() => {
+                let workTypeName, workTimeName: string;
+                if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
+                    let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
+                    if (d) {
+                        workTypeName = d.abbreviationName;
+                    } else {
+                        workTypeName = '';
+                    }
+
+                    let c = _.find(self.listWorkTime(), ['siftCd', self.selectedWorkTimeCode()]);
+                    if (c) {
+                        workTimeName = c.abName;
+                    } else {
+                        workTimeName = '';
+                    }
+                }
+                return [workTypeName, workTimeName];
+            });
+
+            $("#stick-undo").click(function() {
+                $("#extable").exTable("stickUndo");
+            });
         }
 
         /**
@@ -62,7 +81,7 @@ module ksu001.o.viewmodel {
                             displayAtr: wT.displayAtr
                         }));
                     });
-//                    self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
+                    //                    self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -90,7 +109,7 @@ module ksu001.o.viewmodel {
                             note: wT.note,
                         }));
                     });
-//                    self.selectedWorkTimeCode(self.listWorkTime()[0].siftCd);
+                    //                    self.selectedWorkTimeCode(self.listWorkTime()[0].siftCd);
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -108,16 +127,6 @@ module ksu001.o.viewmodel {
         abbreviationName: string,
         memo: string,
         displayAtr: number
-    }
-
-    interface IWorkTime {
-        siftCd: string,
-        name: string,
-        abName: string,
-        dailyWorkAtr: number,
-        methodAtr: number,
-        displayAtr: number,
-        note: string
     }
 
     class WorkType {
@@ -142,6 +151,16 @@ module ksu001.o.viewmodel {
         }
     }
 
+    interface IWorkTime {
+        siftCd: string,
+        name: string,
+        abName: string,
+        dailyWorkAtr: number,
+        methodAtr: number,
+        displayAtr: number,
+        note: string
+    }
+
     class WorkTime {
         siftCd: string;
         name: string;
@@ -160,7 +179,7 @@ module ksu001.o.viewmodel {
             this.methodAtr = params.methodAtr;
             this.displayAtr = params.displayAtr;
             this.note = params.note;
-            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1 + timeZone2 ' + '( ' + this.note + ' )';
+            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1  timeZone2 ' + '( ' + this.note + ' )';
         }
     }
 }

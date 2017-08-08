@@ -14,7 +14,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class CompanyBWSaveCommandHandler.
@@ -31,25 +30,16 @@ public class CompanyBWSaveCommandHandler extends CommandHandler<CompanyBWSaveCom
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<CompanyBWSaveCommand> context) {
-		// get user login
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get company id user login
-		String companyId = loginUserContext.companyId();
-
+		
 		// Get Command
 		CompanyBWSaveCommand command = context.getCommand();
-		command.getCompanyBasicWork().setCompanyId(companyId);
 	
 		// Find if exist
-		Optional<CompanyBasicWork> optional = this.repository.findAll(companyId);
+		Optional<CompanyBasicWork> optional = this.repository.findAll(AppContexts.user().companyId());
 		
 		// Convert to Domain
-		CompanyBasicWork companyBasicWork = command.toDomain();
-
-//		// Validate
-//		companyBasicWork.validate();
-
+		CompanyBasicWork companyBasicWork = new CompanyBasicWork(command);
+		
 		// Check exist
 		if (optional.isPresent()) {
 			this.repository.update(companyBasicWork);

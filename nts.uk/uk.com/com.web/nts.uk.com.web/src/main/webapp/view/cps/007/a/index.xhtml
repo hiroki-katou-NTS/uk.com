@@ -7,10 +7,10 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
+			<title>#{i18n.getText('CPS007_1')}</title>
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="cps007.a.style.css" />
-			<com:scriptfile path="sortable-ko-ext.js" />
 			<com:scriptfile path="layout-control-ko-ext.js" />
 			<com:scriptfile path="cps007.a.service.js" />
 			<com:scriptfile path="cps007.a.vm.js" />
@@ -19,14 +19,14 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button type="button">#{i18n.getText('CPS007_3')}</button>
+				<button type="button" class="proceed">#{i18n.getText('CPS007_3')}</button>
 				<a class="goout"
 					data-bind="ntsLinkButton: { jump: '../../008/a/index.xhtml' }">#{i18n.getText('CPS007_4')}</a>
 			</div>
-			<div id="contents-area" class="cf">
+			<div id="contents-area" class="cf" data-bind="with: layout">
 				<div
 					data-bind="ntsLayoutControl: { 
-					data: items,
+					data: itemsClassification,
 					editAble: editable }"></div>
 			</div>
 		</ui:define>

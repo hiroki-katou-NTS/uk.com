@@ -34,26 +34,26 @@
 					<div
 						data-bind="ntsPanel:{width: '300px', height: '480px', direction: 'right', showIcon: false, visible: true}">
 						<div tabindex="3" style="width: 300px"
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'categoryCode', comId: 'category-list-items', 
-									items: perInfoCategoryList, selected: perInfoCategorySelectCode, selectedKey: 'categoryCode', fields: ['categoryName'], mode: 'igGrid'}" />
+							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'category-list-items', 
+									items: categoryList, selected: perInfoCtgSelectCode, selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid'}" />
 						<table id="category-list-items"
 							data-bind="ntsGridList: {								
 								height: 430,
 								name: '#[CPS005_27]',
-								dataSource: perInfoCategoryList,
-								primaryKey: 'categoryCode',
+								dataSource: categoryList,
+								primaryKey: 'id',
 								columns: [
-									 { headerText: '', key: 'categoryCode', hidden: true },
+									 { headerText: '', key: 'id', hidden: true },
                 					 { headerText: '#{i18n.getText('CPS005_4')}', key: 'categoryName', width: 283 }, 
 								],
 								multiple: false,
-								value: perInfoCategorySelectCode
+								value: perInfoCtgSelectCode
 							}">
 						</table>
 					</div>
 				</div>
 				<div id="contents-area-left">
-					<div data-bind="with: currentCategorySelected">
+					<div data-bind="with: currentCtgSelected">
 						<!-- perInfoCategory selection is not fixed  -->
 						<div data-bind="visible: !fixedIsSelected() ">
 							<div
@@ -65,7 +65,7 @@
 								<input tabindex="4"
 									data-bind="ntsTextEditor: {
 								name: '#[CPS005_4]',
-								value: categoryNameKnockout,
+								value: perInfoCtgName,
 								constraint: '',
 								option: {
 					            	textmode: 'text',
@@ -91,7 +91,7 @@
 								options: $parent.historyClassification,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: historyClassificationSelected,
+								value: historyClassSelected,
 								enable: true }">
 								</div>
 							</div>
@@ -131,7 +131,7 @@
 								options: $parent.singleMultipleType,
 								optionsValue: 'value',
 								optionsText: 'name',
-								value: singleMultipleTypeSelected,
+								value: singleMulTypeSelected,
 								enable: true }">
 								</div>
 								<button tabindex="9"
@@ -147,16 +147,16 @@
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_4')}' "></span>
 								</div>
-								<span class="label" data-bind="text: categoryNameKnockout">Demo</span>	
+								<span class="label" data-bind="text: perInfoCtgName">Demo</span>	
 							</div>
-	
+							
 							<div
 								class="valign-center control-group control-group-margin-custom">
 								<div data-bind="ntsFormLabel: { required: false }"
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_5')}' "></span>
 								</div>
-								<span class="label" data-bind="text: historyClassificationFixed "></span>								
+								<span class="label" data-bind="text: historyFixedName "></span>								
 							</div>
 	
 							<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
@@ -193,12 +193,13 @@
 								data-bind="ntsGridList: {								
 									height: 250,
 									name: '#[CPS005_28]',
-									dataSource: currentCategorySelected().itemNameList,
-									primaryKey: '',
+									dataSource: currentCtgSelected().itemNameList,
+									primaryKey: 'itemName',
 									columns: [
 	                					 { headerText: '#{i18n.getText('CPS005_13')}', key: 'itemName', width: 280 }, 
 									],
 									value: ko.observable(),
+									multiple: false,
 									enable: false,
 								}">
 							</table>

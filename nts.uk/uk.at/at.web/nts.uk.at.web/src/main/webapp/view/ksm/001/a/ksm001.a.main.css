@@ -5,8 +5,52 @@
 	margin-left: 10px;
 }
 
-#targetYear {
+.lableContent {
+	width: 150px;
+}
+
+.helpButton {
+	margin-right: 15px;
+	margin-left: 15px;
+}
+
+.tabPanel {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+.lineContent {
 	margin-top: 20px;
 	margin-left: 20px;
 	display: inline-flex;
+}
+
+.content {
+	margin-left: 9px;
+	margin-top: 8px;
+}
+
+.bg-dark-green {
+	background-color: #C7F391;
+}
+
+.border-all td {
+	border: solid grey 1px;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	padding-left: 10px;
+	min-width: 60px;
+	max-width: 130px;
+}
+
+.border-all input {
+	width: 80px;
+	text-align: center !important;
+}
+
+.employmentSettingContent {
+	margin-top: 30px;
+	margin-left: 20px;
 }

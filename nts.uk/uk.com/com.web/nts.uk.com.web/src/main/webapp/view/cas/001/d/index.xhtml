@@ -9,10 +9,14 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 400,
+					width : 440,
 					height : 600
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.person.dom.person.role.RoleCode
+					nts.uk.ctx.bs.person.dom.person.role.RoleName
+				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cas001.d.style.css" />
 			<com:scriptfile path="cas001.d.service.js" />
@@ -21,41 +25,41 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id='role'>
-				<div class='flex valign-center'>
-					<div
-						data-bind="ntsFormLabel: {required:true}" class='distane'> 
-						<label id="codeName">#{i18n.getText('CAS001_12')}</label>
+			<div id="contents-area">
+				<div id='role'>
+					<div class='flex valign-center' data-bind="with: currentRole">
+						<div
+							data-bind="ntsFormLabel: {constraint: ['RoleCode' , 'RoleName'],required:true}"
+							class='distane'>
+							<label id="codeName">#{i18n.getText('CAS001_12')}</label>
+						</div>
+						<label id="roleCode" data-bind="text: roleCode"></label> 
+						<label id="roleName" data-bind="text: roleName"></label>
 					</div>
-					<label id="roleCode"></label>
-					<label id="roleName"></label>
+					<div data-bind="ntsFormLabel: {}" class='distane'>
+						<label id="codeName">#{i18n.getText('CAS001_57')}</label>
+					</div>
 				</div>
-				<div data-bind="ntsFormLabel: {}" class='distane'>
-					<label id="codeName">#{i18n.getText('CAS001_57')}</label>
-				</div>
-			</div>
-
-			<div id="contents-area" >
 				<div id='category' class="bg-green caret-background">
 					<div id="search" tabindex="1"
 						data-bind="ntsSearchBox: {
 									searchMode: 'filter',
-									targetKey: 'roleCode',
-								    comId: 'roles',
-									items: roleList,
+									targetKey: 'categoryCode',
+								    comId: 'grid',
+									items: categoryList,
 									selected: currentRoleCode, 
-									selectedKey: 'roleCode', 
-									fields: ['roleCode', 'roleName'], mode: 'igGrid'}" />
-					<table id="grid" >
+									selectedKey: 'categoryCode', 
+									fields: ['categoryCode', 'categoryName'], mode: 'igGrid'}" />
+					<table id="grid">
 					</table>
 
 				</div>
-				<hr></hr>
-				<div  id="functions-area">
-					<button id="registration" class="proceed x-large" data-bind='click:creatCategory' tabindex="6">#{i18n.getText('CAS001_61')}</button>
-					<button id="delete" class="danger " data-bind='click: closeDialog' tabindex="7">#{i18n.getText('CAS001_62')}</button>
-
-				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="registration" class="proceed x-large"
+					data-bind='click:creatCategory' tabindex="6">#{i18n.getText('CAS001_61')}</button>
+				<button id="delete" class="danger " data-bind='click: closeDialog'
+					tabindex="7">#{i18n.getText('CAS001_62')}</button>
 
 			</div>
 

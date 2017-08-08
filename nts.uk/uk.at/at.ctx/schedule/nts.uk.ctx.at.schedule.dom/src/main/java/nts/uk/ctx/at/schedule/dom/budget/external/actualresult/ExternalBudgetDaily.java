@@ -25,9 +25,9 @@ public class ExternalBudgetDaily<T> extends AggregateRoot {
     // 外部予算実績項目コード
     private ExternalBudgetCd extBudgetCode;
     
-    /** The process date. */
+    /** The actual date. */
     // 年月日
-    private Date processDate;
+    private Date actualDate;
     
     /** The workplace id. */
     // 職場ID
@@ -42,7 +42,7 @@ public class ExternalBudgetDaily<T> extends AggregateRoot {
         super();
         this.actualValue = memento.getActualValue();
         this.extBudgetCode = memento.getExtBudgetCode();
-        this.processDate = memento.getProcessDate();
+        this.actualDate = memento.getActualDate();
         this.workplaceId = memento.getWorkplaceId();
     }
     
@@ -54,7 +54,7 @@ public class ExternalBudgetDaily<T> extends AggregateRoot {
     public void saveToMemento(ExternalBudgetDailySetMemento<T> memento) {
         memento.setActualValue(this.actualValue);
         memento.setExtBudgetCode(this.extBudgetCode);
-        memento.setProcessDate(this.processDate);
+        memento.setActualDate(this.actualDate);
         memento.setWorkplaceId(this.workplaceId);
     }
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,7 +11,6 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
@@ -21,29 +21,30 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class BusinessTypesFinder {
 
 	@Inject
-	private BusinessTypesRepository workTypeRepository;
+	private BusinessTypesRepository businessTypeRepository;
 
 	/**
 	 * find All business type
 	 * @return
 	 */
 	public List<BusinessTypeDto> findAll() {
-		LoginUserContext login = AppContexts.user();
-		String companyId = login.companyId();
-
-		List<BusinessType> workTypes = workTypeRepository.findAll(companyId);
-
-		// process in UI
-		// if (workTypes.isEmpty()) {
-		// throw new BusinessException("Msg_242");
-		// }
-
-		List<BusinessTypeDto> workTypeDtos = workTypes.stream().map(item -> {
-			return new BusinessTypeDto(item.getWorkTypeCode().v(), item.getWorkTypeName().v());
+		String companyId = AppContexts.user().companyId();
+		return this.businessTypeRepository.findAll(companyId).stream().map(item -> {
+			return new BusinessTypeDto(item.getBusinessTypeCode().v(), item.getBusinessTypeName().v());
 		}).collect(Collectors.toList());
-		workTypeDtos.sort((e2, e1) -> Integer.parseInt(e1.getWorkTypeCode()) - Integer.parseInt(e2.getWorkTypeCode()));
-
-		return workTypeDtos;
 	}
-
+	/**
+	 * find business type by business type code
+	 * @param businessTypeCode
+	 * @return
+	 */
+	public BusinessTypeDto findBusinessType(String businessTypeCode){
+		String companyId = AppContexts.user().companyId();
+		Optional<BusinessType> businessType = businessTypeRepository.findBusinessType(companyId, businessTypeCode);
+		if(!businessType.isPresent()){
+			return null;
+		}
+		BusinessTypeDto businessTypeDto = new BusinessTypeDto(businessType.get().getBusinessTypeCode().v(),businessType.get().getBusinessTypeName().v());
+		return businessTypeDto;
+	}
 }

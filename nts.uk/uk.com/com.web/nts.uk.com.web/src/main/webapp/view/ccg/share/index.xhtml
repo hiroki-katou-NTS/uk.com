@@ -49,25 +49,32 @@
 						<div>
 							<label>#{i18n.getText('CCG001_20')}</label>
 						</div>
-						<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {active: 0, enable: true}" >
+						<div tabindex="-1" class="accordion" id="EmploymentList" data-bind="ntsAccordion: {enable: true}" >
 							<h3>
 								<label>#{i18n.getText('CCG001_5')}</label>
 							</h3>
-							<div tabindex="7" class="contentkcp" id="employmentList"></div>
+							<div class="contentkcp">
+								<div id="employmentList" tabindex="7" style="width: 352px"></div>
+							</div>
 						</div>
-						<div tabindex="-1" class="accordion" data-bind="ntsAccordion: { collapsible : true, enable: true}">
+						<div tabindex="-1" class="accordion" id="ClassificationList" data-bind="ntsAccordion: {enable: true}">
 							<h3>
 								<label>#{i18n.getText('CCG001_6')}</label>
 							</h3>
-							<div tabindex="8" class="contentkcp" id="classificationList"></div>
+							<div class="contentkcp">
+								<div tabindex="8" id="classificationList">
+								</div>
+							</div>
 						</div>
-						<div tabindex="-1" class="accordion"  data-bind="ntsAccordion: {enable: true}">
+						<div tabindex="-1" class="accordion" id="JoptitleList" data-bind="ntsAccordion: {enable: true}">
 							<h3>
 								<label>#{i18n.getText('CCG001_7',["Com_Jobtitle"])}</label>
 							</h3>
-							<div tabindex="9" class="contentkcp" id="jobtitleList"></div>
+							<div class="contentkcp">
+								<div tabindex="9" id="jobtitleList"></div>
+							</div>
 						</div>
-						<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true}">
+						<div tabindex="-1" class="accordion" id="WorkplaceList" data-bind="ntsAccordion: {enable: true}">
 						<h3>
 							<label>#{i18n.getText('CCG001_8')}</label>
 						</h3>
