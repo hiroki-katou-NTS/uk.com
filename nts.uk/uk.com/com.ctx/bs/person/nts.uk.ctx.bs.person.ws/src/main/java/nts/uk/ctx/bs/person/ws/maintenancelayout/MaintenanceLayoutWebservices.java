@@ -14,14 +14,12 @@ import command.maintenancelayout.MaintenanceLayoutCommand;
 import command.maintenancelayout.MaintenanceLayoutCommandHandler;
 import find.maintenancelayout.MaintenanceLayoutDto;
 import find.maintenancelayout.MaintenanceLayoutFinder;
+import nts.arc.layer.ws.WebService;
 
-/**
- * @author laitv
- *
- */
+
 @Path("ctx/bs/person/maintenance")
 @Produces("application/json")
-public class MaintenanceLayoutWebservices {
+public class MaintenanceLayoutWebservices extends WebService{
 
 	@Inject
 	private MaintenanceLayoutFinder mlayoutFinder;
@@ -40,5 +38,4 @@ public class MaintenanceLayoutWebservices {
 	public void addMaintenanceLayout(MaintenanceLayoutCommand command) {
 		this.commandHandler.handle(command);
 	}
-
 }

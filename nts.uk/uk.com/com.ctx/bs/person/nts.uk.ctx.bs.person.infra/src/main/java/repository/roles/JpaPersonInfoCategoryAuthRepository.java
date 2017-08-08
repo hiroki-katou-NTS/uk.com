@@ -16,18 +16,14 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDeta
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
 
-	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonCategoryAuth c";
-
-	private final String SEL_1 = SEL_NO_WHERE
-			+ " WHERE c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
-
-	private final String SEL_2 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
+	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
 			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
-			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd";
+			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd "
+			+ "AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
@@ -98,16 +94,19 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	@Override
-	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
-		return this.queryProxy().query(SEL_1, PpemtPersonCategoryAuth.class)
-				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle().map(e -> {
+	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId,
+			String personCategoryAuthId) {
+		return this.queryProxy()
+				.find(new PpemtPersonCategoryAuthPk(roleId, personCategoryAuthId), PpemtPersonCategoryAuth.class)
+				.map(e -> {
 					return Optional.of(toDomain(e));
 				}).orElse(Optional.empty());
 	}
 
 	@Override
-	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
-		return this.queryProxy().query(SEL_2, Object[].class).setParameter("roleId", roleId).getList(c -> toDomain(c));
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd) {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
+				.setParameter("roleId", roleId).setParameter("contractCd", contractCd).getList(c -> toDomain(c));
 
 	}
 

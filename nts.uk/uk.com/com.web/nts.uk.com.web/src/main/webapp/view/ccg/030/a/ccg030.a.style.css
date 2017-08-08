@@ -8,3 +8,5 @@
 .ntsControl {display: inline;}
 #file_upload{width: 345px; overflow: hidden;}
 .form-label > i {white-space:nowrap;}
+.container {width: 1125px;}
+#contents-area{overflow: hidden};

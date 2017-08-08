@@ -29,7 +29,7 @@ public class JpaItemGroupRepository extends JpaRepository implements IPersonInfo
 	public Optional<PersonInfoItemGroup> getById(String groupId) {
 		PpemtPInfoItemGroup entity = this.queryProxy().query(SELECT_BY_KEY, PpemtPInfoItemGroup.class)
 				.setParameter("groupId", groupId).getSingleOrNull();
-		
+
 		if (entity == null) {
 			return Optional.empty();
 		} else {

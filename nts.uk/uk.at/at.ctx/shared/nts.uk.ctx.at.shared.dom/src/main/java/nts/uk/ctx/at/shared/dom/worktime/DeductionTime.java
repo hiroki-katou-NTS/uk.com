@@ -2,9 +2,10 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
+package nts.uk.ctx.at.shared.dom.worktime;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.TimeWithDayAttr;
 
 /**
  * The Class DeductionTime.

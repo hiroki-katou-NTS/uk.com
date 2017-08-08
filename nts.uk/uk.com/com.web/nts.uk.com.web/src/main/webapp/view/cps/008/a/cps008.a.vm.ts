@@ -24,7 +24,6 @@ module cps008.a.viewmodel {
                         }
                     });
                     _.each(_data, d => layouts.push(d));
-                    debugger;
                     layout.id(_data[0].id);
                     //layout.id.valueHasMutated();
                 }
@@ -40,6 +39,7 @@ module cps008.a.viewmodel {
                         layout.code(item.code);
                         layout.name(item.name);
                     }
+                    
                     // Gọi service tải dữ liệu ra layout
                     /*service.getDetails(id).done((data: ILayout) => {
                         if (data) {

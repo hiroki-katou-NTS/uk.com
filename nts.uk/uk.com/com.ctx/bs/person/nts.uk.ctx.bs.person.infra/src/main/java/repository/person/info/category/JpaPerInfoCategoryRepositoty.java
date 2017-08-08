@@ -2,6 +2,7 @@ package repository.person.info.category;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -35,7 +36,6 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
-
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("cid", companyId).getList(c -> {
 					return createDomainFromEntity(c);
@@ -49,17 +49,27 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					return createDomainFromEntity(c);
 				});
 	}
-
+	
 	@Override
-	public Optional<String> getPerInfoCtgCodeLastest(PersonInfoCategory perInfoCtg, String contractCd) {
-		List CtgCodeLastest =  this.getEntityManager().createQuery(this.SELECT_GET_CATEGORY_CODE_LASTEST_QUERY).setMaxResults(1).getResultList();
+	public String getPerInfoCtgCodeLastest(PersonInfoCategory perInfoCtg, String contractCd) {
+		List<String> ctgCodeLastest =  this.getEntityManager().createQuery(SELECT_GET_CATEGORY_CODE_LASTEST_QUERY, String.class).setMaxResults(1).getResultList();
+		if(ctgCodeLastest != null && !ctgCodeLastest.isEmpty()){
+			return ctgCodeLastest.get(0);
+		}
 		return null;
 	}
 	
 	@Override
-	public void addPerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd) {
-		this.commandProxy().insert(createPerInfoCtgFromDomain(perInfoCtg));
+	public void addPerInfoCtgRoot(PersonInfoCategory perInfoCtg, String contractCd) {
 		this.commandProxy().insert(createPerInfoCtgCmFromDomain(perInfoCtg, contractCd));
+		this.commandProxy().insert(createPerInfoCtgFromDomain(perInfoCtg));
+	}
+	
+	@Override
+	public void addPerInfoCtgWithListCompany(List<PersonInfoCategory> perInfoCtgList, String contractCd) {
+		this.commandProxy().insertAll(perInfoCtgList.stream().map(p -> {
+			return createPerInfoCtgFromDomain(p);
+		}).collect(Collectors.toList()));
 	}
 
 	@Override

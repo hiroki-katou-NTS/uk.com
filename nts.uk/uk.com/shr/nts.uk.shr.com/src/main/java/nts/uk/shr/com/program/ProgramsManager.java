@@ -300,8 +300,11 @@ public class ProgramsManager {
 			"/view/ksm/005/f/index.xhtml");
 	
 	/** The Constant KDL023. */
-	public static final Program KDL023 = new Program(WebAppId.AT, ProgramIdConsts.KDL023, "PgName_KDL023",
+	public static final Program KDL023A = new Program(WebAppId.AT, ProgramIdConsts.KDL023A, "PgName_KDL023A",
 			"/view/kdl/023/a/index.xhtml");
+	
+	public static final Program KDL023B = new Program(WebAppId.AT, ProgramIdConsts.KDL023B, "PgName_KDL023B",
+			"/view/kdl/023/b/index.xhtml");
 	
 	/** The Constant KSM001. */
 	public static final Program KSM001 = new Program(WebAppId.AT, ProgramIdConsts.KSM001, "PgName_KSM001",

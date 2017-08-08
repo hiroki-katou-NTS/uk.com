@@ -140,13 +140,16 @@ module nts.uk.at.view.kmk004.a {
             /**
              * Start page.
              */
-            public startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<void> {
+                nts.uk.ui.block.invisible();
                 let self = this;
-                let dfd = $.Deferred<any>();
+                let dfd = $.Deferred<void>();
                 $.when(self.loadUsageUnitSetting(),
-                    self.setStartMonth(), self.onSelectCompany())
+                    self.setStartMonth())
                     .done(() => {
-                        dfd.resolve();
+                        self.onSelectCompany().done(() => dfd.resolve());
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 return dfd.promise();
             }
