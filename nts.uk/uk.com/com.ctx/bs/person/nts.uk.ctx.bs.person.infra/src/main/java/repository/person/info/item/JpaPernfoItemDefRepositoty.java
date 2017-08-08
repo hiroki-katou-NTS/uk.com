@@ -3,7 +3,6 @@ package repository.person.info.item;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -169,8 +168,8 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 				dataTypeState = DataTypeState.createTimeItem(timeItemMin.intValue(), timeItemMax.intValue());
 				break;
 			case 5:
-				dataTypeState = DataTypeState.createTimePointItem(timepointItemMin.longValue(),
-						timepointItemMax.longValue());
+				dataTypeState = DataTypeState.createTimePointItem(timepointItemMin.intValue(),
+						timepointItemMax.intValue());
 				break;
 			case 6:
 				ReferenceTypeState referenceTypeState = null;

@@ -33,9 +33,10 @@ public class PerInfoItemDefFinder {
 	private PernfoItemDefRepositoty pernfoItemDefRep;
 
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
-		return pernfoItemDefRep.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream().map(item -> {
-			return mappingFromDomaintoDto(item);
-		}).collect(Collectors.toList());
+		return pernfoItemDefRep.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode())
+				.stream().map(item -> {
+					return mappingFromDomaintoDto(item);
+				}).collect(Collectors.toList());
 	};
 
 	public PerInfoItemDefDto getPerInfoItemDefById(String perInfoItemDefId) {
@@ -45,9 +46,10 @@ public class PerInfoItemDefFinder {
 	};
 
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListId(List<String> listItemDefId) {
-		return pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().contractCode()).stream().map(item -> {
-			return mappingFromDomaintoDto(item);
-		}).collect(Collectors.toList());
+		return pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().contractCode()).stream()
+				.map(item -> {
+					return mappingFromDomaintoDto(item);
+				}).collect(Collectors.toList());
 	};
 
 	private PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef) {
@@ -58,79 +60,59 @@ public class PerInfoItemDefFinder {
 	}
 
 	private ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
-		SetItemDto setItem = null;
-		SingleItemDto singleItem = null;
+
 		ItemType itemType = itemTypeState.getItemType();
 		if (itemType == ItemType.SINGLE_ITEM) {
 			SingleItem singleItemDom = (SingleItem) itemTypeState;
-			singleItem = new SingleItemDto(itemType.value, createDataTypeStateDto(singleItemDom.getDataTypeState()));
+			return ItemTypeStateDto.createSingleItemDto(createDataTypeStateDto(singleItemDom.getDataTypeState()));
 		} else {
 			SetItem setItemDom = (SetItem) itemTypeState;
-			setItem = new SetItemDto(itemType.value, setItemDom.getItems());
+			return ItemTypeStateDto.createSetItemDto(setItemDom.getItems());
 		}
-		return new ItemTypeStateDto(setItem, singleItem);
 	}
 
 	private DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
-		TimeItemDto timeItem = null;
-		StringItemDto stringItem = null;
-		TimePointItemDto timePointItem = null;
-		DateItemDto dateItem = null;
-		NumericItemDto numericItem = null;
-		SelectionItemDto selectionItem = null;
 
 		int dataTypeValue = dataTypeState.getDataTypeValue().value;
 		switch (dataTypeValue) {
 		case 1:
 			StringItem strItem = (StringItem) dataTypeState;
-			stringItem = new StringItemDto(dataTypeValue, strItem.getStringItemLength().v(),
+			return DataTypeStateDto.createStringItemDto(strItem.getStringItemLength().v(),
 					strItem.getStringItemType().value, strItem.getStringItemDataType().value);
-			break;
 		case 2:
 			NumericItem numItem = (NumericItem) dataTypeState;
-			numericItem = new NumericItemDto(dataTypeValue, numItem.getNumericItemMinus().value,
+			return DataTypeStateDto.createNumericItemDto(numItem.getNumericItemMinus().value,
 					numItem.getNumericItemAmount().value, numItem.getIntegerPart().v(), numItem.getDecimalPart().v(),
 					numItem.getNumericItemMin().v(), numItem.getNumericItemMax().v());
-			break;
 		case 3:
 			DateItem dItem = (DateItem) dataTypeState;
-			dateItem = new DateItemDto(dataTypeValue, dItem.getDateItemType().value);
-			break;
+			return DataTypeStateDto.createDateItemDto(dItem.getDateItemType().value);
 		case 4:
 			TimeItem tItem = (TimeItem) dataTypeState;
-			timeItem = new TimeItemDto(dataTypeValue, tItem.getMax().v(), tItem.getMin().v());
-			break;
+			return DataTypeStateDto.createTimeItemDto(tItem.getMax().v(), tItem.getMin().v());
 		case 5:
 			TimePointItem tPointItem = (TimePointItem) dataTypeState;
-			timePointItem = new TimePointItemDto(dataTypeValue, tPointItem.getTimePointItemMin().v(),
+			return DataTypeStateDto.createTimePointItemDto(tPointItem.getTimePointItemMin().v(),
 					tPointItem.getTimePointItemMax().v());
-			break;
 		case 6:
 			SelectionItem sItem = (SelectionItem) dataTypeState;
-			selectionItem = new SelectionItemDto(dataTypeValue, createRefTypeStateDto(sItem.getReferenceTypeState()));
-			break;
+			return DataTypeStateDto.createSelectionItemDto(createRefTypeStateDto(sItem.getReferenceTypeState()));
 		default:
-			break;
+			return null;
 		}
-
-		return new DataTypeStateDto(timeItem, stringItem, timePointItem, dateItem, numericItem, selectionItem);
 	}
 
 	private ReferenceTypeStateDto createRefTypeStateDto(ReferenceTypeState refTypeState) {
-		MasterRefConditionDto masterRefCondition = null;
-		CodeNameRefTypeDto codeNameRefType = null;
-		EnumRefConditionDto enumRefCondition = null;
 		ReferenceType refType = refTypeState.getReferenceType();
 		if (refType == ReferenceType.DESIGNATED_MASTER) {
 			MasterReferenceCondition masterRef = (MasterReferenceCondition) refTypeState;
-			masterRefCondition = new MasterRefConditionDto(refType.value, masterRef.getMasterType().v());
+			return ReferenceTypeStateDto.createMasterRefDto(masterRef.getMasterType().v());
 		} else if (refType == ReferenceType.CODE_NAME) {
 			CodeNameReferenceType codeNameRef = (CodeNameReferenceType) refTypeState;
-			codeNameRefType = new CodeNameRefTypeDto(refType.value, codeNameRef.getTypeCode().v());
+			return ReferenceTypeStateDto.createCodeNameRefDto(codeNameRef.getTypeCode().v());
 		} else {
 			EnumReferenceCondition enumRef = (EnumReferenceCondition) refTypeState;
-			enumRefCondition = new EnumRefConditionDto(refType.value, enumRef.getEnumName().v());
+			return ReferenceTypeStateDto.createEnumRefDto(enumRef.getEnumName().v());
 		}
-		return new ReferenceTypeStateDto(masterRefCondition, codeNameRefType, enumRefCondition);
 	}
 }

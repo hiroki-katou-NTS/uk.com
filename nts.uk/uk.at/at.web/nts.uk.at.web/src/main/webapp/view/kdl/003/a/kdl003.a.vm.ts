@@ -22,11 +22,6 @@ module nts.uk.at.view.kdl003.a {
 
             callerParameter: CallerParameter;
 
-            halfDayList1: KnockoutObservableArray<RestTime>;
-            halfDayList2: KnockoutObservableArray<RestTime>;
-            holidayList1: KnockoutObservableArray<RestTime>;
-            holidayList2: KnockoutObservableArray<RestTime>;
-
             lstTimeDayAtrEnum: KnockoutObservableArray<Enum>;
             constructor(parentData: CallerParameter) {
                 var self = this;
@@ -60,19 +55,7 @@ module nts.uk.at.view.kdl003.a {
                 //parent data
                 self.callerParameter = parentData;
 
-                self.halfDayList1 = ko.observable([]);
-                self.halfDayList2 = ko.observable([]);
-                self.holidayList1 = ko.observable([]);
-                self.holidayList2 = ko.observable([]);
-
                 self.lstTimeDayAtrEnum = ko.observableArray([]);
-                self.selectedSiftCode.subscribe((code) => {
-                    if (code != null && code != undefined) {
-                        service.findAllRestTime(code).done(function(data) {
-                            self.bindRestTime(data);
-                        });
-                    }
-                });
                 self.selectedWorkTypeCode.subscribe(function(data, data2) {
 
                 });
@@ -267,34 +250,6 @@ module nts.uk.at.view.kdl003.a {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
                     });
                 $("#inputStartTime").focus();
-            }
-
-            private bindRestTime(data: any) {
-                var self = this;
-                let listHalfDay1 = [];
-                let listHalfDay2 = [];
-                let listHoliday1 = [];
-                let listHoliday2 = [];
-                data.halfDayAttendanceWorkTimeZone.breakTimeZone.lstTimeTable.forEach(function(item, index) {
-                    item = self.convertItemForview(item);
-                    if (index < 5) {
-                        listHalfDay1.push(item);
-                    } else {
-                        listHalfDay2.push(item);
-                    }
-                });
-                data.holidayAttendanceWorkTimeZone.breakTimeZone.lstTimeTable.forEach(function(item, index) {
-                    item = self.convertItemForview(item);
-                    if (index < 5) {
-                        listHoliday1.push(item);
-                    } else {
-                        listHoliday2.push(item);
-                    }
-                });
-                self.halfDayList1(listHalfDay1);
-                self.halfDayList2(listHalfDay2);
-                self.holidayList1(listHoliday1);
-                self.holidayList2(listHoliday2);
             }
 
             private convertItemForview(item: any) {

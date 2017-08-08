@@ -46,7 +46,7 @@ module nts.uk.at.view.kdl023.base.service {
         export interface DailyPatternSetting {
             patternCode: string;
             patternName: string;
-            listDailyPatternVal: Array<DailyPatternValue>;
+            dailyPatternVals: Array<DailyPatternValue>;
         }
         export interface DailyPatternValue {
             dispOrder: number;

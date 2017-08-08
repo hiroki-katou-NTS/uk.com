@@ -610,22 +610,30 @@ module nts.uk.at.view.ksm006.a {
                 nts.uk.ui.windows.setShared('parentCodes', {
                     selectedWorkTypeCode: self.worktypeCode,
                     selectedWorkTimeCode: self.workingCode,
-                    selectableWorktypeList: self.selectableWorktypeList,
-                    selectableWorkingList: self.selectableWorkingList
+                    workTypeCodes: self.selectableWorktypeList,
+                    workTimeCodes: self.selectableWorkingList
                 }, true);
                 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
                     var childData = nts.uk.ui.windows.getShared('childData');
-//                    self.worktypeCode(childData.selectedWorkTypeCode);
-                    self.worktypeCode('003');
-                    if (childData.selectedWorkTimeCode == '000') {
+                    
+                    if (!childData.selectedWorkTypeCode) {
+                        self.worktypeCode(null);
                         self.workingCode(null);
-                    } else {
-//                        self.workingCode(childData.selectedWorkTimeCode);
-                        self.workingCode('003');
+                        self.worktypeDisplayName(null);
+                        self.workingDisplayName(null);
+                        return;
                     }
-//                    self.worktypeDisplayName(childData.selectedWorkTypeName);
-//                    self.workingDisplayName(childData.selectedWorkTimeName);
+                    self.worktypeCode(childData.selectedWorkTypeCode);
+                    self.worktypeDisplayName(childData.selectedWorkTypeName);
+                    if (childData.selectedWorkTimeCode == '000' || !childData.selectedWorkTimeCode) {
+                        self.workingCode(null);
+                        self.workingDisplayName(null);
+                    } else {
+                        self.workingCode(childData.selectedWorkTimeCode);
+                        self.workingDisplayName(childData.selectedWorkTimeName);
+                    }
+                    
                 });
             }
         }
