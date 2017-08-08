@@ -20,6 +20,8 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private SystemRequired systemRequired;
 	private RequireChangable requireChangable;
 	private ItemTypeState itemTypeState;
+	
+	public final static String ROOT_CONTRACT_CODE = "000000000000";
 
 	private PersonInfoItemDefinition(String perInfoCategoryId, String itemCode, String itemParentCode, String itemName,
 			int isAbolition, int isFixed, int isRequired, int systemRequired, int requireChangable) {

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ws.login;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -23,8 +25,10 @@ import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommandHandl
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
+import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
+import nts.uk.ctx.sys.gateway.dom.adapter.CompanyInformationDto;
 
 /**
  * The Class LoginWs.
@@ -40,7 +44,7 @@ public class LoginWs extends WebService {
 
 	@Inject
 	private EmployeeLoginSettingFinder employeeLoginSettingFinder;
-	
+
 	@Inject
 	private SubmitContractFormCommandHandler submitContract;
 
@@ -49,6 +53,9 @@ public class LoginWs extends WebService {
 
 	@Inject
 	private SubmitLoginFormTwoCommandHandler submitForm2;
+
+	@Inject
+	private CompanyInformationFinder companyInformationFinder;
 
 	@Inject
 	private SubmitLoginFormThreeCommandHandler submitForm3;
@@ -85,7 +92,7 @@ public class LoginWs extends WebService {
 	public EmployeeLoginSettingDto getEmployeeLoginSettingForm3(@PathParam("contractCode") String contractCode) {
 		return this.employeeLoginSettingFinder.findByContractCodeForm3(contractCode);
 	}
-	
+
 	/**
 	 * Find.
 	 *
@@ -122,15 +129,15 @@ public class LoginWs extends WebService {
 	}
 
 	/**
-	 * Find.
+	 * Gets the all company.
 	 *
-	 * @return the string
+	 * @param contractCode the contract code
+	 * @return the all company
 	 */
 	@POST
-	@Path("getcompany")
-	public void getAllCompany() {
-		// TODO wait QA
-		// return null;
+	@Path("getcompany/{contractCode}")
+	public List<CompanyInformationDto> getAllCompany(@PathParam("contractCode") String contractCode) {
+		return companyInformationFinder.findAllByContractCode(contractCode);
 	}
 
 	/**

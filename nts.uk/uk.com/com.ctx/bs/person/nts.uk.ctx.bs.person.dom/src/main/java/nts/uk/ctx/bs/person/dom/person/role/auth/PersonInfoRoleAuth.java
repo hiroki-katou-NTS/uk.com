@@ -58,7 +58,7 @@ public class PersonInfoRoleAuth extends AggregateRoot{
 				EnumAdaptor.valueOf(allowMapUpload, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowMapBrowse, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowDocUpload, PersonInfoPermissionType.class),
-				EnumAdaptor.valueOf(allowMapUpload, PersonInfoPermissionType.class), 
+				EnumAdaptor.valueOf(allowDocRef, PersonInfoPermissionType.class), 
 				EnumAdaptor.valueOf(allowAvatarUpload, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowAvatarRef, PersonInfoPermissionType.class));
 	}

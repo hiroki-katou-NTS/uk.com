@@ -13,50 +13,67 @@ module nts.uk.com.view.cas001.d.viewmodel {
             self.categoryList.subscribe(data => {
                 if (data) {
                     $("#grid").igGrid("option", "dataSource", data);
+                } else {
+                    $("#grid").igGrid("option", "dataSource", []);
                 }
             });
-            self.start();
 
+            self.start();
         }
 
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+        start() {
+            let self = this,
+                role: IPersonRole = ko.toJS(self.currentRole);
+
             self.categoryList.removeAll();
-            service.getAllCategory(self.currentRole().roleCode).done(function(data: Array<any>) {
-                console.log(data);
+            service.getAllCategory(role.roleCode).done(function(data: Array<any>) {
                 if (data.length > 0) {
-                    _.each(data, function(obj) {
-                        self.categoryList.push(new CategoryAuth({
-                            categoryId: obj.categoryId,
-                            categoryCode: obj.categoryCode,
-                            categoryName: obj.categoryName,
-                            selfAuth: obj.allowPersonRef == 1 ? true : false,
-                            otherAuth: obj.allowOtherRef == 1 ? true : false
-                        }));
-                    })
+                    self.categoryList(_.map(data, x => new CategoryAuth({
+                        categoryId: x.categoryId,
+                        categoryCode: x.categoryCode,
+                        categoryName: x.categoryName,
+                        selfAuth: !!x.allowPersonRef,
+                        otherAuth: !!x.allowOtherRef
+                    })));
                 }
-
             });
-
-            return dfd.promise();
-
         }
 
         creatCategory() {
-            let self = this;
+            let self = this,
+                role: IPersonRole = ko.toJS(self.currentRole),
+                data: Array<ICategoryAuth> = ko.unwrap(self.categoryList),
+                datas: Array<any> = _(data)
+                    .filter((x: ICategoryAuth) => x.selfAuth || x.otherAuth)
+                    .map((x: ICategoryAuth) => {
+                        return {
+                            roleId: role.roleId,
+                            categoryId: x.categoryId,
+                            allowPersonRef: Number(x.selfAuth),
+                            allowOtherRef: Number(x.otherAuth)
+                        };
+                    })
+                    .value();
 
+            service.updateCategory({ lstCategory: datas }).done(function(data) {
+                console.log(data);
+            }).fail(function(res) {
+                console.log("failed");
+            })
             close();
         }
+
         closeDialog() {
             close();
         }
     }
+
     interface IPersonRole {
         roleId: string;
         roleCode: string;
         roleName: string;
     }
+
     export class PersonRole {
         roleId: string;
         roleCode: string;
@@ -68,6 +85,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
             this.roleName = params.roleName;
         }
     }
+
     interface ICategoryAuth {
         categoryId: string;
         categoryCode: string;
@@ -75,6 +93,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
         selfAuth?: boolean;
         otherAuth?: boolean;
     }
+
     class CategoryAuth {
         categoryId: string;
         categoryCode: string;
