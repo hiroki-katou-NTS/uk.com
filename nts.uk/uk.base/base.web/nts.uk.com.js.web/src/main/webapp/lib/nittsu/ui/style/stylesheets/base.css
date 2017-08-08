@@ -825,7 +825,11 @@ button .icon {
 .ui-accordion .ui-accordion-header.ui-state-active .ui-icon {
   background-image: url("../../../../generic/jqueryui/images/ui-icons_444444_256x240.png");
 }
-/* line 19, ../sass/components/_accordion.scss */
+/* line 17, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-header:focus {
+  box-shadow: 0 0 1px 1px #0096f2;
+}
+/* line 23, ../sass/components/_accordion.scss */
 .ui-accordion .status {
   display: inline-block;
   float: right;
@@ -837,7 +841,7 @@ button .icon {
   min-width: 60px;
   text-align: center;
 }
-/* line 31, ../sass/components/_accordion.scss */
+/* line 35, ../sass/components/_accordion.scss */
 .ui-accordion .close-button {
   position: absolute;
   top: 50%;
@@ -845,12 +849,12 @@ button .icon {
   margin-top: -8px;
   float: right;
 }
-/* line 39, ../sass/components/_accordion.scss */
+/* line 43, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-content {
   border-top-width: 1px;
   border-color: #999;
 }
-/* line 43, ../sass/components/_accordion.scss */
+/* line 47, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-content.nts-accordion-content {
   display: block !important;
 }
@@ -2243,22 +2247,33 @@ button.nts-switch-button[disabled]:hover {
   overflow: hidden;
   padding: 1em;
 }
-.ui-igtree{
-	border: 1px solid #dddddd;
+
+/* line 3, ../sass/components/_treedrag.scss */
+.ui-igtree {
+  border: 1px solid #dddddd;
 }
-.ui-igtree .ui-igtree-root{
-	border: 0px white solid;
+
+/* line 6, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igtree-root {
+  border: 0px white solid;
 }
+
+/* line 9, ../sass/components/_treedrag.scss */
 .ui-igtree .ui-igcheckbox-normal-on {
-	top: -2px;
+  top: -2px;
 }
+
+/* line 12, ../sass/components/_treedrag.scss */
 .ui-igtree .ui-igcheckbox-normal-off {
-	top: -4px;
-    left: -2px;
+  top: -4px;
+  left: -2px;
 }
-.ui-igtree li{
-	list-style-type: none;
+
+/* line 16, ../sass/components/_treedrag.scss */
+.ui-igtree li {
+  list-style-type: none;
 }
+
 /* line 3, ../sass/components/_treegridview.scss */
 .ui-igtreegrid {
   cursor: default;
@@ -3893,12 +3908,12 @@ button.nts-switch-button[disabled]:hover {
   top: 10px;
 }
 
-/* line 45, ../sass/base.scss */
+/* line 46, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 49, ../sass/base.scss */
+/* line 50, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
