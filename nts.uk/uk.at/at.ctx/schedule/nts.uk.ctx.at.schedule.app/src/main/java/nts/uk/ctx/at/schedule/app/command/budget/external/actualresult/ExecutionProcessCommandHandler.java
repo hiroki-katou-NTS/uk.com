@@ -19,12 +19,12 @@ import javax.ejb.Stateful;
 import javax.inject.Inject;
 
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
+import nts.arc.primitive.PrimitiveValueUtil;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.AsyncTaskService;
 import nts.arc.task.data.TaskDataSetter;
@@ -34,6 +34,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetDailyDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
@@ -59,7 +60,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudget
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateful
-public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<ExecutionProcessCommand, String> {
+public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<ExecutionProcessCommand, ExecutionInfor> {
     
     @Inject
     private AsyncTaskService managedTaskService;
@@ -92,9 +93,13 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private static final Integer INDEX_COLUMN_CODE = 0;
     private static final Integer INDEX_COLUMN_DATE = 1;
     private static final Integer INDEX_BEGIN_COL_VALUE = 2;
+    private static final Integer MAX_COLMN = 51;
+    private static final String TOTAL_RECORD = "TOTAL_RECORD";
+    private static final String SUCCESS_CNT = "SUCCESS_CNT";
+    private static final String FAIL_CNT = "FAIL_CNT";
     
     @Override
-    protected String handle(CommandHandlerContext<ExecutionProcessCommand> context) {
+    protected ExecutionInfor handle(CommandHandlerContext<ExecutionProcessCommand> context) {
         ExecutionProcessCommand command = context.getCommand();
         String employeeId = AppContexts.user().employeeId();
         TaskDataSetter setter = new TaskDataSetter();
@@ -102,8 +107,9 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         String executeId = IdentifierUtil.randomUniqueId();
         AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
             this.fileCheckService.validFileFormat(command.getFileId());
-            setter.setData("SUCCESS_CNT", 0);
-            setter.setData("FAIL_CNT", 0);
+            setter.setData(TOTAL_RECORD, 0);
+            setter.setData(SUCCESS_CNT, 0);
+            setter.setData(FAIL_CNT, 0);
             
             // register table LOG with status: IN_COMPLETE 
             GeneralDateTime dateTimeCurrent = GeneralDateTime.now();
@@ -137,17 +143,21 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         });
         task.setDataSetter(setter);
         this.managedTaskService.execute(task);
-        return task.getId();
+        return ExecutionInfor.builder()
+                .taskId(task.getId())
+                .executeId(executeId)
+                .build();
     }
     
     private void processInput(ImportProcess importProcess, TaskDataSetter setter) {
         try {
             Charset charset = this.getCharset(importProcess.extractCondition.getEncoding());
             String newLineCode = this.getNewLineCode();
-            NtsCsvReader csvReader = NtsCsvReader.newReader().withChartSet(charset)
-                    .withFormat(CSVFormat.EXCEL.withHeader(this.fakeHeader(importProcess.externalBudget.getUnitAtr()))
-                            .withRecordSeparator(newLineCode));
-            Iterator<NtsCsvRecord> csvRecordIterator = csvReader.parse(importProcess.inputStream).iterator();
+            NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().withChartSet(charset)
+                    .withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
+            List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
+            setter.updateData(TOTAL_RECORD, csRecords.size() - importProcess.extractCondition.getStartLine() + 1);
+            Iterator<NtsCsvRecord> csvRecordIterator = csRecords.iterator();
             while(csvRecordIterator.hasNext()) {
                 /** TODO: check has interruption, if is interrupt, update table LOG status interruption (中断)
                  * and end flow (stop process)
@@ -160,11 +170,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 Optional<ExternalBudgetLog> optional = this.extBudgetLogRepo.findExtBudgetLogByExecuteId(importProcess.executeId);
                 if (optional.isPresent()) {
                     ExternalBudgetLog log = optional.get();
-                    setter.updateData("SUCCESS_CNT", log.getNumberSuccess());
-                    setter.updateData("FAIL_CNT", log.getNumberFail());
+                    setter.updateData(SUCCESS_CNT, log.getNumberSuccess());
+                    setter.updateData(FAIL_CNT, log.getNumberFail());
                 }
             }
             this.updateLog(importProcess.executeId, CompletionState.DONE);
+            if (importProcess.failCnt > 0) {
+                
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -175,11 +188,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         if (importProcess.startLine < importProcess.extractCondition.getStartLine()) {
             return;
         }
-        // TODO: parse record return List<object>
-        String[] lstHeader = this.fakeHeader(importProcess.externalBudget.getUnitAtr());
+        
+        // get data cell from input csv
         List<String> result = new ArrayList<>();
-        for (String header : lstHeader) {
-            result.add(record.getColumnAsString(header));
+        for (int i = 0; i < MAX_COLMN; i++) {
+            Object header = record.getColumn(i);
+            if (header != null) {
+                result.add(header.toString());
+            }
         }
         // check record has data?
         if (CollectionUtil.isEmpty(result)) {
@@ -333,10 +349,6 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private void validDataLine(ImportProcess importProcess, List<String> result) {
         this.validUnitAtr(importProcess, result.size());
         
-        // finish process of line.
-        if (importProcess.stopLine) {
-            return;
-        }
         // check column 2 (２列目) is date ?
         this.validDateFormat(importProcess, result.get(INDEX_COLUMN_DATE));
         
@@ -344,8 +356,13 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         this.validWorkplaceCode(importProcess, result.get(INDEX_COLUMN_CODE));
         
         // Check actual value by primitive
-        int idxValue = INDEX_BEGIN_COL_VALUE;
-//        this.validActualVal(importProcess, result.subList(idxValue, result.size()));
+        this.validActualVal(importProcess, result);
+        
+        // finish process of line.
+        if (importProcess.stopLine) {
+            this.updateLog(true, importProcess.executeId, importProcess.failCnt);
+            return;
+        }
     }
     private void validUnitAtr(ImportProcess importProcess, int numberColInput) {
         UnitAtr unitAtr = importProcess.externalBudget.getUnitAtr();
@@ -404,10 +421,11 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
             }
         }
         if (isInValidDateFormat) {
+            int idxColReal = INDEX_COLUMN_DATE + 1;
             ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
                     .executionId(importProcess.executeId)
                     .lineNo(importProcess.startLine)
-                    .columnNo(INDEX_COLUMN_DATE)
+                    .columnNo(idxColReal)
                     .errorContent("Invalid format") // Not has message id
                     .build();
             this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
@@ -434,53 +452,59 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         if (importProcess.stopLine) {
             return;
         }
-        int idxVal = INDEX_BEGIN_COL_VALUE;
-        for (int i = 0; i < lstValue.size(); i++) {
+        for (int i = INDEX_BEGIN_COL_VALUE; i < lstValue.size(); i++) {
             String value = lstValue.get(i);
-            String errorContent = this.validValuePrimitive(importProcess, value);
-            if (!StringUtils.isEmpty(errorContent)) {
-                ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
-                        .executionId(importProcess.executeId)
-                        .lineNo(importProcess.startLine)
-                        .columnNo(idxVal + 1)
-                        .errorContent(errorContent)
-                        .build();
-                this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
-                importProcess.failCnt++;
-            }
+            this.validValByPrimitive(importProcess, i + 1, value);
         }
     }
     
-    private String validValuePrimitive(ImportProcess importProcess, String value) {
-        // Check actual value base on primitive.
-        //  TODO: pending team Kiban update get message error from primitive.
+    private void validValByPrimitive (ImportProcess importProcess, int columnNo, String value) {
+        String itemName = "KSU006_18";
         try {
             switch (importProcess.externalBudget.getBudgetAtr()) {
                 case TIME:
-                    // TODO: convert hour, min ==> min
+                    // convert 01:00 -> 60 minute
+                    Long valueTime = this.convertVal(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetTime(valueTime), (ex) ->{
+                        this.logError(importProcess, columnNo, ex.getErrorMessage(itemName));
+                    });
                     break;
                 case PEOPLE:
+                    Integer valuePeople= Integer.parseInt(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetNumberPerson(valuePeople), (ex) ->{
+                        this.logError(importProcess, columnNo, ex.getErrorMessage(itemName));
+                    });
                     break;
                 case MONEY:
+                    Integer valueMoney= Integer.parseInt(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetMoney(valueMoney), (ex) ->{
+                        this.logError(importProcess, columnNo, ex.getErrorMessage(itemName));
+                    });
                     break;
                 case NUMERICAL:
+                    Integer valueNumerical= Integer.parseInt(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetNumericalVal(valueNumerical), (ex) ->{
+                        this.logError(importProcess, columnNo, ex.getErrorMessage(itemName));
+                    });
                     break;
                 case PRICE:
+                    Integer valuePrice= Integer.parseInt(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetUnitPrice(valuePrice), (ex) ->{
+                        this.logError(importProcess, columnNo, ex.getErrorMessage(itemName));
+                    });
                     break;
                 default:
                     throw new RuntimeException("Not budget atr suitable.");
             }
         } catch (Exception e) {
-            // TODO: handle exception
-//            e.printStackTrace();
+            this.logError(importProcess, columnNo, "Invalid format.");
         }
-        return "";
     }
     
     private Long convertVal(String value) {
         String CHARACTER_COLON = ":";
         if (!value.contains(CHARACTER_COLON)) {
-            throw new RuntimeException("Actual valua invalid format.");
+            throw new RuntimeException("Actual value time invalid format.");
         }
         String[] arr = value.split(CHARACTER_COLON);
         Integer HOUR = 60;
@@ -501,6 +525,20 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
             default:
             return StandardCharsets.UTF_8;
         }
+    }
+    
+    private void logError(ImportProcess importProcess, int columnNo, String errContent) {
+        ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
+                .executionId(importProcess.executeId)
+                .lineNo(importProcess.startLine)
+                .columnNo(columnNo)
+                .errorContent(errContent)
+                .build();
+        this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
+        importProcess.failCnt++;
+        
+        // marker finish line.
+        importProcess.stopLine = true;
     }
     
     private void updateLog(String executeId, CompletionState status) {
@@ -529,29 +567,12 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         return "\r\n"; // CR+LF
     }
     
-    private String[] fakeHeader(UnitAtr unitAtr) {
-        switch (unitAtr) {
-            case DAILY:
-                return new String[] {"職場コード", "年月日", "値"};
-            case BYTIMEZONE:
-                List<String> lstHeader = new ArrayList<>();
-                lstHeader.add("職場コード");
-                lstHeader.add("年月日");
-                for (int i = 0; i < 48; i++) {
-                    lstHeader.add("値" + i);
-                }
-                return lstHeader.toArray(new String[lstHeader.size()]);
-            default:
-                throw new RuntimeException("Not unit atr suitable.");
-        }
-    }
-    
     private String getMessageById(String messageId) {
         String errorContent = messageId + " is not found.";
-        Optional<String> optional = this.internationalization.getRawMessage(messageId);
-        if (optional.isPresent()) {
-            errorContent = optional.get();
-        }
+//        Optional<String> optional = this.internationalization.getRawMessage(messageId);
+//        if (optional.isPresent()) {
+//            errorContent = optional.get();
+//        }
         return errorContent;
     }
     

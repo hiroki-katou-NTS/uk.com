@@ -92,7 +92,6 @@ module nts.uk.at.view.ksu006.a {
                 self.uploadFile().done(function() {
                     service.validateFile(self.fileId()).done(function() {
                         nts.uk.ui.windows.setShared("ExtractCondition", self.toJSObject());
-                        nts.uk.ui.windows.setShared("totalRecord", self.totalRecord());
                         nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml',
                             { title: '外部予算実績データ受入実行', dialogClass: 'no-close' });
 
