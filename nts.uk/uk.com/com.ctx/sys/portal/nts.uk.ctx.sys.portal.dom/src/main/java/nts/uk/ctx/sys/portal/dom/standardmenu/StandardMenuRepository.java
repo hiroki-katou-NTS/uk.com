@@ -30,7 +30,7 @@ public interface StandardMenuRepository {
 
 	/**
 	 * added by sonnh1
-	 * find by COMPANYID and (SYSTEM and MENU_CLASSIFICATION) or AFTER_LOGIN_DISPLAY
+	 * find by COMPANYID and SYSTEM and MENU_CLASSIFICATION and AFTER_LOGIN_DISPLAY
 	 * @param companyId
 	 * @param afterLoginDisplay
 	 * @param system

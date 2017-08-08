@@ -222,17 +222,19 @@ module nts.uk.com.view.ccg015.a {
                     var listLength = self.listTopPage().length;
                     service.deleteTopPage(self.toppageSelectedCode()).done(function() {
                         //delete success
-                        //remove follow
-                        self.loadTopPageList().done(function() {
-                            var lst = self.listTopPage();
-                            if (lst.length > 0) {
-                                if (removeIndex < listLength - 1) {
-                                    self.toppageSelectedCode(lst[removeIndex].code);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            //remove follow
+                            self.loadTopPageList().done(function() {
+                                var lst = self.listTopPage();
+                                if (lst.length > 0) {
+                                    if (removeIndex < listLength - 1) {
+                                        self.toppageSelectedCode(lst[removeIndex].code);
+                                    }
+                                    else {
+                                        self.toppageSelectedCode(lst[removeIndex - 1].code);
+                                    }
                                 }
-                                else {
-                                    self.toppageSelectedCode(lst[removeIndex - 1].code);
-                                }
-                            }
+                            });
                         });
                     }).fail();
                 }).ifNo(function() {

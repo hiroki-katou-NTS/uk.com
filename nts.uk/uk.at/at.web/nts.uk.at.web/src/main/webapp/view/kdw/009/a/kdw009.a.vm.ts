@@ -1,13 +1,21 @@
 module nts.uk.at.view.kdw009.a.viewmodel {
     
     export class ScreenModel {
+        // list business type A2_2
         lstBusinessType: KnockoutObservableArray<BusinessType>;
+        // column in list
         gridListColumns: KnockoutObservableArray<any>;
+        // selected code 
         selectedCode: KnockoutObservable<string>;
+        // selected item
         selectedOption: KnockoutObservable<BusinessType>;
+        // binding to text box name A3_3
         selectedName: KnockoutObservable<string>;
+        // binding to text box code A3_2
         codeObject: KnockoutObservable<string>;
+        // check new mode or not
         check: KnockoutObservable<boolean>;
+        // check update or insert
         checkUpdate: KnockoutObservable<boolean>;
         constructor() {
             let self = this;
@@ -36,7 +44,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             self.startPage();
         }
 
-        /** get data number "value" in list **/
+        /** get data to list **/
         getData(): JQueryPromise<any>{
             let self = this;
             let dfd = $.Deferred();
@@ -66,23 +74,6 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     self.selectedCode(self.lstBusinessType()[0].businessTypeCode.toString());
                 }
             });
-            
-//            service.getAll().done((lstData: Array<viewmodel.BusinessType>) => {
-//                if(lstData.length==0){
-//                    self.newMode();
-//                    self.lstBusinessType(lstData);
-//                    dfd.resolve();
-//                    return;
-//                }
-//                let sortedData = _.orderBy(lstData, ['businessTypeCode'], ['asc']);
-//                self.lstBusinessType(sortedData);
-//                self.selectedCode(self.lstBusinessType()[0].businessTypeCode.toString());
-//                
-//                dfd.resolve();
-//            }).fail(function(error){
-//                    dfd.reject();
-//                    alert(error.message);
-//                })        
             return dfd.promise();
         }  
         
@@ -95,6 +86,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     });
             let updateOption = new BusinessType(self.selectedCode(), self.selectedName());  
             code = self.codeObject();
+            // update item to list
             if(self.checkUpdate() == true){
                 service.update(updateOption).done(function(){
                     self.getData().done(function(){
@@ -111,7 +103,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                 }
                 code = self.codeObject();
                 self.selectedOption(null);
-                let obj = new BusinessType(self.codeObject(), self.selectedName())
+                let obj = new BusinessType(self.codeObject(), self.selectedName());
+                // insert item to list
                 service.insert(obj).done(function(){
                     self.getData().done(function(){
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -122,7 +115,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                 });
             }            
         } 
-        
+        //  new mode 
         newMode(){
             let self = this;
             self.check(true);
@@ -132,7 +125,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             self.selectedName("");
             $("#inpCode").focus();   
         }
-        
+        /** remove item from list **/
         remove(){
             let self = this;
             let count = 0;
@@ -145,6 +138,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => { 
                 service.remove(self.selectedOption()).done(function(){
                     self.getData().done(function(){
+                        // if number of item from list after delete == 0 
                         if(self.lstBusinessType().length==0){
                             self.newMode();
                             return;
@@ -154,10 +148,12 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                             self.selectedCode(self.lstBusinessType()[count-1].businessTypeCode);
                             return;
                         }
+                        // delete the first item
                         if(count == 0 ){
                             self.selectedCode(self.lstBusinessType()[0].businessTypeCode);
                             return;
                         }
+                        // delete item at mediate list 
                         else if(count > 0 && count < self.lstBusinessType().length){
                             self.selectedCode(self.lstBusinessType()[count].businessTypeCode);    
                             return;
