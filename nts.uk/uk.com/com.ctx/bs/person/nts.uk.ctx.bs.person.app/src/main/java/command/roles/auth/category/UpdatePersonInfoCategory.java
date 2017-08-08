@@ -12,8 +12,8 @@ public class UpdatePersonInfoCategory {
 	
 	private String categoryCode;
 		
-	private boolean allowPersonRef;
+	private int allowPersonRef;
 	
-	private boolean allowOtherRef;
+	private int allowOtherRef;
 	
 }
