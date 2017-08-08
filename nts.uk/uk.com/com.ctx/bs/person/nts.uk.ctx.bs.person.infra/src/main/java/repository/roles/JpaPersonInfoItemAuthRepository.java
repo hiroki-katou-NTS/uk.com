@@ -1,6 +1,7 @@
 package repository.roles;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -15,7 +16,7 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemDetail;
 @Stateless
 public class JpaPersonInfoItemAuthRepository extends JpaRepository implements PersonInfoItemAuthRepository {
 
-	private final String SEL_3 = " SELECT p.ppemtPersonItemAuthPk.roleId, p.ppemtPersonItemAuthPk.personInfoCategoryAuthId,"
+	private final String SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY = " SELECT p.ppemtPersonItemAuthPk.roleId, p.ppemtPersonItemAuthPk.personInfoCategoryAuthId,"
 			+ " c.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " p.selfAuthType, p.otherPersonAuth, c.itemCd, c.itemName, c.abolitionAtr, c.requiredAtr,"
 			+ " CASE WHEN p.ppemtPersonItemAuthPk.personItemDefId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
@@ -61,6 +62,14 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		return domain;
 	}
 
+	private static PersonInfoItemAuth toDomain(PpemtPersonItemAuth entity) {
+
+		return PersonInfoItemAuth.createFromJavaType(entity.ppemtPersonItemAuthPk.roleId,
+				entity.ppemtPersonItemAuthPk.personInfoCategoryAuthId, entity.ppemtPersonItemAuthPk.personItemDefId,
+				entity.selfAuthType, entity.otherPersonAuth);
+
+	}
+
 	@Override
 	public void add(PersonInfoItemAuth domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -82,10 +91,21 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 	@Override
 	public List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personInfoCategoryAuthId) {
-		List<PersonInfoItemDetail> x = this.queryProxy().query(SEL_3, Object[].class)
+		List<PersonInfoItemDetail> x = this.queryProxy()
+				.query(SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("personInfoCategoryAuthId", personInfoCategoryAuthId).setParameter("roleId", roleId)
 				.getList(c -> toDomain(c));
 		return x;
+	}
+
+	@Override
+	public Optional<PersonInfoItemAuth> getItemDetai(String roleId, String categoryId, String personItemDefId) {
+
+		return this.queryProxy()
+				.find(new PpemtPersonItemAuthPk(roleId, categoryId, personItemDefId), PpemtPersonItemAuth.class)
+				.map(e -> {
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
 	}
 
 }

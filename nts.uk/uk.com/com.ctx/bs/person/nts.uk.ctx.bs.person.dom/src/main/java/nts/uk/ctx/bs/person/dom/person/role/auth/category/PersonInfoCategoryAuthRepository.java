@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PersonInfoCategoryAuthRepository {
-	
-	List<PersonInfoCategoryDetail> getAllCategory(String roleId);
+
+	List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd);
 
 	void add(PersonInfoCategoryAuth domain);
 
 	void update(PersonInfoCategoryAuth domain);
 
-	void delete(String roleId,String personCategoryAuthId);
+	void delete(String roleId, String personCategoryAuthId);
 
 	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId);
 }

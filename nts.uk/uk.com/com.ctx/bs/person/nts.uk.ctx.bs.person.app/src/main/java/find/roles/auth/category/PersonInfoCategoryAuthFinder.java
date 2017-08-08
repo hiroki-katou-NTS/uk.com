@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PersonInfoCategoryAuthFinder
@@ -22,7 +23,7 @@ public class PersonInfoCategoryAuthFinder {
 	private PersonInfoCategoryAuthRepository personCategoryAuthRepository;
 
 	public List<PersonInfoCategoryDetailDto> getAllCategory(String roleId) {
-		return this.personCategoryAuthRepository.getAllCategory(roleId).stream()
+		return this.personCategoryAuthRepository.getAllCategory(roleId, AppContexts.user().contractCode()).stream()
 				.map(x -> PersonInfoCategoryDetailDto.fromDomain(x)).collect(Collectors.toList());
 
 	}
