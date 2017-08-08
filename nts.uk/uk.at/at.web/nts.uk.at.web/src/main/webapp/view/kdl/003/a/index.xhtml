@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 1200,
-					height : 720
+					height : 520
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -102,96 +102,6 @@
 									value: selectedSiftCode
 								}"></table>
 								</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="pad_top_5" colspan="4"><div
-									style="text-align: center">
-									<span class="style_caret caret-bottom"></span>
-								</div></td>
-						</tr>
-					</table>
-					<table>
-						<tr>
-							<td style="vertical-align: top;">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_24')}</div>
-							</td>
-							<td colspan="3">
-								<table class="bottom_tbl">
-									<tr class="bg-green-kdl-003">
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_25')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_26')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_27')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_28')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_29')}</td>
-									</tr>
-									<tr>
-										<com:ko-foreach bind="halfDayList1">
-											<td><label data-bind="text: startDay"></label><label
-												data-bind="text: startTime"></label> <label
-												data-bind="text: '#{i18n.getText('KDL003_13')}'"></label><label
-												data-bind="text: endDay"></label><label
-												data-bind="text: endTime"></label></td>
-										</com:ko-foreach>
-									</tr>
-									<tr class="bg-green-kdl-003">
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_30')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_31')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_32')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_33')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_34')}</td>
-									</tr>
-									<tr>
-										<com:ko-foreach bind="halfDayList2">
-											<td><label data-bind="text: startDay"></label><label
-												data-bind="text: startTime"></label> <label
-												data-bind="text: '#{i18n.getText('KDL003_13')}'"></label><label
-												data-bind="text: endDay"></label><label
-												data-bind="text: endTime"></label></td>
-										</com:ko-foreach>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td class="pad_top_5" style="vertical-align: top; padding-right: 60px;">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_35')}</div>
-							</td>
-							<td class="pad_top_5" colspan="3">
-								<table class="bottom_tbl">
-									<tr class="bg-green-kdl-003">
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_36')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_37')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_38')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_39')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_40')}</td>
-									</tr>
-									<tr>
-										<com:ko-foreach bind="holidayList1">
-											<td><label data-bind="text: startDay"></label><label
-												data-bind="text: startTime"></label> <label
-												data-bind="text: '#{i18n.getText('KDL003_13')}'"></label><label
-												data-bind="text: endDay"></label><label
-												data-bind="text: endTime"></label></td>
-										</com:ko-foreach>
-									</tr>
-									<tr class="bg-green-kdl-003">
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_41')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_42')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_43')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_44')}</td>
-										<td class="tbl_head_col_width">#{i18n.getText('KDL003_45')}</td>
-									</tr>
-									<tr>
-										<com:ko-foreach bind="holidayList2">
-											<td><label data-bind="text: startDay"></label><label
-												data-bind="text: startTime"></label> <label
-												data-bind="text: '#{i18n.getText('KDL003_13')}'"></label><label
-												data-bind="text: endDay"></label><label
-												data-bind="text: endTime"></label></td>
-										</com:ko-foreach>
-									</tr>
-								</table>
 							</td>
 						</tr>
 					</table>
