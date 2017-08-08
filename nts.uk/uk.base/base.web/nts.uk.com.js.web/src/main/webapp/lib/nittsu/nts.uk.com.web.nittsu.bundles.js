@@ -4216,6 +4216,7 @@ var nts;
                         var data = valueAccessor();
                         var setChecked = data.checked;
                         var textId = data.text;
+                        var style = "style-" + (data.style || "normal");
                         var checkBoxText;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
@@ -4225,8 +4226,10 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
+                        container.addClass(style);
                         container.data("tabindex", container.attr("tabindex"));
-                        container.wrap("<div class='checkbox-wrapper'/>");
+                        var wrapper = container.parent();
+                        wrapper.addClass(style);
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -4249,14 +4252,10 @@ var nts;
                             if (code === 32) {
                                 if (container.data("enable") !== false) {
                                     var checkbox = container.find("input[type='checkbox']:first");
-                                    if (checkbox.is(":checked")) {
-                                        checkbox.prop("checked", false);
-                                        setChecked(false);
-                                    }
-                                    else {
-                                        checkbox.prop("checked", true);
-                                        setChecked(true);
-                                    }
+                                    var checked = !checkbox.is(":checked");
+                                    checkbox.prop("checked", checked);
+                                    container[checked ? "addClass" : "removeClass"]("checked");
+                                    setChecked(checked);
                                 }
                                 evt.preventDefault();
                             }
@@ -4272,6 +4271,7 @@ var nts;
                         container.data("readonly", readonly);
                         var $checkBox = $(element).find("input[type='checkbox']");
                         $checkBox.prop("checked", checked);
+                        container[checked ? "addClass" : "removeClass"]("checked");
                         if (enable === true) {
                             $checkBox.removeAttr("disabled");
                             container.attr("tabindex", container.data("tabindex"));
