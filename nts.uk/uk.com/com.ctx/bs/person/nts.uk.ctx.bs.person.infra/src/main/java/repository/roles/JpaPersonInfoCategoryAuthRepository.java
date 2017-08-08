@@ -16,11 +16,6 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDeta
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
 
-	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonCategoryAuth c";
-
-	private final String SELECT_CATEGORY_AUTH_BY_PERSON_CATEGORY_AUTH_ID_QUERY = SEL_NO_WHERE
-			+ " WHERE c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
-
 	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
 			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
@@ -99,10 +94,11 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	@Override
-	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId,
+			String personCategoryAuthId) {
 		return this.queryProxy()
-				.query(SELECT_CATEGORY_AUTH_BY_PERSON_CATEGORY_AUTH_ID_QUERY, PpemtPersonCategoryAuth.class)
-				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle().map(e -> {
+				.find(new PpemtPersonCategoryAuthPk(roleId, personCategoryAuthId), PpemtPersonCategoryAuth.class)
+				.map(e -> {
 					return Optional.of(toDomain(e));
 				}).orElse(Optional.empty());
 	}

@@ -45,9 +45,9 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 		domain.setPersonItemDefId(entity[2] == null ? "a" : entity[2].toString());
 
-		domain.setOtherPersonAuth(entity[3] == null ? 9 : Integer.valueOf(entity[3].toString()));
+		domain.setSelfAuthType(entity[3] == null ? 9 : Integer.valueOf(entity[3].toString()));
 
-		domain.setSelfAuthType(entity[4] == null ? 9 : Integer.valueOf(entity[4].toString()));
+		domain.setOtherPersonAuth(entity[4] == null ? 9 : Integer.valueOf(entity[4].toString()));
 
 		domain.setItemCd(entity[5] == null ? "a" : entity[5].toString());
 

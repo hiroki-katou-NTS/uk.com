@@ -13,7 +13,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuth;
@@ -44,9 +43,7 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 
 		saveRoleAuth(roleCommand);
 
-		String categoryId = saveCategoryAuth(roleCommand);
-		
-		roleCommand.getCurrentCategory().setCategoryId(categoryId);
+		saveCategoryAuth(roleCommand);
 
 		saveItemAuth(roleCommand);
 
@@ -71,7 +68,7 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 		this.pRoleAuthRepo.update(pRoleAuthDomain);
 	}
 
-	private String saveCategoryAuth(SavePersonInfoRoleAuthCommand roleCommand) {
+	private void saveCategoryAuth(SavePersonInfoRoleAuthCommand roleCommand) {
 
 		SavePersonInfoCategoryAuthCommand pCategoryCommand = roleCommand.getCurrentCategory();
 
@@ -89,18 +86,17 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 		}
 
 		Optional<PersonInfoCategoryAuth> optPCategoryAuth = this.pCategoryAuthRepo
-				.getDetailPersonCategoryAuthByPId(categoryId);
+				.getDetailPersonCategoryAuthByPId(roleId, categoryId);
 
 		PersonInfoCategoryAuth pCategoryAuthDomain = PersonInfoCategoryAuth.createFromJavaType(roleId,
-				optPCategoryAuth.isPresent() ? pCategoryCommand.getCategoryId() : IdentifierUtil.randomUniqueId(),
-				pCategoryCommand.getAllowPersonRef(), pCategoryCommand.getAllowOtherRef(),
-				pCategoryCommand.getAllowOtherCompanyRef(), pCategoryCommand.getSelfPastHisAuth(),
-				pCategoryCommand.getSelfFutureHisAuth(), pCategoryCommand.getSelfAllowAddHis(),
-				pCategoryCommand.getSelfAllowDelHis(), pCategoryCommand.getOtherPastHisAuth(),
-				pCategoryCommand.getOtherFutureHisAuth(), pCategoryCommand.getOtherAllowAddHis(),
-				pCategoryCommand.getOtherAllowDelHis(), pCategoryCommand.getSelfAllowAddMulti(),
-				pCategoryCommand.getSelfAllowDelMulti(), pCategoryCommand.getOtherAllowAddMulti(),
-				pCategoryCommand.getOtherAllowDelMulti());
+				pCategoryCommand.getCategoryId(), pCategoryCommand.getAllowPersonRef(),
+				pCategoryCommand.getAllowOtherRef(), pCategoryCommand.getAllowOtherCompanyRef(),
+				pCategoryCommand.getSelfPastHisAuth(), pCategoryCommand.getSelfFutureHisAuth(),
+				pCategoryCommand.getSelfAllowAddHis(), pCategoryCommand.getSelfAllowDelHis(),
+				pCategoryCommand.getOtherPastHisAuth(), pCategoryCommand.getOtherFutureHisAuth(),
+				pCategoryCommand.getOtherAllowAddHis(), pCategoryCommand.getOtherAllowDelHis(),
+				pCategoryCommand.getSelfAllowAddMulti(), pCategoryCommand.getSelfAllowDelMulti(),
+				pCategoryCommand.getOtherAllowAddMulti(), pCategoryCommand.getOtherAllowDelMulti());
 
 		if (optPCategoryAuth.isPresent()) {
 
@@ -111,15 +107,14 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 			this.pCategoryAuthRepo.add(pCategoryAuthDomain);
 
 		}
-		return pCategoryAuthDomain.getPersonInfoCategoryAuthId();
 	}
 
 	private void saveItemAuth(SavePersonInfoRoleAuthCommand roleCommand) {
 
 		SavePersonInfoCategoryAuthCommand pCategoryCommand = roleCommand.getCurrentCategory();
-		
+
 		String roleId = roleCommand.getRoleId();
-		
+
 		String categoryId = pCategoryCommand.getCategoryId();
 
 		List<PersonInfoItemAuthCommand> listItems = pCategoryCommand.getRoleItemList();
@@ -139,8 +134,7 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 					pItemDetailCmd.getPersonItemDefId());
 
 			PersonInfoItemAuth pItemAuthDomain = PersonInfoItemAuth.createFromJavaType(roleId, categoryId,
-					optPItemAuth.isPresent() ? pItemDetailCmd.getPersonItemDefId() : IdentifierUtil.randomUniqueId(),
-					pItemDetailCmd.getSelfAuth(), pItemDetailCmd.getOtherAuth());
+					pItemDetailCmd.getPersonItemDefId(), pItemDetailCmd.getSelfAuth(), pItemDetailCmd.getOtherAuth());
 
 			if (optPItemAuth.isPresent()) {
 

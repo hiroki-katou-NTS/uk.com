@@ -11,7 +11,7 @@ public class PersonInfoItemAuthCommand {
 	
 	private String personItemDefId;
 	
-	private int selfAuth;
-	
 	private int otherAuth;
+	
+	private int selfAuth;
 }

@@ -13,5 +13,5 @@ public interface PersonInfoCategoryAuthRepository {
 
 	void delete(String roleId, String personCategoryAuthId);
 
-	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId);
+	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId);
 }

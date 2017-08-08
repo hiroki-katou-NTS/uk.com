@@ -28,9 +28,9 @@ public class PersonInfoCategoryAuthFinder {
 
 	}
 
-	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
+	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId) {
 		Optional<PersonInfoCategoryAuth> opt = this.personCategoryAuthRepository
-				.getDetailPersonCategoryAuthByPId(personCategoryAuthId);
+				.getDetailPersonCategoryAuthByPId(roleId, personCategoryAuthId);
 		if (!opt.isPresent())
 			return null;
 		return opt.map(c -> PersonInfoCategoryAuthDto.fromDomain(c)).get();
