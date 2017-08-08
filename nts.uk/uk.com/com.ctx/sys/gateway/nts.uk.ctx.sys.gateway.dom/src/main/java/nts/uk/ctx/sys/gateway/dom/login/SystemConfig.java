@@ -14,6 +14,7 @@ import lombok.Getter;
 @Getter
 public class SystemConfig {
 
+	//インストール形式
 	/** The install form. */
 	private InstallForm installForm;
 

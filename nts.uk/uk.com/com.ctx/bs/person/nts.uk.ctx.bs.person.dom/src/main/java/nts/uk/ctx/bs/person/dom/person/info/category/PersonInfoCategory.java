@@ -5,6 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
 
+
 @Getter
 public class PersonInfoCategory extends AggregateRoot {
 	private String personInfoCategoryId;
@@ -16,7 +17,9 @@ public class PersonInfoCategory extends AggregateRoot {
 	private IsAbolition isAbolition;
 	private CategoryType categoryType;
 	private IsFixed isFixed;
-
+	
+	public final static String ROOT_COMPANY_ID = "000000000000-0000";
+	
 	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType) {
 		super();
 		this.personInfoCategoryId = IdentifierUtil.randomUniqueId();

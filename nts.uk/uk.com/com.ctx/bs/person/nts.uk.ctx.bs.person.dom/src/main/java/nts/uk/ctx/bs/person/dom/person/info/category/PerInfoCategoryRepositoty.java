@@ -11,9 +11,11 @@ public interface PerInfoCategoryRepositoty {
 	
     void addPerInfoCtgRoot(PersonInfoCategory perInfoCtg, String contractCd);
     
-    void addPerInfoCtgWithListCompany(List<PersonInfoCategory> perInfoCtgList, String contractCd);
+    void addPerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd, List<String> companyIdList);
     
     void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd);
+    
+    void updatePerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd, List<String> companyIdList);
     
     String getPerInfoCtgCodeLastest(String contractCd);
 }

@@ -4,9 +4,9 @@ module nts.uk.pr.view.ksu006.c {
          *  Service paths
          */
         var paths: any = {
-            findCompletionList: "at/schedule/budget/external/find/completionenum",
+            findCompletionList: "at/schedule/budget/external/log/find/completionenum",
             
-            findAllExternalBudgetLog: "at/schedule/budget/external/findAll/log",
+            findAllExternalBudgetLog: "at/schedule/budget/external/log/findAll/log",
         };
         
         export function findCompletionList(): JQueryPromise<Array<model.EnumerationModel>> {

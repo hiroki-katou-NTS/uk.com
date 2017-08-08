@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface PersonInfoCategoryAuthRepository {
 
-	List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd);
+	List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId);
 
 	void add(PersonInfoCategoryAuth domain);
 
@@ -14,4 +14,11 @@ public interface PersonInfoCategoryAuthRepository {
 	void delete(String roleId, String personCategoryAuthId);
 
 	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId);
+
+	List<PersonInfoCategoryAuth> getAllCategoryAuthByRoleId(String roleId);
+	
+	List<PersonInfoCategoryDetail> getAllCategoryInfo();
+	
+	List<PersonInfoCategoryDetail> getAllCategoryByRoleId(String roleId);
+
 }

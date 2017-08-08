@@ -3,7 +3,6 @@ module nts.uk.at.view.kdl003.a {
         var paths: any = {
             findAllWorkType: "at/share/worktype/findAll",
             findWorkTypeByCodes: "at/share/worktype/getpossibleworktype",
-            findAllRestTime: "at/share/resttime/getresttime",
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
             findByCodeList: "at/shared/worktime/findByCodeList",
             findByTime: "at/shared/worktime/findByTime",
@@ -17,10 +16,6 @@ module nts.uk.at.view.kdl003.a {
         }
         export function findWorkTypeByCodes(command: Array<string>): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findWorkTypeByCodes, command);
-        }
-
-        export function findAllRestTime(command: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findAllRestTime+"/"+command);
         }
 
         export function findByCodeList(command: any): JQueryPromise<any> {

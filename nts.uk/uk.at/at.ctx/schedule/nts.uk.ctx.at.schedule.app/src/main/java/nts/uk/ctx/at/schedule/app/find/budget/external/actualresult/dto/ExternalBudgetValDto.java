@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult;
+package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto;
 
 import java.util.List;
 

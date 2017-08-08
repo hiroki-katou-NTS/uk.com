@@ -31,7 +31,7 @@ public class DailyPatternCommand {
 	private String patternName;
 
 	/** The list daily pattern val. */
-	private List<DailyPatternValDto> listDailyPatternVal;
+	private List<DailyPatternValDto> dailyPatternVals;
 
 	/**
 	 * To domain.
@@ -112,7 +112,7 @@ public class DailyPatternCommand {
 		 */
 		@Override
 		public List<DailyPatternVal> getListDailyPatternVal() {
-			return this.command.getListDailyPatternVal().stream().map(item -> item.toDomain())
+			return this.command.getDailyPatternVals().stream().map(item -> item.toDomain())
 					.collect(Collectors.toList());
 		}
 

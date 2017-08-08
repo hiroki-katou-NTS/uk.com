@@ -8,16 +8,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import command.roles.auth.category.UpdatePersonInfoCategoryAuthCommand;
+import command.roles.auth.category.UpdatePersonInfoCategoryAuthCommandHandler;
 import find.roles.auth.category.PersonInfoCategoryAuthDto;
 import find.roles.auth.category.PersonInfoCategoryAuthFinder;
 import find.roles.auth.category.PersonInfoCategoryDetailDto;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
 
 @Path("ctx/bs/person/roles/auth/category")
 @Produces("application/json")
 public class PersonInfoCategoryAuthWebservice extends WebService {
 	@Inject
 	PersonInfoCategoryAuthFinder personInfoCategoryAuthFinder;
+	
+	@Inject
+	UpdatePersonInfoCategoryAuthCommandHandler update;
 
 	@POST
 	@Path("findAllCategory/{roleId}")
@@ -33,4 +39,17 @@ public class PersonInfoCategoryAuthWebservice extends WebService {
 		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(roleId, personCategoryAuthId);
 	}
 
+	
+	@POST
+	@Path("find/{roleId}")
+	public List<PersonInfoCategoryDetail> getAllCategoryByRoleId(@PathParam("roleId") String roleId) {
+		return personInfoCategoryAuthFinder.getAllCategoryByRoleId(roleId);
+
+	}
+	
+	@POST
+	@Path("update")
+	public void updateCategoryAuth(UpdatePersonInfoCategoryAuthCommand command){
+		this.update.handle(command);
+	}
 }
