@@ -23,7 +23,7 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM PpemtLayoutItemCls e");
-		builderString.append(" WHERE e.ppemtLayoutItemClsPk.layoutId = :layoutId ORDERBY e.ppemtLayoutItemClsPk.dispOrder ASC ");
+		builderString.append(" WHERE e.ppemtLayoutItemClsPk.layoutId = :layoutId ORDER BY e.ppemtLayoutItemClsPk.dispOrder ASC ");
 		GET_ALL_ITEM_CLASSIFICATION = builderString.toString();
 	}
 	
