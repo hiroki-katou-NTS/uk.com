@@ -14,4 +14,11 @@ public interface PersonInfoCategoryAuthRepository {
 	void delete(String roleId, String personCategoryAuthId);
 
 	Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId);
+
+	List<PersonInfoCategoryAuth> getAllCategoryAuthByRoleId(String roleId);
+	
+	List<PersonInfoCategoryDetail> getAllCategoryInfo();
+	
+	List<PersonInfoCategoryDetail> getAllCategoryByRoleId(String roleId);
+
 }

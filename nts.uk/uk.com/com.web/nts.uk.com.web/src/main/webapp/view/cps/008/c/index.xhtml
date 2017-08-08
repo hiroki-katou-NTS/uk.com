@@ -26,7 +26,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="cf">
+				<div class="cf" data-bind ="with : layout">
 					<div></div>
 					<br /> <br /> <br />
 					<table class="table_content">
@@ -45,8 +45,8 @@
 							</td>
 
 							<td class="row_1">
-								<span data-bind="text: layoutCode"></span>
-								<span style="margin-left: 76px" data-bind="text: layoutName"></span></td>
+								<span data-bind="text: code"></span>
+								<span style="margin-left: 76px" data-bind="text: name"></span></td>
 						</tr>
 
 						<tr>
@@ -63,17 +63,17 @@
 									<div class="input_002 input_code">
 										<input id="C_INP_CODE" style="width: 80px"
 											data-bind="ntsTextEditor: {
-											value: A_INP_LAYOUT_CODE,
+											value: INP_CODE,
 											constraint: 'LayoutCode',
-											enable: A_INP_LAYOUT_CODE_ENABLE}" />
+											enable: true}" />
 									</div>
 
 									<div class="input_002 input_name">
 										<input id="C_INP_NAME" style="width: 180px"
 											data-bind="ntsTextEditor: {
-											value: A_INP_LAYOUT_NAME,
+											value: INP_NAME,
 											constraint: 'LayoutName',
-											enable: A_INP_LAYOUT_NAME_ENABLE
+											enable: true
 											}" />
 									</div>
 								</div>
@@ -86,14 +86,14 @@
 							
 						</tr>
 					</table>
-					<div style="margin-left: 148px" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CPS008_43')}' }"></div>
+					<div style="margin-left: 148px" data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('CPS008_43')}' }"></div>
 				</div>
 				<br />
 				
 				
 				<div class="bottomStype">
-					<button class="x-large proceed" id="BTN_DECIDE" data-bind ="click : updateBtn">決定</button>
-					<button class="large" id="BTN_CANCEL" >キャンセル</button>
+					<button class="x-large proceed" id="BTN_DECIDE" data-bind ="click : coppyBtn">決定</button>
+					<button class="large" id="BTN_CANCEL" data-bind ="click : cancelBtn">キャンセル</button>
 					<br />
 				</div>
 			</div>

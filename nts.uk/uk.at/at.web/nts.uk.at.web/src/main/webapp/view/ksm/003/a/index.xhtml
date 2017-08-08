@@ -14,9 +14,9 @@
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm003.a.main.css" />
-			<com:scriptfile path="ksm003.a.start.js" />
-			<com:scriptfile path="ksm003.a.vm.js" />
 			<com:scriptfile path="ksm003.a.service.js" />
+			<com:scriptfile path="ksm003.a.vm.js" />
+			<com:scriptfile path="ksm003.a.start.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
@@ -27,15 +27,15 @@
 				<!-- B1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
-					data-bind="click:registrationDivReason, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
+					data-bind="click:save, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
 				<!-- B1_3: Button Display pattern -->
 				<button tabindex="3" id="btn_005"
 					class="button separate-button fix-button"
-					data-bind="click:openDialogWorking,enable: $root.errors.isEmpty">#{i18n.getText('KSM003_35')}</button>
+					data-bind="click: openDialogWorking,enable: $root.errors.isEmpty">#{i18n.getText('KSM003_35')}</button>
 				<!-- B1_4: Button Delete -->
 				<button tabindex="4" id="btn_004"
 					class="button danger separate-button fix-button"
-					data-bind="click:deleteDivReason, enable: enableDel">#{i18n.getText('KSM003_22')}</button>
+					data-bind="click: save">#{i18n.getText('KSM003_22')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"
@@ -48,16 +48,17 @@
 							data-bind="ntsGridList:{
 								width: 330,
 								height: 230,
-								options: lstPattern,
+								options: itemLst,
 								optionsValue: 'patternCode',
 								columns: columns,
 								multiple: false,
-								value: currentCode,
+								value: selectedCode,
 								enable: true}">
 						</table>
 					</div>
 				</div>
-				<div id="right-content" style="float: left;">
+				<div id="right-content" style="float: left;"
+					data-bind="with: detail">
 					<table>
 						<colgroup>
 							<col width="213px" />
@@ -75,15 +76,14 @@
 								class="nts-input" id="inpCode"
 								data-bind="ntsTextEditor: {
 										  name: '#[KSM003_36]',
-                                          value: detail().patternCode,
+                                          value: patternCode,
                                           constraint: 'PatternCode',
-                                          enable:enableCode, 
                                           required: true}" />
 								<!-- B3_3:Pattern Name--> <input tabindex="7" class="nts-input"
 								id="inpPattern"
 								data-bind="ntsTextEditor: {
 										  name: '#[KSM003_37]',
-                                          value: detail().patternName,
+                                          value: patternName,
                                           constraint: 'PatternName',
                                           required: true}" />
 							</td>
@@ -101,7 +101,7 @@
 									<td>#{i18n.getText('KSM003_31')}</td>
 									<td>#{i18n.getText('KSM003_32')}</td>
 								</tr>
-								<com:ko tag="foreach" bind="detail().dailyPatternVals">
+								<com:ko tag="foreach" bind="dailyPatternVals">
 									<tr>
 										<td>
 											<div>
@@ -117,17 +117,14 @@
 										<td>
 											<div data-bind="text: workingHoursCd "></div>
 										</td>
-										<td>
-											<input data-bind="ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" />
+										<td><input
+											data-bind="ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" />
 										</td>
 									</tr>
 								</com:ko>
 
 							</table>
 						</div>
-
-
-
 					</div>
 				</div>
 			</div>
