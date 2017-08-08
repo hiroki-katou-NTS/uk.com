@@ -89,7 +89,6 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     @Inject
     private StoredFileStreamService fileStreamService;
     private static final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
-    private static final Integer OPEN_DIALOG = -990;
     private static final Integer INDEX_COLUMN_CODE = 0;
     private static final Integer INDEX_COLUMN_DATE = 1;
     private static final Integer INDEX_BEGIN_COL_VALUE = 2;
@@ -103,7 +102,6 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         String executeId = IdentifierUtil.randomUniqueId();
         AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
             this.fileCheckService.validFileFormat(command.getFileId());
-            setter.setData("OPEN_DIALOG", OPEN_DIALOG);
             setter.setData("SUCCESS_CNT", 0);
             setter.setData("FAIL_CNT", 0);
             
@@ -281,7 +279,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         }
         ExternalBudgetTimeDto dto = ExternalBudgetTimeDto.builder()
                 .budgetAtr(importProcess.externalBudget.getBudgetAtr())
-                .workplaceId("") // TODO: find workplace id by workplace code
+                .workplaceId(result.get(INDEX_COLUMN_CODE)) // TODO: find workplace id by workplace code
                 .extBudgetCode(importProcess.extractCondition.getExternalBudgetCode())
                 .actualDate(importProcess.actualDate)
                 .mapValue(mapValue)
