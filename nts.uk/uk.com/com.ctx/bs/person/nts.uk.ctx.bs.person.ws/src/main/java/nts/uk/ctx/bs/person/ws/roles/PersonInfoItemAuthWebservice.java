@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import find.roles.auth.item.PersonInfoItemAuthDto;
 import find.roles.auth.item.PersonInfoItemAuthFinder;
 import find.roles.auth.item.PersonInfoItemDetailDto;
 import nts.arc.layer.ws.WebService;
@@ -20,34 +19,11 @@ public class PersonInfoItemAuthWebservice extends WebService {
 	PersonInfoItemAuthFinder personInfoItemAuthFinder;
 
 	@POST
-	@Path("findAll")
-	public List<PersonInfoItemAuthDto> getAllPersonItemAuth() {
-		return personInfoItemAuthFinder.getAllPersonItemAuth();
-
-	}
-
-	@POST
-	@Path("find/{roleId}/{personCategoryAuthId}")
-	public List<PersonInfoItemAuthDto> getAllPersonItemAuthByCategory(@PathParam("roleId") String roleId,
-			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
-		return personInfoItemAuthFinder.getAllPersonItemAuthByCategory(roleId, personCategoryAuthId);
-
-	}
-
-	@POST
-	@Path("findAllItem/{personInfoCategoryAuthId}")
-	public List<PersonInfoItemDetailDto> getAllItemDetail(
+	@Path("findAllItem/{roleId}/{personInfoCategoryAuthId}")
+	public List<PersonInfoItemDetailDto> getAllItemDetail(@PathParam("roleId") String roleId,
 			@PathParam("personInfoCategoryAuthId") String personInfoCategoryAuthId) {
-		return personInfoItemAuthFinder.getAllItemDetail(personInfoCategoryAuthId);
+		return personInfoItemAuthFinder.getAllItemDetail(roleId, personInfoCategoryAuthId);
 
 	}
 
-	@POST
-	@Path("find/{roleId}/{personCategoryAuthId}/{personItemDefId}")
-	public PersonInfoItemAuthDto getDetailPersonItemAuth(@PathParam("roleId") String roleId,
-			@PathParam("personCategoryAuthId") String personCategoryAuthId,
-			@PathParam("personItemDefId") String personItemDefId) {
-		return personInfoItemAuthFinder.getDetailPersonItemAuth(roleId, personCategoryAuthId, personItemDefId).get();
-
-	}
 }

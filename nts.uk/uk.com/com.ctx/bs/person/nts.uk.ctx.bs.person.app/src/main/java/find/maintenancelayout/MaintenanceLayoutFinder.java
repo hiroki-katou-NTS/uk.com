@@ -3,18 +3,16 @@
  */
 package find.maintenancelayout;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import find.layoutitemclassification.LayoutPersonInfoClsDto;
-import find.person.info.item.PerInfoItemDefDto;
-import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClsRepository;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.ILayoutPersonInfoClsRepository;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
+import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
 
 /**
  * @author laitv
@@ -24,49 +22,35 @@ import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayoutReposi
 public class MaintenanceLayoutFinder {
 
 	@Inject
-	private MaintenanceLayoutRepository maintenanceLayoutRepository;
+	private IMaintenanceLayoutRepository layoutRepo;
 
 	@Inject
-	private LayoutPersonInfoClsRepository layoutPersonInfoClsRepository;
+	private ILayoutPersonInfoClsRepository itemClsRepo;
 	
-//	@Inject
-//	private PernfoItemDefRepositoty itemDefRepositoty;
+	
 
 	public List<MaintenanceLayoutDto> getAllLayout() {
-
-		List<MaintenanceLayoutDto> listLayoutDto = new ArrayList<>();
-
 		// get All Maintenance Layout
-		listLayoutDto = this.maintenanceLayoutRepository.getAllMaintenanceLayout().stream()
-				.map(item -> MaintenanceLayoutDto.fromDomain(item)).collect(Collectors.toList());
+		return this.layoutRepo.getAllMaintenanceLayout().stream().map(item -> MaintenanceLayoutDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
 
-		// get all ItemClassification have LayoutID = listLayoutDto[0].layoutId
-		if (listLayoutDto.size() > 0) {
-			String layoutID = listLayoutDto.get(0).maintenanceLayoutID;
+	public MaintenanceLayoutDto getDetails(String layoutId) {
+		// get detail maintenanceLayout By Id
+		MaintenanceLayoutDto dto = this.layoutRepo.getById(layoutId).map(c -> MaintenanceLayoutDto.fromDomain(c)).get();
 
-			List<LayoutPersonInfoClsDto> listItemCls = new ArrayList<>();
+		// Get list Classification Item by layoutID
+		List<LayoutPersonInfoClsDto> listItemCls = this.itemClsRepo.getAllItemClsById(layoutId).stream()
+				.map(item -> LayoutPersonInfoClsDto.fromDomain(item)).collect(Collectors.toList());
 
-			listItemCls = this.layoutPersonInfoClsRepository.getAllItemCls(layoutID).stream()
-					.map(item -> LayoutPersonInfoClsDto.fromDomain(item)).collect(Collectors.toList());
-			
-			// get List ItemDifination cho mỗi ItemClassification
-			
-			List<PerInfoItemDefDto> listItemClsDf = new ArrayList<>();
-			
-			listItemCls.forEach(
-						item ->{
-						
-													
-						});
-			
-			
-			listLayoutDto.get(0).setListItemClsDto(listItemCls);
-			
-			// 
-			
+		if (listItemCls.size() > 0) {
+			listItemCls.forEach(item -> {
+					
+			});
 		}
 
-		return listLayoutDto;
+		dto.setListItemClsDto(listItemCls);
 
+		return dto;
 	}
 }

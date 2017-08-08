@@ -16,6 +16,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTim
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneVal;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTime;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTimePK;
 
 /**
  * The Class JpaExtBudgetTimeZoneRepository.
@@ -55,6 +56,20 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
         });
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetTimeZoneRepository#isExisted(java.lang.String,
+     * nts.arc.time.GeneralDate, java.lang.String)
+     */
+    @Override
+    public boolean isExisted(String workplaceId, GeneralDate actualDate, String extBudgetCode) {
+        Optional<KscdtExtBudgetTime> optional = this.queryProxy()
+                .find(new KscdtExtBudgetTimePK(workplaceId, actualDate, extBudgetCode), KscdtExtBudgetTime.class);
+        return optional.isPresent();
+    }
+    
     /**
      * Find list entity.
      *
@@ -88,4 +103,5 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
         domain.saveToMemento(memento);
         return lstEntity;
     }
+
 }

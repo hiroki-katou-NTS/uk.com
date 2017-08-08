@@ -60,6 +60,7 @@ module nts.uk.ui.exTable {
         pasteOverWrite: boolean = true;
         stickOverWrite: boolean = true;
         determination: any;
+        modifications: Array<any>;
         
         constructor($container: JQuery, options: any) {
             this.$container = $container;
@@ -321,6 +322,7 @@ module nts.uk.ui.exTable {
             // Edit done
             update.editDone(self.$container);
             update.outsideClick(self.$container);
+            events.onModify(self.$container);
             selection.checkUp(self.$container);
             copy.on(self.$container.find("." + BODY_PRF + DETAIL), self.updateMode);
         }
@@ -1201,7 +1203,7 @@ module nts.uk.ui.exTable {
             if (!util.isNullOrUndefined(res)) {
                 pushEditHistory($body, new selection.Cell(rowIdx, columnKey, res, innerIdx));
                 helper.markCellWith(EDITED_CLS, $cell, innerIdx);
-                events.trigger($exTable, events.CELL_UPDATED, [ rowIdx, columnKey, innerIdx, value ]);
+                events.trigger($exTable, events.CELL_UPDATED, [ new selection.Cell(rowIdx, columnKey, value, innerIdx) ]);
             }
             setText($cell, innerIdx, value);
         }
@@ -1321,7 +1323,7 @@ module nts.uk.ui.exTable {
             }
             render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
             pushHistory($grid, [ new selection.Cell(rowIdx, columnKey, changedData) ], txId);
-            events.trigger($exTable, events.CELL_UPDATED, [ rowIdx, columnKey, innerIdx, value ]);
+            events.trigger($exTable, events.CELL_UPDATED, [ new selection.Cell(rowIdx, columnKey, value, innerIdx) ]);
         }
         export function gridRowOw($grid: JQuery, rowIdx: any, data: any, txId: any) {
             let $exTable = $grid.closest("." + NAMESPACE);
@@ -1346,7 +1348,7 @@ module nts.uk.ui.exTable {
             });
             render.gridRow($grid, rowIdx, data);
             pushHistory($grid, changedCells, txId);
-            events.trigger($exTable, events.ROW_UPDATED, [ rowIdx, data ]);
+            events.trigger($exTable, events.ROW_UPDATED, [ events.createRowUi(rowIdx, data) ]);
         }
         
         export function stickGridCellOw($grid: JQuery, rowIdx: any, columnKey: any, innerIdx: any, value: any) {
@@ -1373,7 +1375,7 @@ module nts.uk.ui.exTable {
             }
             render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
             pushStickHistory($grid, [ new selection.Cell(rowIdx, columnKey, changedData) ]);
-            events.trigger($exTable, events.CELL_UPDATED, [ rowIdx, columnKey, innerIdx, value ]);
+            events.trigger($exTable, events.CELL_UPDATED, [ new selection.Cell(rowIdx, columnKey, value, innerIdx) ]);
         }
         export function stickGridRowOw($grid: JQuery, rowIdx: any, data: any) {
             let $exTable = $grid.closest("." + NAMESPACE);
@@ -1405,7 +1407,7 @@ module nts.uk.ui.exTable {
             });
             render.gridRow($grid, rowIdx, origData);
             pushStickHistory($grid, changedCells);
-            events.trigger($exTable, events.ROW_UPDATED, [ rowIdx, origData ]);
+            events.trigger($exTable, events.ROW_UPDATED, [ events.createRowUi(rowIdx, origData) ]);
         }
         
         export function pushHistory($grid: JQuery, cells: Array<any>, txId: any) {
@@ -2892,6 +2894,68 @@ module nts.uk.ui.exTable {
         export function trigger($target: JQuery, eventName: string, args: any) {
             $target.trigger($.Event(eventName), args);
         }
+        
+        export function onModify($exTable: JQuery) {
+            $exTable.on(CELL_UPDATED, function(evt: any, ui: any) {
+                let exTable = $exTable.data(NAMESPACE);
+                if (!exTable) return;
+                if (ui.value.constructor === Array && (util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
+                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                    return;
+                }
+                pushChange(exTable, ui.rowIndex, ui); 
+            });
+            
+            $exTable.on(ROW_UPDATED, function(evt: any, ui: any) {
+                let exTable = $exTable.data(NAMESPACE);
+                if (!exTable) return;
+                let cells = [];
+                _.forEach(Object.keys(ui.data), function(k, i) {
+                    if (ui.data[k].constructor === Array && ui.data[k].length === 2) {
+                        cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][0], 0));
+                        cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][1], 1));
+                        return;
+                    }
+                    cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k], -1));
+                });
+                _.forEach(cells, function(c, i) {
+                    pushChange(exTable, c.rowIndex, c);
+                });
+            });
+        }
+        
+        function pushChange(exTable: any, rowIdx: any, cell: any) {
+            let modifies = exTable.modifications;
+            if (!modifies) {
+                exTable.modifications = {};
+                exTable.modifications[rowIdx] = [ cell ];
+                return;
+            }
+            if (!modifies[rowIdx]) {
+                modifies[rowIdx] = [ cell ];
+                return;
+            }
+            let rData = modifies[rowIdx];
+            let cellUpdated = false;
+            _.forEach(rData, function(c, i) {
+                if (helper.areSameCells(c, cell)) {
+                    rData[i].value = cell.value;
+                    cellUpdated = true;
+                    return false;
+                }
+            });
+            if (!cellUpdated) {
+                modifies[rowIdx].push(cell);
+            }
+        }
+        
+        export function createRowUi(rowIdx: any, data: any) {
+            return {
+                rowIndex: rowIdx,
+                data: data
+            };
+        }
     }
     
     module feature {
@@ -3138,6 +3202,8 @@ module nts.uk.ui.exTable {
                     return getCellByIndex(self, params[0], params[1]);
                 case "cellById":
                     return getCellById(self, params[0], params[1]);
+                case "updatedCells":
+                    return getUpdatedCells(self);
             }
         };
         
@@ -3408,6 +3474,11 @@ module nts.uk.ui.exTable {
             let $tbl = helper.getMainTable($container);
             if ($tbl.length === 0) return;
             return selection.cellOf($tbl, rowId, columnKey);
+        }
+        function getUpdatedCells($container: JQuery) {
+            let data = $container.data(NAMESPACE).modifications;
+            if (!data) return [];
+            return helper.valuesArray(data);
         }
         function setCellValue($container: JQuery, name: any, rowId: any, columnKey: any, value: any) {
             switch (name) {
@@ -3688,6 +3759,19 @@ module nts.uk.ui.exTable {
         }
         export function containsBr(text: string) {
             return text && text.indexOf("<br/>") > -1;
+        }
+        export function areSameCells(one: any, other: any) {
+            if (parseInt(one.rowIndex) !== parseInt(other.rowIndex)
+                || one.columnKey !== other.columnKey
+                || one.innerIdx !== other.innerIdx) return false;
+            return true;
+        }
+        export function valuesArray(obj: any) {
+            let values = [];
+            _.forEach(Object.keys(obj), function(k, i) {
+                values = _.concat(values, obj[k]);
+            });
+            return values;
         }
     }
     

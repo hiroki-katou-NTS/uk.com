@@ -1,8 +1,14 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -14,23 +20,21 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class AttendanceItemsFinder {
 	
-	public AttendanceItemDto find(){
+	@Inject
+	private AttendanceItemRepository attendanceItemRepository;
+	
+	public List<AttendanceItemDto> find() {
 		LoginUserContext login = AppContexts.user();
-		String companyId = login.companyId();	
+		String companyId = login.companyId();
 		
-		//乖離時間 KMKMT_DIVERGENCE_TIME - hoatt
+		//勤怠項目
+		List<AttendanceItem> attendanceItems = this.attendanceItemRepository.getAttendanceItems(companyId, 1);
 		
-		//加給時間項目 KBPST_BP_TIME_ITEM - hungnm
+		List<AttendanceItemDto> attendanceItemDtos = attendanceItems.stream().map(f -> {
+			return new AttendanceItemDto(f.getAttendanceId(), f.getAttendanceName().v(), f.getDislayNumber());
+		}).collect(Collectors.toList());
 		
-		//割増項目 KMNMT_PREMIUM_ITEM - hungdd
-		
-		//特定加給時間項目 - KBPST_BP_TIME_ITEM - dũng
-		
-		//任意項目
-		
-		//回数集計
-		
-		return null;
+		return attendanceItemDtos;
 	}
 
 }

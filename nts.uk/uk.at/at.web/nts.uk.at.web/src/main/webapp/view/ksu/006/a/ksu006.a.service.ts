@@ -7,6 +7,7 @@ module nts.uk.at.view.ksu006.a {
             findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
             
             findDataPreview: "at/schedule/budget/external/find/preview",
+            validateFile: "at/schedule/budget/external/import/validate",
         };
         
         export function findExternalBudgetList(): JQueryPromise<any> {
@@ -25,6 +26,9 @@ module nts.uk.at.view.ksu006.a {
             return nts.uk.request.ajax(servicePath.findDataPreview, extractCondition);
         }
         
+        export function validateFile(fileId: string): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.validateFile + "/" + fileId);
+        }
         
         /**
         * Model namespace.
@@ -43,11 +47,13 @@ module nts.uk.at.view.ksu006.a {
             }
             
             export class DataPreviewModel {
+                isDailyUnit: boolean;
                 data: Array<ExternalBudgetValueModel>;
                 totalRecord: number;
                 
-                constructor(data: Array<ExternalBudgetValueModel>, totalRecord: number) {
+                constructor(isDailyUnit: boolean, data: Array<ExternalBudgetValueModel>, totalRecord: number) {
                     let self = this;
+                    self.isDailyUnit = isDailyUnit;
                     self.data = data;
                     self.totalRecord = totalRecord;
                 }

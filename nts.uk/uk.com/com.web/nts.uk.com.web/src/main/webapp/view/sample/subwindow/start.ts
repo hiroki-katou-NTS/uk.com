@@ -22,3 +22,10 @@ function openDialog() {
 function openDialogB() {
     nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/dialogb.xhtml");
 }
+function openDialogC() {
+    $("#switch-language").ntsSwitchMasterLanguage();
+    
+    $("#switch-language").on( "selectionChanged", function( event, arg1, arg2 ) {
+        alert( event.detail.languageId ); // "bar"
+    });
+}

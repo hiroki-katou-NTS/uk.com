@@ -19,11 +19,11 @@ public interface ExternalBudgetErrorGetMemento {
     ExtBudgetErrorContent getErrorContent();
 
     /**
-     * Gets the number column.
+     * Gets the column no.
      *
-     * @return the number column
+     * @return the column no
      */
-    int getNumberColumn();
+    int getColumnNo();
 
     /**
      * Gets the actual value.
@@ -54,9 +54,9 @@ public interface ExternalBudgetErrorGetMemento {
     String getExecutionId();
 
     /**
-     * Gets the number line.
+     * Gets the line no.
      *
-     * @return the number line
+     * @return the line no
      */
-    int getNumberLine();
+    int getLineNo();
 }

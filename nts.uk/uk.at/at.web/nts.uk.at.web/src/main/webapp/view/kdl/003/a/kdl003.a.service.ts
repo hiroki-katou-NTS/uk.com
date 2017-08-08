@@ -4,6 +4,7 @@ module nts.uk.at.view.kdl003.a {
             findAllWorkType: "at/share/worktype/findAll",
             findWorkTypeByCodes: "at/share/worktype/getpossibleworktype",
             findAllRestTime: "at/share/resttime/getresttime",
+            findAllWorkTime: "at/shared/worktime/findByCompanyID",
             findByCodeList: "at/shared/worktime/findByCodeList",
             findByTime: "at/shared/worktime/findByTime",
 
@@ -11,8 +12,8 @@ module nts.uk.at.view.kdl003.a {
             getTimeDayAtrEnum: "at/share/resttime/enum/TimeDayAtr"
         }
 
-        export function findAllWorkType(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findAllWorkType, command);
+        export function findAllWorkType(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllWorkType);
         }
         export function findWorkTypeByCodes(command: Array<string>): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findWorkTypeByCodes, command);
@@ -24,6 +25,9 @@ module nts.uk.at.view.kdl003.a {
 
         export function findByCodeList(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findByCodeList, command);
+        }
+        export function findAllWorkTime(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllWorkTime);
         }
 
         export function findByTime(command: any): JQueryPromise<any> {

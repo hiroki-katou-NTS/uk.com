@@ -12,6 +12,7 @@ public class SingleItem extends ItemTypeState {
 	private SingleItem(DataTypeState dataTypeState) {
 		super();
 		this.itemType = ItemType.SINGLE_ITEM;
+		this.dataTypeState = dataTypeState;
 	}
 
 	public static SingleItem createFromJavaType(DataTypeState dataTypeState) {
