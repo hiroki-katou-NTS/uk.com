@@ -22,7 +22,7 @@ public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfo
 	protected void handle(CommandHandlerContext<UpdatePerInfoCtgCommand> context) {
 		UpdatePerInfoCtgCommand perInfoCtgCommand = context.getCommand();
 		String categoryCode = null;
-		PersonInfoCategory perInfoCtg = PersonInfoCategory.createFromJavaType(AppContexts.user().companyId(),
+		PersonInfoCategory perInfoCtg = PersonInfoCategory.createFromJavaType(PersonInfoCategory.ROOT_COMPANY_ID,
 				categoryCode, perInfoCtgCommand.getCategoryName().v(), perInfoCtgCommand.getCategoryType().value);
 		this.perInfoCtgRep.updatePerInfoCtg(perInfoCtg, AppContexts.user().companyId());
 	}
