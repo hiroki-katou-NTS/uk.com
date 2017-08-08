@@ -18,8 +18,8 @@ public class KscdtExtBudgetDailyPK_ {
     /** The wkpid. */
     public static volatile SingularAttribute<KscdtExtBudgetDailyPK, String> wkpid;
     
-    /** The process D. */
-    public static volatile SingularAttribute<KscdtExtBudgetDailyPK, GeneralDate> processD;
+    /** The actual date. */
+    public static volatile SingularAttribute<KscdtExtBudgetDailyPK, GeneralDate> actualDate;
     
     /** The ext budget cd. */
     public static volatile SingularAttribute<KscdtExtBudgetDailyPK, String> extBudgetCd;

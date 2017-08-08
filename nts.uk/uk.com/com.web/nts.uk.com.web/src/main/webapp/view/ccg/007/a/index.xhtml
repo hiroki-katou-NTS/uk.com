@@ -30,8 +30,9 @@
 							</td>
 							<td style="width:230px; padding: 10px;">
 								<div>
-									<input
+									<input tabindex="1" id="contract-code-inp"
 										data-bind="ntsTextEditor: {
+											name: '#{i18n.getText('CCG007_1')}',
 											value: contractCode,
 											required: true,
 											constraint: 'ContractCode',
@@ -49,8 +50,9 @@
 							</td>
 							<td style="width:230px; padding: 10px;">
 								<div>
-									<input
+									<input tabindex="2"
 										data-bind="ntsTextEditor: {
+											name: '#{i18n.getText('CCG007_2')}',
 											value: password,
 											required: true,
 											constraint: 'RawPassword',
@@ -67,7 +69,7 @@
 				<div style="padding-bottom: 5px;">
 					<div>#{i18n.getText('CCG007_11')}</div>
 				</div>
-				<button data-bind=" click: AuthContract"
+				<button tabindex="3" data-bind=" click: AuthContract"
 					class="btn-default proceed large">#{i18n.getText('CCG007_12')}</button>
 			</div>
 		</ui:define>

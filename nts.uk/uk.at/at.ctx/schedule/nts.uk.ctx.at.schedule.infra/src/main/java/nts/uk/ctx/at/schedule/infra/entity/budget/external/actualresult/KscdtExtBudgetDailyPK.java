@@ -32,11 +32,11 @@ public class KscdtExtBudgetDailyPK implements Serializable {
     @Column(name = "WKPID")
     private String wkpid;
     
-    /** The process D. */
+    /** The actual date. */
     @Basic(optional = false)
     @Column(name = "YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
-    private GeneralDate processD;
+    private GeneralDate actualDate;
     
     /** The ext budget cd. */
     @Basic(optional = false)
@@ -58,7 +58,7 @@ public class KscdtExtBudgetDailyPK implements Serializable {
      */
     public KscdtExtBudgetDailyPK(String wkpid, GeneralDate processD, String extBudgetCd) {
         this.wkpid = wkpid;
-        this.processD = processD;
+        this.actualDate = processD;
         this.extBudgetCd = extBudgetCd;
     }
     
@@ -82,7 +82,7 @@ public class KscdtExtBudgetDailyPK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (wkpid != null ? wkpid.hashCode() : 0);
-        hash += (processD != null ? processD.hashCode() : 0);
+        hash += (actualDate != null ? actualDate.hashCode() : 0);
         hash += (extBudgetCd != null ? extBudgetCd.hashCode() : 0);
         return hash;
     }
@@ -101,8 +101,8 @@ public class KscdtExtBudgetDailyPK implements Serializable {
         if ((this.wkpid == null && other.wkpid != null) || (this.wkpid != null && !this.wkpid.equals(other.wkpid))) {
             return false;
         }
-        if ((this.processD == null && other.processD != null)
-                || (this.processD != null && !this.processD.equals(other.processD))) {
+        if ((this.actualDate == null && other.actualDate != null)
+                || (this.actualDate != null && !this.actualDate.equals(other.actualDate))) {
             return false;
         }
         if ((this.extBudgetCd == null && other.extBudgetCd != null)

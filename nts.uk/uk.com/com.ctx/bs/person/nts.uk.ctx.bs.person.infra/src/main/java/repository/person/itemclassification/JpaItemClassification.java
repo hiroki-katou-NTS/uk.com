@@ -11,10 +11,10 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClsRepository;
+import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.ILayoutPersonInfoClsRepository;
 
 @Stateless
-public class JpaItemClassification extends JpaRepository implements LayoutPersonInfoClsRepository {
+public class JpaItemClassification extends JpaRepository implements ILayoutPersonInfoClsRepository {
 
 	private static final String GET_ALL_ITEM_CLASSIFICATION;
 
@@ -23,7 +23,7 @@ public class JpaItemClassification extends JpaRepository implements LayoutPerson
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM PpemtLayoutItemCls e");
-		builderString.append(" WHERE e.ppemtLayoutItemClsPk.layoutId = :layoutId");
+		builderString.append(" WHERE e.ppemtLayoutItemClsPk.layoutId = :layoutId ORDERBY e.ppemtLayoutItemClsPk.dispOrder ASC ");
 		GET_ALL_ITEM_CLASSIFICATION = builderString.toString();
 	}
 	
@@ -39,7 +39,7 @@ public class JpaItemClassification extends JpaRepository implements LayoutPerson
 	
 
 	@Override
-	public List<LayoutPersonInfoClassification> getAllItemCls(String layoutId) {
+	public List<LayoutPersonInfoClassification> getAllItemClsById(String layoutId) {
 		List<PpemtLayoutItemCls> resultList = this.queryProxy()
 				.query(GET_ALL_ITEM_CLASSIFICATION, PpemtLayoutItemCls.class).setParameter("layoutId", layoutId)
 				.getList();

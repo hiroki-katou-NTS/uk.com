@@ -23,6 +23,8 @@ public class BusinessTypeWebService extends WebService {
 	@Inject
 	private BusinessTypesFinder findAll;
 	@Inject
+	private BusinessTypesFinder findBusinessType;
+	@Inject
 	private AddBusinessTypeNameCommandHandler addBusinessName;
 	@Inject
 	private UpdateBusinessTypeNameCommandHandler updateBusinessName;
@@ -36,6 +38,11 @@ public class BusinessTypeWebService extends WebService {
 	@Path("findAll")
 	public List<BusinessTypeDto> getAll(){
 		return this.findAll.findAll();
+	}
+	@POST
+	@Path("findBusinessType")
+	public BusinessTypeDto getBusinessType(String businessTypeCode){
+		return this.findBusinessType.findBusinessType(businessTypeCode);
 	}
 	/**
 	 * insert new business type name

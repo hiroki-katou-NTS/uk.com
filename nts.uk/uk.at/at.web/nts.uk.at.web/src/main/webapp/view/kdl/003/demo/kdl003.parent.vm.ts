@@ -27,19 +27,19 @@ module kdl003.parent.viewmodel {
         OpenDialog003() {
             var self = this;
             nts.uk.ui.windows.setShared('parentCodes', {
-                canSelectWorkTypeCodes: self.canSelectWorkTypeCodes(),
-                selectWorkTypeCode: self.selectWorkTypeCode(),
-                canSelectSiftCodes: self.canSelectSiftCodes(),
-                selectSiftCode: self.selectSiftCode()
+                workTypeCodes: self.canSelectWorkTypeCodes(),
+                selectedWorkTypeCode: self.selectWorkTypeCode(),
+                workTimeCodes: self.canSelectSiftCodes(),
+                selectedWorkTimeCode: self.selectSiftCode()
             }, true);
 
-            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml', { title: '勤務就業選択', }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                 //view all code of selected item 
                 var childData = nts.uk.ui.windows.getShared('childData');
-                self.childSelectWorkTypeCode(childData.selectedWorkTimeCode);
-                self.childSelectWorkTypeName(childData.selectedWorkTimeName);
-                self.childSelectSiftCode(childData.selectedSiftCode);
-                self.childSelectSiftName(childData.selectedSiftName);
+                self.childSelectWorkTypeCode(childData.selectedWorkTypeCode);
+                self.childSelectWorkTypeName(childData.selectedWorkTypeName);
+                self.childSelectSiftCode(childData.selectedWorkTimeCode);
+                self.childSelectSiftName(childData.selectedWorkTimeName);
             })
         }
     }

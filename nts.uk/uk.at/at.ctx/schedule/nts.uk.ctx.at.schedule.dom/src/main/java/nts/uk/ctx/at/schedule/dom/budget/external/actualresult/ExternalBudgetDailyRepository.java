@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface ExternalBudgetDailyRepository.
  */
@@ -24,4 +26,14 @@ public interface ExternalBudgetDailyRepository {
      * @param domain the domain
      */
     <T>void update(ExternalBudgetDaily<T> domain);
+    
+    /**
+     * Checks if is existed.
+     *
+     * @param workplaceId the workplace id
+     * @param actualDate the actual date
+     * @param extBudgetCd the ext budget cd
+     * @return true, if is existed
+     */
+    boolean isExisted(String workplaceId, GeneralDate actualDate, String extBudgetCd);
 }

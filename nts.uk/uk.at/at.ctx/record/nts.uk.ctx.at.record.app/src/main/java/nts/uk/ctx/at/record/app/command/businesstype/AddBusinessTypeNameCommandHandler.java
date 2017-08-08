@@ -11,7 +11,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * @author yennth
+ * Add business type name command handler
+ */
 @Stateless
 public class AddBusinessTypeNameCommandHandler extends CommandHandler<AddBusinessTypeNameCommand>{
 	@Inject
@@ -27,8 +30,6 @@ public class AddBusinessTypeNameCommandHandler extends CommandHandler<AddBusines
 		if(businessTypeOld.isPresent()){
 			throw new BusinessException("Msg_3");
 		}
-		else{
-			businessTypeRep.insertBusinessType(businessType);
-		}
+		businessTypeRep.insertBusinessType(businessType);
 	}
 }

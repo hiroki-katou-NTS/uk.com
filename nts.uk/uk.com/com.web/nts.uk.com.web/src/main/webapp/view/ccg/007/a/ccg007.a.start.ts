@@ -3,6 +3,7 @@ module nts.uk.pr.view.ccg007.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
+            $('#contract-code-inp').focus();
         });
     });
 }

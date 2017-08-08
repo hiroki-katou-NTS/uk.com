@@ -56,18 +56,23 @@ module nts.uk.pr.view.ccg007.b {
 
             private submitLogin() {
                 var self = this;
-                service.submitLogin({ loginId: self.loginId(), password: self.password() }).done(function() {
-                    nts.uk.characteristics.remove("form1LoginInfo");
-                    if (self.isSaveLoginInfo()) {
-                        nts.uk.characteristics.save("form1LoginInfo", {loginId: self.loginId()}).done(function() {
-                            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
-                        });
-                    } else {
-                        nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
-                    }
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                });
+                if (!nts.uk.ui.errors.hasError()) {
+                    service.submitLogin({ loginId: _.escape(self.loginId()), password: _.escape(self.password()) }).done(function() {
+                        nts.uk.characteristics.remove("form1LoginInfo");
+                        if (self.isSaveLoginInfo()) {
+                            nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                                nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                            });
+                        } else {
+                            //TODO confirm kiban team promise for remove
+                            setTimeout(function() {
+                                nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                            }, 1000);
+                        }
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    });
+                }
             }
         }
     }

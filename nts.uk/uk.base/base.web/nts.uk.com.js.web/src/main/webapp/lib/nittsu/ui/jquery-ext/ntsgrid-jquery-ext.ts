@@ -129,7 +129,9 @@ module nts.uk.ui.jqueryExtentions {
             sheet.load.setup($(self), options);
             // Common settings
             settings.build($(self), options);
-            $(this).igGrid(options);
+            if (!onDemand.initial($(self), options)) {
+                $(this).igGrid(options);
+            }
             // Window resize
             $(window).resize(function() {
                 settings.setGridSize($(self));
@@ -142,6 +144,7 @@ module nts.uk.ui.jqueryExtentions {
             export let SELECTION = "Selection";
             export let RESIZING = "Resizing";
             export let COLUMN_FIX = "ColumnFixing";
+            export let PAGING = "Paging";
             export let COPY_PASTE = "CopyPaste";
             export let CELL_EDIT = "CellEdit";
             export let CELL_COLOR = "CellColor";
@@ -151,6 +154,7 @@ module nts.uk.ui.jqueryExtentions {
             export let HEADER_STYLES = "HeaderStyles";
             export let HIDING = "Hiding";
             export let SHEET = "Sheet";
+            export let DEMAND_LOAD = "LoadOnDemand";
             
             export function replaceBy(options: any, featureName: string, newFeature: any) {
                 let replaceId: number;
@@ -1075,7 +1079,7 @@ module nts.uk.ui.jqueryExtentions {
     
                 draw(data: any): JQuery {
                     var $container = $("<div/>").addClass(this.containerClass());
-                    var $button = $("<button/>").addClass("ntsButton").appendTo($container).text(data.controlDef.text || data.initValue)
+                    var $button = $("<button/>").addClass("ntsButton").css("height", "25px").appendTo($container).text(data.controlDef.text || data.initValue)
                         .data("enable", data.enable).on("click", data.controlDef.click);
                     $button.prop("disabled", !data.enable);
                     return $container;
@@ -1604,6 +1608,8 @@ module nts.uk.ui.jqueryExtentions {
                 static GRID_EDIT_CELL_STARTED: string = "iggridupdatingeditcellstarted";
                 static COLUMN_RESIZING: string = "iggridresizingcolumnresizing";
                 static CELL_CLICK: string = "iggridcellclick";
+                static PAGE_INDEX_CHANGE: string = "iggridpagingpageindexchanging";
+                static PAGE_SIZE_CHANGE: string = "iggridpagingpagesizechanging";
                 $grid: JQuery;
                 options: any;
                 preventEditInError: boolean;
@@ -1784,7 +1790,12 @@ module nts.uk.ui.jqueryExtentions {
                     let sheetConfig: any = $grid.data(internal.SHEETS);
                     sheet.onScroll($grid);
                     if (!util.isNullOrUndefined(sheetConfig) && !util.isNullOrUndefined(sheetConfig.currentPosition)) {
+//                        let displayPos = sheetConfig.displayScrollTop;
                         $grid.igGrid("virtualScrollTo", sheetConfig.currentPosition);
+//                        utils.getScrollContainer($grid).scrollTop(parseInt(sheetConfig.currentPosition));
+//                        _.defer(function() {
+//                            utils.getDisplayContainer($grid).scrollTop(displayPos);
+//                        });
                     }
                     
                     // Set selected cell if any
@@ -2225,6 +2236,8 @@ module nts.uk.ui.jqueryExtentions {
             export class Configurator {
                 currentSheet: string;
                 currentPosition: string;
+                blockId: any;
+                displayScrollTop: any;
                 sheets: any;
                 
                 constructor(currentSheet: string, sheets: any) {
@@ -2243,12 +2256,15 @@ module nts.uk.ui.jqueryExtentions {
             
             export function onScroll($grid: JQuery) {
                 let $scrollContainer = $("#" + $grid.attr("id") + "_scrollContainer");
-                if ($scrollContainer.length === 0) return;
+                let $displayContainer = $("#" + $grid.attr("id") + "_displayContainer");
+                if ($scrollContainer.length === 0 || $displayContainer.length === 0) return;
                 
                 let scrollListener = function(evt: any) {
                     let sheetConfig: any = $grid.data(internal.SHEETS);
                     if (util.isNullOrUndefined(sheetConfig)) return;
                     sheetConfig.currentPosition = $scrollContainer.scrollTop() + "px";
+                    sheetConfig.displayScrollTop = $displayContainer.scrollTop();
+                    sheetConfig.blockId = $grid.find("tbody tr:first").data("id");
                 }
                 $scrollContainer.on(events.Handler.SCROLL, scrollListener);  
             }
@@ -2363,6 +2379,18 @@ module nts.uk.ui.jqueryExtentions {
                             clonedOpts.dataSource = $grid.igGrid("option", "dataSource");
                             $grid.igGrid("destroy");
                             $grid.off();
+                            
+                            let pagingFt = feature.find(clonedOpts.features, feature.PAGING);
+                            let loader = $grid.data(internal.LOADER);
+                            if (pagingFt && loader) {
+                                if (!util.isNullOrUndefined(loader.pageIndex)) {
+                                    pagingFt.currentPageIndex = loader.pageIndex;
+                                }
+                                if (!util.isNullOrUndefined(loader.pageSize)) {
+                                    pagingFt.pageSize = loader.pageSize;
+                                }
+                                feature.replaceBy(clonedOpts, feature.PAGING, pagingFt); 
+                            }
                             $grid.ntsGrid(clonedOpts);
                             
                             // Styles
@@ -2395,6 +2423,149 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
         
+        module onDemand {
+            
+            export class Loader {
+                allKeysPath: any;
+                pageRecordsPath: any;
+                keys: Array<any>;
+                pageIndex: any;
+                pageSize: number;
+                constructor(allKeysPath: any, pageRecordsPath: any, pageSize: number) {
+                    this.allKeysPath = allKeysPath;
+                    this.pageRecordsPath = pageRecordsPath;
+                    this.pageSize = pageSize;
+                }
+            }
+            
+            export function hidePageSizeDD($grid: JQuery, options?: any) {
+                if (options && !feature.find(options.ntsFeatures, feature.DEMAND_LOAD)) return; 
+                let $gridContainer = $($grid.igGrid("container"));
+                if ($gridContainer.length > 0) {
+                    $gridContainer.find("div[class*='ui-iggrid-pagesizedropdowncontainer']").hide();
+                }
+            }
+            
+            export function loadKeys($grid: JQuery, path: any) {
+                let dfd = $.Deferred();
+                request.ajax(path).done(function(keys) {
+                    let loader = $grid.data(internal.LOADER);
+                    if (!loader.keys || loader.keys.length === 0) loader.keys = keys;
+                    dfd.resolve(loader.keys);
+                }).fail(function() {
+                    dfd.reject();
+                });
+                return dfd.promise();
+            }
+            
+            export function loadLazy(path: any, keys: Array<any>, startIndex: number, endIndex: number, 
+                dataSource: any, primaryKey: any) {
+                let dfd = $.Deferred();
+                request.ajax(path, keys).done(function(data) {
+                    _.forEach(data, function(rData, index) {
+                        for (let i = startIndex; i < endIndex; i++) {
+                            if (dataSource[i] && dataSource[i][primaryKey] === rData[primaryKey]) {
+                                rData.loaded = true;
+                                dataSource.splice(i, 1, rData); 
+                            }
+                        }
+                    });
+                    dfd.resolve(dataSource);
+                }).fail(function() {;
+                    dfd.reject();
+                });
+                return dfd.promise();
+            }
+            
+            export function initial($grid: JQuery, options: any) {
+                if (!options) return false;
+                let pagingFt = feature.find(options.features, feature.PAGING);
+                if (!pagingFt) return false;
+                let demandLoadFt = feature.find(options.ntsFeatures, feature.DEMAND_LOAD);
+                if (!demandLoadFt) return false;
+                let pageSize = pagingFt.pageSize;
+                let loader = $grid.data(internal.LOADER);
+                if (!loader) {
+                    $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath, pagingFt.pageSize));
+                } else if (loader.keys) { // Switch sheet
+                    pageSize = loader.pageSize;
+                    bindPageChange($grid);
+                    return false;
+                }
+                loadKeys($grid, demandLoadFt.allKeysPath).done(function(keys: Array<any>) {
+                    let primaryKey = options.primaryKey;
+                    let ds = keys.map((key, index) => {
+                        let obj = {};
+                        obj[primaryKey] = key;
+                        obj["loaded"] = false;
+                        return obj;
+                    });
+                    let firstRecordIndex = (pagingFt.currentPageIndex || 0) * pageSize;
+                    let lastRecordIndex = firstRecordIndex + pageSize;
+                    let firstPageItems = keys.slice(firstRecordIndex, lastRecordIndex);
+                    loadLazy(demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex, 
+                        ds, primaryKey).done(function(data) {
+                        options.dataSource = data;
+                        $grid.igGrid(options);
+                        bindPageChange($grid);
+                    });
+                }).fail(function() {
+                    
+                });
+                return true;
+            }
+            
+            function bindPageChange($grid: JQuery) {
+                $grid.on(events.Handler.PAGE_INDEX_CHANGE, function(evt: any, ui: any) {
+                    let newPageIndex = ui.newPageIndex;
+                    let pageSize = ui.owner.pageSize();
+                    let startIndex = newPageIndex * pageSize;
+                    let endIndex = startIndex + pageSize;
+                    let loader = $grid.data(internal.LOADER);
+                    if (!loader || !loader.keys) return;
+                    let dataSource = $grid.igGrid("option", "dataSource");
+                    let primaryKey = $grid.igGrid("option", "primaryKey");
+                    loader.pageIndex = ui.newPageIndex;
+                    let newKeys = loader.keys.slice(startIndex, endIndex);
+                    for (let i = endIndex - 1; i >= startIndex; i--) {
+                        if (dataSource[i] && dataSource[i].loaded) {
+                            newKeys.splice(i - startIndex, 1);
+                        }
+                    }
+                    if (newKeys.length === 0) return;
+                    loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
+                        $grid.igGrid("option", "dataSource", data);
+                        ui.owner.pageIndex(ui.newPageIndex);
+                    });
+                    return false;
+                });
+                
+                $grid.on(events.Handler.PAGE_SIZE_CHANGE, function(evt: any, ui: any) {
+                    let loader = $grid.data(internal.LOADER);
+                    if (!loader) return;
+                    loader.pageSize = ui.newPageSize;
+                    loader.pageIndex = 0;
+                    let currentPageIndex = 0;
+                    let startIndex = currentPageIndex * ui.newPageSize;
+                    let endIndex = startIndex + ui.newPageSize;
+                    let newKeys = loader.keys.slice(startIndex, endIndex);
+                    let dataSource = $grid.igGrid("option", "dataSource");
+                    let primaryKey = $grid.igGrid("option", "primaryKey");
+                    for (let i = endIndex - 1; i >= startIndex; i--) {
+                        if (dataSource[i] && dataSource[i].loaded) {
+                            newKeys.splice(i - startIndex, 1);
+                        }
+                    }
+                    if (newKeys.length === 0) return;
+                    loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
+                        $grid.igGrid("option", "dataSource", data);
+                        ui.owner.pageSize(ui.newPageSize);
+                    });
+                    return false;
+                });
+            }
+        }
+        
         module settings {
             export function build($grid: JQuery, options: any) {
                 let data: any = {};
@@ -2413,6 +2584,7 @@ module nts.uk.ui.jqueryExtentions {
         module internal {
             export let CONTROL_TYPES = "ntsControlTypesGroup";
             export let COMBO_SELECTED = "ntsComboSelection";
+            // Full columns options
             export let GRID_OPTIONS = "ntsGridOptions";
             export let SELECTED_CELL = "ntsSelectedCell";
             export let SHEETS: string = "ntsGridSheets";
@@ -2420,6 +2592,7 @@ module nts.uk.ui.jqueryExtentions {
             export let ENTER_DIRECT = "enter";
             export let SETTINGS = "ntsSettings";
             export let ERRORS_LOG = "ntsErrorsLog";
+            export let LOADER = "ntsLoader";
         }
         
         module utils {
@@ -2485,6 +2658,9 @@ module nts.uk.ui.jqueryExtentions {
             }
             export function hidable($grid: JQuery) {
                 return !util.isNullOrUndefined($grid.data("igGridHiding"));
+            }
+            export function pageable($grid: JQuery) {
+                return !util.isNullOrUndefined($grid.data("igGridPaging"));
             }
             export function disabled($cell: JQuery) {
                 return $cell.hasClass(color.Disable);
@@ -2704,6 +2880,12 @@ module nts.uk.ui.jqueryExtentions {
                         return i;
                 }
                 return -1;
+            }
+            export function getDisplayContainer($grid: JQuery) {
+                return $("#" + $grid.attr("id") + "_displayContainer");
+            }
+            export function getScrollContainer($grid: JQuery) {
+                return $("#" + $grid.attr("id") + "_scrollContainer");
             }
             
             export function startEdit($grid: JQuery, cell: any) {
