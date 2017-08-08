@@ -66,6 +66,16 @@ public class ExternalBudgetFinder {
 	}
 	
 	/**
+	 * Validate file.
+	 *
+	 * @param fileId the file id
+	 */
+	public void validateFile(String fileId) {
+	    // Check valid format file.
+        this.fileCheckService.validFileFormat(fileId);
+	}
+	
+	/**
 	 * Find data preview.
 	 *
 	 * @param file the file
@@ -91,24 +101,23 @@ public class ExternalBudgetFinder {
         ExternalBudget externalBudget = extBudgetOptional.get();
         try {
             InputStream inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
-            Iterator<NtsCsvRecord> csvRecord = this.findRecordFile(inputStream, extractCondition.getEncoding());
-//            while(csvRecord.hasNext()) {
+            Iterator<NtsCsvRecord> csvRecord = this.findRecordFile(inputStream, extractCondition.getEncoding(),
+                    externalBudget.getUnitAtr());
+            while(csvRecord.hasNext()) {
                 if (totalRecord < MAX_RECORD_DISP) {
                     NtsCsvRecord record = csvRecord.next();
-                    // TODO: parse record
-                    // TODO: fake data after parse
+                    String[] lstHeader = this.fakeHeader(externalBudget.getUnitAtr());
                     List<String> result = new ArrayList<>();
-                    result.add("");
-                    result.add("");
-                    result.add("");
-                    result.add("");
+                    for (String header : lstHeader) {
+                        result.add(record.getColumnAsString(header));
+                    }
                     lstExtBudgetVal.add(
                             ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE), result.get(INDEX_DATE),
                                     this.findListExtBudgetValue(result.subList(INDEX_DATE + 1, result.size()),
                                             externalBudget.getUnitAtr())));
                 }
                 totalRecord++;
-//            }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -182,11 +191,11 @@ public class ExternalBudgetFinder {
      * @return the iterator
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    private Iterator<NtsCsvRecord> findRecordFile(InputStream inputStream, Integer encoding) throws IOException {
+    private Iterator<NtsCsvRecord> findRecordFile(InputStream inputStream, Integer encoding, UnitAtr unitAtr) throws IOException {
         Charset charset = this.getCharset(encoding);
         String newLineCode = "\r\n"; // CR+LF
         NtsCsvReader csvReader = NtsCsvReader.newReader().withChartSet(charset)
-                .withFormat(CSVFormat.EXCEL.withHeader("職場コード", "年月日", "値").withRecordSeparator(newLineCode));
+                .withFormat(CSVFormat.EXCEL.withHeader(this.fakeHeader(unitAtr)).withRecordSeparator(newLineCode));
         return csvReader.parse(inputStream).iterator();
     }
     
@@ -203,6 +212,23 @@ public class ExternalBudgetFinder {
             return Charset.forName("Shift_JIS");
         default:
             return StandardCharsets.UTF_8;
+        }
+    }
+    
+    private String[] fakeHeader(UnitAtr unitAtr) {
+        switch (unitAtr) {
+            case DAILY:
+                return new String[] {"職場コード", "年月日", "値"};
+            case BYTIMEZONE:
+                List<String> lstHeader = new ArrayList<>();
+                lstHeader.add("職場コード");
+                lstHeader.add("年月日");
+                for (int i = 0; i < 48; i++) {
+                    lstHeader.add("値" + i);
+                }
+                return lstHeader.toArray(new String[lstHeader.size()]);
+            default:
+                throw new RuntimeException("Not unit atr suitable.");
         }
     }
 }

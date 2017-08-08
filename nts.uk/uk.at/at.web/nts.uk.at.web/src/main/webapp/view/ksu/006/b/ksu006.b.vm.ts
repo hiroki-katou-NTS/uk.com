@@ -3,7 +3,6 @@ module nts.uk.pr.view.ksu006.b {
 
         export class ScreenModel {
 
-            time: KnockoutObservable<string>;
             status: KnockoutObservable<string>; //#KSU006_216 または #KSU006_217（画面モードに従う）
             
             totalRecord: KnockoutObservable<number>;
@@ -24,7 +23,6 @@ module nts.uk.pr.view.ksu006.b {
             
             constructor() {
                 let self = this;
-                self.time = ko.observable('00:00:001');
                 self.status = ko.observable(nts.uk.resource.getText("KSU006_216"));
                 
                 self.totalRecord = ko.observable(null);
@@ -41,7 +39,7 @@ module nts.uk.pr.view.ksu006.b {
                 });
                 self.isDone = ko.observable(false);
                 self.isHasError = ko.computed(() => {
-                    if (self.numberFail() == 0 && self.isDone()) {
+                    if (self.numberFail() != 0 && self.isDone()) {
                         return true;
                     }
                     return false;

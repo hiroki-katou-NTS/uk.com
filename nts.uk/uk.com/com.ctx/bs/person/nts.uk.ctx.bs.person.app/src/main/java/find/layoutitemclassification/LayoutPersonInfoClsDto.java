@@ -18,7 +18,7 @@ public class LayoutPersonInfoClsDto {
 	private int dispOrder;
 	private String personInfoCategoryID;
 	private int layoutItemType;
-	private List<PerInfoItemDefDto> listItemDfDto;
+	private List<PerInfoItemDefDto> listItemDf;
 	
 	
 	public LayoutPersonInfoClsDto(String layoutID, int dispOrder, String personInfoCategoryID, int layoutItemType) {
