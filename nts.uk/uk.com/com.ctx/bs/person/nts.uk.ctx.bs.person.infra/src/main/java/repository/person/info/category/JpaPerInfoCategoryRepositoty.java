@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import entity.person.info.category.PpemtPerInfoCtg;
 import entity.person.info.category.PpemtPerInfoCtgCm;
 import entity.person.info.category.PpemtPerInfoCtgCmPK;
+import entity.person.info.category.PpemtPerInfoCtgOrder;
 import entity.person.info.category.PpemtPerInfoCtgPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -35,6 +36,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private final static String SELECT_GET_CATEGORY_CODE_LASTEST_QUERY = "SELECT co.categoryCd PpemtPerInfoCtgCm co"
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd ORDER BY co.categoryCd DESC";
+
+	private final static String SELECT_GET_DISPORDER_CTG_OF_COMPANY_QUERY = "SELECT od.disporder PpemtPerInfoCtgOrder od"
+			+ " WHERE od.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId AND od.cid = :companyId ORDER BY od.disporder DESC";
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
@@ -67,6 +71,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	public void addPerInfoCtgRoot(PersonInfoCategory perInfoCtg, String contractCd) {
 		this.commandProxy().insert(createPerInfoCtgCmFromDomain(perInfoCtg, contractCd));
 		this.commandProxy().insert(createPerInfoCtgFromDomain(perInfoCtg));
+		addOrderPerInfoCtgRoot(perInfoCtg.getPersonInfoCategoryId(), perInfoCtg.getCompanyId());
 	}
 
 	@Override
@@ -75,6 +80,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		this.commandProxy().insertAll(companyIdList.stream().map(p -> {
 			return createPerInfoCtgFromDomainWithCtgId(perInfoCtg, p);
 		}).collect(Collectors.toList()));
+		addOrderPerInfoCtgWithListCompany(perInfoCtg.getPersonInfoCategoryId(), companyIdList);
 	}
 
 	@Override
@@ -91,6 +97,36 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		}).collect(Collectors.toList()));
 	}
 
+	@Override
+	public boolean checkCtgNameIsUnique(String companyId, String newCtgName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private void addOrderPerInfoCtgRoot(String perInfoCtgId, String companyId) {
+		int newdisOrderLastest = getDispOrderLastestCtgOfCompany(perInfoCtgId, companyId) + 1;
+		this.commandProxy().insert(createPerInfoCtgOrderFromDomain(perInfoCtgId, companyId, newdisOrderLastest));
+	}
+
+	private void addOrderPerInfoCtgWithListCompany(String perInfoCtgId, List<String> companyIdList) {
+		this.commandProxy().insertAll(companyIdList.stream().map(cid -> {
+			int newdisOrderLastest = getDispOrderLastestCtgOfCompany(perInfoCtgId, cid) + 1;
+			return createPerInfoCtgOrderFromDomain(perInfoCtgId, cid, newdisOrderLastest);
+		}).collect(Collectors.toList()));
+	}
+
+	private int getDispOrderLastestCtgOfCompany(String perInfoCtgId, String companyId) {
+		List<Integer> dispOrderLastests = this.getEntityManager()
+				.createQuery(SELECT_GET_DISPORDER_CTG_OF_COMPANY_QUERY, Integer.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("companyId", companyId).setMaxResults(1)
+				.getResultList();
+		if (dispOrderLastests != null && !dispOrderLastests.isEmpty()) {
+			return dispOrderLastests.get(0);
+		}
+		return 0;
+	}
+
+	// mapping
 	private PersonInfoCategory createDomainFromEntity(Object[] c) {
 		String personInfoCategoryId = String.valueOf(c[0]);
 		String categoryCode = String.valueOf(c[1]);
@@ -124,6 +160,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return new PpemtPerInfoCtgCm(perInfoCtgCmPK, perInfoCtg.getCategoryParentCode().v(),
 				perInfoCtg.getCategoryType().value, perInfoCtg.getPersonEmployeeType().value,
 				perInfoCtg.getIsFixed().value);
+	}
+
+	private PpemtPerInfoCtgOrder createPerInfoCtgOrderFromDomain(String perInfoCtgId, String companyId, int disOrder) {
+		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtgId);
+		return new PpemtPerInfoCtgOrder(perInfoCtgPK, companyId, disOrder);
 	}
 
 }
