@@ -85,15 +85,15 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		entity.allowOtherRef = domain.getAllowOtherRef().value;
 		entity.allowPersonRef = domain.getAllowPersonRef().value;
 		entity.otherAllowAddHis = domain.getOtherAllowAddHis().value;
-		entity.otherAllowAddHis = domain.getOtherAllowAddHis().value;
+		entity.otherAllowDelHis = domain.getOtherAllowDelHis().value;
 		entity.selfPastHisAuth = domain.getSelfPastHisAuth().value;
 		entity.selfFutureHisAuth = domain.getSelfFutureHisAuth().value;
 		entity.selfAllowAddHis = domain.getSelfAllowAddHis().value;
-		entity.selfAllowDelHis = domain.getSelfAllowAddHis().value;
+		entity.selfAllowDelHis = domain.getSelfAllowDelHis().value;
 		entity.otherPastHisAuth = domain.getOtherPastHisAuth().value;
 		entity.otherFutureHisAuth = domain.getOtherFutureHisAuth().value;
 		entity.selfAllowAddMulti = domain.getSelfAllowAddMulti().value;
-		entity.selfAllowDelMulti = domain.getSelfAllowDelHis().value;
+		entity.selfAllowDelMulti = domain.getSelfAllowDelMulti().value;
 		entity.otherAllowAddMulti = domain.getOtherAllowAddMulti().value;
 		entity.otherAllowDelMulti = domain.getOtherAllowDelMulti().value;
 		return entity;
