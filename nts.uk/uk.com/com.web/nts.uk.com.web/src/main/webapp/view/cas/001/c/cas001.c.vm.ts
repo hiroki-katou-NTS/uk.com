@@ -3,6 +3,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
     import text = nts.uk.resource.getText;
     import close = nts.uk.ui.windows.close;
     import alert = nts.uk.ui.dialog.alert;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         roleList: KnockoutObservableArray<any> = ko.observableArray([]);

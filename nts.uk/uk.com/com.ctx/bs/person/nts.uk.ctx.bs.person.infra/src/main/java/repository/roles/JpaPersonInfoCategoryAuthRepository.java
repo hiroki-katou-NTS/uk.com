@@ -1,6 +1,5 @@
 package repository.roles;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,24 +28,25 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId"
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = " + "11111"
 			+ " WHERE c.cid = :companyId"
 			+ "	ORDER BY co.disporder";
 	
-	private final String SEL_1 = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
+	private final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 
-	private final String SEL_2 = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, "
+	private final String SEL_CATEGORY_BY_ABOLITION_ATR = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, "
 			+ "CASE WHEN c.perInfoCtgId IS NULL THEN 'False' ELSE 'True' END AS IsConfig" + " FROM PpemtPerInfoCtg d "
-			+ " LEFT JOIN   PpemtPerInfoItem c " + " ON  d.ppemtPerInfoCtgPK.perInfoCtgId = c.perInfoCtgId"
-			+ " WHERE d.cid = :CID  AND d.abolitionAtr = 1 AND c.abolitionAtr = 1";
+			+ " INNER JOIN   PpemtPerInfoItem c " + " ON  d.ppemtPerInfoCtgPK.perInfoCtgId = c.perInfoCtgId"
+			+ " WHERE d.cid = :CID  AND d.abolitionAtr = 0 AND c.abolitionAtr = 0";
 	
-	private final String SEL_3 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
+	private final String SEL_ALL_CATEGORY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
 			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
-			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd";
+			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd "
+			+ " WHERE c.cid = :CID";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
@@ -101,6 +101,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	@Override
 	public void add(PersonInfoCategoryAuth domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 
 	}
 
@@ -129,7 +130,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	@Override
 	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd,String companyId) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
-				.setParameter("roleId", roleId)
+				//.setParameter("roleId", roleId)
 				.setParameter("contractCd", contractCd)
 				.setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
@@ -138,30 +139,24 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	@Override
 	public List<PersonInfoCategoryAuth> getAllCategoryAuthByRoleId(String roleId) {
-		return this.queryProxy().query(SEL_1, PpemtPersonCategoryAuth.class).setParameter("roleId", roleId)
+		return this.queryProxy().query(SEL_CATEGORY_BY_ROLEID, PpemtPersonCategoryAuth.class).setParameter("roleId", roleId)
 				.getList(c -> toDomain(c));
 	}
 
 	@Override
 	public List<PersonInfoCategoryDetail> getAllCategoryInfo() {
 		String companyId = AppContexts.user().companyId();
-		List<PersonInfoCategoryDetail> itemList = this.queryProxy().query(SEL_2, Object[].class)
-				.setParameter("CID", companyId).getList(c -> toDomain(c));
-		List<PersonInfoCategoryDetail> categoryIdList = new ArrayList<>();
-		itemList.stream().forEach(c -> {
-			if (c.isSetting()) {
-				categoryIdList.add(c);
-			}
-
-		});
-
-		return categoryIdList;
+		return  this.queryProxy().query(SEL_CATEGORY_BY_ABOLITION_ATR, Object[].class)
+								 .setParameter("CID", companyId)
+								 .getList(c -> toDomain(c));
 	}
 
 	@Override
 	public List<PersonInfoCategoryDetail> getAllCategoryByRoleId(String roleId) {
-		return this.queryProxy().query(SEL_3,Object[].class)
+		String companyId = AppContexts.user().companyId();
+		return this.queryProxy().query(SEL_ALL_CATEGORY,Object[].class)
 				   .setParameter("roleId", roleId)
+				   .setParameter("CID", companyId)
 				   .getList(c -> toDomain(c));
 	}
 

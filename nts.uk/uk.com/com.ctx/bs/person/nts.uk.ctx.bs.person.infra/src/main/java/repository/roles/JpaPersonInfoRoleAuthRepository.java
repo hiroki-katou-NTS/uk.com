@@ -53,6 +53,7 @@ public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements Pe
 	@Override
 	public void add(PersonInfoRoleAuth domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 
 	}
 
