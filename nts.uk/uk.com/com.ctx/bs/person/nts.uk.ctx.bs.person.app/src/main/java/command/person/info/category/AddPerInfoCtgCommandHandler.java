@@ -20,6 +20,8 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
 
+	private final static String SPECIAL_CTG_CODE = "CO";
+	
 	@Override
 	protected void handle(CommandHandlerContext<AddPerInfoCtgCommand> context) {
 		AddPerInfoCtgCommand perInfoCtgCommand = context.getCommand();
@@ -27,7 +29,7 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		String categoryCode = perInfoCtgRep.getPerInfoCtgCodeLastest(contractCd);
 		String ctgNumberCode = String.valueOf(Integer.parseInt(categoryCode.substring(2, 7)) + 1);
 
-		String addZero = "CO";
+		String addZero = SPECIAL_CTG_CODE;
 		for (int i = 5; i > 0; i++) {
 			if (i == ctgNumberCode.length()) {
 				break;
@@ -35,11 +37,13 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 			addZero += "0";
 		}
 		String newCtgCode = addZero + ctgNumberCode;
+
 		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 		PersonInfoCategory perInfoCtg = PersonInfoCategory.createFromJavaType(PersonInfoCategory.ROOT_COMPANY_ID,
-				categoryCode, perInfoCtgCommand.getCategoryName().v(), perInfoCtgCommand.getCategoryType().value);
-		
+				newCtgCode, perInfoCtgCommand.getCategoryName().v(), perInfoCtgCommand.getCategoryType().value);
+
 		this.perInfoCtgRep.addPerInfoCtgRoot(perInfoCtg, contractCd);
+		this.perInfoCtgRep.addPerInfoCtgWithListCompany(perInfoCtg, contractCd, companyIdList);
 	}
 
 }

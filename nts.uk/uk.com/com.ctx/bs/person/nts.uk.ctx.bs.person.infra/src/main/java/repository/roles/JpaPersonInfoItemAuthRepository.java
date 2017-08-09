@@ -31,6 +31,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			+ " ON i.ppemtPerInfoItemPK.perInfoItemDefId = p.ppemtPersonItemAuthPk.personItemDefId"
 			+ " AND p.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId"
 			+ " AND p.ppemtPersonItemAuthPk.roleId =:roleId"
+			+ " WHERE i.abolitionAtr = 0"
 			+ " ORDER BY io.disporder";
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
