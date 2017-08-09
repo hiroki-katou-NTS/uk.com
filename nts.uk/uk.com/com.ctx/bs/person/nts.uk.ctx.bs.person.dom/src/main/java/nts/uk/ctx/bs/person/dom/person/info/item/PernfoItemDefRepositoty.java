@@ -13,7 +13,12 @@ public interface PernfoItemDefRepositoty {
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 
-	void addPerInfoItemDef(PersonInfoItemDefinition perInfoItemDef, String contractCd);
+	void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
 
-	void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef, String contractCd);
+	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
+
+	String getPerInfoItemCodeLastest(String contractCd, String categoryCd);
+
+	boolean checkItemNameIsUnique(String perInfoCtgId);
+
 }
