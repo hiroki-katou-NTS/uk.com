@@ -28,7 +28,7 @@
 }
 
 #A2_001_container col:FIRST-CHILD {
-	width: 20px !important;
+	width: 25px !important;
 }
 
 #content-left>.caret-bottom:after {
@@ -180,4 +180,7 @@
 
 #A2_012 {
 	height: 25px;
+}
+#A2_001_virtualContainer{
+height: initial !important;
 }

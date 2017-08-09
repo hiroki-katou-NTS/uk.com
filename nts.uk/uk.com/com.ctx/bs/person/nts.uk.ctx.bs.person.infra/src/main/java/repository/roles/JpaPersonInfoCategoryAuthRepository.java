@@ -68,11 +68,10 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		domain.setCategoryName(entity[2].toString());
 		domain.setCategoryType(Integer.valueOf(entity[3].toString()));
 		if (entity[4] != null) {
-			domain.setAllowOtherRef(Integer.valueOf(entity[4].toString()));
+			domain.setAllowPersonRef(Integer.valueOf(entity[4].toString()));
 		}
-		;
 		if (entity[5] != null) {
-			domain.setAllowPersonRef(Integer.valueOf(entity[5].toString()));
+			domain.setAllowOtherRef(Integer.valueOf(entity[5].toString()));
 		}
 		domain.setSetting(Boolean.valueOf(entity[6].toString()));
 		return domain;
