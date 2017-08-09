@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import find.groupitem.PersonInfoItemGroupDto;
 import find.groupitem.PersonInfoItemGroupFinder;
+import find.person.info.item.PerInfoItemDefDto;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/groupitem")
@@ -33,5 +34,11 @@ public class GroupItemWebServices extends WebService {
 		return this.gItemfinder.getById(id);
 	}
 	
+	
+	@POST
+	@Path("getAllItemDf/{groupId}")
+	public List<PerInfoItemDefDto> getAllItemDf(@PathParam("groupId") String groupId) {
+		return this.gItemfinder.getAllItemDf(groupId);
+	}
 	
 }
