@@ -6,7 +6,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
     export class ScreenModel {
         categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);;
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
-        currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole({ roleId: "99900000-0000-0000-0000-000000000001", roleCode: "0001", roleName: 'A1' }));
+        currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole({ roleId: "99900000-0000-0000-0000-000000000001", roleCode: "0001", roleName: 'A' }));
 
         constructor() {
             var self = this;
@@ -26,7 +26,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
                 role: IPersonRole = ko.toJS(self.currentRole);
 
             self.categoryList.removeAll();
-            service.getAllCategory(role.roleCode).done(function(data: Array<any>) {
+            service.getAllCategory(role.roleId).done(function(data: Array<any>) {
                 if (data.length > 0) {
                     self.categoryList(_.map(data, x => new CategoryAuth({
                         categoryId: x.categoryId,

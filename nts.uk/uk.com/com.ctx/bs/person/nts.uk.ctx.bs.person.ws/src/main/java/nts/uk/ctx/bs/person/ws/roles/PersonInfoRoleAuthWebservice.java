@@ -28,7 +28,8 @@ public class PersonInfoRoleAuthWebservice extends WebService {
 	@POST
 	@Path("find/{roleId}")
 	public PersonInfoRoleAuthDto getDetailPersonRoleAuth(@PathParam("roleId") String roleId) {
-		return personInfoRoleAuthFinder.getDetailPersonRoleAuth(roleId).get();
+		PersonInfoRoleAuthDto  roleDto=  personInfoRoleAuthFinder.getDetailPersonRoleAuth(roleId).orElse(new PersonInfoRoleAuthDto("",0,0,0,0,0,0));
+		return roleDto;
 
 	}
 

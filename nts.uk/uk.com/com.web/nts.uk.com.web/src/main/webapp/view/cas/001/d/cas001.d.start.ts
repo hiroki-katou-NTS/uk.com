@@ -62,6 +62,8 @@ $(function() {
 
         if (item) {
             item.selfAuth = _this.prop('checked');
+        }else{
+            item.selfAuth = _this.removeProp('checked');
         }
     });
 
@@ -79,6 +81,8 @@ $(function() {
 
         if (item) {
             item.otherAuth = _this.prop('checked');
+        }else{
+            item.otherAuth = _this.removeProp('checked');
         }
     });
 

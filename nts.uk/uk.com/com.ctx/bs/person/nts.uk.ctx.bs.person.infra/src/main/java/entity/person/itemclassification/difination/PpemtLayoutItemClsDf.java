@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_LAYOUT_ITEM_CLS")
+@Table(name = "PPEMT_LAYOUT_ITEM_CLS_DF")
 @Entity
 public class PpemtLayoutItemClsDf extends UkJpaEntity implements Serializable {
 

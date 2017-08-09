@@ -23,7 +23,7 @@ public class UpdateBusinessTypeNameCommandHandler extends CommandHandler<UpdateB
 	protected void handle (CommandHandlerContext<UpdateBusinessTypeNameCommand> context){
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<BusinessType> businessTypeOld = businessType.findBusinessType(companyId, context.getCommand().getBusinessTypeCode());
+		Optional<BusinessType> businessTypeOld = businessType.findByCode(companyId, context.getCommand().getBusinessTypeCode());
 		if(!businessTypeOld.isPresent()){
 			throw new BusinessException("Du lieu khong ton tai trong DB");
 		}

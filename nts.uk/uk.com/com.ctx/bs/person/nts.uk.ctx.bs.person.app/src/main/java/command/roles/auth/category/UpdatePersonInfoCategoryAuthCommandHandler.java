@@ -35,8 +35,12 @@ public class UpdatePersonInfoCategoryAuthCommandHandler extends CommandHandler<U
 				PersonInfoRoleAuth addRoleAuth = PersonInfoRoleAuth.createFromJavaType(p.getRoleId(), companyId, 0, 0,
 						0, 0, 0, 0);
 				this.roleAuthRepo.add(addRoleAuth);
+				PersonInfoCategoryAuth addCategoryAuth = PersonInfoCategoryAuth.createFromJavaType(p.getRoleId(),
+						p.getCategoryId(), 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0);
+				this.categoryAuthRepo.add(addCategoryAuth);
 			} else {
-				List<PersonInfoCategoryAuth> categoryLst = this.categoryAuthRepo.getAllCategoryAuthByRoleId(p.getRoleId());
+				List<PersonInfoCategoryAuth> categoryLst = this.categoryAuthRepo
+						.getAllCategoryAuthByRoleId(p.getRoleId());
 				if (categoryLst.size() > 0) {
 					categoryLst.stream().forEach(c -> {
 
@@ -44,8 +48,8 @@ public class UpdatePersonInfoCategoryAuthCommandHandler extends CommandHandler<U
 								.getDetailPersonCategoryAuthByPId(p.getRoleId(), p.getCategoryId()).orElse(null);
 						if (categoryAuth != null) {
 							PersonInfoCategoryAuth updateCategory = PersonInfoCategoryAuth.createFromJavaType(
-									p.getRoleId(), p.getCategoryId(), p.getAllowPersonRef(),
-									p.getAllowOtherRef(), categoryAuth.getAllowOtherCompanyRef().value,
+									p.getRoleId(), p.getCategoryId(), p.getAllowPersonRef(), p.getAllowOtherRef(),
+									categoryAuth.getAllowOtherCompanyRef().value,
 									categoryAuth.getSelfPastHisAuth().value, categoryAuth.getSelfFutureHisAuth().value,
 									categoryAuth.getSelfAllowAddHis().value, categoryAuth.getSelfAllowDelHis().value,
 									categoryAuth.getOtherPastHisAuth().value,
@@ -56,12 +60,16 @@ public class UpdatePersonInfoCategoryAuthCommandHandler extends CommandHandler<U
 									categoryAuth.getOtherAllowAddMulti().value,
 									categoryAuth.getOtherAllowDelMulti().value);
 							this.categoryAuthRepo.update(updateCategory);
-						} else {
-							PersonInfoCategoryAuth addCategoryAuth = PersonInfoCategoryAuth.createFromJavaType(
-									p.getRoleId(), p.getCategoryId(), 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0);
+						}else {
+							PersonInfoCategoryAuth addCategoryAuth = PersonInfoCategoryAuth.createFromJavaType(p.getRoleId(),
+									p.getCategoryId(), 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0);
 							this.categoryAuthRepo.add(addCategoryAuth);
-						}
+						} 
 					});
+				} else {
+					PersonInfoCategoryAuth addCategoryAuth = PersonInfoCategoryAuth.createFromJavaType(p.getRoleId(),
+							p.getCategoryId(), 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0);
+					this.categoryAuthRepo.add(addCategoryAuth);
 				}
 
 			}

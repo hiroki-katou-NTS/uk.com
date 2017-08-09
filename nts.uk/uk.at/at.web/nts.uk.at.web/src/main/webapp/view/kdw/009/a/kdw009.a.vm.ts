@@ -13,7 +13,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         selectedName: KnockoutObservable<string>;
         // binding to text box code A3_2
         codeObject: KnockoutObservable<string>;
-        // check new mode or not
+        // check new mode or not   
         check: KnockoutObservable<boolean>;
         // check update or insert
         checkUpdate: KnockoutObservable<boolean>;
@@ -21,7 +21,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             let self = this;
             self.gridListColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDW009_6"), key: 'businessTypeCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KDW009_7"), key: 'businessTypeName', width: 200 }
+                { headerText: nts.uk.resource.getText("KDW009_7"), key: 'businessTypeName', width: 200, formatter: _.escape}
             ]);
             self.lstBusinessType = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -86,11 +86,11 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
                         return item.businessTypeCode == self.codeObject();
                     });
-            let updateOption = new BusinessType(self.selectedCode(), self.selectedName());  
+            let updateOption = new BusinessType(self.selectedCode(), self.selectedName()); 
             code = self.codeObject();
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
-                    // update item to list
+                    // update item to list  
                     if(self.checkUpdate() == true){
                         service.update(updateOption).done(function(){
                             self.getData().done(function(){
@@ -100,11 +100,6 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                         });
                     }
                     else{
-                        if(self.codeObject().length<10){
-                            do{
-                                self.codeObject("0" + self.codeObject());
-                            }while(self.codeObject().length<10);
-                        }
                         code = self.codeObject();
                         self.selectedOption(null);
                         let obj = new BusinessType(self.codeObject(), self.selectedName());

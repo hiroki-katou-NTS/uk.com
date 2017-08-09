@@ -14,17 +14,6 @@ html, body, #master-wrapper {
 	display: inline-block;
 }
 
-.ntsRadioBox {
-	margin-left: 30px; display : table;
-	margin-bottom: 10px;
-	display: table;
-}
-
-.form-label-1 {
-	margin-left: 30px;
-	margin-top: 25px;
-}
-
 .myLinkButton {
 	color: #404040;
 	text-decoration: none;
@@ -55,11 +44,6 @@ div[class^=screen-] {
 	padding: 20px;
 }
 
-.screen-g .g3_1 {
+.screen-g .g3_1{
 	margin: 10px 0 20px 0;
-}
-
-#radio {
-	margin-top: -29px;
-	margin-left: 185px;
 }
