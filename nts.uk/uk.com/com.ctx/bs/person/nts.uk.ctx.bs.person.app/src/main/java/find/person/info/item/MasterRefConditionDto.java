@@ -4,13 +4,12 @@ import lombok.Getter;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
 
 @Getter
-public class MasterRefConditionDto extends ReferenceTypeStateDto {
-	
+public class MasterRefConditionDto extends SelectionItemDto {
+
 	private String masterType;
-	
+
 	private MasterRefConditionDto(String masterType) {
-		super();
-		this.referenceType = ReferenceType.DESIGNATED_MASTER.value;
+		super(ReferenceType.DESIGNATED_MASTER);
 		this.masterType = masterType;
 	}
 

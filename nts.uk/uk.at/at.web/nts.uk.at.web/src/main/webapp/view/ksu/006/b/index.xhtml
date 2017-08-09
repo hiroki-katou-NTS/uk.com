@@ -62,7 +62,7 @@
 							</td>
 						</tr>
 					</table>
-					<div data-bind="visible: isHasError()" style="display: none;">
+					<div data-bind="visible: hasError()" style="display: none;">
 						<table id="single-list" data-bind="ntsGridList: {
 								dataSource: dataError,
 								primaryKey: 'code',

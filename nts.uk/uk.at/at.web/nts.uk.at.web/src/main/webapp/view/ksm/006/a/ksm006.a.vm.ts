@@ -316,7 +316,6 @@ module nts.uk.at.view.ksm006.a {
                  var self = this;
                 
                  nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_35" });
                      service.removeClassifyBasicWork(self.selectedClassifi()).done(function() {
                          nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                          
@@ -333,8 +332,6 @@ module nts.uk.at.view.ksm006.a {
                      }).fail((res) => {
                          nts.uk.ui.dialog.alertError(res.message);
                      });
-                 }).ifNo(() => {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                  });
                 
             }
@@ -345,7 +342,6 @@ module nts.uk.at.view.ksm006.a {
             removeByWorkplace(): void {
                  var self = this;
                  nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_35" });
                      service.removeWorkplaceBasicWork(self.selectedWorkplaceId()).done(function() {
                          nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                          
@@ -362,8 +358,6 @@ module nts.uk.at.view.ksm006.a {
                      }).fail((res) => {
                          nts.uk.ui.dialog.alertError(res.message);
                      });
-                 }).ifNo(() => {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                  });
             }
             
