@@ -54,9 +54,11 @@ module nts.uk.pr.view.ksu006.b {
                 // subscribe
                 self.isDone.subscribe((state) => {
                     if (state) {
-                        nts.uk.ui.windows.getSelf().setSize(650, 880); 
                         self.loadDetailError().done(() => {
-                            self.hasError(self.numberFail() > 0);
+                            if (self.numberFail() > 0) {
+                                nts.uk.ui.windows.getSelf().setSize(650, 880);
+                                self.hasError(true);
+                            }
                         });
                     }
                 });
