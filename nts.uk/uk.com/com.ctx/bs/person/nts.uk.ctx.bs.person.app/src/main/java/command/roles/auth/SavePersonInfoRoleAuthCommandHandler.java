@@ -119,7 +119,7 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 
 		List<PersonInfoItemAuthCommand> listItems = pCategoryCommand.getRoleItemList();
 
-		List<PersonInfoItemDetail> itemDetailList = this.pItemAuthRepo.getAllItemDetail(roleId, categoryId);
+		List<PersonInfoItemDetail> itemDetailList = this.pItemAuthRepo.getAllItemDetail(roleId, categoryId,AppContexts.user().contractCode());
 
 		for (PersonInfoItemAuthCommand pItemDetailCmd : listItems) {
 

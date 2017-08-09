@@ -7,6 +7,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         standardDate: KnockoutObservable<string>;
         items: KnockoutObservableArray<Item>;
         baseDateOptions: KnockoutObservableArray<BaseDateOption>;
+        payDayCalculate: KnockoutObservable<string>;
+        displayDateSelected: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -16,6 +18,13 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.name = ko.observable(data.name);
             self.conditionValue = ko.observable(data.conditionValue);
             self.dateSelected = ko.observable(data.dateSelected);
+            
+            if(data.dateSelected === "") {
+                self.displayDateSelected = ko.observable(false);
+            } else {
+                self.displayDateSelected = ko.observable(true);
+            }
+            
             self.standardDate = ko.observable("");
             self.items = ko.observableArray([]);
             
@@ -23,6 +32,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 new BaseDateOption('1', '入社日'),
                 new BaseDateOption('2', '年休付与基準日')
             ]);
+            
+            self.payDayCalculate = ko.observable("");
         }
 
         /**
@@ -93,7 +104,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         baseDate: number;
         allowPay: boolean;        
     }
-    
+     
     export class BaseDateOption {
         code: string;
         name: string;

@@ -74,7 +74,7 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	 * find business type by companyId and work type code
 	 */
 	@Override
-	public Optional<BusinessType> findBusinessType(String companyId, String businessTypeCode) {
+	public Optional<BusinessType> findByCode(String companyId, String businessTypeCode) {
 		return this.queryProxy().find(new KrcmtBusinessTypePK(companyId, businessTypeCode), KrcmtBusinessType.class).map(c-> toDomain(c));
 	}
 	/**

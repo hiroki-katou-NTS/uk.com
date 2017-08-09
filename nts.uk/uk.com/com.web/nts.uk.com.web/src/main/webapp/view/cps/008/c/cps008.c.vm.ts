@@ -1,104 +1,92 @@
 module cps008.c.viewmodel {
-    
+
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     export class ViewModel {
-        layoutCode: KnockoutObservable<string>;
-        layoutName: KnockoutObservable<string>;
-        A_INP_LAYOUT_CODE: KnockoutObservable<string>;
-        A_INP_LAYOUT_NAME: KnockoutObservable<string>;
-        A_INP_LAYOUT_CODE_ENABLE: KnockoutObservable<boolean>;
-        A_INP_LAYOUT_NAME_ENABLE: KnockoutObservable<boolean>;
-        checked: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
+
+        layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
 
         constructor() {
-            var self = this;
-            self.layoutCode = ko.observable('001');
-            self.layoutName = ko.observable('test');
-            self.A_INP_LAYOUT_CODE = ko.observable(null);
-            self.A_INP_LAYOUT_NAME = ko.observable(null);
-            self.A_INP_LAYOUT_CODE_ENABLE = ko.observable(true);
-            self.A_INP_LAYOUT_NAME_ENABLE = ko.observable(true);
-            self.checked = ko.observable(false);
-            self.enable = ko.observable(true);
+            let self = this,
+                layout: Layout = self.layout();
+            let _data = getShared('CPS008_PARAM');
 
-            let obj = nts.uk.ui.windows.getShared('modelToCoppy');
-            if (obj != null) {
-                self.layoutCode(obj.layoutCode);
-                self.layoutName(obj.layoutName);
-            }
+            self.layout().id(_data.id);
+            self.layout().code(_data.code);
+            self.layout().name(_data.name);
+
         }
 
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            return dfd.promise();
-        }
-        /**
-         *  Update Button
-         */
-        updateBtn() {
-            var self = this;
-            self.checkValidate();
-            let obj = new UpdateMaintenanceLayoutCommand("", self.A_INP_LAYOUT_CODE(),self.layoutCode() ,self.A_INP_LAYOUT_NAME(), "", self.checked());
-            var dfd = $.Deferred<any>();
-            service.updateOrRegisterlMaintenanceLayout(obj)
-                .done(function() {
-                    dfd.resolve();
-                })
-                .fail(function() {
-                    dfd.reject();
-                });
-            dfd.promise();
+        coppyBtn() {
+            let self = this;
+            self.validate();
+            
+            
         }
 
-        /**
-         * check validate
-         */
-        checkValidate() {
-            var self = this;
-            if (self.A_INP_LAYOUT_CODE() == "" || self.A_INP_LAYOUT_NAME() == "") {
-                if (self.A_INP_LAYOUT_CODE() == "") {
+        cancelBtn() {
+
+        }
+
+        validate() {
+            let self = this;
+            // check code gioong nhau
+            if (self.layout().INP_CODE() == "" || self.layout().INP_NAME() == "") {
+                if (self.layout().INP_CODE() == "") {
                     $("#C_INP_CODE").focus();
                 } else {
                     $("#C_INP_NAME").focus();
                 }
                 return;
             }
-            if (self.checked() && (self.layoutCode() == self.A_INP_LAYOUT_CODE())) {
+
+            if (self.layout().checked() && (self.layout().code() == self.layout().INP_CODE())) {
                 nts.uk.ui.dialog.alert("#Msg_355#");
                 $("#C_INP_CODE").focus();
                 return;
             }
+
+
         }
-
-
     }
-    class ItemModel {
+
+    interface ILayout {
+        id: string;
         code: string;
         name: string;
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+        classifications?: Array<any>;
+        action?: number;
+    }
+
+    class Layout {
+        id: KnockoutObservable<string> = ko.observable('');
+        code: KnockoutObservable<string> = ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
+        classifications: KnockoutObservableArray<any> = ko.observableArray([]);
+        INP_CODE: KnockoutObservable<string> = ko.observable('');
+        INP_NAME: KnockoutObservable<string> = ko.observable('');
+        checked: KnockoutObservable<boolean> = ko.observable(false);
+        action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.COPY);
+
+        constructor(param: ILayout) {
+            let self = this;
+
+            if (param) {
+                self.id(param.id || '');
+                self.code(param.code || '');
+                self.name(param.name || '');
+                self.classifications(param.classifications || []);
+            }
         }
     }
-    /**
-     *  model to update or Register 
-     */
-    export class UpdateMaintenanceLayoutCommand {
 
-        companyId: string;
-        layoutCode_sou: string;
-        layoutCode_des : string;
-        layoutName: string;
-        maintenanceLayoutID: string;
-        checked: boolean;
-        constructor(companyId?: string, layoutCode_sou?: string, layoutCode_des? :string , layoutName?: string, maintenanceLayoutID?: string, checked?: boolean) {
-            this.companyId = companyId;
-            this.layoutCode_sou = layoutCode_sou;
-            this.layoutCode_des = layoutCode_des;
-            this.layoutName = layoutName;
-            this.maintenanceLayoutID = maintenanceLayoutID;
-            this.checked = checked;
-        }
+    enum LAYOUT_ACTION {
+        INSERT = 0,
+        UPDATE = 1,
+        COPY = 2,
+        OVERRIDE = 3,
+        REMOVE = 4
     }
 }

@@ -13,12 +13,15 @@ import lombok.Getter;
 @Getter
 public class EmployeeLoginSetting {
 
+	//契約コード
 	/** The contract code. */
 	private ContractCode contractCode;
 
+	//形式2許可区分
 	/** The form 2 permit atr. */
 	private ManageDistinct form2PermitAtr;
 
+	//形式3許可区分
 	/** The form 3 permit atr. */
 	private ManageDistinct form3PermitAtr;
 

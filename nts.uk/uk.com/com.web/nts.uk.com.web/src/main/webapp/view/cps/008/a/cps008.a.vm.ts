@@ -24,32 +24,31 @@ module cps008.a.viewmodel {
                         }
                     });
                     _.each(_data, d => layouts.push(d));
-                    debugger;
                     layout.id(_data[0].id);
-                    //layout.id.valueHasMutated();
+                    layout.id.valueHasMutated();
                 }
             });
 
             layout.id.subscribe(id => {
                 if (id) {
                     // demo subscrible
-                    let items: Array<ILayout> = ko.toJS(layouts),
+                    /*let items: Array<ILayout> = ko.toJS(layouts),
                         item: ILayout = _.find(items, x => x.id == id);
 
                     if (item) {
                         layout.code(item.code);
                         layout.name(item.name);
-                    }
-                    // Gọi service tải dữ liệu ra layout
-                    /*service.getDetails(id).done((data: ILayout) => {
-                        if (data) {
-                            layout.code(data.code);
-                            layout.name(data.name);
-                            layout.classifications(data.classifications);
+                    }*/
 
+                    // Gọi service tải dữ liệu ra layout
+                    service.getDetails(id).done((data: any) => {
+                        if (data) {
+                            layout.code(data.layoutCode);
+                            layout.name(data.layoutName);
+                            layout.classifications(data.listItemClsDto);
                             layout.action(LAYOUT_ACTION.UPDATE);
                         }
-                    });*/
+                    });
                 }
             });
 
@@ -106,7 +105,14 @@ module cps008.a.viewmodel {
         }
 
         openDialogD() {
+            let self = this,
+                layout: Layout = self.layout(),
+                data: ILayout = ko.toJS(self.layout);
 
+            setShared('CPS008_PARASCRD', data);
+            modal('../d/index.xhtml').onClosed(() => {
+
+            });
         }
     }
 

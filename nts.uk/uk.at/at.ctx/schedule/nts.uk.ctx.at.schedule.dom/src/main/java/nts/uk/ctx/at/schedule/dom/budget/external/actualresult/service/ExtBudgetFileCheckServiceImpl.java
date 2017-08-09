@@ -45,7 +45,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     public void validFileFormat(String fileId) {
         this.validFileExisted(fileId);
         this.validFileExtension(fileId);
-        // TODO: validate encoding if can ?
+        // TODO: validate encoding if has error, show message Msg_164: Do u want to continue import?
     }
     
     

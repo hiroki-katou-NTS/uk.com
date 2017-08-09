@@ -24,7 +24,7 @@
 			<div id="contents-area">
 				<table>
 				  	<col width="180"></col>
-					<col width="400"></col>
+					<col width="440"></col>
 					<col width="340"></col>
 					<!--BEGIN A2_1 ~ A2_3 -->
 					<tr>
@@ -44,7 +44,7 @@
 									{ prop: 'name', length: 5}
 								]}" style="margin-right: 10px;">
 							</div>
-							<button id="showDialogExternalBudget" tabindex="4" data-bind="click: openDialogExternBudget">#{i18n.getText('KSU006_5')}</button>
+							<button id="showDialogExternalBudget" tabindex="4" data-bind="click: openDialogExternalBudget">#{i18n.getText('KSU006_5')}</button>
 						</td>
 						<td></td>
 					</tr><!--END A2_1 ~ A2_3 -->
@@ -69,7 +69,7 @@
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'name', length: 5}]}" class="pull-right">
+										{ prop: 'name', length: 5}]}" style="margin-left: 30px;">
 							</div>
 						</td>
 					</tr><!--END A3_1 ~ A3_4 -->
@@ -81,18 +81,17 @@
 							<div style="display: inline-block;"><input tabindex="7" id="data-start-line"
 								data-bind="ntsNumberEditor: {
 										value: startLine,
-										constraint: '',
 										name: '#[KSU006_9]',
 										required: true,
 										option: {
-											width: '30px',
+											width: '60px',
 											textalign: 'right'
 										},
 										enable: true}" />
 							<label>#{i18n.getText('KSU006_10')}</label></div>
 							<div tabindex="8" data-bind="ntsCheckBox: { checked: isOverride,
 											enable: true,
-											text: '#{i18n.getText('KSU006_122')}' }" class="pull-right"></div>
+											text: '#{i18n.getText('KSU006_122')}' }" style="margin-left: 30px;"></div>
 						</td>
 						<td></td>
 					</tr><!--END A3_5 ~ A3_7 -->
@@ -102,7 +101,7 @@
 						<td></td>
 						<td>
 							<button tabindex="9" class="large caret-bottom" data-bind="click: showDataPreview">#{i18n.getText('KSU006_11')}</button>
-							<label class="pull-right" style="margin-right: 25px;" data-bind="visible: enableDataPreview, text: totalRecordDisplay"></label>
+							<label style="margin-left: 62px;" data-bind="visible: enableDataPreview, text: totalRecordDisplay"></label>
 						</td>
 					</tr><!--END A3_8 ~ A3_9 -->
 				</table>
@@ -129,7 +128,7 @@
 							
 							<!-- BEGIN CONTENT -->
 							<tr data-bind="with: firstRecord">
-								<td rowspan="10" class="dataPreview bgIgCol firstCol">#{i18n.getText('KSU006_19')}</td>
+								<td rowspan="10" class="dataPreview bgIgCol firstCol dataInforBase">#{i18n.getText('KSU006_19')}</td>
 								<td class="dataPreview"><div data-bind="text: code"></div></td>
 								<td class="dataPreview"><div data-bind="text: date"></div></td>
 								<td class="dataPreview"><div data-bind="text: listValue[0]"></div></td>
@@ -164,7 +163,7 @@
 									
 									<!-- BEGIN CONTENT -->
 									<tr data-bind="with: firstRecord">
-										<td rowspan="10" class="dataPreview bgIgCol firstCol">#{i18n.getText('KSU006_121')}</td>
+										<td rowspan="10" class="dataPreview bgIgCol firstCol dataInforBase">#{i18n.getText('KSU006_121')}</td>
 										<td class="dataPreview"><div data-bind="text: code"></div></td>
 										<td class="dataPreview"><div data-bind="text: date"></div></td>
 									</tr>

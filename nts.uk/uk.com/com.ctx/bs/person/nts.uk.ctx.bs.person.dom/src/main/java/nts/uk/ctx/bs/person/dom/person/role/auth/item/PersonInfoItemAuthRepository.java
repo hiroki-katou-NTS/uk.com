@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface PersonInfoItemAuthRepository {
 
-	List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personCategoryAuthId);
+	List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personInfoCategoryAuthId,String contractCd);
 
 	Optional<PersonInfoItemAuth> getItemDetai(String roleId, String categoryId, String perInfoItemDefId);
 

@@ -26,7 +26,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	private String getAllMaintenanceLayout = "select c FROM  PpemtMaintenanceLayout c";
 
-	private String getDetailLayout = getAllMaintenanceLayout + " Where c.ppemtMaintenanceLayoutPk.layoutId =: layoutId";
+	private String getDetailLayout = getAllMaintenanceLayout + " Where c.ppemtMaintenanceLayoutPk.layoutId = :layoutId";
 
 	private static final String IS_DUPLICATE_LAYOUTCODE;
 

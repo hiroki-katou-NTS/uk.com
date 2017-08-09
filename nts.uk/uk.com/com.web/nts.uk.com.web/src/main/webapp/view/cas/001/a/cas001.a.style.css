@@ -8,16 +8,13 @@
 	margin-left: 25px !important;
 }
 
-#A1_002 {
-	margin-left: 100px !important;
-}
-
 #functions-area button {
 	width: 70px;
 }
 
 #content-left {
 	width: 270px;
+	height: 490px;
 }
 
 #content-right {
@@ -31,7 +28,7 @@
 }
 
 #A2_001_container col:FIRST-CHILD {
-	width: 20px !important;
+	width: 25px !important;
 }
 
 #content-left>.caret-bottom:after {
@@ -174,4 +171,16 @@
 
 #item_role_table_body_container  .nts-switch-button {
 	width: 70px;
+}
+
+#A2_008_headers_v, #A2_008_virtualContainer td:FIRST-CHILD,
+	#A2_008_setting {
+	overflow: visible !important;
+}
+
+#A2_012 {
+	height: 25px;
+}
+#A2_001_virtualContainer{
+height: initial !important;
 }

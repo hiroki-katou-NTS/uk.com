@@ -10,13 +10,13 @@ module nts.uk.at.view.ksm003.a {
         /**
         * get all Patt Calender
         */
-        export function getAllPattCalender(): JQueryPromise<Array<model.DailyPatternItemDto>> {
+        export function getAllPatterns(): JQueryPromise<Array<model.DailyPatternItemDto>> {
             return nts.uk.request.ajax("at", paths.getAllPattCalender);
         }
         /**
         * add Patt Calender
         */
-        export function addPattCalender(dto: model.DailyPatternDetailDto): JQueryPromise<Array<model.DailyPatternDetailDto>> {
+        export function saveDailyPattern(dto: model.DailyPatternDetailDto): JQueryPromise<Array<model.DailyPatternDetailDto>> {
             return nts.uk.request.ajax("at", paths.addPattCalender, dto);
         }
 

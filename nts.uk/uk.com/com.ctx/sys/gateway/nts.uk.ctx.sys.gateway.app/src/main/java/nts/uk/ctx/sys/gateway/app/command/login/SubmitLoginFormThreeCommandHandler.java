@@ -15,11 +15,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
-import nts.uk.ctx.sys.gateway.dom.login.Employee;
-import nts.uk.ctx.sys.gateway.dom.login.EmployeeCodeSetting;
-import nts.uk.ctx.sys.gateway.dom.login.EmployeeCodeSettingRepository;
-import nts.uk.ctx.sys.gateway.dom.login.GateWayEmployeeRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,10 +32,10 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	UserRepository userRepository;
 
 	@Inject
-	EmployeeCodeSettingRepository employeeCodeSettingRepo;
+	EmployeeCodeSettingAdapter employeeCodeSettingAdapter;
 
 	@Inject
-	GateWayEmployeeRepository employeeRepository;
+	EmployeeAdapter employeeAdapter;
 
 	@Override
 	protected void handle(CommandHandlerContext<SubmitLoginFormThreeCommand> context) {
@@ -51,7 +51,7 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 		// TODO edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 		// TODO get domain 社員
-		Employee em = this.getEmployee(companyId, employeeCode);
+		EmployeeDto em = this.getEmployee(companyId, employeeCode);
 		// TODO get User by associatedPersonId
 		User user = this.getUser(em.getEmployeeId().toString());// TODO
 		// check password
@@ -77,9 +77,9 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	}
 
 	private String employeeCodeEdit(String employeeCode, String companyId) {
-		Optional<EmployeeCodeSetting> findemployeeCodeSetting = employeeCodeSettingRepo.getbyCompanyId(companyId);
+		Optional<EmployeeCodeSettingDto> findemployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
 		if (findemployeeCodeSetting.isPresent()) {
-			EmployeeCodeSetting employeeCodeSetting = findemployeeCodeSetting.get();
+			EmployeeCodeSettingDto employeeCodeSetting = findemployeeCodeSetting.get();
 			EmployCodeEditType editType = employeeCodeSetting.getEditType();
 			Integer addNumberDigit = employeeCodeSetting.getNumberDigit();
 			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
@@ -109,8 +109,8 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 		}
 	}
 
-	private Employee getEmployee(String companyId, String employeeCode) {
-		Optional<Employee> em = employeeRepository.getByEmployeeCode(companyId, employeeCode);
+	private EmployeeDto getEmployee(String companyId, String employeeCode) {
+		Optional<EmployeeDto> em = employeeAdapter.getByEmployeeCode(companyId, employeeCode);
 		if (em.isPresent()) {
 			return em.get();
 		} else {

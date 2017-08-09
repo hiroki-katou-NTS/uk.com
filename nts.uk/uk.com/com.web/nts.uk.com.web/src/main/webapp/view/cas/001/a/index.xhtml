@@ -30,8 +30,7 @@
 				<div id="content-left" class="bg-green">
 					<div style="margin-left: 15px;">
 						<table id="A2_001"
-							data-bind="ntsGridList: {								
-						height: 350,
+							data-bind="ntsGridList: {		
 						showNumbering:true,
 						dataSource: personRoleList ,
 						primaryKey: 'roleId' ,
@@ -48,7 +47,7 @@
 					<div>
 						<div style="width: 270px" id="A2_007"
 							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'categoryId',
-						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentCategoryId , selectedKey: 'currentCategoryId', fields: ['categoryName'], mode: 'igGrid'}" />
+						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentCategoryId , selectedKey: 'categoryId', fields: ['categoryName'], mode: 'igGrid'}" />
 						<table id="A2_008"
 							data-bind="ntsGridList: {	
 						dataSource: currentRole().RoleCategoryList ,
@@ -66,10 +65,14 @@
 					<div id="roleConfigArea" data-bind="with:currentRole">
 
 						<div class="div_line" style="margin-top: 0px;">
-							<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_12')}</div>
-							<span data-bind="text:roleCode"></span> <span
-								data-bind="text:roleName"></span>
-							<button id="A3_004" data-bind="click:$parent.OpenDModal">#{i18n.getText('CAS001_13')}</button>
+							<div class="float_left">
+								<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_12')}</div>
+								<span data-bind="text:roleCode"></span> <span
+									data-bind="text:roleName"></span>
+							</div>
+							<div class="float_left" data-bind="with:$parent">
+								<button id="A3_004" data-bind="click:OpenDModal">#{i18n.getText('CAS001_13')}</button>
+							</div>
 						</div>
 						<div class="div_line">
 							<div id="role_auth_cover">
@@ -202,7 +205,7 @@
 													</div>
 												</div>
 												<div id="auth_group_table">
-													<com:ko-if bind="categoryType === 1">
+													<com:ko-if bind="categoryType === 2">
 														<table id="history_auth_table" class="auth_table">
 															<tr>
 																<th></th>
@@ -291,7 +294,7 @@
 															</tr>
 														</table>
 													</com:ko-if>
-													<com:ko-if bind="categoryType === 2">
+													<com:ko-if bind="categoryType === 3">
 														<table id="multi_auth_table" class="auth_table">
 															<tr>
 																<th></th>
