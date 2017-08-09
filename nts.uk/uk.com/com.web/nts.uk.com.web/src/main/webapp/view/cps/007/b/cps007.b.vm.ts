@@ -33,7 +33,7 @@ module cps007.b.vm {
                         if (data) {
                             cat.categoryType(data.categoryType);
                             cat.categoryName(data.categoryName);
-                            
+
                             // get all item in category
                             service.getItemDefinitions(data.id).done((data: Array<IItemDefinition>) => self.allItems(data));
                         } else {
@@ -50,6 +50,7 @@ module cps007.b.vm {
 
         pushData() {
             let self = this,
+                cat = ko.toJS(self.category),
                 data: Array<IItemDefinition> = ko.unwrap(self.chooseItems);
 
             if (!data.length) {
@@ -57,7 +58,7 @@ module cps007.b.vm {
                 return;
             }
 
-            setShared('CPS007B_VALUE', { chooseItems: data });
+            setShared('CPS007B_VALUE', { category: cat, chooseItems: data });
             self.close();
         }
 

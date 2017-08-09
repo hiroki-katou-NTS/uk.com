@@ -162,11 +162,10 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                             self.selectedCode(self.lstBusinessType()[count].businessTypeCode);    
                             return;
                         }
-                        
-                    });
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
-            }).ifCancel(() => { 
+                    })
+                })
+                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+            }).ifCancel(() => {     
             }); 
             $("#inpPattern").focus();
         }

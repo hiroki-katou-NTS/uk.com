@@ -46,31 +46,16 @@ module nts.uk.at.view.ksu006.a {
                 }
             }
             
-            export class DataPreviewModel {
+            export interface DataPreviewModel {
                 isDailyUnit: boolean;
                 data: Array<ExternalBudgetValueModel>;
                 totalRecord: number;
-                
-                constructor(isDailyUnit: boolean, data: Array<ExternalBudgetValueModel>, totalRecord: number) {
-                    let self = this;
-                    self.isDailyUnit = isDailyUnit;
-                    self.data = data;
-                    self.totalRecord = totalRecord;
-                }
             }
             
-            export class ExternalBudgetValueModel {
+            export interface ExternalBudgetValueModel {
                 code: string;
                 date: string;
                 listValue: Array<any>;
-                
-                
-                constructor(code: string, date: string, listValue: Array<any>) {
-                    let self = this;
-                    self.code = code;
-                    self.date = date;
-                    self.listValue = listValue;
-                }
             }
         }
     }
