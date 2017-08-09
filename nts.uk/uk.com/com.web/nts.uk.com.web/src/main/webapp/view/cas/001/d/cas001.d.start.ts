@@ -45,7 +45,12 @@ $(function() {
                     { columnKey: "categoryCode", readOnly: true },
                     { columnKey: "categoryName", readOnly: true }
                 ]
-            }]
+            }, {
+                name: 'Selection',
+                mode: 'row',
+                activation: false,
+            }
+        ]
     });
 
     $(document).on("click", ".selfAuth:not(.checkRow)", function(evt, ui) {
