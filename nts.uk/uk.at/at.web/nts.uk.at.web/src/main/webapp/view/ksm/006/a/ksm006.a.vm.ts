@@ -268,6 +268,7 @@ module nts.uk.at.view.ksm006.a {
                 var self = this;
                 if (!self.selectedWorkplaceId()) {
                      nts.uk.ui.dialog.info({ messageId: "Msg_339" });
+                    return;
                 }
                     //TODO: wait for QA#84782 Check Worktype, Pair WorkType-WorkingHours
                 
@@ -293,6 +294,10 @@ module nts.uk.at.view.ksm006.a {
              */
             registerByClassification(): void {
                 var self = this;
+                if (!self.selectedClassifi()) {
+                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
+                    return;
+                }
                 service.saveClassifyBasicWork(self.collectClassifyData()).done(function() { 
                     // Check if exist alreadysetting of selectedItem
                     var existItem = self.classifiAlreadySetList().filter((item) => {
