@@ -3,6 +3,8 @@ package find.person.info.item;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
 
 public class DataTypeStateDto {
 	@Getter
@@ -31,8 +33,8 @@ public class DataTypeStateDto {
 				numericItemMin, numericItemMax);
 	}
 
-	public static DataTypeStateDto createSelectionItemDto(ReferenceTypeStateDto referenceTypeState) {
-		return SelectionItemDto.createFromJavaType(referenceTypeState);
+	public static DataTypeStateDto createSelectionItemDto(ReferenceTypeState refTypeState) {
+		return SelectionItemDto.createFromJavaType(refTypeState);
 
 	}
 

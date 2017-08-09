@@ -122,23 +122,10 @@ public class PerInfoItemDefFinder {
 					tPointItem.getTimePointItemMax().v());
 		case 6:
 			SelectionItem sItem = (SelectionItem) dataTypeState;
-			return DataTypeStateDto.createSelectionItemDto(createRefTypeStateDto(sItem.getReferenceTypeState()));
+			return DataTypeStateDto.createSelectionItemDto(sItem.getReferenceTypeState());
 		default:
 			return null;
 		}
 	}
 
-	private ReferenceTypeStateDto createRefTypeStateDto(ReferenceTypeState refTypeState) {
-		ReferenceType refType = refTypeState.getReferenceType();
-		if (refType == ReferenceType.DESIGNATED_MASTER) {
-			MasterReferenceCondition masterRef = (MasterReferenceCondition) refTypeState;
-			return ReferenceTypeStateDto.createMasterRefDto(masterRef.getMasterType().v());
-		} else if (refType == ReferenceType.CODE_NAME) {
-			CodeNameReferenceType codeNameRef = (CodeNameReferenceType) refTypeState;
-			return ReferenceTypeStateDto.createCodeNameRefDto(codeNameRef.getTypeCode().v());
-		} else {
-			EnumReferenceCondition enumRef = (EnumReferenceCondition) refTypeState;
-			return ReferenceTypeStateDto.createEnumRefDto(enumRef.getEnumName().v());
-		}
-	}
 }

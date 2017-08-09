@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 
-@Path("ctx/bs/person/person/info/ctgItem")
+@Path("ctx/bs/person/info/ctgItem")
 @Produces("application/json")
 public class PernfoItemDefWebservice {
 	
