@@ -21,7 +21,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             let self = this;
             self.gridListColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDW009_6"), key: 'businessTypeCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KDW009_7"), key: 'businessTypeName', width: 200 }
+                { headerText: nts.uk.resource.getText("KDW009_7"), key: 'businessTypeName', width: 200, formatter: _.escape}
             ]);
             self.lstBusinessType = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -81,16 +81,13 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         /** update or insert data when click button register **/
         register() {
             let self = this;
-            let code = "";
+            let code = "";  
             $("#inpPattern").trigger("validate");
-            let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
-                        return item.businessTypeCode == self.codeObject();
-                    });
-            let updateOption = new BusinessType(self.selectedCode(), self.selectedName());  
+            let updateOption = new BusinessType(self.selectedCode(), self.selectedName()); 
             code = self.codeObject();
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
-                    // update item to list
+                    // update item to list  
                     if(self.checkUpdate() == true){
                         service.update(updateOption).done(function(){
                             self.getData().done(function(){
@@ -100,11 +97,6 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                         });
                     }
                     else{
-                        if(self.codeObject().length<10){
-                            do{
-                                self.codeObject("0" + self.codeObject());
-                            }while(self.codeObject().length<10);
-                        }
                         code = self.codeObject();
                         self.selectedOption(null);
                         let obj = new BusinessType(self.codeObject(), self.selectedName());
@@ -119,7 +111,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                         });
                     }
                 }
-            });            
+            });    
+            $("#inpPattern").focus();        
         } 
         //  new mode 
         newMode(){
@@ -175,8 +168,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                 });
             }).ifCancel(() => { 
             }); 
-            
-            
+            $("#inpPattern").focus();
         }
     }
     export class BusinessType{

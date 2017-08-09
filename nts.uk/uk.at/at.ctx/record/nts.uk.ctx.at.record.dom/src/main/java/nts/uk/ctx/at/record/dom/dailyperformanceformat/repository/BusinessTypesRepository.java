@@ -25,7 +25,7 @@ public interface BusinessTypesRepository {
 	 * @param businessTypeCode
 	 * @return
 	 */
-	Optional<BusinessType> findBusinessType(String companyId, String businessTypeCode);
+	Optional<BusinessType> findByCode(String companyId, String businessTypeCode);
 	/**
 	 * author: HoangYen
 	 * @param companyId
