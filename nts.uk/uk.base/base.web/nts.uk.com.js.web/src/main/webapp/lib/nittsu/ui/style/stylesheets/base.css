@@ -825,7 +825,11 @@ button .icon {
 .ui-accordion .ui-accordion-header.ui-state-active .ui-icon {
   background-image: url("../../../../generic/jqueryui/images/ui-icons_444444_256x240.png");
 }
-/* line 19, ../sass/components/_accordion.scss */
+/* line 17, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-header:focus {
+  box-shadow: 0 0 1px 1px #0096f2;
+}
+/* line 23, ../sass/components/_accordion.scss */
 .ui-accordion .status {
   display: inline-block;
   float: right;
@@ -837,7 +841,7 @@ button .icon {
   min-width: 60px;
   text-align: center;
 }
-/* line 31, ../sass/components/_accordion.scss */
+/* line 35, ../sass/components/_accordion.scss */
 .ui-accordion .close-button {
   position: absolute;
   top: 50%;
@@ -845,12 +849,12 @@ button .icon {
   margin-top: -8px;
   float: right;
 }
-/* line 39, ../sass/components/_accordion.scss */
+/* line 43, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-content {
   border-top-width: 1px;
   border-color: #999;
 }
-/* line 43, ../sass/components/_accordion.scss */
+/* line 47, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-content.nts-accordion-content {
   display: block !important;
 }
