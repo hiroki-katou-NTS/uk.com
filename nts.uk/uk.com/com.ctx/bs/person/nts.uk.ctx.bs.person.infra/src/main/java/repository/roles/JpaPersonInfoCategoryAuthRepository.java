@@ -30,7 +30,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
 			+ " LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = " + "11111"
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " WHERE c.cid = :companyId"
 			+ " AND c.abolitionAtr = 0"
 			+ "	ORDER BY co.disporder";
@@ -132,7 +132,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	@Override
 	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd,String companyId) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
-				//.setParameter("roleId", roleId)
+				.setParameter("roleId", roleId)
 				.setParameter("contractCd", contractCd)
 				.setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));

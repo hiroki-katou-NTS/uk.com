@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.management.RuntimeErrorException;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
@@ -25,7 +26,7 @@ public class UpdateBusinessTypeNameCommandHandler extends CommandHandler<UpdateB
 		
 		Optional<BusinessType> businessTypeOld = businessType.findByCode(companyId, context.getCommand().getBusinessTypeCode());
 		if(!businessTypeOld.isPresent()){
-			throw new BusinessException("Du lieu khong ton tai trong DB");
+			throw new RuntimeException("対象データがありません。");
 		}
 		BusinessType businessTypeNew = BusinessType.createFromJavaType(companyId, context.getCommand().getBusinessTypeCode(), context.getCommand().getBusinessTypeName());
 		businessType.updateBusinessTypeName(businessTypeNew);

@@ -59,10 +59,10 @@ $(function() {
             id = _this.parents('tr').data('id'),
             data: Array<any> = __viewContext["viewModel"].categoryList(),
             item = _.find(data, x => x.categoryId == id);
-
+        __viewContext["viewModel"].categoryOrgin.push(item);
         if (item) {
             item.selfAuth = _this.prop('checked');
-        }else{
+        } else {
             item.selfAuth = _this.removeProp('checked');
         }
     });
@@ -78,10 +78,10 @@ $(function() {
             id = _this.parents('tr').data('id'),
             data: Array<any> = __viewContext["viewModel"].categoryList(),
             item = _.find(data, x => x.categoryId == id);
-
+        __viewContext["viewModel"].categoryOrgin.push(item);
         if (item) {
             item.otherAuth = _this.prop('checked');
-        }else{
+        } else {
             item.otherAuth = _this.removeProp('checked');
         }
     });
