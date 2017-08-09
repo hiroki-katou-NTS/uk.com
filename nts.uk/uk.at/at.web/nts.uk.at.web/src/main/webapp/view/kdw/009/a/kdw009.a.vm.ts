@@ -35,6 +35,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
                         return item.businessTypeCode == businessTypeCode;
                     });
+                    self.checkUpdate(true);
                     self.selectedOption(foundItem);
                     self.selectedName(self.selectedOption().businessTypeName);
                     self.codeObject(self.selectedOption().businessTypeCode)
@@ -81,49 +82,59 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         register() {
             let self = this;
             let code = "";
+            $("#inpPattern").trigger("validate");
             let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
                         return item.businessTypeCode == self.codeObject();
                     });
             let updateOption = new BusinessType(self.selectedCode(), self.selectedName());  
             code = self.codeObject();
-            // update item to list
-            if(self.checkUpdate() == true){
-                service.update(updateOption).done(function(){
-                    self.getData().done(function(){
-                        self.selectedCode(code);
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
-                    });
-                });
-            }
-            else{
-                if(self.codeObject().length<10){
-                    do{
-                        self.codeObject("0" + self.codeObject());
-                    }while(self.codeObject().length<10);
+            _.defer(() => {
+                if (nts.uk.ui.errors.hasError() === false) {
+                    // update item to list
+                    if(self.checkUpdate() == true){
+                        service.update(updateOption).done(function(){
+                            self.getData().done(function(){
+                                self.selectedCode(code);
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
+                            });
+                        });
+                    }
+                    else{
+                        if(self.codeObject().length<10){
+                            do{
+                                self.codeObject("0" + self.codeObject());
+                            }while(self.codeObject().length<10);
+                        }
+                        code = self.codeObject();
+                        self.selectedOption(null);
+                        let obj = new BusinessType(self.codeObject(), self.selectedName());
+                        // insert item to list
+                        service.insert(obj).done(function(){
+                            self.getData().done(function(){
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                self.selectedCode(code);  
+                            });
+                        }).fail(function(res){
+                            $('#inpCode').ntsError('set', res);
+                        });
+                    }
                 }
-                code = self.codeObject();
-                self.selectedOption(null);
-                let obj = new BusinessType(self.codeObject(), self.selectedName());
-                // insert item to list
-                service.insert(obj).done(function(){
-                    self.getData().done(function(){
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.selectedCode(code);
-                    });
-                }).fail(function(res){
-                    $('#inpCode').ntsError('set', res.messageId);
-                });
-            }            
+            });            
         } 
         //  new mode 
         newMode(){
+            var t0 = performance.now(); 
             let self = this;
             self.check(true);
             self.checkUpdate(false);
             self.selectedCode("");
             self.codeObject("");
             self.selectedName("");
-            $("#inpCode").focus();   
+            $("#inpCode").focus(); 
+            $("#inpCode").ntsError('clear');
+            nts.uk.ui.errors.clearAll();                 
+            var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         /** remove item from list **/
         remove(){
@@ -158,8 +169,9 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                             self.selectedCode(self.lstBusinessType()[count].businessTypeCode);    
                             return;
                         }
+                        
                     });
-                    
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 });
             }).ifCancel(() => { 
             }); 

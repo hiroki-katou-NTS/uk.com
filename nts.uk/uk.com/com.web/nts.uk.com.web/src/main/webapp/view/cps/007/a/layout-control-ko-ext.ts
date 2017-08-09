@@ -1,6 +1,7 @@
 module nts.custombinding {
 
     import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
     import text = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
@@ -56,6 +57,10 @@ module nts.custombinding {
                     
                     .layout-control .ntsControl.search-control .nts-editor {
                         width: 178px !important;
+                    }
+
+                    .layout-control .ui-iggrid-scrolldiv {
+                        background-color: #fff;    
                     }
                     
                     .layout-control .add-buttons {
@@ -196,7 +201,7 @@ module nts.custombinding {
                     <div class="drag-panel">
                         <div id="cps007_srt_control">                        
                             <div class="form-group item-classification">
-                                <div data-bind="if: $data.typeId != 1 && $data.typeId != 2" class="item-control">
+                                <div data-bind="if: $data.layoutItemType != 1 && $data.layoutItemType != 2" class="item-control">
                                     <div data-bind="ntsFormLabel: {}, text: name"></div>
                                     <input tabindex="-1" data-bind="ntsTextEditor: {
                                                 value: ko.observable(''),
@@ -207,7 +212,7 @@ module nts.custombinding {
                                                 readonly: true,
                                                 immediate: false}" />
                                 </div>
-                                <div data-bind="if: $data.typeId == 1" class="item-controls">
+                                <div data-bind="if: $data.layoutItemType == 1" class="item-controls">
                                     <div data-bind="ntsFormLabel: {}, text: name"></div>
                                     <div>
                                         <table>
@@ -228,7 +233,7 @@ module nts.custombinding {
                                         </table>
                                     </div>
                                 </div>
-                                <div data-bind="if: $data.typeId == 2" class="item-sperator">
+                                <div data-bind="if: $data.layoutItemType == 2" class="item-sperator">
                                     <hr />
                                 </div>
                                 <span class="close-btn" data-bind="click: function() { ko.bindingHandlers['ntsLayoutControl'].options.sortable.removeItem($data); }">✖</span>
@@ -240,11 +245,11 @@ module nts.custombinding {
             </div>`);
 
         api = {
-            getCats: '',
-            getGroups: '',
-            getItemCats: '/{0}',
+            getCats: "ctx/bs/person/person/info/category/findby/company",
+            getGroups: 'ctx/bs/person/groupitem/getAll',
+            getItemCats: 'ctx/bs/person/person/info/ctgItem/findby/categoryId/{0}',
             getItemGroups: '/{0}',
-            getItemsByIds: '/{0}',
+            getItemsByIds: 'ctx/bs/person/person/info/ctgItem/findby/listItemId',
         };
 
         services = {
@@ -252,118 +257,19 @@ module nts.custombinding {
                 let self = this,
                     api = self.api;
 
-                return $.Deferred().resolve([
-                    {
-                        id: random(),
-                        code: 'COD1',
-                        name: 'CATEGORY 01',
-                        typeId: IT_CAT_TYPE.SINGLE
-                    },
-                    {
-                        id: random(),
-                        code: 'COD2',
-                        name: 'CATEGORY 02',
-                        typeId: IT_CAT_TYPE.MULTI
-                    },
-                    {
-                        id: random(),
-                        code: 'COD3',
-                        name: 'CATEGORY 03',
-                        typeId: IT_CAT_TYPE.CONTINU
-                    },
-                    {
-                        id: random(),
-                        code: 'COD4',
-                        name: 'CATEGORY 04',
-                        typeId: IT_CAT_TYPE.NODUPLICATE
-                    },
-                    {
-                        id: random(),
-                        code: 'COD5',
-                        name: 'CATEGORY 05',
-                        typeId: IT_CAT_TYPE.DUPLICATE
-                    }
-                ]).promise();
-
-                //return ajax(api.getCats);
+                return ajax(api.getCats);
             },
             getGroups: () => {
                 let self = this,
                     api = self.api;
 
-                return $.Deferred().resolve([
-                    {
-                        id: random(),
-                        code: 'COD1',
-                        name: 'GROUP 01',
-                        typeId: 1
-                    },
-                    {
-                        id: random(),
-                        code: 'COD2',
-                        name: 'GROUP 02',
-                        typeId: 2
-                    },
-                    {
-                        id: random(),
-                        code: 'COD3',
-                        name: 'GROUP 03',
-                        typeId: 3
-                    },
-                    {
-                        id: random(),
-                        code: 'COD4',
-                        name: 'GROUP 04',
-                        typeId: 4
-                    },
-                    {
-                        id: random(),
-                        code: 'COD5',
-                        name: 'GROUP 05',
-                        typeId: 5
-                    }
-                ]).promise();
-
-                //return ajax(api.getGroups);
+                return ajax(api.getGroups);
             },
             getItemByCat: (cid) => {
                 let self = this,
                     api = self.api;
 
-                return $.Deferred().resolve([
-                    {
-                        id: random(),
-                        code: 'COD1',
-                        name: 'ITEM CAT [' + cid + '] ' + 1,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD2',
-                        name: 'ITEM CAT [' + cid + '] ' + 2,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD3',
-                        name: 'ITEM CAT [' + cid + '] ' + 3,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD4',
-                        name: 'ITEM CAT [' + cid + '] ' + 4,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD5',
-                        name: 'ITEM CAT [' + cid + '] ' + 5,
-                        typeId: 0
-                    }
-                ]).promise();
-
-                //return ajax(format(api.getItemCats, cid));
+                return ajax(format(api.getItemCats, cid));
             },
             getItemByGroup: (gid) => {
                 let self = this,
@@ -443,8 +349,8 @@ module nts.custombinding {
                 value: ko.observable(''),
                 options: ko.observableArray([]),
                 optionsValue: 'id',
-                optionsText: 'name',
-                columns: [{ prop: 'name', length: 15 }]
+                optionsText: 'categoryName',
+                columns: [{ prop: 'categoryName', length: 15 }]
             },
             searchbox: {
                 targetKey: undefined,
@@ -462,8 +368,8 @@ module nts.custombinding {
                 options: ko.observableArray([]),
                 value: ko.observable(undefined),
                 optionsValue: 'id',
-                optionsText: 'name',
-                columns: [{ key: 'name', length: 15 }]
+                optionsText: 'itemName',
+                columns: [{ key: 'itemName', length: 15 }]
             },
             sortable: {
                 data: ko.observableArray([]),
@@ -471,33 +377,33 @@ module nts.custombinding {
                 beforeMove: (data, evt, ui) => {
                     let self = this,
                         opts = self.options,
-                        item = data.item,
-                        sindex = data.sourceIndex,
-                        tindex = data.targetIndex,
-                        direct = sindex > tindex,
-                        source = ko.unwrap(opts.sortable.data);
+                        sindex: number = data.sourceIndex,
+                        tindex: number = data.targetIndex,
+                        direct: boolean = sindex > tindex,
+                        item: IItemClassification = data.item,
+                        source: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
 
 
                     // cancel drop if two line is sibling
-                    if (item.typeId == IT_CLA_TYPE.SPER) {
-                        let front = source[tindex - 1] || { id: '-1', typeId: -1 },
-                            replc = source[tindex] || { id: '-1', typeId: -1 },
-                            next = source[tindex + 1] || { id: '-1', typeId: -1 };
+                    if (item.layoutItemType == IT_CLA_TYPE.SPER) {
+                        let front = source[tindex - 1] || { layoutID: '-1', layoutItemType: -1 },
+                            replc = source[tindex] || { layoutID: '-1', layoutItemType: -1 },
+                            next = source[tindex + 1] || { layoutID: '-1', layoutItemType: -1 };
 
                         if (!direct) { // drag from top to below
-                            if ([next.typeId, replc.typeId].indexOf(IT_CLA_TYPE.SPER) > -1) {
+                            if ([next.layoutItemType, replc.layoutItemType].indexOf(IT_CLA_TYPE.SPER) > -1) {
                                 data.cancelDrop = true;
                             }
                         } else {  // drag from below to top
-                            if ([replc.typeId, front.typeId].indexOf(IT_CLA_TYPE.SPER) > -1) {
+                            if ([replc.layoutItemType, front.layoutItemType].indexOf(IT_CLA_TYPE.SPER) > -1) {
                                 data.cancelDrop = true;
                             }
                         }
                     } else { // if item is list or object
-                        let front = source[sindex - 1] || { id: '-1', typeId: -1 },
-                            next = source[sindex + 1] || { id: '-1', typeId: -1 };
+                        let front = source[sindex - 1] || { layoutID: '-1', layoutItemType: -1 },
+                            next = source[sindex + 1] || { layoutID: '-1', layoutItemType: -1 };
 
-                        if (front.typeId == IT_CLA_TYPE.SPER && next.typeId == IT_CLA_TYPE.SPER) {
+                        if (front.layoutItemType == IT_CLA_TYPE.SPER && next.layoutItemType == IT_CLA_TYPE.SPER) {
                             data.cancelDrop = true;
                         }
                     }
@@ -524,19 +430,19 @@ module nts.custombinding {
                         opts = self.options,
                         items = opts.sortable.data;
 
-                    items.remove(x => x.id == data.id);
+                    items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
 
                     let source: Array<any> = ko.unwrap(items),
-                        maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
+                        maps: Array<number> = _(source).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
                             .filter(x => x != -1)
                             .orderBy(x => x).value()
 
                     // remove next line if two line is sibling
                     _.each(maps, (x, i) => {
                         if (maps[i + 1] == x + 1) {
-                            items.remove(m => {
-                                let item = ko.unwrap(items)[maps[i + 1]];
-                                return item && item.typeId == IT_CLA_TYPE.SPER && item.id == m.id;
+                            items.remove((m: IItemClassification) => {
+                                let item: IItemClassification = ko.unwrap(items)[maps[i + 1]];
+                                return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
                             });
                         }
                     });
@@ -583,10 +489,10 @@ module nts.custombinding {
             // load combobox data
             opts.radios.value.subscribe(mode => {
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
-                    services.getCats().done((data: Array<IItemCategory>) => {
-                        if (data && data.length) {
-                            opts.comboxbox.options(data);
-                            opts.comboxbox.value(data[0].id);
+                    services.getCats().done((data: any) => {
+                        if (data && data.categoryList) {
+                            opts.comboxbox.options(data.categoryList);
+                            opts.comboxbox.value(data.categoryList[0].id);
                         }
                         else {
                             opts.comboxbox.value(undefined);
@@ -605,10 +511,19 @@ module nts.custombinding {
 
                     // update list box to group data
                     opts.listbox.options.removeAll();
-                    services.getGroups().done((data: Array<IItemDefinition>) => {
+                    services.getGroups().done((data: Array<IItemGroup>) => {
                         if (data && data.length) {
-                            opts.listbox.options(data);
-                            opts.listbox.value(data[0].id);
+                            // map Array<IItemGroup> to Array<IItemDefinition>
+                            let _items: Array<IItemDefinition> = _.map(data, x => {
+                                return {
+                                    id: x.personInfoItemGroupID,
+                                    itemName: x.fieldGroupName,
+                                    itemTypeState: undefined
+                                };
+                            });
+
+                            opts.listbox.options(_items);
+                            opts.listbox.value(_items[0].id);
                         } else {
                             opts.listbox.value(undefined);
                         }
@@ -629,14 +544,14 @@ module nts.custombinding {
                     opts.listbox.options.removeAll();
 
                     if (item) {
-                        switch (item.typeId) {
+                        switch (item.categoryType) {
                             case IT_CAT_TYPE.SINGLE:
                             case IT_CAT_TYPE.CONTINU:
                             case IT_CAT_TYPE.NODUPLICATE:
                                 $(ctrls.button).text(text('CPS007_11'));
 
-                                services.getItemByCat(item.id).done((data) => {
-                                    if (data) {
+                                services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
+                                    if (data && data.length) {
                                         opts.listbox.options(data);
                                         opts.listbox.value(data[0].id);
                                     }
@@ -650,9 +565,8 @@ module nts.custombinding {
                                 // itemname: categoryname + text('CPS007_21')
                                 let def: IItemDefinition = {
                                     id: item.id,
-                                    code: item.code,
-                                    name: item.name + text('CPS007_21'),
-                                    typeId: item.typeId
+                                    itemName: item.categoryName + text('CPS007_21'),
+                                    itemTypeState: undefined, // item.categoryType
                                 };
                                 opts.listbox.value(def.id);
                                 opts.listbox.options.push(def);
@@ -671,14 +585,15 @@ module nts.custombinding {
                 // add line to list sortable
                 let data: Array<any> = ko.unwrap(opts.sortable.data),
                     last = _.last(data),
-                    item: any = {
-                        id: 'ID' + (data.length + 1),
-                        code: 'COD' + (data.length + 1),
-                        name: 'Line Item ' + (data.length + 1),
-                        typeId: IT_CLA_TYPE.SPER
+                    item: IItemClassification = {
+                        layoutID: random(),
+                        dispOrder: -1,
+                        personInfoCategoryID: undefined,
+                        listItemDf: undefined,
+                        layoutItemType: IT_CLA_TYPE.SPER
                     };
 
-                if (last && last.typeId != IT_CLA_TYPE.SPER) {
+                if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
                     opts.sortable.data.push(item);
                 }
             });
@@ -692,16 +607,18 @@ module nts.custombinding {
 
                     if (cat) {
                         // multiple items
-                        if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.typeId) > -1) {
-                            setShared('CPS007_PARAM', { category: { id: 'ID1' }, chooseItems: [] });
+                        if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
+                            setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
                             modal('../b/index.xhtml').onClosed(() => {
-                                let data = getShared('CPS007_VALUE') || { chooseItems: [] };
+                                let data = getShared('CPS007B_VALUE') || { chooseItems: [] };
                                 if (data.chooseItems && data.chooseItems.length) {
                                     let data = ko.unwrap(opts.sortable.data),
-                                        item: any = {
-                                            id: data.length + 1,
-                                            name: '0000' + (data.length + 1),
-                                            typeId: 1
+                                        item: IItemClassification = {
+                                            layoutID: random(),
+                                            dispOrder: -1,
+                                            personInfoCategoryID: undefined,
+                                            layoutItemType: IT_CLA_TYPE.ITEM,
+                                            listItemDf: []
                                         };
                                     opts.sortable.data.push(item);
                                 }
@@ -709,10 +626,12 @@ module nts.custombinding {
                         }
                         else { // single item
                             let data = ko.unwrap(opts.sortable.data),
-                                item: any = {
-                                    id: data.length + 1,
-                                    code: 'COD' + data.length + 1,
-                                    name: 'Single Item ' + (data.length + 1)
+                                item: IItemClassification = {
+                                    layoutID: random(),
+                                    dispOrder: -1,
+                                    personInfoCategoryID: undefined,
+                                    layoutItemType: IT_CLA_TYPE.ITEM,
+                                    listItemDf: []
                                 };
                             opts.sortable.data.push(item);
                         }
@@ -725,7 +644,16 @@ module nts.custombinding {
                     if (group) {
                         services.getItemByGroup(group.id).done((data: Array<any>) => {
                             if (data && data.length) {
-                                _.each(data, x => opts.sortable.data.push(x));
+                                _.each(data, x => {
+                                    let _items: IItemClassification = {
+                                        layoutID: random(),
+                                        dispOrder: 0,
+                                        personInfoCategoryID: undefined,
+                                        layoutItemType: IT_CLA_TYPE.ITEM,
+                                        listItemDf: []
+                                    };
+                                    opts.sortable.data.push(_items)
+                                });
                             }
                         });
                     }
@@ -795,6 +723,10 @@ module nts.custombinding {
 
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });
+            opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
+                _.each(data, (x, i) => x.dispOrder = i + 1);
+                console.log(data);
+            });
 
             // extend data of sortable with valueAccessor beforeMove prop
             if (access.beforeMove) {
@@ -854,28 +786,57 @@ module nts.custombinding {
         }
     }
 
-    interface IItemGroup {
+    interface IItemCategory {
         id: string;
-        name: string;
+        categoryName: string;
+        categoryType: IT_CAT_TYPE;
+    }
+
+    interface IItemGroup {
+        personInfoItemGroupID: string;
+        fieldGroupName: string;
         dispOrder: number;
     }
 
-    interface IItemCategory {
-        id: string;
-        code: string;
-        name: string;
-        typeId: number;
-    }
-
     interface IItemClassification {
-
+        layoutID?: string;
+        dispOrder: number;
+        personInfoCategoryID?: string;
+        layoutItemType: IT_CLA_TYPE;
+        listItemDf: Array<IItemDefinition>;
     }
 
     interface IItemDefinition {
         id: string;
-        code: string;
-        name: string;
-        typeId?: number;
+        perInfoCtgId?: string;
+        itemCode?: string;
+        itemName: string;
+        isAbolition?: number;
+        isFixed?: number;
+        isRequired?: number;
+        systemRequired?: number;
+        requireChangable?: number;
+        itemTypeState: IItemTypeState;
+    }
+
+    interface IItemTypeState {
+        itemType: ITEM_TYPE; // Set || Single
+        dataTypeState: IItemDefinitionData
+    }
+
+    interface IItemDefinitionData extends IItemDate, IItemString {
+        dataTypeValue: ITEM_SINGLE_TYPE; // type of value of item
+    }
+
+    interface IItemDate {
+        maxValue?: number;
+        minValue?: number;
+    }
+
+    interface IItemString {
+        stringItemDataType?: number;
+        stringItemLength?: number;
+        stringItemType?: number;
     }
 
     // define ITEM_CLASSIFICATION_TYPE
@@ -898,6 +859,21 @@ module nts.custombinding {
     enum CAT_OR_GROUP {
         CATEGORY = 0, // category mode
         GROUP = 1 // group mode
+    }
+
+    // define ITEM_TYPE
+    enum ITEM_TYPE {
+        SET = 1, // List item info
+        SINGLE = 2 // Single item info
+    }
+
+    enum ITEM_SINGLE_TYPE {
+        STRING = 1,
+        NUMERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6
     }
 }
 

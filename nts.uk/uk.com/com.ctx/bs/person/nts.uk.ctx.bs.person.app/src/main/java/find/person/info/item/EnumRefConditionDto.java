@@ -4,13 +4,12 @@ import lombok.Getter;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
 
 @Getter
-public class EnumRefConditionDto extends ReferenceTypeStateDto {
+public class EnumRefConditionDto extends SelectionItemDto {
 
 	private String enumName;
 	
 	private EnumRefConditionDto(String enumName) {
-		super();
-		this.referenceType = ReferenceType.ENUM.value;
+		super(ReferenceType.ENUM);
 		this.enumName = enumName;
 	}
 
