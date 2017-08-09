@@ -9,11 +9,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommandHandler;
@@ -23,13 +21,11 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCo
 import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.ExecutionProcessCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.ExecutionProcessCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetExtractCondition;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetQuery;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetDataPreviewDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetExtractCondition;
 
 /**
  * The Class ExternalBudgetWebService.
@@ -114,6 +110,12 @@ public class ExternalBudgetWebService extends WebService {
         return this.find.findDataPreview(extractCondition);
     }
     
+    @POST
+    @Path("import/validate/{fileId}")
+    public void validateFile(@PathParam("fileId") String fileId) {
+        this.find.validateFile(fileId);
+    }
+    
     /**
      * Execute import file.
      *
@@ -121,30 +123,7 @@ public class ExternalBudgetWebService extends WebService {
      */
     @POST
     @Path("import/execute")
-    public JavaTypeResult<String> executeImportFile(ExecutionProcessCommand command) {
-        return new JavaTypeResult<String>(this.executeProcessHandler.handle(command));
-    }
-    
-    /**
-     * Find completion list.
-     *
-     * @return the list
-     */
-    @POST
-    @Path("find/completionenum")
-    public List<EnumConstant> findCompletionList() {
-        return EnumAdaptor.convertToValueNameList(CompletionState.class);
-    }
-    
-    /**
-     * Find all external budget log.
-     *
-     * @param query the query
-     * @return the list
-     */
-    @POST
-    @Path("findAll/log")
-    public List<ExternalBudgetLogDto> findAllExternalBudgetLog(ExternalBudgetQuery query) {
-        return this.find.findExternalBudgetLog(query);
+    public ExecutionInfor executeImportFile(ExecutionProcessCommand command) {
+        return this.executeProcessHandler.handle(command);
     }
 }

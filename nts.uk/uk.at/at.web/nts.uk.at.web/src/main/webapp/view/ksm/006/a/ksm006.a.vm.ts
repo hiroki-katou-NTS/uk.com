@@ -316,7 +316,6 @@ module nts.uk.at.view.ksm006.a {
                  var self = this;
                 
                  nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_35" });
                      service.removeClassifyBasicWork(self.selectedClassifi()).done(function() {
                          nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                          
@@ -333,8 +332,6 @@ module nts.uk.at.view.ksm006.a {
                      }).fail((res) => {
                          nts.uk.ui.dialog.alertError(res.message);
                      });
-                 }).ifNo(() => {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                  });
                 
             }
@@ -345,7 +342,6 @@ module nts.uk.at.view.ksm006.a {
             removeByWorkplace(): void {
                  var self = this;
                  nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_35" });
                      service.removeWorkplaceBasicWork(self.selectedWorkplaceId()).done(function() {
                          nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                          
@@ -362,8 +358,6 @@ module nts.uk.at.view.ksm006.a {
                      }).fail((res) => {
                          nts.uk.ui.dialog.alertError(res.message);
                      });
-                 }).ifNo(() => {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                  });
             }
             
@@ -409,6 +403,10 @@ module nts.uk.at.view.ksm006.a {
                         // Set Workplace Name.
                         let tree = $('#workplace-list').getDataList();
                         self.setWorkplaceName(tree, self.selectedWorkplaceId());
+                    } else {
+                        self.workplaceBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                        self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                        self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
                     }
 
                 });
@@ -450,6 +448,11 @@ module nts.uk.at.view.ksm006.a {
                                 return item.code == self.selectedClassifi();
                             })[0];
                         self.classificationName(classify.name);
+                    } else {
+                        // If data is null
+                        self.classifyBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                        self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                        self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
                     }
                 });
                 
@@ -610,22 +613,30 @@ module nts.uk.at.view.ksm006.a {
                 nts.uk.ui.windows.setShared('parentCodes', {
                     selectedWorkTypeCode: self.worktypeCode,
                     selectedWorkTimeCode: self.workingCode,
-                    selectableWorktypeList: self.selectableWorktypeList,
-                    selectableWorkingList: self.selectableWorkingList
+                    workTypeCodes: self.selectableWorktypeList,
+                    workTimeCodes: self.selectableWorkingList
                 }, true);
                 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
                     var childData = nts.uk.ui.windows.getShared('childData');
-//                    self.worktypeCode(childData.selectedWorkTypeCode);
-                    self.worktypeCode('003');
-                    if (childData.selectedWorkTimeCode == '000') {
+                    
+                    if (!childData.selectedWorkTypeCode) {
+                        self.worktypeCode(null);
                         self.workingCode(null);
-                    } else {
-//                        self.workingCode(childData.selectedWorkTimeCode);
-                        self.workingCode('003');
+                        self.worktypeDisplayName(null);
+                        self.workingDisplayName(null);
+                        return;
                     }
-//                    self.worktypeDisplayName(childData.selectedWorkTypeName);
-//                    self.workingDisplayName(childData.selectedWorkTimeName);
+                    self.worktypeCode(childData.selectedWorkTypeCode);
+                    self.worktypeDisplayName(childData.selectedWorkTypeName);
+                    if (childData.selectedWorkTimeCode == '000' || !childData.selectedWorkTimeCode) {
+                        self.workingCode(null);
+                        self.workingDisplayName(null);
+                    } else {
+                        self.workingCode(childData.selectedWorkTimeCode);
+                        self.workingDisplayName(childData.selectedWorkTimeName);
+                    }
+                    
                 });
             }
         }

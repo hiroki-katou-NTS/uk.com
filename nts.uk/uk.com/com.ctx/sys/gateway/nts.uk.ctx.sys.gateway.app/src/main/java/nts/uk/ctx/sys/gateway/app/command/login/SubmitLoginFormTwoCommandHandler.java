@@ -15,15 +15,18 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
-import nts.uk.ctx.sys.gateway.dom.login.Employee;
-import nts.uk.ctx.sys.gateway.dom.login.EmployeeCodeSetting;
-import nts.uk.ctx.sys.gateway.dom.login.EmployeeCodeSettingRepository;
-import nts.uk.ctx.sys.gateway.dom.login.GateWayEmployeeRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class SubmitLoginFormTwoCommandHandler.
+ */
 @Stateless
 public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLoginFormTwoCommand> {
 
@@ -31,12 +34,17 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	@Inject
 	UserRepository userRepository;
 
+	/** The employee code setting repo. */
 	@Inject
-	EmployeeCodeSettingRepository employeeCodeSettingRepo;
+	EmployeeCodeSettingAdapter employeeCodeSettingAdapter;
 
+	/** The employee adapter. */
 	@Inject
-	GateWayEmployeeRepository employeeRepository;
+	EmployeeAdapter employeeAdapter;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<SubmitLoginFormTwoCommand> context) {
 
@@ -51,7 +59,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		// TODO edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 		// TODO get domain 社員
-		Employee em = this.getEmployee(companyId, employeeCode);
+		EmployeeDto em = this.getEmployee(companyId, employeeCode);
 		// TODO get User by associatedPersonId
 		User user = this.getUser(em.getEmployeeId().toString());// TODO
 		// check password
@@ -60,6 +68,11 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		this.checkLimitTime(user);
 	}
 
+	/**
+	 * Check input.
+	 *
+	 * @param command the command
+	 */
 	private void checkInput(SubmitLoginFormTwoCommand command) {
 
 		// check input company code
@@ -76,10 +89,17 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		}
 	}
 
+	/**
+	 * Employee code edit.
+	 *
+	 * @param employeeCode the employee code
+	 * @param companyId the company id
+	 * @return the string
+	 */
 	private String employeeCodeEdit(String employeeCode, String companyId) {
-		Optional<EmployeeCodeSetting> findEmployeeCodeSetting = employeeCodeSettingRepo.getbyCompanyId(companyId);
+		Optional<EmployeeCodeSettingDto> findEmployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
 		if (findEmployeeCodeSetting.isPresent()) {
-			EmployeeCodeSetting employeeCodeSetting = findEmployeeCodeSetting.get();
+			EmployeeCodeSettingDto employeeCodeSetting = findEmployeeCodeSetting.get();
 			EmployCodeEditType editType = employeeCodeSetting.getEditType();
 			Integer addNumberDigit = employeeCodeSetting.getNumberDigit();
 			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
@@ -109,8 +129,15 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		}
 	}
 
-	private Employee getEmployee(String companyId, String employeeCode) {
-		Optional<Employee> em = employeeRepository.getByEmployeeCode(companyId, employeeCode);
+	/**
+	 * Gets the employee.
+	 *
+	 * @param companyId the company id
+	 * @param employeeCode the employee code
+	 * @return the employee
+	 */
+	private EmployeeDto getEmployee(String companyId, String employeeCode) {
+		Optional<EmployeeDto> em = employeeAdapter.getByEmployeeCode(companyId, employeeCode);
 		if (em.isPresent()) {
 			return em.get();
 		} else {
@@ -118,6 +145,12 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		}
 	}
 
+	/**
+	 * Gets the user.
+	 *
+	 * @param associatedPersonId the associated person id
+	 * @return the user
+	 */
 	private User getUser(String associatedPersonId) {
 		Optional<User> user = userRepository.getByAssociatedPersonId(associatedPersonId);
 		if (user.isPresent()) {
@@ -127,6 +160,12 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		}
 	}
 
+	/**
+	 * Compare hash password.
+	 *
+	 * @param user the user
+	 * @param password the password
+	 */
 	private void compareHashPassword(User user, String password) {
 		// TODO compare hash string here
 		if (!user.getPassword().v().equals(password)) {
@@ -134,6 +173,11 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		}
 	}
 
+	/**
+	 * Check limit time.
+	 *
+	 * @param user the user
+	 */
 	private void checkLimitTime(User user) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("#Msg_316");

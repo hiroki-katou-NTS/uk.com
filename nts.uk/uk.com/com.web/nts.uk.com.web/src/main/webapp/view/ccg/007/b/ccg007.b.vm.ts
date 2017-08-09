@@ -25,17 +25,17 @@ module nts.uk.pr.view.ccg007.b {
                         else {
                             //TODO get login ID and set here
                             nts.uk.characteristics.restore("form1LoginInfo").done(function(loginInfo) {
-                                self.loginId(loginInfo.loginId);
+                                if (loginInfo) {
+                                    self.loginId(loginInfo.loginId);
+                                }
                             });
                         }
                         dfd.resolve();
                     }).fail(function() {
-                        alert();
                         dfd.resolve();
                         //TODO システムエラー画面へ遷移する    
                     });
                 }).fail(function() {
-                    alert();
                     dfd.resolve();
                     //TODO システムエラー画面へ遷移する    
                 });

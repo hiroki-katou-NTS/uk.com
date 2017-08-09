@@ -4,7 +4,7 @@ module cps008.a.service {
 
     let paths = {
         getAll: "ctx/bs/person/maintenance/findAll",
-        getDetails: "ctx/bs/person/maintenance/findOne/{0}",
+        getDetails: "ctx/bs/person/maintenance/findOne/",
         addMaintenanceLayout: "ctx/bs/person/maintenance/add"
     };
 
@@ -16,9 +16,9 @@ module cps008.a.service {
     }
 
     export function getDetails(lid) {
-        return ajax(format(paths.getDetails, lid));
+        return ajax(format(paths.getDetails + lid));
     }
-
+    
     /**
     * add  Maintenance Layout
     */

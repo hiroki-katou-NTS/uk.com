@@ -12,22 +12,44 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
 
-	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonCategoryAuth c";
+	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
+			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
+			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
+			+ " FROM PpemtPerInfoCtg c"
+			+ " INNER JOIN PpemtPerInfoCtgCm cm"
+			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder co"
+			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItem i"
+			+ " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
+			+ " LEFT JOIN PpemtPersonCategoryAuth p "
+			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = " + "11111"
+			+ " WHERE c.cid = :companyId"
+			+ " AND c.abolitionAtr = 0"
+			+ "	ORDER BY co.disporder";
+	
+	private final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 
-	private final String SEL_1 = SEL_NO_WHERE
-			+ " WHERE c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId =:personInfoCategoryAuthId ";
-
-	private final String SEL_2 = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
+	private final String SEL_CATEGORY_BY_ABOLITION_ATR = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, "
+			+ "CASE WHEN c.perInfoCtgId IS NULL THEN 'False' ELSE 'True' END AS IsConfig" + " FROM PpemtPerInfoCtg d "
+			+ " INNER JOIN   PpemtPerInfoItem c " + " ON  d.ppemtPerInfoCtgPK.perInfoCtgId = c.perInfoCtgId"
+			+ " WHERE d.cid = :CID  AND d.abolitionAtr = 0 AND c.abolitionAtr = 0";
+	
+	private final String SEL_ALL_CATEGORY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
 			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
-			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd";
+			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd "
+			+ " WHERE c.cid = :CID";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
@@ -82,6 +104,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	@Override
 	public void add(PersonInfoCategoryAuth domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 
 	}
 
@@ -98,17 +121,46 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 
 	@Override
-	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String personCategoryAuthId) {
-		return this.queryProxy().query(SEL_1, PpemtPersonCategoryAuth.class)
-				.setParameter("personInfoCategoryAuthId", personCategoryAuthId).getSingle().map(e -> {
+	public Optional<PersonInfoCategoryAuth> getDetailPersonCategoryAuthByPId(String roleId,
+			String personCategoryAuthId) {
+		return this.queryProxy()
+				.find(new PpemtPersonCategoryAuthPk(roleId, personCategoryAuthId), PpemtPersonCategoryAuth.class)
+				.map(e -> {
 					return Optional.of(toDomain(e));
 				}).orElse(Optional.empty());
 	}
 
 	@Override
-	public List<PersonInfoCategoryDetail> getAllCategory(String roleId) {
-		return this.queryProxy().query(SEL_2, Object[].class).setParameter("roleId", roleId).getList(c -> toDomain(c));
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd,String companyId) {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
+				//.setParameter("roleId", roleId)
+				.setParameter("contractCd", contractCd)
+				.setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
 
+	}
+
+	@Override
+	public List<PersonInfoCategoryAuth> getAllCategoryAuthByRoleId(String roleId) {
+		return this.queryProxy().query(SEL_CATEGORY_BY_ROLEID, PpemtPersonCategoryAuth.class).setParameter("roleId", roleId)
+				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<PersonInfoCategoryDetail> getAllCategoryInfo() {
+		String companyId = AppContexts.user().companyId();
+		return  this.queryProxy().query(SEL_CATEGORY_BY_ABOLITION_ATR, Object[].class)
+								 .setParameter("CID", companyId)
+								 .getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<PersonInfoCategoryDetail> getAllCategoryByRoleId(String roleId) {
+		String companyId = AppContexts.user().companyId();
+		return this.queryProxy().query(SEL_ALL_CATEGORY,Object[].class)
+				   .setParameter("roleId", roleId)
+				   .setParameter("CID", companyId)
+				   .getList(c -> toDomain(c));
 	}
 
 }

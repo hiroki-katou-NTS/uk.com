@@ -3,36 +3,53 @@ module nts.uk.pr.view.ksu006.b {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            let extractCondition: any = nts.uk.ui.windows.getShared("ExtractCondition");
             $('.countdown').downCount();
-            let taskId: string = nts.uk.ui.windows.getShared("taskId");
-            nts.uk.deferred.repeat(conf => conf
-            .task(() => {
-                let dfd = $.Deferred();
-                nts.uk.request.specials.getAsyncTaskInfo(taskId).done(function(res: any) {
-                    console.log(res);
-                    if (res.running) {
-                        _.forEach(res.taskDatas, item => {
-                            if (item.key == 'SUCCESS_CNT') {
-                                screenModel.numberSuccess(item.valueAsNumber);
-                            }
-                            if (item.key == 'FAIL_CNT') {
-                                screenModel.numberFail(item.valueAsNumber);
-                            }
-                        });
-                    }
-                    dfd.resolve(res);
-                });
-                return dfd.promise();
-            }).while(info => {
-                return info.pending || info.running;
+            service.executeImportFile(extractCondition).then(function(res: any) {
+                screenModel.executeId(res.executeId);
+                nts.uk.deferred.repeat(conf => conf
+                .task(() => {
+                    let dfd = $.Deferred();
+                    nts.uk.request.specials.getAsyncTaskInfo(res.taskId).done(function(res: any) {
+                        console.log(res);
+                        if (res.running || res.succeeded) {
+                            _.forEach(res.taskDatas, item => {
+                                if (item.key == 'TOTAL_RECORD') {
+                                    screenModel.totalRecord(item.valueAsNumber);
+                                }
+                                if (item.key == 'SUCCESS_CNT') {
+                                    screenModel.numberSuccess(item.valueAsNumber);
+                                }
+                                if (item.key == 'FAIL_CNT') {
+                                    screenModel.numberFail(item.valueAsNumber);
+                                }
+                            });
+                        }
+                        if (res.succeeded) {
+                            screenModel.isDone(true);
+                            screenModel.status(nts.uk.resource.getText("KSU006_217"));
+                            $('.countdown').stop();
+                            
+                            // TODO: find detail error if have?
+                            
+                        }
+                        dfd.resolve(res);
+                    });
+                    return dfd.promise();
+                }).while(info => {
+                    return info.pending || info.running;
+                })
+                .pause(1000))
             })
-            .pause(1000))
             .done(function(res: any) {
-                console.log(res.finishedAt);
-                if (res.finishedAt) {
+                if (res) {
+                    console.log(res.finishedAt);
                     screenModel.isDone(true);
                     $('.countdown').stop();
                 }
+            })
+            .fail(function(res: any) {
+                nts.uk.ui.dialog.alertError(res.message);
             });
         });
     });

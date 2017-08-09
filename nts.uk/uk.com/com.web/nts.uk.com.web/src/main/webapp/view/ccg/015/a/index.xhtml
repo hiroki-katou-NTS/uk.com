@@ -60,8 +60,8 @@
 									}"></table>
 							</div></td>
 						<td id="contents-right">
-							<table id="tableRight" data-bind="with: topPageModel ">
-								<tr>
+							<table id="tableRight">
+								<tr data-bind="with: topPageModel">
 									<td class="contentsRL">
 										<div id="lbl_code_name"
 											data-bind="ntsFormLabel: {required: true}">
@@ -81,7 +81,7 @@
 													]}"></div>
 									</td>
 								</tr>
-								<tr>
+								<tr data-bind="with: topPageModel">
 									<td class="contentsRL">
 										<div id="lbl_code_name"
 											data-bind="ntsFormLabel: {constraint : ['TopPageCode','TopPageName'],required: true}">
@@ -108,7 +108,7 @@
 									</td>
 								</tr>
 
-								<tr>
+								<tr data-bind="with: topPageModel">
 									<td><button tabindex="4"
 											data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()"
 											class="btn_margin_top x-large">#{i18n.getText('CCG015_14')}</button></td>

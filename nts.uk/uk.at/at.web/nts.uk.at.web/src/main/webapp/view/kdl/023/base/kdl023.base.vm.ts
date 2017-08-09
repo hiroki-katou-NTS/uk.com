@@ -338,7 +338,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                 while (currentDate.isSameOrAfter(self.calendarStartDate, 'day')) { // Loop until reach calendar start date.
                     // Reversed list dailyPatternValue loop.
-                    let listDailyPatternVal = self.dailyPatternSetting.listDailyPatternVal.slice().reverse();
+                    let listDailyPatternVal;
+                    if (self.dailyPatternSetting.dailyPatternVals) {
+                        listDailyPatternVal = self.dailyPatternSetting.dailyPatternVals.slice().reverse();
+                    }
 
                     // Master data is registered.
                     if (listDailyPatternVal && listDailyPatternVal.length > 0) {
@@ -369,7 +372,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Forward processing
             while (currentDate.isSameOrBefore(self.calendarEndDate, 'day')) { // Loop until reach calendar end date.
                 // List dailyPatternValue loop.
-                let listDailyPatternVal = self.dailyPatternSetting.listDailyPatternVal;
+                let listDailyPatternVal = self.dailyPatternSetting.dailyPatternVals;
 
                 // Master data is registered.
                 if (listDailyPatternVal && listDailyPatternVal.length > 0) {

@@ -8,6 +8,10 @@ module nts.uk.at.view.kdw008.b {
             currentCodeCbb2: KnockoutObservable<number>
             selectedCodeCbb2: KnockoutObservable<string>;
 
+            //swap list tab 1
+            itemsSwap1: KnockoutObservableArray<ItemModel2>;
+            currentCodeListSwap1: KnockoutObservableArray<any>;
+
             //swap list tab 2
             itemsSwap2: KnockoutObservableArray<ItemModel2>;
             columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -42,7 +46,7 @@ module nts.uk.at.view.kdw008.b {
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
-                //combobox select sheetNo
+                //combobox select sheetNo tab2
                 self.itemListCbb2 = ko.observableArray([
                     new ItemModelCbb2('基本給'),
                     new ItemModelCbb2('役職手当'),
@@ -52,13 +56,28 @@ module nts.uk.at.view.kdw008.b {
 
                 //swaplist 2
                 this.itemsSwap2 = ko.observableArray([]);
-                
+
                 //sample swaplist 2
                 let array = [];
                 for (var i = 0; i < 10000; i++) {
                     array.push(new ItemModel(i, '基本給', "description"));
                 }
                 self.itemsSwap2(array);
+
+                //swaplist 1
+                this.itemsSwap1 = ko.observableArray([]);
+                var x1 = [];
+                this.currentCodeListSwap1 = ko.observableArray(x1);
+                this.currentCodeListSwap1.subscribe(function(value) {
+                    console.log(value);
+                });
+
+                //sample swaplist 2
+                let array = [];
+                for (var i = 0; i < 10000; i++) {
+                    array.push(new ItemModel(i, '基本給', "description"));
+                }
+                self.itemsSwap1(array);
 
                 this.columns2 = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100 },
@@ -98,7 +117,7 @@ module nts.uk.at.view.kdw008.b {
             }
         }
 
-        class ItemModel2 {
+        export class ItemModel2 {
             code: number;
             name: string;
             description: string;
@@ -109,6 +128,71 @@ module nts.uk.at.view.kdw008.b {
                 this.description = description;
                 this.deletable = code % 3 === 0;
             }
+        }
+
+        export class AttendanceItemModel {
+            attendanceItemId: KnockoutObservable<number>;
+            attendanceItemName: KnockoutObservable<string>;
+            attendanceItemDisplayNumber: KnockoutObservable<number>;
+            constructor(data: any) {
+                let self = this;
+                self.attendanceItemId = data.attendanceItemId;
+                self.attendanceItemName = data.attendanceItemName;
+                self.attendanceItemDisplayNumber = data.attendanceItemDisplayNumber;
+            }
+        }
+
+        export class BusinessTypeModel {
+            businessTypeCode: KnockoutObservable<string>;
+            businessTypeName: KnockoutObservable<string>;
+            constructor(data: any) {
+                let self = this;
+                self.businessTypeCode = data.businessTypeCode;
+                self.businessTypeName = data.businessTypeName;
+            }
+        }
+
+        export class BusinessTypeFormatMonthlyModel {
+            businessTypeFormatMonthlyDtos: KnockoutObservableArray<BusinessTypeFormatDetailModel> = ko.observableArray([]);
+            constructor(data: IBusinessTypeFormatDaily) {
+                let self = this;
+                self.businessTypeFormatMonthlyDtos(_.map(data.businessTypeFormatDetailDtos, item => { return new BusinessTypeFormatDetailModel(item) }))
+            }
+        }
+
+        export class BusinessTypeFormatDailyModel {
+            sheetNo: KnockoutObservable<number> = ko.observable(0);
+            sheetName: KnockoutObservable<string> = ko.observable("");
+            businessTypeFormatDetailDtos: KnockoutObservableArray<BusinessTypeFormatDetailModel> = ko.observableArray([]);
+            constructor(data: IBusinessTypeFormatDaily) {
+                let self = this;
+                self.sheetNo(data.sheetNo);
+                self.sheetName(data.sheetName);
+                self.businessTypeFormatDetailDtos(_.map(data.businessTypeFormatDetailDtos, item => { return new BusinessTypeFormatDetailModel(item) }));
+            }
+        }
+
+        export class BusinessTypeFormatDetailModel {
+            attendanceItemId: number;
+            order: number;
+            columnWidth: number;
+            constructor(data: IBusinessTypeFormatDetail) {
+                this.attendanceItemId = data.attendanceItemId;
+                this.order = data.order;
+                this.columnWidth = data.columnWidth;
+            }
+        }
+
+        export interface IBusinessTypeFormatDaily {
+            sheetNo?: number;
+            sheetName?: string;
+            businessTypeFormatDetailDtos: Array<IBusinessTypeFormatDetail>;
+        }
+
+        interface IBusinessTypeFormatDetail {
+            attendanceItemId: number;
+            order: number;
+            columnWidth: number;
         }
     }
 }
