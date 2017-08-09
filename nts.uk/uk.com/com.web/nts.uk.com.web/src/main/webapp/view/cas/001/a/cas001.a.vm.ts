@@ -40,11 +40,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                         if (self.currentRole().RoleCategoryList().length > 0) {
 
-                            let selectedId = self.currentCategoryId() !== "" ? self.currentCategoryId() : self.currentRole().RoleCategoryList()[0].categoryId;
-
                             self.currentCategoryId("");
 
-                            self.currentCategoryId(selectedId);
+                            self.currentCategoryId(self.currentRole().RoleCategoryList()[0].categoryId);
 
                         }
                         else {
@@ -152,7 +150,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
 
-                    primaryKey: 'itemName',
+                    primaryKey: 'personItemDefId',
 
                     virtualization: true,
 
