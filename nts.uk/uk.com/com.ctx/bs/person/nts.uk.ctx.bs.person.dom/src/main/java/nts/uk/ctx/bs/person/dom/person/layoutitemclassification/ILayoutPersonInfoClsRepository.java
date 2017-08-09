@@ -7,10 +7,12 @@ import java.util.List;
 
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 
+public interface ILayoutPersonInfoClsRepository {
 
-public interface ILayoutPersonInfoClsRepository {	
-	
 	List<LayoutPersonInfoClassification> getAllItemClsById(String layoutId);
-	
-	List<PersonInfoItemDefinition> getAllPerInfoItemDefByLayoutId(String layoutId);
+
+	List<String> getAllItemDefIdByLayoutId(String layoutId, String disPOrder);
+
+	String getOneItemDfId(String layoutId, String disPOrder);
+
 }
