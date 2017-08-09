@@ -31,6 +31,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " WHERE c.cid = :companyId"
+			+ " AND c.abolitionAtr = 1"
 			+ "	ORDER BY co.disporder";
 	
 	private final String SEL_1 = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
