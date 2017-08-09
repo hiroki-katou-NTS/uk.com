@@ -23,7 +23,7 @@
 				<!-- B1_1: Button New -->
 				<button tabindex="1" id="btn_001"
 					class="button separate-button fix-button"
-					data-bind="click: refreshData">#{i18n.getText('KSM003_20')}</button>
+					data-bind="click: switchNewMode, enable: isEditting">#{i18n.getText('KSM003_20')}</button>
 				<!-- B1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
@@ -35,7 +35,7 @@
 				<!-- B1_4: Button Delete -->
 				<button tabindex="4" id="btn_004"
 					class="button danger separate-button fix-button"
-					data-bind="click: save">#{i18n.getText('KSM003_22')}</button>
+					data-bind="click: deletePattern, enable: isEditting">#{i18n.getText('KSM003_22')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"
@@ -50,6 +50,7 @@
 								height: 230,
 								options: itemLst,
 								optionsValue: 'patternCode',
+								primaryKey: 'patternCode',
 								columns: columns,
 								multiple: false,
 								value: selectedCode,
@@ -78,6 +79,7 @@
 										  name: '#[KSM003_36]',
                                           value: patternCode,
                                           constraint: 'PatternCode',
+                                          enable: !$parent.isEditting(),
                                           required: true}" />
 								<!-- B3_3:Pattern Name--> <input tabindex="7" class="nts-input"
 								id="inpPattern"
@@ -118,7 +120,7 @@
 											<div data-bind="text: workingHoursCd "></div>
 										</td>
 										<td><input
-											data-bind="ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" />
+											data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" />
 										</td>
 									</tr>
 								</com:ko>
