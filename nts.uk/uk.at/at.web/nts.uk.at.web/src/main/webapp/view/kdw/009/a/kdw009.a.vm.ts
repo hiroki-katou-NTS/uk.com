@@ -13,7 +13,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         selectedName: KnockoutObservable<string>;
         // binding to text box code A3_2
         codeObject: KnockoutObservable<string>;
-        // check new mode or not
+        // check new mode or not   
         check: KnockoutObservable<boolean>;
         // check update or insert
         checkUpdate: KnockoutObservable<boolean>;
@@ -21,7 +21,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             let self = this;
             self.gridListColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDW009_6"), key: 'businessTypeCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KDW009_7"), key: 'businessTypeName', width: 200 }
+                { headerText: nts.uk.resource.getText("KDW009_7"), key: 'businessTypeName', width: 200, formatter: _.escape}
             ]);
             self.lstBusinessType = ko.observableArray([]);
             self.selectedCode = ko.observable("");
