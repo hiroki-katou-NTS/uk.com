@@ -8,7 +8,6 @@ module nts.custombinding {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import close = nts.uk.ui.windows.close; // self test conflict code
 
     export class LayoutControl implements KnockoutBindingHandler {
         $tmp = $(`<div>
@@ -245,11 +244,12 @@ module nts.custombinding {
             </div>`);
 
         api = {
-            getCats: "ctx/bs/person/person/info/category/findby/company",
+            getCats: "ctx/bs/person/info/category/findby/company",
             getGroups: 'ctx/bs/person/groupitem/getAll',
-            getItemCats: 'ctx/bs/person/person/info/ctgItem/findby/categoryId/{0}',
-            getItemGroups: '/{0}',
-            getItemsByIds: 'ctx/bs/person/person/info/ctgItem/findby/listItemId',
+            getItemCats: 'ctx/bs/person/info/ctgItem/findby/categoryId/{0}',
+            getItemGroups: 'ctx/bs/person/groupitem/getAllItemDf/{0}',
+            getItemsById: 'ctx/bs/person/info/ctgItem/findby/itemId/{0}',
+            getItemsByIds: 'ctx/bs/person/info/ctgItem/findby/listItemId',
         };
 
         services = {
@@ -275,46 +275,19 @@ module nts.custombinding {
                 let self = this,
                     api = self.api;
 
-                return $.Deferred().resolve([
-                    {
-                        id: random(),
-                        code: 'COD1',
-                        name: 'GROUP [' + gid + '] ' + 1,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD2',
-                        name: 'GROUP [' + gid + '] ' + 2,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD3',
-                        name: 'GROUP [' + gid + '] ' + 3,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD4',
-                        name: 'GROUP [' + gid + '] ' + 4,
-                        typeId: 0
-                    },
-                    {
-                        id: random(),
-                        code: 'COD5',
-                        name: 'GROUP [' + gid + '] ' + 5,
-                        typeId: 1
-                    }
-                ]).promise();
+                return ajax(format(api.getItemGroups, gid));
+            },
+            getItemsById: (id: string) => {
+                let self = this,
+                    api = self.api;
 
-                //return ajax(format(api.getItemGroups, gid));
+                return ajax(format(api.getItemsById, id));
             },
             getItemsByIds: (ids: Array<any>) => {
                 let self = this,
                     api = self.api;
 
-                //return ajax(format(api.getItemsByIds, ids));
+                return ajax(api.getItemsByIds, ids);
             }
         };
 
@@ -414,7 +387,7 @@ module nts.custombinding {
                         source: Array<any> = ko.unwrap(opts.sortable.data),
                         maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
                             .filter(x => x != -1).value();
-
+ 
                     // remove next line if two line is sibling
                     _.each(maps, (x, i) => {
                         if (maps[i + 1] == x + 1) {
@@ -488,29 +461,25 @@ module nts.custombinding {
             // subscribe handle
             // load combobox data
             opts.radios.value.subscribe(mode => {
+                // remove all data in listbox
+                opts.listbox.options.removeAll();
+
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList) {
                             opts.comboxbox.options(data.categoryList);
-                            opts.comboxbox.value(data.categoryList[0].id);
+                            if (opts.comboxbox.value() == data.categoryList[0].id) {
+                                opts.comboxbox.value.valueHasMutated();
+                            } else {
+                                opts.comboxbox.value(data.categoryList[0].id);
+                            }
                         }
                         else {
-                            opts.comboxbox.value(undefined);
-                            opts.comboxbox.options.removeAll();
-
                             // remove listbox data
                             opts.listbox.value(undefined);
-                            opts.listbox.options.removeAll();
                         }
-                        opts.comboxbox.value.valueHasMutated();
                     });
-                } else { // get item by group
-                    // remove comboxbox data
-                    opts.comboxbox.value(undefined);
-                    opts.comboxbox.options.removeAll();
-
-                    // update list box to group data
-                    opts.listbox.options.removeAll();
+                } else { // get item by group                    
                     services.getGroups().done((data: Array<IItemGroup>) => {
                         if (data && data.length) {
                             // map Array<IItemGroup> to Array<IItemDefinition>
@@ -538,18 +507,16 @@ module nts.custombinding {
             opts.comboxbox.value.subscribe(cid => {
                 if (cid) {
                     let data: Array<IItemCategory> = ko.toJS(opts.comboxbox.options),
-                        item = _.find(data, x => x.id == cid);
+                        item: IItemCategory = _.find(data, x => x.id == cid);
 
                     // remove all item in list item for init new data
                     opts.listbox.options.removeAll();
-
                     if (item) {
                         switch (item.categoryType) {
                             case IT_CAT_TYPE.SINGLE:
                             case IT_CAT_TYPE.CONTINU:
                             case IT_CAT_TYPE.NODUPLICATE:
                                 $(ctrls.button).text(text('CPS007_11'));
-
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
                                     if (data && data.length) {
                                         opts.listbox.options(data);
@@ -578,7 +545,6 @@ module nts.custombinding {
                     }
                 }
             });
-            opts.comboxbox.value.valueHasMutated();
 
             // events handler
             $(ctrls.line).on('click', function() {
@@ -625,7 +591,8 @@ module nts.custombinding {
                             });
                         }
                         else { // single item
-                            let data = ko.unwrap(opts.sortable.data),
+                            let idefid = ko.toJS(opts.listbox.value),
+                                idef = _.find(ko.toJS(opts.listbox.options), (x: IItemDefinition) => x.id == idefid),
                                 item: IItemClassification = {
                                     layoutID: random(),
                                     dispOrder: -1,
@@ -633,7 +600,16 @@ module nts.custombinding {
                                     layoutItemType: IT_CLA_TYPE.ITEM,
                                     listItemDf: []
                                 };
-                            opts.sortable.data.push(item);
+
+                            if (idef) {
+                                services.getItemsById(idef.id).done((def: IItemDefinition) => {
+                                    if (def) {
+                                        item.listItemDf.push(def);
+                                        item.className = def.itemName;
+                                        opts.sortable.data.push(item);
+                                    }
+                                });
+                            }
                         }
                     }
                 } else { // group mode
@@ -725,7 +701,6 @@ module nts.custombinding {
             $.extend(opts.sortable, { data: access.data });
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 _.each(data, (x, i) => x.dispOrder = i + 1);
-                console.log(data);
             });
 
             // extend data of sortable with valueAccessor beforeMove prop
@@ -801,6 +776,7 @@ module nts.custombinding {
     interface IItemClassification {
         layoutID?: string;
         dispOrder: number;
+        className?: string; // only for display if classification is set or duplication item
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>;
@@ -819,24 +795,65 @@ module nts.custombinding {
         itemTypeState: IItemTypeState;
     }
 
-    interface IItemTypeState {
+    interface IItemTypeState extends ISetItem, ISingleItem {
         itemType: ITEM_TYPE; // Set || Single
-        dataTypeState: IItemDefinitionData
     }
 
-    interface IItemDefinitionData extends IItemDate, IItemString {
+    interface ISetItem {
+        items?: Array<string>; // Set ids value
+    }
+
+    interface ISingleItem {
+        dataTypeState?: IItemDefinitionData // Single item value
+    }
+
+    interface IItemDefinitionData extends IItemTime, IItemDate, IItemString, IItemTimePoint {
         dataTypeValue: ITEM_SINGLE_TYPE; // type of value of item
     }
 
+    interface IItemTime {
+        min?: number;
+        max?: number;
+    }
+
     interface IItemDate {
-        maxValue?: number;
-        minValue?: number;
+        dateItemType?: number;
     }
 
     interface IItemString {
         stringItemDataType?: number;
         stringItemLength?: number;
         stringItemType?: number;
+    }
+
+    interface IItemTimePoint {
+        timePointItemMin?: number;
+        timePointItemMax?: number;
+    }
+
+    interface IItemNumeric {
+        numericItemMinus?: number;
+        numericItemAmount?: number;
+        integerPart?: number;
+        decimalPart?: number;
+        NumericItemMin?: number;
+        NumericItemMax?: number;
+    }
+
+    interface IItemSelection extends IItemMasterSelection, IItemEnumSelection, IItemCodeNameSelection {
+        referenceType?: number;
+    }
+
+    interface IItemMasterSelection {
+        masterType?: string;
+    }
+
+    interface IItemEnumSelection {
+        typeCode?: string;
+    }
+
+    interface IItemCodeNameSelection {
+        enumName?: string;
     }
 
     // define ITEM_CLASSIFICATION_TYPE
@@ -861,12 +878,14 @@ module nts.custombinding {
         GROUP = 1 // group mode
     }
 
-    // define ITEM_TYPE
+    // define ITEM_TYPE is set or single item
     enum ITEM_TYPE {
         SET = 1, // List item info
         SINGLE = 2 // Single item info
     }
 
+    // define ITEM_SINGLE_TYPE
+    // type of item if it's single item
     enum ITEM_SINGLE_TYPE {
         STRING = 1,
         NUMERIC = 2,
@@ -874,6 +893,17 @@ module nts.custombinding {
         TIME = 4,
         TIMEPOINT = 5,
         SELECTION = 6
+    }
+
+    // define ITEM_SELECT_TYPE
+    // type of item if it's selection item
+    enum ITEM_SELECT_TYPE {
+        // 1:専用マスタ(DesignatedMaster)
+        DESIGNATED_MASTER = 1,
+        // 2:コード名称(CodeName)
+        CODE_NAME = 2,
+        // 3:列挙型(Enum)
+        ENUM = 3
     }
 }
 

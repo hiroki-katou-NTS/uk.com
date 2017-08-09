@@ -3,6 +3,8 @@ package nts.uk.ctx.bs.person.dom.person.info.category;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoCtgOrder;
+
 public interface PerInfoCategoryRepositoty {
 
 	List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd);
@@ -18,4 +20,11 @@ public interface PerInfoCategoryRepositoty {
     void updatePerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd, List<String> companyIdList);
     
     String getPerInfoCtgCodeLastest(String contractCd);
+    
+    boolean checkCtgNameIsUnique(String companyId, String newCtgName);
+    
+    //void addOderPerInfoCtg(PerInfoCtgOrder order);
+    
+    
+    
 }
