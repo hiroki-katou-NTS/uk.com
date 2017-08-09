@@ -38,9 +38,9 @@ public class BusinessTypesFinder {
 	 * @param businessTypeCode
 	 * @return
 	 */
-	public BusinessTypeDto findBusinessType(String businessTypeCode){
+	public BusinessTypeDto findByCode(String businessTypeCode){
 		String companyId = AppContexts.user().companyId();
-		Optional<BusinessType> businessType = businessTypeRepository.findBusinessType(companyId, businessTypeCode);
+		Optional<BusinessType> businessType = businessTypeRepository.findByCode(companyId, businessTypeCode);
 		if(!businessType.isPresent()){
 			return null;
 		}

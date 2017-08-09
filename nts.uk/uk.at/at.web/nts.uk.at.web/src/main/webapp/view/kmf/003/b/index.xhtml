@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1200,
-					height : 800
+					width : 900,
+					height : 780
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -53,7 +53,7 @@
 						</tr>
 						<tr></tr>
 						<tr>
-							<td>#{i18n.getText('KMF003_53')}</td>
+							<td><span data-bind="visible: displayDateSelected">#{i18n.getText('KMF003_53')}</span></td>
 							<td style="text-align: center;"><span data-bind="text: dateSelected"></span></td>
 							<td><button class="caret-bottom btn-cal" data-bind="click: calculate">#{i18n.getText('KMF003_54')}</button></td>
 						</tr>
@@ -62,62 +62,72 @@
 				
 				<div class="bound"></div>
 				
-				<table class="contents-table">
+				<table class="contents-header">
 					<thead>
 						<tr>
-							<td rowspan="2" width="15">#{i18n.getText('KMF003_38')}</td>
-							<td colspan="2" width="20">#{i18n.getText('KMF003_40')}</td>
-							<td rowspan="2" width="20">#{i18n.getText('KMF003_43')}</td>
-							<td rowspan="2" width="20">#{i18n.getText('KMF003_44')}</td>
-							<td rowspan="2" width="20">#{i18n.getText('KMF003_45')}</td>
-							<td rowspan="2" width="70">#{i18n.getText('KMF003_46')}</td>
-							<td rowspan="2" width="15">#{i18n.getText('KMF003_39')}</td>
-							<td rowspan="2" width="70">#{i18n.getText('KMF003_47')}</td>
+							<td rowspan="2" class="numbers">#{i18n.getText('KMF003_38')}</td>
+							<td colspan="2">#{i18n.getText('KMF003_40')}</td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_43')}</td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_44')}</td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_45')}</td>
+							<td rowspan="2" class="base-date">#{i18n.getText('KMF003_46')}</td>
+							<td rowspan="2" class="allow-pay">#{i18n.getText('KMF003_39')}</td>
+							<td rowspan="2" class="pay-day-cal">#{i18n.getText('KMF003_47')}</td>
 						</tr>
 						<tr>
-							<td width="10">#{i18n.getText('KMF003_41')}</td>
-							<td width="10">#{i18n.getText('KMF003_42')}</td>
+							<td class="input-units">#{i18n.getText('KMF003_41')}</td>
+							<td class="input-units">#{i18n.getText('KMF003_42')}</td>
 						</tr>
 					</thead>
+					<tbody></tbody>
+				</table>
+				
+				<table class="contents-data">
+					<thead></thead>
 					<tbody data-bind="foreach: items">
 						<tr>
-							<td data-bind="text: $index() + 1"></td>
-							<td><input class="year-input" data-bind="ntsNumberEditor: {
+							<td data-bind="text: $index() + 1" class="numbers"></td>
+							<td class="input-units"><input class="year-input" data-bind="ntsNumberEditor: {
 										value: year, 
 										option: ko.mapping.fromJS({
-											unitID: 'YEARS'
+											unitID: 'YEARS',
+											width: '50'
 										})}" /></td>
-							<td><input class="months-input" data-bind="ntsNumberEditor: {
-										value: year, 
+							<td class="input-units"><input class="months-input" data-bind="ntsNumberEditor: {
+										value: month, 
 										option: ko.mapping.fromJS({
-											unitID: 'MONTHS'
+											unitID: 'MONTHS',
+											width: '60'
 										})}" /></td>
-							<td><input class="days-input" data-bind="ntsNumberEditor: {
+							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
 										value: restedDaysInYear, 
 										option: ko.mapping.fromJS({
-											unitID: 'DAYS'
+											unitID: 'DAYS',
+											width: '50'
 										})}" /></td>
-							<td><input class="days-input" data-bind="ntsNumberEditor: {
+							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
 										value: numberOfDays, 
 										option: ko.mapping.fromJS({
-											unitID: 'DAYS'
+											unitID: 'DAYS',
+											width: '50'
 										})}" /></td>										
-							<td><input class="times-input" data-bind="ntsNumberEditor: {
+							<td class="input-units"><input class="times-input" data-bind="ntsNumberEditor: {
 										value: limitedTimes, 
 										option: ko.mapping.fromJS({
-											unitID: 'TIMES'
+											unitID: 'TIMES',
+											width: '50'
 										})}" /></td>
-							<td><div id="combo-box" data-bind="ntsComboBox: {
- 										options: baseDateOptions,
+							<td class="base-date"><div class="base-date-options" id="combo-box" data-bind="ntsComboBox: {
+ 										options: $parent.baseDateOptions,
  										optionsValue: 'code',
- 										value: baseDate,
+ 										value: $data.baseDate,
  										optionsText: 'name',
  										columns: [
- 											{ prop: 'code', length: 4 },
- 											{ prop: 'name', length: 10 },
- 										]}"></div></td>
-							<td><div data-bind="ntsCheckBox: { checked: allowPay }"></div></td>
-							<td></td>
+ 											{ prop: 'name', length: 10 }
+ 										],
+ 										enable: true}"></div></td>
+							<td class="allow-pay"><div data-bind="ntsCheckBox: { checked: allowPay }"></div></td>
+							<td class="pay-day-cal"><span data-bind="text: $parent.payDayCalculate"></span></td>
 						</tr>
 					</tbody>
 				</table>

@@ -28,12 +28,12 @@ public class PpemtLayoutItemClsDfPk implements Serializable{
 	public String layoutId;
 	
 	@Basic(optional = false)
-    @Column(name = "LAYOUT_DISPORDER ")
+    @Column(name = "LAYOUT_DISPORDER")
 	public String layoutDispOrder;
 	
 	
 	@Basic(optional = false)
-    @Column(name = "DISPORDER ")
+    @Column(name = "DISPORDER")
 	public String dispOrder;
 	
 	

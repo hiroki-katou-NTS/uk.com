@@ -174,11 +174,17 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 optionValue = self.conditionValue05() + $('.a7_24').text();
             }
             
+            if(self.A7_4SelectedRuleCode() === 0) {
+                optionValue = nts.uk.resource.getText("KMF003_21") + ": " + optionValue;
+            } else {
+                optionValue = nts.uk.resource.getText("KMF003_22") + ": " + optionValue;
+            }
+            
             var data = {
                 code: self.code(),
                 name: self.name(),
                 conditionValue: optionValue,
-                dateSelected: self.grantDate()
+                dateSelected: self.useConditionCls() ? self.grantDate() : ""
             };
             
             nts.uk.ui.windows.setShared("KMF003_CONDITION_NO", data);

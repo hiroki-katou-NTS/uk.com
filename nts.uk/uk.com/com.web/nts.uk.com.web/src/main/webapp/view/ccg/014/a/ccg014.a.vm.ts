@@ -40,6 +40,14 @@ module ccg014.a.viewmodel {
             self.enableCopy = ko.computed(() => {
                 return (!self.isCreate() && !util.isNullOrEmpty(self.selectedTitleMenuCD()));
             });
+            
+            $("#preview-iframe").on("load", function() {
+                if (self.isCreate() == true)
+                    $("#titleMenuCD").focus();
+                else
+                    $("#titleMenuName").focus();
+            });
+            
         }
 
         /** Start Page */
@@ -61,6 +69,7 @@ module ccg014.a.viewmodel {
             self.selectedTitleMenuCD(null);
             self.selectedTitleMenu(new model.TitleMenu("", "", ""));
             errors.clearAll();
+            $("#preview-iframe").trigger("load");
          }
 
         /** Registry Button Click */

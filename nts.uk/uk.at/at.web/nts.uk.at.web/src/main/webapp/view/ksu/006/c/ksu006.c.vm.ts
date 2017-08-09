@@ -18,8 +18,6 @@ module nts.uk.pr.view.ksu006.c {
             listColumn: KnockoutObservableArray<any>;
             rowSelected: KnockoutObservable<string>;
             
-            isBindingDone: boolean;
-            
             constructor() {
                 let self = this;
                 
@@ -41,12 +39,10 @@ module nts.uk.pr.view.ksu006.c {
                     { headerText: nts.uk.resource.getText("KSU006_316"), key: 'numberSuccess', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_317"), key: 'numberFail', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_318"), key: 'download', width: 100, dataType: 'string', formatter: _.escape,
-                        template: "{{if(${numberFail}) > 0}} <span style='text-decoration: underline;color: blue;'"
-                            + "data-bind='click: downloadDetailError(${executeId})' tabindex='7'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
+                        template: "{{if(${numberFail}) > 0}} <span id='download-log-${executeId}' style='text-decoration: underline;color: blue;'"
+                            + "data-execute='${executeId}' tabindex='7'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
                 ]);
                 self.rowSelected = ko.observable('');
-                
-                self.isBindingDone = false;
             }
 
             public startPage(): JQueryPromise<any> {
@@ -60,14 +56,14 @@ module nts.uk.pr.view.ksu006.c {
                 return dfd.promise();
             }
             
-            public downloadDetailError(executeId: string) {
+            public eventClick() {
                 let self = this;
-                if (!self.isBindingDone) {
-                    return;
-                }
-                // TODO: pending screen B.
-                console.log(executeId);
-                console.log(self.dateRange().startDate);
+                _.forEach(self.dataLog(), item => {
+                    $('#download-log-' + item.executeId).on('click', function() {
+                      let executeId = $(this).data('execute');
+                        console.log(executeId);
+                  });
+                });
             }
             
             public search() {
