@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 
@@ -51,7 +52,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	}
 
 	private void checkPassword(Optional<Contract> contract, String password) {
-		if (!contract.get().getPassword().v().equals(password)) {
+		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(contract.get().getPassword().v())) {
 			throw new BusinessException("#Msg_302");
 		}
 	}

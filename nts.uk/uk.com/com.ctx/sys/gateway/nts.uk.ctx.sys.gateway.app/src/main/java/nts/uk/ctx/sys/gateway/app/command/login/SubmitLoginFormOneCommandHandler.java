@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 
@@ -61,8 +62,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 	}
 
 	private void compareHashPassword(Optional<User> user, String password) {
-		// TODO compare hash string here
-		if (!user.get().getPassword().v().equals(password)) {
+		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(user.get().getPassword().v())) {
 			throw new BusinessException("#Msg_302");
 		}
 	}

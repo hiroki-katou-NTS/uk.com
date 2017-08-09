@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
@@ -82,7 +83,7 @@ public class LocalContractFormCommandHandler
 			return true;
 		}
 		// compare contract pass
-		if (!contract.get().getPassword().v().equals(contractPassword)) {
+		if (!PasswordHash.verifyThat(contractPassword, "salt").isEqualTo(contract.get().getPassword().v())) {
 			return true;
 		}
 		// check time limit

@@ -39,7 +39,7 @@ public class SgwmtUser extends UkJpaEntity implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 44)
+    @Size(min = 1, max = 66)
     @Column(name = "PASSWORD")
     private String password;
     
