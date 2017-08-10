@@ -96,8 +96,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                         // Load daily pattern detail.
                         self.loadDailyPatternDetail(self.selectedDailyPatternCode()).done(() => {
-                            // Xu ly hien thi calendar.
-                            self.optionDates(self.getOptionDates());
                             dfd.resolve();
                         });
 
