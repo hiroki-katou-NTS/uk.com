@@ -4,27 +4,27 @@ public enum ReflectPlanPerState {
 	/**
 	 * 未反映
 	 */
-	NotReflected(0),
+	NOTREFLECTED(0),
 	/**
 	 * 差し戻し
 	 */
-	Remand(1),
+	REMAND(1),
 	/**
 	 * 取消済
 	 */
-	Canceled(2),
+	CANCELED(2),
 	/**
 	 * 取消待ち
 	 */
-	WaitCancel(3),
+	WAITCANCEL(3),
 	/**
 	 * 反映済
 	 */
-	Reflected(4),
+	REFLECTED(4),
 	/**
 	 * 反映待ち
 	 */
-	WaitReflectio(5);
+	WAITREFLECTION(5);
 	
 	public int value;
 	

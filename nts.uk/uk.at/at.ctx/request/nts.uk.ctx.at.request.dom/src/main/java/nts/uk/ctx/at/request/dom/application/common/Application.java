@@ -30,7 +30,7 @@ public class Application extends DomainObject{
 	/**
 	 * 事後申請を自動生成する
 	 */
-	private AutoPostApp autoPostApplication;
+	private UseAtr autoPostApplication;
 	/**
 	 * 入力日
 	 */
@@ -117,7 +117,7 @@ public class Application extends DomainObject{
 				companyID, 
 				applicationID, 
 				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class), 
-				EnumAdaptor.valueOf(autoPostApplication,AutoPostApp.class), 
+				EnumAdaptor.valueOf(autoPostApplication,UseAtr.class), 
 				inputDate, 
 				enteredPersonID, 
 				new ApplicationReason(reversionReason), 

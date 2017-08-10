@@ -1,19 +1,19 @@
 package nts.uk.ctx.at.request.dom.application.common;
 
-public enum AutoPostApp {
+public enum UseAtr {
 
 	/**
 	 * 使用しない
 	 */
-	NotUse(0),
+	NOTUSE(0),
 	/**
 	 * 使用する
 	 */
-	Use(1);
+	USE(1);
 	
 	public int value;
 	
-	AutoPostApp(int type){
+	UseAtr(int type){
 		this.value = type;
 	}
 	
