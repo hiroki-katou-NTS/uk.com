@@ -37,10 +37,8 @@ public class LayoutPersonInfoClsFinder {
 		List<LayoutPersonInfoClsDto> listItemCls = itemClsRepo.getAllByLayoutId(layoutId).stream()
 				.map(item -> LayoutPersonInfoClsDto.fromDomain(item)).collect(Collectors.toList());
 
-		int sizeOflist = listItemCls.size();
-		if (sizeOflist > 0) {
-			for (int i = 0; i < sizeOflist; i++) {
-				LayoutPersonInfoClsDto classDto = listItemCls.get(i);
+		if (listItemCls.size() > 0) {
+			for (LayoutPersonInfoClsDto classDto : listItemCls) {
 				switch (classDto.getLayoutItemType()) {
 				case 0: // list item
 				case 1: // single item
