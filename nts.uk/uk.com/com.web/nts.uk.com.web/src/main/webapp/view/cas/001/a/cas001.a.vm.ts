@@ -8,8 +8,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
         currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole(null));
         currentRoleId: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: getText('Enum_PersonInfoPermissionType_YES') },
-            { code: '0', name: getText('Enum_PersonInfoPermissionType_NO') }
+            { code: 1, name: getText('Enum_PersonInfoPermissionType_YES') },
+            { code: 0, name: getText('Enum_PersonInfoPermissionType_NO') }
         ]);
         itemListCbb: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: getText('Enum_PersonInfoAuthTypes_HIDE') },
@@ -23,7 +23,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
         constructor() {
             let self = this;
             self.currentRoleId.subscribe(function(newRoleId) {
-                console.log(getText('CAS001_29'));
 
                 if (newRoleId == "") {
                     return;
@@ -82,10 +81,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
             $(function() {
                 $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
 
-                    let parrent = $(this).parent().attr('id');
+                    let parrentId = $(this).parent().attr('id');
 
                     for (let item of self.currentRole().currentCategory().roleItemList()) {
-                        parrent == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
+                        parrentId == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
                     }
 
                     $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
@@ -93,14 +92,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 });
             });
         }
-        changeItemListValue(attribute) {
-            let self = this;
-            for (let item of self.currentRole().currentCategory().roleItemList()) {
-                attribute == 'other' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
-            }
-
-            $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
-        }
+        
         OpenDModal() {
 
             let self = this;
@@ -182,7 +174,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     ],
                     ntsControls: [
                         {
-                            name: 'SwitchButtons', options: [{ value: '1', text: '非表示' }, { value: '2', text: '参照のみ' }, { value: '3', text: '更新' }],
+                            name: 'SwitchButtons', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') }, { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
                             optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
                         },
                     ],

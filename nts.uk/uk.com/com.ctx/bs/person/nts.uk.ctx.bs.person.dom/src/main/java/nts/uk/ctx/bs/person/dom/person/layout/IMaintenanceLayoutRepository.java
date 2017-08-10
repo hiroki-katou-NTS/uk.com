@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.person.dom.person.maintenancelayout;
+package nts.uk.ctx.bs.person.dom.person.layout;
 
 import java.util.List;
 import java.util.Optional;
