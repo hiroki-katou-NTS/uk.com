@@ -222,7 +222,7 @@ module nts.uk.at.view.ksm003.a {
             private validate(): boolean {
                 let self = this;
                 $('#inpCode').ntsEditor('validate');
-                $('#inpPar').ntsEditor('validate');
+                $('#inpPattern').ntsEditor('validate');
                 self.detail().dailyPatternVals().forEach((item) => {
                     if (item.isSetting()) {
                         $('#days' + item.dispOrder).ntsEditor('validate');

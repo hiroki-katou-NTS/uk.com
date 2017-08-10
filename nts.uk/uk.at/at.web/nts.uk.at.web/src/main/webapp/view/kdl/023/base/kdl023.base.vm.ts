@@ -27,6 +27,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         isOnScreenA: KnockoutObservable<boolean>;
         isMasterDataUnregisterd: KnockoutObservable<boolean>;
         isOutOfCalendarRange: KnockoutObservable<boolean>;
+        buttonReflectPatternText: KnockoutObservable<string>;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -54,6 +55,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.isOnScreenA = ko.observable(true);
             self.isMasterDataUnregisterd = ko.observable(false);
             self.isOutOfCalendarRange = ko.observable(false);
+            self.buttonReflectPatternText = ko.observable('');
 
             // Calendar component
             self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
@@ -88,6 +90,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.loadWeeklyWorkSetting()) // Load weekly work setting.
                 .done(() => self.loadPatternReflection() // Load pattern reflection.
                     .done(() => {
+
+                        // Set button reflect pattern text.
+                        self.setButtonReflectPatternText();
+
+                        // Check if dailyPatternList has data.
+                        if (!self.dailyPatternList() || !self.dailyPatternList()[0]) {
+                            dfd.resolve();
+                            return;
+                        }
 
                         // Select first daily pattern if none selected.
                         if (!self.selectedDailyPatternCode()) {
@@ -230,11 +241,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             service.findAllPattern().done(function(list: Array<DailyPatternSetting>) {
                 if (list && list.length > 0) {
                     self.dailyPatternList(list);
-                    dfd.resolve();
                 } else {
                     self.showErrorThenCloseDialog();
-                    dfd.fail();
                 }
+                dfd.resolve();
             }).fail(() => {
                 self.showErrorThenCloseDialog();
                 dfd.fail();
@@ -389,7 +399,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         let isLoopEnd = false;
 
                         // Break loop if current date reach calendar's end date.
-                        isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day'); 
+                        isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
 
                         // If pattern's total days is out of calendar's range.
                         if (self.isOutOfCalendarRange()) {
@@ -561,6 +571,24 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     worktime ? worktime : noSetting
                 ]
             };
+        }
+
+        /**
+         * Set button reflect pattern text.
+         */
+        private setButtonReflectPatternText(): void {
+            let self = this;
+
+            // Is on screen A
+            if (self.isOnScreenA()) {
+                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_13'));
+            }
+
+            // Is on screen B
+            else {
+                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_20'));
+            }
+
         }
 
         /**

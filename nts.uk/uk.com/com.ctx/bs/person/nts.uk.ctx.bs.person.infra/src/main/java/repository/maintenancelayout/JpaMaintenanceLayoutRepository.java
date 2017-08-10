@@ -10,8 +10,8 @@ import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.text.translate.NumericEntityUnescaper.OPTION;
 
-import entity.maintenencelayout.PpemtMaintenanceLayout;
-import entity.maintenencelayout.PpemtMaintenanceLayoutPk;
+import entity.layout.PpemtMaintenanceLayout;
+import entity.layout.PpemtMaintenanceLayoutPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
@@ -26,7 +26,8 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	private String getAllMaintenanceLayout = "select c FROM  PpemtMaintenanceLayout c";
 
-	private String getDetailLayout = getAllMaintenanceLayout + " Where c.ppemtMaintenanceLayoutPk.layoutId = :layoutId";
+	private String getDetailLayout = getAllMaintenanceLayout
+			+ " Where c.ppemtMaintenanceLayoutPk.layoutId = :layoutId AND c.companyId = :companyId";
 
 	private static final String IS_DUPLICATE_LAYOUTCODE;
 
@@ -85,13 +86,13 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 	}
 
 	@Override
-	public Optional<MaintenanceLayout> getById(String layoutId) {
+	public Optional<MaintenanceLayout> getById(String companyId, String layoutId) {
 
 		PpemtMaintenanceLayout entity = this.queryProxy().query(getDetailLayout, PpemtMaintenanceLayout.class)
-				.setParameter("layoutId", layoutId).getSingleOrNull();
-		if(entity == null) {
+				.setParameter("layoutId", layoutId).setParameter("companyId", companyId).getSingleOrNull();
+		if (entity == null) {
 			return Optional.empty();
-		}else {
+		} else {
 			return Optional.of(toDomain(entity));
 		}
 

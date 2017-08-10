@@ -4,8 +4,8 @@ module cps008.a.service {
 
     let paths = {
         getAll: "ctx/bs/person/maintenance/findAll",
-        getDetails: "ctx/bs/person/maintenance/findOne/",
-        addMaintenanceLayout: "ctx/bs/person/maintenance/add"
+        getDetails: "ctx/bs/person/maintenance/findOne/{0}",
+        saveData: "ctx/bs/person/maintenance/saveLayout"
     };
 
     /**
@@ -16,22 +16,14 @@ module cps008.a.service {
     }
 
     export function getDetails(lid) {
-        return ajax(format(paths.getDetails + lid));
+        return ajax(format(paths.getDetails, lid));
     }
-    
+
     /**
     * add  Maintenance Layout
     */
-    export function addMaintenanceLayout(model: any) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.addMaintenanceLayout, model)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function saveData(data: any) {
+        return ajax(paths.saveData, data);
     }
 
 

@@ -2,6 +2,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
 
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
@@ -92,16 +93,22 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 });
             });
         }
-        
+
         OpenDModal() {
 
             let self = this;
 
             setShared('personRole', self.currentRole());
 
+            block.invisible();
+
             nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                self.reload();
+                self.reload().done(function() {
+
+                    block.clear();
+
+                });
             });
         }
 
@@ -111,9 +118,15 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             setShared('personRole', self.currentRole());
 
+            block.invisible();
+
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                self.reload();
+                self.reload().done(function() {
+
+                    block.clear();
+
+                });
 
             });
         }
@@ -227,6 +240,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         alert(getText('Msg_217'));
                     }
 
+                    dfd.resolve();
+
                 });
             });
 
@@ -266,6 +281,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
+            block.invisible();
 
             service.getPersonRoleList().done(function(result: Array<IPersonRole>) {
 
@@ -276,6 +292,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     self.personRoleList().push(new PersonRole(iPersonRole));
 
                 });
+
+                block.clear();
+
                 dfd.resolve();
             });
 
@@ -287,9 +306,18 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 command = self.createSaveCommand();
 
+            block.invisible();
+
             service.savePersonRole(command).done(function() {
 
-                self.reload();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
+                    self.reload().done(function() {
+
+                        block.clear();
+
+                    });
+                });
 
             }).fail(function(res) {
 
@@ -388,13 +416,20 @@ module nts.uk.com.view.cas001.a.viewmodel {
             var self = this,
                 dfd = $.Deferred();
 
+            block.invisible();
+
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
 
                 self.RoleCategoryList.removeAll();
 
                 _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
+
                     self.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
+
                 });
+
+                block.clear();
+
                 dfd.resolve();
             });
             return dfd.promise();
@@ -470,6 +505,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
         loadRoleItems(roleId, CategoryId): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+
+            block.invisible();
+
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
 
                 self.roleItemList.removeAll();
@@ -482,6 +520,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
 
                 $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
+
+                block.clear();
 
                 dfd.resolve();
 
