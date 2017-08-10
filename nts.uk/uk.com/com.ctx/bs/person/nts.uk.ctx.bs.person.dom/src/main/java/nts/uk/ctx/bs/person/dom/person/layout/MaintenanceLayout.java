@@ -1,15 +1,13 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.person.dom.person.maintenancelayout;
+package nts.uk.ctx.bs.person.dom.person.layout;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.person.dom.person.newlayout.LayoutCode;
-import nts.uk.ctx.bs.person.dom.person.newlayout.LayoutName;
 
 /**
  * @author laitv

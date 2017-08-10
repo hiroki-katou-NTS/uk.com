@@ -16,6 +16,7 @@ public class LayoutPersonInfoClsDto {
 
 	private String layoutID;
 	private int dispOrder;
+	private String className;
 	private String personInfoCategoryID;
 	private int layoutItemType;
 	private List<PerInfoItemDefDto> listItemDf;
