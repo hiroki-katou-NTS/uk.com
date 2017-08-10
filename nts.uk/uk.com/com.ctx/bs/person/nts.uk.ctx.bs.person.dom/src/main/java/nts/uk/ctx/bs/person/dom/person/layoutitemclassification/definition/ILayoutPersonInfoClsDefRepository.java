@@ -1,12 +1,12 @@
 package nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition;
 
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DispOrder;
+import java.util.List;
 
 public interface ILayoutPersonInfoClsDefRepository {
+	
+	void removeAllByLayoutId(String layoutId);
 
-	void add(LayoutPersonInfoClsDefinition layoutPersonInfoDefinition);
+	void addClassificationItemDefines(List<LayoutPersonInfoClsDefinition> domains);
 
-	void update(LayoutPersonInfoClsDefinition layoutPersonInfoDefinition);
-
-	void remove(String layoutID, DispOrder disPOrder, LayoutDispOrder layoutDisPOrder);
+	List<String> getAllItemDefineIds(String layoutId, int dispOrder);
 }

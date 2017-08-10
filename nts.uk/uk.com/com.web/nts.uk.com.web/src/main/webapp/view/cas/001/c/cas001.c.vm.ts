@@ -16,6 +16,8 @@ module nts.uk.com.view.cas001.c.viewmodel {
             self.roleList.subscribe(data => {
                 if (data) {
                     $("#roles").igGrid("option", "dataSource", data);
+                }else{
+                    $("#roles").igGrid("option", "dataSource", []);
                 }
             });
 

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PersonInfoRoleAuthFinder
@@ -21,12 +22,12 @@ public class PersonInfoRoleAuthFinder {
 	private PersonInfoRoleAuthRepository personRoleAuthRepository;
 
 	public List<PersonInfoRoleAuthDto> getAllPersonInfoRoleAuth() {
-		return this.personRoleAuthRepository.getAllPersonInfoRoleAuth().stream().map(item -> PersonInfoRoleAuthDto.fromDomain(item))
-				.collect(Collectors.toList());
+		return this.personRoleAuthRepository.getAllPersonInfoRoleAuth().stream()
+				.map(item -> PersonInfoRoleAuthDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 	public Optional<PersonInfoRoleAuthDto> getDetailPersonRoleAuth(String roleId) {
-		return this.personRoleAuthRepository.getDetailPersonRoleAuth(roleId)
+		return this.personRoleAuthRepository.getDetailPersonRoleAuth(roleId, AppContexts.user().companyId())
 				.map(c -> PersonInfoRoleAuthDto.fromDomain(c));
 	}
 }

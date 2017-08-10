@@ -1,7 +1,7 @@
 /**
  * 
  */
-package entity.person.itemclassification.difination;
+package entity.itemclassification;
 
 import java.io.Serializable;
 
@@ -11,29 +11,35 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import entity.roles.PpemtPersonRolePk;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * @author laitv
+ *
+ */
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_LAYOUT_ITEM_CLS_DF")
+@AllArgsConstructor
 @Entity
-public class PpemtLayoutItemClsDf extends UkJpaEntity implements Serializable {
+@Table(name = "PPEMT_LAYOUT_ITEM_CLS")
+public class PpemtLayoutItemCls extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpemtLayoutItemClsDfPk ppemtLayoutItemClsDfPk;
-	
+	public PpemtLayoutItemClsPk ppemtLayoutItemClsPk;
+
 	@Basic(optional = false)
-	@Column(name = "PER_INFO_ITEM_DEF_ID")
-	public String itemDfID;
-	
-	
+	@Column(name = "PER_INFO_CATEGORY_ID")
+	public String categoryId;
+
+	@Basic(optional = false)
+	@Column(name = "LAYOUT_ITEM_TYPE")
+	public int itemType;
+
 	@Override
 	protected Object getKey() {
-		return this.ppemtLayoutItemClsDfPk;
+		return this.ppemtLayoutItemClsPk;
 	}
 }

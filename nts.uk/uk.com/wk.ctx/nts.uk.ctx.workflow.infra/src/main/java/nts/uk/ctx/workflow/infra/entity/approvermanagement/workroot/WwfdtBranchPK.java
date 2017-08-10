@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WwfdtBranchPK implements Serializable{
 	private static final long serialVersionUID = 1L;
-	/*会社ID*/
+	/**会社ID*/
 	@Column(name = "CID")
 	public String companyId;
-	/*分岐ID*/
+	/**分岐ID*/
 	@Column(name = "BRANCH_ID")
 	public String branchId;
 }

@@ -11,7 +11,8 @@ import javax.inject.Inject;
 
 import find.layoutitemclassification.LayoutPersonInfoClsDto;
 import find.layoutitemclassification.LayoutPersonInfoClsFinder;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
@@ -33,8 +34,9 @@ public class MaintenanceLayoutFinder {
 	}
 
 	public MaintenanceLayoutDto getDetails(String layoutId) {
+		String companyId = AppContexts.user().companyId();
 		// get detail maintenanceLayout By Id
-		MaintenanceLayoutDto dto = this.layoutRepo.getById(layoutId).map(c -> MaintenanceLayoutDto.fromDomain(c)).get();
+		MaintenanceLayoutDto dto = this.layoutRepo.getById(companyId,layoutId).map(c -> MaintenanceLayoutDto.fromDomain(c)).get();
 
 		// Get list Classification Item by layoutID
 		List<LayoutPersonInfoClsDto> listItemCls = this.ClsFinder.getListClsDto(layoutId);

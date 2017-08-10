@@ -8,8 +8,8 @@ import entity.newlayout.PpemtNewLayout;
 import entity.newlayout.PpemtNewLayoutPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.person.dom.person.newlayout.INewLayoutReposotory;
-import nts.uk.ctx.bs.person.dom.person.newlayout.NewLayout;
+import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
+import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -35,7 +35,7 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 
 		if (entity == null) {
 			commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
-					AppContexts.user().companyId(), "00001", "レイアウト"));
+					AppContexts.user().companyId(), "0001", "レイアウト"));
 
 			entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class).getSingleOrNull();
 		}
