@@ -22,8 +22,8 @@ public class CompanyApprovalRoot extends AggregateRoot {
 	private GeneralDate startDate;
 	/*終了日*/
 	private GeneralDate endDate;
-	/*分岐番号*/
-	private BranchNumber branchNumber;
+	/*分岐ID*/
+	private int branchId;
 	/*任意項目申請ID*/
 	private String anyItemApplicationId;
 	/*確認ルート種類*/
@@ -37,7 +37,7 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			String historyId,
 			String startDate,
 			String endDate,
-			int branchNumber,
+			int branchId,
 			String anyItemApplicationId,
 			int confirmationRootType,
 			int employmentRootAtr,
@@ -46,7 +46,7 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			historyId, 
 			GeneralDate.localDate(LocalDate.parse(startDate)),
 			GeneralDate.localDate(LocalDate.parse(endDate)),
-			EnumAdaptor.valueOf(branchNumber, BranchNumber.class),
+			branchId,
 			anyItemApplicationId,
 			EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
