@@ -17,12 +17,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "WWFDT_APPROVAL_PHASE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfdtAppovalPhase extends UkJpaEntity implements Serializable{
+public class WwfdtApprovalPhase extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/**主キー*/
 	@EmbeddedId
-	public WwfdtAppovalPhasePK wwfdtAppovalPhasePK;
+	public WwfdtApprovalPhasePK wwfdtApprovalPhasePK;
 	/**承認形態*/
 	@Column(name = "APPROVAL_FORM")
 	public int approvalForm;
@@ -35,6 +35,6 @@ public class WwfdtAppovalPhase extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		return wwfdtAppovalPhasePK;
+		return wwfdtApprovalPhasePK;
 	}
 }

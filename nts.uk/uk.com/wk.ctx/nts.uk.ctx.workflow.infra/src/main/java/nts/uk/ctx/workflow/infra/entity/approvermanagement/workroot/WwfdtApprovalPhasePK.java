@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfdtAppovalPhasePK implements Serializable{
+public class WwfdtApprovalPhasePK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**会社ID*/
 	@Column(name = "CID")

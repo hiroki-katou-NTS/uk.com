@@ -14,7 +14,7 @@ public class ApprovalBranch extends AggregateRoot{
 	/**会社ID*/
 	private String companyId;
 	/**分岐ID*/
-	private int branchId;
+	private String branchId;
 	/**番号*/
 	private int number;
 }
