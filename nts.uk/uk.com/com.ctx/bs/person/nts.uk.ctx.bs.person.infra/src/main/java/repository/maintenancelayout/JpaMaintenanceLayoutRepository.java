@@ -14,8 +14,8 @@ import entity.maintenencelayout.PpemtMaintenanceLayout;
 import entity.maintenencelayout.PpemtMaintenanceLayoutPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.MaintenanceLayout;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
 
 /**
  * @author laitv

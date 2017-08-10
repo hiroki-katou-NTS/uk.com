@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.newlayout;
+package nts.uk.ctx.bs.person.dom.person.layout;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
