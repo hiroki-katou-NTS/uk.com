@@ -1,13 +1,15 @@
 package repository.person.itemclassification;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.person.itemclassification.PpemtLayoutItemCls;
-import lombok.val;
+import entity.itemclassification.PpemtLayoutItemCls;
+import entity.itemclassification.PpemtLayoutItemClsPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
@@ -23,6 +25,7 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 
 	static {
 		StringBuilder builderString = new StringBuilder();
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM PpemtLayoutItemCls e");
@@ -31,6 +34,7 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 		GET_ALL_ITEM_CLASSIFICATION = builderString.toString();
 
 		builderString = new StringBuilder();
+
 		builderString.append("SELECT e.ppemtPerInfoItemPK.perInfoItemDefId");
 		builderString.append(" FROM PpemtLayoutItemClsDf d");
 		builderString.append(" INNER JOIN PpemtPerInfoItem e");
@@ -40,6 +44,7 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 		GET_ALL_ITEM_DIFINATION = builderString.toString();
 
 		builderString = new StringBuilder();
+
 		builderString.append("SELECT e.ppemtPerInfoItemPK.perInfoItemDefId");
 		builderString.append(" FROM PpemtLayoutItemClsDf d");
 		builderString.append(" INNER JOIN PpemtPerInfoItem e");
@@ -50,22 +55,17 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 
 	}
 
-	private LayoutPersonInfoClassification convertToDomain(PpemtLayoutItemCls entity) {
-		val domain = LayoutPersonInfoClassification.createFromJaveType(entity.ppemtLayoutItemClsPk.layoutId,
-				Integer.parseInt(entity.ppemtLayoutItemClsPk.dispOrder), entity.categoryId,
-				Integer.parseInt(entity.itemType));
-		return domain;
-	}
-
 	@Override
 	public List<LayoutPersonInfoClassification> getAllItemClsById(String layoutId) {
 		List<PpemtLayoutItemCls> resultList = this.queryProxy()
 				.query(GET_ALL_ITEM_CLASSIFICATION, PpemtLayoutItemCls.class).setParameter("layoutId", layoutId)
 				.getList();
-		System.out.println(resultList);
-		return !resultList.isEmpty() ? resultList.stream().map(item -> {
-			return convertToDomain(item);
-		}).collect(Collectors.toList()) : new ArrayList<>();
+
+		if (resultList.isEmpty()) {
+			return new ArrayList<LayoutPersonInfoClassification>();
+		}
+
+		return resultList.stream().map(item -> toDomain(item)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -87,5 +87,16 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 			return null;
 		}
 	}
+	
+	
 
+	private LayoutPersonInfoClassification toDomain(PpemtLayoutItemCls entity) {
+		return LayoutPersonInfoClassification.createFromJaveType(entity.ppemtLayoutItemClsPk.layoutId,
+				entity.ppemtLayoutItemClsPk.dispOrder, entity.categoryId, entity.itemType);
+	}
+
+	private PpemtLayoutItemCls toEntity(LayoutPersonInfoClassification domain) {
+		PpemtLayoutItemClsPk primaryKey = new PpemtLayoutItemClsPk(domain.getLayoutID(), domain.getDispOrder().v());
+		return new PpemtLayoutItemCls(primaryKey, domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value);
+	}
 }

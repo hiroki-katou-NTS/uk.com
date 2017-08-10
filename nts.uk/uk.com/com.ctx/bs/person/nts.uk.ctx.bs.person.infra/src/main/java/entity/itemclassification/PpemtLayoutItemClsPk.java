@@ -1,7 +1,7 @@
 /**
  * 
  */
-package entity.person.itemclassification.difination;
+package entity.itemclassification;
 
 import java.io.Serializable;
 
@@ -20,22 +20,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class PpemtLayoutItemClsDfPk implements Serializable{
+public class PpemtLayoutItemClsPk implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	@Basic(optional = false)
     @Column(name = "LAYOUT_ID")
 	public String layoutId;
 	
-	@Basic(optional = false)
-    @Column(name = "LAYOUT_DISPORDER")
-	public String layoutDispOrder;
-	
 	
 	@Basic(optional = false)
     @Column(name = "DISPORDER")
-	public String dispOrder;
-	
-	
+	public int dispOrder;
 	
 }
