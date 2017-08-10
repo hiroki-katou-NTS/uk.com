@@ -26,6 +26,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         isReflectionMethodEnable: KnockoutComputed<boolean>;
         isOnScreenA: KnockoutObservable<boolean>;
         isMasterDataUnregisterd: KnockoutObservable<boolean>;
+        isOutOfCalendarRange: KnockoutObservable<boolean>;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -52,6 +53,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.selectedDailyPatternCode = ko.observable('');
             self.isOnScreenA = ko.observable(true);
             self.isMasterDataUnregisterd = ko.observable(false);
+            self.isOutOfCalendarRange = ko.observable(false);
 
             // Calendar component
             self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
@@ -374,13 +376,25 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // List dailyPatternValue loop.
                 let listDailyPatternVal = self.dailyPatternSetting.dailyPatternVals;
 
+                // Set is out of calendar's range observable.
+                self.setIsOutOfCalendarRange(listDailyPatternVal);
+
                 // Master data is registered.
                 if (listDailyPatternVal && listDailyPatternVal.length > 0) {
                     listDailyPatternVal.some(dailyPatternValue => {
                         result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
 
                         // Break loop condition.
-                        let isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
+                        let isLoopEnd = false;
+
+                        // Break loop if current date reach calendar's end date.
+                        isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day'); 
+
+                        // If pattern's total days is out of calendar's range.
+                        if (self.isOutOfCalendarRange()) {
+                            isLoopEnd = false; // continue to loop.
+                        }
+
                         return isLoopEnd;
                     });
                 }
@@ -435,6 +449,17 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
+         * Get total days of pattern.
+         */
+        private getTotalDaysOfPattern(listDailyPatternVal: Array<DailyPatternValue>): number {
+            let sum = 0;
+            _.forEach(listDailyPatternVal, i => {
+                sum += i.days;
+            });
+            return sum;
+        }
+
+        /**
          * Loop forward daily pattern days.
          */
         private loopForwardPatternDays(dailyPatternValue: DailyPatternValue, currentDate: moment.Moment): Array<OptionDate> {
@@ -461,14 +486,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Next day on calendar.
                 currentDate = currentDate.add(1, 'days');
 
-                //  When on screen B
+                // Break loop if pattern's total days is in range and current date reach calendar's end date.
+                if (!self.isOutOfCalendarRange() && currentDate.isAfter(self.calendarEndDate, 'day')) {
+                    break;
+                }
+
+                //  When is on screen B
                 if (!self.isOnScreenA()) {
-
-                    // Break loop if current date reach calendar's end date.
-                    if (currentDate.isAfter(self.calendarEndDate, 'day')) {
-                        break;
-                    }
-
                     // Skip to next day if current date is before calendar's start date.
                     if (currentDate.isSameOrBefore(self.calendarStartDate, 'day')) {
                         _.remove(result, item => item === optionDate);
@@ -631,6 +655,25 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private isFillInTheBlankChecked(): boolean {
             let self = this;
             return ReflectionMethod.FillInTheBlank == self.patternReflection.reflectionMethod;
+        }
+
+        /**
+         * Set is out of calendar's range observable.
+         */
+        private setIsOutOfCalendarRange(listDailyPatternVal: Array<DailyPatternValue>): void {
+            let self = this;
+
+            // Get calendar's range.
+            let calendarRange = self.calendarEndDate.diff(self.calendarStartDate, 'days') + 1;
+
+            // Get total days.
+            let totalDays = self.getTotalDaysOfPattern(listDailyPatternVal);
+
+            // Set value
+            self.isOutOfCalendarRange(false);
+            if (totalDays > calendarRange) {
+                self.isOutOfCalendarRange(true);
+            }
         }
 
         /**
