@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 440,
+					width : 550,
 					height : 600
 				};
 			</script>
@@ -28,13 +28,13 @@
 			<div id="contents-area">
 				<div id='role'>
 					<div class='flex valign-center' data-bind="with: currentRole">
-						<div
+						<div 
 							data-bind="ntsFormLabel: {constraint: ['RoleCode' , 'RoleName'],required:true}"
 							class='distane'>
 							<label id="codeName">#{i18n.getText('CAS001_12')}</label>
 						</div>
-						<label id="roleCode" data-bind="text: roleCode"></label> <label
-							id="roleName" data-bind="text: roleName"></label>
+						<label id="roleCode" data-bind="text: roleCode"></label> 
+						<label id="roleName" data-bind="text: roleName"></label>
 					</div>
 					<div data-bind="ntsFormLabel: {}" class='distane'>
 						<label id="codeName">#{i18n.getText('CAS001_57')}</label>
