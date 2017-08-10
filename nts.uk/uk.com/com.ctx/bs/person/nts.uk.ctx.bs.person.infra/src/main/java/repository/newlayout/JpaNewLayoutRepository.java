@@ -7,13 +7,15 @@ import javax.ejb.Stateless;
 import entity.newlayout.PpemtNewLayout;
 import entity.newlayout.PpemtNewLayoutPk;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.newlayout.INewLayoutReposotory;
 import nts.uk.ctx.bs.person.dom.person.newlayout.NewLayout;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutReposotory {
 
-	private final String GET_FIRST_LAYOUT = "SELECT l FROM  PpemtNewLayout l";
+	private static final String GET_FIRST_LAYOUT = "SELECT l FROM  PpemtNewLayout l";
 
 	@Override
 	public void update(NewLayout domain) {
@@ -32,10 +34,13 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 		PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class).getSingleOrNull();
 
 		if (entity == null) {
-			return Optional.empty();
-		} else {
-			return Optional.of(toDomain(entity));
+			commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
+					AppContexts.user().companyId(), "00001", "レイアウト"));
+
+			entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class).getSingleOrNull();
 		}
+
+		return Optional.of(toDomain(entity));
 	}
 
 	private NewLayout toDomain(PpemtNewLayout entity) {
@@ -45,7 +50,7 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 
 	private PpemtNewLayout toEntity(NewLayout domain) {
 		PpemtNewLayoutPk primary = new PpemtNewLayoutPk(domain.getLayoutID());
-		
+
 		return new PpemtNewLayout(primary, domain.getCompanyId(), domain.getLayoutCode().v(),
 				domain.getLayoutName().v());
 	}
