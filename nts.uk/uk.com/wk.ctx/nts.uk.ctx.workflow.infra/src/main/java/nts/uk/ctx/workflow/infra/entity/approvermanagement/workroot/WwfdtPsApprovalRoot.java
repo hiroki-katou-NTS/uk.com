@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
- * 
+ * 個人別就業承認ルート
  * @author hoatt
  *
  */
@@ -21,25 +21,25 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class WwfdtPsApprovalRoot extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	/*主キー*/
+	/**主キー*/
 	@EmbeddedId
 	public WwfdtPsApprovalRootPK wwfdtPsApprovalRootPK;
-	/*分岐ID*/
+	/**分岐ID*/
 	@Column(name = "BRANCH_ID")
 	public String branchId;
-	/*開始日*/
+	/**開始日*/
 	@Column(name = "START_DATE")
 	public GeneralDate startDate;
-	/*終了日*/
+	/**終了日*/
 	@Column(name = "END_DATE")
 	public GeneralDate endDate;
-	/*任意項目申請ID*/
+	/**任意項目申請ID*/
 	@Column(name = "ANYITEM_APPLICATION_ID")
 	public String anyItemAppId;
-	/*確認ルート種類*/
+	/**確認ルート種類*/
 	@Column(name = "CONFIRMATION_ROOT_TYPE")
 	public int confirmationRootType;
-	/*就業ルート区分*/
+	/**就業ルート区分*/
 	@Column(name = "EMPLOYMENT_ROOT_ATR")
 	public int employmentRootAtr;
 
