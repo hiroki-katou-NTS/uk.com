@@ -32,5 +32,28 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	List<Application> getAllAppByAppType(String companyID,int applicationType);
-	
+	/**
+	 * get all application by range date
+	 * @param companyID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<Application> getAllAppByRangeDate(String companyID,BigDecimal startDate,BigDecimal endDate);
+	/**
+	 * add application
+	 * @param application
+	 */
+	void addApplication(Application application);
+	/**
+	 * update application
+	 * @param application
+	 */
+	void updateApplication(Application application);
+	/**
+	 * delete application
+	 * @param companyID
+	 * @param applicationID
+	 */
+	void deleteApplication(String companyID,String applicationID);
 }

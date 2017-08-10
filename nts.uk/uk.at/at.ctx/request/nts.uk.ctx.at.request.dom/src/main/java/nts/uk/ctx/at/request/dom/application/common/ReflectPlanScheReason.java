@@ -4,15 +4,15 @@ public enum ReflectPlanScheReason {
 	/**
 	 * 問題なし
 	 */
-	NotProblem(0),
+	NOTPROBLEM(0),
 	/**
 	 * 勤務スケジュール確定済
 	 */
-	WorkFixed(1),
+	WORKFIXED(1),
 	/**
 	 * 作業スケジュール確定済
 	 */
-	WorkConfirmed(2);
+	WORKCONFIRMED(2);
 	
 	public int value;
 	

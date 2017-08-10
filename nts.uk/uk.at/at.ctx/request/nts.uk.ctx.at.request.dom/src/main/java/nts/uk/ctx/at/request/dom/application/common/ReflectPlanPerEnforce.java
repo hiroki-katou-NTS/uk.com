@@ -4,11 +4,11 @@ public enum ReflectPlanPerEnforce {
 	/**
 	 * しない
 	 */
-	NotToDo(0),
+	NOTTODO(0),
 	/**
 	 * する
 	 */
-	ToDo(1);
+	TODO(1);
 	
 	public int value;
 	

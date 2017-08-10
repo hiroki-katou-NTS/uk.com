@@ -9,11 +9,11 @@ public enum PrePostAtr {
 	/**
 	 * 0: 事前の受付制限
 	 */
-	Predict(0),
+	PREDICT(0),
 	/**
 	 * 1: 事後の受付制限
 	 */
-	Posterior(1);
+	POSTERIOR(1);
 	
 	public int value;
 	

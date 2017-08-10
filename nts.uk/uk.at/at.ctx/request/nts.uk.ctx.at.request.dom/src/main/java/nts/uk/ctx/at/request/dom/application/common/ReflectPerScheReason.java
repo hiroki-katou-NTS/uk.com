@@ -4,11 +4,11 @@ public enum ReflectPerScheReason {
 	/**
 	 * 問題なし
 	 */
-	NotProblem(0),
+	NOTPROBLEM(0),
 	/**
 	 * 実績確定済
 	 */
-	ActualConfirmed(1);
+	ACTUALCONFIRMED(1);
 	public int value;
 	
 	ReflectPerScheReason(int type){
