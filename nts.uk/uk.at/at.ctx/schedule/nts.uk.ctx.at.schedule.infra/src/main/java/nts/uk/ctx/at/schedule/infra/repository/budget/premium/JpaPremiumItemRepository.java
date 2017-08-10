@@ -24,7 +24,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	@Override
 	public void update(PremiumItem premiumItem) {
-		KmnmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(), premiumItem.getID()), KmnmtPremiumItem.class).get();
+		KmnmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(), premiumItem.getDisplayNumber()), KmnmtPremiumItem.class).get();
 		if(premiumItem.getUseAtr().equals(UseAttribute.Use)){
 			item.setUseAtr(premiumItem.getUseAtr().value);
 			item.setName(premiumItem.getName().v());
@@ -48,10 +48,8 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	private PremiumItem convertToDomain(KmnmtPremiumItem kmnmtPremiumItem){
 		return new PremiumItem(
 				kmnmtPremiumItem.kmnmpPremiumItemPK.companyID, 
-				kmnmtPremiumItem.kmnmpPremiumItemPK.iD,
-				kmnmtPremiumItem.attendanceID,
+				kmnmtPremiumItem.kmnmpPremiumItemPK.displayNumber,
 				new PremiumName(kmnmtPremiumItem.name), 
-				kmnmtPremiumItem.displayNumber, 
 				EnumAdaptor.valueOf(kmnmtPremiumItem.useAtr, UseAttribute.class));
 	}
 }

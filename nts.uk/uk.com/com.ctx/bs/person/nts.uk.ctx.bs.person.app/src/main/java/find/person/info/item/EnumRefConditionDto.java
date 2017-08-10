@@ -1,7 +1,7 @@
 package find.person.info.item;
 
 import lombok.Getter;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 
 @Getter
 public class EnumRefConditionDto extends SelectionItemDto {
@@ -9,7 +9,7 @@ public class EnumRefConditionDto extends SelectionItemDto {
 	private String enumName;
 	
 	private EnumRefConditionDto(String enumName) {
-		super(ReferenceType.ENUM);
+		super(ReferenceTypes.ENUM);
 		this.enumName = enumName;
 	}
 

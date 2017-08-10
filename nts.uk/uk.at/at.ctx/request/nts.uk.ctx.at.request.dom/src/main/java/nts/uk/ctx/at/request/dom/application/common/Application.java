@@ -38,7 +38,7 @@ public class Application extends DomainObject{
 	/**
 	 *  入力者
 	 */
-	private String enteredPersonID;
+	private String enteredPersonSID;
 	/**
 	 * 差戻し理由
 	 */
@@ -59,7 +59,7 @@ public class Application extends DomainObject{
 	/**
 	 * 申請者
 	 */
-	private String  applicantsID;
+	private String  applicantSID;
 	/**
 	 * 予定反映不可理由
 	 */
@@ -99,12 +99,12 @@ public class Application extends DomainObject{
 			int prePostAtr,
 			int autoPostApplication,
 			BigDecimal inputDate, 
-			String enteredPersonID, 
+			String enteredPersonSID, 
 			String reversionReason, 
 			BigDecimal applicationDate,
 			String applicationReason, 
 			int applicationType, 
-			String applicantsID,
+			String applicantSID,
 			int reflectPlanScheReason, 
 			BigDecimal reflectPlanTime,
 			int reflectPlanState, 
@@ -119,12 +119,12 @@ public class Application extends DomainObject{
 				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class), 
 				EnumAdaptor.valueOf(autoPostApplication,UseAtr.class), 
 				inputDate, 
-				enteredPersonID, 
+				enteredPersonSID, 
 				new ApplicationReason(reversionReason), 
 				applicationDate, 
 				new ApplicationReason(applicationReason), 
 				EnumAdaptor.valueOf(applicationType,ApplicationType.class), 
-				applicantsID, 
+				applicantSID, 
 				EnumAdaptor.valueOf(reflectPlanScheReason,ReflectPlanScheReason.class), 
 				reflectPlanTime, 
 				EnumAdaptor.valueOf(reflectPlanState,ReflectPlanPerState.class), 

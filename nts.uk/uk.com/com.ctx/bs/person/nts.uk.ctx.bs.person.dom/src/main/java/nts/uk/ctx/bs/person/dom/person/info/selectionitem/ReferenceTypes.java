@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor
 @IntegerRange(max = 3, min = 1)
-public enum ReferenceType {
+public enum ReferenceTypes {
 	// 1:専用マスタ(DesignatedMaster)
 	DESIGNATED_MASTER(1),
 
