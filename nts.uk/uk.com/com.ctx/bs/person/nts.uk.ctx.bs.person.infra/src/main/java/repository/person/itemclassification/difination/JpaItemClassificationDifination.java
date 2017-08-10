@@ -18,12 +18,12 @@ public class JpaItemClassificationDifination extends JpaRepository implements IL
 	private static final String SELECT_ALL = "SELECT cd FROM PpemtLayoutItemClsDf cd";
 	private static final String SELECT_ALL_BY_CLASSIFID = SELECT_ALL
 			+ " WHERE cd.ppemtLayoutItemClsDfPk.layoutId = :layoutId"
-			+ " AND cd.ppemtLayoutItemClsDfPk.layoutDispOrder = :layoutDispOrder";
+			+ " AND cd.ppemtLayoutItemClsDfPk.layoutDispOrder = :classDispOrder";
 
 	@Override
-	public List<String> getAllItemDefineIds(String layoutId, int dispOrder) {
+	public List<String> getAllItemDefineIds(String layoutId, int classDispOrder) {
 		return queryProxy().query(SELECT_ALL_BY_CLASSIFID, PpemtLayoutItemClsDf.class)
-				.setParameter("layoutId", layoutId).setParameter("layoutDispOrder", dispOrder).getList().stream()
+				.setParameter("layoutId", layoutId).setParameter("classDispOrder", classDispOrder).getList().stream()
 				.map(m -> m.itemDfID).collect(Collectors.toList());
 	}
 

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -48,5 +49,17 @@ public class WorkTypeWebService extends WebService {
 	@Path("findAll")
 	public List<WorkTypeDto> findAll() {
 		return this.find.findByCompanyId();
+	}
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param workTypeCode the work type code
+	 * @return the work type dto
+	 */
+	@POST
+	@Path("findById/{workTypeCode}")
+	public WorkTypeDto findById(@PathParam("workTypeCode") String workTypeCode){
+		return this.find.findById(workTypeCode);
 	}
 }

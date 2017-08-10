@@ -290,14 +290,16 @@ module nts.uk.at.view.ksm005.b {
                 var dto : WorkMonthlySettingDto = self.findByDate(date);
                 if (dto != null) {
                     nts.uk.ui.windows.setShared('parentCodes', {
-                        selectWorkTypeCode: dto.workTypeCode,
-                        selectSiftCode: dto.workingCode
+                        selectedWorkTypeCode: dto.workTypeCode,
+                        selectedWorkTimeCode: dto.workingCode
                     }, true);
 
                     nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
                         var childData = nts.uk.ui.windows.getShared('childData');
-                        dto.workTypeCode = childData.selectedWorkTimeCode;
-                        dto.workingCode = childData.selectedSiftCode;
+                        dto.workTypeCode = childData.selectedWorkTypeCode;
+                        dto.workTypeName = childData.selectedWorkTypeName;
+                        dto.workingCode = childData.selectedWorkTimeCode;
+                        dto.workingName = childData.selectedWorkTimeName;
                         self.updateWorkMonthlySettingClose(dto);
                     });
                 }

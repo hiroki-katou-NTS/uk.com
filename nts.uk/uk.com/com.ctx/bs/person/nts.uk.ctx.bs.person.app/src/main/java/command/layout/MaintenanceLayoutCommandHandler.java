@@ -9,8 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.eclipse.persistence.internal.libraries.asm.tree.LdcInsnNode;
-
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
@@ -30,7 +28,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 	@Inject
 	private IMaintenanceLayoutRepository repo;
-	
+
 	@Inject
 	private ILayoutPersonInfoClsRepository clsRepo;
 
@@ -65,12 +63,6 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 	}
 
-	private void insertLayout(MaintenanceLayoutCommand command) {
-	}
-
-	private void updateLayout(MaintenanceLayoutCommand command) {
-	}
-
 	private void overrideLayout(MaintenanceLayoutCommand command, String newLayoutId) {
 
 		// get Old Layout
@@ -92,19 +84,19 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			MaintenanceLayout newLayout = MaintenanceLayout.createFromJavaType(companyId, newLayoutId,
 					command.getCode(), command.getName());
 			this.repo.add(newLayout);
-			
-			// lay ra list itemcls , sau do update layoutId = new LayoutId , sau do insert list nay bang ItemCls
-			List<LayoutPersonInfoClassification> listCls = this.clsRepo.getAllItemClsById(command.getId());
+
+			// lay ra list itemcls , sau do update layoutId = new LayoutId , sau do insert
+			// list nay bang ItemCls
+			List<LayoutPersonInfoClassification> listCls = this.clsRepo.getAllByLayoutId(command.getId());
 
 			listCls.forEach(item -> {
 				item.setLayoutID(newLayoutId);
 			});
 			// insert list to ItemCls Table
-			this.clsRepo.addListItemCls(listCls);
-			
+			this.clsRepo.addClassifications(listCls);
+
 			// lay ra list itemclsDf
-			
-			
+
 		}
 
 	}
