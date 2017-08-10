@@ -1,11 +1,11 @@
 /**
  * 
  */
-package find.newlayout;
+package find.layout;
 
 import java.util.List;
 
-import find.layoutitemclassification.LayoutPersonInfoClsDto;
+import find.layout.classification.LayoutPersonInfoClsDto;
 import lombok.Value;
 import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
 

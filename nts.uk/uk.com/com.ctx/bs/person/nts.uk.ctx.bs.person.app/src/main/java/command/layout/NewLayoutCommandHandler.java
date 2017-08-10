@@ -13,7 +13,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 
 	@Inject
 	INewLayoutReposotory layoutRepo;
-	
+
 	@Inject
 	ILayoutPersonInfoClsRepository classfRepo;
 
@@ -25,11 +25,11 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 
 		NewLayout domain = NewLayout.createFromJavaType(companyId, command.getLayoutID(), command.getLayoutCode(),
 				command.getLayoutName());
-		
+
 		layoutRepo.update(domain);
-		
-		for(ClassificationCommand classCommand: command.getListClass()) {
-			//classfRepo.
+
+		for (ClassificationCommand classCommand : command.getListClass()) {
+			// classfRepo.
 		}
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.groupitem;
+package find.layout.groupitem;
 
 import lombok.Value;
 import nts.uk.ctx.bs.person.dom.person.groupitem.PersonInfoItemGroup;

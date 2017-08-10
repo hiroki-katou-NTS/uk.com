@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import command.layout.MaintenanceLayoutCommand;
-import find.newlayout.NewLayoutDto;
-import find.newlayout.NewLayoutFinder;
+import find.layout.NewLayoutDto;
+import find.layout.NewLayoutFinder;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/maintenance")

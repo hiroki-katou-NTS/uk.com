@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.layoutitemclassification.definition;
+package find.layout.classification.definition;
 
 import java.util.List;
 

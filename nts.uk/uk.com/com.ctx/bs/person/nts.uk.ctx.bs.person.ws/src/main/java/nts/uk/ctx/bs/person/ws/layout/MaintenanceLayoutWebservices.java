@@ -13,8 +13,8 @@ import javax.ws.rs.Produces;
 
 import command.layout.MaintenanceLayoutCommand;
 import command.layout.MaintenanceLayoutCommandHandler;
-import find.maintenancelayout.MaintenanceLayoutDto;
-import find.maintenancelayout.MaintenanceLayoutFinder;
+import find.layout.MaintenanceLayoutDto;
+import find.layout.MaintenanceLayoutFinder;
 import nts.arc.layer.ws.WebService;
 
 

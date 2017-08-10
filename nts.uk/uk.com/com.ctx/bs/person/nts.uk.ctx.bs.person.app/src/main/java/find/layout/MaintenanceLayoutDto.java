@@ -1,11 +1,11 @@
 /**
  * 
  */
-package find.maintenancelayout;
+package find.layout;
 
 import java.util.List;
 
-import find.layoutitemclassification.LayoutPersonInfoClsDto;
+import find.layout.classification.LayoutPersonInfoClsDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.layoutitemclassification.definition;
+package find.layout.classification.definition;
 
 import lombok.Value;
 import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutPersonInfoClsDefinition;

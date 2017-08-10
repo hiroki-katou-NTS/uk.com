@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.newlayout;
+package find.layout;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,8 +9,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.layoutitemclassification.LayoutPersonInfoClsDto;
-import find.layoutitemclassification.LayoutPersonInfoClsFinder;
+import find.layout.classification.LayoutPersonInfoClsDto;
+import find.layout.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
 

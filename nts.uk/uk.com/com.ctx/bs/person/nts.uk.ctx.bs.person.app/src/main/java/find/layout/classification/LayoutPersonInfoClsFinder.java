@@ -1,16 +1,15 @@
 /**
  * 
  */
-package find.layoutitemclassification;
+package find.layout.classification;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.layoutitemclassification.definition.LayoutPersonInfoClsDefFinder;
+import find.layout.classification.definition.LayoutPersonInfoClsDefFinder;
 import find.person.info.category.PerInfoCategoryFinder;
 import find.person.info.category.PerInfoCtgWithItemsNameDto;
 import find.person.info.item.PerInfoItemDefDto;

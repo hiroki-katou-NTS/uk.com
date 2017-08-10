@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.maintenancelayout;
+package find.layout;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.layoutitemclassification.LayoutPersonInfoClsDto;
-import find.layoutitemclassification.LayoutPersonInfoClsFinder;
+import find.layout.classification.LayoutPersonInfoClsDto;
+import find.layout.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 
