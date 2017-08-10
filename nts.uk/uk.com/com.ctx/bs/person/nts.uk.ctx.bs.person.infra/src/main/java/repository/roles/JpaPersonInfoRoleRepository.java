@@ -15,9 +15,13 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPersonInfoRoleRepository extends JpaRepository implements PersonInforRoleRepository {
-	private final String SELECT_NO_WHERE = "SELECT c FROM PpemtPersonRole c WHERE c.companyId =:companyId ORDER BY c.roleCode";
+	private final String SELECT_NO_WHERE = "SELECT c FROM PpemtPersonRole c";
+	
+	private final String SELECT_ROLE_BY_COMPANY_ID = SELECT_NO_WHERE
+			+" WHERE c.companyId =:companyId ORDER BY c.roleCode";
 
-	private final String SEL_2 = SELECT_NO_WHERE + "  AND c.ppemtPersonRolePk.roleId =:roleId ";
+	private final String SEL_2 = SELECT_NO_WHERE 
+			+ " WHERE c.companyId =:companyId AND c.ppemtPersonRolePk.roleId =:roleId ";
 
 	private static PersonInforRole toDomain(PpemtPersonRole entity) {
 		val domain = PersonInforRole.createFromJavaType(entity.companyId, entity.ppemtPersonRolePk.roleId,
@@ -38,8 +42,8 @@ public class JpaPersonInfoRoleRepository extends JpaRepository implements Person
 	@Override
 	public List<PersonInforRole> getAllPersonRole() {
 		String companyId = AppContexts.user().companyId();
-		return this.queryProxy().query(SELECT_NO_WHERE, PpemtPersonRole.class).setParameter("companyId", companyId)
-				.getList(c -> toDomain(c));
+		return this.queryProxy().query(SELECT_ROLE_BY_COMPANY_ID, PpemtPersonRole.class)
+				.setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 
 	@Override

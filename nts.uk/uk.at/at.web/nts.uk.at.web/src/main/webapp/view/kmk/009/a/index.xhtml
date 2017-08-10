@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
+				nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeName
+				nts.uk.ctx.at.record.dom.divergencetime.Time
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk009.a.main.css" />
+			<com:scriptfile path="kmk009.a.start.js" />
+			<com:scriptfile path="kmk009.a.vm.js" />
+			<com:scriptfile path="kmk009.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1: Button Registration -->
+				<button id="btnSave"
+					class="button proceed separate-button fix-button"
+					data-bind="click: Registration,enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KMK009_1')}</button>
+			</div>
+
+			<div id="content-area">
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<div class="cf">
+						<div style="float: left">
+							<table tabindex="2" id="single-list-dataSource"
+								data-bind="ntsGridList:{
+									width: 450,
+									height: 600,
+									options: dataSource,								
+									optionsValue: 'divTimeId',
+									columns: columns,
+									multiple: false,
+									value: currentCode,
+									enable: true}" >
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id="right-content">
+					<table>
+						<colgroup>
+							<col width="135px" />
+							<col width="*" />
+						</colgroup>
+						<tr class="row">
+							<td>
+								<!-- A3_1 -->
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_5')}</div>
+							</td>
+							<td>
+								<!-- A3_2 , A3_3 ,A3_4: Setting Use -->
+								<div tabindex="3" style = "padding-left: 5px"
+									data-bind="ntsSwitchButton: {
+									options: useSet,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectUse,
+									enable: true }">
+								</div>
+							</td>
+						</tr>
+						<tr class="row">
+							<td>
+								<!--A3_5 -->
+								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK009_6')}</div>
+							</td>
+							<td style = "padding-left: 5px">
+								<!-- A3_6: Divergence Time Name -->
+								<input tabindex="4"
+								class="nts-input" id="itemname"  
+								style="width: 100px"
+								data-bind="ntsTextEditor:{
+										 name: '#[KMK009_6]',
+                                         value: divTimeName,
+                                         required: true,
+                                        
+                                         enable: enableUse}" />
+                                         <!-- constraint: 'DivergenceTimeName', -->
+							</td>
+						</tr>
+						
+						<tr class="row">
+							<td>
+								<!--A3_25 -->
+								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK009_22')}</div>
+							</td>
+							<td style = "padding-left: 5px">
+								<!-- A3_26: Divergence Time Name -->
+								 <input tabindex="5"
+								class="nts-input" id="itemname" 
+								style="width: 60px"
+								data-bind="ntsTextEditor:{
+										name: '#[KMK009_22]',
+                                         value: divTimeName,
+                                         required: true,
+                                         enable: enableUse}" />
+							</td>
+						</tr>
+						<tr class="row">
+							<td>
+								<!--A3_7 -->
+								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK009_14')}</div>
+							</td>
+							<td style = "padding-left: 5px">
+								<!-- A3_8: Divergence Time Name -->
+								 <input tabindex="6"
+								class="nts-input" id="itemname" 
+								style="width: 80px"
+								data-bind="ntsTextEditor:{
+										name: '#[KMK009_14]',
+                                         value: divTimeName,
+                                         required: true,
+                                         enable: enableUse}" />v
+							</td>
+						</tr>
+						<tr class="row">
+							<td>
+								<!-- A3_10 -->
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_8')}</div>
+							</td>
+							<td style = "padding-left: 5px">
+								<!-- A3_11 Open dialog KDL002-->
+								<button tabindex="7"
+									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
+								<!-- A3_12: Time item name --> 
+								<input class="nts-input" id = "inpName"
+								style="width: 350px"
+								data-bind="ntsTextEditor:{
+										name: '#[KMK011_31]',
+										value: timeItemName,
+										required: true,
+										readonly: true,
+										enable: enableUse}" />
+							</td>
+						</tr>
+						<tr class="row">
+							<td>
+								<!-- A3_13 -->
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_9')}</div>
+							</td>
+							<td style = "padding-left: 5px">
+								<!-- A3_14 Open dialog KDL001-->
+								<button tabindex="8"
+									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
+								<!-- A3_15: Time item name --> 
+								<input class="nts-input" id = "inpName"
+								style="width: 350px"
+								data-bind="ntsTextEditor:{
+										name: '#[KMK011_31]',
+										value: timeItemName,
+										required: true,
+										readonly: true,
+										enable: enableUse}" />
+							</td>
+						</tr>
+						<tr class="row">
+							<td>
+								<!-- A3_16: Label -->
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_10')}</div>
+							</td>
+							<td style = "padding-left: 5px">
+								<div tabindex="9">
+								<!--A3:17 : Check error(select) -->
+								<div  style="margin-bottom: 10px"
+									data-bind="ntsCheckBox:{
+									checked: checkErrSelect,
+									enable: enableSelect
+									}">
+								</div>
+								
+								<!-- A3_18: Alarm time -->  
+								<input  class="nts-validate" id="inpAlarmTime" style="width: 50px"
+								data-bind="ntsTimeEditor: {
+									name: '#[KMK009_16]',
+									value: alarmTime,
+									inputFormat: 'time', 
+									mode: 'time', 
+									constraint: 'Time',
+									enable: enableUse}" />
+								<!-- A3_19 -->	
+								#{i18n.getText('KMK009_17')}	
+								</div>
+							</td>
+						</tr>
+						<tr class="row">
+							<td>
+							</td>
+							<td style = "padding-left: 5px">
+								<div tabindex="10">
+								<!-- :A3_20 Check error(select) -->
+								<div  style="margin-bottom: 10px"
+									data-bind="ntsCheckBox:{
+									checked: checkErrSelect,
+									enable: enableSelect
+									}">
+								</div>
+								<!-- A3_21: Error time --> 
+                                <input  style="width: 50px"
+                                 data-bind="ntsTimeEditor: {
+									name: '#[KMK009_19]',
+									value: errTime,
+									inputFormat: 'time', 
+									mode: 'time', 
+									constraint: 'Time',
+									enable: enableUse}" />
+								<!-- A3_22 -->	
+								#{i18n.getText('KMK009_20')}	
+								</div>
+							</td>
+						</tr>
+						<tr class="row">
+							<td>
+								<!-- A3_23 -->
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_11')}</div>
+							</td>
+							<td style = "padding-left: 5px">
+								<div tabindex="11">
+								<!-- A3_24: Check error(select) -->
+								<div  style="margin-bottom: 10px"
+									data-bind="ntsCheckBox:{
+									checked: checkErrSelect,
+									enable: enableSelect,
+									text: '#{i18n.getText('KMK009_21')}'}">
+								</div>
+								</div>
+							</td>
+						</tr>
+
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

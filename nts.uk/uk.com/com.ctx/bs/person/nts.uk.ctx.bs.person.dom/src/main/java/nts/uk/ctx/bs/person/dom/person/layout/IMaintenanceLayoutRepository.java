@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.person.dom.person.maintenancelayout;
+package nts.uk.ctx.bs.person.dom.person.layout;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +22,6 @@ public interface IMaintenanceLayoutRepository {
 
 	List<MaintenanceLayout> getAllMaintenanceLayout();
 
-	Optional<MaintenanceLayout> getById(String id);
+	Optional<MaintenanceLayout> getById(String cid ,String id);
 
 }

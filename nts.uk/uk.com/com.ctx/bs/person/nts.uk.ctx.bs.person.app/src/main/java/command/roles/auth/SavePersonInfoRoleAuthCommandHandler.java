@@ -15,6 +15,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.bs.person.dom.person.role.PersonInforRole;
+import nts.uk.ctx.bs.person.dom.person.role.PersonInforRoleRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuth;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth;
@@ -29,6 +31,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePersonInfoRoleAuthCommand> {
 	@Inject
 	private PersonInfoRoleAuthRepository pRoleAuthRepo;
+	@Inject
+	private PersonInforRoleRepository pRoleRepo;
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 	@Inject
@@ -55,17 +59,29 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 
 		String roleId = roleCommand.getRoleId();
 
-		Optional<PersonInfoRoleAuth> optRoleAuth = this.pRoleAuthRepo.getDetailPersonRoleAuth(roleId);
+		Optional<PersonInforRole> optRole = this.pRoleRepo.getDetailPersonRole(roleId, AppContexts.user().companyId());
 
-		if (!optRoleAuth.isPresent()) {
+		if (!optRole.isPresent()) {
 			throw new BusinessException(new RawErrorMessage(""));
 		}
+
+		Optional<PersonInfoRoleAuth> optRoleAuth = this.pRoleAuthRepo.getDetailPersonRoleAuth(roleId,
+				AppContexts.user().companyId());
 
 		PersonInfoRoleAuth pRoleAuthDomain = PersonInfoRoleAuth.createFromJavaType(roleId, companyId,
 				roleCommand.getAllowMapUpload(), roleCommand.getAllowMapBrowse(), roleCommand.getAllowDocUpload(),
 				roleCommand.getAllowDocRef(), roleCommand.getAllowAvatarUpload(), roleCommand.getAllowAvatarRef());
 
-		this.pRoleAuthRepo.update(pRoleAuthDomain);
+		if (!optRoleAuth.isPresent()) {
+			
+			this.pRoleAuthRepo.add(pRoleAuthDomain);
+			
+		} else {
+			
+			this.pRoleAuthRepo.update(pRoleAuthDomain);
+
+		}
+
 	}
 
 	private void saveCategoryAuth(SavePersonInfoRoleAuthCommand roleCommand) {
@@ -119,7 +135,8 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 
 		List<PersonInfoItemAuthCommand> listItems = pCategoryCommand.getRoleItemList();
 
-		List<PersonInfoItemDetail> itemDetailList = this.pItemAuthRepo.getAllItemDetail(roleId, categoryId,AppContexts.user().contractCode());
+		List<PersonInfoItemDetail> itemDetailList = this.pItemAuthRepo.getAllItemDetail(roleId, categoryId,
+				AppContexts.user().contractCode());
 
 		for (PersonInfoItemAuthCommand pItemDetailCmd : listItems) {
 

@@ -63,7 +63,7 @@ public class PersonInfoCategoryAuthFinder {
 			});
 
 		}
-		PersonInfoRoleAuth roleAuth = this.personRoleAuthRepository.getDetailPersonRoleAuth(roleId).orElse(null);
+		PersonInfoRoleAuth roleAuth = this.personRoleAuthRepository.getDetailPersonRoleAuth(roleId, AppContexts.user().companyId()).orElse(null);
 		if (roleAuth != null) {
 			List<PersonInfoCategoryDetail> categoryInfoList = this.personCategoryAuthRepository
 					.getAllCategoryByRoleId(roleId);

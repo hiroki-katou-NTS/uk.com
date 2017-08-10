@@ -1,7 +1,7 @@
 /**
  * 
  */
-package command.maintenancelayout;
+package command.layout;
 
 import lombok.Getter;
 import lombok.Setter;
