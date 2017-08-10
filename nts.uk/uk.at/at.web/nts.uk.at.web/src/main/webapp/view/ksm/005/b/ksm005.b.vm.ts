@@ -13,8 +13,6 @@ module nts.uk.at.view.ksm005.b {
             modeMonthlyPattern: KnockoutObservable<number>;
             monthlyPatternModel: KnockoutObservable<MonthlyPatternModel>;
             lstWorkMonthlySetting: KnockoutObservableArray<WorkMonthlySettingDto>;
-            lstWorkType: KnockoutObservableArray<WorkTypeDto>;
-            lstWorkTime: KnockoutObservableArray<WorkTimeDto>;
 
             calendarData: KnockoutObservable<any>;
             yearMonthPicked: KnockoutObservable<number>;
@@ -39,8 +37,6 @@ module nts.uk.at.view.ksm005.b {
                     { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 }
                 ]);
                 self.lstWorkMonthlySetting = ko.observableArray([]);
-                self.lstWorkType = ko.observableArray([]);
-                self.lstWorkTime = ko.observableArray([]);
                 self.lstMonthlyPattern = ko.observableArray([]);
                 self.selectMonthlyPattern = ko.observable('');
                 self.monthlyPatternModel = ko.observable(new MonthlyPatternModel());
@@ -104,47 +100,41 @@ module nts.uk.at.view.ksm005.b {
             /**
              * setting view by call service return
              */
-            public updateWorkMothlySetting(data: WorkMonthlySettingDto[], dataWorkType: WorkTypeDto[], dataWorkTime: WorkTimeDto[]): void{
+            public updateWorkMothlySetting(data: WorkMonthlySettingDto[]): void{
                 var self = this;
                 var optionDates: any[] = [];
                 for(var settings: WorkMonthlySettingDto of data){
-                    optionDates.push({
-                        start: self.convertYMD(settings.ymdk),
-                        textColor: 'red',
-                        backgroundColor: 'white',
-                        listText: [
-                            self.findNameWorkTypeCode(settings.workTypeCode, dataWorkType),
-                            self.findNameWorkTimeCode(settings.workingCode, dataWorkTime)
-                        ]
-                    });      
+                    optionDates.push(self.toOptionDate(settings));      
                 }
                 self.optionDates(optionDates);
             }
             
-             /**
-             * find by work time code of data
+            /**
+             * convert option date
              */
-            public findNameWorkTypeCode(workTypeCode: string, data: WorkTypeDto[]) {
-                var worktype = _.find(data, function(item) {
-                    return item.workTypeCode == workTypeCode;
-                });
-                if (!worktype) {
-                    return  nts.uk.resource.getText("KSM005_43");
+            public toOptionDate(dto: WorkMonthlySettingDto): any {
+                // view option date 
+                var self = this;
+                var start: string = self.convertYMD(dto.ymdk);
+                var textColor: string = '';
+                var listText: string[] = [
+                    dto.workTypeName,
+                    dto.workingName
+                ];
+                if (dto.typeColor == TypeColor.ATTENDANCE) {
+                    textColor = TypeColor.ATTENDANCE_COLOR;
                 }
-                return worktype.name;
-            }
-             /**
-             * find by work time code of data
-             */
-            public findNameWorkTimeCode(workTimeCode: string, data: WorkTimeDto[]) {
-                var worktime = _.find(data, function(item) {
-                    return item.code == workTimeCode;
-                });
-                if (!worktime) {
-                    return  nts.uk.resource.getText("KSM005_43");
+                else {
+                    textColor = TypeColor.HOLIDAY_COLOR;
                 }
-                return worktime.name;
+                return {
+                    start: start,
+                    textColor: textColor,
+                    backgroundColor: 'white',
+                    listText: listText
+                };
             }
+            
             /**
              * reload data page by call service
              */
@@ -234,17 +224,11 @@ module nts.uk.at.view.ksm005.b {
                 var self = this;
                 service.findByMonthWorkMonthlySetting(monthlyPatternCode, month).done(function(data) {
                     service.findByIdMonthlyPattern(monthlyPatternCode).done(function(res) {
-                        service.findAllWorkType().done(function(dataWorkType) {
-                            service.findAllWorkTime().done(function(dataWorkTime) {
-                                self.monthlyPatternModel().updateData(res);
-                                self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
-                                self.monthlyPatternModel().updateEnable(false);
-                                self.updateWorkMothlySetting(data, dataWorkType, dataWorkTime);
-                                self.lstWorkType(dataWorkType);
-                                self.lstWorkTime(dataWorkTime);
-                                self.lstWorkMonthlySetting(data);
-                            });
-                        });
+                        self.monthlyPatternModel().updateData(res);
+                        self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
+                        self.monthlyPatternModel().updateEnable(false);
+                        self.updateWorkMothlySetting(data);
+                        self.lstWorkMonthlySetting(data);
                     });
                 });
             }
@@ -338,7 +322,7 @@ module nts.uk.at.view.ksm005.b {
                     }
                 }    
                 self.lstWorkMonthlySetting(dataUpdate);
-                self.updateWorkMothlySetting(dataUpdate ,self.lstWorkType(),self.lstWorkTime());
+                self.updateWorkMothlySetting(dataUpdate);
             } 
              /**
              * clear validate client
@@ -478,6 +462,13 @@ module nts.uk.at.view.ksm005.b {
         export class ModeMonthlyPattern {
             static ADD = 1;
             static UPDATE = 2;
+        }
+        
+        export class TypeColor {
+            static HOLIDAY = 0;
+            static HOLIDAY_COLOR = "#ff0000";
+            static ATTENDANCE = 1;
+            static ATTENDANCE_COLOR = "#0000ff";
         }
 
     }
