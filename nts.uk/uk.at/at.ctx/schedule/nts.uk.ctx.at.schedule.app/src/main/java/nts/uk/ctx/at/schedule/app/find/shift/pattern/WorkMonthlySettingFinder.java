@@ -164,7 +164,7 @@ public class WorkMonthlySettingFinder {
 					worktime = mapWorkTime.get(dto.getWorkingCode());
 					
 					// set work time name
-					dto.setWorkTypeName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
+					dto.setWorkingName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 				}
 				else {
 					

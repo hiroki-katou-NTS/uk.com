@@ -9,15 +9,17 @@ import lombok.AllArgsConstructor;
 /**
  * The Enum DeprecateClassification.
  */
+// 廃止区分
 @AllArgsConstructor
 public enum DeprecateClassification {
-
+	
 	/** The Deprecated. */
-	// 廃止区分
-	Deprecated(1), // 廃止する
+	// 廃止する
+	Deprecated(1), 
 
 	/** The Not deprecated. */
-	NotDeprecated(0); // 廃止しない
+	// 廃止しない
+	NotDeprecated(0); 
 
 	/** The value. */
 	public final int value;
