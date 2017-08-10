@@ -9,7 +9,7 @@ public class CodeNameReferenceType extends ReferenceTypeState {
 
 	private CodeNameReferenceType(String typeCode) {
 		super();
-		this.referenceType = ReferenceType.CODE_NAME;
+		this.referenceType = ReferenceTypes.CODE_NAME;
 		this.typeCode = new TypeCode(typeCode);
 	}
 

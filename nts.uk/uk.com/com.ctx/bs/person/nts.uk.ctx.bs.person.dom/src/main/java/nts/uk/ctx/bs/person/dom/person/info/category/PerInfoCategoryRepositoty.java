@@ -21,6 +21,7 @@ public interface PerInfoCategoryRepositoty {
     
     boolean checkCtgNameIsUnique(String companyId, String newCtgName);
     
+    List<String> getPerInfoCtgIdList(String companyId, String categoryCd);
     //void addOderPerInfoCtg(PerInfoCtgOrder order);
     
     
