@@ -34,12 +34,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 				premiumSettings.stream()
 				.map(x -> new PremiumSetting(
 						companyID, 
-						historyID, 
-						x.getPremiumID(), 
-						x.getRate(), 
-						x.getAttendanceID(), 
-						x.getName(),
+						historyID,  
 						x.getDisplayNumber(),
+						x.getRate(), 
+						x.getName(),
 						x.getUseAtr(), 
 						x.getAttendanceItems()))
 				.collect(Collectors.toList()));

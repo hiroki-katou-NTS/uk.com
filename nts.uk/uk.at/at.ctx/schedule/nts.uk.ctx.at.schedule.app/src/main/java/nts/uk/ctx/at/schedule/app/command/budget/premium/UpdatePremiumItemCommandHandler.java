@@ -50,10 +50,8 @@ public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdateP
 				this.premiumItemRepository.update(
 						new PremiumItem(
 								companyID, 
-								command.getID(), 
-								command.getAttendanceID(),
+								command.getDisplayNumber(),
 								new PremiumName(command.getName()), 
-								command.getDisplayNumber(), 
 								EnumAdaptor.valueOf(command.getUseAtr(), UseAttribute.class) 
 						)
 				);					

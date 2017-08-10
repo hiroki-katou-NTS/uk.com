@@ -52,10 +52,8 @@ module nts.uk.at.view.kml001.a {
                         self.premiumItems.push(
                             new vmbase.PremiumItem(
                                 item.companyID,
-                                item.id,
-                                item.attendanceID,
-                                item.name,
                                 item.displayNumber,
+                                item.name,
                                 item.useAtr, 
                                 false
                             ));
@@ -64,7 +62,7 @@ module nts.uk.at.view.kml001.a {
                     self.premiumItems().forEach(function(item){
                         if(item.useAtr()) {
                             self.currentPersonCost().premiumSets.push(
-                                new vmbase.PremiumSetting("", "", item.iD(), 1, item.attendanceID(), item.name(), item.displayNumber(), item.useAtr(), []));
+                                new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
                         }
                         sum+=item.useAtr();    
                     });
@@ -245,10 +243,8 @@ module nts.uk.at.view.kml001.a {
                                 self.premiumItems.push(
                                     new vmbase.PremiumItem(
                                         item.companyID,
-                                        item.id,
-                                        item.attendanceID,
-                                        item.name,
                                         item.displayNumber,
+                                        item.name,
                                         item.useAtr,
                                         false
                                     ));
@@ -259,7 +255,7 @@ module nts.uk.at.view.kml001.a {
                                 self.premiumItems().forEach(function(item){
                                     if(item.useAtr()) {
                                         self.currentPersonCost().premiumSets.push(
-                                            new vmbase.PremiumSetting("", "", item.iD(), 1, item.attendanceID(), item.name(), item.displayNumber(), item.useAtr(), []));
+                                            new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
                                     }
                                 });    
                                 $("#startDateInput").focus(); 
@@ -269,7 +265,7 @@ module nts.uk.at.view.kml001.a {
                                     self.premiumItems().forEach(function(item){
                                         if(item.useAtr()) {
                                             self.currentPersonCost().premiumSets.push(
-                                                new vmbase.PremiumSetting("", "", item.iD(), 1, item.attendanceID(), item.name(), item.displayNumber(), item.useAtr(), []));
+                                                new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
                                         }
                                     });    
                                     $("#startDateInput").focus();
@@ -346,11 +342,9 @@ module nts.uk.at.view.kml001.a {
                                             new vmbase.PremiumSetting(
                                                 "", 
                                                 "", 
-                                                item.iD(), 
-                                                1, 
-                                                item.attendanceID(), 
-                                                item.name(), 
                                                 item.displayNumber(), 
+                                                1, 
+                                                item.name(), 
                                                 item.useAtr(), 
                                                 []));
                                     }
@@ -389,11 +383,9 @@ module nts.uk.at.view.kml001.a {
                                         new vmbase.PremiumSetting(
                                             "", 
                                             "", 
-                                            item.iD(), 
-                                            1, 
-                                            item.attendanceID(), 
-                                            item.name(), 
                                             item.displayNumber(), 
+                                            1, 
+                                            item.name(),
                                             item.useAtr(), 
                                             []));
                                 }
