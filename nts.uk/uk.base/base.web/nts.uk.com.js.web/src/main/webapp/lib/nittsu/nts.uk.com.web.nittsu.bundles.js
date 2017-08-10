@@ -5584,7 +5584,7 @@ var nts;
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
-                            $input.width(width, false);
+                            $input.width(width);
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
@@ -5741,10 +5741,12 @@ var nts;
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         _super.prototype.init.call(this, $input, data);
                         $input.focus(function () {
-                            var selectionType = document.getSelection().type;
-                            $input.val(data.value());
-                            if (selectionType === 'Range') {
-                                $input.select();
+                            if (!$input.attr('readonly')) {
+                                var selectionType = document.getSelection().type;
+                                $input.val(data.value());
+                                if (selectionType === 'Range') {
+                                    $input.select();
+                                }
                             }
                         });
                     };
@@ -5756,7 +5758,6 @@ var nts;
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                             $parent.css({ 'width': '100%' });
                         }
-                        $input.css("box-sizing", "border-box");
                         if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                             $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
@@ -18067,6 +18068,76 @@ var nts;
         (function (ui) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
+                var accordion;
+                (function (accordion) {
+                    $.widget("ui.accordion", $.ui.accordion, {
+                        _create: function () {
+                            this["tabindex"] = this.element.attr("tabindex") ? this.element.attr("tabindex") : 0;
+                            this.element.removeAttr("tabindex");
+                            return this._super();
+                        },
+                        _refresh: function () {
+                            this._super();
+                            if (!this.active.length) {
+                                this.headers.eq(0).attr("tabIndex", this.tabindex);
+                            }
+                            else {
+                                this.active.attr({
+                                    tabIndex: this.tabindex
+                                });
+                            }
+                        },
+                        _toggle: function (data) {
+                            this._super(data);
+                            var toShow = data.newPanel;
+                            toShow.prev().attr({ tabIndex: this.tabindex });
+                        },
+                        _keydown: function (event) {
+                            if (event.altKey || event.ctrlKey) {
+                                return;
+                            }
+                            var keyCode = $.ui.keyCode, length = this.headers.length, currentIndex = this.headers.index(event.target), toFocus = false;
+                            switch (event.keyCode) {
+                                case keyCode.RIGHT:
+                                case keyCode.DOWN:
+                                    toFocus = this.headers[(currentIndex + 1) % length];
+                                    break;
+                                case keyCode.LEFT:
+                                case keyCode.UP:
+                                    toFocus = this.headers[(currentIndex - 1 + length) % length];
+                                    break;
+                                case keyCode.SPACE:
+                                case keyCode.ENTER:
+                                    this._eventHandler(event);
+                                    break;
+                                case keyCode.HOME:
+                                    toFocus = this.headers[0];
+                                    break;
+                                case keyCode.END:
+                                    toFocus = this.headers[length - 1];
+                                    break;
+                            }
+                            if (toFocus) {
+                                $(event.target).attr("tabIndex", -1);
+                                $(toFocus).attr("tabIndex", this.tabindex);
+                                $(toFocus).trigger("focus");
+                                event.preventDefault();
+                            }
+                        }
+                    });
+                })(accordion || (accordion = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
                 var ntsTreeView;
                 (function (ntsTreeView) {
                     var OUTSIDE_AUTO_SCROLL_SPEED = {
@@ -18407,76 +18478,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var accordion;
-                (function (accordion) {
-                    $.widget("ui.accordion", $.ui.accordion, {
-                        _create: function () {
-                            this["tabindex"] = this.element.attr("tabindex") ? this.element.attr("tabindex") : 0;
-                            this.element.removeAttr("tabindex");
-                            return this._super();
-                        },
-                        _refresh: function () {
-                            this._super();
-                            if (!this.active.length) {
-                                this.headers.eq(0).attr("tabIndex", this.tabindex);
-                            }
-                            else {
-                                this.active.attr({
-                                    tabIndex: this.tabindex
-                                });
-                            }
-                        },
-                        _toggle: function (data) {
-                            this._super(data);
-                            var toShow = data.newPanel;
-                            toShow.prev().attr({ tabIndex: this.tabindex });
-                        },
-                        _keydown: function (event) {
-                            if (event.altKey || event.ctrlKey) {
-                                return;
-                            }
-                            var keyCode = $.ui.keyCode, length = this.headers.length, currentIndex = this.headers.index(event.target), toFocus = false;
-                            switch (event.keyCode) {
-                                case keyCode.RIGHT:
-                                case keyCode.DOWN:
-                                    toFocus = this.headers[(currentIndex + 1) % length];
-                                    break;
-                                case keyCode.LEFT:
-                                case keyCode.UP:
-                                    toFocus = this.headers[(currentIndex - 1 + length) % length];
-                                    break;
-                                case keyCode.SPACE:
-                                case keyCode.ENTER:
-                                    this._eventHandler(event);
-                                    break;
-                                case keyCode.HOME:
-                                    toFocus = this.headers[0];
-                                    break;
-                                case keyCode.END:
-                                    toFocus = this.headers[length - 1];
-                                    break;
-                            }
-                            if (toFocus) {
-                                $(event.target).attr("tabIndex", -1);
-                                $(toFocus).attr("tabIndex", this.tabindex);
-                                $(toFocus).trigger("focus");
-                                event.preventDefault();
-                            }
-                        }
-                    });
-                })(accordion || (accordion = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
