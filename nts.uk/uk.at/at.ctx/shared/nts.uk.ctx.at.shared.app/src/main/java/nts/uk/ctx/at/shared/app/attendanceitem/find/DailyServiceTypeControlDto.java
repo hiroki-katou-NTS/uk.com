@@ -5,7 +5,7 @@ import lombok.Value;
 
 @AllArgsConstructor
 @Value
-public class DAIControlOfAttendanceItemsDto {
+public class DailyServiceTypeControlDto {
 	public int attendanceItemId;
 
 	public String businessTypeCode;

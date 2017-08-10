@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstDAIControlOfAttendanceItemsPK implements Serializable {
+public class KshstDailyServiceTypeControlPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@DBCharPaddingAs(BusinessTypeCode.class)
