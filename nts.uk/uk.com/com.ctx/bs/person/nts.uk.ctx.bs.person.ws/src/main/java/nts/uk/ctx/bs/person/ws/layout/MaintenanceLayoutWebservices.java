@@ -11,8 +11,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import command.maintenancelayout.MaintenanceLayoutCommand;
-import command.maintenancelayout.MaintenanceLayoutCommandHandler;
+import command.layout.MaintenanceLayoutCommand;
+import command.layout.MaintenanceLayoutCommandHandler;
 import find.maintenancelayout.MaintenanceLayoutDto;
 import find.maintenancelayout.MaintenanceLayoutFinder;
 import nts.arc.layer.ws.WebService;

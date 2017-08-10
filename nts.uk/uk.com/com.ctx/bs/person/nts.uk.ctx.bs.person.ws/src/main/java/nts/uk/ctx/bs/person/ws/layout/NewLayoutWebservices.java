@@ -5,7 +5,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import command.maintenancelayout.MaintenanceLayoutCommand;
+import command.layout.MaintenanceLayoutCommand;
 import find.newlayout.NewLayoutDto;
 import find.newlayout.NewLayoutFinder;
 import nts.arc.layer.ws.WebService;

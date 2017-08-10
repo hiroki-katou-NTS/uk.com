@@ -1,7 +1,7 @@
 /**
  * 
  */
-package command.maintenancelayout;
+package command.layout;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
