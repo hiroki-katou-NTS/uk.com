@@ -4,6 +4,7 @@ module nts.custombinding {
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
     import text = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
@@ -454,7 +455,7 @@ module nts.custombinding {
                         }
                     });*/
                 },
-                removeItem: (data) => {
+                removeItem: (data: IItemClassification) => {
                     let self = this,
                         opts = self.options,
                         items = opts.sortable.data;
@@ -475,6 +476,35 @@ module nts.custombinding {
                             });
                         }
                     });
+                },
+                pushItem: (data: IItemClassification) => {
+                    let self = this,
+                        opts = self.options,
+                        items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
+
+                    switch (data.layoutItemType) {
+                        case IT_CLA_TYPE.ITEM:
+                            let item = _.find(ko.unwrap(items), (x: IItemClassification) => x.layoutItemType == IT_CLA_TYPE.ITEM && x.listItemDf[0].id == data.listItemDf[0].id);
+                            if (!item) {
+                                items.push(data);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        case IT_CLA_TYPE.LIST:
+                            items.push(data);
+                            return true;
+                        case IT_CLA_TYPE.SPER:
+                            // add line to list sortable
+                            let last: any = _.last(ko.unwrap(items));
+
+                            if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
+                                items.push(data);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                    }
                 }
             }
         };
@@ -576,7 +606,7 @@ module nts.custombinding {
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
                                     if (data && data.length) {
                                         opts.listbox.options(data);
-                                        opts.listbox.value(data[0].id);
+                                        opts.listbox.value(undefined);
                                     }
                                 });
                                 break;
@@ -591,7 +621,7 @@ module nts.custombinding {
                                     itemName: item.categoryName + text('CPS007_21'),
                                     itemTypeState: undefined, // item.categoryType
                                 };
-                                opts.listbox.value(def.id);
+                                opts.listbox.value(undefined);
                                 opts.listbox.options.push(def);
                                 break;
                         }
@@ -604,23 +634,25 @@ module nts.custombinding {
 
             // events handler
             $(ctrls.line).on('click', function() {
-                // add line to list sortable
-                let data: Array<any> = ko.unwrap(opts.sortable.data),
-                    last = _.last(data),
-                    item: IItemClassification = {
-                        layoutID: random(),
-                        dispOrder: -1,
-                        personInfoCategoryID: undefined,
-                        listItemDf: undefined,
-                        layoutItemType: IT_CLA_TYPE.SPER
-                    };
+                let item: IItemClassification = {
+                    layoutID: random(),
+                    dispOrder: -1,
+                    personInfoCategoryID: undefined,
+                    listItemDf: undefined,
+                    layoutItemType: IT_CLA_TYPE.SPER
+                };
 
-                if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
-                    opts.sortable.data.push(item);
-                }
+                // add line to list sortable
+                opts.sortable.pushItem(item);
             });
 
             $(ctrls.button).on('click', () => {
+                // アルゴリズム「項目追加処理」を実行する
+                // Execute the algorithm "項目追加処理"
+                if (!ko.toJS(opts.listbox.value)) {
+                    alert(text('Msg_203'));
+                    return;
+                }
                 // category mode
                 if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
                     let cid: string = ko.toJS(opts.comboxbox.value),
@@ -646,6 +678,7 @@ module nts.custombinding {
                                                 listItemDf: _data
                                             };
                                             opts.sortable.data.push(item);
+                                            opts.listbox.value(undefined);
                                         });
                                     });
                                 }
@@ -669,7 +702,13 @@ module nts.custombinding {
                                         item.className = def.itemName;
                                         item.personInfoCategoryID = def.perInfoCtgId;
 
-                                        opts.sortable.data.push(item);
+                                        if (opts.sortable.pushItem(item)) {
+                                            opts.listbox.value(undefined);
+                                        } else {
+                                            // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                                            // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                                            alert(text('Msg_202'));
+                                        }
                                     }
                                 });
                             }
@@ -694,7 +733,8 @@ module nts.custombinding {
                                         listItemDf: [x]
                                     };
 
-                                    opts.sortable.data.push(_items)
+                                    opts.sortable.data.push(_items);
+                                    opts.listbox.value(undefined);
                                 });
                             }
                         });
@@ -766,7 +806,7 @@ module nts.custombinding {
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
-                _.each(data, (x, i) => { x.dispOrder = i + 1;  x.layoutID = random() });
+                _.each(data, (x, i) => { x.dispOrder = i + 1; x.layoutID = random() });
             });
 
             // extend data of sortable with valueAccessor beforeMove prop
@@ -841,7 +881,7 @@ module nts.custombinding {
 
     interface IItemClassification {
         layoutID?: string;
-        dispOrder: number;
+        dispOrder?: number;
         className?: string; // only for display if classification is set or duplication item
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
