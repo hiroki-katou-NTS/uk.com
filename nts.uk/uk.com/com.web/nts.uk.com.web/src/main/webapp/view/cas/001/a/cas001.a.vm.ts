@@ -2,19 +2,20 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
 
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole(null));
         currentRoleId: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: '可' },
-            { code: '0', name: '不可' }
+            { code: 1, name: getText('Enum_PersonInfoPermissionType_YES') },
+            { code: 0, name: getText('Enum_PersonInfoPermissionType_NO') }
         ]);
         itemListCbb: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '非表示' },
-            { code: 2, name: '参照のみ' },
-            { code: 3, name: '更新' }
+            { code: 1, name: getText('Enum_PersonInfoAuthTypes_HIDE') },
+            { code: 2, name: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+            { code: 3, name: getText('Enum_PersonInfoAuthTypes_UPDATE') }
         ]);
         anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
         seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
@@ -81,10 +82,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
             $(function() {
                 $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
 
-                    let parrent = $(this).parent().attr('id');
+                    let parrentId = $(this).parent().attr('id');
 
                     for (let item of self.currentRole().currentCategory().roleItemList()) {
-                        parrent == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
+                        parrentId == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
                     }
 
                     $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
@@ -92,23 +93,22 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 });
             });
         }
-        changeItemListValue(attribute) {
-            let self = this;
-            for (let item of self.currentRole().currentCategory().roleItemList()) {
-                attribute == 'other' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
-            }
 
-            $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
-        }
         OpenDModal() {
 
             let self = this;
 
             setShared('personRole', self.currentRole());
 
-            nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+            block.invisible();
 
-                self.reload();
+            nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                self.reload().done(function() {
+
+                    block.clear();
+
+                });
             });
         }
 
@@ -118,9 +118,15 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             setShared('personRole', self.currentRole());
 
-            nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+            block.invisible();
 
-                self.reload();
+            nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                self.reload().done(function() {
+
+                    block.clear();
+
+                });
 
             });
         }
@@ -181,7 +187,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     ],
                     ntsControls: [
                         {
-                            name: 'SwitchButtons', options: [{ value: '1', text: '非表示' }, { value: '2', text: '参照のみ' }, { value: '3', text: '更新' }],
+                            name: 'SwitchButtons', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') }, { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
                             optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
                         },
                     ],
@@ -234,6 +240,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         alert(getText('Msg_217'));
                     }
 
+                    dfd.resolve();
+
                 });
             });
 
@@ -273,6 +281,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
+            block.invisible();
 
             service.getPersonRoleList().done(function(result: Array<IPersonRole>) {
 
@@ -283,6 +292,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     self.personRoleList().push(new PersonRole(iPersonRole));
 
                 });
+
+                block.clear();
+
                 dfd.resolve();
             });
 
@@ -294,9 +306,18 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 command = self.createSaveCommand();
 
+            block.invisible();
+
             service.savePersonRole(command).done(function() {
 
-                self.reload();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
+                    self.reload().done(function() {
+
+                        block.clear();
+
+                    });
+                });
 
             }).fail(function(res) {
 
@@ -395,13 +416,20 @@ module nts.uk.com.view.cas001.a.viewmodel {
             var self = this,
                 dfd = $.Deferred();
 
+            block.invisible();
+
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
 
                 self.RoleCategoryList.removeAll();
 
                 _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
+
                     self.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
+
                 });
+
+                block.clear();
+
                 dfd.resolve();
             });
             return dfd.promise();
@@ -477,6 +505,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
         loadRoleItems(roleId, CategoryId): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+
+            block.invisible();
+
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
 
                 self.roleItemList.removeAll();
@@ -489,6 +520,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
 
                 $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
+
+                block.clear();
 
                 dfd.resolve();
 

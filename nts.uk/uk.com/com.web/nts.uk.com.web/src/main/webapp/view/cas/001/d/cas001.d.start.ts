@@ -1,56 +1,65 @@
+import text = nts.uk.resource.getText;
+
 module nts.uk.com.view.cas001.d {
     let __viewContext: any = window["__viewContext"] || {};
 
     __viewContext.ready(function() {
-        __viewContext["viewModel"] = new viewmodel.ScreenModel();
-        __viewContext.bind(__viewContext["viewModel"]);
+        var screenModel = new viewmodel.ScreenModel();
+        __viewContext["viewModel"] = screenModel;
+        screenModel.start().done(() => {
+            InitIggrid();
+            $("#grid").igGrid("option", "dataSource", screenModel.categoryList());
+            __viewContext.bind(__viewContext["viewModel"]);
+            screenModel.categoryList.subscribe(data => {
+                if (data) {
+                    $("#grid").igGrid("option", "dataSource", data);
+                } else {
+                    $("#grid").igGrid("option", "dataSource", []);
+                }
+            });
+        });
     });
 }
 
-$(function() {
+function InitIggrid() {
     let __viewContext: any = window["__viewContext"] || {};
     $("#grid").igGrid({
         columns: [
-            { headerText: "Id", key: "categoryId", dataType: "string", width: "50px", height: "40px", hidden: true },
+            { headerText: "Id", key: "categoryId", dataType: "string", width: "100px", height: "40px", hidden: true },
             {
-                headerText: "<input class='selfAuth' type='checkbox'  tabindex='2' >他人</input>", key: 'selfAuth',
-                width: "40px", height: "40px",
-                template: "<input  id='a' style='width:30px, height:40px' class='checkRow selfAuth' type='checkbox' data-checked='${selfAuth}' data-id='${categoryId}' tabindex='4'/>"
+                headerText: "他人</br><input class='selfAuth' type='checkbox'  tabindex='2' ></input>", key: 'selfAuth',
+                width: "35px", height: "40px",
+                template: "<input style='width:30px, height:40px' class='checkRow selfAuth' type='checkbox' data-checked='${selfAuth}' data-id='${categoryId}' tabindex='4'/>"
             },
             {
-                headerText: "<input class='otherAuth' type='checkbox'  tabindex='3'>本人</input>", key: 'otherAuth',
-                width: "40px", height: "40px",
-                template: "<input id='b' style='width:30px, height:40px'  class='checkRow otherAuth' type='checkbox' data-checked='${otherAuth}' data-id='${categoryId}' tabindex='4'/>"
+                headerText: "本人</br><input class='otherAuth' type='checkbox'  tabindex='3'></input>", key: 'otherAuth',
+                width: "35px", height: "40px",
+                template: "<input style='width:30px, height:40px'  class='checkRow otherAuth' type='checkbox' data-checked='${otherAuth}' data-id='${categoryId}' tabindex='4'/>"
             },
-            { headerText: "コード", key: "categoryCode", dataType: "string", width: "80px", height: "40px" },
-            { headerText: "カテゴリ名", key: "categoryName", dataType: "string", width: "100px", height: "40px" }
+            { headerText: text('CAS001_21'), key: "categoryName", dataType: "string", width: "100px", height: "40px" }
 
         ],
         primaryKey: 'categoryId',
         autoGenerateColumns: false,
-        autoCommit: true,
         dataSource: [],
-        width: "300px",
+        width: "440px",
         height: "270px",
-        features: [
-            {
-                name: "Updating",
-                enableAddRow: false,
-                editMode: "row",
-                enableDeleteRow: false,
-                columnSettings: [
-                    { columnKey: "categoryId", readOnly: true },
-                    { columnKey: "selfAuth", readOnly: true },
-                    { columnKey: "otherAuth", readOnly: true },
-                    { columnKey: "categoryCode", readOnly: true },
-                    { columnKey: "categoryName", readOnly: true }
-                ]
-            }]
+        features: [{
+            name: 'Selection',
+            mode: 'row',
+            activation: false,
+        }
+        ],
+        dataRendered: function(evt, ui) {
+            $("#grid").find("input[type=checkbox]").each(function() {
+                let $this = $(this);
+                $this.prop('checked', $this.data('checked'));
+            });
+        }
     });
-
+    $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
     $(document).on("click", ".selfAuth:not(.checkRow)", function(evt, ui) {
         let _this = $(this);
-
         $("#grid").find(".checkRow.selfAuth").prop("checked", _this.prop("checked")).trigger("change");
     });
 
@@ -85,13 +94,4 @@ $(function() {
             item.otherAuth = _this.removeProp('checked');
         }
     });
-
-    $("#grid").igGrid({
-        dataRendered: function(evt, ui) {
-            $("#grid").find("input[type=checkbox]").each(function() {
-                let $this = $(this);
-                $this.prop('checked', $this.data('checked'));
-            });
-        }
-    });
-})
+}

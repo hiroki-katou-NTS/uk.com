@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
@@ -39,6 +40,12 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 		String patternCd = command.getPatternCode();
 
 		Optional<DailyPattern> result = this.dailyPatternRepo.findByCode(companyId, patternCd);
+
+		// Check duplicate code in new mode.
+		if (!command.getIsEditting() && result.isPresent()) {
+			// TODO: validate eap and find messegeId.
+			throw new BusinessException("errorMessage");
+		}
 
 		DailyPattern dailyPattern = command.toDomain(companyId);
 
