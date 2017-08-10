@@ -8,5 +8,5 @@ public interface ILayoutPersonInfoClsDefRepository {
 
 	void addClassificationItemDefines(List<LayoutPersonInfoClsDefinition> domains);
 
-	List<String> getAllItemDefineIds(String layoutId, int dispOrder);
+	List<String> getAllItemDefineIds(String layoutId, int classDispOrder);
 }
