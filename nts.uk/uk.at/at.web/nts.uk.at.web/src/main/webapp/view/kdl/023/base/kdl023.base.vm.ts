@@ -109,7 +109,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             return self.patternReflection.statutorySetting.useClassification() ||
                                 self.patternReflection.nonStatutorySetting.useClassification() ||
                                 self.patternReflection.holidaySetting.useClassification();
-                        });
+                        }).extend({ notify: 'always' });
 
                         // Set tabindex.
                         self.isReflectionMethodEnable.subscribe(val => {
@@ -119,6 +119,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 $('#reflection-method-radio-group').attr('tabindex', '-1');
                             }
                         });
+
+                        // Force change to set tab index.
+                        self.patternReflection.holidaySetting.useClassification.valueHasMutated();
 
                     })).fail(res => {
                         nts.uk.ui.dialog.alert(res.message);
