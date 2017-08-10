@@ -7,12 +7,9 @@ import java.util.List;
 
 public interface ILayoutPersonInfoClsRepository {
 
-	List<LayoutPersonInfoClassification> getAllItemClsById(String layoutId);
+	List<LayoutPersonInfoClassification> getAllByLayoutId(String layoutId);
 
-	List<String> getAllItemDefIdByLayoutId(String layoutId, String disPOrder);
+	void removeAllByLayoutId(String layoutId);
 
-	String getOneItemDfId(String layoutId, String disPOrder);
-	
-	void addListItemCls(List<LayoutPersonInfoClassification> listItemCls);
-
+	void addClassifications(List<LayoutPersonInfoClassification> domains);
 }
