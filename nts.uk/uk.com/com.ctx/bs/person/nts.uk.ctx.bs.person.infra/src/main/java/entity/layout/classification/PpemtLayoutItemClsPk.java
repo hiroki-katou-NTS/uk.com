@@ -1,7 +1,7 @@
 /**
  * 
  */
-package entity.maintenencelayout;
+package entity.layout.classification;
 
 import java.io.Serializable;
 
@@ -20,11 +20,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class PpemtMaintenanceLayoutPk implements Serializable{
+public class PpemtLayoutItemClsPk implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	@Basic(optional = false)
     @Column(name = "LAYOUT_ID")
 	public String layoutId;
+	
+	
+	@Basic(optional = false)
+    @Column(name = "DISPORDER")
+	public int dispOrder;
 	
 }

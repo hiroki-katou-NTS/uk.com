@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.itemclassification.difination.PpemtLayoutItemClsDf;
-import entity.itemclassification.difination.PpemtLayoutItemClsDfPk;
+import entity.layout.classification.difination.PpemtLayoutItemClsDf;
+import entity.layout.classification.difination.PpemtLayoutItemClsDfPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.ILayoutPersonInfoClsDefRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.LayoutPersonInfoClsDefinition;

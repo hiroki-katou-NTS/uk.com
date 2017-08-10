@@ -1,7 +1,7 @@
 /**
  * 
  */
-package entity.itemclassification;
+package entity.layout;
 
 import java.io.Serializable;
 
@@ -20,26 +20,30 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "PPEMT_MAINTENANCE_LAYOUT")
 @Entity
-@Table(name = "PPEMT_LAYOUT_ITEM_CLS")
-public class PpemtLayoutItemCls extends UkJpaEntity implements Serializable {
+public class PpemtMaintenanceLayout extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpemtLayoutItemClsPk ppemtLayoutItemClsPk;
-
+	public PpemtMaintenanceLayoutPk ppemtMaintenanceLayoutPk;
+	
 	@Basic(optional = false)
-	@Column(name = "PER_INFO_CATEGORY_ID")
-	public String categoryId;
-
+	@Column(name = "CID")
+	public String companyId;
+	
 	@Basic(optional = false)
-	@Column(name = "LAYOUT_ITEM_TYPE")
-	public int itemType;
+	@Column(name = "LAYOUT_CD")
+	public String layoutCode;
+	
+	@Basic(optional = false)
+	@Column(name = "LAYOUT_NAME")
+	public String layoutName;
 
 	@Override
 	protected Object getKey() {
-		return this.ppemtLayoutItemClsPk;
+		return this.ppemtMaintenanceLayoutPk;
 	}
 }

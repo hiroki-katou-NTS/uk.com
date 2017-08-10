@@ -1,7 +1,7 @@
 /**
  * 
  */
-package entity.itemclassification.difination;
+package entity.layout.classification.difination;
 
 import java.io.Serializable;
 
