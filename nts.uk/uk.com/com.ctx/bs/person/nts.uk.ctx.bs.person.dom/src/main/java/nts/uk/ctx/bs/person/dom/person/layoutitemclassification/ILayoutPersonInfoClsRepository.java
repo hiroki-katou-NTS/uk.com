@@ -13,6 +13,6 @@ public interface ILayoutPersonInfoClsRepository {
 
 	String getOneItemDfId(String layoutId, String disPOrder);
 	
-	
+	void addListItemCls(List<LayoutPersonInfoClassification> listItemCls);
 
 }

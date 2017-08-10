@@ -87,8 +87,12 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 			return null;
 		}
 	}
-	
-	
+
+	@Override
+	public void addListItemCls(List<LayoutPersonInfoClassification> listItemCls) {
+		List<PpemtLayoutItemCls> list = listItemCls.stream().map(item -> toEntity(item)).collect(Collectors.toList());
+		this.commandProxy().insertAll(list);
+	}
 
 	private LayoutPersonInfoClassification toDomain(PpemtLayoutItemCls entity) {
 		return LayoutPersonInfoClassification.createFromJaveType(entity.ppemtLayoutItemClsPk.layoutId,
@@ -99,4 +103,5 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 		PpemtLayoutItemClsPk primaryKey = new PpemtLayoutItemClsPk(domain.getLayoutID(), domain.getDispOrder().v());
 		return new PpemtLayoutItemCls(primaryKey, domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value);
 	}
+
 }
