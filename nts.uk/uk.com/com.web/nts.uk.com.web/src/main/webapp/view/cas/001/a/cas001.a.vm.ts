@@ -8,13 +8,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
         currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole(null));
         currentRoleId: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: '可' },
-            { code: '0', name: '不可' }
+            { code: '1', name: getText('Enum_PersonInfoPermissionType_YES') },
+            { code: '0', name: getText('Enum_PersonInfoPermissionType_NO') }
         ]);
         itemListCbb: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: '非表示' },
-            { code: 2, name: '参照のみ' },
-            { code: 3, name: '更新' }
+            { code: 1, name: getText('Enum_PersonInfoAuthTypes_HIDE') },
+            { code: 2, name: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+            { code: 3, name: getText('Enum_PersonInfoAuthTypes_UPDATE') }
         ]);
         anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
         seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
@@ -23,6 +23,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         constructor() {
             let self = this;
             self.currentRoleId.subscribe(function(newRoleId) {
+                console.log(getText('CAS001_29'));
 
                 if (newRoleId == "") {
                     return;
@@ -106,7 +107,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             setShared('personRole', self.currentRole());
 
-            nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 self.reload();
             });
@@ -118,7 +119,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             setShared('personRole', self.currentRole());
 
-            nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 self.reload();
 

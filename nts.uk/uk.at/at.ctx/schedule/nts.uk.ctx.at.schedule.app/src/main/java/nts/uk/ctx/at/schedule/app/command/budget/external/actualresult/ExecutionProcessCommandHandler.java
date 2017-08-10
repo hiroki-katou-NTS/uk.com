@@ -273,9 +273,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         if (importProcess.stopLine) {
             return;
         }
-        boolean isUpdateCaseFail = false;
-        try {
-            switch (importProcess.externalBudget.getUnitAtr()) {
+        switch (importProcess.externalBudget.getUnitAtr()) {
             case DAILY:
                 this.addExtBudgetDaily(importProcess, result);
                 break;
@@ -284,14 +282,16 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 break;
             default:
                 throw new RuntimeException("Not unit atr suitable.");
-            }
-            importProcess.successCnt++;
-            this.updateLog(isUpdateCaseFail, importProcess.executeId, importProcess.successCnt);
-        } catch (Exception e) {
-            importProcess.failCnt++;
-            isUpdateCaseFail = true;
-            this.updateLog(isUpdateCaseFail, importProcess.executeId, importProcess.failCnt);
         }
+        boolean isUpdateCaseFail = false;
+        int number;
+        if (importProcess.stopLine) {
+            isUpdateCaseFail = true;
+            number = ++importProcess.failCnt;
+        } else {
+            number = ++importProcess.successCnt;
+        }
+        this.updateLog(isUpdateCaseFail, importProcess.executeId, number);
     }
     
     /**
@@ -367,6 +367,9 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 .errorContent(this.getMessageById("Msg_167"))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
+        
+        // marker finish line.
+        importProcess.stopLine = true;
     }
     
     /**
@@ -446,6 +449,9 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 .errorContent(this.getMessageById("Msg_167"))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
+        
+        // marker finish line.
+        importProcess.stopLine = true;
     }
     
     /**
@@ -708,7 +714,10 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 .errorContent(errContent)
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
-        importProcess.failCnt++;
+        
+        if (!importProcess.stopLine) {
+            importProcess.failCnt++;
+        }
         
         // marker finish line.
         importProcess.stopLine = true;

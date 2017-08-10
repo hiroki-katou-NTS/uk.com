@@ -41,10 +41,11 @@ module nts.uk.at.view.ksm003.a {
             }
 
             export class DailyPatternDetailDto {
+                isEditting: boolean = true;
                 patternCode: string;
                 patternName: string;
                 dailyPatternVals: Array<DailyPatternValDto>;
-                
+
                 constructor(patternCode: string, patternName: string, dailyPatternVals: Array<DailyPatternValDto>) {
                     this.patternCode = patternCode;
                     this.patternName = patternName;

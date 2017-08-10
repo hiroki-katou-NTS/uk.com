@@ -33,8 +33,8 @@
 							class='distane'>
 							<label id="codeName">#{i18n.getText('CAS001_12')}</label>
 						</div>
-						<label id="roleCode" data-bind="text: roleCode"></label> 
-						<label id="roleName" data-bind="text: roleName"></label>
+						<label id="roleCode" data-bind="text: roleCode"></label> <label
+							id="roleName" data-bind="text: roleName"></label>
 					</div>
 					<div data-bind="ntsFormLabel: {}" class='distane'>
 						<label id="codeName">#{i18n.getText('CAS001_57')}</label>
@@ -43,13 +43,13 @@
 				<div id='category' class="bg-green caret-background">
 					<div id="search" tabindex="1"
 						data-bind="ntsSearchBox: {
-									searchMode: 'filter',
-									targetKey: 'categoryCode',
-								    comId: 'grid',
-									items: categoryList,
-									selected: currentRoleCode, 
-									selectedKey: 'categoryCode', 
-									fields: ['categoryCode', 'categoryName'], mode: 'igGrid'}" />
+						searchMode: 'filter',
+						targetKey: 'categoryId',
+						mode: 'igGrid', 
+						comId: 'grid',
+						items: categoryList ,  
+						selectedKey: 'categoryId',
+						fields: ['categoryCode', 'categoryName']}" />
 					<table id="grid">
 					</table>
 

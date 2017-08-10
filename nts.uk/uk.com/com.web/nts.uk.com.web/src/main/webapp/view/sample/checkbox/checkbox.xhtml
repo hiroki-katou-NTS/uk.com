@@ -32,6 +32,13 @@
 						</div>
 						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
 						<div data-bind="ntsCheckBox: { checked: readonly }">Readonly</div>
+						
+						<h2>Specify style</h2>
+						<div data-bind="ntsCheckBox: { checked: enable, style: 'normal' }">style "normal" (default) ... スタイル＝一般</div><br />
+						<br />
+						<div data-bind="ntsCheckBox: { checked: enable, style: 'button' }">style "button" ... スタイル＝ボタン</div><br />
+						<br />
+						<div data-bind="ntsCheckBox: { checked: enable, style: 'warnpanel' }">style "warnpanel" ... スタイル＝警告パネル</div><br />
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -43,7 +50,10 @@
 									<h2>HTML</h2>
 <pre><![CDATA[<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
 <!-- Full binding -->
-<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple yet elegant checkbox' }"></div>]]></pre>
+<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple yet elegant checkbox' }"></div>
+<!-- Styling -->
+<div data-bind="ntsCheckBox: { checked: checked, style: 'warnpanel'}">warn panel style</div>
+]]></pre>
 									<h2>ViewModel</h2>
 <pre><![CDATA[class ScreenModel {
     checked: KnockoutObservable<boolean>;
@@ -97,6 +107,17 @@
 													<b>Type:</b> boolean<br/>
 													<b>Default:</b> true<br/>
 													Set enable/disable for CheckBox control
+												</td>
+											</tr>
+											<tr>
+												<td>style<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													<b>Default:</b> "normal"<br/>
+													Choose style according to スタイル of チェックボックス in 項目定義.<br />
+													一般　＝　"normal"<br />
+													ボタン　＝　"button"<br />
+													警告パネル　＝　"warnpanel"<br />
 												</td>
 											</tr>
 										</tbody>

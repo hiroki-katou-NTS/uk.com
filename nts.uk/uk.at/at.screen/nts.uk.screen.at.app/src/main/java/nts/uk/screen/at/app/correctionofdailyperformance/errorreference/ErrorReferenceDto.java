@@ -12,4 +12,6 @@ public class ErrorReferenceDto {
 	public String code;
 	public String message;
 	public String itemName;
+	public int boldAtr;
+	public String messageColor;
 }

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
 import lombok.Getter;
@@ -21,6 +25,12 @@ public class WorkType {
 	private WorkTypeMemo memo;
 	/*使用区分*/
 	private DisplayAtr displayAtr;
+
+	/** The daily work. */
+	private DailyWork dailyWork;  // 1日の勤務
+
+	/** The deprecate. */
+	private DeprecateClassification deprecate; //廃止区分
 	
 	public WorkType(String companyId, WorkTypeCode workTypeCode, int sortOrder,
 			WorkTypeSymbolicName symbolicName, WorkTypeName name, WorkTypeAbbreviationName abbreviationName,

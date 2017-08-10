@@ -47,7 +47,7 @@ public class DailyPatternVal extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(DailyPatternValSetMemento memento) {
-		
+
 		memento.setDispOrder(this.dispOrder);
 		memento.setWorkTypeCodes(this.workTypeSetCd);
 		memento.setWorkHouseCodes(this.workingHoursCd);
