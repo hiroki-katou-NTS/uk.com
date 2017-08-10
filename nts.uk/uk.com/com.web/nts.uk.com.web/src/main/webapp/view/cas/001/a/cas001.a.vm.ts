@@ -92,7 +92,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 });
             });
         }
-        
+
         OpenDModal() {
 
             let self = this;
@@ -288,8 +288,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 command = self.createSaveCommand();
 
             service.savePersonRole(command).done(function() {
-
-                self.reload();
+                
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.reload();
+                });
 
             }).fail(function(res) {
 
