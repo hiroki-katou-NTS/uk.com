@@ -7,32 +7,32 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 /**
- * 
+ * 個人別就業承認ルート
  * @author hoatt
  *
  */
 @Getter
 @AllArgsConstructor
 public class PersonApprovalRoot extends AggregateRoot{
-	/*会社ID*/
+	/**会社ID*/
 	private String companyId;
-	/*社員ID*/
+	/**社員ID*/
 	private String employeeId;
-	/*履歴ID*/
+	/**履歴ID*/
 	private String historyId;
-	/*開始日*/
+	/**開始日*/
 	private GeneralDate startDate;
-	/*終了日*/
+	/**終了日*/
 	private GeneralDate endDate;
-	/*分岐番号*/
-	private BranchNumber branchNumber;
-	/*任意項目申請ID*/
+	/**分岐ID*/
+	private int branchId;
+	/**任意項目申請ID*/
 	private String anyItemApplicationId;
-	/*確認ルート種類*/
+	/**確認ルート種類*/
 	private ConfirmationRootType confirmationRootType;
-	/*就業ルート区分*/
+	/**就業ルート区分*/
 	private EmploymentRootAtr employmentRootAtr;
-	/*申請種類*/
+	/**申請種類*/
 	private ApplicationType applicationType;
 	
 	public static PersonApprovalRoot createSimpleFromJavaType(String companyId,
@@ -40,7 +40,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 			String historyId,
 			String startDate,
 			String endDate,
-			int branchNumber,
+			int branchId,
 			String anyItemApplicationId,
 			int confirmationRootType,
 			int employmentRootAtr,
@@ -50,7 +50,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 			historyId, 
 			GeneralDate.localDate(LocalDate.parse(startDate)),
 			GeneralDate.localDate(LocalDate.parse(endDate)),
-			EnumAdaptor.valueOf(branchNumber, BranchNumber.class),
+			branchId,
 			anyItemApplicationId,
 			EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),

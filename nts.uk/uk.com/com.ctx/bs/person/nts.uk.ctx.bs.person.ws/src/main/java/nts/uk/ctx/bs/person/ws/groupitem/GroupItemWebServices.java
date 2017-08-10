@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import find.groupitem.PersonInfoItemGroupDto;
-import find.groupitem.PersonInfoItemGroupFinder;
+import find.layout.groupitem.PersonInfoItemGroupDto;
+import find.layout.groupitem.PersonInfoItemGroupFinder;
 import find.person.info.item.PerInfoItemDefDto;
 import nts.arc.layer.ws.WebService;
 
