@@ -32,3 +32,4 @@
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/function-wrap/import-setting-form.ts"/>
+/// <reference path="ui/function-wrap/contextmenu.ts"/>
