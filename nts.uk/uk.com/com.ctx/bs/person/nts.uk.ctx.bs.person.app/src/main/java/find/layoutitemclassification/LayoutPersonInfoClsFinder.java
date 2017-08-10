@@ -30,7 +30,7 @@ public class LayoutPersonInfoClsFinder {
 
 	public List<LayoutPersonInfoClsDto> getListClsDto(String layoutId) {
 		
-		List<LayoutPersonInfoClsDto> listItemCls = this.itemClsRepo.getAllItemClsById(layoutId).stream()
+		List<LayoutPersonInfoClsDto> listItemCls = this.itemClsRepo.getAllByLayoutId(layoutId).stream()
 				.map(item -> LayoutPersonInfoClsDto.fromDomain(item)).collect(Collectors.toList());
 		
 		int sizeOflist = listItemCls.size();
