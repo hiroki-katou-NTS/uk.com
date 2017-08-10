@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.layout.groupitem.defitinition;
+package find.groupitem.defitinition;
 
 /**
  * @author laitv

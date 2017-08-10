@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.layout.groupitem;
+package find.groupitem;
 
 import java.util.List;
 import java.util.Optional;
