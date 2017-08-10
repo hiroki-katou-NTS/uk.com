@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="kaf009.a.style.css" />
+			<com:scriptfile path="kaf009.a.start.js" />
+			<com:scriptfile path="kaf009.a.service.js" />
+			<com:scriptfile path="kaf009.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area"></div>
+			<div id="contents-area">
+				<button >#{i18n.getText('KAF009_1')}</button>
+				<label class="block">#{i18n.getText('KAF009_2')}</label>
+				<div class="valign-center  control-group">
+					<button data-bind = "click : openBDialog">#{i18n.getText('KAF009_3')}</button>
+					<span class="caret-right caret-inline"></span>
+				</div>
+				<div class="valign-center  control-group">
+					<button data-bind = "click : openCDialog">#{i18n.getText('KAF009_4')}</button>
+					<span class="caret-right caret-inline"></span>
+				</div>
+				<div class="valign-center  control-group">
+					<button  data-bind = "click : openDDialog">#{i18n.getText('KAF009_6')}</button>
+					<span class="caret-right caret-inline"></span>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
