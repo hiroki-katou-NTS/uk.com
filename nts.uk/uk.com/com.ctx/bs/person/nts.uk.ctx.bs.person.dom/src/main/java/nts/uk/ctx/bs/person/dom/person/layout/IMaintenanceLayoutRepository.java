@@ -22,6 +22,6 @@ public interface IMaintenanceLayoutRepository {
 
 	List<MaintenanceLayout> getAllMaintenanceLayout();
 
-	Optional<MaintenanceLayout> getById(String id);
+	Optional<MaintenanceLayout> getById(String cid ,String id);
 
 }
