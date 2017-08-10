@@ -10,8 +10,8 @@ import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.text.translate.NumericEntityUnescaper.OPTION;
 
-import entity.maintenencelayout.PpemtMaintenanceLayout;
-import entity.maintenencelayout.PpemtMaintenanceLayoutPk;
+import entity.layout.PpemtMaintenanceLayout;
+import entity.layout.PpemtMaintenanceLayoutPk;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;

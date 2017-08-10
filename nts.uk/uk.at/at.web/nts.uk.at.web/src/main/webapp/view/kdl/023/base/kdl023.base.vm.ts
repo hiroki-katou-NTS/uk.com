@@ -91,6 +91,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 .done(() => self.loadPatternReflection() // Load pattern reflection.
                     .done(() => {
 
+                        // Set button reflect pattern text.
+                        self.setButtonReflectPatternText();
+
+                        // Check if dailyPatternList has data.
+                        if (!self.dailyPatternList() || !self.dailyPatternList()[0]) {
+                            dfd.resolve();
+                            return;
+                        }
+
                         // Select first daily pattern if none selected.
                         if (!self.selectedDailyPatternCode()) {
                             self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
@@ -124,9 +133,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                         // Force change to set tab index.
                         self.patternReflection.holidaySetting.useClassification.valueHasMutated();
-
-                        // Set button reflect pattern text.
-                        self.setButtonReflectPatternText();
 
                     })).fail(res => {
                         nts.uk.ui.dialog.alert(res.message);
@@ -235,11 +241,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             service.findAllPattern().done(function(list: Array<DailyPatternSetting>) {
                 if (list && list.length > 0) {
                     self.dailyPatternList(list);
-                    dfd.resolve();
                 } else {
                     self.showErrorThenCloseDialog();
-                    dfd.fail();
                 }
+                dfd.resolve();
             }).fail(() => {
                 self.showErrorThenCloseDialog();
                 dfd.fail();

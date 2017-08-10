@@ -3,7 +3,6 @@ module cps008.b.vm {
     export class ViewModel {
 
         constructor() {
-            $('body').html('');
         }
 
         start() {

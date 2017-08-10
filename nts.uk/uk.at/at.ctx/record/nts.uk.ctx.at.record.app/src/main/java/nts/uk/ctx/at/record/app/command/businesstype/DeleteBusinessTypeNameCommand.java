@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteBusinessTypeNameCommand {
-	/*会社ID*/
+	/**会社ID**/
 	private String companyId;
-	/*勤務種別コード*/
+	/**コード**/
 	private String businessTypeCode;
 }

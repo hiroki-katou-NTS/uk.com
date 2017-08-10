@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.newlayout.PpemtNewLayout;
-import entity.newlayout.PpemtNewLayoutPk;
+import entity.layout.PpemtNewLayout;
+import entity.layout.PpemtNewLayoutPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;

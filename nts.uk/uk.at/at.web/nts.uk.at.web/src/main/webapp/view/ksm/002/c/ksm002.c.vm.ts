@@ -23,7 +23,6 @@ module ksm002.c {
                     dataSource.forEach(function(item){
                         self.specificDateItem.push(
                             new SpecificDateItem(
-                                item.timeItemId,
                                 item.useAtr,
                                 item.specificDateItemNo,
                                 item.specificName
@@ -33,9 +32,11 @@ module ksm002.c {
                     let itemNo =self.specificDateItem().length;
                     while(self.specificDateItem().length<10){
                         self.specificDateItem.push(
-                                new SpecificDateItem('',1,itemNo+1,''));
+                                new SpecificDateItem(1,itemNo+1,''));
                         itemNo = itemNo + 1;
                     }
+                    
+                    
                     self.rootList = _.clone(ko.mapping.toJS(self.specificDateItem()));
                     //check dk: 全ての使用区分が使用しないを選択されている場合
                     self.allUse = ko.pureComputed(function(){
@@ -68,7 +69,7 @@ module ksm002.c {
                     if(item.useAtr()==1){
                         $("#specificName"+index).trigger("validate");
                     }
-                    lstSpecificDateItem.push(new SpecificDateItemCommand(item.timeItemId(),item.useAtr(),item.specificDateItemNo(),item.specificName()));
+                    lstSpecificDateItem.push(new SpecificDateItemCommand(item.useAtr(),item.specificDateItemNo(),item.specificName()));
                 });
                 self.specificDateItem
                 if (!nts.uk.ui.errors.hasError()){
@@ -92,24 +93,20 @@ module ksm002.c {
         }
     }
     export class SpecificDateItem{
-        timeItemId: KnockoutObservable<string>;
         useAtr: KnockoutObservable<number>;
         specificDateItemNo: KnockoutObservable<number>;
         specificName: KnockoutObservable<string>;
-        constructor(timeItemId: string,useAtr: number,specificDateItemNo: number,specificName: string){
-            this.timeItemId = ko.observable(timeItemId);
+        constructor(useAtr: number,specificDateItemNo: number,specificName: string){
             this.useAtr = ko.observable(useAtr);
             this.specificDateItemNo = ko.observable(specificDateItemNo);
             this.specificName = ko.observable(specificName);
         }
     }
         export class SpecificDateItemCommand{
-        timeItemId: string;
         useAtr: number;
         specificDateItemNo: number;
         specificName: string;
-        constructor(timeItemId: string,useAtr: number,specificDateItemNo: number,specificName: string){
-            this.timeItemId = timeItemId;
+        constructor(useAtr: number,specificDateItemNo: number,specificName: string){
             this.useAtr = useAtr;
             this.specificDateItemNo = specificDateItemNo;
             this.specificName = specificName;
