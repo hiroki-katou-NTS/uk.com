@@ -135,6 +135,7 @@ module nts.uk.at.view.ksm003.a {
                 nts.uk.ui.block.grayout();
 
                 if (self.validate()) {
+                    nts.uk.ui.block.clear();
                     return;
                 }
 
