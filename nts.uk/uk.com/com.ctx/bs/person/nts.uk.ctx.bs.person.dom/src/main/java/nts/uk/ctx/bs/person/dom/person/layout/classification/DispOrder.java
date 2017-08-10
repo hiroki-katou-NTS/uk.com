@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.person.dom.person.layoutitemclassification;
+package nts.uk.ctx.bs.person.dom.person.layout.classification;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 

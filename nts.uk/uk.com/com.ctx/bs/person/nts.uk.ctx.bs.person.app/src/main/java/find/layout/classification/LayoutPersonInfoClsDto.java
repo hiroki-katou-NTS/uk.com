@@ -8,7 +8,7 @@ import java.util.List;
 import find.person.info.item.PerInfoItemDefDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
 
 @AllArgsConstructor
 @Data

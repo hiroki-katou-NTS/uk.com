@@ -11,10 +11,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.ILayoutPersonInfoClsRepository;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.ILayoutPersonInfoClsDefRepository;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutPersonInfoClsDefinition;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.ILayoutPersonInfoClsDefRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.LayoutPersonInfoClsDefinition;
 
 @Stateless
 @Transactional
@@ -31,22 +31,25 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {
-		// TODO Auto-generated method stub
+
+		// get new layout domain and command
+		NewLayout update = layoutRepo.getLayout().get();
 		NewLayoutCommand command = context.getCommand();
 
-		NewLayout update = layoutRepo.getLayout().get();
-
-		// layoutRepo.update(update);
-
+		// rmove all classification in this layout
 		classfRepo.removeAllByLayoutId(update.getLayoutID());
 
+		// remove all itemdefinition relation with classification in this layout
 		clsDefRepo.removeAllByLayoutId(update.getLayoutID());
 
-		classfRepo.addClassifications(command.getListClass().stream()
-				.map(m -> toClassificationDomain(m, update.getLayoutID())).collect(Collectors.toList()));
-
+		//
 		List<ClassificationCommand> classCommands = command.getListClass();
 		if (!classCommands.isEmpty()) {
+			// add all classification on client to db
+			classfRepo.addClassifications(classCommands.stream()
+					.map(m -> toClassificationDomain(m, update.getLayoutID())).collect(Collectors.toList()));
+
+			// add all item definition relation with classification to db
 			for (ClassificationCommand classCommand : classCommands) {
 				List<ClassificationItemDfCommand> clsIDfs = classCommand.getListItemClsDf();
 				if (!clsIDfs.isEmpty()) {

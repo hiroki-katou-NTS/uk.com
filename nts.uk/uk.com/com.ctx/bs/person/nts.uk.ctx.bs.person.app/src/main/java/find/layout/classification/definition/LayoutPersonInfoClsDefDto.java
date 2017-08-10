@@ -4,7 +4,7 @@
 package find.layout.classification.definition;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutPersonInfoClsDefinition;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.LayoutPersonInfoClsDefinition;
 
 /**
  * @author laitv

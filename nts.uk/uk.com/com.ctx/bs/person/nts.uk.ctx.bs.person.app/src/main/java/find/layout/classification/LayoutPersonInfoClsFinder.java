@@ -14,7 +14,7 @@ import find.person.info.category.PerInfoCategoryFinder;
 import find.person.info.category.PerInfoCtgWithItemsNameDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.ILayoutPersonInfoClsRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 
 @Stateless
 public class LayoutPersonInfoClsFinder {

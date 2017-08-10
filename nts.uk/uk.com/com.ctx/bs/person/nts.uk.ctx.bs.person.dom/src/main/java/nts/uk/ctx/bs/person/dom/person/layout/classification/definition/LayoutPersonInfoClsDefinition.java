@@ -1,14 +1,14 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition;
+package nts.uk.ctx.bs.person.dom.person.layout.classification.definition;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.DispOrder;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.DispOrder;
 
 /**
  * @author laitv

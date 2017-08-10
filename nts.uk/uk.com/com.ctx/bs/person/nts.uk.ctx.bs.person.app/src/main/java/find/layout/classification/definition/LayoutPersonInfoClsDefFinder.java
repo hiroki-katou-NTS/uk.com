@@ -8,7 +8,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.ILayoutPersonInfoClsDefRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.ILayoutPersonInfoClsDefRepository;
 
 /**
  * @author laitv

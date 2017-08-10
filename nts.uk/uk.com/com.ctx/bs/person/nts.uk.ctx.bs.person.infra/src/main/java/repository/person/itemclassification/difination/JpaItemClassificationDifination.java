@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import entity.itemclassification.difination.PpemtLayoutItemClsDf;
 import entity.itemclassification.difination.PpemtLayoutItemClsDfPk;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.ILayoutPersonInfoClsDefRepository;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.definition.LayoutPersonInfoClsDefinition;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.ILayoutPersonInfoClsDefRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.LayoutPersonInfoClsDefinition;
 
 @Stateless
 public class JpaItemClassificationDifination extends JpaRepository implements ILayoutPersonInfoClsDefRepository {

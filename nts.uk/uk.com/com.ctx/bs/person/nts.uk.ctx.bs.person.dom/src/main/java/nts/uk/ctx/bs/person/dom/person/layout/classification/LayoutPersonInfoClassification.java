@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.person.dom.person.layoutitemclassification;
+package nts.uk.ctx.bs.person.dom.person.layout.classification;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
