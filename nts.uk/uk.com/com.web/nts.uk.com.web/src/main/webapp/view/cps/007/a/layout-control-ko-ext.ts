@@ -9,6 +9,15 @@ module nts.custombinding {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
+    export class LetControl implements KnockoutBindingHandler {
+        init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
+            // Make a modified binding context, with extra properties, and apply it to descendant elements
+            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
     export class LayoutControl implements KnockoutBindingHandler {
         $tmp = $(`<div>
                 <style type="text/css" rel="stylesheet">
@@ -100,35 +109,35 @@ module nts.custombinding {
                         border: 1px dashed transparent;
                     }
 
-                    .layout-control .item-classification>div.item-control>*,
-                    .layout-control .item-classification>div.item-controls>* {
+                    .layout-control .item-classification div.item-control>*,
+                    .layout-control .item-classification div.item-controls>* {
                         overflow: hidden;
                         display: inline-block;
                         vertical-align: middle;
                     }
 
-                    .layout-control .item-classification>div.item-controls>* {
+                    .layout-control .item-classification div.item-controls>* {
                         vertical-align: top;
                     }
 
-                    .layout-control .item-classification>div.item-controls table,
-                    .layout-control .item-classification>div.item-controls table th,
-                    .layout-control .item-classification>div.item-controls table td {
+                    .layout-control .item-classification div.item-controls table,
+                    .layout-control .item-classification div.item-controls table th,
+                    .layout-control .item-classification div.item-controls table td {
                         width: 380px;
                         border: 1px solid #ccc;
                     }
 
-                    .layout-control .item-classification>div.item-controls table th {
+                    .layout-control .item-classification div.item-controls table th {
                         padding: 3px;
                         line-height: 24px;
                         background-color: #E0F59E;
                     }
 
-                    .layout-control .item-classification>div.item-controls table td {
+                    .layout-control .item-classification div.item-controls table td {
                         line-height: 24px;
                     }
 
-                    .layout-control .item-classification>div.item-sperator>hr {
+                    .layout-control .item-classification div.item-sperator>hr {
                         padding: 0;
                         margin: 6px 0;
                         margin-right: 20px;
@@ -200,35 +209,72 @@ module nts.custombinding {
                     <div class="drag-panel">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification">
-                                <div data-bind="if: $data.layoutItemType == 0" class="item-control">
-                                    <div data-bind="ntsFormLabel: {}, text: className"></div>
-                                    <div data-bind="if: $data.listItemDf[0].itemTypeState.itemType == 1">
-                                        <select>
-                                            <option>項目</option>
-                                        <select>
-                                    </div>
-                                    <div data-bind="if: $data.listItemDf[0].itemTypeState.itemType == 2">
-                                        <input tabindex="-1" data-bind="ntsTextEditor: {
-                                                    value: ko.observable(''),
-                                                    constraint: '',
-                                                    option: {},
-                                                    required: false,
-                                                    enable: true,
-                                                    readonly: true,
-                                                    immediate: false}" />
+                                <div data-bind="if: $data.layoutItemType == 0">
+                                    <div data-bind="let: { item: $data.listItemDf[0], listItemDf: $data.listItemDf}" class="item-control">
+                                        <div data-bind="ntsFormLabel: {}, text: className"></div>
+                                        <div data-bind="if: item.itemTypeState.itemType == 1">
+                                            <div id="combo-box" data-bind="ntsComboBox: {
+                                                options: ko.observableArray([]),
+                                                optionsValue: 'code',
+                                                visibleItemsCount: 5,
+                                                value: ko.observable(''),
+                                                optionsText: 'name',
+                                                editable: false,
+                                                enable: true,
+                                                columns: [{ prop: 'name', length: 10 }]}"></div>
+                                        </div>
+                                        <div data-bind="if: item.itemTypeState.itemType == 2">
+                                            <div data-bind="let: { single: item.itemTypeState.dataTypeState }">
+                                                <div data-bind="if: single.dataTypeValue == 1">
+                                                    <input data-bind="ntsTextEditor: {
+                                                                value: ko.observable(''),
+                                                                constraint: '',
+                                                                option: {},
+                                                                required: false,
+                                                                enable: true,
+                                                                readonly: true,
+                                                                immediate: false}" />
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 2">
+                                                    <input data-bind="ntsNumberEditor: {
+                                                            value: ko.observable(undefined)
+                                                        }" />
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 3">
+                                                    <div data-bind="ntsDatePicker: {value: ko.observable(undefined), dateFormat: 'YYYY/MM/DD'}"></div>
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 4">
+                                                    <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 5">
+                                                    <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 6">
+                                                    <div id="combo-box" data-bind="ntsComboBox: {
+                                                        options: ko.observableArray([]),
+                                                        optionsValue: 'code',
+                                                        visibleItemsCount: 5,
+                                                        value: ko.observable(''),
+                                                        optionsText: 'name',
+                                                        editable: false,
+                                                        enable: true,
+                                                        columns: [{ prop: 'name', length: 10 }]}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div data-bind="if: $data.layoutItemType == 1" class="item-controls">
                                     <div data-bind="ntsFormLabel: {}, text: className"></div>
-                                    <div>
+                                    <div data-bind="let: { items: listItemDf }">
                                         <table>
                                             <thead>
-                                                <tr data-bind="foreach: listItemDf">
+                                                <tr data-bind="foreach: items">
                                                     <th data-bind="text: itemName"></th>
                                                 </tr>
                                             </thead>
                                             <tbody data-bind="foreach: [1, 2, 3]">
-                                                <tr data-bind="foreach: $parent.listItemDf">
+                                                <tr data-bind="foreach: items">
                                                     <td>&nbsp;</td>
                                                 </tr>
                                             </tbody>
@@ -720,7 +766,7 @@ module nts.custombinding {
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
-                _.each(data, (x, i) => x.dispOrder = i + 1);
+                _.each(data, (x, i) => { x.dispOrder = i + 1;  x.layoutID = random() });
             });
 
             // extend data of sortable with valueAccessor beforeMove prop
@@ -841,9 +887,9 @@ module nts.custombinding {
     }
 
     interface IItemString {
-        stringItemDataType?: number;
+        stringItemDataType?: ITEM_STRING_DTYPE;
         stringItemLength?: number;
-        stringItemType?: number;
+        stringItemType?: ITEM_STRING_TYPE;
     }
 
     interface IItemTimePoint {
@@ -915,6 +961,24 @@ module nts.custombinding {
         SELECTION = 6
     }
 
+    // define ITEM_STRING_DATA_TYPE
+    enum ITEM_STRING_DTYPE {
+        FIXED_LENGTH = 1, // fixed length
+        VARIABLE_LENGTH = 2 // variable length
+    }
+
+    enum ITEM_STRING_TYPE {
+        ANY = 1,
+        // 2:全ての半角文字(AnyHalfWidth)
+        ANYHALFWIDTH = 2,
+        // 3:半角英数字(AlphaNumeric)
+        ALPHANUMERIC = 3,
+        // 4:半角数字(Numeric)
+        NUMERIC = 4,
+        // 5:全角カタカナ(Kana)
+        KANA = 5
+    }
+
     // define ITEM_SELECT_TYPE
     // type of item if it's selection item
     enum ITEM_SELECT_TYPE {
@@ -926,5 +990,5 @@ module nts.custombinding {
         ENUM = 3
     }
 }
-
+ko.bindingHandlers['let'] = new nts.custombinding.LetControl();
 ko.bindingHandlers["ntsLayoutControl"] = new nts.custombinding.LayoutControl();
