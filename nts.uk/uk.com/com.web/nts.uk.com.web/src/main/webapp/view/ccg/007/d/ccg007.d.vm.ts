@@ -2,6 +2,7 @@ module nts.uk.pr.view.ccg007.d {
     export module viewmodel {
         import SystemConfigDto = service.SystemConfigDto;
         import ContractDto = service.ContractDto;
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             employeeCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -20,18 +21,25 @@ module nts.uk.pr.view.ccg007.d {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 //get system config
+                blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(showContractData: any) {
-                        if (showContractData.showContract) {
-                            self.openContractAuthDialog();
+                        if (showContractData) {
+                            if (showContractData.showContract) {
+                                self.openContractAuthDialog();
+                            }
+                            else {
+                                self.getEmployeeLoginSetting(data.contractCode);
+                            }
+                            dfd.resolve();
                         }
                         else {
-                            self.getEmployeeLoginSetting(data.contractCode);
+                            alert("TODO システムエラー画面へ遷移する");
                         }
-                        dfd.resolve();
+                        blockUI.clear();
                     }).fail(function() {
-                        alert();
-                        //TODO システムエラー画面へ遷移する    
+                        dfd.resolve();
+                        blockUI.clear();
                     });
                 });
                 dfd.resolve();
@@ -61,7 +69,6 @@ module nts.uk.pr.view.ccg007.d {
                         service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
                             //get list company from server 
                             self.companyList(data);
-                            //                            self.companyList([new CompanyItemModel("1234", "会社1"), new CompanyItemModel("0001", "会社2"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社9"), new CompanyItemModel("0002", "会社6"), new CompanyItemModel("0002", "会社8")]);
                             if (data.length > 0) {
                                 self.selectedCompanyCode(self.companyList()[0].code);
                             }
@@ -81,6 +88,7 @@ module nts.uk.pr.view.ccg007.d {
 
             private submitLogin() {
                 var self = this;
+                blockUI.invisible();
                 service.submitLogin({ companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()) }).done(function() {
                     nts.uk.characteristics.remove("form3LoginInfo");
                     if (self.isSaveLoginInfo()) {
@@ -93,8 +101,10 @@ module nts.uk.pr.view.ccg007.d {
                             nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
                         }, 1000);
                     }
+                    blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    blockUI.clear();
                 });
             }
         }

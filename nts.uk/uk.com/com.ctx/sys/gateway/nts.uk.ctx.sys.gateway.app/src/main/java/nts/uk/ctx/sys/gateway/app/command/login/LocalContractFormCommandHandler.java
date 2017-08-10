@@ -48,6 +48,11 @@ public class LocalContractFormCommandHandler
 		LocalContractFormCommand command = context.getCommand();
 
 		SystemConfig systemConfig = this.getSystemConfig();
+		
+		if(systemConfig == null)
+		{
+			return null;
+		}
 		// case Cloud
 		if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
 			if (this.isShowContract(command)) {
@@ -103,7 +108,6 @@ public class LocalContractFormCommandHandler
 		if (systemConfig.isPresent()) {
 			return systemConfig.get();
 		} else {
-			// TODO go to system error screen
 			return null;
 		}
 	}

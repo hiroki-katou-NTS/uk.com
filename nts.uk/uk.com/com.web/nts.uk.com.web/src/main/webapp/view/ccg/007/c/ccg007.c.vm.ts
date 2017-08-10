@@ -2,6 +2,7 @@ module nts.uk.pr.view.ccg007.c {
     export module viewmodel {
         import SystemConfigDto = service.SystemConfigDto;
         import ContractDto = service.ContractDto;
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             companyCode: KnockoutObservable<string>;
             employeeCode: KnockoutObservable<string>;
@@ -20,24 +21,29 @@ module nts.uk.pr.view.ccg007.c {
                 var dfd = $.Deferred<void>();
                 //get system config
                 //TODO get local contract info
+                blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(showContractData: any) {
-                        if (showContractData.showContract) {
-                            self.openContractAuthDialog();
+                        if (showContractData) {
+                            if (showContractData.showContract) {
+                                self.openContractAuthDialog();
+                            }
+                            else {
+                                self.getEmployeeLoginSetting(data.contractCode);
+                            }
                         }
                         else {
-                            self.getEmployeeLoginSetting(data.contractCode);
+                            alert("システムエラー画面へ遷移する");
                         }
+                        blockUI.clear();
                         dfd.resolve();
                     }).fail(function() {
-                        alert();
                         dfd.resolve();
-                        //TODO システムエラー画面へ遷移する    
+                        blockUI.clear();
                     });
                 }).fail(function() {
-                    alert();
                     dfd.resolve();
-                    //TODO システムエラー画面へ遷移する    
+                    blockUI.clear();
                 });
                 return dfd.promise();
             }
@@ -77,6 +83,7 @@ module nts.uk.pr.view.ccg007.c {
 
             private submitLogin() {
                 var self = this;
+                blockUI.invisible();
                 service.submitLogin({ companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()) }).done(function() {
                     nts.uk.characteristics.remove("form2LoginInfo");
                     if (self.isSaveLoginInfo()) {
@@ -89,8 +96,10 @@ module nts.uk.pr.view.ccg007.c {
                             nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
                         }, 1000);
                     }
+                    blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    blockUI.clear();
                 });
             }
         }
