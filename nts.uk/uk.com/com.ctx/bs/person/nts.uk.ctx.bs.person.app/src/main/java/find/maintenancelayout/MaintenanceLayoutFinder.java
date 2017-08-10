@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import find.layoutitemclassification.LayoutPersonInfoClsDto;
 import find.layoutitemclassification.LayoutPersonInfoClsFinder;
-import nts.uk.ctx.bs.person.dom.person.maintenancelayout.IMaintenanceLayoutRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
 
 /**
  * @author laitv

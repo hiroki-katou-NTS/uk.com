@@ -8,8 +8,8 @@ import entity.newlayout.PpemtNewLayout;
 import entity.newlayout.PpemtNewLayoutPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.person.dom.person.newlayout.INewLayoutReposotory;
-import nts.uk.ctx.bs.person.dom.person.newlayout.NewLayout;
+import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
+import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
