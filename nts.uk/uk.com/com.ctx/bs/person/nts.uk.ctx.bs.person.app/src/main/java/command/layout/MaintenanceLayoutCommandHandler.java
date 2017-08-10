@@ -51,9 +51,8 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 			break;
 		case 2: // copy
-
-			break;
 		case 3: // clone and override
+			
 			this.overrideLayout(command, newLayoutId);
 			break;
 		case 4: // remove
@@ -84,6 +83,9 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			MaintenanceLayout newLayout = MaintenanceLayout.createFromJavaType(companyId, newLayoutId,
 					command.getCode(), command.getName());
 			this.repo.add(newLayout);
+			
+			
+			
 
 			// lay ra list itemcls , sau do update layoutId = new LayoutId , sau do insert
 			// list nay bang ItemCls

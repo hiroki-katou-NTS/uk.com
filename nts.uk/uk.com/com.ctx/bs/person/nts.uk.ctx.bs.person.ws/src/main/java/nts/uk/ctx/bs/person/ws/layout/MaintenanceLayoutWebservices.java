@@ -17,10 +17,9 @@ import find.layout.MaintenanceLayoutDto;
 import find.layout.MaintenanceLayoutFinder;
 import nts.arc.layer.ws.WebService;
 
-
 @Path("ctx/bs/person/maintenance")
 @Produces("application/json")
-public class MaintenanceLayoutWebservices extends WebService{
+public class MaintenanceLayoutWebservices extends WebService {
 
 	@Inject
 	private MaintenanceLayoutFinder mlayoutFinder;
@@ -33,14 +32,13 @@ public class MaintenanceLayoutWebservices extends WebService{
 	public List<MaintenanceLayoutDto> getAllMaintenenceLayout() {
 		return mlayoutFinder.getAllLayout();
 	}
-	
+
 	@POST
 	@Path("findOne/{lid}")
 	public MaintenanceLayoutDto getLayoutById(@PathParam("lid") String lid) {
 		return mlayoutFinder.getDetails(lid);
 
 	}
-	
 
 	@POST
 	@Path("saveLayout")
