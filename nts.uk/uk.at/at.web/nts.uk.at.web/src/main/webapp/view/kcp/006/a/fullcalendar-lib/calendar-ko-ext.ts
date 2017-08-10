@@ -92,7 +92,7 @@ module nts.uk.at.view.kcp006.a {
                         duration: { months: 3 }
                     }
                 },
-                dateAlignment: "1",
+                dateAlignment: "week",
                 eventLimitText: function(countMore) {
                     return '。。。';
                 },

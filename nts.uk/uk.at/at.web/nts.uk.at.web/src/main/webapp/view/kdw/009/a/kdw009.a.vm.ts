@@ -21,7 +21,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             let self = this;
             self.gridListColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDW009_6"), key: 'businessTypeCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KDW009_7"), key: 'businessTypeName', width: 200 }
+                { headerText: nts.uk.resource.getText("KDW009_7"), key: 'businessTypeName', width: 200, formatter: _.escape}
             ]);
             self.lstBusinessType = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -81,11 +81,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         /** update or insert data when click button register **/
         register() {
             let self = this;
-            let code = "";
+            let code = "";  
             $("#inpPattern").trigger("validate");
-            let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
-                        return item.businessTypeCode == self.codeObject();
-                    });
             let updateOption = new BusinessType(self.selectedCode(), self.selectedName()); 
             code = self.codeObject();
             _.defer(() => {
@@ -114,7 +111,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                         });
                     }
                 }
-            });            
+            });    
+            $("#inpPattern").focus();        
         } 
         //  new mode 
         newMode(){
@@ -164,14 +162,12 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                             self.selectedCode(self.lstBusinessType()[count].businessTypeCode);    
                             return;
                         }
-                        
-                    });
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
-            }).ifCancel(() => { 
+                    })
+                })
+                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+            }).ifCancel(() => {     
             }); 
-            
-            
+            $("#inpPattern").focus();
         }
     }
     export class BusinessType{

@@ -90,7 +90,7 @@ public class ExternalBudgetFinder {
             throw new RuntimeException("Not external budget setting.");
         }
         ExternalBudget externalBudget = extBudgetOptional.get();
-        int MAX_COLUMN = 100;
+        int MAX_COLUMN = 51;
         int totalRecord = 0;
         int indexLine = 0;
         int countLine = 1;
@@ -125,7 +125,6 @@ public class ExternalBudgetFinder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(totalRecord);
 	    return ExtBudgetDataPreviewDto.builder()
 	            .isDailyUnit(externalBudget.getUnitAtr() == UnitAtr.DAILY)
 	            .data(lstExtBudgetVal)
@@ -185,13 +184,16 @@ public class ExternalBudgetFinder {
             default:
                 throw new RuntimeException("Not unit atr suitable.");
         }
-        if (lstRawVal.size() < numberCol) {
-            do {
-                lstRawVal.add(valEmpty);
-            } while (lstRawVal.size() <= numberCol);
-        } else if (lstRawVal.size() > numberCol){
+        if (lstRawVal.size() > numberCol) {
             lstRawVal.subList(0, numberCol);
+            return lstRawVal;
         }
+        if (lstRawVal.size() == numberCol) {
+            return lstRawVal;
+        }
+        do {
+            lstRawVal.add(valEmpty);
+        } while (lstRawVal.size() <= numberCol);
         return lstRawVal;
     }
 }

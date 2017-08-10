@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 511,//520,
+					width : 511,
 					height : 400
 				};
 			</script>
@@ -62,15 +62,17 @@
 							</td>
 						</tr>
 					</table>
-					<div data-bind="visible: hasError()" style="display: none;">
+					<div data-bind="if: hasError()">
 						<table id="single-list" data-bind="ntsGridList: {
+								height: 454,
 								dataSource: dataError,
-								primaryKey: 'code',
+								primaryKey: 'order',
 								columns: listColumn,
 								multiple: false,
 								value: rowSelected,
 								rows: 10}"></table>
-						<div style="margin-top: 30px;color: red;">#{i18n.getText('KSU006_213')}</div>
+						<div style="margin-top: 30px;color: red;" data-bind="if: isGreaterThanTenError">
+							#{i18n.getText('KSU006_213')}</div>
 					</div>
 				</div>
 			</div>

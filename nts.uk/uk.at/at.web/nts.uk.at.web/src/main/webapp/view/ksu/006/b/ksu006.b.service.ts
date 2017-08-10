@@ -19,6 +19,7 @@ module nts.uk.pr.view.ksu006.b {
         export module model {
             
             export interface ErrorModel {
+                order: number;
                 lineNo: number;
                 columnNo: number;
                 wpkCode: string;

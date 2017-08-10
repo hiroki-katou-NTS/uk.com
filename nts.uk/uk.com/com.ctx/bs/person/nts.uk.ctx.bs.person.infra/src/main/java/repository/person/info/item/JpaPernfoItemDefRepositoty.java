@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import entity.person.info.item.PpemtPerInfoItem;
 import entity.person.info.item.PpemtPerInfoItemCm;
 import entity.person.info.item.PpemtPerInfoItemCmPK;
+import entity.person.info.item.PpemtPerInfoItemOrder;
 import entity.person.info.item.PpemtPerInfoItemPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
@@ -78,6 +79,13 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL "
 			+ " ORDER BY io.disporder";
 
+	private final static String SELECT_GET_ITEM_CODE_LASTEST_QUERY = "SELECT i.ppemtPerInfoItemCmPK.itemCd PpemtPerInfoItemCm i"
+			+ " WHERE i.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.ppemtPerInfoItemCmPK.categoryCd = :categoryCd"
+			+ " ORDER BY i.ppemtPerInfoItemCmPK.itemCd DESC";
+
+	private final static String SELECT_GET_DISPORDER_ITEM_QUERY = "SELECT od.disporder PpemtPerInfoItemOrder od"
+			+ " WHERE od.perInfoCtgId = :perInfoCtgId ORDER BY od.disporder DESC";
+
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -111,16 +119,53 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 	}
 
 	@Override
-	public void addPerInfoItemDef(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
+	public void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
 		this.commandProxy().insert(createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd));
 		this.commandProxy().insert(createPerInfoItemDefFromDomain(perInfoItemDef));
 
 	}
 
 	@Override
-	public void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
+	public void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
 		this.commandProxy().update(createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd));
 		this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
+	}
+
+	@Override
+	public boolean checkItemNameIsUnique(String perInfoCtgId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getPerInfoItemCodeLastest(String contractCd, String categoryCd) {
+		List<String> itemCodeLastest = this.getEntityManager()
+				.createQuery(SELECT_GET_ITEM_CODE_LASTEST_QUERY, String.class).setParameter("contractCd", contractCd)
+				.setParameter("categoryCd", categoryCd).setMaxResults(1).getResultList();
+		if (itemCodeLastest != null && !itemCodeLastest.isEmpty()) {
+			return itemCodeLastest.get(0);
+		}
+		return null;
+	}
+
+	private void addOrderItemRoot(String perInfoItemDefId, String perInfoCtgId) {
+		int newdisOrderLastest = getDispOrderLastestItemOfCtg(perInfoCtgId) + 1;
+		this.commandProxy().insert(createItemOrder(perInfoItemDefId, perInfoCtgId, newdisOrderLastest));
+	}
+
+	private int getDispOrderLastestItemOfCtg(String perInfoCtgId) {
+		List<Integer> dispOrderLastests = this.getEntityManager()
+				.createQuery(SELECT_GET_DISPORDER_ITEM_QUERY, Integer.class).setParameter("perInfoCtgId", perInfoCtgId)
+				.setMaxResults(1).getResultList();
+		if (dispOrderLastests != null && !dispOrderLastests.isEmpty()) {
+			return dispOrderLastests.get(0);
+		}
+		return 0;
+	}
+
+	private PpemtPerInfoItemOrder createItemOrder(String perInfoItemDefId, String perInfoCtgId, int dispOrder) {
+		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDefId);
+		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder);
 	}
 
 	private PersonInfoItemDefinition createDomainFromEntity(Object[] i) {
@@ -287,4 +332,5 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 				numericItemMax, numericItemAmountAtr, numericItemMinusAtr, numericItemDecimalPart,
 				numericItemIntegerPart, selectionItemRefType, selectionItemRefCode);
 	}
+
 }

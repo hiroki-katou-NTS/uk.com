@@ -24,7 +24,7 @@
 					<button id="A_BTN_001">#{i18n.getText('CCG013_1')}</button>
 					<button id="A_BTN_002" class="proceed">#{i18n.getText('CCG013_2')}</button>
 					<button id="A_BTN_003" class="danger">#{i18n.getText('CCG013_6')}</button>
-					<button id="A_BTN_004">続柄の登録</button>
+					<button id="A_BTN_004" data-bind="click: openGDialog">続柄の登録</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -46,7 +46,7 @@
 				</div>
 				<div class="right-content">
 					<div class="control-group">
-						<div style="vertical-align: middle"
+						<div id="code-" style="vertical-align: middle"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_11')}</div>
 						<span><input style="width: 40px; margin-left: 45px;"
 							data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" /></span>
@@ -82,7 +82,7 @@
 							<input style="width: 40px;" data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
 							</div>
 							<div style="margin-top: 20px;" data-bind="ntsRadioButton: {checked: selectedValue, enable: enable, option: option2, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"></div>
-							<button style="display: block;margin-top: 10px;margin-left: 100px;">#{i18n.getText('KMF004_29')}</button>
+							<button style="display: block;margin-top: 10px;margin-left: 100px;" data-bind="click: openBDialog">#{i18n.getText('KMF004_29')}</button>
 							<span style="margin-left: 100px;">#{i18n.getText('KMF004_30')}</span>
 						</div>
 						<div class="tab-content-2">
@@ -177,7 +177,7 @@
 							</div>
 							<span>年齢基準</span>	
 							<button style="width: 25px; height: 25px; margin-left: 20px;"
-								data-bind="ntsHelpButton: {image: 'CCG013_001.png', position: 'right top', enable: true }">?</button>	
+								>?</button>	
 							<div>
 						    <div data-bind="ntsRadioButton: {checked: selectedValue, enable: enable, optionText: '#{i18n.getText('KMF004_42')}', group: 'ntsControl' }"></div>
 						    </div>

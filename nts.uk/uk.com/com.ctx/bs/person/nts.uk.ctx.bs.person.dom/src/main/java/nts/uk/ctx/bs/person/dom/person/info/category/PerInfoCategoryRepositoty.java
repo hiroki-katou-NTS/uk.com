@@ -18,4 +18,11 @@ public interface PerInfoCategoryRepositoty {
     void updatePerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd, List<String> companyIdList);
     
     String getPerInfoCtgCodeLastest(String contractCd);
+    
+    boolean checkCtgNameIsUnique(String companyId, String newCtgName);
+    
+    //void addOderPerInfoCtg(PerInfoCtgOrder order);
+    
+    
+    
 }
