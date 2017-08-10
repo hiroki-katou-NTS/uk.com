@@ -27,6 +27,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         isOnScreenA: KnockoutObservable<boolean>;
         isMasterDataUnregisterd: KnockoutObservable<boolean>;
         isOutOfCalendarRange: KnockoutObservable<boolean>;
+        buttonReflectPatternText: KnockoutObservable<string>;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -54,6 +55,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.isOnScreenA = ko.observable(true);
             self.isMasterDataUnregisterd = ko.observable(false);
             self.isOutOfCalendarRange = ko.observable(false);
+            self.buttonReflectPatternText = ko.observable('');
 
             // Calendar component
             self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
@@ -122,6 +124,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                         // Force change to set tab index.
                         self.patternReflection.holidaySetting.useClassification.valueHasMutated();
+
+                        // Set button reflect pattern text.
+                        self.setButtonReflectPatternText();
 
                     })).fail(res => {
                         nts.uk.ui.dialog.alert(res.message);
@@ -389,7 +394,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         let isLoopEnd = false;
 
                         // Break loop if current date reach calendar's end date.
-                        isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day'); 
+                        isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
 
                         // If pattern's total days is out of calendar's range.
                         if (self.isOutOfCalendarRange()) {
@@ -561,6 +566,24 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     worktime ? worktime : noSetting
                 ]
             };
+        }
+
+        /**
+         * Set button reflect pattern text.
+         */
+        private setButtonReflectPatternText(): void {
+            let self = this;
+
+            // Is on screen A
+            if (self.isOnScreenA()) {
+                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_13'));
+            }
+
+            // Is on screen B
+            else {
+                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_20'));
+            }
+
         }
 
         /**
