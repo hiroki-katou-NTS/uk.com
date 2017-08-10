@@ -3,8 +3,6 @@
  */
 package command.layout;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -14,8 +12,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.ILayoutPersonInfoClsRepository;
-import nts.uk.ctx.bs.person.dom.person.layoutitemclassification.LayoutPersonInfoClassification;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoClassification;
+import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.LayoutPersonInfoClsDefinition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,9 +29,13 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 	private IMaintenanceLayoutRepository repo;
 
 	@Inject
-	private ILayoutPersonInfoClsRepository clsRepo;
+	private ILayoutPersonInfoClsRepository classfRepo;
+	
+	
 
 	String companyId = AppContexts.user().companyId();
+
+	Boolean checkExit = false;
 
 	@Override
 	protected void handle(CommandHandlerContext<MaintenanceLayoutCommand> context) {
@@ -40,6 +43,12 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 		MaintenanceLayoutCommand command = context.getCommand();
 
 		String newLayoutId = IdentifierUtil.randomUniqueId();
+
+		// get Old Layout
+		MaintenanceLayout oldLayout = this.repo.getById(companyId, command.getId()).get();
+
+		// kiem tra newLayoutcode da ton tai chua.
+		checkExit = this.repo.checkExit(companyId, command.getCode());
 
 		switch (command.getAction()) {
 		case 0: // insert
@@ -52,7 +61,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			break;
 		case 2: // copy
 		case 3: // clone and override
-			
+
 			this.overrideLayout(command, newLayoutId);
 			break;
 		case 4: // remove
@@ -64,11 +73,6 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 	private void overrideLayout(MaintenanceLayoutCommand command, String newLayoutId) {
 
-		// get Old Layout
-		MaintenanceLayout oldLayout = this.repo.getById(companyId, command.getId()).get();
-
-		// kiem tra newLayoutcode da ton tai chua.
-		Boolean checkExit = this.repo.checkExit(companyId, command.getCode());
 		if (checkExit) {
 			// khong check 上書き Overwrite ==> la truong hop coppy
 			if (command.getAction() == 2) {
@@ -77,8 +81,12 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 				// co check ==> truong hop override
 
 			}
-		} else {
-			// truong hop coppy
+		}
+
+	}
+
+	private void coppyLayout(MaintenanceLayoutCommand command, String newLayoutId) {
+		if (!checkExit) {
 			// insert vao bang MaintenanceLayout
 			MaintenanceLayout newLayout = MaintenanceLayout.createFromJavaType(companyId, newLayoutId,
 					command.getCode(), command.getName());
@@ -86,20 +94,18 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			
 			
 			
-
-			// lay ra list itemcls , sau do update layoutId = new LayoutId , sau do insert
-			// list nay bang ItemCls
-			List<LayoutPersonInfoClassification> listCls = this.clsRepo.getAllByLayoutId(command.getId());
-
-			listCls.forEach(item -> {
-				item.setLayoutID(newLayoutId);
-			});
-			// insert list to ItemCls Table
-			this.clsRepo.addClassifications(listCls);
-
-			// lay ra list itemclsDf
-
+			
 		}
+	}
+	
+	private LayoutPersonInfoClassification toClassificationDomain(ClassificationCommand command, String layoutId) {
+		return LayoutPersonInfoClassification.createFromJaveType(layoutId, command.getDispOrder(),
+				command.getPersonInfoCategoryID(), command.getLayoutItemType());
+	}
 
+	private LayoutPersonInfoClsDefinition toClassItemDefDomain(ClassificationItemDfCommand command, String layoutId,
+			int classDispOrder) {
+		return LayoutPersonInfoClsDefinition.createFromJavaType(layoutId, classDispOrder, command.getDispOrder(),
+				command.getPersonInfoItemDefinitionID());
 	}
 }
