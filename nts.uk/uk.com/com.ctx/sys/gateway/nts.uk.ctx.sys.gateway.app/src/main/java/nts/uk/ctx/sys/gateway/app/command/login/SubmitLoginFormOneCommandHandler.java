@@ -36,7 +36,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 		// find user by login id
 		Optional<User> user = userRepository.getByLoginId(loginId);
 		if (!user.isPresent()) {
-			throw new BusinessException("#Msg_301");
+			throw new BusinessException("Msg_301");
 		}
 
 		// check password
@@ -53,23 +53,23 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 
 	private void checkInput(SubmitLoginFormOneCommand command) {
 		if (command.getLoginId().isEmpty() || command.getLoginId() == null) {
-			throw new BusinessException("#Msg_309");
+			throw new BusinessException("Msg_309");
 		}
 
 		if (command.getPassword().isEmpty() || command.getPassword() == null) {
-			throw new BusinessException("#Msg_310");
+			throw new BusinessException("Msg_310");
 		}
 	}
 
 	private void compareHashPassword(Optional<User> user, String password) {
 		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(user.get().getPassword().v())) {
-			throw new BusinessException("#Msg_302");
+			throw new BusinessException("Msg_302");
 		}
 	}
 
 	private void checkLimitTime(Optional<User> user) {
 		if (!user.get().getExpirationDate().after(GeneralDate.today())) {
-			throw new BusinessException("#Msg_316");
+			throw new BusinessException("Msg_316");
 		}
 	}
 }

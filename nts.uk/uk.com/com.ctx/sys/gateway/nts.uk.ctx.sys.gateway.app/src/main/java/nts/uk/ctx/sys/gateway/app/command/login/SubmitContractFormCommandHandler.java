@@ -41,28 +41,28 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 			this.checkPassword(contract, password);
 			this.checkTime(contract);
 		} else {
-			throw new BusinessException("#Msg_314");
+			throw new BusinessException("Msg_314");
 		}
 	}
 
 	private void checkTime(Optional<Contract> contract) {
 		if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today()) || contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
-			throw new BusinessException("#Msg_315");
+			throw new BusinessException("Msg_315");
 		}
 	}
 
 	private void checkPassword(Optional<Contract> contract, String password) {
 		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(contract.get().getPassword().v())) {
-			throw new BusinessException("#Msg_302");
+			throw new BusinessException("Msg_302");
 		}
 	}
 
 	private void checkInput(SubmitContractFormCommand command) {
 		if (command.getContractCode() == null) {
-			throw new BusinessException("#Msg_313");
+			throw new BusinessException("Msg_313");
 		}
 		if (command.getPassword() == null) {
-			throw new BusinessException("#Msg_310");
+			throw new BusinessException("Msg_310");
 		}
 	}
 

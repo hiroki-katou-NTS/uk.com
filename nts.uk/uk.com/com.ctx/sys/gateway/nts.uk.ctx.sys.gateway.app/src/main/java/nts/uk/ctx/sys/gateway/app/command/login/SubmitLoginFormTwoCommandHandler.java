@@ -78,15 +78,15 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 
 		// check input company code
 		if (command.getCompanyCode() == null) {
-			throw new BusinessException("#Msg_311");
+			throw new BusinessException("Msg_311");
 		}
 		// check input employee code
 		if (command.getEmployeeCode() == null) {
-			throw new BusinessException("#Msg_312");
+			throw new BusinessException("Msg_312");
 		}
 		// check input password
 		if (command.getPassword() == null) {
-			throw new BusinessException("#Msg_310");
+			throw new BusinessException("Msg_310");
 		}
 	}
 
@@ -142,7 +142,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		if (em.isPresent()) {
 			return em.get();
 		} else {
-			throw new BusinessException("#Msg_301");
+			throw new BusinessException("Msg_301");
 		}
 	}
 
@@ -157,7 +157,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		if (user.isPresent()) {
 			return user.get();
 		} else {
-			throw new BusinessException("#Msg_301");
+			throw new BusinessException("Msg_301");
 		}
 	}
 
@@ -170,7 +170,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	private void compareHashPassword(User user, String password) {
 		// TODO compare hash string here
 		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(user.getPassword().v())) {
-			throw new BusinessException("#Msg_302");
+			throw new BusinessException("Msg_302");
 		}
 	}
 
@@ -181,7 +181,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	 */
 	private void checkLimitTime(User user) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
-			throw new BusinessException("#Msg_316");
+			throw new BusinessException("Msg_316");
 		}
 	}
 }
