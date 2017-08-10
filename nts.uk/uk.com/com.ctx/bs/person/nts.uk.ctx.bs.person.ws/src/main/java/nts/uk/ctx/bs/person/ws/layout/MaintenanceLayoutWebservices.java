@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.person.ws.maintenancelayout;
+package nts.uk.ctx.bs.person.ws.layout;
 
 import java.util.List;
 
@@ -15,7 +15,6 @@ import command.maintenancelayout.MaintenanceLayoutCommand;
 import command.maintenancelayout.MaintenanceLayoutCommandHandler;
 import find.maintenancelayout.MaintenanceLayoutDto;
 import find.maintenancelayout.MaintenanceLayoutFinder;
-import find.roles.auth.category.PersonInfoCategoryDetailDto;
 import nts.arc.layer.ws.WebService;
 
 
