@@ -42,10 +42,10 @@
 						columns: ko.observableArray([{ headerText: 'コード', key: 'id', width: 0 },{ headerText: '#{i18n.getText('CPS007_14')}', key: 'itemName', width: 150 }]),
 						value: chooseItems,
 						searchCriterion: ['itemName'],
-						draggable: true,
-						multipleDrag: { left: true, right: false },
-						innerDrag: { left: false, right: true },
-						outerDrag: { left: true, right: true } 
+						draggable: false,
+						multipleDrag: { left: false, right: false },
+						innerDrag: { left: false, right: false },
+						outerDrag: { left: false, right: false } 
 					}"></div>
 					<div id="swap-list-updown"
 						data-bind="ntsUpDown: {
