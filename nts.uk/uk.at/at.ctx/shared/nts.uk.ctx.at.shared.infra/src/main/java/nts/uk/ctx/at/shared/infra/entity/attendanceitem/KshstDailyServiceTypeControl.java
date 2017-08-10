@@ -15,11 +15,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "KSHST_ATD_ITEM_SET")
-public class KshstDAIControlOfAttendanceItems extends UkJpaEntity implements Serializable {
+@Table(name = "KSHST_DAI_SER_TYPE_CTR")
+public class KshstDailyServiceTypeControl extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KshstDAIControlOfAttendanceItemsPK kshstDAIControlOfAttendanceItemsPK;
+	public KshstDailyServiceTypeControlPK kshstDailyServiceTypeControlPK;
 	@Column(name = "USER_CAN_SET")
 	public BigDecimal youCanChangeIt;
 	@Column(name = "CHANGED_BY_OTHERS")
@@ -29,7 +29,7 @@ public class KshstDAIControlOfAttendanceItems extends UkJpaEntity implements Ser
 	
 	@Override
 	protected Object getKey() {
-		return kshstDAIControlOfAttendanceItemsPK;
+		return kshstDailyServiceTypeControlPK;
 	}
 
 }

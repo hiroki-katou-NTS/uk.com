@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 @AllArgsConstructor
 @Value
-public class DAIControlOfAttendanceItemsCommand {
+public class DailyServiceTypeControlCommand {
 		public String attendanceItemId;
 
 		public String businessTypeCode;

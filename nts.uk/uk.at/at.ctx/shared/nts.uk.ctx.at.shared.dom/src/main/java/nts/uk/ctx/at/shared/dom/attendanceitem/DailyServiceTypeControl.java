@@ -7,7 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
 
 @Getter
-public class DisplayAndInputControlOfAttendanceItems extends AggregateRoot {
+public class DailyServiceTypeControl extends AggregateRoot {
 
 	private BigDecimal attendanceItemId;
 
@@ -19,7 +19,7 @@ public class DisplayAndInputControlOfAttendanceItems extends AggregateRoot {
 
 	private boolean use;
 
-	public DisplayAndInputControlOfAttendanceItems(BigDecimal attendanceItemId, BusinessTypeCode businessTypeCode, boolean youCanChangeIt,
+	public DailyServiceTypeControl(BigDecimal attendanceItemId, BusinessTypeCode businessTypeCode, boolean youCanChangeIt,
 			boolean canBeChangedByOthers, boolean use) {
 		super();
 		this.attendanceItemId = attendanceItemId;
@@ -29,10 +29,10 @@ public class DisplayAndInputControlOfAttendanceItems extends AggregateRoot {
 		this.use = use;
 	}
 
-	public static DisplayAndInputControlOfAttendanceItems createFromJavaType(BigDecimal attendanceItemId,
+	public static DailyServiceTypeControl createFromJavaType(BigDecimal attendanceItemId,
 			String businessTypeCode, boolean youCanChangeIt,
 			boolean canBeChangedByOthers, boolean use) {
-		return new DisplayAndInputControlOfAttendanceItems(attendanceItemId, new BusinessTypeCode(businessTypeCode), youCanChangeIt, canBeChangedByOthers, use);
+		return new DailyServiceTypeControl(attendanceItemId, new BusinessTypeCode(businessTypeCode), youCanChangeIt, canBeChangedByOthers, use);
 
 	}
 

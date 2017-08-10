@@ -1,7 +1,7 @@
 /**
  * 
  */
-package find.layout.groupitem;
+package find.groupitem;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +29,8 @@ public class PersonInfoItemGroupFinder {
 	 * @return
 	 */
 	public List<PersonInfoItemGroupDto> getAllPersonInfoGroup() {
-		List<PersonInfoItemGroupDto> list = this.repo.getAll().stream()
-				.map(item -> PersonInfoItemGroupDto.fromDomain(item)).collect(Collectors.toList());
-		return list;
+		return this.repo.getAll().stream().map(item -> PersonInfoItemGroupDto.fromDomain(item))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -42,15 +41,11 @@ public class PersonInfoItemGroupFinder {
 	public PersonInfoItemGroupDto getById(String groupId) {
 		Optional<PersonInfoItemGroup> groupItem = this.repo.getById(groupId);
 
-		if (groupItem.isPresent()) {
-			PersonInfoItemGroup _groupItem = groupItem.get();
-			// get classifications
-
-			return PersonInfoItemGroupDto.fromDomain(_groupItem);
-		} else {
+		if (!groupItem.isPresent()) {
 			return null;
 		}
 
+		return PersonInfoItemGroupDto.fromDomain(groupItem.get());
 	}
 
 	/**
@@ -60,11 +55,11 @@ public class PersonInfoItemGroupFinder {
 	 */
 	public List<PerInfoItemDefDto> getAllItemDf(String groupId) {
 		List<String> listItemDfId = this.repo.getListItemIdByGrId(groupId);
-		if (!listItemDfId.isEmpty()) {
-			List<PerInfoItemDefDto> listItemDef = itemDfFinder.getPerInfoItemDefByListId(listItemDfId);
-			return listItemDef;
-		} else {
+
+		if (listItemDfId.isEmpty()) {
 			return null;
+		} else {
+			return itemDfFinder.getPerInfoItemDefByListId(listItemDfId);
 		}
 
 	}

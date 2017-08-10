@@ -27,9 +27,6 @@ public class KsmstSpecificDateItem extends UkJpaEntity implements Serializable {
 	@Column(name = "USE_ATR")
 	public BigDecimal useAtr;
 
-	@Column(name = "SPECIFIC_DATE_ITEM_NO")
-	public BigDecimal itemNo;
-
 	@Column(name = "NAME")
 	public String name;
 	

@@ -1,4 +1,7 @@
-package entity.newlayout;
+/**
+ * 
+ */
+package entity.layout.classification;
 
 import java.io.Serializable;
 
@@ -12,30 +15,31 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Entity
+/**
+ * @author laitv
+ *
+ */
+
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEMT_NEW_LAYOUT")
-public class PpemtNewLayout extends UkJpaEntity implements Serializable {
+@Entity
+@Table(name = "PPEMT_LAYOUT_ITEM_CLS")
+public class PpemtLayoutItemCls extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpemtNewLayoutPk ppemtNewLayoutPk;
+	public PpemtLayoutItemClsPk ppemtLayoutItemClsPk;
 
 	@Basic(optional = false)
-	@Column(name = "CID")
-	public String companyId;
+	@Column(name = "PER_INFO_CATEGORY_ID")
+	public String categoryId;
 
 	@Basic(optional = false)
-	@Column(name = "LAYOUT_CD")
-	public String layoutCode;
-
-	@Basic(optional = false)
-	@Column(name = "LAYOUT_NAME")
-	public String layoutName;
+	@Column(name = "LAYOUT_ITEM_TYPE")
+	public int itemType;
 
 	@Override
 	protected Object getKey() {
-		return this.ppemtNewLayoutPk;
+		return this.ppemtLayoutItemClsPk;
 	}
 }
