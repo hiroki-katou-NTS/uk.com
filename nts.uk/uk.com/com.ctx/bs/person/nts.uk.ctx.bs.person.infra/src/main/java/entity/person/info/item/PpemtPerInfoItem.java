@@ -21,7 +21,7 @@ public class PpemtPerInfoItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected PpemtPerInfoItemPK ppemtPerInfoItemPK;
+	public PpemtPerInfoItemPK ppemtPerInfoItemPK;
 
 	@Basic(optional = false)
 	@Column(name = "PER_INFO_CTG_ID")

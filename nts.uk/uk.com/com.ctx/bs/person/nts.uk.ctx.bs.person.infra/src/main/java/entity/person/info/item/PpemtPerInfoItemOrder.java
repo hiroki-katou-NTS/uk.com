@@ -22,7 +22,7 @@ public class PpemtPerInfoItemOrder extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected PpemtPerInfoItemPK ppemtPerInfoItemPK;
+	public PpemtPerInfoItemPK ppemtPerInfoItemPK;
 
 	@Basic(optional = false)
 	@NotNull

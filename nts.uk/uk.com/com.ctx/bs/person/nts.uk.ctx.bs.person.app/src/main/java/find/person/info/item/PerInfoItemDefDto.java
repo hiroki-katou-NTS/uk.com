@@ -13,5 +13,6 @@ public class PerInfoItemDefDto {
 	private int isRequired;
 	private int systemRequired;
 	private int requireChangable;
+	private int dispOrder;
 	private ItemTypeStateDto itemTypeState;
 }

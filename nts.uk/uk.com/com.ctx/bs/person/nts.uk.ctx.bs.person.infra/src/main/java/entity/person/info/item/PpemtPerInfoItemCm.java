@@ -23,7 +23,7 @@ public class PpemtPerInfoItemCm extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected PpemtPerInfoItemCmPK ppemtPerInfoItemCmPK;
+	public PpemtPerInfoItemCmPK ppemtPerInfoItemCmPK;
 
 	@Basic(optional = true)
 	@Column(name = "ITEM_PARENT_CD")
