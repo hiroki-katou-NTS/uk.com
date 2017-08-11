@@ -161,29 +161,40 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             
             var optionValue = '';
+            var conditionValue = '';
+            var afterValue = '';
             
             if(conditionNo === 1){
-                optionValue = self.conditionValue01() + $('.a7_8').text();
+                conditionValue = self.conditionValue01();
+                afterValue = $('.a7_8').text();
             } else if(conditionNo === 2){
-                optionValue = self.conditionValue02() + $('.a7_12').text();
+                conditionValue = self.conditionValue02();
+                afterValue = $('.a7_12').text();
             } else if(conditionNo === 3){
-                optionValue = self.conditionValue03() + $('.a7_16').text();
+                conditionValue = self.conditionValue03();
+                afterValue = $('.a7_16').text();
             } else if(conditionNo === 4){
-                optionValue = self.conditionValue04() + $('.a7_20').text();
+                conditionValue = self.conditionValue04();
+                afterValue = $('.a7_20').text();
             } else if(conditionNo === 5){
-                optionValue = self.conditionValue05() + $('.a7_24').text();
+                conditionValue = self.conditionValue05();
+                afterValue = $('.a7_24').text();
             }
             
             if(self.A7_4SelectedRuleCode() === 0) {
-                optionValue = nts.uk.resource.getText("KMF003_21") + ": " + optionValue;
+                optionValue = nts.uk.resource.getText("KMF003_21");
             } else {
-                optionValue = nts.uk.resource.getText("KMF003_22") + ": " + optionValue;
+                optionValue = nts.uk.resource.getText("KMF003_22");
             }
             
             var data = {
                 code: self.code(),
                 name: self.name(),
-                conditionValue: optionValue,
+                conditionValue: {
+                    option: optionValue,
+                    value: conditionValue,
+                    afterValue: afterValue
+                },
                 dateSelected: self.useConditionCls() ? self.grantDate() : ""
             };
             

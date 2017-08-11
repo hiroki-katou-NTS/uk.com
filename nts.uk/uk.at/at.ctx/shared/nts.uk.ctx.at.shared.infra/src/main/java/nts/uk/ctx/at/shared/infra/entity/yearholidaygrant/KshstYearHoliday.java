@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.shared.infra.entity.yearholidaygrant;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayName;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayNote;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -28,7 +30,7 @@ public class KshstYearHoliday extends UkJpaEntity {
 
 	/* 名称 */
 	@Column(name = "YEAR_HOLIDAY_NAME")
-	public YearHolidayName yearHolidayName;
+	public String yearHolidayName;
 
 	/* 計算方法 */
 	@Column(name = "CALCULATION_METHOD")
@@ -48,7 +50,10 @@ public class KshstYearHoliday extends UkJpaEntity {
 
 	/* 備考 */
 	@Column(name = "YEAR_HOLIDAY_NOTE")
-	public YearHolidayNote yearHolidayNote;
+	public String yearHolidayNote;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="yearHoliday", orphanRemoval = true)
+	public List<KshstGrantingCondition> grantingConditions;
 	
 	@Override
 	protected Object getKey() {

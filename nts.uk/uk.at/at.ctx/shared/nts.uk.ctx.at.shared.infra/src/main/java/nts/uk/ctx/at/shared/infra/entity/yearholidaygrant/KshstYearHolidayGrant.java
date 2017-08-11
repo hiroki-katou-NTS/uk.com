@@ -3,15 +3,13 @@ package nts.uk.ctx.at.shared.infra.entity.yearholidaygrant;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedDays;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimes;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.NumberMonths;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.NumberYears;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -31,23 +29,23 @@ public class KshstYearHolidayGrant extends UkJpaEntity {
 	
 	/* 年休付与日数 */
 	@Column(name = "GRANT_DAYS")
-	public GrantDays grantDays;
+	public int grantDays;
 	
 	/* 時間年休上限日数 */
 	@Column(name = "LIMITED_DAYS")
-	public LimitedDays limitedDays;
+	public int limitedDays;
 	
 	/* 半日年休上限回数 */
 	@Column(name = "LIMITED_CNT")
-	public LimitedTimes limitedTimes;
+	public int limitedTimes;
 	
 	/* 勤続年数月数 */
 	@Column(name = "NUMBER_MONTHS")
-	public NumberMonths numberMonths;
+	public int numberMonths;
 	
 	/* 勤続年数年数 */
 	@Column(name = "NUMBER_YEARS")
-	public NumberYears numberYears;
+	public int numberYears;
 	
 	/* 付与基準日 */
 	@Column(name = "GRANT_DAY_TYPE")
@@ -56,6 +54,14 @@ public class KshstYearHolidayGrant extends UkJpaEntity {
 	/* 一斉付与する */
 	@Column(name = "GRANT_SIMULTANEITY")
 	public int grantSimultaneity;
+	
+	@ManyToOne
+	@JoinColumns( {
+        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+        @JoinColumn(name = "YEAR_HOLIDAY_CD", referencedColumnName = "YEAR_HOLIDAY_CD", insertable = false, updatable = false),
+        @JoinColumn(name = "CONDITION_NO", referencedColumnName = "CONDITION_NO", insertable = false, updatable = false)
+    })
+	public KshstGrantingCondition grantingCondition;
 	
 	@Override
 	protected Object getKey() {

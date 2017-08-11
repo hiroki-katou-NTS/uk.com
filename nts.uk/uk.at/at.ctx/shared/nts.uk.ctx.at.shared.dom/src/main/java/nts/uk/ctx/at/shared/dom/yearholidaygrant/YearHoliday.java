@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 年休付与テーブル設定
@@ -33,10 +36,12 @@ public class YearHoliday {
 	private int simultaneousGrandMonthDays;
 
 	/* 備考 */
-	private YearHolidayNote yearHolidayNote;
+	private Memo yearHolidayNote;
+	
+	private List<GrantingCondition> grantConditions;
 
 	public YearHoliday(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName, int calculationMethod,
-			int standardCalculation, int useSimultaneousGrant, int simultaneousGrandMonthDays, YearHolidayNote yearHolidayNote) {
+			int standardCalculation, int useSimultaneousGrant, int simultaneousGrandMonthDays, Memo yearHolidayNote, List<GrantingCondition> grantConditions) {
 
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
@@ -46,5 +51,6 @@ public class YearHoliday {
 		this.useSimultaneousGrant = useSimultaneousGrant;
 		this.simultaneousGrandMonthDays = simultaneousGrandMonthDays;
 		this.yearHolidayNote = yearHolidayNote;
+		this.grantConditions = grantConditions;
 	}
 }
