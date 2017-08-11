@@ -773,35 +773,30 @@ module nts.custombinding {
             // validate editAble
             if (ko.unwrap(access.editAble) != undefined) {
                 if (typeof access.editAble == 'function') {
-                    $.extend(opts.sortable, {
-                        isEnabled: access.editAble
-                    });
+                    let edit: boolean = access.editAble();
+                    opts.sortable.isEnabled(edit);
                 }
                 else {
-                    $.extend(opts.sortable, {
-                        isEnabled: ko.observable(access.editAble)
-                    });
+                    opts.sortable.isEnabled(Boolean(access.editAble));
                 }
-                opts.sortable.isEnabled.subscribe(x => {
-                    if (!x) {
-                        self.$tmp.find('.left-area, .add-buttons, #cps007_btn_line').hide();
-                        $element
-                            .addClass('readonly')
-                            .removeClass('editable');
-                    } else {
-                        $element
-                            .addClass('editable')
-                            .removeClass('readonly');
-
-                        self.$tmp.find('.left-area, .add-buttons, #cps007_btn_line').show();
-                    }
-                });
-                opts.sortable.isEnabled.valueHasMutated();
-            } else {
-                $.extend(opts.sortable, {
-                    isEnabled: ko.observable(true)
-                });
             }
+
+            // editable
+            opts.sortable.isEnabled.subscribe(x => {
+                if (!x) {
+                    self.$tmp.find('.left-area, .add-buttons, #cps007_btn_line').hide();
+                    $element
+                        .addClass('readonly')
+                        .removeClass('editable');
+                } else {
+                    $element
+                        .addClass('editable')
+                        .removeClass('readonly');
+
+                    self.$tmp.find('.left-area, .add-buttons, #cps007_btn_line').show();
+                }
+            });
+            opts.sortable.isEnabled.valueHasMutated();
 
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });
