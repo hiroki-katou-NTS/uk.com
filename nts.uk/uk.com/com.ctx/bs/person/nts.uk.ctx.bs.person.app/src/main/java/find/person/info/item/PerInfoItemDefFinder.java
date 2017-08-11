@@ -12,11 +12,6 @@ import nts.uk.ctx.bs.person.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItem;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.CodeNameReferenceType;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.EnumReferenceCondition;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.MasterReferenceCondition;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.bs.person.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
@@ -53,31 +48,29 @@ public class PerInfoItemDefFinder {
 					return mappingFromDomaintoDto(item);
 				}).collect(Collectors.toList());
 	};
-	
-	//Function get data for Layout
+
+	// Function get data for Layout
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgIdForLayout(String perInfoCtgId) {
-		return pernfoItemDefRep
-				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().companyCode()).stream()
-				.map(item -> {
-					return mappingFromDomaintoDto(item);
-				}).collect(Collectors.toList());
-	};
-
-	public PerInfoItemDefDto getPerInfoItemDefByIdForLayout(String perInfoItemDefId) {
-		return pernfoItemDefRep.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().companyCode())
-				.map(item -> {
-					return mappingFromDomaintoDto(item);
-				}).orElse(null);
-	};
-
-	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
-		return pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().companyCode())
+		return pernfoItemDefRep.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode())
 				.stream().map(item -> {
 					return mappingFromDomaintoDto(item);
 				}).collect(Collectors.toList());
 	};
 
-	//mapping data from domain to DTO
+	public PerInfoItemDefDto getPerInfoItemDefByIdForLayout(String perInfoItemDefId) {
+		return pernfoItemDefRep.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).map(item -> {
+			return mappingFromDomaintoDto(item);
+		}).orElse(null);
+	};
+
+	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
+		return pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().contractCode()).stream()
+				.map(item -> {
+					return mappingFromDomaintoDto(item);
+				}).collect(Collectors.toList());
+	};
+
+	// mapping data from domain to DTO
 	private PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef) {
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,

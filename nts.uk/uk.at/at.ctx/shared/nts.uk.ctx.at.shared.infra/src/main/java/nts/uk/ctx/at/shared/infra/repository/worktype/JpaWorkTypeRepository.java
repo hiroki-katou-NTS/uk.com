@@ -27,8 +27,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static WorkType toDomain(KmnmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kmnmtWorkTypePK.companyId,
-				entity.kmnmtWorkTypePK.workTypeCode, entity.sortOrder, entity.symbolicName, entity.name,
-				entity.abbreviationName, entity.memo, entity.displayAtr);
+				entity.kmnmtWorkTypePK.workTypeCode, entity.sortOrder, entity.symbolicName,
+				entity.name, entity.abbreviationName, entity.memo, entity.displayAtr,
+				entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
+				entity.deprecateAtr);
 		return domain;
 	}
 

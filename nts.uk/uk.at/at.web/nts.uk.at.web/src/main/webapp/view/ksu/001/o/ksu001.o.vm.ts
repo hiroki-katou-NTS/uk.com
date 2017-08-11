@@ -57,6 +57,11 @@ module ksu001.o.viewmodel {
                 return [workTypeName, workTimeName];
             });
 
+            self.nameWorkTimeType.subscribe(function(value) {
+                //Paste data into cell (set-sticker-single)
+                $("#extable").exTable("stickData", value);
+            });
+
             $("#stick-undo").click(function() {
                 $("#extable").exTable("stickUndo");
             });

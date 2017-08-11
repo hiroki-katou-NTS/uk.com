@@ -11,7 +11,6 @@ module nts.uk.pr.view.ksu006.b {
                 .task(() => {
                     let dfd = $.Deferred();
                     nts.uk.request.specials.getAsyncTaskInfo(res.taskId).done(function(res: any) {
-                        console.log(res);
                         if (res.running || res.succeeded) {
                             _.forEach(res.taskDatas, item => {
                                 if (item.key == 'TOTAL_RECORD') {
@@ -42,11 +41,6 @@ module nts.uk.pr.view.ksu006.b {
                 .pause(1000))
             })
             .done(function(res: any) {
-                if (res) {
-                    console.log(res.finishedAt);
-                    screenModel.isDone(true);
-                    $('.countdown').stop();
-                }
             })
             .fail(function(res: any) {
                 nts.uk.ui.dialog.alertError(res.message);

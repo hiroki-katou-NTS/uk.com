@@ -18,31 +18,24 @@ public class PremiumSetting implements Validatable{
 	
 	private String historyID;
 	
-	private Integer premiumID;
+	private Integer displayNumber;
 	
     private PremiumRate rate;
     
-    private Integer attendanceID;
-    
     private PremiumName name;
-    
-    private Integer displayNumber;
     
     private UseAttribute useAtr;
     
     private List<Integer> attendanceItems;
 
-	public PremiumSetting(String companyID, String historyID, Integer premiumID, PremiumRate rate,
-			Integer attendanceID, PremiumName name, Integer displayNumber, UseAttribute useAtr,
-			List<Integer> attendanceItems) {
+    public PremiumSetting(String companyID, String historyID, Integer displayNumber, PremiumRate rate, PremiumName name,
+			UseAttribute useAtr, List<Integer> attendanceItems) {
 		super();
 		this.companyID = companyID;
 		this.historyID = historyID;
-		this.premiumID = premiumID;
-		this.rate = rate;
-		this.attendanceID = attendanceID;
-		this.name = name;
 		this.displayNumber = displayNumber;
+		this.rate = rate;
+		this.name = name;
 		this.useAtr = useAtr;
 		this.attendanceItems = attendanceItems;
 	}
@@ -51,5 +44,4 @@ public class PremiumSetting implements Validatable{
 	public void validate() {
 		this.rate.validate();
 	}
-    
 }

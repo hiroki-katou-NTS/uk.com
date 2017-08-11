@@ -22,9 +22,9 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private ItemTypeState itemTypeState;
 	
 	public final static String ROOT_CONTRACT_CODE = "000000000000";
-
+	
 	private PersonInfoItemDefinition(String perInfoCategoryId, String itemCode, String itemParentCode, String itemName,
-			int isAbolition, int isFixed, int isRequired, int systemRequired, int requireChangable) {
+			int isAbolition, int isFixed, int isRequired) {
 		super();
 		this.perInfoItemDefId = IdentifierUtil.randomUniqueId();
 		this.perInfoCategoryId = perInfoCategoryId;
@@ -34,8 +34,8 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 		this.isRequired = EnumAdaptor.valueOf(isRequired, IsRequired.class);
-		this.systemRequired = EnumAdaptor.valueOf(systemRequired, SystemRequired.class);
-		this.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
+		this.systemRequired = SystemRequired.NONE_REQUIRED;
+		this.requireChangable = RequireChangable.NONE_REQUIRED;
 	}
 
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemCode,
@@ -55,10 +55,9 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	}
 
 	public static PersonInfoItemDefinition createFromJavaType(String personInfoCategoryId, String itemCode,
-			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired, int systemRequired,
-			int requireChangable) {
+			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired) {
 		return new PersonInfoItemDefinition(personInfoCategoryId, itemCode, itemParentCode, itemName, isAbolition,
-				isFixed, isRequired, systemRequired, requireChangable);
+				isFixed, isRequired);
 	}
 
 	public static PersonInfoItemDefinition createFromEntity(String perInfoItemDefId, String perInfoCategoryId,
