@@ -19,6 +19,8 @@ public interface PernfoItemDefRepositoty {
 
 	String getPerInfoItemCodeLastest(String contractCd, String categoryCd);
 
-	boolean checkItemNameIsUnique(String perInfoCtgId);
+	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName);
+	
+	void addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId);
 
 }

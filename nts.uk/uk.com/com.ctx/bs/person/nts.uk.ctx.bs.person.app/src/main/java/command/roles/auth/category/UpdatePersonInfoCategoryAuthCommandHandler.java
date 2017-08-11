@@ -30,7 +30,7 @@ public class UpdatePersonInfoCategoryAuthCommandHandler extends CommandHandler<U
 		String companyId = AppContexts.user().companyId();
 		category.getLstCategory().stream().forEach(p -> {
 
-			PersonInfoRoleAuth roleAuth = this.roleAuthRepo.getDetailPersonRoleAuth(p.getRoleId()).orElse(null);
+			PersonInfoRoleAuth roleAuth = this.roleAuthRepo.getDetailPersonRoleAuth(p.getRoleId(), AppContexts.user().companyId()).orElse(null);
 			if (roleAuth == null) {
 				PersonInfoRoleAuth addRoleAuth = PersonInfoRoleAuth.createFromJavaType(p.getRoleId(), companyId, 0, 0,
 						0, 0, 0, 0);

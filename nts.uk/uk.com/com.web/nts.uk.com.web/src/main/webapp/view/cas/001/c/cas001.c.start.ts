@@ -12,7 +12,7 @@ $(function() {
         columns: [
             {
                 headerText: text('CAS001_7'), key: 'check', width: "40px", height: "40px",
-                template: "<input data-id='${roleCode}' type='checkbox' tabindex='1'/>"
+                template: "<input data-id='${roleId}' type='checkbox' tabindex='1'/>"
             }
             ,
             { headerText: "roleID", key: "roleId", dataType: "string", width: "90px", height: "40px", hidden: true},

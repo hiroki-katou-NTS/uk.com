@@ -14,14 +14,15 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-
 			<com:stylefile path="cps008.b.style.css" />
+			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 			<com:scriptfile path="cps008.b.service.js" />
 			<com:scriptfile path="cps008.b.vm.js" />
 			<com:scriptfile path="cps008.b.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
+			<div data-bind="ntsLayoutControl: { data: ko.observableArray([]) }"></div>
 		</ui:define>
 	</ui:composition>
 </body>

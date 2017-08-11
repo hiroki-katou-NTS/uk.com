@@ -40,6 +40,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String SELECT_GET_DISPORDER_CTG_OF_COMPANY_QUERY = "SELECT od.disporder PpemtPerInfoCtgOrder od"
 			+ " WHERE od.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId AND od.cid = :companyId ORDER BY od.disporder DESC";
 
+	private final static String SELECT_LIST_CTG_ID_QUERY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryCd = :categoryCd";
+
+	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
+			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName";
+
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
@@ -65,6 +71,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			return ctgCodeLastest.get(0);
 		}
 		return null;
+	}
+
+	@Override
+	public List<String> getPerInfoCtgIdList(String companyId, String categoryCd) {
+		return this.queryProxy().query(SELECT_LIST_CTG_ID_QUERY, String.class).setParameter("companyId", companyId)
+				.setParameter("categoryCd", categoryCd).getList();
 	}
 
 	@Override
@@ -99,7 +111,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public boolean checkCtgNameIsUnique(String companyId, String newCtgName) {
-		// TODO Auto-generated method stub
+		List<String> categoryNames = this.queryProxy().query(SELECT_CHECK_CTG_NAME_QUERY, String.class)
+				.setParameter("companyId", companyId).setParameter("categoryName", newCtgName).getList();
+		if (categoryNames == null || categoryNames.isEmpty()) {
+			return true;
+		}
 		return false;
 	}
 
@@ -166,5 +182,4 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtgId);
 		return new PpemtPerInfoCtgOrder(perInfoCtgPK, companyId, disOrder);
 	}
-
 }

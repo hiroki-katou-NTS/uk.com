@@ -31,15 +31,7 @@ module cps008.a.viewmodel {
 
             layout.id.subscribe(id => {
                 if (id) {
-                    // demo subscrible
-                    /*let items: Array<ILayout> = ko.toJS(layouts),
-                        item: ILayout = _.find(items, x => x.id == id);
-
-                    if (item) {
-                        layout.code(item.code);
-                        layout.name(item.name);
-                    }*/
-
+                    
                     // Gọi service tải dữ liệu ra layout
                     service.getDetails(id).done((data: any) => {
                         if (data) {
@@ -71,6 +63,11 @@ module cps008.a.viewmodel {
                 data: ILayout = ko.toJS(self.layout);
 
             // call service savedata
+            service.saveData(data).done((data: any) => {
+                if (data) {
+
+                }
+            });
         }
 
         copyDataLayout() {
@@ -80,17 +77,26 @@ module cps008.a.viewmodel {
 
             setShared('CPS008_PARAM', data);
             modal('../c/index.xhtml').onClosed(() => {
-                let _data = getShared('CPS008_VALUE');
+                let _data = getShared('CPS008C_RESPONE');
+                debugger;
                 if (_data) {
                     layout.code(_data.code);
                     layout.name(_data.name);
 
-                    if (_data.action == LAYOUT_ACTION.OVERRIDE) {
+                    if (_data.action) {
                         layout.action(LAYOUT_ACTION.OVERRIDE);
                     } else {
                         layout.action(LAYOUT_ACTION.COPY);
                     }
                     // call saveData service
+                    let _layout: Layout = self.layout(),
+                        __data: ILayout = ko.toJS(self.layout);
+                    service.saveData(__data).done((data: any) => {
+                        if (data) {
+
+                        }
+                    });
+
                 }
             });
         }
@@ -129,7 +135,6 @@ module cps008.a.viewmodel {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         classifications: KnockoutObservableArray<any> = ko.observableArray([]);
-
         action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.INSERT);
 
         constructor(param: ILayout) {

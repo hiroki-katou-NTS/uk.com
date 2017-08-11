@@ -4,10 +4,20 @@ module nts.custombinding {
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
     import text = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+
+    export class LetControl implements KnockoutBindingHandler {
+        init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
+            // Make a modified binding context, with extra properties, and apply it to descendant elements
+            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
+
+            return { controlsDescendantBindings: true };
+        }
+    }
 
     export class LayoutControl implements KnockoutBindingHandler {
         $tmp = $(`<div>
@@ -100,35 +110,35 @@ module nts.custombinding {
                         border: 1px dashed transparent;
                     }
 
-                    .layout-control .item-classification>div.item-control>*,
-                    .layout-control .item-classification>div.item-controls>* {
+                    .layout-control .item-classification div.item-control>*,
+                    .layout-control .item-classification div.item-controls>* {
                         overflow: hidden;
                         display: inline-block;
                         vertical-align: middle;
                     }
 
-                    .layout-control .item-classification>div.item-controls>* {
+                    .layout-control .item-classification div.item-controls>* {
                         vertical-align: top;
                     }
 
-                    .layout-control .item-classification>div.item-controls table,
-                    .layout-control .item-classification>div.item-controls table th,
-                    .layout-control .item-classification>div.item-controls table td {
+                    .layout-control .item-classification div.item-controls table,
+                    .layout-control .item-classification div.item-controls table th,
+                    .layout-control .item-classification div.item-controls table td {
                         width: 380px;
                         border: 1px solid #ccc;
                     }
 
-                    .layout-control .item-classification>div.item-controls table th {
+                    .layout-control .item-classification div.item-controls table th {
                         padding: 3px;
                         line-height: 24px;
                         background-color: #E0F59E;
                     }
 
-                    .layout-control .item-classification>div.item-controls table td {
+                    .layout-control .item-classification div.item-controls table td {
                         line-height: 24px;
                     }
 
-                    .layout-control .item-classification>div.item-sperator>hr {
+                    .layout-control .item-classification div.item-sperator>hr {
                         padding: 0;
                         margin: 6px 0;
                         margin-right: 20px;
@@ -200,35 +210,72 @@ module nts.custombinding {
                     <div class="drag-panel">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification">
-                                <div data-bind="if: $data.layoutItemType == 0" class="item-control">
-                                    <div data-bind="ntsFormLabel: {}, text: className"></div>
-                                    <div data-bind="if: $data.listItemDf[0].itemTypeState.itemType == 1">
-                                        <select>
-                                            <option>項目</option>
-                                        <select>
-                                    </div>
-                                    <div data-bind="if: $data.listItemDf[0].itemTypeState.itemType == 2">
-                                        <input tabindex="-1" data-bind="ntsTextEditor: {
-                                                    value: ko.observable(''),
-                                                    constraint: '',
-                                                    option: {},
-                                                    required: false,
-                                                    enable: true,
-                                                    readonly: true,
-                                                    immediate: false}" />
+                                <div data-bind="if: $data.layoutItemType == 0">
+                                    <div data-bind="let: { item: $data.listItemDf[0], listItemDf: $data.listItemDf}" class="item-control">
+                                        <div data-bind="ntsFormLabel: {}, text: className"></div>
+                                        <div data-bind="if: item.itemTypeState.itemType == 1">
+                                            <div id="combo-box" data-bind="ntsComboBox: {
+                                                options: ko.observableArray([]),
+                                                optionsValue: 'code',
+                                                visibleItemsCount: 5,
+                                                value: ko.observable(''),
+                                                optionsText: 'name',
+                                                editable: false,
+                                                enable: true,
+                                                columns: [{ prop: 'name', length: 10 }]}"></div>
+                                        </div>
+                                        <div data-bind="if: item.itemTypeState.itemType == 2">
+                                            <div data-bind="let: { single: item.itemTypeState.dataTypeState }">
+                                                <div data-bind="if: single.dataTypeValue == 1">
+                                                    <input data-bind="ntsTextEditor: {
+                                                                value: ko.observable(''),
+                                                                constraint: '',
+                                                                option: {},
+                                                                required: false,
+                                                                enable: true,
+                                                                readonly: true,
+                                                                immediate: false}" />
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 2">
+                                                    <input data-bind="ntsNumberEditor: {
+                                                            value: ko.observable(undefined)
+                                                        }" />
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 3">
+                                                    <div data-bind="ntsDatePicker: {value: ko.observable(undefined), dateFormat: 'YYYY/MM/DD'}"></div>
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 4">
+                                                    <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 5">
+                                                    <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
+                                                </div>
+                                                <div data-bind="if: single.dataTypeValue == 6">
+                                                    <div id="combo-box" data-bind="ntsComboBox: {
+                                                        options: ko.observableArray([]),
+                                                        optionsValue: 'code',
+                                                        visibleItemsCount: 5,
+                                                        value: ko.observable(''),
+                                                        optionsText: 'name',
+                                                        editable: false,
+                                                        enable: true,
+                                                        columns: [{ prop: 'name', length: 10 }]}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div data-bind="if: $data.layoutItemType == 1" class="item-controls">
                                     <div data-bind="ntsFormLabel: {}, text: className"></div>
-                                    <div>
+                                    <div data-bind="let: { items: listItemDf }">
                                         <table>
                                             <thead>
-                                                <tr data-bind="foreach: listItemDf">
+                                                <tr data-bind="foreach: items">
                                                     <th data-bind="text: itemName"></th>
                                                 </tr>
                                             </thead>
                                             <tbody data-bind="foreach: [1, 2, 3]">
-                                                <tr data-bind="foreach: $parent.listItemDf">
+                                                <tr data-bind="foreach: items">
                                                     <td>&nbsp;</td>
                                                 </tr>
                                             </tbody>
@@ -408,7 +455,7 @@ module nts.custombinding {
                         }
                     });*/
                 },
-                removeItem: (data) => {
+                removeItem: (data: IItemClassification) => {
                     let self = this,
                         opts = self.options,
                         items = opts.sortable.data;
@@ -429,6 +476,35 @@ module nts.custombinding {
                             });
                         }
                     });
+                },
+                pushItem: (data: IItemClassification) => {
+                    let self = this,
+                        opts = self.options,
+                        items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
+
+                    switch (data.layoutItemType) {
+                        case IT_CLA_TYPE.ITEM:
+                            let item = _.find(ko.unwrap(items), (x: IItemClassification) => x.layoutItemType == IT_CLA_TYPE.ITEM && x.listItemDf[0].id == data.listItemDf[0].id);
+                            if (!item) {
+                                items.push(data);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        case IT_CLA_TYPE.LIST:
+                            items.push(data);
+                            return true;
+                        case IT_CLA_TYPE.SPER:
+                            // add line to list sortable
+                            let last: any = _.last(ko.unwrap(items));
+
+                            if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
+                                items.push(data);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                    }
                 }
             }
         };
@@ -530,7 +606,7 @@ module nts.custombinding {
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
                                     if (data && data.length) {
                                         opts.listbox.options(data);
-                                        opts.listbox.value(data[0].id);
+                                        opts.listbox.value(undefined);
                                     }
                                 });
                                 break;
@@ -545,7 +621,7 @@ module nts.custombinding {
                                     itemName: item.categoryName + text('CPS007_21'),
                                     itemTypeState: undefined, // item.categoryType
                                 };
-                                opts.listbox.value(def.id);
+                                opts.listbox.value(undefined);
                                 opts.listbox.options.push(def);
                                 break;
                         }
@@ -558,23 +634,25 @@ module nts.custombinding {
 
             // events handler
             $(ctrls.line).on('click', function() {
-                // add line to list sortable
-                let data: Array<any> = ko.unwrap(opts.sortable.data),
-                    last = _.last(data),
-                    item: IItemClassification = {
-                        layoutID: random(),
-                        dispOrder: -1,
-                        personInfoCategoryID: undefined,
-                        listItemDf: undefined,
-                        layoutItemType: IT_CLA_TYPE.SPER
-                    };
+                let item: IItemClassification = {
+                    layoutID: random(),
+                    dispOrder: -1,
+                    personInfoCategoryID: undefined,
+                    listItemDf: undefined,
+                    layoutItemType: IT_CLA_TYPE.SPER
+                };
 
-                if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
-                    opts.sortable.data.push(item);
-                }
+                // add line to list sortable
+                opts.sortable.pushItem(item);
             });
 
             $(ctrls.button).on('click', () => {
+                // アルゴリズム「項目追加処理」を実行する
+                // Execute the algorithm "項目追加処理"
+                if (!ko.toJS(opts.listbox.value)) {
+                    alert(text('Msg_203'));
+                    return;
+                }
                 // category mode
                 if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
                     let cid: string = ko.toJS(opts.comboxbox.value),
@@ -600,6 +678,7 @@ module nts.custombinding {
                                                 listItemDf: _data
                                             };
                                             opts.sortable.data.push(item);
+                                            opts.listbox.value(undefined);
                                         });
                                     });
                                 }
@@ -623,7 +702,13 @@ module nts.custombinding {
                                         item.className = def.itemName;
                                         item.personInfoCategoryID = def.perInfoCtgId;
 
-                                        opts.sortable.data.push(item);
+                                        if (opts.sortable.pushItem(item)) {
+                                            opts.listbox.value(undefined);
+                                        } else {
+                                            // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                                            // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                                            alert(text('Msg_202'));
+                                        }
                                     }
                                 });
                             }
@@ -648,7 +733,8 @@ module nts.custombinding {
                                         listItemDf: [x]
                                     };
 
-                                    opts.sortable.data.push(_items)
+                                    opts.sortable.data.push(_items);
+                                    opts.listbox.value(undefined);
                                 });
                             }
                         });
@@ -720,7 +806,7 @@ module nts.custombinding {
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
-                _.each(data, (x, i) => x.dispOrder = i + 1);
+                _.each(data, (x, i) => { x.dispOrder = i + 1; x.layoutID = random() });
             });
 
             // extend data of sortable with valueAccessor beforeMove prop
@@ -795,7 +881,7 @@ module nts.custombinding {
 
     interface IItemClassification {
         layoutID?: string;
-        dispOrder: number;
+        dispOrder?: number;
         className?: string; // only for display if classification is set or duplication item
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
@@ -841,9 +927,9 @@ module nts.custombinding {
     }
 
     interface IItemString {
-        stringItemDataType?: number;
+        stringItemDataType?: ITEM_STRING_DTYPE;
         stringItemLength?: number;
-        stringItemType?: number;
+        stringItemType?: ITEM_STRING_TYPE;
     }
 
     interface IItemTimePoint {
@@ -915,6 +1001,24 @@ module nts.custombinding {
         SELECTION = 6
     }
 
+    // define ITEM_STRING_DATA_TYPE
+    enum ITEM_STRING_DTYPE {
+        FIXED_LENGTH = 1, // fixed length
+        VARIABLE_LENGTH = 2 // variable length
+    }
+
+    enum ITEM_STRING_TYPE {
+        ANY = 1,
+        // 2:全ての半角文字(AnyHalfWidth)
+        ANYHALFWIDTH = 2,
+        // 3:半角英数字(AlphaNumeric)
+        ALPHANUMERIC = 3,
+        // 4:半角数字(Numeric)
+        NUMERIC = 4,
+        // 5:全角カタカナ(Kana)
+        KANA = 5
+    }
+
     // define ITEM_SELECT_TYPE
     // type of item if it's selection item
     enum ITEM_SELECT_TYPE {
@@ -926,5 +1030,5 @@ module nts.custombinding {
         ENUM = 3
     }
 }
-
+ko.bindingHandlers['let'] = new nts.custombinding.LetControl();
 ko.bindingHandlers["ntsLayoutControl"] = new nts.custombinding.LayoutControl();
