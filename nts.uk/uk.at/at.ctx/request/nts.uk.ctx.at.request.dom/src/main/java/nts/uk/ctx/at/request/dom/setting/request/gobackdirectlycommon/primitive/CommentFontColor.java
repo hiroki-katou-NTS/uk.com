@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.applicationapproval.gobackdirectlycommon.primitive;
+package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

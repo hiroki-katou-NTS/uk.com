@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.setting.applicationapproval.gobackdirectlycommon;
+package nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -15,9 +15,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name="KRQMT_GO_BACK_DIRECT_SET")
-public class KrqstGoBackDirectSet extends UkJpaEntity{
+public class KrqmtGoBackDirectSet extends UkJpaEntity{
 	@EmbeddedId
-	public KrqstGoBackDirectSetPK krqmtGoBackDirectSetPK;
+	public KrqmtGoBackDirectSetPK krqmtGoBackDirectSetPK;
 	
 	
 	@Column(name="WORK_CHANGE_FLG")

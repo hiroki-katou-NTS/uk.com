@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.setting.applicationapproval.gobackdirectlycommon;
+package nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrqstGoBackDirectSetPK {
+public class KrqmtGoBackDirectSetPK {
 	@Column(name = "CID")
 	public String companyID;
 

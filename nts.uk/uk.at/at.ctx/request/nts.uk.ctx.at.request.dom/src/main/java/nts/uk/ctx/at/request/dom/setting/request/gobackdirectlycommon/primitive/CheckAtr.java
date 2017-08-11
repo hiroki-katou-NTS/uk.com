@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.applicationapproval.gobackdirectlycommon.primitive;
+package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive;
 /** 矛盾チェック区分*/
 public enum CheckAtr {
 	/* チェックしない */

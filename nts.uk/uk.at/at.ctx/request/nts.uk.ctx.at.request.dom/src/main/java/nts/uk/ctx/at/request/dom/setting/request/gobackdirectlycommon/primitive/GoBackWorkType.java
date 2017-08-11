@@ -1,7 +1,7 @@
-package nts.uk.ctx.at.request.dom.setting.applicationapproval.gobackdirectlycommon.primitive;
+package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive;
 
 /** 勤務種類 */
-public enum WorkType {
+public enum GoBackWorkType {
 	/* 0:出勤の勤務種類 */
 	ATTENDANCE(0),
 	/* 1:出勤系の勤務種類 */
@@ -9,7 +9,7 @@ public enum WorkType {
 
 	public final int value;
 
-	WorkType(int value) {
+	GoBackWorkType(int value) {
 		this.value = value;
 	}
 
