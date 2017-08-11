@@ -33,8 +33,8 @@ module nts.uk.at.view.ksm005.e {
 
             constructor() {
                 var self = this;
-                self.startYearMonth = ko.observable(201701);
-                self.endYearMonth = ko.observable(201712);
+                self.startYearMonth = ko.observable(parseInt(moment().format('YYYY')+'01'));
+                self.endYearMonth = ko.observable(parseInt(moment().format('YYYY')+'12'));
                 self.overwirte = ko.observable(true);
                 self.worktypeInfoWorkDays = ko.observable('');
                 self.worktimeInfoWorkDays = ko.observable('');
