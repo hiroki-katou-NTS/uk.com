@@ -1,25 +1,32 @@
 module nts.uk.at.view.kdl003.a {
     export module viewmodel {
         export class ScreenModel {
-            columns: KnockoutObservableArray<NtsGridListColumn>;
-            listWorkTime: KnockoutObservableArray<WorkTimeSet>;
-            selectedWorkTimeCode: KnockoutObservable<string>;
-            searchOption: KnockoutObservable<number>;
+
+            // Search option.
             startTimeOption: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
 
+            // Data list & selected code.
+            listWorkTime: KnockoutObservableArray<WorkTimeSet>;
+            selectedWorkTimeCode: KnockoutObservable<string>;
             listWorkType: KnockoutObservableArray<WorkType>;
             selectedWorkTypeCode: KnockoutObservable<string>;
 
+            // Define columns.
+            workTimeColumns: KnockoutObservableArray<NtsGridListColumn>;
             workTypeColumns: KnockoutObservableArray<NtsGridListColumn>;
 
+            // Initial work time code list..
+            initialWorkTimeCodes: Array<String>;
+
+            // Parameter from caller screen.
             callerParameter: CallerParameter;
 
             constructor(parentData: CallerParameter) {
                 var self = this;
-                self.columns = ko.observableArray([
+                self.workTimeColumns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
@@ -28,7 +35,6 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
                 self.selectedWorkTimeCode = ko.observable('');
-                self.searchOption = ko.observable(0);
                 self.startTimeOption = ko.observable(1);
                 self.startTime = ko.observable(null);
                 self.endTimeOption = ko.observable(1);
@@ -75,8 +81,13 @@ module nts.uk.at.view.kdl003.a {
                 $.when(self.loadWorkTime(),
                     self.loadWorkType())
                     .done(() => {
+                        // Set initial selection.
                         self.initWorkTypeSelection();
                         self.initWorkTimeSelection();
+
+                        // Set initial work time list.
+                        self.initialWorkTimeCodes = _.map(self.listWorkTime(), function(item) { return item.code })
+
                         dfd.resolve();
                     })
                     .fail(function(res) {
@@ -192,7 +203,7 @@ module nts.uk.at.view.kdl003.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
-                    codelist: _.map(self.listWorkTime, function(item) { return item.code }),
+                    codelist: self.initialWorkTimeCodes,
                     startAtr: self.startTimeOption(),
                     startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? -1 : self.startTime(),
                     endAtr: self.endTimeOption(),
@@ -201,6 +212,9 @@ module nts.uk.at.view.kdl003.a {
                 service.findByTime(command)
                     .done(function(data) {
                         self.listWorkTime(data);
+                        if (data && data.length > 0) {
+                            self.selectedWorkTimeCode(data[0].code);
+                        }
                     })
                     .fail(function(res) {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
