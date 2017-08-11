@@ -14,6 +14,7 @@ module nts.uk.at.view.ksm005.e {
 
         export class ScreenModel {
             monthlyPatternCode: string;
+            monthlyPatternName: string;
             startYearMonth: KnockoutObservable<number>;
             endYearMonth: KnockoutObservable<number>;
             overwirte: KnockoutObservable<boolean>;
@@ -49,6 +50,7 @@ module nts.uk.at.view.ksm005.e {
                 self.monthlyPatternSettingBatchNoneStatutoryHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternSettingBatchPublicHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternCode = nts.uk.ui.windows.getShared("monthlyPatternCode");
+                self.monthlyPatternName = nts.uk.ui.windows.getShared("monthlyPatternName");
             }
 
 
@@ -227,7 +229,8 @@ module nts.uk.at.view.ksm005.e {
                     overwrite: self.overwirte(),
                     startYearMonth: self.startYearMonth(),
                     endYearMonth: self.endYearMonth(),
-                    monthlyPatternCode: self.monthlyPatternCode
+                    monthlyPatternCode: self.monthlyPatternCode,
+                    monthlyPatternName: self.monthlyPatternName
                 };    
                 return dto;
             }
