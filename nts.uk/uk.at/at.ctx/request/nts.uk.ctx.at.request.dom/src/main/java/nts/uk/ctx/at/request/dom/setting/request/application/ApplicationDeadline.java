@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.request.application;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
 
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.UseAtr;
  *
  */
 @AllArgsConstructor
-public class ApplicationDeadlineSetting {
+public class ApplicationDeadline extends AggregateRoot {
 	/**　会社ID*/
 	public String companyId;
 	/**
@@ -36,8 +37,13 @@ public class ApplicationDeadlineSetting {
 	 */
 	public DeadlineCriteria deadlineCriteria;
 
-	public static ApplicationDeadlineSetting createSimpleFromJavaType(String companyId,int closureId, int appType, int userAtr, String deadline, int deadlineCriteria) {
-		return new ApplicationDeadlineSetting(companyId,
+	public static ApplicationDeadline createSimpleFromJavaType(String companyId,
+			int closureId, 
+			int appType,
+			int userAtr,
+			String deadline,
+			int deadlineCriteria) {
+		return new ApplicationDeadline(companyId,
 				closureId,
 				EnumAdaptor.valueOf(appType, ApplicationType.class),
 				EnumAdaptor.valueOf(userAtr, UseAtr.class),

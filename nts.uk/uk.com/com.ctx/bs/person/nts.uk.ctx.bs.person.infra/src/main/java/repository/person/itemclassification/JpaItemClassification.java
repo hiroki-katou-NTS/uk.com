@@ -15,7 +15,7 @@ import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutPersonInfoCla
 @Stateless
 public class JpaItemClassification extends JpaRepository implements ILayoutPersonInfoClsRepository {
 
-	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE c PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId";
+	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId";
 	private static final String GET_ALL_ITEM_CLASSIFICATION = "SELECT c FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
 
 	@Override
@@ -34,13 +34,14 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 	@Override
 	public void addClassifications(List<LayoutPersonInfoClassification> domains) {
 		// add all classification to db when save layout
-		commandProxy().insertAll(domains.stream().map(item -> toEntity(item)).collect(Collectors.toList()));
+		List<PpemtLayoutItemCls> entities = domains.stream().map(item -> toEntity(item)).collect(Collectors.toList());
+		commandProxy().insertAll(entities);
 	}
 
 	@Override
 	public void removeAllByLayoutId(String layoutId) {
 		// remove all classifications when update or override layout
-		queryProxy().query(REMOVE_ALL_BY_LAYOUT_ID).setParameter("layoutId", layoutId);
+		getEntityManager().createQuery(REMOVE_ALL_BY_LAYOUT_ID).setParameter("layoutId", layoutId).executeUpdate();
 	}
 
 	private LayoutPersonInfoClassification toDomain(PpemtLayoutItemCls entity) {

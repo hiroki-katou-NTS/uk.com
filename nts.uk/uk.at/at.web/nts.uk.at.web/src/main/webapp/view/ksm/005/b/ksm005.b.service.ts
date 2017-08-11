@@ -52,8 +52,8 @@ module nts.uk.at.view.ksm005.b {
         /**
          * call service save all work monthly setting by month
          */
-        export function saveMonthWorkMonthlySetting(settings: model.WorkMonthlySettingDto[]): JQueryPromise<void> {
-            return nts.uk.request.ajax('at', paths.saveMonthWorkMonthlySetting, {workMonthlySetting: settings});
+        export function saveMonthWorkMonthlySetting(settings: model.WorkMonthlySettingDto[], dto: model.MonthlyPatternDto, mode: number): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.saveMonthWorkMonthlySetting, {workMonthlySetting: settings, mode: mode, monthlyPattern: dto});
         }
         export module model {
 

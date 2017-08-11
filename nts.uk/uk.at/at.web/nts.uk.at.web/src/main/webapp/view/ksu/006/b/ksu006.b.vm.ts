@@ -54,11 +54,12 @@ module nts.uk.pr.view.ksu006.b {
                 // subscribe
                 self.isDone.subscribe((state) => {
                     if (state) {
+                        if (self.numberFail() <= 0) {
+                            return;
+                        }
                         self.loadDetailError().done(() => {
-                            if (self.numberFail() > 0) {
-                                nts.uk.ui.windows.getSelf().setSize(650, 880);
-                                self.hasError(true);
-                            }
+                            self.hasError(true);
+                            nts.uk.ui.windows.getSelf().setSize(self.isGreaterThanTenError() ? 650 : 620, 870);
                         });
                     }
                 });
@@ -71,11 +72,21 @@ module nts.uk.pr.view.ksu006.b {
                 return dfd.promise();
             }
             
-            public getTextButton(): string {
-                if (this.isDone()) {
-                    return nts.uk.resource.getText("KSU006_215");
-                }
-                return nts.uk.resource.getText("KSU006_214");
+            public downloadDetailError() {
+                let self = this;
+                nts.uk.ui.block.grayout();
+                service.downloadDetailError(self.executeId()).done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                }).always(function(res) {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+            public stopImporting() {
+                // TODO: interrupt process import then close dialog
+                nts.uk.ui.windows.close();
             }
             
             public closeDialog() {

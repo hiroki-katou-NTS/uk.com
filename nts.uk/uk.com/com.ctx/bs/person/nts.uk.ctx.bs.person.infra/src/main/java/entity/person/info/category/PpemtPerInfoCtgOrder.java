@@ -21,7 +21,7 @@ public class PpemtPerInfoCtgOrder extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
+	public PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
 	
 	@Basic(optional = false)
 	@Column(name = "CID")

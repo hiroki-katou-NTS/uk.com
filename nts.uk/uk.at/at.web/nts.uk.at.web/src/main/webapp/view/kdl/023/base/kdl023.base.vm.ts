@@ -27,6 +27,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         isOnScreenA: KnockoutObservable<boolean>;
         isMasterDataUnregisterd: KnockoutObservable<boolean>;
         isOutOfCalendarRange: KnockoutObservable<boolean>;
+        isDataEmpty: boolean;
         buttonReflectPatternText: KnockoutObservable<string>;
 
         // Calendar component
@@ -56,6 +57,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.isMasterDataUnregisterd = ko.observable(false);
             self.isOutOfCalendarRange = ko.observable(false);
             self.buttonReflectPatternText = ko.observable('');
+            self.isDataEmpty = false;
 
             // Calendar component
             self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
@@ -90,9 +92,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.loadWeeklyWorkSetting()) // Load weekly work setting.
                 .done(() => self.loadPatternReflection() // Load pattern reflection.
                     .done(() => {
-
-                        // Set button reflect pattern text.
-                        self.setButtonReflectPatternText();
 
                         // Check if dailyPatternList has data.
                         if (!self.dailyPatternList() || !self.dailyPatternList()[0]) {
@@ -138,6 +137,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         nts.uk.ui.dialog.alert(res.message);
                         dfd.fail();
                     }).always(() => {
+                        // Set button reflect pattern text.
+                        self.setButtonReflectPatternText();
+
+                        // Show message Msg_37 then close dialog.
+                        if (self.isDataEmpty) {
+                            self.showErrorThenCloseDialog();
+                        }
+
                         nts.uk.ui.block.clear();
                     });
             return dfd.promise();
@@ -242,7 +249,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 if (list && list.length > 0) {
                     self.dailyPatternList(list);
                 } else {
-                    self.showErrorThenCloseDialog();
+                    self.isDataEmpty = true;
                 }
                 dfd.resolve();
             }).fail(() => {
@@ -305,7 +312,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 if (list && list.length > 0) {
                     self.listWorkType(list);
                 } else {
-                    self.showErrorThenCloseDialog();
+                    self.isDataEmpty = true;
                 }
                 dfd.resolve();
             }).fail(() => {

@@ -7,6 +7,9 @@ package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class ExecutionProcessCommand.
+ */
 @Setter
 @Getter
 public class ExecutionProcessCommand {

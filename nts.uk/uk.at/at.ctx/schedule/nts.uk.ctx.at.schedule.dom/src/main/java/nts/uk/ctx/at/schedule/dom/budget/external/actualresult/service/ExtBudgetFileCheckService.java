@@ -13,6 +13,8 @@ public interface ExtBudgetFileCheckService {
      * Valid file format.
      *
      * @param fileId the file id
+     * @param encoding the encoding
+     * @param startLine the start line
      */
-    void validFileFormat(String fileId);
+    void validFileFormat(String fileId, Integer encoding, Integer startLine);
 }

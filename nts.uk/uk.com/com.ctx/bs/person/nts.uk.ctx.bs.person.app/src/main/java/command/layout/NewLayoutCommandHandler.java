@@ -43,7 +43,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 		clsDefRepo.removeAllByLayoutId(update.getLayoutID());
 
 		//
-		List<ClassificationCommand> classCommands = command.getListClass();
+		List<ClassificationCommand> classCommands = command.getItemsClassification();
 		if (!classCommands.isEmpty()) {
 			// add all classification on client to db
 			classfRepo.addClassifications(classCommands.stream()
