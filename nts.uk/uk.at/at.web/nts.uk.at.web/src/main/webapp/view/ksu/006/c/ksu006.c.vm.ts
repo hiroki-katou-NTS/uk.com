@@ -49,7 +49,7 @@ module nts.uk.pr.view.ksu006.c {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 nts.uk.ui.block.invisible();
-                $.when(self.loadCompletionList()).done(() => {
+                self.loadCompletionList().done(() => {
                     self.loadDataLog().done(() => {
                         nts.uk.ui.block.clear();
                         dfd.resolve();
