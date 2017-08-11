@@ -12,6 +12,29 @@ module cps008.a.viewmodel {
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
 
+
+            self.start();
+            layout.id.subscribe(id => {
+                if (id) {
+
+                    // Gọi service tải dữ liệu ra layout
+                    service.getDetails(id).done((data: any) => {
+                        if (data) {
+                            layout.code(data.layoutCode);
+                            layout.name(data.layoutName);
+                            layout.classifications(data.listItemClsDto || []);
+                            layout.action(LAYOUT_ACTION.UPDATE);
+                        }
+                    });
+                }
+            });
+
+        }
+
+        start(code?: string) {
+            let self = this,
+                layout: Layout = self.layout(),
+                layouts = self.layouts;
             // get all layout
             layouts.removeAll();
             service.getAll().done((data: Array<any>) => {
@@ -24,26 +47,20 @@ module cps008.a.viewmodel {
                         }
                     });
                     _.each(_data, d => layouts.push(d));
-                    layout.id(_data[0].id);
+                    if (!code) {
+                        layout.id(_data[0].id);
+                    }
+                    else {
+                        let _item: ILayout = _.find(ko.toJS(layouts), (x: ILayout) => x.code == code);
+                        if (_item) {
+                            layout.id(_item.id);
+                        } else {
+                            layout.id(_data[0].id);
+                        }
+                    }
                     layout.id.valueHasMutated();
                 }
             });
-
-            layout.id.subscribe(id => {
-                if (id) {
-                    
-                    // Gọi service tải dữ liệu ra layout
-                    service.getDetails(id).done((data: any) => {
-                        if (data) {
-                            layout.code(data.layoutCode);
-                            layout.name(data.layoutName);
-                            layout.classifications(data.listItemClsDto);
-                            layout.action(LAYOUT_ACTION.UPDATE);
-                        }
-                    });
-                }
-            });
-
         }
 
         createNewLayout() {
@@ -56,45 +73,51 @@ module cps008.a.viewmodel {
             layout.classifications([]);
 
             layout.action(LAYOUT_ACTION.INSERT);
+            $("#A_INP_CODE").focus();
         }
 
         saveDataLayout() {
             let self = this,
                 data: ILayout = ko.toJS(self.layout);
 
-            // call service savedata
-            service.saveData(data).done((data: any) => {
-                if (data) {
-
+            // check input
+            if (data.code == '' || data.name == '') {
+                if (data.code == '') {
+                    $("#A_INP_CODE").focus();
+                } else {
+                    $("#A_INP_NAME").focus();
                 }
+                return;
+            }
+
+            // call service savedata
+            service.saveData(data).done((_data: any) => {
+                self.start(data.code);
             });
         }
 
         copyDataLayout() {
             let self = this,
-                layout: Layout = self.layout(),
-                data: ILayout = ko.toJS(self.layout);
+                data: ILayout = ko.toJS(self.layout),
+                layouts: Array<ILayout> = ko.toJS(self.layouts);
 
             setShared('CPS008_PARAM', data);
             modal('../c/index.xhtml').onClosed(() => {
                 let _data = getShared('CPS008C_RESPONE');
-                debugger;
                 if (_data) {
-                    layout.code(_data.code);
-                    layout.name(_data.name);
+                    data.code = _data.code;
+                    data.name = _data.name;
 
                     if (_data.action) {
-                        layout.action(LAYOUT_ACTION.OVERRIDE);
+                        data.action = LAYOUT_ACTION.OVERRIDE;
                     } else {
-                        layout.action(LAYOUT_ACTION.COPY);
+                        data.action = LAYOUT_ACTION.COPY;
                     }
-                    // call saveData service
-                    let _layout: Layout = self.layout(),
-                        __data: ILayout = ko.toJS(self.layout);
-                    service.saveData(__data).done((data: any) => {
-                        if (data) {
 
-                        }
+
+                    // call saveData service
+                    service.saveData(data).done(() => {
+                        self.start(data.code);
                     });
 
                 }
@@ -103,23 +126,21 @@ module cps008.a.viewmodel {
 
         removeDataLayout() {
             let self = this,
-                layout: Layout = self.layout(),
-                data: ILayout = ko.toJS(self.layout);
+                 data: ILayout = ko.toJS(self.layout);
 
             data.action = LAYOUT_ACTION.REMOVE;
             // call service remove
         }
 
-        openDialogD() {
+        showDialogB() {
             let self = this,
-                layout: Layout = self.layout(),
                 data: ILayout = ko.toJS(self.layout);
-
-            setShared('CPS008_PARASCRD', data);
-            modal('../d/index.xhtml').onClosed(() => {
+            setShared('CPS008B_PARAM', data);
+            modal('../b/index.xhtml').onClosed(() => {
 
             });
         }
+     
     }
 
     interface ILayout {

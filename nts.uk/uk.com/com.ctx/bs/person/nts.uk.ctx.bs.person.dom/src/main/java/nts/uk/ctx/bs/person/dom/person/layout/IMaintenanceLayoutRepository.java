@@ -16,12 +16,14 @@ public interface IMaintenanceLayoutRepository {
 
 	void update(MaintenanceLayout maintenanceLayout);
 
-	void remove(String maintenanceLayoutID);
+	void remove(MaintenanceLayout maintenanceLayout);
 
 	boolean checkExit(String cpmpanyId, String layoutCode);
 
-	List<MaintenanceLayout> getAllMaintenanceLayout();
+	List<MaintenanceLayout> getAllMaintenanceLayout(String cid);
 
-	Optional<MaintenanceLayout> getById(String cid ,String id);
+	Optional<MaintenanceLayout> getById(String cid, String id);
+
+	Optional<MaintenanceLayout> getByCode(String cid, String id);
 
 }
