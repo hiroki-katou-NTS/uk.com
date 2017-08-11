@@ -53,7 +53,8 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		String companyCode = command.getCompanyCode();
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
-		String companyId = AppContexts.user().contractCode() + "-" + companyCode;
+		//TODO
+		String companyId = "0" + "-" + companyCode;
 		// check validate input
 		this.checkInput(command);
 
@@ -62,7 +63,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		// TODO get domain 社員
 		EmployeeDto em = this.getEmployee(companyId, employeeCode);
 		// TODO get User by associatedPersonId
-		User user = this.getUser(em.getEmployeeId().toString());// TODO
+		User user = this.getUser(em.getEmployeeId().toString());
 		// check password
 		this.compareHashPassword(user, password);
 		// check time limit
@@ -77,15 +78,15 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	private void checkInput(SubmitLoginFormTwoCommand command) {
 
 		// check input company code
-		if (command.getCompanyCode() == null) {
+		if (command.getCompanyCode().isEmpty()||command.getCompanyCode() == null) {
 			throw new BusinessException("Msg_311");
 		}
 		// check input employee code
-		if (command.getEmployeeCode() == null) {
+		if (command.getEmployeeCode().isEmpty()||command.getEmployeeCode() == null) {
 			throw new BusinessException("Msg_312");
 		}
 		// check input password
-		if (command.getPassword() == null) {
+		if (command.getPassword().isEmpty()|| command.getPassword() == null) {
 			throw new BusinessException("Msg_310");
 		}
 	}

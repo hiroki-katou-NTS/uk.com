@@ -34,7 +34,7 @@
 										data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_1')}',
 											value: contractCode,
-											required: true,
+											required: false,
 											constraint: 'ContractCode',
 											option: {textmode: 'text',width: '200px'}, 
 											enable: true,
@@ -54,7 +54,7 @@
 										data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_2')}',
 											value: password,
-											required: true,
+											required: false,
 											constraint: 'RawPassword',
 											option: {textmode: 'password',width: '200px'},
 											enable: true,
