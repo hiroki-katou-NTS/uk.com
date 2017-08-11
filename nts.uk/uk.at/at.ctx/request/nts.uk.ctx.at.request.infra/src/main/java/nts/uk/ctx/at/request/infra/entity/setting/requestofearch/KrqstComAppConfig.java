@@ -40,7 +40,7 @@ public class KrqstComAppConfig extends UkJpaEntity implements Serializable{
 	 * 残業申請の事前必須設定
 	 */
 	@Column(name = "OT_APP_SETTING_FLG")
-	public int otAppFettingFlg;
+	public int otAppSettingFlg;
 	/**
 	 * 申請時の承認者の選択
 	 */
@@ -60,7 +60,7 @@ public class KrqstComAppConfig extends UkJpaEntity implements Serializable{
 	 * 残業申請休憩時間を表示する
 	 */
 	@Column(name = "OT_BREAK_TIME_DISPLAY_FLG")
-	public int otBreakTimeDisplayFlg;
+	public int otBreakTimeDisFlg;
 	/**
 	 * 残業申請出退勤時刻初期表示区分
 	 */
@@ -90,7 +90,7 @@ public class KrqstComAppConfig extends UkJpaEntity implements Serializable{
 	 * 休出申請休憩時間を表示する休出申請
 	 */
 	@Column(name = "HW_BREAK_TIME_DISPLAY_FLG")
-	public int hwBreakTimeDisplayFlg;
+	public int hwBreakTimeDisFlg;
 	/**
 	 * 休出申請出退勤時刻初期表示区分休出申請
 	 */

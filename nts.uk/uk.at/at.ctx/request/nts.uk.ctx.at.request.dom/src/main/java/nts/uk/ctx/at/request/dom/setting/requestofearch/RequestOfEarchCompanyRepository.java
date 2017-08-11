@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.requestofearch;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface RequestOfEarchCompanyRepository {
 	/**
@@ -8,5 +8,5 @@ public interface RequestOfEarchCompanyRepository {
 	 * @param appType
 	 * @return
 	 */
-	List<RequestOfEarchCompany> getRequestByAppType(int appType);
+	Optional<RequestOfEarchCompany> getRequestByAppType(String companyId, int appType);
 }
