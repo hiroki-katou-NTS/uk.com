@@ -47,4 +47,12 @@ public interface ExternalBudgetLogRepository {
      */
     List<ExternalBudgetLog> findExternalBudgetLog(String employeeId, GeneralDateTime startDateTime,
             GeneralDateTime endDateTime, List<Integer> listState);
+    
+    /**
+     * Checks if is existed.
+     *
+     * @param executeId the execute id
+     * @return true, if is existed
+     */
+    boolean isExisted(String executeId);
 }

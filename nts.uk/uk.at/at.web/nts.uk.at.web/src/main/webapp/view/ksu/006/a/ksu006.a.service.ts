@@ -5,9 +5,9 @@ module nts.uk.at.view.ksu006.a {
          */
         var servicePath: any = {
             findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
-            
             findDataPreview: "at/schedule/budget/external/find/preview",
             validateFile: "at/schedule/budget/external/import/validate",
+            exportDetailError: "at/schedule/budget/external/log/export",
         };
         
         export function findExternalBudgetList(): JQueryPromise<any> {
@@ -28,6 +28,10 @@ module nts.uk.at.view.ksu006.a {
         
         export function validateFile(extractCondition: any): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.validateFile, extractCondition);
+        }
+        
+        export function downloadDetailError(executeId: string): JQueryPromise<Array<model.ExternalBudgetLogModel>> {
+            return nts.uk.request.exportFile(paths.exportDetailError + "/" +  executeId);
         }
         
         /**

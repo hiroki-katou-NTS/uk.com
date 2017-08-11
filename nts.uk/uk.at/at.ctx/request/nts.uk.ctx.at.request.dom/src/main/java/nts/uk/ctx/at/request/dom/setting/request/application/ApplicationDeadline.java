@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.UseAtr;
  *
  */
 @AllArgsConstructor
-public class ApplicationDeadlineSetting extends AggregateRoot {
+public class ApplicationDeadline extends AggregateRoot {
 	/**　会社ID*/
 	public String companyId;
 	/**
@@ -37,13 +37,13 @@ public class ApplicationDeadlineSetting extends AggregateRoot {
 	 */
 	public DeadlineCriteria deadlineCriteria;
 
-	public static ApplicationDeadlineSetting createSimpleFromJavaType(String companyId,
+	public static ApplicationDeadline createSimpleFromJavaType(String companyId,
 			int closureId, 
 			int appType,
 			int userAtr,
 			String deadline,
 			int deadlineCriteria) {
-		return new ApplicationDeadlineSetting(companyId,
+		return new ApplicationDeadline(companyId,
 				closureId,
 				EnumAdaptor.valueOf(appType, ApplicationType.class),
 				EnumAdaptor.valueOf(userAtr, UseAtr.class),
