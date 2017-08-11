@@ -129,7 +129,7 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	}
 
 	private void compareHashPassword(User user, String password) {
-		// TODO compare hash string here
+		// TODO change salt
 		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(user.getPassword().v())) {
 			throw new BusinessException("Msg_302");
 		}

@@ -35,7 +35,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	@Inject
 	UserRepository userRepository;
 
-	/** The employee code setting repo. */
+	/** The employee code setting adapter. */
 	@Inject
 	EmployeeCodeSettingAdapter employeeCodeSettingAdapter;
 
@@ -107,6 +107,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 				// not edit employeeCode
 				return employeeCode;
 			} else {
+				//update employee code
 				switch (editType) {
 				case ZeroBefore:
 					employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");

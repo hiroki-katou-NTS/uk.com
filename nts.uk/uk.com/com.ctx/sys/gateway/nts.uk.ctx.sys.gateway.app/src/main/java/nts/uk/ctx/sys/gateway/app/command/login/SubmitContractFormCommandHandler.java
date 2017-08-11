@@ -32,7 +32,6 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 		this.checkInput(command);
 		// contract auth
 		this.contractAccAuth(contractCode, password);
-		// TODO local storage
 	}
 
 	private void contractAccAuth(String contractCode, String password) {
