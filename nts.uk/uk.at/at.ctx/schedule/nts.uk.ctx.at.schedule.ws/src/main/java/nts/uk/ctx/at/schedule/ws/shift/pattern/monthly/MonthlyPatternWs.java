@@ -20,6 +20,8 @@ import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.MonthlyPatternDe
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.MonthlyPatternDeleteCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.MonthlyPatternUpdateCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.MonthlyPatternUpdateCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.work.WorkMonthlySettingDeleteCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.pattern.work.WorkMonthlySettingDeleteCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.MonthlyPatternFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 
@@ -45,6 +47,10 @@ public class MonthlyPatternWs extends WebService{
 	/** The delete. */
 	@Inject
 	private MonthlyPatternDeleteCommandHandler delete;
+	
+	/** The delete work monthly. */
+	@Inject
+	private WorkMonthlySettingDeleteCommandHandler deleteWorkMonthly;
 	/**
 	 * Find all.
 	 *
@@ -100,5 +106,8 @@ public class MonthlyPatternWs extends WebService{
 	@Path("delete")
 	public void delete(MonthlyPatternDeleteCommand command){
 		this.delete.handle(command);
+		WorkMonthlySettingDeleteCommand commandWorkMonthly = new WorkMonthlySettingDeleteCommand();
+		commandWorkMonthly.setMonthlyPattnernCode(command.getMonthlyPattnernCode());
+		this.deleteWorkMonthly.handle(commandWorkMonthly);
 	}
 }

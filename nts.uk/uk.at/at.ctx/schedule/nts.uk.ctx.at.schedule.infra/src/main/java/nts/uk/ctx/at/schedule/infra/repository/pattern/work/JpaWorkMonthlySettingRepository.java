@@ -301,4 +301,66 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
 				.collect(Collectors.toList());
 	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.pattern.work.
+	 * WorkMonthlySettingRepository#remove(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void remove(String companyId, String monthlyPatternCode) {
+		this.commandProxy().removeAll(this.toEntityRemove(companyId, monthlyPatternCode));
+	}
+	
+	/**
+	 * To entity remove.
+	 *
+	 * @param companyId the company id
+	 * @param monthlyPatternCode the monthly pattern code
+	 * @return the list
+	 */
+	private List<KscmtWorkMonthSet> toEntityRemove(String companyId, String monthlyPatternCode){
+				
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KWMMT_WORK_MONTH_SET (KwmmtWorkMonthSet SQL)
+		CriteriaQuery<KscmtWorkMonthSet> cq = criteriaBuilder.createQuery(KscmtWorkMonthSet.class);
+
+		// root data
+		Root<KscmtWorkMonthSet> root = cq.from(KscmtWorkMonthSet.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.cid),
+				companyId));
+
+		// equal monthly pattern code
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
+				.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// order by ymdk id asc
+		cq.orderBy(criteriaBuilder.asc(
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+
+		// create query
+		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList();
+	}
+
+	
 }

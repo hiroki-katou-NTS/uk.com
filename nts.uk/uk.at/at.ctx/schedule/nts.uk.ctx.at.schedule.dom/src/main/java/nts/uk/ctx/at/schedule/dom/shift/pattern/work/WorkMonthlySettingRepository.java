@@ -62,4 +62,13 @@ public interface WorkMonthlySettingRepository  {
 	 * @return the list
 	 */
 	public List<WorkMonthlySetting> findByYMD(String companyId, String monthlyPatternCode, List<BigDecimal> baseDates);
+	
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param monthlyPatternCode the monthly pattern code
+	 */
+	public void remove(String companyId, String monthlyPatternCode);
 }
