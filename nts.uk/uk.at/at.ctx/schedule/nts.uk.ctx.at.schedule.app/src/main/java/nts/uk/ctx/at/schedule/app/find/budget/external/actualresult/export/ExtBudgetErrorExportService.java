@@ -42,7 +42,7 @@ public class ExtBudgetErrorExportService extends ExportService<String> {
     private IInternationalization internationalization;
 
     /** The Constant LST_NAME_ID. */
-    private static final List<String> LST_NAME_ID = Arrays.asList("KSU006_210", "KSU006_211", "KSU006_207",
+    private static final List<String> LST_NAME_ID_HEADER = Arrays.asList("KSU006_210", "KSU006_211", "KSU006_207",
             "KSU006_208", "KSU006_209", "KSU006_212");
 
     /*
@@ -65,11 +65,12 @@ public class ExtBudgetErrorExportService extends ExportService<String> {
         }
         
         // convert to dto
-        List<ExternalBudgetErrorDto> lstErrorDto = lstError.stream().map(domain -> {
-            ExternalBudgetErrorDto dto = new ExternalBudgetErrorDto();
-            domain.saveToMemento(dto);
-            return dto;
-        }).collect(Collectors.toList());
+        List<ExternalBudgetErrorDto> lstErrorDto = lstError.stream()
+                .map(domain -> {
+                    ExternalBudgetErrorDto dto = new ExternalBudgetErrorDto();
+                    domain.saveToMemento(dto);
+                    return dto;
+                }).collect(Collectors.toList());
         
         // set data export
         ExportData exportData = ExportData.builder()
@@ -88,7 +89,7 @@ public class ExtBudgetErrorExportService extends ExportService<String> {
      */
     private List<String> finHeader() {
         List<String> lstHeader = new ArrayList<>();
-        for (String nameId : LST_NAME_ID) {
+        for (String nameId : LST_NAME_ID_HEADER) {
             Optional<String> optional = this.internationalization.getItemName(nameId);
             if (!optional.isPresent()) {
                 throw new RuntimeException("NameId of header not found.");
