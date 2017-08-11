@@ -14,5 +14,5 @@ public class NewLayoutCommand {
 
 	private String layoutName;
 	
-	private List<ClassificationCommand> listClass;
+	private List<ClassificationCommand> itemsClassification;
 }
