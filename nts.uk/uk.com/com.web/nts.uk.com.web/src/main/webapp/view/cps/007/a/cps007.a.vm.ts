@@ -14,6 +14,7 @@ module cps007.a.vm {
             let self = this,
                 layout = self.layout();
 
+            // get layout info on startup
             service.getData().done((x: ILayout) => {
                 layout.id(x.id);
                 layout.code(x.code);
@@ -24,30 +25,45 @@ module cps007.a.vm {
 
         saveData() {
             let self = this,
-                layout: ILayout = ko.toJS(self.layout);
-
-            debugger;
+                layout: ILayout = ko.toJS(self.layout),
+                command: any = {
+                    layoutID: layout.id,
+                    layoutCode: layout.code,
+                    layoutName: layout.name,
+                    itemsClassification: (layout.itemsClassification || []).map((item, i) => {
+                        return {
+                            dispOrder: i + 1,
+                            personInfoCategoryID: item.personInfoCategoryID,
+                            layoutItemType: item.layoutItemType,
+                            listItemClsDf: (item.listItemDf || []).map((def, j) => {
+                                return {
+                                    dispOrder: j + 1,
+                                    personInfoItemDefinitionID: def.id
+                                };
+                            })
+                        };
+                    })
+                };
+            
+            // push data layout to webservice
+            service.saveData(command);
         }
     }
 
-    interface IItemDefinition {
-        catId: string;
-        id: string;
-        name: string;
-        code: string;
-        sysReq: boolean;
-        reqChang: boolean;
-        isFixed: boolean;
-        typeState: number;
+    interface IItemClassification {
+        layoutID?: string;
+        dispOrder?: number;
+        className?: string;
+        personInfoCategoryID?: string;
+        layoutItemType: number;
+        listItemDf: Array<IItemDefinition>;
     }
 
-    interface IItemClassification {
+    interface IItemDefinition {
         id: string;
-        code: string;
-        name: string;
-        dispOrder: number;
-        typeId: number;
-        itemsDefinition?: Array<IItemDefinition>;
+        perInfoCtgId?: string;
+        itemCode?: string;
+        itemName: string;
     }
 
     interface ILayout {
