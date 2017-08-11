@@ -26,8 +26,8 @@ module nts.uk.at.view.ksu006.a {
             return nts.uk.request.ajax(servicePath.findDataPreview, extractCondition);
         }
         
-        export function validateFile(fileId: string): JQueryPromise<void> {
-            return nts.uk.request.ajax(servicePath.validateFile + "/" + fileId);
+        export function validateFile(extractCondition: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.validateFile, extractCondition);
         }
         
         /**
