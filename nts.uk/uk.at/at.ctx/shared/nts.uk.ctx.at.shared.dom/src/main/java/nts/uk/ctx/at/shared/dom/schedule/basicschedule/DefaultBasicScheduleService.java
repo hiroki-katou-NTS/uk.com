@@ -34,4 +34,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		return null;
 	}
 
+	@Override
+	public void ErrorCheckingStatus(String workTypeCd, String workTimeCd) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
