@@ -48,7 +48,20 @@ module nts.uk.at.view.kdl003.a {
 
                 // On selectedWorkTypeCode changed event.
                 self.selectedWorkTypeCode.subscribe(code => {
-                    self.selectedWorkTimeCode('000');
+                    service.isWorkTimeSettingNeeded(code).done(val => {
+                        switch (val) {
+                            case SetupType.REQUIRED:
+                                self.selectedWorkTimeCode('000');
+                                break;
+                            case SetupType.OPTIONAL:
+                                self.selectedWorkTimeCode('');
+                                break;
+                            case SetupType.NOT_REQUIRED:
+                                self.selectedWorkTimeCode('');
+                                break;
+                            default: // Do nothing.
+                        }
+                    });
                 });
             }
 
@@ -236,20 +249,22 @@ module nts.uk.at.view.kdl003.a {
 
             private getWorkTypeName(workTypeCode: string): string {
                 let self = this;
-                let workType: WorkType;
+                let name: string = '';
                 if (self.listWorkTime()) {
-                    workType = _.find(self.listWorkType(), workType => workType.workTypeCode == workTypeCode);
+                    let workType = _.find(self.listWorkType(), workType => workType.workTypeCode == workTypeCode);
+                    name = workType ? workType.name : '';
                 }
-                return workType.name;
+                return name;
             }
 
             private getWorkTimeName(workTimeCode: string): string {
                 let self = this;
-                let workTime: WorkTimeSet;
+                let name: string = '';
                 if (self.listWorkTime()) {
-                    workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
+                    let workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
+                    name = workTime ? workTime.name : '';
                 }
-                return workTime.name;
+                return name;
             }
 
             public closeDialog(): void {
@@ -292,6 +307,11 @@ module nts.uk.at.view.kdl003.a {
             selectedWorkTypeName: string;
             selectedWorkTimeCode: string;
             selectedWorkTimeName: string;
+        }
+        enum SetupType {
+            REQUIRED = 0,
+            OPTIONAL = 1,
+            NOT_REQUIRED = 2
         }
     }
 }
