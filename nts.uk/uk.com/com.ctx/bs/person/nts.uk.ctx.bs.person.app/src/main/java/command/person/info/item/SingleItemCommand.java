@@ -2,9 +2,13 @@ package command.person.info.item;
 
 import java.math.BigDecimal;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Value
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class SingleItemCommand {
 	private int dataType;
 

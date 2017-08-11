@@ -48,8 +48,10 @@ module nts.uk.pr.view.ksu006.c {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                nts.uk.ui.block.invisible();
                 $.when(self.loadCompletionList()).done(() => {
                     self.loadDataLog().done(() => {
+                        nts.uk.ui.block.clear();
                         dfd.resolve();
                     })
                 });
@@ -58,10 +60,18 @@ module nts.uk.pr.view.ksu006.c {
             
             public eventClick() {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 _.forEach(self.dataLog(), item => {
                     $('#download-log-' + item.executeId).on('click', function() {
                       let executeId = $(this).data('execute');
-                        console.log(executeId);
+                        nts.uk.ui.block.grayout();
+                        service.downloadDetailError(executeId).done(function() {
+                            dfd.resolve();
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alertError(res.message);
+                        }).always(function(res) {
+                            nts.uk.ui.block.clear();
+                        });
                   });
                 });
             }

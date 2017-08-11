@@ -6,6 +6,7 @@ module nts.uk.at.view.kdl003.a {
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
             findByCodeList: "at/shared/worktime/findByCodeList",
             findByTime: "at/shared/worktime/findByTime",
+            isWorkTimeSettingNeeded: "at/schedule/basicschedule/isWorkTimeSettingNeeded",
 
         }
 
@@ -25,6 +26,9 @@ module nts.uk.at.view.kdl003.a {
 
         export function findByTime(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findByTime, command);
+        }
+        export function isWorkTimeSettingNeeded(workTypeCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.isWorkTimeSettingNeeded + '/' + workTypeCode);
         }
         export module model {
         }

@@ -4,14 +4,16 @@ module nts.uk.pr.view.ksu006.b {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             let extractCondition: any = nts.uk.ui.windows.getShared("ExtractCondition");
+            screenModel.status(nts.uk.resource.getText("KSU006_216"));
             $('.countdown').downCount();
+//            nts.uk.ui.block.invisible();
             service.executeImportFile(extractCondition).then(function(res: any) {
                 screenModel.executeId(res.executeId);
                 nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     let dfd = $.Deferred();
                     nts.uk.request.specials.getAsyncTaskInfo(res.taskId).done(function(res: any) {
-                        if (res.running || res.succeeded) {
+                        if (res.running || res.succeeded || res.failed) {
                             _.forEach(res.taskDatas, item => {
                                 if (item.key == 'TOTAL_RECORD') {
                                     screenModel.totalRecord(item.valueAsNumber);
@@ -24,13 +26,14 @@ module nts.uk.pr.view.ksu006.b {
                                 }
                             });
                         }
-                        if (res.succeeded) {
+                        if (res.succeeded || res.failed) {
                             screenModel.isDone(true);
                             screenModel.status(nts.uk.resource.getText("KSU006_217"));
                             $('.countdown').stop();
-                            
-                            // TODO: find detail error if have?
-                            
+                            if (res.error) {
+                                nts.uk.ui.dialog.alertError(res.error.message);
+                            }
+//                            nts.uk.ui.block.clear();
                         }
                         dfd.resolve(res);
                     });

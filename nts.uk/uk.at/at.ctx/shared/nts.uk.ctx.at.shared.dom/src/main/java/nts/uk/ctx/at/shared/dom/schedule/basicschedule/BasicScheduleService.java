@@ -7,6 +7,14 @@ package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
  */
 public interface BasicScheduleService {
 	/**
+	 * Return state of error checking process: nothing or throw error
+	 * 
+	 * @param workTypeCd
+	 * @param workTimeCd
+	 */
+	void ErrorCheckingStatus(String workTypeCd, String workTimeCd);
+
+	/**
 	 * Check needed of Work Time setting
 	 * 
 	 * @param workTypeCd

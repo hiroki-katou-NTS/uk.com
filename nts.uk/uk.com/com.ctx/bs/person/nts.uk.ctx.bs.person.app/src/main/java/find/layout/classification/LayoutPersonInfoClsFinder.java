@@ -39,14 +39,8 @@ public class LayoutPersonInfoClsFinder {
 		if (listItemCls.size() > 0) {
 			for (LayoutPersonInfoClsDto classDto : listItemCls) {
 				switch (classDto.getLayoutItemType()) {
-				case 0: // list item
-				case 1: // single item
-					PerInfoCtgWithItemsNameDto catDto = this.catFinder
-							.getPerInfoCtgWithItemsName(classDto.getPersonInfoCategoryID());
-
-					if (catDto != null) {
-						classDto.setClassName(catDto.getCategoryName());
-					}
+				case 0: // single item
+				case 1: // list item
 
 					List<String> listId = this.clsItemDefFinder.getItemDefineIds(classDto.getLayoutID(),
 							classDto.getDispOrder());
@@ -54,6 +48,19 @@ public class LayoutPersonInfoClsFinder {
 					if (!listId.isEmpty()) {
 						List<PerInfoItemDefDto> listItemDef = itemDfFinder.getPerInfoItemDefByListId(listId);
 						classDto.setListItemDf(listItemDef);
+						
+						if (classDto.getLayoutItemType() == 0) {
+							classDto.setClassName(listItemDef.get(0).getItemName());
+						}
+					}
+
+					if (classDto.getLayoutItemType() == 1) {
+						PerInfoCtgWithItemsNameDto catDto = this.catFinder
+								.getPerInfoCtgWithItemsName(classDto.getPersonInfoCategoryID());
+
+						if (catDto != null) {
+							classDto.setClassName(catDto.getCategoryName());
+						}
 					}
 					break;
 				case 2: // SeparatorLine

@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
+import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.bs.person.dom.person.info.item.IsRequired;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemTypeState;
@@ -36,7 +37,8 @@ public class MappingDtoToDomain {
 		return itemDef;
 	}
 
-	public static PersonInfoItemDefinition mappingFromDomaintoDtoForPeriod(AddItemCommand addItemCommand, List<String> items) {
+	public static PersonInfoItemDefinition mappingFromDomaintoDtoForPeriod(AddItemCommand addItemCommand,
+			List<String> items) {
 		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createFromJavaType(addItemCommand.getPerInfoCtgId(),
 				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), ITEM_NAME_PERIOD,
 				IsAbolition.NOT_ABOLITION.value, IsFixed.FIXED.value, IsRequired.REQUIRED.value);
@@ -54,16 +56,22 @@ public class MappingDtoToDomain {
 
 	private static ItemTypeState createItemTypeState(AddItemCommand addItemCommand, ItemType itemType,
 			DataTypeValue dataTypeValue, List<String> items) {
-
 		itemType = itemType != null ? itemType : EnumAdaptor.valueOf(addItemCommand.getItemType(), ItemType.class);
 		if (itemType == ItemType.SINGLE_ITEM) {
-			return ItemTypeState.createSingleItem(createDataTypeState(addItemCommand.getSingleItem(), dataTypeValue));
+			return ItemTypeState.createSingleItem(createDataTypeState(addItemCommand, dataTypeValue));
 		} else {
 			return ItemTypeState.createSetItem(items);
 		}
 	}
 
-	private static DataTypeState createDataTypeState(SingleItemCommand singleI, DataTypeValue dataTypeValue) {
+	private static DataTypeState createDataTypeState(AddItemCommand addItemCommand, DataTypeValue dataTypeValue) {
+		if (addItemCommand.getSingleItem() == null) {
+			if (dataTypeValue == DataTypeValue.DATE) {
+				return DataTypeState.createDateItem(DateType.YEARMONTHDAY.value);
+			}
+			return null;
+		}
+		SingleItemCommand singleI = addItemCommand.getSingleItem();
 		dataTypeValue = dataTypeValue != null ? dataTypeValue
 				: EnumAdaptor.valueOf(singleI.getDataType(), DataTypeValue.class);
 		switch (dataTypeValue.value) {
