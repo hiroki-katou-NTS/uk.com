@@ -40,6 +40,7 @@ public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator im
     /** The Constant EXPORT_FILE_NAME. */
     private static final String EXPORT_FILE_NAME = "KSU006.xlsx";
     
+    /** The Constant EXTENSION_FILE. */
     private static final String EXTENSION_FILE = ".xlsx";
     
     /** The Constant SHEET_NAME. */
@@ -77,7 +78,6 @@ public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator im
             reportContext.processDesigner();
             
             // save excel file
-//            workbook.save(this.getFileName(exportData.employeeId));
             reportContext.saveAsExcel(this.createNewFile(fileContext, this.getFileName(exportData.employeeId)));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -105,13 +105,15 @@ public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator im
     }
     
     /**
-     * Sets the ting page.
+     * Setting page.
      *
-     * @param worksheet the new ting page
+     * @param worksheet the worksheet
+     * @param totalRow the total row
      */
-    private void settingPage(Worksheet worksheet, int totalColumn) {
+    private void settingPage(Worksheet worksheet, int totalRow) {
         PageSetup pageSetup = worksheet.getPageSetup();
-        String printArea = PRINT_AREA + totalColumn + 1;
+        int idxHeader = 1;
+        String printArea = PRINT_AREA + (idxHeader + totalRow);
         pageSetup.setPrintArea(printArea);
 //        pageSetup.setHeader(0,"&\"IPAPGothic\"&11 " + header.getNameCompany());
     }
@@ -178,10 +180,9 @@ public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator im
     }
     
     /**
-     * Sets the cell data.
+     * Sets the style cell.
      *
-     * @param cell the cell
-     * @param value the value
+     * @param cell the new style cell
      */
     private void setStyleCell(Cell cell) {
         // new style
@@ -211,7 +212,7 @@ public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator im
     /**
      * Convert object to list.
      *
-     * @param obj the obj
+     * @param data the data
      * @return the list
      */
     @SuppressWarnings({"rawtypes"})
