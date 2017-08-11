@@ -14,6 +14,7 @@ module cps007.a.vm {
             let self = this,
                 layout = self.layout();
 
+            // get layout info on startup
             service.getData().done((x: ILayout) => {
                 layout.id(x.id);
                 layout.code(x.code);
@@ -43,7 +44,8 @@ module cps007.a.vm {
                         };
                     })
                 };
-
+            
+            // push data layout to webservice
             service.saveData(command);
         }
     }

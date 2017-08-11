@@ -673,7 +673,7 @@ module nts.custombinding {
                                                 layoutID: random(),
                                                 dispOrder: -1,
                                                 className: _cat.categoryName,
-                                                personInfoCategoryID: undefined,
+                                                personInfoCategoryID: _cat.id,
                                                 layoutItemType: IT_CLA_TYPE.LIST,
                                                 listItemDf: _data
                                             };
