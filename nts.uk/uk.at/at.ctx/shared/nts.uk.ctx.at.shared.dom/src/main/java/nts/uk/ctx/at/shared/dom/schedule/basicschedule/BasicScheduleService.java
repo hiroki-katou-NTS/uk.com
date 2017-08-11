@@ -6,6 +6,12 @@ package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
  *
  */
 public interface BasicScheduleService {
+	
+	/**
+	 * Return state of error checking process: nothing or throw error
+	 */
+	void ErrorCheckingStatus();
+
 	/**
 	 * Check needed of Work Time setting
 	 * 
