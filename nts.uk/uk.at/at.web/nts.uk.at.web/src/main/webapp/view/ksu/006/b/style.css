@@ -4,7 +4,7 @@
 	background-color: #CFF1A5;
 }
 table#infor-base {
-	width: 450px;
+	width: 420px;
 	margin-bottom: 20px;
 }
 th, td {
@@ -13,7 +13,7 @@ th, td {
 }
 
 .pull-right-col {
-	padding-left: 50px;
+	padding-left: 28px;
 }
 
 ul.countdown {

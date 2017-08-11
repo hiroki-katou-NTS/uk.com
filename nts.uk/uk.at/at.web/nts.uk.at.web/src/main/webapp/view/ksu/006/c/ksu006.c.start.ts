@@ -3,7 +3,9 @@ module nts.uk.pr.view.ksu006.c {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            screenModel.eventClick();
+            $(document).delegate('#single-list', "iggridrowsrendered", function(evt, ui) {
+                screenModel.eventClick();
+            });
         });
     });
 }
