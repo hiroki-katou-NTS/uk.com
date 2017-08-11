@@ -16,11 +16,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRQDT_APPLICATION")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafmtApplication extends UkJpaEntity implements Serializable {
+public class KafdtApplication extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KafmtApplicationPK kafmtApplicationPK;
+	public KafdtApplicationPK kafdtApplicationPK;
 
 	/**
 	 * 事前事後区分
@@ -51,9 +51,71 @@ public class KafmtApplication extends UkJpaEntity implements Serializable {
 	@Column(name="REASON_REVERSION")
 	public String reversionReason; 
 	
+	/**
+	 * 申請日
+	 */
+	@Column(name="APP_DATE")
+	public BigDecimal applicationDate; 
+	
+	///
+	/**
+	 * 申請理由
+	 */
+	@Column(name="APP_REASON")
+	public String applicationReason;
+	/**
+	 * 申請種類
+	 */
+	@Column(name="APP_TYPE")
+	public int applicationType;
+	/**
+	 * 申請者
+	 */
+	@Column(name="APPLICANTS_SID")
+	public String  applicantSID;
+	/**
+	 * 予定反映不可理由
+	 */
+	@Column(name="REFLECT_PLAN_SCHE_REASON")
+	public int reflectPlanScheReason;
+    /**
+     * 予定反映日時
+     */
+	@Column(name="REFLECT_PLAN_TIME")
+	public BigDecimal reflectPlanTime;
+	/**
+	 * 予定反映状態
+	 */
+	@Column(name="REFLECT_PLAN_STATE")
+	public int reflectPlanState;
+	/**
+	 * 予定強制反映
+	 */
+	@Column(name="REFLECT_PLAN_ENFORCE_ATR")
+	public int reflectPlanEnforce;
+	/**
+	 * 実績反映不可理由
+	 */
+	@Column(name="REFLECT_PER_SCHE_REASON")
+	public int  reflectPerScheReason;
+	/**
+	 * 実績反映日時
+	 */
+	@Column(name="REFLECT_PER_TIME")
+	public BigDecimal reflectPerTime;
+	/**
+	 * 予定反映状態
+	 */
+	@Column(name="REFLECT_PER_STATE")
+	public int reflectPerState;
+	/**
+	 * 実績強制反映
+	 */
+	@Column(name="REFLECT_PER_ENFORCE_ATR")
+	public int reflectPerEnforce;
 	
 	@Override
 	protected Object getKey() {
-		return kafmtApplicationPK;
+		return kafdtApplicationPK;
 	}
 }
