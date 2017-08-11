@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.requestofearch;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
@@ -59,4 +60,48 @@ public class RequestOfEarchWorkplace extends AggregateRoot{
 	 */
 	public AppDetailSetting hwDetailSetting;
 	
+	public static RequestOfEarchWorkplace createSimpleFromJavaType(String companyId,
+			String wpId,
+			int appType,
+			String memo,
+			int userAtr,
+			int prerequisiteForpauseFlg,
+			int otAppSettingFlg,
+			int selectOfApproversFlg,
+			int appUseSettingFlg,
+			int otBreakInputFieldDisFlg,
+			int otBreakTimeDisFlg,
+			int otAtworkTimeBeginDisFlg,
+			int otGoOutTimeBeginDisFlg,
+			int otTimeCalUseAtr,
+			int otTimeInputUseAtr,
+			int hwBreakInputFieldDisFlg,
+			int hwBreakTimeDisFlg,
+			int hwAtworkTimeBeginDisFlg,
+			int hwGoOutTimeBeginDisFlg,
+			int hwTimeCalUseAtr,
+			int hwTimeInputUseAtr) {
+				return new RequestOfEarchWorkplace(companyId, 
+						wpId,
+						EnumAdaptor.valueOf(appType, ApplicationType.class),
+						new Memo(memo),
+						EnumAdaptor.valueOf(userAtr, UseAtr.class),
+						EnumAdaptor.valueOf(prerequisiteForpauseFlg, SettingFlg.class),
+						EnumAdaptor.valueOf(otAppSettingFlg, SettingFlg.class),
+						EnumAdaptor.valueOf(selectOfApproversFlg, SelectionFlg.class),
+						EnumAdaptor.valueOf(appUseSettingFlg, SettingFlg.class),
+						AppDetailSetting.appDetailSetting(otBreakInputFieldDisFlg, 
+								otBreakTimeDisFlg, 
+								otAtworkTimeBeginDisFlg, 
+								otGoOutTimeBeginDisFlg,
+								otTimeCalUseAtr,
+								otTimeInputUseAtr),
+						AppDetailSetting.appDetailSetting(hwBreakInputFieldDisFlg,
+								hwBreakTimeDisFlg,
+								hwAtworkTimeBeginDisFlg,
+								hwGoOutTimeBeginDisFlg,
+								hwTimeCalUseAtr, 
+								hwTimeInputUseAtr));
+		
+	}
 }
