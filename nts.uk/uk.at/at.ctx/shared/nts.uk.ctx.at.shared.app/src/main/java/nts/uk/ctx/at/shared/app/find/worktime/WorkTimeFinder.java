@@ -1,9 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
@@ -230,4 +236,29 @@ public class WorkTimeFinder {
 				.map(x -> WorkTimeScheduleDto.fromDomain(x)).collect(Collectors.toList());
 	}
 
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param workTimeCode the work time code
+	 * @return the work time dto
+	 */
+	public WorkTimeDto findById(String workTimeCode){
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		// get company id
+		String companyId = loginUserContext.companyId();
+		
+		// call repository find by id
+		Optional<WorkTime> opWorkTime = this.workTimeRepository.findByCode(companyId, workTimeCode);
+
+		WorkTimeDto dto = new WorkTimeDto(null, null, null, null, null, null);
+		// check exist data
+		if(opWorkTime.isPresent()){
+			dto.setCode(opWorkTime.get().getSiftCD().v());
+			dto.setName(opWorkTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
+		}
+		return dto;
+	}
 }
