@@ -663,7 +663,7 @@ module nts.custombinding {
                         // multiple items
                         if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
                             setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
-                            modal('../b/index.xhtml').onClosed(() => {
+                            modal('../../007/b/index.xhtml').onClosed(() => {
                                 let data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
 
                                 if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
