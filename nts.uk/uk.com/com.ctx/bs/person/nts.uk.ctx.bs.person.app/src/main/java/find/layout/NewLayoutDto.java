@@ -19,7 +19,7 @@ public class NewLayoutDto {
 	private String code;
 	private String name;
 
-	private List<LayoutPersonInfoClsDto> listItemClsDto;
+	private List<LayoutPersonInfoClsDto> itemsClassification;
 
 	public static NewLayoutDto fromDomain(NewLayout domain, List<LayoutPersonInfoClsDto> cls) {
 		return new NewLayoutDto(domain.getLayoutID(), domain.getLayoutCode().v(), domain.getLayoutName().v(), cls);

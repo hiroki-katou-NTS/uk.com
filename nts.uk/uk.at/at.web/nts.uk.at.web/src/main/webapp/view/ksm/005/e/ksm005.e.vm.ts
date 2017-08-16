@@ -14,6 +14,7 @@ module nts.uk.at.view.ksm005.e {
 
         export class ScreenModel {
             monthlyPatternCode: string;
+            monthlyPatternName: string;
             startYearMonth: KnockoutObservable<number>;
             endYearMonth: KnockoutObservable<number>;
             overwirte: KnockoutObservable<boolean>;
@@ -33,8 +34,8 @@ module nts.uk.at.view.ksm005.e {
 
             constructor() {
                 var self = this;
-                self.startYearMonth = ko.observable(201701);
-                self.endYearMonth = ko.observable(201712);
+                self.startYearMonth = ko.observable(parseInt(moment().format('YYYY')+'01'));
+                self.endYearMonth = ko.observable(parseInt(moment().format('YYYY')+'12'));
                 self.overwirte = ko.observable(true);
                 self.worktypeInfoWorkDays = ko.observable('');
                 self.worktimeInfoWorkDays = ko.observable('');
@@ -49,6 +50,7 @@ module nts.uk.at.view.ksm005.e {
                 self.monthlyPatternSettingBatchNoneStatutoryHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternSettingBatchPublicHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternCode = nts.uk.ui.windows.getShared("monthlyPatternCode");
+                self.monthlyPatternName = nts.uk.ui.windows.getShared("monthlyPatternName");
             }
 
 
@@ -227,7 +229,8 @@ module nts.uk.at.view.ksm005.e {
                     overwrite: self.overwirte(),
                     startYearMonth: self.startYearMonth(),
                     endYearMonth: self.endYearMonth(),
-                    monthlyPatternCode: self.monthlyPatternCode
+                    monthlyPatternCode: self.monthlyPatternCode,
+                    monthlyPatternName: self.monthlyPatternName
                 };    
                 return dto;
             }

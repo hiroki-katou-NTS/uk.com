@@ -21,7 +21,7 @@ public class PpemtDateRangeItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
+	public PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
 
 	@Basic(optional = false)
 	@Column(name = "START_DATE_ITEM_ID")

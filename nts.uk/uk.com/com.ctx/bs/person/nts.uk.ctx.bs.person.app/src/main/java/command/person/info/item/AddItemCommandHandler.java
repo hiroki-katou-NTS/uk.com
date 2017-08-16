@@ -10,7 +10,7 @@ public class AddItemCommandHandler extends CommandHandler<AddItemCommand> {
 
 	@Override
 	protected void handle(CommandHandlerContext<AddItemCommand> context) {
-		AddItemCommand addItemCommand = context.getCommand();
+		//AddItemCommand addItemCommand = context.getCommand();
 		
 	}
 

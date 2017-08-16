@@ -22,7 +22,7 @@ public class PpemtPerInfoCtg extends UkJpaEntity implements Serializable {
 	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
+	public PpemtPerInfoCtgPK ppemtPerInfoCtgPK;
 
 	@Basic(optional = false)
 	@Column(name = "CID")

@@ -144,6 +144,7 @@ module nts.uk.at.view.ksm005.e {
                 startYearMonth: number;
                 endYearMonth: number;
                 monthlyPatternCode: string;
+                monthlyPatternName: string;
             }
                        
         }
