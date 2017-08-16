@@ -49,13 +49,13 @@ public class ExtBudgetLogFinder {
                 .collect(Collectors.toMap(item -> item.getExternalBudgetCd().v(),
                         item -> item.getExternalBudgetName().v()));
         
-        List<ExternalBudgetLog> lstLog = this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin, query.getStartDate(), query.getEndDate(),
-                query.getListState());
-        
-        // check has data ?
-        if (CollectionUtil.isEmpty(lstLog)) {
+        // check choose at least state completion ?
+        if (CollectionUtil.isEmpty(query.getListState())) {
             throw new BusinessException("Msg_166");
         }
+        
+        List<ExternalBudgetLog> lstLog = this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin,
+                query.getStartDate(), query.getEndDate(), query.getListState());
         return lstLog.stream()
                 .map(domain -> {
                     ExternalBudgetLogDto dto = new ExternalBudgetLogDto();
