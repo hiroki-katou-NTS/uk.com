@@ -40,11 +40,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
         creatCategory() {
             let self = this,
                 role: IPersonRole = ko.toJS(self.currentRole);
-            if (self.categoryOrgin().length > 0) {
-                self.update(self.categoryOrgin(), role.roleId);
-            } else {
                 self.update(self.categoryList(), role.roleId);
-            }
 
         }
 
