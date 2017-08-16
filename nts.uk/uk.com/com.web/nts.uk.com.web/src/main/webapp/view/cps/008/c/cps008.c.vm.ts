@@ -3,52 +3,54 @@ module cps008.c.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import close = nts.uk.ui.windows.close;
 
     export class ViewModel {
-
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
 
         constructor() {
             let self = this,
                 layout: Layout = self.layout();
+
             let _data = getShared('CPS008_PARAM');
 
-            self.layout().id(_data.id);
-            self.layout().code(_data.code);
-            self.layout().name(_data.name);
+            layout.id.subscribe(id => {
+                // call service for get code, name of layout
+                service.getDetails(id).done((data: any) => {
+                    if (data) {
+                        layout.code(data.layoutCode);
+                        layout.name(data.layoutName);
+                    }
+                });
+            });
+            layout.id(_data.id);
 
+            $("#C_INP_CODE").focus();
         }
 
         coppyBtn() {
-            let self = this;
-            self.validate();
-            
-            
-        }
+            let self = this,
+                layout: ILayout = ko.toJS(self.layout);
 
-        cancelBtn() {
-
-        }
-
-        validate() {
-            let self = this;
-            // check code gioong nhau
-            if (self.layout().INP_CODE() == "" || self.layout().INP_NAME() == "") {
-                if (self.layout().INP_CODE() == "") {
+            if (layout.newCode == '' || layout.newName == '') {
+                if (layout.newCode == '') {
                     $("#C_INP_CODE").focus();
                 } else {
                     $("#C_INP_NAME").focus();
                 }
                 return;
-            }
-
-            if (self.layout().checked() && (self.layout().code() == self.layout().INP_CODE())) {
-                nts.uk.ui.dialog.alert("#Msg_355#");
-                $("#C_INP_CODE").focus();
+            } else if (layout.newCode == layout.code) {
+                nts.uk.ui.dialog.alert("#Msg355");
                 return;
-            }
+            } else if (layout.newCode && layout.newName) {
+                setShared('CPS008C_RESPONE', { id: layout.id, code: layout.newCode, name: layout.newName, action: layout.overrideMode });
+                close();
+            } 
+        }
 
-
+        close() {
+            setShared('CPS008C_RESPONE', null);
+            close();
         }
     }
 
@@ -56,19 +58,19 @@ module cps008.c.viewmodel {
         id: string;
         code: string;
         name: string;
-        classifications?: Array<any>;
-        action?: number;
+        newCode?: string;
+        newName?: string;
+        overrideMode?: boolean;
     }
 
     class Layout {
         id: KnockoutObservable<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
-        classifications: KnockoutObservableArray<any> = ko.observableArray([]);
-        INP_CODE: KnockoutObservable<string> = ko.observable('');
-        INP_NAME: KnockoutObservable<string> = ko.observable('');
-        checked: KnockoutObservable<boolean> = ko.observable(false);
-        action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.COPY);
+
+        newCode: KnockoutObservable<string> = ko.observable('');
+        newName: KnockoutObservable<string> = ko.observable('');
+        overrideMode: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(param: ILayout) {
             let self = this;
@@ -77,16 +79,11 @@ module cps008.c.viewmodel {
                 self.id(param.id || '');
                 self.code(param.code || '');
                 self.name(param.name || '');
-                self.classifications(param.classifications || []);
+
+                self.newCode(param.newCode || '');
+                self.newName(param.newName || '');
+                self.overrideMode(param.overrideMode || false);
             }
         }
-    }
-
-    enum LAYOUT_ACTION {
-        INSERT = 0,
-        UPDATE = 1,
-        COPY = 2,
-        OVERRIDE = 3,
-        REMOVE = 4
     }
 }

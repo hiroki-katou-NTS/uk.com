@@ -1,10 +1,10 @@
-import ajax = nts.uk.request.ajax;
-import format = nts.uk.text.format;
-
 module cps007.b.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
     let paths: any = {
-        'getCat': 'ctx/bs/person/person/info/category/findby/{0}',
-        'getItemDs': 'ctx/bs/person/person/info/ctgItem/findby/categoryId/{0}'
+        'getCat': 'ctx/bs/person/info/category/findby/{0}',
+        'getItemDs': 'ctx/bs/person/info/ctgItem/findby/categoryId/{0}'
     };
 
     export function getCategory(cid) {

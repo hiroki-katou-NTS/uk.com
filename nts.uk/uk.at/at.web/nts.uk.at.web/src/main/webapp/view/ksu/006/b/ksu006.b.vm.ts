@@ -15,8 +15,9 @@ module nts.uk.pr.view.ksu006.b {
             isDone: KnockoutObservable<boolean>;
             executeId: KnockoutObservable<string>;
             dataError: KnockoutObservableArray<ErrorModel>;
-            listColumn: KnockoutObservableArray<any>;
+            listColumn: KnockoutObservableArray<NtsGridListColumn>;
             rowSelected: KnockoutObservable<string>;
+            isGreaterThanTenError: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -39,20 +40,26 @@ module nts.uk.pr.view.ksu006.b {
                 self.executeId = ko.observable('');
                 self.dataError = ko.observableArray([]);
                 self.listColumn = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSU006_210"), key: 'lineNo', width: 80, dataType: 'number'},
-                    { headerText: nts.uk.resource.getText("KSU006_211"), key: 'columnNo', width: 80, dataType: 'number'},
-                    { headerText: nts.uk.resource.getText("KSU006_207"), key: 'wpkCode', width: 150, dataType: 'string'},
-                    { headerText: nts.uk.resource.getText("KSU006_208"), key: 'acceptedDate', width: 80},
-                    { headerText: nts.uk.resource.getText("KSU006_209"), key: 'actualValue', width: 100},
-                    { headerText: nts.uk.resource.getText("KSU006_212"), key: 'errorContent', width: 300, dataType: 'string'}
+                    { headerText: "", key: 'order', dataType: "number", hidden: true, formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_210"), key: 'lineNo', width: 80, formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_211"), key: 'columnNo', width: 80, formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_207"), key: 'wpkCode', width: 150, formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_208"), key: 'acceptedDate', width: 80, formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_209"), key: 'actualValue', width: 100, formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_212"), key: 'errorContent', width: 300, formatter: _.escape}
                 ]);
                 self.rowSelected = ko.observable('');
+                self.isGreaterThanTenError = ko.observable(false);
                 
                 // subscribe
                 self.isDone.subscribe((state) => {
                     if (state) {
+                        if (self.numberFail() <= 0) {
+                            return;
+                        }
                         self.loadDetailError().done(() => {
-                            self.hasError(self.numberFail() > 0);
+                            self.hasError(true);
+                            nts.uk.ui.windows.getSelf().setSize(self.isGreaterThanTenError() ? 650 : 620, 870);
                         });
                     }
                 });
@@ -65,11 +72,21 @@ module nts.uk.pr.view.ksu006.b {
                 return dfd.promise();
             }
             
-            public getTextButton(): string {
-                if (this.isDone()) {
-                    return nts.uk.resource.getText("KSU006_215");
-                }
-                return nts.uk.resource.getText("KSU006_214");
+            public downloadDetailError() {
+                let self = this;
+                nts.uk.ui.block.grayout();
+                service.downloadDetailError(self.executeId()).done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                }).always(function(res) {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+            public stopImporting() {
+                // TODO: interrupt process import then close dialog
+                nts.uk.ui.windows.close();
             }
             
             public closeDialog() {
@@ -79,9 +96,16 @@ module nts.uk.pr.view.ksu006.b {
             private loadDetailError(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.findErrors(self.executeId()).done(function(res: ErrorModel) {
+                service.findErrors(self.executeId()).done(function(res: Array<ErrorModel>) {
                     if (res) {
                         self.dataError(res);
+                        if (res.length > 10) {
+                            self.isGreaterThanTenError(true);
+                            self.dataError(res.slice(0, 10));
+                        }
+                        for (let i = 0; i < self.dataError().length; i++) {
+                            self.dataError()[i].order = i;
+                        }
                     }
                     dfd.resolve();
                 }).fail((res: any) => {

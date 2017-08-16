@@ -8,8 +8,8 @@
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.newlayout.LayoutCode
-					nts.uk.ctx.bs.person.dom.person.newlayout.LayoutName
+					nts.uk.ctx.bs.person.dom.person.layout.LayoutCode
+					nts.uk.ctx.bs.person.dom.person.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
@@ -99,7 +99,7 @@
 							</tr>
 						</table>
 						<div>
-							<button class="x-large">#{i18n.getText('CPS008_42')}</button>
+							<button class="x-large" data-bind="click: $parent.showDialogB.bind($parent)">#{i18n.getText('CPS008_42')}</button>
 						</div>
 						<div style="padding-top: 10px"
 							data-bind="ntsLayoutControl: { 

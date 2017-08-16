@@ -55,10 +55,8 @@ public class PersonCostCalculationFinder {
 				.stream()
 				.map(x -> new PremiumItemDto(
 						companyID, 
-						x.getID(),
-						x.getAttendanceID(),
+						x.getDisplayNumber(),
 						x.getName().v(), 
-						x.getDisplayNumber(), 
 						x.getUseAtr().value))
 				.collect(Collectors.toList());
 	}
@@ -88,11 +86,9 @@ public class PersonCostCalculationFinder {
 		return new PremiumSetDto(
 				premiumSetting.getCompanyID(), 
 				premiumSetting.getHistoryID(), 
-				premiumSetting.getPremiumID(), 
+				premiumSetting.getDisplayNumber(), 
 				premiumSetting.getRate().v(),
-				premiumSetting.getAttendanceID(),
 				premiumSetting.getName().v(),
-				premiumSetting.getDisplayNumber(),
 				premiumSetting.getUseAtr().value,
 				premiumSetting.getAttendanceItems().stream().map(x -> new ShortAttendanceItemDto(x, x.toString())).collect(Collectors.toList()));
 	}

@@ -13,7 +13,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         selectedName: KnockoutObservable<string>;
         // binding to text box code A3_2
         codeObject: KnockoutObservable<string>;
-        // check new mode or not   
+        // check new mode or not
         check: KnockoutObservable<boolean>;
         // check update or insert
         checkUpdate: KnockoutObservable<boolean>;
@@ -81,11 +81,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         /** update or insert data when click button register **/
         register() {
             let self = this;
-            let code = "";
+            let code = "";  
             $("#inpPattern").trigger("validate");
-            let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
-                        return item.businessTypeCode == self.codeObject();
-                    });
             let updateOption = new BusinessType(self.selectedCode(), self.selectedName()); 
             code = self.codeObject();
             _.defer(() => {
@@ -114,7 +111,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                         });
                     }
                 }
-            });            
+            });    
+            $("#inpPattern").focus();        
         } 
         //  new mode 
         newMode(){
@@ -164,14 +162,12 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                             self.selectedCode(self.lstBusinessType()[count].businessTypeCode);    
                             return;
                         }
-                        
-                    });
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
-            }).ifCancel(() => { 
+                    })
+                })
+                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+            }).ifCancel(() => {     
             }); 
-            
-            
+            $("#inpPattern").focus();
         }
     }
     export class BusinessType{

@@ -1,27 +1,32 @@
 module nts.uk.at.view.kdl003.a {
-    import Enum = service.model.Enum;
     export module viewmodel {
         export class ScreenModel {
-            columns: KnockoutObservableArray<NtsGridListColumn>;
-            listWorkTime: KnockoutObservableArray<WorkTimeSet>;
-            selectedWorkTimeCode: KnockoutObservable<string>;
-            searchOption: KnockoutObservable<number>;
+
+            // Search option.
             startTimeOption: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
 
+            // Data list & selected code.
+            listWorkTime: KnockoutObservableArray<WorkTimeSet>;
+            selectedWorkTimeCode: KnockoutObservable<string>;
             listWorkType: KnockoutObservableArray<WorkType>;
             selectedWorkTypeCode: KnockoutObservable<string>;
 
+            // Define columns.
+            workTimeColumns: KnockoutObservableArray<NtsGridListColumn>;
             workTypeColumns: KnockoutObservableArray<NtsGridListColumn>;
 
+            // Initial work time code list..
+            initialWorkTimeCodes: Array<String>;
+
+            // Parameter from caller screen.
             callerParameter: CallerParameter;
 
-            lstTimeDayAtrEnum: KnockoutObservableArray<Enum>;
             constructor(parentData: CallerParameter) {
                 var self = this;
-                self.columns = ko.observableArray([
+                self.workTimeColumns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
@@ -30,11 +35,10 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
                 self.selectedWorkTimeCode = ko.observable('');
-                self.searchOption = ko.observable(0);
                 self.startTimeOption = ko.observable(1);
-                self.startTime = ko.observable('');
+                self.startTime = ko.observable(null);
                 self.endTimeOption = ko.observable(1);
-                self.endTime = ko.observable('');
+                self.endTime = ko.observable(null);
                 self.listWorkTime = ko.observableArray([]);
 
                 self.listWorkType = ko.observableArray([]);
@@ -48,12 +52,28 @@ module nts.uk.at.view.kdl003.a {
                 //parent data
                 self.callerParameter = parentData;
 
-                self.lstTimeDayAtrEnum = ko.observableArray([]);
-                self.selectedWorkTypeCode.subscribe(function(data, data2) {
-
+                // On selectedWorkTypeCode changed event.
+                self.selectedWorkTypeCode.subscribe(code => {
+                    service.isWorkTimeSettingNeeded(code).done(val => {
+                        switch (val) {
+                            case SetupType.REQUIRED:
+                                self.selectedWorkTimeCode('000');
+                                break;
+                            case SetupType.OPTIONAL:
+                                self.selectedWorkTimeCode('');
+                                break;
+                            case SetupType.NOT_REQUIRED:
+                                self.selectedWorkTimeCode('');
+                                break;
+                            default: // Do nothing.
+                        }
+                    });
                 });
             }
 
+            /**
+             * Start page.
+             */
             private startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
@@ -61,6 +81,13 @@ module nts.uk.at.view.kdl003.a {
                 $.when(self.loadWorkTime(),
                     self.loadWorkType())
                     .done(() => {
+                        // Set initial selection.
+                        self.initWorkTypeSelection();
+                        self.initWorkTimeSelection();
+
+                        // Set initial work time list.
+                        self.initialWorkTimeCodes = _.map(self.listWorkTime(), function(item) { return item.code })
+
                         dfd.resolve();
                     })
                     .fail(function(res) {
@@ -71,6 +98,9 @@ module nts.uk.at.view.kdl003.a {
                 return dfd.promise();
             }
 
+            /**
+             * Load work time.
+             */
             private loadWorkTime(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
@@ -80,7 +110,6 @@ module nts.uk.at.view.kdl003.a {
                     service.findByCodeList(self.callerParameter.workTimeCodes.split(','))
                         .done(function(data) {
                             self.addFirstItem(data);
-                            self.initWorkTimeSelection();
                             dfd.resolve();
                         });
                 }
@@ -90,13 +119,15 @@ module nts.uk.at.view.kdl003.a {
                     service.findAllWorkTime()
                         .done(function(data) {
                             self.addFirstItem(data);
-                            self.initWorkTimeSelection();
                             dfd.resolve();
                         });
                 }
                 return dfd.promise();
             }
 
+            /**
+             * Load work type.
+             */
             private loadWorkType(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
@@ -106,7 +137,6 @@ module nts.uk.at.view.kdl003.a {
                     service.findWorkTypeByCodes(self.callerParameter.workTypeCodes.split(','))
                         .done(function(workTypeList: Array<WorkType>) {
                             self.listWorkType(workTypeList);
-                            self.initWorkTypeSelection();
                             dfd.resolve();
                         });
                 }
@@ -116,7 +146,6 @@ module nts.uk.at.view.kdl003.a {
                     service.findAllWorkType()
                         .done(function(workTypeList: Array<WorkType>) {
                             self.listWorkType(workTypeList);
-                            self.initWorkTypeSelection();
                             dfd.resolve();
                         });
                 }
@@ -137,6 +166,9 @@ module nts.uk.at.view.kdl003.a {
                 self.listWorkTime(data);
             }
 
+            /**
+             * Initial work type selection 
+             */
             private initWorkTypeSelection(): void {
                 let self = this;
                 // Selected code from caller screen.
@@ -149,6 +181,9 @@ module nts.uk.at.view.kdl003.a {
                 }
             }
 
+            /**
+             * Initial work time selection.
+             */
             private initWorkTimeSelection(): void {
                 let self = this;
                 // Selected code from caller screen.
@@ -161,28 +196,14 @@ module nts.uk.at.view.kdl003.a {
                 }
             }
 
-            private getTimeDayAtrEnum(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-                service.findTimeDayAtrEnum().done(
-                    function(data) {
-                        let map = _.reduce(data, function(hash, value) {
-                            let key = value['value'];
-                            hash[key] = value['localizedName'];
-                            return hash;
-                        }, {});
-                        self.lstTimeDayAtrEnum(map);
-                        dfd.resolve();
-                    }
-                );
-                return dfd.promise();
-            }
-
-            public search() {
+            /**
+             * Search work time.
+             */
+            public search(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
-                    codelist: _.map(self.listWorkTime, function(item) { return item.code }),
+                    codelist: self.initialWorkTimeCodes,
                     startAtr: self.startTimeOption(),
                     startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? -1 : self.startTime(),
                     endAtr: self.endTimeOption(),
@@ -191,6 +212,9 @@ module nts.uk.at.view.kdl003.a {
                 service.findByTime(command)
                     .done(function(data) {
                         self.listWorkTime(data);
+                        if (data && data.length > 0) {
+                            self.selectedWorkTimeCode(data[0].code);
+                        }
                     })
                     .fail(function(res) {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
@@ -199,33 +223,26 @@ module nts.uk.at.view.kdl003.a {
                     });
             }
 
-            private returnData() {
+            /**
+             * Clear search condition.
+             */
+            public clearSearchCondition(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
-                self.startTimeOption(1);
-                self.startTime('');
-                self.endTimeOption(1);
-                self.endTime('');
-                service.findByCodeList(self.callerParameter.workTimeCodes.split(','))
-                    .done(function(data) {
-                        self.addFirstItem(data);
-                        self.initWorkTimeSelection();
-                    })
-                    .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
-                $("#inputStartTime").focus();
-            }
 
-            private convertItemForview(item: any) {
-                var self = this;
-                item.startDay = self.lstTimeDayAtrEnum()[item.startDay];
-                item.endDay = self.lstTimeDayAtrEnum()[item.endDay];
-                item.startTime = nts.uk.time.parseTime(item.startTime, true).format();
-                item.endTime = nts.uk.time.parseTime(item.endTime, true).format();
-                return item;
+                // Reset search conditions
+                self.startTimeOption(1);
+                self.startTime(null);
+                self.endTimeOption(1);
+                self.endTime(null);
+
+                // Reload list work time.
+                self.loadWorkTime().always(() => {
+                    nts.uk.ui.block.clear();
+                });
+
+                // Set focus.
+                $("#inputStartTime").focus();
             }
 
             public submitAndCloseDialog() {
@@ -246,23 +263,25 @@ module nts.uk.at.view.kdl003.a {
 
             private getWorkTypeName(workTypeCode: string): string {
                 let self = this;
-                let workType: WorkType;
+                let name: string = '';
                 if (self.listWorkTime()) {
-                    workType = _.find(self.listWorkType(), workType => workType.workTypeCode == workTypeCode);
+                    let workType = _.find(self.listWorkType(), workType => workType.workTypeCode == workTypeCode);
+                    name = workType ? workType.name : '';
                 }
-                return workType.name;
+                return name;
             }
 
             private getWorkTimeName(workTimeCode: string): string {
                 let self = this;
-                let workTime: WorkTimeSet;
+                let name: string = '';
                 if (self.listWorkTime()) {
-                    workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
+                    let workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
+                    name = workTime ? workTime.name : '';
                 }
-                return workTime.name;
+                return name;
             }
 
-            closeDialog() {
+            public closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
         }
@@ -302,6 +321,11 @@ module nts.uk.at.view.kdl003.a {
             selectedWorkTypeName: string;
             selectedWorkTimeCode: string;
             selectedWorkTimeName: string;
+        }
+        enum SetupType {
+            REQUIRED = 0,
+            OPTIONAL = 1,
+            NOT_REQUIRED = 2
         }
     }
 }

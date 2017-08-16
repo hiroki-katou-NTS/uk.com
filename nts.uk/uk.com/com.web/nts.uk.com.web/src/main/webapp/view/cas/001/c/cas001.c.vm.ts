@@ -8,7 +8,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
     export class ScreenModel {
         roleList: KnockoutObservableArray<any> = ko.observableArray([]);
         roleCodeArray = [];
-        roleCopy: KnockoutObservable<PersonRole> = ko.observable(new PersonRole("99900000-0000-0000-0000-000000000001", "0001", "A"));
+        roleCopy: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
 
         constructor() {
             var self = this;
@@ -16,6 +16,8 @@ module nts.uk.com.view.cas001.c.viewmodel {
             self.roleList.subscribe(data => {
                 if (data) {
                     $("#roles").igGrid("option", "dataSource", data);
+                }else{
+                    $("#roles").igGrid("option", "dataSource", []);
                 }
             });
 
@@ -39,7 +41,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
             let data = (__viewContext["viewModel"].roleList());
             let self = this;
             self.roleCodeArray = [];
-            _.find(data, function(role) {
+            _.find(data, function(role:PersonRole) {
                 if (role.selected === true) {
                     self.roleCodeArray.push(role.roleId);
                 }

@@ -6,8 +6,6 @@ package nts.uk.ctx.at.schedule.app.find.budget.external;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +15,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.csv.CSVFormat;
-
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetDataPreviewDto;
@@ -28,8 +27,8 @@ import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.External
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.Encoding;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUltil;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -62,9 +61,10 @@ public class ExternalBudgetFinder {
 	 *
 	 * @param fileId the file id
 	 */
-	public void validateFile(String fileId) {
+	public void validateFile(ExtBudgetExtractCondition extractCondition) {
 	    // Check valid format file.
-        this.fileCheckService.validFileFormat(fileId);
+	    this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
+                extractCondition.getStartLine());
 	}
 	
 	/**
@@ -75,7 +75,8 @@ public class ExternalBudgetFinder {
 	 */
     public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
         // Check valid format file.
-        this.fileCheckService.validFileFormat(extractCondition.getFileId());
+        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
+                extractCondition.getStartLine());
         
         List<ExternalBudgetValDto> lstExtBudgetVal = new ArrayList<>();
         int INDEX_CODE = 0;
@@ -84,21 +85,33 @@ public class ExternalBudgetFinder {
         int MAX_RECORD_DISP = 10;
         
         String companyId = AppContexts.user().companyId();
+        
+        // find external budget setting
         Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
                 extractCondition.getExternalBudgetCode());
         if (!extBudgetOptional.isPresent()) {
             throw new RuntimeException("Not external budget setting.");
         }
         ExternalBudget externalBudget = extBudgetOptional.get();
-        int MAX_COLUMN = 100;
+        
+        int MAX_COLUMN = 51;
         int totalRecord = 0;
         int indexLine = 0;
         int countLine = 1;
         try {
+            // get input stream by fileId
             InputStream inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
-            List<NtsCsvRecord> csvRecords = this.findRecordFile(inputStream, extractCondition.getEncoding(),
-                    externalBudget.getUnitAtr());
+            
+            // get list record
+            List<NtsCsvRecord> csvRecords = this.findRecordFile(inputStream, extractCondition.getEncoding());
+            
+            if (CollectionUtil.isEmpty(csvRecords)) {
+                throw new BusinessException(new RawErrorMessage("File input not data."));
+            }
+            
+            // calculate total record file
             totalRecord = csvRecords.size() - extractCondition.getStartLine() + 1;
+            
             Iterator<NtsCsvRecord> csvRecordIterator = csvRecords.iterator();
             while(csvRecordIterator.hasNext()) {
                 NtsCsvRecord record = csvRecordIterator.next();
@@ -115,17 +128,17 @@ public class ExternalBudgetFinder {
                         }
                         result.add(value.toString());
                     }
-                    lstExtBudgetVal.add(
-                            ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE), result.get(INDEX_DATE),
-                                    this.findListExtBudgetValue(result.subList(INDEX_VALUE, result.size()),
-                                            externalBudget.getUnitAtr())));
+                    this.findListExtBudgetValue(result, externalBudget.getUnitAtr());
+                    lstExtBudgetVal.add(ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE),
+                            result.get(INDEX_DATE), result.subList(INDEX_VALUE, result.size())));
                     countLine++;
                 }
             }
+            // close input stream
+            inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        System.out.println(totalRecord);
 	    return ExtBudgetDataPreviewDto.builder()
 	            .isDailyUnit(externalBudget.getUnitAtr() == UnitAtr.DAILY)
 	            .data(lstExtBudgetVal)
@@ -133,37 +146,19 @@ public class ExternalBudgetFinder {
 	            .build();
 	}
 	
-	/**
+    /**
      * Find record file.
      *
      * @param inputStream the input stream
      * @param encoding the encoding
-     * @return the iterator
+     * @return the list
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    private List<NtsCsvRecord> findRecordFile(InputStream inputStream, Integer encoding, UnitAtr unitAtr) throws IOException {
-        Charset charset = this.getCharset(encoding);
-        String newLineCode = "\r\n"; // CR+LF
-        NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().withChartSet(charset)
-                .withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
+    private List<NtsCsvRecord> findRecordFile(InputStream inputStream, Integer encoding) throws IOException {
+        NtsCsvReader csvReader = FileUltil.newCsvReader(encoding);
         return csvReader.parse(inputStream);
     }
     
-    /**
-     * Gets the charset.
-     *
-     * @param value the value
-     * @return the charset
-     */
-    private Charset getCharset(Integer value) {
-        Encoding encoding = Encoding.valueOf(value);
-        switch (encoding) {
-        case Shift_JIS:
-            return Charset.forName("Shift_JIS");
-        default:
-            return StandardCharsets.UTF_8;
-        }
-    }
     
     /**
      * Find list ext budget value.
@@ -177,20 +172,23 @@ public class ExternalBudgetFinder {
         int numberCol = 0;
         switch (unitAtr) {
             case DAILY:
-                numberCol = 1;
+                numberCol = 3;
                 break;
             case BYTIMEZONE:
-                numberCol = 47;
+                numberCol = 50;
                 break;
             default:
                 throw new RuntimeException("Not unit atr suitable.");
         }
-        if (lstRawVal.size() < numberCol) {
-            do {
-                lstRawVal.add(valEmpty);
-            } while (lstRawVal.size() <= numberCol);
-        } else if (lstRawVal.size() > numberCol){
+        if (lstRawVal.size() > numberCol) {
             lstRawVal.subList(0, numberCol);
+            return lstRawVal;
+        }
+        if (lstRawVal.size() == numberCol) {
+            return lstRawVal;
+        }
+        while (lstRawVal.size() <= numberCol) {
+            lstRawVal.add(valEmpty);
         }
         return lstRawVal;
     }

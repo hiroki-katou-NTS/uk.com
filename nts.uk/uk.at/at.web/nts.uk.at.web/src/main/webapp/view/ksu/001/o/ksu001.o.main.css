@@ -1,65 +1,65 @@
-#label, #combo-box1, #group-button, #set-work-type {
+#oViewModel #label,#oViewModel  #combo-box1,#oViewModel  #group-button,#oViewModel  #set-work-type {
 	float: left;
 }
 
-#combo-box1 {
+#oViewModel #combo-box1 {
 	top: 2px;
 	margin-left: 35px
 }
 
-#time-edit1 {
+#oViewModel #time-edit1 {
 	text-align: center !important;
 	width: 43px !important;
 	margin-left: 16px
 }
 
-#time-edit2 {
+#oViewModel #time-edit2 {
 	text-align: center !important;
 	width: 43px !important;
 }
 
-#set-work-time {
+#oViewModel #set-work-time {
 	float: left;
 	margin-top: 2px;
 }
 
-.reserved {
+#oViewModel .reserved {
 	margin-left: 10px;
 }
 
-.switchButton-wrapper {
+#oViewModel .switchButton-wrapper {
 	margin-left: 30px;
 }
 
-#combo-box2 {
+#oViewModel #combo-box2 {
 	top: 9px;
 	margin-left: 30px;
 	min-width: 516px !important;
 }
 
-#combo-box1 {
+#oViewModel #combo-box1 {
 	min-width: 310px !important;
 }
 
-#group-button {
+#oViewModel #group-button {
 	margin-left: 265px;
 }
 
-#group-button>button:last-child {
+#oViewModel #group-button>button:last-child {
 	width: 20px;
 	top: -5px;
 	height: 20px;
 }
 
 
-#spelcial, #time-edit2 {
+#oViewModel #spelcial,#oViewModel #time-edit2 {
 	margin-left: 10px;
 }
 
-#stick-undo {
+#oViewModel #stick-undo {
 	margin-right: 180px;
 }
 
-.cf1 .nts-switch-button {
+#oViewModel .cf1 .nts-switch-button {
 	width: 96px !important;
 }

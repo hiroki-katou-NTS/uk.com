@@ -3,6 +3,8 @@ package nts.uk.ctx.bs.person.dom.person.info.item;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
+
 public interface PernfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
@@ -13,7 +15,18 @@ public interface PernfoItemDefRepositoty {
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 
-	void addPerInfoItemDef(PersonInfoItemDefinition perInfoItemDef, String contractCd);
+	void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
 
-	void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef, String contractCd);
+	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
+
+	String getPerInfoItemCodeLastest(String contractCd, String categoryCd);
+
+	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName);
+
+	void addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId);
+
+	List<PerInfoItemDefOrder> getPerInfoItemDefOrdersByCtgId(String perInfoCtgId);
+	
+	int getItemDispOrderBy(String perInfoCtgId, String perInfoItemDefId);
+
 }

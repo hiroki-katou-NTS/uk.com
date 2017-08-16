@@ -81,7 +81,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 { id: 'tab-4', title: nts.uk.resource.getText('KMF004_20'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-5', title: nts.uk.resource.getText('KMF004_21'), content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
-            self.selectedTab = ko.observable('tab-4');
+            self.selectedTab = ko.observable('tab-1');
 
         }
 
@@ -93,6 +93,31 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             dfd.resolve();
 
             return dfd.promise();
+        }
+        
+        openGDialog() {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { title: '代行リスト', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
+                nts.uk.ui.block.clear();
+            });
+
+        }
+        openBDialog() {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/b/index.xhtml', { title: '代行リスト', height: 600, width: 1000, dialogClass: 'no-close' }).onClosed(function(): any {
+                nts.uk.ui.block.clear();
+            });
+
+        }
+        openDDialog() {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/b/index.xhtml', { title: '代行リスト', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
+                nts.uk.ui.block.clear();
+            });
+
         }
     }
 

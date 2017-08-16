@@ -30,7 +30,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
 			+ " LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = " + "11111"
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " WHERE c.cid = :companyId"
 			+ " AND c.abolitionAtr = 0"
 			+ "	ORDER BY co.disporder";
@@ -68,11 +68,10 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		domain.setCategoryName(entity[2].toString());
 		domain.setCategoryType(Integer.valueOf(entity[3].toString()));
 		if (entity[4] != null) {
-			domain.setAllowOtherRef(Integer.valueOf(entity[4].toString()));
+			domain.setAllowPersonRef(Integer.valueOf(entity[4].toString()));
 		}
-		;
 		if (entity[5] != null) {
-			domain.setAllowPersonRef(Integer.valueOf(entity[5].toString()));
+			domain.setAllowOtherRef(Integer.valueOf(entity[5].toString()));
 		}
 		domain.setSetting(Boolean.valueOf(entity[6].toString()));
 		return domain;
@@ -86,15 +85,15 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		entity.allowOtherRef = domain.getAllowOtherRef().value;
 		entity.allowPersonRef = domain.getAllowPersonRef().value;
 		entity.otherAllowAddHis = domain.getOtherAllowAddHis().value;
-		entity.otherAllowAddHis = domain.getOtherAllowAddHis().value;
-		entity.otherFutureHisAuth = domain.getOtherFutureHisAuth().value;
-		entity.otherPastHisAuth = domain.getOtherPastHisAuth().value;
-		entity.selfAllowAddHis = domain.getSelfAllowAddHis().value;
-		entity.selfAllowDelHis = domain.getSelfAllowAddHis().value;
-		entity.selfFutureHisAuth = domain.getSelfFutureHisAuth().value;
+		entity.otherAllowDelHis = domain.getOtherAllowDelHis().value;
 		entity.selfPastHisAuth = domain.getSelfPastHisAuth().value;
+		entity.selfFutureHisAuth = domain.getSelfFutureHisAuth().value;
+		entity.selfAllowAddHis = domain.getSelfAllowAddHis().value;
+		entity.selfAllowDelHis = domain.getSelfAllowDelHis().value;
+		entity.otherPastHisAuth = domain.getOtherPastHisAuth().value;
+		entity.otherFutureHisAuth = domain.getOtherFutureHisAuth().value;
 		entity.selfAllowAddMulti = domain.getSelfAllowAddMulti().value;
-		entity.selfAllowDelMulti = domain.getSelfAllowDelHis().value;
+		entity.selfAllowDelMulti = domain.getSelfAllowDelMulti().value;
 		entity.otherAllowAddMulti = domain.getOtherAllowAddMulti().value;
 		entity.otherAllowDelMulti = domain.getOtherAllowDelMulti().value;
 		return entity;
@@ -133,7 +132,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	@Override
 	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd,String companyId) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
-				//.setParameter("roleId", roleId)
+				.setParameter("roleId", roleId)
 				.setParameter("contractCd", contractCd)
 				.setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));

@@ -268,6 +268,7 @@ module nts.uk.at.view.ksm006.a {
                 var self = this;
                 if (!self.selectedWorkplaceId()) {
                      nts.uk.ui.dialog.info({ messageId: "Msg_339" });
+                    return;
                 }
                     //TODO: wait for QA#84782 Check Worktype, Pair WorkType-WorkingHours
                 
@@ -293,6 +294,10 @@ module nts.uk.at.view.ksm006.a {
              */
             registerByClassification(): void {
                 var self = this;
+                if (!self.selectedClassifi()) {
+                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
+                    return;
+                }
                 service.saveClassifyBasicWork(self.collectClassifyData()).done(function() { 
                     // Check if exist alreadysetting of selectedItem
                     var existItem = self.classifiAlreadySetList().filter((item) => {
@@ -403,6 +408,10 @@ module nts.uk.at.view.ksm006.a {
                         // Set Workplace Name.
                         let tree = $('#workplace-list').getDataList();
                         self.setWorkplaceName(tree, self.selectedWorkplaceId());
+                    } else {
+                        self.workplaceBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                        self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                        self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
                     }
 
                 });
@@ -444,6 +453,11 @@ module nts.uk.at.view.ksm006.a {
                                 return item.code == self.selectedClassifi();
                             })[0];
                         self.classificationName(classify.name);
+                    } else {
+                        // If data is null
+                        self.classifyBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                        self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                        self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
                     }
                 });
                 

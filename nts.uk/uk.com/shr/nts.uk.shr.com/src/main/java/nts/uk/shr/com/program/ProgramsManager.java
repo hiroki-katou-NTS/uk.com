@@ -452,6 +452,18 @@ public class ProgramsManager {
 	public static final Program KMK007C  = new Program(WebAppId.AT, ProgramIdConsts.KMK007C, "PgName_KMK007C",
 			"/view/kmk/007/c/index.xhtml");
 	
+	/**
+	 * CAS001C
+	 */
+	public static final Program CAS001C  = new Program(WebAppId.AT, ProgramIdConsts.CAS001C, "PgName_CAS001C",
+			"/view/cas/001/c/index.xhtml");
+	
+	/**
+	 * CAS001D
+	 */
+	public static final Program CAS001D  = new Program(WebAppId.AT, ProgramIdConsts.CAS001D, "PgName_CAS001D",
+			"/view/cas/001/d/index.xhtml");
+	
 	// TODO: Define new programs here.
 
 	/**

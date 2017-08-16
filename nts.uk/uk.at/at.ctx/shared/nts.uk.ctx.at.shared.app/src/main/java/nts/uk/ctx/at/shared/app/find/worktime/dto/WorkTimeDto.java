@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 
 /**
  * 
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
  */
 
 @AllArgsConstructor
+@Setter
 public class WorkTimeDto {
 	public String code;
 	public String name;

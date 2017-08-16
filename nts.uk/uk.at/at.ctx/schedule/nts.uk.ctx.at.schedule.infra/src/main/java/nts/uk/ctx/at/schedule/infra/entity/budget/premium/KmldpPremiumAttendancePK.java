@@ -20,8 +20,8 @@ public class KmldpPremiumAttendancePK {
 	@Column(name="HIS_ID")
 	public String historyID;
 	
-	@Column(name="PREMIUM_ID")
-	public Integer premiumID;
+	@Column(name="DISPLAY_NUMBER")
+	public Integer displayNumber;
 	
 	@Column(name="ATTENDANCE_ID")
 	public Integer attendanceID;

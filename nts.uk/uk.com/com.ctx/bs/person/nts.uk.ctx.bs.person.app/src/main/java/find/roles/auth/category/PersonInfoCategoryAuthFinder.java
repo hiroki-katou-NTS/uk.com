@@ -40,6 +40,13 @@ public class PersonInfoCategoryAuthFinder {
 				.map(x -> PersonInfoCategoryDetailDto.fromDomain(x)).collect(Collectors.toList());
 
 	}
+	
+	public List<PersonInfoCategoryAuthDto> getAllCategoryAuth(String roleId) {
+		return this.personCategoryAuthRepository
+				.getAllCategoryAuthByRoleId(roleId).stream()
+				.map(x -> PersonInfoCategoryAuthDto.fromDomain(x)).collect(Collectors.toList());
+
+	}
 
 	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId) {
 		Optional<PersonInfoCategoryAuth> opt = this.personCategoryAuthRepository
@@ -63,7 +70,7 @@ public class PersonInfoCategoryAuthFinder {
 			});
 
 		}
-		PersonInfoRoleAuth roleAuth = this.personRoleAuthRepository.getDetailPersonRoleAuth(roleId).orElse(null);
+		PersonInfoRoleAuth roleAuth = this.personRoleAuthRepository.getDetailPersonRoleAuth(roleId, AppContexts.user().companyId()).orElse(null);
 		if (roleAuth != null) {
 			List<PersonInfoCategoryDetail> categoryInfoList = this.personCategoryAuthRepository
 					.getAllCategoryByRoleId(roleId);
