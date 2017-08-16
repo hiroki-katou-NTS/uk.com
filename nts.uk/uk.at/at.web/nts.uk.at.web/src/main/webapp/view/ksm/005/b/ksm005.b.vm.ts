@@ -47,8 +47,10 @@ module nts.uk.at.view.ksm005.b {
                 // now month setting kcp006
                 self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM')));
                 
-                self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string){
-                   self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked()); 
+                self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string) {
+                    if (monthlyPatternCode) {
+                        self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked());
+                    }
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
