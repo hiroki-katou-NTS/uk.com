@@ -1,5 +1,9 @@
 module cps007.a.vm {
+    let block = window["nts"]["uk"]["ui"]["block"]["grayout"];
+    let unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
+
     let __viewContext: any = window['__viewContext'] || {};
+
     export class ViewModel {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
 
@@ -30,23 +34,30 @@ module cps007.a.vm {
                     layoutID: layout.id,
                     layoutCode: layout.code,
                     layoutName: layout.name,
-                    itemsClassification: (layout.itemsClassification || []).map((item, i) => {
+                    itemsClassification: _(layout.itemsClassification || []).map((item, i) => {
                         return {
                             dispOrder: i + 1,
                             personInfoCategoryID: item.personInfoCategoryID,
                             layoutItemType: item.layoutItemType,
-                            listItemClsDf: (item.listItemDf || []).map((def, j) => {
+                            listItemClsDf: _(item.listItemDf || []).map((def, j) => {
                                 return {
                                     dispOrder: j + 1,
                                     personInfoItemDefinitionID: def.id
                                 };
-                            })
+                            }).value()
                         };
-                    })
+                    }).value()
                 };
-            
+
             // push data layout to webservice
-            service.saveData(command);
+            block();
+            service.saveData(command).done(() => {
+                self.start();
+                unblock();
+            }).fail((mes) => {
+                unblock();
+                alert(mes);
+            });;
         }
     }
 

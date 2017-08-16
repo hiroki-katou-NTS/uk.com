@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -50,17 +51,19 @@ public class DailyPerformanceFinder {
 		}
 
 		// find monthly detail
-		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlies = workTypeFormatMonthlyRepository
+		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlies = this.workTypeFormatMonthlyRepository
 				.getMonthlyDetail(companyId, businessTypeCode);
 		List<BusinessTypeFormatDetailDto> businessTypeFormatMonthlyDtos = new ArrayList<BusinessTypeFormatDetailDto>();
 		if (businessTypeFormatMonthlies.isEmpty()) {
 			businessTypeFormatMonthlyDtos = new ArrayList<>();
 		}
 
-		businessTypeFormatMonthlyDtos = businessTypeFormatMonthlies.stream()
-				.map(f -> {
-					return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), f.getOrder(), f.getColumnWidth());
-				}).collect(Collectors.toList());
+		businessTypeFormatMonthlyDtos = businessTypeFormatMonthlies.stream().map(f -> {
+			Optional<AttendanceItem> attendanceItem = this.attendanceItemRepository.getAttendanceItemDetail(companyId,
+					f.getAttendanceItemId());
+			return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), attendanceItem.get().getDislayNumber(),
+					attendanceItem.get().getAttendanceName().v(), f.getOrder(), f.getColumnWidth());
+		}).collect(Collectors.toList());
 
 		BusinessTypeDetailDto businessTypeDetail = new BusinessTypeDetailDto(attendanceItemDtos,
 				businessTypeFormatDailyDto, businessTypeFormatMonthlyDtos);

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,6 +11,8 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeForm
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeMonthlyDetailDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -20,6 +23,9 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class BusinessTypeMonthlyDetailFinder {
+
+	@Inject
+	private AttendanceItemRepository attendanceItemRepository;
 
 	@Inject
 	private BusinessTypeFormatMonthlyRepository workTypeFormatMonthlyRepository;
@@ -36,7 +42,10 @@ public class BusinessTypeMonthlyDetailFinder {
 		} 
 		
 		List<BusinessTypeFormatDetailDto> workTypeFormatMonthlyDtos = workTypeFormatMonthlies.stream().map(f -> {
-			return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), f.getOrder(), f.getColumnWidth());
+			Optional<AttendanceItem> attendanceItem = this.attendanceItemRepository.getAttendanceItemDetail(companyId,
+					f.getAttendanceItemId());
+			return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), attendanceItem.get().getDislayNumber(),
+					attendanceItem.get().getAttendanceName().v(), f.getOrder(), f.getColumnWidth());
 		}).collect(Collectors.toList());
 
 		 BusinessTypeMonthlyDetailDto workTypeDetailDto = new BusinessTypeMonthlyDetailDto(workTypeFormatMonthlyDtos);

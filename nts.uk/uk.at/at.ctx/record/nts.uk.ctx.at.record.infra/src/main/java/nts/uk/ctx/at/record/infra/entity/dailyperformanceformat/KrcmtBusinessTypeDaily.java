@@ -29,7 +29,7 @@ public class KrcmtBusinessTypeDaily extends UkJpaEntity implements Serializable 
 	public KrcmtBusinessTypeDailyPK krcmtBusinessTypeDailyPK;
 
 	@Column(name = "ORDER_DAILY")
-	public BigDecimal order;
+	public int order;
 
 	@Column(name = "COLUMN_WIDTH")
 	public BigDecimal columnWidth;
