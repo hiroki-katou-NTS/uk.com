@@ -17,5 +17,5 @@ public class KshstRelationshipPK implements Serializable{
 	public String companyId;
 	/*コード*/
 	@Column(name = "RELATIONSHIP_CD")
-	public String relationshipcd;
+	public String relationshipCd;
 }

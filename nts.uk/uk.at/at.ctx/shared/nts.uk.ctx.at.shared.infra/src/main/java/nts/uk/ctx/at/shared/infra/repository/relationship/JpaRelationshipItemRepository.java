@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.infra.entity.relationship.KshstRelationshipPK;
 @Stateless
 public class JpaRelationshipItemRepository extends JpaRepository implements RelationshipRepository{
 	
-	private final String SELECT_NO_WHERE = "SELECT c FROM KshstRelationshipItem c";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.KshstRelationshipPK.companyId = :companyId";
+	private final String SELECT_NO_WHERE = "SELECT c FROM KshstRelationshipItem c ";
+	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstRelationshipPK.companyId = :companyId";
 	/**
 	 * change from entity to domain
 	 * @param entity
@@ -26,7 +26,7 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	 */
 	private static Relationship toDomain(KshstRelationshipItem entity){
 		Relationship domain = Relationship.createFromJavaType(entity.kshstRelationshipPK.companyId,
-													entity.kshstRelationshipPK.relationshipcd, 
+													entity.kshstRelationshipPK.relationshipCd, 
 													entity.relationshipName);
 		return domain;
 	}

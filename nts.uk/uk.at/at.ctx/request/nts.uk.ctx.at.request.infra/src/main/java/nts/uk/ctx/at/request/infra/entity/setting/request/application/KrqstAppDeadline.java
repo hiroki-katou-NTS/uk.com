@@ -16,6 +16,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Table(name = "KRQST_APP_DEADLINE")
 public class KrqstAppDeadline extends UkJpaEntity implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/*主キー*/
 	@EmbeddedId
 	public KrqstAppDeadlinePK krqstAppDeadlinePK;
