@@ -55,6 +55,14 @@ module nts.uk.pr.view.ccg007.d {
                     title: nts.uk.resource.getText("CCG007_9"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {
+                    var contractCode = nts.uk.ui.windows.getShared('contractCode');
+                    service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
+                        //get list company from server 
+                        self.companyList(data);
+                        if (data.length > 0) {
+                            self.selectedCompanyCode(self.companyList()[0].companyCode);
+                        }
+                    });
                 });
             }
 
@@ -70,7 +78,7 @@ module nts.uk.pr.view.ccg007.d {
                             //get list company from server 
                             self.companyList(data);
                             if (data.length > 0) {
-                                self.selectedCompanyCode(self.companyList()[0].code);
+                                self.selectedCompanyCode(self.companyList()[0].companyCode);
                             }
                             //get local storage info and set here
                             nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo) {
