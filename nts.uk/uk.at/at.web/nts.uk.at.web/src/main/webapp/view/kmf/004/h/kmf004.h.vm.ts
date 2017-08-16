@@ -8,7 +8,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
         // selected code 
         selectedCode: KnockoutObservable<string>;
         // selected item
-        selectedOption: KnockoutObservable<Relationship>;
+        selectedOption: KnockoutObservable<Relationship>;    
         // binding to text box name A3_3
         selectedName: KnockoutObservable<string>;
         // binding to text box code A3_2
@@ -21,7 +21,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             let self = this;
             self.gridListColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KMF004_7"), key: 'relationshipCd', width: 100 },
-                { headerText: nts.uk.resource.getText("KMF004_8"), key: 'businessTypeName', width: 200, formatter: _.escape}
+                { headerText: nts.uk.resource.getText("KMF004_8"), key: 'relationshipName', width: 200, formatter: _.escape}
             ]);
             self.lstRelationship = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -169,6 +169,14 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             }); 
             $("#inpPattern").focus();
         }
+        
+        close(){
+            var t0 = performance.now();                
+            var t1 = performance.now();
+            nts.uk.ui.windows.close();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
+        }
+        
     }
     export class Relationship{
         relationshipCd: string;

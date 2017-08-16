@@ -110,7 +110,10 @@ public class ExternalBudgetFinder {
             }
             
             // calculate total record file
-            totalRecord = csvRecords.size() - extractCondition.getStartLine() + 1;
+            int calTotal = csvRecords.size() - extractCondition.getStartLine() + 1;
+            if (calTotal > totalRecord) {
+                totalRecord = calTotal;
+            }
             
             Iterator<NtsCsvRecord> csvRecordIterator = csvRecords.iterator();
             while(csvRecordIterator.hasNext()) {
