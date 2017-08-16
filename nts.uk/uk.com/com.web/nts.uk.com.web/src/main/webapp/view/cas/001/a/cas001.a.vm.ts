@@ -83,19 +83,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     });
                 });
             });
-
-
-            self.allowPersonRef.subscribe(function(newValue) {
-                
             
-                
-            });
-
-            self.allowOtherRef.subscribe(function(newValue) {
-                
-             
-
-            });
             //register click change all event
             $(function() {
                 $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
@@ -204,6 +192,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 0, index);
                             let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
                             let NameCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
+                            
                             if (el.requiredAtr == '1') {
                                 $(CheckboxCell).addClass('requiredCell');
                                 $(IsConfigCell).addClass('requiredCell');
@@ -679,7 +668,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 function makeIcon(value, row) {
     if (value == "true")
-        return '&#8226;'
+        return "●";
     return '';
 }
 
