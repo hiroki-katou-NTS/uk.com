@@ -4,16 +4,16 @@ package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
  * @author hieult
  *
  */
-public enum Late {
-	
+public enum Select {
+
 	/** 0: 選択されていない */
-	notSlected(0),
+	NOTSLECTED(0),
 	/** 1: 選択された */
-	Select(1);
+	SELECTED(1);
 	
 	public int value ; 
 	
-	Late(int type) {
+	Select(int type) {
 		this.value = type;
 	}
 
