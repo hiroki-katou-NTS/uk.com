@@ -180,7 +180,7 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 	@Override
 	public List<PerInfoItemDefOrder> getPerInfoItemDefOrdersByCtgId(String perInfoCtgId) {
 		return this.queryProxy().query(SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY, PpemtPerInfoItemOrder.class)
-				.setParameter("perInfoCtgId", "perInfoCtgId").getList(o -> createPerInfoItemDefOrderFromEntity(o));
+				.setParameter("perInfoCtgId", perInfoCtgId).getList(o -> createPerInfoItemDefOrderFromEntity(o));
 	}
 
 	@Override
