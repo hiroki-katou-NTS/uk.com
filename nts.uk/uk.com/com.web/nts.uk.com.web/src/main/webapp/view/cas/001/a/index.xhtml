@@ -229,45 +229,6 @@
 														</tr>
 														<tr>
 															<th>#{i18n.getText('CAS001_30')}</th>
-															<td><div id="A4_020" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowDelHis ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-															<td><div id="A4_021" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowAddHis ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-															<td><div id="A4_022"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: selfPastHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: $parents[1].allowPersonRef() === 1 ,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-															<td><div id="A4_023"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: selfFutureHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: $parents[1].allowPersonRef() === 1  ,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-														</tr>
-														<tr>
-															<th>#{i18n.getText('CAS001_31')}</th>
 															<td><div id="A4_024" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
@@ -304,6 +265,47 @@
 														columns: [
 															{ prop: 'name', length: 5 },
 														]}"></div></td>
+														</tr>
+														<tr>
+															<th>#{i18n.getText('CAS001_31')}</th>
+															<td><div id="A4_020" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowDelHis ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_021" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowAddHis ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_022"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: selfPastHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowPersonRef() === 1 ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+															<td><div id="A4_023"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: selfFutureHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowPersonRef() === 1  ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+
+
 														</tr>
 													</table>
 												</com:ko-if>

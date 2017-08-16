@@ -76,14 +76,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     newCategory.loadRoleItems(self.currentRoleId(), categoryId).done(function() {
 
-                        self.currentRole().currentCategory(newCategory);
-
                         newCategory.setCategoryAuth(result);
+
+                        self.currentRole().currentCategory(newCategory);
 
                     });
                 });
             });
-            
+
             //register click change all event
             $(function() {
                 $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
@@ -192,7 +192,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 0, index);
                             let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
                             let NameCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
-                            
+
                             if (el.requiredAtr == '1') {
                                 $(CheckboxCell).addClass('requiredCell');
                                 $(IsConfigCell).addClass('requiredCell');
