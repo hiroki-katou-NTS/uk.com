@@ -48,6 +48,12 @@ public class PersonInfoCategoryAuthWebservice extends WebService {
 	}
 	
 	@POST
+	@Path("find/categoryAuth/{roleId}")
+	public List<PersonInfoCategoryAuthDto> getAllCategoryAuthByRoleId(@PathParam("roleId") String roleId) {
+		return personInfoCategoryAuthFinder.getAllCategoryAuth(roleId);
+
+	}
+	@POST
 	@Path("update")
 	public void updateCategoryAuth(UpdatePersonInfoCategoryAuthCommand command){
 		this.update.handle(command);

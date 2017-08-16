@@ -76,6 +76,6 @@ button.search-btn, button.clear-btn {
 	height: 30px !important;
 }
 
-#functions-area {
-	border-bottom: none !important;
+#functions-area-bottom {
+	height: 57px !important;
 }
