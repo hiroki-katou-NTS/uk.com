@@ -52,7 +52,7 @@ public class SgwmtUser extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CONTRACT_CD")
-    private long contractCd;
+    private String contractCd;
     
     @Basic(optional = false)
     @NotNull
@@ -82,7 +82,7 @@ public class SgwmtUser extends UkJpaEntity implements Serializable {
     @Column(name = "ASSO_SID")
     private String assoSid;
 
-    public SgwmtUser(String userId, int exclusVer, String password, String loginId, long contractCd, Date expirationDate, short specialUser, short multiCom) {
+    public SgwmtUser(String userId, int exclusVer, String password, String loginId, String contractCd, Date expirationDate, short specialUser, short multiCom) {
         this.userId = userId;
         this.password = password;
         this.loginId = loginId;

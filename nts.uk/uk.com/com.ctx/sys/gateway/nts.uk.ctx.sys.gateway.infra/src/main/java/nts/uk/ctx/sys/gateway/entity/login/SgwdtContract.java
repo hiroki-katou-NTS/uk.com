@@ -37,7 +37,7 @@ public class SgwdtContract implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CONTRACT_CD")
-    private Long contractCd;
+    private String contractCd;
     
     @Basic(optional = false)
     @NotNull
@@ -57,11 +57,11 @@ public class SgwdtContract implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date endD;
     
-    public SgwdtContract(Long contractCd) {
+    public SgwdtContract(String contractCd) {
         this.contractCd = contractCd;
     }
 
-    public SgwdtContract(Long contractCd, int exclusVer, String password, Date strD, Date endD) {
+    public SgwdtContract(String contractCd, int exclusVer, String password, Date strD, Date endD) {
         this.contractCd = contractCd;
         this.password = password;
         this.strD = strD;
