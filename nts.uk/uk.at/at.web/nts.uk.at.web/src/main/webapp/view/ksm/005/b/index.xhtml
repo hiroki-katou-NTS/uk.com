@@ -31,7 +31,7 @@
 					<button tabindex="1" data-bind="click: resetData">#{i18n.getText('KSM005_8')}</button>
 					<button tabindex="2" class="proceed" data-bind="click: saveDataMonthlyPattern">#{i18n.getText('KSM005_9')}</button>
 					<button tabindex="3" data-bind="click: openBatchSettingDialog">#{i18n.getText('KSM005_10')}</button>
-					<button tabindex="5" class="danger" data-bind="click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
+					<button tabindex="5" class="danger" data-bind="enable: enableDelete, click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">
 					<div tabindex="-1" class="pull-left monthlyPatternContents caret-right caret-background bg-green">

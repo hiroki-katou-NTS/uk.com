@@ -44,7 +44,6 @@ module cps008.c.viewmodel {
                 return;
             } else if (layout.newCode && layout.newName) {
                 setShared('CPS008C_RESPONE', { id: layout.id, code: layout.newCode, name: layout.newName, action: layout.overrideMode });
-                debugger;
                 close();
             } 
         }

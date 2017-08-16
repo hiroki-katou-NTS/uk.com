@@ -6,14 +6,17 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import entity.person.info.category.PpemtDateRangeItem;
 import entity.person.info.category.PpemtPerInfoCtg;
 import entity.person.info.category.PpemtPerInfoCtgCm;
 import entity.person.info.category.PpemtPerInfoCtgCmPK;
 import entity.person.info.category.PpemtPerInfoCtgOrder;
 import entity.person.info.category.PpemtPerInfoCtgPK;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
@@ -90,7 +93,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	public void addPerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd,
 			List<String> companyIdList) {
 		this.commandProxy().insertAll(companyIdList.stream().map(p -> {
-			return createPerInfoCtgFromDomainWithCtgId(perInfoCtg, p);
+			return createPerInfoCtgFromDomainWithCid(perInfoCtg, p);
 		}).collect(Collectors.toList()));
 		addOrderPerInfoCtgWithListCompany(perInfoCtg.getPersonInfoCategoryId(), companyIdList);
 	}
@@ -104,9 +107,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public void updatePerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd,
 			List<String> companyIdList) {
-		this.commandProxy().updateAll(companyIdList.stream().map(p -> {
-			return createPerInfoCtgFromDomainWithCtgId(perInfoCtg, p);
-		}).collect(Collectors.toList()));
+//		this.commandProxy().updateAll(companyIdList.stream().map(p -> {
+//			return createPerInfoCtgFromDomainWithCid(perInfoCtg, p);
+//		}).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -117,6 +120,19 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void addDateRangeItem(DateRangeItem dateRangeItem) {
+		this.commandProxy().insert(createDateRangeItemFromDomain(dateRangeItem));
+	}
+
+	@Override
+	public void addDateRangeItemByCtgIdList(List<DateRangeItem> dateRangeItems) {
+		this.commandProxy().insertAll(dateRangeItems.stream().map(c -> {
+			return createDateRangeItemFromDomain(c);
+		}).collect(Collectors.toList()));
+
 	}
 
 	private void addOrderPerInfoCtgRoot(String perInfoCtgId, String companyId) {
@@ -164,8 +180,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	}
 
-	private PpemtPerInfoCtg createPerInfoCtgFromDomainWithCtgId(PersonInfoCategory perInfoCtg, String companyId) {
-		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
+	private PpemtPerInfoCtg createPerInfoCtgFromDomainWithCid(PersonInfoCategory perInfoCtg, String companyId) {
+		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(IdentifierUtil.randomUniqueId());
 		return new PpemtPerInfoCtg(perInfoCtgPK, companyId, perInfoCtg.getCategoryCode().v(),
 				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value);
 
@@ -181,5 +197,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private PpemtPerInfoCtgOrder createPerInfoCtgOrderFromDomain(String perInfoCtgId, String companyId, int disOrder) {
 		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtgId);
 		return new PpemtPerInfoCtgOrder(perInfoCtgPK, companyId, disOrder);
+	}
+
+	private PpemtDateRangeItem createDateRangeItemFromDomain(DateRangeItem dateRangeItem) {
+		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(dateRangeItem.getPersonInfoCtgId());
+		return new PpemtDateRangeItem(perInfoCtgPK, dateRangeItem.getStartDateItemId(),
+				dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
 	}
 }

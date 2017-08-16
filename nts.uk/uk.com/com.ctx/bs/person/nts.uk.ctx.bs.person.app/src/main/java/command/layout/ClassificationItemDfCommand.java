@@ -10,8 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClassificationItemDfCommand {
-	private String layoutID;
-	private int layoutDispOrder;
 	private int dispOrder;
 	private String personInfoItemDefinitionID;
 }

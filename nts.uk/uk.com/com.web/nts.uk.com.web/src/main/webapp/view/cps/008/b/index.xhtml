@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 300,
-					height : 200
+					width : 1024,
+					height : 768
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,7 +22,14 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div data-bind="ntsLayoutControl: { data: ko.observableArray([]) }"></div>
+			<div id="contents-area" data-bind="with: layout">
+				<div
+					data-bind="ntsLayoutControl: { data: itemsClassification, editAble: true }"></div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed" data-bind="click: pushData">#{i18n.getText('CPS008_4')}</button>
+				<button class="danger" data-bind="">#{i18n.getText('CPS008_6')}</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
