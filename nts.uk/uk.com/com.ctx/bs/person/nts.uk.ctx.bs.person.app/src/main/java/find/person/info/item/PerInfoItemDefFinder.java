@@ -53,8 +53,11 @@ public class PerInfoItemDefFinder {
 
 	// Function get data for Layout
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgIdForLayout(String perInfoCtgId) {
-		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep.getAllPerInfoItemDefByCategoryId(perInfoCtgId,
-				AppContexts.user().contractCode());
+		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
+				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
+				.filter(e -> e.getItemParentCode().equals("")) // filter set item or single item (has'nt parent item)
+				.collect(Collectors.toList());
+
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
 	};

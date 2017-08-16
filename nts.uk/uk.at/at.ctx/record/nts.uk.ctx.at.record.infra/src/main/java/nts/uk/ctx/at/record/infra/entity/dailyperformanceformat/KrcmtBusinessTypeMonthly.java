@@ -29,7 +29,7 @@ public class KrcmtBusinessTypeMonthly extends UkJpaEntity implements Serializabl
 	public KrcmtBusinessTypeMonthlyPK krcmtBusinessTypeMonthlyPK;
 
 	@Column(name = "ORDER_MONTHLY")
-	public BigDecimal order;
+	public int order;
 
 	@Column(name = "COLUMN_WIDTH")
 	public BigDecimal columnWidth;
