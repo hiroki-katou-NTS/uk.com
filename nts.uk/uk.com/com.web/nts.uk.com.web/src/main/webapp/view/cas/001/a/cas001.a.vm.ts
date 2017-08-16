@@ -679,7 +679,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 function makeIcon(value, row) {
     if (value == "true")
-        return '&#8226;'
+        return "●";
     return '';
 }
 
