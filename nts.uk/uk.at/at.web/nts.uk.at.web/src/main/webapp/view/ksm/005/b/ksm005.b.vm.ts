@@ -84,10 +84,10 @@ module nts.uk.at.view.ksm005.b {
                 if (self.validateClient()) {
                     return;
                 }
-                nts.uk.ui.windows.setShared("monthlyPatternCode",self.monthlyPatternModel().code());
+                nts.uk.ui.windows.setShared("monthlyPatternCode",nts.uk.text.padLeft(self.monthlyPatternModel().code(),'0',3));
                 nts.uk.ui.windows.setShared("monthlyPatternName",self.monthlyPatternModel().name());
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function(){
-                    self.reloadPage(self.monthlyPatternModel().code(), false);
+                    self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(),'0',3), false);
                 });
             }
 

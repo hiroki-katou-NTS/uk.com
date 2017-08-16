@@ -40,6 +40,7 @@ module nts.uk.at.view.ksm005.e {
          * batch monthly pattern setting call service
          */
         export function batchWorkMonthlySetting(command: model.MonthlyPatternSettingBatchDto): JQueryPromise<void> {
+            command.monthlyPatternCode = nts.uk.text.padLeft(command.monthlyPatternCode, '0', 3);
             return nts.uk.request.ajax('at', paths.batchWorkMonthlySetting, command);
         }
         /**

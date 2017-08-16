@@ -33,6 +33,7 @@ module nts.uk.at.view.ksm005.b {
          * call service add monthly pattern
          */
         export function addMonthlyPattern(dto: model.MonthlyPatternDto) :JQueryPromise<void> {
+            dto.code = nts.uk.text.padLeft(dto.code, '0', 3);
             return nts.uk.request.ajax('at', paths.addMonthlyPattern, {dto: dto});
         }
         /**
