@@ -65,7 +65,7 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	 * Remove attendanceItemId not exist in list that need update
 	 */
 	@Override
-	public void deleteExistData(List<BigDecimal> attendanceItemIds) {
+	public void deleteExistData(List<Integer> attendanceItemIds) {
 		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
 				.executeUpdate();
 	}

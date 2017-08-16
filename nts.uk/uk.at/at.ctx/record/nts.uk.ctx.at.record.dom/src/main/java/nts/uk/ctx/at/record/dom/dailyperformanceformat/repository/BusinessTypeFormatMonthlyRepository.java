@@ -11,7 +11,7 @@ public interface BusinessTypeFormatMonthlyRepository {
 	
 	void update(BusinessTypeFormatMonthly businessTypeFormatMonthly);
 	
-	void deleteExistData(List<BigDecimal> attendanceItemIds);
+	void deleteExistData(List<Integer> attendanceItemIds);
 	
 	void add(List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds);
 

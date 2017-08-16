@@ -7,6 +7,7 @@ module nts.uk.at.view.kdw008.b {
                 updateDailyDetail: "at/record/businesstype/updateBusinessTypeDailyDetail",
                 getMonthlyDetail: "at/record/businesstype/findBusinessTypeMonthlyDetail/{0}",
                 addMonthlyDetail: "at/record/businesstype/addBusinessTypeMonthlyDetail",
+                updateMonthlyDetail: "at/record/businesstype/updateBusinessTypeMonthlyDetail",
                 getAttendanceItem: "at/record/businesstype/attendanceItem/findAll",
                 getSheetNo: "at/record/businesstype/findBusinessTypeDailyDetail/findSheetNo/{0}",
                 getBusinessType: "at/record/businesstype/findAll",
@@ -40,7 +41,7 @@ module nts.uk.at.view.kdw008.b {
             };
 
             updateMonthlyDetail(UpdateBusinessTypeMonthlyCommand: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.addMonthlyDetail, UpdateBusinessTypeMonthlyCommand);
+                return nts.uk.request.ajax("at", this.paths.updateMonthlyDetail, UpdateBusinessTypeMonthlyCommand);
             };
 
             getAttendanceItem(): JQueryPromise<any> {
