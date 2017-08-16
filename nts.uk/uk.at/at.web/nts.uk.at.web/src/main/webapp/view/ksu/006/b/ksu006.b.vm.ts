@@ -60,6 +60,7 @@ module nts.uk.pr.view.ksu006.b {
                         self.loadDetailError().done(() => {
                             self.hasError(true);
                             nts.uk.ui.windows.getSelf().setSize(self.isGreaterThanTenError() ? 650 : 620, 870);
+                            $('#donwloadError').focus();
                         });
                     }
                 });
@@ -76,7 +77,6 @@ module nts.uk.pr.view.ksu006.b {
                 let self = this;
                 nts.uk.ui.block.grayout();
                 service.downloadDetailError(self.executeId()).done(function() {
-                    dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(function(res) {
