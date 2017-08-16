@@ -3,6 +3,8 @@
  */
 package command.layout;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +22,8 @@ public class MaintenanceLayoutCommand {
 	private String code;
 
 	private String name;
+	
+	private List<ClassificationCommand> classifications;
 
 	int action;
 }

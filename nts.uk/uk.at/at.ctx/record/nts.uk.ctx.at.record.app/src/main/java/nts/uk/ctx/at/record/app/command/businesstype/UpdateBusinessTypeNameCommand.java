@@ -10,10 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateBusinessTypeNameCommand {
-	/*会社ID*/
+	/**会社ID**/
 	private String companyId;
-	/*勤務種別コード*/
+	/**勤務種別コード**/
 	private String businessTypeCode;
-	/*勤務種別名*/
+	/**勤務種別名**/
 	private String businessTypeName;
 }

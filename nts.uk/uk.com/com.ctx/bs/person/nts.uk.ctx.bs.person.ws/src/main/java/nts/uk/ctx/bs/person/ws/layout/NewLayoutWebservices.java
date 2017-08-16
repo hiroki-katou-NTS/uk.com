@@ -5,28 +5,32 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import command.layout.MaintenanceLayoutCommand;
-import find.newlayout.NewLayoutDto;
-import find.newlayout.NewLayoutFinder;
+import command.layout.NewLayoutCommand;
+import command.layout.NewLayoutCommandHandler;
+import find.layout.NewLayoutDto;
+import find.layout.NewLayoutFinder;
 import nts.arc.layer.ws.WebService;
 
-@Path("ctx/bs/person/maintenance")
+@Path("ctx/bs/person/newlayout")
 @Produces("application/json")
 public class NewLayoutWebservices extends WebService {
 
 	@Inject
 	private NewLayoutFinder nLayoutFinder;
 
+	@Inject
+	private NewLayoutCommandHandler commandHandler;
+
 	@POST
-	@Path("getNewLayout")
+	@Path("get")
 	public NewLayoutDto getNewLayout() {
 		return nLayoutFinder.getLayout();
 
 	}
-	
+
 	@POST
-	@Path("saveLayout")
-	public void addMaintenanceLayout(MaintenanceLayoutCommand command) {
-		//this.comsmandHandler.handle(command);
+	@Path("save")
+	public void addMaintenanceLayout(NewLayoutCommand command) {
+		this.commandHandler.handle(command);
 	}
 }

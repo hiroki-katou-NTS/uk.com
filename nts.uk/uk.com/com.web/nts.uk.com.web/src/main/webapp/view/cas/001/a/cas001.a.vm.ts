@@ -2,6 +2,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
 
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
@@ -19,6 +20,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
         anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
         seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
         currentCategoryId: KnockoutObservable<string> = ko.observable('');
+        allowPersonRef: KnockoutObservable<number> = ko.observable(1);
+        allowOtherRef: KnockoutObservable<number> = ko.observable(1);
+
+
+
 
         constructor() {
             let self = this;
@@ -37,7 +43,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         newPersonRole.setRoleAuth(result);
 
                         self.currentRole(newPersonRole);
-
+                        self.currentRole().RoleCategoryList.valueHasMutated();
                         if (self.currentRole().RoleCategoryList().length > 0) {
 
                             self.currentCategoryId("");
@@ -70,12 +76,25 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     newCategory.loadRoleItems(self.currentRoleId(), categoryId).done(function() {
 
-                        newCategory.setCategoryAuth(result);
-
                         self.currentRole().currentCategory(newCategory);
+
+                        newCategory.setCategoryAuth(result);
 
                     });
                 });
+            });
+
+
+            self.allowPersonRef.subscribe(function(newValue) {
+                
+            
+                
+            });
+
+            self.allowOtherRef.subscribe(function(newValue) {
+                
+             
+
             });
             //register click change all event
             $(function() {
@@ -90,6 +109,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
 
                 });
+
+
             });
         }
 
@@ -99,9 +120,15 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             setShared('personRole', self.currentRole());
 
+            block.invisible();
+
             nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                self.reload();
+                self.reload().done(function() {
+
+                    block.clear();
+
+                });
             });
         }
 
@@ -111,9 +138,15 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             setShared('personRole', self.currentRole());
 
+            block.invisible();
+
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                self.reload();
+                self.reload().done(function() {
+
+                    block.clear();
+
+                });
 
             });
         }
@@ -121,85 +154,105 @@ module nts.uk.com.view.cas001.a.viewmodel {
         InitializationItemGrid() {
             let self = this;
 
-            let selectGrid = $("#item_role_table_body");
-
-            if (selectGrid.data("igGrid") === undefined) {
-                selectGrid.ntsGrid({
-                    features: [{ name: 'Resizing' },
-                        {
-                            name: "RowSelectors",
-                            enableCheckBoxes: true,
-                            enableRowNumbering: false,
-                            rowSelectorColumnWidth: 34
-                        }
-                    ],
-                    ntsFeatures: [{ name: 'CopyPaste' }],
-
-                    showHeader: true,
-
-                    width: '800px',
-
-                    height: '261px',
-
-                    dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
-
-                    primaryKey: 'personItemDefId',
-
-                    virtualization: true,
-
-                    virtualizationMode: 'continuous',
-
-                    virtualrecordsrender: function(evt, ui) {
-                        var ds = ui.owner.dataSource.data();
-                        $(ds)
-                            .each(
-                            function(index, el: any) {
-                                let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 0, index);
-                                let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
-                                let NameCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
-                                if (el.requiredAtr == '1') {
-                                    $(CheckboxCell).addClass('requiredCell');
-                                    $(IsConfigCell).addClass('requiredCell');
-                                    $(NameCell).addClass('requiredCell');
-                                }
-                            });
-                    },
-                    columns: [
-                        { headerText: getText('CAS001_69'), key: 'setting', dataType: 'string', width: '48px', formatter: makeIcon },
-                        { headerText: '', key: 'requiredAtr', dataType: 'string', width: '34px', hidden: true },
-                        { headerText: '', key: 'personItemDefId', dataType: 'string', width: '34px', hidden: true },
-                        { headerText: getText('CAS001_47'), key: 'itemName', dataType: 'string', width: '255px' },
-                        { headerText: getText('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
-                        { headerText: getText('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
-                    ],
-                    ntsControls: [
-                        {
-                            name: 'SwitchButtons', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') }, { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
-                            optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
-                        },
-                    ],
-
+            if ($("#item_role_table_body").data("igGrid") !== undefined) {
+                $("#item_role_table_body").igGrid({
+                    dataSource: [],
+                    //  columns: [],
+                    features: []
                 });
-                //add switch to table header
-                let switchString = "<div id=\'{0}_auth\' class=\'selected_all_auth\'"
-                    + "data-bind=\"ntsSwitchButton: {options: itemListCbb"
-                    + ",optionsValue:\'code\',optionsText: \'name\',value: {0},enable: true }\">"
-                    + "</div><span id=\'selected_all_caret\' class=\'caret-bottom outline\'></span>",
 
-                    selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll'),
-
-                    seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll');
-
-                nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'otherAuth').append($(selectedAllString));
-
-                nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'selfAuth').append($(seftSelectedAllString));
-            } else {
-
-                let ItemList = self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList();
-
-                selectGrid.igGrid("option", "dataSource", ItemList);
+                $("#item_role_table_body").igGrid("destroy");
+                $("#item_role_table_body").remove();
+                $('#item_role_table_cover').append($('<table id="item_role_table_body"></table>'));
 
             }
+
+
+            $("#item_role_table_body").ntsGrid({
+                features: [{ name: 'Resizing' },
+                    {
+                        name: "RowSelectors",
+                        enableCheckBoxes: true,
+                        enableRowNumbering: false,
+                        rowSelectorColumnWidth: 40
+                    }
+                ],
+                ntsFeatures: [{ name: 'CopyPaste' }],
+
+                showHeader: true,
+
+                width: '800px',
+
+                height: '261px',
+
+                dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
+
+                primaryKey: 'personItemDefId',
+
+                virtualization: true,
+
+                virtualizationMode: 'continuous',
+
+                virtualrecordsrender: function(evt, ui) {
+                    if ($("#item_role_table_body").data("igGrid") === undefined) {
+                        return;
+                    }
+                    var ds = ui.owner.dataSource.data();
+                    $(ds)
+                        .each(
+                        function(index, el: any) {
+                            let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 0, index);
+                            let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
+                            let NameCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
+                            if (el.requiredAtr == '1') {
+                                $(CheckboxCell).addClass('requiredCell');
+                                $(IsConfigCell).addClass('requiredCell');
+                                $(NameCell).addClass('requiredCell');
+                            }
+                        });
+                },
+                columns: [
+                    { headerText: getText('CAS001_69'), key: 'setting', dataType: 'string', width: '48px', formatter: makeIcon },
+                    { headerText: '', key: 'requiredAtr', dataType: 'string', width: '34px', hidden: true },
+                    { headerText: '', key: 'personItemDefId', dataType: 'string', width: '34px', hidden: true },
+                    { headerText: getText('CAS001_47'), key: 'itemName', dataType: 'string', width: '255px' },
+                    { headerText: getText('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons1' },
+                    { headerText: getText('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons2' },
+                ],
+                ntsControls: [
+                    {
+                        name: 'SwitchButtons1', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
+                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: self.allowOtherRef() == 1 ? true : false
+                    },
+                    {
+                        name: 'SwitchButtons2', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
+                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: self.allowPersonRef() == 1 ? true : false
+
+                    }
+                ],
+
+            });
+            //add switch to table header
+            let switchString = "<div id=\'{0}_auth\' class=\'selected_all_auth\'"
+                + "data-bind=\"ntsSwitchButton: {options: itemListCbb"
+                + ",optionsValue:\'code\',optionsText: \'name\',value: {0},enable: {1} }\">"
+                + "</div><span id=\'selected_all_caret\' class=\'caret-bottom outline\'></span>",
+
+                selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll', 'allowOtherRef() == 1 ? true : false'),
+
+                seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', 'allowPersonRef() == 1 ? true : false'),
+
+                otherAuthCell = nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'otherAuth'),
+
+                selfAuthCell = nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'selfAuth');
+
+            otherAuthCell.append($(selectedAllString));
+
+            selfAuthCell.append($(seftSelectedAllString));
+
+
 
         }
 
@@ -226,6 +279,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     else {
                         alert(getText('Msg_217'));
                     }
+
+                    dfd.resolve();
 
                 });
             });
@@ -266,6 +321,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
+            block.invisible();
 
             service.getPersonRoleList().done(function(result: Array<IPersonRole>) {
 
@@ -276,6 +332,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     self.personRoleList().push(new PersonRole(iPersonRole));
 
                 });
+
+                block.clear();
+
                 dfd.resolve();
             });
 
@@ -287,10 +346,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 command = self.createSaveCommand();
 
+            block.invisible();
+
             service.savePersonRole(command).done(function() {
-                
+
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.reload();
+
+                    self.reload().done(function() {
+
+                        block.clear();
+
+                    });
                 });
 
             }).fail(function(res) {
@@ -390,13 +456,20 @@ module nts.uk.com.view.cas001.a.viewmodel {
             var self = this,
                 dfd = $.Deferred();
 
+            block.invisible();
+
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
 
                 self.RoleCategoryList.removeAll();
 
                 _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
+
                     self.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
+
                 });
+
+                block.clear();
+
                 dfd.resolve();
             });
             return dfd.promise();
@@ -409,8 +482,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
         categoryName: string;
         categoryType: number;
         setting: number;
-        allowPersonRef: KnockoutObservable<number>;
-        allowOtherRef: KnockoutObservable<number>;
+        //        allowPersonRef: KnockoutObservable<number>;
+        //        allowOtherRef: KnockoutObservable<number>;
         allowOtherCompanyRef: KnockoutObservable<number>;
         selfPastHisAuth: KnockoutObservable<number>;
         selfFutureHisAuth: KnockoutObservable<number>;
@@ -428,12 +501,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         constructor(param: IPersonRoleCategory) {
             let self = this;
+            let screenModel = __viewContext['screenModel'];
             self.categoryId = param ? param.categoryId : '';
             self.categoryName = param ? param.categoryName : '';
             self.categoryType = param ? param.categoryType : 0;
             self.setting = param ? param.setting : 0;
-            self.allowPersonRef = ko.observable(param ? param.allowPersonRef : 0);
-            self.allowOtherRef = ko.observable(param ? param.allowOtherRef : 0);
+            screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
+            screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
             self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
             self.selfPastHisAuth = ko.observable(param ? param.selfPastHisAuth : 1);
             self.selfFutureHisAuth = ko.observable(param ? param.selfFutureHisAuth : 1);
@@ -452,8 +526,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
         setCategoryAuth(param: IPersonRoleCategory) {
 
             let self = this;
-            self.allowPersonRef = ko.observable(param ? param.allowPersonRef : 0);
-            self.allowOtherRef = ko.observable(param ? param.allowOtherRef : 0);
+            let screenModel = __viewContext['screenModel'];
+            screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
+            screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
             self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
             self.selfPastHisAuth = ko.observable(param ? param.selfPastHisAuth : 1);
             self.selfFutureHisAuth = ko.observable(param ? param.selfFutureHisAuth : 1);
@@ -472,6 +547,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
         loadRoleItems(roleId, CategoryId): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+
+            block.invisible();
+
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
 
                 self.roleItemList.removeAll();
@@ -484,6 +562,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
 
                 $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
+
+                block.clear();
 
                 dfd.resolve();
 
@@ -556,11 +636,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
         otherAllowAddMulti: number;
         roleItemList: Array<PersonRoleItemCommand> = [];
         constructor(param: PersonRoleCategory) {
+
+            let screenModel = __viewContext['screenModel'];
+
             this.categoryId = param.categoryId;
             this.categoryName = param.categoryName;
             this.categoryType = param.categoryType;
-            this.allowPersonRef = param.allowPersonRef();
-            this.allowOtherRef = param.allowOtherRef();
+            this.allowPersonRef = screenModel.allowPersonRef();
+            this.allowOtherRef = screenModel.allowOtherRef();
             this.allowOtherCompanyRef = param.allowOtherCompanyRef();
             this.selfPastHisAuth = param.selfPastHisAuth();
             this.selfFutureHisAuth = param.selfFutureHisAuth();

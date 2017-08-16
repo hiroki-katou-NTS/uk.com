@@ -3,14 +3,16 @@
  */
 package find.groupitem;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.bs.person.dom.person.groupitem.PersonInfoItemGroup;
 
 /**
  * @author laitv
  *
  */
-@Value
+@Getter
+@AllArgsConstructor
 public class PersonInfoItemGroupDto {
 
 	private String personInfoItemGroupID;
@@ -23,5 +25,4 @@ public class PersonInfoItemGroupDto {
 				domain.getFieldGroupName().v(), domain.getDispOrder().v().intValue());
 
 	}
-
 }

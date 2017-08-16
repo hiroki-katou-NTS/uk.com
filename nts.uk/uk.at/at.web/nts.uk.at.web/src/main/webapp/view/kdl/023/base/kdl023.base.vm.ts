@@ -27,6 +27,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         isOnScreenA: KnockoutObservable<boolean>;
         isMasterDataUnregisterd: KnockoutObservable<boolean>;
         isOutOfCalendarRange: KnockoutObservable<boolean>;
+        isDataEmpty: boolean;
         buttonReflectPatternText: KnockoutObservable<string>;
 
         // Calendar component
@@ -56,6 +57,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.isMasterDataUnregisterd = ko.observable(false);
             self.isOutOfCalendarRange = ko.observable(false);
             self.buttonReflectPatternText = ko.observable('');
+            self.isDataEmpty = false;
 
             // Calendar component
             self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
@@ -91,6 +93,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 .done(() => self.loadPatternReflection() // Load pattern reflection.
                     .done(() => {
 
+                        // Check if dailyPatternList has data.
+                        if (!self.dailyPatternList() || !self.dailyPatternList()[0]) {
+                            dfd.resolve();
+                            return;
+                        }
+
                         // Select first daily pattern if none selected.
                         if (!self.selectedDailyPatternCode()) {
                             self.selectedDailyPatternCode(self.dailyPatternList()[0].patternCode);
@@ -125,13 +133,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         // Force change to set tab index.
                         self.patternReflection.holidaySetting.useClassification.valueHasMutated();
 
-                        // Set button reflect pattern text.
-                        self.setButtonReflectPatternText();
-
                     })).fail(res => {
                         nts.uk.ui.dialog.alert(res.message);
                         dfd.fail();
                     }).always(() => {
+                        // Set button reflect pattern text.
+                        self.setButtonReflectPatternText();
+
+                        // Show message Msg_37 then close dialog.
+                        if (self.isDataEmpty) {
+                            self.showErrorThenCloseDialog();
+                        }
+
                         nts.uk.ui.block.clear();
                     });
             return dfd.promise();
@@ -235,11 +248,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             service.findAllPattern().done(function(list: Array<DailyPatternSetting>) {
                 if (list && list.length > 0) {
                     self.dailyPatternList(list);
-                    dfd.resolve();
                 } else {
-                    self.showErrorThenCloseDialog();
-                    dfd.fail();
+                    self.isDataEmpty = true;
                 }
+                dfd.resolve();
             }).fail(() => {
                 self.showErrorThenCloseDialog();
                 dfd.fail();
@@ -300,7 +312,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 if (list && list.length > 0) {
                     self.listWorkType(list);
                 } else {
-                    self.showErrorThenCloseDialog();
+                    self.isDataEmpty = true;
                 }
                 dfd.resolve();
             }).fail(() => {

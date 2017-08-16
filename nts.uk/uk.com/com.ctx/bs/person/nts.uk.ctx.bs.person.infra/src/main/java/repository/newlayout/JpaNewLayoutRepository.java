@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.newlayout.PpemtNewLayout;
-import entity.newlayout.PpemtNewLayoutPk;
+import entity.layout.PpemtNewLayout;
+import entity.layout.PpemtNewLayoutPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
@@ -34,8 +34,9 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 		PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class).getSingleOrNull();
 
 		if (entity == null) {
+			// initial new data (if isn't present)
 			commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
-					AppContexts.user().companyId(), "00001", "レイアウト"));
+					AppContexts.user().companyId(), "001", "レイアウト"));
 
 			entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class).getSingleOrNull();
 		}
