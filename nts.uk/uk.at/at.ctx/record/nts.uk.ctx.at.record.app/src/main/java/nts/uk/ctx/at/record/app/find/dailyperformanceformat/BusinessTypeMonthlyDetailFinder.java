@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,21 +24,16 @@ public class BusinessTypeMonthlyDetailFinder {
 	@Inject
 	private BusinessTypeFormatMonthlyRepository workTypeFormatMonthlyRepository;
 
-	public BusinessTypeMonthlyDetailDto findDetail(String businessTypeCode, BigDecimal sheetNo) {
+	public BusinessTypeMonthlyDetailDto findDetail(String businessTypeCode) {
 		LoginUserContext login = AppContexts.user();
-		String companyId = login.companyId();
-		
-		
-//		List<WorkTypeFormatDailyDto> workTypeFormatDailyDtos = workTypeFormatDailies.stream().map(f -> {
-//			return new WorkTypeFormatDailyDto(
-//					f.getAttendanceItemId(),
-//					f.getSheetNo(),
-//					f.getOrder(), f.getColumnWidth());
-//		}).collect(Collectors.toList());
-		
+		String companyId = login.companyId();		
 
 		List<BusinessTypeFormatMonthly> workTypeFormatMonthlies = workTypeFormatMonthlyRepository
 				.getMonthlyDetail(companyId, businessTypeCode);
+		
+		if(workTypeFormatMonthlies.isEmpty()){
+			return null;
+		} 
 		
 		List<BusinessTypeFormatDetailDto> workTypeFormatMonthlyDtos = workTypeFormatMonthlies.stream().map(f -> {
 			return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), f.getOrder(), f.getColumnWidth());

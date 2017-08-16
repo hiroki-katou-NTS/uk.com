@@ -66,4 +66,12 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeId
 	 */
 	void deleteItemId(String companyId, int divTimeId);
+	/**
+	 * NamPT
+	 * get attendanceId for KDW008 screen
+	 * @param companyId
+	 * @param divTimeUseSet
+	 * @return
+	 */
+	List<DivergenceTime> getAttendanceId(String companyId, int divTimeUseSet);
 }
