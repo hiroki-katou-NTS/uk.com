@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.gobackdirectly.item;
+package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
@@ -60,6 +60,4 @@ public class GoBackDirectlyItem {
 		this.goWorkAtr2 = goWorkAtr2;
 		this.backHomeAtr2 = backHomeAtr2;
 	}
-	
-
 }

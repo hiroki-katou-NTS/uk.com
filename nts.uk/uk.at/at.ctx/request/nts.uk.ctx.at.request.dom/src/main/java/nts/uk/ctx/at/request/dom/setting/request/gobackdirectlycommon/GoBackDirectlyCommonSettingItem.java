@@ -1,15 +1,10 @@
-package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.item;
+package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.Deadline;
-import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentContent;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentFontColor;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.FontWeightFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.GoBackWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;

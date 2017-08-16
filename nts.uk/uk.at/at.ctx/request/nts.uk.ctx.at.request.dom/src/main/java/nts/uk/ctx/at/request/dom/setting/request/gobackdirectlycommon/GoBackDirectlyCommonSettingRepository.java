@@ -1,9 +1,6 @@
-package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.repository;
+package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon;
 
-import java.util.List;
 import java.util.Optional;
-
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.item.GoBackDirectlyCommonSettingItem;
 
 public interface GoBackDirectlyCommonSettingRepository {
 	/***/

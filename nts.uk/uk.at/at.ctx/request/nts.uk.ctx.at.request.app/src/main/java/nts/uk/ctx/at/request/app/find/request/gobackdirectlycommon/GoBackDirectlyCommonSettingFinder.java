@@ -4,8 +4,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.item.GoBackDirectlyCommonSettingItem;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.repository.GoBackDirectlyCommonSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingItem;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

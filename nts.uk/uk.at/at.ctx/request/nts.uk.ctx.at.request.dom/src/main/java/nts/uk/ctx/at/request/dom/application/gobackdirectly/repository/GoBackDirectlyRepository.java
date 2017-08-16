@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.repository;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.item.GoBackDirectlyItem;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyItem;
 
 public interface GoBackDirectlyRepository {
 	//find Application by ID

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.request.application.primitive;
 
 /** 出来る 出来ない　区分 */
-public enum CanAtr {
+public enum AppCanAtr {
 	/*出来ない*/
 	NOTCAN(0),
 	/*出来る*/
@@ -9,7 +9,7 @@ public enum CanAtr {
 
 	public final int value;
 
-	CanAtr(int value) {
+	AppCanAtr(int value) {
 		this.value = value;
 	}
 }

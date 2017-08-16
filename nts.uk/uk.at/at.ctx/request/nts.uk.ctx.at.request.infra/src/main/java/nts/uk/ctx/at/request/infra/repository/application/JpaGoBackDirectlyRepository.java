@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.item.GoBackDirectlyItem;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyItem;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.repository.GoBackDirectlyRepository;

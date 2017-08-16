@@ -4,7 +4,7 @@ import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.primitive.AllowAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.primitive.CanAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.primitive.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.primitive.CheckMethod;
 import nts.uk.ctx.at.request.dom.setting.request.application.primitive.PossibleAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.primitive.RequiredFlg;
@@ -21,27 +21,27 @@ public class ApplicationSettingItem {
 
 	private AppDisplayAtr prePostInitFlg;
 
-	private CanAtr prePostCanChangeFlg;
+	private AppCanAtr prePostCanChangeFlg;
 
 	private AppDisplayAtr typicalReasonDisplayFlg;
 
-	private CanAtr sendMailWhenApprovalFlg;
+	private AppCanAtr sendMailWhenApprovalFlg;
 
-	private CanAtr sendMailWhenRegisterFlg;
+	private AppCanAtr sendMailWhenRegisterFlg;
 
-	private CanAtr displayReasonFlg;
+	private AppCanAtr displayReasonFlg;
 
 	private VacationAppType vacationAppType;
 
-	private CanAtr appActLockFlg;
+	private AppCanAtr appActLockFlg;
 
-	private CanAtr appEndWorkFlg;
+	private AppCanAtr appEndWorkFlg;
 
-	private CanAtr appActConfirmFlg;
+	private AppCanAtr appActConfirmFlg;
 
-	private CanAtr appOvertimeNightFlg;
+	private AppCanAtr appOvertimeNightFlg;
 
-	private CanAtr appActMonthConfirmFlg;
+	private AppCanAtr appActMonthConfirmFlg;
 
 	private RequiredFlg requiredAppReasonFlg;
 
@@ -50,7 +50,7 @@ public class ApplicationSettingItem {
 	private UseAtr retrictPreUseFlg;
 
 	private RetrictDay retrictPreDay;
-
+	
 	private RetrictPreTimeDay retrictPreTimeDay;
 
 	private PossibleAtr rertricPreCanAceeptFlg;
@@ -64,10 +64,10 @@ public class ApplicationSettingItem {
 	private RetrictDay displayInitDayFlg;
 
 	public ApplicationSettingItem(String companyID, ApplicationType appType, AppDisplayAtr prePostInitFlg,
-			CanAtr prePostCanChangeFlg, AppDisplayAtr typicalReasonDisplayFlg, CanAtr sendMailWhenApprovalFlg,
-			CanAtr sendMailWhenRegisterFlg, CanAtr displayReasonFlg, VacationAppType vacationAppType,
-			CanAtr appActLockFlg, CanAtr appEndWorkFlg, CanAtr appActConfirmFlg, CanAtr appOvertimeNightFlg,
-			CanAtr appActMonthConfirmFlg, RequiredFlg requiredAppReasonFlg, CheckMethod retrictPreMethodFlg,
+			AppCanAtr prePostCanChangeFlg, AppDisplayAtr typicalReasonDisplayFlg, AppCanAtr sendMailWhenApprovalFlg,
+			AppCanAtr sendMailWhenRegisterFlg, AppCanAtr displayReasonFlg, VacationAppType vacationAppType,
+			AppCanAtr appActLockFlg, AppCanAtr appEndWorkFlg, AppCanAtr appActConfirmFlg, AppCanAtr appOvertimeNightFlg,
+			AppCanAtr appActMonthConfirmFlg, RequiredFlg requiredAppReasonFlg, CheckMethod retrictPreMethodFlg,
 			UseAtr retrictPreUseFlg, RetrictDay retrictPreDay, RetrictPreTimeDay retrictPreTimeDay,
 			PossibleAtr rertricPreCanAceeptFlg, AllowAtr retrictPostAllowFutureFlg, AppDisplayAtr displayPrePostFlg,
 			AppDisplayAtr displaySearchTimeFlg, RetrictDay displayInitDayFlg) {
