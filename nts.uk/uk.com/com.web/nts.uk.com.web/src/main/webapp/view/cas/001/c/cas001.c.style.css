@@ -24,7 +24,7 @@ button.search-btn,button.clear-btn{
 }
 #registration {
 	margin-right: 5px;
-	margin-top:10px;
+	margin-top:8px;
 	margin-left:55px !important;
 }
 #delete{
@@ -50,7 +50,7 @@ button.search-btn,button.clear-btn{
 	width:100px;
 }
 #functions-area-bottom{
-	height:initial !important;
+	height: initial !important;
 	width: initial !important;
 	padding-top: initial !important;
 	position: initial !important;

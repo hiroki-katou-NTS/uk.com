@@ -41,7 +41,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
             let data = (__viewContext["viewModel"].roleList());
             let self = this;
             self.roleCodeArray = [];
-            _.find(data, function(role) {
+            _.find(data, function(role:PersonRole) {
                 if (role.selected === true) {
                     self.roleCodeArray.push(role.roleId);
                 }

@@ -16,7 +16,7 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
 public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements PersonInfoRoleAuthRepository {
 	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonRoleAuth c";
 
-	private final String SEL_ROLE_AUTH_BY_ROLE_ID = SEL_NO_WHERE + "WHERE c.ppemtPersonRoleAuthPk.roleId=:roleId"
+	private final String SEL_ROLE_AUTH_BY_ROLE_ID = SEL_NO_WHERE + " WHERE c.ppemtPersonRoleAuthPk.roleId=:roleId"
 			+ " AND c.companyId=:companyId";
 
 	private static PersonInfoRoleAuth toDomain(PpemtPersonRoleAuth entity) {
