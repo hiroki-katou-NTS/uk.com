@@ -101,12 +101,12 @@ module nts.uk.pr.view.ccg007.d {
                     nts.uk.characteristics.remove("form3LoginInfo");
                     if (self.isSaveLoginInfo()) {
                         nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
-                            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                         });
                     } else {
                         //TODO confirm kiban team promise for remove
                         setTimeout(function() {
-                            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                         }, 1000);
                     }
                     blockUI.clear();

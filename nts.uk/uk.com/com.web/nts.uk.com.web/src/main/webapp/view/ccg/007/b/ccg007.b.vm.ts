@@ -71,12 +71,12 @@ module nts.uk.pr.view.ccg007.b {
                         nts.uk.characteristics.remove("form1LoginInfo");
                         if (self.isSaveLoginInfo()) {
                             nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
-                                nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                             });
                         } else {
                             //TODO confirm kiban team promise for remove
                             setTimeout(function() {
-                                nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                             }, 1000);
                         }
                         blockUI.clear();
