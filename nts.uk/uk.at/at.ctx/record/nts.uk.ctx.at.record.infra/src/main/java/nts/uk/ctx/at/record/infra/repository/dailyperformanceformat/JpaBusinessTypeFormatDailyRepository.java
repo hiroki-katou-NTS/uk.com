@@ -31,14 +31,15 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
 		FIND = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("UPDATE KrcmtBusinessTypeDaily a ");
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		FIND_DETAIl = builderString.toString();
 
 		builderString = new StringBuilder();

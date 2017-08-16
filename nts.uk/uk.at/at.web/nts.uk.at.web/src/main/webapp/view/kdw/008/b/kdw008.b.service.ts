@@ -5,12 +5,12 @@ module nts.uk.at.view.kdw008.b {
                 getDailyDetail: "at/record/businesstype/findBusinessTypeDailyDetail/{0}/{1}",
                 addDailyDetail: "at/record/businesstype/addBusinessTypeDailyDetail",
                 updateDailyDetail: "at/record/businesstype/updateBusinessTypeDailyDetail",
-                getMonthlyDetail: "at/record/businesstype/findBusinessTypeMonthlyDetail/{0}/{1}",
+                getMonthlyDetail: "at/record/businesstype/findBusinessTypeMonthlyDetail/{0}",
                 addMonthlyDetail: "at/record/businesstype/addBusinessTypeMonthlyDetail",
                 getAttendanceItem: "at/record/businesstype/attendanceItem/findAll",
                 getSheetNo: "at/record/businesstype/findBusinessTypeDailyDetail/findSheetNo/{0}",
                 getBusinessType: "at/record/businesstype/findAll",
-
+                getDailyPerformance: "at/record/businesstype/find/businessTypeDetail/{0}/{1}"
             }
 
             constructor() {
@@ -30,8 +30,8 @@ module nts.uk.at.view.kdw008.b {
                 return nts.uk.request.ajax("at", this.paths.updateDailyDetail, UpdateBusinessTypeDailyCommand);
             };
 
-            getMonthlyDetail(businessTypeCode: string, sheetNo: number): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getMonthlyDetail, businessTypeCode, sheetNo);
+            getMonthlyDetail(businessTypeCode: string): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.getMonthlyDetail, businessTypeCode);
                 return nts.uk.request.ajax("at", _path);
             };
 
@@ -57,6 +57,12 @@ module nts.uk.at.view.kdw008.b {
                 let _path = nts.uk.text.format(this.paths.getBusinessType);
                 return nts.uk.request.ajax("at", _path);
             };
+
+            getDailyPerformance(businessTypeCode: string, sheetNo: number): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.getDailyPerformance, businessTypeCode, sheetNo);
+                return nts.uk.request.ajax("at", _path);
+            };
+
 
         }
     }

@@ -34,7 +34,8 @@ public class BusinessTypeDailyDetailFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 		
-		String sheetName = businessFormatSheetRepository.getSheetInformation(companyId, new BusinessTypeCode(businessTypeCode), sheetNo).get().getSheetName();
+		//
+//		String sheetName = businessFormatSheetRepository.getSheetInformation(companyId, new BusinessTypeCode(businessTypeCode), sheetNo).get().getSheetName();
 
 		List<BusinessTypeFormatDaily> businessTypeFormatDailies = workTypeFormatDailyRepository
 				.getBusinessTypeFormatDailyDetail(companyId, businessTypeCode, sheetNo);
@@ -43,7 +44,7 @@ public class BusinessTypeDailyDetailFinder {
 			return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), f.getOrder(), f.getColumnWidth());
 		}).collect(Collectors.toList());
 
-		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(sheetNo, sheetName, businessTypeFormatDetailDtos);
+		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(new BigDecimal(1), null, businessTypeFormatDetailDtos);
 
 		return businessTypeFormatDailyDto;
 
