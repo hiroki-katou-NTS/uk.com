@@ -6988,7 +6988,7 @@ var nts;
                                     if (searchMode === "filter") {
                                         $container.data("filteredSrouce", result_1.options);
                                         component.attr("filtered", true);
-                                        var source = _.filter(dataSource, function (item) {
+                                        var source = _.filter(data.items(), function (item) {
                                             return _.find(result_1.options, function (itemFilterd) {
                                                 return itemFilterd[primaryKey] === item[primaryKey];
                                             }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
