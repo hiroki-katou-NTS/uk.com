@@ -3270,7 +3270,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_1) {
+        (function (ui) {
             var windows;
             (function (windows) {
                 var MAIN_WINDOW_ID = 'MAIN_WINDOW';
@@ -3548,11 +3548,11 @@ var nts;
                     }
                     sub.open = open;
                 })(sub = windows.sub || (windows.sub = {}));
-            })(windows = ui_1.windows || (ui_1.windows = {}));
+            })(windows = ui.windows || (ui.windows = {}));
             function localize(textId) {
                 return textId;
             }
-            ui_1.localize = localize;
+            ui.localize = localize;
             var dialog;
             (function (dialog) {
                 var DialogHeader = (function () {
@@ -3776,126 +3776,8 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
-            })(dialog = ui_1.dialog || (ui_1.dialog = {}));
-            var contextmenu;
-            (function (contextmenu) {
-                var ContextMenu = (function () {
-                    function ContextMenu(selector, items, enable) {
-                        this.selector = selector;
-                        this.items = items;
-                        this.enable = (enable !== undefined) ? enable : true;
-                        this.init();
-                    }
-                    ContextMenu.prototype.init = function () {
-                        var self = this;
-                        $('body .ntsContextMenu').each(function () {
-                            if ($(this).data("selector") === self.selector) {
-                                $("body").off("contextmenu", self.selector);
-                                $(this).remove();
-                            }
-                        });
-                        self.guid = nts.uk.util.randomId();
-                        var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
-                        self.createMenuItems($contextMenu);
-                        $('body').append($contextMenu);
-                        $("html").on("contextmenu", self.selector, function (event) {
-                            if (self.enable === true) {
-                                event.preventDefault();
-                                self.target = event.target;
-                                $contextMenu.show().position({
-                                    my: "left+2 top+2",
-                                    of: event,
-                                    collision: "fit"
-                                });
-                            }
-                        });
-                        $("html").on("mousedown", function (event) {
-                            if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
-                                $contextMenu.hide();
-                            }
-                        });
-                    };
-                    ContextMenu.prototype.destroy = function () {
-                        $("html").off("contextmenu", this.selector);
-                        $("#" + this.guid).remove();
-                    };
-                    ContextMenu.prototype.refresh = function () {
-                        this.destroy();
-                        this.init();
-                    };
-                    ContextMenu.prototype.getItem = function (target) {
-                        if (typeof target === "number") {
-                            return this.items[target];
-                        }
-                        else if (typeof target === "string") {
-                            return _.find(this.items, ["key", target]);
-                        }
-                        else {
-                            return undefined;
-                        }
-                    };
-                    ContextMenu.prototype.addItem = function (item) {
-                        this.items.push(item);
-                        this.refresh();
-                    };
-                    ContextMenu.prototype.removeItem = function (target) {
-                        var item = this.getItem(target);
-                        if (item !== undefined) {
-                            _.remove(this.items, item);
-                            this.refresh();
-                        }
-                    };
-                    ContextMenu.prototype.setEnable = function (enable) {
-                        this.enable = enable;
-                    };
-                    ContextMenu.prototype.setEnableItem = function (enable, target) {
-                        var item = this.getItem(target);
-                        item.enable = enable;
-                        this.refresh();
-                    };
-                    ContextMenu.prototype.setVisibleItem = function (visible, target) {
-                        var item = this.getItem(target);
-                        item.visible = visible;
-                        this.refresh();
-                    };
-                    ContextMenu.prototype.createMenuItems = function (container) {
-                        var self = this;
-                        _.forEach(self.items, function (item) {
-                            if (item.key !== "divider") {
-                                var menuClasses = "menu-item ";
-                                menuClasses += (item.enable === true) ? "" : "disabled ";
-                                menuClasses += (item.visible === true) ? "" : "hidden ";
-                                var menuItem = $("<li class='" + menuClasses + "'><span class='menu-icon " + item.icon + "'></span>" + item.text + "</li>")
-                                    .data("key", item.key)
-                                    .on("click", function () {
-                                    if (!$(this).hasClass("disabled")) {
-                                        item.handler(self.target);
-                                        container.hide();
-                                    }
-                                }).appendTo(container);
-                            }
-                            else {
-                                var menuItem = $("<li class='menu-item divider'></li>").appendTo(container);
-                            }
-                        });
-                    };
-                    return ContextMenu;
-                }());
-                contextmenu.ContextMenu = ContextMenu;
-                var ContextMenuItem = (function () {
-                    function ContextMenuItem(key, text, handler, icon, visible, enable) {
-                        this.key = key;
-                        this.text = text;
-                        this.handler = (handler !== undefined) ? handler : $.noop;
-                        this.icon = (icon) ? icon : "";
-                        this.visible = (visible !== undefined) ? visible : true;
-                        this.enable = (enable !== undefined) ? enable : true;
-                    }
-                    return ContextMenuItem;
-                }());
-                contextmenu.ContextMenuItem = ContextMenuItem;
-            })(contextmenu = ui_1.contextmenu || (ui_1.contextmenu = {}));
-            ui_1.confirmSave = function (dirtyChecker) {
+            })(dialog = ui.dialog || (ui.dialog = {}));
+            ui.confirmSave = function (dirtyChecker) {
                 var frame = windows.getSelf();
                 if (frame.$dialog === undefined || frame.$dialog === null) {
                     confirmSaveWindow(dirtyChecker);
@@ -3929,22 +3811,22 @@ var nts;
             function confirmSaveEnableDialog(beforeunloadHandler, dialog) {
                 dialog.on("dialogbeforeclose", beforeunloadHandler);
             }
-            ui_1.confirmSaveEnableDialog = confirmSaveEnableDialog;
+            ui.confirmSaveEnableDialog = confirmSaveEnableDialog;
             ;
             function confirmSaveDisableDialog(dialog) {
                 dialog.on("dialogbeforeclose", function () { });
             }
-            ui_1.confirmSaveDisableDialog = confirmSaveDisableDialog;
+            ui.confirmSaveDisableDialog = confirmSaveDisableDialog;
             ;
             function confirmSaveEnable(beforeunloadHandler) {
                 $(window).bind('beforeunload', beforeunloadHandler);
             }
-            ui_1.confirmSaveEnable = confirmSaveEnable;
+            ui.confirmSaveEnable = confirmSaveEnable;
             ;
             function confirmSaveDisable() {
                 $(window).unbind('beforeunload');
             }
-            ui_1.confirmSaveDisable = confirmSaveDisable;
+            ui.confirmSaveDisable = confirmSaveDisable;
             ;
             var block;
             (function (block) {
@@ -3986,7 +3868,7 @@ var nts;
                         left: left
                     };
                 }
-            })(block = ui_1.block || (ui_1.block = {}));
+            })(block = ui.block || (ui.block = {}));
             var DirtyChecker = (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
@@ -4003,7 +3885,7 @@ var nts;
                 };
                 return DirtyChecker;
             }());
-            ui_1.DirtyChecker = DirtyChecker;
+            ui.DirtyChecker = DirtyChecker;
             var ig;
             (function (ig) {
                 var grid;
@@ -4059,7 +3941,7 @@ var nts;
                         header.getLabel = getLabel;
                     })(header = grid.header || (grid.header = {}));
                 })(grid = ig.grid || (ig.grid = {}));
-            })(ig = ui_1.ig || (ui_1.ig = {}));
+            })(ig = ui.ig || (ui.ig = {}));
             var smallExtensions;
             (function (smallExtensions) {
                 $(function () {
@@ -4206,7 +4088,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_2) {
+        (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsCheckboxBindingHandler = (function () {
@@ -4391,7 +4273,7 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-            })(koExtentions = ui_2.koExtentions || (ui_2.koExtentions = {}));
+            })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -4400,7 +4282,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_3) {
+        (function (ui_2) {
             var koExtentions;
             (function (koExtentions) {
                 var ComboBoxBindingHandler = (function () {
@@ -4541,7 +4423,7 @@ var nts;
                     return ComboBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
-            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
+            })(koExtentions = ui_2.koExtentions || (ui_2.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6012,7 +5894,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_4) {
+        (function (ui_3) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsGridListBindingHandler = (function () {
@@ -6403,7 +6285,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
+            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6676,7 +6558,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_5) {
+        (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsRadioBoxBindingHandler = (function () {
@@ -6892,7 +6774,7 @@ var nts;
                 }
                 ko.bindingHandlers['ntsRadioButton'] = new NtsRadioBoxBindingHandler();
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
+            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6901,7 +6783,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_6) {
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 var SearchBox = (function () {
@@ -7170,7 +7052,7 @@ var nts;
                     return NtsSearchBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSearchBox'] = new NtsSearchBoxBindingHandler();
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7179,7 +7061,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsSwapListBindingHandler = (function () {
@@ -7940,7 +7822,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7949,7 +7831,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsSwitchButtonBindingHandler = (function () {
@@ -8073,7 +7955,7 @@ var nts;
                     return NtsSwitchButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8082,7 +7964,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_9) {
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 var TabPanelBindingHandler = (function () {
@@ -8151,7 +8033,7 @@ var nts;
                     return TabPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8212,7 +8094,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_10) {
+        (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsTreeGridViewBindingHandler = (function () {
@@ -8357,7 +8239,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
+            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8366,7 +8248,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_11) {
+        (function (ui_10) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsUpDownBindingHandler = (function () {
@@ -8610,7 +8492,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
+            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8756,6 +8638,264 @@ var nts;
                 }
                 ko.bindingHandlers['ntsLegendButton'] = new NtsLegentButtonBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var importSettingForm;
+            (function (importSettingForm) {
+                var ImportSettingForm = (function () {
+                    function ImportSettingForm(option) {
+                        this.defaultOption = {
+                            selector: ".import-setting-trigger",
+                            features: [
+                                { name: 'Encoding' }
+                            ],
+                            onClosed: $.noop()
+                        };
+                        this.isInit = false;
+                        this.EncodeTypes = [
+                            {
+                                value: 0,
+                                fieldName: "ShiftJIS",
+                                localizedName: "Shift-JIS"
+                            },
+                            {
+                                value: 1,
+                                fieldName: "UTF8",
+                                localizedName: "UTF-8"
+                            },
+                            {
+                                value: 2,
+                                fieldName: "UTF8BOM",
+                                localizedName: "UTF-8 BOM"
+                            },
+                        ];
+                        this.init(option);
+                    }
+                    ImportSettingForm.prototype.init = function (option) {
+                        var self = this;
+                        if (self.isInit === false) {
+                            var rootScreen = nts.uk.ui.windows.container.windows["MAIN_WINDOW"];
+                            var currentScreen = nts.uk.ui.windows.getSelf();
+                            var $rootBody = $(rootScreen.globalContext.document).find("body");
+                            self.isInit = true;
+                            self.option = $.extend({}, this.defaultOption, option);
+                            self.$dialog = $("<div id='" + nts.uk.util.randomId() + "'/>")
+                                .css({
+                                padding: '0px',
+                                overflow: 'hidden'
+                            })
+                                .appendTo($rootBody)
+                                .dialog({
+                                autoOpen: false,
+                                modal: true,
+                                width: 500,
+                                height: 400,
+                                closeOnEscape: false,
+                                open: function () {
+                                    self.result = undefined;
+                                },
+                                close: function (event) {
+                                    self.option.onClosed.call(this, self.result);
+                                }
+                            });
+                            var $dialogTemplate = $("<div class='import-setting-container'/>").append("<div id='functions-area-bottom'/>").append("<div class='import-setting-body'/>");
+                            self.buildEncodeType($dialogTemplate);
+                            var $proccedButton = $("<button class='x-large proceed'>決定</button>").on("click", function (event) {
+                                self.result = {
+                                    encodeType: self.getEncodeType(),
+                                    linebreakCode: null,
+                                    fileFormat: null,
+                                    includeHeader: null
+                                };
+                                self.$dialog.dialog("close");
+                            });
+                            var $closeButton = $("<button class='large'>キャンセル</button>").on("click", function (event) { self.$dialog.dialog("close"); });
+                            $dialogTemplate.find("#functions-area-bottom").append($proccedButton).append($closeButton);
+                            $dialogTemplate.appendTo(self.$dialog);
+                            $(self.option.selector).on("click.ImportSettingForm", self.show.bind(self));
+                        }
+                    };
+                    ImportSettingForm.prototype.destroy = function () {
+                        var self = this;
+                        if (self.isInit) {
+                            self.isInit = false;
+                            self.$dialog.dialog("destroy");
+                            $(self.option.selector).off("click.ImportSettingForm");
+                        }
+                    };
+                    ImportSettingForm.prototype.refresh = function (option) {
+                        this.destroy();
+                        this.init(option || this.option);
+                    };
+                    ImportSettingForm.prototype.show = function () {
+                        if (this.isInit)
+                            this.$dialog.dialog("open");
+                    };
+                    ImportSettingForm.prototype.hide = function () {
+                        if (this.isInit)
+                            this.$dialog.dialog("close");
+                    };
+                    ImportSettingForm.prototype.buildEncodeType = function ($dialogTemplate) {
+                        var self = this;
+                        self.$encodeTypeCombo = $("<div id='" + nts.uk.util.randomId() + "' class='encode-type'/>").appendTo($dialogTemplate.find(".import-setting-body"));
+                        self.$encodeTypeCombo.igCombo({
+                            visibleItemsCount: 5,
+                            dataSource: self.EncodeTypes,
+                            valueKey: "value",
+                            textKey: 'localizedName',
+                            mode: "dropdown",
+                            placeHolder: '',
+                            tabIndex: -1,
+                            enableClearButton: false
+                        });
+                        var dialogZindex = self.$dialog.closest(".ui-dialog").css("z-index");
+                        var $encodeTypeDropdown = self.$encodeTypeCombo.igCombo("dropDown").css("z-index", Number(dialogZindex) + 10);
+                    };
+                    ImportSettingForm.prototype.getEncodeType = function () {
+                        var self = this;
+                        var encodeType = _.find(self.EncodeTypes, function (item) {
+                            return item.value == self.$encodeTypeCombo.igCombo("value");
+                        });
+                        return encodeType;
+                    };
+                    return ImportSettingForm;
+                }());
+                importSettingForm.ImportSettingForm = ImportSettingForm;
+            })(importSettingForm = ui.importSettingForm || (ui.importSettingForm = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_11) {
+            var contextmenu;
+            (function (contextmenu) {
+                var ContextMenu = (function () {
+                    function ContextMenu(selector, items, enable) {
+                        this.selector = selector;
+                        this.items = items;
+                        this.enable = (enable !== undefined) ? enable : true;
+                        this.init();
+                    }
+                    ContextMenu.prototype.init = function () {
+                        var self = this;
+                        $('body .ntsContextMenu').each(function () {
+                            if ($(this).data("selector") === self.selector) {
+                                $("body").off("contextmenu", self.selector);
+                                $(this).remove();
+                            }
+                        });
+                        self.guid = nts.uk.util.randomId();
+                        var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
+                        self.createMenuItems($contextMenu);
+                        $('body').append($contextMenu);
+                        $("html").on("contextmenu", self.selector, function (event) {
+                            if (self.enable === true) {
+                                event.preventDefault();
+                                self.target = event.target;
+                                $contextMenu.show().position({
+                                    my: "left+2 top+2",
+                                    of: event,
+                                    collision: "fit"
+                                });
+                            }
+                        });
+                        $("html").on("mousedown", function (event) {
+                            if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
+                                $contextMenu.hide();
+                            }
+                        });
+                    };
+                    ContextMenu.prototype.destroy = function () {
+                        $("html").off("contextmenu", this.selector);
+                        $("#" + this.guid).remove();
+                    };
+                    ContextMenu.prototype.refresh = function () {
+                        this.destroy();
+                        this.init();
+                    };
+                    ContextMenu.prototype.getItem = function (target) {
+                        if (typeof target === "number") {
+                            return this.items[target];
+                        }
+                        else if (typeof target === "string") {
+                            return _.find(this.items, ["key", target]);
+                        }
+                        else {
+                            return undefined;
+                        }
+                    };
+                    ContextMenu.prototype.addItem = function (item) {
+                        this.items.push(item);
+                        this.refresh();
+                    };
+                    ContextMenu.prototype.removeItem = function (target) {
+                        var item = this.getItem(target);
+                        if (item !== undefined) {
+                            _.remove(this.items, item);
+                            this.refresh();
+                        }
+                    };
+                    ContextMenu.prototype.setEnable = function (enable) {
+                        this.enable = enable;
+                    };
+                    ContextMenu.prototype.setEnableItem = function (enable, target) {
+                        var item = this.getItem(target);
+                        item.enable = enable;
+                        this.refresh();
+                    };
+                    ContextMenu.prototype.setVisibleItem = function (visible, target) {
+                        var item = this.getItem(target);
+                        item.visible = visible;
+                        this.refresh();
+                    };
+                    ContextMenu.prototype.createMenuItems = function (container) {
+                        var self = this;
+                        _.forEach(self.items, function (item) {
+                            if (item.key !== "divider") {
+                                var menuClasses = "menu-item ";
+                                menuClasses += (item.enable === true) ? "" : "disabled ";
+                                menuClasses += (item.visible === true) ? "" : "hidden ";
+                                var menuItem = $("<li class='" + menuClasses + "'><span class='menu-icon " + item.icon + "'></span>" + item.text + "</li>")
+                                    .data("key", item.key)
+                                    .on("click", function () {
+                                    if (!$(this).hasClass("disabled")) {
+                                        item.handler(self.target);
+                                        container.hide();
+                                    }
+                                }).appendTo(container);
+                            }
+                            else {
+                                var menuItem = $("<li class='menu-item divider'></li>").appendTo(container);
+                            }
+                        });
+                    };
+                    return ContextMenu;
+                }());
+                contextmenu.ContextMenu = ContextMenu;
+                var ContextMenuItem = (function () {
+                    function ContextMenuItem(key, text, handler, icon, visible, enable) {
+                        this.key = key;
+                        this.text = text;
+                        this.handler = (handler !== undefined) ? handler : $.noop;
+                        this.icon = (icon) ? icon : "";
+                        this.visible = (visible !== undefined) ? visible : true;
+                        this.enable = (enable !== undefined) ? enable : true;
+                    }
+                    return ContextMenuItem;
+                }());
+                contextmenu.ContextMenuItem = ContextMenuItem;
+            })(contextmenu = ui_11.contextmenu || (ui_11.contextmenu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

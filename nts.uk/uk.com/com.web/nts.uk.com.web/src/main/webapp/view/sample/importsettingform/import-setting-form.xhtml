@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	<com:scriptfile set="IGNITE" />
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+					nts.arc.time.YearMonth
+					nts.uk.shr.com.primitive.sample.ResidenceCode
+   				</com:ValidatorScript>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>Import Setting Form</h1>
+						<h2>Overview</h2>
+						<h3>Trigger with JQuery Selector</h3>
+						<button class="import-setting-trigger">Trigger</button>
+						<a class="goout import-setting-trigger" data-bind="ntsLinkButton: { }">Trigger</a>
+						<br/><br/>
+						<h3>Trigger with function</h3>
+						<div data-bind="ntsFunctionPanel: {width: 200, headerText: 'Function Panel', dataSource: functionItems}"></div>
+						<br/><br/>
+						<button data-bind="click: init">Init</button>
+						<button data-bind="click: destroy">Destroy</button>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-usage">Usage</a></li>
+									<li><a href="#tabs-api">API</a></li>
+								</ol>
+								<div id="tabs-usage" class="cf">
+									<h2>HTML</h2>
+									<pre><![CDATA[<button class="import-setting-trigger">Trigger</button> ]]></pre>
+									<h2>ViewModel</h2>
+									<pre><![CDATA[// Create an ImportSettingFrom. Auto call Init
+self.importSettingForm = new nts.uk.ui.importSettingForm.ImportSettingForm({
+    onClosed: function(result) {
+        console.log(result);
+    }
+});
+
+// Destroy an ImportSettingFrom
+self.importSettingForm.destroy();
+
+// Init an ImportSettingFrom
+self.importSettingForm.init();
+
+// Recreate an ImportSettingFrom
+self.importSettingForm.refresh();
+
+// Show ImportSettingFrom
+self.importSettingForm.show();
+
+// Hide ImportSettingFrom
+self.importSettingForm.hide();]]></pre>
+								</div>
+								<div id="tabs-api" class="cf">
+									<article>
+										<h2>Information</h2>
+										<b>Module:</b> nts.uk.ui.importSettingForm<br/>
+										<b>File:</b> nts.uk.com.js.web/src/main/webapp/lib/nittsu/ui/function-wrap/import-setting-form.ts<br/>
+									</article>
+									<article>
+										<h2>Constructor</h2>
+										<table class="table">
+											<colgroup>
+												<col width="400px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>Namr</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>ImportSettingForm()</td>
+													<td>Initializes a new instance of the ImportSettingForm class with default option</td>
+												</tr>
+												<tr>
+													<td>ImportSettingForm(option: ImportSetingOption)</td>
+													<td>Initializes a new instance of the ImportSettingForm class with given option
+													<div class="catalog-accordion">
+														<a href="#">ImportSetingOption</a>
+														<table class="table">
+															<colgroup>
+																<col width="150px" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th><h4>Name</h4></th>
+																	<th><h4>Description</h4></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>selector<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> string<br/>
+																		<b>Default:</b> ".import-setting-trigger"<br/>
+																		JQuery selector for element can show ImportSettingForm
+																	</td>
+																</tr>
+																<tr>
+																	<td>features<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> Array&lt;ImportSettingFeature&gt;<br/>
+																		<b>Default:</b> [ { name: 'Encoding' } ]<br/>
+																		<div class="catalog-accordion">
+																			<a href="#">ImportSettingFeature</a>
+																			<table class="table">
+																				<colgroup>
+																					<col width="150px" />
+																				</colgroup>
+																				<thead>
+																					<tr>
+																						<th><h4>Name</h4></th>
+																						<th><h4>Description</h4></th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					<tr>
+																						<td>name</td>
+																						<td>
+																							<b>Type:</b> FeatureName<br/>
+																							<b>Member:</b><br/>
+																							<i>Encoding</i> Turn on Encoding feature<br/>
+																							<i>FileFormat</i> Turn on FileFormat feature<br/>
+																							<i>LineBreak</i> Turn on LineBreak feature<br/>
+																							<i>IncludeHeader</i> Turn on IncludeHeader feature<br/>
+																						</td>
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																	</td>
+																</tr>
+																<tr>
+																	<td>onClosed<br/><i>(optional)</i></td>
+																	<td>
+																		<b>Type:</b> (result: ImportSettingResult) => void<br/>
+																		<b>Default:</b> $.noop()<br/>
+																		Trigger after ImportSettingForm is closed and return the result.
+																		<div class="catalog-accordion">
+																			<a href="#">ImportSettingResult</a>
+																			<table class="table">
+																				<colgroup>
+																					<col width="150px" />
+																				</colgroup>
+																				<thead>
+																					<tr>
+																						<th><h4>Name</h4></th>
+																						<th><h4>Description</h4></th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					<tr>
+																						<td>encodeType</td>
+																						<td>
+																							<b>Type:</b> nts.uk.enums.EnumConstant<br/>
+																							<b>Properties:</b><br/>
+																							<i>value</i> Turn on Encoding feature<br/>
+																							<i>fieldName</i> Turn on FileFormat feature<br/>
+																							<i>localizedName</i> Turn on LineBreak feature<br/>
+																						</td>
+																					</tr>
+																					<tr>
+																						<td>linebreakCode</td>
+																						<td>Not implement yet.</td>
+																					</tr>
+																					<tr>
+																						<td>fileFormat</td>
+																						<td>Not implement yet.</td>
+																					</tr>
+																					<tr>
+																						<td>includeHeader</td>
+																						<td>Not implement yet.</td>
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																		<div class="catalog-accordion">
+																			<a href="#">List EncodeType</a>
+																			<table class="table">
+																				<colgroup>
+																					<col width="150px" />
+																				</colgroup>
+																				<thead>
+																					<tr>
+																						<th><h4>Name</h4></th>
+																						<th><h4>Description</h4></th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					<tr>
+																						<td>Shift-JIS</td>
+																						<td>
+																							<i>value</i> 0<br/>
+																							<i>fieldName</i> "ShiftJIS"<br/>
+																							<i>localizedName</i> "Shift-JIS"<br/>
+																						</td>
+																					</tr>
+																					<tr>
+																						<td>UTF-8</td>
+																						<td>
+																							<i>value</i> 1<br/>
+																							<i>fieldName</i> "UTF8"<br/>
+																							<i>localizedName</i> "UTF-8"<br/>
+																						</td>
+																					</tr>
+																					<tr>
+																						<td>UTF-8 BOM</td>
+																						<td>
+																							<i>value</i> 2<br/>
+																							<i>fieldName</i> "UTF8BOM"<br/>
+																							<i>localizedName</i> "UTF-8 BOM"<br/>
+																						</td>
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</article>
+									<article>
+										<h2>Methods</h2>
+										<table class="table">
+											<colgroup>
+												<col width="300px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>Name</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>init(option?: ImportSetingOption)</td>
+													<td>
+														<b>Return:</b> void<br/>
+														<b>Arguments:</b><br/>
+														<i>option: ImportSetingOption</i> Init ImportSettingForm with given option<br/>
+													</td>
+												</tr>
+												<tr>
+													<td>destroy()</td>
+													<td>
+														<b>Return:</b> void<br/>
+														Destroy ImportSettingForm
+													</td>
+												</tr>
+												<tr>
+													<td>refresh(option?: ImportSetingOption)</td>
+													<td>
+														<b>Return:</b> void<br/>
+														Recreate ImportSettingForm. If no <i>option</i> is pass, using exist <i>option</i>
+													</td>
+												</tr>
+												<tr>
+													<td>show()</td>
+													<td>
+														<b>Return:</b> void<br/>
+														Show ImportSettingForm
+													</td>
+												</tr>
+												<tr>
+													<td>hide()</td>
+													<td>
+														<b>Return:</b> void<br/>
+														Hide ImportSettingForm
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</article>
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>
