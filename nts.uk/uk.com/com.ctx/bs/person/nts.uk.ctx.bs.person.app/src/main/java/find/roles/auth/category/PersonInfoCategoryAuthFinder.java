@@ -40,6 +40,13 @@ public class PersonInfoCategoryAuthFinder {
 				.map(x -> PersonInfoCategoryDetailDto.fromDomain(x)).collect(Collectors.toList());
 
 	}
+	
+	public List<PersonInfoCategoryAuthDto> getAllCategoryAuth(String roleId) {
+		return this.personCategoryAuthRepository
+				.getAllCategoryAuthByRoleId(roleId).stream()
+				.map(x -> PersonInfoCategoryAuthDto.fromDomain(x)).collect(Collectors.toList());
+
+	}
 
 	public PersonInfoCategoryAuthDto getDetailPersonCategoryAuthByPId(String roleId, String personCategoryAuthId) {
 		Optional<PersonInfoCategoryAuth> opt = this.personCategoryAuthRepository

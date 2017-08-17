@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
 import java.util.List;
@@ -26,6 +30,22 @@ public interface WorkTypeRepository {
 	 */
 	List<WorkType> findByCompanyId(String companyId);
 
+	/**
+	 * Find not deprecated.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<WorkType> findNotDeprecated(String companyId);
+
+	/**
+	 * Find not deprecated by list code.
+	 *
+	 * @param companyId the company id
+	 * @param codes the codes
+	 * @return the list
+	 */
+	List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes);
 
 	/**
 	 * Find by companyId and displayAtr.

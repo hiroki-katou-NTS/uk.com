@@ -25,8 +25,8 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtBusinessFormatSheet a ");
 		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
-		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.sheetNo = :sheetNo ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.sheetNo = :sheetNo ");
 		FIND = builderString.toString();
 		
 		builderString = new StringBuilder();

@@ -28,7 +28,7 @@ public class AddBusinessTypeMonthlyCommandHandler extends CommandHandler<AddBusi
 
 		AddBusinessTypeMonthlyCommand command = context.getCommand();
 
-		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds = command.getWorkTypeFormatDetailDtos().stream()
+		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds = command.getBusinessTypeFormatDetailDtos().stream()
 				.map(f -> {
 					return new BusinessTypeFormatMonthly(companyId, new BusinessTypeCode(command.getBusinesstypeCode()),
 							f.getAttendanceItemId(), f.getOrder(), f.getColumnWidth());

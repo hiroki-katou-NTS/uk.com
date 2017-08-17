@@ -11,9 +11,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetQuery;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -40,11 +43,20 @@ public class ExtBudgetLogFinder {
     public List<ExternalBudgetLogDto> findExternalBudgetLog(ExternalBudgetQuery query) {
         String companyId = AppContexts.user().companyId();
         String employeeIdLogin = AppContexts.user().employeeId();
+        
+        // find external budget setting
         Map<String, String> mapBudget = this.externalBudgetRepo.findAll(companyId).stream()
                 .collect(Collectors.toMap(item -> item.getExternalBudgetCd().v(),
                         item -> item.getExternalBudgetName().v()));
-        return this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin, query.getStartDate(), query.getEndDate(),
-                query.getListState()).stream()
+        
+        // check choose at least state completion ?
+        if (CollectionUtil.isEmpty(query.getListState())) {
+            throw new BusinessException("Msg_166");
+        }
+        
+        List<ExternalBudgetLog> lstLog = this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin,
+                query.getStartDate(), query.getEndDate(), query.getListState());
+        return lstLog.stream()
                 .map(domain -> {
                     ExternalBudgetLogDto dto = new ExternalBudgetLogDto();
                     domain.saveToMemento(dto);

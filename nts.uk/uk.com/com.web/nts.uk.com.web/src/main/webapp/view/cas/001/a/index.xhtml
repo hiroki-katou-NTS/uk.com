@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.person.dom.person.role.RoleName
+			</com:ValidatorScript>
 			<com:stylefile path="cas001.a.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="cas001.a.start.js" />
@@ -19,7 +22,8 @@
 				<div class="container">
 					<!-- <button id="A1_001">#{i18n.getText('CAS001_2')}</button> -->
 					<button id="A1_002" class="proceed" data-bind="click:saveData">#{i18n.getText('CAS001_3')}</button>
-					<button id="A1_003" data-bind="click:OpenCModal">#{i18n.getText('CAS001_4')}</button>
+					<button id="A1_003"
+						data-bind="click:OpenCModal,enable:(personRoleList().length &gt; 0)">#{i18n.getText('CAS001_4')}</button>
 					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
 					<div class="float-right">
 						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">#{i18n.getText('CAS001_6')}</a>
@@ -46,8 +50,15 @@
 					<span id="A2_001Caret" class="caret-bottom outline"></span>
 					<div>
 						<div style="width: 270px" id="A2_007"
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'categoryId',
-						 comId: 'A2_008', items: currentRole().RoleCategoryList, selected: currentCategoryId , selectedKey: 'categoryId', fields: ['categoryName'], mode: 'igGrid'}" />
+							data-bind="ntsSearchBox: {
+							searchMode: 'filter',
+							targetKey: 'categoryId',
+						 	comId: 'A2_008',
+						 	items: currentRole().RoleCategoryList,
+						 	selected: currentCategoryId,
+						 	selectedKey: 'categoryId',
+						 	fields: ['categoryName'],
+						 	mode: 'igGrid'}" />
 						<table id="A2_008"
 							data-bind="ntsGridList: {	
 						dataSource: currentRole().RoleCategoryList ,
@@ -66,7 +77,8 @@
 
 						<div class="div_line" style="margin-top: 0px;">
 							<div class="float_left">
-								<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_12')}</div>
+								<div
+									data-bind="ntsFormLabel: { required:true,constraint:'RoleName' }">#{i18n.getText('CAS001_12')}</div>
 								<span data-bind="text:roleCode"></span> <span
 									data-bind="text:roleName"></span>
 							</div>
@@ -179,7 +191,7 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowPersonRef ,
+													value: $parents[1].allowOtherRef ,
 													enable: true }"></div>
 												</div>
 												<div>
@@ -189,19 +201,21 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowOtherRef ,
+													value: $parents[1].allowPersonRef ,
 													enable: true }"></div>
 												</div>
-												<div>
-													<span id="A4_011">#{i18n.getText('CAS001_28')}</span>
-													<div id="A4_012" class="cf margin_left_10"
-														data-bind="ntsSwitchButton: {
+												<com:ko-if bind="categoryType === 3">
+													<div>
+														<span id="A4_011">#{i18n.getText('CAS001_28')}</span>
+														<div id="A4_012" class="cf margin_left_10"
+															data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: allowOtherCompanyRef ,
 													enable: true }"></div>
-												</div>
+													</div>
+												</com:ko-if>
 											</div>
 											<div id="auth_group_table">
 												<com:ko-if bind="categoryType === 2">
@@ -215,59 +229,20 @@
 														</tr>
 														<tr>
 															<th>#{i18n.getText('CAS001_30')}</th>
-															<td><div id="A4_012" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowDelHis ,
-													enable: true }"></div></td>
-															<td><div id="A4_012" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowAddHis ,
-													enable: true }"></div></td>
-															<td><div id="A4_022"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: selfPastHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: true,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-															<td><div id="A4_023"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: selfFutureHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: true,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-														</tr>
-														<tr>
-															<th>#{i18n.getText('CAS001_31')}</th>
-															<td><div id="A4_012" class="cf"
+															<td><div id="A4_024" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: otherAllowDelHis ,
-													enable: true }"></div></td>
-															<td><div id="A4_012" class="cf"
+													enable: $parents[1].allowOtherRef()===1 }"></div></td>
+															<td><div id="A4_025" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: otherAllowAddHis ,
-													enable: true }"></div></td>
+													enable: $parents[1].allowOtherRef()===1 }"></div></td>
 															<td><div id="A4_026"
 																	data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
@@ -275,7 +250,7 @@
 														value: otherPastHisAuth ,
 														optionsText: 'name',
 														editable: false,
-														enable: true,
+														enable: $parents[1].allowOtherRef()===1 ,
 														columns: [
 															{ prop: 'name', length: 5 },
 														]}"></div></td>
@@ -286,10 +261,51 @@
 														value: otherFutureHisAuth ,
 														optionsText: 'name',
 														editable: false,
-														enable: true,
+														enable: $parents[1].allowOtherRef()===1 ,
 														columns: [
 															{ prop: 'name', length: 5 },
 														]}"></div></td>
+														</tr>
+														<tr>
+															<th>#{i18n.getText('CAS001_31')}</th>
+															<td><div id="A4_020" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowDelHis ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_021" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowAddHis ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_022"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: selfPastHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowPersonRef() === 1 ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+															<td><div id="A4_023"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: selfFutureHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowPersonRef() === 1  ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+
+
 														</tr>
 													</table>
 												</com:ko-if>
@@ -302,37 +318,37 @@
 														</tr>
 														<tr>
 															<th>#{i18n.getText('CAS001_30')}</th>
-															<td><div id="A4_012" class="cf"
+															<td><div id="A4_033" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: selfAllowDelMulti ,
-													enable: true }"></div></td>
-															<td><div id="A4_012" class="cf"
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_034" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: selfAllowAddMulti ,
-													enable: true }"></div></td>
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
 														</tr>
 														<tr>
 															<th>#{i18n.getText('CAS001_31')}</th>
-															<td><div id="A4_012" class="cf"
+															<td><div id="A4_035" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: otherAllowDelMulti ,
-													enable: true }"></div></td>
-															<td><div id="A4_012" class="cf"
+													enable: $parents[1].allowOtherRef()===1 }"></div></td>
+															<td><div id="A4_036" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: otherAllowAddMulti ,
-													enable: true }"></div></td>
+													enable: $parents[1].allowOtherRef()===1 }"></div></td>
 														</tr>
 													</table>
 												</com:ko-if>

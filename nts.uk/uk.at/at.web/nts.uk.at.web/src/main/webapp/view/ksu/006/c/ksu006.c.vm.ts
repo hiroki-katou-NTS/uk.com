@@ -43,25 +43,43 @@ module nts.uk.pr.view.ksu006.c {
                             + "data-execute='${executeId}' tabindex='7'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
                 ]);
                 self.rowSelected = ko.observable('');
+                
+                // Create Customs handle For event rened nts grid.
+                (<any>ko.bindingHandlers).rended = {
+                update: function(element: any, valueAccessor: any, allBindings: KnockoutAllBindingsAccessor,
+                    viewModel: any,bindingContext: KnockoutBindingContext) {
+                        let dataLog = ko.unwrap(valueAccessor());
+                        self.eventClick(dataLog);
+                    }
+                }
             }
 
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                $.when(self.loadCompletionList()).done(() => {
+                nts.uk.ui.block.invisible();
+                self.loadCompletionList().done(() => {
                     self.loadDataLog().done(() => {
+                        nts.uk.ui.block.clear();
                         dfd.resolve();
                     })
                 });
                 return dfd.promise();
             }
             
-            public eventClick() {
+            public eventClick(dataLog: any) {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 _.forEach(self.dataLog(), item => {
                     $('#download-log-' + item.executeId).on('click', function() {
-                      let executeId = $(this).data('execute');
-                        console.log(executeId);
+                        nts.uk.ui.block.grayout();
+                        service.downloadDetailError(item.executeId).done(function() {
+                            dfd.resolve();
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alertError(res.message);
+                        }).always(function(res) {
+                            nts.uk.ui.block.clear();
+                        });
                   });
                 });
             }

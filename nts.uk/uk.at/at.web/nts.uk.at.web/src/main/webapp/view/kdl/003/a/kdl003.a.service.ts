@@ -1,11 +1,12 @@
 module nts.uk.at.view.kdl003.a {
     export module service {
         var paths: any = {
-            findAllWorkType: "at/share/worktype/findAll",
-            findWorkTypeByCodes: "at/share/worktype/getpossibleworktype",
+            findAllWorkType: "at/share/worktype/findNotDeprecated",
+            findWorkTypeByCodes: "at/share/worktype/findNotDeprecatedByListCode",
             findAllWorkTime: "at/shared/worktime/findByCompanyID",
             findByCodeList: "at/shared/worktime/findByCodeList",
             findByTime: "at/shared/worktime/findByTime",
+            isWorkTimeSettingNeeded: "at/schedule/basicschedule/isWorkTimeSettingNeeded",
 
         }
 
@@ -25,6 +26,12 @@ module nts.uk.at.view.kdl003.a {
 
         export function findByTime(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findByTime, command);
+        }
+        export function isWorkTimeSettingNeeded(workTypeCode: string): JQueryPromise<any> {
+            //return nts.uk.request.ajax(paths.isWorkTimeSettingNeeded + '/' + workTypeCode);
+            let dfd = $.Deferred();
+            dfd.resolve(2);
+            return dfd.promise();
         }
         export module model {
         }

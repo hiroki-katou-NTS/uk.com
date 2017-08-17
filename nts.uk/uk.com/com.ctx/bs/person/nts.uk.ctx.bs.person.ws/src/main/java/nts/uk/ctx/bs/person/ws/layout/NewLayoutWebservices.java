@@ -11,7 +11,7 @@ import find.layout.NewLayoutDto;
 import find.layout.NewLayoutFinder;
 import nts.arc.layer.ws.WebService;
 
-@Path("ctx/bs/person/maintenance")
+@Path("ctx/bs/person/newlayout")
 @Produces("application/json")
 public class NewLayoutWebservices extends WebService {
 
@@ -22,14 +22,14 @@ public class NewLayoutWebservices extends WebService {
 	private NewLayoutCommandHandler commandHandler;
 
 	@POST
-	@Path("getNewLayout")
+	@Path("get")
 	public NewLayoutDto getNewLayout() {
 		return nLayoutFinder.getLayout();
 
 	}
 
 	@POST
-	@Path("saveLayout")
+	@Path("save")
 	public void addMaintenanceLayout(NewLayoutCommand command) {
 		this.commandHandler.handle(command);
 	}

@@ -71,7 +71,7 @@ module nts.uk.at.view.ksu006.a {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                
+                nts.uk.ui.block.grayout();
                 self.initNameId();
                 $.when(self.loadAllExternalBudget()).done(() => {
                     if (self.externalBudgetList().length > 0) {
@@ -79,6 +79,7 @@ module nts.uk.at.view.ksu006.a {
                         self.selectedExtBudgetCode(self.externalBudgetList()[0].code);
                     }
                     $('#showDialogExternalBudget').focus();
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
                 
@@ -87,17 +88,11 @@ module nts.uk.at.view.ksu006.a {
             
             public execute() {
                 let self = this;
+                let dfd = $.Deferred<any>();
                 $('#comboExternalBudget').focus();
-                let isOpendDialog: boolean = false;
                 self.uploadFile().done(function() {
-                    service.validateFile(self.fileId()).done(function() {
-                        nts.uk.ui.windows.setShared("ExtractCondition", self.toJSObject());
-                        nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml',
-                            { title: '外部予算実績データ受入実行', dialogClass: 'no-close' });
-
-                    }).fail(function(res: any) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                    });
+                    self.validateFile();
+                    dfd.resolve();
                 }).fail(function() {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
@@ -105,13 +100,18 @@ module nts.uk.at.view.ksu006.a {
             
             public openDialogExternalBudget() {
                 let self = this;
-                nts.uk.ui.windows.sub.modal('/view/kdl/024/a/index.xhtml', { title: '外部予算実績の設定'}).onClosed(() => {
+                nts.uk.ui.block.grayout();
+                nts.uk.ui.windows.sub.modal('/view/kdl/024/a/index.xhtml').onClosed(() => {
+                    nts.uk.ui.block.clear();
                     self.loadAllExternalBudget();
                 });
             }
             
             public openDialogLog() {
-                nts.uk.ui.windows.sub.modal('/view/ksu/006/c/index.xhtml', { title: '外部予算実績データ受入実行ログ', dialogClass: 'no-close' });
+                nts.uk.ui.block.grayout();
+                nts.uk.ui.windows.sub.modal('/view/ksu/006/c/index.xhtml').onClosed(() => {
+                        nts.uk.ui.block.clear();
+                    });
             }
             
             private showDataPreview() {
@@ -120,6 +120,7 @@ module nts.uk.at.view.ksu006.a {
                 self.dataPreview([]);
                 self.firstRecord(null);
                 self.remainData([]);
+                
                 self.uploadFile().done(function() {
                     service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
                         self.isDataDailyUnit(res.isDailyUnit);
@@ -176,6 +177,20 @@ module nts.uk.at.view.ksu006.a {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
+            }
+            
+            private validateFile() {
+                let self = this;
+                let extractCondition: any = self.toJSObject();
+                service.validateFile(extractCondition).done(function() {
+                    nts.uk.ui.block.grayout();
+                    nts.uk.ui.windows.setShared("ExtractCondition", extractCondition);
+                    nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml').onClosed(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
             }
             
             private toJSObject(): any {

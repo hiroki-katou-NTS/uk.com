@@ -14,7 +14,7 @@ import nts.uk.ctx.bs.person.dom.person.layout.classification.definition.LayoutPe
 @Stateless
 public class JpaItemClassificationDifination extends JpaRepository implements ILayoutPersonInfoClsDefRepository {
 
-	private static final String REMOVE_ALL = "DELETE cd PpemtLayoutItemClsDf cd";
+	private static final String REMOVE_ALL = "DELETE FROM PpemtLayoutItemClsDf cd";
 	private static final String REMOVE_ALL_BY_LAYOUT_ID = REMOVE_ALL
 			+ " WHERE cd.ppemtLayoutItemClsDfPk.layoutId = :layoutId";
 
@@ -32,7 +32,7 @@ public class JpaItemClassificationDifination extends JpaRepository implements IL
 
 	@Override
 	public void removeAllByLayoutId(String layoutId) {
-		queryProxy().query(REMOVE_ALL_BY_LAYOUT_ID).setParameter("layoutId", layoutId);
+		getEntityManager().createQuery(REMOVE_ALL_BY_LAYOUT_ID).setParameter("layoutId", layoutId).executeUpdate();
 	}
 
 	@Override

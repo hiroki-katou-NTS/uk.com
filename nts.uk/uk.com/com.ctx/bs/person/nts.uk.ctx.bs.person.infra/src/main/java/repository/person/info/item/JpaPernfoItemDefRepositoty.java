@@ -13,12 +13,14 @@ import entity.person.info.item.PpemtPerInfoItemCmPK;
 import entity.person.info.item.PpemtPerInfoItemOrder;
 import entity.person.info.item.PpemtPerInfoItemPK;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItem;
+import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.CodeNameReferenceType;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.EnumReferenceCondition;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.MasterReferenceCondition;
@@ -89,6 +91,16 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 
 	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
 			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName";
+
+	private final static String SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY = "SELECT o FROM PpemtPerInfoItemOrder o"
+			+ " WHERE o.perInfoCtgId = :perInfoCtgId";
+
+	private final static String SELECT_ITEM_DISPORDER_BY_KEY_QUERY = "SELECT o.disporder FROM PpemtPerInfoItemOrder o"
+			+ " WHERE o.perInfoCtgId = :perInfoCtgId AND o.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoItemDefId";
+
+	// private final static String SELECT_ITEM_SET_QUERY = "SELECT
+	// ic.ppemtPerInfoItemCmPK. FROM PpemtPerInfoItemCm ic"
+	// + " WHERE ic.itemParentCd = :itemParentCd";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -163,6 +175,19 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 			return itemCodeLastest.get(0);
 		}
 		return null;
+	}
+
+	@Override
+	public List<PerInfoItemDefOrder> getPerInfoItemDefOrdersByCtgId(String perInfoCtgId) {
+		return this.queryProxy().query(SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY, PpemtPerInfoItemOrder.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).getList(o -> createPerInfoItemDefOrderFromEntity(o));
+	}
+
+	@Override
+	public int getItemDispOrderBy(String perInfoCtgId, String perInfoItemDefId) {
+		return this.queryProxy().query(SELECT_ITEM_DISPORDER_BY_KEY_QUERY, Integer.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("perInfoItemDefId", perInfoItemDefId)
+				.getSingle().orElse(0);
 	}
 
 	private void addOrderItemRoot(String perInfoItemDefId, String perInfoCtgId) {
@@ -276,7 +301,7 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 
 	private PpemtPerInfoItem createPerInfoItemDefFromDomainWithCtgId(PersonInfoItemDefinition perInfoItemDef,
 			String perInfoCtgId) {
-		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDef.getPerInfoItemDefId());
+		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(IdentifierUtil.randomUniqueId());
 		return new PpemtPerInfoItem(perInfoItemPK, perInfoCtgId, perInfoItemDef.getItemCode().v(),
 				perInfoItemDef.getItemName().v(), perInfoItemDef.getIsAbolition().value,
 				perInfoItemDef.getIsRequired().value);
@@ -363,6 +388,11 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 				timepointItemMax, dateItemType, stringItemType, stringItemLength, stringItemDataType, numericItemMin,
 				numericItemMax, numericItemAmountAtr, numericItemMinusAtr, numericItemDecimalPart,
 				numericItemIntegerPart, selectionItemRefType, selectionItemRefCode);
+	}
+
+	private PerInfoItemDefOrder createPerInfoItemDefOrderFromEntity(PpemtPerInfoItemOrder order) {
+		return PerInfoItemDefOrder.createFromJavaType(order.ppemtPerInfoItemPK.perInfoItemDefId, order.perInfoCtgId,
+				order.disporder);
 	}
 
 }

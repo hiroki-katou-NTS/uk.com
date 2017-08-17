@@ -9,8 +9,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
 
@@ -40,6 +42,17 @@ public class MonthlyPatternSettingSaveCommandHandler
 		
 		// command to domain
 		MonthlyPatternSetting domain = command.toDomain();
+		
+		
+		// check not setting employee
+		if(StringUtil.isNullOrEmpty(command.getEmployeeId(), true)){
+			throw new BusinessException("Msg_189");
+		}
+		
+		// check not monthly pattern code
+		if(StringUtil.isNullOrEmpty(command.getMonthlyPatternCode(), true)){
+			throw new BusinessException("Msg_190");
+		}
 		
 		// find data by employee id
 		Optional<MonthlyPatternSetting> monthlyPatternSetting = this.repository

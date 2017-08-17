@@ -117,6 +117,18 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
                 .collect(Collectors.toList());
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetLogRepository#isExisted(java.lang.String)
+     */
+    @Override
+    public boolean isExisted(String executeId) {
+        return this.queryProxy().find(executeId, KscdtExtBudgetLog.class).isPresent();
+    }
+
+    
     /**
      * To entity.
      *
