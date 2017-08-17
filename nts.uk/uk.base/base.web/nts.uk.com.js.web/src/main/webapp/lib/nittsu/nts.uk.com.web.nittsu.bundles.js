@@ -4317,8 +4317,8 @@ var nts;
                         var data = valueAccessor();
                         var self = this;
                         var options = ko.unwrap(data.options);
-                        var optionValue = ko.unwrap(data.optionsValue);
-                        var optionText = ko.unwrap(data.optionsText);
+                        var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
+                        var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
                         var enable = ko.unwrap(data.enable);
@@ -4330,8 +4330,11 @@ var nts;
                         var fillCharacter = ' ';
                         var maxWidthCharacter = 15;
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-                        if (_.find(options, function (item) { return item[optionValue] === selectedValue; }) === undefined && !editable) {
-                            selectedValue = options.length > 0 ? options[0][optionValue] : '';
+                        var getValue = function (item) {
+                            return optionValue === null ? item : item[optionValue];
+                        };
+                        if (_.find(options, function (item) { return getValue(item) === selectedValue; }) === undefined && !editable) {
+                            selectedValue = options.length > 0 ? getValue(options[0]) : '';
                             data.value(selectedValue);
                         }
                         var haveColumn = columns && columns.length > 0;
@@ -4353,7 +4356,7 @@ var nts;
                                     });
                                 }
                                 else {
-                                    newOptionText = option[optionText];
+                                    newOptionText = optionText === null ? option : option[optionText];
                                 }
                                 option['nts-combo-label'] = newOptionText;
                                 return option;
@@ -4391,7 +4394,7 @@ var nts;
                                 itemTemplate: itemTemplate,
                                 selectionChanged: function (evt, ui) {
                                     if (ui.items.length > 0) {
-                                        data.value(ui.items[0].data[optionValue]);
+                                        data.value(getValue(ui.items[0].data));
                                     }
                                 }
                             });
@@ -18632,4 +18635,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
