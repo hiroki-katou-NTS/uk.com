@@ -5477,7 +5477,7 @@ var nts;
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
-                            $input.width(width, false);
+                            $input.width(width);
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
@@ -5634,10 +5634,12 @@ var nts;
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         _super.prototype.init.call(this, $input, data);
                         $input.focus(function () {
-                            var selectionType = document.getSelection().type;
-                            $input.val(data.value());
-                            if (selectionType === 'Range') {
-                                $input.select();
+                            if (!$input.attr('readonly')) {
+                                var selectionType = document.getSelection().type;
+                                $input.val(data.value());
+                                if (selectionType === 'Range') {
+                                    $input.select();
+                                }
                             }
                         });
                     };
@@ -5649,7 +5651,6 @@ var nts;
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                             $parent.css({ 'width': '100%' });
                         }
-                        $input.css("box-sizing", "border-box");
                         if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                             $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
