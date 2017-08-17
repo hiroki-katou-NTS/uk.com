@@ -52,23 +52,6 @@ module nts.uk.at.view.kdl003.a {
                 //parent data
                 self.callerParameter = parentData;
 
-                // On selectedWorkTypeCode changed event.
-                self.selectedWorkTypeCode.subscribe(code => {
-                    service.isWorkTimeSettingNeeded(code).done(val => {
-                        switch (val) {
-                            case SetupType.REQUIRED:
-                                self.selectedWorkTimeCode('000');
-                                break;
-                            case SetupType.OPTIONAL:
-                                self.selectedWorkTimeCode('');
-                                break;
-                            case SetupType.NOT_REQUIRED:
-                                self.selectedWorkTimeCode('');
-                                break;
-                            default: // Do nothing.
-                        }
-                    });
-                });
             }
 
             /**
@@ -83,7 +66,22 @@ module nts.uk.at.view.kdl003.a {
                     .done(() => {
                         // Set initial selection.
                         self.initWorkTypeSelection();
-                        self.initWorkTimeSelection();
+                        self.setWorkTimeSelection();
+
+                        // On selectedWorkTypeCode changed event.
+                        self.selectedWorkTypeCode.subscribe(code => {
+                            service.isWorkTimeSettingNeeded(code).done(val => {
+                                switch (val) {
+                                    case SetupType.REQUIRED:
+                                        self.setWorkTimeSelection();
+                                        break;
+                                    case SetupType.OPTIONAL:
+                                        self.setWorkTimeSelection();
+                                        break;
+                                    default: self.selectedWorkTimeCode('000');
+                                }
+                            });
+                        });
 
                         // Set initial work time list.
                         self.initialWorkTimeCodes = _.map(self.listWorkTime(), function(item) { return item.code })
@@ -152,6 +150,9 @@ module nts.uk.at.view.kdl003.a {
                 return dfd.promise();
             }
 
+            /**
+             * Add first item.
+             */
             private addFirstItem(data): void {
                 let self = this;
                 //add item　なし
@@ -182,9 +183,9 @@ module nts.uk.at.view.kdl003.a {
             }
 
             /**
-             * Initial work time selection.
+             * Set work time selection.
              */
-            private initWorkTimeSelection(): void {
+            private setWorkTimeSelection(): void {
                 let self = this;
                 // Selected code from caller screen.
                 if (self.callerParameter.selectedWorkTimeCode) {
@@ -245,22 +246,80 @@ module nts.uk.at.view.kdl003.a {
                 $("#inputStartTime").focus();
             }
 
+            /**
+             * Submit and close dialog.
+             */
             public submitAndCloseDialog() {
                 nts.uk.ui.block.invisible();
                 let self = this;
-                let workTypeName = self.getWorkTypeName(self.selectedWorkTypeCode());
-                let workTimeName = self.getWorkTimeName(self.selectedWorkTimeCode());
-                let returneData: ReturnedData = {
-                    selectedWorkTypeCode: self.selectedWorkTypeCode(),
-                    selectedWorkTypeName: workTypeName,
-                    selectedWorkTimeCode: self.selectedWorkTimeCode(),
-                    selectedWorkTimeName: workTimeName
-                };
-                nts.uk.ui.windows.setShared("childData", returneData, true);
-                nts.uk.ui.block.clear();
-                nts.uk.ui.windows.close();
+                self.submit().done(() => {
+                    nts.uk.ui.block.clear();
+                    self.closeDialog();
+                });
             }
 
+            /**
+             * Submit
+             */
+            private submit(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.isWorkTimeSettingNeeded(self.selectedWorkTypeCode()).done(setupType => {
+
+                    // Set returned data..
+                    let workTypeName = self.getWorkTypeName(self.selectedWorkTypeCode());
+                    let workTimeName = self.getWorkTimeName(self.selectedWorkTimeCode());
+                    let returnedData: ReturnedData = {
+                        selectedWorkTypeCode: self.selectedWorkTypeCode(),
+                        selectedWorkTypeName: workTypeName,
+                        selectedWorkTimeCode: self.selectedWorkTimeCode(),
+                        selectedWorkTimeName: workTimeName
+                    };
+
+                    // Switch setup type.
+                    switch (setupType) {
+                        case SetupType.REQUIRED:
+                            if (!self.listWorkTime() || self.listWorkTime().length < 1) {
+                                returnedData.selectedWorkTimeCode = '';
+                                returnedData.selectedWorkTimeName = '';
+                                self.setReturnedData(returnedData, 'Msg_24').done(() => dfd.resolve());
+                            } else {
+                                self.setReturnedData(returnedData).done(() => dfd.resolve());
+                            }
+                            break;
+                        case SetupType.NOT_REQUIRED:
+                            if (self.selectedWorkTimeCode() != '000') {
+                                self.setReturnedData(returnedData, 'Msg_23').done(() => dfd.resolve());
+                            } else {
+                                self.setReturnedData(returnedData).done(() => dfd.resolve());
+                            }
+                            break;
+                        default:
+                            self.setReturnedData(returnedData).done(() => dfd.resolve());
+                    }
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * Set returned data.
+             */
+            private setReturnedData(returnedData, msgId?: string): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
+                nts.uk.ui.windows.setShared("childData", returnedData, true);
+                if (msgId) {
+                    nts.uk.ui.dialog.alertError({ messageId: msgId }).then(() => {
+                        dfd.resolve();
+                    });
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Get work type name.
+             */
             private getWorkTypeName(workTypeCode: string): string {
                 let self = this;
                 let name: string = '';
@@ -271,6 +330,9 @@ module nts.uk.at.view.kdl003.a {
                 return name;
             }
 
+            /**
+             * Get work time name.
+             */
             private getWorkTimeName(workTimeCode: string): string {
                 let self = this;
                 let name: string = '';
@@ -281,6 +343,9 @@ module nts.uk.at.view.kdl003.a {
                 return name;
             }
 
+            /**
+             * Close dialog.
+             */
             public closeDialog(): void {
                 nts.uk.ui.windows.close();
             }

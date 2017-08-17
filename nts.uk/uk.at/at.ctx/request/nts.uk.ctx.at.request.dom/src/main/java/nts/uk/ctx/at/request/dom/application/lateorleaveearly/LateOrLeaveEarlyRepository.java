@@ -29,4 +29,10 @@ public interface LateOrLeaveEarlyRepository {
 	 */
 	void update (LateOrLeaveEarly lateOrLeaveEarly);
 	
+	/**
+	 * Remove
+	 * @param companyID
+	 * @param appID
+	 */
+	void remove (String companyID , String appID);
 }

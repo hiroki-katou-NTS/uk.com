@@ -17,7 +17,7 @@ module nts.uk.pr.view.ksu006.c {
             return nts.uk.request.ajax(paths.findAllExternalBudgetLog, query);
         }
         
-        export function downloadDetailError(executeId: string): JQueryPromise<Array<model.ExternalBudgetLogModel>> {
+        export function downloadDetailError(executeId: string): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportDetailError + "/" +  executeId);
         }
 
