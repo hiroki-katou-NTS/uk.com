@@ -9985,75 +9985,55 @@ var nts;
                     NtsFileUploadBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var fileName = data.filename;
-                        var isLink = data.aslink;
-                        var suportedExtension = ko.unwrap(data.accept);
-                        var textId = ko.unwrap(data.text);
-                        var control = $(element);
-                        var onchange = data.onchange;
-                        var onfilenameclick = data.onfilenameclick;
-                        var fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
-                        var fileBrowserButton = $("<button class='browser-button' ></button>");
-                        var browserButtonText;
-                        if (textId) {
-                            browserButtonText = nts.uk.resource.getText(textId);
-                        }
-                        else {
-                            browserButtonText = "ファイルアップロード";
-                        }
-                        fileBrowserButton.text(browserButtonText);
-                        var fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
-                        var displayAsLink = false;
-                        if (isLink != undefined) {
-                            if (typeof isLink == 'function') {
-                                displayAsLink = isLink();
-                            }
-                            else {
-                                displayAsLink = isLink;
-                            }
-                        }
-                        if (displayAsLink) {
-                            fileNameLable.addClass("filename");
-                        }
-                        else {
-                            fileNameLable.addClass("standard-file-name");
-                        }
-                        var fileInput = $("<input style ='display:none;' type='file' class='fileinput'/>");
-                        if (suportedExtension) {
-                            fileInput.attr("accept", suportedExtension.toString());
-                        }
-                        fileuploadContainer.append(fileBrowserButton);
-                        fileuploadContainer.append(fileNameLable);
-                        fileuploadContainer.append(fileInput);
-                        fileuploadContainer.appendTo(control);
-                        fileBrowserButton.click(function () {
-                            fileInput.val(null);
+                        var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
+                        var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
+                        ;
+                        var container = $(element);
+                        var $fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
+                        var $fileBrowserButton = $("<button class='browser-button'></button>");
+                        var $fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
+                        var $fileInput = $("<input style='display:none;' type='file' class='fileinput'/>");
+                        $fileuploadContainer.append($fileBrowserButton);
+                        $fileuploadContainer.append($fileNameLable);
+                        $fileuploadContainer.append($fileInput);
+                        $fileuploadContainer.appendTo(container);
+                        $fileBrowserButton.click(function () {
+                            $fileInput.val(null);
+                            fileName("");
+                            $fileInput.click();
                         });
-                        fileInput.change(function () {
+                        $fileInput.change(function () {
                             var selectedFilePath = $(this).val();
                             var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
-                            if (fileName != undefined) {
-                                data.filename(getSelectedFileName);
-                            }
-                            fileNameLable.text(getSelectedFileName);
-                            if (typeof onchange == 'function') {
-                                onchange($(this).val());
-                            }
+                            fileName(getSelectedFileName);
+                            onchange(getSelectedFileName);
                         });
-                        fileBrowserButton.click(function () {
-                            fileInput.click();
+                        $fileNameLable.click(function () {
+                            onfilenameclick($(this).text());
                         });
-                        if (onfilenameclick) {
-                            fileNameLable.click(function () {
-                                onfilenameclick($(this).text());
-                            });
-                        }
                     };
                     NtsFileUploadBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var fileName = ko.unwrap(data.filename);
-                        var control = $(element);
-                        var fileNameLable = control.parent().find(".filenamelabel");
-                        fileNameLable.text(fileName);
+                        var accept = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
+                        var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
+                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "ファイルアップロード";
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var container = $(element);
+                        container.find("input[type='file']").attr("accept", accept.toString());
+                        var $fileNameLable = container.find(".filenamelabel");
+                        $fileNameLable.text(fileName);
+                        if (asLink == true) {
+                            $fileNameLable.addClass("hyperlink");
+                            $fileNameLable.removeClass("standard-file-name");
+                        }
+                        else {
+                            $fileNameLable.addClass("standard-file-name");
+                            $fileNameLable.removeClass("hyperlink");
+                        }
+                        var $fileBrowserButton = container.find(".browser-button");
+                        $fileBrowserButton.text(text);
+                        $fileBrowserButton.prop("disabled", !enable);
                     };
                     return NtsFileUploadBindingHandler;
                 }());
@@ -18447,24 +18427,24 @@ var nts;
                 (function (ntsFileUpload) {
                     $.fn.ntsFileUpload = function (option) {
                         var dfd = $.Deferred();
-                        var file;
+                        var fileInput;
                         if ($(this).find("input[type='file']").length == 0) {
-                            file = $(this)[0].files;
+                            fileInput = $(this).get(0);
                         }
                         else {
-                            file = $(this).find("input[type='file']")[0].files;
+                            fileInput = $(this).find("input[type='file']").get(0);
                         }
-                        if (file) {
-                            var formData = new FormData();
-                            formData.append("stereotype", option.stereoType);
-                            formData.append("userfile", file[0]);
-                            formData.append("filename", file[0].name);
-                            if (file[0]) {
+                        if (fileInput !== undefined) {
+                            var file_2 = fileInput.files;
+                            if (file_2.length > 0) {
+                                var formData = new FormData();
+                                formData.append("stereotype", option.stereoType);
+                                formData.append("userfile", file_2[0]);
+                                formData.append("filename", file_2[0].name);
                                 return nts.uk.request.uploadFile(formData, option);
                             }
                             else {
                                 dfd.reject({ message: "please select file", messageId: "-1" });
-                                return dfd.promise();
                             }
                         }
                         else {
