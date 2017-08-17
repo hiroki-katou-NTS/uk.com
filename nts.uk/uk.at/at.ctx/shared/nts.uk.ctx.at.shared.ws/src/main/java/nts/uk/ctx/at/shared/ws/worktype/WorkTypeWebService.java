@@ -19,7 +19,7 @@ import nts.arc.layer.ws.WebService;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.DefaultBasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
 /**
@@ -35,7 +35,7 @@ public class WorkTypeWebService extends WebService {
 	
 	/** The basic schedule. */
 	@Inject 
-	private DefaultBasicScheduleService basicSchedule;
+	private BasicScheduleService basicSchedule;
 	
 	private static final List<Integer> workstyleList = Arrays.asList(WorkStyle.AFTERNOON_BREAK.value,
 			WorkStyle.MORNING_BREAK.value, WorkStyle.ONE_DAY_REST.value, WorkStyle.ONE_DAY_WORK.value);

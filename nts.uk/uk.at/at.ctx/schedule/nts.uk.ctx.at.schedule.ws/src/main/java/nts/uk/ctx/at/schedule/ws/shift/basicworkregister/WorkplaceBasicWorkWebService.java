@@ -21,7 +21,7 @@ import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.WorkplaceBWSav
 import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.WorkplaceBWSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.WorkplaceBasicWorkFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.WorkplaceBasicWorkFindDto;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.DefaultBasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
 /**
@@ -45,7 +45,7 @@ public class WorkplaceBasicWorkWebService extends WebService {
 	
 	/** The basic schedule service. */
 	@Inject
-	private DefaultBasicScheduleService basicScheduleService;
+	private BasicScheduleService basicScheduleService;
 	
 	/** The internationalization. */
 	@Inject
