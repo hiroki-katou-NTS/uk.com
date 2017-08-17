@@ -354,7 +354,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param domain the domain
      */
-    private <T> void saveDataDaily (ImportProcess importProcess, ExternalBudgetDaily<T> domain) {
+    private <T> void saveDataDaily(ImportProcess importProcess, ExternalBudgetDaily<T> domain) {
         if (!this.extBudgetDailyRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
                 domain.getExtBudgetCode().v())) {
             this.extBudgetDailyRepo.add(domain);
@@ -431,7 +431,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param domain the domain
      */
-    private <T> void saveDataTime (ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
+    private <T> void saveDataTime(ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
         if (!this.extBudgetTimeRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
                 domain.getExtBudgetCode().v())) {
             this.extBudgetTimeRepo.add(domain);
