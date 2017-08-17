@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.estimate.guideline;
 
 import lombok.Getter;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTermOfUse;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.GuidelineCondition;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 
 /**
@@ -17,7 +17,7 @@ public class EstimatedAlarmColor {
 
 	/** The estimate term of use. */
 	// 目安利用条件
-	private EstimateTermOfUse estimateTermOfUse;
+	private GuidelineCondition guidelineCondition;
 
 	/** The color. */
 	// 色
