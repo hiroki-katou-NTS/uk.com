@@ -37,7 +37,7 @@ public class AddBusinessTypeDailyCommandHandler extends CommandHandler<AddBusine
 
 		AddBusinessTypeDailyCommand command = context.getCommand();
 
-		List<BusinessTypeFormatDaily> businessTypeFormatDailies = command.getWorkTypeFormatDetailDtos().stream()
+		List<BusinessTypeFormatDaily> businessTypeFormatDailies = command.getBusinessTypeFormatDetailDtos().stream()
 				.map(f -> {
 					return new BusinessTypeFormatDaily(companyId, new BusinessTypeCode(command.getBusinesstypeCode()),
 							f.getAttendanceItemId(), command.getSheetNo(), f.getOrder(), f.getColumnWidth());
