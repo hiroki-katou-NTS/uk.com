@@ -220,12 +220,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     {
                         name: 'SwitchButtons1', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
                             { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
-                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: self.allowOtherRef() == 1 ? true : false
+                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
                     },
                     {
                         name: 'SwitchButtons2', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
                             { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
-                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: self.allowPersonRef() == 1 ? true : false
+                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
 
                     }
                 ],
@@ -479,8 +479,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
         categoryName: string;
         categoryType: number;
         setting: number;
-        //        allowPersonRef: KnockoutObservable<number>;
-        //        allowOtherRef: KnockoutObservable<number>;
         allowOtherCompanyRef: KnockoutObservable<number>;
         selfPastHisAuth: KnockoutObservable<number>;
         selfFutureHisAuth: KnockoutObservable<number>;
