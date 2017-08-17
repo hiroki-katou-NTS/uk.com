@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.login;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -38,11 +37,11 @@ public class JpaSystemConfigRepository extends JpaRepository implements SystemCo
 		// select root
 		cq.select(root);
 
-		List<SgwstSystemConfig> result = em.createQuery(cq).getResultList();
-		if (result.isEmpty()) {
+		SgwstSystemConfig result = em.createQuery(cq).getSingleResult();
+		if (result == null) {
 			return Optional.empty();
 		} else {
-			return Optional.of(new SystemConfig(new JpaSystemConfigGetMemento(result.get(0))));
+			return Optional.of(new SystemConfig(new JpaSystemConfigGetMemento(result)));
 		}
 	}
 

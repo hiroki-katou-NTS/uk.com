@@ -46,24 +46,24 @@ public class LocalContractFormCommandHandler
 	@Override
 	protected CheckContractDto handle(CommandHandlerContext<LocalContractFormCommand> context) {
 		LocalContractFormCommand command = context.getCommand();
+		try {
+			SystemConfig systemConfig = this.getSystemConfig();
 
-		SystemConfig systemConfig = this.getSystemConfig();
-		
-		if(systemConfig == null)
-		{
-			return null;
-		}
-		// case Cloud
-		if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
-			if (this.isShowContract(command)) {
-				return new CheckContractDto(true);
-			} else {
+			// case Cloud
+			if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
+				if (this.isShowContract(command)) {
+					return new CheckContractDto(true);
+				} else {
+					return new CheckContractDto(false);
+				}
+			}
+			// case OnPre
+			else {
 				return new CheckContractDto(false);
 			}
-		}
-		// case OnPre
-		else {
-			return new CheckContractDto(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -79,7 +79,7 @@ public class LocalContractFormCommandHandler
 		String contractCode = command.getContractCode();
 		String contractPassword = command.getContractPassword();
 
-		if (contractCode.isEmpty() ||contractCode == null) {
+		if (contractCode.isEmpty() || contractCode == null) {
 			return true;
 		}
 		// get domain contract

@@ -36,7 +36,6 @@ module nts.uk.pr.view.ccg007.b {
                         }
                         else {
                             //TODO システムエラー画面へ遷移する
-                            alert("TODO システムエラー画面へ遷移する");
                         }
                         blockUI.clear();
                         dfd.resolve();

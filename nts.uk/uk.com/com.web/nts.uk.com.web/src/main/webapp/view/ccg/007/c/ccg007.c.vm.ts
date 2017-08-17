@@ -33,7 +33,7 @@ module nts.uk.pr.view.ccg007.c {
                             }
                         }
                         else {
-                            alert("システムエラー画面へ遷移する");
+                            //TODO システムエラー画面へ遷移する
                         }
                         blockUI.clear();
                         dfd.resolve();
