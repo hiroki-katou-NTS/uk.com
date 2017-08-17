@@ -52,7 +52,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                         }
                         else {
-                            alert(getText('Msg_217'));
+                            alert(getText('Msg_364'));
                         }
 
                     });
