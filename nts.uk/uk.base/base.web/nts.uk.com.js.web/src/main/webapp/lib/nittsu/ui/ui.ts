@@ -90,8 +90,8 @@ module nts.uk.ui {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
                     let dialogName = this.globalContext.__viewContext["program"]["programName"];
-                    let title = nts.uk.util.isNullOrEmpty(dialogName)　
-                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? "未設定" : dialogName;
+//                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
                 
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
