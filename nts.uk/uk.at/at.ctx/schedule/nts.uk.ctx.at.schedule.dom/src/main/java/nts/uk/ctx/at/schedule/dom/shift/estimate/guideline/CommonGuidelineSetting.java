@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.estimate.guideline;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -20,8 +22,8 @@ public class CommonGuidelineSetting extends AggregateRoot {
 	private CompanyId companyId;
 
 	/** The alarm colors. */
-	// アラーム色
-	private EstimatedAlarmColor alarmColors;
+	// アラーム色 (1-5 items)
+	private List<EstimatedAlarmColor> alarmColors;
 
 	/** The estimate time. */
 	// 目安時間条件
@@ -34,4 +36,5 @@ public class CommonGuidelineSetting extends AggregateRoot {
 	/** The estimate number of days. */
 	// 目安日数条件
 	private ReferenceCondition estimateNumberOfDays;
+	
 }
