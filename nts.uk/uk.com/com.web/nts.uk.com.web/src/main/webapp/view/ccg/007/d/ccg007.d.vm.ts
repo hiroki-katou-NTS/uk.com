@@ -50,8 +50,8 @@ module nts.uk.pr.view.ccg007.d {
             private openContractAuthDialog() {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ccg/007/a/index.xhtml", {
-                    height: 320,
-                    width: 500,
+                    height: 300,
+                    width: 400,
                     title: nts.uk.resource.getText("CCG007_9"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {

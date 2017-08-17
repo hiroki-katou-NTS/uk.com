@@ -23,7 +23,6 @@ import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SubmitLoginFormTwoCommandHandler.
