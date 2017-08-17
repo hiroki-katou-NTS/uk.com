@@ -2416,10 +2416,21 @@ var nts;
                 return dfd.promise();
             }
             request.exportFile = exportFile;
+            var asyncTask;
+            (function (asyncTask) {
+                function getInfo(taskId) {
+                    return ajax('/ntscommons/arc/task/async/info/' + taskId);
+                }
+                asyncTask.getInfo = getInfo;
+                function requestToCancel(taskId) {
+                    ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
+                }
+                asyncTask.requestToCancel = requestToCancel;
+            })(asyncTask = request.asyncTask || (request.asyncTask = {}));
             var specials;
             (function (specials) {
                 function getAsyncTaskInfo(taskId) {
-                    return ajax('/ntscommons/arc/task/async/' + taskId);
+                    return asyncTask.getInfo(taskId);
                 }
                 specials.getAsyncTaskInfo = getAsyncTaskInfo;
                 function donwloadFile(fileId) {
