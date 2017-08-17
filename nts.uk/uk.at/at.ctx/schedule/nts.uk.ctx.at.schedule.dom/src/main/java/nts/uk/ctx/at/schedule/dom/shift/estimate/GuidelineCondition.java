@@ -8,7 +8,7 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate;
  * The Enum EstimateTermOfUse.
  */
 // 目安利用条件
-public enum EstimateTermOfUse {
+public enum GuidelineCondition {
 
 	/** The condition 1st. */
 	// 条件1
@@ -40,7 +40,7 @@ public enum EstimateTermOfUse {
 	public String description;
 
 	/** The Constant values. */
-	private final static EstimateTermOfUse[] values = EstimateTermOfUse.values();
+	private final static GuidelineCondition[] values = GuidelineCondition.values();
 
 	/**
 	 * Instantiates a new estimate term of use.
@@ -52,7 +52,7 @@ public enum EstimateTermOfUse {
 	 * @param description
 	 *            the description
 	 */
-	private EstimateTermOfUse(int value, String nameId, String description) {
+	private GuidelineCondition(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -65,14 +65,14 @@ public enum EstimateTermOfUse {
 	 *            the value
 	 * @return the estimate term of use
 	 */
-	public static EstimateTermOfUse valueOf(Integer value) {
+	public static GuidelineCondition valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (EstimateTermOfUse val : EstimateTermOfUse.values) {
+		for (GuidelineCondition val : GuidelineCondition.values) {
 			if (val.value == value) {
 				return val;
 			}

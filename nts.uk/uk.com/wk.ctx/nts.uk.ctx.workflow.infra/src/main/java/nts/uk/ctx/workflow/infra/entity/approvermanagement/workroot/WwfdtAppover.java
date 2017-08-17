@@ -33,13 +33,13 @@ public class WwfdtAppover extends UkJpaEntity implements Serializable {
 	public String employeeId;
 	/**順序*/
 	@Column(name = "ORDER_NUMBER")
-	public String orderNumber;
+	public int orderNumber;
 	/**区分*/
 	@Column(name = "APPROVAL_ATR")
-	public String approvalAtr;
+	public int approvalAtr;
 	/**確定者*/
 	@Column(name = "CONFIRM_PERSON")
-	public String confirmPerson;
+	public int confirmPerson;
 
 	@Override
 	protected Object getKey() {

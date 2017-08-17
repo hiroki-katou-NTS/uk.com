@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 
 @Getter
-public class GrantingCondition {
+public class GrantCondition {
 	/* 会社ID */
 	private String companyId;
 	
@@ -24,15 +24,15 @@ public class GrantingCondition {
 	private ConditionValue conditionValue;
 	
 	/* 条件利用区分 */
-	private int useConditionClassification;
+	private int useConditionAtr;
 
-	public GrantingCondition(String companyId, YearHolidayCode yearHolidayCode, int conditionNo, ConditionValue conditionValue,
-			int useConditionClassification) {
+	public GrantCondition(String companyId, YearHolidayCode yearHolidayCode, int conditionNo, ConditionValue conditionValue,
+			int useConditionAtr) {
 		
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
 		this.conditionNo = conditionNo;
 		this.conditionValue = conditionValue;
-		this.useConditionClassification = useConditionClassification;
+		this.useConditionAtr = useConditionAtr;
 	}	
 }

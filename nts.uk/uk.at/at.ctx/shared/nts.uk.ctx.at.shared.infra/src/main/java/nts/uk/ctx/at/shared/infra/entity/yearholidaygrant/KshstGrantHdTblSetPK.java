@@ -15,20 +15,12 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstYearHolidayGrantPK {
+public class KshstGrantHdTblSetPK {
 	/* 会社ID */
 	@Column(name = "CID")
 	public String companyId;
-	
-	/* 年休付与NO */
-	@Column(name = "YEAR_HOLIDAY_GRANT_NO")
-	public int yearHolidayGrantNo;
-	
-	/* 条件NO */
-	@Column(name = "CONDITION_NO")
-	public int conditionNo;
-	
-	/* 年休付与テーブル設定コード */
-	@Column(name = "YEAR_HOLIDAY_CD")
+
+	/* コード */
+	@Column(name = "YEAR_HD_CD")
 	public String yearHolidayCode;
 }

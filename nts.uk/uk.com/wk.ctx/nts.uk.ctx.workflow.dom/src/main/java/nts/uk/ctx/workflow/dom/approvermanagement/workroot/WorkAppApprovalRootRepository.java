@@ -33,4 +33,11 @@ public interface WorkAppApprovalRootRepository {
 	 * @return
 	 */
 	List<CompanyApprovalRoot> getAllComApprovalRoot(String companyId);
+	/**
+	 * get All Approver By Code
+	 * @param companyId
+	 * @param approvalPhaseId
+	 * @return
+	 */
+	List<Approver> getAllApproverByCode(String companyId, String approvalPhaseId);
 }
