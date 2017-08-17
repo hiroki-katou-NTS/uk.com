@@ -17,11 +17,11 @@ public class UpdateRelationshipCommandHandler extends CommandHandler<UpdateRelat
 	@Override
 	protected void handle (CommandHandlerContext<UpdateRelationshipCommand> context){
 		String companyId = AppContexts.user().companyId();
-		Optional<Relationship> relationshipOld =  relaRep.getByCode(companyId, context.getCommand().getRelationshipCd());
+		Optional<Relationship> relationshipOld =  relaRep.getByCode(companyId, context.getCommand().getRelationshipCode());
 		if(!relationshipOld.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}
-		Relationship relationshipNew = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCd(), context.getCommand().getRelationshipName());
-		relaRep.updateRelationship(relationshipNew);
+		Relationship relationshipNew = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCode(), context.getCommand().getRelationshipName());
+		relaRep.update(relationshipNew);
 	}
 }

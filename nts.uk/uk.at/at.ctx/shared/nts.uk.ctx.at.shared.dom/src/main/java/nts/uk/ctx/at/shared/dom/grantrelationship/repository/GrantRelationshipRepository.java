@@ -12,22 +12,22 @@ public interface GrantRelationshipRepository {
 	 * @param companyId
 	 * @return
 	 */
-	List<GrantRelationship> getAll(String companyId);
+	List<GrantRelationship> findAll(String companyId);
 	/**
 	 * author: Hoang Yen
 	 * @param grantRelationship
 	 */
-	void updateGrantRelationship(GrantRelationship grantRelationship);
+	void update(GrantRelationship grantRelationship);
 	/**
 	 * author: Hoang Yen
 	 * @param grantRelationship
 	 */
-	void insertGrantRelationship(GrantRelationship grantRelationship);
+	void insert(GrantRelationship grantRelationship);
 	/**
 	 * author: Hoang Yen
 	 * @param grantRelationship
 	 */
-	void deleteGrantRelationship(GrantRelationship grantRelationship);
+	void delete(GrantRelationship grantRelationship);
 	/**
 	 * 
 	 * @param companyId
@@ -36,5 +36,5 @@ public interface GrantRelationshipRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<Relationship> getByCode(String companyId, String specialHolidayCd, String relationshipCd);
+	Optional<Relationship> findByCode(String companyId, String specialHolidayCode, String relationshipCode);
 }

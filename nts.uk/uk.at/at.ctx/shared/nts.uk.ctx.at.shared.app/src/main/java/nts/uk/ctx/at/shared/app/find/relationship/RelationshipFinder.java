@@ -23,8 +23,8 @@ public class RelationshipFinder {
 	 */
 	public List<RelationshipDto> getAll(){
 		String companyId = AppContexts.user().companyId();
-		return this.relaRep.getAll(companyId).stream().map(item->{
-			return new RelationshipDto(item.getRelationshipCd().v(), item.getRelationshipName().v());
+		return this.relaRep.findAll(companyId).stream().map(item->{
+			return new RelationshipDto(item.getRelationshipCode().v(), item.getRelationshipName().v());
 		}).collect(Collectors.toList());
 	}
 }

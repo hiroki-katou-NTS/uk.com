@@ -5,9 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.query.DBCharPaddingAs;
 import nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipCode;
 @Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class KshstGrantRelationshipPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/*会社ID*/
@@ -15,9 +19,9 @@ public class KshstGrantRelationshipPK implements Serializable{
 	public String companyId;
 	/*コード*/
 	@Column(name = "SPHD_CD")
-	public String specialHolidayCd;
+	public int specialHolidayCode;
 	/*コード*/
 	@Column(name = "RELATIONSHIP_CD")
 	@DBCharPaddingAs(RelationshipCode.class)
-	public String relationshipCd;
+	public String relationshipCode;
 }
