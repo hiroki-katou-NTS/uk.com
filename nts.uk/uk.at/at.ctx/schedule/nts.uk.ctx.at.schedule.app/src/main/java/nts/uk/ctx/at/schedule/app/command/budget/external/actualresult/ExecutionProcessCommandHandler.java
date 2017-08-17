@@ -206,7 +206,13 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         try {
             NtsCsvReader csvReader = FileUltil.newCsvReader(importProcess.extractCondition.getEncoding());
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
-            setter.updateData(TOTAL_RECORD, csRecords.size() - importProcess.extractCondition.getStartLine() + 1);
+            
+            // calculate total record and check has data
+            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine() + 1;
+            if (calTotal > DEFAULT_VALUE) {
+                setter.updateData(TOTAL_RECORD, calTotal);
+            }
+            
             Iterator<NtsCsvRecord> csvRecordIterator = csRecords.iterator();
             while(csvRecordIterator.hasNext()) {
                 /** TODO: check has interruption, if is interrupt, update table LOG status interruption (中断)

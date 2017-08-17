@@ -3,8 +3,9 @@ module nts.uk.pr.view.ksu006.c {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $('#dateRangePickerLog').find('.ntsStartDatePicker').focus();
             $(document).delegate('#single-list', "iggridrowsrendered", function(evt, ui) {
-                screenModel.eventClick();
+                screenModel.eventClick(screenModel.dataLog());
             });
         });
     });

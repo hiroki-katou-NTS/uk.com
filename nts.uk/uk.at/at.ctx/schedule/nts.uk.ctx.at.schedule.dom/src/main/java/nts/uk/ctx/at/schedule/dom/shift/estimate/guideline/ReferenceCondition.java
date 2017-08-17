@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.estimate.guideline;
 
 import lombok.Getter;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTermOfUse;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.GuidelineCondition;
 
 /**
  * The Class EstimateCondition.
@@ -16,13 +16,13 @@ public class ReferenceCondition {
 
 	/** The yearly display condition. */
 	// 年間表示条件
-	private EstimateTermOfUse yearlyDisplayCondition;
+	private GuidelineCondition yearlyDisplayCondition;
 
 	/** The monthly display condition. */
 	// 月間表示条件
-	private EstimateTermOfUse monthlyDisplayCondition;
+	private GuidelineCondition monthlyDisplayCondition;
 
 	/** The alarm check condition. */
 	// アラームチェック条件
-	private EstimateTermOfUse alarmCheckCondition;
+	private GuidelineCondition alarmCheckCondition;
 }

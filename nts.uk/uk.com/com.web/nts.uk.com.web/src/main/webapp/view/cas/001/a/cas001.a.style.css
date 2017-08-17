@@ -181,6 +181,15 @@
 #A2_012 {
 	height: 25px;
 }
-#A2_001_virtualContainer{
-height: initial !important;
+
+#A2_001_virtualContainer {
+	height: initial !important;
+}
+
+#A2_008 tr>td:NTH-CHILD(2) {
+	text-align: center;
+}
+
+#item_role_table_body tr>td:NTH-CHILD(2) {
+	text-align: center;
 }

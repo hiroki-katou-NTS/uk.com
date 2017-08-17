@@ -74,6 +74,29 @@ public class WorkTypeWebService extends WebService {
 	public List<WorkTypeDto> findAll() {
 		return this.find.findByCompanyId();
 	}
+
+	/**
+	 * Find not deprecated.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findNotDeprecated")
+	public List<WorkTypeDto> findNotDeprecated() {
+		return this.find.findNotDeprecated();
+	}
+
+	/**
+	 * Find not deprecated by list code.
+	 *
+	 * @param codes the codes
+	 * @return the list
+	 */
+	@POST
+	@Path("findNotDeprecatedByListCode")
+	public List<WorkTypeDto> findNotDeprecatedByListCode(List<String> codes) {
+		return this.find.findNotDeprecatedByListCode(codes);
+	}
 	
 	/**
 	 * Find by id.

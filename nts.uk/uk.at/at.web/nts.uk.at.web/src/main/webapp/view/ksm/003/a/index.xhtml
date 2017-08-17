@@ -73,16 +73,16 @@
 								</div>
 							</td>
 							<td>
-								<!-- B3_2: Pattern code --> <input tabindex="6"
-								class="nts-input" id="inpCode"
+								<!-- B3_2: Pattern code --> 
+								<input tabindex="6" class="nts-input" id="inpCode"
 								data-bind="ntsTextEditor: {
 										  name: '#[KSM003_36]',
                                           value: patternCode,
                                           constraint: 'PatternCode',
                                           enable: !$parent.isEditting(),
                                           required: true}" />
-								<!-- B3_3:Pattern Name--> <input tabindex="7" class="nts-input"
-								id="inpPattern"
+								<!-- B3_3:Pattern Name--> 
+								<input tabindex="7" class="nts-input" id="inpPattern"
 								data-bind="ntsTextEditor: {
 										  name: '#[KSM003_37]',
                                           value: patternName,
@@ -105,26 +105,25 @@
 								</tr>
 								<com:ko tag="foreach" bind="dailyPatternVals">
 									<tr>
-										<td>
-											<div>
-												<button class="buttonEvent"
-													style="margin: 10px 10px 10px 10px;"
+										<td >
+											<div >
+												<button class="buttonEvent" 
+													style="margin: 10px 10px 10px 10px;width: 80px"
 													data-bind="click: openDialogWorkDays">
 													#{i18n.getText('KSM003_34')}</button>
 											</div>
 										</td>
 										<td>
-											<div data-bind="text: workTypeSetCd "></div>
+											<div  style="width: 200px" data-bind="text: workTypeInfo "></div>
 										</td>
 										<td>
-											<div data-bind="text: workingHoursCd "></div>
+											<div  style="width: 200px" data-bind="text: workingInfo "></div>
 										</td>
-										<td><input
-											data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" />
+										<td ><input 
+											data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" style="width: 50px ;"/> #{i18n.getText('KSM003_33')} 
 										</td>
 									</tr>
 								</com:ko>
-
 							</table>
 						</div>
 					</div>

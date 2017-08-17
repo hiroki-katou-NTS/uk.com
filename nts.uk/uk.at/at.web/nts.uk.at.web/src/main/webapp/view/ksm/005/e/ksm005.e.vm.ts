@@ -169,6 +169,7 @@ module nts.uk.at.view.ksm005.e {
                 var self = this;
                 // check error
                 if (self.checkMonthlyPatternSettingBatch()) {
+                    nts.uk.ui.block.clear();
                     return;
                 }
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.WORK_DAYS, self.monthlyPatternSettingBatchWorkDays());
