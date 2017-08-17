@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.dailyperformanceformat;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,43 +34,47 @@ public class UpdateBusinessTypeMonthlyCommandHandler extends CommandHandler<Upda
 		UpdateBusinessTypeMonthlyCommand command = context.getCommand();
 
 		// List attendanceItemId in DB
-		List<BigDecimal> attendanceItemIdInDBS = this.businessTypeFormatMonthlyRepository
+		List<Integer> attendanceItemIdInDBS = this.businessTypeFormatMonthlyRepository
 				.getMonthlyDetail(companyId, command.getBusinesstypeCode()).stream().map(f -> {
 					return f.getAttendanceItemId();
 				}).collect(Collectors.toList());
 
 		// List attendanceItemId from UI
-		List<BigDecimal> attendanceItemIds = command.getWorkTypeFormatDetailDtos().stream().map(f -> {
+		List<Integer> attendanceItemIds = command.getBusinessTypeFormatDetailDtos().stream().map(f -> {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
 		// List attendanceItemId has been removed from list UI compare List from DB
-		List<BigDecimal> attendanceItemIdRemove = attendanceItemIdInDBS.stream()
+		List<Integer> attendanceItemIdRemove = attendanceItemIdInDBS.stream()
 				.filter(item -> !attendanceItemIds.contains(item)).collect(Collectors.toList());
 		
 		// List attendanceItemId has been added from List UI compare List from DB
-		List<BigDecimal> attendanceItemIdAdd = attendanceItemIds.stream()
+		List<Integer> attendanceItemIdAdd = attendanceItemIds.stream()
 				.filter(item -> !attendanceItemIdInDBS.contains(item)).collect(Collectors.toList());
 
 		// remove all of data has removed in list attendanceId from UI
-		this.businessTypeFormatMonthlyRepository.deleteExistData(attendanceItemIdRemove);
+		if(!attendanceItemIdRemove.isEmpty()){
+			this.businessTypeFormatMonthlyRepository.deleteExistData(attendanceItemIdRemove);			
+		}
 
 		// List Data Update from UI compare DB (exist in DB)
-		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyUpdates = command.getWorkTypeFormatDetailDtos()
+		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyUpdates = command.getBusinessTypeFormatDetailDtos()
 				.stream().filter(item -> !attendanceItemIdAdd.contains(item.getAttendanceItemId())).map(f -> {
 					return new BusinessTypeFormatMonthly(companyId, new BusinessTypeCode(command.getBusinesstypeCode()),
 							f.getAttendanceItemId(), f.getOrder(), f.getColumnWidth());
 				}).collect(Collectors.toList());
 		
 		// List Data Add from UI (just added in UI)
-		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds = command.getWorkTypeFormatDetailDtos()
+		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds = command.getBusinessTypeFormatDetailDtos()
 				.stream().filter(item -> attendanceItemIdAdd.contains(item.getAttendanceItemId())).map(f -> {
 					return new BusinessTypeFormatMonthly(companyId, new BusinessTypeCode(command.getBusinesstypeCode()),
 							f.getAttendanceItemId(), f.getOrder(), f.getColumnWidth());
 				}).collect(Collectors.toList());
 
 		// add all of data has added in list attendanceId
-		this.businessTypeFormatMonthlyRepository.add(businessTypeFormatMonthlyAdds);
+		if(!businessTypeFormatMonthlyAdds.isEmpty()){
+			this.businessTypeFormatMonthlyRepository.add(businessTypeFormatMonthlyAdds);			
+		}
 
 		// update data has changed in list attendanceId
 		businessTypeFormatMonthlyUpdates.forEach(f -> {

@@ -92,7 +92,7 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
 			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName";
 
-	private final static String SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY = "SELECT * FROM PpemtPerInfoItemOrder o"
+	private final static String SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY = "SELECT o FROM PpemtPerInfoItemOrder o"
 			+ " WHERE o.perInfoCtgId = :perInfoCtgId";
 
 	private final static String SELECT_ITEM_DISPORDER_BY_KEY_QUERY = "SELECT o.disporder FROM PpemtPerInfoItemOrder o"
@@ -179,9 +179,8 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 
 	@Override
 	public List<PerInfoItemDefOrder> getPerInfoItemDefOrdersByCtgId(String perInfoCtgId) {
-		return this.queryProxy().query(SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY, PpemtPerInfoItemOrder.class).getList(o -> {
-			return createPerInfoItemDefOrderFromEntity(o);
-		});
+		return this.queryProxy().query(SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY, PpemtPerInfoItemOrder.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).getList(o -> createPerInfoItemDefOrderFromEntity(o));
 	}
 
 	@Override

@@ -236,14 +236,16 @@ module nts.uk.at.view.ksm005.b {
             public detailMonthlyPattern(monthlyPatternCode: string, month: number): void {
                 var self = this;
                 service.findByMonthWorkMonthlySetting(monthlyPatternCode, month).done(function(data) {
-                    service.findByIdMonthlyPattern(monthlyPatternCode).done(function(res) {
-                        self.monthlyPatternModel().updateData(res);
-                        self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
-                        self.monthlyPatternModel().updateEnable(false);
-                        self.enableDelete(true);
-                        self.updateWorkMothlySetting(data);
-                        self.lstWorkMonthlySetting(data);
-                    });
+                    if (monthlyPatternCode) {
+                        service.findByIdMonthlyPattern(monthlyPatternCode).done(function(res) {
+                            self.monthlyPatternModel().updateData(res);
+                            self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
+                            self.monthlyPatternModel().updateEnable(false);
+                            self.enableDelete(true);
+                        });
+                    }
+                    self.updateWorkMothlySetting(data);
+                    self.lstWorkMonthlySetting(data);
                 });
             }
             

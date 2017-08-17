@@ -63,10 +63,12 @@
 						</tr>
 					</table>
 					
-						<button class="large pull-right" tabindex="2"
-							style="margin-right: 40px; margin-bottom: 10px;display: none;"
-							data-bind="if: hasError() ,click: downloadDetailError">
-							#{i18n.getText('KSU006_205')}</button>
+					<div style="display: none;" data-bind="visible: true">
+						<com:ko tag="if" bind="hasError()">
+							<button id="donwloadError" class="large pull-right" tabindex="2" style="margin-right: 40px; margin-bottom: 10px;"
+							data-bind="click: downloadDetailError">#{i18n.getText('KSU006_205')}</button>
+						</com:ko>
+					</div>
 					<com:ko tag="if" bind="hasError()">
 						<table id="single-list"
 							data-bind="ntsGridList: {
@@ -87,10 +89,10 @@
 			<div id="functions-area-bottom" >
 					<div id="process" style="display: none;" data-bind="visible: true">
 						<com:ko tag="if" bind="!isDone()">
-							<button class="large" tabindex="1" data-bind="click: stopImporting">#{i18n.getText('KSU006_214')}</button>
+							<button id="stopExecute" class="large" tabindex="1" data-bind="click: stopImporting">#{i18n.getText('KSU006_214')}</button>
 						</com:ko>
 						<com:ko tag="if" bind="isDone()">
-							<button class="large" tabindex="3"
+							<button id="closeDialog" class="large" tabindex="3"
 								data-bind="click: closeDialog">#{i18n.getText('KSU006_215')}</button>
 						</com:ko>
 				</div>

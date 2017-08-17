@@ -9,6 +9,7 @@ module nts.uk.pr.view.ksu006.b {
 //            nts.uk.ui.block.invisible();
             service.executeImportFile(extractCondition).then(function(res: any) {
                 screenModel.executeId(res.executeId);
+                $('#stopExecute').focus();
                 nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     let dfd = $.Deferred();
@@ -34,6 +35,9 @@ module nts.uk.pr.view.ksu006.b {
                                 nts.uk.ui.dialog.alertError(res.error.message);
                             }
 //                            nts.uk.ui.block.clear();
+                            if (res.succeeded) {
+                                $('#closeDialog').focus();
+                            }
                         }
                         dfd.resolve(res);
                     });
