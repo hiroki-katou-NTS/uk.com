@@ -4,14 +4,14 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(2)
-public class LimitedDays extends IntegerPrimitiveValue<LimitedDays> {
+public class LengthOfServiceMonths extends IntegerPrimitiveValue<LengthOfServiceMonths> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public LimitedDays(Integer rawValue) {
+	public LengthOfServiceMonths(Integer rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

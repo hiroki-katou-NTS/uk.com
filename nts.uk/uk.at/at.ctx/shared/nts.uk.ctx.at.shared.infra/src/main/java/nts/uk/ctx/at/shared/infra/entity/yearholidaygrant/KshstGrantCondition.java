@@ -23,35 +23,35 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_GRANTING_CONDITION")
+@Table(name="KSHST_GRANT_CONDITION")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstGrantingCondition extends UkJpaEntity {
+public class KshstGrantCondition extends UkJpaEntity {
 	/*主キー*/
 	@EmbeddedId
-    public KshstGrantingConditionPK kshstGrantingConditionPK;
+    public KshstGrantConditionPK kshstGrantConditionPK;
 	
 	/* 条件値 */
 	@Column(name = "CONDITION_VALUE")
 	public int conditionValue;
 	
 	/* 条件利用区分 */
-	@Column(name = "USE_CONDITION_CLS")
-	public int useConditionClassification;
+	@Column(name = "USE_CONDITION_ATR")
+	public int useConditionAtr;
 	
 	@ManyToOne
 	@JoinColumns( {
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "YEAR_HOLIDAY_CD", referencedColumnName = "YEAR_HOLIDAY_CD", insertable = false, updatable = false)
     })
-	public KshstYearHoliday yearHoliday;
+	public KshstGrantHdTblSet yearHoliday;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantingCondition", orphanRemoval = true)
-	public List<KshstYearHolidayGrant> yearHolidayGrants;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantCondition", orphanRemoval = true)
+	public List<KshstGrantHdTbl> yearHolidayGrants;
 	
 	@Override
 	protected Object getKey() {
-		return kshstGrantingConditionPK;
+		return kshstGrantConditionPK;
 	}
 
 }

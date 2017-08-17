@@ -19,7 +19,7 @@ public interface YearHolidayRepository {
 	 * @param companyId the company id
 	 * @return the year holiday grant
 	 */
-	List<YearHoliday> findAll(String companyId);
+	List<GrantHdTblSet> findAll(String companyId);
 
 	/**
 	 * Gets the year holiday grant by code.
@@ -28,21 +28,21 @@ public interface YearHolidayRepository {
 	 * @param yearHolidayCode the year holiday code
 	 * @return the year holiday grant by code
 	 */
-	Optional<YearHoliday> findByCode(String companyId, String yearHolidayCode);
+	Optional<GrantHdTblSet> findByCode(String companyId, String yearHolidayCode);
 	
 	/**
 	 * Adds the year holiday grant.
 	 *
 	 * @param yearHolidayGrant the year holiday grant
 	 */
-	void add(YearHoliday yearHolidayGrant);
+	void add(GrantHdTblSet yearHolidayGrant);
 	
 	/**
 	 * Update the year holiday grant.
 	 *
 	 * @param yearHolidayGrant the year holiday grant
 	 */
-	void update(YearHoliday yearHolidayGrant);
+	void update(GrantHdTblSet yearHolidayGrant);
 	
 	/**
 	 * Removes the year holiday grant by id.

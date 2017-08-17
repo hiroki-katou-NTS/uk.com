@@ -13,7 +13,7 @@ import nts.uk.shr.com.primitive.Memo;
  */
 
 @Getter
-public class YearHoliday {
+public class GrantHdTblSet {
 	/* 会社ID */
 	private String companyId;
 
@@ -38,10 +38,10 @@ public class YearHoliday {
 	/* 備考 */
 	private Memo yearHolidayNote;
 	
-	private List<GrantingCondition> grantConditions;
+	private List<GrantCondition> grantConditions;
 
-	public YearHoliday(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName, int calculationMethod,
-			int standardCalculation, int useSimultaneousGrant, int simultaneousGrandMonthDays, Memo yearHolidayNote, List<GrantingCondition> grantConditions) {
+	public GrantHdTblSet(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName, int calculationMethod,
+			int standardCalculation, int useSimultaneousGrant, int simultaneousGrandMonthDays, Memo yearHolidayNote, List<GrantCondition> grantConditions) {
 
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;

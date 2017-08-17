@@ -20,16 +20,16 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_YEAR_HOLIDAY")
+@Table(name="KSHST_GRANT_HD_TBL_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstYearHoliday extends UkJpaEntity {
+public class KshstGrantHdTblSet extends UkJpaEntity {
 	/*主キー*/
 	@EmbeddedId
-    public KshstYearHolidayPK kshstYearHolidayPK;
+    public KshstGrantHdTblSetPK kshstGrantHdTblSetPK;
 
 	/* 名称 */
-	@Column(name = "YEAR_HOLIDAY_NAME")
+	@Column(name = "YEAR_HD_NAME")
 	public String yearHolidayName;
 
 	/* 計算方法 */
@@ -52,12 +52,12 @@ public class KshstYearHoliday extends UkJpaEntity {
 	@Column(name = "YEAR_HOLIDAY_NOTE")
 	public String yearHolidayNote;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="yearHoliday", orphanRemoval = true)
-	public List<KshstGrantingCondition> grantingConditions;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantHdTblSet", orphanRemoval = true)
+	public List<KshstGrantCondition> grantConditions;
 	
 	@Override
 	protected Object getKey() {
-		return kshstYearHolidayPK;
+		return kshstGrantHdTblSetPK;
 	}
 
 }

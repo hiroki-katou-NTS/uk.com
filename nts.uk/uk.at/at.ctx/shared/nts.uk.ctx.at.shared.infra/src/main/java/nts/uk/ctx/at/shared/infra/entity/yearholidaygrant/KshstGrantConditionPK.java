@@ -15,12 +15,16 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstYearHolidayPK {
+public class KshstGrantConditionPK {
 	/* 会社ID */
 	@Column(name = "CID")
 	public String companyId;
-
-	/* コード */
+	
+	/* 年休付与テーブル設定コード */
 	@Column(name = "YEAR_HOLIDAY_CD")
 	public String yearHolidayCode;
+	
+	/* 条件NO */
+	@Column(name = "CONDITION_NO")
+	public int conditionNo;
 }

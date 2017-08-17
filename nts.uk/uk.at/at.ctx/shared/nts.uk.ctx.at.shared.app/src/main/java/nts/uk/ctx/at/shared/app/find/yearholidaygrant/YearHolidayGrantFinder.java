@@ -1,12 +1,10 @@
 package nts.uk.ctx.at.shared.app.find.yearholidaygrant;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,7 +22,8 @@ public class YearHolidayGrantFinder {
 	 * @return the list
 	 */
 	public List<YearHolidayGrantDto> findAll() {
-		return this.yearHolidayRepository.findAll(companyId).stream().map(c -> YearHolidayGrantDto.fromDomain(c))
-				.collect(Collectors.toList());
+//		return this.yearHolidayRepository.findAll(companyId).stream().map(c -> YearHolidayGrantDto.fromDomain(c))
+//				.collect(Collectors.toList());
+		return null;
 	}
 }
