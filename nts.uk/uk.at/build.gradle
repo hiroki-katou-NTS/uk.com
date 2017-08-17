@@ -155,6 +155,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.app') {
 }
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.infra') {
 	dependencies {
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
 	}
