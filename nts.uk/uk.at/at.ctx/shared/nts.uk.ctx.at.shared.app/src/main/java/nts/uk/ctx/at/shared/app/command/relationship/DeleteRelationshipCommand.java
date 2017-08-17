@@ -13,5 +13,5 @@ public class DeleteRelationshipCommand {
 	/**会社ID**/
 	private String companyId;
 	/**勤務種別コード**/
-	private String relationshipCd;
+	private String relationshipCode;
 }

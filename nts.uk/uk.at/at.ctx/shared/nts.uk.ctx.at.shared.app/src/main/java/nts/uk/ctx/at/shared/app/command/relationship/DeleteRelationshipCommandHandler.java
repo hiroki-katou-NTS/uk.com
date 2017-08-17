@@ -18,10 +18,10 @@ public class DeleteRelationshipCommandHandler extends CommandHandler<DeleteRelat
 	@Override
 	protected void handle (CommandHandlerContext<DeleteRelationshipCommand> context){
 		String companyId = AppContexts.user().companyId();
-		Optional<Relationship> relationshipOld = relaRep.getByCode(companyId, context.getCommand().getRelationshipCd());
+		Optional<Relationship> relationshipOld = relaRep.getByCode(companyId, context.getCommand().getRelationshipCode());
 		if(!relationshipOld.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}
-		relaRep.deleteRelationship(companyId, context.getCommand().getRelationshipCd());
+		relaRep.delete(companyId, context.getCommand().getRelationshipCode());
 	}
 }

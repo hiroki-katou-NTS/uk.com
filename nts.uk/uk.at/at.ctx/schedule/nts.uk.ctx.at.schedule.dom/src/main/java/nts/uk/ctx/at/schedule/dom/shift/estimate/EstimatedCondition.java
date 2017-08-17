@@ -8,27 +8,27 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate;
  * The Enum EstimateTermOfUse.
  */
 // 目安利用条件
-public enum GuidelineCondition {
+public enum EstimatedCondition {
 
 	/** The condition 1st. */
 	// 条件1
-	CONDITION_1ST(1, "Enum_AmPmClassification_Condition_1st", "条件1"),
+	CONDITION_1ST(1, "Enum_EstimatedCondition_1st", "条件1"),
 
 	/** The condition 2nd. */
 	// 条件2
-	CONDITION_2ND(2, "Enum_AmPmClassification_Condition_2nd", "条件2"),
+	CONDITION_2ND(2, "Enum_EstimatedCondition_2nd", "条件2"),
 
 	/** The condition 3rd. */
 	// 条件3
-	CONDITION_3RD(3, "Enum_AmPmClassification_Condition_3rd", "条件3"),
+	CONDITION_3RD(3, "Enum_EstimatedCondition_3rd", "条件3"),
 
 	/** The condition 4th. */
 	// 条件4
-	CONDITION_4TH(4, "Enum_AmPmClassification_Condition_4th", "条件4"),
+	CONDITION_4TH(4, "Enum_EstimatedCondition_4th", "条件4"),
 
 	/** The condition 5th. */
 	// 条件5
-	CONDITION_5TH(5, "Enum_AmPmClassification_Condition_5th", "条件5");
+	CONDITION_5TH(5, "Enum_EstimatedCondition_5th", "条件5");
 
 	/** The value. */
 	public int value;
@@ -40,7 +40,7 @@ public enum GuidelineCondition {
 	public String description;
 
 	/** The Constant values. */
-	private final static GuidelineCondition[] values = GuidelineCondition.values();
+	private final static EstimatedCondition[] values = EstimatedCondition.values();
 
 	/**
 	 * Instantiates a new estimate term of use.
@@ -52,7 +52,7 @@ public enum GuidelineCondition {
 	 * @param description
 	 *            the description
 	 */
-	private GuidelineCondition(int value, String nameId, String description) {
+	private EstimatedCondition(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -65,14 +65,14 @@ public enum GuidelineCondition {
 	 *            the value
 	 * @return the estimate term of use
 	 */
-	public static GuidelineCondition valueOf(Integer value) {
+	public static EstimatedCondition valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (GuidelineCondition val : GuidelineCondition.values) {
+		for (EstimatedCondition val : EstimatedCondition.values) {
 			if (val.value == value) {
 				return val;
 			}

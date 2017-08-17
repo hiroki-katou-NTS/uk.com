@@ -15,7 +15,7 @@ public class InsertRelationshipCommand {
 	/**会社ID**/
 	private String companyId;
 	/**コード**/
-	private String relationshipCd;
+	private String relationshipCode;
 	/**名称**/
 	private String relationshipName;
 }

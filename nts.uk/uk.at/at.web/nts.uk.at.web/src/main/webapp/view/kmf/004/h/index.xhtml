@@ -35,7 +35,7 @@
 						<table id="lstRelationship" tabindex="4" data-bind="ntsGridList: {								
 						height: 362,
 						options: lstRelationship,
-						optionsValue: 'relationshipCd',
+						optionsValue: 'relationshipCode',
 						columns: gridListColumns,
 						multiple: false,
 						value: selectedCode}"></table>
@@ -55,14 +55,14 @@
 							<td>
 								<!-- H3_2: Code -->
 								<input tabindex="5" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
-																												constraint: 'relationshipCd',
+																												constraint: 'RelationshipCode',
 																												required: true,
 																												name: '#[KMF004_10]',
 																												immediate: true,
 																												enable: check}"/>
 								<!-- H3_3: Name--> 
 								<input tabindex="6" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
-																												constraint: 'relationshipName',
+																												constraint: 'RelationshipName',
 																												name: '#[KMF004_8]',
 																												required: true,
 																												enable: true}"/>

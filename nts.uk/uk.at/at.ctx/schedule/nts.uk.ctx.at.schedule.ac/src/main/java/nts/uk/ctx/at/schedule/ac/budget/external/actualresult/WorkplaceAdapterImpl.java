@@ -27,9 +27,13 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
      */
     @Override
     public List<String> findWpkIdList(String wpkCode, Date date) {
-        // TODO: fake return lstWpkId.
-        List<String> lstWpkId = Arrays.asList(wpkCode);
-        return lstWpkId;
+        // TODO: fake return wpkId.
+        StringBuilder wpkId = new StringBuilder(wpkCode);
+        String zero = "0";
+        while(wpkId.length() < 36) {
+            wpkId.append(zero);
+        }
+        return Arrays.asList(wpkId.toString());
     }
 
 }

@@ -30,7 +30,7 @@ module nts.uk.at.view.kdl003.a {
         export function isWorkTimeSettingNeeded(workTypeCode: string): JQueryPromise<any> {
             //return nts.uk.request.ajax(paths.isWorkTimeSettingNeeded + '/' + workTypeCode);
             let dfd = $.Deferred();
-            dfd.resolve(2);
+            dfd.resolve(0);
             return dfd.promise();
         }
         export module model {

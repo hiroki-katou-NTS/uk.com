@@ -18,12 +18,12 @@ public class InsertRelationshipCommandHandler extends CommandHandler<InsertRelat
 	@Override
 	protected void handle(CommandHandlerContext<InsertRelationshipCommand> context){
 		String companyId = AppContexts.user().companyId();
-		Relationship relationship = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCd(),
+		Relationship relationship = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCode(),
 																	context.getCommand().getRelationshipName());
-		Optional<Relationship> relationshipOld = relashipRep.getByCode(companyId, context.getCommand().getRelationshipCd());
+		Optional<Relationship> relationshipOld = relashipRep.getByCode(companyId, context.getCommand().getRelationshipCode());
 		if(relationshipOld.isPresent()){
 			throw new BusinessException("Msg_3");
 		}
-		relashipRep.insertRelationship(relationship);
+		relashipRep.insert(relationship);
 	}
 }
