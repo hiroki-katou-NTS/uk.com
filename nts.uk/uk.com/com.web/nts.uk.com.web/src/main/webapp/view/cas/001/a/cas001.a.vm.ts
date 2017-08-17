@@ -3,6 +3,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog.info;
     export class ScreenModel {
 
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
@@ -52,7 +53,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                         }
                         else {
-                            alert(getText('Msg_364'));
+                            dialog({ messageId: "Msg_364" });
                         }
 
                     });
@@ -97,7 +98,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
 
                 });
+            });
 
+            self.allowOtherRef.subscribe(function(newValue) {
+
+
+            });
+
+            self.allowPersonRef.subscribe(function(newValue) {
 
             });
         }
@@ -266,7 +274,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     }
                     else {
-                        alert(getText('Msg_217'));
+                        dialog({ messageId: "Msg_217" });
                     }
 
                     dfd.resolve();
@@ -295,7 +303,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
                 else {
 
-                    alert(getText('Msg_217'));
+                    dialog({ messageId: "Msg_217" });
 
                 }
 
@@ -339,7 +347,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             service.savePersonRole(command).done(function() {
 
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                dialog({ messageId: "Msg_15" }).then(function() {
 
                     self.reload().done(function() {
 
@@ -547,7 +555,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 });
 
                 if (self.roleItemList().length < 1) {
-                    alert(getText('Msg_217'));
+                    dialog({ messageId: "Msg_217" });
                 }
 
                 $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
