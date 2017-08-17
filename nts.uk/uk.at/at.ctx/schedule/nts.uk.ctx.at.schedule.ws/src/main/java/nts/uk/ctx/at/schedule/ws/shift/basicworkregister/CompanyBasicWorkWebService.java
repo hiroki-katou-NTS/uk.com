@@ -4,16 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.ws.shift.basicworkregister;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.CompanyBWSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.CompanyBWSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.CompanyBasicWorkFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.CompanyBasicWorkFindDto;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.DefaultBasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
 /**
  * The Class CompanyBasicWorkWebService.
@@ -29,6 +35,14 @@ public class CompanyBasicWorkWebService extends WebService {
 	/** The save. */
 	@Inject
 	private CompanyBWSaveCommandHandler save;
+	
+	/** The basic schedule service. */
+	@Inject
+	private DefaultBasicScheduleService basicScheduleService;
+	
+	/** The internationalization. */
+	@Inject
+	private IInternationalization internationalization;
 
 	/**
 	 * Find all.
@@ -50,7 +64,36 @@ public class CompanyBasicWorkWebService extends WebService {
 	 */
 	@POST
 	@Path("save")
-	public void save(CompanyBWSaveCommand command) {
-		this.save.handle(command);
+	public List<String> save(CompanyBWSaveCommand command) {
+		List<String> errorMessages = new ArrayList<>();
+		// Check Worktype:
+		command.getBasicWorkSetting().stream().forEach(item -> {
+			WorkStyle workStyle = basicScheduleService.checkWorkDay(item.getWorktypeCode().v());
+			if (workStyle.value == WorkStyle.ONE_DAY_REST.value) {
+				int workDayDivision = item.getWorkdayDivision().value;
+				switch (workDayDivision) {
+				case 0:
+					errorMessages.add(internationalization.getItemName("Msg_178", "KSM006_6").get());
+				case 1:
+					errorMessages.add(internationalization.getItemName("Msg_179", "KSM006_7").get());
+				case 2:
+					errorMessages.add(internationalization.getItemName("Msg_179", "KSM006_8").get());
+				}
+			}
+		});
+		// If has Errors
+		if (errorMessages.size() <= 0) {
+			// check pair WorkTypeCode - WorkTimeCode require
+			command.getBasicWorkSetting().stream().forEach(item -> {
+				this.basicScheduleService.ErrorCheckingStatus(item.getWorktypeCode().v(), item.getWorkingCode().v());
+			});
+			
+			this.save.handle(command);
+			return new ArrayList<>();
+
+		} else {
+			// Show message
+			return errorMessages;
+		}
 	}
 }
