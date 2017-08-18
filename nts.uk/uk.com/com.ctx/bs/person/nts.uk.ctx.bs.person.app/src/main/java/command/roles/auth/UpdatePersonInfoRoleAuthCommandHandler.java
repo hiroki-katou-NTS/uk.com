@@ -31,12 +31,22 @@ public class UpdatePersonInfoRoleAuthCommandHandler extends CommandHandler<Updat
 				.getDetailPersonRoleAuth(update.getRoleIdDestination(), AppContexts.user().companyId());
 		if (p_RoleDestination.isPresent()) {
 			update.getRoleIds().forEach(c -> {
-				this.personRoleAuthRepository.delete(c);
+				Optional<PersonInfoRoleAuth> p_RoleSource = this.personRoleAuthRepository.getDetailPersonRoleAuth(c,
+						AppContexts.user().companyId());
 				PersonInfoRoleAuth insert = PersonInfoRoleAuth.createFromJavaType(c, companyId,
-						p_RoleDestination.get().getAllowDocUpload().value, p_RoleDestination.get().getAllowMapBrowse().value,
-						p_RoleDestination.get().getAllowDocUpload().value, p_RoleDestination.get().getAllowDocRef().value,
-						p_RoleDestination.get().getAllowAvatarUpload().value, p_RoleDestination.get().getAllowAvatarRef().value);
-				this.personRoleAuthRepository.add(insert);
+						p_RoleDestination.get().getAllowDocUpload().value,
+						p_RoleDestination.get().getAllowMapBrowse().value,
+						p_RoleDestination.get().getAllowDocUpload().value,
+						p_RoleDestination.get().getAllowDocRef().value,
+						p_RoleDestination.get().getAllowAvatarUpload().value,
+						p_RoleDestination.get().getAllowAvatarRef().value);
+				if (p_RoleSource.isPresent()) {
+					this.personRoleAuthRepository.delete(c);
+					this.personRoleAuthRepository.add(insert);
+				} else {
+					this.personRoleAuthRepository.add(insert);
+
+				}
 			});
 		}
 
