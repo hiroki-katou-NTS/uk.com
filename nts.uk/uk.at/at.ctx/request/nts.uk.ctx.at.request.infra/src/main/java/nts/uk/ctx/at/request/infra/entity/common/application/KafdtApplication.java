@@ -29,12 +29,6 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	public int prePostAtr; 
 
 	/**
-	 * 事後申請を自動生成する
-	 */
-	@Column(name="AUTO_POST_APP")
-	public int autoPostApplication; 
-	
-	/**
 	 * 入力日
 	 */
 	@Column(name="INPUT_DATE")

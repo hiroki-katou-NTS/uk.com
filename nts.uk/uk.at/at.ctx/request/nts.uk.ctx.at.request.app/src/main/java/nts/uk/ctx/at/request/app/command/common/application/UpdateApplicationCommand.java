@@ -25,11 +25,6 @@ public class UpdateApplicationCommand {
 	private int prePostAtr; 
 
 	/**
-	 * 事後申請を自動生成する
-	 */
-	private int autoPostApplication; 
-
-	/**
 	 * 入力日
 	 */
 	private BigDecimal inputDate; 
@@ -107,8 +102,7 @@ public class UpdateApplicationCommand {
 		return Application.createFromJavaType(
 				AppContexts.user().companyId(), 
 				this.applicationID,  
-				this.prePostAtr,  
-				this.autoPostApplication,  
+				this.prePostAtr, 
 				this.inputDate,  
 				this.enteredPersonSID,  
 				this.reversionReason,  

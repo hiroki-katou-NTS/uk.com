@@ -7,6 +7,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import find.person.info.item.PerInfoItemDefFinder;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
@@ -29,12 +32,34 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 	@Inject
 	ILayoutPersonInfoClsDefRepository clsDefRepo;
 
+	@Inject
+	PerInfoItemDefFinder itemDefFinder;
+
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {
 
 		// get new layout domain and command
 		NewLayout update = layoutRepo.getLayout().get();
 		NewLayoutCommand command = context.getCommand();
+
+		// validate all usecase [Registration] at here
+		// throw exception if not valid
+		List<String> requiredIds = itemDefFinder.getRequiredIds();
+		List<String> allSaveItemIds = command.getItemsClassification().stream().map(m -> m.listItemClsDf)
+				.flatMap(List::stream).map(m -> m.getPersonInfoItemDefinitionID()).sorted()
+				.collect(Collectors.toList());
+
+		// エラーメッセージ（#Msg_201,システム必須項目のうち配置されていない項目（カンマ区切りの文字列））を表示する
+		if (!allSaveItemIds.containsAll(requiredIds)) {
+			throw new BusinessException(new RawErrorMessage("Msg_201"));
+		}
+
+		// エラーメッセージ（#Msg_289#,２つ以上配置されている項目名）を表示する
+		for (int i = 0; i < allSaveItemIds.size() - 1; i++) {
+			if (allSaveItemIds.get(i).equals(allSaveItemIds.get(i + 1))) {
+				throw new BusinessException(new RawErrorMessage("Msg_289"));
+			}
+		}
 
 		// rmove all classification in this layout
 		classfRepo.removeAllByLayoutId(update.getLayoutID());

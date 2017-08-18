@@ -54,4 +54,10 @@ public class PernfoItemDefWebservice {
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
 		return itemDefFinder.getPerInfoItemDefByListIdForLayout(listItemDefId);
 	}
+	
+	@POST
+	@Path("layout/finditem/required")
+	public List<String> getRequiredIds() {
+		return itemDefFinder.getRequiredIds();
+	}
 }

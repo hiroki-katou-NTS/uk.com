@@ -20,6 +20,8 @@ import java.util.Optional;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -248,6 +250,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      */
     private void processLine(ImportProcess importProcess, NtsCsvRecord record) {
         importProcess.startLine++;
+        // check line start read
         if (importProcess.startLine < importProcess.extractCondition.getStartLine()) {
             return;
         }
@@ -652,7 +655,9 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 default:
                     throw new RuntimeException("Not budget atr suitable.");
             }
-        } catch (NumberFormatException e) {
+        } catch (BusinessException e) {
+            this.logError(importProcess, columnNo, value, e.getMessage());
+        } catch (NumberFormatException numberFormat) {
             this.logError(importProcess, columnNo, value, "Invalid format number.");
         }
     }
@@ -681,13 +686,13 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private Long convertVal(String value) {
         String CHARACTER_COLON = ":";
         if (!value.contains(CHARACTER_COLON)) {
-            throw new RuntimeException("Actual value time invalid format.");
+            throw new BusinessException(new RawErrorMessage("Invalid format time."));
         }
         String[] arr = value.split(CHARACTER_COLON);
         Integer HOUR = 60;
         Long numberHour = Long.parseLong(arr[0]);
-        Long numberminute = Long.parseLong(arr[1]);
-        return numberHour * HOUR + numberminute;
+        Long numberMinute = Long.parseLong(arr[1]);
+        return numberHour * HOUR + numberMinute;
     }
     
     /**

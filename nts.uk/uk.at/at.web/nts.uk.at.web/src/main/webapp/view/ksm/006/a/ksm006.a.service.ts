@@ -21,7 +21,7 @@ module nts.uk.at.view.ksm006.a {
             findClassifySetting: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/findSetting',
             
             // Find WorkTypeCode List
-            findWorktypeCodeList: 'ctx/at/share/worktype/findSelectAble',
+            findWorktypeCodeList: 'at/share/worktype/findSelectAble',
             
             // Find WorkTimeCode List
             findWorktimeCodeList: 'at/shared/worktime/findByCompanyID'
@@ -106,7 +106,7 @@ module nts.uk.at.view.ksm006.a {
          * Find WorktypeCode List
          */
         export function findWorktypeCodeList(command: Array<number>): JQueryPromise<any> {
-            let data = {workStyleLst: command}
+            let data = {workStyleLst: command};
             return nts.uk.request.ajax(paths.findWorktypeCodeList, data);
         }
         

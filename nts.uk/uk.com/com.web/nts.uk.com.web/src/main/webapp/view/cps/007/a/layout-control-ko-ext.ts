@@ -23,7 +23,7 @@ module nts.custombinding {
         $tmp = $(`<div>
                 <style type="text/css" rel="stylesheet">
                     .layout-control.editable{
-                        width: 1000px;
+                        width: 1025px;
                     }
                     .layout-control .left-area,
                     .layout-control .right-area,
@@ -80,7 +80,7 @@ module nts.custombinding {
                     .layout-control .drag-panel {
                         border: 1px solid #ccc;
                         border-radius: 10px;
-                        width: 572px;
+                        width: 597px;
                         height: 615px;
                         padding: 10px;
                         box-sizing: border-box;
@@ -121,14 +121,18 @@ module nts.custombinding {
                         vertical-align: top;
                     }
 
-                    .layout-control .item-classification div.set-item {
+                    .layout-control .item-classification div.set-item-list,
+                    .layout-control .item-classification div.multiple-items {
+                        margin-left: 5px;
+                    }
+
+                    .layout-control .item-classification div.set-item-list div.set-item {
                         display: inline-block;
                     }
 
                     .layout-control .item-classification div.item-controls table,
                     .layout-control .item-classification div.item-controls table th,
                     .layout-control .item-classification div.item-controls table td {
-                        width: 380px;
                         border: 1px solid #ccc;
                     }
 
@@ -169,7 +173,7 @@ module nts.custombinding {
                     }
 
                     .layout-control .item-classification .form-label {
-                        width: 100px;
+                        width: 125px;
                         line-height: 37px;
                         white-space: nowrap;
                     }
@@ -231,7 +235,7 @@ module nts.custombinding {
                                 </div>
                                 <div data-bind="if: $data.layoutItemType == 1" class="item-controls">
                                     <div data-bind="ntsFormLabel: {}, text: className"></div>
-                                    <div data-bind="let: { items: listItemDf }">
+                                    <div data-bind="let: { items: listItemDf }" class="multiple-items">
                                         <table>
                                             <thead>
                                                 <tr data-bind="foreach: items">

@@ -22,10 +22,6 @@ public class ApplicationDto {
 	 */
 	private int prePostAtr; 
 
-	/**
-	 * 事後申請を自動生成する
-	 */
-	private int autoPostApplication; 
 
 	/**
 	 * 入力日
@@ -105,8 +101,7 @@ public class ApplicationDto {
 		return new ApplicationDto(
 				domain.getCompanyID(),
 				domain.getApplicationID(),
-				domain.getPrePostAtr().value, 
-				domain.getAutoPostApplication().value, 
+				domain.getPrePostAtr().value,
 				domain.getInputDate(), 
 				domain.getEnteredPersonSID(), 
 				domain.getReversionReason().v(), 
