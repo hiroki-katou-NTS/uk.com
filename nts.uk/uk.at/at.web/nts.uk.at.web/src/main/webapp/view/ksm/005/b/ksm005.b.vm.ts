@@ -392,7 +392,7 @@ module nts.uk.at.view.ksm005.b {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload pa    
-                        self.reloadPage(self.monthlyPatternModel().code(), false);
+                        self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     });
                 }).fail(function(error) {
                     // show message

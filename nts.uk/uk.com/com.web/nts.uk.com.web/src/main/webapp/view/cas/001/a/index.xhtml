@@ -76,11 +76,11 @@
 					<div id="roleConfigArea" data-bind="with:currentRole">
 
 						<div class="div_line" style="margin-top: 0px;">
-							<div class="float_left">
-								<div
+							<div class="float_left display_flex">
+								<div 
 									data-bind="ntsFormLabel: { required:true,constraint:'RoleName' }">#{i18n.getText('CAS001_12')}</div>
-								<span data-bind="text:roleCode"></span> <span
-									data-bind="text:roleName"></span>
+								<span id="A3_002" data-bind="text:roleCode"></span> 
+								<span id="A3_003" data-bind="text:roleName"></span>
 							</div>
 							<div class="float_left" data-bind="with:$parent">
 								<button id="A3_004" data-bind="click:OpenDModal">#{i18n.getText('CAS001_13')}</button>

@@ -11,23 +11,23 @@ public interface RelationshipRepository {
 	 * @param companyId
 	 * @return
 	 */
-	List<Relationship> getAll(String companyId);
+	List<Relationship> findAll(String companyId);
 	/**
 	 * author: Hoang Yen
 	 * @param relationship
 	 */
-	void updateRelationship(Relationship relationship);
+	void update(Relationship relationship);
 	/**
 	 * author: Hoang Yen
 	 * @param relationship
 	 */
-	void insertRelationship(Relationship relationship);
+	void insert(Relationship relationship);
 	/**
 	 * author: Hoang Yen
 	 * @param companyId
 	 * @param relationshipCd
 	 */
-	void deleteRelationship(String companyId, String relationshipCd);
+	void delete(String companyId, String relationshipCd);
 	/**
 	 * 
 	 * @param companyId

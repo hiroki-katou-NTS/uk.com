@@ -8,6 +8,6 @@ import lombok.Value;
  */
 @Value
 public class RelationshipDto {
-	private String relationshipCd;
+	private String relationshipCode;
 	private String relationshipName;
 }

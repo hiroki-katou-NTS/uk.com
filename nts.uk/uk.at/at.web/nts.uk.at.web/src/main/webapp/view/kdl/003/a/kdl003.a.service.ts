@@ -28,7 +28,11 @@ module nts.uk.at.view.kdl003.a {
             return nts.uk.request.ajax(paths.findByTime, command);
         }
         export function isWorkTimeSettingNeeded(workTypeCode: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.isWorkTimeSettingNeeded + '/' + workTypeCode);
+            //return nts.uk.request.ajax(paths.isWorkTimeSettingNeeded + '/' + workTypeCode);
+            let dfd = $.Deferred();
+            let random = Math.floor(Math.random() * 3);
+            dfd.resolve(random);
+            return dfd.promise();
         }
         export module model {
         }

@@ -9,9 +9,11 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkAppApprovalRootRepository;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfdtAppover;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfdtApprovalPhase;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfdtBranch;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfdtComApprovalRoot;
@@ -35,6 +37,9 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	private final String SELECT_FROM_APPHASE = "SELECT c FROM WwfdtApprovalPhase c"
 			+ " WHERE c.wwfdtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfdtApprovalPhasePK.branchId = :branchId";
+	private final String SELECT_FROM_APPROVER = "SELECT c FROM WwfdtAppover c"
+			+ " WHERE c.wwfdtAppoverPK.companyId = :companyId"
+			+ " AND c.wwfdtAppoverPK.approvalPhaseId = :approvalPhaseId";
 		
 	private static CompanyApprovalRoot toDomainComApR(WwfdtComApprovalRoot entity){
 		val domain = CompanyApprovalRoot.createSimpleFromJavaType(entity.wwfdtComApprovalRootPK.companyId,
@@ -76,7 +81,22 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 				entity.orderNumber);
 		return domain;
 	}
-	
+	private static Approver toDomainApprover(WwfdtAppover entity){
+		val domain = Approver.createSimpleFromJavaType(entity.wwfdtAppoverPK.companyId,
+				entity.wwfdtAppoverPK.approvalPhaseId,
+				entity.jobId,
+				entity.employeeId,
+				entity.orderNumber,
+				entity.approvalAtr,
+				entity.confirmPerson);
+		return domain;
+	}
+	/**
+	 * get all Person Approval Root
+	 * @param companyId
+	 * @param employeeId
+	 * @return
+	 */
 	@Override
 	public List<PersonApprovalRoot> getAllPsApprovalRoot(String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_FROM_PSAPR, WwfdtPsApprovalRoot.class)
@@ -84,12 +104,24 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 				.setParameter("employeeId", employeeId)
 				.getList(c->toDomainPsApR(c));
 	}
+	/**
+	 * get All Company Approval Root
+	 * @param companyId
+	 * @return
+	 */
 	@Override
 	public List<CompanyApprovalRoot> getAllComApprovalRoot(String companyId) {
 		return this.queryProxy().query(SELECT_FROM_COMAPR, WwfdtComApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.getList(c->toDomainComApR(c));
 	}
+	/**
+	 * get Approval Branch
+	 * @param companyId
+	 * @param branchId
+	 * @param number
+	 * @return
+	 */
 	@Override
 	public Optional<ApprovalBranch> getApprovalBranch(String companyId, String branchId, int number) {
 		return this.queryProxy().query(SELECT_FROM_APBRANCH,WwfdtBranch.class)
@@ -97,13 +129,31 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 				.setParameter("branchId", branchId)
 				.getSingle(c->toDomainBranch(c));
 	}
-
+	/**
+	 * get All Approval Phase by Code
+	 * @param companyId
+	 * @param branchId
+	 * @return
+	 */
 	@Override
 	public List<ApprovalPhase> getAllApprovalPhasebyCode(String companyId, String branchId) {
 		return this.queryProxy().query(SELECT_FROM_APPHASE,WwfdtApprovalPhase.class)
 				.setParameter("companyId", companyId)
 				.setParameter("branchId", branchId)
 				.getList(c->toDomainApPhase(c));
+	}
+	/**
+	 * get All Approver By Code
+	 * @param companyId
+	 * @param approvalPhaseId
+	 * @return
+	 */
+	@Override
+	public List<Approver> getAllApproverByCode(String companyId, String approvalPhaseId) {
+		return this.queryProxy().query(SELECT_FROM_APPROVER, WwfdtAppover.class)
+				.setParameter("companyId", companyId)
+				.setParameter("approvalPhaseId", approvalPhaseId)
+				.getList(c -> toDomainApprover(c));
 	}
 
 

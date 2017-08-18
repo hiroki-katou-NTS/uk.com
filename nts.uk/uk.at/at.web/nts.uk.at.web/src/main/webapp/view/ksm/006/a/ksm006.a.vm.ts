@@ -42,7 +42,7 @@ module nts.uk.at.view.ksm006.a {
             isUpdateModeClassify: KnockoutObservable<boolean>;
             workplaceName: KnockoutObservable<string>;
             classificationName: KnockoutObservable<string>;
-            
+            selectableCodes: KnockoutObservableArray<number>;
             
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -122,6 +122,7 @@ module nts.uk.at.view.ksm006.a {
                 
                 self.workplaceName = ko.observable(null);
                 self.classificationName = ko.observable(null);
+                self.selectableCodes = ko.observableArray([WorkStyle.MORNING_BREAK, WorkStyle.AFTERNOON_BREAK, WorkStyle.ONE_DAY_WORK]);
             }
             
             /**
@@ -253,8 +254,17 @@ module nts.uk.at.view.ksm006.a {
              */
             registerByCompany(): void { 
                 var self = this;
-                service.saveCompanyBasicWork(self.collectCompanyData()).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                service.saveCompanyBasicWork(self.collectCompanyData()).done(function(data) {
+                    if (data.length > 0) {
+//                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
+                        var message = "";
+                        data.stream().forEach(function(item, index) {
+                           message += item + "\n"; 
+                        });
+                        nts.uk.ui.dialog.info(message);
+                    } else {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
@@ -272,16 +282,25 @@ module nts.uk.at.view.ksm006.a {
                 }
                     //TODO: wait for QA#84782 Check Worktype, Pair WorkType-WorkingHours
                 
-                service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function() {
-                    var existItem = self.workplaceAlreadySetList().filter((item) => {
+                service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
+                    if (data.length > 0) {
+                        //                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
+                        var message = "";
+                        data.stream().forEach(function(item, index) {
+                            message += item + "\n";
+                        });
+                        nts.uk.ui.dialog.info(message);
+                    } else {
+                        var existItem = self.workplaceAlreadySetList().filter((item) => {
                             return item.workplaceId == self.workplaceGrid.selectedWorkplaceId();
                         })[0];
-                    // Set AlreadySetting
-                    if (!existItem) {
-                        self.workplaceAlreadySetList.push(new UnitAlreadySettingModel(self.selectedWorkplaceId(), true));
+                        // Set AlreadySetting
+                        if (!existItem) {
+                            self.workplaceAlreadySetList.push(new UnitAlreadySettingModel(self.selectedWorkplaceId(), true));
+                        }
+
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
-                    
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -298,17 +317,27 @@ module nts.uk.at.view.ksm006.a {
                      nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
-                service.saveClassifyBasicWork(self.collectClassifyData()).done(function() { 
-                    // Check if exist alreadysetting of selectedItem
-                    var existItem = self.classifiAlreadySetList().filter((item) => {
-                        return item.code == self.classificationGrid.selectedCode();
-                    })[0];
-                    // Set AlreadySetting
-                    if (!existItem) {
-                        self.classifiAlreadySetList.push({ "code": self.selectedClassifi(), "isAlreadySetting": true });  
+                service.saveClassifyBasicWork(self.collectClassifyData()).done(function(data) {
+                    if (data.length > 0) {
+                        //                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
+                        var message = "";
+                        data.stream().forEach(function(item, index) {
+                            message += item + "\n";
+                        });
+                        nts.uk.ui.dialog.info(message);
+                    } else {
+                        // Check if exist alreadysetting of selectedItem
+                        var existItem = self.classifiAlreadySetList().filter((item) => {
+                            return item.code == self.classificationGrid.selectedCode();
+                        })[0];
+                        // Set AlreadySetting
+                        if (!existItem) {
+                            self.classifiAlreadySetList.push({ "code": self.selectedClassifi(), "isAlreadySetting": true });
+                        }
+
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
-                                   
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
@@ -613,13 +642,14 @@ module nts.uk.at.view.ksm006.a {
             /**
              * Go to KDL003 
              */
-            public gotoDialog(): void {
-               let self = this;
+            public gotoDialog(data, enumVal: number): void {
+                let self = this;
+                var typecodes = [];
                 nts.uk.ui.windows.setShared('parentCodes', {
                     selectedWorkTypeCode: self.worktypeCode,
                     selectedWorkTimeCode: self.workingCode,
-                    workTypeCodes: self.selectableWorktypeList,
-                    workTimeCodes: self.selectableWorkingList
+                    workTypeCodes: service.findWorktypeCodeList(typecodes),
+                    workTimeCodes: service.findWorktimeCodeList()
                 }, true);
                 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
@@ -644,6 +674,15 @@ module nts.uk.at.view.ksm006.a {
                     
                 });
             }
+        }
+        /**
+             * Class WorkStyle
+             */
+        export class WorkStyle {
+            static ONE_DAY_REST = 0;
+            static MORNING_BREAK = 1;
+            static AFTERNOON_BREAK = 2;
+            static ONE_DAY_WORK = 4;
         }
         
         /**

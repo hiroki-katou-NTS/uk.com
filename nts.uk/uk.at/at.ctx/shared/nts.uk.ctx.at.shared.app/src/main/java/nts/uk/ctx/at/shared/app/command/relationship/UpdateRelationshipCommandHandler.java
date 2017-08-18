@@ -10,6 +10,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
+/**
+ * update relationship command handler
+ * @author yennth
+ *
+ */
 @Stateless
 public class UpdateRelationshipCommandHandler extends CommandHandler<UpdateRelationshipCommand> {
 	@Inject
@@ -17,11 +22,11 @@ public class UpdateRelationshipCommandHandler extends CommandHandler<UpdateRelat
 	@Override
 	protected void handle (CommandHandlerContext<UpdateRelationshipCommand> context){
 		String companyId = AppContexts.user().companyId();
-		Optional<Relationship> relationshipOld =  relaRep.getByCode(companyId, context.getCommand().getRelationshipCd());
+		Optional<Relationship> relationshipOld =  relaRep.getByCode(companyId, context.getCommand().getRelationshipCode());
 		if(!relationshipOld.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}
-		Relationship relationshipNew = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCd(), context.getCommand().getRelationshipName());
-		relaRep.updateRelationship(relationshipNew);
+		Relationship relationshipNew = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCode(), context.getCommand().getRelationshipName());
+		relaRep.update(relationshipNew);
 	}
 }

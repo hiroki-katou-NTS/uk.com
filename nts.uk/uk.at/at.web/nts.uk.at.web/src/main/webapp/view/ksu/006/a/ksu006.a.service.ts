@@ -30,10 +30,6 @@ module nts.uk.at.view.ksu006.a {
             return nts.uk.request.ajax(servicePath.validateFile, extractCondition);
         }
         
-        export function downloadDetailError(executeId: string): JQueryPromise<Array<model.ExternalBudgetLogModel>> {
-            return nts.uk.request.exportFile(paths.exportDetailError + "/" +  executeId);
-        }
-        
         /**
         * Model namespace.
         */
