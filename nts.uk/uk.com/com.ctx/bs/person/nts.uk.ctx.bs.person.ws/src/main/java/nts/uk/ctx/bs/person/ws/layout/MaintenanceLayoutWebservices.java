@@ -36,7 +36,8 @@ public class MaintenanceLayoutWebservices extends WebService {
 	@POST
 	@Path("findOne/{lid}")
 	public MaintenanceLayoutDto getLayoutById(@PathParam("lid") String lid) {
-		return mlayoutFinder.getDetails(lid);
+		 MaintenanceLayoutDto x = mlayoutFinder.getDetails(lid);
+		 return x;
 
 	}
 

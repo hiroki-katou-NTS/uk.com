@@ -58,7 +58,9 @@ public class UpdateBusinessTypeDailyCommandHandler extends CommandHandler<Update
 				.filter(item -> !attendanceItemIdInDBs.contains(item)).collect(Collectors.toList());
 
 		// remove all of data has removed in list attendanceId from UI
-		this.businessTypeFormatDailyRepository.deleteExistData(attendanceItemIdRemove);
+		if(!attendanceItemIdRemove.isEmpty()){
+			this.businessTypeFormatDailyRepository.deleteExistData(attendanceItemIdRemove);			
+		}
 
 		// List Data Update from UI compare DB (exist in DB)
 		List<BusinessTypeFormatDaily> businessTypeFormatDailyUpdates = command.getBusinessTypeFormatDetailDtos().stream()
@@ -75,7 +77,9 @@ public class UpdateBusinessTypeDailyCommandHandler extends CommandHandler<Update
 				}).collect(Collectors.toList());
 
 		// add all of data has added in list attendanceId
-		this.businessTypeFormatDailyRepository.add(businessTypeFormatDailyAdds);
+		if(!businessTypeFormatDailyAdds.isEmpty()){
+			this.businessTypeFormatDailyRepository.add(businessTypeFormatDailyAdds);			
+		}
 
 		// update data has changed in list attendanceId
 		businessTypeFormatDailyUpdates.forEach(f -> {

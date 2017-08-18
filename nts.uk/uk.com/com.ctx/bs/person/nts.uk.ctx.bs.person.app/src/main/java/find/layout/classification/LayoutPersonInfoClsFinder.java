@@ -3,6 +3,7 @@
  */
 package find.layout.classification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,11 +47,23 @@ public class LayoutPersonInfoClsFinder {
 							classDto.getDispOrder());
 
 					if (!listId.isEmpty()) {
-						List<PerInfoItemDefDto> listItemDef = itemDfFinder.getPerInfoItemDefByListId(listId);
-						classDto.setListItemDf(listItemDef);
-						
+						List<PerInfoItemDefDto> listItemDefDto = new ArrayList<PerInfoItemDefDto>();
+
+						List<PerInfoItemDefDto> listItemDef = itemDfFinder.getPerInfoItemDefByListIdForLayout(listId);
+
+						for (String id : listId) {
+							List<PerInfoItemDefDto> dto = listItemDef.stream().filter(p -> p.getId().equals(id))
+									.collect(Collectors.toList());
+
+							if (!dto.isEmpty()) {
+								listItemDefDto.add(dto.get(0));
+							}
+						}
+
+						classDto.setListItemDf(listItemDefDto);
+
 						if (classDto.getLayoutItemType() == 0) {
-							classDto.setClassName(listItemDef.get(0).getItemName());
+							classDto.setClassName(listItemDefDto.get(0).getItemName());
 						}
 					}
 

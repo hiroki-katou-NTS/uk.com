@@ -54,3 +54,24 @@
 	margin-top: 30px;
 	margin-left: 20px;
 }
+
+.person_left {
+	width: 40%;
+}
+
+.person_right {
+	width: 60%;
+}
+
+.employment_left {
+	width: 30%;
+}
+
+.employment_right {
+	width: 70%;
+}
+
+.contentkcp005 {
+	margin-top: 20px;
+	margin-left: 100px;
+}

@@ -11,6 +11,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
+/**
+ * insert relationship Command handler
+ * @author yennth
+ *
+ */
 @Stateless
 public class InsertRelationshipCommandHandler extends CommandHandler<InsertRelationshipCommand>{
 	@Inject
