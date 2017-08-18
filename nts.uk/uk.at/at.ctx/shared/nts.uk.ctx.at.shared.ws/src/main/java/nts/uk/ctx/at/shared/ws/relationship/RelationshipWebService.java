@@ -42,7 +42,7 @@ public class RelationshipWebService extends WebService{
 	 */
 	@POST
 	@Path("add")
-	public void insertRelationship(InsertRelationshipCommand command){
+	public void insert(InsertRelationshipCommand command){
 		this.add.handle(command);
 	}
 	/**
@@ -51,7 +51,7 @@ public class RelationshipWebService extends WebService{
 	 */
 	@POST
 	@Path("update")
-	public void updateRelationship(UpdateRelationshipCommand command){
+	public void update(UpdateRelationshipCommand command){
 		this.update.handle(command);
 	}
 	/**
@@ -60,7 +60,7 @@ public class RelationshipWebService extends WebService{
 	 */
 	@POST
 	@Path("delete")
-	public void deleteRelationship(DeleteRelationshipCommand command){
+	public void delete(DeleteRelationshipCommand command){
 		this.delete.handle(command);
 	}
 }
