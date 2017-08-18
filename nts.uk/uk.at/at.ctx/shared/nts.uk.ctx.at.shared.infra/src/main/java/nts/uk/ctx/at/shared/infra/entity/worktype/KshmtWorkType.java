@@ -15,30 +15,42 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="KMNMT_WORK_TYPE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmnmtWorkType extends UkJpaEntity implements Serializable{
+public class KshmtWorkType extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/*主キー*/
 	@EmbeddedId
-    public KmnmtWorkTypePK kmnmtWorkTypePK;
+    public KshmtWorkTypePK kmnmtWorkTypePK;
 	
-	/*ソート順*/
-	@Column(name = "SORT_ORDER")
-	public int sortOrder;
-	/*勤務種類記号名*/
-	@Column(name = "SYMBOLIC_NAME")
-	public String symbolicName;
 	/*勤務種類名称*/
 	@Column(name = "NAME")
 	public String name;
 	/*勤務種類略名*/
-	@Column(name = "ABBREVIATION_NAME")
+	@Column(name = "ABNAME")
 	public String abbreviationName;
+	/*勤務種類略名*/
+	@Column(name = "SYNAME")
+	public String symbolicName;
+	/*廃止区分*/
+	@Column(name = "ABOLISH_ATR")
+	public int abolishAtr;
 	/*勤務種類備考*/
 	@Column(name = "MEMO")
 	public String memo;
-	/*使用区分*/
-	@Column(name = "DISPLAY_ATR")
-	public int displayAtr;
+	/*並び順*/
+	@Column(name = "DISPLAYORDER")
+	public int displayOrder;
+	/*勤務の単位*/
+	@Column(name = "WORK_ATR")
+	public int workAtr;
+	/*  */
+	@Column(name = "ONE_DAY_CLS")
+	public int oneDayCls;
+	/*   */
+	@Column(name = "AFTERNOON_CLS")
+	public int afternoonCls;
+	/*   */
+	@Column(name = "MORNING_CLS")
+	public int morningCls;
 	
 	@Override
 	protected Object getKey() {
