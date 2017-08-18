@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 
 import entity.person.info.item.PpemtPerInfoItem;
 import entity.person.info.item.PpemtPerInfoItemCm;
@@ -35,6 +36,7 @@ import nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
 
 @Stateless
+@Transactional
 public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoItemDefRepositoty {
 
 	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
@@ -103,6 +105,11 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd"
 			+ " AND c.itemParentCd = :itemParentCd AND i.perInfoCtgId = :perInfoCtgId";
+
+	private final static String SELECT_REQUIRED_ITEMS_IDS = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i"
+			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
+			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.requiredAtr = 1 AND i.abolitionAtr = 0"
+			+ " AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)";
 
 	// private final static String SELECT_ITEM_SET_QUERY = "SELECT
 	// ic.ppemtPerInfoItemCmPK. FROM PpemtPerInfoItemCm ic"
@@ -201,6 +208,12 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 		return this.queryProxy().query(SELECT_ITEM_DISPORDER_BY_KEY_QUERY, Integer.class)
 				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("perInfoItemDefId", perInfoItemDefId)
 				.getSingle().orElse(0);
+	}
+
+	@Override
+	public List<String> getRequiredIds(String contractCd, String companyId) {
+		return queryProxy().query(SELECT_REQUIRED_ITEMS_IDS, String.class).setParameter("contractCd", contractCd)
+				.setParameter("companyId", companyId).getList();
 	}
 
 	private List<String> getChildIds(String contractCd, String perInfoCtgId, String parentCode) {

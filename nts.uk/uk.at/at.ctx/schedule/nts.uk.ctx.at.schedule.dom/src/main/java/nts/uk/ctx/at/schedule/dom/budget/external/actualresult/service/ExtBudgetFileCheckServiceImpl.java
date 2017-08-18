@@ -111,8 +111,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
             if (CollectionUtil.isEmpty(csvRecords)) {
                 return;
             }
-            int totalRecord = csvRecords.size() - startLine + 1;
-            if (totalRecord > MAX_RECORD) {
+            if (csvRecords.size() > MAX_RECORD) {
                 throw new BusinessException("Msg_168");
             }
             inputStream.close();

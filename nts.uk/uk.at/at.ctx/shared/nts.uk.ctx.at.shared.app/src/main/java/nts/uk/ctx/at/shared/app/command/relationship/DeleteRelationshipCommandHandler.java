@@ -17,12 +17,12 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DeleteRelationshipCommandHandler extends CommandHandler<DeleteRelationshipCommand>{
-	@Inject
+	@Inject	
 	private RelationshipRepository relaRep;
 	@Override
 	protected void handle (CommandHandlerContext<DeleteRelationshipCommand> context){
 		String companyId = AppContexts.user().companyId();
-		Optional<Relationship> relationshipOld = relaRep.getByCode(companyId, context.getCommand().getRelationshipCode());
+		Optional<Relationship> relationshipOld = relaRep.findByCode(companyId, context.getCommand().getRelationshipCode());
 		if(!relationshipOld.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}
