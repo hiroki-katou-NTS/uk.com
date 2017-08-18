@@ -28,10 +28,6 @@ public class Application extends DomainObject{
 	 */
 	private PrePostAtr prePostAtr;
 	/**
-	 * 事後申請を自動生成する
-	 */
-	private UseAtr autoPostApplication;
-	/**
 	 * 入力日
 	 */
 	private BigDecimal inputDate;
@@ -97,7 +93,6 @@ public class Application extends DomainObject{
 			String companyID,
 			String applicationID,
 			int prePostAtr,
-			int autoPostApplication,
 			BigDecimal inputDate, 
 			String enteredPersonSID, 
 			String reversionReason, 
@@ -116,8 +111,7 @@ public class Application extends DomainObject{
 		return new  Application(
 				companyID, 
 				applicationID, 
-				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class), 
-				EnumAdaptor.valueOf(autoPostApplication,UseAtr.class), 
+				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class),
 				inputDate, 
 				enteredPersonSID, 
 				new ApplicationReason(reversionReason), 
