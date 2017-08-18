@@ -20,6 +20,5 @@ public class KshstRelationshipPK implements Serializable{
 	/*コード*/
 	@Column(name = "RELATIONSHIP_CD")
 	@DBCharPaddingAs(RelationshipCode.class)
-	public String relationshipCd;
-	
+	public String relationshipCode;
 }

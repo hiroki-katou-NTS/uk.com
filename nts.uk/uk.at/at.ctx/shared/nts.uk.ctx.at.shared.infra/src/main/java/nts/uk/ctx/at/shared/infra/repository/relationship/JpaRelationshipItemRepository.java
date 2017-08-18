@@ -26,14 +26,14 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	 */
 	private static Relationship toDomain(KshstRelationshipItem entity){
 		Relationship domain = Relationship.createFromJavaType(entity.kshstRelationshipPK.companyId,
-													entity.kshstRelationshipPK.relationshipCd, 
+													entity.kshstRelationshipPK.relationshipCode, 
 													entity.relationshipName);
 		return domain;
 	}
 	
 	private static KshstRelationshipItem toEntity(Relationship domain){
 		val entity = new KshstRelationshipItem();
-		entity.kshstRelationshipPK = new KshstRelationshipPK(domain.getCompanyId(), domain.getRelationshipCd().v());
+		entity.kshstRelationshipPK = new KshstRelationshipPK(domain.getCompanyId(), domain.getRelationshipCode().v());
 		entity.relationshipName = domain.getRelationshipName().v();
 		return entity;
 	}
@@ -44,7 +44,7 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	 * author: Hoang Yen
 	 */
 	@Override
-	public List<Relationship> getAll(String companyId) {
+	public List<Relationship> findAll(String companyId) {
 		return this.queryProxy().query(SELECT_ITEM, KshstRelationshipItem.class).setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 	/**
@@ -52,7 +52,7 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	 * author: Hoang Yen
 	 */
 	@Override
-	public void updateRelationship(Relationship relationship) {
+	public void update(Relationship relationship) {
 		KshstRelationshipItem entity = toEntity(relationship);
 		KshstRelationshipItem oldEntity = this.queryProxy().find(entity.kshstRelationshipPK, KshstRelationshipItem.class).get();
 		oldEntity.setRelationshipName(entity.relationshipName);
@@ -63,7 +63,7 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	 * author: Hoang Yen
 	 */
 	@Override
-	public void insertRelationship(Relationship relationship) {
+	public void insert(Relationship relationship) {
 		this.commandProxy().insert(toEntity(relationship));		
 	}
 	/**
@@ -71,7 +71,7 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	 * author: Hoang Yen
 	 */
 	@Override
-	public void deleteRelationship(String companyId, String relationshipCd) {
+	public void delete(String companyId, String relationshipCd) {
 		KshstRelationshipPK kshstRelationshipPK = new KshstRelationshipPK(companyId, relationshipCd);
 		this.commandProxy().remove(KshstRelationshipItem.class, kshstRelationshipPK);
 	}

@@ -34,6 +34,12 @@ public class BasicScheduleWebService extends WebService {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
+	/**
+	 * Register data to BASIC_SCHEDULE
+	 * 
+	 * @param command
+	 * @return JavaTypeResult<List<String>>
+	 */
 	@POST
 	@Path("register")
 	public JavaTypeResult<List<String>> register(List<RegisterBasicScheduleCommand> command) {
@@ -43,7 +49,8 @@ public class BasicScheduleWebService extends WebService {
 	/**
 	 * Checks if is work time setting needed.
 	 *
-	 * @param workTypeCode the work type code
+	 * @param workTypeCode
+	 *            the work type code
 	 * @return the int
 	 */
 	@POST

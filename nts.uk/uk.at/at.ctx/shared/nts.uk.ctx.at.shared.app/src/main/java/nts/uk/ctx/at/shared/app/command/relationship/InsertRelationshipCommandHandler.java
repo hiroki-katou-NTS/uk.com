@@ -11,6 +11,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
+/**
+ * insert relationship Command handler
+ * @author yennth
+ *
+ */
 @Stateless
 public class InsertRelationshipCommandHandler extends CommandHandler<InsertRelationshipCommand>{
 	@Inject
@@ -18,12 +23,12 @@ public class InsertRelationshipCommandHandler extends CommandHandler<InsertRelat
 	@Override
 	protected void handle(CommandHandlerContext<InsertRelationshipCommand> context){
 		String companyId = AppContexts.user().companyId();
-		Relationship relationship = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCd(),
+		Relationship relationship = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCode(),
 																	context.getCommand().getRelationshipName());
-		Optional<Relationship> relationshipOld = relashipRep.getByCode(companyId, context.getCommand().getRelationshipCd());
+		Optional<Relationship> relationshipOld = relashipRep.getByCode(companyId, context.getCommand().getRelationshipCode());
 		if(relationshipOld.isPresent()){
 			throw new BusinessException("Msg_3");
 		}
-		relashipRep.insertRelationship(relationship);
+		relashipRep.insert(relationship);
 	}
 }
