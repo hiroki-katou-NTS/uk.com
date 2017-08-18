@@ -32,13 +32,13 @@
 							<div>Start date: <label data-bind="text: dateValue().startDate"></label> <input data-bind="ntsTimeEditor: {value: startDateString}"/></div>
 							<div>End date: <label data-bind="text: dateValue().endDate"></label> <input data-bind="ntsTimeEditor: {value: endDateString}"/></div>
 						</div>
-						<div id="daterangepicker" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>
+						<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>
 						<br/>
 						<br/>
-						<div id="daterangepicker2" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear'}"/>
+						<div id="daterangepicker2" tabindex="2" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear'}"/>
 						<br/>
 						<br/>
-						<div id="daterangepicker2" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear', type: 'yearmonth'}"/>
+						<div id="daterangepicker3" tabindex="3" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear', type: 'yearmonth'}"/>
 						<br />					
 						<article class="cf">
 							<div class="tabs">
@@ -49,7 +49,7 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="daterangepicker" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>]]></pre>
+<pre><![CDATA[<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
