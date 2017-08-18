@@ -573,6 +573,8 @@ module nts.custombinding {
                         }
                     });
                 } else { // get item by group
+                    // change text in add-button to [グループを追加　→]
+                    $(ctrls.button).text(text('CPS007_20'));
                     services.getGroups().done((data: Array<IItemGroup>) => {
                         if (data && data.length) {
                             // map Array<IItemGroup> to Array<IItemDefinition>
