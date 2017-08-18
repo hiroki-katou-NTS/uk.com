@@ -3,6 +3,7 @@ module cps008.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
+    import Text = nts.uk.resource.getText
 
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
@@ -119,8 +120,10 @@ module cps008.a.viewmodel {
                 self.start(data.code);
 
             }).fail((error: any) => {
+                if (error.message == 'Msg_3') {
+                    showDialog.alert(Text('Msg_3'));
+                }
 
-                showDialog.alert(nts.uk.resource.getText('Msg_3'));
 
             });
         }
@@ -163,6 +166,12 @@ module cps008.a.viewmodel {
                     // call saveData service
                     service.saveData(command).done(() => {
                         self.start(_data.code);
+                    }).fail((error: any) => {
+                        if (error.message == 'Msg_3') {
+                            showDialog.alert(Text('Msg_3'));
+                        }
+
+
                     });
 
                 }
@@ -174,9 +183,20 @@ module cps008.a.viewmodel {
                 data: ILayout = ko.toJS(self.layout);
 
             data.action = LAYOUT_ACTION.REMOVE;
-            // call service remove
-            service.saveData(data).done(() => {
-                self.start();
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+
+                // call service remove
+                service.saveData(data).done(() => {
+                    self.start();
+                }).fail((error: any) => {
+                    if (error.message == 'Msg_16') {
+                        showDialog.alert(Text('Msg_16'));
+                    }
+                });
+
+            }).ifCancel(() => {
+
             });
         }
 
@@ -188,12 +208,18 @@ module cps008.a.viewmodel {
             modal('../b/index.xhtml').onClosed(() => {
                 let dto: Array<any> = getShared('CPS008B_VALUE');
 
-                layout.classifications.removeAll();
+
                 if (dto && dto.length) {
+                    layout.classifications.removeAll();
                     _.each(dto, x => layout.classifications.push(x));
                     layout.action(LAYOUT_ACTION.UPDATE);
-                    console.log(layout);
+                    self.saveDataLayout();
+                } else if (dto.length == 0) {
+                    layout.classifications.removeAll();
+                    self.saveDataLayout();
                 }
+
+
             });
         }
 
