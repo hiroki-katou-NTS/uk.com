@@ -9,11 +9,11 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class UsageClassification.
+ * The Class UsageSetting.
  */
 // 目安利用区分
 @Getter
-public class UsageClassification extends DomainObject {
+public class UsageSetting extends DomainObject {
 
 	/** The company id. */
 	// 会社ID
@@ -23,7 +23,31 @@ public class UsageClassification extends DomainObject {
 	// 雇用利用設定
 	private UseClassification employmentSetting;
 
-	/** The personal usage setting. */
+	/** The personal setting. */
 	// 個人利用設定
 	private UseClassification personalSetting;
+
+	/**
+	 * Instantiates a new usage setting.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public UsageSetting(UsageSettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.employmentSetting = memento.getEmploymentSetting();
+		this.personalSetting = memento.getPersonalSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(UsageSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setEmploymentSetting(this.employmentSetting);
+		memento.setPersonalSetting(this.personalSetting);
+	}
 }
