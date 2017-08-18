@@ -123,7 +123,7 @@ public class WorkTypeFinder {
 		
 		WorkType workType = opWorkType.get();
 		
-		if(workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)){
+		if(workType.getWorkAtr().equals(WorkTypeUnit.OneDay)){
 			
 		}
 	}
