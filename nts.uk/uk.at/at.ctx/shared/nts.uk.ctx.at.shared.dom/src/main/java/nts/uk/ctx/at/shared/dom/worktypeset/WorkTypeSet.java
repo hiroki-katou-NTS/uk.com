@@ -3,8 +3,8 @@ package nts.uk.ctx.at.shared.dom.worktypeset;
 import java.util.UUID;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 
 @Getter
@@ -14,7 +14,7 @@ public class WorkTypeSet {
 
 	private WorkTypeCode workTypeCd;
 	
-	private WorkAtr workAtr;
+	private WorkTypeUnit workAtr;
 	
 	private Boolean digestPublicHd;
 	
