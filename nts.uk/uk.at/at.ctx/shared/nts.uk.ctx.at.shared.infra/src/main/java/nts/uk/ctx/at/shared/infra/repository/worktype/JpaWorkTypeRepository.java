@@ -72,4 +72,16 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.map(x -> toDomain(x));
 	}
 
+	@Override
+	public List<WorkType> findNotDeprecated(String companyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
