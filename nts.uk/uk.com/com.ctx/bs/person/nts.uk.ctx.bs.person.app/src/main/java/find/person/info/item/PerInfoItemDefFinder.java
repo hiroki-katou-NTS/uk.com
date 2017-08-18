@@ -79,6 +79,13 @@ public class PerInfoItemDefFinder {
 				}).collect(Collectors.toList());
 	};
 
+	// return list id of item definition if it's require;
+	public List<String> getRequiredIds() {
+		String companyId  = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
+		return this.pernfoItemDefRep.getRequiredIds(contractCd, companyId);
+	}
+
 	// mapping data from domain to DTO
 
 	private List<PerInfoItemDefDto> mappingItemAndOrder(List<PersonInfoItemDefinition> itemDefs,

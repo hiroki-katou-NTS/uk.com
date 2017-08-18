@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.LineStart;
 
 /**
  * The Class ExtBudgetExtractCondition.
@@ -24,7 +25,7 @@ public class ExtBudgetExtractCondition {
     private Integer encoding;
     
     /** The start line. */
-    private Integer startLine;
+    private LineStart startLine;
     
     /** The is override. */
     private Boolean isOverride;
