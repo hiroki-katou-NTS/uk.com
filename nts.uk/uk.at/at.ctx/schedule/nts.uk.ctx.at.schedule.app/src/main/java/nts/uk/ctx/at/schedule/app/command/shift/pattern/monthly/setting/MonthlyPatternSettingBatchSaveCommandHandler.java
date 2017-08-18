@@ -24,8 +24,11 @@ import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -35,6 +38,10 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class MonthlyPatternSettingBatchSaveCommandHandler
 		extends CommandHandler<MonthlyPatternSettingBatchSaveCommand> {
+	
+	/** The monthly pattern repository. */
+	@Inject
+	private MonthlyPatternRepository monthlyPatternRepository;
 	
 	/** The public holiday repository. */
 	@Inject
@@ -47,6 +54,11 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	/** The weekly work setting finder. */
 	@Inject
 	private WeeklyWorkSettingFinder weeklyWorkSettingFinder;
+	
+	
+	/** The Basic schedule service. */
+	@Inject
+	private BasicScheduleService basicScheduleService;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -63,6 +75,38 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// get command
 		MonthlyPatternSettingBatchSaveCommand command = context.getCommand();
+		
+
+		// check pair work days
+		basicScheduleService.checkPairWorkTypeWorkTime(command.getSettingWorkDays().getWorkTypeCode(),
+				command.getSettingWorkDays().getWorkingCode());
+
+		// check pair statutory holiday
+		basicScheduleService.checkPairWorkTypeWorkTime(
+				command.getSettingStatutoryHolidays().getWorkTypeCode(),
+				command.getSettingStatutoryHolidays().getWorkingCode());
+
+		// check pair none statutory holiday
+		basicScheduleService.checkPairWorkTypeWorkTime(
+				command.getSettingNoneStatutoryHolidays().getWorkTypeCode(),
+				command.getSettingNoneStatutoryHolidays().getWorkingCode());
+
+		// check pair public holiday
+		basicScheduleService.checkPairWorkTypeWorkTime(
+				command.getSettingPublicHolidays().getWorkTypeCode(),
+				command.getSettingPublicHolidays().getWorkingCode());
+
+		// find by id monthly pattern code
+		Optional<MonthlyPattern> opMonthlyPattern = this.monthlyPatternRepository
+				.findById(companyId, command.getMonthlyPatternCode());
+		
+		// check exist data 
+		if(opMonthlyPattern.isPresent()){
+			this.monthlyPatternRepository.update(command.toDomainMonthlyPattern(companyId));
+		}
+		else {
+			this.monthlyPatternRepository.add(command.toDomainMonthlyPattern(companyId));
+		}
 		
 		// startDate
 		Date toStartDate = this.toDate(command.getStartYearMonth() * MONTH_MUL + NEXT_DAY);

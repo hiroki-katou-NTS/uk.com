@@ -4,9 +4,9 @@ module nts.uk.pr.view.ksu006.c {
          *  Service paths
          */
         var paths: any = {
-            findCompletionList: "at/schedule/budget/external/find/completionenum",
-            
-            findAllExternalBudgetLog: "at/schedule/budget/external/findAll/log",
+            findCompletionList: "at/schedule/budget/external/log/find/completionenum",
+            findAllExternalBudgetLog: "at/schedule/budget/external/log/findAll/log",
+            exportDetailError: "at/schedule/budget/external/log/export",
         };
         
         export function findCompletionList(): JQueryPromise<Array<model.EnumerationModel>> {
@@ -15,6 +15,10 @@ module nts.uk.pr.view.ksu006.c {
         
         export function findAllExternalBudgetLog(query: any): JQueryPromise<Array<model.ExternalBudgetLogModel>> {
             return nts.uk.request.ajax(paths.findAllExternalBudgetLog, query);
+        }
+        
+        export function downloadDetailError(executeId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportDetailError + "/" +  executeId);
         }
 
         export module model {

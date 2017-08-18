@@ -18,8 +18,6 @@ module nts.uk.pr.view.ksu006.c {
             listColumn: KnockoutObservableArray<any>;
             rowSelected: KnockoutObservable<string>;
             
-            isBindingDone: boolean;
-            
             constructor() {
                 let self = this;
                 
@@ -33,7 +31,7 @@ module nts.uk.pr.view.ksu006.c {
                 self.dataLog = ko.observableArray([]);
                 self.listColumn = ko.observableArray([
                     { headerText: "", key: 'executeId', dataType: "string", hidden: true, formatter: _.escape},
-                    { headerText: nts.uk.resource.getText("KSU006_311"), key: 'startDate', width: 175, dataType: 'date', format: 'yyyy/MM/dd HH:MM:SS'},
+                    { headerText: nts.uk.resource.getText("KSU006_311"), key: 'startDate', width: 175, dataType: 'date', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_312"), key: 'endDate', width: 175, dataType: 'date', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_313"), key: 'extBudgetName', width: 150, dataType: 'string', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_314"), key: 'fileName', width: 200, dataType: 'string', formatter: _.escape},
@@ -41,33 +39,49 @@ module nts.uk.pr.view.ksu006.c {
                     { headerText: nts.uk.resource.getText("KSU006_316"), key: 'numberSuccess', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_317"), key: 'numberFail', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_318"), key: 'download', width: 100, dataType: 'string', formatter: _.escape,
-                        template: "{{if(${numberFail}) > 0}} <span style='text-decoration: underline;color: blue;'"
-                            + "data-bind='click: downloadDetailError(${executeId})' tabindex='7'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
+                        template: "{{if(${numberFail}) > 0}} <span id='download-log-${executeId}' style='text-decoration: underline;color: blue;'"
+                            + "data-execute='${executeId}' tabindex='7'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
                 ]);
                 self.rowSelected = ko.observable('');
                 
-                self.isBindingDone = false;
+                // Create Customs handle For event rened nts grid.
+                (<any>ko.bindingHandlers).rended = {
+                update: function(element: any, valueAccessor: any, allBindings: KnockoutAllBindingsAccessor,
+                    viewModel: any,bindingContext: KnockoutBindingContext) {
+                        let dataLog = ko.unwrap(valueAccessor());
+                        self.eventClick(dataLog);
+                    }
+                }
             }
 
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                $.when(self.loadCompletionList()).done(() => {
+                nts.uk.ui.block.invisible();
+                self.loadCompletionList().done(() => {
                     self.loadDataLog().done(() => {
+                        nts.uk.ui.block.clear();
                         dfd.resolve();
                     })
                 });
                 return dfd.promise();
             }
             
-            public downloadDetailError(executeId: string) {
+            public eventClick(dataLog: any) {
                 let self = this;
-                if (!self.isBindingDone) {
-                    return;
-                }
-                // TODO: pending screen B.
-                console.log(executeId);
-                console.log(self.dateRange().startDate);
+                let dfd = $.Deferred<void>();
+                _.forEach(self.dataLog(), item => {
+                    $('#download-log-' + item.executeId).on('click', function() {
+                        nts.uk.ui.block.grayout();
+                        service.downloadDetailError(item.executeId).done(function() {
+                            dfd.resolve();
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alertError(res.message);
+                        }).always(function(res) {
+                            nts.uk.ui.block.clear();
+                        });
+                  });
+                });
             }
             
             public search() {

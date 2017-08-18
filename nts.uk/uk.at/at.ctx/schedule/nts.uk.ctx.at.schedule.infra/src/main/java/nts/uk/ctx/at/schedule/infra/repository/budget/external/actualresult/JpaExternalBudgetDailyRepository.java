@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetDaily;
@@ -44,6 +45,20 @@ public class JpaExternalBudgetDailyRepository extends JpaRepository implements E
         this.commandProxy().update(this.toEntity(domain));
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetDailyRepository#isExisted(java.lang.String,
+     * nts.arc.time.GeneralDate, java.lang.String)
+     */
+    @Override
+    public boolean isExisted(String workplaceId, GeneralDate actualDate, String extBudgetCd) {
+        Optional<KscdtExtBudgetDaily> optional = this.queryProxy()
+                .find(new KscdtExtBudgetDailyPK(workplaceId, actualDate, extBudgetCd), KscdtExtBudgetDaily.class);
+        return optional.isPresent();
+    }
+    
     /**
      * To entity.
      *
@@ -67,4 +82,5 @@ public class JpaExternalBudgetDailyRepository extends JpaRepository implements E
         domain.saveToMemento(memento);
         return entity;
     }
+
 }

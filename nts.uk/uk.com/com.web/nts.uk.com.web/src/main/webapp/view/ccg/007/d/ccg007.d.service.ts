@@ -4,18 +4,23 @@ module nts.uk.pr.view.ccg007.d {
 
         // Service paths.
         var servicePath = {
-            getContractAuth: "ctx/sys/gateway/login/checkcontract1",
-            submitLogin: "ctx/sys/gateway/login/submit/form1",
+            checkContract: "ctx/sys/gateway/login/checkcontract",
+            submitLogin: "ctx/sys/gateway/login/submit/form3",
             getAllCompany: "ctx/sys/gateway/login/getcompany",
+            getEmployeeLoginSetting: "ctx/sys/gateway/login/emlogsettingform3",
         }
 
         /**
-          * Function is used to copy new Top Page.
-          */
-        export function getLoginForm(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getContractAuth);
+         * Function is used to copy new Top Page.
+         */
+        export function checkContract(data: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.checkContract, data);
         }
 
+        export function getEmployeeLoginSetting(contractCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getEmployeeLoginSetting + "/" + contractCode);
+        }
+        
         /**
           * Function is used to copy new Top Page.
           */
@@ -26,10 +31,10 @@ module nts.uk.pr.view.ccg007.d {
         /**
           * Function is used to copy new Top Page.
           */
-        export function getAllCompany(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getAllCompany);
+        export function getAllCompany(contractCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getAllCompany+"/"+ contractCode);
         }
-        
+
         export interface SystemConfigDto {
             installForm: number;
         }

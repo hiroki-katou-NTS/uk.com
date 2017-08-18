@@ -1,7 +1,7 @@
 module ksu001.o.viewmodel {
+    import alert = nts.uk.ui.dialog.alert;
 
     export class ScreenModel {
-
         listWorkType: KnockoutObservableArray<IWorkType>;
         listWorkTime: KnockoutObservableArray<IWorkTime>;
         itemName: KnockoutObservable<string>;
@@ -12,6 +12,7 @@ module ksu001.o.viewmodel {
         time2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
+        nameWorkTimeType: KnockoutObservable<any[]>;
 
         constructor() {
             let self = this;
@@ -34,13 +35,36 @@ module ksu001.o.viewmodel {
 
             self.findWorkType();
             self.findWorkTime();
-        }
 
-        start() {
-            let self = this;
-            var dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
+            //get name of workType and workTime
+            self.nameWorkTimeType = ko.pureComputed(() => {
+                let workTypeName, workTimeName: string;
+                if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
+                    let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
+                    if (d) {
+                        workTypeName = d.abbreviationName;
+                    } else {
+                        workTypeName = '';
+                    }
+
+                    let c = _.find(self.listWorkTime(), ['siftCd', self.selectedWorkTimeCode()]);
+                    if (c) {
+                        workTimeName = c.abName;
+                    } else {
+                        workTimeName = '';
+                    }
+                }
+                return [workTypeName, workTimeName];
+            });
+
+            self.nameWorkTimeType.subscribe(function(value) {
+                //Paste data into cell (set-sticker-single)
+                $("#extable").exTable("stickData", value);
+            });
+
+            $("#stick-undo").click(function() {
+                $("#extable").exTable("stickUndo");
+            });
         }
 
         /**
@@ -49,8 +73,8 @@ module ksu001.o.viewmodel {
         findWorkType(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.getWorkType().done(function(data: WorkType) {
-                if (data) {
+            service.getWorkType().done(function(data: WorkType[]) {
+                if (data.length > 0) {
                     _.each(data, function(wT) {
                         self.listWorkType.push(new WorkType({
                             workTypeCode: wT.workTypeCode,
@@ -63,6 +87,8 @@ module ksu001.o.viewmodel {
                         }));
                     });
                     //                    self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
+                } else {
+                    alert('Have not data of workType');
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -77,8 +103,8 @@ module ksu001.o.viewmodel {
         findWorkTime(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.getWorkTime().done(function(data) {
-                if (data) {
+            service.getWorkTime().done(function(data: WorkTime[]) {
+                if (data.length > 0) {
                     _.each(data, function(wT) {
                         self.listWorkTime.push(new WorkTime({
                             siftCd: wT.siftCd,
@@ -91,6 +117,8 @@ module ksu001.o.viewmodel {
                         }));
                     });
                     //                    self.selectedWorkTimeCode(self.listWorkTime()[0].siftCd);
+                } else {
+                    alert('Have not data of workTime');
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -160,7 +188,7 @@ module ksu001.o.viewmodel {
             this.methodAtr = params.methodAtr;
             this.displayAtr = params.displayAtr;
             this.note = params.note;
-            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1 + timeZone2 ' + '( ' + this.note + ' )';
+            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1  timeZone2 ' + '( ' + this.note + ' )';
         }
     }
 }

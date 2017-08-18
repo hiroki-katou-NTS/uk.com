@@ -18,18 +18,18 @@ public class BusinessType extends AggregateRoot {
 	/**
 	 * padding left "0"
 	 */
-	private BusinessTypeCode workTypeCode;
+	private BusinessTypeCode businessTypeCode;
 	
-	private BusinessTypeName workTypeName;
+	private BusinessTypeName businessTypeName;
 
-	public BusinessType(String companyId, BusinessTypeCode workTypeCode, BusinessTypeName workTypeName) {
+	public BusinessType(String companyId, BusinessTypeCode businessTypeCode, BusinessTypeName businessTypeName) {
 		super();
 		this.companyId = companyId;
-		this.workTypeCode = workTypeCode;
-		this.workTypeName = workTypeName;
+		this.businessTypeCode = businessTypeCode;
+		this.businessTypeName = businessTypeName;
 	}
 	
-	public static BusinessType createFromJavaType(String companyId, String workTypeCode, String workTypeName){
-		return new BusinessType(companyId, new BusinessTypeCode(workTypeCode), new BusinessTypeName(workTypeName));
+	public static BusinessType createFromJavaType(String companyId, String businessTypeCode, String businessTypeName){
+		return new BusinessType(companyId, new BusinessTypeCode(businessTypeCode), new BusinessTypeName(businessTypeName));
 	}	
 }

@@ -53,12 +53,13 @@ __viewContext.ready(function () {
             this.empId = empId;
             this.empName = empId;
             if (manual) {
+                let days = [ "日", "月", "火", "水", "木", "金", "土" ];
                 for (let i = -6; i <= 31; i++) {
                     if (i <= 0) {
                         let d = 31 + i;
-                        this["__" + d] = d;
+                        this["__" + d] = d + "<br/>" + days[7 + i === 7 ? 0 : 7 + i];
                     } else {
-                        this["_" + i] = "4/" + i;
+                        this["_" + i] = "4/" + i + "<br/>" + days[i % 7]; 
                     }
                 }
                 return;
@@ -76,7 +77,6 @@ __viewContext.ready(function () {
         }
     }
     
-    let days = [ "日", "月", "火", "水", "木", "金", "土" ];
     let detailHeaderDs = [];
     detailHeaderDs.push(new ExItem(undefined, true));
     detailHeaderDs.push({ empId: "", __25: "over", __26: "", __27: "", __28: "", __29: "", __30: "", __31: "",
@@ -113,13 +113,13 @@ __viewContext.ready(function () {
     }
     let middleHeaderDeco = [ new CellColor("over1", undefined, "small-font-size"), new CellColor("over2", undefined, "small-font-size")];
     let middleContentDeco = [];
-    let detailHeaderDeco = [ new CellColor("empId", 1, "ultra-small-font-size")];
+    let detailHeaderDeco = [ new CellColor("empId", 1, "small-font-size")];
     for (let i = -6; i < 32; i++) {
         if (i <= 0) {
             let d = 31 + i;
-            detailHeaderDeco.push(new CellColor("__" + d, 1, "ultra-small-font-size")) 
+            detailHeaderDeco.push(new CellColor("__" + d, 1, "medium-font-size")) 
         } else {
-            detailHeaderDeco.push(new CellColor("_" + i, 1, "ultra-small-font-size"));
+            detailHeaderDeco.push(new CellColor("_" + i, 1, "medium-font-size"));
         }
     }
     let detailContentDeco = []; 
@@ -219,7 +219,7 @@ __viewContext.ready(function () {
             iconWidth: "35px", control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); } }];
     let leftmostHeader = {
         columns: leftmostColumns,
-        rowHeight: "60px",
+        rowHeight: "75px",
         width: "160px"
     };
     let leftmostContent = {
@@ -234,7 +234,7 @@ __viewContext.ready(function () {
         }
     };
     let middleColumns = [
-        { headerText: "有資格者", key: "cert", width: "50px", handlerType: "tooltip", supplier: tts },
+        { headerText: "有資<br/>格者", key: "cert", width: "50px", handlerType: "tooltip", supplier: tts },
         { 
             headerText: "回数集計１",
             group: [
@@ -249,7 +249,7 @@ __viewContext.ready(function () {
         width: "200px",
         features: [{
             name: "HeaderRowHeight",
-            rows: { 0: "35px", 1: "25px" }   
+            rows: { 0: "50px", 1: "25px" }   
         }, {
             name: "HeaderCellStyle",
             decorator: middleHeaderDeco
@@ -276,7 +276,7 @@ __viewContext.ready(function () {
         width: "700px",
         features: [{
             name: "HeaderRowHeight",
-            rows: { 0: "35px", 1: "25px" }   
+            rows: { 0: "50px", 1: "25px" }   
         }, {
             name: "HeaderCellStyle",
             decorator: detailHeaderDeco
@@ -318,7 +318,7 @@ __viewContext.ready(function () {
     let leftHorzSumHeader = {
         columns: leftHorzColumns,
 //        dataSource: leftHorzHeaderDs,
-        rowHeight: "60px"
+        rowHeight: "75px"
     };
     let leftHorzSumContent = {
         columns: leftHorzColumns,
@@ -329,11 +329,11 @@ __viewContext.ready(function () {
     let horizontalSumHeader = {
         columns: detailColumns,
         dataSource: detailHeaderDs,
-        rowHeight: "30px",
-//        features: [{
-//            name: "HeaderRowHeight",
-//            rows: { 0: "35px", 1: "25px" }   
-//        }, {
+        features: [{
+            name: "HeaderRowHeight",
+            rows: { 0: "45px", 1: "30px" }   
+        }
+//        , {
 //            name: "HeaderCellStyle",
 //            decorator: detailHeaderDeco
 //        }, {
@@ -360,8 +360,8 @@ __viewContext.ready(function () {
         width: "200px",
         features: [{
             name: "HeaderRowHeight",
-            rows: { 0: "20px", 1: "40px" }   
-        }
+            rows: { 0: "30px", 1: "45px" }   
+        }]
     };
     let vertSumContent = {
         columns: vertSumColumns,
@@ -369,13 +369,13 @@ __viewContext.ready(function () {
         primaryKey: "empId"
     };
     new nts.uk.ui.exTable.ExTable($("#extable"), { 
-            headerHeight: "60px", bodyRowHeight: "50px", bodyHeight: "400px", 
-            horizontalSumHeaderHeight: "60px", horizontalSumBodyHeight: "200px",
+            headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "400px", 
+            horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "200px",
             horizontalSumBodyRowHeight: "20px",
             areaResize: true, 
             bodyHeightMode: "dynamic",
-            windowOccupation: 900,
-            updateMode: "edit",
+            windowOccupation: 120,
+            updateMode: "stick",
             pasteOverWrite: true,
             stickOverWrite: true,
             determination: {
@@ -386,7 +386,7 @@ __viewContext.ready(function () {
                 showBodyHeightButton: true,
                 click: function() {
                     alert("Show dialog");
-                } 
+                }
             }})
         .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
         .MiddleHeader(middleHeader).MiddleContent(middleContent)

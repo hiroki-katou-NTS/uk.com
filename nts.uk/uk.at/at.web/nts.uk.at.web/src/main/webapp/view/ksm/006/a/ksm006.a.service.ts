@@ -18,58 +18,104 @@ module nts.uk.at.view.ksm006.a {
             findClassifyBasicWork: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/find',
             saveClassifyBasicWork: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/save',
             removeClassifyBasicWork: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/remove',
-            findClassifySetting: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/findSetting'
+            findClassifySetting: 'ctx/at/schedule/shift/basicworkregister/classificationbasicwork/findSetting',
+            
+            // Find WorkTypeCode List
+            findWorktypeCodeList: 'ctx/at/share/worktype/findSelectAble',
+            
+            // Find WorkTimeCode List
+            findWorktimeCodeList: 'at/shared/worktime/findByCompanyID'
             
         };
 
-// Company        
+        /**
+         * Find CompanyBasicWork
+         */    
         export function findCompanyBasicWork(): JQueryPromise<model.CompanyBasicWorkFindDto> {
             return nts.uk.request.ajax(paths.findCompanyBasicWork);
         }
         
+        /**
+         * Save CompanyBasicWork
+         */
         export function saveCompanyBasicWork(command: Array<model.BasicWorkSettingDto>): JQueryPromise<any> {
             var data = {basicWorkSetting: command};
             return nts.uk.request.ajax(paths.saveCompanyBasicWork, data);
         }
         
-// Workplace        
+        /**
+         * Find WorkplaceBasicWork
+         */       
         export function findWorkplaceBasicWork(workplaceId: string): JQueryPromise<model.WorkplaceBasicWorkFindDto> {
             return nts.uk.request.ajax(paths.findWorkplaceBasicWork + "/" + workplaceId);
         }
         
+        /**
+         * Save WorkplaceBasicWork
+         */
         export function saveWorkplaceBasicWork(command: model.WorkplaceBasicWorkDto): JQueryPromise<any> {
             let data = {workplaceId: command.workplaceId, basicWorkSetting: command.basicWorkSetting}
             return nts.uk.request.ajax(paths.saveWorkplaceBasicWork, data);
         }
         
+        /**
+         * Remove WorkplaceBasicWork
+         */
         export function removeWorkplaceBasicWork(command: string): JQueryPromise<any> {
             let data = {workplaceId: command}
             return nts.uk.request.ajax(paths.removeWorkplaceBasicWork, data);
         }
         
+        /**
+         * Find WorkplaceSetting
+         */
         export function findWorkplaceSetting(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findWorkplaceSetting);
         }
         
-// Classification
+        /**
+         * Find ClassifyBasicWork
+         */
         export function findClassifyBasicWork(classifyCode: string): JQueryPromise<model.ClassifiBasicWorkFindDto> {
             return nts.uk.request.ajax(paths.findClassifyBasicWork + "/" + classifyCode);
         }
         
-         export function saveClassifyBasicWork(command: model.ClassificationBasicWorkDto): JQueryPromise<any> {
+        /**
+         * Save ClassifyBasicWork
+         */
+        export function saveClassifyBasicWork(command: model.ClassificationBasicWorkDto): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.saveClassifyBasicWork, command);
         }
         
+        /**
+         * Remove ClassifyBasicWork
+         */
         export function removeClassifyBasicWork(command: string): JQueryPromise<any> {
             let data = {classificationCode: command}
             return nts.uk.request.ajax(paths.removeClassifyBasicWork, data);
         }
         
+        /**
+         * Find ClassifySetting
+         */
         export function findClassifySetting(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findClassifySetting);
         }
         
+        /**
+         * Find WorktypeCode List
+         */
+        export function findWorktypeCodeList(command: Array<number>): JQueryPromise<any> {
+            let data = {workStyleLst: command}
+            return nts.uk.request.ajax(paths.findWorktypeCodeList, data);
+        }
         
+        /**
+         * Find WorkTimeCode List
+         */
+        export function findWorktimeCodeList(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findWorktimeCodeList);
+        }
 
         /**
         * Model namespace.

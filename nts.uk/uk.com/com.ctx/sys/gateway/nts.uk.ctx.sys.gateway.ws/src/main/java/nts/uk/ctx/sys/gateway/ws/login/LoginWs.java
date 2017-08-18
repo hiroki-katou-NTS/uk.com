@@ -4,22 +4,31 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ws.login;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
-import nts.uk.ctx.sys.gateway.app.find.login.LoginFormOneFinder;
-import nts.uk.ctx.sys.gateway.app.find.login.LoginFormTwoFinder;
-import nts.uk.ctx.sys.gateway.app.find.login.dto.CheckContractDto;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
+import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
+import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
+import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
+import nts.uk.ctx.sys.gateway.dom.adapter.CompanyInformationDto;
 
 /**
  * The Class LoginWs.
@@ -31,10 +40,13 @@ public class LoginWs extends WebService {
 
 	/** The login finder. */
 	@Inject
-	private LoginFormOneFinder loginFormOneFinder;
+	private LocalContractFormCommandHandler localContractFormCommandHandler;
 
 	@Inject
-	private LoginFormTwoFinder loginFormTwoFinder;
+	private EmployeeLoginSettingFinder employeeLoginSettingFinder;
+
+	@Inject
+	private SubmitContractFormCommandHandler submitContract;
 
 	@Inject
 	private SubmitLoginFormOneCommandHandler submitForm1;
@@ -43,7 +55,43 @@ public class LoginWs extends WebService {
 	private SubmitLoginFormTwoCommandHandler submitForm2;
 
 	@Inject
-	private SubmitContractFormCommandHandler submitContract;
+	private CompanyInformationFinder companyInformationFinder;
+
+	@Inject
+	private SubmitLoginFormThreeCommandHandler submitForm3;
+
+	/**
+	 * Find.
+	 *
+	 * @return the string
+	 */
+	@POST
+	@Path("checkcontract")
+	public CheckContractDto checkContractForm1(LocalContractFormCommand command) {
+		return this.localContractFormCommandHandler.handle(command);
+	}
+
+	/**
+	 * Find.
+	 *
+	 * @return the string
+	 */
+	@POST
+	@Path("emlogsettingform2/{contractCode}")
+	public EmployeeLoginSettingDto getEmployeeLoginSettingForm2(@PathParam("contractCode") String contractCode) {
+		return this.employeeLoginSettingFinder.findByContractCodeForm2(contractCode);
+	}
+
+	/**
+	 * Find.
+	 *
+	 * @return the string
+	 */
+	@POST
+	@Path("emlogsettingform3/{contractCode}")
+	public EmployeeLoginSettingDto getEmployeeLoginSettingForm3(@PathParam("contractCode") String contractCode) {
+		return this.employeeLoginSettingFinder.findByContractCodeForm3(contractCode);
+	}
 
 	/**
 	 * Find.
@@ -54,40 +102,6 @@ public class LoginWs extends WebService {
 	@Path("submitcontract")
 	public void submitContract(SubmitContractFormCommand command) {
 		this.submitContract.handle(command);
-	}
-	
-	/**
-	 * Find.
-	 *
-	 * @return the string
-	 */
-	@POST
-	@Path("getcompany")
-	public void getAllCompany() {
-		//TODO wait QA
-//		return null;
-	}
-
-	/**
-	 * Find.
-	 *
-	 * @return the string
-	 */
-	@POST
-	@Path("checkcontract1")
-	public CheckContractDto checkContractForm1() {
-		return this.loginFormOneFinder.getStartStatus();
-	}
-
-	/**
-	 * Find.
-	 *
-	 * @return the string
-	 */
-	@POST
-	@Path("checkcontract2")
-	public String checkContractForm2() {
-		return this.loginFormTwoFinder.getStartStatus();
 	}
 
 	/**
@@ -103,7 +117,7 @@ public class LoginWs extends WebService {
 	}
 
 	/**
-	 * Submit login form 1.
+	 * Submit login form 2.
 	 *
 	 * @param command
 	 *            the command
@@ -112,5 +126,29 @@ public class LoginWs extends WebService {
 	@Path("submit/form2")
 	public void submitLoginForm2(SubmitLoginFormTwoCommand command) {
 		this.submitForm2.handle(command);
+	}
+
+	/**
+	 * Gets the all company.
+	 *
+	 * @param contractCode the contract code
+	 * @return the all company
+	 */
+	@POST
+	@Path("getcompany/{contractCode}")
+	public List<CompanyInformationDto> getAllCompany(@PathParam("contractCode") String contractCode) {
+		return companyInformationFinder.findAllByContractCode(contractCode);
+	}
+
+	/**
+	 * Submit login form 3.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("submit/form3")
+	public void submitLoginForm3(SubmitLoginFormThreeCommand command) {
+		this.submitForm3.handle(command);
 	}
 }

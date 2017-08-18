@@ -155,7 +155,7 @@ module nts.uk.ui.koExtentions {
                 var code = e.keyCode || e.which;
                 if (!readonly && code.toString() !== '9') {
                     var newText = $input.val();
-                    var result = validator.validate(newText);
+                    var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
                     if (!result.isValid) {
                         $input.ntsError('set', result.errorMessage, result.errorCode);
@@ -167,7 +167,7 @@ module nts.uk.ui.koExtentions {
             $input.blur(() => {
                 if (!$input.attr('readonly')) {
                     var newText = $input.val();
-                    var result = validator.validate(newText);
+                    var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
                     if (!result.isValid) {
                         $input.ntsError('set', result.errorMessage, result.errorCode);
@@ -233,6 +233,19 @@ module nts.uk.ui.koExtentions {
             name = nts.uk.resource.getControlName(name);
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            if(data.constraint=="WorkplaceCode"){
+                return new validation.WorkplaceCodeValidator(name, constraintName, { required: required });
+            }
+            if(data.constraint=="DepartmentCode"){
+                return new validation.DepartmentCodeValidator(name, constraintName, { required: required });
+            }
+            if(data.constraint=="PostCode"){
+                return new validation.PostCodeValidator(name, constraintName, { required: required });
+            }
+            if(data.constraint=="PunchCardNo"){
+                return new validation.PunchCardNoValidator(name, constraintName, { required: required });
+            }
+
             return new validation.StringValidator(name, constraintName, { required: required });
         }
     }
@@ -397,7 +410,49 @@ module nts.uk.ui.koExtentions {
             return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
         }
     }
+    
+    /**
+     * TimeEditor Processor
+     */
+    class TimeWithDayAttrEditorProcessor extends EditorProcessor {
+        
+        init($input: JQuery, data: any) {
+            super.init($input, data);
+            $input.focus(() => {
+                if (!$input.attr('readonly')) {
+                    var selectionType = document.getSelection().type;
+                    // Remove separator (comma)
+                    let parsed = time.parseTime(data.value(), true);
+                    let value = parsed.success ? parsed.format() : data.value();
+                    $input.val(value);
+                    // If focusing is caused by Tab key, select text
+                    // this code is needed because removing separator deselects.
+                    if (selectionType === 'Range') {
+                        $input.select();
+                    }
+                }
+            });
+        }
+        
+        getDefaultOption(): any {
+            return new nts.uk.ui.option.TimeWithDayAttrEditorOption();
+        }
 
+        getFormatter(data: any): format.IFormatter {
+            var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            return new text.TimeWithDayFormatter(option);
+        }
+
+        getValidator(data: any): validation.IValidator {
+            //TODO: 
+            var name = data.name !== undefined ? ko.unwrap(data.name) : "";
+            name = nts.uk.resource.getControlName(name);
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            return new validation.TimeWithDayValidator(name, constraintName, { required: required });
+        }
+    }
+    
     /**
      * Base Editor
      */
@@ -498,9 +553,30 @@ module nts.uk.ui.koExtentions {
             new MultilineEditorProcessor().update($(element), valueAccessor());
         }
     }
+    
+    /**
+     * TimeWithDayAttr
+     */
+    class NtsTimeWithDayAttrEditorBindingHandler extends NtsEditorBindingHandler {
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new TimeWithDayAttrEditorProcessor().init($(element), valueAccessor());
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new TimeWithDayAttrEditorProcessor().update($(element), valueAccessor());
+        }
+    }
 
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
     ko.bindingHandlers['ntsMultilineEditor'] = new NtsMultilineEditorBindingHandler();
+    ko.bindingHandlers['ntsTimeWithDayEditor'] = new NtsTimeWithDayAttrEditorBindingHandler();
 }

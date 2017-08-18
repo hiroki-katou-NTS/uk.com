@@ -1,74 +1,198 @@
 module nts.uk.com.view.cas001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
-    import text = nts.uk.resource.getText;
+    import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog.info;
     export class ScreenModel {
+
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole(null));
         currentRoleId: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: '可' },
-            { code: '0', name: '不可' }
+            { code: 1, name: getText('Enum_PersonInfoPermissionType_YES') },
+            { code: 0, name: getText('Enum_PersonInfoPermissionType_NO') }
         ]);
         itemListCbb: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: '非表示' },
-            { code: 1, name: '参照のみ' },
-            { code: 2, name: '更新' }
+            { code: 1, name: getText('Enum_PersonInfoAuthTypes_HIDE') },
+            { code: 2, name: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+            { code: 3, name: getText('Enum_PersonInfoAuthTypes_UPDATE') }
         ]);
         anotherSelectedAll: KnockoutObservable<number> = ko.observable(1);
         seftSelectedAll: KnockoutObservable<number> = ko.observable(1);
+        currentCategoryId: KnockoutObservable<string> = ko.observable('');
+        allowPersonRef: KnockoutObservable<number> = ko.observable(1);
+        allowOtherRef: KnockoutObservable<number> = ko.observable(1);
+
+
+
+
         constructor() {
             let self = this;
             self.currentRoleId.subscribe(function(newRoleId) {
+
+                if (newRoleId == "") {
+                    return;
+                }
+
                 let newPersonRole = _.find(self.personRoleList(), function(role) { return role.roleId === newRoleId });
+
                 service.getPersonRoleAuth(newPersonRole.roleId).done(function(result: IPersonRole) {
+
                     newPersonRole.loadRoleCategoriesList(newPersonRole.roleId).done(function() {
+
                         newPersonRole.setRoleAuth(result);
+
                         self.currentRole(newPersonRole);
+                        self.currentRole().RoleCategoryList.valueHasMutated();
+                        if (self.currentRole().RoleCategoryList().length > 0) {
+
+                            self.currentCategoryId("");
+
+                            self.currentCategoryId(self.currentRole().RoleCategoryList()[0].categoryId);
+
+                        }
+                        else {
+                            dialog({ messageId: "Msg_364" });
+                        }
+
+                    });
+                });
+
+            });
+
+            self.currentCategoryId.subscribe(function(categoryId) {
+
+                if (categoryId == "") {
+                    return;
+                }
+
+                let newCategory = _.find(self.currentRole().RoleCategoryList(), function(roleCategory) {
+
+                    return roleCategory.categoryId === categoryId;
+
+                });
+
+                service.getCategoryAuth(self.currentRoleId(), categoryId).done(function(result: IPersonRoleCategory) {
+
+                    newCategory.loadRoleItems(self.currentRoleId(), categoryId).done(function() {
+
+                        newCategory.setCategoryAuth(result);
+
+                        self.currentRole().currentCategory(newCategory);
+
                     });
                 });
             });
-            self.seftSelectedAll.subscribe(function(newValue) {
-                for (let item of self.currentRole().currentCategory().roleItemList()) {
-                    item.SelfAuthority = newValue;
-                }
-                $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
+
+            //register click change all event
+            $(function() {
+                $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
+
+                    let parrentId = $(this).parent().attr('id');
+
+                    for (let item of self.currentRole().currentCategory().roleItemList()) {
+                        parrentId == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
+                    }
+
+                    $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
+
+                });
+            });
+
+            self.allowOtherRef.subscribe(function(newValue) {
+
 
             });
-            self.anotherSelectedAll.subscribe(function(newValue) {
-                for (let item of self.currentRole().currentCategory().roleItemList()) {
-                    item.OtherPeopleAuthority = newValue;
-                }
-                $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
+
+            self.allowPersonRef.subscribe(function(newValue) {
+
             });
         }
+
         OpenDModal() {
-            nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+
+            let self = this;
+
+            setShared('personRole', self.currentRole());
+
+            block.invisible();
+
+            nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                self.reload().done(function() {
+
+                    block.clear();
+
+                });
             });
         }
+
         OpenCModal() {
-            nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+
+            let self = this;
+
+            setShared('personRole', self.currentRole());
+
+            block.invisible();
+
+            nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                self.reload().done(function() {
+
+                    block.clear();
+
+                });
+
             });
         }
+
         InitializationItemGrid() {
             let self = this;
+
+            if ($("#item_role_table_body").data("igGrid") !== undefined) {
+                $("#item_role_table_body").igGrid({
+                    dataSource: [],
+                    //  columns: [],
+                    features: []
+                });
+
+                $("#item_role_table_body").igGrid("destroy");
+                $("#item_role_table_body").remove();
+                $('#item_role_table_cover').append($('<table id="item_role_table_body"></table>'));
+
+            }
+
+
             $("#item_role_table_body").ntsGrid({
                 features: [{ name: 'Resizing' },
                     {
                         name: "RowSelectors",
                         enableCheckBoxes: true,
                         enableRowNumbering: false,
-                        rowSelectorColumnWidth: 34
+                        rowSelectorColumnWidth: 40
                     }
                 ],
                 ntsFeatures: [{ name: 'CopyPaste' }],
+
                 showHeader: true,
+
                 width: '800px',
+
                 height: '261px',
+
                 dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
-                primaryKey: 'ItemName',
+
+                primaryKey: 'personItemDefId',
+
                 virtualization: true,
+
                 virtualizationMode: 'continuous',
+
                 virtualrecordsrender: function(evt, ui) {
+                    if ($("#item_role_table_body").data("igGrid") === undefined) {
+                        return;
+                    }
                     var ds = ui.owner.dataSource.data();
                     $(ds)
                         .each(
@@ -76,7 +200,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 0, index);
                             let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
                             let NameCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
-                            if (el.IsRequired == '1') {
+
+                            if (el.requiredAtr == '1') {
                                 $(CheckboxCell).addClass('requiredCell');
                                 $(IsConfigCell).addClass('requiredCell');
                                 $(NameCell).addClass('requiredCell');
@@ -84,64 +209,165 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         });
                 },
                 columns: [
-                    { headerText: text('CAS001_69'), key: 'IsConfig', dataType: 'string', width: '48px', formatter: makeIcon },
-                    { headerText: 'IsRequired', key: 'IsRequired', dataType: 'string', width: '34px', hidden: true },
-                    { headerText: text('CAS001_47'), key: 'ItemName', dataType: 'string', width: '255px' },
-                    { headerText: text('CAS001_48'), key: 'OtherPeopleAuthority', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
-                    { headerText: text('CAS001_52'), key: 'SelfAuthority', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
+                    { headerText: getText('CAS001_69'), key: 'setting', dataType: 'string', width: '48px', formatter: makeIcon },
+                    { headerText: '', key: 'requiredAtr', dataType: 'string', width: '34px', hidden: true },
+                    { headerText: '', key: 'personItemDefId', dataType: 'string', width: '34px', hidden: true },
+                    { headerText: getText('CAS001_47'), key: 'itemName', dataType: 'string', width: '255px' },
+                    { headerText: getText('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons1' },
+                    { headerText: getText('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons2' },
                 ],
                 ntsControls: [
                     {
-                        name: 'SwitchButtons', options: [{ value: '0', text: '非表示' }, { value: '1', text: '参照のみ' }, { value: '2', text: '更新' }],
+                        name: 'SwitchButtons1', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
                         optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
                     },
+                    {
+                        name: 'SwitchButtons2', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
+                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
+
+                    }
                 ],
 
             });
             //add switch to table header
-
-            let switchString = "<div id=\'auth_of_info_selected_all\'"
+            let switchString = "<div id=\'{0}_auth\' class=\'selected_all_auth\'"
                 + "data-bind=\"ntsSwitchButton: {options: itemListCbb"
-                + ",optionsValue:\'code\',optionsText: \'name\',value: {0},enable: true }\">"
-                + "</div><span id=\'selected_all_caret\' class=\'caret-bottom outline\'></span>"
-            let selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll');
-            let seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll');
-            nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'OtherPeopleAuthority').append($(selectedAllString));
-            nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'SelfAuthority').append($(seftSelectedAllString));
+                + ",optionsValue:\'code\',optionsText: \'name\',value: {0},enable: {1} }\">"
+                + "</div><span id=\'selected_all_caret\' class=\'caret-bottom outline\'></span>",
+
+                selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll', 'allowOtherRef() == 1 ? true : false'),
+
+                seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', 'allowPersonRef() == 1 ? true : false'),
+
+                otherAuthCell = nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'otherAuth'),
+
+                selfAuthCell = nts.uk.ui.ig.grid.header.getCell('item_role_table_body', 'selfAuth');
+
+            otherAuthCell.append($(selectedAllString));
+
+            selfAuthCell.append($(seftSelectedAllString));
+
+
+
+        }
+
+        reload(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                personRole = self.currentRole();
+
+            service.getPersonRoleAuth(personRole.roleId).done(function(result: IPersonRole) {
+
+                personRole.loadRoleCategoriesList(personRole.roleId).done(function() {
+
+                    personRole.setRoleAuth(result);
+
+                    if (self.currentRole().RoleCategoryList().length > 0) {
+
+                        let selectedId = self.currentCategoryId();
+
+                        self.currentCategoryId("");
+
+                        self.currentCategoryId(selectedId);
+
+                    }
+                    else {
+                        dialog({ messageId: "Msg_217" });
+                    }
+
+                    dfd.resolve();
+
+                });
+            });
+
+            return dfd.promise();
         }
         start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred();
+
             self.InitializationItemGrid();
+
             self.loadPersonRoleList().done(function() {
 
+                let selectedId = self.currentRoleId() !== '' ? self.currentRoleId() : self.personRoleList()[0].roleId;
+
+                self.currentRoleId('');
+
+                if (self.personRoleList().length > 0) {
+
+                    self.currentRoleId(selectedId);
+
+                }
+                else {
+
+                    dialog({ messageId: "Msg_217" });
+
+                }
+
                 dfd.resolve();
+
             });
+
             return dfd.promise();
         }
 
         loadPersonRoleList(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred();
+
+            block.invisible();
+
             service.getPersonRoleList().done(function(result: Array<IPersonRole>) {
+
+                self.personRoleList.removeAll();
+
                 _.forEach(result, function(iPersonRole: IPersonRole) {
+
                     self.personRoleList().push(new PersonRole(iPersonRole));
+
                 });
-                if (self.personRoleList().length > 0) {
-                    self.currentRoleId(self.personRoleList()[0].roleId);
-                }
-                else {
-                    alert(text('Msg_217'));
-                }
+
+                block.clear();
+
                 dfd.resolve();
             });
+
             return dfd.promise();
         }
 
         saveData() {
+            let self = this,
+
+                command = self.createSaveCommand();
+
+            block.invisible();
+
+            service.savePersonRole(command).done(function() {
+
+                dialog({ messageId: "Msg_15" }).then(function() {
+
+                    self.reload().done(function() {
+
+                        block.clear();
+
+                    });
+                });
+
+            }).fail(function(res) {
+
+                alert(res);
+
+            });
+        }
+        createSaveCommand() {
+
             let self = this;
-            let item = self.currentRole().currentCategory().roleItemList()[0];
-            console.log(item.OtherPeopleAuthority);
+
+            return new PersonRoleCommand(self.currentRole());
+
         }
     }
     export interface IPersonRole {
@@ -156,37 +382,36 @@ module nts.uk.com.view.cas001.a.viewmodel {
         allowAvatarRef: number;
     }
     export interface IPersonRoleCategory {
-        PersonInfoCategoryId: string;
-        PersonInfoCategoryName: string;
-        IsConfig: number;
-        PersonRoleType: any;
-        AllowPersonReference: number;
-        AllowOthersReference: number;
-        AllowAnotherCompanyReference: number;
-        PastHistoryAuthority: number;
-        FutureHistoryAuthority: number;
-        AllowDeleteHistory: number;
-        AllowAddHistory: number;
-        OtherPastHistoryAuthority: number;
-        OtherFutureHistoryAuthority: number;
-        OtherAllowDeleteHistory: number;
-        OtherAllowAddHistory: number;
-        AllowDeleteMulti: number;
-        AllowAddMulti: number;
-        AllowOtherDeleteMulti: number;
-        AllowOtherAddMulti: number;
+        categoryId: string;
+        categoryName: string;
+        setting: number;
+        categoryType: number;
+        allowPersonRef: number;
+        allowOtherRef: number;
+        allowOtherCompanyRef: number;
+        selfPastHisAuth: number;
+        selfFutureHisAuth: number;
+        selfAllowDelHis: number;
+        selfAllowAddHis: number;
+        otherPastHisAuth: number;
+        otherFutureHisAuth: number;
+        otherAllowDelHis: number;
+        otherAllowAddHis: number;
+        selfAllowDelMulti: number;
+        selfAllowAddMulti: number;
+        otherAllowDelMulti: number;
+        otherAllowAddMulti: number;
 
     }
     export interface IPersonRoleItem {
-        PersonInfoItemDefinitionID: string;
-        IsConfig: number;
-        IsRequired: number;
-        ItemName: string;
-        PersonInfoItemAuthorityID: string;
-        PersonInfoCategoryID: string;
-        OtherPeopleAuthority: number;
-        SelfAuthority: number;
+        personItemDefId: string;
+        setting: boolean;
+        requiredAtr: string;
+        itemName: string;
+        otherAuth: number;
+        selfAuth: number;
     }
+
     export class PersonRole {
         roleId: string;
         roleCode: string;
@@ -199,7 +424,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
         allowAvatarRef: KnockoutObservable<number>;
         RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
         currentCategory: KnockoutObservable<PersonRoleCategory> = ko.observable(null);
-        currentRoleCategoryId: KnockoutObservable<string> = ko.observable('');
         constructor(param: IPersonRole) {
             let self = this;
             self.roleId = param ? param.roleId : '';
@@ -212,13 +436,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.allowAvatarUpload = ko.observable(param ? param.allowAvatarUpload : 0);
             self.allowAvatarRef = ko.observable(param ? param.allowAvatarRef : 0);
 
-            self.currentRoleCategoryId.subscribe(function(newCategoryId) {
-                let newCategory = _.find(self.RoleCategoryList(), function(roleCategory) { return roleCategory.PersonInfoCategoryId === newCategoryId; });
-                newCategory.loadRoleItems(newCategory.PersonInfoCategoryId);
-                self.currentCategory(newCategory);
-            });
-
         }
+
         setRoleAuth(param: IPersonRole) {
             let self = this;
             self.allowMapBrowse = ko.observable(param ? param.allowMapBrowse : 0);
@@ -228,123 +447,234 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.allowAvatarUpload = ko.observable(param ? param.allowAvatarUpload : 0);
             self.allowAvatarRef = ko.observable(param ? param.allowAvatarRef : 0);
         }
+
+
         loadRoleCategoriesList(RoleId): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            self.RoleCategoryList([]);
-            service.getAllPersonCategoryAuthByRoleId(RoleId).done(function(result: Array<IPersonRoleCategory>) {
+            var self = this,
+                dfd = $.Deferred();
+
+            block.invisible();
+
+            service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
+
+                self.RoleCategoryList.removeAll();
+
                 _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
+
                     self.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
+
                 });
-                if (self.RoleCategoryList().length > 0) {
-                    self.currentRoleCategoryId(self.RoleCategoryList()[0].PersonInfoCategoryId);
-                }
-                else {
-                    alert(text('Msg_217'));
-                }
+
+                block.clear();
+
                 dfd.resolve();
             });
             return dfd.promise();
         }
-
     }
+
     export class PersonRoleCategory {
-        PersonInfoCategoryId: string;
-        PersonInfoCategoryName: string;
-        IsConfig: number;
-        PersonRoleType: KnockoutObservable<any>;
-        AllowPersonReference: KnockoutObservable<number>;
-        AllowOthersReference: KnockoutObservable<number>;
-        AllowAnotherCompanyReference: KnockoutObservable<number>;
-        PastHistoryAuthority: KnockoutObservable<number>;
-        FutureHistoryAuthority: KnockoutObservable<number>;
-        AllowDeleteHistory: KnockoutObservable<number>;
-        AllowAddHistory: KnockoutObservable<number>;
-        OtherPastHistoryAuthority: KnockoutObservable<number>;
-        OtherFutureHistoryAuthority: KnockoutObservable<number>;
-        OtherAllowDeleteHistory: KnockoutObservable<number>;
-        OtherAllowAddHistory: KnockoutObservable<number>;
-        AllowDeleteMulti: KnockoutObservable<number>;
-        AllowAddMulti: KnockoutObservable<number>;
-        AllowOtherDeleteMulti: KnockoutObservable<number>;
-        AllowOtherAddMulti: KnockoutObservable<number>;
+
+        categoryId: string;
+        categoryName: string;
+        categoryType: number;
+        setting: number;
+        allowOtherCompanyRef: KnockoutObservable<number>;
+        selfPastHisAuth: KnockoutObservable<number>;
+        selfFutureHisAuth: KnockoutObservable<number>;
+        selfAllowDelHis: KnockoutObservable<number>;
+        selfAllowAddHis: KnockoutObservable<number>;
+        otherPastHisAuth: KnockoutObservable<number>;
+        otherFutureHisAuth: KnockoutObservable<number>;
+        otherAllowDelHis: KnockoutObservable<number>;
+        otherAllowAddHis: KnockoutObservable<number>;
+        selfAllowDelMulti: KnockoutObservable<number>;
+        selfAllowAddMulti: KnockoutObservable<number>;
+        otherAllowDelMulti: KnockoutObservable<number>;
+        otherAllowAddMulti: KnockoutObservable<number>;
         roleItemList: KnockoutObservableArray<PersonRoleItem> = ko.observableArray([]);
-        currentItem: KnockoutObservable<PersonRoleItem> = ko.observable(new PersonRoleItem(null));
-        currentItemCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+
         constructor(param: IPersonRoleCategory) {
             let self = this;
-            self.PersonInfoCategoryId = param ? param.PersonInfoCategoryId : '';
-            self.PersonInfoCategoryName = param ? param.PersonInfoCategoryName : '';
-            self.IsConfig = param ? param.IsConfig : 0;
-            self.PersonRoleType = ko.observable(param ? param.PersonRoleType : 0);
-            self.AllowPersonReference = ko.observable(param ? param.AllowPersonReference : 0);
-            self.AllowOthersReference = ko.observable(param ? param.AllowOthersReference : 0);
-            self.AllowAnotherCompanyReference = ko.observable(param ? param.AllowAnotherCompanyReference : 0);
-            self.PastHistoryAuthority = ko.observable(param ? param.PastHistoryAuthority : 0);
-            self.FutureHistoryAuthority = ko.observable(param ? param.FutureHistoryAuthority : 0);
-            self.AllowDeleteHistory = ko.observable(param ? param.AllowDeleteHistory : 0);
-            self.AllowAddHistory = ko.observable(param ? param.AllowAddHistory : 0);
-            self.OtherPastHistoryAuthority = ko.observable(param ? param.OtherPastHistoryAuthority : 0);
-            self.OtherFutureHistoryAuthority = ko.observable(param ? param.OtherFutureHistoryAuthority : 0);
-            self.OtherAllowDeleteHistory = ko.observable(param ? param.OtherAllowDeleteHistory : 0);
-            self.OtherAllowAddHistory = ko.observable(param ? param.OtherAllowAddHistory : 0);
-            self.AllowDeleteMulti = ko.observable(param ? param.AllowDeleteMulti : 0);
-            self.AllowAddMulti = ko.observable(param ? param.AllowAddMulti : 0);
-            self.AllowOtherDeleteMulti = ko.observable(param ? param.AllowOtherDeleteMulti : 0);
-            self.AllowOtherAddMulti = ko.observable(param ? param.AllowOtherAddMulti : 0);
+            let screenModel = __viewContext['screenModel'];
+            self.categoryId = param ? param.categoryId : '';
+            self.categoryName = param ? param.categoryName : '';
+            self.categoryType = param ? param.categoryType : 0;
+            self.setting = param ? param.setting : 0;
+            screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
+            screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
+            self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
+            self.selfPastHisAuth = ko.observable(param ? param.selfPastHisAuth : 1);
+            self.selfFutureHisAuth = ko.observable(param ? param.selfFutureHisAuth : 1);
+            self.selfAllowDelHis = ko.observable(param ? param.selfAllowDelHis : 0);
+            self.selfAllowAddHis = ko.observable(param ? param.selfAllowAddHis : 0);
+            self.otherPastHisAuth = ko.observable(param ? param.otherPastHisAuth : 1);
+            self.otherFutureHisAuth = ko.observable(param ? param.otherFutureHisAuth : 1);
+            self.otherAllowDelHis = ko.observable(param ? param.otherAllowDelHis : 0);
+            self.otherAllowAddHis = ko.observable(param ? param.otherAllowAddHis : 0);
+            self.selfAllowDelMulti = ko.observable(param ? param.selfAllowDelMulti : 0);
+            self.selfAllowAddMulti = ko.observable(param ? param.selfAllowAddMulti : 0);
+            self.otherAllowDelMulti = ko.observable(param ? param.otherAllowDelMulti : 0);
+            self.otherAllowAddMulti = ko.observable(param ? param.otherAllowAddMulti : 0);
         }
-        loadRoleItems(CategoryCode): JQueryPromise<any> {
+
+        setCategoryAuth(param: IPersonRoleCategory) {
+
+            let self = this;
+            let screenModel = __viewContext['screenModel'];
+            screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
+            screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
+            self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
+            self.selfPastHisAuth = ko.observable(param ? param.selfPastHisAuth : 1);
+            self.selfFutureHisAuth = ko.observable(param ? param.selfFutureHisAuth : 1);
+            self.selfAllowDelHis = ko.observable(param ? param.selfAllowDelHis : 0);
+            self.selfAllowAddHis = ko.observable(param ? param.selfAllowAddHis : 0);
+            self.otherPastHisAuth = ko.observable(param ? param.otherPastHisAuth : 1);
+            self.otherFutureHisAuth = ko.observable(param ? param.otherFutureHisAuth : 1);
+            self.otherAllowDelHis = ko.observable(param ? param.otherAllowDelHis : 0);
+            self.otherAllowAddHis = ko.observable(param ? param.otherAllowAddHis : 0);
+            self.selfAllowDelMulti = ko.observable(param ? param.selfAllowDelMulti : 0);
+            self.selfAllowAddMulti = ko.observable(param ? param.selfAllowAddMulti : 0);
+            self.otherAllowDelMulti = ko.observable(param ? param.otherAllowDelMulti : 0);
+            self.otherAllowAddMulti = ko.observable(param ? param.otherAllowAddMulti : 0);
+        }
+
+        loadRoleItems(roleId, CategoryId): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.roleItemList([]);
-            for (let i = 1; i < 1000; i++) {
-                let object = {
-                    PersonInfoItemDefinitionID: 'id' + i,
-                    IsConfig: i % 2,
-                    IsRequired: i % 2,
-                    ItemName: 'name' + i,
-                    PersonInfoItemAuthorityID: 'id' + i,
-                    PersonInfoCategoryID: 'id' + i,
-                    OtherPeopleAuthority: i % 3,
-                    SelfAuthority: i % 3
-                };
-                self.roleItemList().push(new PersonRoleItem(object));
-            }
-            if (self.roleItemList().length < 1) {
-                alert(text('Msg_217'));
-            }
-            $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
-            dfd.resolve();
+
+            block.invisible();
+
+            service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
+
+                self.roleItemList.removeAll();
+                _.forEach(result, function(iPersonRoleItem: IPersonRoleItem) {
+                    self.roleItemList.push(new PersonRoleItem(iPersonRoleItem));
+                });
+
+                if (self.roleItemList().length < 1) {
+                    dialog({ messageId: "Msg_217" });
+                }
+
+                $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
+
+                block.clear();
+
+                dfd.resolve();
+
+            });
             return dfd.promise();
         }
     }
+
     export class PersonRoleItem {
-        PersonInfoItemDefinitionID: string;
-        IsConfig: number;
-        IsRequired: number;
-        ItemName: string;
-        PersonInfoItemAuthorityID: string;
-        PersonInfoCategoryID: string;
-        OtherPeopleAuthority: number;
-        SelfAuthority: number;
+        personItemDefId: string;
+        setting: boolean;
+        requiredAtr: string;
+        itemName: string;
+        otherAuth: number;
+        selfAuth: number;
+
         constructor(param: IPersonRoleItem) {
             let self = this;
-            self.PersonInfoItemDefinitionID = param ? param.PersonInfoItemDefinitionID : '';
-            self.IsConfig = param ? param.IsConfig : 0;
-            self.IsRequired = param ? param.IsRequired : 0;
-            self.ItemName = param ? param.ItemName : '';
-            self.PersonInfoItemAuthorityID = param ? param.PersonInfoItemAuthorityID : '';
-            self.PersonInfoCategoryID = param ? param.PersonInfoCategoryID : '';
-            self.OtherPeopleAuthority = param ? param.OtherPeopleAuthority : 0;
-            self.SelfAuthority = param ? param.SelfAuthority : 0;
+            self.personItemDefId = param ? param.personItemDefId : '';
+            self.setting = param ? param.setting : false;
+            self.requiredAtr = param ? param.requiredAtr : 'false';
+            self.itemName = param ? param.itemName : '';
+            self.otherAuth = this.setting === true ? param ? param.otherAuth : 1 : 1;
+            self.selfAuth = this.setting === true ? param ? param.selfAuth : 1 : 1;
+        }
+    }
+
+    export class PersonRoleCommand {
+        roleId: string;
+        roleCode: string;
+        roleName: string;
+        allowMapBrowse: number;
+        allowMapUpload: number;
+        allowDocUpload: number;
+        allowDocRef: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
+        currentCategory: PersonRoleCategoryCommand = null;
+        constructor(param: PersonRole) {
+            this.roleId = param.roleId;
+            this.roleCode = param.roleCode;
+            this.roleName = param.roleName;
+            this.allowMapBrowse = param.allowMapBrowse();
+            this.allowMapUpload = param.allowMapUpload();
+            this.allowDocUpload = param.allowDocUpload();
+            this.allowDocRef = param.allowDocRef();
+            this.allowAvatarUpload = param.allowAvatarUpload();
+            this.allowAvatarRef = param.allowAvatarRef();
+            this.currentCategory = new PersonRoleCategoryCommand(param.currentCategory());
+        }
+    }
+    export class PersonRoleCategoryCommand {
+        categoryId: string;
+        categoryName: string;
+        categoryType: number;
+        allowPersonRef: number;
+        allowOtherRef: number;
+        allowOtherCompanyRef: number;
+        selfPastHisAuth: number;
+        selfFutureHisAuth: number;
+        selfAllowDelHis: number;
+        selfAllowAddHis: number;
+        otherPastHisAuth: number;
+        otherFutureHisAuth: number;
+        otherAllowDelHis: number;
+        otherAllowAddHis: number;
+        selfAllowDelMulti: number;
+        selfAllowAddMulti: number;
+        otherAllowDelMulti: number;
+        otherAllowAddMulti: number;
+        roleItemList: Array<PersonRoleItemCommand> = [];
+        constructor(param: PersonRoleCategory) {
+
+            let screenModel = __viewContext['screenModel'];
+
+            this.categoryId = param.categoryId;
+            this.categoryName = param.categoryName;
+            this.categoryType = param.categoryType;
+            this.allowPersonRef = screenModel.allowPersonRef();
+            this.allowOtherRef = screenModel.allowOtherRef();
+            this.allowOtherCompanyRef = param.allowOtherCompanyRef();
+            this.selfPastHisAuth = param.selfPastHisAuth();
+            this.selfFutureHisAuth = param.selfFutureHisAuth();
+            this.selfAllowDelHis = param.selfAllowDelHis();
+            this.selfAllowAddHis = param.selfAllowAddHis();
+            this.otherPastHisAuth = param.otherPastHisAuth();
+            this.otherFutureHisAuth = param.otherFutureHisAuth();
+            this.otherAllowDelHis = param.otherAllowDelHis();
+            this.otherAllowAddHis = param.otherAllowAddHis();
+            this.selfAllowDelMulti = param.selfAllowDelMulti();
+            this.selfAllowAddMulti = param.selfAllowAddMulti();
+            this.otherAllowDelMulti = param.otherAllowDelMulti();
+            this.otherAllowAddMulti = param.otherAllowAddMulti();
+            for (let i of param.roleItemList()) {
+                this.roleItemList.push(new PersonRoleItemCommand(i))
+            }
+
         }
 
     }
+    export class PersonRoleItemCommand {
+        personItemDefId: string;
+        otherAuth: number;
+        selfAuth: number;
+        constructor(param: PersonRoleItem) {
+            this.personItemDefId = param.personItemDefId;
+            this.otherAuth = param.otherAuth;
+            this.selfAuth = param.selfAuth;
+        }
 
+    }
 }
+
 function makeIcon(value, row) {
-    if (value == 1)
-        return '&#8226;'
+    if (value == "true")
+        return "●";
     return '';
 }
 

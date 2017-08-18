@@ -44,3 +44,16 @@
 	width: 25px !important;
 	text-align: center;
 }
+.border-all td {
+	border: solid grey 1px;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	padding-left: 10px;
+	min-width: 100px;
+	max-width: 200px;
+}
+.tbl-monthly .ntsControl {
+	width: 50px !important;
+}

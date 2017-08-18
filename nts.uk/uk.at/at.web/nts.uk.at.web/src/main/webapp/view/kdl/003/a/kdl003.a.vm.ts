@@ -1,280 +1,363 @@
 module nts.uk.at.view.kdl003.a {
-    import Enum = service.model.Enum;
     export module viewmodel {
         export class ScreenModel {
-            columns: KnockoutObservableArray<NtsGridListColumn>;
-            multiSelectMode: KnockoutObservable<boolean>;
-            rootList: Array<WorkTimeSet>;
-            selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
-            selectedCodeList: KnockoutObservableArray<string>;
-            selectedSiftCode: KnockoutObservable<string>;
-            selectedSiftName: KnockoutObservable<string>;
-            searchOption: KnockoutObservable<number>;
+
+            // Search options.
             startTimeOption: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
 
-            lstWorkType: KnockoutObservableArray<WorkType>;
+            // Data list & selected code.
+            listWorkTime: KnockoutObservableArray<WorkTimeSet>;
+            selectedWorkTimeCode: KnockoutObservable<string>;
+            listWorkType: KnockoutObservableArray<WorkType>;
             selectedWorkTypeCode: KnockoutObservable<string>;
-            selectedWorkTypeName: KnockoutObservable<string>;
 
+            // Define columns.
+            workTimeColumns: KnockoutObservableArray<NtsGridListColumn>;
             workTypeColumns: KnockoutObservableArray<NtsGridListColumn>;
 
-            parentData: KnockoutObservable<any>;
+            // Initial work time code list..
+            initialWorkTimeCodes: Array<String>;
 
-            halfDayList1: KnockoutObservableArray<RestTime>;
-            halfDayList2: KnockoutObservableArray<RestTime>;
-            holidayList1: KnockoutObservableArray<RestTime>;
-            holidayList2: KnockoutObservableArray<RestTime>;
+            // Parameter from caller screen.
+            callerParameter: CallerParameter;
 
-            lstTimeDayAtrEnum: KnockoutObservableArray<Enum>;
-            constructor(parentData: any) {
+            constructor(parentData: CallerParameter) {
                 var self = this;
-                self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 50 },
-                    { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 100 },
-                    { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
-                    { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 },
-                    { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 120 },
-                    { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
-                ]);
-                self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
-                self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectedCodeList'));
-                self.selectedSiftCode = ko.observable(parentData.selectSiftCode);
-                self.selectedSiftName = ko.observable("");
-                self.searchOption = ko.observable(0);
-                self.startTimeOption = ko.observable(1);
-                self.startTime = ko.observable('');
-                self.endTimeOption = ko.observable(1);
-                self.endTime = ko.observable('');
-                self.selectAbleItemList = ko.observableArray([]);
 
-                self.lstWorkType = ko.observableArray([]);
-                self.selectedWorkTypeCode = ko.observable(parentData.selectWorkTypeCode);
-                self.selectedWorkTypeName = ko.observable("");
+                // Search options
+                self.startTimeOption = ko.observable(1);
+                self.startTime = ko.observable(null);
+                self.endTimeOption = ko.observable(1);
+                self.endTime = ko.observable(null);
+
+                self.listWorkTime = ko.observableArray([]);
+                self.selectedWorkTimeCode = ko.observable('');
+                self.listWorkType = ko.observableArray([]);
+                self.selectedWorkTypeCode = ko.observable('');
+
+                // Define gridlist's columns
                 self.workTypeColumns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'workTypeCode', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
-                    { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'memo', width: 200 }
+                    { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'memo', width: 130 }
+                ]);
+                self.workTimeColumns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'code', width: 50 },
+                    { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
+                    { headerText: nts.uk.resource.getText('KDL003_19'), prop: 'workTime1', width: 200 },
+                    { headerText: nts.uk.resource.getText('KDL003_20'), prop: 'workTime2', width: 200 },
+                    { headerText: nts.uk.resource.getText('KDL003_21'), prop: 'workAtr', width: 100 },
+                    { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
 
                 //parent data
-                self.parentData = ko.observable(parentData);
+                self.callerParameter = parentData;
 
-                self.halfDayList1 = ko.observable([]);
-                self.halfDayList2 = ko.observable([]);
-                self.holidayList1 = ko.observable([]);
-                self.holidayList2 = ko.observable([]);
-
-                self.lstTimeDayAtrEnum = ko.observableArray([]);
-                self.selectedSiftCode.subscribe((code) => {
-                    if (code != null && code != undefined) {
-                        service.findAllRestTime(code).done(function(data) {
-                            self.bindRestTime(data);
-                        });
-                    }
-                });
-                self.selectedWorkTypeCode.subscribe(function(data, data2) {
-
-                });
             }
 
-            private startPage(): JQueryPromise<any> {
+            /**
+             * Start page.
+             */
+            private startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
-                //                var command = self.parentData().canSelectWorkTypeCodes.length > 0 ? self.parentData().canSelectWorkTypeCodes.split(',') : null)
-                //                              , self.getTimeDayAtrEnum();
-                
-                //find all worktype
-                $.when(service.findAllWorkType()).done(
-                    function(workTypeData: Array<WorkType>) {
-                        self.lstWorkType(workTypeData);
-                    }
-                )
-                
-                var canSelectSiftCodes = (self.parentData().canSelectSiftCodes != null && self.parentData().canSelectSiftCodes.length > 0) ? self.parentData().canSelectSiftCodes.split(',') : [];
-                service.findByCodeList(canSelectSiftCodes)
-                    .done(function(data) {
-                        self.rootList = data;
-                        //add itemã€€ã�ªã�—
-                        data.unshift({
-                            code: "000",
-                            name: "ã�ªã�—",
-                            workTime1: "",
-                            workTime2: "",
-                            workAtr: "",
-                            remark: ""
+                $.when(self.loadWorkTime(),
+                    self.loadWorkType())
+                    .done(() => {
+                        // Set initial selection.
+                        self.initWorkTypeSelection();
+                        self.setWorkTimeSelection();
+
+                        // On selectedWorkTypeCode changed event.
+                        self.selectedWorkTypeCode.subscribe(code => {
+                            service.isWorkTimeSettingNeeded(code).done(val => {
+                                switch (val) {
+                                    case SetupType.REQUIRED:
+                                        self.setWorkTimeSelection();
+                                        break;
+                                    case SetupType.OPTIONAL:
+                                        // Do nothing.
+                                        break;
+                                    default: self.selectedWorkTimeCode('000');
+                                }
+                            });
                         });
-                        self.selectAbleItemList(_.clone(self.rootList));
-                        if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
-                            if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
-                                self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
-                                self.selectedSiftCode(_.first(self.selectAbleItemList()).code);
-                            } else {
-                                self.selectedSiftCode(_.first(self.selectedCodeList()));
-                            }
-                        } else {
-                            self.selectedCodeList([]);
-                            self.selectedSiftCode(null);
-                        }
-                        nts.uk.ui.block.clear();
+
+                        // Set initial work time list.
+                        self.initialWorkTimeCodes = _.map(self.listWorkTime(), function(item) { return item.code })
+
                         dfd.resolve();
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
                 return dfd.promise();
             }
 
-            private getTimeDayAtrEnum(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-                service.findTimeDayAtrEnum().done(
-                    function(data) {
-                        let map = _.reduce(data, function(hash, value) {
-                            let key = value['value'];
-                            hash[key] = value['localizedName'];
-                            return hash;
-                        }, {});
-                        self.lstTimeDayAtrEnum(map);
-                        dfd.resolve();
-                    }
-                );
+            /**
+             * Load work time.
+             */
+            private loadWorkTime(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+
+                // Find work time by list code if caller's parameters exist.
+                if (self.callerParameter.workTimeCodes && self.callerParameter.workTimeCodes.length > 0) {
+                    service.findByCodeList(self.callerParameter.workTimeCodes.split(','))
+                        .done(function(data) {
+                            self.addFirstItem(data);
+                            dfd.resolve();
+                        });
+                }
+
+                // Find all work time
+                else {
+                    service.findAllWorkTime()
+                        .done(function(data) {
+                            self.addFirstItem(data);
+                            dfd.resolve();
+                        });
+                }
                 return dfd.promise();
             }
 
-            public search() {
+            /**
+             * Load work type.
+             */
+            private loadWorkType(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+
+                // Find work type by list code if caller's parameters exist.
+                if (self.callerParameter.workTypeCodes && self.callerParameter.workTypeCodes.length > 0) {
+                    service.findWorkTypeByCodes(self.callerParameter.workTypeCodes.split(','))
+                        .done(function(workTypeList: Array<WorkType>) {
+                            self.listWorkType(workTypeList);
+                            dfd.resolve();
+                        });
+                }
+
+                // Find all work type.
+                else {
+                    service.findAllWorkType()
+                        .done(function(workTypeList: Array<WorkType>) {
+                            self.listWorkType(workTypeList);
+                            dfd.resolve();
+                        });
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Add first work time item.
+             */
+            private addFirstItem(data: Array<WorkTimeSet>): void {
+                let self = this;
+                //add item　なし
+                data.unshift({
+                    code: "000",
+                    name: "なし",
+                    workTime1: "",
+                    workTime2: "",
+                    workAtr: "",
+                    remark: ""
+                });
+                self.listWorkTime(data);
+            }
+
+            /**
+             * Initial work type selection 
+             */
+            private initWorkTypeSelection(): void {
+                let self = this;
+                // Selected code from caller screen.
+                if (self.callerParameter.selectedWorkTypeCode) {
+                    self.selectedWorkTypeCode(self.callerParameter.selectedWorkTypeCode);
+                }
+                // Select first item.
+                else {
+                    self.selectedWorkTypeCode(_.first(self.listWorkType()).workTypeCode);
+                }
+            }
+
+            /**
+             * Set work time selection.
+             */
+            private setWorkTimeSelection(): void {
+                let self = this;
+                // Selected code from caller screen.
+                if (self.callerParameter.selectedWorkTimeCode) {
+                    self.selectedWorkTimeCode(self.callerParameter.selectedWorkTimeCode);
+                }
+                // Select first item.
+                else {
+                    self.selectedWorkTimeCode(_.first(self.listWorkTime()).code);
+                }
+            }
+
+            /**
+             * Search work time.
+             */
+            public search(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
+
+                // Search command.
                 let command = {
-                    codelist: _.map(self.rootList, function(item) { return item.code }),
+                    codelist: self.initialWorkTimeCodes,
                     startAtr: self.startTimeOption(),
                     startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? -1 : self.startTime(),
                     endAtr: self.endTimeOption(),
                     endTime: nts.uk.util.isNullOrEmpty(self.endTime()) ? -1 : self.endTime()
                 }
-                kdl001.a.service.findByTime(command)
+
+                // Search & display data.
+                service.findByTime(command)
                     .done(function(data) {
-                        self.selectAbleItemList(data);
-                        if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
-                            self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
-                            self.selectedSiftCode(_.first(self.selectAbleItemList()).code);
-                        } else {
-                            self.selectedCodeList([]);
-                            self.selectedSiftCode(null);
+                        self.listWorkTime(data);
+                        if (data && data.length > 0) {
+                            self.selectedWorkTimeCode(data[0].code);
                         }
-                        nts.uk.ui.block.clear();
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    }).always(() => {
+                        // Set focus.
+                        $("[tabindex='10']").focus();
+
+                        nts.uk.ui.block.clear();
                     });
             }
 
-            private returnData() {
+            /**
+             * Clear search condition.
+             */
+            public clearSearchCondition(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
+
+                // Reset search conditions
                 self.startTimeOption(1);
-                self.startTime('');
+                self.startTime(null);
                 self.endTimeOption(1);
-                self.endTime('');
-                kdl001.a.service.findByCodeList(self.selectAbleCodeList())
-                    .done(function(data) {
-                        self.rootList = data;
-                        self.selectAbleItemList(_.clone(self.rootList));
-                        if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
-                            if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
-                                self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
-                            }
-                            self.selectedSiftCode(_.first(self.selectAbleItemList()).code);
-                        } else {
-                            self.selectedCodeList([]);
-                            self.selectedSiftCode(null);
-                        }
-                        nts.uk.ui.block.clear();
-                    })
-                    .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-                    });
-                $("#inputStartTime").focus();
-            }
+                self.endTime(null);
 
-            private bindRestTime(data: any) {
-                var self = this;
-                let listHalfDay1 = [];
-                let listHalfDay2 = [];
-                let listHoliday1 = [];
-                let listHoliday2 = [];
-                data.halfDayAttendanceWorkTimeZone.breakTimeZone.lstTimeTable.forEach(function(item, index) {
-                    item = self.convertItemForview(item);
-                    if (index < 5) {
-                        listHalfDay1.push(item);
-                    } else {
-                        listHalfDay2.push(item);
-                    }
+                // Reload list work time.
+                self.loadWorkTime().always(() => {
+                    nts.uk.ui.block.clear();
                 });
-                data.holidayAttendanceWorkTimeZone.breakTimeZone.lstTimeTable.forEach(function(item, index) {
-                    item = self.convertItemForview(item);
-                    if (index < 5) {
-                        listHoliday1.push(item);
-                    } else {
-                        listHoliday2.push(item);
-                    }
-                });
-                self.halfDayList1(listHalfDay1);
-                self.halfDayList2(listHalfDay2);
-                self.holidayList1(listHoliday1);
-                self.holidayList2(listHoliday2);
+
+                // Set focus.
+                $("[tabindex='10']").focus();
             }
 
-            private convertItemForview(item: any) {
-                var self = this;
-                item.startDay = self.lstTimeDayAtrEnum()[item.startDay];
-                item.endDay = self.lstTimeDayAtrEnum()[item.endDay];
-                item.startTime = nts.uk.time.parseTime(item.startTime, true).format();
-                item.endTime = nts.uk.time.parseTime(item.endTime, true).format();
-                return item;
-            }
-
+            /**
+             * Submit and close dialog.
+             */
             public submitAndCloseDialog() {
                 nts.uk.ui.block.invisible();
-                var self = this;
-                self.getWorkTypeName(self.selectedWorkTypeCode());
-                self.getSiftName(self.selectedSiftCode());
-                var sendData = {
-                    selectedWorkTimeCode: self.selectedWorkTypeCode(),
-                    selectedWorkTimeName: self.selectedWorkTypeName(),
-                    selectedSiftCode: self.selectedSiftCode(),
-                    selectedSiftName: self.selectedSiftName()
-                };
-                nts.uk.ui.windows.setShared("childData", sendData, true);
-                nts.uk.ui.block.clear();
-                nts.uk.ui.windows.close();
+                let self = this;
+                self.submit().done(() => {
+                    nts.uk.ui.block.clear();
+                    self.closeDialog();
+                });
             }
 
-            private getWorkTypeName(code): string {
-                var self = this;
-                if (self.lstWorkType()) {
-                    self.lstWorkType().forEach((item, index) => {
-                        if (item.workTypeCode == code) {
-                            self.selectedWorkTypeName(item.name);
-                        }
-                    });
-                }
+            /**
+             * Submit
+             */
+            private submit(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.isWorkTimeSettingNeeded(self.selectedWorkTypeCode()).done(setupType => {
+
+                    // Set returned data..
+                    let workTypeName = self.getWorkTypeName(self.selectedWorkTypeCode());
+                    let workTimeName = self.getWorkTimeName(self.selectedWorkTimeCode());
+                    let returnedData: ReturnedData = {
+                        selectedWorkTypeCode: self.selectedWorkTypeCode(),
+                        selectedWorkTypeName: workTypeName,
+                        selectedWorkTimeCode: self.selectedWorkTimeCode(),
+                        selectedWorkTimeName: workTimeName
+                    };
+
+                    // Switch setup type.
+                    switch (setupType) {
+                        case SetupType.REQUIRED:
+                            if (!self.listWorkTime() || self.listWorkTime().length < 1) {
+                                returnedData.selectedWorkTimeCode = '';
+                                returnedData.selectedWorkTimeName = '';
+                                self.setReturnedData(returnedData, 'Msg_24').done(() => dfd.resolve());
+                            } else {
+                                self.setReturnedData(returnedData).done(() => dfd.resolve());
+                            }
+                            break;
+                        case SetupType.NOT_REQUIRED:
+                            if (self.selectedWorkTimeCode() != '000') {
+                                self.setReturnedData(returnedData, 'Msg_23').done(() => dfd.resolve());
+                            } else {
+                                self.setReturnedData(returnedData).done(() => dfd.resolve());
+                            }
+                            break;
+                        default:
+                            self.setReturnedData(returnedData).done(() => dfd.resolve());
+                    }
+                });
+                return dfd.promise();
             }
 
-            private getSiftName(siftCode): string {
-                var self = this;
-                if (self.selectAbleItemList()) {
-                    self.selectAbleItemList().forEach((item, index) => {
-                        if (item.code == siftCode) {
-                            self.selectedSiftName(item.name);
-                        }
+            /**
+             * Set returned data.
+             */
+            private setReturnedData(returnedData, msgId?: string): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
+                nts.uk.ui.windows.setShared("childData", returnedData, true);
+                if (msgId) {
+                    nts.uk.ui.dialog.alertError({ messageId: msgId }).then(() => {
+                        dfd.resolve();
                     });
+                } else {
+                    dfd.resolve();
                 }
+                return dfd.promise();
             }
-            closeDialog() {
+
+            /**
+             * Get work type name.
+             */
+            private getWorkTypeName(workTypeCode: string): string {
+                let self = this;
+                let name: string = '';
+                if (self.listWorkTime()) {
+                    let workType = _.find(self.listWorkType(), workType => workType.workTypeCode == workTypeCode);
+                    name = workType ? workType.name : '';
+                }
+                return name;
+            }
+
+            /**
+             * Get work time name.
+             */
+            private getWorkTimeName(workTimeCode: string): string {
+                let self = this;
+                let name: string = '';
+                if (self.listWorkTime()) {
+                    let workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
+                    name = workTime ? workTime.name : '';
+                }
+                return name;
+            }
+
+            /**
+             * Close dialog.
+             */
+            public closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
         }
@@ -297,10 +380,22 @@ module nts.uk.at.view.kdl003.a {
             symbolicName: string;
             workTypeCode: string;
         }
-        interface RestTime {
-            startDay: string;
-            startTime: string;
-            endDay: string;
-            endTime: string;
+        interface CallerParameter {
+            workTypeCodes: Array<string>;
+            selectedWorkTypeCode: string;
+            workTimeCodes: Array<string>;
+            selectedWorkTimeCode: string;
+        }
+        interface ReturnedData {
+            selectedWorkTypeCode: string;
+            selectedWorkTypeName: string;
+            selectedWorkTimeCode: string;
+            selectedWorkTimeName: string;
+        }
+        enum SetupType {
+            REQUIRED = 0,
+            OPTIONAL = 1,
+            NOT_REQUIRED = 2
         }
     }
+}

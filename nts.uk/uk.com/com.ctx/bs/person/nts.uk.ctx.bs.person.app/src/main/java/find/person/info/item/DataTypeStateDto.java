@@ -1,13 +1,40 @@
 package find.person.info.item;
 
-import lombok.Value;
+import java.math.BigDecimal;
 
-@Value
+import lombok.Getter;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
+
 public class DataTypeStateDto {
-	private TimeItemDto timeItem;
-	private StringItemDto stringItem;
-	private TimePointItemDto timePointItem;
-	private DateItemDto dateItem;
-	private NumericItemDto numericItem;
-	private SelectionItemDto selectionItem;
+	@Getter
+	protected int dataTypeValue;
+
+	public static DataTypeStateDto createTimeItemDto(long max, long min) {
+		return TimeItemDto.createFromJavaType(max, min);
+	}
+
+	public static DataTypeStateDto createStringItemDto(int stringItemLength, int stringItemType,
+			int stringItemDataType) {
+		return StringItemDto.createFromJavaType(stringItemLength, stringItemType, stringItemDataType);
+	}
+
+	public static DataTypeStateDto createTimePointItemDto(int timePointItemMin, int timePointItemMax) {
+		return TimePointItemDto.createFromJavaType(timePointItemMin, timePointItemMax);
+	}
+
+	public static DataTypeStateDto createDateItemDto(int dateItemType) {
+		return DateItemDto.createFromJavaType(dateItemType);
+	}
+
+	public static DataTypeStateDto createNumericItemDto(int numericItemMinus, int numericItemAmount, int integerPart,
+			int decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
+		return NumericItemDto.createFromJavaType(numericItemMinus, numericItemAmount, integerPart, decimalPart,
+				numericItemMin, numericItemMax);
+	}
+
+	public static DataTypeStateDto createSelectionItemDto(ReferenceTypeState refTypeState) {
+		return SelectionItemDto.createFromJavaType(refTypeState);
+
+	}
+
 }

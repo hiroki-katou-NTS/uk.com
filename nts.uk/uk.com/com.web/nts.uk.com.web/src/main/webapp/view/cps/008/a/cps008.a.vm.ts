@@ -1,202 +1,181 @@
 module cps008.a.viewmodel {
-
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ViewModel {
-
-        items: KnockoutObservableArray<MaintenanceLayout>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        A_INP_LAYOUT_CODE: KnockoutObservable<string>;
-        A_INP_LAYOUT_NAME: KnockoutObservable<string>;
-        A_INP_LAYOUT_CODE_ENABLE: KnockoutObservable<boolean>;
-        A_INP_LAYOUT_NAME_ENABLE: KnockoutObservable<boolean>;
-        enableBtnCoppy: KnockoutObservable<boolean>;
-        enableBtnDelete: KnockoutObservable<boolean>;
+        layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
+        layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
 
         constructor() {
-            var self = this;
-            self.items = ko.observableArray([]);
+            let self = this,
+                layout: Layout = self.layout(),
+                layouts = self.layouts;
 
-            self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'layoutCode', width: 120, hidden: false },
-                { headerText: '名称', key: 'layoutName', width: 171, hidden: false }
-            ]);
 
-            self.currentCode = ko.observable();
-            self.A_INP_LAYOUT_CODE = ko.observable(null);
-            self.A_INP_LAYOUT_NAME = ko.observable(null);
-            self.A_INP_LAYOUT_CODE_ENABLE = ko.observable(false);
-            self.A_INP_LAYOUT_NAME_ENABLE = ko.observable(true);
-            self.enableBtnCoppy = ko.observable(true);
-            self.enableBtnDelete = ko.observable(true);
+            self.start();
+            layout.id.subscribe(id => {
+                if (id) {
 
-            self.currentCode.subscribe((function(codeChanged) {
-                if (codeChanged == null) {
-                    return;
+                    // Gọi service tải dữ liệu ra layout
+                    service.getDetails(id).done((data: any) => {
+                        if (data) {
+                            layout.code(data.layoutCode);
+                            layout.name(data.layoutName);
+                            layout.classifications(data.listItemClsDto || []);
+                            layout.action(LAYOUT_ACTION.UPDATE);
+                        }
+                    });
                 }
-                self.updateMode();
-                let obj = self.findObj(codeChanged);
-                self.A_INP_LAYOUT_CODE(obj.layoutCode);
-                self.A_INP_LAYOUT_NAME(obj.layoutName);
-            }));
+            });
+
         }
 
-        /**
-         *  find Object Maintenance Layout when item selected
-         */
-        findObj(value: string): any {
-            let self = this;
-            var itemModel = null;
-            _.find(self.items(), function(obj: viewmodel.MaintenanceLayout) {
-                if (obj.layoutCode == value) {
-                    itemModel = obj;
+        start(code?: string) {
+            let self = this,
+                layout: Layout = self.layout(),
+                layouts = self.layouts;
+            // get all layout
+            layouts.removeAll();
+            service.getAll().done((data: Array<any>) => {
+                if (data && data.length) {
+                    let _data: Array<ILayout> = _.map(data, x => {
+                        return {
+                            id: x.maintenanceLayoutID,
+                            name: x.layoutName,
+                            code: x.layoutCode
+                        }
+                    });
+                    _.each(_data, d => layouts.push(d));
+                    if (!code) {
+                        layout.id(_data[0].id);
+                    }
+                    else {
+                        let _item: ILayout = _.find(ko.toJS(layouts), (x: ILayout) => x.code == code);
+                        if (_item) {
+                            layout.id(_item.id);
+                        } else {
+                            layout.id(_data[0].id);
+                        }
+                    }
+                    layout.id.valueHasMutated();
                 }
-            })
-            return itemModel;
-        }
-
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            service.getAllMaintenanceLayout().done(function(layout_arr: Array<viewmodel.MaintenanceLayout>) {
-                if (layout_arr.length > 0) {
-                    self.items(layout_arr);
-                    self.currentCode(layout_arr[0].layoutCode);
-                } else {
-                    self.newModeBtn();
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-            })
-            dfd.resolve();
-            return dfd.promise();
-        }
-        /**
-         *  get all domain Maintenence Layout
-         */
-        getAllData(layoutCode: String) {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            service.getAllMaintenanceLayout().done(function(layout_arr: Array<viewmodel.MaintenanceLayout>) {
-                self.items(layout_arr);
-                self.currentCode(layoutCode);
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-            })
-            dfd.resolve();
-            return dfd.promise();
-        }
-
-        /**
-         *  mode Update cho Screen
-         */
-        updateMode() {
-            var self = this;
-            self.enableBtnCoppy(true);
-            self.enableBtnDelete(true);
-            self.A_INP_LAYOUT_CODE_ENABLE(false);
-        }
-
-        /**
-         *  check Input code, name
-         */
-        checkValidateInput(): boolean {
-            let self = this;
-            if (self.A_INP_LAYOUT_CODE() && self.A_INP_LAYOUT_NAME()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /**
-         *  set mode new or when click button New
-         */
-        newModeBtn() {
-            var self = this;
-            self.enableBtnCoppy(false);
-            self.enableBtnDelete(false);
-            self.A_INP_LAYOUT_CODE_ENABLE(true);
-            self.A_INP_LAYOUT_CODE("");
-            self.A_INP_LAYOUT_NAME("");
-            $("#A_INP_CODE").focus();
-        }
-        /**
-         *  Register Maintenance Layout
-         */
-        registerBtn() {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            if (self.checkValidateInput()) {
-                let obj = new AddMaintenanceLayoutCommand("000-000000000001 ", self.A_INP_LAYOUT_CODE(), self.A_INP_LAYOUT_NAME(), "1");
-                service.addMaintenanceLayout(obj)
-                    .done(function(error) {
-                        nts.uk.ui.dialog.alert("#Msg_15#");
-                        self.getAllData(obj.layoutCode);
-                        dfd.resolve();
-                    }).fail(function(error) {
-                        alert(error.message);
-                    })
-                dfd.resolve();
-                return dfd.promise();
-            } else {
-                console.log("");
-            }
-        }
-
-        /**
-         *  Delete Maintenance Layout
-         */
-        deleteBtn() {
-            var self = this;
-        }
-
-        /**
-         *  Open Screen C
-         */
-        openDialogCoppy() {
-            var self = this;
-            if (self.currentCode() == null) {
-                return;
-            }
-            let obj = self.findObj(self.currentCode());
-            nts.uk.ui.windows.setShared('modelToCoppy', obj);
-            nts.uk.ui.windows.sub.modal('/view/cps/008/c/index.xhtml', { title: '他のレイアウトへ複製' }).onClosed(function(): any {
             });
         }
+
+        createNewLayout() {
+            let self = this,
+                layout: Layout = self.layout();
+
+            layout.id(undefined);
+            layout.code('');
+            layout.name('');
+            layout.classifications([]);
+
+            layout.action(LAYOUT_ACTION.INSERT);
+            $("#A_INP_CODE").focus();
+        }
+
+        saveDataLayout() {
+            let self = this,
+                data: ILayout = ko.toJS(self.layout);
+
+            // check input
+            if (data.code == '' || data.name == '') {
+                if (data.code == '') {
+                    $("#A_INP_CODE").focus();
+                } else {
+                    $("#A_INP_NAME").focus();
+                }
+                return;
+            }
+
+            // call service savedata
+            service.saveData(data).done((_data: any) => {
+                self.start(data.code);
+            });
+        }
+
+        copyDataLayout() {
+            let self = this,
+                data: ILayout = ko.toJS(self.layout),
+                layouts: Array<ILayout> = ko.toJS(self.layouts);
+
+            setShared('CPS008_PARAM', data);
+            modal('../c/index.xhtml').onClosed(() => {
+                let _data = getShared('CPS008C_RESPONE');
+                if (_data) {
+                    data.code = _data.code;
+                    data.name = _data.name;
+
+                    if (_data.action) {
+                        data.action = LAYOUT_ACTION.OVERRIDE;
+                    } else {
+                        data.action = LAYOUT_ACTION.COPY;
+                    }
+
+
+                    // call saveData service
+                    service.saveData(data).done(() => {
+                        self.start(data.code);
+                    });
+
+                }
+            });
+        }
+
+        removeDataLayout() {
+            let self = this,
+                 data: ILayout = ko.toJS(self.layout);
+
+            data.action = LAYOUT_ACTION.REMOVE;
+            // call service remove
+        }
+
+        showDialogB() {
+            let self = this,
+                data: ILayout = ko.toJS(self.layout);
+            setShared('CPS008B_PARAM', data);
+            modal('../b/index.xhtml').onClosed(() => {
+
+            });
+        }
+     
     }
 
-    /**
-     *  model Dto
-     */
-    export class MaintenanceLayout {
-        companyId: string;
-        layoutCode: string;
-        layoutName: string;
-        maintenanceLayoutID: string;
-        constructor(companyId?: string, layoutCode?: string, layoutName?: string, maintenanceLayoutID?: string) {
-            this.companyId = companyId;
-            this.layoutCode = layoutCode;
-            this.layoutName = layoutName;
-            this.maintenanceLayoutID = maintenanceLayoutID;
+    interface ILayout {
+        id: string;
+        code: string;
+        name: string;
+        classifications?: Array<any>;
+        action?: number;
+    }
+
+    class Layout {
+        id: KnockoutObservable<string> = ko.observable('');
+        code: KnockoutObservable<string> = ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
+        classifications: KnockoutObservableArray<any> = ko.observableArray([]);
+        action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.INSERT);
+
+        constructor(param: ILayout) {
+            let self = this;
+
+            if (param) {
+                self.id(param.id || '');
+                self.code(param.code || '');
+                self.name(param.name || '');
+
+                self.classifications(param.classifications || []);
+            }
         }
     }
 
-    /**
-     *  model command 
-     */
-    export class AddMaintenanceLayoutCommand {
-        companyId: string;
-        layoutCode: string;
-        layoutName: string;
-        maintenanceLayoutID: string;
-        constructor(companyId?: string, layoutCode?: string, layoutName?: string, maintenanceLayoutID?: string) {
-            this.companyId = companyId;
-            this.layoutCode = layoutCode;
-            this.layoutName = layoutName;
-            this.maintenanceLayoutID = maintenanceLayoutID;
-        }
+    enum LAYOUT_ACTION {
+        INSERT = 0,
+        UPDATE = 1,
+        COPY = 2,
+        OVERRIDE = 3,
+        REMOVE = 4
     }
-} 
+}

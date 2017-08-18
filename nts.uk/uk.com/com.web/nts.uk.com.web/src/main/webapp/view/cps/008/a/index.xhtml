@@ -5,13 +5,14 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.newlayout.LayoutCode
-					nts.uk.ctx.bs.person.dom.person.newlayout.LayoutName
+					nts.uk.ctx.bs.person.dom.person.layout.LayoutCode
+					nts.uk.ctx.bs.person.dom.person.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 			<com:stylefile path="cps008.a.style.css" />
 			<com:scriptfile path="cps008.a.service.js" />
 			<com:scriptfile path="cps008.a.vm.js" />
@@ -19,78 +20,93 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area" >
-				<button id="A_BTN_NEW" 
-					data-bind=" enable: $root.errors.isEmpty , click : newModeBtn" >#{i18n.getText('CPS008_3') }</button>
-				<button id="A_BTN_REGISTER"  class="proceed"  data-bind = " click : registerBtn">#{i18n.getText('CPS008_4')}</button>
-				<button id="A_BTN_COPPY" data-bind = "click : openDialogCoppy , enable: enableBtnCoppy">#{i18n.getText('CPS008_5')}</button>
-				<button id="A_BTN_DELETE"  class="danger" data-bind = "click : deleteBtn , enable : enableBtnDelete">#{i18n.getText('CPS008_6')}</button>
-				<a class="goout" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('CPS008_7')}</a>
+			<div id="functions-area">
+				<button id="A_BTN_NEW" data-bind="click : createNewLayout">#{i18n.getText('CPS008_3')}</button>
+				<button id="A_BTN_REGISTER" class="proceed"
+					data-bind="click: saveDataLayout">#{i18n.getText('CPS008_4')}</button>
+				<button id="A_BTN_COPPY"
+					data-bind="click: copyDataLayout, enable: layout().id() != undefined">#{i18n.getText('CPS008_5')}</button>
+				<button id="A_BTN_DELETE" class="danger"
+					data-bind="click: removeDataLayout, enable: layout().id() != undefined">#{i18n.getText('CPS008_6')}</button>
+				<a class="goout"
+					data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('CPS008_7')}</a>
 			</div>
 			<div id="contents-area">
-				<div id="left-content" class="relative bg-green caret-right caret-background">
+				<div id="left-content"
+					class="relative bg-green caret-right caret-background">
 					<i class="icon icon-searchbox"></i>
 					<div class="cf">
-						<div style="float:left">
-		 					<div style="width: 308px" data-bind="ntsSearchBox: {targetKey: 'layoutCode', comId: 'multi-list',  
-		 						items: items, selected: currentCode, selectedKey: 'layoutCode', fields: ['layoutName', 'layoutCode'], mode: 'igGrid'}" />		 
-							<table id="multi-list" data-bind="ntsGridList: {
+						<div style="float: left">
+							<div style="width: 308px"
+								data-bind="ntsSearchBox: {
+									targetKey: 'code', 
+									comId: 'multi-list',
+									items: layouts, 
+									selected: layout().id, 
+									selectedKey: 'code', 
+									fields: ['name', 'code'], 
+									mode: 'igGrid'
+									}" />
+							<table id="multi-list"
+								data-bind="ntsGridList: {
 									height: 320,
-									options: items,
-									optionsValue: 'layoutCode',
-									columns: columns,
+									options: layouts,
+									optionsValue: 'id',
+									columns: [
+						                { headerText: '', key: 'id', width: 0, hidden: true },
+						                { headerText: 'コード', key: 'code', width: 120, hidden: false },
+						                { headerText: '名称', key: 'name', width: 171, hidden: false }
+						            ],
 									multiple: false,
-									value: currentCode}">
+									value: layout().id}">
 							</table>
 						</div>
 					</div>
 				</div>
-				
-				
-				<div id="right-content">
+				<div id="right-content" data-bind="with: layout">
 					<div id="right-content">
-					<table class="table_content">
-						<colgroup>
-							<col width="220px" />
-							<col width="*" />
-						</colgroup>
+						<table class="table_content">
+							<colgroup>
+								<col width="220px" />
+								<col width="*" />
+							</colgroup>
+							<tr>
+								<td class="row_1">
+									<div
+										data-bind="ntsFormLabel: { constraint: ['LayoutCode','LayoutName'] , required: true }">
+										コード/名称</div>
+								</td>
+								<td class="valign-center">
+									<div>
+										<div class="input_002 input_code">
+											<input id="A_INP_CODE" style="width: 80px"
+												data-bind="ntsTextEditor: {
+															value: code,
+															constraint: 'LayoutCode',
+															enable: true }" />
+										</div>
 
-						<tr>
-							<td class="row_1">
-								<div
-									data-bind="ntsFormLabel: { constraint: ['LayoutCode','LayoutName'] , required: true }">
-									コード/名称</div>
-							</td>
-							<td class="valign-center">
-								<div>
-									<div class="input_002 input_code">
-										<input id="A_INP_CODE" style="width: 80px"
-											data-bind="ntsTextEditor: {
-											value: A_INP_LAYOUT_CODE,
-											constraint: 'LayoutCode',
-											enable: A_INP_LAYOUT_CODE_ENABLE}" />
-									</div>
-
-									<div class="input_002 input_name">
-										<input id="A_INP_DEPNAME" style="width: 180px"
-											data-bind="ntsTextEditor: {
-											value: A_INP_LAYOUT_NAME,
-											constraint: 'LayoutName',
-											enable: A_INP_LAYOUT_NAME_ENABLE
+										<div class="input_002 input_name">
+											<input id="A_INP_DEPNAME" style="width: 180px"
+												data-bind="ntsTextEditor: {
+															value: name,
+															constraint: 'LayoutName',
+															enable: true
 											}" />
+										</div>
 									</div>
-								</div>
-							</td>
-						</tr>
-					</table>
-					
-					<div>
-						<button class="x-large">#{i18n.getText('CPS008_42')}</button>
+								</td>
+							</tr>
+						</table>
+						<div>
+							<button class="x-large" data-bind="click: $parent.showDialogB.bind($parent)">#{i18n.getText('CPS008_42')}</button>
+						</div>
+						<div style="padding-top: 10px"
+							data-bind="ntsLayoutControl: { 
+								data: classifications,
+								editAble: false }"></div>
 					</div>
 				</div>
-				</div>
-				<div></div>
-				
 			</div>
 		</ui:define>
 	</ui:composition>

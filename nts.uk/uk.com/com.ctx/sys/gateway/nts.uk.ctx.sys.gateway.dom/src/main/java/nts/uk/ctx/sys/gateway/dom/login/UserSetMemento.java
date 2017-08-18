@@ -23,7 +23,7 @@ public interface UserSetMemento {
      *
      * @param password the new password
      */
-    public void setPassword(HashPassword password);
+    public void setPassword(RawPassword password);
 
     /**
      * Sets the login id.

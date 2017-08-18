@@ -4,27 +4,31 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.budget.external;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
-import nts.arc.system.ServerSystemProperties;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetDataPreviewDto;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetExtractCondition;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExtBudgetFileReaderServiceImpl;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetLogDto;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetQuery;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.ExternalBudgetValDto;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.csv.NtsCsvReader;
+import nts.gul.csv.NtsCsvRecord;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetDataPreviewDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetExtractCondition;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetValDto;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUltil;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -33,15 +37,28 @@ public class ExternalBudgetFinder {
 	@Inject
 	private ExternalBudgetRepository externalBudgetRepo;
 	
-	/** The ext budget log repo. */
-	@Inject
-    private ExternalBudgetLogRepository extBudgetLogRepo;
-	
-	@Inject
-	private StoredFileInfoRepository fileInfoRepository;
-	
+	/** The file stream service. */
 	@Inject
     private StoredFileStreamService fileStreamService;
+	
+	/** The file check service. */
+    @Inject
+    private ExtBudgetFileCheckService fileCheckService;
+    
+    /** The Constant INDEX_CODE. */
+    private final int INDEX_CODE = 0;
+    
+    /** The Constant INDEX_DATE. */
+    private final int INDEX_DATE = 1;
+    
+    /** The Constant INDEX_VALUE. */
+    private final int INDEX_VALUE = 2;
+    
+    /** The Constant MAX_RECORD_DISP. */
+    private final int MAX_RECORD_DISP = 10;
+    
+    /** The Constant MAX_COLUMN. */
+    private final int MAX_COLUMN = 51;
 	
 	/*
 	 * get All List iTem of external Budget
@@ -55,74 +72,148 @@ public class ExternalBudgetFinder {
 	}
 	
 	/**
+	 * Validate file.
+	 *
+	 * @param fileId the file id
+	 */
+	public void validateFile(ExtBudgetExtractCondition extractCondition) {
+	    // Check valid format file.
+	    this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
+                extractCondition.getStartLine());
+	}
+	
+	/**
 	 * Find data preview.
 	 *
 	 * @param file the file
 	 * @return the ext budget data preview dto
 	 */
-	@SuppressWarnings("unchecked")
     public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
-	    System.out.println(new File(ServerSystemProperties.fileStoragePath()).toPath().resolve(extractCondition.getFileId()).toString());
-//	    InputStream inputStream = null;
-//	    try {
-//            inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
-//        } catch (BusinessException businessException) {
-//            throw new BusinessException("Msg_158");
-//        }
-//	    
-//	    Optional<StoredFileInfo> optional = this.fileInfoRepository.find(extractCondition.getFileId());
-//        if(!optional.isPresent()){
-//            new RuntimeException("stored file info is not found.");
-//        }
-//        StoredFileInfo storagedFileInfor = optional.get();
-//        
-//        // check file extension
-//        List<String> FILE_EXTENSION_ARR = Arrays.asList("text, csv");
-//        if (!FILE_EXTENSION_ARR.contains(storagedFileInfor.getFileType().toLowerCase())) {
-//            throw new BusinessException("Msg_159"); 
-//        }
-//	    
+        // Check valid format file.
+        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
+                extractCondition.getStartLine());
         
         String companyId = AppContexts.user().companyId();
+        
+        // find external budget setting
         Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
                 extractCondition.getExternalBudgetCode());
         if (!extBudgetOptional.isPresent()) {
             throw new RuntimeException("Not external budget setting.");
         }
-        
         ExternalBudget externalBudget = extBudgetOptional.get();
-        ExtBudgetFileReaderServiceImpl fileReader = new ExtBudgetFileReaderServiceImpl(extractCondition, externalBudget,
-                this.fileInfoRepository, this.fileStreamService);
-	    Map<String, Object> mapData = fileReader.findDataPreview();
+        
+        int totalRecord = 0;
+        int indexLine = 0;
+        List<ExternalBudgetValDto> lstExtBudgetVal = new ArrayList<>();
+        try {
+            // get input stream by fileId
+            InputStream inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
+            
+            // get list record
+            List<NtsCsvRecord> csvRecords = this.findRecordFile(inputStream, extractCondition.getEncoding());
+            if (CollectionUtil.isEmpty(csvRecords)) {
+                throw new BusinessException(new RawErrorMessage("File input not data."));
+            }
+            
+            // calculate total record file
+            int calTotal = csvRecords.size() - extractCondition.getStartLine() + 1;
+            if (calTotal > totalRecord) {
+                totalRecord = calTotal;
+            }
+            Iterator<NtsCsvRecord> csvRecordIterator = csvRecords.iterator();
+            while(csvRecordIterator.hasNext()) {
+                NtsCsvRecord record = csvRecordIterator.next();
+                indexLine++;
+                if (indexLine < extractCondition.getStartLine()) {
+                    continue;
+                }
+                // check max record show client.
+                if (lstExtBudgetVal.size() <= MAX_RECORD_DISP) {
+                    // get record data
+                    List<String> result = this.findDataRecord(record);
+                    
+                    // fill or split column space if number column is incorrect. 
+                    this.findListExtBudgetValue(result, externalBudget.getUnitAtr());
+                    
+                    lstExtBudgetVal.add(ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE),
+                            result.get(INDEX_DATE), result.subList(INDEX_VALUE, result.size())));
+                }
+            }
+            // close input stream
+            inputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 	    return ExtBudgetDataPreviewDto.builder()
-	            .data((List<ExternalBudgetValDto>) mapData.get(ExtBudgetFileReaderServiceImpl.DATA_PREVIEW))
-	            .totalRecord((Integer) mapData.get(ExtBudgetFileReaderServiceImpl.TOTAL_RECORD))
+	            .isDailyUnit(externalBudget.getUnitAtr() == UnitAtr.DAILY)
+	            .data(lstExtBudgetVal)
+	            .totalRecord(totalRecord)
 	            .build();
 	}
 	
-	/**
-	 * Find external budget log.
-	 *
-	 * @param startDate the start date
-	 * @return the list
-	 */
-	public List<ExternalBudgetLogDto> findExternalBudgetLog(ExternalBudgetQuery query) {
-	    String companyId = AppContexts.user().companyId();
-	    String employeeIdLogin = AppContexts.user().employeeId();
-	    Map<String, String> mapBudget = this.externalBudgetRepo.findAll(companyId).stream()
-	            .collect(Collectors.toMap(item -> item.getExternalBudgetCd().v(),
-	                    item -> item.getExternalBudgetName().v()));
-	    return this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin, query.getStartDate(), query.getEndDate(),
-	            query.getListState()).stream()
-	            .map(domain -> {
-	                ExternalBudgetLogDto dto = new ExternalBudgetLogDto();
-	                domain.saveToMemento(dto);
-	                
-	                // set external budget name
-	                dto.extBudgetName = mapBudget.get(domain.getExtBudgetCode().v());
-	                return dto;
-	            })
-	            .collect(Collectors.toList());
-	}
-	
+    /**
+     * Find data record.
+     *
+     * @param record the record
+     * @return the list
+     */
+    private List<String> findDataRecord(NtsCsvRecord record) {
+        List<String> result = new ArrayList<>();
+        for (int idxCol = 0; idxCol < MAX_COLUMN; idxCol++) {
+            Object value = record.getColumn(idxCol);
+            if (value == null) {
+                continue;
+            }
+            result.add(value.toString());
+        }
+        return result;
+    }
+    
+    /**
+     * Find record file.
+     *
+     * @param inputStream the input stream
+     * @param encoding the encoding
+     * @return the list
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    private List<NtsCsvRecord> findRecordFile(InputStream inputStream, Integer encoding) throws IOException {
+        NtsCsvReader csvReader = FileUltil.newCsvReader(encoding);
+        return csvReader.parse(inputStream);
+    }
+    
+    
+    /**
+     * Find list ext budget value.
+     *
+     * @param lstRawVal the lst raw val
+     * @param extBudgetCode the ext budget code
+     * @return the list
+     */
+    private List<String> findListExtBudgetValue(List<String> lstRawVal, UnitAtr unitAtr) {
+        String valEmpty = "";
+        int numberCol;
+        switch (unitAtr) {
+            case DAILY:
+                numberCol = 3;
+                break;
+            case BYTIMEZONE:
+                numberCol = 50;
+                break;
+            default:
+                throw new RuntimeException("Not unit atr suitable.");
+        }
+        if (lstRawVal.size() > numberCol) {
+            lstRawVal.subList(0, numberCol);
+            return lstRawVal;
+        }
+        if (lstRawVal.size() == numberCol) {
+            return lstRawVal;
+        }
+        while (lstRawVal.size() <= numberCol) {
+            lstRawVal.add(valEmpty);
+        }
+        return lstRawVal;
+    }
 }

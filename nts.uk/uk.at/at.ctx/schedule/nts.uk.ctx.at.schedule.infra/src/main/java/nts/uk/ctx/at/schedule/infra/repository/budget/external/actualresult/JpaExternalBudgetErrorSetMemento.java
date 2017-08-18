@@ -10,6 +10,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetActualVa
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetErrorContent;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetErrorPK;
 
 /**
  * The Class JpaExternalBudgetErrorSetMemento.
@@ -26,6 +27,9 @@ public class JpaExternalBudgetErrorSetMemento implements ExternalBudgetErrorSetM
      *            the entity
      */
     public JpaExternalBudgetErrorSetMemento(KscdtExtBudgetError entity) {
+        if (entity != null && entity.getKscdtExtBudgetErrorPK() == null) {
+            entity.setKscdtExtBudgetErrorPK(new KscdtExtBudgetErrorPK());
+        }
         this.entity = entity;
     }
 
@@ -47,7 +51,7 @@ public class JpaExternalBudgetErrorSetMemento implements ExternalBudgetErrorSetM
      *            the new number column
      */
     @Override
-    public void setNumberColumn(int numberColumn) {
+    public void setColumnNo(int numberColumn) {
         this.entity.getKscdtExtBudgetErrorPK().setColumnNo(numberColumn);
     }
 
@@ -102,7 +106,7 @@ public class JpaExternalBudgetErrorSetMemento implements ExternalBudgetErrorSetM
      *            the new number line
      */
     @Override
-    public void setNumberLine(int numberLine) {
+    public void setLineNo(int numberLine) {
         this.entity.getKscdtExtBudgetErrorPK().setLineNo(numberLine);
     }
 

@@ -44,31 +44,31 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 		// check time limit
 		this.checkLimitTime(user);
 
-		// TODO check save to local storage(client incharge) 
+		// TODO check save to local storage(client incharge)
 		// if check -> save
 		// else -> remove
 
 	}
 
 	private void checkInput(SubmitLoginFormOneCommand command) {
-		if (command.getLoginId() == null) {
+		if (command.getLoginId().isEmpty() || command.getLoginId() == null) {
 			throw new BusinessException("#Msg_309");
 		}
 
-		if (command.getPassword() == null) {
+		if (command.getPassword().isEmpty() || command.getPassword() == null) {
 			throw new BusinessException("#Msg_310");
 		}
 	}
 
 	private void compareHashPassword(Optional<User> user, String password) {
 		// TODO compare hash string here
-		if (!user.get().getPassword().equals(password)) {
+		if (!user.get().getPassword().v().equals(password)) {
 			throw new BusinessException("#Msg_302");
 		}
 	}
 
 	private void checkLimitTime(Optional<User> user) {
-		if (user.get().getExpirationDate().after(GeneralDate.today())) {
+		if (!user.get().getExpirationDate().after(GeneralDate.today())) {
 			throw new BusinessException("#Msg_316");
 		}
 	}

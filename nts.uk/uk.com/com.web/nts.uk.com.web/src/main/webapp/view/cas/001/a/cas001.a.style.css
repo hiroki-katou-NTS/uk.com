@@ -14,6 +14,7 @@
 
 #content-left {
 	width: 270px;
+	height: 490px;
 }
 
 #content-right {
@@ -32,6 +33,10 @@
 	border-right: 1.7em solid transparent;
 	border-left: 1.6em solid transparent;
 	margin-left: 0.6em;
+}
+
+#A3_003 {
+	margin-left: 10px;
 }
 
 #content-left>.caret-bottom {
@@ -58,6 +63,7 @@
 
 .auth_table td {
 	background: white;
+	height: 34px;
 }
 
 #roleAuTable td {
@@ -81,7 +87,7 @@
 }
 
 #file_permission_settings_cover {
-	width: 820px;
+	width: 835px;
 }
 
 #file_permission_settings {
@@ -111,11 +117,11 @@
 	margin-left: 10px;
 }
 
-#auth_of_info_selected_all {
+.selected_all_auth {
 	display: block;
 }
 
-#auth_of_info_selected_all .nts-switch-button {
+.selected_all_auth .nts-switch-button {
 	width: 70px;
 	margin-left: 5px;
 }
@@ -165,4 +171,25 @@
 
 #item_role_table_body_container  .nts-switch-button {
 	width: 70px;
+}
+
+#A2_008_headers_v, #A2_008_virtualContainer td:FIRST-CHILD,
+	#A2_008_setting {
+	overflow: visible !important;
+}
+
+#A2_012 {
+	height: 25px;
+}
+
+#A2_001_virtualContainer {
+	height: initial !important;
+}
+
+#A2_008 tr>td:NTH-CHILD(2) {
+	text-align: center;
+}
+
+#item_role_table_body tr>td:NTH-CHILD(2) {
+	text-align: center;
 }

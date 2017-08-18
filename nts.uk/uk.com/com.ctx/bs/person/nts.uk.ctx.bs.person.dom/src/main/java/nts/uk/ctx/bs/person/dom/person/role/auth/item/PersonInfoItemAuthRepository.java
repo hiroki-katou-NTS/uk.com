@@ -4,17 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PersonInfoItemAuthRepository {
-	List<PersonInfoItemAuth> getAllPersonItemAuth();
 
-	List<PersonInfoItemAuth> getAllPersonItemAuthByCategory(String roleId, String personCategoryAuthId);
+	List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personInfoCategoryAuthId,String contractCd);
 
-	Optional<PersonInfoItemAuth> getDetailPersonItemAuth(String roleId, String personCategoryAuthId,
-			String personItemDefId);
-	List<PersonInfoItemDetail> getAllItemDetail(String personCategoryAuthId);
+	Optional<PersonInfoItemAuth> getItemDetai(String roleId, String categoryId, String perInfoItemDefId);
 
 	void add(PersonInfoItemAuth domain);
 
 	void update(PersonInfoItemAuth domain);
 
-	void delete(String roleId,String personCategoryAuthId, String personItemDefId);
+	void delete(String roleId, String personCategoryAuthId, String personItemDefId);
 }

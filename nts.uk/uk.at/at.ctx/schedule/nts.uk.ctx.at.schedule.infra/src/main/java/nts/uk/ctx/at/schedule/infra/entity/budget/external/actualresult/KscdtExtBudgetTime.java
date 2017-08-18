@@ -76,17 +76,6 @@ public class KscdtExtBudgetTime extends UkJpaEntity implements Serializable {
         this.kscdtExtBudgetTimePK = new KscdtExtBudgetTimePK(wkpid, actualDate, extBudgetCd);
     }
     
-    /**
-     * Creates the entity.
-     *
-     * @param other the other
-     * @return the kscdt ext budget time
-     */
-    public static KscdtExtBudgetTime createEntity(KscdtExtBudgetTime other) {
-        return new KscdtExtBudgetTime(new KscdtExtBudgetTimePK(other.getKscdtExtBudgetTimePK().getWkpid(),
-                other.getKscdtExtBudgetTimePK().getActualDate(), other.getKscdtExtBudgetTimePK().getExtBudgetCd()));
-    }
-
     /*
      * (non-Javadoc)
      * 

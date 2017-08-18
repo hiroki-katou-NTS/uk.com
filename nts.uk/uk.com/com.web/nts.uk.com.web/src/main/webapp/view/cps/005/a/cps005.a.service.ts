@@ -2,18 +2,37 @@ module nts.uk.com.view.cps005.a {
     export module service {
         export class Service {
             paths = {
-                getDetailYearMonth: "at/record/agreementMonthSetting/getAgreementMonthSetting/{0}",
+                getAllPerInfoCtg: "ctx/bs/person/info/category/findby/company",
+                getPerInfoCtg: "ctx/bs/person/info/category/findby/{0}",
+                getPerInfoCtgWithItemsName: "ctx/bs/person/info/category/find/withItemsName/{0}",
+                addPerInfoCtg: "ctx/bs/person/info/category/add",
+                updatePerInfoCtg: "ctx/bs/person/info/category/update",
             }
-
             constructor() {
 
             }
 
-            getDetailYearMonth(employeeId: string): JQueryPromise<any> {
-                //                let _path = nts.uk.text.format(this.paths.getDetailYearMonth, employeeId);
-                return //nts.uk.request.ajax("com", _path);
+            getAllPerInfoCtg(): JQueryPromise<any> {
+                return nts.uk.request.ajax("com", this.paths.getAllPerInfoCtg);
             };
 
+            getPerInfoCtg(categoryId: string): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.getPerInfoCtg, categoryId);
+                return nts.uk.request.ajax("com", _path);
+            };
+
+            getPerInfoCtgWithItemsName(categoryId: string): JQueryPromise<any> {
+                let _path = nts.uk.text.format(this.paths.getPerInfoCtgWithItemsName, categoryId);
+                return nts.uk.request.ajax("com", _path);
+            };
+
+            addPerInfoCtg(newCategory: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("com", this.paths.getAllPerInfoCtg);
+            };
+
+            updatePerInfoCtg(newCategory: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("com", this.paths.updatePerInfoCtg);
+            };
 
         }
     }

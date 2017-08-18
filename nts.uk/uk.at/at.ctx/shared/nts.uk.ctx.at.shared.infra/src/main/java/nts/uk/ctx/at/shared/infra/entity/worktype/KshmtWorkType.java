@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktype;
 
 import java.io.Serializable;
@@ -51,6 +55,26 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
 	/*   */
 	@Column(name = "MORNING_CLS")
 	public int morningCls;
+	
+	/*廃止区分*/
+	@Column(name = "DEPRECATE_ATR")
+	public int deprecateAtr;
+	
+	/*勤務区分*/
+	@Column(name = "WORKTYPE_ATR")
+	public int worktypeAtr;
+	
+	/*1日*/
+	@Column(name = "ONE_DAY_ATR")
+	public int oneDayAtr;
+	
+	/*午前*/
+	@Column(name = "MORNING_ATR")
+	public int morningAtr;
+	
+	/*午後*/
+	@Column(name = "AFTERNOON_ATR")
+	public int afternoonAtr;
 	
 	@Override
 	protected Object getKey() {

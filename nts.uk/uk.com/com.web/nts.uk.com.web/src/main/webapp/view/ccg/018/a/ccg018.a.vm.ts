@@ -108,7 +108,7 @@ module ccg018.a.viewmodel {
         
         /**
          * Find data in table STANDARD_MENU base on CompanyId and System = 0(common) and MenuClassification = 8(top page)
-         * Return 2 array comboItemsAsTopPage and comboItemsAfterLogin 
+         * Return array comboItemsAsTopPage 
          */
         findBySystemMenuCls(): JQueryPromise<any> {
             let self = this;

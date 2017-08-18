@@ -19,33 +19,8 @@ public class ExternalBudgetVal<T> {
      *
      * @param value the value
      */
-    public ExternalBudgetVal(Long value) {
-        this.initObject(value);
-    }
-    
-    /**
-     * Inits the object.
-     *
-     * @param value the value
-     */
-    @SuppressWarnings("unchecked")
-    private void initObject(Long value) {
-        if (this.object instanceof ExtBudgetTime) {
-            this.object = (T) new ExtBudgetTime(value);
-        }
-        if (this.object instanceof ExtBudgetNumberPerson) {
-            this.object = (T) new ExtBudgetNumberPerson(value.intValue());
-        }
-        if (this.object instanceof ExtBudgetMoney) {
-            this.object = (T) new ExtBudgetMoney(value.intValue());
-        }
-        if (this.object instanceof ExtBudgetNumericalVal) {
-            this.object = (T) new ExtBudgetNumericalVal(value.intValue());
-        }
-        if (this.object instanceof ExtBudgetUnitPrice) {
-            this.object = (T) new ExtBudgetUnitPrice(value.intValue());
-        }
-        throw new RuntimeException("Not external budget attribute");
+    public ExternalBudgetVal(T object) {
+        this.object = object;
     }
     
     /**

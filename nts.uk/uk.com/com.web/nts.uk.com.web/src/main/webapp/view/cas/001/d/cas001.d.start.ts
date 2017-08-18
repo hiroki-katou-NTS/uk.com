@@ -1,66 +1,95 @@
+import text = nts.uk.resource.getText;
+
 module nts.uk.com.view.cas001.d {
+    let __viewContext: any = window["__viewContext"] || {};
+
     __viewContext.ready(function() {
-        __viewContext["viewModel"] = new viewmodel.ScreenModel();
-        __viewContext.bind(__viewContext["viewModel"]);
+        var screenModel = new viewmodel.ScreenModel();
+        __viewContext["viewModel"] = screenModel;
+        screenModel.start().done(() => {
+            InitIggrid();
+            $("#grid").igGrid("option", "dataSource", screenModel.categoryList());
+            __viewContext.bind(__viewContext["viewModel"]);
+            screenModel.categoryList.subscribe(data => {
+                if (data) {
+                    $("#grid").igGrid("option", "dataSource", data);
+                } else {
+                    $("#grid").igGrid("option", "dataSource", []);
+                }
+            });
+        });
     });
 }
-$(function() {
+
+function InitIggrid() {
+    let __viewContext: any = window["__viewContext"] || {};
     $("#grid").igGrid({
         columns: [
+            { headerText: "Id", key: "categoryId", dataType: "string", width: "100px", height: "40px", hidden: true },
             {
-                headerText: "<input id='selfAuth' type='checkbox'  tabindex='2' >他人</input>", key: 'selfAuth',
-                width: "80px", height: "40px", formatter: function(evt: any, row: any) {
-                    let cb = $("<input  class = 'checkRow selfAuth' type='checkbox' tabindex='4'/>");
-                    cb.attr("data-id", row.roleCode);
-                    return cb[0].outerHTML;
-                }
+                headerText: "他人</br><input class='selfAuth' type='checkbox'  tabindex='2' ></input>", key: 'selfAuth',
+                width: "35px", height: "40px",
+                template: "<input style='width:30px, height:40px' class='checkRow selfAuth' type='checkbox' data-checked='${selfAuth}' data-id='${categoryId}' tabindex='4'/>"
             },
             {
-                headerText: "<input id='otherAuth' type='checkbox'  tabindex='3'>本人</input>", key: 'otherAuth',
-                width: "80px", height: "40px", formatter: function(evt: any, row: any) {
-                    let cb = $("<input  class = 'checkRow otherAuth' type='checkbox' tabindex='5'/>");
-                    cb.attr("data-id", row.roleCode);
-                    return cb[0].outerHTML;
-                }
+                headerText: "本人</br><input class='otherAuth' type='checkbox'  tabindex='3'></input>", key: 'otherAuth',
+                width: "35px", height: "40px",
+                template: "<input style='width:30px, height:40px'  class='checkRow otherAuth' type='checkbox' data-checked='${otherAuth}' data-id='${categoryId}' tabindex='4'/>"
             },
-            { headerText: "コード", key: "roleCode", dataType: "string", width: "100px", height: "40px", hidden: true },
-            { headerText: "カテゴリ名", key: "roleName", dataType: "string", width: "50px", height: "40px" },
-            { headerText: '説明', key: 'description', width: "35px", hidden: true, height: "40px" },
+            { headerText: text('CAS001_21'), key: "categoryName", dataType: "string", width: "100px", height: "40px" }
 
         ],
-        primaryKey: 'roleCode',
+        primaryKey: 'categoryId',
         autoGenerateColumns: false,
-        autoCommit: true,
         dataSource: [],
-        width: "300px",
+        width: "440px",
         height: "270px",
-        features: [
-            {
-                name: "Updating",
-                enableAddRow: false,
-                editMode: "row",
-                enableDeleteRow: false,
-                columnSettings: [
-                    { columnKey: "selfAuth", readOnly: true },
-                    { columnKey: "otherAuth", readOnly: true },
-                    { columnKey: "roleCode", readOnly: true },
-                    { columnKey: "roleName", readOnly: true },
-                    { columnKey: "description", readOnly: true },
-                ]
-            }]
+        features: [{
+            name: 'Selection',
+            mode: 'row',
+            activation: false,
+        }
+        ],
+        dataRendered: function(evt, ui) {
+            $("#grid").find("input[type=checkbox]").each(function() {
+                let $this = $(this);
+                $this.prop('checked', $this.data('checked'));
+            });
+        }
     });
-    $(document).on("click", "#selfAuth", function(evt, ui) {
-        $("#grid").igGridUpdating("endEdit");
-        $("#grid").find("tr").each((index, element) => {
-            // change state of all checkbox delete
-            $(element).find(".selfAuth").prop("checked", $("#selfAuth").prop("checked")).trigger("change");
-        });
+    $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
+    $(document).on("click", ".selfAuth:not(.checkRow)", function(evt, ui) {
+        let _this = $(this);
+        $("#grid").find(".checkRow.selfAuth").prop("checked", _this.prop("checked")).trigger("change");
     });
-    $(document).on("click", "#otherAuth", function(evt, ui) {
-        $("#grid").igGridUpdating("endEdit");
-        $("#grid").find("tr").each((index, element) => {
-            // change state of all checkbox delete
-            $(element).find(".otherAuth").prop("checked", $("#otherAuth").prop("checked")).trigger("change");
-        });
+
+    $(document).on("change", ".selfAuth.checkRow", function(evt, ui) {
+        let _this = $(this),
+            id = _this.parents('tr').data('id'),
+            data: Array<any> = __viewContext["viewModel"].categoryList(),
+            item = _.find(data, x => x.categoryId == id);
+        if (item) {
+            item.selfAuth = _this.prop('checked');
+        } else {
+            item.selfAuth = _this.removeProp('checked');
+        }
     });
-})
+
+    $(document).on("click", ".otherAuth:not(.checkRow)", function(evt, ui) {
+        let _this = $(this);
+
+        $("#grid").find(".checkRow.otherAuth").prop("checked", _this.prop("checked")).trigger("change");
+    });
+
+    $(document).on("change", ".otherAuth.checkRow", function(evt, ui) {
+        let _this = $(this),
+            id = _this.parents('tr').data('id'),
+            data: Array<any> = __viewContext["viewModel"].categoryList(),
+            item = _.find(data, x => x.categoryId == id);
+        if (item) {
+            item.otherAuth = _this.prop('checked');
+        } else {
+            item.otherAuth = _this.removeProp('checked');
+        }
+    });
+}

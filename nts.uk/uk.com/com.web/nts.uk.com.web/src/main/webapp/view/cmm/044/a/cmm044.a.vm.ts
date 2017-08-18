@@ -293,6 +293,10 @@ module cmm044.a.viewmodel {
          */
         addAgent() {
             var self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
+            
             nts.uk.ui.block.invisible();
             self.currentItem().agentAppType1(self.agentAppType1());
             self.currentItem().agentAppType2(self.agentAppType2());
@@ -304,7 +308,7 @@ module cmm044.a.viewmodel {
             self.currentItem().agentSid2(self.agentSid2());
             self.currentItem().agentSid3(self.agentSid3());
             self.currentItem().agentSid4(self.agentSid4());
-
+            
             var agent = ko.toJSON(self.currentItem());
             agent["employeeId"] = self.empSelectedItem().personId;
             var existsItem = self.findInHistItem(self.currentItem().employeeId(), self.histSelectedItem());

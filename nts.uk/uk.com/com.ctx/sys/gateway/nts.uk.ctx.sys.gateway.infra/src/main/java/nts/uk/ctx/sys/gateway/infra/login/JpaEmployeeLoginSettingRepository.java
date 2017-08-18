@@ -4,20 +4,51 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.login;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSetting;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingRepository;
-@Stateless
-public class JpaEmployeeLoginSettingRepository extends JpaRepository implements EmployeeLoginSettingRepository{
+import nts.uk.ctx.sys.gateway.entity.login.SgwstEmployeeLoginSet;
+import nts.uk.ctx.sys.gateway.entity.login.SgwstEmployeeLoginSet_;
 
+/**
+ * The Class JpaEmployeeLoginSettingRepository.
+ */
+@Stateless
+public class JpaEmployeeLoginSettingRepository extends JpaRepository implements EmployeeLoginSettingRepository {
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingRepository#getByContractCode(java.lang.String)
+	 */
 	@Override
 	public Optional<EmployeeLoginSetting> getByContractCode(String contractCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		EntityManager em = this.getEntityManager();
 
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<SgwstEmployeeLoginSet> query = builder.createQuery(SgwstEmployeeLoginSet.class);
+		Root<SgwstEmployeeLoginSet> root = query.from(SgwstEmployeeLoginSet.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList.add(builder.equal(root.get(SgwstEmployeeLoginSet_.contractCd), contractCode));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		SgwstEmployeeLoginSet result = em.createQuery(query).getSingleResult();
+		if (result == null) {
+			return Optional.empty();
+		} else {
+			return Optional.of(new EmployeeLoginSetting(new JpaEmployeeLoginSettingGetMemento(result)));
+		}
+	}
 }

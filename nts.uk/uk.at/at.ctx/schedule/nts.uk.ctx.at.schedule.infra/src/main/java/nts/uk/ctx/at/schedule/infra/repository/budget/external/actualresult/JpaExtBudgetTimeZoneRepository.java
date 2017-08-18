@@ -9,13 +9,22 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZone;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneVal;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTime;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTimePK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTimePK_;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetTime_;
 
 /**
  * The Class JpaExtBudgetTimeZoneRepository.
@@ -55,6 +64,36 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
         });
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetTimeZoneRepository#isExisted(java.lang.String,
+     * nts.arc.time.GeneralDate, java.lang.String)
+     */
+    @Override
+    public boolean isExisted(String workplaceId, GeneralDate actualDate, String extBudgetCode) {
+        EntityManager em = this.getEntityManager();
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KscdtExtBudgetTime> query = builder.createQuery(KscdtExtBudgetTime.class);
+        Root<KscdtExtBudgetTime> root = query.from(KscdtExtBudgetTime.class);
+
+        List<Predicate> predicateList = new ArrayList<>();
+
+        predicateList.add(builder.equal(
+                root.get(KscdtExtBudgetTime_.kscdtExtBudgetTimePK).get(KscdtExtBudgetTimePK_.wkpid), workplaceId));
+        predicateList.add(builder.equal(
+                root.get(KscdtExtBudgetTime_.kscdtExtBudgetTimePK).get(KscdtExtBudgetTimePK_.actualDate), actualDate));
+        predicateList.add(
+                builder.equal(root.get(KscdtExtBudgetTime_.kscdtExtBudgetTimePK).get(KscdtExtBudgetTimePK_.extBudgetCd),
+                        extBudgetCode));
+
+        query.where(predicateList.toArray(new Predicate[] {}));
+        
+        return !CollectionUtil.isEmpty(em.createQuery(query).getResultList());
+    }
+    
     /**
      * Find list entity.
      *
@@ -66,19 +105,20 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
      */
     private <T> List<KscdtExtBudgetTime> findListEntity(ExternalBudgetTimeZone<T> domain) {
         // create template entity.
-        KscdtExtBudgetTime tempEntity = new KscdtExtBudgetTime(domain.getWorkplaceId(),
+        KscdtExtBudgetTimePK tempPK = new KscdtExtBudgetTimePK(domain.getWorkplaceId(),
                 GeneralDate.legacyDate(domain.getActualDate()), domain.getExtBudgetCode().v());
         
         List<KscdtExtBudgetTime> lstEntity = new ArrayList<>();
         
         for (ExternalBudgetTimeZoneVal<T> object : domain.getActualValues()) {
 
-            // create new other entity
-            KscdtExtBudgetTime newEntity = KscdtExtBudgetTime.createEntity(tempEntity);
-            newEntity.getKscdtExtBudgetTimePK().setPeriodTimeNo(object.getTimePeriod());
+            // create new other pk
+            KscdtExtBudgetTimePK pk = KscdtExtBudgetTimePK.createEntity(tempPK);
+            pk.setPeriodTimeNo(object.getTimePeriod());
 
+            KscdtExtBudgetTime newEntity = new KscdtExtBudgetTime(pk);
             // find entity existed ?
-            Optional<KscdtExtBudgetTime> optional = this.queryProxy().find(newEntity, KscdtExtBudgetTime.class);
+            Optional<KscdtExtBudgetTime> optional = this.queryProxy().find(pk, KscdtExtBudgetTime.class);
             if (optional.isPresent()) {
                 newEntity = optional.get();
             }
@@ -88,4 +128,5 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
         domain.saveToMemento(memento);
         return lstEntity;
     }
+
 }

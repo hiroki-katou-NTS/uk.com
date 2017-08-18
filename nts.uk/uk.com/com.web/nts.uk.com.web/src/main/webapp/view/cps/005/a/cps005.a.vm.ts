@@ -5,7 +5,6 @@ module nts.uk.com.view.cps005.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import service = nts.uk.com.view.cps005.a.service;
     import textUK = nts.uk.text;
 
     export module viewmodel {
@@ -20,7 +19,13 @@ module nts.uk.com.view.cps005.a {
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                dfd.resolve();
+                new service.Service().getAllPerInfoCtg().done(function(data: IData) {
+                    self.currentData(new DataModel(data));
+                    if(data && data.categoryList && data.categoryList.length > 0){
+                        self.currentData().perInfoCtgSelectCode(data.categoryList[0].id);
+                    }
+                    dfd.resolve();
+                }).fail(error => { });
                 return dfd.promise();
             }
 
@@ -39,25 +44,16 @@ module nts.uk.com.view.cps005.a {
     }
 
     export class DataModel {
-        perInfoCategoryList: KnockoutObservableArray<PerInfoCategoryModel> = ko.observableArray([
-            new PerInfoCategoryModel({ categoryCode: "C01", categoryName: "A1", fixedAtr: 0, categoryType: 1 }),
-            new PerInfoCategoryModel({ categoryCode: "C02", categoryName: "A2", fixedAtr: 1, categoryType: 2, categoryTypeName: nts.uk.resource.getText("CPS005_56") }),
-            new PerInfoCategoryModel({ categoryCode: "C03", categoryName: "A3", fixedAtr: 0, categoryType: 5 }),
-            new PerInfoCategoryModel({ categoryCode: "C04", categoryName: "A4", fixedAtr: 1, categoryType: 4, categoryTypeName: "非連続" })
-        ]);
-        perInfoCategorySelectCode: KnockoutObservable<string> = ko.observable("C01");
-        currentCategorySelected: KnockoutObservable<PerInfoCategoryModel> = ko.observable(this.perInfoCategoryList()[0]);
+        categoryList: KnockoutObservableArray<PerInfoCtgModel> = ko.observableArray([]);
+        perInfoCtgSelectCode: KnockoutObservable<string> = ko.observable("");
+        currentCtgSelected: KnockoutObservable<PerInfoCtgModel> = ko.observable(new PerInfoCtgModel(null));
 
         historyClassification: Array<any> = [
             { code: 1, name: nts.uk.resource.getText("CPS005_53") },
             { code: 2, name: nts.uk.resource.getText("CPS005_54") },
         ];
         //<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
-        historyTypes: Array<any> = [
-            { value: 1, localizedName: "連続" },
-            { value: 2, localizedName: "非連続" },
-            { value: 3, localizedName: "重複" },
-        ];
+        historyTypes: any = new Array<any>();
         //mapping CategoryType enum value = 1 or 2. Theo thiết kế không lấy từ enum CategoryType
         singleMultipleType: Array<any> = [
             { value: 1, name: nts.uk.resource.getText("CPS005_55") },
@@ -66,63 +62,73 @@ module nts.uk.com.view.cps005.a {
 
         constructor(data: IData) {
             let self = this;
-            if (!data) return;
-            self.perInfoCategoryList = ko.observableArray(_.map(data.categoryList, item => { return new PerInfoCategoryModel(item) }));
-            
+            if (data) {
+                self.categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
+                self.historyTypes = data.historyTypes ? data.historyTypes : [];
+            }
             //subscribe select category code
-            self.perInfoCategorySelectCode.subscribe(newCategoryCode => {
-                let cateType;
-                if (textUK.isNullOrEmpty(newCategoryCode)) return;
-                self.currentCategorySelected(_.find(self.perInfoCategoryList(), item => { return item.categoryCode == newCategoryCode }));
-                self.currentCategorySelected().fixedIsSelected(false);
-                if (self.currentCategorySelected().fixedAtr == true) {
-                    self.currentCategorySelected().fixedIsSelected(true);
-                }
+            self.perInfoCtgSelectCode.subscribe(newId => {
+                if (textUK.isNullOrEmpty(newId)) return;
+                new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
+                    self.currentCtgSelected(new PerInfoCtgModel(data));
+                });
             });
         }
     }
 
 
-    export class PerInfoCategoryModel {
-        categoryCode: string = "";
+    export class PerInfoCtgModel {
+        id: string = "";
         categoryName: string = "";
-        categoryCodeKnockout: KnockoutObservable<string> = ko.observable("");
-        categoryNameKnockout: KnockoutObservable<string> = ko.observable("");
-        fixedAtr: boolean;
-        historyClassificationFixed: string = "";// tính toán app
+        perInfoCtgName: KnockoutObservable<string> = ko.observable("");
+        historyFixedName: string = "";
         categoryType: number = 1;
         categoryTypeName: string = "";
-        historyClassificationSelected: KnockoutObservable<number> = ko.observable(1);
+        historyClassSelected: KnockoutObservable<number> = ko.observable(1);
+        // historyTypesSelected and singleMulTypeSelected == categoryType
         historyTypesSelected: KnockoutObservable<number> = ko.observable(1);
-        singleMultipleTypeSelected: KnockoutObservable<number> = ko.observable(1);
+        singleMulTypeSelected: KnockoutObservable<number> = ko.observable(1);
+        itemNameList: KnockoutObservableArray<PerInfoItemModel> = ko.observableArray([]);
         //all visiable
         historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(false);
         fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
-        itemNameList: KnockoutObservableArray<PerInfoItemModel> = ko.observableArray([]);
-        constructor(data: IPersonInfoCategory) {
+        constructor(data: IPersonInfoCtg) {
             let self = this;
-            self.categoryCode = data.categoryCode || "";
-            self.categoryName = data.categoryName || "";
-            self.categoryCodeKnockout(data.categoryCode || "");
-            self.categoryNameKnockout(data.categoryName || "");
-            self.fixedAtr = data.fixedAtr == 1 ? true : false;
-            for (let i = 1; i < 5; i++) {
-                self.itemNameList.push(new PerInfoItemModel(self.categoryName + i));
+            if (data) {
+                self.id = data.id || "";
+                self.categoryName = data.categoryName || "";
+                self.perInfoCtgName(data.categoryName || "");
+                self.itemNameList(_.map(data.itemNameList, item => { return new PerInfoItemModel(item) }));
+                self.historyFixedName = (data.categoryType == 1 || data.categoryType == 2) ? nts.uk.resource.getText("CPS005_54") : nts.uk.resource.getText("CPS005_53");
+                self.categoryType = data.categoryType;
+                switch (self.categoryType) {
+                    case 1:
+                        self.categoryTypeName = nts.uk.resource.getText("CPS005_55");
+                        break;
+                    case 2:
+                        self.categoryTypeName = nts.uk.resource.getText("CPS005_56");
+                        break;
+                    case 3:
+                        self.categoryTypeName = nts.uk.resource.getText("Enum_HistoryTypes_CONTINUOUS");
+                        break;
+                    case 4:
+                        self.categoryTypeName = nts.uk.resource.getText("Enum_HistoryTypes_NO_DUPLICATE");
+                        break;
+                    case 5:
+                        self.categoryTypeName = nts.uk.resource.getText("Enum_HistoryTypes_DUPLICATE");
+                        break;
+                }
+                self.historyClassSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);
+                self.singleMulTypeSelected(data.categoryType || 1);
+                if (self.historyClassSelected() == 1) {
+                    self.historyTypesSelected(data.categoryType - 2);
+                    self.singleMulTypeSelected(1);
+                    self.historyTypesDisplay(true);
+                }
+                self.fixedIsSelected(data.isFixed == 1 ? true : false);
             }
-            self.historyClassificationFixed = (data.categoryType == 1 || data.categoryType == 2) ? nts.uk.resource.getText("CPS005_54") : nts.uk.resource.getText("CPS005_53");
-            self.categoryType = data.categoryType;
-            self.categoryTypeName = data.categoryTypeName || "";
-            self.historyClassificationSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);
-            self.singleMultipleTypeSelected(data.categoryType || 1);
-            if (self.historyClassificationSelected() == 1) {
-                self.historyTypesSelected(data.categoryType - 2);
-                self.singleMultipleTypeSelected(1);
-                self.historyTypesDisplay(true);
-            }
-            self.fixedIsSelected(self.fixedAtr);
-            //self.itemNameList(_.map(data.itemNameList, item => {return new PerInfoItemModel(item)}));
             //subscribe select history type (1: history, 2: not history)
-            self.historyClassificationSelected.subscribe(newHisClassification => {
+            self.historyClassSelected.subscribe(newHisClassification => {
                 if (textUK.isNullOrEmpty(newHisClassification)) return;
                 self.historyTypesDisplay(false);
                 if (newHisClassification == 1) {
@@ -130,7 +136,6 @@ module nts.uk.com.view.cps005.a {
                 }
             });
         }
-
     }
 
     export class PerInfoItemModel {
@@ -142,15 +147,15 @@ module nts.uk.com.view.cps005.a {
     }
 
     interface IData {
-        categoryList: Array<IPersonInfoCategory>;
+        historyTypes: any;
+        categoryList: Array<IPersonInfoCtg>;
     }
 
-    interface IPersonInfoCategory {
-        categoryCode: string;
+    interface IPersonInfoCtg {
+        id: string;
         categoryName: string;
-        fixedAtr: number;
-        categoryType: number;
-        categoryTypeName?: string;
+        isFixed?: number;
+        categoryType?: number;
         itemNameList?: Array<string>;
     }
 }

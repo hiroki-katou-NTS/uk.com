@@ -5,7 +5,9 @@ import lombok.Value;
 @Value
 public class AttendanceItemDto {
 	
-	private String workTypeCode;
+	private int attendanceItemId;
 	
-	private String workTypeName;
+	private String attendanceItemName;
+	
+	private int attendanceItemDisplayNumber;
 }

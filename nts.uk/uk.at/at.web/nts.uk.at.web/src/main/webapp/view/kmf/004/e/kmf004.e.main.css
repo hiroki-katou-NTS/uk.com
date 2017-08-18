@@ -1,0 +1,32 @@
+div[class^=screen-h] {
+	padding-top: 30px;
+	padding-left: 30px;
+}
+
+.screen-h .panel.ntsPanel {
+	margin-right: 35px;
+}
+
+.screen-h .infomation,
+.screen-h .panel.ntsPanel {
+	float: left;
+	display: block;
+}
+
+.screen-h .controls-group {
+	padding-left: 30px;
+}
+
+.screen-h .form-group {
+	margin-bottom: 10px;
+}
+
+.screen-h #tree-grid{
+	width: 500px;
+	float: left;
+	margin-right: 30px; 
+}
+
+.screen-h .ntsSearchBox {
+	min-width: 300px;
+}

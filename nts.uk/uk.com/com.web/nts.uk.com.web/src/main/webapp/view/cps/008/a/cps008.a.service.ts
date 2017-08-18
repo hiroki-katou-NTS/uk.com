@@ -1,37 +1,29 @@
 module cps008.a.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
     let paths = {
-        getAllMaintenanceLayout: "ctx/bs/person/maintenance/findAll",
-        addMaintenanceLayout: "ctx/bs/person/maintenance/add"
+        getAll: "ctx/bs/person/maintenance/findAll",
+        getDetails: "ctx/bs/person/maintenance/findOne/{0}",
+        saveData: "ctx/bs/person/maintenance/saveLayout"
     };
 
     /**
     * Get list Maintenance Layout
     */
-    export function getAllMaintenanceLayout(): JQueryPromise<Array<viewmodel.MaintenanceLayout>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.getAllMaintenanceLayout)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function getAll() {
+        return ajax(paths.getAll);
     }
 
-      /**
-      * add  Maintenance Layout
-      */
-    export function addMaintenanceLayout(model: any) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.addMaintenanceLayout, model)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function getDetails(lid) {
+        return ajax(format(paths.getDetails, lid));
+    }
+
+    /**
+    * add  Maintenance Layout
+    */
+    export function saveData(data: any) {
+        return ajax(paths.saveData, data);
     }
 
 

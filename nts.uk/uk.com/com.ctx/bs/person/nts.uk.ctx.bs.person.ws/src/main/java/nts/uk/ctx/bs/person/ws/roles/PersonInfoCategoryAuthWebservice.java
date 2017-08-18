@@ -8,8 +8,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import command.roles.auth.category.UpdatePersonInfoCategoryAuthCommand;
+import command.roles.auth.category.UpdatePersonInfoCategoryAuthCommandHandler;
 import find.roles.auth.category.PersonInfoCategoryAuthDto;
 import find.roles.auth.category.PersonInfoCategoryAuthFinder;
+import find.roles.auth.category.PersonInfoCategoryDetailDto;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
 
@@ -18,39 +21,41 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDeta
 public class PersonInfoCategoryAuthWebservice extends WebService {
 	@Inject
 	PersonInfoCategoryAuthFinder personInfoCategoryAuthFinder;
-
-	@POST
-	@Path("findAll")
-	public List<PersonInfoCategoryAuthDto> getAllPersonCategoryAuth() {
-		return personInfoCategoryAuthFinder.getAllPersonCategoryAuth();
-
-	}
-
-	@POST
-	@Path("find/{roleId}")
-	public List<PersonInfoCategoryAuthDto> getAllPersonCategoryAuthByRoleId(@PathParam("roleId") String roleId) {
-		return personInfoCategoryAuthFinder.getAllPersonCategoryAuthByRoleId(roleId);
-
-	}
 	
+	@Inject
+	UpdatePersonInfoCategoryAuthCommandHandler update;
+
 	@POST
 	@Path("findAllCategory/{roleId}")
-	public List<PersonInfoCategoryDetail> getAllCategory(@PathParam("roleId") String roleId) {
+	public List<PersonInfoCategoryDetailDto> getAllCategory(@PathParam("roleId") String roleId) {
 		return personInfoCategoryAuthFinder.getAllCategory(roleId);
 
 	}
 
 	@POST
 	@Path("find/{roleId}/{personCategoryAuthId}")
-	public PersonInfoCategoryAuthDto getPersonCategoryAuthByRoleId(@PathParam("roleId") String roleId,
+	public PersonInfoCategoryAuthDto getCategoryAuth(@PathParam("roleId") String roleId,
 			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
-		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuth(roleId, personCategoryAuthId).get();
-	}
-	@POST
-	@Path("findDetail/{personCategoryAuthId}")
-	public PersonInfoCategoryAuthDto getAuthDetailByPId(
-			@PathParam("personCategoryAuthId") String personCategoryAuthId) {
-		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(personCategoryAuthId).get();
+		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(roleId, personCategoryAuthId);
 	}
 
+	
+	@POST
+	@Path("find/{roleId}")
+	public List<PersonInfoCategoryDetail> getAllCategoryByRoleId(@PathParam("roleId") String roleId) {
+		return personInfoCategoryAuthFinder.getAllCategoryByRoleId(roleId);
+
+	}
+	
+	@POST
+	@Path("find/categoryAuth/{roleId}")
+	public List<PersonInfoCategoryAuthDto> getAllCategoryAuthByRoleId(@PathParam("roleId") String roleId) {
+		return personInfoCategoryAuthFinder.getAllCategoryAuth(roleId);
+
+	}
+	@POST
+	@Path("update")
+	public void updateCategoryAuth(UpdatePersonInfoCategoryAuthCommand command){
+		this.update.handle(command);
+	}
 }
