@@ -17,14 +17,12 @@ module nts.uk.at.view.kdl003.a {
         export function findWorkTypeByCodes(command: Array<string>): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findWorkTypeByCodes, command);
         }
-
         export function findByCodeList(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findByCodeList, command);
         }
         export function findAllWorkTime(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findAllWorkTime);
         }
-
         export function findByTime(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findByTime, command);
         }
@@ -33,8 +31,6 @@ module nts.uk.at.view.kdl003.a {
         }
         export function checkPairWorkTypeWorkTime(workTypeCode: string, workTimeCode): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.checkPairWorkTypeWorkTime + '/' + workTypeCode + '/' + workTimeCode);
-        }
-        export module model {
         }
     }
 }

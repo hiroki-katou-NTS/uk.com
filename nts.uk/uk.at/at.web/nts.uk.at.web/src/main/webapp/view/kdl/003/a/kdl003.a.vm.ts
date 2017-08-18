@@ -63,7 +63,7 @@ module nts.uk.at.view.kdl003.a {
              */
             private startPage(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred();
+                var dfd = $.Deferred<void>();
                 nts.uk.ui.block.invisible();
                 $.when(self.loadWorkTime(),
                     self.loadWorkType())
@@ -265,16 +265,19 @@ module nts.uk.at.view.kdl003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
+                let workTypeCode = self.selectedWorkTypeCode();
+                let workTimeCode = self.selectedWorkTimeCode();
+
                 // Check pair work type & work time.
-                service.checkPairWorkTypeWorkTime(self.selectedWorkTypeCode(), self.selectedWorkTimeCode()).done(() => {
+                service.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode).done(() => {
 
                     // Set shared data.
-                    let workTypeName = self.getWorkTypeName(self.selectedWorkTypeCode());
-                    let workTimeName = self.getWorkTimeName(self.selectedWorkTimeCode());
+                    let workTypeName = self.getWorkTypeName(workTypeCode);
+                    let workTimeName = self.getWorkTimeName(workTimeCode);
                     let returnedData = {
-                        selectedWorkTypeCode: self.selectedWorkTypeCode(),
+                        selectedWorkTypeCode: workTypeCode,
                         selectedWorkTypeName: workTypeName,
-                        selectedWorkTimeCode: self.selectedWorkTimeCode(),
+                        selectedWorkTimeCode: workTimeCode,
                         selectedWorkTimeName: workTimeName
                     };
                     nts.uk.ui.windows.setShared("childData", returnedData, true);
