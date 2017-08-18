@@ -28,5 +28,7 @@ public interface PernfoItemDefRepositoty {
 	List<PerInfoItemDefOrder> getPerInfoItemDefOrdersByCtgId(String perInfoCtgId);
 	
 	int getItemDispOrderBy(String perInfoCtgId, String perInfoItemDefId);
+	
+	List<String> getRequiredIds(String contractCd, String companyId);
 
 }
