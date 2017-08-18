@@ -41,6 +41,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.Exter
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetTimeDto;
+import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
@@ -108,32 +109,38 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     @Inject
     private WorkplaceAdapter workplaceAdapter;
     
-    /** The Constant FORMAT_DATES. */
+    /** The format dates. */
     private final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
     
-    /** The Constant DEFAULT_VALUE. */
+    /** The default value. */
     private final Integer DEFAULT_VALUE = 0;
     
-    /** The Constant INDEX_COLUMN_CODE. */
+    /** The index column code. */
     private final Integer INDEX_COLUMN_CODE = 0;
     
-    /** The Constant INDEX_COLUMN_DATE. */
+    /** The index column date. */
     private final Integer INDEX_COLUMN_DATE = 1;
     
-    /** The Constant INDEX_BEGIN_COL_VALUE. */
+    /** The index begin col value. */
     private final Integer INDEX_BEGIN_COL_VALUE = 2;
     
-    /** The Constant MAX_COLMN. */
+    /** The max colmn. */
     private final Integer MAX_COLMN = 51;
     
-    /** The Constant TOTAL_RECORD. */
+    /** The total record. */
     private final String TOTAL_RECORD = "TOTAL_RECORD";
     
-    /** The Constant SUCCESS_CNT. */
+    /** The success cnt. */
     private final String SUCCESS_CNT = "SUCCESS_CNT";
     
-    /** The Constant FAIL_CNT. */
+    /** The fail cnt. */
     private final String FAIL_CNT = "FAIL_CNT";
+    
+    /** The blank value. */
+    private final String BLANK_VALUE = "0";
+    
+    /** The blank value time. */
+    private final String BLANK_VALUE_TIME = "00:00";
     
     /* (non-Javadoc)
      * @see nts.arc.layer.app.command.CommandHandlerWithResult#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -149,7 +156,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         Map<String, String> mapStringJP = findAllStringJP();
         AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
             // valid file format
-            this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine());
+            this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine().v());
             
             // get input stream by file id
             InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
@@ -210,7 +217,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
             
             // calculate total record and check has data
-            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine() + 1;
+            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine().v() + 1;
             if (calTotal > DEFAULT_VALUE) {
                 setter.updateData(TOTAL_RECORD, calTotal);
             }
@@ -251,16 +258,16 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private void processLine(ImportProcess importProcess, NtsCsvRecord record) {
         importProcess.startLine++;
         // check line start read
-        if (importProcess.startLine < importProcess.extractCondition.getStartLine()) {
+        if (importProcess.startLine < importProcess.extractCondition.getStartLine().v()) {
             return;
         }
         
         // get data cell from input csv
         List<String> result = new ArrayList<>();
         for (int i = 0; i < MAX_COLMN; i++) {
-            Object header = record.getColumn(i);
-            if (header != null) {
-                result.add(header.toString());
+            Object value = record.getColumn(i);
+            if (value != null) {
+                result.add(this.fillBlankValueIfNeed(value.toString(), importProcess.externalBudget.getBudgetAtr()));
             }
         }
         // check record has data?
@@ -274,6 +281,24 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         
         // insert data master
         this.insertValue(importProcess, result);
+    }
+    
+    /**
+     * Fill value if need.
+     *
+     * @param value the value
+     * @param budgetAtr the budget atr
+     * @return the string
+     */
+    private String fillBlankValueIfNeed(String value, BudgetAtr budgetAtr) {
+        if (!value.trim().isEmpty()) {
+            return value;
+        }
+        if (budgetAtr == BudgetAtr.TIME) {
+            return BLANK_VALUE_TIME;
+        } else {
+            return BLANK_VALUE;
+        }
     }
     
     /**
