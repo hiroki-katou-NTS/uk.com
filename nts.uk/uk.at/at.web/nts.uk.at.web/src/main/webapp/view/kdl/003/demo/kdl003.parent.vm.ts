@@ -1,9 +1,9 @@
 module kdl003.parent.viewmodel {
     export class ScreenModel {
         //codes from parent screen
-        canSelectWorkTypeCodes: KnockoutObservableArray<string>;
+        canSelectWorkTypeCodes: KnockoutObservable<string>;
         selectWorkTypeCode: KnockoutObservable<string>;
-        canSelectSiftCodes: KnockoutObservableArray<string>;
+        canSelectSiftCodes: KnockoutObservable<string>;
         selectSiftCode: KnockoutObservable<string>;
 
         childSelectWorkTypeCode: KnockoutObservable<string>;
@@ -13,9 +13,9 @@ module kdl003.parent.viewmodel {
         constructor() {
             var self = this;
             //construct codes 
-            self.canSelectWorkTypeCodes = ko.observableArray(['001', '002', '003', '004', '005', '006', '007', '008', '009', '010']);
+            self.canSelectWorkTypeCodes = ko.observable('001,002,003,004,005,006,007,008,009,010');
             self.selectWorkTypeCode = ko.observable('002');
-            self.canSelectSiftCodes = ko.observableArray(['AAA', 'AAD', 'AAG', 'AAI']);
+            self.canSelectSiftCodes = ko.observable('AAA,AAD,AAG,AAI');
             self.selectSiftCode = ko.observable('AAG');
 
             self.childSelectWorkTypeCode = ko.observable('');
@@ -27,9 +27,9 @@ module kdl003.parent.viewmodel {
         OpenDialog003() {
             var self = this;
             nts.uk.ui.windows.setShared('parentCodes', {
-                workTypeCodes: self.canSelectWorkTypeCodes(),
+                workTypeCodes: self.canSelectWorkTypeCodes().split(','),
                 selectedWorkTypeCode: self.selectWorkTypeCode(),
-                workTimeCodes: self.canSelectSiftCodes(),
+                workTimeCodes: self.canSelectSiftCodes().split(','),
                 selectedWorkTimeCode: self.selectSiftCode()
             }, true);
 

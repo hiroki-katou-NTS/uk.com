@@ -129,7 +129,7 @@ public class ExternalBudgetFinder {
                     continue;
                 }
                 // check max record show client.
-                if (lstExtBudgetVal.size() <= MAX_RECORD_DISP) {
+                if (lstExtBudgetVal.size() < MAX_RECORD_DISP) {
                     // get record data
                     List<String> result = this.findDataRecord(record);
                     
