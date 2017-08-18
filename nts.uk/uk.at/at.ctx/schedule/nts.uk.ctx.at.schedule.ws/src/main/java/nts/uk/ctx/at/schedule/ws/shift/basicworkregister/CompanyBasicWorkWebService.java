@@ -85,7 +85,7 @@ public class CompanyBasicWorkWebService extends WebService {
 		if (errorMessages.size() <= 0) {
 			// check pair WorkTypeCode - WorkTimeCode require
 			command.getBasicWorkSetting().stream().forEach(item -> {
-				this.basicScheduleService.ErrorCheckingStatus(item.getWorktypeCode().v(), item.getWorkingCode().v());
+				this.basicScheduleService.checkPairWorkTypeWorkTime(item.getWorktypeCode().v(), item.getWorkingCode().v());
 			});
 			
 			this.save.handle(command);

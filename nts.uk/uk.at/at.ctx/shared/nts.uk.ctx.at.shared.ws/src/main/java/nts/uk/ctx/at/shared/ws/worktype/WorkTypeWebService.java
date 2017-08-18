@@ -110,19 +110,26 @@ public class WorkTypeWebService extends WebService {
 		return this.find.findById(workTypeCode);
 	}
 	
+	/**
+	 * Find selectable.
+	 *
+	 * @param workStyleLst the work style lst
+	 * @return the list
+	 */
 	@POST
-	@Path("findSelectAble/{workStyleLst}")
-	public List<String> findSelectable(@PathParam("workStyleLst") List<Integer> workStyleLst) {
+	@Path("findSelectAble")
+	public List<String> findSelectable(WorkStyleListDto workStyleLst) {
+		// Get WorkTypeCode List
 		List<String> worktypeCodeList = this.find.findByCompanyId().stream().map(item -> {
 			return item.getWorkTypeCode();
 		}).collect(Collectors.toList());
 		
 		// Case: input workstyleList is Null
-		if (CollectionUtil.isEmpty(workStyleLst)) {
+		if (CollectionUtil.isEmpty(workStyleLst.getWorkStyleLst())) {
 			return new ArrayList<>();
 		}
 		// Case: input workstyleList contains full values of enum WorkStyle
-		if (workStyleLst.containsAll(workstyleList)) {
+		if (workStyleLst.getWorkStyleLst().containsAll(workstyleList)) {
 			return worktypeCodeList;
 		}
 		// Other cases
