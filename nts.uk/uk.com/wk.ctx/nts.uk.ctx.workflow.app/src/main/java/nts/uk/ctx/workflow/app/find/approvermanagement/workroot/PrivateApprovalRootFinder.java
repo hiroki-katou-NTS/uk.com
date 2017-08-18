@@ -22,19 +22,22 @@ public class PrivateApprovalRootFinder {
 	
 	public List<PrivateApprovalRootDto> getAllPrivateApprovalRoot(String employeeId){
 		List<PrivateApprovalRootDto> lstAppRoot = new ArrayList<>();
+		//get data person by employee id
 		List<PersonApprovalRoot> lstPri = this.repo.getAllPsApprovalRoot(companyId, employeeId);
 		for (PersonApprovalRoot personalApprovalRoot : lstPri) {
 			List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-			Optional<ApprovalBranch> branch = this.repo.getApprovalBranch(companyId, personalApprovalRoot.getBranchId(), 1);
-			if(branch.isPresent()){
+//			Optional<ApprovalBranch> branch = this.repo.getApprovalBranch(companyId, personalApprovalRoot.getBranchId(), 1);
+//			if(branch.isPresent()){
 				List<Approver> lstApprover = new ArrayList<>();
+				//get data approval phase by branch id
 				List<ApprovalPhase> lstAppPhase = this.repo.getAllApprovalPhasebyCode(companyId, personalApprovalRoot.getBranchId());
 				for (ApprovalPhase approvalPhase : lstAppPhase) {
+					//get data approver by approval phase id
 					lstApprover = this.repo.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
 							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
-			}
+//			}
 			lstAppRoot.add(new PrivateApprovalRootDto(personalApprovalRoot,lstApprovalPhase));			
 		}
 		

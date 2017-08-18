@@ -258,73 +258,35 @@ module nts.uk.at.view.kdl003.a {
             }
 
             /**
-             * Submit and close dialog.
+             * Submit.
              */
-            public submitAndCloseDialog() {
+            public submit() {
                 nts.uk.ui.block.invisible();
                 let self = this;
-                self.submit().done(() => {
-                    nts.uk.ui.block.clear();
-                    self.closeDialog();
-                });
-            }
-
-            /**
-             * Submit
-             */
-            private submit(): JQueryPromise<void> {
-                let self = this;
                 let dfd = $.Deferred<void>();
-                service.isWorkTimeSettingNeeded(self.selectedWorkTypeCode()).done(setupType => {
 
-                    // Set returned data..
+                // Check pair work type & work time.
+                service.checkPairWorkTypeWorkTime(self.selectedWorkTypeCode(), self.selectedWorkTimeCode()).done(() => {
+
+                    // Set shared data.
                     let workTypeName = self.getWorkTypeName(self.selectedWorkTypeCode());
                     let workTimeName = self.getWorkTimeName(self.selectedWorkTimeCode());
-                    let returnedData: ReturnedData = {
+                    let returnedData = {
                         selectedWorkTypeCode: self.selectedWorkTypeCode(),
                         selectedWorkTypeName: workTypeName,
                         selectedWorkTimeCode: self.selectedWorkTimeCode(),
                         selectedWorkTimeName: workTimeName
                     };
+                    nts.uk.ui.windows.setShared("childData", returnedData, true);
 
-                    // Switch setup type.
-                    switch (setupType) {
-                        case SetupType.REQUIRED:
-                            if (!self.listWorkTime() || self.listWorkTime().length < 1) {
-                                returnedData.selectedWorkTimeCode = '';
-                                returnedData.selectedWorkTimeName = '';
-                                self.setReturnedData(returnedData, 'Msg_24').done(() => dfd.resolve());
-                            } else {
-                                self.setReturnedData(returnedData).done(() => dfd.resolve());
-                            }
-                            break;
-                        case SetupType.NOT_REQUIRED:
-                            if (self.selectedWorkTimeCode() != '000') {
-                                self.setReturnedData(returnedData, 'Msg_23').done(() => dfd.resolve());
-                            } else {
-                                self.setReturnedData(returnedData).done(() => dfd.resolve());
-                            }
-                            break;
-                        default:
-                            self.setReturnedData(returnedData).done(() => dfd.resolve());
-                    }
+                    // Close dialog.
+                    self.closeDialog();
+
+                }).fail(error => {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
-                return dfd.promise();
-            }
-
-            /**
-             * Set returned data.
-             */
-            private setReturnedData(returnedData, msgId?: string): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                nts.uk.ui.windows.setShared("childData", returnedData, true);
-                if (msgId) {
-                    nts.uk.ui.dialog.alertError({ messageId: msgId }).then(() => {
-                        dfd.resolve();
-                    });
-                } else {
-                    dfd.resolve();
-                }
                 return dfd.promise();
             }
 

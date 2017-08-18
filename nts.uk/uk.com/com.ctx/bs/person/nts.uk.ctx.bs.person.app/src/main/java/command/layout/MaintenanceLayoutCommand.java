@@ -17,13 +17,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MaintenanceLayoutCommand {
+	
 	private String id;
 
 	private String code;
 
 	private String name;
 	
-	private List<ClassificationCommand> classifications;
+	private List<ClassificationCommand> classifications; 
 
 	int action;
 }

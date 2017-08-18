@@ -23,6 +23,19 @@ public class JpaItemClassificationDifination extends JpaRepository implements IL
 			+ " WHERE cd.ppemtLayoutItemClsDfPk.layoutId = :layoutId"
 			+ " AND cd.ppemtLayoutItemClsDfPk.layoutDispOrder = :classDispOrder"
 			+ " ORDER BY cd.ppemtLayoutItemClsDfPk.dispOrder ASC";
+	
+	private static final String CHECK_EXIT_ITEMCLS_DF;
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM PpemtLayoutItemClsDf e");
+		builderString.append(" WHERE e.ppemtLayoutItemClsDfPk.layoutId = :layoutId");
+		CHECK_EXIT_ITEMCLS_DF = builderString.toString();
+
+	}
+	
 
 	@Override
 	public List<String> getAllItemDefineIds(String layoutId, int classDispOrder) {
@@ -46,5 +59,12 @@ public class JpaItemClassificationDifination extends JpaRepository implements IL
 				domain.getLayoutDisPOrder().v(), domain.getDispOrder().v());
 
 		return new PpemtLayoutItemClsDf(ppemtLayoutItemClsDfPk, domain.getPersonInfoItemDefinitionID());
+	}
+
+	@Override
+	public boolean checkExitItemClsDf(String layoutId) {
+		List<PpemtLayoutItemClsDf> list = this.queryProxy().query(CHECK_EXIT_ITEMCLS_DF, PpemtLayoutItemClsDf.class)
+				.setParameter("layoutId", layoutId).getList();
+		return !list.isEmpty();
 	}
 }

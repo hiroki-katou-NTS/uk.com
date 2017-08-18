@@ -16,15 +16,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 @Entity
-@Table(name = "WWFDT_APPROVER")
+@Table(name = "WWFMT_APPROVER")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfdtAppover extends UkJpaEntity implements Serializable {
+public class WwfmtAppover extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**主キー*/
 	@EmbeddedId
-	public WwfdtAppoverPK wwfdtAppoverPK;
+	public WwfmtAppoverPK wwfmtAppoverPK;
 	/**職位ID*/
 	@Column(name = "JOB_ID")
 	public String jobId;
@@ -43,6 +43,6 @@ public class WwfdtAppover extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return wwfdtAppoverPK;
+		return wwfmtAppoverPK;
 	}
 }

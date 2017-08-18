@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
@@ -20,19 +19,19 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCd) {
 		// TODO Auto-generated method stub
-		return null;
+		return SetupType.REQUIRED;
 	}
 
 	@Override
 	public SetupType checkRequiredOfInputType(DayType dayType) {
 		// TODO Auto-generated method stub
-		return null;
+		return SetupType.REQUIRED;
 	}
 
 	@Override
 	public WorkStyle checkWorkDay(String workTypeCd) {
 		// TODO Auto-generated method stub
-		return null;
+		return WorkStyle.ONE_DAY_WORK;
 	}
 
 	@Override

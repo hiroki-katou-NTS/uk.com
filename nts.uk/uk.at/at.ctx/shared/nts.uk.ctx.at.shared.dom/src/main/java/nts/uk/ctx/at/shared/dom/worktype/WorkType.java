@@ -5,51 +5,37 @@ import nts.arc.enums.EnumAdaptor;
 
 @Getter
 public class WorkType {
-
-	/* 会社ID */
+	/*会社ID*/
 	private String companyId;
-	/* 勤務種類コード */
+	/*勤務種類コード*/
 	private WorkTypeCode workTypeCode;
-	/* 勤務種類名称 */
-	private WorkTypeName name;
-	/* 勤務種類略名 */
-	private WorkTypeAbbreviationName abbreviationName;
-	/* 勤務種類記号名 */
-	private WorkTypeSymbolicName symbolicName;
-	/* 廃止区分 */
-	private DisplayAtr displayAtr;
-	/* 勤務種類備考 */
-	private WorkTypeMemo memo;
-	/* 並び順 */
+	/*ソート順*/
 	private int sortOrder;
-	/* 勤務の単位 */
-	private WorkAtr workAtr;
-
-	private DutyTypeAtr oneDayCls;
-
-	private DutyTypeAtr afternoonCls;
-
-	private DutyTypeAtr morningCls;
-
-	public WorkType(String companyId, WorkTypeCode workTypeCode, WorkTypeName name,
-			WorkTypeAbbreviationName abbreviationName, WorkTypeSymbolicName symbolicName, DisplayAtr displayAtr,
-			WorkTypeMemo memo, int sortOrder, WorkAtr workAtr, DutyTypeAtr oneDayCls, DutyTypeAtr afternoonCls,
-			DutyTypeAtr morningCls) {
+	/*勤務種類記号名*/
+	private WorkTypeSymbolicName symbolicName;
+	/*勤務種類名称*/
+	private WorkTypeName name;
+	/*勤務種類略名*/
+	private WorkTypeAbbreviationName abbreviationName;
+	/*勤務種類備考*/
+	private WorkTypeMemo memo;
+	/*使用区分*/
+	private DisplayAtr displayAtr;
+	
+	public WorkType(String companyId, WorkTypeCode workTypeCode, int sortOrder,
+			WorkTypeSymbolicName symbolicName, WorkTypeName name, WorkTypeAbbreviationName abbreviationName,
+			WorkTypeMemo memo, DisplayAtr displayAtr) {
 		super();
 		this.companyId = companyId;
 		this.workTypeCode = workTypeCode;
+		this.sortOrder = sortOrder;
+		this.symbolicName = symbolicName;
 		this.name = name;
 		this.abbreviationName = abbreviationName;
-		this.symbolicName = symbolicName;
-		this.displayAtr = displayAtr;
 		this.memo = memo;
-		this.sortOrder = sortOrder;
-		this.workAtr = workAtr;
-		this.oneDayCls = oneDayCls;
-		this.afternoonCls = afternoonCls;
-		this.morningCls = morningCls;
+		this.displayAtr = displayAtr;
 	}
-
+	
 	public static WorkType createSimpleFromJavaType(String companyId,
 										String workTypeCode,
 										int sortOrder,
@@ -57,24 +43,14 @@ public class WorkType {
 										String name,
 										String abbreviationName,
 										String memo,
-										int displayAtr,
-										int workAtr,
-										int oneDayCls,
-										int afternoonCls,
-										int morningCls){
-		        
-		 return new WorkType(companyId,
-				             new WorkTypeCode(workTypeCode),
-				             new WorkTypeName(name),
-				             new WorkTypeAbbreviationName(abbreviationName),
-				             new WorkTypeSymbolicName(symbolicName),
-				             EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
-				             new WorkTypeMemo(memo),
-				             sortOrder,
-				             EnumAdaptor.valueOf(workAtr, WorkAtr.class),
-                             EnumAdaptor.valueOf(oneDayCls, DutyTypeAtr.class),
-                             EnumAdaptor.valueOf(afternoonCls, DutyTypeAtr.class),
-				             EnumAdaptor.valueOf(morningCls, DutyTypeAtr.class));
+										int displayAtr){
+		return new WorkType(companyId, 
+				new WorkTypeCode(workTypeCode),
+				sortOrder,
+				new WorkTypeSymbolicName(symbolicName),
+				new WorkTypeName(name),
+				new WorkTypeAbbreviationName(abbreviationName),
+				new WorkTypeMemo(memo),
+				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class));
 	}
-
 }

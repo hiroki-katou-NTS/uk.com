@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageClassification;
 
 /**
  * The Class Establishment.

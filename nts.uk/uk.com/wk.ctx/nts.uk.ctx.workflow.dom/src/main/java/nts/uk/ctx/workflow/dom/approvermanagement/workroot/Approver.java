@@ -15,6 +15,8 @@ public class Approver {
 	private String companyId;
 	/**承認フェーズID*/
 	private String approvalPhaseId;
+	/**承認者ID*/
+	private String approverId;
 	/**職位ID*/
 	private String jobTitleId;
 	/**社員ID*/
@@ -28,6 +30,7 @@ public class Approver {
 	
 	public static Approver createSimpleFromJavaType(String companyId,
 			String approvalPhaseId,
+			String approverId,
 			String jobTitleId,
 			String employeeId,
 			int orderNumber,
@@ -35,6 +38,7 @@ public class Approver {
 			int confirmPerson){
 		return new Approver(companyId,
 				approvalPhaseId,
+				approverId,
 				jobTitleId,
 				employeeId,
 				orderNumber,

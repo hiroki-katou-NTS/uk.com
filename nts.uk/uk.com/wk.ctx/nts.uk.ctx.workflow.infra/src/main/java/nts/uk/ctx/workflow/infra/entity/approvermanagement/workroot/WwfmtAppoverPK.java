@@ -13,15 +13,15 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfdtApprovalPhasePK implements Serializable{
+public class WwfmtAppoverPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**会社ID*/
 	@Column(name = "CID")
 	public String companyId;
-	/**分岐ID*/
-	@Column(name = "BRANCH_ID")
-	public String branchId;
 	/**承認フェーズID*/
 	@Column(name = "APPROVAL_PHASE_ID")
 	public String approvalPhaseId;
+	/**承認者ID*/
+	@Column(name = "APPROVER_ID")
+	public String approverId;
 }
