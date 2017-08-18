@@ -3,6 +3,8 @@
  */
 package command.layout;
 
+import java.awt.Dialog;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +12,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
@@ -42,6 +46,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 	String companyId = AppContexts.user().companyId();
 	Boolean checkExit = false;
+	MaintenanceLayout oldLayout = null;
 
 	@Override
 	protected void handle(CommandHandlerContext<MaintenanceLayoutCommand> context) {
@@ -52,7 +57,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 		// get Old Layout
 		if (command.getId() != null) {
-			MaintenanceLayout oldLayout = this.repo.getById(companyId, command.getId()).get();
+			oldLayout = this.repo.getById(companyId, command.getId()).get();
 		}
 		// kiem tra newLayoutcode da ton tai chua.
 		checkExit = this.repo.checkExit(companyId, command.getCode());
@@ -66,35 +71,114 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			updateLayout(command);
 			break;
 		case 2: // copy
-
 			this.coppyLayout(command, newLayoutId);
 			break;
 		case 3: // clone and override
-
 			this.overrideLayout(command, newLayoutId);
 			break;
 		case 4: // remove
-
+			this.deleteLayout(command);
 			break;
 		}
 
 	}
 
 	private void insertLayout(MaintenanceLayoutCommand command, String newLayoutId) {
-		if (!checkExit) {
+		if (checkExit) {
+			// throw Error Message #Msg_3
+			throw new BusinessException(new RawErrorMessage("Msg_3"));
+
+		} else {
 			MaintenanceLayout newLayout = new MaintenanceLayout(companyId, newLayoutId,
 					new LayoutCode(command.getCode()), new LayoutName(command.getName()));
 			this.repo.add(newLayout);
+			// hien thi information message (# Msg_15 #)
 		}
 	}
 
 	private void deleteLayout(MaintenanceLayoutCommand command) {
 
+		if (checkExit) {
+			this.repo.remove(oldLayout);
+			this.classfRepo.removeAllByLayoutId(command.getId());
+			this.clsDefRepo.removeAllByLayoutId(command.getId());
+		}
+
 	}
 
 	private void updateLayout(MaintenanceLayoutCommand command) {
-		
-		
+		if (checkExit) {
+			String layoutId = command.getId();
+			// get Old Layout
+			MaintenanceLayout layout = this.repo.getByCode(companyId, command.getCode()).get();
+			layout.setLayoutName(new LayoutName(command.getName()));
+
+			// update MaintenanceLayout table
+			repo.update(layout);
+
+			// truong hop co truyen list itemcls
+			if (command.getClassifications().size() > 0) {
+
+				List<ClassificationCommand> classifications = command.getClassifications();
+				List<LayoutPersonInfoClassification> list_cls = new ArrayList<>();
+				List<LayoutPersonInfoClsDefinition> list_clsDf = new ArrayList<>();
+				int sizeListCls = classifications.size();
+
+				// check exit itemClassification in table ItemCls , neu có rồi thì xóa đi insert
+				// lại. Chưa có thì insert
+				if (classfRepo.checkExitItemCls(layoutId)) {
+					// update list itemCls <=> (xóa xong insert lai)
+					classfRepo.removeAllByLayoutId(layoutId);
+
+					for (int i = 0; i < sizeListCls; i++) {
+						list_cls.add(LayoutPersonInfoClassification.createFromJaveType(layoutId,
+								classifications.get(i).getDispOrder(), classifications.get(i).getPersonInfoCategoryID(),
+								classifications.get(i).getLayoutItemType()));
+
+						if (classifications.get(i).getListItemClsDf().size() > 0) {
+							int sizeListClsDf = classifications.get(i).getListItemClsDf().size();
+							for (int j = 0; j < sizeListClsDf; j++) {
+								list_clsDf.add(LayoutPersonInfoClsDefinition.createFromJavaType(layoutId,
+										classifications.get(i).getDispOrder(),
+										classifications.get(i).getListItemClsDf().get(j).getDispOrder(), classifications
+												.get(i).getListItemClsDf().get(j).getPersonInfoItemDefinitionID()));
+							}
+						}
+					}
+
+					classfRepo.addClassifications(list_cls);
+
+					// xoa het itemClsDf theo layoutId
+
+					clsDefRepo.removeAllByLayoutId(layoutId);
+
+					clsDefRepo.addClassificationItemDefines(list_clsDf);
+
+				} else {
+					// insert list itemCls
+					for (int i = 0; i < sizeListCls; i++) {
+						list_cls.add(LayoutPersonInfoClassification.createFromJaveType(layoutId,
+								classifications.get(i).getDispOrder(), classifications.get(i).getPersonInfoCategoryID(),
+								classifications.get(i).getLayoutItemType()));
+
+						if (classifications.get(i).getListItemClsDf().size() > 0) {
+							int sizeListClsDf = classifications.get(i).getListItemClsDf().size();
+							for (int j = 0; j < sizeListClsDf; j++) {
+								list_clsDf.add(LayoutPersonInfoClsDefinition.createFromJavaType(layoutId,
+										classifications.get(i).getDispOrder(),
+										classifications.get(i).getListItemClsDf().get(j).getDispOrder(), classifications
+												.get(i).getListItemClsDf().get(j).getPersonInfoItemDefinitionID()));
+							}
+						}
+					}
+					classfRepo.addClassifications(list_cls);
+
+					clsDefRepo.addClassificationItemDefines(list_clsDf);
+
+				}
+			}
+
+		}
 
 	}
 
@@ -107,10 +191,10 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			repo.remove(oldLayout);
 
 			// rmove all classification in this layout
-			classfRepo.removeAllByLayoutId(command.getId());
+			classfRepo.removeAllByLayoutId(oldLayout.getMaintenanceLayoutID());
 
 			// remove all itemdefinition relation with classification in this layout
-			clsDefRepo.removeAllByLayoutId(command.getId());
+			clsDefRepo.removeAllByLayoutId(oldLayout.getMaintenanceLayoutID());
 
 			// insert vao bang MaintenanceLayout
 			MaintenanceLayout newLayout = new MaintenanceLayout(companyId, newLayoutId,
@@ -162,7 +246,8 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 				}
 			}
 		} else {
-			// throw #Msg_3
+			// throw Error Message #Msg_3
+			throw new BusinessException(new RawErrorMessage("Msg_3"));
 		}
 	}
 

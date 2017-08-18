@@ -27,8 +27,7 @@ public class UpdateApplicationCommandHandler extends CommandHandler<UpdateApplic
 		Application application = Application.createFromJavaType(
 				companyID,
 				appCommand.getApplicationID(),
-				appCommand.getPrePostAtr(), 
-				appCommand.getAutoPostApplication(), 
+				appCommand.getPrePostAtr(),
 				appCommand.getInputDate(), 
 				appCommand.getEnteredPersonSID(), 
 				appCommand.getReversionReason(), 

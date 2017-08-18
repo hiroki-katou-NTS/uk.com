@@ -1,7 +1,3 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktype;
 
 import java.util.List;
@@ -24,11 +20,6 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kmnmtWorkTypePK.workTypeCode IN :lstPossible";
 
-	private final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
-			+ " AND c.kmnmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0";
-
-	private final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
-			+ " AND c.deprecateAtr = 0";
 
 	private final String SELECT_BY_CID_DISPLAY_ATR = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
@@ -36,10 +27,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static WorkType toDomain(KmnmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kmnmtWorkTypePK.companyId,
-				entity.kmnmtWorkTypePK.workTypeCode, entity.sortOrder, entity.symbolicName,
-				entity.name, entity.abbreviationName, entity.memo, entity.displayAtr,
-				entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
-				entity.deprecateAtr);
+				entity.kmnmtWorkTypePK.workTypeCode, entity.sortOrder, entity.symbolicName, entity.name,
+				entity.abbreviationName, entity.memo, entity.displayAtr);
 		return domain;
 	}
 
@@ -72,29 +61,16 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.map(x -> toDomain(x));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository#findNotDeprecated(
-	 * java.lang.String)
-	 */
 	@Override
 	public List<WorkType> findNotDeprecated(String companyId) {
-		return this.queryProxy().query(FIND_NOT_DEPRECATED, KmnmtWorkType.class).setParameter("companyId", companyId)
-				.getList(c -> toDomain(c));
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository#
-	 * findNotDeprecatedByListCode(java.lang.String, java.util.List)
-	 */
 	@Override
 	public List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes) {
-		return this.queryProxy().query(FIND_NOT_DEPRECATED_BY_LIST_CODE, KmnmtWorkType.class)
-				.setParameter("companyId", companyId).setParameter("codes", codes).getList(c -> toDomain(c));
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

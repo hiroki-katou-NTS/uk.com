@@ -1,6 +1,7 @@
 package repository.person.info.item;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,8 +25,8 @@ import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.CodeNameReferenceType;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.EnumReferenceCondition;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.MasterReferenceCondition;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.SingleItem;
@@ -82,11 +83,11 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL "
 			+ " ORDER BY io.disporder";
 
-	private final static String SELECT_GET_ITEM_CODE_LASTEST_QUERY = "SELECT i.ppemtPerInfoItemCmPK.itemCd PpemtPerInfoItemCm i"
+	private final static String SELECT_GET_ITEM_CODE_LASTEST_QUERY = "SELECT i.ppemtPerInfoItemCmPK.itemCd FROM PpemtPerInfoItemCm i"
 			+ " WHERE i.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.ppemtPerInfoItemCmPK.categoryCd = :categoryCd"
 			+ " ORDER BY i.ppemtPerInfoItemCmPK.itemCd DESC";
 
-	private final static String SELECT_GET_DISPORDER_ITEM_QUERY = "SELECT od.disporder PpemtPerInfoItemOrder od"
+	private final static String SELECT_GET_DISPORDER_ITEM_QUERY = "SELECT od.disporder FROM PpemtPerInfoItemOrder od"
 			+ " WHERE od.perInfoCtgId = :perInfoCtgId ORDER BY od.disporder DESC";
 
 	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
@@ -98,15 +99,23 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 	private final static String SELECT_ITEM_DISPORDER_BY_KEY_QUERY = "SELECT o.disporder FROM PpemtPerInfoItemOrder o"
 			+ " WHERE o.perInfoCtgId = :perInfoCtgId AND o.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoItemDefId";
 
+	private final static String SELECT_CHILD_ITEM_IDS = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i"
+			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
+			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd"
+			+ " AND c.itemParentCd = :itemParentCd AND i.perInfoCtgId = :perInfoCtgId";
+
 	// private final static String SELECT_ITEM_SET_QUERY = "SELECT
 	// ic.ppemtPerInfoItemCmPK. FROM PpemtPerInfoItemCm ic"
 	// + " WHERE ic.itemParentCd = :itemParentCd";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
+
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
-					return createDomainFromEntity(i);
+					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));
+
+					return createDomainFromEntity(i, items);
 				});
 	}
 
@@ -114,7 +123,9 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 	public Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoItemDefId).getSingle(i -> {
-					return createDomainFromEntity(i);
+					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
+
+					return createDomainFromEntity(i, items);
 				});
 	}
 
@@ -122,7 +133,9 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 	public List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList(i -> {
-					return createDomainFromEntity(i);
+					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
+
+					return createDomainFromEntity(i, items);
 				});
 	}
 
@@ -190,6 +203,11 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 				.getSingle().orElse(0);
 	}
 
+	private List<String> getChildIds(String contractCd, String perInfoCtgId, String parentCode) {
+		return queryProxy().query(SELECT_CHILD_ITEM_IDS, String.class).setParameter("contractCd", contractCd)
+				.setParameter("itemParentCd", parentCode).setParameter("perInfoCtgId", perInfoCtgId).getList();
+	}
+
 	private void addOrderItemRoot(String perInfoItemDefId, String perInfoCtgId) {
 		int newdisOrderLastest = getDispOrderLastestItemOfCtg(perInfoCtgId) + 1;
 		this.commandProxy().insert(createItemOrder(perInfoItemDefId, perInfoCtgId, newdisOrderLastest));
@@ -217,7 +235,7 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder);
 	}
 
-	private PersonInfoItemDefinition createDomainFromEntity(Object[] i) {
+	private PersonInfoItemDefinition createDomainFromEntity(Object[] i, List<String> items) {
 		String perInfoItemDefId = String.valueOf(i[0]);
 		String itemCode = String.valueOf(i[1]);
 		String itemName = String.valueOf(i[2]);
@@ -249,8 +267,9 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 
 		PersonInfoItemDefinition item = PersonInfoItemDefinition.createFromEntity(perInfoItemDefId, perInfoCategoryId,
 				itemCode, itemParentCode, itemName, isAbolition, isFixed, isRequired, systemRequired, requireChangable);
+		DataTypeState dataTypeState = null;
+
 		if (itemType == ItemType.SINGLE_ITEM.value) {
-			DataTypeState dataTypeState = null;
 			switch (dataType.intValue()) {
 			case 1:
 				dataTypeState = DataTypeState.createStringItem(stringItemLength.intValue(), stringItemType.intValue(),
@@ -287,8 +306,9 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 			}
 			item.setItemTypeState(ItemTypeState.createSingleItem(dataTypeState));
 		} else {
-			item.setItemTypeState(ItemTypeState.createSetItem(null));
+			item.setItemTypeState(ItemTypeState.createSetItem(items == null ? Arrays.asList(new String[] {}) : items));
 		}
+
 		return item;
 	}
 
@@ -382,6 +402,7 @@ public class JpaPernfoItemDefRepositoty extends JpaRepository implements PernfoI
 				break;
 			}
 		}
+
 		return new PpemtPerInfoItemCm(perInfoItemCmPK, perInfoItemDef.getItemParentCode().v(),
 				perInfoItemDef.getSystemRequired().value, perInfoItemDef.getRequireChangable().value,
 				perInfoItemDef.getIsFixed().value, itemType, dataType, timeItemMin, timeItemMax, timepointItemMin,

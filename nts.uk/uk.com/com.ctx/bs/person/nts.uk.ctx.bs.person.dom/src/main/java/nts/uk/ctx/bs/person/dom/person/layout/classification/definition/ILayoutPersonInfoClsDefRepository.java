@@ -9,4 +9,6 @@ public interface ILayoutPersonInfoClsDefRepository {
 	void addClassificationItemDefines(List<LayoutPersonInfoClsDefinition> domains);
 
 	List<String> getAllItemDefineIds(String layoutId, int classDispOrder);
+	
+	boolean checkExitItemClsDf(String layoutId);
 }

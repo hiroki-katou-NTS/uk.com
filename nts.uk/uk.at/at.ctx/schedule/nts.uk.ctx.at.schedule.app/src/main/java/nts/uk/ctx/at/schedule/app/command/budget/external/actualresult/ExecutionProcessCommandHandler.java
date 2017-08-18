@@ -20,6 +20,8 @@ import java.util.Optional;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -107,31 +109,31 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private WorkplaceAdapter workplaceAdapter;
     
     /** The Constant FORMAT_DATES. */
-    private static final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
+    private final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
     
     /** The Constant DEFAULT_VALUE. */
-    private static final Integer DEFAULT_VALUE = 0;
+    private final Integer DEFAULT_VALUE = 0;
     
     /** The Constant INDEX_COLUMN_CODE. */
-    private static final Integer INDEX_COLUMN_CODE = 0;
+    private final Integer INDEX_COLUMN_CODE = 0;
     
     /** The Constant INDEX_COLUMN_DATE. */
-    private static final Integer INDEX_COLUMN_DATE = 1;
+    private final Integer INDEX_COLUMN_DATE = 1;
     
     /** The Constant INDEX_BEGIN_COL_VALUE. */
-    private static final Integer INDEX_BEGIN_COL_VALUE = 2;
+    private final Integer INDEX_BEGIN_COL_VALUE = 2;
     
     /** The Constant MAX_COLMN. */
-    private static final Integer MAX_COLMN = 51;
+    private final Integer MAX_COLMN = 51;
     
     /** The Constant TOTAL_RECORD. */
-    private static final String TOTAL_RECORD = "TOTAL_RECORD";
+    private final String TOTAL_RECORD = "TOTAL_RECORD";
     
     /** The Constant SUCCESS_CNT. */
-    private static final String SUCCESS_CNT = "SUCCESS_CNT";
+    private final String SUCCESS_CNT = "SUCCESS_CNT";
     
     /** The Constant FAIL_CNT. */
-    private static final String FAIL_CNT = "FAIL_CNT";
+    private final String FAIL_CNT = "FAIL_CNT";
     
     /* (non-Javadoc)
      * @see nts.arc.layer.app.command.CommandHandlerWithResult#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -312,12 +314,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      */
     private void addExtBudgetDaily(ImportProcess importProcess, List<String> result) {
         String rawValue = result.get(INDEX_BEGIN_COL_VALUE);
-        Long value = null;
-        try {
-            value = this.convertVal(rawValue);
-        } catch (RuntimeException e) {
-            value = Long.parseLong(rawValue);
-        }
+        Long value = this.parseActualValue(rawValue);
         ExternalBudgetDailyDto dto = ExternalBudgetDailyDto.builder()
                 .budgetAtr(importProcess.externalBudget.getBudgetAtr())
                 .workplaceId(importProcess.workplaceId)
@@ -359,7 +356,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param domain the domain
      */
-    private <T> void saveDataDaily (ImportProcess importProcess, ExternalBudgetDaily<T> domain) {
+    private <T> void saveDataDaily(ImportProcess importProcess, ExternalBudgetDaily<T> domain) {
         if (!this.extBudgetDailyRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
                 domain.getExtBudgetCode().v())) {
             this.extBudgetDailyRepo.add(domain);
@@ -393,12 +390,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         List<String> lstValue = result.subList(INDEX_BEGIN_COL_VALUE, result.size());
         for (int i=0; i<lstValue.size(); i++) {
             String rawValue = lstValue.get(i);
-            Long value = null;
-            try {
-                value = this.convertVal(rawValue);
-            } catch (RuntimeException e) {
-                value = Long.parseLong(rawValue);
-            }
+            Long value = this.parseActualValue(rawValue);
             mapValue.put(i, value);
         }
         ExternalBudgetTimeDto dto = ExternalBudgetTimeDto.builder()
@@ -441,7 +433,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param domain the domain
      */
-    private <T> void saveDataTime (ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
+    private <T> void saveDataTime(ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
         if (!this.extBudgetTimeRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
                 domain.getExtBudgetCode().v())) {
             this.extBudgetTimeRepo.add(domain);
@@ -497,7 +489,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      */
     private void validUnitAtr(ImportProcess importProcess, int numberColInput) {
         UnitAtr unitAtr = importProcess.externalBudget.getUnitAtr();
-        int numberCol = 0;
+        int numberCol;
         switch (unitAtr) {
             case DAILY:
                 numberCol = 3;
@@ -516,7 +508,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         if (numberColInput < numberCol) {
             numberColError = numberColInput;
             messageIdError = "Msg_163";
-        } else if (numberColInput > numberCol) {
+        } else {
             numberColError = ++numberCol;
             messageIdError = "Msg_162";
         }
@@ -662,8 +654,25 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 default:
                     throw new RuntimeException("Not budget atr suitable.");
             }
-        } catch (Exception e) {
+        } catch (BusinessException e) {
+            this.logError(importProcess, columnNo, value, e.getMessage());
+        } catch (NumberFormatException numberFormat) {
             this.logError(importProcess, columnNo, value, "Invalid format number.");
+        }
+    }
+    
+    /**
+     * Parses the actual value.
+     *
+     * @param rawValue the raw value
+     * @return the long
+     */
+    private Long parseActualValue(String rawValue) {
+        try {
+            return Long.parseLong(rawValue);
+        } catch (NumberFormatException e) {
+            // case budget atr: TIME
+            return this.convertVal(rawValue);
         }
     }
     
@@ -676,13 +685,13 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private Long convertVal(String value) {
         String CHARACTER_COLON = ":";
         if (!value.contains(CHARACTER_COLON)) {
-            throw new RuntimeException("Actual value time invalid format.");
+            throw new BusinessException(new RawErrorMessage("Invalid format time."));
         }
         String[] arr = value.split(CHARACTER_COLON);
         Integer HOUR = 60;
         Long numberHour = Long.parseLong(arr[0]);
-        Long numberminute = Long.parseLong(arr[1]);
-        return numberHour * HOUR + numberminute;
+        Long numberMinute = Long.parseLong(arr[1]);
+        return numberHour * HOUR + numberMinute;
     }
     
     /**

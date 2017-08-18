@@ -42,7 +42,6 @@ module nts.uk.at.view.ksm006.a {
             isUpdateModeClassify: KnockoutObservable<boolean>;
             workplaceName: KnockoutObservable<string>;
             classificationName: KnockoutObservable<string>;
-            selectableCodes: KnockoutObservableArray<number>;
             
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -122,7 +121,6 @@ module nts.uk.at.view.ksm006.a {
                 
                 self.workplaceName = ko.observable(null);
                 self.classificationName = ko.observable(null);
-                self.selectableCodes = ko.observableArray([WorkStyle.MORNING_BREAK, WorkStyle.AFTERNOON_BREAK, WorkStyle.ONE_DAY_WORK]);
             }
             
             /**
@@ -631,47 +629,68 @@ module nts.uk.at.view.ksm006.a {
             
             selectableWorktypeList: KnockoutObservableArray<string>;
             selectableWorkingList: KnockoutObservableArray<string>;
+            worktypeCodes: KnockoutObservableArray<number>;
             
             constructor (worktypeCode: string, worktypeDisplayName: string, workingCode: string, workingDisplayName: string) {
                 this.worktypeCode = ko.observable(worktypeCode);
                 this.worktypeDisplayName = ko.observable(worktypeDisplayName);
                 this.workingCode = ko.observable(workingCode);
                 this.workingDisplayName = ko.observable(workingDisplayName);
+                this.worktypeCodes = ko.observableArray([]);
             }
             
             /**
              * Go to KDL003 
              */
-            public gotoDialog(data, enumVal: number): void {
+            public gotoDialog(enumVal: number, data): void {
                 let self = this;
-                var typecodes = [];
-                nts.uk.ui.windows.setShared('parentCodes', {
-                    selectedWorkTypeCode: self.worktypeCode,
-                    selectedWorkTimeCode: self.workingCode,
-                    workTypeCodes: service.findWorktypeCodeList(typecodes),
-                    workTimeCodes: service.findWorktimeCodeList()
-                }, true);
-                
-                nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
-                    var childData = nts.uk.ui.windows.getShared('childData');
+                // Set worktypeCodes
+                switch (enumVal) {
+                    case 1:
+                        self.worktypeCodes([WorkStyle.MORNING_BREAK, WorkStyle.AFTERNOON_BREAK, WorkStyle.ONE_DAY_WORK]);
+                        break;
+
+                    case 2:
+                        self.worktypeCodes([WorkStyle.MORNING_BREAK, WorkStyle.AFTERNOON_BREAK, WorkStyle.ONE_DAY_REST]);
+                        break;
+
+                    case 3:
+                        self.worktypeCodes([WorkStyle.MORNING_BREAK, WorkStyle.AFTERNOON_BREAK, WorkStyle.ONE_DAY_REST]);
+                        break;
                     
-                    if (!childData.selectedWorkTypeCode) {
-                        self.worktypeCode(null);
-                        self.workingCode(null);
-                        self.worktypeDisplayName(null);
-                        self.workingDisplayName(null);
-                        return;
-                    }
-                    self.worktypeCode(childData.selectedWorkTypeCode);
-                    self.worktypeDisplayName(childData.selectedWorkTypeName);
-                    if (childData.selectedWorkTimeCode == '000' || !childData.selectedWorkTimeCode) {
-                        self.workingCode(null);
-                        self.workingDisplayName(null);
-                    } else {
-                        self.workingCode(childData.selectedWorkTimeCode);
-                        self.workingDisplayName(childData.selectedWorkTimeName);
-                    }
-                    
+                }
+                // Find worktypeCode List and worktimeCode List to Set Parameters to open Dialog KDL003
+                $.when(service.findWorktypeCodeList(self.worktypeCodes()), service.findWorktimeCodeList())
+                    .done(function(workTypeCodes, workTimes) {
+                        let workTimeCodes = workTimes.map(item => item.code);
+                        nts.uk.ui.windows.setShared('parentCodes', {
+                            selectedWorkTypeCode: self.worktypeCode(),
+                            selectedWorkTimeCode: self.workingCode(),
+                            workTypeCodes: workTypeCodes,
+                            workTimeCodes: workTimeCodes
+                        }, true);
+                        // onClosed Dialog
+                        nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
+                            var childData = nts.uk.ui.windows.getShared('childData');
+                            // If childData is undefined or selectedWorkTypeCode is undefined
+                            if (!childData || !childData.selectedWorkTypeCode) {
+                                self.worktypeCode(null);
+                                self.workingCode(null);
+                                self.worktypeDisplayName(null);
+                                self.workingDisplayName(null);
+                                return;
+                            }
+                            self.worktypeCode(childData.selectedWorkTypeCode);
+                            self.worktypeDisplayName(childData.selectedWorkTypeName);
+                            if (childData.selectedWorkTimeCode == '000' || !childData.selectedWorkTimeCode) {
+                                self.workingCode(null);
+                                self.workingDisplayName(null);
+                            } else {
+                                self.workingCode(childData.selectedWorkTimeCode);
+                                self.workingDisplayName(childData.selectedWorkTimeName);
+                            }
+
+                        });
                 });
             }
         }

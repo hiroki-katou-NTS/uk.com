@@ -22,9 +22,9 @@ module nts.uk.at.view.ksm003.a {
             worktimeInfoWorkDays: KnockoutObservable<string>;
             
             // Chua dung den (Check )
-            patternValDays: KnockoutObservable<number>;
-            workTypeSetCd: KnockoutObservable<string>;
-            workingHoursCd: KnockoutObservable<string>;
+//            patternValDays: KnockoutObservable<number>;
+//            workTypeSetCd: KnockoutObservable<string>;
+//            workingHoursCd: KnockoutObservable<string>;
 
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -48,9 +48,9 @@ module nts.uk.at.view.ksm003.a {
                 self.worktypeInfoWorkDays = ko.observable('');
                 self.worktimeInfoWorkDays = ko.observable('');
 
-                self.patternValDays = ko.observable(null);
-                self.workTypeSetCd = ko.observable('');
-                self.workingHoursCd = ko.observable('');
+//                self.patternValDays = ko.observable(null);
+//                self.workTypeSetCd = ko.observable('');
+//                self.workingHoursCd = ko.observable('');
 
                 //subscribe currentCode
                 self.selectedCode.subscribe(function(codeChanged: string) {
@@ -115,11 +115,12 @@ module nts.uk.at.view.ksm003.a {
                 // nts.uk.ui.block.grayout();
 
                 service.getPatternValByPatternCd(patternCode).done(function(dataRes) {
-
-                    self.detail(new model.DailyPatternDetailModel(dataRes.patternCode, dataRes.patternName, dataRes.dailyPatternVals.map(function(item) {
-                       return new model.DailyPatternValModel(item.dispOrder, item.workTypeSetCd, item.workingHoursCd, item.days);
-                    })));
-
+                    
+                    if(dataRes !== undefined){
+                        self.detail(new model.DailyPatternDetailModel(dataRes.patternCode, dataRes.patternName, dataRes.dailyPatternVals.map(function(item) {
+                           return new model.DailyPatternValModel(item.dispOrder, item.workTypeSetCd, item.workingHoursCd, item.days);
+                        })));
+                    }
                     self.isEditting(true);
 
                     //                    nts.uk.ui.block.clear();
@@ -160,7 +161,7 @@ module nts.uk.at.view.ksm003.a {
             public deletePattern() {
                 let self = this;
 
-                nts.uk.ui.block.grayout();
+//                nts.uk.ui.block.grayout();
 
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     var dataHistory: DailyPatternItemDto[] = self.itemLst();
@@ -194,10 +195,10 @@ module nts.uk.at.view.ksm003.a {
                             }
                         });
                     }).always(function() {
-                        nts.uk.ui.block.clear();
+//                        nts.uk.ui.block.clear();
                     });
                 }).ifNo(function() {
-                    nts.uk.ui.block.clear();
+//                    nts.uk.ui.block.clear();
                     return;
                 });
 

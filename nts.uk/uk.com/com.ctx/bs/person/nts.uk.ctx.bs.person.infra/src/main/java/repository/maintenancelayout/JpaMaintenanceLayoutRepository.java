@@ -12,6 +12,8 @@ import org.apache.commons.lang3.text.translate.NumericEntityUnescaper.OPTION;
 
 import entity.layout.PpemtMaintenanceLayout;
 import entity.layout.PpemtMaintenanceLayoutPk;
+import entity.layout.classification.PpemtLayoutItemCls;
+import entity.layout.classification.difination.PpemtLayoutItemClsDf;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.layout.IMaintenanceLayoutRepository;
@@ -24,13 +26,17 @@ import nts.uk.ctx.bs.person.dom.person.layout.MaintenanceLayout;
 @Stateless
 public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMaintenanceLayoutRepository {
 
-	private String getAllMaintenanceLayout = "select c FROM  PpemtMaintenanceLayout c Where c.companyId = :companyId";
+	private String getAllMaintenanceLayout = "select c FROM  PpemtMaintenanceLayout c Where c.companyId = :companyId ORDER BY c.layoutCode ASC";
 
 	private String getDetailLayout = "select c FROM  PpemtMaintenanceLayout c Where c.ppemtMaintenanceLayoutPk.layoutId = :layoutId AND c.companyId = :companyId";
-	
+
 	private String getDetailLayoutByCode = "select c FROM  PpemtMaintenanceLayout c Where c.layoutCode = :layoutCode  AND c.companyId = :companyId";
 
 	private static final String IS_DUPLICATE_LAYOUTCODE;
+
+	private static final String CHECK_EXIT_ITEMCLS;
+
+	private static final String CHECK_EXIT_ITEMCLS_DF;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -40,6 +46,18 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 		builderString.append(" WHERE e.layoutCode = :layoutCode");
 		builderString.append(" AND  e.companyId = :companyId");
 		IS_DUPLICATE_LAYOUTCODE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM PpemtLayoutItemCls e");
+		builderString.append(" WHERE e.ppemtLayoutItemClsPk.layoutId = :layoutId");
+		CHECK_EXIT_ITEMCLS = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM PpemtLayoutItemClsDf e");
+		builderString.append(" WHERE e.ppemtLayoutItemClsDfPk.layoutId = :layoutId");
+		CHECK_EXIT_ITEMCLS_DF = builderString.toString();
 
 	}
 
@@ -72,6 +90,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 	@Override
 	public void update(MaintenanceLayout maintenanceLayout) {
 		// TODO Auto-generated method stub
+		this.commandProxy().update(toEntity(maintenanceLayout));
 
 	}
 
@@ -79,13 +98,6 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 	public void remove(MaintenanceLayout domain) {
 		PpemtMaintenanceLayoutPk pk = new PpemtMaintenanceLayoutPk(domain.getMaintenanceLayoutID());
 		this.commandProxy().remove(PpemtMaintenanceLayout.class, pk);
-	}
-
-	@Override
-	public boolean checkExit(String companyId, String layoutCode) {
-		boolean x = this.queryProxy().query(IS_DUPLICATE_LAYOUTCODE, long.class).setParameter("layoutCode", layoutCode)
-				.setParameter("companyId", companyId).getSingle().isPresent();
-		return x;
 	}
 
 	@Override
@@ -111,4 +123,11 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 			return Optional.of(toDomain(entity));
 		}
 	}
+
+	@Override
+	public boolean checkExit(String companyId, String layoutCode) {
+		return this.queryProxy().query(IS_DUPLICATE_LAYOUTCODE, long.class).setParameter("layoutCode", layoutCode)
+				.setParameter("companyId", companyId).getSingle().isPresent();
+	}
+
 }
