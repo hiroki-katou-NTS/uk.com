@@ -12,8 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InsertRelationshipCommand {
-	/**会社ID**/
-	private String companyId;
 	/**コード**/
 	private String relationshipCode;
 	/**名称**/
