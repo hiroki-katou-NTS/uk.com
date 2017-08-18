@@ -71,7 +71,7 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 			public void accept(DailyPatternValDto t) {
 				if(t != null){
 					// check pair work days
-					basicScheduleService.ErrorCheckingStatus(t.getWorkTypeSetCd(), t.getWorkingHoursCd());
+					basicScheduleService.checkPairWorkTypeWorkTime(t.getWorkTypeSetCd(), t.getWorkingHoursCd());
 					// check repeat day 
 					if(t.getDays() == null){
 						throw new BusinessException("Msg_25");
