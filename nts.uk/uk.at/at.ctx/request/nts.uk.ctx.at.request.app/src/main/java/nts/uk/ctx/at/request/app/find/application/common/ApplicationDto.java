@@ -1,24 +1,17 @@
-package nts.uk.ctx.at.request.app.command.common.application;
+package nts.uk.ctx.at.request.app.find.application.common;
 
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.shr.com.context.AppContexts;
-/**
- * 
- * @author tutk
- *
- */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class CreateApplicationCommand {
 
+@Value
+public class ApplicationDto {
+	/**
+	 * 会社ID
+	 */
+	private String companyID;
+	
 	/**
 	 * 申請ID
 	 */
@@ -28,6 +21,7 @@ public class CreateApplicationCommand {
 	 * 事前事後区分
 	 */
 	private int prePostAtr; 
+
 
 	/**
 	 * 入力日
@@ -103,25 +97,27 @@ public class CreateApplicationCommand {
 	 */
 	private int reflectPerEnforce;
 	
-	public Application toDomain() {
-		return Application.createFromJavaType(
-				AppContexts.user().companyId(), 
-				this.applicationID,  
-				this.prePostAtr, 
-				this.inputDate,  
-				this.enteredPersonSID,  
-				this.reversionReason,  
-				this.applicationDate,  
-				this.applicationReason,  
-				this.applicationType,  
-				this.applicantSID,  
-				this.reflectPlanScheReason,  
-				this.reflectPlanTime,  
-				this.reflectPlanState,  
-				this.reflectPlanEnforce,  
-				this.reflectPerScheReason,  
-				this.reflectPerTime,  
-				this.reflectPerState,  
-				this.reflectPerEnforce);
+	public static ApplicationDto fromDomain(Application domain) {
+		return new ApplicationDto(
+				domain.getCompanyID(),
+				domain.getApplicationID(),
+				domain.getPrePostAtr().value,
+				domain.getInputDate(), 
+				domain.getEnteredPersonSID(), 
+				domain.getReversionReason().v(), 
+				domain.getApplicationDate(), 
+				domain.getApplicationReason().v(),
+				domain.getApplicationType().value, 
+				domain.getApplicantSID(), 
+				domain.getReflectPlanScheReason().value, 
+				domain.getReflectPlanTime(), 
+				domain.getReflectPlanState().value, 
+				domain.getReflectPlanEnforce().value, 
+				domain.getReflectPerScheReason().value, 
+				domain.getReflectPerTime(), 
+				domain.getReflectPerState().value, 
+				domain.getReflectPerEnforce().value
+				);
 	}
+
 }

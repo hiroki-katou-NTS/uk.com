@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.common.lateorleaveearly;
+package nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly;
 
 import java.io.Serializable;
 

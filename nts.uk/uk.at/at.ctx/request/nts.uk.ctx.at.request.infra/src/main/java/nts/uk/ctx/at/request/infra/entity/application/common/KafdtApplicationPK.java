@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.common.application;
+package nts.uk.ctx.at.request.infra.entity.application.common;
 
 import java.io.Serializable;
 
