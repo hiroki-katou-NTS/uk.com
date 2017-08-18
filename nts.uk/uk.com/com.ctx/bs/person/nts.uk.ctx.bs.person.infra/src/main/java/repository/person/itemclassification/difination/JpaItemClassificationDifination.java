@@ -21,7 +21,8 @@ public class JpaItemClassificationDifination extends JpaRepository implements IL
 	private static final String SELECT_ALL = "SELECT cd FROM PpemtLayoutItemClsDf cd";
 	private static final String SELECT_ALL_BY_CLASSIFID = SELECT_ALL
 			+ " WHERE cd.ppemtLayoutItemClsDfPk.layoutId = :layoutId"
-			+ " AND cd.ppemtLayoutItemClsDfPk.layoutDispOrder = :classDispOrder";
+			+ " AND cd.ppemtLayoutItemClsDfPk.layoutDispOrder = :classDispOrder"
+			+ " ORDER BY cd.ppemtLayoutItemClsDfPk.dispOrder ASC";
 
 	@Override
 	public List<String> getAllItemDefineIds(String layoutId, int classDispOrder) {
