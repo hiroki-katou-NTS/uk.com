@@ -25,7 +25,7 @@ public enum ApplicationType {
 	/** 時間年休申請*/
 	ANNUAL_HOLIDAY_APPLICATION(8),
 	/** 遅刻早退取消申請*/
-	earlyLeaveCancel_APPLICATION(9),
+	EARLY_LEAVE_CANCEL_APPLICATION(9),
 	/** 振休振出申請*/
 	COMPLEMENT_LEAVE_APPLICATION(10),
 	/** 打刻申請（NR形式）*/

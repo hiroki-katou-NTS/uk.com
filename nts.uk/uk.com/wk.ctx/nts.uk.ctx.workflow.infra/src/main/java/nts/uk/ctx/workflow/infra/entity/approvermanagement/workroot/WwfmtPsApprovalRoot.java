@@ -10,31 +10,35 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
- * 会社別就業承認ルート
+ * 個人別就業承認ルート
  * @author hoatt
  *
  */
 @Entity
-@Table(name = "WWFDT_COM_APPROVAL_ROOT")
+@Table(name = "WWFMT_PS_APPROVAL_ROOT")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfdtComApprovalRoot extends UkJpaEntity implements Serializable {
+public class WwfmtPsApprovalRoot extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**主キー*/
 	@EmbeddedId
-	public WwfdtComApprovalRootPK wwfdtComApprovalRootPK;
-	/**分岐ID*/
-	@Column(name = "BRANCH_ID")
-	public String branchId;
+	public WwfmtPsApprovalRootPK wwfmtPsApprovalRootPK;
+
 	/**開始日*/
 	@Column(name = "START_DATE")
 	public GeneralDate startDate;
 	/**終了日*/
 	@Column(name = "END_DATE")
 	public GeneralDate endDate;
+	/**申請種類*/
+	@Column(name = "APP_TYPE")
+	public int applicationType;
+	/**分岐ID*/
+	@Column(name = "BRANCH_ID")
+	public String branchId;
 	/**任意項目申請ID*/
-	@Column(name = "ANYITEM_APPLICATION_ID")
+	@Column(name = "ANYITEM_APP_ID")
 	public String anyItemAppId;
 	/**確認ルート種類*/
 	@Column(name = "CONFIRMATION_ROOT_TYPE")
@@ -45,6 +49,6 @@ public class WwfdtComApprovalRoot extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return wwfdtComApprovalRootPK;
+		return wwfmtPsApprovalRootPK;
 	}
 }

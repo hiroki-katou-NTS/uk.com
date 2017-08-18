@@ -29,7 +29,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 	}
 	
 	@POST
-	@Path("getbycom")
+	@Path("getbyperson")
 	public List<PrivateApprovalRootDto> getAllByPerson(@PathParam("employeeId") String employeeId) {
 		return this.privateFinder.getAllPrivateApprovalRoot(employeeId);
 	}

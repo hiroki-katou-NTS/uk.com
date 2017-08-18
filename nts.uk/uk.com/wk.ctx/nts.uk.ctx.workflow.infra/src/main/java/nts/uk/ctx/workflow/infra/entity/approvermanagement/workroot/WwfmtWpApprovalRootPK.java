@@ -1,8 +1,10 @@
 package nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 /**
@@ -13,12 +15,15 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfdtAppoverPK implements Serializable{
+public class WwfmtWpApprovalRootPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**会社ID*/
 	@Column(name = "CID")
 	public String companyId;
-	/**承認フェーズID*/
-	@Column(name = "APPROVAL_PHASE_ID")
-	public String approvalPhaseId;
+	/**職場ID*/
+	@Column(name = "WKPID")
+	public String workplaceId;
+	/**履歴ID*/
+	@Column(name = "HIST_ID")
+	public String historyId;
 }
