@@ -80,7 +80,7 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	 * author: Hoang Yen
 	 */
 	@Override
-	public Optional<Relationship> getByCode(String companyId, String relationshipCd) {
+	public Optional<Relationship> findByCode(String companyId, String relationshipCd) {
 		return this.queryProxy().find(new KshstRelationshipPK(companyId, relationshipCd), KshstRelationshipItem.class).map(c -> toDomain(c));
 	}
 	

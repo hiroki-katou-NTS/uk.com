@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.grantrelationship.GrantRelationship;
-import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 
 public interface GrantRelationshipRepository {
 	/**
@@ -27,7 +26,7 @@ public interface GrantRelationshipRepository {
 	 * author: Hoang Yen
 	 * @param grantRelationship
 	 */
-	void delete(GrantRelationship grantRelationship);
+	void delete(String companyId, int specialHolidayCode, String relationshipCode);
 	/**
 	 * 
 	 * @param companyId
@@ -36,5 +35,5 @@ public interface GrantRelationshipRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<Relationship> findByCode(String companyId, String specialHolidayCode, String relationshipCode);
+	Optional<GrantRelationship> findByCode(String companyId, int specialHolidayCode, String relationshipCode);
 }

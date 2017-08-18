@@ -25,7 +25,7 @@ public class InsertRelationshipCommandHandler extends CommandHandler<InsertRelat
 		String companyId = AppContexts.user().companyId();
 		Relationship relationship = Relationship.createFromJavaType(companyId, context.getCommand().getRelationshipCode(),
 																	context.getCommand().getRelationshipName());
-		Optional<Relationship> relationshipOld = relashipRep.getByCode(companyId, context.getCommand().getRelationshipCode());
+		Optional<Relationship> relationshipOld = relashipRep.findByCode(companyId, context.getCommand().getRelationshipCode());
 		if(relationshipOld.isPresent()){
 			throw new BusinessException("Msg_3");
 		}
