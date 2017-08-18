@@ -28,7 +28,6 @@ public class CreateApplicationCommandHandler extends CommandHandler<CreateApplic
 				companyID,
 				appCommand.getApplicationID(),
 				appCommand.getPrePostAtr(), 
-				appCommand.getAutoPostApplication(), 
 				appCommand.getInputDate(), 
 				appCommand.getEnteredPersonSID(), 
 				appCommand.getReversionReason(), 
