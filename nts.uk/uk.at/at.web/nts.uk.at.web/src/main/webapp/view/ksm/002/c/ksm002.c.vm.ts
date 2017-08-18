@@ -30,10 +30,11 @@ module ksm002.c {
                     });
                     //insert new item when data in db <10 items
                     let itemNo =self.specificDateItem().length;
+                    let itemNoNew = self.specificDateItem()[itemNo-1].specificDateItemNo();
                     while(self.specificDateItem().length<10){
                         self.specificDateItem.push(
-                                new SpecificDateItem(1,itemNo+1,''));
-                        itemNo = itemNo + 1;
+                                new SpecificDateItem(1,itemNoNew+1,''));
+                        itemNoNew = itemNoNew + 1;
                     }
                     
                     

@@ -1,11 +1,9 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 /**
  * 職場別就業承認ルート
  * @author hoatt
@@ -20,12 +18,10 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 	private String workplaceId;
 	/**履歴ID*/
 	private String historyId;
-	/**開始日*/
-	private GeneralDate startDate;
-	/**終了日*/
-	private GeneralDate endDate;
+	/**期間*/
+	private ApprovalPeriod period;
 	/**分岐ID*/
-	private int branchId;
+	private String branchId;
 	/**任意項目申請ID*/
 	private String anyItemApplicationId;
 	/**確認ルート種類*/
@@ -40,7 +36,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 			String historyId,
 			String startDate,
 			String endDate,
-			int branchId,
+			String branchId,
 			String anyItemApplicationId,
 			int confirmationRootType,
 			int employmentRootAtr,
@@ -48,8 +44,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 		return new WorkplaceApprovalRoot(companyId, 
 			workplaceId,
 			historyId, 
-			GeneralDate.localDate(LocalDate.parse(startDate)),
-			GeneralDate.localDate(LocalDate.parse(endDate)),
+			ApprovalPeriod.createSimpleFromJavaType(startDate, endDate),
 			branchId,
 			anyItemApplicationId,
 			EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),

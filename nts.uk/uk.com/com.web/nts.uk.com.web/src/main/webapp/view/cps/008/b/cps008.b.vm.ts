@@ -1,7 +1,7 @@
 module cps008.b.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-
+    import close = nts.uk.ui.windows.close;
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
@@ -17,53 +17,40 @@ module cps008.b.vm {
         start() {
             let self = this,
                 layout = self.layout(),
+
                 dto: any = getShared('CPS008B_PARAM');
-            _.map(dto, (x: ILayout) => {
-                layout.id(dto.id);
-                layout.code(dto.code);
-                layout.name(dto.name);
-                layout.itemsClassification(dto.classifications);
-            });
+            layout.id = dto.id;
+            layout.code = dto.code;
+            layout.name = dto.name;
             // lấy list items classification ra theo layoutid của maintainece layout truyền từ màn a lên
             // Không có thì gọi service dưới lấy list items classification của new layout rồi truyền vào layout ở view model
-            service.getListCls(layout.id).done(x => {
-                if (x && x.length) {
-                    layout.itemsClassification(x.itemsClassification);
+            service.getListCls(dto.id).done((x: any) => {
+                if (x.listItemClsDto && x.listItemClsDto.length) {
+                    layout.itemsClassification(x.listItemClsDto);
                 } else {
                     service.getData().done((x: ILayout) => {
-                        debugger;
                         layout.itemsClassification(x.itemsClassification);
-                        
+
                     });
                 }
-                
+
             });
+
         }
 
         pushData() {
             let self = this,
-                layout: ILayout = ko.toJS(self.layout),
-                command: any = {
-                    layoutID: layout.id,
-                    layoutCode: layout.code,
-                    layoutName: layout.name,
-                    itemsClassification: (layout.itemsClassification || []).map((item, i) => {
-                        return {
-                            dispOrder: i + 1,
-                            personInfoCategoryID: item.personInfoCategoryID,
-                            layoutItemType: item.layoutItemType,
-                            listItemClsDf: (item.listItemDf || []).map((def, j) => {
-                                return {
-                                    dispOrder: j + 1,
-                                    personInfoItemDefinitionID: def.id
-                                };
-                            })
-                        };
-                    })
-                };
+                layout: ILayout = ko.toJS(self.layout);
+            debugger;
+            setShared("CPS008B_VALUE", layout.itemsClassification);
+            close();
 
-            setShared("CPS008B_VALUE", command.itemsClassification);
             //service.saveData(command);
+        }
+
+        close() {
+            setShared('CPS008B_VALUE', null);
+            close();
         }
     }
 

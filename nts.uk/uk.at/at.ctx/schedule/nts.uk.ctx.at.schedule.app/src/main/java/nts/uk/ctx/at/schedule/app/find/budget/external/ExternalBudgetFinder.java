@@ -44,6 +44,21 @@ public class ExternalBudgetFinder {
 	/** The file check service. */
     @Inject
     private ExtBudgetFileCheckService fileCheckService;
+    
+    /** The Constant INDEX_CODE. */
+    private final int INDEX_CODE = 0;
+    
+    /** The Constant INDEX_DATE. */
+    private final int INDEX_DATE = 1;
+    
+    /** The Constant INDEX_VALUE. */
+    private final int INDEX_VALUE = 2;
+    
+    /** The Constant MAX_RECORD_DISP. */
+    private final int MAX_RECORD_DISP = 10;
+    
+    /** The Constant MAX_COLUMN. */
+    private final int MAX_COLUMN = 51;
 	
 	/*
 	 * get All List iTem of external Budget
@@ -64,7 +79,7 @@ public class ExternalBudgetFinder {
 	public void validateFile(ExtBudgetExtractCondition extractCondition) {
 	    // Check valid format file.
 	    this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
-                extractCondition.getStartLine());
+                extractCondition.getStartLine().v());
 	}
 	
 	/**
@@ -74,15 +89,9 @@ public class ExternalBudgetFinder {
 	 * @return the ext budget data preview dto
 	 */
     public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
+        int lineStart = extractCondition.getStartLine().v();
         // Check valid format file.
-        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
-                extractCondition.getStartLine());
-        
-        List<ExternalBudgetValDto> lstExtBudgetVal = new ArrayList<>();
-        int INDEX_CODE = 0;
-        int INDEX_DATE = 1;
-        int INDEX_VALUE = 2;
-        int MAX_RECORD_DISP = 10;
+        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(), lineStart);
         
         String companyId = AppContexts.user().companyId();
         
@@ -94,44 +103,41 @@ public class ExternalBudgetFinder {
         }
         ExternalBudget externalBudget = extBudgetOptional.get();
         
-        int MAX_COLUMN = 51;
         int totalRecord = 0;
         int indexLine = 0;
-        int countLine = 1;
+        List<ExternalBudgetValDto> lstExtBudgetVal = new ArrayList<>();
         try {
             // get input stream by fileId
             InputStream inputStream = this.fileStreamService.takeOutFromFileId(extractCondition.getFileId());
             
             // get list record
             List<NtsCsvRecord> csvRecords = this.findRecordFile(inputStream, extractCondition.getEncoding());
-            
             if (CollectionUtil.isEmpty(csvRecords)) {
                 throw new BusinessException(new RawErrorMessage("File input not data."));
             }
             
             // calculate total record file
-            totalRecord = csvRecords.size() - extractCondition.getStartLine() + 1;
-            
+            int calTotal = csvRecords.size() - lineStart + 1;
+            if (calTotal > totalRecord) {
+                totalRecord = calTotal;
+            }
             Iterator<NtsCsvRecord> csvRecordIterator = csvRecords.iterator();
             while(csvRecordIterator.hasNext()) {
                 NtsCsvRecord record = csvRecordIterator.next();
                 indexLine++;
-                if (indexLine < extractCondition.getStartLine()) {
+                if (indexLine < lineStart) {
                     continue;
                 }
-                if (countLine <= MAX_RECORD_DISP) {
-                    List<String> result = new ArrayList<>();
-                    for (int idxCol = 0; idxCol < MAX_COLUMN; idxCol++) {
-                        Object value = record.getColumn(idxCol);
-                        if (value == null) {
-                            continue;
-                        }
-                        result.add(value.toString());
-                    }
+                // check max record show client.
+                if (lstExtBudgetVal.size() < MAX_RECORD_DISP) {
+                    // get record data
+                    List<String> result = this.findDataRecord(record);
+                    
+                    // fill or split column space if number column is incorrect. 
                     this.findListExtBudgetValue(result, externalBudget.getUnitAtr());
+                    
                     lstExtBudgetVal.add(ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE),
                             result.get(INDEX_DATE), result.subList(INDEX_VALUE, result.size())));
-                    countLine++;
                 }
             }
             // close input stream
@@ -146,6 +152,24 @@ public class ExternalBudgetFinder {
 	            .build();
 	}
 	
+    /**
+     * Find data record.
+     *
+     * @param record the record
+     * @return the list
+     */
+    private List<String> findDataRecord(NtsCsvRecord record) {
+        List<String> result = new ArrayList<>();
+        for (int idxCol = 0; idxCol < MAX_COLUMN; idxCol++) {
+            Object value = record.getColumn(idxCol);
+            if (value == null) {
+                continue;
+            }
+            result.add(value.toString());
+        }
+        return result;
+    }
+    
     /**
      * Find record file.
      *
@@ -169,7 +193,7 @@ public class ExternalBudgetFinder {
      */
     private List<String> findListExtBudgetValue(List<String> lstRawVal, UnitAtr unitAtr) {
         String valEmpty = "";
-        int numberCol = 0;
+        int numberCol;
         switch (unitAtr) {
             case DAILY:
                 numberCol = 3;

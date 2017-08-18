@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktype;
 
 import java.util.List;
@@ -24,6 +28,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private final String SELECT_BY_CID_DISPLAY_ATR = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
 			+ " AND c.displayAtr = :displayAtr ORDER BY c.sortOrder ASC";
+
+	private final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
+			+ " AND c.kmnmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0";
+
+	private final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
+			+ " AND c.deprecateAtr = 0";
 
 	private static WorkType toDomain(KmnmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kmnmtWorkTypePK.companyId,
@@ -61,6 +71,31 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
 		return this.queryProxy().find(new KmnmtWorkTypePK(companyId, workTypeCd), KmnmtWorkType.class)
 				.map(x -> toDomain(x));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository#findNotDeprecated(
+	 * java.lang.String)
+	 */
+	@Override
+	public List<WorkType> findNotDeprecated(String companyId) {
+		return this.queryProxy().query(FIND_NOT_DEPRECATED, KmnmtWorkType.class).setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository#
+	 * findNotDeprecatedByListCode(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes) {
+		return this.queryProxy().query(FIND_NOT_DEPRECATED_BY_LIST_CODE, KmnmtWorkType.class)
+				.setParameter("companyId", companyId).setParameter("codes", codes).getList(c -> toDomain(c));
 	}
 
 }

@@ -38,10 +38,10 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     private StoredFileStreamService fileStreamService;
 
     /** The Constant FILE_EXTENSION_ARR. */
-    private static final List<String> FILE_EXTENSION_ARR = Arrays.asList("txt", "csv");
+    private final List<String> FILE_EXTENSION_ARR = Arrays.asList("txt", "csv");
 
     /** The Constant MAX_RECORD. */
-    private static final int MAX_RECORD = 999;
+    private final int MAX_RECORD = 999;
 
     /*
      * (non-Javadoc)
@@ -67,7 +67,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
             throw new BusinessException("Msg_157");
         }
         try {
-            this.fileStreamService.takeOutFromFileId(fileId).close();;
+            this.fileStreamService.takeOutFromFileId(fileId).close();
         } catch (BusinessException businessException) {
             throw new BusinessException("Msg_158");
         } catch (IOException e) {
@@ -84,7 +84,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     private void validFileExtension(String fileId) {
         Optional<StoredFileInfo> optional = this.fileInfoRepository.find(fileId);
         if (!optional.isPresent()) {
-            new RuntimeException("stored file info is not found.");
+            throw new RuntimeException("stored file info is not found.");
         }
         StoredFileInfo storagedFileInfor = optional.get();
         // check file extension
@@ -111,8 +111,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
             if (CollectionUtil.isEmpty(csvRecords)) {
                 return;
             }
-            int totalRecord = csvRecords.size() - startLine + 1;
-            if (totalRecord > MAX_RECORD) {
+            if (csvRecords.size() > MAX_RECORD) {
                 throw new BusinessException("Msg_168");
             }
             inputStream.close();

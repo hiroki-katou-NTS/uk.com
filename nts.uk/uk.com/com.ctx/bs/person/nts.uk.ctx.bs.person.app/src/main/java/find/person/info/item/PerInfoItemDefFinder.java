@@ -53,8 +53,11 @@ public class PerInfoItemDefFinder {
 
 	// Function get data for Layout
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgIdForLayout(String perInfoCtgId) {
-		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep.getAllPerInfoItemDefByCategoryId(perInfoCtgId,
-				AppContexts.user().contractCode());
+		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
+				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
+				.filter(e -> e.getItemParentCode().equals("")) // filter set item or single item (has'nt parent item)
+				.collect(Collectors.toList());
+
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
 	};
@@ -75,6 +78,13 @@ public class PerInfoItemDefFinder {
 					return mappingFromDomaintoDto(i, dispOrder);
 				}).collect(Collectors.toList());
 	};
+
+	// return list id of item definition if it's require;
+	public List<String> getRequiredIds() {
+		String companyId  = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
+		return this.pernfoItemDefRep.getRequiredIds(contractCd, companyId);
+	}
 
 	// mapping data from domain to DTO
 

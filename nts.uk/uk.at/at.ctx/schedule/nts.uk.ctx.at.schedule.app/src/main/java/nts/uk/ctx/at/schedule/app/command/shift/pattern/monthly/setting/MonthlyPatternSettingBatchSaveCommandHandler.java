@@ -78,21 +78,21 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 
 		// check pair work days
-		basicScheduleService.ErrorCheckingStatus(command.getSettingWorkDays().getWorkTypeCode(),
+		basicScheduleService.checkPairWorkTypeWorkTime(command.getSettingWorkDays().getWorkTypeCode(),
 				command.getSettingWorkDays().getWorkingCode());
 
 		// check pair statutory holiday
-		basicScheduleService.ErrorCheckingStatus(
+		basicScheduleService.checkPairWorkTypeWorkTime(
 				command.getSettingStatutoryHolidays().getWorkTypeCode(),
 				command.getSettingStatutoryHolidays().getWorkingCode());
 
 		// check pair none statutory holiday
-		basicScheduleService.ErrorCheckingStatus(
+		basicScheduleService.checkPairWorkTypeWorkTime(
 				command.getSettingNoneStatutoryHolidays().getWorkTypeCode(),
 				command.getSettingNoneStatutoryHolidays().getWorkingCode());
 
 		// check pair public holiday
-		basicScheduleService.ErrorCheckingStatus(
+		basicScheduleService.checkPairWorkTypeWorkTime(
 				command.getSettingPublicHolidays().getWorkTypeCode(),
 				command.getSettingPublicHolidays().getWorkingCode());
 

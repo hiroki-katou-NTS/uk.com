@@ -2,17 +2,19 @@
 	margin-left: 7px;
 	margin-top: 5px;
 }
-#roleCode{
+
+#roleCode {
 	
 }
-#roleName{
+
+#roleName {
 	margin-left: 15px;
 }
+
 #category {
 	margin-left: 25px;
 	width: 480px;
 	height: 370px;
-	
 }
 
 #search {
@@ -58,7 +60,8 @@ button.search-btn, button.clear-btn {
 	margin-right: 85px;
 	padding-right: 0px;
 }
-.ui-iggrid-header{
+
+.ui-iggrid-header {
 	height: 45px !important;
 }
 

@@ -2,6 +2,8 @@ module cps008.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import showDialog = nts.uk.ui.dialog;
+    import Text = nts.uk.resource.getText
 
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
@@ -78,7 +80,26 @@ module cps008.a.viewmodel {
 
         saveDataLayout() {
             let self = this,
-                data: ILayout = ko.toJS(self.layout);
+                data: ILayout = ko.toJS(self.layout),
+                command: any = {
+                    id: data.id,
+                    code: data.code,
+                    name: data.name,
+                    action: data.action,
+                    classifications: _(data.classifications || []).map((item, i) => {
+                        return {
+                            dispOrder: i + 1,
+                            personInfoCategoryID: item.personInfoCategoryID,
+                            layoutItemType: item.layoutItemType,
+                            listItemClsDf: _(item.listItemDf || []).map((def, j) => {
+                                return {
+                                    dispOrder: j + 1,
+                                    personInfoItemDefinitionID: def.id
+                                };
+                            }).value()
+                        };
+                    }).value()
+                };
 
             // check input
             if (data.code == '' || data.name == '') {
@@ -91,8 +112,19 @@ module cps008.a.viewmodel {
             }
 
             // call service savedata
-            service.saveData(data).done((_data: any) => {
+            service.saveData(command).done((_data: any) => {
+
+                showDialog.info({ messageId: "Msg_15" }).then(function() {
+                    close();
+                });
                 self.start(data.code);
+
+            }).fail((error: any) => {
+                if (error.message == 'Msg_3') {
+                    showDialog.alert(Text('Msg_3'));
+                }
+
+
             });
         }
 
@@ -105,19 +137,41 @@ module cps008.a.viewmodel {
             modal('../c/index.xhtml').onClosed(() => {
                 let _data = getShared('CPS008C_RESPONE');
                 if (_data) {
-                    data.code = _data.code;
-                    data.name = _data.name;
+                    var command: any = {
+                        id: data.id,
+                        code: _data.code,
+                        name: _data.name,
+                        classifications: (data.classifications || []).map((item, i) => {
+                            return {
+                                dispOrder: i + 1,
+                                personInfoCategoryID: item.personInfoCategoryID,
+                                layoutItemType: item.layoutItemType,
+                                listItemClsDf: (item.listItemDf || []).map((def, j) => {
+                                    return {
+                                        dispOrder: j + 1,
+                                        personInfoItemDefinitionID: def.id
+                                    };
+                                })
+                            };
+                        })
+                    };
 
                     if (_data.action) {
-                        data.action = LAYOUT_ACTION.OVERRIDE;
+                        command.action = LAYOUT_ACTION.OVERRIDE;
                     } else {
-                        data.action = LAYOUT_ACTION.COPY;
+                        command.action = LAYOUT_ACTION.COPY;
                     }
 
 
                     // call saveData service
-                    service.saveData(data).done(() => {
-                        self.start(data.code);
+                    service.saveData(command).done(() => {
+                        self.start(_data.code);
+                    }).fail((error: any) => {
+                        if (error.message == 'Msg_3') {
+                            showDialog.alert(Text('Msg_3'));
+                        }
+
+
                     });
 
                 }
@@ -126,28 +180,75 @@ module cps008.a.viewmodel {
 
         removeDataLayout() {
             let self = this,
-                 data: ILayout = ko.toJS(self.layout);
+                data: ILayout = ko.toJS(self.layout);
 
             data.action = LAYOUT_ACTION.REMOVE;
-            // call service remove
+
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+
+                // call service remove
+                service.saveData(data).done(() => {
+                    self.start();
+                }).fail((error: any) => {
+                    if (error.message == 'Msg_16') {
+                        showDialog.alert(Text('Msg_16'));
+                    }
+                });
+
+            }).ifCancel(() => {
+
+            });
         }
 
         showDialogB() {
             let self = this,
+                layout: Layout = self.layout(),
                 data: ILayout = ko.toJS(self.layout);
             setShared('CPS008B_PARAM', data);
             modal('../b/index.xhtml').onClosed(() => {
+                let dto: Array<any> = getShared('CPS008B_VALUE');
+
+
+                if (dto && dto.length) {
+                    layout.classifications.removeAll();
+                    _.each(dto, x => layout.classifications.push(x));
+                    layout.action(LAYOUT_ACTION.UPDATE);
+                    self.saveDataLayout();
+                } else if (dto.length == 0) {
+                    layout.classifications.removeAll();
+                    self.saveDataLayout();
+                }
+
 
             });
         }
-     
+
     }
+
+    interface IItemClassification {
+        layoutID?: string;
+        dispOrder?: number;
+        className?: string;
+        personInfoCategoryID?: string;
+        layoutItemType: number;
+        listItemDf: Array<IItemDefinition>;
+    }
+
+    interface IItemDefinition {
+        id: string;
+        perInfoCtgId?: string;
+        itemCode?: string;
+        itemName: string;
+        dispOrder: number;
+
+    }
+
 
     interface ILayout {
         id: string;
         code: string;
         name: string;
-        classifications?: Array<any>;
+        classifications?: Array<IItemClassification>;
         action?: number;
     }
 

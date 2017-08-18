@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.budget.external.actualresult.LineStart
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="ksu006.a.service.js" />
@@ -81,6 +84,7 @@
 							<div style="display: inline-block;"><input tabindex="7" id="data-start-line"
 								data-bind="ntsNumberEditor: {
 										value: startLine,
+										constraint: 'LineStart',
 										name: '#[KSU006_9]',
 										required: true,
 										option: {
@@ -101,7 +105,7 @@
 						<td></td>
 						<td>
 							<button tabindex="9" class="large caret-bottom" data-bind="click: showDataPreview">#{i18n.getText('KSU006_11')}</button>
-							<label style="margin-left: 62px;" data-bind="visible: enableDataPreview, text: totalRecordDisplay"></label>
+							<label style="margin-left: 62px;" data-bind="text: totalRecordDisplay()"></label>
 						</td>
 					</tr><!--END A3_8 ~ A3_9 -->
 				</table>

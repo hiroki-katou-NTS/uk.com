@@ -88,20 +88,11 @@ module nts.uk.at.view.ksu006.a {
             
             public execute() {
                 let self = this;
+                let dfd = $.Deferred<any>();
                 $('#comboExternalBudget').focus();
-                let isOpendDialog: boolean = false;
                 self.uploadFile().done(function() {
-                    service.validateFile(self.toJSObject()).done(function() {
-                        nts.uk.ui.block.grayout();
-                        nts.uk.ui.windows.setShared("ExtractCondition", self.toJSObject());
-                        nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml',
-                            { title: '外部予算実績データ受入実行', dialogClass: 'no-close' }).onClosed(() => {
-                                nts.uk.ui.block.clear();
-                            });
-
-                    }).fail(function(res: any) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                    });
+                    self.validateFile();
+                    dfd.resolve();
                 }).fail(function() {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
@@ -110,7 +101,7 @@ module nts.uk.at.view.ksu006.a {
             public openDialogExternalBudget() {
                 let self = this;
                 nts.uk.ui.block.grayout();
-                nts.uk.ui.windows.sub.modal('/view/kdl/024/a/index.xhtml', { title: '外部予算実績の設定'}).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/kdl/024/a/index.xhtml').onClosed(() => {
                     nts.uk.ui.block.clear();
                     self.loadAllExternalBudget();
                 });
@@ -118,8 +109,7 @@ module nts.uk.at.view.ksu006.a {
             
             public openDialogLog() {
                 nts.uk.ui.block.grayout();
-                nts.uk.ui.windows.sub.modal('/view/ksu/006/c/index.xhtml', { title: '外部予算実績データ受入実行ログ',
-                    dialogClass: 'no-close' }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/ksu/006/c/index.xhtml').onClosed(() => {
                         nts.uk.ui.block.clear();
                     });
             }
@@ -130,6 +120,7 @@ module nts.uk.at.view.ksu006.a {
                 self.dataPreview([]);
                 self.firstRecord(null);
                 self.remainData([]);
+                
                 self.uploadFile().done(function() {
                     service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
                         self.isDataDailyUnit(res.isDailyUnit);
@@ -188,6 +179,20 @@ module nts.uk.at.view.ksu006.a {
                 return dfd.promise();
             }
             
+            private validateFile() {
+                let self = this;
+                let extractCondition: any = self.toJSObject();
+                service.validateFile(extractCondition).done(function() {
+                    nts.uk.ui.block.grayout();
+                    nts.uk.ui.windows.setShared("ExtractCondition", extractCondition);
+                    nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml').onClosed(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+            }
+            
             private toJSObject(): any {
                 let self = this;
                 return {
@@ -195,7 +200,7 @@ module nts.uk.at.view.ksu006.a {
                         fileId: self.fileId(),
                         fileName: self.fileName(),
                         encoding: self.selectedEncoding(),
-                        startLine: self.startLine(),
+                        startLine: parseInt(self.startLine()),
                         isOverride: self.isOverride()
                 };
             }

@@ -35,7 +35,7 @@ public class PpemtPInfoItemGroup extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "DISPORDER")
-	public String dispOrder;
+	public int dispOrder;
 
 	@Override
 	protected Object getKey() {

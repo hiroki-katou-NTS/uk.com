@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 780, height: 740 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="cmm018.k.service.js" />
+			<com:scriptfile path="cmm018.k.vm.js" />
+			<com:scriptfile path="cmm018.k.start.js" />
+			
+			<com:stylefile path="cmm018.k.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="contentHeader">
+					<!--K1_1-->
+					<div class = "titleAppType" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_47')}</div>
+					<!--K1_2-->
+					<label id="appType" data-bind="text: appType"></label>
+					<!--K1_7-->
+					<div class = "titleDate" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_74')}</div>
+					<!--K1_8-->
+					<div id ="standardDate" tabindex="1" data-bind="ntsDatePicker: {value: standardDate, dateFormat: 'YYYY/MM/DD'}"></div>
+					<!--K1_9  Caret-->
+					<button data-bind="" tabindex="2" id = "applyButton" class="caret-bottom">#{i18n.getText('CMM018_77')}</button>
+				</div>
+				<!--K1_3-->
+				<div class="typeSetting" tabindex="3" data-bind="ntsSwitchButton: {
+									options: typeSetting,
+									optionsValue: 'typeCode',
+									optionsText: 'typeName',
+									value: selectTypeSet,
+									enable: true }"></div>
+				<!--K1_6 職場リスト-->
+				<div class="leftExtend">
+					<div id="tree-grid"></div>	
+				</div>
+				<div class = "settingApprover">
+					<table>
+						<tr>
+							<td class ="selectApprover">
+								<!--K2_1-->
+								<div class = "titleSelect" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_61')}</div>
+							</td>
+							<td></td>
+							<td class ="selectedApprover">
+								<!--K2_1-->
+								<div class ="titleSelected" data-bind = "ntsFormLabel: {required: true }">#{i18n.getText('CMM018_27')}</div>
+							</td>
+							<td  class ="selectApprover">
+								<!--K2_1選択可能な承認者一覧-->
+								<div id="component-items-list"></div>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+						</tr>
+					</table>
+					
+				
+					
+				</div>				
+			</div>
+			<div id="functions-area-bottom">
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

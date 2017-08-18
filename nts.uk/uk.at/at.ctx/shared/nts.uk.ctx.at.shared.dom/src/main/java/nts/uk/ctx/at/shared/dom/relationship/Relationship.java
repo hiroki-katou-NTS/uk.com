@@ -10,16 +10,16 @@ import nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipName;
 @Getter
 public class Relationship extends AggregateRoot{
 	private String companyId;
-	private RelationshipCode relationshipCd;
+	private RelationshipCode relationshipCode;
 	private RelationshipName relationshipName;
 	
-	public Relationship(String companyId, RelationshipCode relationshipCd, RelationshipName relationshipName) {
+	public Relationship(String companyId, RelationshipCode relationshipCode, RelationshipName relationshipName) {
 		super();
 		this.companyId = companyId;
-		this.relationshipCd = relationshipCd;
+		this.relationshipCode = relationshipCode;
 		this.relationshipName = relationshipName;
 	}
-	public static Relationship createFromJavaType(String companyId, String relationshipCd, String relationshipName){
-		return new Relationship(companyId, new RelationshipCode(relationshipCd), new RelationshipName(relationshipName));
+	public static Relationship createFromJavaType(String companyId, String relationshipCode, String relationshipName){
+		return new Relationship(companyId, new RelationshipCode(relationshipCode), new RelationshipName(relationshipName));
 	}
 }
