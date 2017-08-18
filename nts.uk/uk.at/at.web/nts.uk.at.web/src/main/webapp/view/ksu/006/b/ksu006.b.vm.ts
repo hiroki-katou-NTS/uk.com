@@ -44,7 +44,7 @@ module nts.uk.pr.view.ksu006.b {
                     { headerText: nts.uk.resource.getText("KSU006_210"), key: 'lineNo', width: 80, formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_211"), key: 'columnNo', width: 80, formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_207"), key: 'wpkCode', width: 150, formatter: _.escape},
-                    { headerText: nts.uk.resource.getText("KSU006_208"), key: 'acceptedDate', width: 80, formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_208"), key: 'acceptedDate', width: 130, formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_209"), key: 'actualValue', width: 100, formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_212"), key: 'errorContent', width: 300, formatter: _.escape}
                 ]);
@@ -59,7 +59,7 @@ module nts.uk.pr.view.ksu006.b {
                         }
                         self.loadDetailError().done(() => {
                             self.hasError(true);
-                            nts.uk.ui.windows.getSelf().setSize(self.isGreaterThanTenError() ? 650 : 620, 870);
+                            nts.uk.ui.windows.getSelf().setSize(self.isGreaterThanTenError() ? 650 : 620, 920);
                             $('#donwloadError').focus();
                         });
                     }

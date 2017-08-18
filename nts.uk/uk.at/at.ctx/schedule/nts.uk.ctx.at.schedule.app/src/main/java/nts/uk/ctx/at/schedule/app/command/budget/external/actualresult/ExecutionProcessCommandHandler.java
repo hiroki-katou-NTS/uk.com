@@ -149,7 +149,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         Map<String, String> mapStringJP = findAllStringJP();
         AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
             // valid file format
-            this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine());
+            this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine().v());
             
             // get input stream by file id
             InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
@@ -210,7 +210,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
             
             // calculate total record and check has data
-            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine() + 1;
+            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine().v() + 1;
             if (calTotal > DEFAULT_VALUE) {
                 setter.updateData(TOTAL_RECORD, calTotal);
             }
@@ -251,7 +251,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private void processLine(ImportProcess importProcess, NtsCsvRecord record) {
         importProcess.startLine++;
         // check line start read
-        if (importProcess.startLine < importProcess.extractCondition.getStartLine()) {
+        if (importProcess.startLine < importProcess.extractCondition.getStartLine().v()) {
             return;
         }
         

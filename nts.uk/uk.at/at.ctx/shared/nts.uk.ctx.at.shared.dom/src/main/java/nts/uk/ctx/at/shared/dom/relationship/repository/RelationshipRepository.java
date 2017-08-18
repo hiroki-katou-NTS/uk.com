@@ -35,5 +35,5 @@ public interface RelationshipRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<Relationship> getByCode(String companyId, String relationshipCd);
+	Optional<Relationship> findByCode(String companyId, String relationshipCd);
 }

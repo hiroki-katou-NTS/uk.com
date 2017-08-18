@@ -200,7 +200,7 @@ module nts.uk.at.view.ksu006.a {
                         fileId: self.fileId(),
                         fileName: self.fileName(),
                         encoding: self.selectedEncoding(),
-                        startLine: self.startLine(),
+                        startLine: parseInt(self.startLine()),
                         isOverride: self.isOverride()
                 };
             }
