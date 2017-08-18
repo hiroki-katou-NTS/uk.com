@@ -99,6 +99,14 @@ public class AsposeCellsReportContext implements AutoCloseable {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public void saveAsCSV(OutputStream outputStream) {
+		try {
+			this.workbook.save(outputStream, SaveFormat.CSV);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public void close() throws Exception {
