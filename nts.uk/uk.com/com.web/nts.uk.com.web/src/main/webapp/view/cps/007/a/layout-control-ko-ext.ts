@@ -121,6 +121,10 @@ module nts.custombinding {
                         vertical-align: top;
                     }
 
+                    .layout-control .item-classification div.set-item {
+                        display: inline-block;
+                    }
+
                     .layout-control .item-classification div.item-controls table,
                     .layout-control .item-classification div.item-controls table th,
                     .layout-control .item-classification div.item-controls table td {
@@ -213,54 +217,14 @@ module nts.custombinding {
                                 <div data-bind="if: $data.layoutItemType == 0">
                                     <div data-bind="let: { item: $data.listItemDf[0], listItemDf: $data.listItemDf}" class="item-control">
                                         <div data-bind="ntsFormLabel: {}, text: className"></div>
-                                        <div data-bind="if: item.itemTypeState.itemType == 1">
-                                            <div id="combo-box" data-bind="ntsComboBox: {
-                                                options: ko.observableArray([]),
-                                                optionsValue: 'code',
-                                                visibleItemsCount: 5,
-                                                value: ko.observable(''),
-                                                optionsText: 'name',
-                                                editable: false,
-                                                enable: true,
-                                                columns: [{ prop: 'name', length: 10 }]}"></div>
+                                        <div data-bind="if: item.itemTypeState.itemType == 1" class="set-items">
+                                            <div data-bind="foreach: _.filter(listItemDf, (x, i) => i != 0)" class="set-item-list">
+                                                <div data-bind="template: { name: 'itemtemplate', data: $data.itemTypeState.dataTypeState }" class="set-item"></div>
+                                            </div>            
                                         </div>
-                                        <div data-bind="if: item.itemTypeState.itemType == 2">
-                                            <div data-bind="let: { single: item.itemTypeState.dataTypeState }">
-                                                <div data-bind="if: single.dataTypeValue == 1">
-                                                    <input data-bind="ntsTextEditor: {
-                                                                value: ko.observable(''),
-                                                                constraint: '',
-                                                                option: {},
-                                                                required: false,
-                                                                enable: true,
-                                                                readonly: true,
-                                                                immediate: false}" />
-                                                </div>
-                                                <div data-bind="if: single.dataTypeValue == 2">
-                                                    <input data-bind="ntsNumberEditor: {
-                                                            value: ko.observable(undefined)
-                                                        }" />
-                                                </div>
-                                                <div data-bind="if: single.dataTypeValue == 3">
-                                                    <div data-bind="ntsDatePicker: {value: ko.observable(undefined), dateFormat: 'YYYY/MM/DD'}"></div>
-                                                </div>
-                                                <div data-bind="if: single.dataTypeValue == 4">
-                                                    <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
-                                                </div>
-                                                <div data-bind="if: single.dataTypeValue == 5">
-                                                    <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
-                                                </div>
-                                                <div data-bind="if: single.dataTypeValue == 6">
-                                                    <div id="combo-box" data-bind="ntsComboBox: {
-                                                        options: ko.observableArray([]),
-                                                        optionsValue: 'code',
-                                                        visibleItemsCount: 5,
-                                                        value: ko.observable(''),
-                                                        optionsText: 'name',
-                                                        editable: false,
-                                                        enable: true,
-                                                        columns: [{ prop: 'name', length: 10 }]}"></div>
-                                                </div>
+                                        <div data-bind="if: item.itemTypeState.itemType == 2" class="single-items">
+                                            <div data-bind="let: { single: item.itemTypeState.dataTypeState }" class="single-item-list">
+                                                <div data-bind="template: { name: 'itemtemplate', data: single }" class="single-item"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -285,22 +249,63 @@ module nts.custombinding {
                                 <div data-bind="if: $data.layoutItemType == 2" class="item-sperator">
                                     <hr />
                                 </div>
-                                <span class="close-btn" data-bind="click: function() { ko.bindingHandlers['ntsLayoutControl'].options.sortable.removeItem($data); }">✖</span>
+                                <span class="close-btn" data-bind="click: function() { ko.bindingHandlers['ntsLayoutControl'].options.sortable.removeItem($data, false); }">✖</span>
                             </div>
                         </div>
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
+                <script type="text/html" id="itemtemplate">                    
+                    <div data-bind="if: $data.dataTypeValue == 1" class="string">
+                        <input data-bind="ntsTextEditor: {
+                                    value: ko.observable(''),
+                                    constraint: '',
+                                    option: {},
+                                    required: false, 
+                                    enable: true,
+                                    readonly: true,
+                                    immediate: false}" />
+                    </div>
+                    <div data-bind="if: $data.dataTypeValue == 2" class="numeric">
+                        <input data-bind="ntsNumberEditor: { 
+                                    value: ko.observable(0),
+                                    enable: true,
+                                    readonly: true }" />
+                    </div>
+                    <div data-bind="if: $data.dataTypeValue == 3" class="date">
+                        <div data-bind="ntsDatePicker: {
+                                    value: ko.observable(undefined), 
+                                    dateFormat: 'YYYY/MM/DD',
+                                    enable: false }"></div>
+                    </div>
+                    <div data-bind="if: $data.dataTypeValue == 4" class="time">
+                        <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
+                    </div>
+                    <div data-bind="if: $data.dataTypeValue == 5" class="timepoint">
+                        <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
+                    </div>
+                    <div data-bind="if: $data.dataTypeValue == 6" class="selection">
+                        <div id="combo-box" data-bind="ntsComboBox: {
+                            options: ko.observableArray([]),
+                            optionsValue: 'code',
+                            visibleItemsCount: 5,
+                            value: ko.observable(''),
+                            optionsText: 'name',
+                            editable: false,
+                            enable: true,
+                            columns: [{ prop: 'name', length: 10 }]}"></div>
+                    </div>                    
+                </script>
             </div>`);
 
         api = {
             getCat: 'ctx/bs/person/info/category/findby/{0}',
             getCats: "ctx/bs/person/info/category/findby/company",
             getGroups: 'ctx/bs/person/groupitem/getAll',
-            getItemCats: 'ctx/bs/person/info/ctgItem/findby/categoryId/{0}',
+            getItemCats: 'ctx/bs/person/info/ctgItem/layout/findby/categoryId/{0}',
             getItemGroups: 'ctx/bs/person/groupitem/getAllItemDf/{0}',
-            getItemsById: 'ctx/bs/person/info/ctgItem/findby/itemId/{0}',
-            getItemsByIds: 'ctx/bs/person/info/ctgItem/findby/listItemId',
+            getItemsById: 'ctx/bs/person/info/ctgItem/layout/findby/itemId/{0}',
+            getItemsByIds: 'ctx/bs/person/info/ctgItem/layout/findby/listItemId',
         };
 
         services = {
@@ -455,12 +460,16 @@ module nts.custombinding {
                         }
                     });*/
                 },
-                removeItem: (data: IItemClassification) => {
+                removeItem: (data: IItemClassification, byItemId?: boolean) => {
                     let self = this,
                         opts = self.options,
                         items = opts.sortable.data;
 
-                    items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
+                    if (!byItemId) { // remove item by classification id (virtual id)
+                        items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
+                    } else if (data.listItemDf) { // remove item by item definition id
+                        items.remove((x: IItemClassification) => x.listItemDf && x.listItemDf[0].id == data.listItemDf[0].id);
+                    }
 
                     let source: Array<any> = ko.unwrap(items),
                         maps: Array<number> = _(source).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
@@ -476,6 +485,8 @@ module nts.custombinding {
                             });
                         }
                     });
+
+                    return opts.sortable;
                 },
                 pushItem: (data: IItemClassification) => {
                     let self = this,
@@ -560,32 +571,29 @@ module nts.custombinding {
                                 opts.comboxbox.value(data.categoryList[0].id);
                             }
                         }
-                        else {
-                            // remove listbox data
-                            opts.listbox.value(undefined);
-                        }
                     });
                 } else { // get item by group
                     services.getGroups().done((data: Array<IItemGroup>) => {
                         if (data && data.length) {
                             // map Array<IItemGroup> to Array<IItemDefinition>
+                            // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
+                            // remove groups when it does not contains any item definition (by hql)
                             let _items: Array<IItemDefinition> = _.map(data, x => {
                                 return {
                                     id: x.personInfoItemGroupID,
                                     itemName: x.fieldGroupName,
-                                    itemTypeState: undefined
+                                    itemTypeState: undefined,
+                                    dispOrder: x.dispOrder
                                 };
                             });
 
                             opts.listbox.options(_items);
-                            opts.listbox.value(_items[0].id);
-                        } else {
-                            opts.listbox.value(undefined);
                         }
                     });
-
-                    $(ctrls.button).text(text('CPS007_20'));
                 }
+
+                // remove listbox data
+                opts.listbox.value(undefined);
             });
             opts.radios.value.valueHasMutated();
 
@@ -605,6 +613,12 @@ module nts.custombinding {
                                 $(ctrls.button).text(text('CPS007_11'));
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
                                     if (data && data.length) {
+                                        // get all item defined in category with abolition = 0
+                                        // order by dispOrder asc
+                                        data = _(data)
+                                            .filter(m => !m.isAbolition)
+                                            .orderBy(m => m.dispOrder).value();
+
                                         opts.listbox.options(data);
                                         opts.listbox.value(undefined);
                                     }
@@ -629,6 +643,14 @@ module nts.custombinding {
                         // select undefine
                         opts.listbox.value(undefined);
                     }
+                }
+            });
+
+            opts.listbox.options.subscribe(x => {
+                if (!x || !x.length) {
+                    $(ctrls.button).prop('disabled', true);
+                } else {
+                    $(ctrls.button).prop('disabled', false);
                 }
             });
 
@@ -662,13 +684,27 @@ module nts.custombinding {
                     if (cat) {
                         // multiple items
                         if ([IT_CAT_TYPE.MULTI, IT_CAT_TYPE.DUPLICATE].indexOf(cat.categoryType) > -1) {
+                            // 画面項目「カテゴリ選択」で選択している情報が、既に配置されているかチェックする
+                            // if category is exist in sortable box.
+                            let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
+                            if (_catcls) {
+                                alert(text('Msg_202'));
+                                return;
+                            }
+
                             setShared('CPS007B_PARAM', { category: cat, chooseItems: [] });
                             modal('../../007/b/index.xhtml').onClosed(() => {
                                 let data = getShared('CPS007B_VALUE') || { category: undefined, chooseItems: [] };
 
                                 if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
                                     services.getCat(data.category.id).done((_cat: IItemCategory) => {
-                                        services.getItemsByIds(data.chooseItems.map(x => x.id)).done((_data: Array<IItemDefinition>) => {
+                                        let ids: Array<string> = data.chooseItems.map(x => x.id);
+                                        services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
+                                            // sort againt by ids
+                                            _.each(_data, x => x.dispOrder = ids.indexOf(x.id) + 1);
+
+                                            _data = _.orderBy(_data, x => x.dispOrder);
+
                                             let item: IItemClassification = {
                                                 layoutID: random(),
                                                 dispOrder: -1,
@@ -684,7 +720,7 @@ module nts.custombinding {
                                 }
                             });
                         }
-                        else { // single item
+                        else { // set or single item
                             let idefid = ko.toJS(opts.listbox.value),
                                 idef = _.find(ko.toJS(opts.listbox.options), (x: IItemDefinition) => x.id == idefid),
                                 item: IItemClassification = {
@@ -698,9 +734,19 @@ module nts.custombinding {
                             if (idef) {
                                 services.getItemsById(idef.id).done((def: IItemDefinition) => {
                                     if (def) {
+                                        def.dispOrder = -1;
                                         item.listItemDf = [def];
                                         item.className = def.itemName;
                                         item.personInfoCategoryID = def.perInfoCtgId;
+
+                                        // setitem
+                                        if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                            services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
+                                                if (defs && defs.length) {
+                                                    _(defs).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+                                                }
+                                            });
+                                        }
 
                                         if (opts.sortable.pushItem(item)) {
                                             opts.listbox.value(undefined);
@@ -723,18 +769,29 @@ module nts.custombinding {
                         services.getItemByGroup(group.id).done((data: Array<IItemDefinition>) => {
                             if (data && data.length) {
                                 _.each(data, x => {
+                                    // get item defined is not abolition
+                                    if (!x.isAbolition) {
+                                        let _items: IItemClassification = {
+                                            layoutID: random(),
+                                            className: x.itemName,
+                                            dispOrder: 0,
+                                            personInfoCategoryID: x.perInfoCtgId,
+                                            layoutItemType: IT_CLA_TYPE.ITEM,
+                                            listItemDf: [x]
+                                        };
 
-                                    let _items: IItemClassification = {
-                                        layoutID: random(),
-                                        className: x.itemName,
-                                        dispOrder: 0,
-                                        personInfoCategoryID: x.perInfoCtgId,
-                                        layoutItemType: IT_CLA_TYPE.ITEM,
-                                        listItemDf: [x]
-                                    };
-
-                                    opts.sortable.data.push(_items);
-                                    opts.listbox.value(undefined);
+                                        if (opts.sortable.pushItem(_items)) {
+                                            opts.listbox.value(undefined);
+                                        } else {
+                                            // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
+                                            // Show msg_404 if itemdefinition is exist
+                                            alert(text('Msg_204')).then(() => {
+                                                opts.sortable
+                                                    .removeItem(_items, true)
+                                                    .pushItem(_items);
+                                            });
+                                        }
+                                    }
                                 });
                             }
                         });
@@ -885,6 +942,7 @@ module nts.custombinding {
 
     interface IItemDefinition {
         id: string;
+        dispOrder?: number;
         perInfoCtgId?: string;
         itemCode?: string;
         itemName: string;
