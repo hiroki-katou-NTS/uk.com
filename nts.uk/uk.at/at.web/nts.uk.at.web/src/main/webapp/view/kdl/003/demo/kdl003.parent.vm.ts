@@ -25,11 +25,13 @@ module kdl003.parent.viewmodel {
         }
         //open dialog 003 
         OpenDialog003() {
-            var self = this;
+            let self = this;
+            let workTypeCodes = self.canSelectWorkTypeCodes() ? self.canSelectWorkTypeCodes().split(',') : [];
+            let workTimeCodes = self.canSelectSiftCodes() ? self.canSelectSiftCodes().split(',') : [];
             nts.uk.ui.windows.setShared('parentCodes', {
-                workTypeCodes: self.canSelectWorkTypeCodes().split(','),
+                workTypeCodes: workTypeCodes,
                 selectedWorkTypeCode: self.selectWorkTypeCode(),
-                workTimeCodes: self.canSelectSiftCodes().split(','),
+                workTimeCodes: workTimeCodes,
                 selectedWorkTimeCode: self.selectSiftCode()
             }, true);
 
