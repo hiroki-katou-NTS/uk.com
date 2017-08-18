@@ -18,6 +18,8 @@ module nts.uk.pr.view.ksu006.c {
             listColumn: KnockoutObservableArray<any>;
             rowSelected: KnockoutObservable<string>;
             
+            isFilterData: boolean;
+            
             constructor() {
                 let self = this;
                 
@@ -44,12 +46,15 @@ module nts.uk.pr.view.ksu006.c {
                 ]);
                 self.rowSelected = ko.observable('');
                 
+                self.isFilterData = false;
+                
                 // Create Customs handle For event rened nts grid.
                 (<any>ko.bindingHandlers).rended = {
-                update: function(element: any, valueAccessor: any, allBindings: KnockoutAllBindingsAccessor,
-                    viewModel: any,bindingContext: KnockoutBindingContext) {
+                update: function(element: any, valueAccessor: any, allBindings: KnockoutAllBindingsAccessor) {
                         let dataLog = ko.unwrap(valueAccessor());
-                        self.eventClick(dataLog);
+                        if (!self.isFilterData) {
+                            self.eventClick(dataLog);
+                        }
                     }
                 }
             }
@@ -104,7 +109,9 @@ module nts.uk.pr.view.ksu006.c {
                     nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_166"));
                     return;
                 }
-                self.loadDataLog(true, listState);
+                self.loadDataLog(true, listState).done(() => {
+                    self.isFilterData = true;
+                });
             }
             
             public closeDialog() {

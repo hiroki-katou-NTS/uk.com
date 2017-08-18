@@ -250,6 +250,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      */
     private void processLine(ImportProcess importProcess, NtsCsvRecord record) {
         importProcess.startLine++;
+        // check line start read
         if (importProcess.startLine < importProcess.extractCondition.getStartLine()) {
             return;
         }
