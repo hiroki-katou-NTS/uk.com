@@ -39,14 +39,14 @@ public class GrantHdTbl {
 	private LengthOfServiceYears lengthOfServiceYears;
 	
 	/* 付与基準日 */
-	private int grantReferenceDate;
+	private GrantReferenceDate grantReferenceDate;
 	
 	/* 一斉付与する */
-	private int grantSimultaneity;
+	private GrantSimultaneity grantSimultaneity;
 
 	public GrantHdTbl(String companyId, int grantYearHolidayNo, int conditionNo, YearHolidayCode yearHolidayCode,
 			GrantDays grantDays, LimitedTimeHdDays limitedTimeHdDays, LimitedHalfHdCnt limitedHalfHdCnt, LengthOfServiceMonths lengthOfServiceMonths, 
-			LengthOfServiceYears lengthOfServiceYears, int grantReferenceDate, int grantSimultaneity) {
+			LengthOfServiceYears lengthOfServiceYears, GrantReferenceDate grantReferenceDate, GrantSimultaneity grantSimultaneity) {
 		
 		this.companyId = companyId;
 		this.grantYearHolidayNo = grantYearHolidayNo;
