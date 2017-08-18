@@ -1,8 +1,9 @@
 module cps007.a.vm {
-    let block = window["nts"]["uk"]["ui"]["block"]["grayout"];
-    let unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
-
-    let __viewContext: any = window['__viewContext'] || {};
+    import alert = nts.uk.ui.dialog.alert;
+    
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
 
     export class ViewModel {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
@@ -56,8 +57,8 @@ module cps007.a.vm {
                 unblock();
             }).fail((mes) => {
                 unblock();
-                alert(mes);
-            });;
+                alert(mes.message);
+            });
         }
     }
 
