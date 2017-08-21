@@ -15,9 +15,6 @@ public class KrqstWpAppConfigPK implements Serializable{
 	/**会社ID*/
 	@Column(name = "CID")
 	public String companyId;
-	/**申請種類*/
-	@Column(name = "APP_TYPE")
-	public int appType;
 	/**
 	 * 職場ID
 	 */

@@ -15,8 +15,8 @@ module kdl003.parent.viewmodel {
             //construct codes 
             self.canSelectWorkTypeCodes = ko.observable('001,002,003,004,005,006,007,008,009,010');
             self.selectWorkTypeCode = ko.observable('002');
-            self.canSelectSiftCodes = ko.observable('AAA,AAD,AAG,AAI');
-            self.selectSiftCode = ko.observable('AAG');
+            self.canSelectSiftCodes = ko.observable('001,003,005');
+            self.selectSiftCode = ko.observable('003');
 
             self.childSelectWorkTypeCode = ko.observable('');
             self.childSelectWorkTypeName = ko.observable('');
@@ -38,10 +38,12 @@ module kdl003.parent.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                 //view all code of selected item 
                 var childData = nts.uk.ui.windows.getShared('childData');
-                self.childSelectWorkTypeCode(childData.selectedWorkTypeCode);
-                self.childSelectWorkTypeName(childData.selectedWorkTypeName);
-                self.childSelectSiftCode(childData.selectedWorkTimeCode);
-                self.childSelectSiftName(childData.selectedWorkTimeName);
+                if (childData) {
+                    self.childSelectWorkTypeCode(childData.selectedWorkTypeCode);
+                    self.childSelectWorkTypeName(childData.selectedWorkTypeName);
+                    self.childSelectSiftCode(childData.selectedWorkTimeCode);
+                    self.childSelectSiftName(childData.selectedWorkTimeName);
+                }
             })
         }
     }

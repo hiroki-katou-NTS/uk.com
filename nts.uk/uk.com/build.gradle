@@ -105,8 +105,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.25'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.37'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.26'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.38'
 		
 	}
 }
@@ -612,13 +612,13 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:bs:person:nts.uk.ctx.bs.person.ws')
 		
 		// shr find implement
-		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
-		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.1'
-		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: '0.1'
-		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: '0.1'
-		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: '0.1'
-		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: '0.1'
-		//runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: '0.1'
 		
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.ws', version: '0.1'
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.app', version: '0.1'

@@ -3,7 +3,7 @@ module cps008.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
-    import Text = nts.uk.resource.getText
+    import Text = nts.uk.resource.getText;
 
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
@@ -26,6 +26,7 @@ module cps008.a.viewmodel {
                             layout.name(data.layoutName);
                             layout.classifications(data.listItemClsDto || []);
                             layout.action(LAYOUT_ACTION.UPDATE);
+                            $("#A_INP_NAME").focus();
                         }
                     });
                 }
@@ -61,13 +62,19 @@ module cps008.a.viewmodel {
                         }
                     }
                     layout.id.valueHasMutated();
+
+                } else {
+                    self.createNewLayout();
                 }
             });
         }
 
         createNewLayout() {
             let self = this,
-                layout: Layout = self.layout();
+                layout: Layout = self.layout(),
+                layouts = self.layouts;
+
+            layouts.removeAll();
 
             layout.id(undefined);
             layout.code('');
@@ -115,13 +122,16 @@ module cps008.a.viewmodel {
             service.saveData(command).done((_data: any) => {
 
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
-                    close();
+                    $("#A_INP_NAME").focus();
                 });
+
                 self.start(data.code);
 
             }).fail((error: any) => {
                 if (error.message == 'Msg_3') {
-                    showDialog.alert(Text('Msg_3'));
+                    showDialog.alert(Text('Msg_3')).then(function() {
+                        $("#A_INP_CODE").focus();
+                    });
                 }
 
 
@@ -164,16 +174,24 @@ module cps008.a.viewmodel {
 
 
                     // call saveData service
-                    service.saveData(command).done(() => {
-                        self.start(_data.code);
+                    service.saveData(command).done((data: any) => {
+
+                        showDialog.info({ messageId: "Msg_20" }).then(function() {
+                            self.start(_data.code);
+                        });
+
                     }).fail((error: any) => {
                         if (error.message == 'Msg_3') {
-                            showDialog.alert(Text('Msg_3'));
+                            showDialog.alert(Text('Msg_3')).then(function() {
+                                self.start(data.code);
+                            });
                         }
 
 
                     });
 
+                } else {
+                    $("#A_INP_NAME").focus();
                 }
             });
         }
@@ -187,12 +205,12 @@ module cps008.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
 
                 // call service remove
-                service.saveData(data).done(() => {
-                    self.start();
+                service.saveData(data).done((data: any) => {
+                    showDialog.info(Text('Msg_16')).then(function() {
+                        self.start();
+                    });
                 }).fail((error: any) => {
-                    if (error.message == 'Msg_16') {
-                        showDialog.alert(Text('Msg_16'));
-                    }
+
                 });
 
             }).ifCancel(() => {
@@ -213,10 +231,6 @@ module cps008.a.viewmodel {
                     layout.classifications.removeAll();
                     _.each(dto, x => layout.classifications.push(x));
                     layout.action(LAYOUT_ACTION.UPDATE);
-                    self.saveDataLayout();
-                } else if (dto.length == 0) {
-                    layout.classifications.removeAll();
-                    self.saveDataLayout();
                 }
 
 

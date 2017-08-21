@@ -54,14 +54,14 @@
 							searchMode: 'filter',
 							targetKey: 'categoryId',
 						 	comId: 'A2_008',
-						 	items: currentRole().RoleCategoryList,
+						 	items: RoleCategoryList,
 						 	selected: currentCategoryId,
 						 	selectedKey: 'categoryId',
 						 	fields: ['categoryName'],
 						 	mode: 'igGrid'}" />
 						<table id="A2_008"
 							data-bind="ntsGridList: {	
-						dataSource: currentRole().RoleCategoryList ,
+						dataSource: RoleCategoryList ,
 						primaryKey: 'categoryId' ,
 						columns: [{ headerText: 'コード', key: 'categoryId', width: 200 ,hidden:true},
 								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'categoryName', width: 165},

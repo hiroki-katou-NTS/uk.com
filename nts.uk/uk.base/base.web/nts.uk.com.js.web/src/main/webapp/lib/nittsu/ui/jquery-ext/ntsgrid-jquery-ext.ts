@@ -75,6 +75,7 @@ module nts.uk.ui.jqueryExtentions {
                     };
     
                     var ntsControl = ntsControls.getControl(controlDef.controlType);
+                    // TODO: Somehow when re-render by virtualization, it can't get cell out of grid
                     var cell = $self.igGrid("cellById", rowId, column.key);
                     var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
                     isEnable = isEnable !== undefined ? isEnable : controlDef.enable === undefined ? true : controlDef.enable;
@@ -713,7 +714,9 @@ module nts.uk.ui.jqueryExtentions {
         module functions {
             export let UPDATE_ROW: string = "updateRow";
             export let ENABLE_CONTROL: string = "enableNtsControlAt";
+            export let ENABLE_ALL_CONTROL: string = "enableNtsControl";
             export let DISABLE_CONTROL: string = "disableNtsControlAt";
+            export let DISABLE_ALL_CONTROL: string = "disableNtsControl";
             export let DIRECT_ENTER: string = "directEnter";
             
             export function ntsAction($grid: JQuery, method: string, params: Array<any>) {
@@ -725,8 +728,14 @@ module nts.uk.ui.jqueryExtentions {
                     case ENABLE_CONTROL:
                         enableNtsControlAt($grid, params[0], params[1], params[2]);
                         break;
+                    case ENABLE_ALL_CONTROL:
+                        enableNtsControl($grid, params[0], params[1]);
+                        break;
                     case DISABLE_CONTROL:
                         disableNtsControlAt($grid, params[0], params[1], params[2]);
+                        break;
+                    case DISABLE_ALL_CONTROL:
+                        disableNtsControl($grid, params[0], params[1]);
                         break;
                     case DIRECT_ENTER:
                         var direction: selection.Direction = $grid.data(internal.ENTER_DIRECT);
@@ -740,6 +749,13 @@ module nts.uk.ui.jqueryExtentions {
                         break;
                 }
             }
+            
+            function enableNtsControl($grid: JQuery, columnKey: any, controlType: string) {
+                var datasource = $grid.igGrid("option", "dataSource");
+                for (let i = 0; i <= datasource.length; i++) {
+                    enableNtsControlAt($grid, i, columnKey, controlType);
+                }
+            }
     
             function updateRow($grid: JQuery, rowId: any, object: any, autoCommit: boolean) {
                 updating.updateRow($grid, rowId, object, undefined, true);
@@ -749,7 +765,14 @@ module nts.uk.ui.jqueryExtentions {
                     if (updatedRow !== undefined) $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
                 }
             }
-    
+
+            function disableNtsControl($grid: JQuery, columnKey: any, controlType: string) {
+                var datasource = $grid.igGrid("option", "dataSource");
+                for (let i = 0; i <= datasource.length; i++) {
+                    disableNtsControlAt($grid, i, columnKey, controlType);
+                }
+            }
+            
             function disableNtsControlAt($grid: JQuery, rowId: any, columnKey: any, controlType: string) {
                 var cellContainer = $grid.igGrid("cellById", rowId, columnKey);
                 var control = ntsControls.getControl(controlType);
@@ -2576,8 +2599,9 @@ module nts.uk.ui.jqueryExtentions {
             export function setGridSize($grid: JQuery) {
                 var height = window.innerHeight;
                 var width = window.innerWidth;
-                $grid.igGrid("option", "width", width - 240); 
-                $grid.igGrid("option", "height", height - 90);
+                // TODO: Developer want to set width & height on their own. Should decide when we will auto resize or that will be an option
+//                $grid.igGrid("option", "width", width - 240);
+//                $grid.igGrid("option", "height", height - 90);
             }
         }
         

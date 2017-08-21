@@ -1,53 +1,51 @@
 package nts.uk.ctx.at.shared.app.find.yearholidaygrant;
 
+import java.util.List;
+
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.shr.com.primitive.Memo;
 
 @Value
 public class YearHolidayGrantDto {
 	/* 会社ID */
 	private String companyId;
-	
-	/* 年休付与NO */
-	private int grantYearHolidayNo;
-	
-	/* 条件NO */
-	private int conditionNo;
-	
-	/* 年休付与テーブル設定コード */
+
+	/* コード */
 	private String yearHolidayCode;
+
+	/* 名称 */
+	private String yearHolidayName;
+
+	/* 計算方法 */
+	private int calculationMethod;
+
+	/* 計算基準 */
+	private int standardCalculation;
+
+	/* 一斉付与を利用する */
+	private int useSimultaneousGrant;
+
+	/* 一斉付与日 */
+	private int simultaneousGrandMonthDays;
+
+	/* 備考 */
+	private Memo yearHolidayNote;
 	
-	/* 年休付与日数 */
-	private int grantDays;
+	private List<GrantCondition> grantConditions;
 	
-	/* 時間年休上限日数 */
-	private int limitedTimeHdDays;
-	
-	/* 半日年休上限回数 */
-	private int limitedHalfHdCnt;
-	
-	/* 勤続年数月数 */
-	private int lengthOfServiceMonths;
-	
-	/* 勤続年数年数 */
-	private int lengthOfServiceYears;
-	
-	/* 付与基準日 */
-	private int grantReferenceDate;
-	
-	/* 一斉付与する */
-	private int grantSimultaneity;
-	
-	public static YearHolidayGrantDto fromDomain(YearHolidayGrantDto domain){
-		return new YearHolidayGrantDto(domain.getCompanyId(),
-					domain.getGrantYearHolidayNo(),
-					domain.getConditionNo(),
-					domain.getYearHolidayCode(),
-					domain.getGrantDays(),
-					domain.getLimitedTimeHdDays(),
-					domain.getLimitedHalfHdCnt(),
-					domain.getLengthOfServiceMonths(),
-					domain.getLengthOfServiceYears(),
-					domain.getGrantReferenceDate(),
-					domain.getGrantSimultaneity());
+	public static YearHolidayGrantDto fromDomain(GrantHdTblSet domain){
+		return new YearHolidayGrantDto(
+			domain.getCompanyId(),
+			domain.getYearHolidayCode().v(),
+			domain.getYearHolidayName().v(),
+			domain.getCalculationMethod().value,
+			domain.getStandardCalculation().value,
+			domain.getUseSimultaneousGrant().value,
+			domain.getSimultaneousGrandMonthDays(),
+			domain.getYearHolidayNote(),
+			domain.getGrantConditions()
+		);
 	}
 }

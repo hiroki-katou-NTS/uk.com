@@ -35,6 +35,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE
 			+ " WHERE c.kmnmtEmployeePK.companyId = :companyId";
+	
+	public final String SELECT_BY_SID = SELECT_NO_WHERE
+			+ " WHERE c.kmnmtEmployeePK.employeeId = :sId";
 
 	private static Employee toDomain(KmnmtEmployee entity) {
 		Employee domain = Employee.createFromJavaStyle(entity.kmnmtEmployeePK.companyId,
@@ -103,6 +106,16 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				.setParameter("companyId", companyId)
 				.setParameter("employeeIds", employeeIds).getList(c -> toDomain(c));
 		return lstPerson;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#findBySid(java.lang.String)
+	 */
+	@Override
+	public Optional<Employee> findBySid(String employeeId) {
+		return this.queryProxy().query(SELECT_BY_SID, KmnmtEmployee.class)
+				.setParameter("sId", employeeId)
+				.getSingle(c -> toDomain(c));
 	}
 
 }
