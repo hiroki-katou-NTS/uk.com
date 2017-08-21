@@ -23,10 +23,10 @@ public interface PerInfoCategoryRepositoty {
 
 	boolean checkCtgNameIsUnique(String companyId, String newCtgName);
 
-	List<String> getPerInfoCtgIdList(String companyId, String categoryCd);
+	List<String> getPerInfoCtgIdList(List<String> companyIdList, String categoryCd);
 
-	void addDateRangeItem(DateRangeItem dateRangeItem);
+	void addDateRangeItemRoot(DateRangeItem dateRangeItem);
 
-	void addDateRangeItemByCtgIdList(List<DateRangeItem> dateRangeItems);
+	void addListDateRangeItem(List<DateRangeItem> dateRangeItems);
 
 }
