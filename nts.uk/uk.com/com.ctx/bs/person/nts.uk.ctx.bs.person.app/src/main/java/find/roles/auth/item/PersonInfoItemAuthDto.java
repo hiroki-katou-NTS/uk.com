@@ -5,11 +5,11 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuth;
 
 @Value
 public class PersonInfoItemAuthDto {
-	String roleId;
-	String personCategoryAuthId;
-	String personItemDefId;
-	int selfAuth;
-	int otherAuth;
+	private String roleId;
+	private String personCategoryAuthId;
+	private String personItemDefId;
+	private int selfAuth;
+	private int otherAuth;
 
 	public static PersonInfoItemAuthDto fromDomain(PersonInfoItemAuth domain) {
 		return new PersonInfoItemAuthDto(domain.getRoleId(), domain.getPersonCategoryAuthId(),
