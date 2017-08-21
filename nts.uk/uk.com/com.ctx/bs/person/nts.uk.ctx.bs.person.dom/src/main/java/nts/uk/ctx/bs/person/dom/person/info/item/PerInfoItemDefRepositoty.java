@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
 
-public interface PernfoItemDefRepositoty {
+public interface PerInfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
 
