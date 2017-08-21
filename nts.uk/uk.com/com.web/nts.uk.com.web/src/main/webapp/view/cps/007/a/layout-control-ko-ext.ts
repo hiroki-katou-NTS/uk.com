@@ -597,13 +597,16 @@ module nts.custombinding {
 
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     services.getCats().done((data: any) => {
-                        if (data && data.categoryList) {
+                        if (data && data.categoryList && data.categoryList.length) {
                             opts.comboxbox.options(data.categoryList);
                             if (opts.comboxbox.value() == data.categoryList[0].id) {
                                 opts.comboxbox.value.valueHasMutated();
                             } else {
                                 opts.comboxbox.value(data.categoryList[0].id);
                             }
+                        } else {
+                            // show message if hasn't any category
+                            alert(text('Msg_288'));
                         }
                     });
                 } else { // get item by group
@@ -689,7 +692,7 @@ module nts.custombinding {
                     $(ctrls.button).prop('disabled', false);
                 }
             });
-            
+
             // disable group if not has any group
             services.getGroups().done((data: Array<any>) => {
                 if (!data || !data.length) {
