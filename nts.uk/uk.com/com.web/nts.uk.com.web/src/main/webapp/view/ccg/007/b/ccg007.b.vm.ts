@@ -17,7 +17,7 @@ module nts.uk.pr.view.ccg007.b {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 //get system config
-                //TODO get local contract info
+                //get local contract info
                 blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(data: any) {
@@ -50,7 +50,7 @@ module nts.uk.pr.view.ccg007.b {
                 return dfd.promise();
             }
 
-            //TODO when invalid contract 
+            //when invalid contract 
             private openContractAuthDialog() {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ccg/007/a/index.xhtml", {

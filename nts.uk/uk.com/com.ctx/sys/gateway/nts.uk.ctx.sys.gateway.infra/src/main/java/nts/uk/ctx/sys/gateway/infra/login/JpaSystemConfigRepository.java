@@ -17,9 +17,15 @@ import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
 import nts.uk.ctx.sys.gateway.entity.login.SgwstSystemConfig;
 
+/**
+ * The Class JpaSystemConfigRepository.
+ */
 @Stateless
 public class JpaSystemConfigRepository extends JpaRepository implements SystemConfigRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository#getSystemConfig()
+	 */
 	@Override
 	public Optional<SystemConfig> getSystemConfig() {
 

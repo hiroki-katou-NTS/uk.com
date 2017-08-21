@@ -46,7 +46,7 @@ module nts.uk.pr.view.ccg007.d {
                 return dfd.promise();
             }
 
-            //TODO when invalid contract 
+            //when invalid contract 
             private openContractAuthDialog() {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ccg/007/a/index.xhtml", {

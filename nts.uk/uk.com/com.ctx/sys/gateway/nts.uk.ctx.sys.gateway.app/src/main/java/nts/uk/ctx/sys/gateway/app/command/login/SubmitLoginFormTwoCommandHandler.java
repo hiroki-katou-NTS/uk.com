@@ -52,16 +52,16 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		String companyCode = command.getCompanyCode();
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
-		//TODO
+		//TODO 0 = Contract code
 		String companyId = "0" + "-" + companyCode;
 		// check validate input
 		this.checkInput(command);
 
-		// TODO edit employee code
+		// Edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
-		// TODO get domain 社員
+		// Get domain 社員
 		EmployeeDto em = this.getEmployee(companyId, employeeCode);
-		// TODO get User by associatedPersonId
+		// Get User by associatedPersonId
 		User user = this.getUser(em.getEmployeeId().toString());
 		// check password
 		this.compareHashPassword(user, password);

@@ -20,7 +20,7 @@ module nts.uk.pr.view.ccg007.c {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 //get system config
-                //TODO get local contract info
+                //get local contract info
                 blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(showContractData: any) {
@@ -56,7 +56,7 @@ module nts.uk.pr.view.ccg007.c {
                         nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                     }
                     else {
-                        //TODO get login ID and set here
+                        //get login ID and set here
                         nts.uk.characteristics.restore("form2LoginInfo").done(function(loginInfo) {
                             if (loginInfo) {
                                 self.companyCode(loginInfo.companyCode);
@@ -69,7 +69,7 @@ module nts.uk.pr.view.ccg007.c {
                 return dfd.promise();
             }
 
-            //TODO when invalid contract 
+            //when invalid contract 
             private openContractAuthDialog() {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ccg/007/a/index.xhtml", {
