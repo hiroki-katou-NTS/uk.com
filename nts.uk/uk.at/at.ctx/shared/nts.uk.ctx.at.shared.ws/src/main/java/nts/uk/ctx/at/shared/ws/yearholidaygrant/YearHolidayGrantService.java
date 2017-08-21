@@ -9,11 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.yearholidaygrant.YearHolidayGrantAddCommand;
 import nts.uk.ctx.at.shared.app.command.yearholidaygrant.YearHolidayGrantAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.yearholidaygrant.YearHolidayGrantCommand;
 import nts.uk.ctx.at.shared.app.command.yearholidaygrant.YearHolidayGrantDeleteCommand;
 import nts.uk.ctx.at.shared.app.command.yearholidaygrant.YearHolidayGrantDeleteCommandHandler;
-import nts.uk.ctx.at.shared.app.command.yearholidaygrant.YearHolidayGrantUpdateCommand;
 import nts.uk.ctx.at.shared.app.command.yearholidaygrant.YearHolidayGrantUpdateCommandHandler;
 import nts.uk.ctx.at.shared.app.find.yearholidaygrant.YearHolidayGrantDto;
 import nts.uk.ctx.at.shared.app.find.yearholidaygrant.YearHolidayGrantFinder;
@@ -71,7 +70,7 @@ public class YearHolidayGrantService extends WebService {
 	 */
 	@POST
 	@Path("add")
-	public void addYearHolidayGrant(YearHolidayGrantAddCommand command) {
+	public void addYearHolidayGrant(YearHolidayGrantCommand command) {
 		add.handle(command);
 	}
 	
@@ -82,7 +81,7 @@ public class YearHolidayGrantService extends WebService {
 	 */
 	@POST
 	@Path("update")
-	public void updateYearHolidayGrant(YearHolidayGrantUpdateCommand command) {
+	public void updateYearHolidayGrant(YearHolidayGrantCommand command) {
 		update.handle(command);
 	}
 	

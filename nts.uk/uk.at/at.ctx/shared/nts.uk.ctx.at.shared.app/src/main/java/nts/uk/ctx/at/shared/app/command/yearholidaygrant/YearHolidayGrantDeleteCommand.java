@@ -9,10 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class YearHolidayGrantDeleteCommand {
-	/* 会社ID */
-	private String companyId;
-	
+public class YearHolidayGrantDeleteCommand {	
 	/* コード */
 	private String yearHolidayCode;
 }

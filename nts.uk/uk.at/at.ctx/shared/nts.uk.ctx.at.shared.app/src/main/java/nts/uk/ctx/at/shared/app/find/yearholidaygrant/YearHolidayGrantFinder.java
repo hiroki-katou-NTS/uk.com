@@ -11,6 +11,12 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * A - Screen
+ * @author TanLV
+ *
+ */
 @Stateless
 public class YearHolidayGrantFinder {
 	@Inject

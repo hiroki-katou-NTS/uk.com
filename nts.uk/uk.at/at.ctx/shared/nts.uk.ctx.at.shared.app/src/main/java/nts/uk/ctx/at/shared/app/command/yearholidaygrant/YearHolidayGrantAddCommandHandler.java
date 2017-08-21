@@ -15,13 +15,13 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Transactional
 @Stateless
-public class YearHolidayGrantAddCommandHandler extends CommandHandler<YearHolidayGrantAddCommand> {
+public class YearHolidayGrantAddCommandHandler extends CommandHandler<YearHolidayGrantCommand> {
 	@Inject
 	private YearHolidayRepository yearHolidayRepo;
 	
 	@Override
-	protected void handle(CommandHandlerContext<YearHolidayGrantAddCommand> context) {
-		YearHolidayGrantAddCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<YearHolidayGrantCommand> context) {
+		YearHolidayGrantCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
 		// check exists code
