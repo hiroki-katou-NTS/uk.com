@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.UseAtr;
  */
 @Getter
 @AllArgsConstructor
-public class AppDetailSetting extends AggregateRoot {
+public class RequestAppDetailSetting extends AggregateRoot {
 	/**
 	 *　会社Iｄ 	
 	 */
@@ -66,10 +66,10 @@ public class AppDetailSetting extends AggregateRoot {
 	public UseAtr timeInputUseAtr;
 	
 	
-	public static AppDetailSetting createSimpleFromJavaType(String companyId,
+	public static RequestAppDetailSetting createSimpleFromJavaType(String companyId,
 			int appType,
 			String memo,
-			int userAtr,
+			int useAtr,
 			int prerequisiteForpauseFlg,
 			int otAppSettingFlg,
 			int breakInputFieldDisFlg,
@@ -78,10 +78,10 @@ public class AppDetailSetting extends AggregateRoot {
 			int goOutTimeBeginDisFlg,
 			int timeCalUseAtr,
 			int timeInputUseAtr) {
-				return new AppDetailSetting(companyId, 
+				return new RequestAppDetailSetting(companyId, 
 						EnumAdaptor.valueOf(appType, ApplicationType.class),
 						new Memo(memo),
-						EnumAdaptor.valueOf(userAtr, UseAtr.class),
+						EnumAdaptor.valueOf(useAtr, UseAtr.class),
 						EnumAdaptor.valueOf(prerequisiteForpauseFlg, SettingFlg.class),
 						EnumAdaptor.valueOf(otAppSettingFlg, SettingFlg.class),
 						EnumAdaptor.valueOf(breakInputFieldDisFlg, DisplayFlg.class),
