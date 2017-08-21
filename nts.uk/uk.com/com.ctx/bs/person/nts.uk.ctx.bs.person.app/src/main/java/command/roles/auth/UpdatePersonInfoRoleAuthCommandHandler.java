@@ -42,11 +42,9 @@ public class UpdatePersonInfoRoleAuthCommandHandler extends CommandHandler<Updat
 						p_RoleDestination.get().getAllowAvatarRef().value);
 				if (p_RoleSource.isPresent()) {
 					this.personRoleAuthRepository.delete(c);
-					this.personRoleAuthRepository.add(insert);
-				} else {
-					this.personRoleAuthRepository.add(insert);
-
 				}
+				
+				this.personRoleAuthRepository.add(insert);
 			});
 		}
 
