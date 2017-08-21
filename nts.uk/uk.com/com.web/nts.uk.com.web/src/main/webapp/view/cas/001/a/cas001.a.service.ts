@@ -6,7 +6,7 @@ module nts.uk.com.view.cas001.a.service {
         getCategoryRoleList: "/ctx/bs/person/roles/auth/category/findAllCategory/{0}",
         getCategoryAuth: "/ctx/bs/person/roles/auth/category/find/{0}/{1}",
         getPersonRoleItemList: "/ctx/bs/person/roles/auth/item/findAllItem/{0}/{1}",
-        savePersonRole: "/ctx/bs/person/roles/save"
+        savePersonRole: "/ctx/bs/person/roles/auth/save"
     }
 
     export function getPersonRoleList(): JQueryPromise<any> {
