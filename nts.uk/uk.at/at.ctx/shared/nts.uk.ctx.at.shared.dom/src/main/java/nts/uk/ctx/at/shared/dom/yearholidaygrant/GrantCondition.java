@@ -24,10 +24,10 @@ public class GrantCondition {
 	private ConditionValue conditionValue;
 	
 	/* 条件利用区分 */
-	private int useConditionAtr;
+	private UseConditionAtr useConditionAtr;
 
 	public GrantCondition(String companyId, YearHolidayCode yearHolidayCode, int conditionNo, ConditionValue conditionValue,
-			int useConditionAtr) {
+			UseConditionAtr useConditionAtr) {
 		
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
