@@ -63,8 +63,7 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		Map<String, String> headers = new LinkedHashMap<>(); 
 		
 		LoginUserContext context = AppContexts.user();
-		String companyId = context.companyId();
-		String companyname = this.company.getCompany(companyId)
+		String companyname = this.company.getCurrentCompany()
 				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
 		
 		String language = currentLanguage.getSessionLocale().getDisplayLanguage(); 
