@@ -21,6 +21,9 @@ module nts.uk.at.view.kdl003.a {
             // Initial work time code list..
             initialWorkTimeCodes: Array<String>;
 
+            // Reserved work time selected code.
+            reservedSelectedWorkTimeCode: KnockoutObservable<string>;
+
             // Parameter from caller screen.
             callerParameter: CallerParameter;
 
@@ -37,6 +40,7 @@ module nts.uk.at.view.kdl003.a {
                 self.selectedWorkTimeCode = ko.observable('');
                 self.listWorkType = ko.observableArray([]);
                 self.selectedWorkTypeCode = ko.observable('');
+                self.reservedSelectedWorkTimeCode = ko.observable('');
 
                 // Define gridlist's columns
                 self.workTypeColumns = ko.observableArray([
@@ -74,6 +78,9 @@ module nts.uk.at.view.kdl003.a {
 
                         // On selectedWorkTypeCode changed event.
                         self.selectedWorkTypeCode.subscribe(code => {
+                            if (!self.listWorkTime() || self.listWorkTime().length == 0) {
+                                return;
+                            }
                             service.isWorkTimeSettingNeeded(code).done(val => {
                                 switch (val) {
                                     case SetupType.REQUIRED:
@@ -114,10 +121,8 @@ module nts.uk.at.view.kdl003.a {
                             self.addFirstItem(data);
                             dfd.resolve();
                         });
-                }
-
-                // Find all work time
-                else {
+                } else {
+                    // Find all work time
                     service.findAllWorkTime()
                         .done(function(data) {
                             self.addFirstItem(data);
@@ -141,10 +146,8 @@ module nts.uk.at.view.kdl003.a {
                             self.listWorkType(workTypeList);
                             dfd.resolve();
                         });
-                }
-
-                // Find all work type.
-                else {
+                } else {
+                    // Find all work type.
                     service.findAllWorkType()
                         .done(function(workTypeList: Array<WorkType>) {
                             self.listWorkType(workTypeList);
@@ -179,9 +182,8 @@ module nts.uk.at.view.kdl003.a {
                 // Selected code from caller screen.
                 if (self.callerParameter.selectedWorkTypeCode) {
                     self.selectedWorkTypeCode(self.callerParameter.selectedWorkTypeCode);
-                }
-                // Select first item.
-                else {
+                } else {
+                    // Select first item.
                     self.selectedWorkTypeCode(_.first(self.listWorkType()).workTypeCode);
                 }
             }
@@ -194,9 +196,8 @@ module nts.uk.at.view.kdl003.a {
                 // Selected code from caller screen.
                 if (self.callerParameter.selectedWorkTimeCode) {
                     self.selectedWorkTimeCode(self.callerParameter.selectedWorkTimeCode);
-                }
-                // Select first item.
-                else {
+                } else {
+                    // Select first item.
                     self.selectedWorkTimeCode(_.first(self.listWorkTime()).code);
                 }
             }
@@ -223,6 +224,9 @@ module nts.uk.at.view.kdl003.a {
                         self.listWorkTime(data);
                         if (data && data.length > 0) {
                             self.selectedWorkTimeCode(data[0].code);
+                        } else {
+                            self.reservedSelectedWorkTimeCode(self.selectedWorkTimeCode());
+                            self.selectedWorkTimeCode('000');
                         }
                     })
                     .fail(function(res) {
@@ -250,6 +254,8 @@ module nts.uk.at.view.kdl003.a {
 
                 // Reload list work time.
                 self.loadWorkTime().always(() => {
+                    // Select previous selected code.
+                    self.selectedWorkTimeCode(self.reservedSelectedWorkTimeCode());
                     nts.uk.ui.block.clear();
                 });
 
