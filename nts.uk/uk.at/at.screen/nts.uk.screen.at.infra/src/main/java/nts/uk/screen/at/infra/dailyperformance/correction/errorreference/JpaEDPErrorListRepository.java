@@ -1,4 +1,4 @@
-package nts.uk.screen.at.infra.correctionofdailyperformance.errorreference;
+package nts.uk.screen.at.infra.dailyperformance.correction.errorreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +13,9 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkReco
 import nts.uk.ctx.at.shared.infra.entity.attendance.KmnmtAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.attendance.KmnmtAttendanceItemPK;
 import nts.uk.ctx.at.shared.infra.entity.correctionofdailyperformance.errorreference.KrcdtEDPErrorList;
-import nts.uk.screen.at.app.correctionofdailyperformance.errorreference.ErrorReferenceDto;
-import nts.uk.screen.at.app.correctionofdailyperformance.errorreference.ErrorReferenceParams;
-import nts.uk.screen.at.app.correctionofdailyperformance.errorreference.ErrorReferenceRepository;
+import nts.uk.screen.at.app.dailyperformance.correction.errorreference.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.errorreference.ErrorReferenceParams;
+import nts.uk.screen.at.app.dailyperformance.correction.errorreference.ErrorReferenceRepository;
 
 @Stateless
 public class JpaEDPErrorListRepository extends JpaRepository implements ErrorReferenceRepository {

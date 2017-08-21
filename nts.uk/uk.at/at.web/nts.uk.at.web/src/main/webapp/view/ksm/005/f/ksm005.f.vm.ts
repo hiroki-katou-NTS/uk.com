@@ -43,9 +43,17 @@ module nts.uk.at.view.ksm005.f {
             public saveMonthlyPatternSetting(): void{
                 var self = this;
                 nts.uk.ui.windows.setShared("monthlyPatternCode", self.selectMonthlyPattern());
+                nts.uk.ui.windows.setShared("isCancel", false);
                 nts.uk.ui.windows.close();
             }
         
+            /**
+             * close windows
+             */
+            public cancelSaveMonthlyPatternSetting(): void {
+                nts.uk.ui.windows.setShared("isCancel", true);
+                nts.uk.ui.windows.close();
+            }
         }
 
     }
