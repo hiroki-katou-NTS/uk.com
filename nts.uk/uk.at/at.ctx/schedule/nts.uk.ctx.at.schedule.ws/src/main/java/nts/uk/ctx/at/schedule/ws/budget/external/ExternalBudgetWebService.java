@@ -97,6 +97,19 @@ public class ExternalBudgetWebService extends WebService {
 		this.delete.handle(command);
 	}
 
+	
+	/**
+	 * Checks if is daily unit.
+	 *
+	 * @param externalBudgetCd the external budget cd
+	 * @return true, if is daily unit
+	 */
+	@POST
+    @Path("validate/isDailyUnit")
+    public boolean isDailyUnit(String externalBudgetCd) {
+        return this.find.isDailyUnit(externalBudgetCd);
+    }
+	
     /**
      * Find data preview.
      *

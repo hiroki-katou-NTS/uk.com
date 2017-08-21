@@ -17,10 +17,12 @@ module nts.uk.at.view.kmf004.h.viewmodel {
         check: KnockoutObservable<boolean>;
         // check update or insert
         checkUpdate: KnockoutObservable<boolean>;
+        // check enable delete button
+        checkDelete: KnockoutObservable<boolean>;
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KMF004_7"), key: 'relationshipCd', width: 100 },
+                { headerText: nts.uk.resource.getText("KMF004_7"), key: 'relationshipCode', width: 100 },
                 { headerText: nts.uk.resource.getText("KMF004_8"), key: 'relationshipName', width: 200, formatter: _.escape}
             ]);
             self.lstRelationship = ko.observableArray([]);
@@ -30,27 +32,29 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             self.check = ko.observable(false);
             self.codeObject = ko.observable("");
             self.checkUpdate = ko.observable(true);
-            self.selectedCode.subscribe((relationshipCd) => {
-                if (relationshipCd) {
+            self.checkDelete = ko.observable(true);
+            self.selectedCode.subscribe((value) => {
+                if (value) {
                     let foundItem = _.find(self.lstRelationship(), (item: Relationship) => {
-                        return item.relationshipCd == relationshipCd;
+                        return item.relationshipCode == value;
                     });
                     self.checkUpdate(true);
+                    self.checkDelete(true);
                     self.selectedOption(foundItem);
                     self.selectedName(self.selectedOption().relationshipName);
-                    self.codeObject(self.selectedOption().relationshipCd)
+                    self.codeObject(self.selectedOption().relationshipCode)
                     self.check(false);
                 }
             });
-            self.startPage();
+            
         }
 
         /** get data to list **/
         getData(): JQueryPromise<any>{
             let self = this;
             let dfd = $.Deferred();
-            service.getAll().done((lstData: Array<viewmodel.Relationship>) => {
-                let sortedData = _.orderBy(lstData, ['relationshipCd'], ['asc']);
+            service.findAll().done((lstData: Array<viewmodel.Relationship>) => {
+                let sortedData = _.orderBy(lstData, ['relationshipCode'], ['asc']);
                 self.lstRelationship(sortedData);
                 dfd.resolve();
             }).fail(function(error){
@@ -68,12 +72,14 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             let list=[];
             self.getData().done(function(){
                 if(self.lstRelationship().length == 0){
-                self.newMode();
-                return;
+                    self.clearFrom();
+                    self.checkDelete(false);
                 }
                 else{
-                    self.selectedCode(self.lstRelationship()[0].relationshipCd.toString());
+                    self.selectedCode(self.lstRelationship()[0].relationshipCode);
                 }
+                
+                dfd.resolve();
             });
             return dfd.promise();
         }  
@@ -115,8 +121,14 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             $("#inpPattern").focus();        
         } 
         //  new mode 
-        newMode(){
-            var t0 = performance.now(); 
+        newMode(){ 
+            let self = this;
+            $("#inpCode").ntsError('clear');
+            self.clearFrom();
+            self.checkDelete(false);
+        }
+        
+        clearFrom() {
             let self = this;
             self.check(true);
             self.checkUpdate(false);
@@ -124,17 +136,15 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             self.codeObject("");
             self.selectedName("");
             $("#inpCode").focus(); 
-            $("#inpCode").ntsError('clear');
             nts.uk.ui.errors.clearAll();                 
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
+        
         /** remove item from list **/
         remove(){
             let self = this;
             let count = 0;
             for (let i = 0; i <= self.lstRelationship().length; i++){
-                if(self.lstRelationship()[i].relationshipCd == self.selectedCode()){
+                if(self.lstRelationship()[i].relationshipCode == self.selectedCode()){
                     count = i;
                     break;
                 }
@@ -145,26 +155,27 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                         // if number of item from list after delete == 0 
                         if(self.lstRelationship().length==0){
                             self.newMode();
+                            self.checkDelete(false);
                             return;
                         }
                         // delete the last item
                         if(count == ((self.lstRelationship().length))){
-                            self.selectedCode(self.lstRelationship()[count-1].relationshipCd);
+                            self.selectedCode(self.lstRelationship()[count-1].relationshipCode);
                             return;
                         }
                         // delete the first item
                         if(count == 0 ){
-                            self.selectedCode(self.lstRelationship()[0].relationshipCd);
+                            self.selectedCode(self.lstRelationship()[0].relationshipCode);
                             return;
                         }
                         // delete item at mediate list 
                         else if(count > 0 && count < self.lstRelationship().length){
-                            self.selectedCode(self.lstRelationship()[count].relationshipCd);    
+                            self.selectedCode(self.lstRelationship()[count].relationshipCode);    
                             return;
                         }
                     })
+                 nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 })
-                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
             }).ifCancel(() => {     
             }); 
             $("#inpPattern").focus();
@@ -179,11 +190,11 @@ module nts.uk.at.view.kmf004.h.viewmodel {
         
     }
     export class Relationship{
-        relationshipCd: string;
+        relationshipCode: string;
         relationshipName: string;  
-        constructor(relationshipCd: string, relationshipName: string){
-            this.relationshipCd = relationshipCd;
-            this.relationshipName =relationshipName;
+        constructor(relationshipCode: string, relationshipName: string){
+            this.relationshipCode = relationshipCode;
+            this.relationshipName = relationshipName;
         }
     }
 }

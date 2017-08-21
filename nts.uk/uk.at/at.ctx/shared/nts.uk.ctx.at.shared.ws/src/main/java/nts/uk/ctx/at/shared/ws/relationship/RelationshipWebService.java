@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.app.find.relationship.RelationshipFinder;
 @Produces("application/json")
 public class RelationshipWebService extends WebService{
 	@Inject
-	private RelationshipFinder getAll;
+	private RelationshipFinder finder;
 	@Inject 
 	private InsertRelationshipCommandHandler add;
 	@Inject
@@ -32,9 +32,9 @@ public class RelationshipWebService extends WebService{
 	 * @return
 	 */
 	@POST
-	@Path("getAll")
-	public List<RelationshipDto> getAll(){
-		return this.getAll.getAll();
+	@Path("findAll")
+	public List<RelationshipDto> finder(){
+		return this.finder.finder();
 	}
 	/**
 	 * insert a relationship 
@@ -42,7 +42,7 @@ public class RelationshipWebService extends WebService{
 	 */
 	@POST
 	@Path("add")
-	public void insertRelationship(InsertRelationshipCommand command){
+	public void insert(InsertRelationshipCommand command){
 		this.add.handle(command);
 	}
 	/**
@@ -51,7 +51,7 @@ public class RelationshipWebService extends WebService{
 	 */
 	@POST
 	@Path("update")
-	public void updateRelationship(UpdateRelationshipCommand command){
+	public void update(UpdateRelationshipCommand command){
 		this.update.handle(command);
 	}
 	/**
@@ -60,7 +60,7 @@ public class RelationshipWebService extends WebService{
 	 */
 	@POST
 	@Path("delete")
-	public void deleteRelationship(DeleteRelationshipCommand command){
+	public void delete(DeleteRelationshipCommand command){
 		this.delete.handle(command);
 	}
 }

@@ -22,9 +22,9 @@ public class TimeDay extends TimeClockPrimitiveValue<TimeDay> {
 		super(second);
 	}
 	
-	public TimeDay(Time.Value timeValue) {
+	/*public TimeDay(Time.Value timeValue) {
 		super(timeValue);
-	}
+	}*/
 	
 }
 

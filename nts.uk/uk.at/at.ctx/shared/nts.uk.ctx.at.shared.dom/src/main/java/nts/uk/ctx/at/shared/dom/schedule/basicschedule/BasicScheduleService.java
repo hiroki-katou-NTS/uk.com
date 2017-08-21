@@ -6,13 +6,14 @@ package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
  *
  */
 public interface BasicScheduleService {
+	
 	/**
 	 * Return state of error checking process: nothing or throw error
 	 * 
 	 * @param workTypeCd
 	 * @param workTimeCd
 	 */
-	void ErrorCheckingStatus(String workTypeCd, String workTimeCd);
+	void checkPairWorkTypeWorkTime(String workTypeCd, String workTimeCd);
 
 	/**
 	 * Check needed of Work Time setting
@@ -46,5 +47,4 @@ public interface BasicScheduleService {
 	 * @return SetupType
 	 */
 	SetupType checkRequired(SetupType morningWorkStyle, SetupType afternoonWorkStyle);
-
 }

@@ -281,11 +281,21 @@ module nts.uk.request {
 
         return dfd.promise();
     }
+    
+    export module asyncTask {
+        export function getInfo(taskId: string) {
+            return ajax('/ntscommons/arc/task/async/info/' + taskId);
+        }
+        
+        export function requestToCancel(taskId: string) {
+            ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
+        }
+    }
 
     export module specials {
 
         export function getAsyncTaskInfo(taskId: string) {
-            return ajax('/ntscommons/arc/task/async/' + taskId);
+            return asyncTask.getInfo(taskId);
         }
 
         export function donwloadFile(fileId: string) {

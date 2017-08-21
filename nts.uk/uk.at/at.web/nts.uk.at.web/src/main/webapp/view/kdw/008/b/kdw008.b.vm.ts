@@ -15,7 +15,7 @@ module nts.uk.at.view.kdw008.b {
             columns1: KnockoutObservableArray<NtsGridListColumn>;
             selectedCode: KnockoutObservable<any>;
             //combobox select sheetNo
-            sheetNoList: KnockoutObservableArray<any>;
+            sheetNoList: KnockoutObservableArray<SheetNoModel>;
             itemNameCbb2: KnockoutObservable<string>;
             currentCodeCbb2: KnockoutObservable<number>;
             selectedSheetNo: KnockoutObservable<number>;
@@ -80,11 +80,22 @@ module nts.uk.at.view.kdw008.b {
                 self.selectedTab = ko.observable('tab-2');
 
                 //combobox select sheetNo tab2
-                self.sheetNoList = ko.observableArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-                self.selectedSheetNo = ko.observable(3);
+                self.sheetNoList = ko.observableArray([
+                    new SheetNoModel('1', '1'),
+                    new SheetNoModel('2', '2'),
+                    new SheetNoModel('3', '3'),
+                    new SheetNoModel('4', '4'),
+                    new SheetNoModel('5', '5'),
+                    new SheetNoModel('6', '6'),
+                    new SheetNoModel('7', '7'),
+                    new SheetNoModel('8', '8'),
+                    new SheetNoModel('9', '9'),
+                    new SheetNoModel('10', '10')
+                ]);
+                self.selectedSheetNo = ko.observable(1);
                 self.selectedSheetNo.subscribe((value) => {
-                    console.log(value);                    
-                    });
+                    console.log(value);
+                });
 
                 //swaplist 2
                 var x = [];
@@ -145,30 +156,39 @@ module nts.uk.at.view.kdw008.b {
                         // show data tab 1
                         self.businessTypeFormatMonthlyValue([]);
                         data.businessTypeFormatMonthlyDtos = _.sortBy(data.businessTypeFormatMonthlyDtos, ["order"]);
-                        var attendanceItemModelMonthly = _.map(data.businessTypeFormatMonthlyDtos, item => {
-                            var obj = {
-                                attendanceItemId: item.attendanceItemId,
-                                attendanceItemName: item.attendanceItemName,
-                                attendanceItemDisplayNumber: item.dislayNumber
-                            };
-                            return new AttendanceItemModel(obj);
-                        });
-                        self.businessTypeFormatMonthlyValue(attendanceItemModelMonthly);
+                        if (data.businessTypeFormatMonthlyDtos) {
+                            var attendanceItemModelMonthly = _.map(data.businessTypeFormatMonthlyDtos, item => {
+                                var obj = {
+                                    attendanceItemId: item.attendanceItemId,
+                                    attendanceItemName: item.attendanceItemName,
+                                    attendanceItemDisplayNumber: item.dislayNumber
+                                };
+                                return new AttendanceItemModel(obj);
+                            });
+                            self.businessTypeFormatMonthlyValue(attendanceItemModelMonthly);
 
+                        } else self.businessTypeFormatMonthlyValue([]);
                         //show data tab 2
                         self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
                         self.selectedSheetName(data.businessTypeFormatDailyDto.sheetName);
                         self.businessTypeFormatDailyValue([]);
                         data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos = _.sortBy(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, ["order"]);
-                        var attendanceItemModelDaily = _.map(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, item => {
-                            var daily = {
-                                attendanceItemId: item.attendanceItemId,
-                                attendanceItemName: item.attendanceItemName,
-                                attendanceItemDisplayNumber: item.dislayNumber
-                            }
-                            return new AttendanceItemModel(daily);
-                        });
-                        self.businessTypeFormatDailyValue(attendanceItemModelDaily);
+                        if (data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos) {
+                            var attendanceItemModelDaily = _.map(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, item => {
+                                var daily = {
+                                    attendanceItemId: item.attendanceItemId,
+                                    attendanceItemName: item.attendanceItemName,
+                                    attendanceItemDisplayNumber: item.dislayNumber
+                                }
+                                return new AttendanceItemModel(daily);
+                            });
+                            self.businessTypeFormatDailyValue(attendanceItemModelDaily);
+                        } else {
+                            self.businessTypeFormatDailyValue([]);
+                        }
+
+                    } else {
+                        self.currentBusinessType([]);
                     }
                     dfd.resolve();
                 }).fail(error => {
@@ -220,7 +240,7 @@ module nts.uk.at.view.kdw008.b {
                     };
                     return new BusinessTypeFormatDetailModel(monthly);
                 });
-                var addOrUpdateBusinessFormatDaily = new BusinessTypeFormatDailyModel(self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto);
+                var addOrUpdateBusinessFormatDaily = new AddBusinessFormatDaily(self.currentBusinessTypeCode(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto);
                 if (self.currentBusinessType().businessTypeFormatDailyDto().businessTypeFormatDetailDtos.length > 0) {
                     new service.Service().updateDailyDetail(addOrUpdateBusinessFormatDaily);
                 } else {
@@ -230,6 +250,15 @@ module nts.uk.at.view.kdw008.b {
 
         }
 
+        export class SheetNoModel {
+            sheetNoId: string;
+            sheetNoName: string;
+            constructor(sheetNoId: string, sheetNoName: string) {
+                this.sheetNoId = sheetNoId;
+                this.sheetNoName = sheetNoName;
+            }
+        }
+
         export class AddBusinessFormatMonthly {
             businesstypeCode: string;
             businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>;
@@ -237,6 +266,19 @@ module nts.uk.at.view.kdw008.b {
                 let self = this;
                 self.businesstypeCode = businessTypeCode || "";
                 self.businessTypeFormatDetailDtos = businessTypeFormatDetailDtos || [];
+            }
+        }
+
+        export class AddBusinessFormatDaily {
+            businesstypeCode: string;
+            sheetNo: number;
+            sheetName: string;
+            businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>;
+            constructor(businesstypeCode: string, sheetNo: number, sheetName: string, businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>) {
+                this.businesstypeCode = businesstypeCode || "";
+                this.sheetNo = sheetNo || 0;
+                this.sheetName = sheetName || "";
+                this.businessTypeFormatDetailDtos = businessTypeFormatDetailDtos || [];
             }
         }
 
@@ -297,7 +339,7 @@ module nts.uk.at.view.kdw008.b {
             constructor(data: IBusinessTypeDetail) {
                 if (!data) return;
                 this.attendanceItemDtos(data.attendanceItemDtos ? _.map(data.attendanceItemDtos, item => { return new AttendanceItemModel(item) }) : []);
-                this.businessTypeFormatDailyDto(data.businessTypeFormatDailyDto ? new BusinessTypeFormatDailyModel(data.businessTypeFormatDailyDto) : null);
+                this.businessTypeFormatDailyDto(data.businessTypeFormatDailyDto ? new BusinessTypeFormatDailyModel(data.businessTypeFormatDailyDto.sheetNo, data.businessTypeFormatDailyDto.sheetName, data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos) : null);
                 this.businessTypeFormatMonthlyDtos(data.businessTypeFormatMonthlyDtos ? _.map(data.businessTypeFormatMonthlyDtos, item => { return new BusinessTypeFormatDetailModel(item) }) : []);
             }
         }

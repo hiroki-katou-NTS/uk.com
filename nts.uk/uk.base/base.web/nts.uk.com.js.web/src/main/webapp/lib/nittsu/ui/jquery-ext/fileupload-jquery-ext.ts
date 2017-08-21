@@ -10,23 +10,23 @@ module nts.uk.ui.jqueryExtentions {
 
         $.fn.ntsFileUpload = function(option: FileUploadOption) {
             let dfd = $.Deferred();
-            let file: JQuery;
+            let fileInput: HTMLElement;
             if ($(this).find("input[type='file']").length == 0) {
-                file = $(this)[0].files;
+                fileInput = $(this).get(0);
             } else {
-                file = $(this).find("input[type='file']")[0].files;
+                fileInput = $(this).find("input[type='file']").get(0);
             }
-            if (file) {
-                var formData = new FormData();
-                formData.append("stereotype", option.stereoType);
-                // HTML file input, chosen by user
-                formData.append("userfile", file[0]);
-                formData.append("filename", file[0].name);
-                if (file[0]) {
+
+            if (fileInput !== undefined) {
+                let file: File[] = fileInput.files;
+                if (file.length > 0) {
+                    var formData = new FormData();
+                    formData.append("stereotype", option.stereoType);
+                    formData.append("userfile", file[0]);
+                    formData.append("filename", file[0].name);
                     return nts.uk.request.uploadFile(formData, option);
                 } else {
                     dfd.reject({ message: "please select file", messageId: "-1" });
-                    return dfd.promise();
                 }
             } else {
                 dfd.reject({ messageId: "0", message: "can not find control" });

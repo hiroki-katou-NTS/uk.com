@@ -27,16 +27,16 @@
 	margin-left: 15px;
 }
 
-#A2_001_container col:FIRST-CHILD {
-	width: 25px !important;
-}
-
 #content-left>.caret-bottom:after {
 	color: #97d155;
 	font-size: 20px;
 	border-right: 1.7em solid transparent;
 	border-left: 1.6em solid transparent;
 	margin-left: 0.6em;
+}
+
+#A3_003 {
+	margin-left: 10px;
 }
 
 #content-left>.caret-bottom {

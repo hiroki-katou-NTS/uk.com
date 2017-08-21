@@ -19,7 +19,7 @@ module cps008.a.service {
         return ajax(format(paths.getDetails, lid));
     }
 
-    /**
+   /**
     * add  Maintenance Layout
     */
     export function saveData(data: any) {

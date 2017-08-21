@@ -84,10 +84,13 @@ module nts.uk.at.view.ksm005.b {
                 if (self.validateClient()) {
                     return;
                 }
-                nts.uk.ui.windows.setShared("monthlyPatternCode",nts.uk.text.padLeft(self.monthlyPatternModel().code(),'0',3));
-                nts.uk.ui.windows.setShared("monthlyPatternName",self.monthlyPatternModel().name());
-                nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function(){
-                    self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(),'0',3), false);
+                nts.uk.ui.windows.setShared("monthlyPatternCode", nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3));
+                nts.uk.ui.windows.setShared("monthlyPatternName", self.monthlyPatternModel().name());
+                nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function() {
+                    var isCancelSave: boolean = nts.uk.ui.windows.getShared("isCancelSave");
+                    if (!isCancelSave) {
+                        self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
+                    }
                 });
             }
 
@@ -360,8 +363,8 @@ module nts.uk.at.view.ksm005.b {
              * clear validate client
              */
            public clearValiate() {
-                $('#inp_monthlyPatternCode').ntsError('clear')
-                $('#inp_monthlyPatternName').ntsError('clear')
+                $('#inp_monthlyPatternCode').ntsError('clear');
+                $('#inp_monthlyPatternName').ntsError('clear');
             }
             
             
@@ -392,7 +395,7 @@ module nts.uk.at.view.ksm005.b {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload pa    
-                        self.reloadPage(self.monthlyPatternModel().code(), false);
+                        self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     });
                 }).fail(function(error) {
                     // show message
@@ -440,6 +443,8 @@ module nts.uk.at.view.ksm005.b {
                 this.name = ko.observable('');
                 this.enableMonthlyPatternCode = ko.observable(true);
                 this.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    filldirection: "right",
+                    fillcharacter: "0",
                     width: "50px",
                     textmode: "text",
                     textalign: "left"

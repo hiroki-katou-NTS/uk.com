@@ -179,6 +179,7 @@ module nts.uk.at.view.ksm005.e {
                 service.batchWorkMonthlySetting(self.collectData()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        nts.uk.ui.windows.setShared("isCancelSave", false);
                         nts.uk.ui.windows.close();
                     });
 
@@ -239,6 +240,7 @@ module nts.uk.at.view.ksm005.e {
              * function by click button cancel save monthly pattern setting batch
              */
             public cancelSaveMonthlyPatternSetting(): void{
+                nts.uk.ui.windows.setShared("isCancelSave", true);
                 nts.uk.ui.windows.close();    
             }
             /**
