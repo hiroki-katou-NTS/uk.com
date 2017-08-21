@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.correctionofdailyperformance.errorreference;
+package nts.uk.screen.at.app.dailyperformance.correction.errorreference;
 
 import java.util.List;
 
