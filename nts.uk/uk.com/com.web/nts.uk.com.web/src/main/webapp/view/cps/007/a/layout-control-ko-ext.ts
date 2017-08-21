@@ -693,7 +693,7 @@ module nts.custombinding {
             // disable group if not has any group
             services.getGroups().done((data: Array<any>) => {
                 if (!data || !data.length) {
-                    opts.radios.options().filter(x => x.id == CAT_OR_GROUP.GROUP).forEach(x => x.enable(false);
+                    opts.radios.options().filter(x => x.id == CAT_OR_GROUP.GROUP).forEach(x => x.enable(false));
                 }
             });
 
