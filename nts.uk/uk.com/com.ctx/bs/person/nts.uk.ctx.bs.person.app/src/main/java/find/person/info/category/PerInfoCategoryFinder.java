@@ -12,7 +12,7 @@ import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.bs.person.dom.person.info.category.HistoryTypes;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -26,7 +26,7 @@ public class PerInfoCategoryFinder {
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
 	@Inject
-	private PernfoItemDefRepositoty pernfoItemDefRep;
+	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
 		return perInfoCtgRepositoty

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemTypeState;
-import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
@@ -26,7 +26,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class PerInfoItemDefFinder {
 
 	@Inject
-	private PernfoItemDefRepositoty pernfoItemDefRep;
+	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
 		return this.pernfoItemDefRep
