@@ -34,8 +34,8 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 	@Inject
 	private ISessionLocale currentLanguage;
 	
-//	@Inject
-//	private CompanyAdapter company;
+	@Inject
+	private CompanyAdapter company;
 
 	@Override
 	protected void handle(ExportServiceContext<MasterListExportQuery> context) {
@@ -64,8 +64,8 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		
 		LoginUserContext context = AppContexts.user();
 		String companyCode = context.companyCode();
-		String companyname = "";//company.getCompanyByCode(companyCode)
-//				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
+		String companyname = this.company.getCompanyByCode(companyCode)
+				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
 		
 		String language = currentLanguage.getSessionLocale().getDisplayLanguage(); 
 		

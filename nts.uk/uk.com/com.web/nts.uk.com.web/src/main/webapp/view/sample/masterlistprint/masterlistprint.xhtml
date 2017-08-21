@@ -51,7 +51,7 @@
 									<li>Override method getMasterDatas for return master list datas.</li>
 								</ul>
 <pre><![CDATA[@Stateless
-@DomainID(value = "TestMasterList") 
+@DomainID(value = "test") 
 public class TestMasterListExportImpl implements MasterListData {
 	
 	@Override
@@ -103,7 +103,7 @@ public class MasterListExportQuery {
 }
 
 // Call web service
-nts.uk.request.exportFile('/masterlist/report/print', {domainId: "TestMasterList", domainType: "test"}).done(() => {
+nts.uk.request.exportFile('/masterlist/report/print', {domainId: "test", domainType: "test"}).done(() => {
     console.log('DONE!!');
 });
 ]]></pre>
