@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.request.application.primitive;
+package nts.uk.ctx.at.request.dom.setting.request.application.common;
 
 /** 受付可能か */
 public enum PossibleAtr {

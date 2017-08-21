@@ -18,27 +18,6 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@EmbeddedId
 	public KrqstApplicationSettingPK krqstApplicationSettingPK;
 
-	@Column(name = "PRE_POST_INIT_ATR")
-	public int prePostInitAtr;
-
-	@Column(name = "PRE_POST_CAN_CHANGE_FLG")
-	public int prePostCanChangeFlg;
-
-	@Column(name = "TYPICAL_REASON_DISPLAY_FLG")
-	public int typicalReasonDisplayFlg;
-
-	@Column(name = "SEND_MAIL_WHEN_APPROVAL_FLG")
-	public int sendMailWhenApprovalFlg;
-	
-	@Column(name = "SEND_MAIL_WHEN_REGISTER_FLG")
-	public int sendMailWhenRegisterlFlg;
-	
-	@Column(name = "DISPLAY_REASON_FLG")
-	public int displayReasonFlg;
-
-	@Column(name = "VACATION_APP_TYPE")
-	public int vacationAppType;
-
 	@Column(name = "APP_ACT_LOCK_FLG")
 	public int appActLockFlg;
 
@@ -57,24 +36,6 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@Column(name = "REQUIRE_APP_REASON_FLG")
 	public int requireAppReasonFlg;
 
-	@Column(name = "RETRICT_PRE_METHOD_FLG")
-	public int retrictPreMethodFlg;
-
-	@Column(name = "RETRICT_PRE_USE_FLG")
-	public int retrictPreUseFlg;
-
-	@Column(name = "RETRICT_PRE_DAY")
-	public int retrictPreDay;
-
-	@Column(name = "RETRICT_PRE_TIMEDAY")
-	public int retrictPreTimeDay;
-
-	@Column(name = "RETRICT_PRE_CAN_ACCEPT_FLG")
-	public int retrictPreCanAcceptFlg;
-
-	@Column(name = "RETRICT_POST_ALLOW_FUTURE_FLG")
-	public int retrictPostAllowFutureFlg;
-
 	@Column(name = "DISPLAY_PRE_POST_FLG")
 	public int displayPrePostFlg;
 
@@ -83,6 +44,47 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 
 	@Column(name = "DISPLAY_INIT_DAY_FLG")
 	public int displayInitDayFlg;
+
+	/** 承認 */
+
+	@Column(name = "ADVANCE_EXCESS_MESS_DISP_ATR")
+	public int advanceExcessMessDispAtr;
+
+	@Column(name = "HW_ADVANCE_DISP_ATR")
+	public int hwAdvanceDispAtr;
+
+	@Column(name = "HW_ACTUAL_DISP_ATR")
+	public int hwActualDispAtr;
+
+	@Column(name = "ACTUAL_EXCESS_MESS_DISP_ATR")
+	public int actualExcessMessDispAtr;
+
+	@Column(name = "OT_ADVANCE_DISP_ATR")
+	public int otAdvanceDispAtr;
+
+	@Column(name = "OT_ACTUAL_DISP_ATR")
+	public int otActualDispAtr;
+
+	@Column(name = "WARNING_DATE_DISP_ATR")
+	public int warningDateDispAtr;
+
+	@Column(name = "APP_REASON_DISP_ATR")
+	public int appReasonDispAtr;
+
+	@Column(name = "APP_CONTENT_CHANGE_FLG")
+	public int appContentChangeFlg;
+
+	@Column(name = "PERSON_APPROVAL_FLG")
+	public int personApprovalFlg;
+
+	@Column(name = "SCHE_REFLECT_FLG")
+	public int scheReflectFlg;
+
+	@Column(name = "PRIORITY_TIME_REFLECT_FLG")
+	public int priorityTimeReflectFlg;
+
+	@Column(name = "ATTENDENT_TIME_REFLECT_FLG")
+	public int attendentTimeReflectFlg;
 
 	@Override
 	protected Object getKey() {

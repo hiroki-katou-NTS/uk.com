@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.request.application;
+package nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting;
 
 import java.util.List;
 import java.util.Optional;

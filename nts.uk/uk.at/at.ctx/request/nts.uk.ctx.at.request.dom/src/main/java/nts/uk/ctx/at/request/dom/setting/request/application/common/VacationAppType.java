@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.request.application.primitive;
+package nts.uk.ctx.at.request.dom.setting.request.application.common;
 
 /** 休暇申請の種類 */
 public enum VacationAppType {

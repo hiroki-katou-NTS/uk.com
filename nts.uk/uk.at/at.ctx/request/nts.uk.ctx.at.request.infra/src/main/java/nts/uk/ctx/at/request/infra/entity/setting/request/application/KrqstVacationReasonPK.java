@@ -11,11 +11,15 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqstApplicationSettingPK implements Serializable{
-
+public class KrqstVacationReasonPK implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyID;
+
+	/** 申請種類 */
+	@Column(name = "VACATION_APP_TYPE")
+	public String vacationAppType;
+
 }
