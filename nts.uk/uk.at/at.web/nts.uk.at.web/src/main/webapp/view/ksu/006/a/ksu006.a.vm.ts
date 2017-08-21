@@ -59,20 +59,36 @@ module nts.uk.at.view.ksu006.a {
                 });
                 
                 self.enableDataPreview = ko.observable(false);;
-                self.isDataDailyUnit = ko.observable(false);
+                self.isDataDailyUnit = ko.observable(true);
                 self.dataPreview = ko.observableArray([]);
                 self.firstRecord = ko.observable(null);
                 self.remainData = ko.observableArray([]);
                 // name id
                 self.nameIdTitleList = ko.observableArray([]);
                 self.nameIdValueList = ko.observableArray([]);
+                
+                // subscribe
+                self.selectedExtBudgetCode.subscribe(function(value) {
+                    if(!value) {
+                        return;
+                    }
+                    self.enableDataPreview(false);
+                    nts.uk.ui.block.grayout();
+                    self.checkUnitAtr().done(() => {
+                        self.enableDataPreview(true);
+                        nts.uk.ui.block.clear();
+                    });
+                });
             }
             
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 nts.uk.ui.block.grayout();
-                self.initNameId();
+                
+                // initial name id of time zone unit
+                self.initNameIdTimeZoneUnit();
+                
                 $.when(self.loadAllExternalBudget()).done(() => {
                     if (self.externalBudgetList().length > 0) {
                         self.isEnableExecute(true);
@@ -88,20 +104,11 @@ module nts.uk.at.view.ksu006.a {
             
             public execute() {
                 let self = this;
+                let dfd = $.Deferred<any>();
                 $('#comboExternalBudget').focus();
-                let isOpendDialog: boolean = false;
                 self.uploadFile().done(function() {
-                    service.validateFile(self.toJSObject()).done(function() {
-                        nts.uk.ui.block.grayout();
-                        nts.uk.ui.windows.setShared("ExtractCondition", self.toJSObject());
-                        nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml',
-                            { title: '外部予算実績データ受入実行', dialogClass: 'no-close' }).onClosed(() => {
-                                nts.uk.ui.block.clear();
-                            });
-
-                    }).fail(function(res: any) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                    });
+                    self.validateFile();
+                    dfd.resolve();
                 }).fail(function() {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
@@ -110,7 +117,7 @@ module nts.uk.at.view.ksu006.a {
             public openDialogExternalBudget() {
                 let self = this;
                 nts.uk.ui.block.grayout();
-                nts.uk.ui.windows.sub.modal('/view/kdl/024/a/index.xhtml', { title: '外部予算実績の設定'}).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/kdl/024/a/index.xhtml').onClosed(() => {
                     nts.uk.ui.block.clear();
                     self.loadAllExternalBudget();
                 });
@@ -118,10 +125,21 @@ module nts.uk.at.view.ksu006.a {
             
             public openDialogLog() {
                 nts.uk.ui.block.grayout();
-                nts.uk.ui.windows.sub.modal('/view/ksu/006/c/index.xhtml', { title: '外部予算実績データ受入実行ログ',
-                    dialogClass: 'no-close' }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/ksu/006/c/index.xhtml').onClosed(() => {
                         nts.uk.ui.block.clear();
                     });
+            }
+            
+            private checkUnitAtr(): JQueryPromise<boolean> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.checkUnitAtr(self.selectedExtBudgetCode()).done((state: boolean) => {
+                    self.isDataDailyUnit(state);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+                return dfd.promise();
             }
             
             private showDataPreview() {
@@ -130,6 +148,7 @@ module nts.uk.at.view.ksu006.a {
                 self.dataPreview([]);
                 self.firstRecord(null);
                 self.remainData([]);
+                
                 self.uploadFile().done(function() {
                     service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
                         self.isDataDailyUnit(res.isDailyUnit);
@@ -139,7 +158,6 @@ module nts.uk.at.view.ksu006.a {
                         self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
                         
                         self.totalRecord(res.totalRecord);
-                        self.enableDataPreview(true);
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
                     });
@@ -148,11 +166,8 @@ module nts.uk.at.view.ksu006.a {
                 });  
             }
             
-            private initNameId() {
+            private initNameIdTimeZoneUnit() {
                 let self = this;
-                if (self.isDataDailyUnit()) {
-                    return;
-                }
                 // find name id for case time zone unit
                 for (let i=0; i<48; i++) {
                     self.nameIdTitleList.push(nts.uk.resource.getText("KSU006_" + (i + 23)));
@@ -188,6 +203,20 @@ module nts.uk.at.view.ksu006.a {
                 return dfd.promise();
             }
             
+            private validateFile() {
+                let self = this;
+                let extractCondition: any = self.toJSObject();
+                service.validateFile(extractCondition).done(function() {
+                    nts.uk.ui.block.grayout();
+                    nts.uk.ui.windows.setShared("ExtractCondition", extractCondition);
+                    nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml').onClosed(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+            }
+            
             private toJSObject(): any {
                 let self = this;
                 return {
@@ -195,7 +224,7 @@ module nts.uk.at.view.ksu006.a {
                         fileId: self.fileId(),
                         fileName: self.fileName(),
                         encoding: self.selectedEncoding(),
-                        startLine: self.startLine(),
+                        startLine: parseInt(self.startLine()),
                         isOverride: self.isOverride()
                 };
             }

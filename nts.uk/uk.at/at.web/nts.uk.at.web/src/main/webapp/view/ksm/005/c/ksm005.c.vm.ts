@@ -130,6 +130,7 @@ module nts.uk.at.view.ksm005.c {
                 
             }
 
+            
             /**
              * update selected employee kcp005 => detail
              */
@@ -162,7 +163,9 @@ module nts.uk.at.view.ksm005.c {
              */
             public applySelectEmployeeId(employeeId: string){
                 var self = this;    
-                self.employeeName(self.findByIdEmployee(employeeId).name);
+                if (employeeId) {
+                    self.employeeName((self.findByIdEmployee(employeeId)).name);
+                }
                 service.findByIdMonthlyPatternSetting(employeeId).done(function(data: MonthlyPatternSettingDto){
                     if (data.setting) {
                         self.monthlyPatternCode = data.info.code;

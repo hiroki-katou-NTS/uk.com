@@ -54,3 +54,6 @@
 	min-width: 100px;
 	max-width: 200px;
 }
+.tbl-monthly .ntsControl {
+	width: 50px !important;
+}

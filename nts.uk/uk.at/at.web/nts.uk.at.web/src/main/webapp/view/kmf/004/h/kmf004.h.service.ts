@@ -1,14 +1,14 @@
 module nts.uk.at.view.kmf004.h.service {
     
     var paths: any = {
-        getAll: "at/shared/relationship/getAll",
+        findAll: "at/shared/relationship/findAll",
         update: "at/shared/relationship/update",
         insert: "at/shared/relationship/add",
         remove: "at/shared/relationship/delete"
     }
     
-    export function getAll(){
-        return nts.uk.request.ajax(paths.getAll);    
+    export function findAll(){
+        return nts.uk.request.ajax(paths.findAll);    
     }    
     
     export function update(command: viewmodel.Relationship): JQueryPromise<void>{

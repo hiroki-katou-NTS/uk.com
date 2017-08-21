@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.infra.entity.common.application.KafdtApplication;
-import nts.uk.ctx.at.request.infra.entity.common.application.KafdtApplicationPK;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository  {
@@ -28,8 +28,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return Application.createFromJavaType(
 				entity.kafdtApplicationPK.companyID, 
 				entity.kafdtApplicationPK.applicationID, 
-				entity.prePostAtr, 
-				entity.autoPostApplication, 
+				entity.prePostAtr,
 				entity.inputDate, 
 				entity.enteredPersonSID, 
 				entity.reversionReason, 
@@ -50,8 +49,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private KafdtApplication toEntity(Application domain){
 		return new KafdtApplication(
 				new KafdtApplicationPK(domain.getCompanyID(),domain.getApplicationID()), 
-				domain.getPrePostAtr().value, 
-				domain.getAutoPostApplication().value, 
+				domain.getPrePostAtr().value,
 				domain.getInputDate(), 
 				domain.getEnteredPersonSID(), 
 				domain.getReversionReason().v(), 
@@ -130,7 +128,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		KafdtApplication updateEntity = this.queryProxy()
 							.find(newEntity.kafdtApplicationPK, KafdtApplication.class).get();
 		updateEntity.prePostAtr = newEntity.prePostAtr;
-		updateEntity.autoPostApplication = newEntity.autoPostApplication;
 		updateEntity.inputDate = newEntity.inputDate;
 		updateEntity.enteredPersonSID = newEntity.enteredPersonSID; 
 		updateEntity.reversionReason = newEntity.reversionReason; 

@@ -21,16 +21,16 @@ public class BusinessTypeFormatDaily extends AggregateRoot {
 	 */
 	private BusinessTypeCode businessTypeCode;
 
-	private BigDecimal attendanceItemId;
+	private int attendanceItemId;
 
 	private BigDecimal sheetNo;
 
-	private BigDecimal order;
+	private int order;
 
 	private BigDecimal columnWidth;
 
-	public BusinessTypeFormatDaily(String companyId, BusinessTypeCode businessTypeCode, BigDecimal attendanceItemId,
-			BigDecimal sheetNo, BigDecimal order, BigDecimal columnWidth) {
+	public BusinessTypeFormatDaily(String companyId, BusinessTypeCode businessTypeCode, int attendanceItemId,
+			BigDecimal sheetNo, int order, BigDecimal columnWidth) {
 		super();
 		this.companyId = companyId;
 		this.businessTypeCode = businessTypeCode;
@@ -41,7 +41,7 @@ public class BusinessTypeFormatDaily extends AggregateRoot {
 	}
 
 	public static BusinessTypeFormatDaily createFromJavaType(String companyId, String businessTypeCode,
-			BigDecimal attendanceItemId, BigDecimal sheetNo, BigDecimal order, BigDecimal columnWidth) {
+			int attendanceItemId, BigDecimal sheetNo, int order, BigDecimal columnWidth) {
 		return new BusinessTypeFormatDaily(companyId, new BusinessTypeCode(businessTypeCode), attendanceItemId, sheetNo,
 				order, columnWidth);
 	}

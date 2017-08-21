@@ -43,12 +43,33 @@ public class WorkTypeFinder {
 	}
 
 	/**
+	 * Find not deprecated by list code.
+	 *
+	 * @param codes the codes
+	 * @return the list
+	 */
+	public List<WorkTypeDto> findNotDeprecatedByListCode(List<String> codes) {
+		return this.workTypeRepo.findNotDeprecatedByListCode(companyId, codes).stream()
+				.map(dom -> WorkTypeDto.fromDomain(dom)).collect(Collectors.toList());
+	}
+
+	/**
 	 * Find by company id.
 	 *
 	 * @return the list
 	 */
 	public List<WorkTypeDto> findByCompanyId() {
 		return this.workTypeRepo.findByCompanyId(companyId).stream().map(c -> WorkTypeDto.fromDomain(c))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Find not deprecated.
+	 *
+	 * @return the list
+	 */
+	public List<WorkTypeDto> findNotDeprecated() {
+		return this.workTypeRepo.findNotDeprecated(companyId).stream().map(dom -> WorkTypeDto.fromDomain(dom))
 				.collect(Collectors.toList());
 	}
 
@@ -102,8 +123,8 @@ public class WorkTypeFinder {
 		
 		WorkType workType = opWorkType.get();
 		
-		if(workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)){
-			
-		}
+//		if(workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)){
+//			
+//		}
 	}
 }

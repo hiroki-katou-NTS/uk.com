@@ -78,28 +78,25 @@
 							<span class="label">#{i18n.getText('KDW008_23')}</span>
 							<div id="A_SEL_002"
 								data-bind="ntsComboBox: {
-													options: itemListCbb2,
-													optionsValue: 'nameCbb2',
-													value: selectedCodeCbb2,
-													optionsText: 'nameCbb2',
-													enable: true,
-													columns: [
-														{ prop: 'nameCbb2', length: 4 }
-													]}">
+									options: sheetNoList,
+									optionsValue: 'sheetNoId',
+									optionsText: 'sheetNoName',
+									value: selectedSheetNo,
+									enable: true}">
 							</div>
 							<span id="label2" class="label">#{i18n.getText('KDW008_8')}</span>
-							<input></input>
+							<input data-bind="ntsTextEditor: {value: selectedSheetName}"></input>
 						</div>
 						<div id="label2" class="label">#{i18n.getText('KDW008_24')}</div>
 						<BR />
 						<div class="label">#{i18n.getText('KDW008_29')}</div>
-						<div style="margin-top: 15px" id="swap-list"
+						<div style="margin-top: 15px" id="swap-list2"
 							data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
-							height: 350,
+							height: 370,
 							dataSource: currentBusinessType().attendanceItemDtos,
-							primaryKey: 'currentBusinessType().attendanceItemId',
-							columns: columns3,
+							primaryKey: 'attendanceItemId',
+							columns: columns2,
 							value: businessTypeFormatDailyValue,
 							searchMode: 'filter',
 							searchCriterion: ['currentBusinessType().attendanceItemName','currentBusinessType().attendanceItemId'],

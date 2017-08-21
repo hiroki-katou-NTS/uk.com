@@ -47,8 +47,10 @@ module nts.uk.at.view.ksm005.b {
                 // now month setting kcp006
                 self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM')));
                 
-                self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string){
-                   self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked()); 
+                self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string) {
+                    if (monthlyPatternCode) {
+                        self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked());
+                    }
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
@@ -82,10 +84,10 @@ module nts.uk.at.view.ksm005.b {
                 if (self.validateClient()) {
                     return;
                 }
-                nts.uk.ui.windows.setShared("monthlyPatternCode",self.monthlyPatternModel().code());
+                nts.uk.ui.windows.setShared("monthlyPatternCode",nts.uk.text.padLeft(self.monthlyPatternModel().code(),'0',3));
                 nts.uk.ui.windows.setShared("monthlyPatternName",self.monthlyPatternModel().name());
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function(){
-                    self.reloadPage(self.monthlyPatternModel().code(), false);
+                    self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(),'0',3), false);
                 });
             }
 
@@ -234,14 +236,16 @@ module nts.uk.at.view.ksm005.b {
             public detailMonthlyPattern(monthlyPatternCode: string, month: number): void {
                 var self = this;
                 service.findByMonthWorkMonthlySetting(monthlyPatternCode, month).done(function(data) {
-                    service.findByIdMonthlyPattern(monthlyPatternCode).done(function(res) {
-                        self.monthlyPatternModel().updateData(res);
-                        self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
-                        self.monthlyPatternModel().updateEnable(false);
-                        self.enableDelete(true);
-                        self.updateWorkMothlySetting(data);
-                        self.lstWorkMonthlySetting(data);
-                    });
+                    if (monthlyPatternCode) {
+                        service.findByIdMonthlyPattern(monthlyPatternCode).done(function(res) {
+                            self.monthlyPatternModel().updateData(res);
+                            self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
+                            self.monthlyPatternModel().updateEnable(false);
+                            self.enableDelete(true);
+                        });
+                    }
+                    self.updateWorkMothlySetting(data);
+                    self.lstWorkMonthlySetting(data);
                 });
             }
             
@@ -388,7 +392,7 @@ module nts.uk.at.view.ksm005.b {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload pa    
-                        self.reloadPage(self.monthlyPatternModel().code(), false);
+                        self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     });
                 }).fail(function(error) {
                     // show message

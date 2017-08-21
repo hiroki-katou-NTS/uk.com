@@ -15,8 +15,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             
             var data = nts.uk.ui.windows.getShared("KMF003_CONDITION_NO");
             self.code = ko.observable(data.code);
-            self.name = ko.observable(data.name);
-            self.conditionValue = ko.observable(data.conditionValue);
+            self.name = ko.observable(data.name);            
+            self.conditionValue = ko.observable(nts.uk.resource.getText("KMF003_37", [data.conditionValue.option, data.conditionValue.value, data.conditionValue.afterValue]));
             self.dateSelected = ko.observable(data.dateSelected);
             
             if(data.dateSelected === "") {

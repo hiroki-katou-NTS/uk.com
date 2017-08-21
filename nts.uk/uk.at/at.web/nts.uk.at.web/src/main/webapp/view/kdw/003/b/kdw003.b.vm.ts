@@ -7,190 +7,190 @@ module nts.uk.at.view.kdw003.b {
                 var self = this;
                 //  this.employeeErrorItems = ko.observableArray([]);
 
-               /* var data = [
-                    {
-                        "idAuto": 1,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 2,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 3,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 4,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 5,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 6,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 7,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 8,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 9,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 10,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 11,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 12,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 13,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 14,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 15,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 16,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 17,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 18,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 19,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    },
-                    {
-                        "idAuto": 20,
-                        "employeeCode": "A000000000001",
-                        "employeeName": "日通三郎",
-                        "date": "2017/6/20(火)",
-                        "code": 101,
-                        "message": "Overtime time has exceeded 45H",
-                        "itemName": "Attendance embossing"
-                    }
-
-
-                ]; */
+                /* var data = [
+                     {
+                         "idAuto": 1,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 2,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 3,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 4,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 5,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 6,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 7,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 8,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 9,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 10,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 11,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 12,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 13,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 14,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 15,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 16,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 17,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 18,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 19,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+                         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     },
+                     {
+                         "idAuto": 20,
+                         "employeeCode": "A000000000001",
+                         "employeeName": "日通三郎",
+                         "date": "2017/6/20(火)",
+                         "code": 101,
+         "message": "Overtime time has exceeded 45H",
+                         "itemName": "Attendance embossing"
+                     }
+ 
+ 
+                 ]; */
                 
                 var data = [];
 
@@ -314,12 +314,4 @@ module nts.uk.at.view.kdw003.b {
 
         }
     }
-
-
-
-
-
-
-
-
-
+}

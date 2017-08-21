@@ -3,58 +3,13 @@ module nts.uk.pr.view.ksu006.b {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            let extractCondition: any = nts.uk.ui.windows.getShared("ExtractCondition");
-            screenModel.status(nts.uk.resource.getText("KSU006_216"));
-            $('.countdown').downCount();
-//            nts.uk.ui.block.invisible();
-            service.executeImportFile(extractCondition).then(function(res: any) {
-                screenModel.executeId(res.executeId);
-                nts.uk.deferred.repeat(conf => conf
-                .task(() => {
-                    let dfd = $.Deferred();
-                    nts.uk.request.specials.getAsyncTaskInfo(res.taskId).done(function(res: any) {
-                        if (res.running || res.succeeded || res.failed) {
-                            _.forEach(res.taskDatas, item => {
-                                if (item.key == 'TOTAL_RECORD') {
-                                    screenModel.totalRecord(item.valueAsNumber);
-                                }
-                                if (item.key == 'SUCCESS_CNT') {
-                                    screenModel.numberSuccess(item.valueAsNumber);
-                                }
-                                if (item.key == 'FAIL_CNT') {
-                                    screenModel.numberFail(item.valueAsNumber);
-                                }
-                            });
-                        }
-                        if (res.succeeded || res.failed) {
-                            screenModel.isDone(true);
-                            screenModel.status(nts.uk.resource.getText("KSU006_217"));
-                            $('.countdown').stop();
-                            if (res.error) {
-                                nts.uk.ui.dialog.alertError(res.error.message);
-                            }
-//                            nts.uk.ui.block.clear();
-                        }
-                        dfd.resolve(res);
-                    });
-                    return dfd.promise();
-                }).while(info => {
-                    return info.pending || info.running;
-                })
-                .pause(1000))
-            })
-            .done(function(res: any) {
-            })
-            .fail(function(res: any) {
-                nts.uk.ui.dialog.alertError(res.message);
-            });
         });
     });
 }
 interface JQuery {
 
     downCount(options, callback);
-    stop(options, callback);
+    stopCountDown(options, callback);
 }
 
 (function($: any) {
@@ -150,7 +105,7 @@ interface JQuery {
         interval = setInterval(countdown, 1000);
     };
     
-    $.fn.stop = function(options, callback) {
+    $.fn.stopCountDown = function(options, callback) {
          clearInterval(interval);
     };
 } (jQuery));

@@ -12,5 +12,5 @@ public enum ConfirmationRootType {
 	DAILY_CONFIRMATION(0),
 	/** 月次確認*/
 	MONTHLY_CONFIRMATION(1);
-	public final int value;
+	public final Integer value;
 }

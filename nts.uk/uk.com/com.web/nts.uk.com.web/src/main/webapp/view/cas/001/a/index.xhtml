@@ -76,11 +76,11 @@
 					<div id="roleConfigArea" data-bind="with:currentRole">
 
 						<div class="div_line" style="margin-top: 0px;">
-							<div class="float_left">
-								<div
+							<div class="float_left display_flex">
+								<div 
 									data-bind="ntsFormLabel: { required:true,constraint:'RoleName' }">#{i18n.getText('CAS001_12')}</div>
-								<span data-bind="text:roleCode"></span> <span
-									data-bind="text:roleName"></span>
+								<span id="A3_002" data-bind="text:roleCode"></span> 
+								<span id="A3_003" data-bind="text:roleName"></span>
 							</div>
 							<div class="float_left" data-bind="with:$parent">
 								<button id="A3_004" data-bind="click:OpenDModal">#{i18n.getText('CAS001_13')}</button>
@@ -229,45 +229,6 @@
 														</tr>
 														<tr>
 															<th>#{i18n.getText('CAS001_30')}</th>
-															<td><div id="A4_020" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowDelHis ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-															<td><div id="A4_021" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowAddHis ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-															<td><div id="A4_022"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: selfPastHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: $parents[1].allowPersonRef() === 1 ,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-															<td><div id="A4_023"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: selfFutureHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: $parents[1].allowPersonRef() === 1  ,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-														</tr>
-														<tr>
-															<th>#{i18n.getText('CAS001_31')}</th>
 															<td><div id="A4_024" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
@@ -304,6 +265,47 @@
 														columns: [
 															{ prop: 'name', length: 5 },
 														]}"></div></td>
+														</tr>
+														<tr>
+															<th>#{i18n.getText('CAS001_31')}</th>
+															<td><div id="A4_020" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowDelHis ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_021" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowAddHis ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_022"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: selfPastHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowPersonRef() === 1 ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+															<td><div id="A4_023"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: selfFutureHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowPersonRef() === 1  ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+
+
 														</tr>
 													</table>
 												</com:ko-if>

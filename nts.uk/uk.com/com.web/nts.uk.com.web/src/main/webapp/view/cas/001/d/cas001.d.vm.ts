@@ -6,7 +6,6 @@ module nts.uk.com.view.cas001.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
-        categoryOrgin: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
         currentRole: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
 

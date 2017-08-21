@@ -18,6 +18,18 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId";
 	private static final String GET_ALL_ITEM_CLASSIFICATION = "SELECT c FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
 
+	private static final String CHECK_EXIT_ITEMCLS;
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM PpemtLayoutItemCls e");
+		builderString.append(" WHERE e.ppemtLayoutItemClsPk.layoutId = :layoutId");
+		CHECK_EXIT_ITEMCLS = builderString.toString();
+
+	}
+
 	@Override
 	public List<LayoutPersonInfoClassification> getAllByLayoutId(String layoutId) {
 		List<PpemtLayoutItemCls> resultList = this.queryProxy()
@@ -42,6 +54,13 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 	public void removeAllByLayoutId(String layoutId) {
 		// remove all classifications when update or override layout
 		getEntityManager().createQuery(REMOVE_ALL_BY_LAYOUT_ID).setParameter("layoutId", layoutId).executeUpdate();
+	}
+
+	@Override
+	public boolean checkExitItemCls(String layoutId) {
+		List<PpemtLayoutItemCls> list = this.queryProxy().query(CHECK_EXIT_ITEMCLS, PpemtLayoutItemCls.class)
+				.setParameter("layoutId", layoutId).getList();
+		return !list.isEmpty();
 	}
 
 	private LayoutPersonInfoClassification toDomain(PpemtLayoutItemCls entity) {

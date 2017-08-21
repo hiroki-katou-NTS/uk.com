@@ -21,6 +21,11 @@
 	width: 85px;
 }
 
+#functions-area button.danger {
+    margin-left: 220px;
+    margin-right: 490px;
+}
+
 #A_BTN_DELETE {
 	margin-left: 100px;
 	width: 80px;
@@ -76,7 +81,7 @@ button.search-btn {
 
 div#left-content.relative.bg-green.caret-right.caret-background{
 	width: 330px;
-	height: 82%;
+	height: 700px;
 }
 
 i.icon.icon-searchbox{

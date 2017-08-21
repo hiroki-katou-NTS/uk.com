@@ -19,6 +19,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class ExtBudgetLogFinder.
@@ -41,21 +42,20 @@ public class ExtBudgetLogFinder {
      * @return the list
      */
     public List<ExternalBudgetLogDto> findExternalBudgetLog(ExternalBudgetQuery query) {
-        String companyId = AppContexts.user().companyId();
-        String employeeIdLogin = AppContexts.user().employeeId();
+        LoginUserContext user = AppContexts.user();
         
         // find external budget setting
-        Map<String, String> mapBudget = this.externalBudgetRepo.findAll(companyId).stream()
+        Map<String, String> mapBudget = this.externalBudgetRepo.findAll(user.companyId()).stream()
                 .collect(Collectors.toMap(item -> item.getExternalBudgetCd().v(),
                         item -> item.getExternalBudgetName().v()));
         
-        List<ExternalBudgetLog> lstLog = this.extBudgetLogRepo.findExternalBudgetLog(employeeIdLogin, query.getStartDate(), query.getEndDate(),
-                query.getListState());
-        
-        // check has data ?
-        if (CollectionUtil.isEmpty(lstLog)) {
+        // check choose at least state completion ?
+        if (CollectionUtil.isEmpty(query.getListState())) {
             throw new BusinessException("Msg_166");
         }
+        
+        List<ExternalBudgetLog> lstLog = this.extBudgetLogRepo.findExternalBudgetLog(user.employeeId(),
+                query.getStartDate(), query.getEndDate(), query.getListState());
         return lstLog.stream()
                 .map(domain -> {
                     ExternalBudgetLogDto dto = new ExternalBudgetLogDto();
