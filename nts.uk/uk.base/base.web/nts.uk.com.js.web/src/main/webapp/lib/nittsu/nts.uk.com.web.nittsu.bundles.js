@@ -2416,6 +2416,30 @@ var nts;
                 return dfd.promise();
             }
             request.exportFile = exportFile;
+            function downloadFileWithTask(taskId, data, options) {
+                var dfd = $.Deferred();
+                var checkTask = function () {
+                    specials.getAsyncTaskInfo(taskId).done(function (res) {
+                        if (res.status == "PENDING" || res.status == "RUNNING") {
+                            setTimeout(function () {
+                                checkTask();
+                            }, 1000);
+                        }
+                        if (res.failed || res.status == "ABORTED") {
+                            dfd.reject(res.error);
+                        }
+                        else {
+                            specials.donwloadFile(res.id);
+                            dfd.resolve(res);
+                        }
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                checkTask();
+                return dfd.promise();
+            }
+            request.downloadFileWithTask = downloadFileWithTask;
             var asyncTask;
             (function (asyncTask) {
                 function getInfo(taskId) {
@@ -3355,8 +3379,7 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName)
-                                || path !== _this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "未設定" : dialogName;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -4317,8 +4340,8 @@ var nts;
                         var data = valueAccessor();
                         var self = this;
                         var options = ko.unwrap(data.options);
-                        var optionValue = ko.unwrap(data.optionsValue);
-                        var optionText = ko.unwrap(data.optionsText);
+                        var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
+                        var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
                         var enable = ko.unwrap(data.enable);
@@ -4330,8 +4353,11 @@ var nts;
                         var fillCharacter = ' ';
                         var maxWidthCharacter = 15;
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-                        if (_.find(options, function (item) { return item[optionValue] === selectedValue; }) === undefined && !editable) {
-                            selectedValue = options.length > 0 ? options[0][optionValue] : '';
+                        var getValue = function (item) {
+                            return optionValue === null ? item : item[optionValue];
+                        };
+                        if (_.find(options, function (item) { return getValue(item) === selectedValue; }) === undefined && !editable) {
+                            selectedValue = options.length > 0 ? getValue(options[0]) : '';
                             data.value(selectedValue);
                         }
                         var haveColumn = columns && columns.length > 0;
@@ -4353,7 +4379,7 @@ var nts;
                                     });
                                 }
                                 else {
-                                    newOptionText = option[optionText];
+                                    newOptionText = optionText === null ? option : option[optionText];
                                 }
                                 option['nts-combo-label'] = newOptionText;
                                 return option;
@@ -4391,7 +4417,7 @@ var nts;
                                 itemTemplate: itemTemplate,
                                 selectionChanged: function (evt, ui) {
                                     if (ui.items.length > 0) {
-                                        data.value(ui.items[0].data[optionValue]);
+                                        data.value(getValue(ui.items[0].data));
                                     }
                                 }
                             });
@@ -11089,7 +11115,9 @@ var nts;
                     (function (functions) {
                         functions.UPDATE_ROW = "updateRow";
                         functions.ENABLE_CONTROL = "enableNtsControlAt";
+                        functions.ENABLE_ALL_CONTROL = "enableNtsControl";
                         functions.DISABLE_CONTROL = "disableNtsControlAt";
+                        functions.DISABLE_ALL_CONTROL = "disableNtsControl";
                         functions.DIRECT_ENTER = "directEnter";
                         function ntsAction($grid, method, params) {
                             switch (method) {
@@ -11100,8 +11128,14 @@ var nts;
                                 case functions.ENABLE_CONTROL:
                                     enableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
+                                case functions.ENABLE_ALL_CONTROL:
+                                    enableNtsControl($grid, params[0], params[1]);
+                                    break;
                                 case functions.DISABLE_CONTROL:
                                     disableNtsControlAt($grid, params[0], params[1], params[2]);
+                                    break;
+                                case functions.DISABLE_ALL_CONTROL:
+                                    disableNtsControl($grid, params[0], params[1]);
                                     break;
                                 case functions.DIRECT_ENTER:
                                     var direction = $grid.data(internal.ENTER_DIRECT);
@@ -11116,6 +11150,12 @@ var nts;
                             }
                         }
                         functions.ntsAction = ntsAction;
+                        function enableNtsControl($grid, columnKey, controlType) {
+                            var datasource = $grid.igGrid("option", "dataSource");
+                            for (var i = 0; i <= datasource.length; i++) {
+                                enableNtsControlAt($grid, i, columnKey, controlType);
+                            }
+                        }
                         function updateRow($grid, rowId, object, autoCommit) {
                             updating.updateRow($grid, rowId, object, undefined, true);
                             if (!autoCommit) {
@@ -11123,6 +11163,12 @@ var nts;
                                 $grid.igGrid("commit");
                                 if (updatedRow !== undefined)
                                     $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
+                            }
+                        }
+                        function disableNtsControl($grid, columnKey, controlType) {
+                            var datasource = $grid.igGrid("option", "dataSource");
+                            for (var i = 0; i <= datasource.length; i++) {
+                                disableNtsControlAt($grid, i, columnKey, controlType);
                             }
                         }
                         function disableNtsControlAt($grid, rowId, columnKey, controlType) {
@@ -12864,8 +12910,6 @@ var nts;
                         function setGridSize($grid) {
                             var height = window.innerHeight;
                             var width = window.innerWidth;
-                            $grid.igGrid("option", "width", width - 240);
-                            $grid.igGrid("option", "height", height - 90);
                         }
                         settings.setGridSize = setGridSize;
                     })(settings || (settings = {}));
@@ -18199,6 +18243,76 @@ var nts;
         (function (ui) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
+                var accordion;
+                (function (accordion) {
+                    $.widget("ui.accordion", $.ui.accordion, {
+                        _create: function () {
+                            this["tabindex"] = this.element.attr("tabindex") ? this.element.attr("tabindex") : 0;
+                            this.element.removeAttr("tabindex");
+                            return this._super();
+                        },
+                        _refresh: function () {
+                            this._super();
+                            if (!this.active.length) {
+                                this.headers.eq(0).attr("tabIndex", this.tabindex);
+                            }
+                            else {
+                                this.active.attr({
+                                    tabIndex: this.tabindex
+                                });
+                            }
+                        },
+                        _toggle: function (data) {
+                            this._super(data);
+                            var toShow = data.newPanel;
+                            toShow.prev().attr({ tabIndex: this.tabindex });
+                        },
+                        _keydown: function (event) {
+                            if (event.altKey || event.ctrlKey) {
+                                return;
+                            }
+                            var keyCode = $.ui.keyCode, length = this.headers.length, currentIndex = this.headers.index(event.target), toFocus = false;
+                            switch (event.keyCode) {
+                                case keyCode.RIGHT:
+                                case keyCode.DOWN:
+                                    toFocus = this.headers[(currentIndex + 1) % length];
+                                    break;
+                                case keyCode.LEFT:
+                                case keyCode.UP:
+                                    toFocus = this.headers[(currentIndex - 1 + length) % length];
+                                    break;
+                                case keyCode.SPACE:
+                                case keyCode.ENTER:
+                                    this._eventHandler(event);
+                                    break;
+                                case keyCode.HOME:
+                                    toFocus = this.headers[0];
+                                    break;
+                                case keyCode.END:
+                                    toFocus = this.headers[length - 1];
+                                    break;
+                            }
+                            if (toFocus) {
+                                $(event.target).attr("tabIndex", -1);
+                                $(toFocus).attr("tabIndex", this.tabindex);
+                                $(toFocus).trigger("focus");
+                                event.preventDefault();
+                            }
+                        }
+                    });
+                })(accordion || (accordion = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
                 var ntsTreeView;
                 (function (ntsTreeView) {
                     var OUTSIDE_AUTO_SCROLL_SPEED = {
@@ -18539,76 +18653,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var accordion;
-                (function (accordion) {
-                    $.widget("ui.accordion", $.ui.accordion, {
-                        _create: function () {
-                            this["tabindex"] = this.element.attr("tabindex") ? this.element.attr("tabindex") : 0;
-                            this.element.removeAttr("tabindex");
-                            return this._super();
-                        },
-                        _refresh: function () {
-                            this._super();
-                            if (!this.active.length) {
-                                this.headers.eq(0).attr("tabIndex", this.tabindex);
-                            }
-                            else {
-                                this.active.attr({
-                                    tabIndex: this.tabindex
-                                });
-                            }
-                        },
-                        _toggle: function (data) {
-                            this._super(data);
-                            var toShow = data.newPanel;
-                            toShow.prev().attr({ tabIndex: this.tabindex });
-                        },
-                        _keydown: function (event) {
-                            if (event.altKey || event.ctrlKey) {
-                                return;
-                            }
-                            var keyCode = $.ui.keyCode, length = this.headers.length, currentIndex = this.headers.index(event.target), toFocus = false;
-                            switch (event.keyCode) {
-                                case keyCode.RIGHT:
-                                case keyCode.DOWN:
-                                    toFocus = this.headers[(currentIndex + 1) % length];
-                                    break;
-                                case keyCode.LEFT:
-                                case keyCode.UP:
-                                    toFocus = this.headers[(currentIndex - 1 + length) % length];
-                                    break;
-                                case keyCode.SPACE:
-                                case keyCode.ENTER:
-                                    this._eventHandler(event);
-                                    break;
-                                case keyCode.HOME:
-                                    toFocus = this.headers[0];
-                                    break;
-                                case keyCode.END:
-                                    toFocus = this.headers[length - 1];
-                                    break;
-                            }
-                            if (toFocus) {
-                                $(event.target).attr("tabIndex", -1);
-                                $(toFocus).attr("tabIndex", this.tabindex);
-                                $(toFocus).trigger("focus");
-                                event.preventDefault();
-                            }
-                        }
-                    });
-                })(accordion || (accordion = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

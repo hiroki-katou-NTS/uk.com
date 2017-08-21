@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface CompanyAdapter {
 
-	public Optional<CompanyInfor> getCompanyByCode(String companyCode);
+	public Optional<CompanyInfor> getCurrentCompany();
 }
