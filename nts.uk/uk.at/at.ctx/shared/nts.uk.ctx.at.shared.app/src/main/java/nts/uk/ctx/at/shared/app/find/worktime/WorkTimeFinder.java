@@ -70,11 +70,45 @@ public class WorkTimeFinder {
 		workTimeMethodSet[3] = internationalization.getItemName(WorkTimeMethodSet.Enum_Fluid_Work.name()).get();
 	}
 
+	/**
+	 * Find by company ID.
+	 *
+	 * @return the list
+	 */
 	public List<WorkTimeDto> findByCompanyID() {
 		String companyID = AppContexts.user().companyId();
 		List<WorkTime> workTimeItems = this.workTimeRepository.findByCompanyID(companyID);
 		List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCompanyID(companyID);
 		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+	}
+
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<WorkTimeDto> findAll() {
+		String companyID = AppContexts.user().companyId();
+		List<WorkTime> workTimeItems = this.workTimeRepository.findAll(companyID);
+		List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCompanyID(companyID);
+		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+	}
+
+	/**
+	 * Find by codes.
+	 *
+	 * @param codes the codes
+	 * @return the list
+	 */
+	public List<WorkTimeDto> findByCodes(List<String> codes) {
+		String companyID = AppContexts.user().companyId();
+		if (codes.isEmpty()) {
+			return Collections.emptyList();
+		} else {
+			List<WorkTime> workTimeItems = this.workTimeRepository.findByCodes(companyID, codes);
+			List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCodeList(companyID, codes);
+			return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+		}
 	}
 
 	/**

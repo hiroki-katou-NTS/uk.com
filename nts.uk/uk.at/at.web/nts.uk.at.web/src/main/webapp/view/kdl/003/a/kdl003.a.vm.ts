@@ -109,7 +109,7 @@ module nts.uk.at.view.kdl003.a {
 
                 // Find work time by list code if caller's parameters exist.
                 if (self.callerParameter.workTimeCodes && self.callerParameter.workTimeCodes.length > 0) {
-                    service.findByCodeList(self.callerParameter.workTimeCodes)
+                    service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
                         .done(function(data) {
                             self.addFirstItem(data);
                             dfd.resolve();
