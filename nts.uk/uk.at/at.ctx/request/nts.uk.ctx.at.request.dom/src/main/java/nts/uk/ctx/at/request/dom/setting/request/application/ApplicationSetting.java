@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.primitive.VacationA
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 
 @Value
-public class ApplicationSettingItem {
+public class ApplicationSetting {
 	private String companyID;
 
 	private ApplicationType appType;
@@ -43,7 +43,7 @@ public class ApplicationSettingItem {
 
 	private AppCanAtr appActMonthConfirmFlg;
 
-	private RequiredFlg requiredAppReasonFlg;
+	private RequiredFlg requireAppReasonFlg;
 
 	private CheckMethod retrictPreMethodFlg;
 
@@ -53,7 +53,7 @@ public class ApplicationSettingItem {
 	
 	private RetrictPreTimeDay retrictPreTimeDay;
 
-	private PossibleAtr rertricPreCanAceeptFlg;
+	private PossibleAtr retrictPreCanAceeptFlg;
 
 	private AllowAtr retrictPostAllowFutureFlg;
 
@@ -63,13 +63,13 @@ public class ApplicationSettingItem {
 
 	private RetrictDay displayInitDayFlg;
 
-	public ApplicationSettingItem(String companyID, ApplicationType appType, AppDisplayAtr prePostInitFlg,
+	public ApplicationSetting(String companyID, ApplicationType appType, AppDisplayAtr prePostInitFlg,
 			AppCanAtr prePostCanChangeFlg, AppDisplayAtr typicalReasonDisplayFlg, AppCanAtr sendMailWhenApprovalFlg,
 			AppCanAtr sendMailWhenRegisterFlg, AppCanAtr displayReasonFlg, VacationAppType vacationAppType,
 			AppCanAtr appActLockFlg, AppCanAtr appEndWorkFlg, AppCanAtr appActConfirmFlg, AppCanAtr appOvertimeNightFlg,
-			AppCanAtr appActMonthConfirmFlg, RequiredFlg requiredAppReasonFlg, CheckMethod retrictPreMethodFlg,
+			AppCanAtr appActMonthConfirmFlg, RequiredFlg requireAppReasonFlg, CheckMethod retrictPreMethodFlg,
 			UseAtr retrictPreUseFlg, RetrictDay retrictPreDay, RetrictPreTimeDay retrictPreTimeDay,
-			PossibleAtr rertricPreCanAceeptFlg, AllowAtr retrictPostAllowFutureFlg, AppDisplayAtr displayPrePostFlg,
+			PossibleAtr retrictPreCanAceeptFlg, AllowAtr retrictPostAllowFutureFlg, AppDisplayAtr displayPrePostFlg,
 			AppDisplayAtr displaySearchTimeFlg, RetrictDay displayInitDayFlg) {
 		super();
 		this.companyID = companyID;
@@ -86,12 +86,12 @@ public class ApplicationSettingItem {
 		this.appActConfirmFlg = appActConfirmFlg;
 		this.appOvertimeNightFlg = appOvertimeNightFlg;
 		this.appActMonthConfirmFlg = appActMonthConfirmFlg;
-		this.requiredAppReasonFlg = requiredAppReasonFlg;
+		this.requireAppReasonFlg = requireAppReasonFlg;
 		this.retrictPreMethodFlg = retrictPreMethodFlg;
 		this.retrictPreUseFlg = retrictPreUseFlg;
 		this.retrictPreDay = retrictPreDay;
 		this.retrictPreTimeDay = retrictPreTimeDay;
-		this.rertricPreCanAceeptFlg = rertricPreCanAceeptFlg;
+		this.retrictPreCanAceeptFlg = retrictPreCanAceeptFlg;
 		this.retrictPostAllowFutureFlg = retrictPostAllowFutureFlg;
 		this.displayPrePostFlg = displayPrePostFlg;
 		this.displaySearchTimeFlg = displaySearchTimeFlg;
