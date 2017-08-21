@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
 /**
  * The Class JpaCompanyEstablishmentRepository.
  */
+@Stateless
 public class JpaCompanyEstablishmentRepository extends JpaRepository
 		implements CompanyEstablishmentRepository {
 
