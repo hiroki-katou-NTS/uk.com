@@ -111,17 +111,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.requiredAtr = 1 AND i.abolitionAtr = 0"
 			+ " AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)";
 
-	// private final static String SELECT_ITEM_SET_QUERY = "SELECT
-	// ic.ppemtPerInfoItemCmPK. FROM PpemtPerInfoItemCm ic"
-	// + " WHERE ic.itemParentCd = :itemParentCd";
-
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
-
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
 					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));
-
 					return createDomainFromEntity(i, items);
 				});
 	}
@@ -131,7 +125,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoItemDefId).getSingle(i -> {
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
-
 					return createDomainFromEntity(i, items);
 				});
 	}
@@ -141,7 +134,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		return this.queryProxy().query(SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("listItemDefId", listItemDefId).getList(i -> {
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
-
 					return createDomainFromEntity(i, items);
 				});
 	}
@@ -159,7 +151,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		this.commandProxy().insert(createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd));
 		this.commandProxy().insert(createPerInfoItemDefFromDomain(perInfoItemDef));
 		addOrderItemRoot(perInfoItemDef.getPerInfoItemDefId(), perInfoItemDef.getPerInfoCategoryId());
-
 	}
 
 	@Override
@@ -415,7 +406,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 			}
 		}
-
 		return new PpemtPerInfoItemCm(perInfoItemCmPK, perInfoItemDef.getItemParentCode().v(),
 				perInfoItemDef.getSystemRequired().value, perInfoItemDef.getRequireChangable().value,
 				perInfoItemDef.getIsFixed().value, itemType, dataType, timeItemMin, timeItemMax, timepointItemMin,
