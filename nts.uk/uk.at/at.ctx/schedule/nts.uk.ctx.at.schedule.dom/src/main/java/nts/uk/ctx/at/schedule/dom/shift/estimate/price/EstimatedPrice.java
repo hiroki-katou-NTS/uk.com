@@ -23,5 +23,5 @@ public class EstimatedPrice extends DomainObject{
 	
 	/** The estimated price. */
 	// 金額 
-	private EstimatedPrice estimatedPrice;
+	private EstimatePrice estimatedPrice;
 }

@@ -7,12 +7,16 @@ import lombok.Value;
 @Value
 public class DailyServiceTypeControlDto {
 	public int attendanceItemId;
+	
+	public String attendanceItemName;
 
 	public String businessTypeCode;
 
+	public boolean use;
+	
 	public boolean youCanChangeIt;
 
 	public boolean canBeChangedByOthers;
 	
-	public boolean use;
+	public boolean userCanSet;
 }
