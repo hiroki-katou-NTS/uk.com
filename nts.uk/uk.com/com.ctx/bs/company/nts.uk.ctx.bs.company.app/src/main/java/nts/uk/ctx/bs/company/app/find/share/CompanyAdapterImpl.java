@@ -15,7 +15,7 @@ public class CompanyAdapterImpl implements CompanyAdapter{
 	private CompanyFinder companyFinder;
 
 	@Override
-	public Optional<CompanyInfor> getCompanyByCode(String companyCode) {
+	public Optional<CompanyInfor> getCurrentCompany() {
 		Optional<CompanyInfor> result = Optional.empty();
 		
 		CompanyDto dto = companyFinder.getCompany();
