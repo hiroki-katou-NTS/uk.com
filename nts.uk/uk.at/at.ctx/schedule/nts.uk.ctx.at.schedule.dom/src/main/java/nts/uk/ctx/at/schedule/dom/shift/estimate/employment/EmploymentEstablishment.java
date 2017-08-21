@@ -32,4 +32,29 @@ public class EmploymentEstablishment extends AggregateRoot{
 	/** The employment code. */
 	//雇用コード
 	private EmploymentCode employmentCode;
+	
+	/**
+	 * Instantiates a new employment establishment.
+	 *
+	 * @param memento the memento
+	 */
+	public EmploymentEstablishment(EmploymentEstablishmentGetMemento memento){
+		this.companyId = memento.getCompanyId();
+		this.targetYear = memento.getTargetYear();
+		this.advancedSetting = memento.getAdvancedSetting();
+		this.employmentCode = memento.getEmploymentCode();
+	}
+	
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EmploymentEstablishmentSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setTargetYear(this.targetYear);
+		memento.setAdvancedSetting(this.advancedSetting);
+		memento.setEmploymentCode(this.employmentCode);
+	}
 }

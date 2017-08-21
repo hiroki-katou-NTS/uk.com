@@ -32,4 +32,29 @@ public class EstimateDetailSetting extends DomainObject{
 	/** The estimate number of day. */
 	// 目安日数条件
 	private List<EstimateNumberOfDay> estimateNumberOfDay;
+	
+	
+	/**
+	 * Instantiates a new estimate detail setting.
+	 *
+	 * @param memento the memento
+	 */
+	public EstimateDetailSetting(EstimateDetailSettingGetMemento memento){
+		this.estimateTime = memento.getEstimateTime();
+		this.estimatePrice = memento.getEstimatePrice();
+		this.estimateNumberOfDay = memento.getEstimateNumberOfDay();
+	}
+	
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EstimateDetailSettingSetMemento memento){
+		memento.setEstimateTime(this.estimateTime);
+		memento.setEstimatePrice(this.estimatePrice);
+		memento.setEstimateNumberOfDay(this.estimateNumberOfDay);
+	}
+	
 }
