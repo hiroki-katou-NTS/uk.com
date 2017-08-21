@@ -2416,6 +2416,30 @@ var nts;
                 return dfd.promise();
             }
             request.exportFile = exportFile;
+            function downloadFileWithTask(taskId, data, options) {
+                var dfd = $.Deferred();
+                var checkTask = function () {
+                    specials.getAsyncTaskInfo(taskId).done(function (res) {
+                        if (res.status == "PENDING" || res.status == "RUNNING") {
+                            setTimeout(function () {
+                                checkTask();
+                            }, 1000);
+                        }
+                        if (res.failed || res.status == "ABORTED") {
+                            dfd.reject(res.error);
+                        }
+                        else {
+                            specials.donwloadFile(res.id);
+                            dfd.resolve(res);
+                        }
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                checkTask();
+                return dfd.promise();
+            }
+            request.downloadFileWithTask = downloadFileWithTask;
             var asyncTask;
             (function (asyncTask) {
                 function getInfo(taskId) {
