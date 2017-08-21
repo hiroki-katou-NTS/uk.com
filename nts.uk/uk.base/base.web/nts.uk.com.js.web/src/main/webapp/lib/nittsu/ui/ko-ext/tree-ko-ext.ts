@@ -154,16 +154,11 @@ module nts.uk.ui.koExtentions {
                 },
                 nodeCheckstateChanged: function(evt, ui) {
                     if (ko.isObservable(data.selectedValues)) {
-                        if(ui.newState === "on"){
+                        if (ko.isObservable(data.selectedValues)) { 
                             let selectedNodes = $tree.igTree("checkedNodes");
                             data.selectedValues(_.map(selectedNodes, function(s){
                                 return s.data[optionsValue];    
                             }));
-                        } else {
-                            _.remove(data.selectedValues(), function(val){
-                                return ui.node.data[optionsValue] === val;        
-                            });    
-                            data.selectedValues.valueHasMutated();
                         }
                     }
                 }

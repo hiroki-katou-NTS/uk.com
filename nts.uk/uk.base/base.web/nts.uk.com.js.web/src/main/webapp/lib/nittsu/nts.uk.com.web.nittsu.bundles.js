@@ -2416,10 +2416,45 @@ var nts;
                 return dfd.promise();
             }
             request.exportFile = exportFile;
+            function downloadFileWithTask(taskId, data, options) {
+                var dfd = $.Deferred();
+                var checkTask = function () {
+                    specials.getAsyncTaskInfo(taskId).done(function (res) {
+                        if (res.status == "PENDING" || res.status == "RUNNING") {
+                            setTimeout(function () {
+                                checkTask();
+                            }, 1000);
+                        }
+                        if (res.failed || res.status == "ABORTED") {
+                            dfd.reject(res.error);
+                        }
+                        else {
+                            specials.donwloadFile(res.id);
+                            dfd.resolve(res);
+                        }
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                checkTask();
+                return dfd.promise();
+            }
+            request.downloadFileWithTask = downloadFileWithTask;
+            var asyncTask;
+            (function (asyncTask) {
+                function getInfo(taskId) {
+                    return ajax('/ntscommons/arc/task/async/info/' + taskId);
+                }
+                asyncTask.getInfo = getInfo;
+                function requestToCancel(taskId) {
+                    ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
+                }
+                asyncTask.requestToCancel = requestToCancel;
+            })(asyncTask = request.asyncTask || (request.asyncTask = {}));
             var specials;
             (function (specials) {
                 function getAsyncTaskInfo(taskId) {
-                    return ajax('/ntscommons/arc/task/async/' + taskId);
+                    return asyncTask.getInfo(taskId);
                 }
                 specials.getAsyncTaskInfo = getAsyncTaskInfo;
                 function donwloadFile(fileId) {
@@ -3270,7 +3305,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_1) {
+        (function (ui) {
             var windows;
             (function (windows) {
                 var MAIN_WINDOW_ID = 'MAIN_WINDOW';
@@ -3344,8 +3379,7 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName)
-                                || path !== _this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "未設定" : dialogName;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -3548,11 +3582,11 @@ var nts;
                     }
                     sub.open = open;
                 })(sub = windows.sub || (windows.sub = {}));
-            })(windows = ui_1.windows || (ui_1.windows = {}));
+            })(windows = ui.windows || (ui.windows = {}));
             function localize(textId) {
                 return textId;
             }
-            ui_1.localize = localize;
+            ui.localize = localize;
             var dialog;
             (function (dialog) {
                 var DialogHeader = (function () {
@@ -3776,126 +3810,8 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
-            })(dialog = ui_1.dialog || (ui_1.dialog = {}));
-            var contextmenu;
-            (function (contextmenu) {
-                var ContextMenu = (function () {
-                    function ContextMenu(selector, items, enable) {
-                        this.selector = selector;
-                        this.items = items;
-                        this.enable = (enable !== undefined) ? enable : true;
-                        this.init();
-                    }
-                    ContextMenu.prototype.init = function () {
-                        var self = this;
-                        $('body .ntsContextMenu').each(function () {
-                            if ($(this).data("selector") === self.selector) {
-                                $("body").off("contextmenu", self.selector);
-                                $(this).remove();
-                            }
-                        });
-                        self.guid = nts.uk.util.randomId();
-                        var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
-                        self.createMenuItems($contextMenu);
-                        $('body').append($contextMenu);
-                        $("html").on("contextmenu", self.selector, function (event) {
-                            if (self.enable === true) {
-                                event.preventDefault();
-                                self.target = event.target;
-                                $contextMenu.show().position({
-                                    my: "left+2 top+2",
-                                    of: event,
-                                    collision: "fit"
-                                });
-                            }
-                        });
-                        $("html").on("mousedown", function (event) {
-                            if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
-                                $contextMenu.hide();
-                            }
-                        });
-                    };
-                    ContextMenu.prototype.destroy = function () {
-                        $("html").off("contextmenu", this.selector);
-                        $("#" + this.guid).remove();
-                    };
-                    ContextMenu.prototype.refresh = function () {
-                        this.destroy();
-                        this.init();
-                    };
-                    ContextMenu.prototype.getItem = function (target) {
-                        if (typeof target === "number") {
-                            return this.items[target];
-                        }
-                        else if (typeof target === "string") {
-                            return _.find(this.items, ["key", target]);
-                        }
-                        else {
-                            return undefined;
-                        }
-                    };
-                    ContextMenu.prototype.addItem = function (item) {
-                        this.items.push(item);
-                        this.refresh();
-                    };
-                    ContextMenu.prototype.removeItem = function (target) {
-                        var item = this.getItem(target);
-                        if (item !== undefined) {
-                            _.remove(this.items, item);
-                            this.refresh();
-                        }
-                    };
-                    ContextMenu.prototype.setEnable = function (enable) {
-                        this.enable = enable;
-                    };
-                    ContextMenu.prototype.setEnableItem = function (enable, target) {
-                        var item = this.getItem(target);
-                        item.enable = enable;
-                        this.refresh();
-                    };
-                    ContextMenu.prototype.setVisibleItem = function (visible, target) {
-                        var item = this.getItem(target);
-                        item.visible = visible;
-                        this.refresh();
-                    };
-                    ContextMenu.prototype.createMenuItems = function (container) {
-                        var self = this;
-                        _.forEach(self.items, function (item) {
-                            if (item.key !== "divider") {
-                                var menuClasses = "menu-item ";
-                                menuClasses += (item.enable === true) ? "" : "disabled ";
-                                menuClasses += (item.visible === true) ? "" : "hidden ";
-                                var menuItem = $("<li class='" + menuClasses + "'><span class='menu-icon " + item.icon + "'></span>" + item.text + "</li>")
-                                    .data("key", item.key)
-                                    .on("click", function () {
-                                    if (!$(this).hasClass("disabled")) {
-                                        item.handler(self.target);
-                                        container.hide();
-                                    }
-                                }).appendTo(container);
-                            }
-                            else {
-                                var menuItem = $("<li class='menu-item divider'></li>").appendTo(container);
-                            }
-                        });
-                    };
-                    return ContextMenu;
-                }());
-                contextmenu.ContextMenu = ContextMenu;
-                var ContextMenuItem = (function () {
-                    function ContextMenuItem(key, text, handler, icon, visible, enable) {
-                        this.key = key;
-                        this.text = text;
-                        this.handler = (handler !== undefined) ? handler : $.noop;
-                        this.icon = (icon) ? icon : "";
-                        this.visible = (visible !== undefined) ? visible : true;
-                        this.enable = (enable !== undefined) ? enable : true;
-                    }
-                    return ContextMenuItem;
-                }());
-                contextmenu.ContextMenuItem = ContextMenuItem;
-            })(contextmenu = ui_1.contextmenu || (ui_1.contextmenu = {}));
-            ui_1.confirmSave = function (dirtyChecker) {
+            })(dialog = ui.dialog || (ui.dialog = {}));
+            ui.confirmSave = function (dirtyChecker) {
                 var frame = windows.getSelf();
                 if (frame.$dialog === undefined || frame.$dialog === null) {
                     confirmSaveWindow(dirtyChecker);
@@ -3929,22 +3845,22 @@ var nts;
             function confirmSaveEnableDialog(beforeunloadHandler, dialog) {
                 dialog.on("dialogbeforeclose", beforeunloadHandler);
             }
-            ui_1.confirmSaveEnableDialog = confirmSaveEnableDialog;
+            ui.confirmSaveEnableDialog = confirmSaveEnableDialog;
             ;
             function confirmSaveDisableDialog(dialog) {
                 dialog.on("dialogbeforeclose", function () { });
             }
-            ui_1.confirmSaveDisableDialog = confirmSaveDisableDialog;
+            ui.confirmSaveDisableDialog = confirmSaveDisableDialog;
             ;
             function confirmSaveEnable(beforeunloadHandler) {
                 $(window).bind('beforeunload', beforeunloadHandler);
             }
-            ui_1.confirmSaveEnable = confirmSaveEnable;
+            ui.confirmSaveEnable = confirmSaveEnable;
             ;
             function confirmSaveDisable() {
                 $(window).unbind('beforeunload');
             }
-            ui_1.confirmSaveDisable = confirmSaveDisable;
+            ui.confirmSaveDisable = confirmSaveDisable;
             ;
             var block;
             (function (block) {
@@ -3986,7 +3902,7 @@ var nts;
                         left: left
                     };
                 }
-            })(block = ui_1.block || (ui_1.block = {}));
+            })(block = ui.block || (ui.block = {}));
             var DirtyChecker = (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
@@ -4003,7 +3919,7 @@ var nts;
                 };
                 return DirtyChecker;
             }());
-            ui_1.DirtyChecker = DirtyChecker;
+            ui.DirtyChecker = DirtyChecker;
             var ig;
             (function (ig) {
                 var grid;
@@ -4059,7 +3975,7 @@ var nts;
                         header.getLabel = getLabel;
                     })(header = grid.header || (grid.header = {}));
                 })(grid = ig.grid || (ig.grid = {}));
-            })(ig = ui_1.ig || (ui_1.ig = {}));
+            })(ig = ui.ig || (ui.ig = {}));
             var smallExtensions;
             (function (smallExtensions) {
                 $(function () {
@@ -4206,7 +4122,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_2) {
+        (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsCheckboxBindingHandler = (function () {
@@ -4216,6 +4132,7 @@ var nts;
                         var data = valueAccessor();
                         var setChecked = data.checked;
                         var textId = data.text;
+                        var style = "style-" + (data.style || "normal");
                         var checkBoxText;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
@@ -4225,8 +4142,10 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
+                        container.addClass(style);
                         container.data("tabindex", container.attr("tabindex"));
-                        container.wrap("<div class='checkbox-wrapper'/>");
+                        var wrapper = container.parent();
+                        wrapper.addClass(style);
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -4249,14 +4168,10 @@ var nts;
                             if (code === 32) {
                                 if (container.data("enable") !== false) {
                                     var checkbox = container.find("input[type='checkbox']:first");
-                                    if (checkbox.is(":checked")) {
-                                        checkbox.prop("checked", false);
-                                        setChecked(false);
-                                    }
-                                    else {
-                                        checkbox.prop("checked", true);
-                                        setChecked(true);
-                                    }
+                                    var checked = !checkbox.is(":checked");
+                                    checkbox.prop("checked", checked);
+                                    container[checked ? "addClass" : "removeClass"]("checked");
+                                    setChecked(checked);
                                 }
                                 evt.preventDefault();
                             }
@@ -4272,6 +4187,7 @@ var nts;
                         container.data("readonly", readonly);
                         var $checkBox = $(element).find("input[type='checkbox']");
                         $checkBox.prop("checked", checked);
+                        container[checked ? "addClass" : "removeClass"]("checked");
                         if (enable === true) {
                             $checkBox.removeAttr("disabled");
                             container.attr("tabindex", container.data("tabindex"));
@@ -4391,7 +4307,7 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-            })(koExtentions = ui_2.koExtentions || (ui_2.koExtentions = {}));
+            })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -4400,7 +4316,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_3) {
+        (function (ui_2) {
             var koExtentions;
             (function (koExtentions) {
                 var ComboBoxBindingHandler = (function () {
@@ -4424,8 +4340,8 @@ var nts;
                         var data = valueAccessor();
                         var self = this;
                         var options = ko.unwrap(data.options);
-                        var optionValue = ko.unwrap(data.optionsValue);
-                        var optionText = ko.unwrap(data.optionsText);
+                        var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
+                        var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
                         var enable = ko.unwrap(data.enable);
@@ -4437,8 +4353,11 @@ var nts;
                         var fillCharacter = ' ';
                         var maxWidthCharacter = 15;
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-                        if (_.find(options, function (item) { return item[optionValue] === selectedValue; }) === undefined && !editable) {
-                            selectedValue = options.length > 0 ? options[0][optionValue] : '';
+                        var getValue = function (item) {
+                            return optionValue === null ? item : item[optionValue];
+                        };
+                        if (_.find(options, function (item) { return getValue(item) === selectedValue; }) === undefined && !editable) {
+                            selectedValue = options.length > 0 ? getValue(options[0]) : '';
                             data.value(selectedValue);
                         }
                         var haveColumn = columns && columns.length > 0;
@@ -4460,7 +4379,7 @@ var nts;
                                     });
                                 }
                                 else {
-                                    newOptionText = option[optionText];
+                                    newOptionText = optionText === null ? option : option[optionText];
                                 }
                                 option['nts-combo-label'] = newOptionText;
                                 return option;
@@ -4498,7 +4417,7 @@ var nts;
                                 itemTemplate: itemTemplate,
                                 selectionChanged: function (evt, ui) {
                                     if (ui.items.length > 0) {
-                                        data.value(ui.items[0].data[optionValue]);
+                                        data.value(getValue(ui.items[0].data));
                                     }
                                 }
                             });
@@ -4541,7 +4460,7 @@ var nts;
                     return ComboBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
-            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
+            })(koExtentions = ui_2.koExtentions || (ui_2.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5584,7 +5503,7 @@ var nts;
                         $input.attr('placeholder', placeholder);
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
-                            $input.width(width, false);
+                            $input.width(width);
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
@@ -5741,10 +5660,12 @@ var nts;
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         _super.prototype.init.call(this, $input, data);
                         $input.focus(function () {
-                            var selectionType = document.getSelection().type;
-                            $input.val(data.value());
-                            if (selectionType === 'Range') {
-                                $input.select();
+                            if (!$input.attr('readonly')) {
+                                var selectionType = document.getSelection().type;
+                                $input.val(data.value());
+                                if (selectionType === 'Range') {
+                                    $input.select();
+                                }
                             }
                         });
                     };
@@ -5756,7 +5677,6 @@ var nts;
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                             $parent.css({ 'width': '100%' });
                         }
-                        $input.css("box-sizing", "border-box");
                         if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                             $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                             var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
@@ -6012,7 +5932,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_4) {
+        (function (ui_3) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsGridListBindingHandler = (function () {
@@ -6403,7 +6323,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
+            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6676,7 +6596,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_5) {
+        (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsRadioBoxBindingHandler = (function () {
@@ -6892,7 +6812,7 @@ var nts;
                 }
                 ko.bindingHandlers['ntsRadioButton'] = new NtsRadioBoxBindingHandler();
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
+            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6901,7 +6821,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_6) {
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 var SearchBox = (function () {
@@ -7062,21 +6982,15 @@ var nts;
                         $container.data("searchObject", searchObject);
                         var search = function (searchKey) {
                             if (targetMode) {
-                                var selectedItems = void 0, isMulti = void 0;
+                                var selectedItems = void 0;
                                 if (targetMode == 'igGrid') {
                                     if (component.length === 0) {
                                         component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                                     }
                                     selectedItems = component.ntsGridList("getSelected");
-                                    isMulti = component.igGridSelection('option', 'multipleSelection');
                                 }
                                 else if (targetMode == 'igTree') {
                                     selectedItems = component.ntsTreeView("getSelected");
-                                    isMulti = component.igTreeGridSelection('option', 'multipleSelection');
-                                }
-                                else if (targetMode == 'igTreeDrag') {
-                                    selectedItems = component.ntsTreeDrag("getSelected");
-                                    isMulti = component.ntsTreeDrag('option', 'isMulti');
                                 }
                                 var srh_1 = $container.data("searchObject");
                                 var result_1 = srh_1.search(searchKey, selectedItems);
@@ -7084,6 +6998,8 @@ var nts;
                                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
                                     return;
                                 }
+                                var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
+                                    : component.igTreeGridSelection('option', 'multipleSelection');
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
                                 var selectedValue = void 0;
                                 if (selectedKey !== null) {
@@ -7098,7 +7014,7 @@ var nts;
                                     if (searchMode === "filter") {
                                         $container.data("filteredSrouce", result_1.options);
                                         component.attr("filtered", true);
-                                        var source = _.filter(dataSource, function (item) {
+                                        var source = _.filter(data.items(), function (item) {
                                             return _.find(result_1.options, function (itemFilterd) {
                                                 return itemFilterd[primaryKey] === item[primaryKey];
                                             }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
@@ -7114,9 +7030,6 @@ var nts;
                                 }
                                 else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
-                                }
-                                else if (targetMode == 'igTreeDrag') {
-                                    component.ntsTreeDrag("setSelected", selectedProperties);
                                 }
                                 _.defer(function () {
                                     component.trigger("selectChange");
@@ -7177,7 +7090,7 @@ var nts;
                     return NtsSearchBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSearchBox'] = new NtsSearchBoxBindingHandler();
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7186,7 +7099,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsSwapListBindingHandler = (function () {
@@ -7947,7 +7860,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7956,7 +7869,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsSwitchButtonBindingHandler = (function () {
@@ -8080,7 +7993,7 @@ var nts;
                     return NtsSwitchButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8089,7 +8002,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_9) {
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 var TabPanelBindingHandler = (function () {
@@ -8158,7 +8071,7 @@ var nts;
                     return TabPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8219,7 +8132,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_10) {
+        (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsTreeGridViewBindingHandler = (function () {
@@ -8364,7 +8277,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
+            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8373,7 +8286,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_11) {
+        (function (ui_10) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsUpDownBindingHandler = (function () {
@@ -8617,7 +8530,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
+            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8763,6 +8676,264 @@ var nts;
                 }
                 ko.bindingHandlers['ntsLegendButton'] = new NtsLegentButtonBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var importSettingForm;
+            (function (importSettingForm) {
+                var ImportSettingForm = (function () {
+                    function ImportSettingForm(option) {
+                        this.defaultOption = {
+                            selector: ".import-setting-trigger",
+                            features: [
+                                { name: 'Encoding' }
+                            ],
+                            onClosed: $.noop()
+                        };
+                        this.isInit = false;
+                        this.EncodeTypes = [
+                            {
+                                value: 0,
+                                fieldName: "ShiftJIS",
+                                localizedName: "Shift-JIS"
+                            },
+                            {
+                                value: 1,
+                                fieldName: "UTF8",
+                                localizedName: "UTF-8"
+                            },
+                            {
+                                value: 2,
+                                fieldName: "UTF8BOM",
+                                localizedName: "UTF-8 BOM"
+                            },
+                        ];
+                        this.init(option);
+                    }
+                    ImportSettingForm.prototype.init = function (option) {
+                        var self = this;
+                        if (self.isInit === false) {
+                            var rootScreen = nts.uk.ui.windows.container.windows["MAIN_WINDOW"];
+                            var currentScreen = nts.uk.ui.windows.getSelf();
+                            var $rootBody = $(rootScreen.globalContext.document).find("body");
+                            self.isInit = true;
+                            self.option = $.extend({}, this.defaultOption, option);
+                            self.$dialog = $("<div id='" + nts.uk.util.randomId() + "'/>")
+                                .css({
+                                padding: '0px',
+                                overflow: 'hidden'
+                            })
+                                .appendTo($rootBody)
+                                .dialog({
+                                autoOpen: false,
+                                modal: true,
+                                width: 500,
+                                height: 400,
+                                closeOnEscape: false,
+                                open: function () {
+                                    self.result = undefined;
+                                },
+                                close: function (event) {
+                                    self.option.onClosed.call(this, self.result);
+                                }
+                            });
+                            var $dialogTemplate = $("<div class='import-setting-container'/>").append("<div id='functions-area-bottom'/>").append("<div class='import-setting-body'/>");
+                            self.buildEncodeType($dialogTemplate);
+                            var $proccedButton = $("<button class='x-large proceed'>決定</button>").on("click", function (event) {
+                                self.result = {
+                                    encodeType: self.getEncodeType(),
+                                    linebreakCode: null,
+                                    fileFormat: null,
+                                    includeHeader: null
+                                };
+                                self.$dialog.dialog("close");
+                            });
+                            var $closeButton = $("<button class='large'>キャンセル</button>").on("click", function (event) { self.$dialog.dialog("close"); });
+                            $dialogTemplate.find("#functions-area-bottom").append($proccedButton).append($closeButton);
+                            $dialogTemplate.appendTo(self.$dialog);
+                            $(self.option.selector).on("click.ImportSettingForm", self.show.bind(self));
+                        }
+                    };
+                    ImportSettingForm.prototype.destroy = function () {
+                        var self = this;
+                        if (self.isInit) {
+                            self.isInit = false;
+                            self.$dialog.dialog("destroy");
+                            $(self.option.selector).off("click.ImportSettingForm");
+                        }
+                    };
+                    ImportSettingForm.prototype.refresh = function (option) {
+                        this.destroy();
+                        this.init(option || this.option);
+                    };
+                    ImportSettingForm.prototype.show = function () {
+                        if (this.isInit)
+                            this.$dialog.dialog("open");
+                    };
+                    ImportSettingForm.prototype.hide = function () {
+                        if (this.isInit)
+                            this.$dialog.dialog("close");
+                    };
+                    ImportSettingForm.prototype.buildEncodeType = function ($dialogTemplate) {
+                        var self = this;
+                        self.$encodeTypeCombo = $("<div id='" + nts.uk.util.randomId() + "' class='encode-type'/>").appendTo($dialogTemplate.find(".import-setting-body"));
+                        self.$encodeTypeCombo.igCombo({
+                            visibleItemsCount: 5,
+                            dataSource: self.EncodeTypes,
+                            valueKey: "value",
+                            textKey: 'localizedName',
+                            mode: "dropdown",
+                            placeHolder: '',
+                            tabIndex: -1,
+                            enableClearButton: false
+                        });
+                        var dialogZindex = self.$dialog.closest(".ui-dialog").css("z-index");
+                        var $encodeTypeDropdown = self.$encodeTypeCombo.igCombo("dropDown").css("z-index", Number(dialogZindex) + 10);
+                    };
+                    ImportSettingForm.prototype.getEncodeType = function () {
+                        var self = this;
+                        var encodeType = _.find(self.EncodeTypes, function (item) {
+                            return item.value == self.$encodeTypeCombo.igCombo("value");
+                        });
+                        return encodeType;
+                    };
+                    return ImportSettingForm;
+                }());
+                importSettingForm.ImportSettingForm = ImportSettingForm;
+            })(importSettingForm = ui.importSettingForm || (ui.importSettingForm = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_11) {
+            var contextmenu;
+            (function (contextmenu) {
+                var ContextMenu = (function () {
+                    function ContextMenu(selector, items, enable) {
+                        this.selector = selector;
+                        this.items = items;
+                        this.enable = (enable !== undefined) ? enable : true;
+                        this.init();
+                    }
+                    ContextMenu.prototype.init = function () {
+                        var self = this;
+                        $('body .ntsContextMenu').each(function () {
+                            if ($(this).data("selector") === self.selector) {
+                                $("body").off("contextmenu", self.selector);
+                                $(this).remove();
+                            }
+                        });
+                        self.guid = nts.uk.util.randomId();
+                        var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
+                        self.createMenuItems($contextMenu);
+                        $('body').append($contextMenu);
+                        $("html").on("contextmenu", self.selector, function (event) {
+                            if (self.enable === true) {
+                                event.preventDefault();
+                                self.target = event.target;
+                                $contextMenu.show().position({
+                                    my: "left+2 top+2",
+                                    of: event,
+                                    collision: "fit"
+                                });
+                            }
+                        });
+                        $("html").on("mousedown", function (event) {
+                            if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
+                                $contextMenu.hide();
+                            }
+                        });
+                    };
+                    ContextMenu.prototype.destroy = function () {
+                        $("html").off("contextmenu", this.selector);
+                        $("#" + this.guid).remove();
+                    };
+                    ContextMenu.prototype.refresh = function () {
+                        this.destroy();
+                        this.init();
+                    };
+                    ContextMenu.prototype.getItem = function (target) {
+                        if (typeof target === "number") {
+                            return this.items[target];
+                        }
+                        else if (typeof target === "string") {
+                            return _.find(this.items, ["key", target]);
+                        }
+                        else {
+                            return undefined;
+                        }
+                    };
+                    ContextMenu.prototype.addItem = function (item) {
+                        this.items.push(item);
+                        this.refresh();
+                    };
+                    ContextMenu.prototype.removeItem = function (target) {
+                        var item = this.getItem(target);
+                        if (item !== undefined) {
+                            _.remove(this.items, item);
+                            this.refresh();
+                        }
+                    };
+                    ContextMenu.prototype.setEnable = function (enable) {
+                        this.enable = enable;
+                    };
+                    ContextMenu.prototype.setEnableItem = function (enable, target) {
+                        var item = this.getItem(target);
+                        item.enable = enable;
+                        this.refresh();
+                    };
+                    ContextMenu.prototype.setVisibleItem = function (visible, target) {
+                        var item = this.getItem(target);
+                        item.visible = visible;
+                        this.refresh();
+                    };
+                    ContextMenu.prototype.createMenuItems = function (container) {
+                        var self = this;
+                        _.forEach(self.items, function (item) {
+                            if (item.key !== "divider") {
+                                var menuClasses = "menu-item ";
+                                menuClasses += (item.enable === true) ? "" : "disabled ";
+                                menuClasses += (item.visible === true) ? "" : "hidden ";
+                                var menuItem = $("<li class='" + menuClasses + "'><span class='menu-icon " + item.icon + "'></span>" + item.text + "</li>")
+                                    .data("key", item.key)
+                                    .on("click", function () {
+                                    if (!$(this).hasClass("disabled")) {
+                                        item.handler(self.target);
+                                        container.hide();
+                                    }
+                                }).appendTo(container);
+                            }
+                            else {
+                                var menuItem = $("<li class='menu-item divider'></li>").appendTo(container);
+                            }
+                        });
+                    };
+                    return ContextMenu;
+                }());
+                contextmenu.ContextMenu = ContextMenu;
+                var ContextMenuItem = (function () {
+                    function ContextMenuItem(key, text, handler, icon, visible, enable) {
+                        this.key = key;
+                        this.text = text;
+                        this.handler = (handler !== undefined) ? handler : $.noop;
+                        this.icon = (icon) ? icon : "";
+                        this.visible = (visible !== undefined) ? visible : true;
+                        this.enable = (enable !== undefined) ? enable : true;
+                    }
+                    return ContextMenuItem;
+                }());
+                contextmenu.ContextMenuItem = ContextMenuItem;
+            })(contextmenu = ui_11.contextmenu || (ui_11.contextmenu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9840,75 +10011,55 @@ var nts;
                     NtsFileUploadBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var fileName = data.filename;
-                        var isLink = data.aslink;
-                        var suportedExtension = ko.unwrap(data.accept);
-                        var textId = ko.unwrap(data.text);
-                        var control = $(element);
-                        var onchange = data.onchange;
-                        var onfilenameclick = data.onfilenameclick;
-                        var fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
-                        var fileBrowserButton = $("<button class='browser-button' ></button>");
-                        var browserButtonText;
-                        if (textId) {
-                            browserButtonText = nts.uk.resource.getText(textId);
-                        }
-                        else {
-                            browserButtonText = "ファイルアップロード";
-                        }
-                        fileBrowserButton.text(browserButtonText);
-                        var fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
-                        var displayAsLink = false;
-                        if (isLink != undefined) {
-                            if (typeof isLink == 'function') {
-                                displayAsLink = isLink();
-                            }
-                            else {
-                                displayAsLink = isLink;
-                            }
-                        }
-                        if (displayAsLink) {
-                            fileNameLable.addClass("filename");
-                        }
-                        else {
-                            fileNameLable.addClass("standard-file-name");
-                        }
-                        var fileInput = $("<input style ='display:none;' type='file' class='fileinput'/>");
-                        if (suportedExtension) {
-                            fileInput.attr("accept", suportedExtension.toString());
-                        }
-                        fileuploadContainer.append(fileBrowserButton);
-                        fileuploadContainer.append(fileNameLable);
-                        fileuploadContainer.append(fileInput);
-                        fileuploadContainer.appendTo(control);
-                        fileBrowserButton.click(function () {
-                            fileInput.val(null);
+                        var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
+                        var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
+                        ;
+                        var container = $(element);
+                        var $fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
+                        var $fileBrowserButton = $("<button class='browser-button'></button>");
+                        var $fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
+                        var $fileInput = $("<input style='display:none;' type='file' class='fileinput'/>");
+                        $fileuploadContainer.append($fileBrowserButton);
+                        $fileuploadContainer.append($fileNameLable);
+                        $fileuploadContainer.append($fileInput);
+                        $fileuploadContainer.appendTo(container);
+                        $fileBrowserButton.click(function () {
+                            $fileInput.val(null);
+                            fileName("");
+                            $fileInput.click();
                         });
-                        fileInput.change(function () {
+                        $fileInput.change(function () {
                             var selectedFilePath = $(this).val();
                             var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
-                            if (fileName != undefined) {
-                                data.filename(getSelectedFileName);
-                            }
-                            fileNameLable.text(getSelectedFileName);
-                            if (typeof onchange == 'function') {
-                                onchange($(this).val());
-                            }
+                            fileName(getSelectedFileName);
+                            onchange(getSelectedFileName);
                         });
-                        fileBrowserButton.click(function () {
-                            fileInput.click();
+                        $fileNameLable.click(function () {
+                            onfilenameclick($(this).text());
                         });
-                        if (onfilenameclick) {
-                            fileNameLable.click(function () {
-                                onfilenameclick($(this).text());
-                            });
-                        }
                     };
                     NtsFileUploadBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var fileName = ko.unwrap(data.filename);
-                        var control = $(element);
-                        var fileNameLable = control.parent().find(".filenamelabel");
-                        fileNameLable.text(fileName);
+                        var accept = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
+                        var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
+                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "ファイルアップロード";
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var container = $(element);
+                        container.find("input[type='file']").attr("accept", accept.toString());
+                        var $fileNameLable = container.find(".filenamelabel");
+                        $fileNameLable.text(fileName);
+                        if (asLink == true) {
+                            $fileNameLable.addClass("hyperlink");
+                            $fileNameLable.removeClass("standard-file-name");
+                        }
+                        else {
+                            $fileNameLable.addClass("standard-file-name");
+                            $fileNameLable.removeClass("hyperlink");
+                        }
+                        var $fileBrowserButton = container.find(".browser-button");
+                        $fileBrowserButton.text(text);
+                        $fileBrowserButton.prop("disabled", !enable);
                     };
                     return NtsFileUploadBindingHandler;
                 }());
@@ -10259,27 +10410,6 @@ var nts;
                         return $treegrid;
                     }
                     function setupIgTreeScroll($control) {
-                        var id = $control.attr('id');
-                        $control.on("selectChange", function () {
-                            var selectedRows = $control.ntsTreeDrag("getSelected");
-                            if ($.isArray(selectedRows)) {
-                                selectedRows = selectedRows[0];
-                            }
-                            if (!nts.uk.util.isNullOrUndefined(selectedRows)) {
-                                $control.igTree("expandToNode", selectedRows.element);
-                                var index = _.findIndex($control.find("li"), function (e) {
-                                    return $(e).is(selectedRows.element);
-                                });
-                                if (index >= 0) {
-                                    var scrollTo_1 = index * 29;
-                                    var scrollTop = $control.scrollTop();
-                                    var height = $control.height();
-                                    if (scrollTo_1 < scrollTop || scrollTo_1 > scrollTop + height - 28) {
-                                        $control.scrollTop(scrollTo_1);
-                                    }
-                                }
-                            }
-                        });
                         return $control;
                     }
                 })(ntsSearchBox || (ntsSearchBox = {}));
@@ -13809,17 +13939,11 @@ var nts;
                             },
                             nodeCheckstateChanged: function (evt, ui) {
                                 if (ko.isObservable(data.selectedValues)) {
-                                    if (ui.newState === "on") {
+                                    if (ko.isObservable(data.selectedValues)) {
                                         var selectedNodes = $tree.igTree("checkedNodes");
                                         data.selectedValues(_.map(selectedNodes, function (s) {
                                             return s.data[optionsValue];
                                         }));
-                                    }
-                                    else {
-                                        _.remove(data.selectedValues(), function (val) {
-                                            return ui.node.data[optionsValue] === val;
-                                        });
-                                        data.selectedValues.valueHasMutated();
                                     }
                                 }
                             }
@@ -18138,6 +18262,76 @@ var nts;
         (function (ui) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
+                var accordion;
+                (function (accordion) {
+                    $.widget("ui.accordion", $.ui.accordion, {
+                        _create: function () {
+                            this["tabindex"] = this.element.attr("tabindex") ? this.element.attr("tabindex") : 0;
+                            this.element.removeAttr("tabindex");
+                            return this._super();
+                        },
+                        _refresh: function () {
+                            this._super();
+                            if (!this.active.length) {
+                                this.headers.eq(0).attr("tabIndex", this.tabindex);
+                            }
+                            else {
+                                this.active.attr({
+                                    tabIndex: this.tabindex
+                                });
+                            }
+                        },
+                        _toggle: function (data) {
+                            this._super(data);
+                            var toShow = data.newPanel;
+                            toShow.prev().attr({ tabIndex: this.tabindex });
+                        },
+                        _keydown: function (event) {
+                            if (event.altKey || event.ctrlKey) {
+                                return;
+                            }
+                            var keyCode = $.ui.keyCode, length = this.headers.length, currentIndex = this.headers.index(event.target), toFocus = false;
+                            switch (event.keyCode) {
+                                case keyCode.RIGHT:
+                                case keyCode.DOWN:
+                                    toFocus = this.headers[(currentIndex + 1) % length];
+                                    break;
+                                case keyCode.LEFT:
+                                case keyCode.UP:
+                                    toFocus = this.headers[(currentIndex - 1 + length) % length];
+                                    break;
+                                case keyCode.SPACE:
+                                case keyCode.ENTER:
+                                    this._eventHandler(event);
+                                    break;
+                                case keyCode.HOME:
+                                    toFocus = this.headers[0];
+                                    break;
+                                case keyCode.END:
+                                    toFocus = this.headers[length - 1];
+                                    break;
+                            }
+                            if (toFocus) {
+                                $(event.target).attr("tabIndex", -1);
+                                $(toFocus).attr("tabIndex", this.tabindex);
+                                $(toFocus).trigger("focus");
+                                event.preventDefault();
+                            }
+                        }
+                    });
+                })(accordion || (accordion = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
                 var ntsTreeView;
                 (function (ntsTreeView) {
                     var OUTSIDE_AUTO_SCROLL_SPEED = {
@@ -18188,63 +18382,6 @@ var nts;
                         $grid.igTreeGridSelection('clearSelection');
                     }
                 })(ntsTreeView || (ntsTreeView = {}));
-                var ntsTreeDrag;
-                (function (ntsTreeDrag) {
-                    $.fn.ntsTreeDrag = function (action, param) {
-                        var $tree = $(this);
-                        switch (action) {
-                            case 'getSelected':
-                                return getSelected($tree);
-                            case 'setSelected':
-                                return setSelected($tree, param);
-                            case 'deselectAll':
-                                return deselectAll($tree);
-                            case 'isMulti':
-                                return isMultiple($tree);
-                        }
-                    };
-                    function isMultiple($tree) {
-                        var isMulti = $tree.igTree("option", "checkboxMode") !== "off";
-                        return isMulti;
-                    }
-                    function getSelected($tree) {
-                        var isMulti = isMultiple($tree);
-                        if (isMulti) {
-                            var values = $tree.igTree("checkedNodes");
-                            _.forEach(values, function (e) {
-                                return e["id"] = e.data[e.binding.valueKey];
-                            });
-                            return values;
-                        }
-                        else {
-                            var value = $tree.igTree("selectedNode");
-                            value["id"] = value.data[value.binding.valueKey];
-                            return value;
-                        }
-                    }
-                    function setSelected($tree, selectedId) {
-                        deselectAll($tree);
-                        var isMulti = isMultiple($tree);
-                        if (isMulti) {
-                            if (!$.isArray(selectedId)) {
-                                selectedId = [selectedId];
-                            }
-                            selectedId.forEach(function (id) {
-                                var $node = $tree.igTree("nodesByValue", id);
-                                $tree.igTree("toggleCheckstate", $node);
-                            });
-                        }
-                        else {
-                            var $node = $tree.igTree("nodesByValue", selectedId);
-                            $tree.igTree("select", $node);
-                        }
-                    }
-                    function deselectAll($tree) {
-                        _.forEach($tree.igTree("checkedNodes"), function (node) {
-                            $tree.igTree("toggleCheckstate", node.element);
-                        });
-                    }
-                })(ntsTreeDrag || (ntsTreeDrag = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -18423,24 +18560,24 @@ var nts;
                 (function (ntsFileUpload) {
                     $.fn.ntsFileUpload = function (option) {
                         var dfd = $.Deferred();
-                        var file;
+                        var fileInput;
                         if ($(this).find("input[type='file']").length == 0) {
-                            file = $(this)[0].files;
+                            fileInput = $(this).get(0);
                         }
                         else {
-                            file = $(this).find("input[type='file']")[0].files;
+                            fileInput = $(this).find("input[type='file']").get(0);
                         }
-                        if (file) {
-                            var formData = new FormData();
-                            formData.append("stereotype", option.stereoType);
-                            formData.append("userfile", file[0]);
-                            formData.append("filename", file[0].name);
-                            if (file[0]) {
+                        if (fileInput !== undefined) {
+                            var file_2 = fileInput.files;
+                            if (file_2.length > 0) {
+                                var formData = new FormData();
+                                formData.append("stereotype", option.stereoType);
+                                formData.append("userfile", file_2[0]);
+                                formData.append("filename", file_2[0].name);
                                 return nts.uk.request.uploadFile(formData, option);
                             }
                             else {
                                 dfd.reject({ message: "please select file", messageId: "-1" });
-                                return dfd.promise();
                             }
                         }
                         else {
@@ -18477,8 +18614,6 @@ var nts;
                         var activate = (data.activate !== undefined) ? (data.activate) : function (event, ui) { };
                         var create = (data.create !== undefined) ? (data.create) : function (event, ui) { };
                         var container = $(element);
-                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
-                            container.attr("tabindex", "0");
                         container.accordion({
                             active: realActive,
                             animate: animate,
@@ -18540,4 +18675,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
