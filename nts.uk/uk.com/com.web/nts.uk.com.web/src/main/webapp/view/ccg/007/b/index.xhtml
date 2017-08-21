@@ -41,7 +41,7 @@
 											value: loginId,
 											required: false,
 											constraint: 'LoginId',
-											option: {textmode: 'text',width: '200px'}, 
+											option: {textmode: 'text',width: '222px'}, 
 											enable: true,
 											readonly: false}" />
 								</div></td>
@@ -59,15 +59,15 @@
 											value: password,
 											required: false,
 											constraint: 'RawPassword',
-											option: {textmode: 'password',width: '200px'},
+											option: {textmode: 'password',width: '222px'},
 											enable: true,
 											readonly: false}" />
 								</div></td>
 						</tr>
 						<tr>
-							<td><div tabindex="3"
+							<td><div class ="pad_5 align_right" tabindex="3"
 									data-bind="ntsCheckBox: { checked: isSaveLoginInfo}"></div></td>
-							<td><label data-bind="text: '#{i18n.getText('CCG007_5')}'"></label></td>
+							<td class="pad_5"><label data-bind="text: '#{i18n.getText('CCG007_5')}'"></label></td>
 						</tr>
 						<tr>
 							<td colspan="2" class="align_center"><div class="pad_5">

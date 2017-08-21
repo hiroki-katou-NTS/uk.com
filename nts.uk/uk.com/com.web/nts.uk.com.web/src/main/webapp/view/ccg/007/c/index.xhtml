@@ -37,7 +37,7 @@
 										name: '#{i18n.getText('CCG007_7')}',
 										value: companyCode,
 										required: false,
-										option: {textmode: 'text',width: '40px'},
+										option: {textmode: 'text',width: '50px'},
 										enable: true,
 										readonly: false}" />
 								</div></td>
@@ -47,14 +47,14 @@
 										data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_8')}',
 										value: employeeCode,
-										option: {textmode: 'text',width: '80px'},
+										option: {textmode: 'text',width: '100px'},
 										required: false,
 										enable: true,
 										readonly: false}" />
 								</div></td>
 						</tr>
 						<tr>
-							<td class="pad_5"><div
+							<td colspan="4" class="pad_5"><div
 									data-bind="text: '#{i18n.getText('CCG007_2')}'"></div></td>
 						</tr>
 						<tr>
@@ -65,7 +65,7 @@
 										name: '#{i18n.getText('CCG007_2')}',
 										value: password,
 										required: false,
-										option: {textmode: 'password',width: '200px'},
+										option: {textmode: 'password',width: '230px'},
 										enable: true,
 										readonly: false}" />
 								</div></td>
@@ -73,7 +73,7 @@
 						<tr>
 							<td class="pad_5 align_right"><div tabindex="4"
 									data-bind="ntsCheckBox: { checked: isSaveLoginInfo }"></div></td>
-							<td colspan="3"><label
+							<td colspan="3" class="pad_5"><label
 								data-bind="text: '#{i18n.getText('CCG007_5')}'"></label></td>
 						</tr>
 						<tr>
