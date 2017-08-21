@@ -124,7 +124,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         // Set tabindex.
                         self.isReflectionMethodEnable.subscribe(val => {
                             if (val) {
-                                $('#reflection-method-radio-group').attr('tabindex', '5');
+                                $('#reflection-method-radio-group').attr('tabindex', '8');
                             } else {
                                 $('#reflection-method-radio-group').attr('tabindex', '-1');
                             }
