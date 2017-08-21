@@ -1,17 +1,17 @@
 module nts.uk.at.view.kmf004.g.viewmodel {
     
     export class ScreenModel {
-        // list business type A2_2
-        lstGrantRelationship: KnockoutObservableArray<Relationship>;
+        // list grant relationship A2_2
+        lstGrantRelationship: KnockoutObservableArray<GrantRelationship>;
         // column in list
         gridListColumns: KnockoutObservableArray<any>;
         // selected code 
         selectedCode: KnockoutObservable<string>;
         // selected item
-        selectedOption: KnockoutObservable<Relationship>;    
+        selectedOption: KnockoutObservable<GrantRelationship>;    
         // binding to text box name A3_3
         selectedName: KnockoutObservable<string>;
-        // binding to text box code A3_2
+        // binding to text box code A3_2         
         codeObject: KnockoutObservable<string>;
         // check new mode or not
         check: KnockoutObservable<boolean>;
@@ -19,11 +19,14 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         checkUpdate: KnockoutObservable<boolean>;
         // check enable delete button
         checkDelete: KnockoutObservable<boolean>;
+        // check column
+        isAlreadySetting: KnockoutObservable<boolean>;
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KMF004_7"), key: 'relationshipCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KMF004_8"), key: 'relationshipName', width: 200, formatter: _.escape}
+                { headerText: nts.uk.resource.getText("KMF004_8"), key: 'relationshipName', width: 200, formatter: _.escape},
+                { headerText: nts.uk.resource.getText("KMF004_129"), width: 100 }
             ]);
             self.lstGrantRelationship = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -33,9 +36,10 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             self.codeObject = ko.observable("");
             self.checkUpdate = ko.observable(true);
             self.checkDelete = ko.observable(true);
+            self.
             self.selectedCode.subscribe((value) => {
                 if (value) {
-                    let foundItem = _.find(self.lstGrantRelationship(), (item: Relationship) => {
+                    let foundItem = _.find(self.lstGrantRelationship(), (item: GrantRelationship) => {
                         return item.relationshipCode == value;
                     });
                     self.checkUpdate(true);
@@ -53,7 +57,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         getData(): JQueryPromise<any>{
             let self = this;
             let dfd = $.Deferred();
-            service.findAll().done((lstData: Array<viewmodel.Relationship>) => {
+            service.findAll().done((lstData: Array<viewmodel.GrantRelationship>) => {
                 let sortedData = _.orderBy(lstData, ['relationshipCode'], ['asc']);
                 self.lstGrantRelationship(sortedData);
                 dfd.resolve();
@@ -89,7 +93,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             let self = this;
             let code = "";  
             $("#inpPattern").trigger("validate");
-            let updateOption = new Relationship(self.selectedCode(), self.selectedName()); 
+            let updateOption = new GrantRelationship(self.selectedCode(), self.selectedName()); 
             code = self.codeObject();
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
@@ -105,7 +109,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                     else{
                         code = self.codeObject();
                         self.selectedOption(null);
-                        let obj = new Relationship(self.codeObject(), self.selectedName());
+                        let obj = new GrantRelationship(self.codeObject(), self.selectedName());
                         // insert item to list
                         service.insert(obj).done(function(){
                             self.getData().done(function(){
@@ -189,12 +193,18 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         }
         
     }
-    export class Relationship{
-        relationshipCode: string;
-        relationshipName: string;  
-        constructor(relationshipCode: string, relationshipName: string){
-            this.relationshipCode = relationshipCode;
+    export class GrantRelationship{
+        specialHolidayCode: number;
+        relationshipName: string;
+        relationshipCode: string; 
+        grantRelationshipDay: number;
+        morningHour: number; 
+        constructor(specialHolidayCode: number, relationshipName: string, relationshipCode: string, grantRelationshipDay: number, morningHour: number){
+            this.specialHolidayCode = specialHolidayCode;
             this.relationshipName = relationshipName;
+            this.relationshipCode = relationshipCode;
+            this.grantRelationshipDay = grantRelationshipDay;
+            this.morningHour = morningHour;
         }
     }
 }
