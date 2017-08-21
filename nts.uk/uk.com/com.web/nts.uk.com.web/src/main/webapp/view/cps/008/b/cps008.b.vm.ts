@@ -43,9 +43,21 @@ module cps008.b.vm {
                 layout: ILayout = ko.toJS(self.layout);
             debugger;
             setShared("CPS008B_VALUE", layout.itemsClassification);
+            // check item tren man hinh
+            if (layout.itemsClassification.length == 0) {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getText('Msg_203'));
+                return;
+            }
+
+            for (let i = 0; i < layout.itemsClassification.length - 1; i++) {
+                if (JSON.stringify(layout.itemsClassification[i]) === JSON.stringify(layout.itemsClassification[i + 1])) {
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getText('Msg_289'));
+                    return;
+                }
+            }
+
             close();
 
-            //service.saveData(command);
         }
 
         close() {
