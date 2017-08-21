@@ -63,15 +63,15 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		Map<String, String> headers = new LinkedHashMap<>(); 
 		
 		LoginUserContext context = AppContexts.user();
-		String companyCode = context.companyCode();
-		String companyname = this.company.getCompanyByCode(companyCode)
+		String companyId = context.companyId();
+		String companyname = this.company.getCompany(companyId)
 				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
 		
 		String language = currentLanguage.getSessionLocale().getDisplayLanguage(); 
 		
 		String createReportDate = GeneralDateTime.now().localDateTime().format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"));
 		
-		headers.put("【会社】", companyCode + " " + companyname);
+		headers.put("【会社】", context.companyCode() + " " + companyname);
 		headers.put("【種類】", query.getDomainType());
 		headers.put("【日時】", createReportDate);
 		headers.put("【選択言語】 ", language);
