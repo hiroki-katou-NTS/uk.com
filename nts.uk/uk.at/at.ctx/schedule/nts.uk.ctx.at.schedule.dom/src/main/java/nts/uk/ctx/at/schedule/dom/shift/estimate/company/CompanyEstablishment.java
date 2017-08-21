@@ -29,4 +29,27 @@ public class CompanyEstablishment extends AggregateRoot{
 	/** The advanced setting. */
 	//詳細設定
 	private EstimateDetailSetting advancedSetting;
+	
+	
+	/**
+	 * Instantiates a new company establishment.
+	 *
+	 * @param memento the memento
+	 */
+	public CompanyEstablishment(CompanyEstablishmentGetMemento memento){
+		this.companyId = memento.getCompanyId();
+		this.targetYear = memento.getTargetYear();
+		this.advancedSetting = memento.getAdvancedSetting();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(CompanyEstablishmentSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setTargetYear(this.targetYear);
+		memento.setAdvancedSetting(this.advancedSetting);
+	}
 }
