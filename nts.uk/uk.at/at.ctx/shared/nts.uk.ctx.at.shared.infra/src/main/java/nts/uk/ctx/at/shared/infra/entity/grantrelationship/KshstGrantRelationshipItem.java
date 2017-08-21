@@ -30,7 +30,7 @@ public class KshstGrantRelationshipItem extends UkJpaEntity implements Serializa
 	public int grantRelationshipDay;
 	/* 喪主時加算日数 */
 	@Column(name = "MORNING_HOUR")
-	public int morningHour;
+	public Integer morningHour;
 	@Override
 	protected Object getKey() {
 		return kshstGrantRelationshipPK;

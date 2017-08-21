@@ -3796,6 +3796,15 @@ button.nts-switch-button[disabled]:hover {
   width: 30px;
 }
 
+/* line 1, ../sass/components/_importsettingform.scss */
+.import-setting-container {
+  height: 100%;
+}
+/* line 4, ../sass/components/_importsettingform.scss */
+.import-setting-container .import-setting-body {
+  padding: 25px 30px;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
@@ -3959,12 +3968,12 @@ button.nts-switch-button[disabled]:hover {
   top: 10px;
 }
 
-/* line 46, ../sass/base.scss */
+/* line 47, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 50, ../sass/base.scss */
+/* line 51, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

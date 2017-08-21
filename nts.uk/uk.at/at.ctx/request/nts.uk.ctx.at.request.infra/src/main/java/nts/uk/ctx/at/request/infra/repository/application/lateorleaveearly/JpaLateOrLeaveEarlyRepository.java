@@ -5,8 +5,8 @@ import java.util.Optional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
-import nts.uk.ctx.at.request.infra.entity.application.common.lateorleaveearly.KrqdtAppLateOrLeave;
-import nts.uk.ctx.at.request.infra.entity.application.common.lateorleaveearly.KrqdtAppLateOrLeavePK;
+import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
+import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
 
 public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements LateOrLeaveEarlyRepository {

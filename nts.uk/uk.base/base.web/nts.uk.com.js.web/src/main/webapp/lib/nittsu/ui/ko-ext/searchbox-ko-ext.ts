@@ -229,7 +229,7 @@ module nts.uk.ui.koExtentions {
                             component.attr("filtered", true);   
                             //selected(selectedValue);
                             //selected.valueHasMutated();
-                            let source = _.filter(dataSource, function (item: any){
+                            let source = _.filter(data.items(), function (item: any){
                                              return _.find(result.options, function (itemFilterd: any){
                                             return itemFilterd[primaryKey] === item[primaryKey];        
                                                 }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){

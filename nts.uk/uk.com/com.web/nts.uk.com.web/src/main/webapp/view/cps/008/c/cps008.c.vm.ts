@@ -40,7 +40,7 @@ module cps008.c.viewmodel {
                 }
                 return;
             } else if (layout.newCode == layout.code) {
-                nts.uk.ui.dialog.alert("#Msg355");
+                nts.uk.ui.dialog.alert(nts.uk.resource.getText('Msg_355'));
                 return;
             } else if (layout.newCode && layout.newName) {
                 setShared('CPS008C_RESPONE', { id: layout.id, code: layout.newCode, name: layout.newName, action: layout.overrideMode });

@@ -72,6 +72,18 @@ public class ExternalBudgetFinder {
 	}
 	
 	/**
+	 * Checks if is daily unit.
+	 *
+	 * @param externalBudgetCd the external budget cd
+	 * @return true, if is daily unit
+	 */
+	public boolean isDailyUnit(String externalBudgetCd) {
+        String companyId = AppContexts.user().companyId();
+        return this.externalBudgetRepo.findAll(companyId).stream()
+                .anyMatch(p -> p.getExternalBudgetCd().v().equals(externalBudgetCd) && p.getUnitAtr() == UnitAtr.DAILY);
+    }
+	
+	/**
 	 * Validate file.
 	 *
 	 * @param fileId the file id
