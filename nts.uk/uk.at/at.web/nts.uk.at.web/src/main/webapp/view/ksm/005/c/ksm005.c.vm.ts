@@ -87,7 +87,13 @@ module nts.uk.at.view.ksm005.c {
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
 
                 self.selectedCode.subscribe(function(employeeCode: string) {
-                    self.applySelectEmployeeCode(employeeCode);
+                    if (employeeCode) {
+                        self.applySelectEmployeeCode(employeeCode);
+                    }else {
+                        self.enableSave(false);
+                        self.enableDelete(false);
+                        self.enableSystemChange(false);    
+                    }
                 });
             }
             /**
@@ -227,10 +233,13 @@ module nts.uk.at.view.ksm005.c {
                 nts.uk.ui.windows.setShared("employeeId",self.selectedCode());
                 nts.uk.ui.windows.setShared("monthlyPatternCode",self.monthlyPatternCode);
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/f/index.xhtml").onClosed(function(){
-                    service.findByIdMonthlyPattern(nts.uk.ui.windows.getShared("monthlyPatternCode")).done(function(data){
-                        self.monthlyPatternCode = data.code;
-                        self.monthlyPatternSetting(data.code + ' ' + data.name);
-                    });
+                    var isCancel: boolean = nts.uk.ui.windows.getShared("isCancel");
+                    if (!isCancel) {
+                        service.findByIdMonthlyPattern(nts.uk.ui.windows.getShared("monthlyPatternCode")).done(function(data) {
+                            self.monthlyPatternCode = data.code;
+                            self.monthlyPatternSetting(data.code + ' ' + data.name);
+                        });
+                    }
                 });
             }
 
