@@ -3422,7 +3422,12 @@ button.nts-switch-button[disabled]:hover {
   color: gray;
 }
 
-/* line 18, ../sass/components/_ntsgrid.scss */
+/* line 17, ../sass/components/_ntsgrid.scss */
+.ui-iggrid .ui-iggrid-tablebody td {
+  height: 21px;
+}
+
+/* line 20, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,
@@ -3432,7 +3437,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: purple;
 }
 
-/* line 27, ../sass/components/_ntsgrid.scss */
+/* line 29, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-reflect,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-calc,
@@ -3444,7 +3449,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: green;
 }
 
-/* line 38, ../sass/components/_ntsgrid.scss */
+/* line 40, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
@@ -3458,7 +3463,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: orange;
 }
 
-/* line 51, ../sass/components/_ntsgrid.scss */
+/* line 53, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
@@ -3474,7 +3479,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: pink;
 }
 
-/* line 66, ../sass/components/_ntsgrid.scss */
+/* line 68, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-alarm,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
@@ -3492,7 +3497,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: yellow;
 }
 
-/* line 83, ../sass/components/_ntsgrid.scss */
+/* line 85, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-error,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error,
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-alarm,
@@ -3512,7 +3517,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: red;
 }
 
-/* line 102, ../sass/components/_ntsgrid.scss */
+/* line 104, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-error,
@@ -3534,12 +3539,12 @@ button.nts-switch-button[disabled]:hover {
   background-color: #007fff;
 }
 
-/* line 127, ../sass/components/_ntsgrid.scss */
+/* line 129, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
 }
 
-/* line 135, ../sass/components/_ntsgrid.scss */
+/* line 137, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }
