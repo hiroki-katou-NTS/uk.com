@@ -313,8 +313,8 @@ module nts.uk.at.view.kdl003.a {
              */
             private getWorkTimeName(workTimeCode: string): string {
                 let self = this;
-                let name: string = '';
-                if (self.listWorkTime()) {
+                let name = 'なし';
+                if (!nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                     let workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
                     name = workTime ? workTime.name : '';
                 }
