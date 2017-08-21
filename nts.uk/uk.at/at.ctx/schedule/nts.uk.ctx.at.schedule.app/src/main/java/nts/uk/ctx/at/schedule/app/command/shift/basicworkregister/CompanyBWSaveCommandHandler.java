@@ -24,6 +24,7 @@ public class CompanyBWSaveCommandHandler extends CommandHandler<CompanyBWSaveCom
 	/** The repository. */
 	@Inject
 	private CompanyBasicWorkRepository repository;
+	
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -33,7 +34,7 @@ public class CompanyBWSaveCommandHandler extends CommandHandler<CompanyBWSaveCom
 		
 		// Get Command
 		CompanyBWSaveCommand command = context.getCommand();
-	
+
 		// Find if exist
 		Optional<CompanyBasicWork> optional = this.repository.findAll(AppContexts.user().companyId());
 		

@@ -24,15 +24,16 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kmnmtWorkTypePK.workTypeCode IN :lstPossible";
 
+
+	private final String SELECT_BY_CID_DISPLAY_ATR = SELECT_FROM_WORKTYPE
+			+ " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
+			+ " AND c.displayAtr = :displayAtr ORDER BY c.sortOrder ASC";
+
 	private final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kmnmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0";
 
 	private final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE + " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
 			+ " AND c.deprecateAtr = 0";
-
-	private final String SELECT_BY_CID_DISPLAY_ATR = SELECT_FROM_WORKTYPE
-			+ " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
-			+ " AND c.displayAtr = :displayAtr ORDER BY c.sortOrder ASC";
 
 	private static WorkType toDomain(KmnmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kmnmtWorkTypePK.companyId,

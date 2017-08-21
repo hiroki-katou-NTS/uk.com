@@ -1,7 +1,6 @@
 module nts.uk.at.view.ksm005.f {
 
     import MonthlyPatternDto = service.model.MonthlyPatternDto;
-    import MonthlyPatternSettingDto = service.model.MonthlyPatternSettingDto;
     export module viewmodel {
 
         export class ScreenModel {
@@ -31,6 +30,9 @@ module nts.uk.at.view.ksm005.f {
                 var dfd = $.Deferred();
                 service.findAllMonthlyPattern().done(function(data) {
                     self.lstMonthlyPattern(data);
+                    if (!self.selectMonthlyPattern() && data && data.length > 0) {
+                        self.selectMonthlyPattern(data[0].code);
+                    }
                     dfd.resolve(self);
                 });
                 return dfd.promise();

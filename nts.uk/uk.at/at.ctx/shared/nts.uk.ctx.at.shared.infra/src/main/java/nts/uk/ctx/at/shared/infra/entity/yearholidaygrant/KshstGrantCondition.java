@@ -44,7 +44,7 @@ public class KshstGrantCondition extends UkJpaEntity {
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
         @JoinColumn(name = "YEAR_HOLIDAY_CD", referencedColumnName = "YEAR_HOLIDAY_CD", insertable = false, updatable = false)
     })
-	public KshstGrantHdTblSet yearHoliday;
+	public KshstGrantHdTblSet grantHdTblSet;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantCondition", orphanRemoval = true)
 	public List<KshstGrantHdTbl> yearHolidayGrants;

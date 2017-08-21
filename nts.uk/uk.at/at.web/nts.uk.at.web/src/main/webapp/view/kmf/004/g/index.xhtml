@@ -7,12 +7,15 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.grantrelationship.primitives.GrantRelationshipDay
+				nts.uk.ctx.at.shared.dom.grantrelationship.primitives.MorningHour
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />			
-			<com:stylefile path="kmf004.h.main.css" />
-			<com:scriptfile path="kmf004.h.start.js" />
-			<com:scriptfile path="kmf004.h.vm.js" />
-			<com:scriptfile path="kmf004.h.service.js" />
+			<com:stylefile path="kmf004.g.main.css" />
+			<com:scriptfile path="kmf004.g.start.js" />
+			<com:scriptfile path="kmf004.g.vm.js" />
+			<com:scriptfile path="kmf004.g.service.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
@@ -27,10 +30,10 @@
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div style="float: left; margin: 20px" >
 						<!-- H2_2: List -->
-						<table id="lstRelationship" tabindex="4" data-bind="ntsGridList: {								
+						<table id="lstGrantRelationship" tabindex="4" data-bind="ntsGridList: {								
 						height: 362,
-						options: lstRelationship,
-						optionsValue: 'relationshipCd',
+						options: lstGrantRelationship,
+						optionsValue: 'grantRelationshipCode',
 						columns: gridListColumns,
 						multiple: false,
 						value: selectedCode}"></table>
@@ -45,26 +48,30 @@
 						<tr class="row">
 							<td>
 								<!-- G3_1: Label -->
-								<div id="label1" data-bind="ntsFormLabel: {required: false, constraint:['RelationshipCode','RelationshipName'] }">#{i18n.getText('KMF004_9')}</div>
+								<div id="label1" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMF004_9')}</div>
 								<!-- G4_1: Label -->
-								<div id="label2" data-bind="ntsFormLabel: {required: true, constraint:['RelationshipCode','RelationshipName'] }">#{i18n.getText('KMF004_31')}</div>
+								<div id="label2" data-bind="ntsFormLabel: {required: true, constraint:['GrantRelationshipDay'] }">#{i18n.getText('KMF004_31')}</div>
 								<!-- G5_1: Label -->
-								<div id="label3" data-bind="ntsFormLabel: {required: false, constraint:['RelationshipCode','RelationshipName'] }">#{i18n.getText('KMF004_128')}</div>
+								<div id="label3" data-bind="ntsFormLabel: {required: false, constraint:['MorningHour'] }">#{i18n.getText('KMF004_128')}</div>
 							</td>
 							<td>
-								<!-- H3_2: Code -->
-								<input tabindex="5" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
+								<div><label id="code">a</label>
+								<label id="name">b</label></div>
+								<!-- G4_2: GRANT_RELATIONSHIP_DAYS -->
+								<div><input tabindex="5" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
 																												constraint: 'relationshipCd',
 																												required: true,
 																												name: '#[KMF004_10]',
 																												immediate: true,
-																												enable: check}"/>
-								<!-- H3_3: Name--> 
-								<input tabindex="6" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
+																												enable: check}"></input>
+								</div>
+								<!-- G5_2: MORNING_HOUR--> 
+								<div><input tabindex="6" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
 																												constraint: 'relationshipName',
 																												name: '#[KMF004_8]',
 																												required: true,
 																												enable: true}"/>
+								</div>																												
 							</td>
 						</tr>
 					</table>

@@ -50,7 +50,7 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 	public void update(BusinessFormatSheet businessFormatSheet) {
 		this.getEntityManager().createQuery(UPDATE_BY_KEY)
 				.setParameter("companyId", businessFormatSheet.getCompanyId())
-				.setParameter("businessTypeCode", businessFormatSheet.getBusinessTypeCode())
+				.setParameter("businessTypeCode", businessFormatSheet.getBusinessTypeCode().v())
 				.setParameter("sheetNo", businessFormatSheet.getSheetNo())
 				.setParameter("sheetName", businessFormatSheet.getSheetName()).executeUpdate();
 	}

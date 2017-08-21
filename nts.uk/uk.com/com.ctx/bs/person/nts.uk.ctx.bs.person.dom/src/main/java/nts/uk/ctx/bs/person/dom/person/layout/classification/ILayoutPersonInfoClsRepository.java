@@ -12,4 +12,6 @@ public interface ILayoutPersonInfoClsRepository {
 	void removeAllByLayoutId(String layoutId);
 
 	void addClassifications(List<LayoutPersonInfoClassification> domains);
+	
+	boolean checkExitItemCls( String layoutId);
 }

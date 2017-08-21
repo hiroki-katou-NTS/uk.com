@@ -10,18 +10,22 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * delete relationship command handler
+ * @author yennth
+ *
+ */
 @Stateless
 public class DeleteRelationshipCommandHandler extends CommandHandler<DeleteRelationshipCommand>{
-	@Inject
+	@Inject	
 	private RelationshipRepository relaRep;
 	@Override
 	protected void handle (CommandHandlerContext<DeleteRelationshipCommand> context){
 		String companyId = AppContexts.user().companyId();
-		Optional<Relationship> relationshipOld = relaRep.getByCode(companyId, context.getCommand().getRelationshipCd());
+		Optional<Relationship> relationshipOld = relaRep.findByCode(companyId, context.getCommand().getRelationshipCode());
 		if(!relationshipOld.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}
-		relaRep.deleteRelationship(companyId, context.getCommand().getRelationshipCd());
+		relaRep.delete(companyId, context.getCommand().getRelationshipCode());
 	}
 }

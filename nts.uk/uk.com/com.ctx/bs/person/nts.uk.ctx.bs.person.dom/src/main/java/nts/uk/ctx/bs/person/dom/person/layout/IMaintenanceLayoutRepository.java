@@ -19,7 +19,7 @@ public interface IMaintenanceLayoutRepository {
 	void remove(MaintenanceLayout maintenanceLayout);
 
 	boolean checkExit(String cpmpanyId, String layoutCode);
-
+	
 	List<MaintenanceLayout> getAllMaintenanceLayout(String cid);
 
 	Optional<MaintenanceLayout> getById(String cid, String id);

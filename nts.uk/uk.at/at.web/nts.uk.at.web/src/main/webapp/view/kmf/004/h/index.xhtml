@@ -24,7 +24,7 @@
 				<!-- H1_2: Button Registration -->
 				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<!-- H1_3: Button Delete -->
-				<button tabindex="3" id="btn_003" class="button danger separate-button fix-button" data-bind="enable:lstRelationship().length>0, click: remove" >#{i18n.getText('KMF004_3')}</button>
+				<button tabindex="3" id="btn_003" class="button danger separate-button fix-button" data-bind="enable: checkDelete, click: remove" >#{i18n.getText('KMF004_3')}</button>
 				<!-- H1_4: Button close -->
 				<button tabindex="4" id="btn_004" class="button separate-button fix-button"  data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
 			</div>
@@ -35,7 +35,7 @@
 						<table id="lstRelationship" tabindex="4" data-bind="ntsGridList: {								
 						height: 362,
 						options: lstRelationship,
-						optionsValue: 'relationshipCd',
+						optionsValue: 'relationshipCode',
 						columns: gridListColumns,
 						multiple: false,
 						value: selectedCode}"></table>
@@ -55,14 +55,14 @@
 							<td>
 								<!-- H3_2: Code -->
 								<input tabindex="5" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
-																												constraint: 'relationshipCd',
+																												constraint: 'RelationshipCode',
 																												required: true,
 																												name: '#[KMF004_10]',
 																												immediate: true,
 																												enable: check}"/>
 								<!-- H3_3: Name--> 
 								<input tabindex="6" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
-																												constraint: 'relationshipName',
+																												constraint: 'RelationshipName',
 																												name: '#[KMF004_8]',
 																												required: true,
 																												enable: true}"/>
