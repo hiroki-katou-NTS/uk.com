@@ -21,7 +21,6 @@ import nts.uk.shr.infra.file.report.masterlist.annotation.NamedAnnotation;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterListHeaderColumns;
 import nts.uk.shr.infra.file.report.masterlist.generator.MasterListExportSource;
 import nts.uk.shr.infra.file.report.masterlist.generator.MasterListReportGenerator;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
@@ -45,9 +44,8 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		
 		try {
 			MasterListData domainData = CDI.current().select(MasterListData.class, new NamedAnnotation(query.getDomainId())).get();
-			MasterListHeaderColumns headerColumns = CDI.current().select(MasterListHeaderColumns.class, new NamedAnnotation(query.getDomainId())).get();
 			
-			List<MasterHeaderColumn> columns = headerColumns.getHeaderColumns();
+			List<MasterHeaderColumn> columns = domainData.getHeaderColumns();
 			List<MasterData> datas = domainData.getMasterDatas();
 			Map<String, String> headers = this.getHeaderInfor(query);
 			

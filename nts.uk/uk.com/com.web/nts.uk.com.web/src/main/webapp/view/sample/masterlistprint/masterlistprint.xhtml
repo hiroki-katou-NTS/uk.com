@@ -26,25 +26,33 @@
 						
 						<h3>Below are steps for init master list:</h3>
 						<ul>
-							<li><b>Implement interface MasterListHeaderColumns</b>: return list attributes of master list and style of this as column.</li>
-							<li><b>Implement interface MasterListData</b>: return list datas of master list and from them, kiban will draw table master list.</li>
-							<li><b>Call print master list web service</b>: call web service for print master list.</li>
+							<li><h4>Implement interface for get data to print:</h4>
+								<ul>
+									<li><h5>Implement interface MasterListHeaderColumns</h5>
+										<i>(return list attributes of master list and style of this as column.)</i></li>
+									<li><h5>Implement interface MasterListData</h5>
+										<i>(return list datas of master list and from them, kiban will draw table master list.)</i></li>
+								</ul>
+							</li>
+							<li><h4>Call print master list web service</h4> 
+								<i>(call web service for print master list.)</i></li>
 						</ul>
 						
 						<h3>Below are detail guide for each steps:</h3>
 						
 						<div class="feature-box">
-							<div class="header"><h3>Implement interface MasterListHeaderColumns</h3></div>
+							<div class="header"><h3>Implement interface for get datas</h3></div>
 							<div class="content">
 								<ul>
 									<li>Create a class for implement interface MasterListHeaderColumns</li>
 									<li>Attach annotation @Stateless at top of class declaration</li>
 									<li>Attach annotation @DomainID at top of class declaration and pass domain id corresponding to master list.</li>
 									<li>Override method getHeaderColumns for return attributes of master and style for them.</li>
+									<li>Override method getMasterDatas for return master list datas.</li>
 								</ul>
 <pre><![CDATA[@Stateless
 @DomainID(value = "TestMasterList") 
-public class TestMasterListColumnImpl implements MasterListHeaderColumns{
+public class TestMasterListExportImpl implements MasterListData {
 	
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns() {
@@ -59,41 +67,19 @@ public class TestMasterListColumnImpl implements MasterListHeaderColumns{
 		
 		return columns;
 	}
-
-}]]></pre>
-							</div>
-						</div>
-						
-						<div class="feature-box">
-							<div class="header"><h3>Implement interface MasterListData</h3></div>
-							<div class="content">
-							<ul>
-									<li>Create a class for implement interface MasterListData</li>
-									<li>Attach annotation @Stateless at top of class declaration</li>
-									<li>Attach annotation @DomainID at top of class declaration and pass domain id corresponding to master list.</li>
-									<li>Override method getMasterDatas for return master list datas.</li>
-								</ul>
-<pre><![CDATA[@Stateless
-@DomainID(value = "TestMasterList") 
-public class TestMasterListExportImpl implements MasterListData{
-
+	
 	@Override
-	public List<MasterData> getMasterDatas() {
-		List<MasterData> datas = new ArrayList<>();
+	public List<MasterHeaderColumn> getHeaderColumns() {
+		List<MasterHeaderColumn> columns = new ArrayList<>();
 		
 		int i = 1;
-		Random random = new Random();
-		while (i <= 20) {
-			int j = 1;
-			Map<String, Object> data = new HashMap<>();
-			while (j <= 100){
-				data.put("Column " + j, random.nextInt(1000) + 1);
-				j++;
-			}
-			datas.add(new MasterData(data, null, ""));
+		
+		while (i <= 100) {
+			columns.add(new MasterHeaderColumn("Column " + i, "", ColumnTextAlign.CENTER, "", true));
 			i++;
 		}
-		return datas;
+		
+		return columns;
 	}
 
 }]]></pre>
