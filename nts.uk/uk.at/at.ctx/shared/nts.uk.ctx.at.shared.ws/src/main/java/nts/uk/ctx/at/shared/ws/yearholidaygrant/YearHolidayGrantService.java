@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.app.find.yearholidaygrant.YearHolidayGrantFinder;
 /**
  * The Class YearHolidayGrantService.
  */
-
 @Path("at/share/yearholidaygrant")
 @Produces("application/json")
 public class YearHolidayGrantService extends WebService {
