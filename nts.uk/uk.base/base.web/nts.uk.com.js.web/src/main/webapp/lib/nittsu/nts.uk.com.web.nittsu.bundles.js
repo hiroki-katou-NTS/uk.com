@@ -11115,7 +11115,9 @@ var nts;
                     (function (functions) {
                         functions.UPDATE_ROW = "updateRow";
                         functions.ENABLE_CONTROL = "enableNtsControlAt";
+                        functions.ENABLE_ALL_CONTROL = "enableNtsControl";
                         functions.DISABLE_CONTROL = "disableNtsControlAt";
+                        functions.DISABLE_ALL_CONTROL = "disableNtsControl";
                         functions.DIRECT_ENTER = "directEnter";
                         function ntsAction($grid, method, params) {
                             switch (method) {
@@ -11126,8 +11128,14 @@ var nts;
                                 case functions.ENABLE_CONTROL:
                                     enableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
+                                case functions.ENABLE_ALL_CONTROL:
+                                    enableNtsControl($grid, params[0], params[1]);
+                                    break;
                                 case functions.DISABLE_CONTROL:
                                     disableNtsControlAt($grid, params[0], params[1], params[2]);
+                                    break;
+                                case functions.DISABLE_ALL_CONTROL:
+                                    disableNtsControl($grid, params[0], params[1]);
                                     break;
                                 case functions.DIRECT_ENTER:
                                     var direction = $grid.data(internal.ENTER_DIRECT);
@@ -11142,6 +11150,12 @@ var nts;
                             }
                         }
                         functions.ntsAction = ntsAction;
+                        function enableNtsControl($grid, columnKey, controlType) {
+                            var datasource = $grid.igGrid("option", "dataSource");
+                            for (var i = 0; i <= datasource.length; i++) {
+                                enableNtsControlAt($grid, i, columnKey, controlType);
+                            }
+                        }
                         function updateRow($grid, rowId, object, autoCommit) {
                             updating.updateRow($grid, rowId, object, undefined, true);
                             if (!autoCommit) {
@@ -11149,6 +11163,12 @@ var nts;
                                 $grid.igGrid("commit");
                                 if (updatedRow !== undefined)
                                     $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
+                            }
+                        }
+                        function disableNtsControl($grid, columnKey, controlType) {
+                            var datasource = $grid.igGrid("option", "dataSource");
+                            for (var i = 0; i <= datasource.length; i++) {
+                                disableNtsControlAt($grid, i, columnKey, controlType);
                             }
                         }
                         function disableNtsControlAt($grid, rowId, columnKey, controlType) {
@@ -12890,8 +12910,6 @@ var nts;
                         function setGridSize($grid) {
                             var height = window.innerHeight;
                             var width = window.innerWidth;
-                            $grid.igGrid("option", "width", width - 240);
-                            $grid.igGrid("option", "height", height - 90);
                         }
                         settings.setGridSize = setGridSize;
                     })(settings || (settings = {}));
