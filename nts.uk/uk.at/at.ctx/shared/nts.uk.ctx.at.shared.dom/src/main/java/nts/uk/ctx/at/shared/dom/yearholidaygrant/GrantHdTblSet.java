@@ -3,6 +3,9 @@ package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -13,7 +16,7 @@ import nts.uk.shr.com.primitive.Memo;
  */
 
 @Getter
-public class GrantHdTblSet {
+public class GrantHdTblSet extends AggregateRoot {
 	/* 会社ID */
 	private String companyId;
 
@@ -24,24 +27,70 @@ public class GrantHdTblSet {
 	private YearHolidayName yearHolidayName;
 
 	/* 計算方法 */
-	private int calculationMethod;
+	private CalculationMethod calculationMethod;
 
 	/* 計算基準 */
-	private int standardCalculation;
+	private StandardCalculation standardCalculation;
 
 	/* 一斉付与を利用する */
-	private int useSimultaneousGrant;
+	private UseSimultaneousGrant useSimultaneousGrant;
 
 	/* 一斉付与日 */
-	private int simultaneousGrandMonthDays;
+	private Integer simultaneousGrandMonthDays;
 
 	/* 備考 */
 	private Memo yearHolidayNote;
 	
 	private List<GrantCondition> grantConditions;
-
-	public GrantHdTblSet(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName, int calculationMethod,
-			int standardCalculation, int useSimultaneousGrant, int simultaneousGrandMonthDays, Memo yearHolidayNote, List<GrantCondition> grantConditions) {
+	
+	@Override
+	public void validate() {
+		super.validate();
+		
+		// 一斉付与を利用する」がTRUEの場合は必ず一斉付与日を登録すること
+		if (UseSimultaneousGrant.USE.equals(this.useSimultaneousGrant) && this.simultaneousGrandMonthDays == null) {
+			throw new BusinessException("Msg_261");
+		}
+				
+		// 付与日数の計算対象」が「出勤率」の場合、条件値<=100
+		if(CalculationMethod.WORKING_DAY.equals(this.calculationMethod)){
+			for (GrantCondition grantCondition : grantConditions) {
+				if(grantCondition.getConditionValue().v() > 100){
+					throw new BusinessException("Msg_262");
+				}
+			}
+		}
+				
+		for(int i=0; i<this.grantConditions.size(); i++) {
+			if (i == 0) {
+				continue;
+			}
+			
+			GrantCondition currentCondition = this.grantConditions.get(i);
+			
+			// 利用区分がTRUEの付与条件は、選択されている計算方法の条件値が入力されていること
+			if (currentCondition.getUseConditionAtr() == UseConditionAtr.USE && currentCondition.getConditionValue() == null) {
+				throw new BusinessException("Msg_271");
+			}
+			
+			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
+			if(CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)){
+				if(currentCondition.getConditionValue().v() > 366){
+					throw new BusinessException("Msg_263");
+				}
+			}
+			
+			// 条件NO：1、条件値　>　条件NO：2、条件値　>　条件NO：3、条件値　>　条件NO：4、条件値　>　条件NO：5、条件値　		
+			int firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
+			int secondValue = currentCondition.getConditionValue().v();
+			if (firstValue <= secondValue) {
+				throw new BusinessException("Msg_264");
+			}
+		}
+	}
+	
+	public GrantHdTblSet(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName, CalculationMethod calculationMethod,
+			StandardCalculation standardCalculation, UseSimultaneousGrant useSimultaneousGrant, int simultaneousGrandMonthDays, Memo yearHolidayNote, List<GrantCondition> grantConditions) {
 
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
@@ -52,5 +101,17 @@ public class GrantHdTblSet {
 		this.simultaneousGrandMonthDays = simultaneousGrandMonthDays;
 		this.yearHolidayNote = yearHolidayNote;
 		this.grantConditions = grantConditions;
+	}
+
+	public static GrantHdTblSet createFromJavaType(String companyId, String yearHolidayCode, String yearHolidayName, int calculationMethod,
+			int standardCalculation, int useSimultaneousGrant, int simultaneousGrandMonthDays, String yearHolidayNote, List<GrantCondition> grantConditions) {
+		return new GrantHdTblSet(companyId, 
+				new YearHolidayCode(yearHolidayCode), 
+				new YearHolidayName(yearHolidayName), 
+				EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class), 
+				EnumAdaptor.valueOf(standardCalculation, StandardCalculation.class), 
+				EnumAdaptor.valueOf(useSimultaneousGrant, UseSimultaneousGrant.class), 
+				simultaneousGrandMonthDays, 
+				new Memo(yearHolidayNote), grantConditions);
 	}
 }

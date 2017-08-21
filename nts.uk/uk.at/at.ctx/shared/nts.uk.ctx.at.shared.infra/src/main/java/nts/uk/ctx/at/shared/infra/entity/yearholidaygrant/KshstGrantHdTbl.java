@@ -68,4 +68,18 @@ public class KshstGrantHdTbl extends UkJpaEntity {
 		return kshstGrantHdTblPK;
 	}
 
+	public KshstGrantHdTbl(KshstGrantHdTblPK kshstGrantHdTblPK, int grantDays, int limitedTimeHdDays,
+			int limitedHalfHdCnt, int lengthOfServiceMonths, int lengthOfServiceYears, int grantReferenceDate,
+			int grantSimultaneity) {
+		super();
+		this.kshstGrantHdTblPK = kshstGrantHdTblPK;
+		this.grantDays = grantDays;
+		this.limitedTimeHdDays = limitedTimeHdDays;
+		this.limitedHalfHdCnt = limitedHalfHdCnt;
+		this.lengthOfServiceMonths = lengthOfServiceMonths;
+		this.lengthOfServiceYears = lengthOfServiceYears;
+		this.grantReferenceDate = grantReferenceDate;
+		this.grantSimultaneity = grantSimultaneity;
+	}
+	
 }

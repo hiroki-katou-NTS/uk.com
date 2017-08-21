@@ -3,9 +3,6 @@ module nts.uk.at.view.ksm003.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            if(screenModel.itemLst().length <= 0) {
-               $("#inpCode").focus(); 
-            }
         });
     });
 }

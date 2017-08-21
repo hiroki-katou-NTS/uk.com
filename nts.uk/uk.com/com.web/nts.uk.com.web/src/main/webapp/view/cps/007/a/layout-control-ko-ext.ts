@@ -299,7 +299,7 @@ module nts.custombinding {
                         <div data-bind="ntsDatePicker: {
                                     value: ko.observable(undefined), 
                                     dateFormat: 'YYYY/MM/DD',
-                                    enable: true,
+                                    enable: false,
                                     readonly: true }, attr: { title: $data.itemName }"></div>
                     </div>
                     <div data-bind="if: $data.info.dataTypeValue == 4" class="time">
@@ -402,10 +402,12 @@ module nts.custombinding {
                 value: ko.observable(0),
                 options: ko.observableArray([{
                     id: CAT_OR_GROUP.CATEGORY,
-                    name: text('CPS007_6')
+                    name: text('CPS007_6'),
+                    enable: ko.observable(true)
                 }, {
                         id: CAT_OR_GROUP.GROUP,
-                        name: text('CPS007_7')
+                        name: text('CPS007_7'),
+                        enable: ko.observable(true)
                     }]),
                 optionsValue: 'id',
                 optionsText: 'name'
@@ -595,13 +597,16 @@ module nts.custombinding {
 
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     services.getCats().done((data: any) => {
-                        if (data && data.categoryList) {
+                        if (data && data.categoryList && data.categoryList.length) {
                             opts.comboxbox.options(data.categoryList);
                             if (opts.comboxbox.value() == data.categoryList[0].id) {
                                 opts.comboxbox.value.valueHasMutated();
                             } else {
                                 opts.comboxbox.value(data.categoryList[0].id);
                             }
+                        } else {
+                            // show message if hasn't any category
+                            alert(text('Msg_288'));
                         }
                     });
                 } else { // get item by group
@@ -685,6 +690,13 @@ module nts.custombinding {
                     $(ctrls.button).prop('disabled', true);
                 } else {
                     $(ctrls.button).prop('disabled', false);
+                }
+            });
+
+            // disable group if not has any group
+            services.getGroups().done((data: Array<any>) => {
+                if (!data || !data.length) {
+                    opts.radios.options().filter(x => x.id == CAT_OR_GROUP.GROUP).forEach(x => x.enable(false));
                 }
             });
 

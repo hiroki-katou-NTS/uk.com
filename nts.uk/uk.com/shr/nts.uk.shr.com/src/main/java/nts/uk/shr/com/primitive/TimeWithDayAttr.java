@@ -1,12 +1,8 @@
 package nts.uk.shr.com.primitive;
 
-import java.lang.reflect.Constructor;
-import java.util.Optional;
+import org.apache.http.annotation.Obsolete;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.LongPrimitiveValue;
-import nts.arc.primitive.PrimitiveValueConstraintException;
-import nts.arc.primitive.TimePrimitiveValue;
 import nts.arc.primitive.constraint.LongRange;
 import nts.gul.util.Time;
 import nts.uk.shr.com.enumcommon.DayAttr;
@@ -15,33 +11,58 @@ import nts.uk.shr.com.enumcommon.DayAttr;
 @LongRange(max = 4319, min = -720)
 public class TimeWithDayAttr extends IntegerPrimitiveValue<TimeWithDayAttr>{
 	
-	private final DayAttr dayDivision; 
+	private static final int MAX_MINUTES_IN_DAY = Time.MAX_HOUR * Time.MAX_MS;
+
+	/** 12:00 at the previous day */
+	public static final TimeWithDayAttr THE_PREVIOUS_DAY_1200 = new TimeWithDayAttr(-12 * Time.MAX_MS);
 	
-	private final int time; 
+	/** 00:00 at the present day */
+	public static final TimeWithDayAttr THE_PRESENT_DAY_0000 = new TimeWithDayAttr(0);
+	
+	/** 00:00 at the next day */
+	public static final TimeWithDayAttr THE_NEXT_DAY_0000 = new TimeWithDayAttr(1 * MAX_MINUTES_IN_DAY);
+	
+	/** 00:00 at two days later */
+	public static final TimeWithDayAttr TWO_DAYS_LATER_0000 = new TimeWithDayAttr(2 * MAX_MINUTES_IN_DAY);
+	
+	/** 23:59 at two days later */
+	public static final TimeWithDayAttr TWO_DAYS_LATER_2359 = new TimeWithDayAttr(3 * MAX_MINUTES_IN_DAY - 1);
 	
 	private static final long serialVersionUID = 1L;
 
 	public TimeWithDayAttr(int rawValue) {
 		super(rawValue);
-		if (rawValue < 0){
-			dayDivision = DayAttr.THE_PREVIOUS_DAY;
-			time = Math.abs(rawValue);
-		} else {
-			dayDivision = checkDayDivision(rawValue);
-			time = getTimeDuration(rawValue);
-		}
 	}
 	
 	public DayAttr getDayDivision (){
-		return this.dayDivision;
+		
+		if (this.v() >= TWO_DAYS_LATER_0000.v()) {
+			return DayAttr.TWO_DAY_LATER;
+		}
+		if (this.v() >= THE_NEXT_DAY_0000.v()) {
+			return DayAttr.THE_NEXT_DAY;
+		}
+		if (this.v() >= THE_PRESENT_DAY_0000.v()) {
+			return DayAttr.THE_PRESENT_DAY;
+		}
+		
+		return DayAttr.THE_PREVIOUS_DAY;
 	}
 	
 	public int getDayTime(){
-		return time;
+		return (this.v() + MAX_MINUTES_IN_DAY) % MAX_MINUTES_IN_DAY;
+	}
+	
+	/**
+	 * Returns value as minutes integer.
+	 * @return value as minutes integer
+	 */
+	public int valueAsMinutes() {
+		return this.v();
 	}
 	
 	public String getInDayTimeWithFormat(){
-		return (time / 60) + ":" + (time % 60);
+		return this.hour() + ":" + this.minute();
 	}
 	
 	public String getRawTimeWithFormat(){
@@ -49,11 +70,11 @@ public class TimeWithDayAttr extends IntegerPrimitiveValue<TimeWithDayAttr>{
 	}
 	
 	public int hour() {
-		return Time.getHour(this.time).intValue();
+		return this.getDayTime() / 60;
 	}
 
 	public int minute() {
-		return Time.getMinute(this.time).intValue();
+		return this.getDayTime() % 60;
 	}
 
 	public TimeWithDayAttr addHours(int hours) {
@@ -72,29 +93,20 @@ public class TimeWithDayAttr extends IntegerPrimitiveValue<TimeWithDayAttr>{
 		return addTime(-minutes, 1);
 	}
 	
-	private TimeWithDayAttr addTime(int value, int unitValue){
-		int newValue = this.v() + value * unitValue;
+	/**
+	 * Returns shifted time instance but min="12:00 at previous day" max="23:59 at two days later".
+	 * @param minutesToShift
+	 * @return shifted time instance
+	 */
+	public TimeWithDayAttr shiftWithLimit(int minutesToShift) {
+		int newValue = this.v() + minutesToShift;
+		newValue = Math.max(newValue, THE_PREVIOUS_DAY_1200.valueAsMinutes());
+		newValue = Math.min(newValue, TWO_DAYS_LATER_2359.valueAsMinutes());
 		return new TimeWithDayAttr(newValue);
 	}
 	
-	private int getTimeDuration(int value){
-		if(this.dayDivision == DayAttr.THE_PRESENT_DAY){
-			return value;
-		}
-		return value - (this.dayDivision.value -1) * Time.MAX_HOUR * Time.MAX_MS;
-	}
-
-	private DayAttr checkDayDivision(int value) {
-		int days = value / (Time.MAX_HOUR*Time.MAX_MS);
-		switch (days) {
-			case 0:
-				return DayAttr.THE_PRESENT_DAY;
-			case 1:
-				return DayAttr.THE_NEXT_DAY;
-			case 2:
-				return DayAttr.TWO_DAY_LATER;
-			default:
-				throw new PrimitiveValueConstraintException();
-		}
+	private TimeWithDayAttr addTime(int value, int unitValue){
+		int newValue = this.v() + value * unitValue;
+		return new TimeWithDayAttr(newValue);
 	}
 }
