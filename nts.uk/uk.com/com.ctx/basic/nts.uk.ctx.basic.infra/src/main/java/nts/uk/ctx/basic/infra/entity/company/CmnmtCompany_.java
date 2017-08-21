@@ -10,17 +10,17 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KclmtClosure_.
  */
-@StaticMetamodel(CmnmtCompany.class)
+@StaticMetamodel(CmnmtCompanyOld.class)
 public class CmnmtCompany_ {
 
 	/** The ccd. */
-	public static volatile SingularAttribute<CmnmtCompany, String> ccd;
+	public static volatile SingularAttribute<CmnmtCompanyOld, String> ccd;
 
 	/** The cid. */
-	public static volatile SingularAttribute<CmnmtCompany, String> cid;
+	public static volatile SingularAttribute<CmnmtCompanyOld, String> cid;
 
 	/** The str M. */
-	public static volatile SingularAttribute<CmnmtCompany, Integer> strM;
+	public static volatile SingularAttribute<CmnmtCompanyOld, Integer> strM;
 
 
 }

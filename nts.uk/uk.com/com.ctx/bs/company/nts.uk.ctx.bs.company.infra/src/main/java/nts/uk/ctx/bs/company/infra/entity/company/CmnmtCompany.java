@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.infra.entity.company;
+package nts.uk.ctx.bs.company.infra.entity.company;
 
 import java.io.Serializable;
 
@@ -23,8 +23,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-//@Table(name = "CMNMT_COMPANY")
-public class CmnmtCompanyOld extends UkJpaEntity implements Serializable {
+@Table(name = "CMNMT_COMPANY")
+public class CmnmtCompany extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -34,6 +34,12 @@ public class CmnmtCompanyOld extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "CCD")
     private String ccd;
+
+    /** The ccd. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "COMPANY_NAME")
+    private String companyName;
     
     /** The cid. */
     @Id
@@ -51,7 +57,7 @@ public class CmnmtCompanyOld extends UkJpaEntity implements Serializable {
     /**
      * Instantiates a new cmnmt company.
      */
-    public CmnmtCompanyOld() {
+    public CmnmtCompany() {
     	super();
     }
 
@@ -60,7 +66,7 @@ public class CmnmtCompanyOld extends UkJpaEntity implements Serializable {
      *
      * @param cid the cid
      */
-    public CmnmtCompanyOld(String cid) {
+    public CmnmtCompany(String cid) {
         this.cid = cid;
     }
 
@@ -85,10 +91,10 @@ public class CmnmtCompanyOld extends UkJpaEntity implements Serializable {
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
-		if (!(object instanceof CmnmtCompanyOld)) {
+		if (!(object instanceof CmnmtCompany)) {
 			return false;
 		}
-		CmnmtCompanyOld other = (CmnmtCompanyOld) object;
+		CmnmtCompany other = (CmnmtCompany) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

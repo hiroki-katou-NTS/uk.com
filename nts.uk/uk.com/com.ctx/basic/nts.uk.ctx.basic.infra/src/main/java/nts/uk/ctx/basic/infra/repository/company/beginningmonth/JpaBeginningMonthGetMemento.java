@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.basic.infra.repository.company.beginningmonth;
 
-import nts.uk.ctx.basic.dom.company.CompanyId;
-import nts.uk.ctx.basic.dom.company.StartMonth;
 import nts.uk.ctx.basic.dom.company.beginningmonth.BeginningMonthGetMemento;
 import nts.uk.ctx.basic.infra.entity.company.beginningmonth.CbmstBeginningMonth;
 
@@ -24,22 +22,6 @@ public class JpaBeginningMonthGetMemento implements BeginningMonthGetMemento {
 	 */
 	public JpaBeginningMonthGetMemento(CbmstBeginningMonth entity) {
 		this.entity = entity;
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.BeginningMonthGetMemento#getCompanyId()
-	 */
-	@Override
-	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getCid());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.BeginningMonthGetMemento#getMonth()
-	 */
-	@Override
-	public StartMonth getMonth() {
-		return new StartMonth(this.entity.getMonth());
 	}
 
 }
