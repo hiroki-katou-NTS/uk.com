@@ -23,8 +23,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         currentCategoryId: KnockoutObservable<string> = ko.observable('');
         allowPersonRef: KnockoutObservable<number> = ko.observable(1);
         allowOtherRef: KnockoutObservable<number> = ko.observable(1);
-
-
+        RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
 
 
         constructor() {
@@ -44,12 +43,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         newPersonRole.setRoleAuth(result);
 
                         self.currentRole(newPersonRole);
-                        self.currentRole().RoleCategoryList.valueHasMutated();
-                        if (self.currentRole().RoleCategoryList().length > 0) {
+                        self.RoleCategoryList.valueHasMutated();
+                        if (self.RoleCategoryList().length > 0) {
 
                             self.currentCategoryId("");
 
-                            self.currentCategoryId(self.currentRole().RoleCategoryList()[0].categoryId);
+                            self.currentCategoryId(self.RoleCategoryList()[0].categoryId);
 
                         }
                         else {
@@ -67,7 +66,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     return;
                 }
 
-                let newCategory = _.find(self.currentRole().RoleCategoryList(), function(roleCategory) {
+                let newCategory = _.find(self.RoleCategoryList(), function(roleCategory) {
 
                     return roleCategory.categoryId === categoryId;
 
@@ -264,7 +263,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     personRole.setRoleAuth(result);
 
-                    if (self.currentRole().RoleCategoryList().length > 0) {
+                    if (self.RoleCategoryList().length > 0) {
 
                         let selectedId = self.currentCategoryId();
 
@@ -422,7 +421,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         allowDocRef: KnockoutObservable<number>;
         allowAvatarUpload: KnockoutObservable<number>;
         allowAvatarRef: KnockoutObservable<number>;
-        RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
+        // RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
         currentCategory: KnockoutObservable<PersonRoleCategory> = ko.observable(null);
         constructor(param: IPersonRole) {
             let self = this;
@@ -452,16 +451,16 @@ module nts.uk.com.view.cas001.a.viewmodel {
         loadRoleCategoriesList(RoleId): JQueryPromise<any> {
             var self = this,
                 dfd = $.Deferred();
-
+            let screenModel = __viewContext['screenModel'];
             block.invisible();
 
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
 
-                self.RoleCategoryList.removeAll();
+                screenModel.RoleCategoryList.removeAll();
 
                 _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
 
-                    self.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
+                    screenModel.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
 
                 });
 
