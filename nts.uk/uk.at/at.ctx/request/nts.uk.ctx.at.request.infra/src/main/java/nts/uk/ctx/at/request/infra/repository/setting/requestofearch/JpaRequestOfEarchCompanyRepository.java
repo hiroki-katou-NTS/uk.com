@@ -26,26 +26,8 @@ public class JpaRequestOfEarchCompanyRepository extends JpaRepository implements
 		return data;
 	}
 	private RequestOfEarchCompany toDomain(KrqstComAppConfig entity) {
-		return RequestOfEarchCompany.createSimpleFromJavaType(entity.krqstComAppConfigPK.companyId,
-				entity.krqstComAppConfigPK.appType,
-				entity.memo,
-				entity.useAtr,
-				entity.prerequisiteForpauseFlg,
-				entity.otAppSettingFlg,
-				entity.selectOfApproversFlg,
-				entity.appUseSettingFlg,
-				entity.otBreakInputFieldDisFlg,
-				entity.otBreakTimeDisFlg,
-				entity.otAtworkTimeBeginDisFlg,
-				entity.otGoOutTimeBeginDisFlg,
-				entity.otTimeCalUseAtr, 
-				entity.otTimeInputUseAtr,
-				entity.hwBreakInputFieldDisFlg,
-				entity.hwBreakTimeDisFlg,
-				entity.hwAtworkTimeBeginDisFlg,
-				entity.hwGoOutTimeBeginDisFlg, 
-				entity.hwTimeCalUseAtr,
-				entity.hwTimeInputUseAtr);
+		return RequestOfEarchCompany.createSimpleFromJavaType(entity.krqstComAppConfigPK.companyId,				
+				entity.selectOfApproversFlg);
 	}
 
 }

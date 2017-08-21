@@ -21,7 +21,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 	/**期間*/
 	private ApprovalPeriod period;
 	/**分岐ID*/
-	private int branchId;
+	private String branchId;
 	/**任意項目申請ID*/
 	private String anyItemApplicationId;
 	/**確認ルート種類*/
@@ -36,7 +36,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 			String historyId,
 			String startDate,
 			String endDate,
-			int branchId,
+			String branchId,
 			String anyItemApplicationId,
 			int confirmationRootType,
 			int employmentRootAtr,

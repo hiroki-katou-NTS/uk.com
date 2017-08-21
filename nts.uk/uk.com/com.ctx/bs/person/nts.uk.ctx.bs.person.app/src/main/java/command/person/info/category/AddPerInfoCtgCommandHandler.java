@@ -13,7 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,7 +24,7 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 	private PerInfoCategoryRepositoty perInfoCtgRep;
 
 	@Inject
-	private PernfoItemDefRepositoty pernfoItemDefRep;
+	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	private final static String SPECIAL_CTG_CODE = "CO";
 	private final static String SPECIAL_ITEM_CODE = "IO";

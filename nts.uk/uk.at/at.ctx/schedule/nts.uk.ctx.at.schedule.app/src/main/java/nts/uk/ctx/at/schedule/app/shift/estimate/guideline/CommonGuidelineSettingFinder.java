@@ -29,7 +29,7 @@ public class CommonGuidelineSettingFinder {
 	 *
 	 * @return the common guideline setting dto
 	 */
-	public CommonGuidelineSettingDto findByCompanyCode() {
+	public CommonGuidelineSettingDto findByCompanyId() {
 
 		String companyId = AppContexts.user().companyId();
 

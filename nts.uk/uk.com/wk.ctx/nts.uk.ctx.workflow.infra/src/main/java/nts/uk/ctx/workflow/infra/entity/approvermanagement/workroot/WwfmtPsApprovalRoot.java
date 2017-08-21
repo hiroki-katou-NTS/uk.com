@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
@@ -14,6 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author hoatt
  *
  */
+@Setter
 @Entity
 @Table(name = "WWFMT_PS_APPROVAL_ROOT")
 @AllArgsConstructor
@@ -33,7 +35,7 @@ public class WwfmtPsApprovalRoot extends UkJpaEntity implements Serializable {
 	public GeneralDate endDate;
 	/**申請種類*/
 	@Column(name = "APP_TYPE")
-	public int applicationType;
+	public Integer applicationType;
 	/**分岐ID*/
 	@Column(name = "BRANCH_ID")
 	public String branchId;
@@ -42,7 +44,7 @@ public class WwfmtPsApprovalRoot extends UkJpaEntity implements Serializable {
 	public String anyItemAppId;
 	/**確認ルート種類*/
 	@Column(name = "CONFIRMATION_ROOT_TYPE")
-	public int confirmationRootType;
+	public Integer confirmationRootType;
 	/**就業ルート区分*/
 	@Column(name = "EMPLOYMENT_ROOT_ATR")
 	public int employmentRootAtr;

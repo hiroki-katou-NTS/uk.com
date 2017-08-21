@@ -6,7 +6,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.basic.dom.company.CompanyCode;
 import nts.uk.ctx.basic.dom.organization.shr.HierarchyCode;
 import nts.uk.shr.com.primitive.Memo;
 

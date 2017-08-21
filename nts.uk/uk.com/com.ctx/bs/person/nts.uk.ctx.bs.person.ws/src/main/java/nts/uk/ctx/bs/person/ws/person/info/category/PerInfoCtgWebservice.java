@@ -37,7 +37,7 @@ public class PerInfoCtgWebservice extends WebService {
 	}
 
 	@POST
-	@Path("findby/{Id}")
+	@Path("find/companyby/{Id}")
 	public PerInfoCtgFullDto getPerInfoCtg(@PathParam("Id") String id) {
 		return perInfoCtgFinder.getPerInfoCtg(id);
 	}

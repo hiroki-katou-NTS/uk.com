@@ -6,13 +6,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemTypeState;
-import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.bs.person.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
@@ -26,7 +30,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class PerInfoItemDefFinder {
 
 	@Inject
-	private PernfoItemDefRepositoty pernfoItemDefRep;
+	private PerInfoItemDefRepositoty pernfoItemDefRep;
+
+	@Inject
+	IInternationalization internationalization;
 
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
 		return this.pernfoItemDefRep
@@ -55,9 +62,12 @@ public class PerInfoItemDefFinder {
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgIdForLayout(String perInfoCtgId) {
 		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
 				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
-				.filter(e -> e.getItemParentCode().equals("")) // filter set item or single item (has'nt parent item)
+				.filter(e -> e.getItemParentCode().equals("")) // filter set
+																// item or
+																// single item
+																// (has'nt
+																// parent item)
 				.collect(Collectors.toList());
-
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
 	};
@@ -81,7 +91,7 @@ public class PerInfoItemDefFinder {
 
 	// return list id of item definition if it's require;
 	public List<String> getRequiredIds() {
-		String companyId  = AppContexts.user().companyId();
+		String companyId = AppContexts.user().companyId();
 		String contractCd = AppContexts.user().contractCode();
 		return this.pernfoItemDefRep.getRequiredIds(contractCd, companyId);
 	}
@@ -101,14 +111,16 @@ public class PerInfoItemDefFinder {
 	}
 
 	private PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
+		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
+				internationalization);
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
 				itemDef.getIsFixed().value, itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
-				itemDef.getRequireChangable().value, dispOrder, createItemTypeStateDto(itemDef.getItemTypeState()));
+				itemDef.getRequireChangable().value, dispOrder, createItemTypeStateDto(itemDef.getItemTypeState()),
+				selectionItemRefTypes);
 	}
 
 	private ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
-
 		ItemType itemType = itemTypeState.getItemType();
 		if (itemType == ItemType.SINGLE_ITEM) {
 			SingleItem singleItemDom = (SingleItem) itemTypeState;
@@ -120,7 +132,6 @@ public class PerInfoItemDefFinder {
 	}
 
 	private DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
-
 		int dataTypeValue = dataTypeState.getDataTypeValue().value;
 		switch (dataTypeValue) {
 		case 1:

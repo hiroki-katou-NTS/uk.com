@@ -29,26 +29,8 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 	}
 	private RequestOfEarchWorkplace toDomain(KrqstWpAppConfig entity) {
 		return RequestOfEarchWorkplace.createSimpleFromJavaType(entity.krqstWpAppConfigPK.companyId,
-				entity.krqstWpAppConfigPK.workplaceId,
-				entity.krqstWpAppConfigPK.appType,
-				entity.memo,
-				entity.useAtr,
-				entity.prerequisiteForpauseFlg,
-				entity.otAppSettingFlg,
-				entity.selectOfApproversFlg,
-				entity.appUseSettingFlg,
-				entity.otBreakInputFieldDisFlg,
-				entity.otBreakTimeDisFlg,
-				entity.otAtworkTimeBeginDisFlg,
-				entity.otGoOutTimeBeginDisFlg,
-				entity.otTimeCalUseAtr, 
-				entity.otTimeInputUseAtr,
-				entity.hwBreakInputFieldDisFlg,
-				entity.hwBreakTimeDisFlg,
-				entity.hwAtworkTimeBeginDisFlg,
-				entity.hwGoOutTimeBeginDisFlg, 
-				entity.hwTimeCalUseAtr,
-				entity.hwTimeInputUseAtr);
+				entity.krqstWpAppConfigPK.workplaceId,				
+				entity.selectOfApproversFlg);
 	}
 
 }

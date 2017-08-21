@@ -36,5 +36,5 @@ public enum ApplicationType {
 	BUSINESS_TRIP_APPLICATION_OFFICE_HELPER(13),
 	/** ３６協定時間申請*/
 	APPLICATION_36(14);
-	public final int value;
+	public final Integer value;
 }

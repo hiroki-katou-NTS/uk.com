@@ -59,20 +59,36 @@ module nts.uk.at.view.ksu006.a {
                 });
                 
                 self.enableDataPreview = ko.observable(false);;
-                self.isDataDailyUnit = ko.observable(false);
+                self.isDataDailyUnit = ko.observable(true);
                 self.dataPreview = ko.observableArray([]);
                 self.firstRecord = ko.observable(null);
                 self.remainData = ko.observableArray([]);
                 // name id
                 self.nameIdTitleList = ko.observableArray([]);
                 self.nameIdValueList = ko.observableArray([]);
+                
+                // subscribe
+                self.selectedExtBudgetCode.subscribe(function(value) {
+                    if(!value) {
+                        return;
+                    }
+                    self.enableDataPreview(false);
+                    nts.uk.ui.block.grayout();
+                    self.checkUnitAtr().done(() => {
+                        self.enableDataPreview(true);
+                        nts.uk.ui.block.clear();
+                    });
+                });
             }
             
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 nts.uk.ui.block.grayout();
-                self.initNameId();
+                
+                // initial name id of time zone unit
+                self.initNameIdTimeZoneUnit();
+                
                 $.when(self.loadAllExternalBudget()).done(() => {
                     if (self.externalBudgetList().length > 0) {
                         self.isEnableExecute(true);
@@ -114,6 +130,18 @@ module nts.uk.at.view.ksu006.a {
                     });
             }
             
+            private checkUnitAtr(): JQueryPromise<boolean> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.checkUnitAtr(self.selectedExtBudgetCode()).done((state: boolean) => {
+                    self.isDataDailyUnit(state);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+                return dfd.promise();
+            }
+            
             private showDataPreview() {
                 let self = this;
                 // reset value
@@ -130,7 +158,6 @@ module nts.uk.at.view.ksu006.a {
                         self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
                         
                         self.totalRecord(res.totalRecord);
-                        self.enableDataPreview(true);
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
                     });
@@ -139,11 +166,8 @@ module nts.uk.at.view.ksu006.a {
                 });  
             }
             
-            private initNameId() {
+            private initNameIdTimeZoneUnit() {
                 let self = this;
-                if (self.isDataDailyUnit()) {
-                    return;
-                }
                 // find name id for case time zone unit
                 for (let i=0; i<48; i++) {
                     self.nameIdTitleList.push(nts.uk.resource.getText("KSU006_" + (i + 23)));

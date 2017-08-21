@@ -5,6 +5,7 @@ module nts.uk.at.view.ksu006.a {
          */
         var servicePath: any = {
             findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
+            checkUnitAtr: "at/schedule/budget/external/validate/isDailyUnit",
             findDataPreview: "at/schedule/budget/external/find/preview",
             validateFile: "at/schedule/budget/external/import/validate",
             exportDetailError: "at/schedule/budget/external/log/export",
@@ -20,6 +21,10 @@ module nts.uk.at.view.ksu006.a {
                 dfd.resolve(list);
             });
             return dfd.promise();
+        }
+        
+        export function checkUnitAtr(externalBudgetCd: string): JQueryPromise<boolean> {
+            return nts.uk.request.ajax("at", servicePath.checkUnitAtr, externalBudgetCd);
         }
         
         export function findDataPreview(extractCondition: any): JQueryPromise<model.DataPreviewModel> {

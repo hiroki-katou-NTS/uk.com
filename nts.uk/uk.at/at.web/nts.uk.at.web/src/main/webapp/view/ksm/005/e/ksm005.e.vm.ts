@@ -34,8 +34,8 @@ module nts.uk.at.view.ksm005.e {
 
             constructor() {
                 var self = this;
-                self.startYearMonth = ko.observable(parseInt(moment().format('YYYY')+'01'));
-                self.endYearMonth = ko.observable(parseInt(moment().format('YYYY')+'12'));
+                self.startYearMonth = ko.observable(nts.uk.ui.windows.getShared("yearmonth"));
+                self.endYearMonth = ko.observable(nts.uk.ui.windows.getShared("yearmonth"));
                 self.overwirte = ko.observable(true);
                 self.worktypeInfoWorkDays = ko.observable('');
                 self.worktimeInfoWorkDays = ko.observable('');
@@ -179,6 +179,7 @@ module nts.uk.at.view.ksm005.e {
                 service.batchWorkMonthlySetting(self.collectData()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        nts.uk.ui.windows.setShared("isCancelSave", false);
                         nts.uk.ui.windows.close();
                     });
 
@@ -239,6 +240,7 @@ module nts.uk.at.view.ksm005.e {
              * function by click button cancel save monthly pattern setting batch
              */
             public cancelSaveMonthlyPatternSetting(): void{
+                nts.uk.ui.windows.setShared("isCancelSave", true);
                 nts.uk.ui.windows.close();    
             }
             /**
