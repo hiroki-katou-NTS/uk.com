@@ -573,6 +573,7 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.dom')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.app')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')
+		runtime project (':wk.ctx:nts.uk.ctx.workflow.ac')
 		
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ac')
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')
@@ -664,6 +665,14 @@ project (':wk.ctx:nts.uk.ctx.workflow.infra') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
+	}
+}
+
+project (':wk.ctx:nts.uk.ctx.workflow.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 	}
 }
 
