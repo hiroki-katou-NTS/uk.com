@@ -28,10 +28,10 @@ public class DailyServiceTypeControlUpdateCommand extends CommandHandler<List<Da
 	private DailyServiceTypeControl toDailyServiceTypeControlDomain(
 			DailyServiceTypeControlCommand dailyServiceTypeControlCommand) {
 		return DailyServiceTypeControl.createFromJavaType(
-				new BigDecimal(dailyServiceTypeControlCommand.attendanceItemId),
+				dailyServiceTypeControlCommand.attendanceItemId,
 				dailyServiceTypeControlCommand.businessTypeCode, 
 				dailyServiceTypeControlCommand.youCanChangeIt,
-				dailyServiceTypeControlCommand.canBeChangedByOthers, dailyServiceTypeControlCommand.use);
+				dailyServiceTypeControlCommand.canBeChangedByOthers, dailyServiceTypeControlCommand.use,"",1);
 	}
 
 }
