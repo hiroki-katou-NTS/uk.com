@@ -6,7 +6,6 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 年休付与テーブル設定
@@ -39,7 +38,7 @@ public class GrantHdTblSet extends AggregateRoot {
 	private Integer simultaneousGrandMonthDays;
 
 	/* 備考 */
-	private Memo yearHolidayNote;
+	private YearHolidayNote yearHolidayNote;
 	
 	private List<GrantCondition> grantConditions;
 	
@@ -90,7 +89,7 @@ public class GrantHdTblSet extends AggregateRoot {
 	}
 	
 	public GrantHdTblSet(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName, CalculationMethod calculationMethod,
-			StandardCalculation standardCalculation, UseSimultaneousGrant useSimultaneousGrant, int simultaneousGrandMonthDays, Memo yearHolidayNote, List<GrantCondition> grantConditions) {
+			StandardCalculation standardCalculation, UseSimultaneousGrant useSimultaneousGrant, int simultaneousGrandMonthDays, YearHolidayNote yearHolidayNote, List<GrantCondition> grantConditions) {
 
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
@@ -112,6 +111,6 @@ public class GrantHdTblSet extends AggregateRoot {
 				EnumAdaptor.valueOf(standardCalculation, StandardCalculation.class), 
 				EnumAdaptor.valueOf(useSimultaneousGrant, UseSimultaneousGrant.class), 
 				simultaneousGrandMonthDays, 
-				new Memo(yearHolidayNote), grantConditions);
+				new YearHolidayNote(yearHolidayNote), grantConditions);
 	}
 }

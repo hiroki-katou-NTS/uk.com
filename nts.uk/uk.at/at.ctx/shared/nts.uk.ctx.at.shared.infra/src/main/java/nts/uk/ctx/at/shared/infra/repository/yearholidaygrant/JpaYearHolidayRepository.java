@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.yearholidaygrant;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseConditionAtr;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantCondition;
+import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantConditionPK;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSet;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSetPK;
 
@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSetPK;
 @Stateless
 public class JpaYearHolidayRepository extends JpaRepository implements YearHolidayRepository {
 	
-	private final String findAllByCompanyID = "SELECT a FROM KshstYearHoliday a "
+	private final String findAllByCompanyID = "SELECT a FROM KshstGrantHdTblSet a "
 			+ "WHERE a.kshstGrantHdTblSetPK.companyId = :companyId";
 	
 	@Override
@@ -61,11 +61,15 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		kshstYearHoliday.useSimultaneousGrant = yearHoliday.getUseSimultaneousGrant().value;
 		kshstYearHoliday.yearHolidayNote = yearHoliday.getYearHolidayNote().v();
 		
-		List<KshstGrantCondition> grantCoditionList = new ArrayList<KshstGrantCondition>();
-		// todo
+		List<KshstGrantCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
+				.map(x -> {
+					KshstGrantConditionPK conditionKey = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
+					return new KshstGrantCondition(conditionKey, x.getConditionValue().v(), x.getUseConditionAtr().value);
+				}).collect(Collectors.toList());
+		
 		kshstYearHoliday.grantConditions = grantCoditionList;
 		
-		this.commandProxy().update(entity);
+		this.commandProxy().update(kshstYearHoliday);
 	}
 
 	@Override
@@ -103,7 +107,11 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	 * @return
 	 */
 	private KshstGrantHdTblSet toEntity(GrantHdTblSet yearHoliday) {
-		List<KshstGrantCondition> grantCoditionList = new ArrayList<KshstGrantCondition>();
+		List<KshstGrantCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
+				.map(x -> {
+					KshstGrantConditionPK key = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
+					return new KshstGrantCondition(key, x.getConditionValue().v(), x.getUseConditionAtr().value);
+				}).collect(Collectors.toList());
 		
 		return new KshstGrantHdTblSet(
 				new KshstGrantHdTblSetPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v()),

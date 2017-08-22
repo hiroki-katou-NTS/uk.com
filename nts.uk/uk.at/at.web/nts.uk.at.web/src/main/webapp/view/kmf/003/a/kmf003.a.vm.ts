@@ -2,7 +2,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
     export class ScreenModel {
         //Grid data
         columns: KnockoutObservable<any>;
-        singleSelectedCode: KnockoutObservableArray<any>;;
+        singleSelectedCode: KnockoutObservable<any>;;
         items: KnockoutObservableArray<ItemModel>;
         currentCode: KnockoutObservable<any>;
         
@@ -47,32 +47,44 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             
             //Grid data
-            self.items = ko.observableArray([
-                new ItemModel('01', 'qwe'),
-                new ItemModel('02', 'www'),
-                new ItemModel('03', 'sasdsa'),
-                new ItemModel('04', 'asdasd'),
-                new ItemModel('05', '324w'),
-                new ItemModel('06', 'bbbb'),
-                new ItemModel('07', 'qwe'),
-                new ItemModel('08', 'www'),
-                new ItemModel('09', 'sasdsa'),
-                new ItemModel('10', 'asdasd'),
-                new ItemModel('11', '324w'),
-                new ItemModel('12', 'bbbb')
-            ]);
+            self.items = ko.observableArray([]);
             
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KMF003_8"), prop: 'code', width: 50 },
                 { headerText: nts.uk.resource.getText("KMF003_9"), prop: 'name', width: 200 }
             ]);
             
-            self.singleSelectedCode = ko.observableArray([]);
+            self.singleSelectedCode = ko.observable("");
             self.currentCode = ko.observable();
             
+            //Bind data to from when user select item on grid
             self.singleSelectedCode.subscribe(function(value) {
-                self.code(value.toString());
-                self.editmode(false);
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
+                if(value.length > 0){
+                    service.findByCode(value).done(function(data) {
+                        self.editmode(false);
+                        self.code(data.yearHolidayCode);
+                        self.name(data.yearHolidayName);
+                        self.A6_2SelectedRuleCode(data.standardCalculation);  
+                        self.A7_4SelectedRuleCode(data.calculationMethod);
+                        self.useConditionCls(data.useSimultaneousGrant === 1 ? true : false);
+                        self.grantDate(data.simultaneousGrandMonthDays.toString());
+                        self.note(data.yearHolidayNote);                    
+                        self.conditionValue01(data.grantConditions[0] && data.grantConditions[0].conditionValue.toString());
+                        self.useCls02(data.grantConditions[1] && data.grantConditions[1].useConditionAtr == 1 ? true : false);
+                        self.conditionValue02(data.grantConditions[1] && data.grantConditions[1].conditionValue.toString());
+                        self.useCls03(data.grantConditions[2] && data.grantConditions[2].useConditionAtr == 1 ? true : false);
+                        self.conditionValue03(data.grantConditions[2] && data.grantConditions[2].conditionValue.toString());
+                        self.useCls04(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1 ? true : false);
+                        self.conditionValue04(data.grantConditions[3] && data.grantConditions[3].conditionValue.toString());
+                        self.useCls05(data.grantConditions[4] && data.grantConditions[4].useConditionAtr == 1 ? true : false);
+                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());                    
+                    }).fail(function(res) {
+                          
+                    });
+                }
             });        
             
             //Controls display
@@ -89,10 +101,37 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
+            $.when(self.getData()).done(function() {
+                                
+                if (self.items().length > 0) {
+                    self.singleSelectedCode(self.items()[0].code);
+                }
+                
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
+            return dfd.promise();
+        }
+        
+        /**
+         * Get data from db.
+         */
+        getData(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.items([]);
             service.findAll().done(function(data) {
+                _.forEach(data, function(item) {
+                    self.items.push(new ItemModel(item.yearHolidayCode, item.yearHolidayName));
+                });
+                
                 dfd.resolve(data);
-            });            
-
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
             return dfd.promise();
         }
         
@@ -102,6 +141,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         cleanForm(){
             var self = this;
 
+            // clear all error
+            nts.uk.ui.errors.clearAll();
+            
             //Top input form
             self.code("");
             self.name("");              
@@ -143,17 +185,158 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         }
         
         /**
-         * Save data to db
+         * Execute add or update data to db
          */
         addFunction(){
+            var self = this;
             
+            // clear all error
+            nts.uk.ui.errors.clearAll();
+            
+            // validate
+            $(".input-code").trigger("validate");
+            $(".input-name").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
+                
+            var code = self.code();
+            var name = self.name();
+            var calMethod = Number(self.A7_4SelectedRuleCode());
+            var standMethod = Number(self.A6_2SelectedRuleCode());
+            var useConditionCls = self.useConditionCls() == true ? 1 : 0;
+            var grantMd = Number(self.grantDate());
+            var memo = self.note();
+            var grandConditions = new Array<GrantCondition>();
+            
+            if(self.conditionValue01().trim() !== ""){
+                grandConditions.push(new GrantCondition({
+                    conditionNo: 1,
+                    yearHolidayCode: code,
+                    useConditionAtr: 1,
+                    conditionValue: Number(self.conditionValue01())
+                }));
+            }
+            
+            if(self.useCls02() && self.conditionValue02().trim() !== ""){
+                grandConditions.push(new GrantCondition({
+                    conditionNo: 2,
+                    yearHolidayCode: code,
+                    useConditionAtr: self.useCls02() == true ? 1 : 0,
+                    conditionValue: Number(self.conditionValue02())
+                }));
+            }
+            
+            if(self.useCls03() && self.conditionValue03().trim() !== ""){
+                grandConditions.push(new GrantCondition({
+                    conditionNo: 3,
+                    yearHolidayCode: code,
+                    useConditionAtr: self.useCls03() == true ? 1 : 0,
+                    conditionValue: Number(self.conditionValue03())
+                }));
+            }
+            
+            if(self.useCls04() && self.conditionValue04().trim() !== ""){
+                grandConditions.push(new GrantCondition({
+                    conditionNo: 4,
+                    yearHolidayCode: code,
+                    useConditionAtr: self.useCls04() == true ? 1 : 0,
+                    conditionValue: Number(self.conditionValue04())
+                }));
+            }
+            
+            if(self.useCls05() && self.conditionValue05().trim() !== ""){
+                grandConditions.push(new GrantCondition({
+                    conditionNo: 5,
+                    yearHolidayCode: code,
+                    useConditionAtr: self.useCls05() == true ? 1 : 0,
+                    conditionValue: Number(self.conditionValue05())
+                }));
+            }
+            
+            var data = new YearHolidayGrantDto(code, name, calMethod, standMethod, useConditionCls, grantMd, memo, grandConditions);
+            
+            if(!self.editmode()){
+                self.updateMode(data);
+            } else {
+                self.addMode(data);
+            }
+        }
+        
+        //Add data to db
+        addMode(data: YearHolidayGrantDto){
+            var self = this;
+            
+            service.addYearHolidayGrant(data).done(function() {
+                self.getData();
+                self.singleSelectedCode(data.yearHolidayCode);
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();      
+            });
+        }
+        
+        //Update data to db
+        updateMode(data: YearHolidayGrantDto){
+            var self = this;
+            
+            service.updateYearHolidayGrant(data).done(function() {
+                self.getData();
+                self.singleSelectedCode(data.yearHolidayCode);
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();      
+            });
         }
         
         /**
          * Delete data by code
          */
         deleteFunction(){
+            var self = this;
             
+            let count = 0;
+            for (let i = 0; i <= self.items().length; i++){
+                if(self.items()[i].code == self.singleSelectedCode()){
+                    count = i;
+                    break;
+                }
+            }
+            
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.deleteYearHolidayGrant(self.singleSelectedCode()).done(function() {
+                    self.getData().done(function(){
+                        // if number of item from list after delete == 0 
+                        if(self.items().length==0){
+                            self.cleanForm();
+                            return;
+                        }
+                        // delete the last item
+                        if(count == ((self.items().length))){
+                            self.singleSelectedCode(self.items()[count-1].code);
+                            return;
+                        }
+                        // delete the first item
+                        if(count == 0 ){
+                            self.singleSelectedCode(self.items()[0].code);
+                            return;
+                        }
+                        // delete item at mediate list 
+                        else if(count > 0 && count < self.items().length){
+                            self.singleSelectedCode(self.items()[count].code);    
+                            return;
+                        }
+                    });
+                    
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();      
+                });
+            });
         }
         
         /**
@@ -398,4 +581,46 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             this.name = name;       
         }
     } 
+    
+    class YearHolidayGrantDto {
+        yearHolidayCode: string;
+        yearHolidayName: string;
+        calculationMethod: number;
+        standardCalculation: number;
+        useSimultaneousGrant: number;
+        simultaneousGrandMonthDays: number;
+        yearHolidayNote: string;
+        grantConditions: Array<GrantCondition>;  
+        constructor(yearHolidayCode: string, yearHolidayName: string, calculationMethod: number, standardCalculation: number, useSimultaneousGrant: number, 
+                simultaneousGrandMonthDays: number, yearHolidayNote: string, grantConditions: Array<GrantCondition>) {
+            this.yearHolidayCode = yearHolidayCode;
+            this.yearHolidayName = yearHolidayName;     
+            this.calculationMethod = calculationMethod;
+            this.standardCalculation = standardCalculation; 
+            this.useSimultaneousGrant = useSimultaneousGrant;
+            this.simultaneousGrandMonthDays = simultaneousGrandMonthDays; 
+            this.yearHolidayNote = yearHolidayNote;
+            this.grantConditions = grantConditions;   
+        }
+    }
+    
+    class GrantCondition {
+        yearHolidayCode: string;
+        conditionNo: number;
+        conditionValue: number;
+        useConditionAtr: number; 
+        constructor(param: IGrantCondition) {
+            this.yearHolidayCode = param.yearHolidayCode;
+            this.conditionNo = param.conditionNo;
+            this.conditionValue = param.conditionValue;
+            this.useConditionAtr = param.useConditionAtr;       
+        }
+    }
+    
+    interface IGrantCondition {
+        yearHolidayCode: string;
+        conditionNo: number;
+        conditionValue: number;
+        useConditionAtr: number;     
+    }
 }
