@@ -16,30 +16,32 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name="KMNMT_WORK_TYPE")
+@Table(name="KSHMT_WORKTYPE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmnmtWorkType extends UkJpaEntity implements Serializable{
+public class KshmtWorkType extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
+	
 	/*主キー*/
 	@EmbeddedId
-    public KmnmtWorkTypePK kmnmtWorkTypePK;
+    public KshmtWorkTypePK kshmtWorkTypePK;
 	
-	/*ソート順*/
-	@Column(name = "SORT_ORDER")
-	public int sortOrder;
 	/*勤務種類記号名*/
 	@Column(name = "SYMBOLIC_NAME")
 	public String symbolicName;
+	
 	/*勤務種類名称*/
 	@Column(name = "NAME")
 	public String name;
+	
 	/*勤務種類略名*/
 	@Column(name = "ABBREVIATION_NAME")
 	public String abbreviationName;
+	
 	/*勤務種類備考*/
 	@Column(name = "MEMO")
 	public String memo;
+	
 	/*使用区分*/
 	@Column(name = "DISPLAY_ATR")
 	public int displayAtr;
@@ -64,9 +66,12 @@ public class KmnmtWorkType extends UkJpaEntity implements Serializable{
 	@Column(name = "AFTERNOON_ATR")
 	public int afternoonAtr;
 	
+    @Column(name = "CALC_METHOD")
+    public int calculatorMethod;
+	
 	@Override
 	protected Object getKey() {
-		return kmnmtWorkTypePK;
+		return kshmtWorkTypePK;
 	}
 
 }

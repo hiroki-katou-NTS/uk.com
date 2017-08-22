@@ -87,13 +87,13 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
             throw new RuntimeException("stored file info is not found.");
         }
         StoredFileInfo storagedFileInfor = optional.get();
-        // check file extension
-        String extensionFile = storagedFileInfor.getMimeType().toLowerCase();
-        for (String item : FILE_EXTENSION_ARR) {
-            if (!extensionFile.contains(item)) {
-                throw new BusinessException("Msg_159");
-            }
-        }
+        // TODO: check file extension
+//        String extensionFile = storagedFileInfor.getMimeType().toLowerCase();
+//        for (String item : FILE_EXTENSION_ARR) {
+//            if (!extensionFile.contains(item)) {
+//                throw new BusinessException("Msg_159");
+//            }
+//        }
     }
 
     /**

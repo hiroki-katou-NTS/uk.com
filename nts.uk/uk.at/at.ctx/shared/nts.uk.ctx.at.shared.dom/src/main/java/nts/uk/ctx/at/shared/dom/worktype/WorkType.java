@@ -21,11 +21,7 @@ public class WorkType {
 	/** The work type code. */
 	/*勤務種類コード*/
 	private WorkTypeCode workTypeCode;
-	
-	/** The sort order. */
-	/*ソート順*/
-	private int sortOrder;
-	
+		
 	/** The symbolic name. */
 	/*勤務種類記号名*/
 	private WorkTypeSymbolicName symbolicName;
@@ -52,33 +48,42 @@ public class WorkType {
 
 	/** The deprecate. */
 	//廃止区分
-	private DeprecateClassification deprecate; 
+	private DeprecateClassification deprecate;
+	
+	//出勤率の計算
+	private CalculateMethod  calculateMethod;
 	
 	/**
-	 * Instantiates a new work type.
-	 *
-	 * @param companyId the company id
-	 * @param workTypeCode the work type code
-	 * @param sortOrder the sort order
-	 * @param symbolicName the symbolic name
-	 * @param name the name
-	 * @param abbreviationName the abbreviation name
-	 * @param memo the memo
-	 * @param displayAtr the display atr
+	 * 
+	 * @param companyId
+	 * @param workTypeCode
+	 * @param sortOrder
+	 * @param symbolicName
+	 * @param name
+	 * @param abbreviationName
+	 * @param memo
+	 * @param displayAtr
+	 * @param dailyWork
+	 * @param deprecate
+	 * @param calculateMethod
 	 */
-	public WorkType(String companyId, WorkTypeCode workTypeCode, int sortOrder,
-			WorkTypeSymbolicName symbolicName, WorkTypeName name,
-			WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo, DisplayAtr displayAtr) {
+	public WorkType(String companyId, WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName,
+			WorkTypeName name, WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo, DisplayAtr displayAtr,
+			DailyWork dailyWork, DeprecateClassification deprecate, CalculateMethod calculateMethod) {
 		super();
 		this.companyId = companyId;
 		this.workTypeCode = workTypeCode;
-		this.sortOrder = sortOrder;
 		this.symbolicName = symbolicName;
 		this.name = name;
 		this.abbreviationName = abbreviationName;
 		this.memo = memo;
 		this.displayAtr = displayAtr;
+		this.dailyWork = dailyWork;
+		this.deprecate = deprecate;
+		this.calculateMethod = calculateMethod;
 	}
+
+
 	
 	/**
 	 * Creates the simple from java type.
@@ -94,47 +99,19 @@ public class WorkType {
 	 * @return the work type
 	 */
 	public static WorkType createSimpleFromJavaType(String companyId, String workTypeCode,
-			int sortOrder, String symbolicName, String name, String abbreviationName, String memo,
-			int displayAtr,int workTypeUnit, int oneDay, int morning, int afternoon, int deprecate) {
+			String symbolicName, String name, String abbreviationName, String memo,
+			int displayAtr,int workTypeUnit, int oneDay, int morning, int afternoon, int deprecate,int calculateMethod) {
 		DailyWork dailyWork = new DailyWork();
 		dailyWork.setWorkTypeUnit(EnumAdaptor.valueOf(workTypeUnit, WorkTypeUnit.class));
 		dailyWork.setOneDay(EnumAdaptor.valueOf(oneDay, WorkTypeClassification.class));
 		dailyWork.setMorning(EnumAdaptor.valueOf(morning, WorkTypeClassification.class));
 		dailyWork.setAfternoon(EnumAdaptor.valueOf(afternoon, WorkTypeClassification.class));
-		return new WorkType(companyId, new WorkTypeCode(workTypeCode), sortOrder,
+		return new WorkType(companyId, new WorkTypeCode(workTypeCode),
 				new WorkTypeSymbolicName(symbolicName), new WorkTypeName(name),
 				new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
 				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), dailyWork,
-				EnumAdaptor.valueOf(deprecate, DeprecateClassification.class));
+				EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
+				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
 	}
 	
-	/**
-	 * Instantiates a new work type.
-	 *
-	 * @param companyId the company id
-	 * @param workTypeCode the work type code
-	 * @param sortOrder the sort order
-	 * @param symbolicName the symbolic name
-	 * @param name the name
-	 * @param abbreviationName the abbreviation name
-	 * @param memo the memo
-	 * @param displayAtr the display atr
-	 * @param dailyWork the daily work
-	 */
-	public WorkType(String companyId, WorkTypeCode workTypeCode, int sortOrder,
-			WorkTypeSymbolicName symbolicName, WorkTypeName name,
-			WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo, DisplayAtr displayAtr,
-			DailyWork dailyWork, DeprecateClassification deprecate) {
-		super();
-		this.companyId = companyId;
-		this.workTypeCode = workTypeCode;
-		this.sortOrder = sortOrder;
-		this.symbolicName = symbolicName;
-		this.name = name;
-		this.abbreviationName = abbreviationName;
-		this.memo = memo;
-		this.displayAtr = displayAtr;
-		this.dailyWork = dailyWork;
-		this.deprecate = deprecate;
-	}
 }

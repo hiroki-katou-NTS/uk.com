@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktypeset;
+package nts.uk.ctx.at.shared.dom.worktype;
 
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public class WorkTypeSet {
 	
 	private Boolean countHodiday;
 	
-	private Boolean closeAtr;
+	private CloseAtr closeAtr;
 	
 	private UUID sumFrame;
 	

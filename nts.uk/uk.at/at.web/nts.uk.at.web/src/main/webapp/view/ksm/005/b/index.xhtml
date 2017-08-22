@@ -42,7 +42,8 @@
 							primaryKey: 'code',
 							columns: columnMonthlyPatterns,
 							multiple: false,
-							value: selectMonthlyPattern
+							value: selectMonthlyPattern,
+							rows: 10
 						}"></table>	
 					</div>
 					<div class="pull-left monthlyPatternDetail">
@@ -57,7 +58,7 @@
 								data-bind="ntsTextEditor: {
 								value: code,
 								constraint: 'MonthlyPatternCode',
-								option: {textmode: 'text'},
+								option: textEditorOption,
 								required: true,
 								name:'#[KSM005_17]', 
 								enable: enableMonthlyPatternCode}" />
