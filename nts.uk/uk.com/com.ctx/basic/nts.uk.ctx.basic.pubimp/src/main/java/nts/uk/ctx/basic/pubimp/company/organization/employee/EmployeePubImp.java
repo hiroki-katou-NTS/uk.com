@@ -4,22 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.basic.pubimp.company.organization.employee;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
-import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
-import nts.uk.ctx.basic.pub.company.organization.employee.EmployeeDto;
 import nts.uk.ctx.basic.pub.company.organization.employee.EmployeePub;
 
 /**
@@ -28,22 +24,16 @@ import nts.uk.ctx.basic.pub.company.organization.employee.EmployeePub;
 @Stateless
 public class EmployeePubImp implements EmployeePub {
 
+	/** The first index. */
 	private final int FIRST_INDEX = 0;
-
-	// @Inject
-	// private EmployeeSearchQueryProcessor employeeSearchQueryProcessor;
-
-	/** The employee repo. */
-	@Inject
-	private EmployeeRepository employeeRepo;
-
-	/** The workplace repository. */
-	@Inject
-	private WorkplaceRepository workplaceRepository;
 
 	/** The workplace history repository. */
 	@Inject
 	private AffWorkplaceHistoryRepository workplaceHistoryRepository;
+
+	/** The employment history repository. */
+	@Inject
+	private AffEmploymentHistoryRepository employmentHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -53,41 +43,39 @@ public class EmployeePubImp implements EmployeePub {
 	 * lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<EmployeeDto> find(String employeeId, GeneralDate baseDate) {
-		Optional<Employee> optEmployee = employeeRepo.findBySid(employeeId);
-
+	public String getWorkplaceId(String employeeId, GeneralDate baseDate) {
+		// Query
 		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 
-		List<Workplace> workplaces = new ArrayList<>();
-		if (!CollectionUtil.isEmpty(affWorkplaceHistories)) {
-			workplaces = workplaceRepository
-					.findAllWorkplace(affWorkplaceHistories.get(FIRST_INDEX).getWorkplaceId().v());
+		// Check exist
+		if (CollectionUtil.isEmpty(affWorkplaceHistories)) {
+			return null;
 		}
-
-		if (!optEmployee.isPresent() || CollectionUtil.isEmpty(affWorkplaceHistories)
-				|| CollectionUtil.isEmpty(workplaces)) {
-			return Optional.empty();
-		}
-
-		Employee employee = optEmployee.get();
-		Workplace workplace = workplaces.get(FIRST_INDEX);
-
-		// Collect info
-		EmployeeDto employeeDto = new EmployeeDto();
-		employeeDto.setCompanyId(employee.getCompanyId());
-		employeeDto.setPId(employee.getPId());
-		employeeDto.setSId(employee.getSId());
-		employeeDto.setSCd(employee.getSCd().v());
-		employeeDto.setSMail(employee.getSMail().v());
-		employeeDto.setRetirementDate(employee.getRetirementDate());
-		employeeDto.setJoinDate(employee.getJoinDate());
-		employeeDto.setWkpCode(workplace.getWorkplaceCode().v());
-		employeeDto.setWkpId(workplace.getWorkplaceId().v());
-		employeeDto.setWkpName(workplace.getWorkplaceName().v());
 
 		// Return
-		return Optional.of(employeeDto);
+		return affWorkplaceHistories.get(FIRST_INDEX).getWorkplaceId().v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.basic.pub.company.organization.employee.EmployeePub#
+	 * getEmployeeCode(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public String getEmploymentCode(String employeeId, GeneralDate baseDate) {
+		// Query
+		List<AffEmploymentHistory> affEmploymentHistories = employmentHistoryRepository
+				.searchEmploymentOfSids(Arrays.asList(employeeId), baseDate);
+
+		// Check exist
+		if (CollectionUtil.isEmpty(affEmploymentHistories)) {
+			return null;
+		}
+
+		// Return
+		return affEmploymentHistories.get(FIRST_INDEX).getEmploymentCode().v();
 	}
 
 }

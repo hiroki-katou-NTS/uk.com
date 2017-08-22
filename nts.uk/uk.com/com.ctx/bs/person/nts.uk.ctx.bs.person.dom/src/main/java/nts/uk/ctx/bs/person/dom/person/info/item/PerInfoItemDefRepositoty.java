@@ -23,12 +23,11 @@ public interface PerInfoItemDefRepositoty {
 
 	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName);
 
-	void addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId);
+	List<String> addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId);
 
 	List<PerInfoItemDefOrder> getPerInfoItemDefOrdersByCtgId(String perInfoCtgId);
 	
 	int getItemDispOrderBy(String perInfoCtgId, String perInfoItemDefId);
 	
 	List<String> getRequiredIds(String contractCd, String companyId);
-
 }
