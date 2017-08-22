@@ -16,34 +16,19 @@ public class KscmtEstTimeComSet_ {
 	/** The kscmt est time com set PK. */
 	public static volatile SingularAttribute<KscmtEstTimeComSet, KscmtEstTimeComSetPK> kscmtEstTimeComSetPK;
 	
-	/** The m condition 1 st time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> mCondition1stTime;
+	/** The est condition 1 st time. */
+	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition1stTime;
 	
-	/** The m condition 2 nd time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> mCondition2ndTime;
+	/** The est condition 2 nd time. */
+	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition2ndTime;
 	
-	/** The m condition 3 rd time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> mCondition3rdTime;
+	/** The est condition 3 rd time. */
+	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition3rdTime;
 	
-	/** The m condition 4 th time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> mCondition4thTime;
+	/** The est condition 4 th time. */
+	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition4thTime;
 	
-	/** The m condition 5 th time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> mCondition5thTime;
+	/** The est condition 5 th time. */
+	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> estCondition5thTime;
 	
-	/** The y condition 1 st time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> yCondition1stTime;
-	
-	/** The m condition 5 th time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> yCondition2ndTime;
-	
-	/** The y condition 3 rd time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> yCondition3rdTime;
-	
-	/** The y condition 4 th time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> yCondition4thTime;
-	
-	/** The y condition 5 th time. */
-	public static volatile SingularAttribute<KscmtEstTimeComSet, Integer> yCondition5thTime;
-
 }

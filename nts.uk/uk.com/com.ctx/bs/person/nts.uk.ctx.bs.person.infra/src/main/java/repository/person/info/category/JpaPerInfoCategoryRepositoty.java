@@ -100,8 +100,15 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd) {
-		this.commandProxy().update(createPerInfoCtgFromDomain(perInfoCtg));
-		this.commandProxy().update(createPerInfoCtgCmFromDomain(perInfoCtg, contractCd));
+		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
+		PpemtPerInfoCtg perInfoCtgOld = this.queryProxy().find(perInfoCtgPK, PpemtPerInfoCtg.class).orElse(null);
+		perInfoCtgOld.categoryName = perInfoCtg.getCategoryName().v();
+		this.commandProxy().update(perInfoCtgOld);
+		
+		PpemtPerInfoCtgCmPK perInfoCtgCmPK = new PpemtPerInfoCtgCmPK(contractCd, perInfoCtgOld.categoryCd);
+		PpemtPerInfoCtgCm perInfoCtgCmOld = this.queryProxy().find(perInfoCtgCmPK, PpemtPerInfoCtgCm.class).orElse(null);
+		perInfoCtgCmOld.categoryType = perInfoCtg.getCategoryType().value;
+		this.commandProxy().update(perInfoCtgCmOld);
 	}
 
 	@Override

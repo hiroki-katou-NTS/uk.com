@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutReposotory {
 
-	private static final String GET_FIRST_LAYOUT = "SELECT l FROM  PpemtNewLayout l";
+	private static final String GET_FIRST_LAYOUT = "SELECT l FROM  PpemtNewLayout l WHERE l.companyId = :companyId";
 
 	@Override
 	public void update(NewLayout domain) {
@@ -31,12 +31,14 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 
 	@Override
 	public Optional<NewLayout> getLayout() {
-		PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class).getSingleOrNull();
+		String companyId = AppContexts.user().companyId();
+		PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
+				.setParameter("companyId", companyId).getSingleOrNull();
 
 		if (entity == null) {
 			// initial new data (if isn't present)
 			commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
-					AppContexts.user().companyId(), "001", "レイアウト"));
+					companyId, "001", "レイアウト"));
 
 			entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class).getSingleOrNull();
 		}

@@ -6,6 +6,8 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate.time;
 
 import java.util.List;
 
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
+
 /**
  * The Interface EstimateTimeSettingGetMemento.
  */

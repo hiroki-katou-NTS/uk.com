@@ -22,11 +22,13 @@ public class AttendanceItem extends AggregateRoot {
 	private UseSetting useAtr;
 	/* 勤怠項目属性 */
 	private AttendanceAtr attendanceAtr;
+	
+	private int nameLineFeedPosition;
 
 	public static AttendanceItem createSimpleFromJavaType(String companyId, int attendanceId, String attendanceName,
-			int dislayNumber, int useAtr, int attendanceAtr) {
+			int dislayNumber, int useAtr, int attendanceAtr, int nameLineFeedPosition) {
 		return new AttendanceItem(companyId, attendanceId, new AttendanceName(attendanceName), dislayNumber,
-				EnumAdaptor.valueOf(useAtr, UseSetting.class), EnumAdaptor.valueOf(attendanceAtr, AttendanceAtr.class));
+				EnumAdaptor.valueOf(useAtr, UseSetting.class), EnumAdaptor.valueOf(attendanceAtr, AttendanceAtr.class),nameLineFeedPosition);
 	}
 
 }
