@@ -67,7 +67,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 		// remove all itemdefinition relation with classification in this layout
 		clsDefRepo.removeAllByLayoutId(update.getLayoutID());
 
-		//
+		// push all classification and item definition to db
 		List<ClassificationCommand> classCommands = command.getItemsClassification();
 		if (!classCommands.isEmpty()) {
 			// add all classification on client to db
@@ -83,8 +83,6 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 							.collect(Collectors.toList()));
 				}
 			}
-			
-			
 		}
 	}
 
