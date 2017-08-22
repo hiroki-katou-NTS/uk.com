@@ -18289,9 +18289,6 @@ var nts;
                     NtsMonthDaysBindingHandler.getDaysInMonth = function (month) {
                         var daysInMonth = moment(month, "MM").daysInMonth();
                         if (daysInMonth !== NaN) {
-                            if (month === 2) {
-                                daysInMonth++;
-                            }
                             var days = [];
                             while (days.length < daysInMonth) {
                                 days.push({ text: days.length + 1, value: days.length + 1 });

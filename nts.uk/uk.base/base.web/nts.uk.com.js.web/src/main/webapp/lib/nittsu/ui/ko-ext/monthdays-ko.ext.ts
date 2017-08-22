@@ -118,10 +118,10 @@ module nts.uk.ui.koExtentions {
         static getDaysInMonth(month: number): Array<any> {
             
             let daysInMonth = moment(month, "MM").daysInMonth();
-            if (daysInMonth !== NaN) { 
-                if (month === 2){
-                    daysInMonth++;        
-                }
+            if (daysInMonth !== NaN) {  
+//                if (month === 2){
+//                    daysInMonth++;        
+//                }
                 let days = [];
                 while (days.length < daysInMonth){
                     days.push({text: days.length + 1, value: days.length + 1});        
