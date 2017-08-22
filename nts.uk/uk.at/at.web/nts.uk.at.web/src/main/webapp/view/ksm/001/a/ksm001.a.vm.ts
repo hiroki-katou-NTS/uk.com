@@ -117,6 +117,7 @@ module nts.uk.at.view.ksm001.a {
                 ]);
                 self.selectedTab = ko.observable('person-tab-1');
                 self.selEmploymentTab = ko.observable('emp-tab-1');
+                
             }
             /**
             * start page data 
@@ -148,10 +149,9 @@ module nts.uk.at.view.ksm001.a {
             public onSelectCompany(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                self.isCompanySelected(true);
-                self.isEmploymentSelected(false);
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(false);
+                self.isCompanySelected(true);
                 self.isLoading(true);
                 service.findAllMonthly().done(function(data: MonthlyDto[]) {
                     var dataModel: MonthlyModel[] = [];
@@ -163,9 +163,6 @@ module nts.uk.at.view.ksm001.a {
                     }
                     self.lstMonthly(dataModel);
                     self.isLoading(false);
-                    window.setTimeout(function() {
-                        $('#' + self.selectedTab()).removeClass('disappear');
-                    }, 100);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -181,9 +178,6 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(true);
                 self.isLoading(false);
                 $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption)
-                window.setTimeout(function() {
-                    $('#'+ self.selEmploymentTab()).removeClass('disappear');
-                }, 100);
             }
             /**
              * on click tab panel employment action event
@@ -191,8 +185,8 @@ module nts.uk.at.view.ksm001.a {
             public onSelectPerson(): void {
                 var self = this;
                 self.isCompanySelected(false);
-                self.isPersonSelected(true);
                 self.isEmploymentSelected(false);
+                self.isPersonSelected(true);
                 self.isLoading(true);
                 service.findAllMonthly().done(function(data: MonthlyDto[]) {
                     var dataModel: MonthlyModel[] = [];
@@ -212,9 +206,6 @@ module nts.uk.at.view.ksm001.a {
                     self.applyKCP005ContentSearch([]);
                     
                     $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
-                     window.setTimeout(function() {
-                         $('#' + self.selectedTab()).removeClass('disappear');
-                     }, 100);
                     
                 });
             }
