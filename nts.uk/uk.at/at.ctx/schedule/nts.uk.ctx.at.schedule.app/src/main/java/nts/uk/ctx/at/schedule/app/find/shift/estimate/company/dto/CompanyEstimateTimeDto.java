@@ -24,6 +24,6 @@ public class CompanyEstimateTimeDto implements Serializable {
 	/** The monthly estimates. */
 	private List<EstimateTimeDto> monthlyEstimates;
 
-	/** The yearly monthly estimate. */
-	private EstimateTimeDto yearlyMonthlyEstimate;
+	/** The yearly estimate. */
+	private EstimateTimeDto yearlyEstimate;
 }

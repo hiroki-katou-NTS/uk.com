@@ -73,7 +73,7 @@ public class CompanyEstablishmentFinder {
 				mapEstimateTimeSetting.get(EstimateTargetClassification.YEARLY)
 						.saveToMemento(yearly);
 			}
-			dto.setYearlyMonthlyEstimate(yearly);
+			dto.setYearlyEstimate(yearly);
 
 			List<EstimateTimeDto> monthlys = new ArrayList<>();
 			for (int index = FIRST_MONTH; index <= TOTAL_MONTH; index++) {
