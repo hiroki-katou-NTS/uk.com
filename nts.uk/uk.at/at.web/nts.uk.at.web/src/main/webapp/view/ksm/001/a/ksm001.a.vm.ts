@@ -106,17 +106,17 @@ module nts.uk.at.view.ksm001.a {
 
                 }
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: nts.uk.resource.getText("KSM001_23"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: nts.uk.resource.getText("KSM001_24"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'person-tab-1', title: nts.uk.resource.getText("KSM001_23"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'person-tab-2', title: nts.uk.resource.getText("KSM001_24"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'person-tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.employmentTabs = ko.observableArray([
                     { id: 'emp-tab-1', title: nts.uk.resource.getText("KSM001_23"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'emp-tab-2', title: nts.uk.resource.getText("KSM001_24"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'emp-tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.selectedTab = ko.observable('tab-1');
-                self.selEmploymentTab = ko.observable('emp-tap-1');
+                self.selectedTab = ko.observable('person-tab-1');
+                self.selEmploymentTab = ko.observable('emp-tab-1');
             }
             /**
             * start page data 
@@ -172,7 +172,9 @@ module nts.uk.at.view.ksm001.a {
                 self.isPersonSelected(false);
                 self.isEmploymentSelected(true);
                 self.isLoading(false);
-                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption);
+                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(function () {
+                    $('#emp-tab-1').removeClass('disappear');
+                });
             }
             /**
              * on click tab panel employment action event
@@ -200,7 +202,10 @@ module nts.uk.at.view.ksm001.a {
                     self.employeeList = ko.observableArray<UnitModel>([]);
                     self.applyKCP005ContentSearch([]);
                     
-                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
+                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
+                        $('#person-tab-1').removeClass('disappear');
+                    });
+                    
                 });
             }
 
