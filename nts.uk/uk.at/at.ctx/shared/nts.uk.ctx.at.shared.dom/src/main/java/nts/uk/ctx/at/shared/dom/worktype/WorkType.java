@@ -38,10 +38,6 @@ public class WorkType {
 	/*勤務種類備考*/
 	private WorkTypeMemo memo;
 	
-	/** The display atr. */
-	/*使用区分*/
-	private DisplayAtr displayAtr;
-
 	/** The daily work. */
 	// 1日の勤務
 	private DailyWork dailyWork;  
@@ -68,7 +64,7 @@ public class WorkType {
 	 * @param calculateMethod
 	 */
 	public WorkType(String companyId, WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName,
-			WorkTypeName name, WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo, DisplayAtr displayAtr,
+			WorkTypeName name, WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo,
 			DailyWork dailyWork, DeprecateClassification deprecate, CalculateMethod calculateMethod) {
 		super();
 		this.companyId = companyId;
@@ -77,7 +73,6 @@ public class WorkType {
 		this.name = name;
 		this.abbreviationName = abbreviationName;
 		this.memo = memo;
-		this.displayAtr = displayAtr;
 		this.dailyWork = dailyWork;
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
@@ -100,7 +95,7 @@ public class WorkType {
 	 */
 	public static WorkType createSimpleFromJavaType(String companyId, String workTypeCode,
 			String symbolicName, String name, String abbreviationName, String memo,
-			int displayAtr,int workTypeUnit, int oneDay, int morning, int afternoon, int deprecate,int calculateMethod) {
+			int workTypeUnit, int oneDay, int morning, int afternoon, int deprecate,int calculateMethod) {
 		DailyWork dailyWork = new DailyWork();
 		dailyWork.setWorkTypeUnit(EnumAdaptor.valueOf(workTypeUnit, WorkTypeUnit.class));
 		dailyWork.setOneDay(EnumAdaptor.valueOf(oneDay, WorkTypeClassification.class));
@@ -109,7 +104,7 @@ public class WorkType {
 		return new WorkType(companyId, new WorkTypeCode(workTypeCode),
 				new WorkTypeSymbolicName(symbolicName), new WorkTypeName(name),
 				new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
-				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), dailyWork,
+				dailyWork,
 				EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
 				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
 	}	

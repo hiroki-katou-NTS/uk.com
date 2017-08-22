@@ -18,6 +18,6 @@ public class KshmtAbsenceFramePK implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 	/*欠勤枠ID*/
-	@Column(name = "ABSENCE_FRAME_ID")
-	public String absenceFrameId;	
+	@Column(name = "ABSENCE_FRAME_NO")
+	public String absenceFrameNo;	
 }

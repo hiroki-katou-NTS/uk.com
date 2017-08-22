@@ -18,8 +18,6 @@ public class WorkTypeDto {
 	private String abbreviationName;
 	/*勤務種類備考*/
 	private String memo;
-	/*使用区分*/
-	private int displayAtr;
 	
 	public static WorkTypeDto fromDomain(WorkType domain){
 		return new WorkTypeDto(domain.getCompanyId(),
@@ -28,8 +26,7 @@ public class WorkTypeDto {
 					domain.getSymbolicName().v(),
 					domain.getName().v(),
 					domain.getAbbreviationName().v(),
-					domain.getMemo().v(),
-					domain.getDisplayAtr().value
+					domain.getMemo().v()
 					);
 	}
 }
