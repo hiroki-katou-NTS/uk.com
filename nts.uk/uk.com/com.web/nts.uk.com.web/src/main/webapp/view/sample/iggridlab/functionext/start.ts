@@ -146,6 +146,7 @@ module nts.uk.ui.gridlist {
                             virtualization: true,
                             virtualizationMode: 'continuous',
                             enter: 'right',
+                            autoFitWindow: true,
                             preventEditInError: false,
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
@@ -217,7 +218,7 @@ module nts.uk.ui.gridlist {
 //                                        },
                                         {
                                             name: 'Paging',
-                                            pageSize: 50,
+                                            pageSize: 100,
                                             currentPageIndex: 0
                                         },
                                         { name: 'ColumnFixing', fixingDirection: 'left',
@@ -350,6 +351,12 @@ module nts.uk.ui.gridlist {
         });
         $("#disable-ctrl").on("click", function() {
             $("#grid2").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
+        });
+        $("#enable-ctrls").on("click", function() {
+            $("#grid2").ntsGrid("enableNtsControls", "header01", "ComboBox");
+        });
+        $("#disable-ctrls").on("click", function() {
+            $("#grid2").ntsGrid("disableNtsControls", "header01", "ComboBox");
         });
         
         function totalNumber(data) {
