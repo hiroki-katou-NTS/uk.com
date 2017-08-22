@@ -57,6 +57,17 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	private static final String DELETE_APPROVER_BY_APHASEID = "DELETE from WwfmtAppover c "
 			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
 			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
+	private final String SELECT_COMAPR_BY_EDATE = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRoot.companyId = :companyId"
+			+ " AND c.endDate = :endDate";
+	private final String SELECT_PSAPR_BY_EDATE = "SELECT c FROM WwfmtPsApprovalRoot c"
+			+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
+			+ " AND c.endDate = :endDate";
+	private final String SELECT_WPAPR_BY_EDATE = "SELECT c FROM WwfmtWpApprovalRoot c"
+			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
+			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
+			+ " AND c.endDate = :endDate";
 		
 	/**
 	 * convert entity WwfmtComApprovalRoot to domain CompanyApprovalRoot
@@ -102,13 +113,13 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 		val domain = WorkplaceApprovalRoot.createSimpleFromJavaType(entity.wwfmtWpApprovalRootPK.companyId,
 				entity.wwfmtWpApprovalRootPK.workplaceId,
 				entity.wwfmtWpApprovalRootPK.historyId,
+				entity.applicationType,
 				entity.startDate.toString(),
 				entity.endDate.toString(),
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
-				entity.employmentRootAtr,
-				entity.applicationType);
+				entity.employmentRootAtr);
 		return domain;
 	}
 	/**
@@ -464,5 +475,48 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 		x.setConfirmationRootType(a.confirmationRootType);
 		x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
+	}
+	/**
+	 * get Company Approval Root By End date
+	 * @param companyId
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, String endDate) {
+		return this.queryProxy().query(SELECT_COMAPR_BY_EDATE, WwfmtComApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("endDate", endDate)
+				.getList(c->toDomainComApR(c));
+	}
+	/**
+	 * get Workplace Approval Root By End date
+	 * @param companyId
+	 * @param workplaceId
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, String endDate) {
+		return this.queryProxy().query(SELECT_WPAPR_BY_EDATE, WwfmtWpApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("workplaceId", workplaceId)
+				.setParameter("endDate", endDate)
+				.getList(c->toDomainWpApR(c));
+	}
+	/**
+	 * get Person Approval Root By End date
+	 * @param companyId
+	 * @param employeeId
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, String endDate) {
+		return this.queryProxy().query(SELECT_PSAPR_BY_EDATE, WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("endDate", endDate)
+				.getList(c->toDomainPsApR(c));
 	}
 }
