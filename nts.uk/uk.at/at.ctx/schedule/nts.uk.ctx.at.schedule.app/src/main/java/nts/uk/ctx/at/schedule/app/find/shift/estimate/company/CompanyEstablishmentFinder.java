@@ -15,10 +15,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateTimeDto;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.MonthlyEstimateTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimateTimeDto;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishment;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentRepository;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -66,7 +66,7 @@ public class CompanyEstablishmentFinder {
 					.stream().collect(Collectors.toMap((monthly) -> {
 						return monthly.getTargetClassification();
 					}, Function.identity()));
-			MonthlyEstimateTimeDto yearly = new MonthlyEstimateTimeDto();
+			EstimateTimeDto yearly = new EstimateTimeDto();
 
 			// check yearly exist data
 			if (mapEstimateTimeSetting.containsKey(EstimateTargetClassification.YEARLY)) {
@@ -75,10 +75,10 @@ public class CompanyEstablishmentFinder {
 			}
 			dto.setYearlyMonthlyEstimate(yearly);
 
-			List<MonthlyEstimateTimeDto> monthlys = new ArrayList<>();
+			List<EstimateTimeDto> monthlys = new ArrayList<>();
 			for (int index = FIRST_MONTH; index <= TOTAL_MONTH; index++) {
 
-				MonthlyEstimateTimeDto monthly = new MonthlyEstimateTimeDto();
+				EstimateTimeDto monthly = new EstimateTimeDto();
 
 				// check exist data
 				if (mapEstimateTimeSetting
