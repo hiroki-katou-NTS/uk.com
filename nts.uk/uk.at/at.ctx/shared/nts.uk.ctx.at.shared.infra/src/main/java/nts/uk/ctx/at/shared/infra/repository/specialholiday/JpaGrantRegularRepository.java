@@ -13,7 +13,6 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantDateComPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantDateSet;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantDateSetPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegular;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegularPK;
 
 public class JpaGrantRegularRepository extends JpaRepository implements GrantRegularRepository {
 	private static final String SELECT_ALL;
@@ -59,9 +58,10 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	 * @return
 	 */
 	private GrantDateCom convertToDomainCom(KshstGrantDateCom kshstGrantDateCom) {
+		List<GrantDateSet> grantDateSets = kshstGrantDateCom.grantDateSets.stream().map(x-> convertToDomainSet(x)).collect(Collectors.toList());
 		GrantDateCom grantDateCom = GrantDateCom.createFromJavaType(kshstGrantDateCom.kshstGrantDateComPK.companyId,
 				kshstGrantDateCom.kshstGrantDateComPK.specialHolidayCode, kshstGrantDateCom.grantDateAtr,
-				kshstGrantDateCom.grantDate);
+				kshstGrantDateCom.grantDate, grantDateSets);
 		return grantDateCom;
 	}
 

@@ -26,10 +26,12 @@ public class GrantDateCom {
 	private List<GrantDateSet> grantDateSets;
 	
 	public static GrantDateCom createFromJavaType(String companyId, String specialHolidayCode, int grantDateAtr,
-			int grantDate) {
+			int grantDate ,List<GrantDateSet> grantDateSets) {
 		return new GrantDateCom(companyId,
 				new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(grantDateAtr, GrantDateAtr.class),
-				new GrantDate(grantDate));
+				new GrantDate(grantDate),
+				grantDateSets);
 	}
+
 }
