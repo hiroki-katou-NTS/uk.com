@@ -44,7 +44,7 @@ module nts.uk.at.view.ksu006.a {
                 self.selectedExtBudgetCode = ko.observable('');
                 
                 self.fileName = ko.observable("");
-                self.extensionFileList = ko.observableArray([".txt",'.csv']);
+                self.extensionFileList = ko.observableArray(["txt",'csv']);
                 self.fileId = ko.observable(null);
                 
                 self.encodingList = ko.observableArray([{code: 1, name: 'Shift JIS'}]);
