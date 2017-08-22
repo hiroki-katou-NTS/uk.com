@@ -11,6 +11,7 @@
 			<span class="action-bar">
 			<button tabindex="1" class="proceed">#{i18n.getText('KSM001_1')}</button>
 			<button tabindex="2" class="danger" >#{i18n.getText('KSM001_2')}</button>
+			<ui:insert name="extended-action-bar" />
 			<button tabindex="3" >#{i18n.getText('KSM001_50')}</button>
 			<button tabindex="4" >#{i18n.getText('KSM001_51')}</button>
 			</span>
@@ -32,24 +33,16 @@
 				columns: [
 					{ prop: 'name', length: 6 }
 				]}"></div>
+			<ui:insert name="extended-111" />
 			</div>
-			
-			<br />
-			<div class="lineContent">
-				<div class="lableContent" data-bind="ntsFormLabel: {required: false}">
-					<label>#{i18n.getText('KSM001_5')}</label>
-				</div>
-				<div class="content"><label>#{i18n.getText('KSM001_5')}</label></div>
+			<br/>
+			<div style="display: inline-flex">
+				<ui:insert name="extended-222" />
+				<com:ko tag="template" bind="{name: '3-cai-tab'}"></com:ko>
 			</div>
-			
-			<br />
-			<div class="lineContent">
-				<div class="lableContent" data-bind="ntsFormLabel: {required: false}">
-					<label>#{i18n.getText('KSM001_21')}</label>
-				</div>
-			</div>
-			<br />
-			<div tabindex="13" id="tab-panel" class="pull-left tabPanel"
+		</div>
+		<script type="text/html" id="3-cai-tab">
+			<div tabindex="13" id="tab-panel" class="tabPanel"
 				data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 				<div class="tab-content-1">
 					<div class="control-group">
@@ -298,7 +291,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</script>
 	</ui:composition>
 </body>
 </html>
