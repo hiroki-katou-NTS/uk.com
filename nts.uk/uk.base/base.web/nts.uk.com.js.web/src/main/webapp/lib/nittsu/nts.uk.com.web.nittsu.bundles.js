@@ -6076,7 +6076,7 @@ var nts;
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
                                 var selected = $grid.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     data.value(_.map(selected, function (s) { return s.id; }));
                                 }
                                 else {
@@ -6085,7 +6085,7 @@ var nts;
                             }
                             else {
                                 var selected = $grid.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     data.value(selected.id);
                                 }
                                 else {
@@ -6433,7 +6433,7 @@ var nts;
                             var itemSelected;
                             if (container.igGridSelection('option', 'multipleSelection')) {
                                 var selected = container.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     itemSelected = _.map(selected, function (s) { return s.id; });
                                 }
                                 else {
@@ -6442,7 +6442,7 @@ var nts;
                             }
                             else {
                                 var selected = container.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     itemSelected = selected.id;
                                 }
                                 else {
@@ -7001,16 +7001,8 @@ var nts;
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
                                     : component.igTreeGridSelection('option', 'multipleSelection');
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
-                                var selectedValue = void 0;
-                                if (selectedKey !== null) {
-                                    selectedValue = isMulti ? _.map(result_1.selectItems, selectedKey) :
-                                        result_1.selectItems.length > 0 ? result_1.selectItems[0][selectedKey] : undefined;
-                                }
-                                else {
-                                    selectedValue = isMulti ? [result_1.selectItems] :
-                                        result_1.selectItems.length > 0 ? result_1.selectItems[0] : undefined;
-                                }
                                 if (targetMode === 'igGrid') {
+                                    component.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
                                         $container.data("filteredSrouce", result_1.options);
                                         component.attr("filtered", true);
@@ -7023,10 +7015,10 @@ var nts;
                                         });
                                         component.igGrid("option", "dataSource", source);
                                         component.igGrid("dataBind");
+                                        if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
+                                            component.trigger("selectionchanged");
+                                        }
                                     }
-                                    else {
-                                    }
-                                    component.ntsGridList("setSelected", selectedProperties);
                                 }
                                 else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
@@ -18725,4 +18717,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
