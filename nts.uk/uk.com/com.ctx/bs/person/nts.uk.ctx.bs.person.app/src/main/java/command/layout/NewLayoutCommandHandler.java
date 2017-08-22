@@ -55,7 +55,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 		}
 
 		// エラーメッセージ（#Msg_289#,２つ以上配置されている項目名）を表示する
-		for (int i = 0; i < allSaveItemIds.size() - 1; i++) {
+		for (int i = 0; i < allSaveItemIds.size() - 2; i++) {
 			if (allSaveItemIds.get(i).equals(allSaveItemIds.get(i + 1))) {
 				throw new BusinessException(new RawErrorMessage("Msg_289"));
 			}
@@ -83,6 +83,8 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 							.collect(Collectors.toList()));
 				}
 			}
+			
+			
 		}
 	}
 
