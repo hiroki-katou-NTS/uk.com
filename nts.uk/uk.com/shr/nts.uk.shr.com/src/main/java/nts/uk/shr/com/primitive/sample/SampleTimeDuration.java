@@ -11,8 +11,8 @@ public class SampleTimeDuration extends TimeDurationPrimitiveValue<SampleTimeDur
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SampleTimeDuration(int hour, int minute, int second) {
-		super(hour, minute, second);
+	public SampleTimeDuration(int timeAsMinutes) {
+		super(timeAsMinutes);
 	}
 
 }
