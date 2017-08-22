@@ -1,6 +1,7 @@
 package repository.person.info.item;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -154,13 +155,17 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public void addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId) {
+	public List<String> addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId) {
+		List<String> perInfoItemDefIds = new ArrayList<>();
 		this.commandProxy().insertAll(perInfoCtgId.stream().map(i -> {
-			return createPerInfoItemDefFromDomainWithCtgId(perInfoItemDef, i);
+			PpemtPerInfoItem item = createPerInfoItemDefFromDomainWithCtgId(perInfoItemDef, i);
+			perInfoItemDefIds.add(item.ppemtPerInfoItemPK.perInfoItemDefId);
+			return item;
 		}).collect(Collectors.toList()));
 		addOrderItemWithCtgIdList(perInfoItemDef.getPerInfoItemDefId(), perInfoCtgId);
+		return perInfoItemDefIds;
 	}
-
+	
 	@Override
 	public void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
 		this.commandProxy().update(createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd));

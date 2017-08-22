@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.basic.pub.company.organization.employee;
 
-import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
 
 /**
@@ -20,5 +18,14 @@ public interface EmployeePub {
 	 * @param referenceDate the reference date
 	 * @return the optional
 	 */
-	Optional<EmployeeDto> find(String employeeId, GeneralDate baseDate);
+	String getWorkplaceId(String employeeId, GeneralDate baseDate);
+
+	/**
+	 * Gets the employee code.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the employee code
+	 */
+	String getEmploymentCode(String employeeId, GeneralDate baseDate);
 }

@@ -77,7 +77,7 @@ module nts.uk.at.view.kdw008.b {
                     { id: 'tab-1', title: '月次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: '日次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.selectedTab = ko.observable('tab-2');
+                self.selectedTab = ko.observable('tab-1');
 
                 //combobox select sheetNo tab2
                 self.sheetNoList = ko.observableArray([
@@ -94,7 +94,7 @@ module nts.uk.at.view.kdw008.b {
                 ]);
                 self.selectedSheetNo = ko.observable(1);
                 self.selectedSheetNo.subscribe((value) => {
-                    console.log(value);
+                    self.getDetail(self.selectedCode());
                 });
 
                 //swaplist 2
@@ -128,13 +128,14 @@ module nts.uk.at.view.kdw008.b {
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentBusinessTypeCode(self.businessTypeList()[0].businessTypeCode);
                         self.currentBusinessTypeName(self.businessTypeList()[0].businessTypeName);
-
+                        self.selectedCode(self.businessTypeList()[0].businessTypeCode);
+                        self.getDetail(self.businessTypeList()[0].businessTypeCode);
                     } else {
                         self.setNewMode();
                     }
+                    dfd.resolve();
                 });
 
-                dfd.resolve();
                 return dfd.promise();
             }
 
@@ -142,6 +143,7 @@ module nts.uk.at.view.kdw008.b {
                 let self = this;
                 self.newMode(true);
                 self.isUpdate = false;
+                self.currentBusinessType([]);
                 self.currentBusinessTypeCode(null);
                 self.currentBusinessTypeName('');
                 self.selectedCode(null);
@@ -150,7 +152,7 @@ module nts.uk.at.view.kdw008.b {
             getDetail(businessTypeCode: string) {
                 let self = this,
                     dfd = $.Deferred();
-                new service.Service().getDailyPerformance(self.currentBusinessTypeCode(), self.selectedSheetNo()).done(function(data: IBusinessTypeDetail) {
+                new service.Service().getDailyPerformance(businessTypeCode, self.selectedSheetNo()).done(function(data: IBusinessTypeDetail) {
                     if (data) {
                         self.currentBusinessType(new BusinessTypeDetailModel(data));
                         // show data tab 1
@@ -169,7 +171,7 @@ module nts.uk.at.view.kdw008.b {
 
                         } else self.businessTypeFormatMonthlyValue([]);
                         //show data tab 2
-                        self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
+                        //self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
                         self.selectedSheetName(data.businessTypeFormatDailyDto.sheetName);
                         self.businessTypeFormatDailyValue([]);
                         data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos = _.sortBy(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, ["order"]);
@@ -246,6 +248,12 @@ module nts.uk.at.view.kdw008.b {
                 } else {
                     new service.Service().addDailyDetail(addOrUpdateBusinessFormatDaily);
                 }
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                self.getDetail(self.currentBusinessTypeCode());
+            }
+            
+            dialog(){
+               nts.uk.ui.windows.sub.modal("../c/index.xhtml"); 
             }
 
         }

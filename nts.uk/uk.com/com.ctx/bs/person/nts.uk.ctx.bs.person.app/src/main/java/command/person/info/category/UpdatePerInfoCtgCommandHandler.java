@@ -20,7 +20,7 @@ public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfo
 		UpdatePerInfoCtgCommand perInfoCtgCommand = context.getCommand();
 		String categoryCode = null;
 		PersonInfoCategory perInfoCtg = PersonInfoCategory.createFromJavaType(PersonInfoCategory.ROOT_COMPANY_ID,
-				categoryCode, perInfoCtgCommand.getCategoryName().v(), perInfoCtgCommand.getCategoryType().value);
+				categoryCode, perInfoCtgCommand.getCategoryName(), perInfoCtgCommand.getCategoryType());
 		this.perInfoCtgRep.updatePerInfoCtg(perInfoCtg, AppContexts.user().companyId());
 	}
 

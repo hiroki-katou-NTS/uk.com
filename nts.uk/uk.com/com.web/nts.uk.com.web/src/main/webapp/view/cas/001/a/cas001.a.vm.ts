@@ -101,10 +101,21 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             self.allowOtherRef.subscribe(function(newValue) {
 
+                if (newValue == 0) {
+                    $("#item_role_table_body").ntsGrid("disableNtsControl", "otherAuth", "SwitchButtons");
+                } else {
+                    $("#item_role_table_body").ntsGrid("enableNtsControl", "otherAuth", "SwitchButtons");
+                }
 
             });
 
             self.allowPersonRef.subscribe(function(newValue) {
+
+                if (newValue == 0) {
+                    $("#item_role_table_body").ntsGrid("disableNtsControl", "selfAuth", "SwitchButtons");
+                } else {
+                    $("#item_role_table_body").ntsGrid("enableNtsControl", "selfAuth", "SwitchButtons");
+                }
 
             });
         }
@@ -176,9 +187,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 showHeader: true,
 
-                width: '800px',
+                width: '830px',
 
-                height: '261px',
+                height: '315px',
 
                 dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
 
@@ -212,20 +223,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     { headerText: '', key: 'requiredAtr', dataType: 'string', width: '34px', hidden: true },
                     { headerText: '', key: 'personItemDefId', dataType: 'string', width: '34px', hidden: true },
                     { headerText: getText('CAS001_47'), key: 'itemName', dataType: 'string', width: '255px' },
-                    { headerText: getText('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons1' },
-                    { headerText: getText('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons2' },
+                    { headerText: getText('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
+                    { headerText: getText('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
                 ],
                 ntsControls: [
                     {
-                        name: 'SwitchButtons1', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
-                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
-                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
-                    },
-                    {
-                        name: 'SwitchButtons2', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
-                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
-                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
-
+                        name: 'SwitchButtons', 
+                        options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') },
+                                  { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+                                   { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
+                        optionsValue: 'value', 
+                        optionsText: 'text', controlType: 'SwitchButtons', enable: true
                     }
                 ],
 

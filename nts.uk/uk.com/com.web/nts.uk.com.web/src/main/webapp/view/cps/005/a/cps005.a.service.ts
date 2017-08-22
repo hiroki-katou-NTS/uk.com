@@ -27,7 +27,7 @@ module nts.uk.com.view.cps005.a {
             };
 
             addPerInfoCtg(newCategory: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.getAllPerInfoCtg);
+                return nts.uk.request.ajax("com", this.paths.addPerInfoCtg, newCategory);
             };
 
             updatePerInfoCtg(newCategory: any): JQueryPromise<any> {
