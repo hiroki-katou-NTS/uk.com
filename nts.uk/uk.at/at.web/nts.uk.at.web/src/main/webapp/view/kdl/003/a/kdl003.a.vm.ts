@@ -187,8 +187,10 @@ module nts.uk.at.view.kdl003.a {
             private setWorkTimeSelection(): void {
                 let self = this;
                 // Selected code from caller screen.
-                if (self.callerParameter.selectedWorkTimeCode) {
-                    self.selectedWorkTimeCode(self.callerParameter.selectedWorkTimeCode);
+                let selectedWorkTimeCode = self.callerParameter.selectedWorkTimeCode;
+                let isInSelectableCodes = selectedWorkTimeCode ? _.find(self.listWorkTime(), item => selectedWorkTimeCode == item.code) : false;
+                if (selectedWorkTimeCode && isInSelectableCodes) {
+                    self.selectedWorkTimeCode(selectedWorkTimeCode);
                 } else {
                     // Select first item.
                     self.selectedWorkTimeCode(_.first(self.listWorkTime()).code);
