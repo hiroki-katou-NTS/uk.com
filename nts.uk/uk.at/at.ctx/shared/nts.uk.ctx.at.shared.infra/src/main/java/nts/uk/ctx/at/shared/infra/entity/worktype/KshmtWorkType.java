@@ -71,7 +71,7 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		return kmnmtWorkTypePK;
+		return kshmtWorkTypePK;
 	}
 
 }
