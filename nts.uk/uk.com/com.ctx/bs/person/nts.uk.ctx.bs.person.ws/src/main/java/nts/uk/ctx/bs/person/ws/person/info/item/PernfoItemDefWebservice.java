@@ -38,20 +38,26 @@ public class PernfoItemDefWebservice {
 	
 	//service for screen Layout
 	@POST
-	@Path("findby/categoryId/{perInfoCtgId}")
+	@Path("layout/findby/categoryId/{perInfoCtgId}")
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgIdForLayout(@PathParam("perInfoCtgId") String perInfoCtgId) {
 		return itemDefFinder.getAllPerInfoItemDefByCtgIdForLayout(perInfoCtgId);
 	}
 	
 	@POST
-	@Path("findby/itemId/{Id}")
+	@Path("layout/findby/itemId/{Id}")
 	public PerInfoItemDefDto getPerInfoItemDefByIdForLayout(@PathParam("Id") String Id) {
 		return itemDefFinder.getPerInfoItemDefByIdForLayout(Id);
 	}
 	
 	@POST
-	@Path("findby/listItemId")
+	@Path("layout/findby/listItemId")
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
 		return itemDefFinder.getPerInfoItemDefByListIdForLayout(listItemDefId);
+	}
+	
+	@POST
+	@Path("layout/finditem/required")
+	public List<String> getRequiredIds() {
+		return itemDefFinder.getRequiredIds();
 	}
 }

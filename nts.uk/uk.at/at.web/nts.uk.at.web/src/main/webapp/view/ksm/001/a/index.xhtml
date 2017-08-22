@@ -8,14 +8,12 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-			<script>
-				var dialogSize = {
-					width : 900,
-					height : 700
-				};
-			</script>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:stylefile path="ksm001.a.main.css" />
 			<com:scriptfile path="ksm001.a.start.js" />
 			<com:scriptfile path="ksm001.a.service.js" />
@@ -32,17 +30,17 @@
 			<!-- COMPANY WORK TIME SETTING  START -->
 			<div id="tabpanel-1" role="tabpanel">
 				<com:ko tag="if" bind="isCompanySelected">
-					<ui:include src="a.xhtml" />
+					<ui:include src="b.xhtml" />
 				</com:ko>
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
 				<com:ko tag="if" bind="isEmploymentSelected">
-					<ui:include src="b.xhtml" />
+					<ui:include src="c.xhtml" />
 				</com:ko>
 			</div>
 			<div id="tabpanel-3" role="tabpanel">
 				<com:ko tag="if" bind="isPersonSelected">
-					<ui:include src="c.xhtml" />
+					<ui:include src="d.xhtml" />
 				</com:ko>
 			</div>
 		</ui:define>

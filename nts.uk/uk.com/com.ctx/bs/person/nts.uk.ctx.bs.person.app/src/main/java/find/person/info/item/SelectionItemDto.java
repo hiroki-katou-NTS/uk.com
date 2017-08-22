@@ -4,14 +4,14 @@ import lombok.Getter;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.CodeNameReferenceType;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.EnumReferenceCondition;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.MasterReferenceCondition;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeValue;
 
 @Getter
 public class SelectionItemDto extends DataTypeStateDto {
 
-	private ReferenceType referenceType;
+	private ReferenceTypes referenceType;
 
 	private static SelectionItemDto createMasterRefDto(String masterType) {
 		return MasterRefConditionDto.createFromJavaType(masterType);
@@ -25,19 +25,19 @@ public class SelectionItemDto extends DataTypeStateDto {
 		return EnumRefConditionDto.createFromJavaType(enumName);
 	}
 
-	protected SelectionItemDto(ReferenceType referenceType) {
+	protected SelectionItemDto(ReferenceTypes referenceType) {
 		super();
 		this.referenceType = referenceType;
 		this.dataTypeValue = DataTypeValue.SELECTION.value;
 	}
 
 	public static SelectionItemDto createFromJavaType(ReferenceTypeState referenceTypeState) {
-		ReferenceType refType = referenceTypeState.getReferenceType();
+		ReferenceTypes refType = referenceTypeState.getReferenceType();
 
-		if (refType == ReferenceType.DESIGNATED_MASTER) {
+		if (refType == ReferenceTypes.DESIGNATED_MASTER) {
 			MasterReferenceCondition masterRef = (MasterReferenceCondition) referenceTypeState;
 			return createMasterRefDto(masterRef.getMasterType().v());
-		} else if (refType == ReferenceType.CODE_NAME) {
+		} else if (refType == ReferenceTypes.CODE_NAME) {
 			CodeNameReferenceType codeNameRef = (CodeNameReferenceType) referenceTypeState;
 			return createCodeNameRefDto(codeNameRef.getTypeCode().v());
 		} else {

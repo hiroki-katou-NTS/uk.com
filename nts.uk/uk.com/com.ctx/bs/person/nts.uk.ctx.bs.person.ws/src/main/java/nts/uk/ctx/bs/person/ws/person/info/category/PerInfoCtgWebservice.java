@@ -25,7 +25,7 @@ public class PerInfoCtgWebservice extends WebService {
 	private PerInfoCategoryFinder perInfoCtgFinder;
 
 	@Inject
-	private AddPerInfoCtgCommandHandler dddPerInfoCtgCommand;
+	private AddPerInfoCtgCommandHandler addPerInfoCtgCommand;
 
 	@Inject
 	private UpdatePerInfoCtgCommandHandler updatePerInfoCtgCommand;
@@ -37,7 +37,7 @@ public class PerInfoCtgWebservice extends WebService {
 	}
 
 	@POST
-	@Path("findby/{Id}")
+	@Path("find/companyby/{Id}")
 	public PerInfoCtgFullDto getPerInfoCtg(@PathParam("Id") String id) {
 		return perInfoCtgFinder.getPerInfoCtg(id);
 	}
@@ -57,7 +57,7 @@ public class PerInfoCtgWebservice extends WebService {
 	@POST
 	@Path("add")
 	public void addPerInfoCtg(AddPerInfoCtgCommand newPerInfoCtg) {
-		dddPerInfoCtgCommand.handle(newPerInfoCtg);
+		addPerInfoCtgCommand.handle(newPerInfoCtg);
 	}
 
 	@POST

@@ -9,7 +9,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -98,6 +97,19 @@ public class ExternalBudgetWebService extends WebService {
 		this.delete.handle(command);
 	}
 
+	
+	/**
+	 * Checks if is daily unit.
+	 *
+	 * @param externalBudgetCd the external budget cd
+	 * @return true, if is daily unit
+	 */
+	@POST
+    @Path("validate/isDailyUnit")
+    public boolean isDailyUnit(String externalBudgetCd) {
+        return this.find.isDailyUnit(externalBudgetCd);
+    }
+	
     /**
      * Find data preview.
      *
@@ -111,9 +123,9 @@ public class ExternalBudgetWebService extends WebService {
     }
     
     @POST
-    @Path("import/validate/{fileId}")
-    public void validateFile(@PathParam("fileId") String fileId) {
-        this.find.validateFile(fileId);
+    @Path("import/validate")
+    public void validateFile(ExtBudgetExtractCondition extractCondition) {
+        this.find.validateFile(extractCondition);
     }
     
     /**

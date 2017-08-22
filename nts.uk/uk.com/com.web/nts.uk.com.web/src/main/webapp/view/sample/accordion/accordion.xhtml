@@ -31,11 +31,11 @@
 						<h2>Demo</h2>
 						<h3>Single</h3>
 						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
-						<div data-bind="ntsAccordion: { }">
+						<div data-bind="ntsAccordion: { }" tabindex="1">
 							<h3>詳細検索</h3>
 							<div>First content panel</div>
 						</div>
-						<div data-bind="ntsAccordion: { enable: enable }">
+						<div data-bind="ntsAccordion: { enable: enable }" tabindex="2">
 							<h3>
 								詳細検索
 								<span class="status">全選択</span>
@@ -45,7 +45,7 @@
 						</div>
 						<h3>Group</h3>
 						<input data-bind="ntsTextEditor: { value: active }"></input>
-						<div id="group-accordion" data-bind="ntsAccordion: { active: active, enable: enable }">
+						<div id="group-accordion" data-bind="ntsAccordion: { active: active, enable: enable }" tabindex="3">
 							<h3>詳細検索</h3>
 							<div>
 								<table id="multi-list" data-bind="ntsGridList: {

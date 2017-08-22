@@ -9,7 +9,7 @@ public class EnumReferenceCondition extends ReferenceTypeState {
 
 	private EnumReferenceCondition(String enumName) {
 		super();
-		this.referenceType = ReferenceType.ENUM;
+		this.referenceType = ReferenceTypes.ENUM;
 		this.enumName = new EnumName(enumName);
 	}
 

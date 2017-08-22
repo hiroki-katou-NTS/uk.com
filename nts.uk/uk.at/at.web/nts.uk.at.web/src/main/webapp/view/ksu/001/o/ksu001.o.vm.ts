@@ -1,7 +1,7 @@
 module ksu001.o.viewmodel {
+    import alert = nts.uk.ui.dialog.alert;
 
     export class ScreenModel {
-
         listWorkType: KnockoutObservableArray<IWorkType>;
         listWorkTime: KnockoutObservableArray<IWorkTime>;
         itemName: KnockoutObservable<string>;
@@ -57,6 +57,11 @@ module ksu001.o.viewmodel {
                 return [workTypeName, workTimeName];
             });
 
+            self.nameWorkTimeType.subscribe(function(value) {
+                //Paste data into cell (set-sticker-single)
+                $("#extable").exTable("stickData", value);
+            });
+
             $("#stick-undo").click(function() {
                 $("#extable").exTable("stickUndo");
             });
@@ -68,8 +73,8 @@ module ksu001.o.viewmodel {
         findWorkType(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.getWorkType().done(function(data: WorkType) {
-                if (data) {
+            service.getWorkType().done(function(data: WorkType[]) {
+                if (data.length > 0) {
                     _.each(data, function(wT) {
                         self.listWorkType.push(new WorkType({
                             workTypeCode: wT.workTypeCode,
@@ -82,6 +87,8 @@ module ksu001.o.viewmodel {
                         }));
                     });
                     //                    self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
+                } else {
+                    alert('Have not data of workType');
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -96,8 +103,8 @@ module ksu001.o.viewmodel {
         findWorkTime(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.getWorkTime().done(function(data) {
-                if (data) {
+            service.getWorkTime().done(function(data: WorkTime[]) {
+                if (data.length > 0) {
                     _.each(data, function(wT) {
                         self.listWorkTime.push(new WorkTime({
                             siftCd: wT.siftCd,
@@ -110,6 +117,8 @@ module ksu001.o.viewmodel {
                         }));
                     });
                     //                    self.selectedWorkTimeCode(self.listWorkTime()[0].siftCd);
+                } else {
+                    alert('Have not data of workTime');
                 }
                 dfd.resolve();
             }).fail(function() {

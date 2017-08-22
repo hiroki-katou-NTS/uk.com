@@ -23,6 +23,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Setter
 @Getter
 public class DailyPatternCommand {
+	
+	/** The is editting. */
+	private Boolean isEditting;
 
 	/** The pattern code. */
 	private String patternCode;
@@ -112,8 +115,8 @@ public class DailyPatternCommand {
 		 */
 		@Override
 		public List<DailyPatternVal> getListDailyPatternVal() {
-			return this.command.getDailyPatternVals().stream().map(item -> item.toDomain())
-					.collect(Collectors.toList());
+			return this.command.getDailyPatternVals().stream().filter(item -> item != null)
+					.map(item -> item.toDomain()).collect(Collectors.toList());
 		}
 
 	}

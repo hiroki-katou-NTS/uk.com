@@ -2,27 +2,22 @@ module nts.uk.com.view.cas001.d.viewmodel {
     import close = nts.uk.ui.windows.close;
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
-
+    import alert = nts.uk.ui.dialog.alert;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
-        categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);;
+        categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
-        currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole({ roleId: "99900000-0000-0000-0000-000000000001", roleCode: "0001", roleName: 'A' }));
+        currentRole: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
 
         constructor() {
             var self = this;
-            self.categoryList.subscribe(data => {
-                if (data) {
-                    $("#grid").igGrid("option", "dataSource", data);
-                } else {
-                    $("#grid").igGrid("option", "dataSource", []);
-                }
-            });
 
             self.start();
         }
 
-        start() {
+        start(): JQueryPromise<any> {
             let self = this,
+                dfd = $.Deferred(),
                 role: IPersonRole = ko.toJS(self.currentRole);
 
             self.categoryList.removeAll();
@@ -35,37 +30,44 @@ module nts.uk.com.view.cas001.d.viewmodel {
                         selfAuth: !!x.allowPersonRef,
                         otherAuth: !!x.allowOtherRef
                     })));
+                    dfd.resolve();
                 }
             });
+            return dfd.promise();
         }
 
         creatCategory() {
             let self = this,
-                role: IPersonRole = ko.toJS(self.currentRole),
-                data: Array<ICategoryAuth> = ko.unwrap(self.categoryList),
+                role: IPersonRole = ko.toJS(self.currentRole);
+            self.update(self.categoryList(), role.roleId);
+
+        }
+
+        closeDialog() {
+            close();
+        }
+
+        update(items: Array<CategoryAuth>, roleId: string) {
+            let data: Array<ICategoryAuth> = _.uniqBy(items, 'categoryId'),
                 datas: Array<any> = _(data)
-                    .filter((x: ICategoryAuth) => x.selfAuth || x.otherAuth)
                     .map((x: ICategoryAuth) => {
                         return {
-                            roleId: role.roleId,
+                            roleId: roleId,
                             categoryId: x.categoryId,
                             allowPersonRef: Number(x.selfAuth),
                             allowOtherRef: Number(x.otherAuth)
                         };
                     })
                     .value();
-
             service.updateCategory({ lstCategory: datas }).done(function(data) {
-                console.log(data);
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    close();
+                });
             }).fail(function(res) {
-                console.log("failed");
+                alert(res.message);
             })
-            close();
         }
 
-        closeDialog() {
-            close();
-        }
     }
 
     interface IPersonRole {

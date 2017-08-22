@@ -3,7 +3,6 @@ package find.person.info.item;
 import java.math.BigDecimal;
 
 import lombok.Getter;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
 
 public class DataTypeStateDto {

@@ -50,11 +50,9 @@ public class InsertPersonCostCalculationCommandHandler extends CommandHandler<Pe
 							.map(x -> new PremiumSetting(
 									x.getCompanyID(), 
 									x.getHistoryID(), 
-									x.getPremiumID(), 
+									x.getDisplayNumber(),  
 									new PremiumRate(x.getRate()), 
-									x.getAttendanceID(),
 									new PremiumName(x.getName()), 
-									x.getDisplayNumber(), 
 									EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class), 
 									x.getAttendanceItems().stream().map(y -> y.getShortAttendanceID()).collect(Collectors.toList())))
 							.collect(Collectors.toList())

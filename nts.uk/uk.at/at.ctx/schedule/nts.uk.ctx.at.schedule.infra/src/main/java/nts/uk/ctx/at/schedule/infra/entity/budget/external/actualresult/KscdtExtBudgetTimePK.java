@@ -82,6 +82,16 @@ public class KscdtExtBudgetTimePK implements Serializable {
         this.periodTimeNo = periodTimeNo;
     }
 
+    /**
+     * Creates the entity.
+     *
+     * @param other the other
+     * @return the kscdt ext budget time PK
+     */
+    public static KscdtExtBudgetTimePK createEntity(KscdtExtBudgetTimePK other) {
+        return new KscdtExtBudgetTimePK(other.getWkpid(), other.getActualDate(), other.getExtBudgetCd());
+    }
+    
     /*
      * (non-Javadoc)
      * 
