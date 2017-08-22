@@ -1,10 +1,11 @@
 module nts.uk.at.view.ksm006.a {
-    import CompanyBasicWorkFindDto = service.model.CompanyBasicWorkFindDto; 
+    import CompanyBasicWorkFindDto = service.model.CompanyBasicWorkFindDto;
     import BasicWorkSettingDto = service.model.BasicWorkSettingDto;
     import WorkplaceBasicWorkFindDto = service.model.WorkplaceBasicWorkFindDto;
     import WorkplaceBasicWorkDto = service.model.WorkplaceBasicWorkDto;
     import ClassifiBasicWorkFindDto = service.model.ClassifiBasicWorkFindDto;
     import ClassificationBasicWorkDto = service.model.ClassificationBasicWorkDto;
+    import blockUI = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
             selectedWorkplaceId: KnockoutObservable<string>;
@@ -12,37 +13,37 @@ module nts.uk.at.view.ksm006.a {
             workplaceAlreadySetList: KnockoutObservableArray<UnitAlreadySettingModel>;
             workplaceList: KnockoutObservableArray<UnitModel>;
             workplaceGrid: any;
-            
+
             classificationGrid: any;
             selectedClassifi: KnockoutObservable<string>;
             classificationList: KnockoutObservableArray<UnitModel>;
             classifiAlreadySetList: KnockoutObservableArray<any>;
-            
+
             // on Company Tab
             companyBWWorkingDay: KnockoutObservable<BasicWorkModel>;
             companyBWNonInLaw: KnockoutObservable<BasicWorkModel>;
             companyBWNonExtra: KnockoutObservable<BasicWorkModel>;
-            
+
             // on Workplace Tab
             workplaceBWWorkingDay: KnockoutObservable<BasicWorkModel>;
             workplaceBWNonInLaw: KnockoutObservable<BasicWorkModel>;
             workplaceBWNonExtra: KnockoutObservable<BasicWorkModel>;
-            
+
             // on Classification Tab
             classifyBWWorkingDay: KnockoutObservable<BasicWorkModel>;
             classifyBWNonInLaw: KnockoutObservable<BasicWorkModel>;
             classifyBWNonExtra: KnockoutObservable<BasicWorkModel>;
-            
+
             isShowCompanyTab: KnockoutObservable<boolean>;
             isShowWorkplaceTab: KnockoutObservable<boolean>;
             isShowClassifyTab: KnockoutObservable<boolean>;
-            
+
             companyId: string;
             isUpdateModeWorkplace: KnockoutObservable<boolean>;
             isUpdateModeClassify: KnockoutObservable<boolean>;
             workplaceName: KnockoutObservable<string>;
             classificationName: KnockoutObservable<string>;
-            
+
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
 
@@ -52,18 +53,18 @@ module nts.uk.at.view.ksm006.a {
                 self.baseDate = ko.observable(new Date());
                 self.workplaceAlreadySetList = ko.observableArray([]);
                 self.workplaceGrid = {
-                        isShowAlreadySet: true,
-                        isMultiSelect: false,
-                        treeType: ListType.WORK_PLACE,
-                        selectedWorkplaceId: self.selectedWorkplaceId,
-                        baseDate: self.baseDate,
-                        selectType: SelectionType.SELECT_FIRST_ITEM,
-                        isShowSelectButton: false,
-                        isDialog: false,
-                        alreadySettingList: self.workplaceAlreadySetList,
-                        maxRows: 10
+                    isShowAlreadySet: true,
+                    isMultiSelect: false,
+                    treeType: ListType.WORK_PLACE,
+                    selectedWorkplaceId: self.selectedWorkplaceId,
+                    baseDate: self.baseDate,
+                    selectType: SelectionType.SELECT_FIRST_ITEM,
+                    isShowSelectButton: false,
+                    isDialog: false,
+                    alreadySettingList: self.workplaceAlreadySetList,
+                    maxRows: 10
                 };
-                
+
                 self.selectedClassifi = ko.observable("");
                 self.classifiAlreadySetList = ko.observableArray([]);
                 self.classificationGrid = {
@@ -77,68 +78,69 @@ module nts.uk.at.view.ksm006.a {
                     alreadySettingList: self.classifiAlreadySetList,
                     maxRows: 12
                 };
-                
+
                 // Initialize on Company Tab
                 self.companyBWWorkingDay = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
                 self.companyBWNonInLaw = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
                 self.companyBWNonExtra = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
-                
+
                 // Initialize on Workplace Tab
                 self.workplaceBWWorkingDay = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
                 self.workplaceBWNonInLaw = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
                 self.workplaceBWNonExtra = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
-                
+
                 // Initialize on Classification Tab
                 self.classifyBWWorkingDay = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
                 self.classifyBWNonInLaw = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
                 self.classifyBWNonExtra = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
-                
+
                 self.isShowCompanyTab = ko.observable(true);
                 self.isShowWorkplaceTab = ko.observable(false);
                 self.isShowClassifyTab = ko.observable(false);
-                
+
                 self.isUpdateModeWorkplace = ko.computed(function() {
                     var existItem = self.workplaceAlreadySetList().filter((item) => {
-                                return item.workplaceId == self.selectedWorkplaceId();
-                            })[0];
+                        return item.workplaceId == self.selectedWorkplaceId();
+                    })[0];
                     if (existItem) {
-                        return true;    
+                        return true;
                     } else {
-                        return false;    
+                        return false;
                     }
                 });
-                
+
                 self.isUpdateModeClassify = ko.computed(function() {
                     var existItem = self.classifiAlreadySetList().filter((item) => {
                         return item.code == self.selectedClassifi();
                     })[0];
                     if (existItem) {
-                        return true;    
+                        return true;
                     } else {
-                        return false;    
+                        return false;
                     }
                 });
-                
+
                 self.workplaceName = ko.observable(null);
                 self.classificationName = ko.observable(null);
             }
-            
+
             /**
              * Start Page
              */
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                
+                blockUI.invisible();
                 self.findCompanyBasicWork().done(function() {
+                    blockUI.clear();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
+                    blockUI.clear();
                 });
-                
                 return dfd.promise();
             }
-            
+
             /**
              * Set Workplace Name
              */
@@ -155,8 +157,8 @@ module nts.uk.at.view.ksm006.a {
                     }
                 }
             }
-            
-            
+
+
             /**
              * Find CompanyBasicWork
              */
@@ -200,12 +202,12 @@ module nts.uk.at.view.ksm006.a {
                 });
                 return dfd.promise();
             }
-            
-            
+
+
             /**
              * Find WorkplaceBasicWork by WorkplaceId
              */
-            private findWorkplaceBasicWork(workplaceId: string): JQueryPromise<any>  {
+            private findWorkplaceBasicWork(workplaceId: string): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findWorkplaceBasicWork(workplaceId).done(function(data: WorkplaceBasicWorkFindDto) {
@@ -237,50 +239,52 @@ module nts.uk.at.view.ksm006.a {
                     });
                     dfd.resolve();
                     return;
-                    
+
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
                 return dfd.promise();
             }
-            
-            
-            
-            
+
+
+
+
             /**
              * Register Basic Work By Company
              */
-            registerByCompany(): void { 
+            registerByCompany(): void {
                 var self = this;
+                blockUI.invisible();
                 service.saveCompanyBasicWork(self.collectCompanyData()).done(function(data) {
                     if (data.length > 0) {
-//                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
+                        //                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
                         var message = "";
                         data.stream().forEach(function(item, index) {
-                           message += item + "\n"; 
+                            message += item + "\n";
                         });
                         nts.uk.ui.dialog.info(message);
                     } else {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
+                    blockUI.clear();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
+                    blockUI.clear();
                 });
             }
-            
-            
+
+
             /**
              * Register Basic Work By Workplace
              */
             registerByWorkplace(): void {
                 var self = this;
+                blockUI.invisible();
                 if (!self.selectedWorkplaceId()) {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
-                    //TODO: wait for QA#84782 Check Worktype, Pair WorkType-WorkingHours
-                
-                service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
+                  service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
                     if (data.length > 0) {
                         //                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
                         var message = "";
@@ -299,20 +303,22 @@ module nts.uk.at.view.ksm006.a {
 
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
-                    
+                    blockUI.clear();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
+                    blockUI.clear();
                 });
             }
-            
-            
+
+
             /**
              * Register Basic Work By Classification 
              */
             registerByClassification(): void {
                 var self = this;
+                blockUI.invisible();
                 if (!self.selectedClassifi()) {
-                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
                 service.saveClassifyBasicWork(self.collectClassifyData()).done(function(data) {
@@ -335,83 +341,90 @@ module nts.uk.at.view.ksm006.a {
 
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
-                    
+                    blockUI.clear();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
+                    blockUI.clear();
                 });
             }
-            
+
             /**
              *  Remove Classification Basic Work
              */
             removeByClassification(): void {
-                 var self = this;
-                
-                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                     service.removeClassifyBasicWork(self.selectedClassifi()).done(function() {
-                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                         
-                         // Remove AlreadySetting from Classification BW Grid List 
-                         self.classifiAlreadySetList.remove(self.classifiAlreadySetList().filter((item) => {
-                             return item.code == self.selectedClassifi();
-                         })[0]);
-                         
-                         // Find ClassificationBasicWork
+                var self = this;
+                blockUI.invisible();
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.removeClassifyBasicWork(self.selectedClassifi()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+
+                        // Remove AlreadySetting from Classification BW Grid List 
+                        self.classifiAlreadySetList.remove(self.classifiAlreadySetList().filter((item) => {
+                            return item.code == self.selectedClassifi();
+                        })[0]);
+
+                        // Find ClassificationBasicWork
                         service.findClassifyBasicWork(self.selectedClassifi()).done(function(classifyBasicWork: ClassifiBasicWorkFindDto) {
                             self.bindClassifyBasicWork(classifyBasicWork);
                         });
-                         
-                     }).fail((res) => {
-                         nts.uk.ui.dialog.alertError(res.message);
-                     });
-                 });
-                
+                        blockUI.clear();
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError(res.message);
+                        blockUI.clear();
+                    });
+                });
+
             }
-            
+
             /**
              *  Remove Workplace Basic Work
              */
             removeByWorkplace(): void {
-                 var self = this;
-                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                     service.removeWorkplaceBasicWork(self.selectedWorkplaceId()).done(function() {
-                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                         
-                         // Remove AlreadySetting from Workplace BW Grid List
-                         self.workplaceAlreadySetList.remove(self.workplaceAlreadySetList().filter((item) => {
-                             return item.workplaceId == self.selectedWorkplaceId();
-                         })[0]);
-                         
-                         // Find WorkplaceBasicWork by WorkplaceId
+                var self = this;
+                blockUI.invisible();
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.removeWorkplaceBasicWork(self.selectedWorkplaceId()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+
+                        // Remove AlreadySetting from Workplace BW Grid List
+                        self.workplaceAlreadySetList.remove(self.workplaceAlreadySetList().filter((item) => {
+                            return item.workplaceId == self.selectedWorkplaceId();
+                        })[0]);
+
+                        // Find WorkplaceBasicWork by WorkplaceId
                         service.findWorkplaceBasicWork(self.selectedWorkplaceId()).done(function(workplaceBasicWork: WorkplaceBasicWorkFindDto) {
-                           self.bindWorkplaceBasicWork(workplaceBasicWork);
+                            self.bindWorkplaceBasicWork(workplaceBasicWork);
                         });
-                         
-                     }).fail((res) => {
-                         nts.uk.ui.dialog.alertError(res.message);
-                     });
-                 });
+                        blockUI.clear();
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError(res.message);
+                        blockUI.clear();
+                    });
+                });
             }
-            
-            
+
+
             /**
              * Switch To Company Tab
              */
-            switchToCompanyTab(): void { 
+            switchToCompanyTab(): void {
                 var self = this;
+                blockUI.invisible();
                 self.isShowCompanyTab(true);
                 self.isShowClassifyTab(false);
                 self.isShowWorkplaceTab(false);
                 self.findCompanyBasicWork();
                 $('#focus-btn').focus();
+                blockUI.clear();
             }
-            
-            
+
+
             /**
              * SwitchTo Workplace Tab
              */
             switchToWorkplaceTab(): void {
                 var self = this;
+                blockUI.invisible();
                 self.isShowWorkplaceTab(true);
                 self.isShowCompanyTab(false);
                 self.isShowClassifyTab(false);
@@ -423,14 +436,14 @@ module nts.uk.at.view.ksm006.a {
                     }
                     self.workplaceAlreadySetList(alreadySettingList);
                 });
-                 
+
                 // Selected Item subscribe
                 self.selectedWorkplaceId.subscribe(function(data: string) {
-                    
+                    blockUI.invisible();
                     if (data) {
                         // Find WorkplaceBasicWork by WorkplaceId
                         service.findWorkplaceBasicWork(data).done(function(workplaceBasicWork: WorkplaceBasicWorkFindDto) {
-                           self.bindWorkplaceBasicWork(workplaceBasicWork);
+                            self.bindWorkplaceBasicWork(workplaceBasicWork);
                         });
                         // Set Workplace Name.
                         let tree = $('#workplace-list').getDataList();
@@ -440,18 +453,20 @@ module nts.uk.at.view.ksm006.a {
                         self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
                         self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
                     }
-
+                    blockUI.clear();
                 });
                 // Reload Workplace List
                 $('#workplace-list').ntsTreeComponent(self.workplaceGrid).done(() => $('#workplace-list').focus());
+                blockUI.clear();
             }
-            
-            
+
+
             /**
              * Switch To Classification Tab
              */
-            switchToClassTab(): void { 
+            switchToClassTab(): void {
                 var self = this;
+                blockUI.invisible();
                 self.isShowClassifyTab(true);
                 self.isShowCompanyTab(false);
                 self.isShowWorkplaceTab(false);
@@ -465,20 +480,21 @@ module nts.uk.at.view.ksm006.a {
                 })
                 // Reload Classification List
                 $('#classification-list').ntsListComponent(self.classificationGrid).done(() => $('#classification-list').focus());
-                
+
                 // SelectedClassification Subscribe
                 self.selectedClassifi.subscribe(function(data: string) {
+                    blockUI.invisible();
                     if (data) {
                         // Find ClassificationBasicWork
                         service.findClassifyBasicWork(data).done(function(classifyBasicWork: ClassifiBasicWorkFindDto) {
                             self.bindClassifyBasicWork(classifyBasicWork);
                         });
-                        
+
                         // Set Classification Name
                         var classifyDataList = $('#classification-list').getDataList();
                         var classify = classifyDataList.filter((item) => {
-                                return item.code == self.selectedClassifi();
-                            })[0];
+                            return item.code == self.selectedClassifi();
+                        })[0];
                         self.classificationName(classify.name);
                     } else {
                         // If data is null
@@ -486,11 +502,12 @@ module nts.uk.at.view.ksm006.a {
                         self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
                         self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
                     }
+                    blockUI.clear();
                 });
-                
+                blockUI.clear();
             }
-            
-            
+
+
             /**
              * Bind Classification Basic Work
              */
@@ -525,8 +542,8 @@ module nts.uk.at.view.ksm006.a {
                 self.selectedClassifi(data.classificationCode);
                 return;
             }
-            
-            
+
+
             /**
              * Bind Workplace Basic Work
              */
@@ -560,24 +577,24 @@ module nts.uk.at.view.ksm006.a {
                 self.selectedWorkplaceId(data.workplaceId);
                 return;
             }
-            
-            
+
+
             /**
              * collect company Basic Work data to save
              */
             private collectCompanyData(): Array<BasicWorkSettingDto> {
-                var self = this;               
+                var self = this;
                 var basicWorkSettingArray: Array<BasicWorkSettingDto> = [];
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, 
-                self.companyBWWorkingDay().worktypeCode(), self.companyBWWorkingDay().workingCode()));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, 
-                self.companyBWNonInLaw().worktypeCode(), self.companyBWNonInLaw().workingCode()));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, 
-                self.companyBWNonExtra().worktypeCode(), self.companyBWNonExtra().workingCode()));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY,
+                    self.companyBWWorkingDay().worktypeCode(), self.companyBWWorkingDay().workingCode()));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW,
+                    self.companyBWNonInLaw().worktypeCode(), self.companyBWNonInLaw().workingCode()));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR,
+                    self.companyBWNonExtra().worktypeCode(), self.companyBWNonExtra().workingCode()));
                 return basicWorkSettingArray;
             }
-            
-            
+
+
             /**
              * collect Workplace Basic Work data to save
              */
@@ -585,38 +602,38 @@ module nts.uk.at.view.ksm006.a {
                 var self = this;
                 var dto: WorkplaceBasicWorkDto = new WorkplaceBasicWorkDto();
                 dto.workplaceId = self.selectedWorkplaceId();
-                var basicWorkSettingArray: Array<BasicWorkSettingDto> =[];
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, 
-                self.workplaceBWWorkingDay().worktypeCode(), self.workplaceBWWorkingDay().workingCode()));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, 
-                self.workplaceBWNonInLaw().worktypeCode(), self.workplaceBWNonInLaw().workingCode()));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, 
-                self.workplaceBWNonExtra().worktypeCode(), self.workplaceBWNonExtra().workingCode()));
+                var basicWorkSettingArray: Array<BasicWorkSettingDto> = [];
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY,
+                    self.workplaceBWWorkingDay().worktypeCode(), self.workplaceBWWorkingDay().workingCode()));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW,
+                    self.workplaceBWNonInLaw().worktypeCode(), self.workplaceBWNonInLaw().workingCode()));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR,
+                    self.workplaceBWNonExtra().worktypeCode(), self.workplaceBWNonExtra().workingCode()));
                 dto.basicWorkSetting = basicWorkSettingArray;
                 return dto;
             }
-            
-            
+
+
             /**
              * collect Classification Basic Work data to save
              */
             private collectClassifyData(): ClassificationBasicWorkDto {
                 var self = this;
                 var dto: ClassificationBasicWorkDto = new ClassificationBasicWorkDto();
-                dto.classificationCode = self.selectedClassifi();  
-                var basicWorkSettingArray: Array<BasicWorkSettingDto> =[];
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY, 
-                self.classifyBWWorkingDay().worktypeCode(), self.classifyBWWorkingDay().workingCode()));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW, 
-                self.classifyBWNonInLaw().worktypeCode(), self.classifyBWNonInLaw().workingCode()));
-                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR, 
-                self.classifyBWNonExtra().worktypeCode(), self.classifyBWNonExtra().workingCode()));
+                dto.classificationCode = self.selectedClassifi();
+                var basicWorkSettingArray: Array<BasicWorkSettingDto> = [];
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.WORKING_DAY,
+                    self.classifyBWWorkingDay().worktypeCode(), self.classifyBWWorkingDay().workingCode()));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_INLAW,
+                    self.classifyBWNonInLaw().worktypeCode(), self.classifyBWNonInLaw().workingCode()));
+                basicWorkSettingArray.push(new BasicWorkSettingDto(WorkingDayDivision.NON_WORK_EXTR,
+                    self.classifyBWNonExtra().worktypeCode(), self.classifyBWNonExtra().workingCode()));
                 dto.basicWorkSetting = basicWorkSettingArray;
                 return dto;
             }
         }
-        
-        
+
+
         /**
          * Class BasicWorkModel
          */
@@ -626,24 +643,25 @@ module nts.uk.at.view.ksm006.a {
             worktypeDisplayName: KnockoutObservable<string>;
             workingCode: KnockoutObservable<string>;
             workingDisplayName: KnockoutObservable<string>;
-            
+
             selectableWorktypeList: KnockoutObservableArray<string>;
             selectableWorkingList: KnockoutObservableArray<string>;
             worktypeCodes: KnockoutObservableArray<number>;
-            
-            constructor (worktypeCode: string, worktypeDisplayName: string, workingCode: string, workingDisplayName: string) {
+
+            constructor(worktypeCode: string, worktypeDisplayName: string, workingCode: string, workingDisplayName: string) {
                 this.worktypeCode = ko.observable(worktypeCode);
                 this.worktypeDisplayName = ko.observable(worktypeDisplayName);
                 this.workingCode = ko.observable(workingCode);
                 this.workingDisplayName = ko.observable(workingDisplayName);
                 this.worktypeCodes = ko.observableArray([]);
             }
-            
+
             /**
              * Go to KDL003 
              */
             public gotoDialog(enumVal: number, data): void {
                 let self = this;
+                blockUI.invisible();
                 // Set worktypeCodes
                 switch (enumVal) {
                     case 1:
@@ -657,7 +675,7 @@ module nts.uk.at.view.ksm006.a {
                     case 3:
                         self.worktypeCodes([WorkStyle.MORNING_BREAK, WorkStyle.AFTERNOON_BREAK, WorkStyle.ONE_DAY_REST]);
                         break;
-                    
+
                 }
                 // Find worktypeCode List and worktimeCode List to Set Parameters to open Dialog KDL003
                 $.when(service.findWorktypeCodeList(self.worktypeCodes()), service.findWorktimeCodeList())
@@ -674,10 +692,6 @@ module nts.uk.at.view.ksm006.a {
                             var childData = nts.uk.ui.windows.getShared('childData');
                             // If childData is undefined or selectedWorkTypeCode is undefined
                             if (!childData || !childData.selectedWorkTypeCode) {
-                                self.worktypeCode(null);
-                                self.workingCode(null);
-                                self.worktypeDisplayName(null);
-                                self.workingDisplayName(null);
                                 return;
                             }
                             self.worktypeCode(childData.selectedWorkTypeCode);
@@ -691,7 +705,8 @@ module nts.uk.at.view.ksm006.a {
                             }
 
                         });
-                });
+                    });
+                blockUI.clear();
             }
         }
         /**
@@ -703,7 +718,7 @@ module nts.uk.at.view.ksm006.a {
             static AFTERNOON_BREAK = 2;
             static ONE_DAY_WORK = 4;
         }
-        
+
         /**
          * Class WorkingDayDivision
          */
@@ -712,20 +727,20 @@ module nts.uk.at.view.ksm006.a {
             static NON_WORK_INLAW = 1;
             static NON_WORK_EXTR = 2;
         }
-        
+
         /**
          *  Class UnitAlreadySettingModel
          */
         export class UnitAlreadySettingModel {
             workplaceId: string;
             isAlreadySetting: boolean;
-            
+
             constructor(code: string, isAlreadySetting: boolean) {
                 this.workplaceId = code;
                 this.isAlreadySetting = isAlreadySetting;
             }
         }
-        
+
         /**
          * Class ListType
          */
@@ -733,7 +748,7 @@ module nts.uk.at.view.ksm006.a {
             static WORK_PLACE = 1;
             static CLASSIFICATION = 2;
         }
-        
+
         /**
          * Class SelectionType
          */
@@ -743,7 +758,7 @@ module nts.uk.at.view.ksm006.a {
             static SELECT_FIRST_ITEM = 3;
             static NO_SELECT = 4;
         }
-        
+
         /**
          * Interface UnitModel
          */
