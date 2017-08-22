@@ -137,6 +137,11 @@ module nts.uk.at.view.ksm001.a {
                 return dfd.promise();
             }
             
+            public visibleTabpanel() {
+                var self = this;
+                
+            }
+            
             /**
              * on click tab panel company action event
              */
@@ -158,6 +163,9 @@ module nts.uk.at.view.ksm001.a {
                     }
                     self.lstMonthly(dataModel);
                     self.isLoading(false);
+                    window.setTimeout(function() {
+                        $('#' + self.selectedTab()).removeClass('disappear');
+                    }, 100);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -172,9 +180,10 @@ module nts.uk.at.view.ksm001.a {
                 self.isPersonSelected(false);
                 self.isEmploymentSelected(true);
                 self.isLoading(false);
-                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(function () {
-                    $('#emp-tab-1').removeClass('disappear');
-                });
+                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption)
+                window.setTimeout(function() {
+                    $('#'+ self.selEmploymentTab()).removeClass('disappear');
+                }, 100);
             }
             /**
              * on click tab panel employment action event
@@ -202,9 +211,10 @@ module nts.uk.at.view.ksm001.a {
                     self.employeeList = ko.observableArray<UnitModel>([]);
                     self.applyKCP005ContentSearch([]);
                     
-                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
-                        $('#person-tab-1').removeClass('disappear');
-                    });
+                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
+                     window.setTimeout(function() {
+                         $('#' + self.selectedTab()).removeClass('disappear');
+                     }, 100);
                     
                 });
             }
