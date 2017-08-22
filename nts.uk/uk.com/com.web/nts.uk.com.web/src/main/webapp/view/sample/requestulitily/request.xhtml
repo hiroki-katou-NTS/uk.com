@@ -72,6 +72,16 @@ Result: "http://localhost:8080/nts.uk.com.web/view/sample/requestulitily/request
 });]]></pre>
 							</div>
 						</div>
+						
+						<div class="feature-box">
+							<div class="header"><h3>Run asynchronous task and cancel</h3></div>
+							<div class="content" data-bind="with: asyncTask">
+								<button data-bind="click: run">run /sample/asynccmd/test</button>
+								<button data-bind="click: cancel">cancel</button>
+								<div>See console. status will be output into console.</div>
+								<div>To implement server-side, see SampleAsyncCmmandWebService.</div>
+							</div>
+						</div>
 
 
 						<div class="footer cf">

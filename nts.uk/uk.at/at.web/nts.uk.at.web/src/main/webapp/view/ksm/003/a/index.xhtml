@@ -23,7 +23,7 @@
 				<!-- B1_1: Button New -->
 				<button tabindex="1" id="btn_001"
 					class="button separate-button fix-button"
-					data-bind="click: switchNewMode, enable: isEditting">#{i18n.getText('KSM003_20')}</button>
+					data-bind="click: switchNewMode">#{i18n.getText('KSM003_20')}</button>
 				<!-- B1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
@@ -35,7 +35,7 @@
 				<!-- B1_4: Button Delete -->
 				<button tabindex="4" id="btn_004"
 					class="button danger separate-button fix-button"
-					data-bind="click: deletePattern, enable: isEditting">#{i18n.getText('KSM003_22')}</button>
+					data-bind="click: deletePattern, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_22')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"
@@ -44,7 +44,7 @@
 						<!-- B3_1: Label -->
 						<div style="margin-bottom: 20px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSM003_23')}</div>
 						<!-- B2_2: List Divergence Reason -->
-						<table tabindex="5" id="single-list"
+						<table  id="single-list"
 							data-bind="ntsGridList:{
 								width: 330,
 								height: 230,
@@ -74,7 +74,7 @@
 							</td>
 							<td>
 								<!-- B3_2: Pattern code --> 
-								<input tabindex="6" class="nts-input" id="inpCode"
+								<input tabindex="5" class="nts-input" id="inpCode"
 								data-bind="ntsTextEditor: {
 										  name: '#[KSM003_36]',
                                           value: patternCode,
@@ -82,7 +82,7 @@
                                           enable: !$parent.isEditting(),
                                           required: true}" />
 								<!-- B3_3:Pattern Name--> 
-								<input tabindex="7" class="nts-input" id="inpPattern"
+								<input tabindex="6" class="nts-input" id="inpPattern"
 								data-bind="ntsTextEditor: {
 										  name: '#[KSM003_37]',
                                           value: patternName,
@@ -95,35 +95,40 @@
 						<!-- B3_1: Label -->
 						<!-- B2_2: List Pattern Value-->
 						<div>#{i18n.getText('KSM003_29')}</div>
-						<div class="control-group">
-							<table class="border-all tbl-monthly">
-								<tr class="bg-green">
-									<td></td>
-									<td>#{i18n.getText('KSM003_30')}</td>
-									<td>#{i18n.getText('KSM003_31')}</td>
-									<td>#{i18n.getText('KSM003_32')}</td>
-								</tr>
-								<com:ko tag="foreach" bind="dailyPatternVals">
-									<tr>
-										<td >
-											<div >
-												<button class="buttonEvent" 
-													style="margin: 10px 10px 10px 10px;width: 80px"
-													data-bind="click: openDialogWorkDays">
-													#{i18n.getText('KSM003_34')}</button>
-											</div>
-										</td>
-										<td>
-											<div  style="width: 200px" data-bind="text: workTypeInfo "></div>
-										</td>
-										<td>
-											<div  style="width: 200px" data-bind="text: workingInfo "></div>
-										</td>
-										<td ><input 
-											data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" style="width: 50px ;"/> #{i18n.getText('KSM003_33')} 
-										</td>
+						 <div class="control-group" > 
+							<table class="border-all tbl-monthly" id="tblDailyPatternVals">
+								<THEAD>
+									<tr class="bg-green">
+										<td></td>
+										<td>#{i18n.getText('KSM003_30')}</td>
+										<td>#{i18n.getText('KSM003_31')}</td>
+										<td>#{i18n.getText('KSM003_32')}</td>
 									</tr>
-								</com:ko>
+								</THEAD>
+								<TBODY>
+									<com:ko tag="foreach" bind="dailyPatternVals">
+										<tr>
+											<td >
+												<div >
+													<button class="buttonEvent" 
+														style="width: 80px"
+														data-bind="click: openDialogWorkDays">
+														#{i18n.getText('KSM003_34')} </button>
+												</div>
+											</td>
+											<td>
+												<div  style="width: 200px" data-bind="text: workTypeInfo "></div>
+											</td>
+											<td>
+												<div  style="width: 200px" data-bind="text: workingInfo "></div>
+											</td>
+											<td ><input tabindex="7"  class="nts-input"
+												data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" style="width: 30px ;"/> #{i18n.getText('KSM003_33')} 
+												
+											</td>
+										</tr>
+									</com:ko>
+								</TBODY>
 							</table>
 						</div>
 					</div>

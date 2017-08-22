@@ -74,15 +74,15 @@ module nts.uk.at.view.kdl003.a {
 
                         // On selectedWorkTypeCode changed event.
                         self.selectedWorkTypeCode.subscribe(code => {
+                            if (nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
+                                return;
+                            }
                             service.isWorkTimeSettingNeeded(code).done(val => {
                                 switch (val) {
-                                    case SetupType.REQUIRED:
-                                        self.setWorkTimeSelection();
+                                    case SetupType.NOT_REQUIRED:
+                                        self.selectedWorkTimeCode('000');
                                         break;
-                                    case SetupType.OPTIONAL:
-                                        // Do nothing.
-                                        break;
-                                    default: self.selectedWorkTimeCode('000');
+                                    default: // Do nothing.
                                 }
                             });
                         });
@@ -108,16 +108,14 @@ module nts.uk.at.view.kdl003.a {
                 let dfd = $.Deferred<void>();
 
                 // Find work time by list code if caller's parameters exist.
-                if (self.callerParameter.workTimeCodes && self.callerParameter.workTimeCodes.length > 0) {
-                    service.findByCodeList(self.callerParameter.workTimeCodes)
+                if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
+                    service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
                         .done(function(data) {
                             self.addFirstItem(data);
                             dfd.resolve();
                         });
-                }
-
-                // Find all work time
-                else {
+                } else {
+                    // Find all work time
                     service.findAllWorkTime()
                         .done(function(data) {
                             self.addFirstItem(data);
@@ -135,16 +133,14 @@ module nts.uk.at.view.kdl003.a {
                 let dfd = $.Deferred<void>();
 
                 // Find work type by list code if caller's parameters exist.
-                if (self.callerParameter.workTypeCodes && self.callerParameter.workTypeCodes.length > 0) {
+                if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTypeCodes)) {
                     service.findWorkTypeByCodes(self.callerParameter.workTypeCodes)
                         .done(function(workTypeList: Array<WorkType>) {
                             self.listWorkType(workTypeList);
                             dfd.resolve();
                         });
-                }
-
-                // Find all work type.
-                else {
+                } else {
+                    // Find all work type.
                     service.findAllWorkType()
                         .done(function(workTypeList: Array<WorkType>) {
                             self.listWorkType(workTypeList);
@@ -179,9 +175,8 @@ module nts.uk.at.view.kdl003.a {
                 // Selected code from caller screen.
                 if (self.callerParameter.selectedWorkTypeCode) {
                     self.selectedWorkTypeCode(self.callerParameter.selectedWorkTypeCode);
-                }
-                // Select first item.
-                else {
+                } else {
+                    // Select first item.
                     self.selectedWorkTypeCode(_.first(self.listWorkType()).workTypeCode);
                 }
             }
@@ -192,11 +187,12 @@ module nts.uk.at.view.kdl003.a {
             private setWorkTimeSelection(): void {
                 let self = this;
                 // Selected code from caller screen.
-                if (self.callerParameter.selectedWorkTimeCode) {
-                    self.selectedWorkTimeCode(self.callerParameter.selectedWorkTimeCode);
-                }
-                // Select first item.
-                else {
+                let selectedWorkTimeCode = self.callerParameter.selectedWorkTimeCode;
+                let isInSelectableCodes = selectedWorkTimeCode ? _.find(self.listWorkTime(), item => selectedWorkTimeCode == item.code) : false;
+                if (selectedWorkTimeCode && isInSelectableCodes) {
+                    self.selectedWorkTimeCode(selectedWorkTimeCode);
+                } else {
+                    // Select first item.
                     self.selectedWorkTimeCode(_.first(self.listWorkTime()).code);
                 }
             }
@@ -221,7 +217,7 @@ module nts.uk.at.view.kdl003.a {
                 service.findByTime(command)
                     .done(function(data) {
                         self.listWorkTime(data);
-                        if (data && data.length > 0) {
+                        if (!nts.uk.util.isNullOrEmpty(data)) {
                             self.selectedWorkTimeCode(data[0].code);
                         }
                     })
@@ -268,6 +264,11 @@ module nts.uk.at.view.kdl003.a {
                 let workTypeCode = self.selectedWorkTypeCode();
                 let workTimeCode = self.selectedWorkTimeCode();
 
+                // Set work time = なし if list work time is empty.
+                if (nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
+                    workTimeCode = '000';
+                }
+
                 // Check pair work type & work time.
                 service.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode).done(() => {
 
@@ -311,8 +312,8 @@ module nts.uk.at.view.kdl003.a {
              */
             private getWorkTimeName(workTimeCode: string): string {
                 let self = this;
-                let name: string = '';
-                if (self.listWorkTime()) {
+                let name = 'なし';
+                if (!nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                     let workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
                     name = workTime ? workTime.name : '';
                 }

@@ -29,21 +29,62 @@ import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeScheduleDto;
 @Produces("application/json")
 public class WorkTimeWebService extends WebService {
 
+	/** The work time finder. */
 	@Inject
 	private WorkTimeFinder workTimeFinder;
 
+	/**
+	 * Find by company ID.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findByCompanyID")
 	public List<WorkTimeDto> findByCompanyID() {
 		return this.workTimeFinder.findByCompanyID();
 	}
 
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll")
+	public List<WorkTimeDto> findAll() {
+		return this.workTimeFinder.findAll();
+	}
+
+	/**
+	 * Find by codes.
+	 *
+	 * @param codes the codes
+	 * @return the list
+	 */
+	@POST
+	@Path("findByCodes")
+	public List<WorkTimeDto> findByCodes(List<String> codes) {
+		return this.workTimeFinder.findByCodes(codes);
+	}
+
+	/**
+	 * Find by code list.
+	 *
+	 * @param codelist the codelist
+	 * @return the list
+	 */
 	@POST
 	@Path("findByCodeList")
 	public List<WorkTimeDto> findByCodeList(List<String> codelist) {
 		return this.workTimeFinder.findByCodeList(codelist);
 	}
 
+	/**
+	 * Find by time.
+	 *
+	 * @param command the command
+	 * @return the list
+	 */
 	@POST
 	@Path("findByTime")
 	public List<WorkTimeDto> findByTime(WorkTimeCommandFinder command) {
@@ -51,6 +92,11 @@ public class WorkTimeWebService extends WebService {
 				command.endTime);
 	}
 
+	/**
+	 * Find by C id and display atr.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findByCIdAndDisplayAtr")
 	public List<WorkTimeScheduleDto> findByCIdAndDisplayAtr() {

@@ -23,6 +23,7 @@ module nts.uk.at.view.ksm005.b {
             yearMonth: KnockoutObservable<number>;
             startDate: number;
             endDate: number;
+            isBuild: boolean;
             workplaceId: KnockoutObservable<string>;
             eventDisplay: KnockoutObservable<boolean>;
             eventUpdatable: KnockoutObservable<boolean>;
@@ -37,6 +38,7 @@ module nts.uk.at.view.ksm005.b {
                     { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
                     { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 }
                 ]);
+                self.isBuild = false;
                 self.lstWorkMonthlySetting = ko.observableArray([]);
                 self.lstMonthlyPattern = ko.observableArray([]);
                 self.selectMonthlyPattern = ko.observable('');
@@ -48,9 +50,17 @@ module nts.uk.at.view.ksm005.b {
                 self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM')));
                 
                 self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string) {
+                    if (self.isBuild) {
+                        self.clearValiate();
+                    }
+                    
                     if (monthlyPatternCode) {
                         self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked());
                     }
+                    else {
+                        self.resetData();
+                    }
+                    console.log(monthlyPatternCode);
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
@@ -84,10 +94,14 @@ module nts.uk.at.view.ksm005.b {
                 if (self.validateClient()) {
                     return;
                 }
-                nts.uk.ui.windows.setShared("monthlyPatternCode",nts.uk.text.padLeft(self.monthlyPatternModel().code(),'0',3));
-                nts.uk.ui.windows.setShared("monthlyPatternName",self.monthlyPatternModel().name());
-                nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function(){
-                    self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(),'0',3), false);
+                nts.uk.ui.windows.setShared("monthlyPatternCode", nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3));
+                nts.uk.ui.windows.setShared("monthlyPatternName", self.monthlyPatternModel().name());
+                nts.uk.ui.windows.setShared("yearmonth", self.yearMonthPicked());
+                nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function() {
+                    var isCancelSave: boolean = nts.uk.ui.windows.getShared("isCancelSave");
+                    if (!isCancelSave) {
+                        self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
+                    }
                 });
             }
 
@@ -360,8 +374,8 @@ module nts.uk.at.view.ksm005.b {
              * clear validate client
              */
            public clearValiate() {
-                $('#inp_monthlyPatternCode').ntsError('clear')
-                $('#inp_monthlyPatternName').ntsError('clear')
+                $('#inp_monthlyPatternCode').ntsError('clear');
+                $('#inp_monthlyPatternName').ntsError('clear');
             }
             
             
@@ -440,7 +454,10 @@ module nts.uk.at.view.ksm005.b {
                 this.name = ko.observable('');
                 this.enableMonthlyPatternCode = ko.observable(true);
                 this.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    width: "50px",
+                    filldirection: "left",
+                    fillcharacter: "0",
+                    autofill: true,
+                    width: "40px",
                     textmode: "text",
                     textalign: "left"
                 }));

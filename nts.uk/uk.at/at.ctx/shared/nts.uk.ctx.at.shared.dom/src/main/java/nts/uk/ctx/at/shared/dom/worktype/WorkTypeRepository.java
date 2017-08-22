@@ -29,6 +29,7 @@ public interface WorkTypeRepository {
 	 * @return the list
 	 */
 	List<WorkType> findByCompanyId(String companyId);
+	
 
 	/**
 	 * Find not deprecated.
@@ -64,4 +65,6 @@ public interface WorkTypeRepository {
 	 * @return WorkType
 	 */
 	Optional<WorkType> findByPK(String companyId, String workTypeCd);
+	
+	void add(WorkType worktype);
 }

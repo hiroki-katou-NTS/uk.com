@@ -20,11 +20,11 @@ public class KshstDailyServiceTypeControl extends UkJpaEntity implements Seriali
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KshstDailyServiceTypeControlPK kshstDailyServiceTypeControlPK;
-	@Column(name = "USER_CAN_SET")
+	@Column(name = "CHANGED_BY_YOU")
 	public BigDecimal youCanChangeIt;
 	@Column(name = "CHANGED_BY_OTHERS")
 	public BigDecimal canBeChangedByOthers;
-	@Column(name = "USE")
+	@Column(name = "USE_ATR")
 	public BigDecimal use;
 	
 	@Override

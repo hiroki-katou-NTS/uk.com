@@ -13,11 +13,16 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscmtEstTimeComSet.
  */
+
+@Getter
+@Setter
 @Entity
 @Table(name = "KSCMT_EST_TIME_COM_SET")
 public class KscmtEstTimeComSet extends UkJpaEntity implements Serializable {
@@ -29,65 +34,36 @@ public class KscmtEstTimeComSet extends UkJpaEntity implements Serializable {
     @EmbeddedId
     protected KscmtEstTimeComSetPK kscmtEstTimeComSetPK;
     
-    /** The m condition 1 st time. */
+    /** The est condition 1 st time. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_1ST_TIME")
-    private int mCondition1stTime;
+    @Column(name = "EST_CONDITION_1ST_TIME")
+    private int estCondition1stTime;
     
-    /** The m condition 2 nd time. */
+    /** The est condition 2 nd time. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_2ND_TIME")
-    private int mCondition2ndTime;
+    @Column(name = "EST_CONDITION_2ND_TIME")
+    private int estCondition2ndTime;
     
-    /** The m condition 3 rd time. */
+    /** The est condition 3 rd time. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_3RD_TIME")
-    private int mCondition3rdTime;
+    @Column(name = "EST_CONDITION_3RD_TIME")
+    private int estCondition3rdTime;
     
-    /** The m condition 4 th time. */
+    /** The est condition 4 th time. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_4TH_TIME")
-    private int mCondition4thTime;
+    @Column(name = "EST_CONDITION_4TH_TIME")
+    private int estCondition4thTime;
     
-    /** The m condition 5 th time. */
+    /** The est condition 5 th time. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_5TH_TIME")
-    private int mCondition5thTime;
-    
-    /** The y condition 1 st time. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_1ST_TIME")
-    private int yCondition1stTime;
-    
-    /** The y condition 2 nd time. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_2ND_TIME")
-    private int yCondition2ndTime;
-    
-    /** The y condition 3 rd time. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_3RD_TIME")
-    private int yCondition3rdTime;
-    
-    /** The y condition 4 th time. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_4TH_TIME")
-    private int yCondition4thTime;
-    
-    /** The y condition 5 th time. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_5TH_TIME")
-    private int yCondition5thTime;
+    @Column(name = "EST_CONDITION_5TH_TIME")
+    private int estCondition5thTime;
+
 
     /**
      * Instantiates a new kscmt est time com set.

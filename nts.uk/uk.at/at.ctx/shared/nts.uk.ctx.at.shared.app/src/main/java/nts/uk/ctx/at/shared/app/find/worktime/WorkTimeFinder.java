@@ -70,11 +70,45 @@ public class WorkTimeFinder {
 		workTimeMethodSet[3] = internationalization.getItemName(WorkTimeMethodSet.Enum_Fluid_Work.name()).get();
 	}
 
+	/**
+	 * Find by company ID.
+	 *
+	 * @return the list
+	 */
 	public List<WorkTimeDto> findByCompanyID() {
 		String companyID = AppContexts.user().companyId();
 		List<WorkTime> workTimeItems = this.workTimeRepository.findByCompanyID(companyID);
 		List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCompanyID(companyID);
 		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+	}
+
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<WorkTimeDto> findAll() {
+		String companyID = AppContexts.user().companyId();
+		List<WorkTime> workTimeItems = this.workTimeRepository.findAll(companyID);
+		List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCompanyID(companyID);
+		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+	}
+
+	/**
+	 * Find by codes.
+	 *
+	 * @param codes the codes
+	 * @return the list
+	 */
+	public List<WorkTimeDto> findByCodes(List<String> codes) {
+		String companyID = AppContexts.user().companyId();
+		if (codes.isEmpty()) {
+			return Collections.emptyList();
+		} else {
+			List<WorkTime> workTimeItems = this.workTimeRepository.findByCodes(companyID, codes);
+			List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCodeList(companyID, codes);
+			return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+		}
 	}
 
 	/**
@@ -156,30 +190,28 @@ public class WorkTimeFinder {
 			workTimeDtos = Collections.emptyList();
 		} else {
 			for (WorkTimeSet item : workTimeSetItems) {
-				int index = workTimeSetItems.indexOf(item);
-				WorkTime currentWorkTime = workTimeItems.get(index);
-				WorkTimeSet currentWorkTimeSet = workTimeSetItems.get(index);
-				if ((currentWorkTimeSet.getWorkTimeDay1() == null) && (currentWorkTimeSet.getWorkTimeDay2() == null)) {
+				WorkTime currentWorkTime = workTimeItems.stream().filter(x -> x.getSiftCD().toString().equals(item.getSiftCD())).findAny().get();
+				if ((item.getWorkTimeDay1() == null) && (item.getWorkTimeDay2() == null)) {
 					continue;
-				} else if (currentWorkTimeSet.getWorkTimeDay1().getUse_atr().equals(UseSetting.UseAtr_NotUse)
-						&& currentWorkTimeSet.getWorkTimeDay2().getUse_atr().equals(UseSetting.UseAtr_NotUse)) {
+				} else if (item.getWorkTimeDay1().getUse_atr().equals(UseSetting.UseAtr_NotUse)
+						&& item.getWorkTimeDay2().getUse_atr().equals(UseSetting.UseAtr_NotUse)) {
 					continue;
 				} else {
 					workTimeDtos.add(new WorkTimeDto(currentWorkTime.getSiftCD().v(),
 							currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(),
-							(!(currentWorkTimeSet.getWorkTimeDay1() == null))
-									? createWorkTimeField(currentWorkTimeSet.getWorkTimeDay1().getUse_atr(),
-											currentWorkTimeSet.getWorkTimeDay1().getA_m_StartCLock(),
-											currentWorkTimeSet.getWorkTimeDay1().getA_m_StartAtr(),
-											currentWorkTimeSet.getWorkTimeDay1().getP_m_EndClock(),
-											currentWorkTimeSet.getWorkTimeDay1().getP_m_EndAtr())
+							(!(item.getWorkTimeDay1() == null))
+									? createWorkTimeField(item.getWorkTimeDay1().getUse_atr(),
+											item.getWorkTimeDay1().getA_m_StartCLock(),
+											item.getWorkTimeDay1().getA_m_StartAtr(),
+											item.getWorkTimeDay1().getP_m_EndClock(),
+											item.getWorkTimeDay1().getP_m_EndAtr())
 									: null,
-							(!(currentWorkTimeSet.getWorkTimeDay2() == null))
-									? createWorkTimeField(currentWorkTimeSet.getWorkTimeDay2().getUse_atr(),
-											currentWorkTimeSet.getWorkTimeDay2().getA_m_StartCLock(),
-											currentWorkTimeSet.getWorkTimeDay2().getA_m_StartAtr(),
-											currentWorkTimeSet.getWorkTimeDay2().getP_m_EndClock(),
-											currentWorkTimeSet.getWorkTimeDay2().getP_m_EndAtr())
+							(!(item.getWorkTimeDay2() == null))
+									? createWorkTimeField(item.getWorkTimeDay2().getUse_atr(),
+											item.getWorkTimeDay2().getA_m_StartCLock(),
+											item.getWorkTimeDay2().getA_m_StartAtr(),
+											item.getWorkTimeDay2().getP_m_EndClock(),
+											item.getWorkTimeDay2().getP_m_EndAtr())
 									: null,
 							workTimeMethodSet[currentWorkTime.getWorkTimeDivision().getWorkTimeMethodSet().value],
 							currentWorkTime.getNote().v()));

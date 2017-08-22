@@ -11,9 +11,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class KscmtEstTimeComSetPK.
  */
+@Getter
+@Setter
 @Embeddable
 public class KscmtEstTimeComSetPK implements Serializable {
     
@@ -30,13 +35,13 @@ public class KscmtEstTimeComSetPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "TARGET_YEAR")
-    private short targetYear;
+    private int targetYear;
     
     /** The target cls. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "TARGET_CLS")
-    private short targetCls;
+    private int targetCls;
 
     /**
      * Instantiates a new kscmt est time com set PK.
@@ -51,7 +56,7 @@ public class KscmtEstTimeComSetPK implements Serializable {
      * @param targetYear the target year
      * @param targetCls the target cls
      */
-    public KscmtEstTimeComSetPK(String cid, short targetYear, short targetCls) {
+    public KscmtEstTimeComSetPK(String cid, int targetYear, int targetCls) {
         this.cid = cid;
         this.targetYear = targetYear;
         this.targetCls = targetCls;

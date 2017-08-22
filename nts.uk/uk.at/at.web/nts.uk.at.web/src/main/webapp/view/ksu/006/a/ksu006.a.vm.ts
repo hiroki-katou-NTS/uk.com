@@ -44,7 +44,7 @@ module nts.uk.at.view.ksu006.a {
                 self.selectedExtBudgetCode = ko.observable('');
                 
                 self.fileName = ko.observable("");
-                self.extensionFileList = ko.observableArray([".txt",'.csv']);
+                self.extensionFileList = ko.observableArray(['txt','csv', 'TXT', 'CSV']);
                 self.fileId = ko.observable(null);
                 
                 self.encodingList = ko.observableArray([{code: 1, name: 'Shift JIS'}]);
@@ -59,20 +59,39 @@ module nts.uk.at.view.ksu006.a {
                 });
                 
                 self.enableDataPreview = ko.observable(false);;
-                self.isDataDailyUnit = ko.observable(false);
+                self.isDataDailyUnit = ko.observable(true);
                 self.dataPreview = ko.observableArray([]);
                 self.firstRecord = ko.observable(null);
                 self.remainData = ko.observableArray([]);
                 // name id
                 self.nameIdTitleList = ko.observableArray([]);
                 self.nameIdValueList = ko.observableArray([]);
+                
+                // subscribe
+                self.selectedExtBudgetCode.subscribe(function(value) {
+                    if(!value) {
+                        return;
+                    }
+                    self.enableDataPreview(false);
+                    nts.uk.ui.block.grayout();
+                    self.checkUnitAtr().done(() => {
+                        // reset value
+                        self.resetDataPreview();
+                        
+                        self.enableDataPreview(true);
+                        nts.uk.ui.block.clear();
+                    });
+                });
             }
             
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 nts.uk.ui.block.grayout();
-                self.initNameId();
+                
+                // initial name id of time zone unit
+                self.initNameIdTimeZoneUnit();
+                
                 $.when(self.loadAllExternalBudget()).done(() => {
                     if (self.externalBudgetList().length > 0) {
                         self.isEnableExecute(true);
@@ -94,7 +113,7 @@ module nts.uk.at.view.ksu006.a {
                     self.validateFile();
                     dfd.resolve();
                 }).fail(function() {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                 });
             }
             
@@ -114,12 +133,22 @@ module nts.uk.at.view.ksu006.a {
                     });
             }
             
+            private checkUnitAtr(): JQueryPromise<boolean> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.checkUnitAtr(self.selectedExtBudgetCode()).done((state: boolean) => {
+                    self.isDataDailyUnit(state);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                });
+                return dfd.promise();
+            }
+            
             private showDataPreview() {
                 let self = this;
                 // reset value
-                self.dataPreview([]);
-                self.firstRecord(null);
-                self.remainData([]);
+                self.resetDataPreview();
                 
                 self.uploadFile().done(function() {
                     service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
@@ -130,20 +159,23 @@ module nts.uk.at.view.ksu006.a {
                         self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
                         
                         self.totalRecord(res.totalRecord);
-                        self.enableDataPreview(true);
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                     });
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                 });  
             }
             
-            private initNameId() {
+            private resetDataPreview() {
                 let self = this;
-                if (self.isDataDailyUnit()) {
-                    return;
-                }
+                self.dataPreview([]);
+                self.firstRecord(null);
+                self.remainData([]);
+            }
+            
+            private initNameIdTimeZoneUnit() {
+                let self = this;
                 // find name id for case time zone unit
                 for (let i=0; i<48; i++) {
                     self.nameIdTitleList.push(nts.uk.resource.getText("KSU006_" + (i + 23)));
@@ -158,7 +190,7 @@ module nts.uk.at.view.ksu006.a {
                     self.externalBudgetList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                 });
                 return dfd.promise();
             }
@@ -167,14 +199,14 @@ module nts.uk.at.view.ksu006.a {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 if (!self.fileName()) {
-                    nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_157" ));
+                    nts.uk.ui.dialog.alertError({messageId: "Msg_157"});
                     return dfd.promise();
                 }
-                $("#file-upload").ntsFileUpload({stereoType: self.extensionFileList()}).done(function(inforFileUpload) {
+                $("#file-upload").ntsFileUpload({stereoType: 'ExternalBudgetFile'}).done(function(inforFileUpload) {
                     self.fileId(inforFileUpload[0].id);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                 });
                 return dfd.promise();
             }
@@ -189,7 +221,7 @@ module nts.uk.at.view.ksu006.a {
                         nts.uk.ui.block.clear();
                     });
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                 });
             }
             

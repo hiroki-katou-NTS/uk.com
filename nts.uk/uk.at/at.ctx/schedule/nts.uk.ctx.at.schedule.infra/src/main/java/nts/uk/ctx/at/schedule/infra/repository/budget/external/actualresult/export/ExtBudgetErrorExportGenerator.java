@@ -35,28 +35,28 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator implements ExtBudgetErrorGenerator {
     
     /** The Constant TEMPLATE_FILE. */
-    private static final String TEMPLATE_FILE = "export/KSU006.xlsx";
+    private final String REPORT_ID = "CSV_GENERATOR";
     
     /** The Constant EXPORT_FILE_NAME. */
-    private static final String EXPORT_FILE_NAME = "KSU006.xlsx";
+    private final String EXPORT_FILE_NAME = "KSU006.csv";
     
     /** The Constant EXTENSION_FILE. */
-    private static final String EXTENSION_FILE = ".xlsx";
+    private final String EXTENSION_FILE = ".csv";
     
     /** The Constant SHEET_NAME. */
-    private static final String SHEET_NAME = "Sheet 1";
+    private final String SHEET_NAME = "Sheet 1";
     
     /** The Constant PRINT_AREA. */
-    private static final String PRINT_AREA = "A1:F";
+    private final String PRINT_AREA = "A1:F";
     
     /** The Constant DEFAULT_VALUE. */
-    private static final int DEFAULT_VALUE = 0;
+    private final int DEFAULT_VALUE = 0;
     
     /** The Constant INDEX_HEADER. */
-    private static final int INDEX_HEADER = 0;
+    private final int INDEX_HEADER = 0;
     
     /** The Constant INDEX_CONTENT. */
-    private static final int INDEX_CONTENT = 1;
+    private final int INDEX_CONTENT = 1;
     
     /*
      * (non-Javadoc)
@@ -67,7 +67,7 @@ public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator im
      */
     @Override
     public void generate(FileGeneratorContext fileContext, ExportData exportData) {
-        try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+        try (val reportContext = this.createEmptyContext(REPORT_ID)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             
@@ -77,8 +77,8 @@ public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator im
             reportContext.getDesigner().setWorkbook(workbook);
             reportContext.processDesigner();
             
-            // save excel file
-            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getFileName(exportData.employeeId)));
+            // save csv file
+            reportContext.saveAsCSV(this.createNewFile(fileContext, this.getFileName(exportData.employeeId)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -204,9 +204,9 @@ public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator im
      * @return the file name
      */
     private String getFileName(String employeeId) {
-        String fileName = this.getReportName(EXPORT_FILE_NAME);
-        String[] lstComponent = fileName.split(EXTENSION_FILE);
-        return String.format("%s_%s.%s", lstComponent[0], employeeId, EXTENSION_FILE);
+        String rawFileName = this.getReportName(EXPORT_FILE_NAME);
+        String fileName = rawFileName.substring(DEFAULT_VALUE, rawFileName.indexOf(EXTENSION_FILE));
+        return String.format("%s_%s%s", fileName, employeeId, EXTENSION_FILE);
     }
     
     /**
