@@ -41,6 +41,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.Exter
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetTimeDto;
+import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
@@ -108,32 +109,44 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     @Inject
     private WorkplaceAdapter workplaceAdapter;
     
-    /** The Constant FORMAT_DATES. */
+    /** The format dates. */
     private final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
     
-    /** The Constant DEFAULT_VALUE. */
+    /** The default value. */
     private final Integer DEFAULT_VALUE = 0;
     
-    /** The Constant INDEX_COLUMN_CODE. */
+    /** The max column daily. */
+    private final Integer MAX_COLUMN_DAILY = 3;
+    
+    /** The max column time zone. */
+    private final Integer MAX_COLUMN_TIME_ZONE = 50;
+    
+    /** The index column code. */
     private final Integer INDEX_COLUMN_CODE = 0;
     
-    /** The Constant INDEX_COLUMN_DATE. */
+    /** The index column date. */
     private final Integer INDEX_COLUMN_DATE = 1;
     
-    /** The Constant INDEX_BEGIN_COL_VALUE. */
+    /** The index begin col value. */
     private final Integer INDEX_BEGIN_COL_VALUE = 2;
     
-    /** The Constant MAX_COLMN. */
+    /** The max colmn. */
     private final Integer MAX_COLMN = 51;
     
-    /** The Constant TOTAL_RECORD. */
+    /** The total record. */
     private final String TOTAL_RECORD = "TOTAL_RECORD";
     
-    /** The Constant SUCCESS_CNT. */
+    /** The success cnt. */
     private final String SUCCESS_CNT = "SUCCESS_CNT";
     
-    /** The Constant FAIL_CNT. */
+    /** The fail cnt. */
     private final String FAIL_CNT = "FAIL_CNT";
+    
+    /** The blank value. */
+    private final String BLANK_VALUE = "0";
+    
+    /** The blank value time. */
+    private final String BLANK_VALUE_TIME = "00:00";
     
     /* (non-Javadoc)
      * @see nts.arc.layer.app.command.CommandHandlerWithResult#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -149,7 +162,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         Map<String, String> mapStringJP = findAllStringJP();
         AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
             // valid file format
-            this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine());
+            this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine().v());
             
             // get input stream by file id
             InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
@@ -210,7 +223,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
             
             // calculate total record and check has data
-            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine() + 1;
+            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine().v() + 1;
             if (calTotal > DEFAULT_VALUE) {
                 setter.updateData(TOTAL_RECORD, calTotal);
             }
@@ -251,16 +264,16 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private void processLine(ImportProcess importProcess, NtsCsvRecord record) {
         importProcess.startLine++;
         // check line start read
-        if (importProcess.startLine < importProcess.extractCondition.getStartLine()) {
+        if (importProcess.startLine < importProcess.extractCondition.getStartLine().v()) {
             return;
         }
         
         // get data cell from input csv
         List<String> result = new ArrayList<>();
         for (int i = 0; i < MAX_COLMN; i++) {
-            Object header = record.getColumn(i);
-            if (header != null) {
-                result.add(header.toString());
+            Object value = record.getColumn(i);
+            if (value != null) {
+                result.add(this.fillBlankValueIfNeed(value.toString(), importProcess.externalBudget.getBudgetAtr()));
             }
         }
         // check record has data?
@@ -274,6 +287,24 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         
         // insert data master
         this.insertValue(importProcess, result);
+    }
+    
+    /**
+     * Fill value if need.
+     *
+     * @param value the value
+     * @param budgetAtr the budget atr
+     * @return the string
+     */
+    private String fillBlankValueIfNeed(String value, BudgetAtr budgetAtr) {
+        if (!value.trim().isEmpty()) {
+            return value;
+        }
+        if (budgetAtr == BudgetAtr.TIME) {
+            return BLANK_VALUE_TIME;
+        } else {
+            return BLANK_VALUE;
+        }
     }
     
     /**
@@ -464,13 +495,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param result the result
      */
     private void validDataLine(ImportProcess importProcess, List<String> result) {
+        // valid column necessary.
         this.validUnitAtr(importProcess, result.size());
         
         // check column 2 (２列目) is date ?
-        this.validDateFormat(importProcess, result.get(INDEX_COLUMN_DATE));
+        this.validDateFormat(importProcess, result);
         
         // Check column 1 (1列目) is workplace code?
-        this.validWorkplaceCode(importProcess, result.get(INDEX_COLUMN_CODE));
+        this.validWorkplaceCode(importProcess, result);
         
         // Check actual value by primitive
         this.validActualVal(importProcess, result);
@@ -493,10 +525,10 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         int numberCol;
         switch (unitAtr) {
             case DAILY:
-                numberCol = 3;
+                numberCol = MAX_COLUMN_DAILY;
                 break;
             case BYTIMEZONE:
-                numberCol = 50;
+                numberCol = MAX_COLUMN_TIME_ZONE;
                 break;
             default:
                 throw new RuntimeException("Not unit atr suitable.");
@@ -504,19 +536,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         if (numberColInput == numberCol) {
             return;
         }
-        int numberColError = 0;
-        String messageIdError = "";
+        String messageIdError = "Msg_162";
         if (numberColInput < numberCol) {
-            numberColError = numberColInput;
             messageIdError = "Msg_163";
-        } else {
-            numberColError = ++numberCol;
-            messageIdError = "Msg_162";
         }
         ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
-                .columnNo(numberColError)
+                .columnNo(DEFAULT_VALUE)
                 .errorContent(importProcess.mapStringJP.get(messageIdError))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
@@ -532,11 +559,12 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param inputDate the input date
      */
-    private void validDateFormat(ImportProcess importProcess, String inputDate) {
+    private void validDateFormat(ImportProcess importProcess, List<String> result) {
         // finish process of line.
         if (importProcess.stopLine) {
             return;
         }
+        String inputDate = result.get(INDEX_COLUMN_DATE);
         Boolean isInValidDateFormat = null;
         for (String formatDate : FORMAT_DATES) {
             try {
@@ -570,11 +598,12 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param workplaceCode the workplace code
      */
-    private void validWorkplaceCode(ImportProcess importProcess, String workplaceCode) {
+    private void validWorkplaceCode(ImportProcess importProcess, List<String> result) {
         // finish process of line.
         if (importProcess.stopLine) {
             return;
         }
+        String workplaceCode = result.get(INDEX_COLUMN_CODE);
         List<String> lstWpkId = this.workplaceAdapter.findWpkIdList(workplaceCode, importProcess.actualDate);
         if (!CollectionUtil.isEmpty(lstWpkId)) {
             importProcess.workplaceId = lstWpkId.get(DEFAULT_VALUE);

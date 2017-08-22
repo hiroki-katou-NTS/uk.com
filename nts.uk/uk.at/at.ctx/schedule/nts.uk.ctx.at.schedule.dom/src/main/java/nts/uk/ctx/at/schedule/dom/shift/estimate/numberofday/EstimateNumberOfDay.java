@@ -26,6 +26,7 @@ public class EstimateNumberOfDay extends DomainObject{
 	// 年間目安日数設定
 	private List<YearlyEstimateNumberOfDay> yearlyEstimateNumberOfDaySetting;
 	
+	/** The monthly estimate number of day setting. */
 	// 月間目安日数設定
 	private List<MonthlyEstimateNumberOfDay> monthlyEstimateNumberOfDaySetting;
 }

@@ -21,7 +21,7 @@ module nts.uk.ui.koExtentions {
             this.editorOption = $.extend(this.getDefaultOption(), option);
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
-                var autoWidth = constraint.maxLength * characterWidth;
+                let autoWidth = constraint.maxLength * characterWidth;
                 $input.width(autoWidth);
             }
             $input.addClass('nts-editor nts-input');
@@ -113,7 +113,7 @@ module nts.uk.ui.koExtentions {
             $input.attr('placeholder', placeholder);
             $input.css('text-align', textalign);
             if (width.trim() != "")
-                $input.width(width, false);
+                $input.width(width);
             // Format value
             var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
             $input.val(formatted);
@@ -288,13 +288,15 @@ module nts.uk.ui.koExtentions {
         init($input: JQuery, data: any) {
             super.init($input, data);
             $input.focus(() => {
-                var selectionType = document.getSelection().type;
-                // Remove separator (comma)
-                $input.val(data.value());
-                // If focusing is caused by Tab key, select text
-                // this code is needed because removing separator deselects.
-                if (selectionType === 'Range') {
-                    $input.select();
+                if (!$input.attr('readonly')) {
+                    var selectionType = document.getSelection().type;
+                    // Remove separator (comma)
+                    $input.val(data.value());
+                    // If focusing is caused by Tab key, select text
+                    // this code is needed because removing separator deselects.
+                    if (selectionType === 'Range') {
+                        $input.select();
+                    }
                 }
             });
         }
@@ -307,7 +309,6 @@ module nts.uk.ui.koExtentions {
             if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 $parent.css({ 'width': '100%' });
             }
-            $input.css("box-sizing", "border-box");
             
             if (this.editorOption.currencyformat !== undefined && this.editorOption.currencyformat !== null) {
                 $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');

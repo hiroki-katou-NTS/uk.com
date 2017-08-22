@@ -281,11 +281,46 @@ module nts.uk.request {
 
         return dfd.promise();
     }
+    
+    export function downloadFileWithTask(taskId: string, data?: any, options?: any) {
+        let dfd = $.Deferred();
+
+        var checkTask = function(){
+            specials.getAsyncTaskInfo(taskId).done((res: any) => {
+                if (res.status == "PENDING" || res.status == "RUNNING") {
+                    setTimeout(function(){ 
+                     checkTask();       
+                    }, 1000)
+                } if (res.failed || res.status == "ABORTED") { 
+                        dfd.reject(res.error);
+                } else {
+                    specials.donwloadFile(res.id);
+                    dfd.resolve(res);
+                }
+            }).fail(res => {
+                dfd.reject(res);
+            });
+        };
+        
+        checkTask();
+
+        return dfd.promise();
+    }
+    
+    export module asyncTask {
+        export function getInfo(taskId: string) {
+            return ajax('/ntscommons/arc/task/async/info/' + taskId);
+        }
+        
+        export function requestToCancel(taskId: string) {
+            ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
+        }
+    }
 
     export module specials {
 
         export function getAsyncTaskInfo(taskId: string) {
-            return ajax('/ntscommons/arc/task/async/' + taskId);
+            return asyncTask.getInfo(taskId);
         }
 
         export function donwloadFile(fileId: string) {

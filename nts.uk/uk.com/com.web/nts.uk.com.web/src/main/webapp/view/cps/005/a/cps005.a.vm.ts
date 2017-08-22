@@ -21,7 +21,7 @@ module nts.uk.com.view.cps005.a {
                     dfd = $.Deferred();
                 new service.Service().getAllPerInfoCtg().done(function(data: IData) {
                     self.currentData(new DataModel(data));
-                    if(data && data.categoryList && data.categoryList.length > 0){
+                    if (data && data.categoryList && data.categoryList.length > 0) {
                         self.currentData().perInfoCtgSelectCode(data.categoryList[0].id);
                     }
                     dfd.resolve();
@@ -30,11 +30,17 @@ module nts.uk.com.view.cps005.a {
             }
 
             register() {
-
+                let self = this;
+                self.currentData().perInfoCtgSelectCode("");
+                self.currentData().currentCtgSelected(new PerInfoCtgModel(null));
             }
 
             addUpdateData() {
-
+                let self = this,
+                    newCategory = new AddUpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
+                new service.Service().addPerInfoCtg(newCategory).done().fail(error => {
+                    nts.uk.ui.dialog.alertError({ messageId: error });
+                });
             }
 
             updateData() {
@@ -90,7 +96,7 @@ module nts.uk.com.view.cps005.a {
         singleMulTypeSelected: KnockoutObservable<number> = ko.observable(1);
         itemNameList: KnockoutObservableArray<PerInfoItemModel> = ko.observableArray([]);
         //all visiable
-        historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(false);
+        historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(true);
         fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
         constructor(data: IPersonInfoCtg) {
             let self = this;
@@ -120,6 +126,7 @@ module nts.uk.com.view.cps005.a {
                 }
                 self.historyClassSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);
                 self.singleMulTypeSelected(data.categoryType || 1);
+                self.historyTypesDisplay(false);
                 if (self.historyClassSelected() == 1) {
                     self.historyTypesSelected(data.categoryType - 2);
                     self.singleMulTypeSelected(1);
@@ -143,6 +150,20 @@ module nts.uk.com.view.cps005.a {
         constructor(itemName: string) {
             let self = this;
             self.itemName = itemName;
+        }
+    }
+
+    export class AddUpdatePerInfoCtgModel {
+        categoryName: string;
+        categoryType: number;
+        constructor(data: PerInfoCtgModel) {
+            let self = this;
+            self.categoryName = data.perInfoCtgName();
+            if (data.historyClassSelected() == 2) {
+                self.categoryType = data.singleMulTypeSelected();
+            } else {
+                self.categoryType = data.historyTypesSelected() + 2;
+            }
         }
     }
 

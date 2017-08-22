@@ -86,8 +86,14 @@ module nts.uk.at.view.ksm005.c {
                 self.applyKCP005ContentSearch([]);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
 
-                self.selectedCode.subscribe(function(employeeId: string) {
-                    self.applySelectEmployeeId(employeeId);
+                self.selectedCode.subscribe(function(employeeCode: string) {
+                    if (employeeCode) {
+                        self.applySelectEmployeeCode(employeeCode);
+                    }else {
+                        self.enableSave(false);
+                        self.enableDelete(false);
+                        self.enableSystemChange(false);    
+                    }
                 });
             }
             /**
@@ -99,7 +105,7 @@ module nts.uk.at.view.ksm005.c {
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch: EmployeeSearchDto of dataList) {
                     var employee: UnitModel = {
-                        code: employeeSearch.employeeId,
+                        code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
                     };
@@ -107,7 +113,7 @@ module nts.uk.at.view.ksm005.c {
                 }
                 self.employeeList(employeeSearchs);
                 if (dataList.length > 0) {
-                    self.selectedCode(dataList[0].employeeId);
+                    self.selectedCode(dataList[0].employeeCode);
                 }
                 
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data){
@@ -125,7 +131,8 @@ module nts.uk.at.view.ksm005.c {
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
-                    maxRows: 15
+                    maxRows: 15,
+                    maxWidth: 450
                 }; 
                 
             }
@@ -134,11 +141,11 @@ module nts.uk.at.view.ksm005.c {
             /**
              * update selected employee kcp005 => detail
              */
-            public findByIdEmployee(employeeId: string): UnitModel {
+            public findByCodeEmployee(employeeCode: string): UnitModel {
                 var employee: UnitModel;
                 var self = this;
                 for (var employeeSelect: UnitModel of self.employeeList()) {
-                    if (employeeSelect.code === employeeId) {
+                    if (employeeSelect.code === employeeCode) {
                         employee = employeeSelect;
                         break;
                     }
@@ -149,40 +156,75 @@ module nts.uk.at.view.ksm005.c {
             /**
              * get all employee id by search data CCG out put 
              */
-            public getAllEmployeeIdBySearch(): string[]{
+            public getAllEmployeeIdBySearch(): string[] {
                 var self = this;
                 var employeeIds: string[] = [];
-                 for (var employeeSelect: UnitModel of self.employeeList()) {
-                    employeeIds.push(employeeSelect.code);
+                for (var employeeSelect: UnitModel of self.employeeList()) {
+                    employeeIds.push(self.findEmployeeIdByCode(employeeSelect.code));
                 }
                 return employeeIds;
+            }
+            
+            /**
+             * find employee id in selected
+             */
+            public findEmployeeIdByCode(employeeCode: string): string{
+                var self = this;
+                var employeeId = '';
+                for (var employee: EmployeeSearchDto of self.selectedEmployee()) {
+                    if(employee.employeeCode === employeeCode){
+                        employeeId = employee.employeeId;
+                    }
+                }
+                return employeeId;
+            }
+            /**
+             * find employee code in selected
+             */
+            public findEmployeeCodeById(employeeId: string): string{
+                var self = this;
+                var employeeCode = '';
+                for (var employee: EmployeeSearchDto of self.selectedEmployee()) {
+                    if(employee.employeeId === employeeId){
+                        employeeCode = employee.employeeCode;
+                    }
+                }
+                return employeeCode;
             }
             
              /**
              *  apply info monthly pattern setting 
              */
-            public applySelectEmployeeId(employeeId: string){
+            public applySelectEmployeeCode(employeeCode: string){
                 var self = this;    
-                if (employeeId) {
-                    self.employeeName((self.findByIdEmployee(employeeId)).name);
+                if (employeeCode) {
+                    self.employeeName((self.findByCodeEmployee(employeeCode)).name);
+                    service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode)).done(function(data: MonthlyPatternSettingDto) {
+                        console.log(data);
+                        if (data.setting) {
+                            if (data.info && data.info.code) {
+                                self.monthlyPatternCode = data.info.code;
+                                self.monthlyPatternSetting(data.info.code + ' ' + data.info.name);
+                                self.enableSave(true);
+                                self.enableDelete(true);
+                                self.enableSystemChange(true);
+                            }else {
+                                self.monthlyPatternCode = '';
+                                self.monthlyPatternSetting(nts.uk.resource.getText("KSM005_43"));
+                                self.enableSave(true);
+                                self.enableDelete(true);
+                                self.enableSystemChange(true);   
+                            }
+                        } else {
+                            self.monthlyPatternCode = '';
+                            self.monthlyPatternSetting('');
+                            self.enableSave(true);
+                            self.enableDelete(false);
+                            self.enableSystemChange(true);
+                        }
+                    });
                 }
-                service.findByIdMonthlyPatternSetting(employeeId).done(function(data: MonthlyPatternSettingDto){
-                    if (data.setting) {
-                        self.monthlyPatternCode = data.info.code;
-                        self.monthlyPatternSetting(data.info.code + ' ' + data.info.name);
-                        self.enableSave(true);
-                        self.enableDelete(true);
-                        self.enableSystemChange(true);
-                    } else {
-                        self.monthlyPatternCode = '';
-                        self.monthlyPatternSetting(nts.uk.resource.getText("KSM005_43"));
-                        self.enableSave(true);
-                        self.enableDelete(false);
-                        self.enableSystemChange(true);
-                    }
-                });
             }
-
             /**
              * open dialog system change (f)
              */
@@ -191,10 +233,13 @@ module nts.uk.at.view.ksm005.c {
                 nts.uk.ui.windows.setShared("employeeId",self.selectedCode());
                 nts.uk.ui.windows.setShared("monthlyPatternCode",self.monthlyPatternCode);
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/f/index.xhtml").onClosed(function(){
-                    service.findByIdMonthlyPattern(nts.uk.ui.windows.getShared("monthlyPatternCode")).done(function(data){
-                        self.monthlyPatternCode = data.code;
-                        self.monthlyPatternSetting(data.code + ' ' + data.name);
-                    });
+                    var isCancel: boolean = nts.uk.ui.windows.getShared("isCancel");
+                    if (!isCancel) {
+                        service.findByIdMonthlyPattern(nts.uk.ui.windows.getShared("monthlyPatternCode")).done(function(data) {
+                            self.monthlyPatternCode = data.code;
+                            self.monthlyPatternSetting(data.code + ' ' + data.name);
+                        });
+                    }
                 });
             }
 
@@ -204,10 +249,11 @@ module nts.uk.at.view.ksm005.c {
             public findAllByEmployeeIds(employeeIds: string[]) : JQueryPromise<UnitAlreadySettingModel[]> {
                 var dfd = $.Deferred();
                 var dataRes: UnitAlreadySettingModel[] = [];
+                var self = this;
                 service.findAllMonthlyPatternSetting(employeeIds).done(function(data) {
                     for (var employeeId: string of data) {
                         var setting: UnitAlreadySettingModel;
-                        setting = { code: employeeId, isAlreadySetting: true };
+                        setting = { code: self.findEmployeeCodeById(employeeId), isAlreadySetting: true };
                         dataRes.push(setting);
                     }
                     dfd.resolve(dataRes);
@@ -222,7 +268,7 @@ module nts.uk.at.view.ksm005.c {
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data) {
                     self.alreadySettingList(data);
                 });
-                self.applySelectEmployeeId(self.selectedCode());
+                self.applySelectEmployeeCode(self.selectedCode());
             }
             
             /**
@@ -231,7 +277,7 @@ module nts.uk.at.view.ksm005.c {
             public saveMonthlyPatternSetting(): void {
                 var self = this;
                 var dto : MonthlyPatternSettingActionDto;
-                dto = {employeeId: self.selectedCode(), monthlyPatternCode: self.monthlyPatternCode};
+                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), monthlyPatternCode: self.monthlyPatternCode};
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -250,7 +296,7 @@ module nts.uk.at.view.ksm005.c {
             public deleteMonthlyPatternSetting(): void {
                 var self = this;
                 var dto: MonthlyPatternSettingActionDto;
-                dto = { employeeId: self.selectedCode(), monthlyPatternCode: self.monthlyPatternCode };
+                dto = { employeeId: self.findEmployeeIdByCode(self.selectedCode()), monthlyPatternCode: self.monthlyPatternCode };
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.deleteMonthlyPatternSetting(dto).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {

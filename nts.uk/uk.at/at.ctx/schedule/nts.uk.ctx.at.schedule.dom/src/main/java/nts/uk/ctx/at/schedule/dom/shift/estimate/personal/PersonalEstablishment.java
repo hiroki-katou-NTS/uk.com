@@ -8,7 +8,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * The Class PersonEstablishment.
@@ -16,9 +15,10 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 // 個人目安設定
 @Getter
 public class PersonalEstablishment extends AggregateRoot{
-	/** The company id. */
-	//会社ID
-	private CompanyId companyId;
+	
+	/** The employee id. */
+	//社員ID
+	private String employeeId;
 
 	/** The target year. */
 	// 対象年
@@ -27,4 +27,27 @@ public class PersonalEstablishment extends AggregateRoot{
 	/** The advanced setting. */
 	//詳細設定
 	private EstimateDetailSetting advancedSetting;
+	
+	
+	/**
+	 * Instantiates a new personal establishment.
+	 *
+	 * @param memento the memento
+	 */
+	public PersonalEstablishment(PersonalEstablishmentGetMemento memento){
+		this.employeeId = memento.getEmployeeId();
+		this.targetYear = memento.getTargetYear();
+		this.advancedSetting = memento.getAdvancedSetting();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PersonalEstablishmentSetMemento memento){
+		memento.setEmployeeId(this.employeeId);
+		memento.setTargetYear(this.targetYear);
+		memento.setAdvancedSetting(this.advancedSetting);
+	}
 }

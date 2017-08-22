@@ -1,7 +1,5 @@
 package command.person.info.item;
 
-import java.util.List;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
@@ -25,7 +23,7 @@ public class MappingDtoToDomain {
 		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createFromJavaType(addItemCommand.getPerInfoCtgId(),
 				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), ITEM_NAME_START_DATE,
 				IsAbolition.NOT_ABOLITION.value, IsFixed.FIXED.value, IsRequired.REQUIRED.value);
-		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SINGLE_ITEM, DataTypeValue.DATE, null));
+		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SINGLE_ITEM, DataTypeValue.DATE));
 		return itemDef;
 	}
 
@@ -33,16 +31,15 @@ public class MappingDtoToDomain {
 		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createFromJavaType(addItemCommand.getPerInfoCtgId(),
 				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), ITEM_NAME_END_DATE,
 				IsAbolition.NOT_ABOLITION.value, IsFixed.FIXED.value, IsRequired.NONE_REQUIRED.value);
-		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SINGLE_ITEM, DataTypeValue.DATE, null));
+		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SINGLE_ITEM, DataTypeValue.DATE));
 		return itemDef;
 	}
 
-	public static PersonInfoItemDefinition mappingFromDomaintoDtoForPeriod(AddItemCommand addItemCommand,
-			List<String> items) {
+	public static PersonInfoItemDefinition mappingFromDomaintoDtoForPeriod(AddItemCommand addItemCommand) {
 		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createFromJavaType(addItemCommand.getPerInfoCtgId(),
 				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), ITEM_NAME_PERIOD,
 				IsAbolition.NOT_ABOLITION.value, IsFixed.FIXED.value, IsRequired.REQUIRED.value);
-		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SET_ITEM, null, items));
+		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SET_ITEM, null));
 		return itemDef;
 	}
 
@@ -50,17 +47,17 @@ public class MappingDtoToDomain {
 		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createFromJavaType(addItemCommand.getPerInfoCtgId(),
 				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), addItemCommand.getItemName(),
 				IsAbolition.NOT_ABOLITION.value, IsFixed.NOT_FIXED.value, IsRequired.REQUIRED.value);
-		itemDef.setItemTypeState(createItemTypeState(addItemCommand, null, null, null));
+		itemDef.setItemTypeState(createItemTypeState(addItemCommand, null, null));
 		return itemDef;
 	}
 
 	private static ItemTypeState createItemTypeState(AddItemCommand addItemCommand, ItemType itemType,
-			DataTypeValue dataTypeValue, List<String> items) {
+			DataTypeValue dataTypeValue) {
 		itemType = itemType != null ? itemType : EnumAdaptor.valueOf(addItemCommand.getItemType(), ItemType.class);
 		if (itemType == ItemType.SINGLE_ITEM) {
 			return ItemTypeState.createSingleItem(createDataTypeState(addItemCommand, dataTypeValue));
 		} else {
-			return ItemTypeState.createSetItem(items);
+			return ItemTypeState.createSetItem(null);
 		}
 	}
 

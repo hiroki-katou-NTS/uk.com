@@ -72,6 +72,18 @@ public class ExternalBudgetFinder {
 	}
 	
 	/**
+	 * Checks if is daily unit.
+	 *
+	 * @param externalBudgetCd the external budget cd
+	 * @return true, if is daily unit
+	 */
+	public boolean isDailyUnit(String externalBudgetCd) {
+        String companyId = AppContexts.user().companyId();
+        return this.externalBudgetRepo.findAll(companyId).stream()
+                .anyMatch(p -> p.getExternalBudgetCd().v().equals(externalBudgetCd) && p.getUnitAtr() == UnitAtr.DAILY);
+    }
+	
+	/**
 	 * Validate file.
 	 *
 	 * @param fileId the file id
@@ -79,7 +91,7 @@ public class ExternalBudgetFinder {
 	public void validateFile(ExtBudgetExtractCondition extractCondition) {
 	    // Check valid format file.
 	    this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
-                extractCondition.getStartLine());
+                extractCondition.getStartLine().v());
 	}
 	
 	/**
@@ -89,9 +101,9 @@ public class ExternalBudgetFinder {
 	 * @return the ext budget data preview dto
 	 */
     public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
+        int lineStart = extractCondition.getStartLine().v();
         // Check valid format file.
-        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(),
-                extractCondition.getStartLine());
+        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(), lineStart);
         
         String companyId = AppContexts.user().companyId();
         
@@ -117,7 +129,7 @@ public class ExternalBudgetFinder {
             }
             
             // calculate total record file
-            int calTotal = csvRecords.size() - extractCondition.getStartLine() + 1;
+            int calTotal = csvRecords.size() - lineStart + 1;
             if (calTotal > totalRecord) {
                 totalRecord = calTotal;
             }
@@ -125,7 +137,7 @@ public class ExternalBudgetFinder {
             while(csvRecordIterator.hasNext()) {
                 NtsCsvRecord record = csvRecordIterator.next();
                 indexLine++;
-                if (indexLine < extractCondition.getStartLine()) {
+                if (indexLine < lineStart) {
                     continue;
                 }
                 // check max record show client.

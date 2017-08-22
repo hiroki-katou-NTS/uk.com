@@ -2,10 +2,10 @@ package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
 public enum Change {
 
-	/** 変更しない */
-	NOTCHANGE(0),
-	/** 変化する */
-	CHANGE(1);
+	/** しない */
+	NOT(0),
+	/** する  */
+	DO(1);
 
 	public int value;
 

@@ -55,12 +55,13 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 		String newLayoutId = IdentifierUtil.randomUniqueId();
 
-		// get Old Layout
-		if (command.getId() != null) {
-			oldLayout = this.repo.getById(companyId, command.getId()).get();
-		}
 		// kiem tra newLayoutcode da ton tai chua.
 		checkExit = this.repo.checkExit(companyId, command.getCode());
+
+		// get Old Layout
+		if (command.getId() != null && checkExit) {
+			oldLayout = this.repo.getById(companyId, command.getId()).get();
+		}
 
 		switch (command.getAction()) {
 		case 0: // insert
@@ -98,7 +99,10 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 	private void deleteLayout(MaintenanceLayoutCommand command) {
 
-		if (checkExit) {
+		if (!checkExit) {
+			// throw Error Message #Msg_3
+			throw new BusinessException(new RawErrorMessage("Msg_16"));
+		} else {
 			this.repo.remove(oldLayout);
 			this.classfRepo.removeAllByLayoutId(command.getId());
 			this.clsDefRepo.removeAllByLayoutId(command.getId());
@@ -117,6 +121,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 			repo.update(layout);
 
 			// truong hop co truyen list itemcls
+			boolean check_cls_exit = classfRepo.checkExitItemCls(layoutId);
 			if (command.getClassifications().size() > 0) {
 
 				List<ClassificationCommand> classifications = command.getClassifications();
@@ -126,7 +131,7 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 				// check exit itemClassification in table ItemCls , neu có rồi thì xóa đi insert
 				// lại. Chưa có thì insert
-				if (classfRepo.checkExitItemCls(layoutId)) {
+				if (check_cls_exit) {
 					// update list itemCls <=> (xóa xong insert lai)
 					classfRepo.removeAllByLayoutId(layoutId);
 
@@ -175,6 +180,11 @@ public class MaintenanceLayoutCommandHandler extends CommandHandler<MaintenanceL
 
 					clsDefRepo.addClassificationItemDefines(list_clsDf);
 
+				}
+			} else {
+				if (check_cls_exit) {
+					classfRepo.removeAllByLayoutId(layoutId);
+					clsDefRepo.removeAllByLayoutId(layoutId);
 				}
 			}
 

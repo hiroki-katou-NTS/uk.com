@@ -130,6 +130,10 @@ module nts.custombinding {
                         display: inline-block;
                     }
 
+                    .layout-control .item-classification div.item-controls table {
+                        width: 385px;
+                    }
+
                     .layout-control .item-classification div.item-controls table,
                     .layout-control .item-classification div.item-controls table th,
                     .layout-control .item-classification div.item-controls table td {
@@ -222,13 +226,13 @@ module nts.custombinding {
                                     <div data-bind="let: { item: $data.listItemDf[0], listItemDf: $data.listItemDf}" class="item-control">
                                         <div data-bind="ntsFormLabel: {}, text: className"></div>
                                         <div data-bind="if: item.itemTypeState.itemType == 1" class="set-items">
-                                            <div data-bind="foreach: _.filter(listItemDf, (x, i) => i != 0)" class="set-item-list">
-                                                <div data-bind="template: { name: 'itemtemplate', data: $data.itemTypeState.dataTypeState }" class="set-item"></div>
+                                            <div data-bind="foreach: _.filter(listItemDf, function(x, i) { return i != 0; })" class="set-item-list">
+                                                <div data-bind="template: { name: 'itemtemplate', data: { itemName: $data.itemName, info: $data.itemTypeState.dataTypeState } }" class="set-item"></div>
                                             </div>            
                                         </div>
                                         <div data-bind="if: item.itemTypeState.itemType == 2" class="single-items">
-                                            <div data-bind="let: { single: item.itemTypeState.dataTypeState }" class="single-item-list">
-                                                <div data-bind="template: { name: 'itemtemplate', data: single }" class="single-item"></div>
+                                            <div class="single-item-list">
+                                                <div data-bind="template: { name: 'itemtemplate', data: { itemName: item.itemName, info: item.itemTypeState.dataTypeState } }" class="single-item"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -238,7 +242,7 @@ module nts.custombinding {
                                     <div data-bind="let: { items: listItemDf }" class="multiple-items">
                                         <table>
                                             <thead>
-                                                <tr data-bind="foreach: items">
+                                                <tr data-bind="foreach: listItemDf">
                                                     <th data-bind="text: itemName"></th>
                                                 </tr>
                                             </thead>
@@ -259,36 +263,60 @@ module nts.custombinding {
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
-                <script type="text/html" id="itemtemplate">                    
-                    <div data-bind="if: $data.dataTypeValue == 1" class="string">
-                        <input data-bind="ntsTextEditor: {
-                                    value: ko.observable(''),
-                                    constraint: '',
-                                    option: {},
-                                    required: false, 
-                                    enable: true,
-                                    readonly: true,
-                                    immediate: false}" />
+                <script type="text/html" id="itemtemplate">
+                    <div data-bind="if: $data.info.dataTypeValue == 1" class="string">
+                        <div data-bind="if: $data.info.stringItemLength < 40">
+                            <input data-bind="ntsTextEditor: {
+                                value: ko.observable(''),
+                                required: false, 
+                                option: {
+                                    textmode: 'text',
+                                    placeholder: $data.itemName
+                                },
+                                enable: true,
+                                readonly: true,
+                                immediate: false}, attr: { title: $data.itemName }" />
+                        </div>
+                        <div data-bind="if: $data.info.stringItemLength >= 40">
+                            <textarea data-bind="ntsMultilineEditor: {
+                                value: ko.observable(''),
+                                option: {
+                                    textmode: 'text',
+                                    placeholder: $data.itemName
+                                },
+                                enable: true,
+                                readonly: true,
+                                immediate: false}" />
+                        </div>
                     </div>
-                    <div data-bind="if: $data.dataTypeValue == 2" class="numeric">
+                    <div data-bind="if: $data.info.dataTypeValue == 2" class="numeric">
                         <input data-bind="ntsNumberEditor: { 
                                     value: ko.observable(0),
                                     enable: true,
-                                    readonly: true }" />
+                                    readonly: true }, attr: { title: $data.itemName }" />
                     </div>
-                    <div data-bind="if: $data.dataTypeValue == 3" class="date">
+                    <div data-bind="if: $data.info.dataTypeValue == 3" class="date">
                         <div data-bind="ntsDatePicker: {
                                     value: ko.observable(undefined), 
                                     dateFormat: 'YYYY/MM/DD',
-                                    enable: false }"></div>
+                                    enable: false,
+                                    readonly: true }, attr: { title: $data.itemName }"></div>
                     </div>
-                    <div data-bind="if: $data.dataTypeValue == 4" class="time">
-                        <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
+                    <div data-bind="if: $data.info.dataTypeValue == 4" class="time">
+                        <input data-bind="ntsTimeEditor: {
+                            value: ko.observable(undefined), 
+                            inputFormat: 'HH:mm',
+                            enable: true,
+                            readonly: true }, attr: { placeholder: $data.itemName }" />
                     </div>
-                    <div data-bind="if: $data.dataTypeValue == 5" class="timepoint">
-                        <input data-bind="ntsTimeEditor: {value: ko.observable(undefined), inputFormat: 'date'}" />
+                    <div data-bind="if: $data.info.dataTypeValue == 5" class="timepoint">
+                        <input data-bind="ntsTimeEditor: {
+                            value: ko.observable(undefined), 
+                            inputFormat: 'HH:mm',
+                            enable: true,
+                            readonly: true }, attr: { placeholder: $data.itemName }" />
                     </div>
-                    <div data-bind="if: $data.dataTypeValue == 6" class="selection">
+                    <div data-bind="if: $data.info.dataTypeValue == 6" class="selection">
                         <div id="combo-box" data-bind="ntsComboBox: {
                             options: ko.observableArray([]),
                             optionsValue: 'code',
@@ -298,12 +326,12 @@ module nts.custombinding {
                             editable: false,
                             enable: true,
                             columns: [{ prop: 'name', length: 10 }]}"></div>
-                    </div>                    
+                    </div>
                 </script>
             </div>`);
 
         api = {
-            getCat: 'ctx/bs/person/info/category/findby/{0}',
+            getCat: 'ctx/bs/person/info/category/find/companyby/{0}',
             getCats: "ctx/bs/person/info/category/findby/company",
             getGroups: 'ctx/bs/person/groupitem/getAll',
             getItemCats: 'ctx/bs/person/info/ctgItem/layout/findby/categoryId/{0}',
@@ -374,10 +402,12 @@ module nts.custombinding {
                 value: ko.observable(0),
                 options: ko.observableArray([{
                     id: CAT_OR_GROUP.CATEGORY,
-                    name: text('CPS007_6')
+                    name: text('CPS007_6'),
+                    enable: ko.observable(true)
                 }, {
                         id: CAT_OR_GROUP.GROUP,
-                        name: text('CPS007_7')
+                        name: text('CPS007_7'),
+                        enable: ko.observable(true)
                     }]),
                 optionsValue: 'id',
                 optionsText: 'name'
@@ -392,13 +422,13 @@ module nts.custombinding {
                 columns: [{ prop: 'categoryName', length: 15 }]
             },
             searchbox: {
-                targetKey: undefined,
                 mode: 'igGrid',
-                comId: 'grid',
+                comId: 'cps007_lst_control',
                 items: ko.observableArray([]),
                 selected: ko.observableArray([]),
+                targetKey: 'id',
                 selectedKey: 'id',
-                fields: ['name']
+                fields: ['itemName']
             },
             listbox: {
                 enable: ko.observable(true),
@@ -536,7 +566,6 @@ module nts.custombinding {
             });
 
             $.extend(opts.searchbox, {
-                targetKey: 'cps007_lst_control',
                 items: ko.computed(opts.listbox.options),
                 selected: opts.listbox.value
             });
@@ -567,13 +596,16 @@ module nts.custombinding {
 
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     services.getCats().done((data: any) => {
-                        if (data && data.categoryList) {
+                        if (data && data.categoryList && data.categoryList.length) {
                             opts.comboxbox.options(data.categoryList);
                             if (opts.comboxbox.value() == data.categoryList[0].id) {
                                 opts.comboxbox.value.valueHasMutated();
                             } else {
                                 opts.comboxbox.value(data.categoryList[0].id);
                             }
+                        } else {
+                            // show message if hasn't any category
+                            alert(text('Msg_288'));
                         }
                     });
                 } else { // get item by group
@@ -657,6 +689,13 @@ module nts.custombinding {
                     $(ctrls.button).prop('disabled', true);
                 } else {
                     $(ctrls.button).prop('disabled', false);
+                }
+            });
+
+            // disable group if not has any group
+            services.getGroups().done((data: Array<any>) => {
+                if (!data || !data.length) {
+                    opts.radios.options().filter(x => x.id == CAT_OR_GROUP.GROUP).forEach(x => x.enable(false));
                 }
             });
 
@@ -750,16 +789,25 @@ module nts.custombinding {
                                             services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
                                                 if (defs && defs.length) {
                                                     _(defs).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+
+                                                    if (opts.sortable.pushItem(item)) {
+                                                        opts.listbox.value(undefined);
+                                                    } else {
+                                                        // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                                                        // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                                                        alert(text('Msg_202'));
+                                                    }
                                                 }
                                             });
-                                        }
-
-                                        if (opts.sortable.pushItem(item)) {
-                                            opts.listbox.value(undefined);
                                         } else {
-                                            // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
-                                            // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                                            alert(text('Msg_202'));
+
+                                            if (opts.sortable.pushItem(item)) {
+                                                opts.listbox.value(undefined);
+                                            } else {
+                                                // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                                                // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                                                alert(text('Msg_202'));
+                                            }
                                         }
                                     }
                                 });

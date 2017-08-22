@@ -9,7 +9,6 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.grantrelationship.GrantRelationship;
 import nts.uk.ctx.at.shared.dom.grantrelationship.repository.GrantRelationshipRepository;
-import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.infra.entity.grantrelationship.KshstGrantRelationshipItem;
 import nts.uk.ctx.at.shared.infra.entity.grantrelationship.KshstGrantRelationshipPK;
 
@@ -54,8 +53,11 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	 */
 	@Override
 	public void update(GrantRelationship grantRelationship) {
-		// TODO Auto-generated method stub
-		
+		KshstGrantRelationshipItem entity = toEntity(grantRelationship);
+		KshstGrantRelationshipItem oldEntity = this.queryProxy().find(entity.kshstGrantRelationshipPK, KshstGrantRelationshipItem.class).get();
+		oldEntity.setGrantRelationshipDay(entity.grantRelationshipDay);
+		oldEntity.setMorningHour(entity.morningHour);
+		this.commandProxy().update(oldEntity);
 	}
 	/**
 	 * insert grant relationship
@@ -63,17 +65,23 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	 */
 	@Override
 	public void insert(GrantRelationship grantRelationship) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().insert(toEntity(grantRelationship));
 	}
+	/**
+	 * get grant relationship by code
+	 * author: Hoang Yen
+	 */
 	@Override
-	public void delete(GrantRelationship grantRelationship) {
-		// TODO Auto-generated method stub
-		
+	public Optional<GrantRelationship> findByCode(String companyId, int specialHolidayCode, String relationshipCode) {
+		return this.queryProxy().find(new KshstGrantRelationshipPK(companyId, specialHolidayCode, relationshipCode), KshstGrantRelationshipItem.class).map(c-> toDomain(c));
 	}
+	/**
+	 * delete grant relation ship
+	 * author: Hoang Yen
+	 */
 	@Override
-	public Optional<Relationship> findByCode(String companyId, String specialHolidayCd, String relationshipCd) {
-		// TODO Auto-generated method stub
-		return null;
+	public void delete(String companyId, int specialHolidayCode, String relationshipCode) {
+		KshstGrantRelationshipPK kshstGrantRelationshipPK = new KshstGrantRelationshipPK(companyId, specialHolidayCode, relationshipCode);
+		this.commandProxy().remove(KshstGrantRelationshipItem.class, kshstGrantRelationshipPK);
 	}
 }

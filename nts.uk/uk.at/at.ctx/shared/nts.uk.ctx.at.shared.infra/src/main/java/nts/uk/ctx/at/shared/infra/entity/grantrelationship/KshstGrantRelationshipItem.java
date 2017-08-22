@@ -8,8 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -26,7 +30,7 @@ public class KshstGrantRelationshipItem extends UkJpaEntity implements Serializa
 	public int grantRelationshipDay;
 	/* 喪主時加算日数 */
 	@Column(name = "MORNING_HOUR")
-	public int morningHour;
+	public Integer morningHour;
 	@Override
 	protected Object getKey() {
 		return kshstGrantRelationshipPK;
