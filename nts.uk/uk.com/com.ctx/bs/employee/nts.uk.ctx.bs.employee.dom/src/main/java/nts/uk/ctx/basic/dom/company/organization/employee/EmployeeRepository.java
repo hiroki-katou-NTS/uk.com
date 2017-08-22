@@ -53,5 +53,5 @@ public interface EmployeeRepository {
 	 * @param employeeId the employee id
 	 * @return the optional
 	 */
-	Optional<Employee> findBySid(String employeeId);
+	Optional<Employee> findBySid(String companyId, String employeeId);
 }
