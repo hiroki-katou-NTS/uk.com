@@ -123,4 +123,27 @@ public interface WorkAppApprovalRootRepository {
 	 * @param wpAppRoot
 	 */
 	void updateWpApprovalRoot(WorkplaceApprovalRoot wpAppRoot);
+	/**
+	 * get Company Approval Root By End date
+	 * @param companyId
+	 * @param endDate
+	 * @return
+	 */
+	List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, String endDate);
+	/**
+	 * get Workplace Approval Root By End date
+	 * @param companyId
+	 * @param workplaceId
+	 * @param endDate
+	 * @return
+	 */
+	List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, String endDate);
+	/**
+	 * get Person Approval Root By End date
+	 * @param companyId
+	 * @param employeeId
+	 * @param endDate
+	 * @return
+	 */
+	List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, String endDate);
 }
