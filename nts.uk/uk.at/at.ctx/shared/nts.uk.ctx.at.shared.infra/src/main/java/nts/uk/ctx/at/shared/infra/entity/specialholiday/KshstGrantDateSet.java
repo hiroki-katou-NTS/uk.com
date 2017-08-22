@@ -34,8 +34,8 @@ public class KshstGrantDateSet extends UkJpaEntity implements Serializable {
 
 	@ManyToOne
     @JoinColumns({
-    	@JoinColumn(name="CID", referencedColumnName="CID"),
-    	@JoinColumn(name="SPHD_CD", referencedColumnName="SPHD_CD")
+    	@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+    	@JoinColumn(name="SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
     })
 	public KshstGrantDateCom grantDateCom;
 	

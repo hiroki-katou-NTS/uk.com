@@ -32,7 +32,7 @@ public class KshstGrantDateCom extends UkJpaEntity implements Serializable {
 	@Column(name = "GRANT_DATE")
 	public int grantDate;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="grantDateCom")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantDateCom", orphanRemoval = true)
 	public List<KshstGrantDateSet> grantDateSets;
 
 	@Override
