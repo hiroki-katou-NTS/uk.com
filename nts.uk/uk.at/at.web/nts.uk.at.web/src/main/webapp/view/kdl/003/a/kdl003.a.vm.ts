@@ -79,13 +79,10 @@ module nts.uk.at.view.kdl003.a {
                             }
                             service.isWorkTimeSettingNeeded(code).done(val => {
                                 switch (val) {
-                                    case SetupType.REQUIRED:
-                                        self.setWorkTimeSelection();
+                                    case SetupType.NOT_REQUIRED:
+                                        self.selectedWorkTimeCode('000');
                                         break;
-                                    case SetupType.OPTIONAL:
-                                        // Do nothing.
-                                        break;
-                                    default: self.selectedWorkTimeCode('000');
+                                    default: // Do nothing.
                                 }
                             });
                         });
