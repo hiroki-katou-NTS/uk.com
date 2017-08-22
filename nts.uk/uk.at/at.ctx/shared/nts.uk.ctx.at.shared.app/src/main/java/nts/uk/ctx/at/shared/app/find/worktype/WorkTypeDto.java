@@ -24,7 +24,7 @@ public class WorkTypeDto {
 	public static WorkTypeDto fromDomain(WorkType domain){
 		return new WorkTypeDto(domain.getCompanyId(),
 					domain.getWorkTypeCode().v(),
-					domain.getSortOrder(),
+					0,
 					domain.getSymbolicName().v(),
 					domain.getName().v(),
 					domain.getAbbreviationName().v(),

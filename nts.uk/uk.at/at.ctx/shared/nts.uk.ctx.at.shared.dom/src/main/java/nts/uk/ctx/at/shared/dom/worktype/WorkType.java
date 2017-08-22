@@ -112,6 +112,5 @@ public class WorkType {
 				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class), dailyWork,
 				EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
 				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
-	}
-	
+	}	
 }

@@ -66,6 +66,7 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
 	@Column(name = "AFTERNOON_ATR")
 	public int afternoonAtr;
 	
+	/*出勤率の計算*/
     @Column(name = "CALC_METHOD")
     public int calculatorMethod;
 	
