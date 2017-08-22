@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.estimate.time;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
 
@@ -14,7 +13,6 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
  */
 // 月間目安時間設定
 @Getter
-@Setter
 public class MonthlyEstimateTimeSetting extends DomainObject{
 
 	/** The time. */
@@ -24,4 +22,18 @@ public class MonthlyEstimateTimeSetting extends DomainObject{
 	/** The estimated condition. */
 	// 目安利用条件
 	private EstimatedCondition estimatedCondition;
+
+	/**
+	 * Instantiates a new monthly estimate time setting.
+	 *
+	 * @param time the time
+	 * @param estimatedCondition the estimated condition
+	 */
+	public MonthlyEstimateTimeSetting(MonthlyEstimateTime time,
+			EstimatedCondition estimatedCondition) {
+		this.time = time;
+		this.estimatedCondition = estimatedCondition;
+	}
+	
+	
 }

@@ -2,18 +2,17 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.estimate.time;
+package nts.uk.ctx.at.schedule.dom.shift.estimate.price;
 
 import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 
 /**
- * The Interface EstimateTimeSettingGetMemento.
+ * The Interface EstimatedPriceSettingGetMemento.
  */
-public interface EstimateTimeSettingGetMemento {
+public interface EstimatedPriceSettingGetMemento {
 
-	
 	/**
 	 * Gets the target classification.
 	 *
@@ -23,18 +22,9 @@ public interface EstimateTimeSettingGetMemento {
 	
 	
 	/**
-	 * Gets the yearly estimate time setting.
+	 * Gets the price setting.
 	 *
-	 * @return the yearly estimate time setting
+	 * @return the price setting
 	 */
-	List<YearlyEstimateTimeSetting> getYearlyEstimateTimeSetting();
-	
-	
-	
-	/**
-	 * Gets the monthly estimate time setting.
-	 *
-	 * @return the monthly estimate time setting
-	 */
-	List<MonthlyEstimateTimeSetting> getMonthlyEstimateTimeSetting();
+	List<EstimatedPrice> getPriceSetting();
 }

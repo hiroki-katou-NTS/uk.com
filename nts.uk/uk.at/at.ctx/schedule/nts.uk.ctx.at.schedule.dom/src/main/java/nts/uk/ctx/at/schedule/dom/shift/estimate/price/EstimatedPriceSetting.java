@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate.price;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTargetClassification;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 
 /**
  * The Class EstimatedPriceSetting.
@@ -23,5 +23,27 @@ public class EstimatedPriceSetting {
 	
 	/** The price setting. */
 	// 金額設定
-	private List<EstimatedPriceSetting> priceSetting;
+	private List<EstimatedPrice> priceSetting;
+	
+	
+	/**
+	 * Instantiates a new estimated price setting.
+	 *
+	 * @param memento the memento
+	 */
+	public EstimatedPriceSetting(EstimatedPriceSettingGetMemento memento){
+		this.targetClassification = memento.getTargetClassification();
+		this.priceSetting = memento.getPriceSetting();
+	}
+	
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EstimatedPriceSettingSetMemento memento){
+		memento.setTargetClassification(this.targetClassification);
+		memento.setPriceSetting(this.priceSetting);
+	}
 }
