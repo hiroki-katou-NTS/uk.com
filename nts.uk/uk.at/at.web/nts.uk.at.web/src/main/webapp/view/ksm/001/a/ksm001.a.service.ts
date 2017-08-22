@@ -24,6 +24,7 @@ module nts.uk.at.view.ksm001.a {
                 time3rd: number;
                 time4th: number;
                 time5th: number;    
+                            
             }
             
             export interface CompanyEstimateTimeDto {

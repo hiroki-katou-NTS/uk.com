@@ -1,7 +1,8 @@
 module nts.uk.at.view.ksm001.a {
 
     import TargetYearDto = service.model.TargetYearDto;
-    import MonthlyDto = service.model.MonthlyDto;
+    import EstimateTimeDto = service.model.EstimateTimeDto;
+    import CompanyEstimateTimeDto = service.model.CompanyEstimateTimeDto;
 
     export module viewmodel {
 
@@ -12,8 +13,7 @@ module nts.uk.at.view.ksm001.a {
             isPersonSelected: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             selectedTargetYear: KnockoutObservable<string>;
-            lstMonthly: KnockoutObservableArray<MonthlyModel>;
-            beginMonthly: KnockoutObservable<MonthlyModel>;
+            companyTimeModel: KnockoutObservable<CompanyEstimateTimeModel>;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             employmentTabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
@@ -44,8 +44,7 @@ module nts.uk.at.view.ksm001.a {
                 self.baseDate = ko.observable(new Date());
                 self.selectedEmployee = ko.observableArray([]);
                 self.lstTargetYear = ko.observableArray([]);
-                self.lstMonthly = ko.observableArray([]);
-                self.beginMonthly = ko.observable(new MonthlyModel());
+                self.companyTimeModel = ko.observable(new CompanyEstimateTimeModel());
                 self.isCompanySelected = ko.observable(true);
                 self.isEmploymentSelected = ko.observable(false);
                 self.isPersonSelected = ko.observable(false);
@@ -153,15 +152,11 @@ module nts.uk.at.view.ksm001.a {
                 self.isPersonSelected(false);
                 self.isCompanySelected(true);
                 self.isLoading(true);
-                service.findAllMonthly().done(function(data: MonthlyDto[]) {
-                    var dataModel: MonthlyModel[] = [];
-                    for (var monthly: MonthlyDto of data) {
-                        var monthlyModel: MonthlyModel = new MonthlyModel();
-                        monthlyModel.updateDate(monthly);
-                        dataModel.push(monthlyModel);
-                        self.beginMonthly(monthlyModel);
-                    }
-                    self.lstMonthly(dataModel);
+                service.findAllMonthlyEstimateTime(2017).done(function(data) {
+                    self.companyTimeModel().updateData(data);
+                    
+                    console.log(self.companyTimeModel());
+                    console.log(data);
                     self.isLoading(false);
                     dfd.resolve();
                 });
@@ -188,15 +183,8 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
                 self.isLoading(true);
-                service.findAllMonthly().done(function(data: MonthlyDto[]) {
-                    var dataModel: MonthlyModel[] = [];
-                    for (var monthly: MonthlyDto of data) {
-                        var monthlyModel: MonthlyModel = new MonthlyModel();
-                        monthlyModel.updateDate(monthly);
-                        dataModel.push(monthlyModel);
-                        self.beginMonthly(monthlyModel);
-                    }
-                    self.lstMonthly(dataModel);
+                service.findAllMonthlyEstimateTime(2017).done(function(data) {
+                    self.companyTimeModel().updateData(data);
                     self.isLoading(false);
                     $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson);
                     self.selectedCode = ko.observable('');
@@ -204,9 +192,11 @@ module nts.uk.at.view.ksm001.a {
                     self.isShowNoSelectRow = ko.observable(false);
                     self.employeeList = ko.observableArray<UnitModel>([]);
                     self.applyKCP005ContentSearch([]);
-                    
+
                     $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
-                    
+                    window.setTimeout(function() {
+                        $('#' + self.selectedTab()).removeClass('disappear');
+                    }, 100);
                 });
             }
 
@@ -218,7 +208,7 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 self.employeeList([]);
                 var employeeSearchs: UnitModel[] = [];
-                for (var employeeSearch: EmployeeSearchDto of dataList) {
+                for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
                         code: employeeSearch.employeeId,
                         name: employeeSearch.employeeName,
@@ -259,7 +249,7 @@ module nts.uk.at.view.ksm001.a {
             public getAllEmployeeIdBySearch(): string[] {
                 var self = this;
                 var employeeIds: string[] = [];
-                for (var employeeSelect: UnitModel of self.employeeList()) {
+                for (var employeeSelect of self.employeeList()) {
                     employeeIds.push(employeeSelect.code);
                 }
                 return employeeIds;
@@ -277,30 +267,47 @@ module nts.uk.at.view.ksm001.a {
 
         }
 
-        export class MonthlyModel {
-            month: number;
-            time001: KnockoutObservable<number>;
-            time002: KnockoutObservable<number>;
-            time003: KnockoutObservable<number>;
-            time004: KnockoutObservable<number>;
-            time005: KnockoutObservable<number>;
+        export class EstimateTimeModel {
+            time1st: KnockoutObservable<number>;
+            time2nd: KnockoutObservable<number>;
+            time3rd: KnockoutObservable<number>;
+            time4th: KnockoutObservable<number>;
+            time5th: KnockoutObservable<number>;
 
             constructor() {
-                this.month = 1;
-                this.time001 = ko.observable(0);
-                this.time002 = ko.observable(0);
-                this.time003 = ko.observable(0);
-                this.time004 = ko.observable(0);
-                this.time005 = ko.observable(0);
+                this.time1st = ko.observable(0);
+                this.time2nd = ko.observable(0);
+                this.time3rd = ko.observable(0);
+                this.time4th = ko.observable(0);
+                this.time5th = ko.observable(0);
             }
 
-            updateDate(dto: MonthlyDto) {
-                this.month = dto.month;
-                this.time001(dto.time001);
-                this.time002(dto.time002);
-                this.time003(dto.time003);
-                this.time004(dto.time004);
-                this.time005(dto.time005);
+            updateData(dto: EstimateTimeDto) {
+                this.time1st(dto.time1st);
+                this.time2nd(dto.time2nd);
+                this.time3rd(dto.time3rd);
+                this.time4th(dto.time4th);
+                this.time5th(dto.time5th);
+            }
+        }
+        
+        export class CompanyEstimateTimeModel{
+            monthlyEstimates: EstimateTimeModel[];
+            yearlyEstimate: EstimateTimeModel;
+            
+            constructor(){
+                this.monthlyEstimates = [];
+                this.yearlyEstimate = new EstimateTimeModel();    
+            }
+            
+            updateData(dto: CompanyEstimateTimeDto) {
+                this.monthlyEstimates = [];
+                for (var item of dto.monthlyEstimates) {
+                    var model: EstimateTimeModel = new EstimateTimeModel();
+                    model.updateData(item);
+                    this.monthlyEstimates.push(model);
+                }
+                this.yearlyEstimate.updateData(dto.yearlyEstimate);
             }
         }
         
