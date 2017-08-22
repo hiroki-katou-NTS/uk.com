@@ -107,6 +107,12 @@ module nts.uk.ui.gridlist {
         $("#disable-ctrl").on("click", function() {
             $("#grid2").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
         });
+        $("#disable-all").on("click", function() {
+            $("#grid2").ntsGrid("disableNtsControl", "ruleCode", "SwitchButtons");
+        });
+        $("#enable-all").on("click", function() {
+            $("#grid2").ntsGrid("enableNtsControl", "ruleCode", "SwitchButtons");
+        });
         this.bind(model);
     });
 }

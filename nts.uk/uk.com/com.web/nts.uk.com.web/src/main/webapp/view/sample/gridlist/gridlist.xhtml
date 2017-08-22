@@ -29,31 +29,20 @@
 						<button data-bind="click: removeItem">Remove</button>
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<hr />
-						Single selecting mode
-						<table id="single-list" data-bind="ntsGridList: {								
+						<h3>Single selecting mode</h3>
+						<table id="single-list" data-bind="ntsGridList: {
 								height: 350,
 								dataSource: items,
 								primaryKey: 'code',
-								columns: columns2,
+								columns: columns,
 								enable: enable,
-								deleteOptions : {visible : true, deleteField: 'deletable'},
 								multiple: false,
-								features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
-								value: currentCode
-							}"></table>
-						<br/>
-						<table id="single-list-limited" data-bind="ntsGridList: {
-								dataSource: items,
-								primaryKey: 'code',
-								columns: columns2,
-								deleteOptions : {visible : true, deleteField: 'deletable'},
 								value: currentCode,
-								rows: 5
+								rows: 10
 							}"></table>
-						<br/>
 						currentCode: <span data-bind="text: currentCode"></span>
-						<hr />
-						Multiple selectng mode
+						<hr/>
+						<h3>Multiple selecting mode</h3>
 						<table id="multi-list" data-bind="ntsGridList: {
 								height: 350,
 								dataSource: items,
@@ -61,21 +50,13 @@
 								columns: columns,
 								enable: enable,
 								multiple: true,
-								value: currentCodeList
-							}"></table>
-						<br/>
-						<br/>
-							<table id="multi-list-limited" data-bind="ntsGridList: {
-								height: 350,
-								dataSource: items,
-								optionsValue: 'code',
-								columns: columns,
-								enable: enable,
-								multiple: true,
 								value: currentCodeList,
-								rows: 5
+								rows: 10
 							}"></table>
-						<br />
+						currentCodeList: <span data-bind="text: currentCodeList"></span><br/>
+						<button data-bind="click: addDeleteButton">Add Delete Button</button>
+						<hr/>
+						<h3>Draggable</h3>
 						<table id="draggable-list" data-bind="ntsGridList: {
 							height: 300,
 							dataSource: dragItems,
@@ -86,8 +67,7 @@
 							value: codeList,
 							itemDraggable: true
 						}"></table>
-						<button data-bind="click: addDeleteButton">Add Delete Button</button>
-						currentCodeList: <span data-bind="text: currentCodeList"></span>
+						currentCodeList: <span data-bind="text: codeList"></span><br/>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

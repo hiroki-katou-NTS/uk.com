@@ -48,7 +48,7 @@ module ksu001.a.viewmodel {
 
         arrDay: Time[] = [];
         listSid: string[] = [];
-        isCreateExTable: boolean = true;
+        isClickNextBackMonth: boolean = false;
 
         constructor() {
             let self = this;
@@ -137,10 +137,11 @@ module ksu001.a.viewmodel {
             //start
             self.selectedModeDisplay(1);
             self.initCCG001();
+            self.initExTable();
 
-            _.delay(() => {
-                $('#hor-scroll-button-hide').click();
-            }, 300);
+            //            _.delay(() => {
+            //                $('#hor-scroll-button-hide').click();
+            //            }, 300);
         }
 
         /**
@@ -185,13 +186,7 @@ module ksu001.a.viewmodel {
             });
             //get data basicSchedule
             self.getDataBasicSchedule().done(function() {
-                if (self.isCreateExTable) {
-                    // create extable
-                    self.initExTable();
-                    self.isCreateExTable = false;
-                } else {
-                    self.updateExTable();
-                }
+                self.updateExTable();
             });
 
 
@@ -287,31 +282,6 @@ module ksu001.a.viewmodel {
 
             horzSumHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
 
-            // set dataSource
-            _.each(self.listSid, (x) => {
-                //leftMost dataSource
-                let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
-                leftmostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
-                //middle dataSource
-                middleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
-                //detail dataSource
-                let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
-                detailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                //vertSumContent dataSource
-                vertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
-            });
-
-            for (let i = 0; i < 10; i++) {
-                let obj = {};
-                obj["itemId"] = i.toString();
-                obj["empId"] = "";
-                for (let j = 0; j < self.arrDay.length; j++) {
-                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
-                }
-                horzSumContentDs.push(obj);
-                leftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
-            }
-
             //create leftMost Header and Content
             let leftmostColumns = [{
                 headerText: nts.uk.resource.getText("KSU001_56"), key: "empName", width: "160px", icon: "ui-icon ui-icon-contact",
@@ -347,9 +317,7 @@ module ksu001.a.viewmodel {
                 features: [{
                     name: "HeaderRowHeight",
                     rows: { 0: "75px" }
-                }, {
-                        name: "ColumnResizes"
-                    }]
+                }]
             };
 
             let middleContent = {
@@ -483,9 +451,6 @@ module ksu001.a.viewmodel {
             //set mode of exTable is stickMode single
             $("#extable").exTable("stickMode", "single");
 
-            //Paste data into cell (set-sticker-single)
-            $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
-
             /**
              * next a month
              */
@@ -497,8 +462,8 @@ module ksu001.a.viewmodel {
                 dtMoment = dtMoment.add(1, 'months');
                 dtMoment.subtract(1, 'days');
                 self.dtAft(dtMoment.toDate());
-
-                self.updateDetailHozrSum();
+                self.isClickNextBackMonth = true;
+                self.updateDetailHozrSum(self.isClickNextBackMonth);
             });
 
             /**
@@ -512,8 +477,8 @@ module ksu001.a.viewmodel {
                 dtMoment = dtMoment.subtract(1, 'months');
                 dtMoment.add(1, 'days');
                 self.dtPrev(dtMoment.toDate());
-
-                self.updateDetailHozrSum();
+                self.isClickNextBackMonth = true;
+                self.updateDetailHozrSum(self.isClickNextBackMonth);
             });
 
             /**
@@ -523,17 +488,24 @@ module ksu001.a.viewmodel {
                 let dfd = $.Deferred(),
                     arrObj: BasicSchedule[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
-                    lengthArr = arrCell.length;
+                    lengthArrCell = arrCell.length;
 
-                for (let i = 0; i < lengthArr; i += 2) {
+                for (let i = 0; i < lengthArrCell; i += 2) {
                     arrObj.push(new BasicSchedule({
-                        date: arrCell[i].columnKey,
-                        sid: self.listSid[i],
-                        workTimeCd: arrCell[i + 1].value,
-                        workTypeCd: arrCell[i].value
+                        // slice string '_YYYYMMDD' to 'YYYYMMDD'
+                        date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
+                        employeeId: self.listSid[arrCell[i].rowIndex],
+                        //                        workTimeCd: arrCell[i + 1].value,
+                        //                        workTypeCd: arrCell[i].value
+                        workTimeCd: 'ABC',
+                        workTypeCd: '001'
                     }));
                 }
                 service.registerData(arrObj).done(function() {
+                    //get data and update extable
+                    self.getDataBasicSchedule().done(function() {
+                        self.updateExTable();
+                    });
                     dfd.resolve();
                 }).fail(function() {
                     dfd.reject();
@@ -547,7 +519,10 @@ module ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
-            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newVertSumContentDs = [];
+            //Paste data into cell (set-sticker-single)
+            $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
+
+            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
 
             _.each(self.listSid, (x) => {
                 //newLeftMost dataSource
@@ -562,37 +537,43 @@ module ksu001.a.viewmodel {
                 newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
             });
 
+            for (let i = 0; i < 10; i++) {
+                newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
+            }
+
             let updateLeftmostContent = {
                 dataSource: newLeftMostDs,
-                primaryKey: "empId"
             };
 
             let updateMiddleContent = {
                 dataSource: newMiddleDs,
-                primaryKey: "empId",
             };
 
             let updateDetailContent = {
                 dataSource: newDetailContentDs,
-                primaryKey: "empId",
             };
 
             let updateVertSumContent = {
                 dataSource: newVertSumContentDs,
-                primaryKey: "empId"
+            };
+
+            let updateLeftHorzSumContent = {
+                dataSource: newLeftHorzContentDs
             };
 
             $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
             $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
             $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
+            $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
 
-            self.updateDetailHozrSum();
+            self.isClickNextBackMonth = false;
+            self.updateDetailHozrSum(self.isClickNextBackMonth);
         }
 
         /**
          * update new data of header and content of detail and horizSum
          */
-        updateDetailHozrSum(): void {
+        updateDetailHozrSum(isClickNextBackMonth: boolean): void {
             let self = this;
 
             //Get dates in time period
@@ -630,42 +611,48 @@ module ksu001.a.viewmodel {
                 horzSumContentDs.push(obj);
             }
 
-            self.getDataBasicSchedule().done(() => {
-                let detailHeaderDeco = [], detailContentDeco = [];
-                //dataSource
-                _.each(self.listSid, (x) => {
-                    let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
-                    newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+            let detailHeaderDeco = [], detailContentDeco = [];
+            //Set color for detail
+            self.setColorForDetail(detailHeaderDeco, detailContentDeco);
+            let updateDetailHeader = {
+                columns: newDetailColumns,
+                dataSource: newDetailHeaderDs,
+                features: [{
+                    name: "HeaderCellStyle",
+                    decorator: detailHeaderDeco
+                }]
+            };
+
+            //if haven't data in extable, only update header detail and header horizontal
+            if (isClickNextBackMonth && self.empItems().length == 0) {
+                $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, {});
+            } else {
+                self.getDataBasicSchedule().done(() => {
+                    //dataSource
+                    _.each(self.listSid, (x) => {
+                        let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
+                        newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                    });
+
+                    let updateDetailContent = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailContentDs,
+                        features: [{
+                            name: "BodyCellStyle",
+                            decorator: detailContentDeco
+                        }]
+                    };
+
+                    let updateHorzSumContent = {
+                        columns: newDetailColumns,
+                        dataSource: horzSumContentDs
+                    };
+
+                    $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                    $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateHorzSumContent);
                 });
-
-                //Set color for detail
-                self.setColorForDetail(detailHeaderDeco, detailContentDeco);
-
-                let updateDetailHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
-                        name: "HeaderCellStyle",
-                        decorator: detailHeaderDeco
-                    }]
-                };
-                let updateDetailContent = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailContentDs,
-                    features: [{
-                        name: "BodyCellStyle",
-                        decorator: detailContentDeco
-                    }]
-                };
-
-                let updateHorzSumContent = {
-                    columns: newDetailColumns,
-                    dataSource: horzSumContentDs
-                };
-
-                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateHorzSumContent);
-            });
+            }
         }
 
         /**
@@ -694,7 +681,6 @@ module ksu001.a.viewmodel {
                 });
             }
         }
-
     }
 
     interface ICell {
@@ -750,20 +736,20 @@ module ksu001.a.viewmodel {
 
     interface IBasicSchedule {
         date: string,
-        sid: string,
+        employeeId: string,
         workTimeCd: string,
         workTypeCd: string
     }
 
     class BasicSchedule {
         date: string;
-        sid: string;
+        employeeId: string;
         workTimeCd: string;
         workTypeCd: string;
 
         constructor(params: IBasicSchedule) {
             this.date = params.date;
-            this.sid = params.sid;
+            this.employeeId = params.employeeId;
             this.workTimeCd = params.workTimeCd;
             this.workTypeCd = params.workTypeCd;
         }

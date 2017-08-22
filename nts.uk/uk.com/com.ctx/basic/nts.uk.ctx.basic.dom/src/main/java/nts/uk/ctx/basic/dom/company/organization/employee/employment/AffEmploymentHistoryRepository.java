@@ -21,8 +21,7 @@ public interface AffEmploymentHistoryRepository {
 	 * @return the list
 	 */
 	List<AffEmploymentHistory> searchEmployee(GeneralDate baseDate, List<String> employmentCodes );
-	
-	
+
 	/**
 	 * Search employee.
 	 *
@@ -33,8 +32,15 @@ public interface AffEmploymentHistoryRepository {
 	 */
 	List<AffEmploymentHistory> searchEmployee(List<String> employeeIds, 
 			GeneralDate baseDate, List<String> employmentCodes );
-	
-	
-	
+
+	/**
+	 * Search employment of sids.
+	 *
+	 * @param employeeIds the employee ids
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<AffEmploymentHistory> searchEmploymentOfSids(List<String> employeeIds,
+			GeneralDate baseDate);
 
 }

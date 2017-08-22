@@ -89,7 +89,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
-            dfd.resolve();
+            service.findAll().done(function(data) {
+                dfd.resolve(data);
+            });            
 
             return dfd.promise();
         }

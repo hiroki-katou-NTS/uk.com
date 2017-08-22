@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.person.dom.person.role.RoleName
+			</com:ValidatorScript>
+			<com:stylefile path="cas001.a.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cas001.a.start.js" />
+			<com:scriptfile path="cas001.a.service.js" />
+			<com:scriptfile path="cas001.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<!-- <button id="A1_001">#{i18n.getText('CAS001_2')}</button> -->
+					<button id="A1_002" class="proceed" data-bind="click:saveData">#{i18n.getText('CAS001_3')}</button>
+					<button id="A1_003"
+						data-bind="click:OpenCModal,enable:(personRoleList().length &gt; 0)">#{i18n.getText('CAS001_4')}</button>
+					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
+					<div class="float-right">
+						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">#{i18n.getText('CAS001_6')}</a>
+					</div>
+				</div>
+			</div>
+			<div id="contents-area" class="cf">
+				<div id="content-left" class="bg-green"></div>
+				<div id="content-right"></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

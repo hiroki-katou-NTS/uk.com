@@ -5,21 +5,19 @@ module nts.uk.ui.gridlist {
             items: KnockoutObservableArray<ItemModel>;
             dragItems: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<NtsGridListColumn>;
-            columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
             codeList: KnockouObservableArray<any>;
             count: number = 100;
-            switchOptions: KnockoutObservableArray<any>;
             enable: KnockoutObservable<boolean>;
             constructor() {
                 
-                this.enable = ko.observable(false);
+                this.enable = ko.observable(true);
                 this.items = ko.observableArray([]);
                 this.dragItems = ko.observableArray([]);
                 
-                for(let i = 1; i < 15; i++) {
-                    this.items.push(new ItemModel('00' + i, '基本給 基本給  基本給 基本給 基本給 基本給 基本給 基本給 基本給 基本給基本給基本給基本給 v基本給基本給 基本給', "description " + i, i%3 === 0, "2010/1/1"));
+                for(let i = 1; i < 100; i++) {
+                    this.items.push(new ItemModel('00' + i, '基本給 基本給', "description " + i, i%3 === 0, "2010/1/1"));
                     this.dragItems.push(new ItemModel('00' + i, '基本給 ', "description " + i, i%3 === 0, "2010/1/1"));
                 }
                 
@@ -29,20 +27,7 @@ module nts.uk.ui.gridlist {
                     { headerText: '説明', key: 'description', width: 150 }, 
                     { headerText: '説明1', key: 'other1', width: 150},
                     { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' } 
-                ]); 
-                this.columns2 = ko.observableArray([
-                    { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                    { headerText: '名称', key: 'name', width: 150, columnCssClass: "test" },
-                    { headerText: '説明', key: 'description', width: 150 },
-                    { headerText: '説明1', key: 'other1', width: 150 }, 
-                    { headerText: '説明2', key: 'other2', width: 150 }
-                ]);
-                
-                this.switchOptions = ko.observableArray([
-                    { code: "1", name: '四捨五入' },
-                    { code: "2", name: '切り上げ' },
-                    { code: "3", name: '切り捨て' }
-                ]);
+                ]);                 
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
                 this.codeList = ko.observableArray([]);

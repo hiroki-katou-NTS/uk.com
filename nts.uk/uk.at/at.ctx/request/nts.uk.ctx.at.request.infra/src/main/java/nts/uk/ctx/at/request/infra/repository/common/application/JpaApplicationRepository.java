@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.infra.entity.common.application.KafdtApplication;
-import nts.uk.ctx.at.request.infra.entity.common.application.KafdtApplicationPK;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository  {

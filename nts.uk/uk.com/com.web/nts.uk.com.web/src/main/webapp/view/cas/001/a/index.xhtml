@@ -12,6 +12,8 @@
 			</com:ValidatorScript>
 			<com:stylefile path="cas001.a.style.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
 			<com:scriptfile path="cas001.a.start.js" />
 			<com:scriptfile path="cas001.a.service.js" />
 			<com:scriptfile path="cas001.a.vm.js" />
@@ -54,14 +56,14 @@
 							searchMode: 'filter',
 							targetKey: 'categoryId',
 						 	comId: 'A2_008',
-						 	items: currentRole().RoleCategoryList,
+						 	items: RoleCategoryList,
 						 	selected: currentCategoryId,
 						 	selectedKey: 'categoryId',
 						 	fields: ['categoryName'],
 						 	mode: 'igGrid'}" />
 						<table id="A2_008"
 							data-bind="ntsGridList: {	
-						dataSource: currentRole().RoleCategoryList ,
+						dataSource: RoleCategoryList ,
 						primaryKey: 'categoryId' ,
 						columns: [{ headerText: 'コード', key: 'categoryId', width: 200 ,hidden:true},
 								{ headerText: '#{i18n.getText('CAS001_10')}', key: 'categoryName', width: 165},

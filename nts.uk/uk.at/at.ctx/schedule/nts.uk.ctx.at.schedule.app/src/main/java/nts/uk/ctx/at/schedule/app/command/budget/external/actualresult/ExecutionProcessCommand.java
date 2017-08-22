@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.LineStart;
 
 /**
  * The Class ExecutionProcessCommand.
@@ -27,7 +28,7 @@ public class ExecutionProcessCommand {
     private Integer encoding;
     
     /** The start line. */
-    private Integer startLine;
+    private LineStart startLine;
     
     /** The is override. */
     private Boolean isOverride;

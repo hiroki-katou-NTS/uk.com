@@ -11,7 +11,7 @@ import java.util.Optional;
  * The Interface EmployeeRepository.
  */
 public interface EmployeeRepository {
-	
+
 	/**
 	 * Gets the person id by employee code.
 	 *
@@ -20,7 +20,7 @@ public interface EmployeeRepository {
 	 * @return the person id by employee code
 	 */
 	Optional<Employee> getPersonIdByEmployeeCode(String companyId, String employeeCode);
-	
+
 	/**
 	 * Gets the list person by list employee.
 	 *
@@ -29,8 +29,7 @@ public interface EmployeeRepository {
 	 * @return the list person by list employee
 	 */
 	List<Employee> getListPersonByListEmployee(String companyId, List<String> employeeCode);
-	
-	
+
 	/**
 	 * Gets the all employee.
 	 *
@@ -38,8 +37,7 @@ public interface EmployeeRepository {
 	 * @return the all employee
 	 */
 	List<Employee> getAllEmployee(String companyId);
-	
-	
+
 	/**
 	 * Gets the list person by list employee.
 	 *
@@ -48,4 +46,12 @@ public interface EmployeeRepository {
 	 * @return the list person by list employee
 	 */
 	List<Employee> getListPersonByListEmployeeId(String companyId, List<String> employeeIds);
+
+	/**
+	 * Find by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @return the optional
+	 */
+	Optional<Employee> findBySid(String employeeId);
 }
