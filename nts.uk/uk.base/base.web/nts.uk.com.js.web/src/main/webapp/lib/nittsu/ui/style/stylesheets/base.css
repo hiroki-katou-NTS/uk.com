@@ -3590,6 +3590,10 @@ button.nts-switch-button[disabled]:hover {
   margin-top: -8px;
 }
 
+div .ex-area-line.x-stay {
+	cursor: default !important;
+}
+
 /* line 32, ../sass/components/_extable.scss */
 .top-right-tooltip:before {
   width: 0;
