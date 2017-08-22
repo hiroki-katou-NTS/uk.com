@@ -44,7 +44,7 @@ module nts.uk.at.view.ksu006.a {
                 self.selectedExtBudgetCode = ko.observable('');
                 
                 self.fileName = ko.observable("");
-                self.extensionFileList = ko.observableArray(["txt",'csv']);
+                self.extensionFileList = ko.observableArray(['txt','csv', 'TXT', 'CSV']);
                 self.fileId = ko.observable(null);
                 
                 self.encodingList = ko.observableArray([{code: 1, name: 'Shift JIS'}]);
@@ -75,6 +75,9 @@ module nts.uk.at.view.ksu006.a {
                     self.enableDataPreview(false);
                     nts.uk.ui.block.grayout();
                     self.checkUnitAtr().done(() => {
+                        // reset value
+                        self.resetDataPreview();
+                        
                         self.enableDataPreview(true);
                         nts.uk.ui.block.clear();
                     });
@@ -145,9 +148,7 @@ module nts.uk.at.view.ksu006.a {
             private showDataPreview() {
                 let self = this;
                 // reset value
-                self.dataPreview([]);
-                self.firstRecord(null);
-                self.remainData([]);
+                self.resetDataPreview();
                 
                 self.uploadFile().done(function() {
                     service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
@@ -164,6 +165,13 @@ module nts.uk.at.view.ksu006.a {
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                 });  
+            }
+            
+            private resetDataPreview() {
+                let self = this;
+                self.dataPreview([]);
+                self.firstRecord(null);
+                self.remainData([]);
             }
             
             private initNameIdTimeZoneUnit() {
@@ -194,7 +202,7 @@ module nts.uk.at.view.ksu006.a {
                     nts.uk.ui.dialog.alertError({messageId: "Msg_157"});
                     return dfd.promise();
                 }
-                $("#file-upload").ntsFileUpload({stereoType: self.extensionFileList()}).done(function(inforFileUpload) {
+                $("#file-upload").ntsFileUpload({stereoType: 'ExternalBudgetFile'}).done(function(inforFileUpload) {
                     self.fileId(inforFileUpload[0].id);
                     dfd.resolve();
                 }).fail(function(res) {
