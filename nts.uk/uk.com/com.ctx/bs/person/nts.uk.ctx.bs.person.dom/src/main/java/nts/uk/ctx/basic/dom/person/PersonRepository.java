@@ -18,7 +18,7 @@ public interface PersonRepository {
 	 * @param personIds the person ids
 	 * @return the person by person id
 	 */
-	List<Person> getPersonByPersonId(List<String> personIds);
+	List<Person> getPersonByPersonIds(List<String> personIds);
 	
 	
 	/**

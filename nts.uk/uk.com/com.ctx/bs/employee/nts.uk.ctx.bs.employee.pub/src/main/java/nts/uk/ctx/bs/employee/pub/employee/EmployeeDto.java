@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.pub.company.organization.employee;
+package nts.uk.ctx.bs.employee.pub.employee;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -34,12 +34,4 @@ public class EmployeeDto {
 	/** The join date. */
 	private GeneralDate joinDate;
 
-	/** The work place code. */
-	private String wkpCode;
-
-	/** The work place id. */
-	private String wkpId;
-
-	/** The work place name. */
-	private String wkpName;
 }
