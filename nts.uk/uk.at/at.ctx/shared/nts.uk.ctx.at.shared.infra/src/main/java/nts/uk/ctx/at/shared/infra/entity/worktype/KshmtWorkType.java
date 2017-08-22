@@ -27,7 +27,7 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
     public KshmtWorkTypePK kshmtWorkTypePK;
 	
 	/*勤務種類記号名*/
-	@Column(name = "SYMBOLIC_NAME")
+	@Column(name = "SYNAME")
 	public String symbolicName;
 	
 	/*勤務種類名称*/
@@ -35,35 +35,31 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
 	public String name;
 	
 	/*勤務種類略名*/
-	@Column(name = "ABBREVIATION_NAME")
+	@Column(name = "ABNAME")
 	public String abbreviationName;
 	
 	/*勤務種類備考*/
 	@Column(name = "MEMO")
 	public String memo;
-	
-	/*使用区分*/
-	@Column(name = "DISPLAY_ATR")
-	public int displayAtr;
-	
+		
 	/*廃止区分*/
-	@Column(name = "DEPRECATE_ATR")
+	@Column(name = "ABOLISH_ATR")
 	public int deprecateAtr;
 	
 	/*勤務区分*/
-	@Column(name = "WORKTYPE_ATR")
+	@Column(name = "WORK_ATR")
 	public int worktypeAtr;
 	
 	/*1日*/
-	@Column(name = "ONE_DAY_ATR")
+	@Column(name = "ONE_DAY_CLS")
 	public int oneDayAtr;
 	
 	/*午前*/
-	@Column(name = "MORNING_ATR")
+	@Column(name = "MORNING_CLS")
 	public int morningAtr;
 	
 	/*午後*/
-	@Column(name = "AFTERNOON_ATR")
+	@Column(name = "AFTERNOON_CLS")
 	public int afternoonAtr;
 	
 	/*出勤率の計算*/
