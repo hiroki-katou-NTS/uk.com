@@ -123,7 +123,8 @@ module nts.uk.ui {
                 var self = this;
                 if (self.isInit) {
                     self.isInit = false;
-                    self.$dialog.dialog("destroy");
+                    self.$encodeTypeCombo.igCombo("destroy");
+                    self.$dialog.dialog("destroy").remove();
                     $(self.option.selector).off("click.ImportSettingForm");
                 }
             }
