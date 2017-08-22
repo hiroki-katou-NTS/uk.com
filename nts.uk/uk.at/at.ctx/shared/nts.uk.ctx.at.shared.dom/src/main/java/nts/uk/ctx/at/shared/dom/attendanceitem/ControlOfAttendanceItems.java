@@ -29,11 +29,11 @@ public class ControlOfAttendanceItems extends AggregateRoot {
 	}
 
 	public static ControlOfAttendanceItems createFromJavaType(BigDecimal attandanceTimeId, int inputUnitOfTimeItem,
-			String headerBackgroundColorOfDailyPerformance,int nameLineFeedPosition) {
+			String headerBackgroundColorOfDailyPerformance, int nameLineFeedPosition) {
 
 		return new ControlOfAttendanceItems(attandanceTimeId,
-				EnumAdaptor.valueOf(inputUnitOfTimeItem, TimeInputUnit.class),
-				new HeaderBackgroundColor(headerBackgroundColorOfDailyPerformance),nameLineFeedPosition);
+				inputUnitOfTimeItem == -1 ? null : EnumAdaptor.valueOf(inputUnitOfTimeItem, TimeInputUnit.class),
+				new HeaderBackgroundColor(headerBackgroundColorOfDailyPerformance), nameLineFeedPosition);
 	}
 
 }
