@@ -5,10 +5,10 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTime;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetFileName;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogSetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionState;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExecutionTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExtBudgetFileName;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
 
 /**
