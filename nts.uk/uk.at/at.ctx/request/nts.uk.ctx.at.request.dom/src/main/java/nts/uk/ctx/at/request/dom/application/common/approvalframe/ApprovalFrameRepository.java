@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.approvalframe;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -10,7 +11,13 @@ import java.util.Optional;
 
 public interface ApprovalFrameRepository {
 		
-	
+	/**
+	 * get all approver by phase ID
+	 * @param companyID
+	 * @param phaseID
+	 * @return
+	 */
+	List<ApprovalFrame> getAllApproverByPhaseID(String companyID , String phaseID);
 	
 	/**
 	 * Find by Code
@@ -19,7 +26,7 @@ public interface ApprovalFrameRepository {
 	 * @param dispOrder
 	 * @return
 	 */
-	Optional<ApprovalFrame> findByCode(String companyID , String phaseID , String dispOrder);
+	Optional<ApprovalFrame> findByCode(String companyID , String phaseID , int dispOrder);
 	
 	/**
 	 * Create ApprovalFrame
@@ -40,6 +47,6 @@ public interface ApprovalFrameRepository {
 	 * @param appID
 	 * @param phaseID
 	 */
-	void delete (String companyID , String appID , int phaseID );
+	void delete (String companyID , String phaseID , int dispOrder );
 
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.approvalframe;
+package nts.uk.ctx.at.request.dom.application.common.approveaccepted;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
