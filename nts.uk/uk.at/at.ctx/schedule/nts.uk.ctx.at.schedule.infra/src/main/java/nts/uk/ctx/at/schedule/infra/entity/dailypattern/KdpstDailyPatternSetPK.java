@@ -38,7 +38,7 @@ public class KdpstDailyPatternSetPK implements Serializable{
 	private String cid;
 	
     /** The cid. */
-    @DBCharPaddingAs(PatternCode.class)
+//    @DBCharPaddingAs(PatternCode.class)
     @Basic(optional = false)
     @Column(name = "PATTERN_CD")
 	private String patternCd;

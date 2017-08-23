@@ -28,7 +28,6 @@ public class JpaApplicationDeadlineRepository extends JpaRepository implements A
 	 */
 	@Override
 	public List<ApplicationDeadline> getDeadlineByClosureId(String companyId, int closureId) {
-
 		List<ApplicationDeadline> data = this.queryProxy()
 				.query(FINDBYCLOSURE, KrqstAppDeadline.class)
 				.setParameter("companyId", companyId)

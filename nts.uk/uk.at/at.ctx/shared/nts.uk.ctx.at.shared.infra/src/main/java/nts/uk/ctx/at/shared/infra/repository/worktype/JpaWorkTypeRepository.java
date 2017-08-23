@@ -19,29 +19,53 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypePK;
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
 
-	private final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
+	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
 
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
-
 
 	private final String SELECT_BY_CID_DISPLAY_ATR = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.displayAtr = :displayAtr ORDER BY c.sortOrder ASC";
 
-	private final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.kshmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0";
+	private static final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE
+			+ " LEFT JOIN KshmtWorkTypeOrder o"
+			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.kshmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0"
+			+ " ORDER BY o.dispOrder ASC";
 
-	private final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.deprecateAtr = 0";
+	private static final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE
+			+ " LEFT JOIN KshmtWorkTypeOrder o"
+			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.deprecateAtr = 0"
+			+ " ORDER BY o.dispOrder ASC";
 
 	private static WorkType toDomain(KshmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
-				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName,
-				entity.name, entity.abbreviationName, entity.memo,
-				entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
-				entity.deprecateAtr,entity.calculatorMethod);
+				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
+				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
+				entity.deprecateAtr, entity.calculatorMethod);
 		return domain;
+	}
+
+	private static KshmtWorkType toEntity(WorkType domain) {
+		val entity = new KshmtWorkType();
+
+		entity.kshmtWorkTypePK = new KshmtWorkTypePK(domain.getCompanyId(), domain.getWorkTypeCode().v());
+		entity.abbreviationName = domain.getAbbreviationName().v();
+		entity.afternoonAtr = domain.getDailyWork().getAfternoon().value;
+		entity.calculatorMethod = domain.getCalculateMethod().value;
+		entity.deprecateAtr = domain.getDeprecate().value;
+		entity.memo = domain.getMemo().v();
+		entity.morningAtr = domain.getDailyWork().getMorning().value;
+		entity.name = domain.getName().v();
+		entity.oneDayAtr = domain.getDailyWork().getOneDay().value;
+		entity.symbolicName = domain.getSymbolicName().v();
+		entity.worktypeAtr = domain.getDailyWork().getWorkTypeUnit().value;
+
+		return entity;
 	}
 
 	@Override
@@ -56,7 +80,6 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		return this.queryProxy().query(query, KshmtWorkType.class).setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
 	}
-
 
 	/**
 	 * Find by companyId and displayAtr = DISPLAY sort by SORT_ORDER
@@ -96,6 +119,14 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes) {
 		return this.queryProxy().query(FIND_NOT_DEPRECATED_BY_LIST_CODE, KshmtWorkType.class)
 				.setParameter("companyId", companyId).setParameter("codes", codes).getList(c -> toDomain(c));
+	}
+
+	/**
+	 * Insert workType to KSHMT_WORKTYPE
+	 */
+	@Override
+	public void add(WorkType workType) {
+		this.commandProxy().insert(toEntity(workType));
 	}
 
 }

@@ -1,6 +1,6 @@
 module nts.uk.at.view.kmf004.a.viewmodel {
     export class ScreenModel {
-        items: KnockoutObservableArray<ItemModel>;
+        items: KnockoutObservableArray<ItemModelSpecialHoliday>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         tabs: KnockoutObservableArray<any>;
@@ -32,9 +32,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.selectedCode = ko.observable('0002')
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            for (let i = 1; i < 5; i++) {
-                self.items.push(new ItemModel('00' + i, '基本給'));
-            }
 
             self.itemList = ko.observableArray([
                 new ItemModel('基本給1', '基本給'),
@@ -87,22 +84,36 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-
             var dfd = $.Deferred();
-
+            self.getAllSpecialHoliday();
+            
             dfd.resolve();
+            return dfd.promise();
+        }
+
+        getAllSpecialHoliday(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            service.findAllSpecialHoliday().done(function(specialHoliday_arr: Array<model.SpecialHolidayDto>) {
+                if (specialHoliday_arr && specialHoliday_arr.length) {
+                    for (var i = 0; i < specialHoliday_arr.length; i++) {
+                        self.items.push(new model.SpecialHolidayDto(
+                            specialHoliday_arr[i].companyId,
+                            specialHoliday_arr[i].specialHolidayCode,
+                            specialHoliday_arr[i].specialHolidayName,
+                            specialHoliday_arr[i].grantPeriodicCls,
+                            specialHoliday_arr[i].memo));
+                    }
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+                dfd.reject(error);
+            });
 
             return dfd.promise();
         }
-        
-        openGDialog() {
-            let self = this;
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { title: '代行リスト',  dialogClass: 'no-close' }).onClosed(function(): any {
-                nts.uk.ui.block.clear();
-            });
 
-        }
         openBDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
@@ -119,6 +130,33 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
         }
+
+        openGDialog() {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { title: '続柄に対する付与日数', dialogClass: 'no-close' }).onClosed(function(): any {
+                nts.uk.ui.block.clear();
+            });
+
+        }
+
+        openHDialog() {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/h/index.xhtml', { title: '続柄の登録',dialogClass: 'no-close' }).onClosed(function(): any {
+                nts.uk.ui.block.clear();
+            });
+
+        }
+    }
+    
+    class ItemModelSpecialHoliday {
+        specialHolidayCode: string;
+        specialHolidayName: string;
+        constructor(specialHolidayCode: string, specialHolidayName: string) {
+            this.specialHolidayCode = specialHolidayCode;
+            this.specialHolidayName = specialHolidayName;
+        }
     }
 
     class ItemModel {
@@ -127,6 +165,23 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    export module model {
+        export class SpecialHolidayDto {
+            companyId: string;
+            specialHolidayCode: string;
+            specialHolidayName: string;
+            grantPeriodicCls: number;
+            memo: string;
+            constructor(companyId: string, specialHolidayCode: string, specialHolidayName: string, grantPeriodicCls: number, memo: string) {
+                this.companyId = companyId;
+                this.specialHolidayCode = specialHolidayCode;
+                this.specialHolidayName = specialHolidayName;
+                this.grantPeriodicCls = grantPeriodicCls;
+                this.memo = memo;
+            }
         }
     }
 }

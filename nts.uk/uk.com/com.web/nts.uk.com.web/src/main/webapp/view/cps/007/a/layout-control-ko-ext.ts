@@ -415,6 +415,7 @@ module nts.custombinding {
             comboxbox: {
                 enable: ko.observable(true),
                 editable: ko.observable(false),
+                visibleItemsCount: 10,
                 value: ko.observable(''),
                 options: ko.observableArray([]),
                 optionsValue: 'id',

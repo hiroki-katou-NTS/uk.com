@@ -16,6 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KRQDT_GO_BACK_DIRECTLY")
 public class KrqdtGoBackDirectly extends UkJpaEntity{
+	
 	@EmbeddedId
 	public KrqdtGoBackDirectlyPK krqdtGoBackDirectlyPK;
 	
@@ -31,7 +32,7 @@ public class KrqdtGoBackDirectly extends UkJpaEntity{
 	@Column(name="WORK_TIME_START1")
 	public int workTimeStart1;
 	
-	@Column(name="WORK_TIME_End1")
+	@Column(name="WORK_TIME_END1")
 	public int workTimeEnd1;
 	
 	@Column(name="WORK_LOCATION_CD1")

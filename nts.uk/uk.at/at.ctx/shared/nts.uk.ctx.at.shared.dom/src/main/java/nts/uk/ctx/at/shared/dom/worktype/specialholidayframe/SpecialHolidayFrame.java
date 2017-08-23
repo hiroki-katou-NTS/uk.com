@@ -13,26 +13,26 @@ public class SpecialHolidayFrame {
 	/*会社ID*/
 	private String companyId;
 	/*特別休暇枠ID*/
-	private UUID SpecialHdFrameId;
+	private int SpecialHdFrameNo;
 	/*枠名称*/
 	private WorkTypeName SpecialHdFrameName;
 	/*特別休暇枠の廃止区分*/
 	private DeprecateClassification deprecateSpecialHd;
 	
 	
-	public SpecialHolidayFrame(String companyId, UUID specialHdFrameId, WorkTypeName specialHdFrameName,
+	public SpecialHolidayFrame(String companyId, int specialHdFrameNo, WorkTypeName specialHdFrameName,
 			DeprecateClassification deprecateSpecialHd) {
 		super();
 		this.companyId = companyId;
-		SpecialHdFrameId = specialHdFrameId;
+		this.SpecialHdFrameNo = specialHdFrameNo;
 		SpecialHdFrameName = specialHdFrameName;
 		this.deprecateSpecialHd = deprecateSpecialHd;
 	}
 	
-	public static SpecialHolidayFrame createSimpleFromJavaType(String companyId, String specialHdFrameId, String specialHdFrameName,
+	public static SpecialHolidayFrame createSimpleFromJavaType(String companyId, int specialHdFrameNo, String specialHdFrameName,
 			int deprecateSpecialHd) {
 		return new SpecialHolidayFrame(companyId, 
-				UUID.fromString(specialHdFrameId), 
+				specialHdFrameNo,
 				new WorkTypeName(specialHdFrameName), 
 				EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class));
 	}
