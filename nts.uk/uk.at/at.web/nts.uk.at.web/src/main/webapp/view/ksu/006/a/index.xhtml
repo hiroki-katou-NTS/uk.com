@@ -20,7 +20,9 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" tabindex="1" data-bind="click: execute, enable: isModeExecute">#{i18n.getText('KSU006_1')}</button>
+				<button class="proceed" tabindex="1" 
+					data-bind="click: execute, enable: (isModeExecute() &amp;&amp; $root.errors.isEmpty)">
+						#{i18n.getText('KSU006_1')}</button>
 				<button tabindex="2" data-bind="click: openDialogLog">#{i18n.getText('KSU006_2')}</button>
 			</div>
 
@@ -67,14 +69,14 @@
 							<label id="label-char-code" data-bind="enable: isModeExecute">#{i18n.getText('KSU006_8')}</label>
 							<div tabindex="6" data-bind="ntsComboBox: {
 									options: encodingList,
-									optionsValue: 'code',
+									optionsValue: 'value',
 									value: selectedEncoding,
 									optionsText: 'name',
 									editable: false,
 									enable: true,
 									enable: isModeExecute,
 									columns: [
-										{ prop: 'name', length: 5}]}" style="margin-left: 30px;">
+										{ prop: 'localizedName', length: 5}]}" style="margin-left: 30px;">
 							</div>
 						</td>
 					</tr><!--END A3_1 ~ A3_4 -->
@@ -107,7 +109,7 @@
 						<td></td>
 						<td>
 							<button tabindex="9" class="large caret-bottom" 
-								data-bind="click: showDataPreview, enable: isModeExecute">
+								data-bind="click: showDataPreview, enable: (isModeExecute() &amp;&amp; $root.errors.isEmpty)">
 								#{i18n.getText('KSU006_11')}</button>
 							<label style="margin-left: 62px;" 
 								data-bind="text: totalRecordDisplay(), enable: isModeExecute"></label>

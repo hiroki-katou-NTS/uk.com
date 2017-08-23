@@ -26,7 +26,7 @@ public class GrantRelationship extends AggregateRoot{
 		this.morningHour = morningHour;
 	}
 	public static GrantRelationship createFromJavaType(String companyId, int specialHolidayCode, String relationshipCode,
-			int grantRelationshipDay, int morningHour){
-		return new GrantRelationship(companyId, specialHolidayCode, relationshipCode, new GrantRelationshipDay(grantRelationshipDay), new MorningHour(morningHour));
+			int grantRelationshipDay, Integer morningHour){
+		return new GrantRelationship(companyId, specialHolidayCode, relationshipCode, new GrantRelationshipDay(grantRelationshipDay), morningHour != null ? new MorningHour(morningHour) : null);
 	}
 }

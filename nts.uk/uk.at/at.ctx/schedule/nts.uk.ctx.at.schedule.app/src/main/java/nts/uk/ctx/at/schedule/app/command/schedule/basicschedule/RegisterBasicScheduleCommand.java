@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.schedule.basicschedule;
 
 import lombok.Data;
-import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -10,10 +9,9 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Data
-@Value
 public class RegisterBasicScheduleCommand {
 	private String employeeId;
 	private GeneralDate date;
-	private String workTypeCd;
-	private String workTimeCd;
+	private String workTypeCode;
+	private String workTimeCode;
 }

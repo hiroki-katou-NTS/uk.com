@@ -42,19 +42,25 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	private final String findWorkTimeByList = "SELECT a FROM KwtmtWorkTime a "
 			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID " + "AND a.kwtmpWorkTimePK.siftCD IN :siftCDs";
 
-	private final String FIND_BY_CID_AND_DISPLAY_ATR = "SELECT a FROM KwtmtWorkTime a JOIN KshmtWorkTimeOrder b ON a.kwtmpWorkTimePK.siftCD = b.kshmpWorkTimeOrderPK.workTimeCd "
+	private final String FIND_BY_CID_AND_DISPLAY_ATR = "SELECT a FROM KwtmtWorkTime a JOIN KshmtWorkTimeOrder b ON a.kwtmpWorkTimePK.siftCD = b.kshmpWorkTimeOrderPK.workTimeCode "
 			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID "
 			+ "AND a.displayAtr = :displayAtr "
 			+ "ORDER BY b.dispOrder ASC";
 
-	private final String FIND_ALL = "SELECT k FROM KwtmtWorkTime k "
-			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID "
-			+ "AND k.displayAtr = 1 "; // Always display.
-
-	private final String FIND_BY_CODES = "SELECT k FROM KwtmtWorkTime k "
+	private static final String FIND_ALL = "SELECT k FROM KwtmtWorkTime k "
+			+ "LEFT JOIN KshmtWorkTimeOrder o "
+			+ "ON k.kwtmpWorkTimePK.siftCD = o.kshmpWorkTimeOrderPK.workTimeCode "
 			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID "
 			+ "AND k.displayAtr = 1 " // Always display.
-			+ "AND k.kwtmpWorkTimePK.siftCD IN :siftCDs";
+			+ "ORDER BY o.dispOrder ASC";
+
+	private static final String FIND_BY_CODES = "SELECT k FROM KwtmtWorkTime k "
+			+ "LEFT JOIN KshmtWorkTimeOrder o "
+			+ "ON k.kwtmpWorkTimePK.siftCD = o.kshmpWorkTimeOrderPK.workTimeCode "
+			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID "
+			+ "AND k.displayAtr = 1 " // Always display.
+			+ "AND k.kwtmpWorkTimePK.siftCD IN :siftCDs "
+			+ "ORDER BY o.dispOrder ASC";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCompanyID(java.lang.String)
@@ -116,7 +122,7 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 
 	/**
 	 * get list WorkTime by CompanyId and DisplayAtr = DISPLAY
-	 * Join with table ORDER to sort workTimeCd
+	 * Join with table ORDER to sort workTimeCode
 	 */
 	@Override
 	public List<WorkTime> findByCIdAndDisplayAtr(String companyID, int displayAtr) {

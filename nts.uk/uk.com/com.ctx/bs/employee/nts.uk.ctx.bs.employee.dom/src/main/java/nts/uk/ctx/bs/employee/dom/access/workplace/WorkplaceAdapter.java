@@ -15,8 +15,21 @@ import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
  */
 public interface WorkplaceAdapter {
 
-	// List<AcWorkplaceDto> findAllWorkplaceOfCompany(String companyId, String
-	// workplaceId, GeneralDate baseDate);
+	/**
+	 * Find by wpk id.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the optional
+	 */
+	AcWorkplaceDto findByWkpId(String workplaceId);
+
+	/**
+	 * Find by wpk ids.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the list
+	 */
+	List<AcWorkplaceDto> findByWkpIds(List<String> workplaceIds);
 
 	/**
 	 * Find by person ids.

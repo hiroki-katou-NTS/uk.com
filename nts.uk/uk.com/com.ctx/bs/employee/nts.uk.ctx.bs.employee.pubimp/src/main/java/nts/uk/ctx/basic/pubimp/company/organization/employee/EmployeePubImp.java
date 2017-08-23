@@ -6,20 +6,23 @@ package nts.uk.ctx.basic.pubimp.company.organization.employee;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.access.employment.EmploymentAdapter;
+import nts.uk.ctx.bs.employee.dom.access.employment.dto.AcEmploymentDto;
 import nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter;
+import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeePub;
 
@@ -29,12 +32,13 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeePub;
 @Stateless
 public class EmployeePubImp implements EmployeePub {
 
-	/** The first index. */
-	private final int FIRST_INDEX = 0;
-
 	/** The workplace adapter. */
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
+
+	/** The employment adapter. */
+	@Inject
+	private EmploymentAdapter employmentAdapter;
 
 	/** The employee repository. */
 	@Inject
@@ -61,16 +65,16 @@ public class EmployeePubImp implements EmployeePub {
 		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 
-		// TODO: Import ac
-		// workplaceAdapter.findAllWorkplace(companyId, baseDate)
+		List<String> wkpIds = affWorkplaceHistories.stream().map(item -> item.getWorkplaceId().v())
+				.collect(Collectors.toList());
 
-		// Check exist
-		if (CollectionUtil.isEmpty(affWorkplaceHistories)) {
-			return null;
-		}
+		List<AcWorkplaceDto> acWorkplaceDtos = workplaceAdapter.findByWkpIds(wkpIds);
 
-		// Return
-		return affWorkplaceHistories.get(FIRST_INDEX).getWorkplaceId().v();
+		Map<String, String> comWkpMap = acWorkplaceDtos.stream().collect(
+				Collectors.toMap(AcWorkplaceDto::getCompanyId, AcWorkplaceDto::getWorkplaceId));
+
+		// Return workplace id
+		return comWkpMap.get(companyId);
 	}
 
 	/*
@@ -85,15 +89,16 @@ public class EmployeePubImp implements EmployeePub {
 		List<AffEmploymentHistory> affEmploymentHistories = employmentHistoryRepository
 				.searchEmploymentOfSids(Arrays.asList(employeeId), baseDate);
 
-		// TODO: Import ac
+		List<String> employmentCodes = affEmploymentHistories.stream()
+				.map(item -> item.getEmploymentCode().v()).collect(Collectors.toList());
 
-		// Check exist
-		if (CollectionUtil.isEmpty(affEmploymentHistories)) {
-			return null;
-		}
+		List<AcEmploymentDto> acEmploymentDtos = employmentAdapter.findByEmpCodes(employmentCodes);
 
-		// Return
-		return affEmploymentHistories.get(FIRST_INDEX).getEmploymentCode().v();
+		Map<String, String> comEmpMap = acEmploymentDtos.stream().collect(Collectors
+				.toMap(AcEmploymentDto::getCompanyId, AcEmploymentDto::getEmploymentCode));
+
+		// Return EmploymentCode
+		return comEmpMap.get(companyId);
 	}
 
 	/*

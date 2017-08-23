@@ -69,4 +69,12 @@ public class PersonInfoCategory extends AggregateRoot {
 			int categoryType) {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryType);
 	}
+
+	public void setCategoryName(String name) {
+		this.categoryName = new CategoryName(name);
+	}
+	
+	public void setCategoryType(int categoryType) {
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+	}
 }

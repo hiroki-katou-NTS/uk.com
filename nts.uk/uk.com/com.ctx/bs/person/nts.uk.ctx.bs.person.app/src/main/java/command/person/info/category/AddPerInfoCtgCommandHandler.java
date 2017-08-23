@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import command.person.info.item.AddItemCommand;
 import command.person.info.item.MappingDtoToDomain;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.info.category.CategoryType;
@@ -37,7 +38,7 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		AddPerInfoCtgCommand perInfoCtgCommand = context.getCommand();
 		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
 				perInfoCtgCommand.getCategoryName())) {
-			throw new BusinessException("Msg_215");
+			throw new BusinessException(new RawErrorMessage("Msg_215"));
 		}
 		String contractCd = AppContexts.user().contractCode();
 		String newCtgCode = createNewCode(this.perInfoCtgRep.getPerInfoCtgCodeLastest(contractCd), SPECIAL_CTG_CODE);
