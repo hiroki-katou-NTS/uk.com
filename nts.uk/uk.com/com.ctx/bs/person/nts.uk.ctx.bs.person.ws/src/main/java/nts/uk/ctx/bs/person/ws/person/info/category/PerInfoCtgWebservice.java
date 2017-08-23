@@ -53,7 +53,13 @@ public class PerInfoCtgWebservice extends WebService {
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompany() {
 		return perInfoCtgFinder.getAllPerInfoCtgByCompany();
 	}
-
+	
+	@POST
+	@Path("findAll/company/root")
+	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
+		return perInfoCtgFinder.getAllPerInfoCtgByCompanyRoot();
+	}
+	
 	@POST
 	@Path("add")
 	public void addPerInfoCtg(AddPerInfoCtgCommand newPerInfoCtg) {

@@ -22,6 +22,9 @@ import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
+import nts.gul.text.charset.CharsetDetector;
+import nts.gul.text.charset.NtsCharset;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
 
 /**
  * The Class ExtBudgetFileCheckServiceImpl.
@@ -37,10 +40,10 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     @Inject
     private StoredFileStreamService fileStreamService;
 
-    /** The Constant FILE_EXTENSION_ARR. */
+    /** The file extension arr. */
     private final List<String> FILE_EXTENSION_ARR = Arrays.asList("txt", "csv");
 
-    /** The Constant MAX_RECORD. */
+    /** The max record. */
     private final int MAX_RECORD = 999;
 
     /*
@@ -51,29 +54,30 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
      */
     @Override
     public void validFileFormat(String fileId, Integer encoding, Integer startLine) {
-        this.validFileExisted(fileId);
+        InputStream inputStream = this.findContentFile(fileId);
+        
         this.validFileExtension(fileId);
-        this.validLimitRecord(fileId, encoding, startLine);
-        // TODO: validate encoding if has error, show message Msg_161: Do u want to continue import?
+        this.validLimitRecord(inputStream, encoding, startLine);
+        this.validCharset(inputStream);
     }
 
     /**
-     * Valid file existed.
+     * Find content file.
      *
      * @param fileId the file id
+     * @return the input stream
      */
-    private void validFileExisted(String fileId) {
+    private InputStream findContentFile(String fileId) {
+        // check file is chose?
         if (StringUtils.isEmpty(fileId)) {
             throw new BusinessException("Msg_157");
         }
         try {
-            this.fileStreamService.takeOutFromFileId(fileId).close();
+            // get input stream
+            return this.fileStreamService.takeOutFromFileId(fileId);
         } catch (BusinessException businessException) {
             throw new BusinessException("Msg_158");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-        
     }
 
     /**
@@ -87,26 +91,27 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
             throw new RuntimeException("stored file info is not found.");
         }
         StoredFileInfo storagedFileInfor = optional.get();
-        // check file extension
-        String extensionFile = storagedFileInfor.getFileType().toLowerCase();
-        for (String item : FILE_EXTENSION_ARR) {
-            if (!extensionFile.contains(item)) {
-                throw new BusinessException("Msg_159");
-            }
-        }
+        
+        
+        // TODO: check file extension
+//        String extensionFile = storagedFileInfor.getMimeType().toLowerCase();
+//        for (String item : FILE_EXTENSION_ARR) {
+//            if (!extensionFile.contains(item)) {
+//                throw new BusinessException("Msg_159");
+//            }
+//        }
     }
 
     /**
      * Valid limit record.
      *
-     * @param fileId the file id
+     * @param inputStream the input stream
      * @param encoding the encoding
      * @param startLine the start line
      */
-    private void validLimitRecord(String fileId, Integer encoding, Integer startLine) {
+    private void validLimitRecord(InputStream inputStream, Integer encoding, Integer startLine) {
         NtsCsvReader csvReader = FileUltil.newCsvReader(encoding);
         try {
-            InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
             List<NtsCsvRecord> csvRecords = csvReader.parse(inputStream);
             if (CollectionUtil.isEmpty(csvRecords)) {
                 return;
@@ -114,9 +119,21 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
             if (csvRecords.size() > MAX_RECORD) {
                 throw new BusinessException("Msg_168");
             }
-            inputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * Valid charset.
+     *
+     * @param inputStream the input stream
+     */
+    @SuppressWarnings("static-access")
+    private void validCharset(InputStream inputStream) {
+        NtsCharset charset = CharsetDetector.detect(inputStream);
+        if (charset.SHIFT_JIS.value != ExtBudgetCharset.Shift_JIS.value) {
+            throw new BusinessException("Msg_161");
         }
     }
 }

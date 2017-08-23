@@ -41,7 +41,7 @@ public class JpaContractGetMemento implements ContractGetMemento {
 	 */
 	@Override
 	public ContractCode getContractCode() {
-		return new ContractCode(this.entity.getContractCd().toString());
+		return new ContractCode(this.entity.getContractCd());
 	}
 
 	/* (non-Javadoc)

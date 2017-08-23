@@ -52,4 +52,5 @@ public class CompanyEstablishment extends AggregateRoot{
 		memento.setTargetYear(this.targetYear);
 		memento.setAdvancedSetting(this.advancedSetting);
 	}
+	
 }

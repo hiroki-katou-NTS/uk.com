@@ -17,6 +17,7 @@
 			<com:scriptfile path="kmf004.h.vm.js" />
 			<com:scriptfile path="kmf004.h.service.js" />
 		</ui:define>
+		<script>var dialogSize = { width: 380, height: 500 };</script>
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
 				<!-- H1_1: Button New -->
@@ -32,7 +33,7 @@
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div style="float: left; margin: 20px" >
 						<!-- H2_2: List -->
-						<table id="lstRelationship" tabindex="4" data-bind="ntsGridList: {								
+						<table id="lstRelationship" tabindex="5" data-bind="ntsGridList: {								
 						height: 362,
 						options: lstRelationship,
 						optionsValue: 'relationshipCode',
@@ -54,14 +55,14 @@
 							</td>
 							<td>
 								<!-- H3_2: Code -->
-								<input tabindex="5" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
+								<input tabindex="6" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
 																												constraint: 'RelationshipCode',
 																												required: true,
 																												name: '#[KMF004_10]',
 																												immediate: true,
 																												enable: check}"/>
 								<!-- H3_3: Name--> 
-								<input tabindex="6" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
+								<input tabindex="7" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
 																												constraint: 'RelationshipName',
 																												name: '#[KMF004_8]',
 																												required: true,

@@ -45,7 +45,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal;
@@ -53,12 +52,13 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPrice;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZone;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.WorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionState;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUltil;
 import nts.uk.shr.com.context.AppContexts;
@@ -114,6 +114,12 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     
     /** The default value. */
     private final Integer DEFAULT_VALUE = 0;
+    
+    /** The max column daily. */
+    private final Integer MAX_COLUMN_DAILY = 3;
+    
+    /** The max column time zone. */
+    private final Integer MAX_COLUMN_TIME_ZONE = 50;
     
     /** The index column code. */
     private final Integer INDEX_COLUMN_CODE = 0;
@@ -489,13 +495,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param result the result
      */
     private void validDataLine(ImportProcess importProcess, List<String> result) {
+        // valid column necessary.
         this.validUnitAtr(importProcess, result.size());
         
         // check column 2 (２列目) is date ?
-        this.validDateFormat(importProcess, result.get(INDEX_COLUMN_DATE));
+        this.validDateFormat(importProcess, result);
         
         // Check column 1 (1列目) is workplace code?
-        this.validWorkplaceCode(importProcess, result.get(INDEX_COLUMN_CODE));
+        this.validWorkplaceCode(importProcess, result);
         
         // Check actual value by primitive
         this.validActualVal(importProcess, result);
@@ -518,10 +525,10 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         int numberCol;
         switch (unitAtr) {
             case DAILY:
-                numberCol = 3;
+                numberCol = MAX_COLUMN_DAILY;
                 break;
             case BYTIMEZONE:
-                numberCol = 50;
+                numberCol = MAX_COLUMN_TIME_ZONE;
                 break;
             default:
                 throw new RuntimeException("Not unit atr suitable.");
@@ -529,19 +536,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         if (numberColInput == numberCol) {
             return;
         }
-        int numberColError = 0;
-        String messageIdError = "";
+        String messageIdError = "Msg_162";
         if (numberColInput < numberCol) {
-            numberColError = numberColInput;
             messageIdError = "Msg_163";
-        } else {
-            numberColError = ++numberCol;
-            messageIdError = "Msg_162";
         }
         ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
-                .columnNo(numberColError)
+                .columnNo(DEFAULT_VALUE)
                 .errorContent(importProcess.mapStringJP.get(messageIdError))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
@@ -557,11 +559,12 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param inputDate the input date
      */
-    private void validDateFormat(ImportProcess importProcess, String inputDate) {
+    private void validDateFormat(ImportProcess importProcess, List<String> result) {
         // finish process of line.
         if (importProcess.stopLine) {
             return;
         }
+        String inputDate = result.get(INDEX_COLUMN_DATE);
         Boolean isInValidDateFormat = null;
         for (String formatDate : FORMAT_DATES) {
             try {
@@ -595,11 +598,12 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param workplaceCode the workplace code
      */
-    private void validWorkplaceCode(ImportProcess importProcess, String workplaceCode) {
+    private void validWorkplaceCode(ImportProcess importProcess, List<String> result) {
         // finish process of line.
         if (importProcess.stopLine) {
             return;
         }
+        String workplaceCode = result.get(INDEX_COLUMN_CODE);
         List<String> lstWpkId = this.workplaceAdapter.findWpkIdList(workplaceCode, importProcess.actualDate);
         if (!CollectionUtil.isEmpty(lstWpkId)) {
             importProcess.workplaceId = lstWpkId.get(DEFAULT_VALUE);
@@ -711,7 +715,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private Long convertVal(String value) {
         String CHARACTER_COLON = ":";
         if (!value.contains(CHARACTER_COLON)) {
-            throw new BusinessException(new RawErrorMessage("Invalid format time."));
+            throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
         }
         String[] arr = value.split(CHARACTER_COLON);
         Integer HOUR = 60;

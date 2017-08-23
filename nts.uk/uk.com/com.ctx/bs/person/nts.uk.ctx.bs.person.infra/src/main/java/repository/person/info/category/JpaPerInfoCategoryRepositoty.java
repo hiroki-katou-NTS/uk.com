@@ -20,9 +20,9 @@ import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
-	
+
 	private final static String SPECIAL_CTG_CODE = "CO";
-	
+
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
@@ -100,16 +100,25 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd) {
-		this.commandProxy().update(createPerInfoCtgFromDomain(perInfoCtg));
-		this.commandProxy().update(createPerInfoCtgCmFromDomain(perInfoCtg, contractCd));
+		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
+		PpemtPerInfoCtg perInfoCtgOld = this.queryProxy().find(perInfoCtgPK, PpemtPerInfoCtg.class).orElse(null);
+		perInfoCtgOld.categoryName = perInfoCtg.getCategoryName().v();
+		this.commandProxy().update(perInfoCtgOld);
+		PpemtPerInfoCtgCmPK perInfoCtgCmPK = new PpemtPerInfoCtgCmPK(contractCd, perInfoCtgOld.categoryCd);
+		PpemtPerInfoCtgCm perInfoCtgCmOld = this.queryProxy().find(perInfoCtgCmPK, PpemtPerInfoCtgCm.class)
+				.orElse(null);
+		perInfoCtgCmOld.categoryType = perInfoCtg.getCategoryType().value;
+		this.commandProxy().update(perInfoCtgCmOld);
 	}
 
 	@Override
-	public void updatePerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd,
-			List<String> companyIdList) {
-		// this.commandProxy().updateAll(companyIdList.stream().map(p -> {
-		// return createPerInfoCtgFromDomainWithCid(perInfoCtg, p);
-		// }).collect(Collectors.toList()));
+	public void updatePerInfoCtgWithListCompany(String categoryName, List<String> ctgIdList) {
+		ctgIdList.stream().forEach(ctgId -> {
+			PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(ctgId);
+			PpemtPerInfoCtg perInfoCtgOld = this.queryProxy().find(perInfoCtgPK, PpemtPerInfoCtg.class).orElse(null);
+			perInfoCtgOld.categoryName = categoryName;
+			this.commandProxy().update(perInfoCtgOld);
+		});
 	}
 
 	@Override
@@ -189,8 +198,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	private PpemtPerInfoCtgCm createPerInfoCtgCmFromDomain(PersonInfoCategory perInfoCtg, String contractCd) {
 		PpemtPerInfoCtgCmPK perInfoCtgCmPK = new PpemtPerInfoCtgCmPK(contractCd, perInfoCtg.getCategoryCode().v());
-		String categoryParentCode = perInfoCtg.getCategoryParentCode() == null ? null
-				: perInfoCtg.getCategoryParentCode().v();
+		String categoryParentCode = (perInfoCtg.getCategoryParentCode() == null
+				|| perInfoCtg.getCategoryParentCode().v().isEmpty()) ? null : perInfoCtg.getCategoryParentCode().v();
 		return new PpemtPerInfoCtgCm(perInfoCtgCmPK, categoryParentCode, perInfoCtg.getCategoryType().value,
 				perInfoCtg.getPersonEmployeeType().value, perInfoCtg.getIsFixed().value);
 	}

@@ -28,10 +28,10 @@ public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 	public KscdpBasicSchedulePK kscdpBSchedulePK;
 
 	@Column(name = "WORKTYPE_CD")
-	public String workTypeCd;
+	public String workTypeCode;
 
 	@Column(name = "WORKTIME_CD")
-	public String workTimeCd;
+	public String workTimeCode;
 
 	@Override
 	protected Object getKey() {

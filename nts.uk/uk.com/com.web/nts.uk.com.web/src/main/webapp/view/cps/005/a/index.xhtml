@@ -62,7 +62,7 @@
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_4')}' "></span>
 								</div>
-								<input tabindex="4"
+								<input tabindex="4" id="category-name-control"
 									data-bind="ntsTextEditor: {
 								name: '#[CPS005_4]',
 								value: perInfoCtgName,
@@ -78,7 +78,7 @@
 								readonly: false,
 								immediate: false}" />
 							</div>
-	
+
 							<div
 								class="valign-center control-group control-group-margin-custom">
 								<div data-bind="ntsFormLabel: { required: true }"
@@ -92,10 +92,10 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: historyClassSelected,
-								enable: true }">
+								enable: $parent.historyClassEnable }">
 								</div>
 							</div>
-	
+
 							<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
 							<div
 								class="valign-center control-group control-group-margin-custom"
@@ -116,7 +116,7 @@
 								<button tabindex="7"
 									data-bind="ntsHelpButton: {image: '../image/history-type.PNG', position: 'right top', enable: true }">?</button>
 							</div>
-	
+
 							<!-- mapping CategoryType enum value = 1 or 2 -->
 							<div
 								class="valign-center control-group control-group-margin-custom"
@@ -138,7 +138,7 @@
 									data-bind="ntsHelpButton: {image: '../image/single-multi-select.PNG', position: 'right top', enable: true }">?</button>
 							</div>
 						</div>
-	
+
 						<!-- perInfoCategory selection is fixed  -->
 						<div data-bind="visible: fixedIsSelected() ">
 							<div
@@ -147,18 +147,18 @@
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_4')}' "></span>
 								</div>
-								<span class="label" data-bind="text: perInfoCtgName">Demo</span>	
+								<span class="label" data-bind="text: perInfoCtgName">Demo</span>
 							</div>
-							
+
 							<div
 								class="valign-center control-group control-group-margin-custom">
 								<div data-bind="ntsFormLabel: { required: false }"
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_5')}' "></span>
 								</div>
-								<span class="label" data-bind="text: historyFixedName "></span>								
+								<span class="label" data-bind="text: historyFixedName "></span>
 							</div>
-	
+
 							<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
 							<div
 								class="valign-center control-group control-group-margin-custom"
@@ -167,11 +167,11 @@
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_6')}' "></span>
 								</div>
-								<span class="label" data-bind="text: categoryTypeName "></span>								
+								<span class="label" data-bind="text: categoryTypeName "></span>
 								<button tabindex="10"
 									data-bind="ntsHelpButton: {image: '../image/history-type.PNG', position: 'right top', enable: true }">?</button>
 							</div>
-	
+
 							<!-- mapping CategoryType enum value = 1 or 2 -->
 							<div
 								class="valign-center control-group control-group-margin-custom"

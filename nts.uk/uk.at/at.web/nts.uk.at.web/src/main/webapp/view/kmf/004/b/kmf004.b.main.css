@@ -1,21 +1,43 @@
 html, body, #master-wrapper {
 	height: 100%;
 }
-
+thead {
+	background-color: #c7f391;
+}
 #master-content {
 	height: calc(100% - 50px);
 }
+.contents-header td {
+    border: 1px solid;
+    text-align: center;
+    height: 20px;
+    padding: 5px 3px;
+}
 
+tr {
+	height: 10px;
+}
+table.contents-header td.numbers {
+	width: 30px;
+}
+td.input-units{
+	width: 168px;
+}
+.numbers{
+	background-color: #c7f391;
+	width: 36px;
+}
 .sidebar-content-header .title {
 	width: 165px;
 }
 
-.sidebar-content-header>* {
+.sidebar-content-header {
 	display: inline-block;
 }
 
 .ntsRadioBox {
-	margin-left: 30px; display : table;
+	margin-left: 30px;
+	display: table;
 	margin-bottom: 10px;
 	display: table;
 }
@@ -54,12 +76,72 @@ html, body, #master-wrapper {
 div[class^=screen-] {
 	padding: 20px;
 }
-
+.contents-data td {
+    border: 1px solid;
+    text-align: center;
+    height: 20px;
+}
 .screen-g .g3_1 {
 	margin: 10px 0 20px 0;
 }
+.input-units-year{
+	width: 155px;
+}
+.ntsControl.symbol.symbol-right::after {
+	right: 16px !important;
 
+	}
 #radio {
 	margin-top: -29px;
 	margin-left: 185px;
+	padding: 5px !important;
+}
+
+#monthdays {
+	left: -143px;
+	top: -81px !important;
+}
+table.contents-data thead, table.contents-data tbody {
+	display: block;
+}
+table.contents-data td.input-units {
+	width: 69px;
+}
+
+table.contents-data tbody {
+    height: 350px;   
+    overflow-y: auto;   
+    overflow-x: hidden; 
+    border: 1px solid;
+}
+.year-input.nts-editor.nts-input.reset-element, .months-input.nts-editor.nts-input.reset-element{
+	height: 26px;
+}
+
+
+
+span.nts-editor-wrapped.ntsControl.symbol.symbol-right {
+    width: auto !important;
+}
+.base-date-options {
+	width: 150px;
+	min-width: 0 !important;
+}
+
+
+.contents-data td {
+    border: 1px solid;
+    text-align: center;
+    height: 20px;
+}
+
+table.contents-data thead, table.contents-data tbody {
+	display: block;
+}
+
+table.contents-data tbody {
+    height: 350px;   
+    overflow-y: auto;   
+    overflow-x: hidden; 
+    border: 1px solid;
 }

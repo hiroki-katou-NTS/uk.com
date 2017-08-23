@@ -33,65 +33,35 @@ public class KscmtEstDaysPerSet extends UkJpaEntity implements Serializable {
     @EmbeddedId
     protected KscmtEstDaysPerSetPK kscmtEstDaysPerSetPK;
     
-    /** The m condition 1 st days. */
+    /** The est condition 1 st days. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_1ST_DAYS")
-    private short mCondition1stDays;
+    @Column(name = "EST_CONDITION_1ST_DAYS")
+    private short estCondition1stDays;
     
-    /** The m condition 2 nd days. */
+    /** The est condition 2 nd days. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_2ND_DAYS")
-    private short mCondition2ndDays;
+    @Column(name = "EST_CONDITION_2ND_DAYS")
+    private short estCondition2ndDays;
     
-    /** The m condition 3 rd days. */
+    /** The est condition 3 rd days. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_3RD_DAYS")
-    private short mCondition3rdDays;
+    @Column(name = "EST_CONDITION_3RD_DAYS")
+    private short estCondition3rdDays;
     
-    /** The m condition 4 th days. */
+    /** The est condition 4 th days. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_4TH_DAYS")
-    private short mCondition4thDays;
+    @Column(name = "EST_CONDITION_4TH_DAYS")
+    private short estCondition4thDays;
     
-    /** The m condition 5 th days. */
+    /** The est condition 5 th days. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_CONDITION_5TH_DAYS")
-    private short mCondition5thDays;
-    
-    /** The y condition 1 st days. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_1ST_DAYS")
-    private short yCondition1stDays;
-    
-    /** The y condition 2 nd days. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_2ND_DAYS")
-    private short yCondition2ndDays;
-    
-    /** The y condition 3 rd days. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_3RD_DAYS")
-    private short yCondition3rdDays;
-    
-    /** The y condition 4 th days. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_4TH_DAYS")
-    private short yCondition4thDays;
-    
-    /** The y condition 5 th days. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "Y_CONDITION_5TH_DAYS")
-    private short yCondition5thDays;
+    @Column(name = "EST_CONDITION_5TH_DAYS")
+    private short estCondition5thDays;
 
     /**
      * Instantiates a new kscmt est days per set.
