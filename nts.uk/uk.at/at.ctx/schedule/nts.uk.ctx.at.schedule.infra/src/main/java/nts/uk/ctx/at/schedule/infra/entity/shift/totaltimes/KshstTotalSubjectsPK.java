@@ -29,11 +29,11 @@ public class KshstTotalSubjectsPK implements Serializable {
 
 	/** The total times no. */
 	@Column(name = "TOTAL_TIMES_NO")
-	private short totalTimesNo;
+	private Integer totalTimesNo;
 
 	/** The work type atr. */
 	@Column(name = "WORK_TYPE_ATR")
-	private short workTypeAtr;
+	private Integer workTypeAtr;
 
 	/**
 	 * Instantiates a new kshst total subjects PK.
@@ -52,7 +52,7 @@ public class KshstTotalSubjectsPK implements Serializable {
 	 * @param workTypeAtr
 	 *            the work type atr
 	 */
-	public KshstTotalSubjectsPK(String cid, short totalTimesNo, short workTypeAtr) {
+	public KshstTotalSubjectsPK(String cid, Integer totalTimesNo, Integer workTypeAtr) {
 		this.cid = cid;
 		this.totalTimesNo = totalTimesNo;
 		this.workTypeAtr = workTypeAtr;

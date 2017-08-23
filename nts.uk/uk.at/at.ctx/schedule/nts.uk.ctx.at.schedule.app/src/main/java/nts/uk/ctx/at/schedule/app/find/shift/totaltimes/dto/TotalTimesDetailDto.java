@@ -27,35 +27,27 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class TotalTimesDetailDto implements TotalTimesSetMemento {
 
 	/** The total count no. */
-	// 回数集計NO
 	private Integer totalCountNo;
 
 	/** The count atr. */
-	// 半日勤務カウント区分
 	private Integer countAtr;
 
 	/** The use atr. */
-	// するしない区分
 	private Integer useAtr;
 
 	/** The total times name. */
-	// 回数集計名称
 	private String totalTimesName;
 
 	/** The total times AB name. */
-	// 回数集計略名
 	private String totalTimesABName;
 
 	/** The summary atr. */
-	// 回数集計区分
 	private Integer summaryAtr;
 
 	/** The total condition. */
-	// 回数集計条件
 	private TotalConditionDto totalCondition;
 
 	/** The summary list. */
-	// 集計対象一覧
 	private List<TotalSubjectsDto> summaryList;
 
 	/*

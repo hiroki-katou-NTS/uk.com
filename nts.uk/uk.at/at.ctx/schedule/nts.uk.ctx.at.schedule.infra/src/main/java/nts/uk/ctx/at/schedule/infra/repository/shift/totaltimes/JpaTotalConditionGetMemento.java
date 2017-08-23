@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.shift.totaltimes;
 
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.ConditionThresholdLimit;
@@ -5,13 +9,16 @@ import nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalConditionGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.UseAtr;
 import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalCondition;
 
+/**
+ * The Class JpaTotalConditionGetMemento.
+ */
 public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 
 	/** The entity. */
 	private KshstTotalCondition entity;
 
 	/**
-	 * Instantiates a new jpa total condition set memento.
+	 * Instantiates a new jpa total condition get memento.
 	 *
 	 * @param totalTimes
 	 *            the total times
@@ -20,28 +27,52 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 		this.entity = totalTimes;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalConditionGetMemento#
+	 * getUpperLimitSettingAtr()
+	 */
 	@Override
 	public UseAtr getUpperLimitSettingAtr() {
-		// TODO Auto-generated method stub
-		return null;
+		return UseAtr.valueOf(this.entity.getUpperLimitSetAtr());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalConditionGetMemento#
+	 * getLowerLimitSettingAtr()
+	 */
 	@Override
 	public UseAtr getLowerLimitSettingAtr() {
-		// TODO Auto-generated method stub
-		return null;
+		return UseAtr.valueOf(this.entity.getLowerLimitSetAtr());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalConditionGetMemento#
+	 * getThresoldUpperLimit()
+	 */
 	@Override
 	public ConditionThresholdLimit getThresoldUpperLimit() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ConditionThresholdLimit(this.entity.getThresoldUpperLimit());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalConditionGetMemento#
+	 * getThresoldLowerLimit()
+	 */
 	@Override
 	public ConditionThresholdLimit getThresoldLowerLimit() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ConditionThresholdLimit(this.entity.getThresoldLowerLimit());
 	}
 
 }

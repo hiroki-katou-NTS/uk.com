@@ -88,4 +88,18 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 		return Optional.of(new TotalTimes(new JpaTotalTimesGetMemento(optKshstTotalTimes.get())));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesRepository#update(
+	 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimes)
+	 */
+	@Override
+	public void update(TotalTimes totalTimes) {
+		KshstTotalTimes entity = new KshstTotalTimes();
+		totalTimes.saveToMemento(new JpaTotalTimesSetMemento(entity));
+		this.commandProxy().update(entity);
+	}
+
 }
