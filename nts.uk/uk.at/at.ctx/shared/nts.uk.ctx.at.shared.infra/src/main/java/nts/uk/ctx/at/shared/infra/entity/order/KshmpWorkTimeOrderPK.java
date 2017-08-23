@@ -19,5 +19,5 @@ public class KshmpWorkTimeOrderPK {
 	public String companyID;
 
 	@Column(name = "WORKTIME_CD")
-	public String workTimeCd;
+	public String workTimeCode;
 }

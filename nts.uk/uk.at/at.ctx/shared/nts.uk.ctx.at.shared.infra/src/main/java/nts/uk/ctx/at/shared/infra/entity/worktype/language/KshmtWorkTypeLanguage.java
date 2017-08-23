@@ -34,6 +34,4 @@ public class KshmtWorkTypeLanguage extends UkJpaEntity implements Serializable{/
 		return kmnmtWorkTypeLanguagePK;
 	}
 	
-	
-
 }

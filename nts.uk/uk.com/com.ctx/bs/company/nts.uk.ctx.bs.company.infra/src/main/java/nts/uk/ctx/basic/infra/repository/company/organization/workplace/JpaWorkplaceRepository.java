@@ -6,6 +6,7 @@ package nts.uk.ctx.basic.infra.repository.company.organization.workplace;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,22 +24,25 @@ import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchy;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplacePK_;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace_;
 import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHierarchy;
 import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHierarchyPK_;
 import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHierarchy_;
 import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHist;
 import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHistPK_;
 import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWkpHist_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplacePK_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace_;
 
 /**
  * The Class JpaWorkplaceRepository.
  */
 @Stateless
 public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRepository {
-	
+
+	/** The first item index. */
+	private final int FIRST_ITEM_INDEX = 0;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -62,7 +66,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	public void update(Workplace workplace) {
 		this.commandProxy().update(this.toEntity(workplace));
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -72,7 +76,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 */
 	@Override
 	public List<WorkPlaceHistory> findAllHistory(String companyId, GeneralDate generalDate) {
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -90,7 +94,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		// >= general date
 		lstpredicateWhere
 				.add(criteriaBuilder.lessThanOrEqualTo(root.get(CwpmtWkpHist_.strD), generalDate));
-		 // <= general date
+		// <= general date
 		lstpredicateWhere.add(
 				criteriaBuilder.greaterThanOrEqualTo(root.get(CwpmtWkpHist_.endD), generalDate));
 
@@ -100,8 +104,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		return em.createQuery(cq).getResultList().stream().map(item -> this.histToDomain(item))
 				.collect(Collectors.toList());
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -142,7 +145,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		// exclude select
 		return lst.stream().map(item -> this.hierarchyToDomain(item)).collect(Collectors.toList());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -150,7 +153,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository#
 	 * findAllWorkplace(java.lang.String)
 	 */
-	public List<Workplace> findAllWorkplace(String workplaceId) {
+	public List<Workplace> findByWkpIds(List<String> workplaceIds) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -168,9 +171,8 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equals workplaceId
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.wkpid),
-				workplaceId));
+		lstpredicateWhere.add(root.get(CwpmtWorkplace_.cwpmtWorkplacePK)
+				.get(CwpmtWorkplacePK_.wkpid).in(workplaceIds));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -182,45 +184,48 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		return query.getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Hist to domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the work place history
 	 */
-	private WorkPlaceHistory histToDomain(CwpmtWkpHist entity){
+	private WorkPlaceHistory histToDomain(CwpmtWkpHist entity) {
 		return new WorkPlaceHistory(new JpaWorkplaceHistoryGetMemento(entity));
 	}
-	
+
 	/**
 	 * Hierarchy to domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the work place hierarchy
 	 */
 	private WorkPlaceHierarchy hierarchyToDomain(CwpmtWkpHierarchy entity) {
 		return new WorkPlaceHierarchy(new JpaWorkplaceHierarchyGetMemento(entity));
 	}
-	
+
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the workplace
 	 */
-	private Workplace toDomain(CwpmtWorkplace entity){
+	private Workplace toDomain(CwpmtWorkplace entity) {
 		return new Workplace(new JpaWorkplaceGetMemento(entity));
 	}
-	
-	
+
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the cwpmt workplace
 	 */
-	private CwpmtWorkplace toEntity(Workplace domain){
+	private CwpmtWorkplace toEntity(Workplace domain) {
 		CwpmtWorkplace entity = new CwpmtWorkplace();
 		domain.saveToMemento(new JpaWorkplaceSetMemento(entity));
 		return entity;
@@ -229,13 +234,15 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	/**
 	 * Gets the hierarchy by workplace id.
 	 *
-	 * @param companyId the company id
-	 * @param workplaceId the workplace id
+	 * @param companyId
+	 *            the company id
+	 * @param workplaceId
+	 *            the workplace id
 	 * @return the hierarchy by workplace id
 	 */
 	private List<WorkPlaceHierarchy> getHierarchyByWorkplaceId(String companyId,
 			String workplaceId) {
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -256,7 +263,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(CwpmtWkpHierarchy_.cwpmtWkpHierarchyPK).get(CwpmtWkpHierarchyPK_.cid),
 				companyId));
-		
+
 		// equal work place id
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(CwpmtWkpHierarchy_.cwpmtWkpHierarchyPK).get(CwpmtWkpHierarchyPK_.wkpid),
@@ -270,7 +277,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		TypedQuery<CwpmtWkpHierarchy> query = em.createQuery(cq);
 
 		List<CwpmtWkpHierarchy> lst = query.getResultList();
-		
+
 		// exclude select
 		return lst.stream().map(item -> this.hierarchyToDomain(item)).collect(Collectors.toList());
 	}
@@ -282,17 +289,19 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository#
 	 * findAllHierarchyChild(java.lang.String, java.lang.String)
 	 */
-	
+
 	/**
 	 * Gets the all hierarchy by hierarchy code.
 	 *
-	 * @param companyId the company id
-	 * @param hierarchyCode the hierarchy code
+	 * @param companyId
+	 *            the company id
+	 * @param hierarchyCode
+	 *            the hierarchy code
 	 * @return the all hierarchy by hierarchy code
 	 */
 	private List<WorkPlaceHierarchy> getAllHierarchyByHierarchyCode(String companyId,
 			String hierarchyCode) {
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -313,7 +322,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(CwpmtWkpHierarchy_.cwpmtWkpHierarchyPK).get(CwpmtWkpHierarchyPK_.cid),
 				companyId));
-		
+
 		// like hierarchy code
 		lstpredicateWhere.add(criteriaBuilder.like(root.get(CwpmtWkpHierarchy_.hierarchyCd),
 				hierarchyCode + "%"));
@@ -326,7 +335,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		TypedQuery<CwpmtWkpHierarchy> query = em.createQuery(cq);
 
 		List<CwpmtWkpHierarchy> lst = query.getResultList();
-		
+
 		// exclude select
 		return lst.stream().map(item -> this.hierarchyToDomain(item)).collect(Collectors.toList());
 	}
@@ -366,7 +375,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 */
 	@Override
 	public List<Workplace> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate) {
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -386,11 +395,11 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		// equals workplaceId
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.cid), companyId));
-		
+
 		// start date le base date
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.strD), baseDate));
-		
+
 		// start date le base date
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
 				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.endD), baseDate));
@@ -404,6 +413,54 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		// exclude select
 		return query.getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository#
+	 * findByWkpId(java.lang.String)
+	 */
+	@Override
+	public Optional<Workplace> findByWkpId(String workplaceId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call CWPMT_WORK_PLACE (CwpmtWorkPlace SQL)
+		CriteriaQuery<CwpmtWorkplace> cq = criteriaBuilder.createQuery(CwpmtWorkplace.class);
+
+		// root data
+		Root<CwpmtWorkplace> root = cq.from(CwpmtWorkplace.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equals workplaceId
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.wkpid),
+				workplaceId));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<CwpmtWorkplace> query = em.createQuery(cq);
+
+		// exclude select
+		List<CwpmtWorkplace> result = query.getResultList();
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// Return
+		return Optional.of(this.toDomain(result.get(FIRST_ITEM_INDEX)));
 	}
 
 }

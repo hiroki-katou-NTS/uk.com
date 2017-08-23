@@ -19,6 +19,6 @@ public class KshmtSpecialHolidayFramePK implements Serializable {
 	public String companyId;
 	/*特別休暇枠ID*/
 	@Column(name = "SPHD_FRAME_NO")
-	public String specialHdFrameId;	
+	public int specialHdFrameNo;	
 
 }

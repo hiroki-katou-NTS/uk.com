@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
 
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+
 /**
  * 
  * @author sonnh1
@@ -10,18 +12,18 @@ public interface BasicScheduleService {
 	/**
 	 * Return state of error checking process: nothing or throw error
 	 * 
-	 * @param workTypeCd
-	 * @param workTimeCd
+	 * @param workTypeCode
+	 * @param workTimeCode
 	 */
-	void checkPairWorkTypeWorkTime(String workTypeCd, String workTimeCd);
+	void checkPairWorkTypeWorkTime(String workTypeCode, String workTimeCode);
 
 	/**
 	 * Check needed of Work Time setting
 	 * 
-	 * @param workTypeCd
+	 * @param workTypeCode
 	 * @return SetupType
 	 */
-	SetupType checkNeededOfWorkTimeSetting(String workTypeCd);
+	SetupType checkNeededOfWorkTimeSetting(String workTypeCode);
 
 	/**
 	 * Check required of input type
@@ -29,15 +31,15 @@ public interface BasicScheduleService {
 	 * @param dayType
 	 * @return SetupType
 	 */
-	SetupType checkRequiredOfInputType(DayType dayType);
+	SetupType checkRequiredOfInputType(WorkTypeClassification workTypeClass);
 
 	/**
 	 * Check work day
 	 * 
-	 * @param workTypeCd
+	 * @param workTypeCode
 	 * @return WorkStyle
 	 */
-	WorkStyle checkWorkDay(String workTypeCd);
+	WorkStyle checkWorkDay(String workTypeCode);
 
 	/**
 	 * Check required

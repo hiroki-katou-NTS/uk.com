@@ -23,8 +23,8 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ "WHERE c.kscdpBSchedulePK.sId IN :sId AND c.kscdpBSchedulePK.date >= :startDate AND c.kscdpBSchedulePK.date <= :endDate";
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
-		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date, entity.workTypeCd,
-				entity.workTimeCd);
+		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date, entity.workTypeCode,
+				entity.workTimeCode);
 	}
 
 	@Override

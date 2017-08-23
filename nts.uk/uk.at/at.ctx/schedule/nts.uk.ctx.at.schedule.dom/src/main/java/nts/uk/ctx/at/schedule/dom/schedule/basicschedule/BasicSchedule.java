@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 
@@ -20,12 +18,13 @@ public class BasicSchedule {
 	private String sId;
 
 	private GeneralDate date;
+	/* workType Code */
+	private String workTypeCode;
+	/* workTime Code */
+	private String workTimeCode;
 
-	private WorkTypeCode workTypeCd;
-
-	private SiftCode workTimeCd;
-
-	public static BasicSchedule createFromJavaType(String sId, GeneralDate date, String workTypeCd, String workTimeCd) {
-		return new BasicSchedule(sId, date, new WorkTypeCode(workTypeCd), new SiftCode(workTimeCd));
+	public static BasicSchedule createFromJavaType(String sId, GeneralDate date, String workTypeCode,
+			String workTimeCode) {
+		return new BasicSchedule(sId, date, workTypeCode, workTimeCode);
 	}
 }

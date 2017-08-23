@@ -1,10 +1,16 @@
 package nts.uk.ctx.at.shared.app.find.grantrelationship;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.ctx.at.shared.dom.grantrelationship.GrantRelationship;
 import nts.uk.ctx.at.shared.dom.grantrelationship.repository.GrantRelationshipRepository;
+import nts.uk.ctx.at.shared.dom.relationship.Relationship;
+import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -16,13 +22,29 @@ import nts.uk.shr.com.context.AppContexts;
 public class GrantRelationshipFinder {
 	@Inject
 	private GrantRelationshipRepository grantRelaRep;
-	public List<GrantRelationshipDto> finder(){
+	@Inject
+	private RelationshipRepository relationshopRepo;
+	
+	public List<GrantRelationshipDto> finder() {
 		String companyId = AppContexts.user().companyId();
-		return this.grantRelaRep.findAll(companyId).stream().map(item -> {
-			return new GrantRelationshipDto(item.getSpecialHolidayCode(), 
-											item.getRelationshipCode(),
-											item.getGrantRelationshipDay().v(),
-											item.getMorningHour().v());
+		
+		List<Relationship> relationshipList = relationshopRepo.findAll(companyId);
+		List<GrantRelationship> grantRelationshipList = this.grantRelaRep.findAll(companyId);
+		
+		Map<String, GrantRelationship> grantRelationshipMap = grantRelationshipList.stream().collect(Collectors.toMap(GrantRelationship::getRelationshipCode, x->x));
+		
+		return relationshipList.stream().map(item -> {
+			GrantRelationship grantRelationship = grantRelationshipMap.get(item.getRelationshipCode().v());
+			
+			return new GrantRelationshipDto(
+					grantRelationship != null ? grantRelationship.getSpecialHolidayCode() : 0, 
+					item.getRelationshipCode().v(),
+					item.getRelationshipName().v(),
+					grantRelationship != null && grantRelationship.getGrantRelationshipDay() != null ? grantRelationship.getGrantRelationshipDay().v() : null,
+					grantRelationship != null && grantRelationship.getMorningHour() != null ? grantRelationship.getMorningHour().v() : null, 
+					grantRelationship != null);
 		}).collect(Collectors.toList());
 	}
+	
+	
 }

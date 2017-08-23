@@ -33,6 +33,9 @@ public class InsertGrantRelationshipCommandHandler extends CommandHandler<Insert
 		if(!grantRelationshipOld.isPresent()){
 			grantRelaRep.insert(grantRelationship);
 		}
+		else{
+			grantRelaRep.update(grantRelationship);
+		}
 	}
 	
 }
