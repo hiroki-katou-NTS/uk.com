@@ -223,7 +223,7 @@ public class ExternalBudgetFinder {
         if (lstRawVal.size() == numberCol) {
             return lstRawVal;
         }
-        while (lstRawVal.size() <= numberCol) {
+        while (lstRawVal.size() < numberCol) {
             lstRawVal.add(valEmpty);
         }
         return lstRawVal;
