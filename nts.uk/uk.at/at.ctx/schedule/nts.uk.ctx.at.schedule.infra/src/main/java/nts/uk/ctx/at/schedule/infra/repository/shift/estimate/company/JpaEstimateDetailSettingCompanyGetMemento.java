@@ -11,6 +11,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingGetMemento
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
 
@@ -24,6 +25,9 @@ public class JpaEstimateDetailSettingCompanyGetMemento implements EstimateDetail
 	
 	/** The estimate price companys. */
 	private List<KscmtEstPriceComSet> estimatePriceCompanys;
+	
+	/** The estimate days companys. */
+	private List<KscmtEstDaysComSet> estimateDaysCompanys;
 
 	
 	/**
@@ -32,9 +36,11 @@ public class JpaEstimateDetailSettingCompanyGetMemento implements EstimateDetail
 	 * @param estimateTimeCompanys the estimate time companys
 	 */
 	public JpaEstimateDetailSettingCompanyGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
-			List<KscmtEstPriceComSet> estimatePriceCompanys) {
+			List<KscmtEstPriceComSet> estimatePriceCompanys,
+			List<KscmtEstDaysComSet> estimateDaysCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
 		this.estimatePriceCompanys = estimatePriceCompanys;
+		this.estimateDaysCompanys = estimateDaysCompanys;
 	}
 	/*
 	 * (non-Javadoc)
@@ -75,8 +81,10 @@ public class JpaEstimateDetailSettingCompanyGetMemento implements EstimateDetail
 	 */
 	@Override
 	public List<EstimateNumberOfDay> getEstimateNumberOfDay() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.estimateDaysCompanys.stream()
+				.map(entity -> new EstimateNumberOfDay(
+						new JpaCompanyEstimateNumberOfDayGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 }
