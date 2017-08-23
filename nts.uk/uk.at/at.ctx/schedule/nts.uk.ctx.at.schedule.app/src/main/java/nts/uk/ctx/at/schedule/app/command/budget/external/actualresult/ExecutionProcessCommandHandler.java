@@ -715,7 +715,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private Long convertVal(String value) {
         String CHARACTER_COLON = ":";
         if (!value.contains(CHARACTER_COLON)) {
-            throw new BusinessException(new RawErrorMessage("Invalid format time."));
+            throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
         }
         String[] arr = value.split(CHARACTER_COLON);
         Integer HOUR = 60;
