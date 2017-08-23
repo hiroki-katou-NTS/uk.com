@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypePK;
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
 
-	private final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
+	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
 
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
@@ -28,12 +28,19 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.displayAtr = :displayAtr ORDER BY c.sortOrder ASC";
 
-	private final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE
+	private static final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE
+			+ " LEFT JOIN KshmtWorkTypeOrder o"
+			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.kshmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0";
+			+ " AND c.kshmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0"
+			+ " ORDER BY o.dispOrder ASC";
 
-	private final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.deprecateAtr = 0";
+	private static final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE
+			+ " LEFT JOIN KshmtWorkTypeOrder o"
+			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.deprecateAtr = 0"
+			+ " ORDER BY o.dispOrder ASC";
 
 	private static WorkType toDomain(KshmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
