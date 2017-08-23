@@ -66,6 +66,9 @@ module nts.uk.com.view.cps005.a {
 
             addUpdateData() {
                 let self = this;
+                if (!self.currentData().currentCtgSelected().perInfoCtgName()) {
+                    return;
+                }
                 if (self.isUpdate) {
                     let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
                     new service.Service().updatePerInfoCtg(updateCategory).done(() => {
@@ -89,11 +92,10 @@ module nts.uk.com.view.cps005.a {
                         nts.uk.ui.dialog.alertError(error);
                     });
                 }
-
             }
 
             openDialogB() {
-
+                alert("open dialog B");
             }
         }
     }

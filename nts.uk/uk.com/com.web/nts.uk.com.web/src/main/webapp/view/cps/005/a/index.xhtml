@@ -188,7 +188,8 @@
 					</div>
 					<div>
 						<div class="valign-center control-group" id="group-item-setting">
-							<button tabindex="12" id="item-setting-button">#{i18n.getText('CPS005_9')}</button>
+							<button tabindex="12" id="item-setting-button"
+								data-bind="click: $parents[0].openDialogB">#{i18n.getText('CPS005_9')}</button>
 							<table id="item-info-list"
 								data-bind="ntsGridList: {								
 									height: 250,
