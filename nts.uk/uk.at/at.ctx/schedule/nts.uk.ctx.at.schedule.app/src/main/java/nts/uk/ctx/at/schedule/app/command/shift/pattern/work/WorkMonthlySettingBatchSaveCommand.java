@@ -46,9 +46,9 @@ public class WorkMonthlySettingBatchSaveCommand {
 	 * @return the list
 	 */
 	public List<WorkMonthlySetting> toDomainMonth(String companyId){
-		return this.workMonthlySetting.stream()
-				.map(dto -> new WorkMonthlySetting(
-						new WorkMonthlySettingBatchGetMementoImpl(companyId, dto)))
+		return this.workMonthlySetting.stream().map(
+				dto -> new WorkMonthlySetting(new WorkMonthlySettingBatchGetMementoImpl(companyId,
+						dto, monthlyPattern.getCode())))
 				.collect(Collectors.toList());
 	}
 	/**
@@ -62,15 +62,21 @@ public class WorkMonthlySettingBatchSaveCommand {
 		/** The dto. */
 		private WorkMonthlySettingDto dto;
 		
+		/** The monthly pattern code. */
+		private String monthlyPatternCode;
+		
 		/**
 		 * Instantiates a new work monthly setting batch get memento impl.
 		 *
 		 * @param companyId the company id
 		 * @param dto the dto
+		 * @param monthlyPatternCode the monthly pattern code
 		 */
-		public WorkMonthlySettingBatchGetMementoImpl(String companyId, WorkMonthlySettingDto dto) {
+		public WorkMonthlySettingBatchGetMementoImpl(String companyId, WorkMonthlySettingDto dto,
+				String monthlyPatternCode) {
 			this.companyId = companyId;
 			this.dto = dto;
+			this.monthlyPatternCode = monthlyPatternCode;
 		}
 		
 		/*
@@ -122,7 +128,7 @@ public class WorkMonthlySettingBatchSaveCommand {
 		 */
 		@Override
 		public MonthlyPatternCode getMonthlyPatternCode() {
-			return new MonthlyPatternCode(this.dto.getMonthlyPatternCode());
+			return new MonthlyPatternCode(this.monthlyPatternCode);
 		}
 		
 	}

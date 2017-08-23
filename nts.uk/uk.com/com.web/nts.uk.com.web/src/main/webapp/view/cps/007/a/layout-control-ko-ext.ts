@@ -331,7 +331,7 @@ module nts.custombinding {
             </div>`);
 
         api = {
-            getCat: 'ctx/bs/person/info/category/findby/{0}',
+            getCat: 'ctx/bs/person/info/category/find/companyby/{0}',
             getCats: "ctx/bs/person/info/category/findby/company",
             getGroups: 'ctx/bs/person/groupitem/getAll',
             getItemCats: 'ctx/bs/person/info/ctgItem/layout/findby/categoryId/{0}',
@@ -422,13 +422,13 @@ module nts.custombinding {
                 columns: [{ prop: 'categoryName', length: 15 }]
             },
             searchbox: {
-                targetKey: undefined,
                 mode: 'igGrid',
-                comId: 'grid',
+                comId: 'cps007_lst_control',
                 items: ko.observableArray([]),
                 selected: ko.observableArray([]),
+                targetKey: 'id',
                 selectedKey: 'id',
-                fields: ['name']
+                fields: ['itemName']
             },
             listbox: {
                 enable: ko.observable(true),
@@ -566,7 +566,6 @@ module nts.custombinding {
             });
 
             $.extend(opts.searchbox, {
-                targetKey: 'cps007_lst_control',
                 items: ko.computed(opts.listbox.options),
                 selected: opts.listbox.value
             });

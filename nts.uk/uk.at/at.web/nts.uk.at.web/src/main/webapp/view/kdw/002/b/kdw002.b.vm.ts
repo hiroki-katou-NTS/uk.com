@@ -80,8 +80,9 @@ module nts.uk.at.view.kdw002.b {
                         }));
                 });
                 
-                service.updateDailyService(DailyServiceTypeControls);
-                infor(nts.uk.resource.getMessage("Msg_15", []));
+                service.updateDailyService(DailyServiceTypeControls).done(x=>{
+                     infor(nts.uk.resource.getMessage("Msg_15", []));
+                });
             }
             searchData(): void {
                 var self = this;

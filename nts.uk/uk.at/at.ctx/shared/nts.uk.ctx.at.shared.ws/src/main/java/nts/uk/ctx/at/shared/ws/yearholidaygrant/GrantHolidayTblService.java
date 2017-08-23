@@ -47,7 +47,7 @@ public class GrantHolidayTblService extends WebService {
 	 * @return the GrantHolidayTblDto
 	 */
 	@POST
-	@Path("findByCode/{conditionNo}{yearHolidayCode}")
+	@Path("findByCode/{conditionNo}/{yearHolidayCode}")
 	public List<GrantHolidayTblDto> findByCode(@PathParam("conditionNo") int conditionNo, @PathParam("yearHolidayCode") String yearHolidayCode){
 		return this.find.findByCode(conditionNo, yearHolidayCode);
 	}

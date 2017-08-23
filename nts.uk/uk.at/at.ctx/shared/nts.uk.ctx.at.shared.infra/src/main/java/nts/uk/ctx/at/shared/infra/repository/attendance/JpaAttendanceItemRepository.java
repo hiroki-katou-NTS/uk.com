@@ -28,7 +28,7 @@ public class JpaAttendanceItemRepository extends JpaRepository implements Attend
 	private static AttendanceItem toDomain(KmnmtAttendanceItem entity) {
 		val domain = AttendanceItem.createSimpleFromJavaType(entity.kmnmtAttendanceItemPK.companyId,
 				entity.kmnmtAttendanceItemPK.attendanceItemId, entity.attendanceItemName, entity.displayNumber,
-				entity.useAtr, entity.attendanceAtr);
+				entity.useAtr, entity.attendanceAtr, entity.nameLineFeedPosition);
 		return domain;
 	}
 

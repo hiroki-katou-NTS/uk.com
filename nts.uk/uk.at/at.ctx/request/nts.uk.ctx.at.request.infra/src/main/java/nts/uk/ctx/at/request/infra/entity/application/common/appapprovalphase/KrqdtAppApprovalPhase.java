@@ -29,8 +29,8 @@ public class KrqdtAppApprovalPhase extends UkJpaEntity implements Serializable {
 	@Column(name = "APPROVAL_FORM")
 	public String approvalForm;
 	
-	@Column(name = "ORDER_PHASE")
-	public int orderPhase;
+	@Column(name = "DISPORDER")
+	public int dispOrder;
 	
 	@Column(name = "APPROVAL_ATR")
 	public String approvalATR;

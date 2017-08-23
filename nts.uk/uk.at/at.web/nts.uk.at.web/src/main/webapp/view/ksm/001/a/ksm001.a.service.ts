@@ -1,18 +1,14 @@
 module nts.uk.at.view.ksm001.a {
     export module service {
+        var paths = {
+            findAllMonthlyEstimateTime: "ctx/at/schedule/shift/estimate/company/find"
+        }
 
         /**
-         * call service get all monthly
+         * call service get all monthly estimate time of company
          */
-        export function findAllMonthly(): JQueryPromise<model.MonthlyDto[]> {
-            var dfd = $.Deferred();
-            var arrMonthly: model.MonthlyDto[] = [];
-            for(var i: number = 1; i<=12; i++){
-                var monthly: model.MonthlyDto = { month: i, time001: 2017, time002: 2017, time003: 2017, time004: 2017, time005: 2017 };
-                arrMonthly.push(monthly);
-            }
-            dfd.resolve(arrMonthly);
-            return dfd.promise();
+        export function findAllMonthlyEstimateTime(targetYear: number): JQueryPromise<model.CompanyEstimateTimeDto> {
+            return nts.uk.request.ajax('at', paths.findAllMonthlyEstimateTime + '/' + targetYear);
         }
         
         export module model {
@@ -22,13 +18,18 @@ module nts.uk.at.view.ksm001.a {
                 name: number;
             }
             
-            export interface MonthlyDto{
-                month: number;
-                time001: number;
-                time002: number;
-                time003: number;
-                time004: number;
-                time005: number;    
+            export interface EstimateTimeDto{
+                time1st: number;
+                time2nd: number;
+                time3rd: number;
+                time4th: number;
+                time5th: number;    
+                            
+            }
+            
+            export interface CompanyEstimateTimeDto {
+                monthlyEstimates: EstimateTimeDto[];
+                yearlyEstimate: EstimateTimeDto;
             }
 
         }

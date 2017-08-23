@@ -36,13 +36,13 @@ public class KscmtEstPriceComSetPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "TARGET_YEAR")
-    private short targetYear;
+    private int targetYear;
     
     /** The target cls. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "TARGET_CLS")
-    private short targetCls;
+    private int targetCls;
 
     /**
      * Instantiates a new kscmt est price com set PK.
@@ -57,7 +57,7 @@ public class KscmtEstPriceComSetPK implements Serializable {
      * @param targetYear the target year
      * @param targetCls the target cls
      */
-    public KscmtEstPriceComSetPK(String cid, short targetYear, short targetCls) {
+    public KscmtEstPriceComSetPK(String cid, int targetYear, int targetCls) {
         this.cid = cid;
         this.targetYear = targetYear;
         this.targetCls = targetCls;

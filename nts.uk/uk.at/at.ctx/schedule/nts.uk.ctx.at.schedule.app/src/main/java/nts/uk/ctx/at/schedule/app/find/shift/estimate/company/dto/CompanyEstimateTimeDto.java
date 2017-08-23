@@ -9,7 +9,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.MonthlyEstimateTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimateTimeDto;
 
 /**
  * The Class CompanyEstimateTimeDto.
@@ -22,8 +22,8 @@ public class CompanyEstimateTimeDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The monthly estimates. */
-	private List<MonthlyEstimateTimeDto> monthlyEstimates;
+	private List<EstimateTimeDto> monthlyEstimates;
 
-	/** The yearly monthly estimate. */
-	private MonthlyEstimateTimeDto yearlyMonthlyEstimate;
+	/** The yearly estimate. */
+	private EstimateTimeDto yearlyEstimate;
 }
