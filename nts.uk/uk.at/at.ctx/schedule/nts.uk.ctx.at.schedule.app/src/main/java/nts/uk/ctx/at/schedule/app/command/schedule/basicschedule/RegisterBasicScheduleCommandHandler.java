@@ -24,6 +24,9 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author sonnh1
+ * 
+ *         Insert or Update data to DB BASIC_SCHEDULE. If error exist, return
+ *         error
  *
  */
 @Stateless
@@ -44,7 +47,6 @@ public class RegisterBasicScheduleCommandHandler
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<List<RegisterBasicScheduleCommand>> context) {
-		// long tStart = System.currentTimeMillis();
 		Optional<WorkType> workType = null;
 		Optional<WorkTime> workTime = null;
 
@@ -52,35 +54,38 @@ public class RegisterBasicScheduleCommandHandler
 		List<String> errList = new ArrayList<String>();
 		List<RegisterBasicScheduleCommand> bScheduleCommand = context.getCommand();
 		for (RegisterBasicScheduleCommand bSchedule : bScheduleCommand) {
+			BasicSchedule basicScheduleObj = BasicSchedule.createFromJavaType(bSchedule.getEmployeeId(),
+					bSchedule.getDate(), bSchedule.getWorkTypeCode(), bSchedule.getWorkTimeCode());
+
 			// Check WorkType
-			workType = workTypeRepo.findByPK(companyId, bSchedule.getWorkTypeCd());
+			workType = workTypeRepo.findByPK(companyId, bSchedule.getWorkTypeCode());
 
 			if (!workType.isPresent()) {
 				// set error to list
-				errList.add("WorkTypeCode " + bSchedule.getWorkTypeCd() + " doesn't exist!");
+				errList.add("Msg_436");
 				continue;
 			}
 
 			if (workType.get().getDeprecate() != DeprecateClassification.Deprecated) {
 				// set error to list
-				errList.add("WorkTypeCode " + bSchedule.getWorkTypeCd() + " doesn't displayed!");
+				errList.add("Msg_468");
 				continue;
 			}
 
 			// Check WorkTime
-			// WorkTimeCd = "000" : it is day off
-			if (bSchedule.getWorkTimeCd() != "000") {
-				workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCd());
+			// WorkTimeCode = "000" : it is day off
+			if (bSchedule.getWorkTimeCode() != "000") {
+				workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCode());
 
 				if (!workTime.isPresent()) {
 					// Set error to list
-					errList.add("WorkTimeCode " + bSchedule.getWorkTimeCd() + " doesn't exist!");
+					errList.add("Msg_437");
 					continue;
 				}
 
 				if (workTime.get().getDispAtr().value != DisplayAtr.DisplayAtr_Display.value) {
 					// Set error to list
-					errList.add("WorkTimeCode " + bSchedule.getWorkTimeCd() + " doesn't exist!");
+					errList.add("Msg_469");
 					continue;
 				}
 			}
@@ -95,16 +100,14 @@ public class RegisterBasicScheduleCommandHandler
 				errList.add(ex.getMessage());
 			}
 
-			// Insert/Update
-			BasicSchedule basicScheduleObj = BasicSchedule.createFromJavaType(bSchedule.getEmployeeId(),
-					bSchedule.getDate(), bSchedule.getWorkTypeCd(), bSchedule.getWorkTimeCd());
 			// Check exist of basicSchedule
-			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.getByPK(bSchedule.getEmployeeId(),
+			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(bSchedule.getEmployeeId(),
 					bSchedule.getDate());
+			// Insert/Update
 			if (basicSchedule.isPresent()) {
-				basicScheduleRepo.updateBSchedule(basicScheduleObj);
+				basicScheduleRepo.update(basicScheduleObj);
 			} else {
-				basicScheduleRepo.insertBSchedule(basicScheduleObj);
+				basicScheduleRepo.insert(basicScheduleObj);
 			}
 		}
 
