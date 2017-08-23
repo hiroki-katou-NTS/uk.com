@@ -7,14 +7,16 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk007.a.style.css" />
 			<com:scriptfile path="kmk007.a.start.js" />
 			<com:scriptfile path="kmk007.a.vm.js" />
 			<com:scriptfile path="kmk007.a.service.js" />
+			<com:scriptfile
+				path="/view/language/select/languagemasterselect-jquery-ext.js"
+				of="nts.uk.com.web" />
+			<com:stylefile path="/view/language/select/languagemasterselect.css"
+				of="nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -24,7 +26,7 @@
 					<button id="register-button" class="proceed">#{i18n.getText('KMK007_2')}</button>
 					<button id="orderby-button">#{i18n.getText('KMK007_3')}</button>
 					<button id="print-button">マスタリスト出力ボタン</button>
-					<button id="orderby-button">言語切替ボタン</button>
+					<div id="switch-language"></div>
 					<button id="print-button" class="danger">#{i18n.getText('KMK007_5')}</button>
 				</div>
 			</div>
@@ -230,7 +232,7 @@
 														]}"></div>
 								<div
 									style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
-							</div>						
+							</div>
 							<div id="oneday-set-9" data-bind="if: selectedCode1() == '14'">
 								<div
 									style="margin-top: 20px; margin-left: 40px; display: inline-block;">
@@ -288,13 +290,15 @@
 										data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KMK007_25')}</div>
 								</div>
 							</div>
-							<div id="halfday-set-2" data-bind="if: selectedCode3() + selectedRuleCode() == '92'">
+							<div id="halfday-set-2"
+								data-bind="if: selectedCode3() + selectedRuleCode() == '92'">
 								<div>
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KMK007_27')}</div>
 								</div>
 							</div>
-							<div id="halfday-set-8" data-bind="if: selectedCode3() + selectedRuleCode() == '22'">
+							<div id="halfday-set-8"
+								data-bind="if: selectedCode3() + selectedRuleCode() == '22'">
 								<div>
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KMK007_27')}</div>
