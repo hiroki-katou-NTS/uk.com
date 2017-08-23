@@ -3,10 +3,12 @@ package repository.person.info.category;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCtgRepository;
 import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
-
+@Stateless
 public class JpaPerInfoCtgRepository implements PersonInfoCtgRepository{
 	
 
@@ -17,6 +19,7 @@ public class JpaPerInfoCtgRepository implements PersonInfoCtgRepository{
 			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL "
 			+ " ORDER BY io.disporder";
+
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
 		// TODO Auto-generated method stub
@@ -68,19 +71,19 @@ public class JpaPerInfoCtgRepository implements PersonInfoCtgRepository{
 	}
 
 	@Override
-	public List<String> getPerInfoCtgIdList(String companyId, String categoryCd) {
+	public List<String> getPerInfoCtgIdList(List<String> companyIdList, String categoryCd) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void addDateRangeItem(DateRangeItem dateRangeItem) {
+	public void addDateRangeItemRoot(DateRangeItem dateRangeItem) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void addDateRangeItemByCtgIdList(List<DateRangeItem> dateRangeItems) {
+	public void addListDateRangeItem(List<DateRangeItem> dateRangeItems) {
 		// TODO Auto-generated method stub
 		
 	}
