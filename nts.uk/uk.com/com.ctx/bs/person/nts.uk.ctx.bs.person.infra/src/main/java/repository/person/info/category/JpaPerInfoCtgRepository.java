@@ -3,10 +3,12 @@ package repository.person.info.category;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCtgRepository;
 import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
-
+@Stateless
 public class JpaPerInfoCtgRepository implements PersonInfoCtgRepository{
 	
 
