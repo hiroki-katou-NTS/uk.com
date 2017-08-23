@@ -8,7 +8,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 /**
  * The Class JpaCompanyEstablishmentGetMemento.
  */
-public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGetMemento{
+public class JpaCompanyEstablishmentSetMemento implements CompanyEstablishmentSetMemento{
 	
 	public static final int FIRST_TIME = 0;
 	
@@ -32,46 +32,53 @@ public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGe
 	 *
 	 * @param estimateTimeCompanys the estimate time companys
 	 */
-	public JpaCompanyEstablishmentGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
+	public JpaCompanyEstablishmentSetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
 			List<KscmtEstPriceComSet> estimatePriceCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
 		this.estimatePriceCompanys = estimatePriceCompanys;
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
-	 * CompanyEstablishmentGetMemento#getCompanyId()
+	 * CompanyEstablishmentSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.
+	 * common.CompanyId)
 	 */
 	@Override
-	public CompanyId getCompanyId() {
-		return new CompanyId(
-				this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComSetPK().getCid());
+	public void setCompanyId(CompanyId companyId) {
+		this.estimateTimeCompanys.forEach(estimateTime -> {
+			estimateTime.getKscmtEstTimeComSetPK().setCid(companyId.v());
+		});
+		
+		this.estimatePriceCompanys.forEach(esTimatePrice->{
+			esTimatePrice.getKscmtEstPriceComSetPK().setCid(companyId.v());
+		});
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
-	 * CompanyEstablishmentGetMemento#getTargetYear()
+	 * CompanyEstablishmentSetMemento#setTargetYear(nts.uk.ctx.at.schedule.dom.
+	 * shift.estimate.Year)
 	 */
 	@Override
-	public Year getTargetYear() {
-		return new Year(this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComSetPK()
-				.getTargetYear());
+	public void setTargetYear(Year targetYear) {
+		this.estimateTimeCompanys.forEach(estimateTime -> {
+			estimateTime.getKscmtEstTimeComSetPK().setTargetYear(targetYear.v());
+		});
+		
+		this.estimatePriceCompanys.forEach(esTimatePrice->{
+			esTimatePrice.getKscmtEstPriceComSetPK().setTargetYear(targetYear.v());
+		});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
-	 * CompanyEstablishmentGetMemento#getAdvancedSetting()
-	 */
 	@Override
-	public EstimateDetailSetting getAdvancedSetting() {
-		return new EstimateDetailSetting(new JpaEstimateDetailSettingCompanyGetMemento(
-				this.estimateTimeCompanys, this.estimatePriceCompanys));
+	public void setAdvancedSetting(EstimateDetailSetting advancedSetting) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
