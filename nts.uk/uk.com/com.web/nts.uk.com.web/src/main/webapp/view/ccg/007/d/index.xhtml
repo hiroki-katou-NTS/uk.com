@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="ccg007.d.style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -14,8 +14,11 @@
 			<com:scriptfile path="ccg007.d.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div style="background-color:lightblue;" id="contents-area">
-				<div style="position: relative; top: 30%; margin: 0 auto auto 45%;">
+			<!-- TODO remove after kiban fix -->
+			<div id="functions-area" class="divHeader"></div>
+			<!-- ===== -->
+			<div style="background-color: lightblue;" id="contents-area">
+				<div style="position: relative; top: 20%; margin: 0 auto auto 40%;">
 					<table>
 						<tr>
 							<td colspan="2" class="pad_5"><img src="CCG007_001.png" /></td>
@@ -31,15 +34,16 @@
 									data-bind="ntsComboBox: {
 										name: '#{i18n.getText('CCG007_7')}',
 										options: companyList,
-										optionsValue: 'code',
+										optionsValue: 'companyCode',
 										visibleItemsCount: 5,
 										value: selectedCompanyCode,
-										optionsText: 'name',
+										optionsText: 'companyName',
+										required: true,
 										editable: false,
 										enable: true,
 										columns: [
-											{ prop: 'code', length: 4 },
-											{ prop: 'name', length: 10 },
+											{ prop: 'companyCode', length: 4 },
+											{ prop: 'companyName', length: 10 },
 										]}"></div>
 							</td>
 						</tr>
@@ -54,7 +58,7 @@
 										data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_8')}',
 										value: employeeCode,
-										required: true,
+										required: false,
 										option: {textmode: 'text',width: '230px'},
 										enable: true,
 										readonly: false}" />
@@ -71,7 +75,7 @@
 										data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_2')}',
 										value: password,
-										required: true,
+										required: false,
 										option: {textmode: 'password',width: '230px'},
 										enable: true,
 										readonly: false}" />
@@ -79,13 +83,13 @@
 						</tr>
 						<tr>
 							<td class="pad_5 align_right"><div tabindex="4"
-									data-bind="ntsCheckBox: { checked: true }"></div></td>
-							<td><label data-bind="text: '#{i18n.getText('CCG007_5')}'"></label></td>
+									data-bind="ntsCheckBox: { checked: isSaveLoginInfo }"></div></td>
+							<td class="pad_5"><label data-bind="text: '#{i18n.getText('CCG007_5')}'"></label></td>
 						</tr>
 						<tr>
 							<td></td>
-							<td class="pad_5"><button tabindex="5" data-bind="click: submitLogin"
-									class="full_width proceed large">
+							<td class="pad_5"><button tabindex="5"
+									data-bind="click: submitLogin" class="full_width proceed large">
 									<div data-bind="text: '#{i18n.getText('CCG007_3')}'"></div>
 								</button></td>
 						</tr>
