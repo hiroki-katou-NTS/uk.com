@@ -26,32 +26,38 @@ public class NullLoginUserContext implements LoginUserContext {
 
 	@Override
 	public String personId() {
-		return null;
+		return "000426a2-181b-4c7f-abc8-6fff9f4f983a";
+//		return null;
 	}
 
 	@Override
 	public String contractCode() {
-		return null;
+		return "000000000000";
+//		return null;
 	}
 
 	@Override
 	public String companyId() {
-		return null;
+		return this.contractCode() + "-" + this.companyCode();
+//		return null;
 	}
 
 	@Override
 	public String companyCode() {
-		return null;
+		return "0001";
+//		return null;
 	}
 
 	@Override
 	public String employeeId() {
-		return null;
+		return "000426a2-181b-4c7f-abc8-6fff9f4f983a";
+//		return null;
 	}
 
 	@Override
 	public String employeeCode() {
-		return null;
+		return "1234567890AB";
+//		return null;
 	}
 
 }
