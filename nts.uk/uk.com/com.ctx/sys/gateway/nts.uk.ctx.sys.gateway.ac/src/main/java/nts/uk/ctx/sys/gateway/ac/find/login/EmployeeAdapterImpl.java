@@ -15,16 +15,23 @@ import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
  * The Class EmployeeAdapterImpl.
  */
 @Stateless
-public class EmployeeAdapterImpl implements EmployeeAdapter{
+public class EmployeeAdapterImpl implements EmployeeAdapter {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.adapter.EmployeeAdapter#getByEmployeeCode(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.gateway.dom.adapter.EmployeeAdapter#getByEmployeeCode(java
+	 * .lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<EmployeeDto> getByEmployeeCode(String companyId, String employeeCode) {
-		
-		EmployeeDto em = new EmployeeDto("busiName", "personalId", 1111, employeeCode);
-		//mock data
-		return Optional.of(em);
+		// mock data
+		if (employeeCode.equals("123000000000")) {
+			EmployeeDto em = new EmployeeDto("busiName", "personalId", 1111, employeeCode);
+			return Optional.of(em);
+		} else {
+			return Optional.empty();
+		}
 	}
 }

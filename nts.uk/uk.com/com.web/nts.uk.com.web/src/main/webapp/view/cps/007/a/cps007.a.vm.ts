@@ -1,6 +1,8 @@
 module cps007.a.vm {
+    import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
-    
+    import text = nts.uk.resource.getText;
+
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
@@ -50,11 +52,29 @@ module cps007.a.vm {
                     }).value()
                 };
 
+            let itemids = _(command.itemsClassification)
+                .map(x => x.listItemClsDf)
+                .flatten()
+                .filter(x => !!x)
+                .map((x: any) => x.personInfoItemDefinitionID)
+                .groupBy()
+                .pickBy((x: Array<string>) => x.length > 1)
+                .keys()
+                .value();
+
+            // エラーメッセージ（#Msg_202,２つ以上配置されている項目名）を表示する
+            if (!!itemids.length) {
+                alert(text('Msg_202'));
+                return;
+            }
+
             // push data layout to webservice
             block();
             service.saveData(command).done(() => {
                 self.start();
-                unblock();
+                info(text("Msg_15")).then(function() {
+                    unblock();
+                });
             }).fail((mes) => {
                 unblock();
                 alert(mes.message);

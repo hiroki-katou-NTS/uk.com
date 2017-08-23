@@ -7,17 +7,17 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.ConditionValue;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseConditionAtr;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayName;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantCondition;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSet;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSetPK;
-import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 
@@ -55,10 +55,10 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		Optional<KshstGrantHdTblSet> entity = this.queryProxy().find(key, KshstGrantHdTblSet.class);
 		KshstGrantHdTblSet kshstYearHoliday = entity.get();
 		kshstYearHoliday.yearHolidayName = yearHoliday.getYearHolidayName().v();
-		kshstYearHoliday.calculationMethod = yearHoliday.getCalculationMethod();
+		kshstYearHoliday.calculationMethod = yearHoliday.getCalculationMethod().value;
 		kshstYearHoliday.simultaneousGrandMonthDays = yearHoliday.getSimultaneousGrandMonthDays();
-		kshstYearHoliday.standardCalculation = yearHoliday.getStandardCalculation();
-		kshstYearHoliday.useSimultaneousGrant = yearHoliday.getUseSimultaneousGrant();
+		kshstYearHoliday.standardCalculation = yearHoliday.getStandardCalculation().value;
+		kshstYearHoliday.useSimultaneousGrant = yearHoliday.getUseSimultaneousGrant().value;
 		kshstYearHoliday.yearHolidayNote = yearHoliday.getYearHolidayNote().v();
 		
 		List<KshstGrantCondition> grantCoditionList = new ArrayList<KshstGrantCondition>();
@@ -84,17 +84,17 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 					new YearHolidayCode(t.kshstGrantConditionPK.yearHolidayCode), 
 					t.kshstGrantConditionPK.conditionNo, 
 					new ConditionValue(t.conditionValue), 
-					t.useConditionAtr);
+					EnumAdaptor.valueOf(t.useConditionAtr, UseConditionAtr.class));
 		}).collect(Collectors.toList());
 		
-		return new GrantHdTblSet(x.kshstGrantHdTblSetPK.companyId, 
-				new YearHolidayCode(x.kshstGrantHdTblSetPK.yearHolidayCode), 
-				new YearHolidayName(x.yearHolidayName), 
+		return GrantHdTblSet.createFromJavaType(x.kshstGrantHdTblSetPK.companyId, 
+				x.kshstGrantHdTblSetPK.yearHolidayCode, 
+				x.yearHolidayName, 
 				x.calculationMethod, 
 				x.standardCalculation, 
 				x.useSimultaneousGrant,	
 				x.simultaneousGrandMonthDays, 
-				new Memo(x.yearHolidayNote), grantConditions);
+				x.yearHolidayNote, grantConditions);
 	}
 
 	/**
@@ -108,9 +108,9 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		return new KshstGrantHdTblSet(
 				new KshstGrantHdTblSetPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v()),
 				yearHoliday.getYearHolidayName().v(),
-				yearHoliday.getCalculationMethod(),
-				yearHoliday.getStandardCalculation(),
-				yearHoliday.getUseSimultaneousGrant(),
+				yearHoliday.getCalculationMethod().value,
+				yearHoliday.getStandardCalculation().value,
+				yearHoliday.getUseSimultaneousGrant().value,
 				yearHoliday.getSimultaneousGrandMonthDays(),
 				yearHoliday.getYearHolidayNote().v(), grantCoditionList);
 	}

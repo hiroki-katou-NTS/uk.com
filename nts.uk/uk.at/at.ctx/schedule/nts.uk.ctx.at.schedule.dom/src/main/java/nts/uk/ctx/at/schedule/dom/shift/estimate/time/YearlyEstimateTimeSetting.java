@@ -23,4 +23,17 @@ public class YearlyEstimateTimeSetting extends DomainObject{
 	// 時間
 	private YearlyEstimateTime time;
 
+	/**
+	 * Instantiates a new yearly estimate time setting.
+	 *
+	 * @param estimatedCondition the estimated condition
+	 * @param time the time
+	 */
+	public YearlyEstimateTimeSetting(EstimatedCondition estimatedCondition,
+			YearlyEstimateTime time) {
+		this.estimatedCondition = estimatedCondition;
+		this.time = time;
+	}
+
+	
 }

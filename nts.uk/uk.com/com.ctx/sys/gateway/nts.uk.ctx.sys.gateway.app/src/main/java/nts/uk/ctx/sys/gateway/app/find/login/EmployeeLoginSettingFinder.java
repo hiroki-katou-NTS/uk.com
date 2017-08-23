@@ -14,12 +14,22 @@ import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSetting;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingRepository;
 import nts.uk.ctx.sys.gateway.dom.login.ManageDistinct;
 
+/**
+ * The Class EmployeeLoginSettingFinder.
+ */
 @Stateless
 public class EmployeeLoginSettingFinder {
 
+	/** The employee login setting repository. */
 	@Inject
 	EmployeeLoginSettingRepository employeeLoginSettingRepository;
 
+	/**
+	 * Find by contract code form 2.
+	 *
+	 * @param contractCode the contract code
+	 * @return the employee login setting dto
+	 */
 	public EmployeeLoginSettingDto findByContractCodeForm2(String contractCode) {
 
 		Optional<EmployeeLoginSetting> emLogSetting = employeeLoginSettingRepository.getByContractCode(contractCode);
@@ -35,6 +45,12 @@ public class EmployeeLoginSettingFinder {
 		}
 	}
 	
+	/**
+	 * Find by contract code form 3.
+	 *
+	 * @param contractCode the contract code
+	 * @return the employee login setting dto
+	 */
 	public EmployeeLoginSettingDto findByContractCodeForm3(String contractCode) {
 
 		Optional<EmployeeLoginSetting> emLogSetting = employeeLoginSettingRepository.getByContractCode(contractCode);

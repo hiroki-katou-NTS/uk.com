@@ -3260,32 +3260,47 @@ button.nts-switch-button[disabled]:hover {
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
 }
 /* line 11, ../sass/components/_contextmenu.scss */
+.ntsContextMenu:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #FAFAFA;
+  width: 30px;
+  border-right: 1px solid #EEEEEE;
+  box-sizing: border-box;
+  z-index: 1;
+}
+/* line 25, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li {
   position: relative;
   display: block;
   list-style: none;
-  padding: 0 10px 0 30px;
+  padding: 0 10px 0 37px;
   line-height: 28px;
   cursor: pointer;
+  z-index: 2;
 }
-/* line 19, ../sass/components/_contextmenu.scss */
+/* line 34, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
-/* line 23, ../sass/components/_contextmenu.scss */
+/* line 38, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
-/* line 29, ../sass/components/_contextmenu.scss */
+/* line 44, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li .menu-icon {
   position: absolute;
-  left: 6px;
+  left: 7px;
   top: 50%;
   margin-top: -8px;
 }
-/* line 37, ../sass/components/_contextmenu.scss */
+/* line 52, ../sass/components/_contextmenu.scss */
 .ntsContextMenu .divider {
   height: 0;
   border-top: 1px solid #ccc;
@@ -3425,7 +3440,12 @@ button.nts-switch-button[disabled]:hover {
   color: gray;
 }
 
-/* line 18, ../sass/components/_ntsgrid.scss */
+/* line 17, ../sass/components/_ntsgrid.scss */
+.ui-iggrid .ui-iggrid-tablebody td {
+  height: 21px;
+}
+
+/* line 20, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,
@@ -3435,7 +3455,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: purple;
 }
 
-/* line 27, ../sass/components/_ntsgrid.scss */
+/* line 29, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-reflect,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-calc,
@@ -3447,7 +3467,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: green;
 }
 
-/* line 38, ../sass/components/_ntsgrid.scss */
+/* line 40, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
@@ -3461,7 +3481,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: orange;
 }
 
-/* line 51, ../sass/components/_ntsgrid.scss */
+/* line 53, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
@@ -3477,7 +3497,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: pink;
 }
 
-/* line 66, ../sass/components/_ntsgrid.scss */
+/* line 68, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-alarm,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
@@ -3495,7 +3515,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: yellow;
 }
 
-/* line 83, ../sass/components/_ntsgrid.scss */
+/* line 85, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-error,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error,
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-alarm,
@@ -3515,7 +3535,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: red;
 }
 
-/* line 102, ../sass/components/_ntsgrid.scss */
+/* line 104, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-error,
@@ -3537,12 +3557,12 @@ button.nts-switch-button[disabled]:hover {
   background-color: #007fff;
 }
 
-/* line 127, ../sass/components/_ntsgrid.scss */
+/* line 129, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
 }
 
-/* line 135, ../sass/components/_ntsgrid.scss */
+/* line 137, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }
@@ -3593,6 +3613,10 @@ button.nts-switch-button[disabled]:hover {
   margin-top: -8px;
 }
 
+div .ex-area-line.x-stay {
+	cursor: default !important;
+}
+
 /* line 32, ../sass/components/_extable.scss */
 .top-right-tooltip:before {
   width: 0;
@@ -3632,36 +3656,52 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 65, ../sass/components/_extable.scss */
+.x-context-menu:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #FAFAFA;
+  width: 30px;
+  border-right: 1px solid #EEEEEE;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+/* line 79, ../sass/components/_extable.scss */
 .x-context-menu li {
   position: relative;
   display: block;
   list-style: none;
-  padding: 0 10px 0 30px;
+  padding: 0 10px 0 37px;
   line-height: 28px;
   cursor: pointer;
+  z-index: 2;
 }
 
-/* line 73, ../sass/components/_extable.scss */
+/* line 88, ../sass/components/_extable.scss */
 .x-context-menu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
 
-/* line 76, ../sass/components/_extable.scss */
+/* line 91, ../sass/components/_extable.scss */
 .x-context-menu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
 
-/* line 81, ../sass/components/_extable.scss */
+/* line 96, ../sass/components/_extable.scss */
 .x-context-menu li .menu-icon {
   position: absolute;
-  left: 6px;
+  left: 7px;
   top: 50%;
   margin-top: -8px;
 }
 
-/* line 87, ../sass/components/_extable.scss */
+/* line 102, ../sass/components/_extable.scss */
 .x-context-menu .partition {
   height: 0;
   border-top: 1px solid #ccc;
@@ -3669,7 +3709,7 @@ button.nts-switch-button[disabled]:hover {
   margin: 5px 0;
 }
 
-/* line 94, ../sass/components/_extable.scss */
+/* line 109, ../sass/components/_extable.scss */
 .x-popup-panel {
   position: absolute;
   display: block;
@@ -3681,7 +3721,7 @@ button.nts-switch-button[disabled]:hover {
   padding: 5px;
 }
 
-/* line 105, ../sass/components/_extable.scss */
+/* line 120, ../sass/components/_extable.scss */
 .x-link {
   display: inline-block;
   color: #0D86D1;

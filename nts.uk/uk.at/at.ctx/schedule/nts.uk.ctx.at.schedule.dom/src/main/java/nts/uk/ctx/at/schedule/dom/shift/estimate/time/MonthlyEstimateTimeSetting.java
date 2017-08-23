@@ -22,4 +22,18 @@ public class MonthlyEstimateTimeSetting extends DomainObject{
 	/** The estimated condition. */
 	// 目安利用条件
 	private EstimatedCondition estimatedCondition;
+
+	/**
+	 * Instantiates a new monthly estimate time setting.
+	 *
+	 * @param time the time
+	 * @param estimatedCondition the estimated condition
+	 */
+	public MonthlyEstimateTimeSetting(MonthlyEstimateTime time,
+			EstimatedCondition estimatedCondition) {
+		this.time = time;
+		this.estimatedCondition = estimatedCondition;
+	}
+	
+	
 }

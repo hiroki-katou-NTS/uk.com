@@ -2416,6 +2416,30 @@ var nts;
                 return dfd.promise();
             }
             request.exportFile = exportFile;
+            function downloadFileWithTask(taskId, data, options) {
+                var dfd = $.Deferred();
+                var checkTask = function () {
+                    specials.getAsyncTaskInfo(taskId).done(function (res) {
+                        if (res.status == "PENDING" || res.status == "RUNNING") {
+                            setTimeout(function () {
+                                checkTask();
+                            }, 1000);
+                        }
+                        if (res.failed || res.status == "ABORTED") {
+                            dfd.reject(res.error);
+                        }
+                        else {
+                            specials.donwloadFile(res.id);
+                            dfd.resolve(res);
+                        }
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                checkTask();
+                return dfd.promise();
+            }
+            request.downloadFileWithTask = downloadFileWithTask;
             var asyncTask;
             (function (asyncTask) {
                 function getInfo(taskId) {
@@ -3355,8 +3379,7 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName)
-                                || path !== _this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName;
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "未設定" : dialogName;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -4317,8 +4340,8 @@ var nts;
                         var data = valueAccessor();
                         var self = this;
                         var options = ko.unwrap(data.options);
-                        var optionValue = ko.unwrap(data.optionsValue);
-                        var optionText = ko.unwrap(data.optionsText);
+                        var optionValue = data.optionsValue === undefined ? null : ko.unwrap(data.optionsValue);
+                        var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
                         var enable = ko.unwrap(data.enable);
@@ -4330,8 +4353,11 @@ var nts;
                         var fillCharacter = ' ';
                         var maxWidthCharacter = 15;
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-                        if (_.find(options, function (item) { return item[optionValue] === selectedValue; }) === undefined && !editable) {
-                            selectedValue = options.length > 0 ? options[0][optionValue] : '';
+                        var getValue = function (item) {
+                            return optionValue === null ? item : item[optionValue];
+                        };
+                        if (_.find(options, function (item) { return getValue(item) === selectedValue; }) === undefined && !editable) {
+                            selectedValue = options.length > 0 ? getValue(options[0]) : '';
                             data.value(selectedValue);
                         }
                         var haveColumn = columns && columns.length > 0;
@@ -4353,7 +4379,7 @@ var nts;
                                     });
                                 }
                                 else {
-                                    newOptionText = option[optionText];
+                                    newOptionText = optionText === null ? option : option[optionText];
                                 }
                                 option['nts-combo-label'] = newOptionText;
                                 return option;
@@ -4391,7 +4417,7 @@ var nts;
                                 itemTemplate: itemTemplate,
                                 selectionChanged: function (evt, ui) {
                                     if (ui.items.length > 0) {
-                                        data.value(ui.items[0].data[optionValue]);
+                                        data.value(getValue(ui.items[0].data));
                                     }
                                 }
                             });
@@ -6050,7 +6076,7 @@ var nts;
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
                                 var selected = $grid.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     data.value(_.map(selected, function (s) { return s.id; }));
                                 }
                                 else {
@@ -6059,7 +6085,7 @@ var nts;
                             }
                             else {
                                 var selected = $grid.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     data.value(selected.id);
                                 }
                                 else {
@@ -6407,7 +6433,7 @@ var nts;
                             var itemSelected;
                             if (container.igGridSelection('option', 'multipleSelection')) {
                                 var selected = container.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     itemSelected = _.map(selected, function (s) { return s.id; });
                                 }
                                 else {
@@ -6416,7 +6442,7 @@ var nts;
                             }
                             else {
                                 var selected = container.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     itemSelected = selected.id;
                                 }
                                 else {
@@ -6975,16 +7001,8 @@ var nts;
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
                                     : component.igTreeGridSelection('option', 'multipleSelection');
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
-                                var selectedValue = void 0;
-                                if (selectedKey !== null) {
-                                    selectedValue = isMulti ? _.map(result_1.selectItems, selectedKey) :
-                                        result_1.selectItems.length > 0 ? result_1.selectItems[0][selectedKey] : undefined;
-                                }
-                                else {
-                                    selectedValue = isMulti ? [result_1.selectItems] :
-                                        result_1.selectItems.length > 0 ? result_1.selectItems[0] : undefined;
-                                }
                                 if (targetMode === 'igGrid') {
+                                    component.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
                                         $container.data("filteredSrouce", result_1.options);
                                         component.attr("filtered", true);
@@ -6997,10 +7015,10 @@ var nts;
                                         });
                                         component.igGrid("option", "dataSource", source);
                                         component.igGrid("dataBind");
+                                        if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
+                                            component.trigger("selectionchanged");
+                                        }
                                     }
-                                    else {
-                                    }
-                                    component.ntsGridList("setSelected", selectedProperties);
                                 }
                                 else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
@@ -8738,7 +8756,8 @@ var nts;
                         var self = this;
                         if (self.isInit) {
                             self.isInit = false;
-                            self.$dialog.dialog("destroy");
+                            self.$encodeTypeCombo.igCombo("destroy");
+                            self.$dialog.dialog("destroy").remove();
                             $(self.option.selector).off("click.ImportSettingForm");
                         }
                     };
@@ -11089,7 +11108,9 @@ var nts;
                     (function (functions) {
                         functions.UPDATE_ROW = "updateRow";
                         functions.ENABLE_CONTROL = "enableNtsControlAt";
+                        functions.ENABLE_ALL_CONTROL = "enableNtsControl";
                         functions.DISABLE_CONTROL = "disableNtsControlAt";
+                        functions.DISABLE_ALL_CONTROL = "disableNtsControl";
                         functions.DIRECT_ENTER = "directEnter";
                         function ntsAction($grid, method, params) {
                             switch (method) {
@@ -11100,8 +11121,14 @@ var nts;
                                 case functions.ENABLE_CONTROL:
                                     enableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
+                                case functions.ENABLE_ALL_CONTROL:
+                                    enableNtsControl($grid, params[0], params[1]);
+                                    break;
                                 case functions.DISABLE_CONTROL:
                                     disableNtsControlAt($grid, params[0], params[1], params[2]);
+                                    break;
+                                case functions.DISABLE_ALL_CONTROL:
+                                    disableNtsControl($grid, params[0], params[1]);
                                     break;
                                 case functions.DIRECT_ENTER:
                                     var direction = $grid.data(internal.ENTER_DIRECT);
@@ -11116,6 +11143,12 @@ var nts;
                             }
                         }
                         functions.ntsAction = ntsAction;
+                        function enableNtsControl($grid, columnKey, controlType) {
+                            var datasource = $grid.igGrid("option", "dataSource");
+                            for (var i = 0; i <= datasource.length; i++) {
+                                enableNtsControlAt($grid, i, columnKey, controlType);
+                            }
+                        }
                         function updateRow($grid, rowId, object, autoCommit) {
                             updating.updateRow($grid, rowId, object, undefined, true);
                             if (!autoCommit) {
@@ -11123,6 +11156,12 @@ var nts;
                                 $grid.igGrid("commit");
                                 if (updatedRow !== undefined)
                                     $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
+                            }
+                        }
+                        function disableNtsControl($grid, columnKey, controlType) {
+                            var datasource = $grid.igGrid("option", "dataSource");
+                            for (var i = 0; i <= datasource.length; i++) {
+                                disableNtsControlAt($grid, i, columnKey, controlType);
                             }
                         }
                         function disableNtsControlAt($grid, rowId, columnKey, controlType) {
@@ -12864,8 +12903,6 @@ var nts;
                         function setGridSize($grid) {
                             var height = window.innerHeight;
                             var width = window.innerWidth;
-                            $grid.igGrid("option", "width", width - 240);
-                            $grid.igGrid("option", "height", height - 90);
                         }
                         settings.setGridSize = setGridSize;
                     })(settings || (settings = {}));
@@ -13957,7 +13994,6 @@ var nts;
                 var H_BTN_HEIGHT = "24px";
                 var DYNAMIC = "dynamic";
                 var FIXED = "fixed";
-                var OCCUPY = "exoccupy";
                 var COPY_PASTE = "copyPaste";
                 var EDIT = "edit";
                 var STICK = "stick";
@@ -13965,7 +14001,8 @@ var nts;
                 var ExTable = (function () {
                     function ExTable($container, options) {
                         this.bodyHeightSetMode = DYNAMIC;
-                        this.windowOccupation = 0;
+                        this.windowXOccupation = 0;
+                        this.windowYOccupation = 0;
                         this.updateMode = EDIT;
                         this.pasteOverWrite = true;
                         this.stickOverWrite = true;
@@ -13980,14 +14017,17 @@ var nts;
                         this.areaResize = options.areaResize;
                         this.heightSetter = options.heightSetter;
                         this.bodyHeightSetMode = options.bodyHeightMode;
-                        this.windowOccupation = options.windowOccupation;
+                        this.windowXOccupation = options.windowXOccupation;
+                        this.windowYOccupation = options.windowYOccupation;
                         if (options.updateMode) {
                             this.updateMode = options.updateMode;
                         }
                         this.pasteOverWrite = options.pasteOverWrite;
                         this.stickOverWrite = options.stickOverWrite;
+                        this.viewMode = options.viewMode;
                         this.determination = options.determination;
-                        this.$container.data(OCCUPY, this.windowOccupation);
+                        this.$container.data(internal.X_OCCUPY, this.windowXOccupation);
+                        this.$container.data(internal.Y_OCCUPY, this.windowYOccupation);
                         helper.makeConnector();
                     }
                     ExTable.prototype.setUpdateMode = function (updateMode) {
@@ -14023,6 +14063,7 @@ var nts;
                         this.detailContent = _.cloneDeep(detailContent);
                         this.setBodyClass(this.detailContent, DETAIL);
                         this.detailContent.updateMode = this.updateMode;
+                        this.detailContent.viewMode = this.viewMode;
                         return this;
                     };
                     ExTable.prototype.VerticalSumHeader = function (verticalSumHeader) {
@@ -14393,7 +14434,9 @@ var nts;
                         }
                         Painter.prototype.cell = function (rData, rowIdx, key) {
                             var self = this;
-                            var data = rData[key];
+                            var cData = rData[key];
+                            var data = cData && _.isObject(cData) && cData.constructor !== Array && _.isFunction(self.options.view) ?
+                                self.options.view(self.options.viewMode, cData) : cData;
                             var column = self.columnsMap[key];
                             if (uk.util.isNullOrUndefined(column))
                                 return;
@@ -14649,20 +14692,27 @@ var nts;
                             .css(wrapperStyles(top, left, options.width, options.height));
                     }
                     render.createWrapper = createWrapper;
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore) {
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, isRestore) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var updateMode = helper.getExTableFromGrid($grid).updateMode;
                         var $cell = selection.cellAt($grid, rowIdx, columnKey);
                         if ($cell === intan.NULL)
                             return;
                         var origDs = helper.getOrigDS($grid);
+                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
+                        var viewFn = gen.painter.options.view;
+                        var viewMode = gen.painter.options.viewMode;
+                        var value = valueObj;
+                        if (_.isFunction(viewFn)) {
+                            value = viewFn(viewMode, valueObj);
+                        }
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if ($childCells.length > 0) {
                             if (value.constructor === Array) {
                                 _.forEach(value, function (val, i) {
                                     var $c = $($childCells[i]);
                                     $c.text(val);
-                                    trace(origDs, $c, rowIdx, columnKey, i, val);
+                                    trace(origDs, $c, rowIdx, columnKey, i, valueObj);
                                     if (updateMode === EDIT) {
                                         validation.validate($exTable, $grid, $c, rowIdx, columnKey, i, val);
                                     }
@@ -14671,7 +14721,7 @@ var nts;
                             else {
                                 var $c = $($childCells[innerIdx]);
                                 $c.text(value);
-                                trace(origDs, $c, rowIdx, columnKey, innerIdx, value);
+                                trace(origDs, $c, rowIdx, columnKey, innerIdx, valueObj);
                                 if (updateMode === EDIT) {
                                     validation.validate($exTable, $grid, $c, rowIdx, columnKey, innerIdx, value);
                                 }
@@ -14679,7 +14729,7 @@ var nts;
                         }
                         else {
                             $cell.text(value);
-                            trace(origDs, $cell, rowIdx, columnKey, -1, value);
+                            trace(origDs, $cell, rowIdx, columnKey, -1, valueObj);
                             if (updateMode === EDIT) {
                                 validation.validate($exTable, $grid, $cell, rowIdx, columnKey, -1, value);
                             }
@@ -14695,20 +14745,27 @@ var nts;
                         });
                         var visibleColumns = helper.gridVisibleColumns($grid);
                         var origDs = helper.getOrigDS($grid);
+                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
+                        var viewFn = gen.painter.options.view;
+                        var viewMode = gen.painter.options.viewMode;
                         _.forEach(Object.keys(data), function (key) {
                             _.forEach(visibleColumns, function (col, index) {
                                 if (col.key === key) {
                                     var $target = $cells.eq(index);
                                     var childCells_1 = $target.find("." + render.CHILD_CELL_CLS);
                                     if (childCells_1.length > 0) {
-                                        if (data[key].constructor === Array) {
-                                            _.forEach(data[key], function (d, i) {
+                                        var cData_1 = data[key];
+                                        if (_.isFunction(viewFn)) {
+                                            cData_1 = viewFn(viewMode, data[key]);
+                                        }
+                                        if (cData_1.constructor === Array) {
+                                            _.forEach(cData_1, function (d, i) {
                                                 var $c = $(childCells_1[i]);
                                                 $c.text(d);
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
-                                                trace(origDs, $c, rowIdx, key, i, d);
+                                                trace(origDs, $c, rowIdx, key, i, cData_1);
                                             });
                                             return false;
                                         }
@@ -14719,7 +14776,7 @@ var nts;
                                         }
                                     }
                                     else {
-                                        $target.text(data[key]);
+                                        $target.text(viewFn(viewMode, data[key]));
                                         trace(origDs, $target, rowIdx, key, -1, data[key]);
                                         if (updateMode === EDIT) {
                                             validation.validate($exTable, $grid, $target, rowIdx, key, -1, data[key]);
@@ -14734,8 +14791,8 @@ var nts;
                     function trace(ds, $cell, rowIdx, key, innerIdx, value) {
                         if (!ds || ds.length === 0)
                             return;
-                        var oVal = !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1 ? ds[rowIdx][key][innerIdx] : ds[rowIdx][key];
-                        if (!uk.util.isNullOrUndefined(oVal) && value.constructor === String && oVal.trim() === value.trim()) {
+                        var oVal = ds[rowIdx][key];
+                        if (!uk.util.isNullOrUndefined(oVal) && _.isEqual(oVal, value)) {
                             $cell.removeClass(update.EDITED_CLS);
                         }
                         else {
@@ -15103,9 +15160,23 @@ var nts;
                         value = validation.formatTime(value);
                         var res = cellData($exTable, rowIdx, columnKey, innerIdx, value);
                         if (!uk.util.isNullOrUndefined(res)) {
+                            var newValObj = value;
+                            if (_.isObject(res)) {
+                                var $main = helper.getMainTable($exTable);
+                                var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
+                                var upperInput = gen.painter.options.upperInput;
+                                var lowerInput = gen.painter.options.lowerInput;
+                                newValObj = _.cloneDeep(res);
+                                if (innerIdx === 0) {
+                                    newValObj[upperInput] = value;
+                                }
+                                else if (innerIdx === 1) {
+                                    newValObj[lowerInput] = value;
+                                }
+                            }
                             pushEditHistory($body, new selection.Cell(rowIdx, columnKey, res, innerIdx));
                             helper.markCellWith(update.EDITED_CLS, $cell, innerIdx);
-                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
+                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, newValObj, innerIdx)]);
                         }
                         setText($cell, innerIdx, value);
                     }
@@ -15159,9 +15230,20 @@ var nts;
                             }
                             return null;
                         }
-                        if (currentVal[innerIdx] !== value) {
-                            oldVal = _.cloneDeep(currentVal[innerIdx]);
-                            exTable.detailContent.dataSource[rowIdx][columnKey][innerIdx] = value;
+                        var $main = helper.getMainTable($exTable);
+                        var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
+                        var upperInput = gen.painter.options.upperInput;
+                        var lowerInput = gen.painter.options.lowerInput;
+                        var field;
+                        if (innerIdx === 0) {
+                            field = upperInput;
+                        }
+                        else if (innerIdx === 1) {
+                            field = lowerInput;
+                        }
+                        if (currentVal[field] !== value) {
+                            oldVal = _.cloneDeep(currentVal);
+                            exTable.detailContent.dataSource[rowIdx][columnKey][field] = value;
                             return oldVal;
                         }
                         return null;
@@ -15281,23 +15363,8 @@ var nts;
                         var cData = gen.dataSource[rowIdx][columnKey];
                         if (!exTable.stickOverWrite && !uk.util.isNullOrEmpty(cData))
                             return;
-                        var changedData;
-                        if (cData.constructor === Array) {
-                            if (value.constructor === Array) {
-                                changedData = _.cloneDeep(cData);
-                                _.forEach(cData, function (d, i) {
-                                    gen.dataSource[rowIdx][columnKey][i] = value[i];
-                                });
-                            }
-                            else {
-                                changedData = cData[innerIdx];
-                                gen.dataSource[rowIdx][columnKey][innerIdx] = value;
-                            }
-                        }
-                        else {
-                            changedData = cData;
-                            gen.dataSource[rowIdx][columnKey] = value;
-                        }
+                        var changedData = _.cloneDeep(cData);
+                        gen.dataSource[rowIdx][columnKey] = value;
                         render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
                         pushStickHistory($grid, [new selection.Cell(rowIdx, columnKey, changedData)]);
                         events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
@@ -15435,7 +15502,7 @@ var nts;
                             var copiedData;
                             if (selectedCells.length === 1) {
                                 this.mode = Mode.SINGLE;
-                                copiedData = selectedCells[0].value;
+                                copiedData = _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
                             }
                             else {
                                 this.mode = Mode.MULTIPLE;
@@ -15471,7 +15538,7 @@ var nts;
                                 if (uk.util.isNullOrUndefined(structure[rowIndex])) {
                                     structure[rowIndex] = {};
                                 }
-                                structure[rowIndex][columnIndex] = cell.value;
+                                structure[rowIndex][columnIndex] = helper.stringValue(cell.value);
                             });
                             for (var i = minRow; i <= maxRow; i++) {
                                 for (var j = minColumn; j <= maxColumn; j++) {
@@ -15513,9 +15580,7 @@ var nts;
                         Printer.prototype.pasteSingleCell = function (evt) {
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
-                            if (cbData.indexOf(",") > 0) {
-                                cbData = cbData.split(",");
-                            }
+                            cbData = helper.getCellData(cbData);
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
@@ -15563,7 +15628,7 @@ var nts;
                                             break;
                                         continue;
                                     }
-                                    rowData[columnKey] = row[i];
+                                    rowData[columnKey] = helper.getCellData(row[i]);
                                     columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
                                     if (!columnKey)
                                         break;
@@ -15580,6 +15645,7 @@ var nts;
                             var tx = histories.pop();
                             _.forEach(tx.items, function (item) {
                                 update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                                internal.removeChange(self.$grid, item);
                             });
                         };
                         Printer.prototype.getClipboardContent = function (evt) {
@@ -16216,6 +16282,7 @@ var nts;
                     resize.AREA_AGENCY = "ex-area-agency";
                     resize.RESIZE_AREA = "resize-area";
                     resize.AREA_LINE = "ex-area-line";
+                    resize.STAY_CLS = "x-stay";
                     var ColumnAdjuster = (function () {
                         function ColumnAdjuster($headerTable, $contentTable, options) {
                             this.$headerTable = $headerTable;
@@ -16357,6 +16424,8 @@ var nts;
                                 var height = $wrapper.height() + self.bodyWrappers[index].height();
                                 var left = $wrapper.outerWidth() + ($wrapper.offset().left - self.$areaAgency.offset().left);
                                 $line.css({ left: left, height: height });
+                                if ($wrapper.hasClass(HEADER_PRF + LEFTMOST))
+                                    $line.addClass(resize.STAY_CLS);
                             });
                             self.$areaAgency.on(events.MOUSE_DOWN, $.proxy(self.cursorDown, self));
                         };
@@ -16366,6 +16435,8 @@ var nts;
                                 self.cursorUp(event);
                             }
                             var $targetGrip = $(event.target);
+                            if ($targetGrip.hasClass(resize.STAY_CLS))
+                                return;
                             var gripIndex = $targetGrip.index();
                             var $leftArea = $targetGrip.data(resize.RESIZE_AREA);
                             var $rightArea = self.headerWrappers[gripIndex + 1];
@@ -16526,7 +16597,7 @@ var nts;
                         return { position: "absolute", cursor: "ew-resize", width: "4px", zIndex: 2, marginLeft: marginLeft };
                     }
                     function fitWindowHeight($container, wrappers, horzSumExists) {
-                        var height = window.innerHeight - 100;
+                        var height = window.innerHeight - parseInt($container.data(internal.Y_OCCUPY)) - 100;
                         var $horzSumHeader, $horzSumBody, decreaseAmt;
                         wrappers = wrappers || _.map($container.find("div[class*='" + BODY_PRF + "']").filter(function () {
                             return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
@@ -16559,7 +16630,7 @@ var nts;
                         var $detailBody = $container.find("." + BODY_PRF + DETAIL);
                         var width = window.innerWidth - $detailHeader.offset().left;
                         if ($vertSumHeader.length > 0 && $vertSumHeader.css("display") !== "none") {
-                            width = width - parseInt($container.data(OCCUPY)) - $vertSumContent.width();
+                            width = width - parseInt($container.data(internal.X_OCCUPY)) - $vertSumContent.width();
                             $detailHeader.width(width);
                             $detailBody.width(width);
                             $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width);
@@ -16568,7 +16639,7 @@ var nts;
                             syncDetailAreaLine($container, $detailHeader, $detailBody);
                             return;
                         }
-                        width = width - parseInt($container.data(OCCUPY));
+                        width = width - parseInt($container.data(internal.X_OCCUPY));
                         $detailHeader.width(width - helper.getScrollWidth());
                         $detailBody.width(width);
                         $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width - helper.getScrollWidth());
@@ -17433,9 +17504,12 @@ var nts;
                     function undoStick($container) {
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         var histories = $grid.data(internal.STICK_HISTORY);
+                        if (!histories)
+                            return;
                         var items = histories.pop();
                         _.forEach(items, function (i) {
                             update.gridCell($grid, i.rowIndex, i.columnKey, -1, i.value, true);
+                            internal.removeChange($grid, i);
                         });
                     }
                     function clearHistories($container, type) {
@@ -17565,6 +17639,8 @@ var nts;
                 })(func || (func = {}));
                 var internal;
                 (function (internal) {
+                    internal.X_OCCUPY = "ex-x-occupy";
+                    internal.Y_OCCUPY = "ex-y-occupy";
                     internal.TANGI = "x-tangi";
                     internal.CANON = "x-canon";
                     internal.STICKER = "x-sticker";
@@ -17592,6 +17668,25 @@ var nts;
                         return gen.dataSource;
                     }
                     internal.getDataSource = getDataSource;
+                    function removeChange($grid, cell) {
+                        var origDs = helper.getOrigDS($grid);
+                        var exTable = helper.getExTableFromGrid($grid);
+                        if (!origDs || !exTable)
+                            return;
+                        var oVal = origDs[cell.rowIndex][cell.columnKey];
+                        var cells = exTable.modifications[cell.rowIndex];
+                        if (!cells)
+                            return;
+                        var index = -1;
+                        _.forEach(cells, function (c, i) {
+                            if (helper.areSameCells(cell, c) && cell.value === oVal) {
+                                index = i;
+                                return false;
+                            }
+                        });
+                        exTable.modifications[cell.rowIndex].splice(index, 1);
+                    }
+                    internal.removeChange = removeChange;
                 })(internal || (internal = {}));
                 var helper;
                 (function (helper) {
@@ -17836,6 +17931,19 @@ var nts;
                         return values;
                     }
                     helper.valuesArray = valuesArray;
+                    function stringValue(val) {
+                        return _.isObject(val) ? JSON.stringify(val) : val;
+                    }
+                    helper.stringValue = stringValue;
+                    function getCellData(data) {
+                        try {
+                            return JSON.parse(data);
+                        }
+                        catch (e) {
+                            return data;
+                        }
+                    }
+                    helper.getCellData = getCellData;
                 })(helper || (helper = {}));
                 var widget;
                 (function (widget) {
@@ -18173,9 +18281,6 @@ var nts;
                     NtsMonthDaysBindingHandler.getDaysInMonth = function (month) {
                         var daysInMonth = moment(month, "MM").daysInMonth();
                         if (daysInMonth !== NaN) {
-                            if (month === 2) {
-                                daysInMonth++;
-                            }
                             var days = [];
                             while (days.length < daysInMonth) {
                                 days.push({ text: days.length + 1, value: days.length + 1 });
@@ -18188,6 +18293,76 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
             })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var accordion;
+                (function (accordion) {
+                    $.widget("ui.accordion", $.ui.accordion, {
+                        _create: function () {
+                            this["tabindex"] = this.element.attr("tabindex") ? this.element.attr("tabindex") : 0;
+                            this.element.removeAttr("tabindex");
+                            return this._super();
+                        },
+                        _refresh: function () {
+                            this._super();
+                            if (!this.active.length) {
+                                this.headers.eq(0).attr("tabIndex", this.tabindex);
+                            }
+                            else {
+                                this.active.attr({
+                                    tabIndex: this.tabindex
+                                });
+                            }
+                        },
+                        _toggle: function (data) {
+                            this._super(data);
+                            var toShow = data.newPanel;
+                            toShow.prev().attr({ tabIndex: this.tabindex });
+                        },
+                        _keydown: function (event) {
+                            if (event.altKey || event.ctrlKey) {
+                                return;
+                            }
+                            var keyCode = $.ui.keyCode, length = this.headers.length, currentIndex = this.headers.index(event.target), toFocus = false;
+                            switch (event.keyCode) {
+                                case keyCode.RIGHT:
+                                case keyCode.DOWN:
+                                    toFocus = this.headers[(currentIndex + 1) % length];
+                                    break;
+                                case keyCode.LEFT:
+                                case keyCode.UP:
+                                    toFocus = this.headers[(currentIndex - 1 + length) % length];
+                                    break;
+                                case keyCode.SPACE:
+                                case keyCode.ENTER:
+                                    this._eventHandler(event);
+                                    break;
+                                case keyCode.HOME:
+                                    toFocus = this.headers[0];
+                                    break;
+                                case keyCode.END:
+                                    toFocus = this.headers[length - 1];
+                                    break;
+                            }
+                            if (toFocus) {
+                                $(event.target).attr("tabIndex", -1);
+                                $(toFocus).attr("tabIndex", this.tabindex);
+                                $(toFocus).trigger("focus");
+                                event.preventDefault();
+                            }
+                        }
+                    });
+                })(accordion || (accordion = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -18542,74 +18717,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var accordion;
-                (function (accordion) {
-                    $.widget("ui.accordion", $.ui.accordion, {
-                        _create: function () {
-                            this["tabindex"] = this.element.attr("tabindex") ? this.element.attr("tabindex") : 0;
-                            this.element.removeAttr("tabindex");
-                            return this._super();
-                        },
-                        _refresh: function () {
-                            this._super();
-                            if (!this.active.length) {
-                                this.headers.eq(0).attr("tabIndex", this.tabindex);
-                            }
-                            else {
-                                this.active.attr({
-                                    tabIndex: this.tabindex
-                                });
-                            }
-                        },
-                        _toggle: function (data) {
-                            this._super(data);
-                            var toShow = data.newPanel;
-                            toShow.prev().attr({ tabIndex: this.tabindex });
-                        },
-                        _keydown: function (event) {
-                            if (event.altKey || event.ctrlKey) {
-                                return;
-                            }
-                            var keyCode = $.ui.keyCode, length = this.headers.length, currentIndex = this.headers.index(event.target), toFocus = false;
-                            switch (event.keyCode) {
-                                case keyCode.RIGHT:
-                                case keyCode.DOWN:
-                                    toFocus = this.headers[(currentIndex + 1) % length];
-                                    break;
-                                case keyCode.LEFT:
-                                case keyCode.UP:
-                                    toFocus = this.headers[(currentIndex - 1 + length) % length];
-                                    break;
-                                case keyCode.SPACE:
-                                case keyCode.ENTER:
-                                    this._eventHandler(event);
-                                    break;
-                                case keyCode.HOME:
-                                    toFocus = this.headers[0];
-                                    break;
-                                case keyCode.END:
-                                    toFocus = this.headers[length - 1];
-                                    break;
-                            }
-                            if (toFocus) {
-                                $(event.target).attr("tabIndex", -1);
-                                $(toFocus).attr("tabIndex", this.tabindex);
-                                $(toFocus).trigger("focus");
-                                event.preventDefault();
-                            }
-                        }
-                    });
-                })(accordion || (accordion = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

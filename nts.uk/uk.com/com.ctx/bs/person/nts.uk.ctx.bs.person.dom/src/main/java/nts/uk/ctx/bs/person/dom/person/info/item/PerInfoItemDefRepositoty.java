@@ -15,7 +15,7 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 
-	void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
+	void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd,  String ctgCode);
 
 	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
 
@@ -23,12 +23,11 @@ public interface PerInfoItemDefRepositoty {
 
 	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName);
 
-	void addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId);
+	List<String> addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId);
 
 	List<PerInfoItemDefOrder> getPerInfoItemDefOrdersByCtgId(String perInfoCtgId);
 	
 	int getItemDispOrderBy(String perInfoCtgId, String perInfoItemDefId);
 	
 	List<String> getRequiredIds(String contractCd, String companyId);
-
 }

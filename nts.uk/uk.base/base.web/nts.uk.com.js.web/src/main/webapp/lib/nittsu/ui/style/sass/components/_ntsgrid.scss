@@ -14,7 +14,9 @@
 	background-color: #CCC;
 	color: gray;
 }
-
+.ui-iggrid .ui-iggrid-tablebody td{
+	height: 21px;
+}
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc, 
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,

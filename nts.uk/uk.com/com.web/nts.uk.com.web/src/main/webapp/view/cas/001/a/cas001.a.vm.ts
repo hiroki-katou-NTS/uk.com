@@ -23,10 +23,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
         currentCategoryId: KnockoutObservable<string> = ko.observable('');
         allowPersonRef: KnockoutObservable<number> = ko.observable(1);
         allowOtherRef: KnockoutObservable<number> = ko.observable(1);
-
-
-
-
+        RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
+        
         constructor() {
             let self = this;
             self.currentRoleId.subscribe(function(newRoleId) {
@@ -44,12 +42,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         newPersonRole.setRoleAuth(result);
 
                         self.currentRole(newPersonRole);
-                        self.currentRole().RoleCategoryList.valueHasMutated();
-                        if (self.currentRole().RoleCategoryList().length > 0) {
+                        self.RoleCategoryList.valueHasMutated();
+                        if (self.RoleCategoryList().length > 0) {
 
                             self.currentCategoryId("");
 
-                            self.currentCategoryId(self.currentRole().RoleCategoryList()[0].categoryId);
+                            self.currentCategoryId(self.RoleCategoryList()[0].categoryId);
 
                         }
                         else {
@@ -67,7 +65,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     return;
                 }
 
-                let newCategory = _.find(self.currentRole().RoleCategoryList(), function(roleCategory) {
+                let newCategory = _.find(self.RoleCategoryList(), function(roleCategory) {
 
                     return roleCategory.categoryId === categoryId;
 
@@ -102,10 +100,21 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             self.allowOtherRef.subscribe(function(newValue) {
 
+                if (newValue == 0) {
+                    $("#item_role_table_body").ntsGrid("disableNtsControl", "otherAuth", "SwitchButtons");
+                } else {
+                    $("#item_role_table_body").ntsGrid("enableNtsControl", "otherAuth", "SwitchButtons");
+                }
 
             });
 
             self.allowPersonRef.subscribe(function(newValue) {
+
+                if (newValue == 0) {
+                    $("#item_role_table_body").ntsGrid("disableNtsControl", "selfAuth", "SwitchButtons");
+                } else {
+                    $("#item_role_table_body").ntsGrid("enableNtsControl", "selfAuth", "SwitchButtons");
+                }
 
             });
         }
@@ -177,9 +186,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 showHeader: true,
 
-                width: '800px',
+                width: '830px',
 
-                height: '261px',
+                height: '315px',
 
                 dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
 
@@ -213,20 +222,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     { headerText: '', key: 'requiredAtr', dataType: 'string', width: '34px', hidden: true },
                     { headerText: '', key: 'personItemDefId', dataType: 'string', width: '34px', hidden: true },
                     { headerText: getText('CAS001_47'), key: 'itemName', dataType: 'string', width: '255px' },
-                    { headerText: getText('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons1' },
-                    { headerText: getText('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons2' },
+                    { headerText: getText('CAS001_48'), key: 'otherAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
+                    { headerText: getText('CAS001_52'), key: 'selfAuth', dataType: 'string', width: '232px', ntsControl: 'SwitchButtons' },
                 ],
                 ntsControls: [
                     {
-                        name: 'SwitchButtons1', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
-                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
-                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
-                    },
-                    {
-                        name: 'SwitchButtons2', options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') }, { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
-                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
-                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
-
+                        name: 'SwitchButtons', 
+                        options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') },
+                                  { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+                                   { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
+                        optionsValue: 'value', 
+                        optionsText: 'text', controlType: 'SwitchButtons', enable: true
                     }
                 ],
 
@@ -264,7 +270,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     personRole.setRoleAuth(result);
 
-                    if (self.currentRole().RoleCategoryList().length > 0) {
+                    if (self.RoleCategoryList().length > 0) {
 
                         let selectedId = self.currentCategoryId();
 
@@ -422,7 +428,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         allowDocRef: KnockoutObservable<number>;
         allowAvatarUpload: KnockoutObservable<number>;
         allowAvatarRef: KnockoutObservable<number>;
-        RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
+        // RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
         currentCategory: KnockoutObservable<PersonRoleCategory> = ko.observable(null);
         constructor(param: IPersonRole) {
             let self = this;
@@ -452,16 +458,16 @@ module nts.uk.com.view.cas001.a.viewmodel {
         loadRoleCategoriesList(RoleId): JQueryPromise<any> {
             var self = this,
                 dfd = $.Deferred();
-
+            let screenModel = __viewContext['screenModel'];
             block.invisible();
 
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
 
-                self.RoleCategoryList.removeAll();
+                screenModel.RoleCategoryList.removeAll();
 
                 _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
 
-                    self.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
+                    screenModel.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
 
                 });
 

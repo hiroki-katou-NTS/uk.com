@@ -39,7 +39,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
         creatCategory() {
             let self = this,
                 role: IPersonRole = ko.toJS(self.currentRole);
-                self.update(self.categoryList(), role.roleId);
+            self.update(self.categoryList(), role.roleId);
 
         }
 

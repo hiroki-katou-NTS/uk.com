@@ -2,6 +2,7 @@ module nts.uk.pr.view.ccg007.d {
     export module viewmodel {
         import SystemConfigDto = service.SystemConfigDto;
         import ContractDto = service.ContractDto;
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             employeeCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -20,33 +21,48 @@ module nts.uk.pr.view.ccg007.d {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 //get system config
+                blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(showContractData: any) {
-                        if (showContractData.showContract) {
-                            self.openContractAuthDialog();
+                        if (showContractData) {
+                            if (showContractData.showContract) {
+                                self.openContractAuthDialog();
+                            }
+                            else {
+                                self.getEmployeeLoginSetting(data.contractCode);
+                            }
+                            dfd.resolve();
                         }
                         else {
-                            self.getEmployeeLoginSetting(data.contractCode);
+                            //TODO システムエラー画面へ遷移する
                         }
-                        dfd.resolve();
+                        blockUI.clear();
                     }).fail(function() {
-                        alert();
-                        //TODO システムエラー画面へ遷移する    
+                        dfd.resolve();
+                        blockUI.clear();
                     });
                 });
                 dfd.resolve();
                 return dfd.promise();
             }
 
-            //TODO when invalid contract 
+            //when invalid contract 
             private openContractAuthDialog() {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ccg/007/a/index.xhtml", {
-                    height: 320,
-                    width: 500,
+                    height: 300,
+                    width: 400,
                     title: nts.uk.resource.getText("CCG007_9"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {
+                    var contractCode = nts.uk.ui.windows.getShared('contractCode');
+                    service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
+                        //get list company from server 
+                        self.companyList(data);
+                        if (data.length > 0) {
+                            self.selectedCompanyCode(self.companyList()[0].companyCode);
+                        }
+                    });
                 });
             }
 
@@ -61,9 +77,8 @@ module nts.uk.pr.view.ccg007.d {
                         service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
                             //get list company from server 
                             self.companyList(data);
-//                            self.companyList([new CompanyItemModel("1234", "会社1"), new CompanyItemModel("0001", "会社2"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社3"), new CompanyItemModel("0002", "会社9"), new CompanyItemModel("0002", "会社6"), new CompanyItemModel("0002", "会社8")]);
                             if (data.length > 0) {
-                                self.selectedCompanyCode(self.companyList()[0].code);
+                                self.selectedCompanyCode(self.companyList()[0].companyCode);
                             }
                             //get local storage info and set here
                             nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo) {
@@ -81,30 +96,30 @@ module nts.uk.pr.view.ccg007.d {
 
             private submitLogin() {
                 var self = this;
+                blockUI.invisible();
                 service.submitLogin({ companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()) }).done(function() {
                     nts.uk.characteristics.remove("form3LoginInfo");
                     if (self.isSaveLoginInfo()) {
-                        nts.uk.characteristics.save("form3LoginInfo", { companyCode:_.escape( self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
-                            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                        nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                         });
                     } else {
                         //TODO confirm kiban team promise for remove
                         setTimeout(function() {
-                            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                         }, 1000);
                     }
+                    blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    blockUI.clear();
                 });
             }
         }
         export class CompanyItemModel {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
+            companyId: string;
+            companyCode: string;
+            companyName: string;
         }
     }
 }

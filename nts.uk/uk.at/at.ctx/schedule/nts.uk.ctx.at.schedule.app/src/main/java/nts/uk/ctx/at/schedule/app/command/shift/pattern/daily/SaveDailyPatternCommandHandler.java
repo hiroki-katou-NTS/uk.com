@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.daily.dto.DailyPatternValDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternRepository;
@@ -57,7 +58,12 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 			// validate eap and find messegeId.
 			throw new BusinessException("Msg_3");
 		}
-
+		// Check patternName Null.
+//		if (StringUtil.isNullOrEmpty(command.getPatternName(), true)) {
+//			// validate eap and find messegeId.
+//			throw new BusinessException("");
+//		}
+		
 		// Check validate dailypattern all not setting
 		List<DailyPatternValDto> checkNotSetting = command.getDailyPatternVals().stream().filter(Objects::nonNull)
 				.collect(Collectors.toList());
@@ -71,15 +77,27 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 			public void accept(DailyPatternValDto t) {
 				if(t != null){
 					// check pair work days
-					basicScheduleService.checkPairWorkTypeWorkTime(t.getWorkTypeSetCd(), t.getWorkingHoursCd());
-					// check repeat day 
-					if(t.getDays() == null){
+					if(!StringUtil.isNullOrEmpty(t.getWorkTypeSetCd(), true)  && !StringUtil.isNullOrEmpty(t.getWorkingHoursCd(), true)){
+						basicScheduleService.checkPairWorkTypeWorkTime(t.getWorkTypeSetCd(), t.getWorkingHoursCd());
+					}
+				 
+					// check validate eap and find msg25
+					if(!StringUtil.isNullOrEmpty(t.getWorkTypeSetCd(), true) && !StringUtil.isNullOrEmpty(t.getWorkingHoursCd(), true) && t.getDays() == null ){
 						throw new BusinessException("Msg_25");
 					}
 					
+					// check validate eap and find msg25
+					if(StringUtil.isNullOrEmpty(t.getWorkTypeSetCd(), true) && StringUtil.isNullOrEmpty(t.getWorkingHoursCd(), true) && t.getDays() == null ){
+						throw new BusinessException("Msg_25");
+					}
 					
 					// check validate eap and find msg22
-					if(t.getWorkTypeSetCd() == null && t.getDays() !=null ){
+					if(StringUtil.isNullOrEmpty(t.getWorkTypeSetCd(), true) && !StringUtil.isNullOrEmpty(t.getWorkingHoursCd(), true)){
+						throw new BusinessException("Msg_23");
+					}
+					
+					// check validate eap and find msg22
+					if(StringUtil.isNullOrEmpty(t.getWorkTypeSetCd(), true) && StringUtil.isNullOrEmpty(t.getWorkingHoursCd(), true) && t.getDays() != null ){
 						throw new BusinessException("Msg_22");
 					}
 				}

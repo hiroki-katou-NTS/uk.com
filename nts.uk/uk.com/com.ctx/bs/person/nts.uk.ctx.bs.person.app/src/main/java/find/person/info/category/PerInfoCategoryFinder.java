@@ -58,7 +58,20 @@ public class PerInfoCategoryFinder {
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
 		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
 	};
+	
+	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
+		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty
+				.getAllPerInfoCategory(PersonInfoCategory.ROOT_COMPANY_ID, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+				.stream().map(p -> {
+					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
+							p.getCategoryType().value);
+				}).collect(Collectors.toList());
 
+		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
+		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
+	};
+	
+	
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(String perInfoCtgId) {
 		List<String> itemNameList = pernfoItemDefRep.getPerInfoItemsName(perInfoCtgId,
 				PersonInfoItemDefinition.ROOT_CONTRACT_CODE);

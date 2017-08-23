@@ -7,6 +7,9 @@ package nts.uk.ctx.sys.gateway.entity.login;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+/**
+ * The Class SgwstEmployeeLoginSet_.
+ */
 @StaticMetamodel(SgwstEmployeeLoginSet.class)
 public class SgwstEmployeeLoginSet_ {
 	

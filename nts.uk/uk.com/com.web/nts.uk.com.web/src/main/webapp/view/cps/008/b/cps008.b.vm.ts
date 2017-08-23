@@ -41,11 +41,28 @@ module cps008.b.vm {
         pushData() {
             let self = this,
                 layout: ILayout = ko.toJS(self.layout);
-            debugger;
+
+            // check item tren man hinh
+            if (layout.itemsClassification.length == 0) {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getText('Msg_203'));
+                return;
+            }
+
+            let listItemIds = _(layout.itemsClassification).map(x => x.listItemDf).flatten().filter(x => !!x).map((m: IItemDefinition) => m.id).orderBy(m => m).value();
+
+
+            // エラーメッセージ（#Msg_289#,２つ以上配置されている項目名）を表示する
+            for (let i = 0; i < listItemIds.length - 2; i++) {
+                if (listItemIds[i] === listItemIds[i + 1]) {
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getText('Msg_289'));
+                    return;
+                }
+            }
+
             setShared("CPS008B_VALUE", layout.itemsClassification);
+
             close();
 
-            //service.saveData(command);
         }
 
         close() {
