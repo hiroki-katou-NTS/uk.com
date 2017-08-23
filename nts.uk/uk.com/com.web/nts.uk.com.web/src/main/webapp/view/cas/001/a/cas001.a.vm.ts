@@ -24,8 +24,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         allowPersonRef: KnockoutObservable<number> = ko.observable(1);
         allowOtherRef: KnockoutObservable<number> = ko.observable(1);
         RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
-
-
+        
         constructor() {
             let self = this;
             self.currentRoleId.subscribe(function(newRoleId) {
