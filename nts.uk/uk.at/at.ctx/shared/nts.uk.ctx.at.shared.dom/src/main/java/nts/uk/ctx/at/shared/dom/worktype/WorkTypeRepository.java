@@ -65,6 +65,4 @@ public interface WorkTypeRepository {
 	 * @return WorkType
 	 */
 	Optional<WorkType> findByPK(String companyId, String workTypeCd);
-	
-	void add(WorkType worktype);
 }

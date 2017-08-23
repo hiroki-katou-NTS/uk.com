@@ -15,6 +15,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -65,7 +66,7 @@ public class RegisterBasicScheduleCommandHandler
 				continue;
 			}
 
-			if (workType.get().getDisplayAtr() != DisplayAtr.DisplayAtr_Display) {
+			if (workType.get().getDeprecate() != DeprecateClassification.Deprecated) {
 				// set error to list
 				errList.add("Msg_468");
 				continue;

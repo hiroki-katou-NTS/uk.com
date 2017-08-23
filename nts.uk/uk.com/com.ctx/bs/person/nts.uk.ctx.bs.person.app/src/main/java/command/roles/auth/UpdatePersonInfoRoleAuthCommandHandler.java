@@ -28,7 +28,7 @@ public class UpdatePersonInfoRoleAuthCommandHandler extends CommandHandler<Updat
 		}
 		String companyId = AppContexts.user().companyId();
 		Optional<PersonInfoRoleAuth> p_RoleDestination = this.personRoleAuthRepository
-				.getDetailPersonRoleAuth(update.getRoleIdDestination(), AppContexts.user().companyId());
+				.getDetailPersonRoleAuth(update.getRoleIdDestination(), companyId);
 		if (p_RoleDestination.isPresent()) {
 			update.getRoleIds().forEach(c -> {
 				Optional<PersonInfoRoleAuth> p_RoleSource = this.personRoleAuthRepository.getDetailPersonRoleAuth(c,

@@ -63,4 +63,18 @@ public class PersonInfoRoleAuth extends AggregateRoot{
 				EnumAdaptor.valueOf(allowAvatarRef, PersonInfoPermissionType.class));
 	}
 	
+	public static PersonInfoRoleAuth createFromDefaultValue(String roleId, String companyId){
+		if(roleId.isEmpty()){
+			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+		}
+		return new PersonInfoRoleAuth(roleId, companyId,
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class), 
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class));
+	}
+	
+	
 }
