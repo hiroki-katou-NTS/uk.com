@@ -8,14 +8,14 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
 
 /**
  * The Class EmployeeCodeSettingAdapterImpl.
  */
 @Stateless
-public class EmployeeCodeSettingAdapterImpl implements EmployeeCodeSettingAdapter {
+public class SysEmployeeCodeSettingAdapterImpl implements SysEmployeeCodeSettingAdapter {
 
 	/*
 	 * (non-Javadoc)
@@ -26,7 +26,7 @@ public class EmployeeCodeSettingAdapterImpl implements EmployeeCodeSettingAdapte
 	@Override
 	public Optional<EmployeeCodeSettingDto> getbyCompanyId(String companyId) {
 		// mock data
-		if (companyId.equals("0-1234")) {
+		if (companyId.equals("000000000000-1234")) {
 			EmployeeCodeSettingDto fake = new EmployeeCodeSettingDto("000000000000-1234", 12, 1);
 			return Optional.of(fake);
 		} else {
