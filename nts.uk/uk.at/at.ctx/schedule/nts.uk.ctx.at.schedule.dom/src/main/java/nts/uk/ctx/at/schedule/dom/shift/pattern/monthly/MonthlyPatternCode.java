@@ -4,18 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.monthly;
 
+import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
-import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
  * The Class MonthlyPatternCode.
  */
 //月間パターンコード
-@StringCharType(CharType.NUMERIC)
+@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(3)
-public class MonthlyPatternCode extends CodePrimitiveValue<MonthlyPatternCode>{
+public class MonthlyPatternCode extends StringPrimitiveValue<MonthlyPatternCode>{
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

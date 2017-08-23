@@ -20,7 +20,7 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" tabindex="1" data-bind="click: execute, enable: isEnableExecute">#{i18n.getText('KSU006_1')}</button>
+				<button class="proceed" tabindex="1" data-bind="click: execute, enable: isModeExecute">#{i18n.getText('KSU006_1')}</button>
 				<button tabindex="2" data-bind="click: openDialogLog">#{i18n.getText('KSU006_2')}</button>
 			</div>
 
@@ -54,16 +54,17 @@
 					
 					<!--BEGIN A3_1 ~ A3_4 -->
 					<tr>
-						<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_6')}</div></td>
+						<td><div data-bind="ntsFormLabel: {required: true}, enable: isModeExecute">#{i18n.getText('KSU006_6')}</div></td>
 						<td>
 							<div id="file-upload" tabindex="5" data-bind="ntsFileUpload:{
 								filename: fileName,
 								accept: extensionFileList,
+								enable: isModeExecute,
 								text: '#{i18n.getText('KSU006_7')}'}" >
 							</div>
 						</td>
 						<td>
-							<label id="label-char-code">#{i18n.getText('KSU006_8')}</label>
+							<label id="label-char-code" data-bind="enable: isModeExecute">#{i18n.getText('KSU006_8')}</label>
 							<div tabindex="6" data-bind="ntsComboBox: {
 									options: encodingList,
 									optionsValue: 'code',
@@ -71,6 +72,7 @@
 									optionsText: 'name',
 									editable: false,
 									enable: true,
+									enable: isModeExecute,
 									columns: [
 										{ prop: 'name', length: 5}]}" style="margin-left: 30px;">
 							</div>
@@ -91,10 +93,10 @@
 											width: '60px',
 											textalign: 'right'
 										},
-										enable: true}" />
-							<label>#{i18n.getText('KSU006_10')}</label></div>
+										enable: isModeExecute}" />
+							<label data-bind="enable: isModeExecute">#{i18n.getText('KSU006_10')}</label></div>
 							<div tabindex="8" data-bind="ntsCheckBox: { checked: isOverride,
-											enable: true,
+											enable: isModeExecute,
 											text: '#{i18n.getText('KSU006_122')}' }" style="margin-left: 30px;"></div>
 						</td>
 						<td></td>
@@ -104,8 +106,11 @@
 					<tr>
 						<td></td>
 						<td>
-							<button tabindex="9" class="large caret-bottom" data-bind="click: showDataPreview">#{i18n.getText('KSU006_11')}</button>
-							<label style="margin-left: 62px;" data-bind="text: totalRecordDisplay()"></label>
+							<button tabindex="9" class="large caret-bottom" 
+								data-bind="click: showDataPreview, enable: isModeExecute">
+								#{i18n.getText('KSU006_11')}</button>
+							<label style="margin-left: 62px;" 
+								data-bind="text: totalRecordDisplay(), enable: isModeExecute"></label>
 						</td>
 					</tr><!--END A3_8 ~ A3_9 -->
 				</table>

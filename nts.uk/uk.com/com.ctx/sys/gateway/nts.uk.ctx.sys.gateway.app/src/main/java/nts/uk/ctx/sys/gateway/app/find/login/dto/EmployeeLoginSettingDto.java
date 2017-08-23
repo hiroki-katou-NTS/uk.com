@@ -4,13 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.find.login.dto;
 
+import lombok.Data;
+
 /**
  * The Class EmployeeLoginSettingDto.
  */
+@Data
 public class EmployeeLoginSettingDto {
 
 	/** The goto form 1. */
-	public boolean gotoForm1;
+	private boolean gotoForm1;
 
 	/**
 	 * @param gotoForm1

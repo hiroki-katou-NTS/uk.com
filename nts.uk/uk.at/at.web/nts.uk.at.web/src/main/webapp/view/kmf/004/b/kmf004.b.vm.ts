@@ -17,7 +17,7 @@ module nts.uk.at.view.kmf004 {
                 new TabModel({ id: 'B', name: getText('Com_Company'), active: true }),
                 new TabModel({ id: 'C', name: getText('Com_Person') })
             ]);
-            
+
             //radio
 
             constructor() {
@@ -26,7 +26,7 @@ module nts.uk.at.view.kmf004 {
 
                 self.tabs().map((t) => {
                     // set title for tab
-                    
+
                     if (t.active() == true) {
                         self.title(t.name);
                         self.changeTab(t);
@@ -96,30 +96,64 @@ module nts.uk.at.view.kmf004 {
         export class ScreenModel {
             itemList: KnockoutObservableArray<any>;
             selectedId: KnockoutObservable<number>;
+            value: KnockoutObservable<string>;
+            enable: KnockoutObservable<boolean>;
+            items: KnockoutObservableArray<Item>;
             constructor() {
                 let self = this;
                 self.itemList = ko.observableArray([
-                new BoxModel(0, nts.uk.resource.getText("KMF004_75")),
-                new BoxModel(1, nts.uk.resource.getText("KMF004_77")),
-                new BoxModel(2, nts.uk.resource.getText("KMF004_78"))
-            ]);
-                
+                    new BoxModel(0, nts.uk.resource.getText("KMF004_75")),
+                    new BoxModel(1, nts.uk.resource.getText("KMF004_77")),
+                    new BoxModel(2, nts.uk.resource.getText("KMF004_78"))
+                ]);
+
+                self.value = ko.observable('');
+                self.enable = ko.observable(true);
                 self.selectedId = ko.observable(0);
-                
+                self.items = ko.observableArray([]);
                 self.start();
             }
 
             start() {
+                var self = this;
+                var dfd = $.Deferred();
+            
+            for(var i=0; i< 20; i++) {
+                var item : IItem = {
+                    year: i,
+                    month: i,
+                };
+                self.items.push(new Item(item));    
+            }
+            
+            dfd.resolve();
+
+            return dfd.promise();
             }
         }
-            class BoxModel {
+        class BoxModel {
             id: number;
             name: string;
             constructor(id, name) {
                 var self = this;
                 self.id = id;
                 self.name = name;
+            }
         }
+        export class Item {
+        year: KnockoutObservable<number>;
+        month: KnockoutObservable<number>;
+        
+        constructor(param: IItem) {
+            var self = this;
+            self.year = ko.observable(param.year);
+            self.month = ko.observable(param.month);
+    
+        }
+    }
+        export interface IItem {
+        year: number;
+        month: number;
     }
     }
 }

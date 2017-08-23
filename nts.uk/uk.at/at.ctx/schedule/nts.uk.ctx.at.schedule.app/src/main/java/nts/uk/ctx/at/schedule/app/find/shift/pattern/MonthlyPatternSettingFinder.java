@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
@@ -58,8 +59,14 @@ public class MonthlyPatternSettingFinder {
 		if(monthlyPatternSetting.isPresent()){
 			Optional<MonthlyPattern> monthlyPattern = this.monthlyPatternRepository
 					.findById(companyId, monthlyPatternSetting.get().getMonthlyPatternCode().v());
-			if(monthlyPattern.isPresent()){
+
+			// check setting begin
+			if (!StringUtil.isNullOrEmpty(monthlyPatternSetting.get().getMonthlyPatternCode().v(),
+					true)) {
 				dto.setSetting(true);
+			}
+			// setting info exist
+			if(monthlyPattern.isPresent()){
 				MonthlyPatternDto info = new MonthlyPatternDto();
 				monthlyPattern.get().saveToMemento(info);
 				dto.setInfo(info);

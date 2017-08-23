@@ -5,7 +5,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
 
-
 @Getter
 public class PersonInfoCategory extends AggregateRoot {
 	private String personInfoCategoryId;
@@ -17,9 +16,9 @@ public class PersonInfoCategory extends AggregateRoot {
 	private IsAbolition isAbolition;
 	private CategoryType categoryType;
 	private IsFixed isFixed;
-	
+
 	public final static String ROOT_COMPANY_ID = "000000000000-0000";
-	
+
 	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType) {
 		super();
 		this.personInfoCategoryId = IdentifierUtil.randomUniqueId();
@@ -32,7 +31,7 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = IsFixed.NOT_FIXED;
 	}
-	
+
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
 			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
 			int isFixed) {
@@ -46,14 +45,28 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 	}
-	
-	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName, int categoryType) {
+
+	private PersonInfoCategory(String personInfoCategoryId, String companyId, int categoryType) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.companyId = companyId;
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+	}
+
+	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName,
+			int categoryType) {
 		return new PersonInfoCategory(companyId, categoryCode, categoryName, categoryType);
 	}
 
 	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
 			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
 			int isAbolition, int categoryType, int isFixed) {
-		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName, personEmployeeType, isAbolition, categoryType, isFixed);
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
+				personEmployeeType, isAbolition, categoryType, isFixed);
+	}
+
+	public static PersonInfoCategory createFromJavaTypeUpdate(String personInfoCategoryId, String companyId,
+			int categoryType) {
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryType);
 	}
 }

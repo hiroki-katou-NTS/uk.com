@@ -29,6 +29,7 @@ public interface WorkTypeRepository {
 	 * @return the list
 	 */
 	List<WorkType> findByCompanyId(String companyId);
+	
 
 	/**
 	 * Find not deprecated.

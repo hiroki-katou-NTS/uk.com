@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday;
 
 import java.util.List;
 
-import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTargetClassification;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 
 /**
  * The Interface EstimateNumberOfDayGetMemento.

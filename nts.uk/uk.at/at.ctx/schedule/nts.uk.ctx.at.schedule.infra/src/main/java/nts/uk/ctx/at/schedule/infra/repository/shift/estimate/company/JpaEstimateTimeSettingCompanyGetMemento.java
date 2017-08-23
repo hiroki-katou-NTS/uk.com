@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTime;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTimeSetting;
@@ -53,16 +53,28 @@ public class JpaEstimateTimeSettingCompanyGetMemento implements EstimateTimeSett
 	@Override
 	public List<YearlyEstimateTimeSetting> getYearlyEstimateTimeSetting() {
 		List<YearlyEstimateTimeSetting> yearlyEstimateTimeSetting = new ArrayList<>();
-		yearlyEstimateTimeSetting.add(this.getYearlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_1ST, this.estTimeCompany.getYCondition1stTime()));
-		yearlyEstimateTimeSetting.add(this.getYearlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_2ND, this.estTimeCompany.getYCondition2ndTime()));
-		yearlyEstimateTimeSetting.add(this.getYearlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_3RD, this.estTimeCompany.getYCondition3rdTime()));
-		yearlyEstimateTimeSetting.add(this.getYearlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_4TH, this.estTimeCompany.getYCondition4thTime()));
-		yearlyEstimateTimeSetting.add(this.getYearlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_5TH, this.estTimeCompany.getYCondition5thTime()));
+		
+		
+		// check target classification yearly
+		if (this.estTimeCompany.getKscmtEstTimeComSetPK()
+				.getTargetCls() == EstimateTargetClassification.YEARLY.value) {
+			yearlyEstimateTimeSetting
+					.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_1ST,
+							new YearlyEstimateTime(this.estTimeCompany.getEstCondition1stTime())));
+			yearlyEstimateTimeSetting
+			.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_2ND,
+					new YearlyEstimateTime(this.estTimeCompany.getEstCondition2ndTime())));
+			yearlyEstimateTimeSetting
+			.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_3RD,
+					new YearlyEstimateTime(this.estTimeCompany.getEstCondition3rdTime())));
+			yearlyEstimateTimeSetting
+			.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_4TH,
+					new YearlyEstimateTime(this.estTimeCompany.getEstCondition4thTime())));
+			yearlyEstimateTimeSetting
+			.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_5TH,
+					new YearlyEstimateTime(this.estTimeCompany.getEstCondition5thTime())));
+		}
+		
 		return yearlyEstimateTimeSetting;
 	}
 
@@ -74,47 +86,29 @@ public class JpaEstimateTimeSettingCompanyGetMemento implements EstimateTimeSett
 	@Override
 	public List<MonthlyEstimateTimeSetting> getMonthlyEstimateTimeSetting() {
 		List<MonthlyEstimateTimeSetting> monthlyEstimateTimeSetting = new ArrayList<>();
-		monthlyEstimateTimeSetting.add(this.getMonthlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_1ST, this.estTimeCompany.getMCondition1stTime()));
-		monthlyEstimateTimeSetting.add(this.getMonthlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_2ND, this.estTimeCompany.getMCondition2ndTime()));
-		monthlyEstimateTimeSetting.add(this.getMonthlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_3RD, this.estTimeCompany.getMCondition3rdTime()));
-		monthlyEstimateTimeSetting.add(this.getMonthlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_4TH, this.estTimeCompany.getMCondition4thTime()));
-		monthlyEstimateTimeSetting.add(this.getMonthlyEstimateTimeSetting(
-				EstimatedCondition.CONDITION_5TH, this.estTimeCompany.getMCondition5thTime()));
+		
+		// check target classification not yearly
+		if (this.estTimeCompany.getKscmtEstTimeComSetPK()
+				.getTargetCls() != EstimateTargetClassification.YEARLY.value) {
+			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition1stTime()),
+					EstimatedCondition.CONDITION_1ST));
+			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition2ndTime()),
+					EstimatedCondition.CONDITION_2ND));
+			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition3rdTime()),
+					EstimatedCondition.CONDITION_3RD));
+			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition4thTime()),
+					EstimatedCondition.CONDITION_4TH));
+			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition5thTime()),
+					EstimatedCondition.CONDITION_5TH));
+		}
+		
 		return monthlyEstimateTimeSetting;
 	}
 	
-	/**
-	 * Gets the yearly estimate time setting.
-	 *
-	 * @param estimatedCondition the estimated condition
-	 * @param time the time
-	 * @return the yearly estimate time setting
-	 */
-	public YearlyEstimateTimeSetting getYearlyEstimateTimeSetting(
-			EstimatedCondition estimatedCondition, int time) {
-		YearlyEstimateTimeSetting yearly = new YearlyEstimateTimeSetting();
-		yearly.setTime(new YearlyEstimateTime(time));
-		yearly.setEstimatedCondition(estimatedCondition);
-		return yearly;
-	}
-	
-	/**
-	 * Gets the monthly estimate time setting.
-	 *
-	 * @param estimatedCondition the estimated condition
-	 * @param time the time
-	 * @return the monthly estimate time setting
-	 */
-	public MonthlyEstimateTimeSetting getMonthlyEstimateTimeSetting(
-			EstimatedCondition estimatedCondition, int time) {
-		MonthlyEstimateTimeSetting monthly = new MonthlyEstimateTimeSetting();
-		monthly.setTime(new MonthlyEstimateTime(time));
-		monthly.setEstimatedCondition(estimatedCondition);
-		return monthly;
-	}
 
 }

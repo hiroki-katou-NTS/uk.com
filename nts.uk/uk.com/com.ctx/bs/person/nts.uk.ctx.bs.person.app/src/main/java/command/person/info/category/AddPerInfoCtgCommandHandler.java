@@ -62,21 +62,21 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeForPeriod, null, null, 0,
 				null);
 		PersonInfoItemDefinition itemPeriod = MappingDtoToDomain.mappingFromDomaintoDtoForPeriod(addItemCommand);
-		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemPeriod, contractCd);
+		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemPeriod, contractCd, newCtgCode);
 		// mapping and Add with PersonInfoItemDefinition root is StartDate type
 		// default.
 		String newItemCodeStartDate = createNewCode(newItemCodeForPeriod, SPECIAL_ITEM_CODE);
 		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeStartDate,
 				newItemCodeForPeriod, null, 0, null);
 		PersonInfoItemDefinition itemStartDate = MappingDtoToDomain.mappingFromDomaintoDtoForStartDate(addItemCommand);
-		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemStartDate, contractCd);
+		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemStartDate, contractCd, newCtgCode);
 		// mapping and Add with PersonInfoItemDefinition root is EndDate type
 		// default.
 		String newItemCodeEndDate = createNewCode(newItemCodeStartDate, SPECIAL_ITEM_CODE);
 		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeEndDate,
 				newItemCodeForPeriod, null, 0, null);
 		PersonInfoItemDefinition itemEndDate = MappingDtoToDomain.mappingFromDomaintoDtoForEndtDate(addItemCommand);
-		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemEndDate, contractCd);
+		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemEndDate, contractCd, newCtgCode);
 		// add DateRangeItem root.
 		this.perInfoCtgRep.addDateRangeItemRoot(DateRangeItem.createFromJavaType(perInfoCtg.getPersonInfoCategoryId(),
 				itemStartDate.getPerInfoItemDefId(), itemEndDate.getPerInfoItemDefId(),

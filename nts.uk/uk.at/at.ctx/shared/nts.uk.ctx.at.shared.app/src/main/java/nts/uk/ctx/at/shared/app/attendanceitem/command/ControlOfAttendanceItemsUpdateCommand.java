@@ -15,19 +15,23 @@ public class ControlOfAttendanceItemsUpdateCommand extends CommandHandler<Contro
 	@Inject
 	private ControlOfAttendanceItemsRepository controlOfAttendanceItemsRepository;
 
-	@Override
-	protected void handle(CommandHandlerContext<ControlOfAttendanceItemsCommand> context) {
-
-		ControlOfAttendanceItemsCommand controlOfAttendanceItemsCommand = context.getCommand();
-		this.controlOfAttendanceItemsRepository
-				.updateControlOfAttendanceItem(this.toControlOfAttendanceItemsDomain(controlOfAttendanceItemsCommand));
-	}
 
 	private ControlOfAttendanceItems toControlOfAttendanceItemsDomain(
 			ControlOfAttendanceItemsCommand controlOfAttendanceItemsCommand) {
 		return ControlOfAttendanceItems.createFromJavaType(  new BigDecimal(controlOfAttendanceItemsCommand.attandanceTimeId) ,
 				controlOfAttendanceItemsCommand.inputUnitOfTimeItem,
 				controlOfAttendanceItemsCommand.headerBackgroundColorOfDailyPerformance,controlOfAttendanceItemsCommand.nameLineFeedPosition);
+	}
+	
+	
+	
+
+	@Override
+	protected void handle(CommandHandlerContext<ControlOfAttendanceItemsCommand> context) {
+
+		ControlOfAttendanceItemsCommand controlOfAttendanceItemsCommand = context.getCommand();
+		this.controlOfAttendanceItemsRepository
+				.updateControlOfAttendanceItem(this.toControlOfAttendanceItemsDomain(controlOfAttendanceItemsCommand));
 	}
 
 }

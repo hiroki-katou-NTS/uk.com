@@ -3,7 +3,7 @@ module cps007.b.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getCat': 'ctx/bs/person/info/category/findby/{0}',
+        'getCat': 'ctx/bs/person/info/category/find/companyby/{0}',
         'getItemDs': 'ctx/bs/person/info/ctgItem/findby/categoryId/{0}'
     };
 

@@ -32,9 +32,7 @@
 						<a tabindex="-1" href="">#{i18n.getText('KDW002_8')}</a>
 					</div>
 				</div>
-				<button tabindex="2" class="proceed">#{i18n.getText('KDW002_2')}</button>
-				<!-- 				data-bind="click: submitData" -->
-
+				<button tabindex="2" class="proceed" data-bind="click: submitData">#{i18n.getText('KDW002_2')}</button>
 
 			</div>
 			<div id="contents-area">
@@ -42,17 +40,16 @@
 					data-bind="ntsPanel:{ direction: 'right', visible: true}">
 
 					<div style="width: 300px"
-						data-bind="ntsSearchBox: {searchMode: 'filter',placeHolder:'',targetKey: 'code',mode:'igGrid', comId:'gridList', items: dataSource,selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
+						data-bind="ntsSearchBox: {searchMode: 'filter',placeHolder:'',targetKey: 'attendanceItemId',mode:'igGrid', comId:'gridList', items: attendanceItems,selected: aICurrentCode, selectedKey: 'attendanceItemId', childField: 'childs', fields: ['attendanceItemName', 'attendanceItemId']}" />
 					<label>勤 怠 項 目</label>
-
 					<table id="gridList"
 						data-bind="ntsGridList:{
 				width: 300,
 				height: 500,
-				options: dataSource,
-				value: singleSelectedCode,
-				columns: columns,
-				optionsValue: 'code',
+				options: attendanceItems,
+				value: aICurrentCode,
+				columns: attendanceItemColumn,
+				optionsValue: 'attendanceItemId',
 				multiple: false,
 				enable: true,										
 				showCheckBox: false}">
@@ -63,19 +60,19 @@
 				</div>
 				<div class="rightContent"></div>
 				<div class="component-area">
-					<label>#{i18n.getText('KDW002_3')} </label> <label class="mylabel">item
-						code </label> <label class="mylabel">#{i18n.getText('KDW002_4')}</label> <label
-						class="mylabel">item name </label>
+					<label>#{i18n.getText('KDW002_3')} </label> <label class="mylabel" data-bind="text: txtItemId"></label> <label class="mylabel">#{i18n.getText('KDW002_4')}</label> <label
+						class="mylabel" data-bind="text: txtItemName"></label>
 				</div>
+				<label  data-bind="value: linebreak "></label>
 				<div class="component-area">
 					<label>#{i18n.getText('KDW002_5')}</label>
 					<div class="headerColor"
-						data-bind="ntsColorPicker: {value: value, width: 50}" />
+						data-bind="ntsColorPicker: {value: headerColorValue, width: 50}" />
 				</div>
 				<div class="component-area">
 					<label>#{i18n.getText('KDW002_6')}</label> <select
 						class="unitRounding"
-						data-bind="options: unitRoundings, selectedOptions: selectedOption"></select>
+						data-bind="options: unitRoundings , optionsText: 'timeInputName', optionsValue: 'timeInputValue' , value: timeInputCurrentCode"></select>
 				</div>
 
 			</div>
