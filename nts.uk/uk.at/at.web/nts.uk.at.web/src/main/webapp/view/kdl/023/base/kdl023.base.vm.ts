@@ -162,6 +162,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         public forward(): void {
             let self = this;
+
+            // Do nothing if option dates is empty.
+            if (self.isOptionDatesEmpty()) {
+                return;
+            }
+
+            // Add 1 day to pattern start date.
             self.patternStartDate.add(1, 'days');
 
             // Reload calendar
@@ -176,6 +183,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         public backward(): void {
             let self = this;
+
+            // Do nothing if option dates is empty. 
+            if (self.isOptionDatesEmpty()) {
+                return;
+            }
+
+            // Subtract 1 day from pattern start date.
             self.patternStartDate.subtract(1, 'days');
 
             // Reload calendar
@@ -683,6 +697,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private isHolidaySettingChecked(): boolean {
             let self = this;
             return self.patternReflection.holidaySetting.useClassification();
+        }
+
+        /**
+         * Check option dates data
+         */
+        public isOptionDatesEmpty(): boolean {
+            let self = this;
+            return nts.uk.util.isNullOrEmpty(self.optionDates());
         }
 
         /**
