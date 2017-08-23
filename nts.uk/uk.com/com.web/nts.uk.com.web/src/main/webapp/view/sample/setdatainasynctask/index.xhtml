@@ -51,6 +51,19 @@ public class Test {
 		setter.updateData("processing", 2);
 	}
 }
+
+
+//////////////////////////////////////////
+//in command handler
+public class Test extends AsyncCommandHandler<Test2>{
+
+	@Override
+	protected void handle(CommandHandlerContext<Test2> context) {
+		// TODO Auto-generated method stub
+		context.asAsync().getDataSetter().setData("test", "1");
+	}
+
+}
 						]]>
 					</pre>
 
