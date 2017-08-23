@@ -6076,7 +6076,7 @@ var nts;
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
                                 var selected = $grid.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     data.value(_.map(selected, function (s) { return s.id; }));
                                 }
                                 else {
@@ -6085,7 +6085,7 @@ var nts;
                             }
                             else {
                                 var selected = $grid.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     data.value(selected.id);
                                 }
                                 else {
@@ -6433,7 +6433,7 @@ var nts;
                             var itemSelected;
                             if (container.igGridSelection('option', 'multipleSelection')) {
                                 var selected = container.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     itemSelected = _.map(selected, function (s) { return s.id; });
                                 }
                                 else {
@@ -6442,7 +6442,7 @@ var nts;
                             }
                             else {
                                 var selected = container.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     itemSelected = selected.id;
                                 }
                                 else {
@@ -7001,16 +7001,8 @@ var nts;
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
                                     : component.igTreeGridSelection('option', 'multipleSelection');
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
-                                var selectedValue = void 0;
-                                if (selectedKey !== null) {
-                                    selectedValue = isMulti ? _.map(result_1.selectItems, selectedKey) :
-                                        result_1.selectItems.length > 0 ? result_1.selectItems[0][selectedKey] : undefined;
-                                }
-                                else {
-                                    selectedValue = isMulti ? [result_1.selectItems] :
-                                        result_1.selectItems.length > 0 ? result_1.selectItems[0] : undefined;
-                                }
                                 if (targetMode === 'igGrid') {
+                                    component.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
                                         $container.data("filteredSrouce", result_1.options);
                                         component.attr("filtered", true);
@@ -7023,10 +7015,10 @@ var nts;
                                         });
                                         component.igGrid("option", "dataSource", source);
                                         component.igGrid("dataBind");
+                                        if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
+                                            component.trigger("selectionchanged");
+                                        }
                                     }
-                                    else {
-                                    }
-                                    component.ntsGridList("setSelected", selectedProperties);
                                 }
                                 else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
@@ -8764,7 +8756,8 @@ var nts;
                         var self = this;
                         if (self.isInit) {
                             self.isInit = false;
-                            self.$dialog.dialog("destroy");
+                            self.$encodeTypeCombo.igCombo("destroy");
+                            self.$dialog.dialog("destroy").remove();
                             $(self.option.selector).off("click.ImportSettingForm");
                         }
                     };
@@ -14001,7 +13994,6 @@ var nts;
                 var H_BTN_HEIGHT = "24px";
                 var DYNAMIC = "dynamic";
                 var FIXED = "fixed";
-                var OCCUPY = "exoccupy";
                 var COPY_PASTE = "copyPaste";
                 var EDIT = "edit";
                 var STICK = "stick";
@@ -14009,7 +14001,8 @@ var nts;
                 var ExTable = (function () {
                     function ExTable($container, options) {
                         this.bodyHeightSetMode = DYNAMIC;
-                        this.windowOccupation = 0;
+                        this.windowXOccupation = 0;
+                        this.windowYOccupation = 0;
                         this.updateMode = EDIT;
                         this.pasteOverWrite = true;
                         this.stickOverWrite = true;
@@ -14024,14 +14017,17 @@ var nts;
                         this.areaResize = options.areaResize;
                         this.heightSetter = options.heightSetter;
                         this.bodyHeightSetMode = options.bodyHeightMode;
-                        this.windowOccupation = options.windowOccupation;
+                        this.windowXOccupation = options.windowXOccupation;
+                        this.windowYOccupation = options.windowYOccupation;
                         if (options.updateMode) {
                             this.updateMode = options.updateMode;
                         }
                         this.pasteOverWrite = options.pasteOverWrite;
                         this.stickOverWrite = options.stickOverWrite;
+                        this.viewMode = options.viewMode;
                         this.determination = options.determination;
-                        this.$container.data(OCCUPY, this.windowOccupation);
+                        this.$container.data(internal.X_OCCUPY, this.windowXOccupation);
+                        this.$container.data(internal.Y_OCCUPY, this.windowYOccupation);
                         helper.makeConnector();
                     }
                     ExTable.prototype.setUpdateMode = function (updateMode) {
@@ -14067,6 +14063,7 @@ var nts;
                         this.detailContent = _.cloneDeep(detailContent);
                         this.setBodyClass(this.detailContent, DETAIL);
                         this.detailContent.updateMode = this.updateMode;
+                        this.detailContent.viewMode = this.viewMode;
                         return this;
                     };
                     ExTable.prototype.VerticalSumHeader = function (verticalSumHeader) {
@@ -14437,7 +14434,9 @@ var nts;
                         }
                         Painter.prototype.cell = function (rData, rowIdx, key) {
                             var self = this;
-                            var data = rData[key];
+                            var cData = rData[key];
+                            var data = cData && _.isObject(cData) && cData.constructor !== Array && _.isFunction(self.options.view) ?
+                                self.options.view(self.options.viewMode, cData) : cData;
                             var column = self.columnsMap[key];
                             if (uk.util.isNullOrUndefined(column))
                                 return;
@@ -14693,20 +14692,27 @@ var nts;
                             .css(wrapperStyles(top, left, options.width, options.height));
                     }
                     render.createWrapper = createWrapper;
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore) {
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, isRestore) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var updateMode = helper.getExTableFromGrid($grid).updateMode;
                         var $cell = selection.cellAt($grid, rowIdx, columnKey);
                         if ($cell === intan.NULL)
                             return;
                         var origDs = helper.getOrigDS($grid);
+                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
+                        var viewFn = gen.painter.options.view;
+                        var viewMode = gen.painter.options.viewMode;
+                        var value = valueObj;
+                        if (_.isFunction(viewFn)) {
+                            value = viewFn(viewMode, valueObj);
+                        }
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if ($childCells.length > 0) {
                             if (value.constructor === Array) {
                                 _.forEach(value, function (val, i) {
                                     var $c = $($childCells[i]);
                                     $c.text(val);
-                                    trace(origDs, $c, rowIdx, columnKey, i, val);
+                                    trace(origDs, $c, rowIdx, columnKey, i, valueObj);
                                     if (updateMode === EDIT) {
                                         validation.validate($exTable, $grid, $c, rowIdx, columnKey, i, val);
                                     }
@@ -14715,7 +14721,7 @@ var nts;
                             else {
                                 var $c = $($childCells[innerIdx]);
                                 $c.text(value);
-                                trace(origDs, $c, rowIdx, columnKey, innerIdx, value);
+                                trace(origDs, $c, rowIdx, columnKey, innerIdx, valueObj);
                                 if (updateMode === EDIT) {
                                     validation.validate($exTable, $grid, $c, rowIdx, columnKey, innerIdx, value);
                                 }
@@ -14723,7 +14729,7 @@ var nts;
                         }
                         else {
                             $cell.text(value);
-                            trace(origDs, $cell, rowIdx, columnKey, -1, value);
+                            trace(origDs, $cell, rowIdx, columnKey, -1, valueObj);
                             if (updateMode === EDIT) {
                                 validation.validate($exTable, $grid, $cell, rowIdx, columnKey, -1, value);
                             }
@@ -14739,20 +14745,27 @@ var nts;
                         });
                         var visibleColumns = helper.gridVisibleColumns($grid);
                         var origDs = helper.getOrigDS($grid);
+                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
+                        var viewFn = gen.painter.options.view;
+                        var viewMode = gen.painter.options.viewMode;
                         _.forEach(Object.keys(data), function (key) {
                             _.forEach(visibleColumns, function (col, index) {
                                 if (col.key === key) {
                                     var $target = $cells.eq(index);
                                     var childCells_1 = $target.find("." + render.CHILD_CELL_CLS);
                                     if (childCells_1.length > 0) {
-                                        if (data[key].constructor === Array) {
-                                            _.forEach(data[key], function (d, i) {
+                                        var cData_1 = data[key];
+                                        if (_.isFunction(viewFn)) {
+                                            cData_1 = viewFn(viewMode, data[key]);
+                                        }
+                                        if (cData_1.constructor === Array) {
+                                            _.forEach(cData_1, function (d, i) {
                                                 var $c = $(childCells_1[i]);
                                                 $c.text(d);
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
-                                                trace(origDs, $c, rowIdx, key, i, d);
+                                                trace(origDs, $c, rowIdx, key, i, cData_1);
                                             });
                                             return false;
                                         }
@@ -14763,7 +14776,7 @@ var nts;
                                         }
                                     }
                                     else {
-                                        $target.text(data[key]);
+                                        $target.text(viewFn(viewMode, data[key]));
                                         trace(origDs, $target, rowIdx, key, -1, data[key]);
                                         if (updateMode === EDIT) {
                                             validation.validate($exTable, $grid, $target, rowIdx, key, -1, data[key]);
@@ -14778,8 +14791,8 @@ var nts;
                     function trace(ds, $cell, rowIdx, key, innerIdx, value) {
                         if (!ds || ds.length === 0)
                             return;
-                        var oVal = !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1 ? ds[rowIdx][key][innerIdx] : ds[rowIdx][key];
-                        if (!uk.util.isNullOrUndefined(oVal) && value.constructor === String && oVal.trim() === value.trim()) {
+                        var oVal = ds[rowIdx][key];
+                        if (!uk.util.isNullOrUndefined(oVal) && _.isEqual(oVal, value)) {
                             $cell.removeClass(update.EDITED_CLS);
                         }
                         else {
@@ -15147,9 +15160,23 @@ var nts;
                         value = validation.formatTime(value);
                         var res = cellData($exTable, rowIdx, columnKey, innerIdx, value);
                         if (!uk.util.isNullOrUndefined(res)) {
+                            var newValObj = value;
+                            if (_.isObject(res)) {
+                                var $main = helper.getMainTable($exTable);
+                                var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
+                                var upperInput = gen.painter.options.upperInput;
+                                var lowerInput = gen.painter.options.lowerInput;
+                                newValObj = _.cloneDeep(res);
+                                if (innerIdx === 0) {
+                                    newValObj[upperInput] = value;
+                                }
+                                else if (innerIdx === 1) {
+                                    newValObj[lowerInput] = value;
+                                }
+                            }
                             pushEditHistory($body, new selection.Cell(rowIdx, columnKey, res, innerIdx));
                             helper.markCellWith(update.EDITED_CLS, $cell, innerIdx);
-                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
+                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, newValObj, innerIdx)]);
                         }
                         setText($cell, innerIdx, value);
                     }
@@ -15203,9 +15230,20 @@ var nts;
                             }
                             return null;
                         }
-                        if (currentVal[innerIdx] !== value) {
-                            oldVal = _.cloneDeep(currentVal[innerIdx]);
-                            exTable.detailContent.dataSource[rowIdx][columnKey][innerIdx] = value;
+                        var $main = helper.getMainTable($exTable);
+                        var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
+                        var upperInput = gen.painter.options.upperInput;
+                        var lowerInput = gen.painter.options.lowerInput;
+                        var field;
+                        if (innerIdx === 0) {
+                            field = upperInput;
+                        }
+                        else if (innerIdx === 1) {
+                            field = lowerInput;
+                        }
+                        if (currentVal[field] !== value) {
+                            oldVal = _.cloneDeep(currentVal);
+                            exTable.detailContent.dataSource[rowIdx][columnKey][field] = value;
                             return oldVal;
                         }
                         return null;
@@ -15325,23 +15363,8 @@ var nts;
                         var cData = gen.dataSource[rowIdx][columnKey];
                         if (!exTable.stickOverWrite && !uk.util.isNullOrEmpty(cData))
                             return;
-                        var changedData;
-                        if (cData.constructor === Array) {
-                            if (value.constructor === Array) {
-                                changedData = _.cloneDeep(cData);
-                                _.forEach(cData, function (d, i) {
-                                    gen.dataSource[rowIdx][columnKey][i] = value[i];
-                                });
-                            }
-                            else {
-                                changedData = cData[innerIdx];
-                                gen.dataSource[rowIdx][columnKey][innerIdx] = value;
-                            }
-                        }
-                        else {
-                            changedData = cData;
-                            gen.dataSource[rowIdx][columnKey] = value;
-                        }
+                        var changedData = _.cloneDeep(cData);
+                        gen.dataSource[rowIdx][columnKey] = value;
                         render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
                         pushStickHistory($grid, [new selection.Cell(rowIdx, columnKey, changedData)]);
                         events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
@@ -15479,7 +15502,7 @@ var nts;
                             var copiedData;
                             if (selectedCells.length === 1) {
                                 this.mode = Mode.SINGLE;
-                                copiedData = selectedCells[0].value;
+                                copiedData = _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
                             }
                             else {
                                 this.mode = Mode.MULTIPLE;
@@ -15515,7 +15538,7 @@ var nts;
                                 if (uk.util.isNullOrUndefined(structure[rowIndex])) {
                                     structure[rowIndex] = {};
                                 }
-                                structure[rowIndex][columnIndex] = cell.value;
+                                structure[rowIndex][columnIndex] = helper.stringValue(cell.value);
                             });
                             for (var i = minRow; i <= maxRow; i++) {
                                 for (var j = minColumn; j <= maxColumn; j++) {
@@ -15557,9 +15580,7 @@ var nts;
                         Printer.prototype.pasteSingleCell = function (evt) {
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
-                            if (cbData.indexOf(",") > 0) {
-                                cbData = cbData.split(",");
-                            }
+                            cbData = helper.getCellData(cbData);
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
@@ -15607,7 +15628,7 @@ var nts;
                                             break;
                                         continue;
                                     }
-                                    rowData[columnKey] = row[i];
+                                    rowData[columnKey] = helper.getCellData(row[i]);
                                     columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
                                     if (!columnKey)
                                         break;
@@ -15624,6 +15645,7 @@ var nts;
                             var tx = histories.pop();
                             _.forEach(tx.items, function (item) {
                                 update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                                internal.removeChange(self.$grid, item);
                             });
                         };
                         Printer.prototype.getClipboardContent = function (evt) {
@@ -16260,6 +16282,7 @@ var nts;
                     resize.AREA_AGENCY = "ex-area-agency";
                     resize.RESIZE_AREA = "resize-area";
                     resize.AREA_LINE = "ex-area-line";
+                    resize.STAY_CLS = "x-stay";
                     var ColumnAdjuster = (function () {
                         function ColumnAdjuster($headerTable, $contentTable, options) {
                             this.$headerTable = $headerTable;
@@ -16401,6 +16424,8 @@ var nts;
                                 var height = $wrapper.height() + self.bodyWrappers[index].height();
                                 var left = $wrapper.outerWidth() + ($wrapper.offset().left - self.$areaAgency.offset().left);
                                 $line.css({ left: left, height: height });
+                                if ($wrapper.hasClass(HEADER_PRF + LEFTMOST))
+                                    $line.addClass(resize.STAY_CLS);
                             });
                             self.$areaAgency.on(events.MOUSE_DOWN, $.proxy(self.cursorDown, self));
                         };
@@ -16410,6 +16435,8 @@ var nts;
                                 self.cursorUp(event);
                             }
                             var $targetGrip = $(event.target);
+                            if ($targetGrip.hasClass(resize.STAY_CLS))
+                                return;
                             var gripIndex = $targetGrip.index();
                             var $leftArea = $targetGrip.data(resize.RESIZE_AREA);
                             var $rightArea = self.headerWrappers[gripIndex + 1];
@@ -16570,7 +16597,7 @@ var nts;
                         return { position: "absolute", cursor: "ew-resize", width: "4px", zIndex: 2, marginLeft: marginLeft };
                     }
                     function fitWindowHeight($container, wrappers, horzSumExists) {
-                        var height = window.innerHeight - 100;
+                        var height = window.innerHeight - parseInt($container.data(internal.Y_OCCUPY)) - 100;
                         var $horzSumHeader, $horzSumBody, decreaseAmt;
                         wrappers = wrappers || _.map($container.find("div[class*='" + BODY_PRF + "']").filter(function () {
                             return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
@@ -16603,7 +16630,7 @@ var nts;
                         var $detailBody = $container.find("." + BODY_PRF + DETAIL);
                         var width = window.innerWidth - $detailHeader.offset().left;
                         if ($vertSumHeader.length > 0 && $vertSumHeader.css("display") !== "none") {
-                            width = width - parseInt($container.data(OCCUPY)) - $vertSumContent.width();
+                            width = width - parseInt($container.data(internal.X_OCCUPY)) - $vertSumContent.width();
                             $detailHeader.width(width);
                             $detailBody.width(width);
                             $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width);
@@ -16612,7 +16639,7 @@ var nts;
                             syncDetailAreaLine($container, $detailHeader, $detailBody);
                             return;
                         }
-                        width = width - parseInt($container.data(OCCUPY));
+                        width = width - parseInt($container.data(internal.X_OCCUPY));
                         $detailHeader.width(width - helper.getScrollWidth());
                         $detailBody.width(width);
                         $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width - helper.getScrollWidth());
@@ -17477,9 +17504,12 @@ var nts;
                     function undoStick($container) {
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         var histories = $grid.data(internal.STICK_HISTORY);
+                        if (!histories)
+                            return;
                         var items = histories.pop();
                         _.forEach(items, function (i) {
                             update.gridCell($grid, i.rowIndex, i.columnKey, -1, i.value, true);
+                            internal.removeChange($grid, i);
                         });
                     }
                     function clearHistories($container, type) {
@@ -17609,6 +17639,8 @@ var nts;
                 })(func || (func = {}));
                 var internal;
                 (function (internal) {
+                    internal.X_OCCUPY = "ex-x-occupy";
+                    internal.Y_OCCUPY = "ex-y-occupy";
                     internal.TANGI = "x-tangi";
                     internal.CANON = "x-canon";
                     internal.STICKER = "x-sticker";
@@ -17636,6 +17668,25 @@ var nts;
                         return gen.dataSource;
                     }
                     internal.getDataSource = getDataSource;
+                    function removeChange($grid, cell) {
+                        var origDs = helper.getOrigDS($grid);
+                        var exTable = helper.getExTableFromGrid($grid);
+                        if (!origDs || !exTable)
+                            return;
+                        var oVal = origDs[cell.rowIndex][cell.columnKey];
+                        var cells = exTable.modifications[cell.rowIndex];
+                        if (!cells)
+                            return;
+                        var index = -1;
+                        _.forEach(cells, function (c, i) {
+                            if (helper.areSameCells(cell, c) && cell.value === oVal) {
+                                index = i;
+                                return false;
+                            }
+                        });
+                        exTable.modifications[cell.rowIndex].splice(index, 1);
+                    }
+                    internal.removeChange = removeChange;
                 })(internal || (internal = {}));
                 var helper;
                 (function (helper) {
@@ -17880,6 +17931,19 @@ var nts;
                         return values;
                     }
                     helper.valuesArray = valuesArray;
+                    function stringValue(val) {
+                        return _.isObject(val) ? JSON.stringify(val) : val;
+                    }
+                    helper.stringValue = stringValue;
+                    function getCellData(data) {
+                        try {
+                            return JSON.parse(data);
+                        }
+                        catch (e) {
+                            return data;
+                        }
+                    }
+                    helper.getCellData = getCellData;
                 })(helper || (helper = {}));
                 var widget;
                 (function (widget) {
@@ -18217,9 +18281,6 @@ var nts;
                     NtsMonthDaysBindingHandler.getDaysInMonth = function (month) {
                         var daysInMonth = moment(month, "MM").daysInMonth();
                         if (daysInMonth !== NaN) {
-                            if (month === 2) {
-                                daysInMonth++;
-                            }
                             var days = [];
                             while (days.length < daysInMonth) {
                                 days.push({ text: days.length + 1, value: days.length + 1 });
@@ -18656,4 +18717,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

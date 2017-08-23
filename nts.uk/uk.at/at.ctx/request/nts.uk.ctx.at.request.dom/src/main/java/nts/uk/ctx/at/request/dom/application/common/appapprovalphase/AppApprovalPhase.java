@@ -25,15 +25,15 @@ public class AppApprovalPhase extends DomainObject {
 	private ApprovalForm approvalForm;
 
 	/** 順序 */
-	private int orderPhase;
+	private int dispOrder;
 
 	/** 承認区分 */
 	private ApprovalATR approvalATR;
 
-	public static AppApprovalPhase createFromJavaType(String companyID , String appID , String phaseID , int approvalForm , int orderPhase , int approvalATR ) 
+	public static AppApprovalPhase createFromJavaType(String companyID , String appID , String phaseID , int approvalForm , int dispOrder , int approvalATR ) 
 							{return new AppApprovalPhase (companyID , appID , phaseID ,
 															EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
-															orderPhase,
+															dispOrder,
 															EnumAdaptor.valueOf(approvalATR, ApprovalATR.class)) ; 
 								}									
 }

@@ -7,6 +7,24 @@ __viewContext.ready(function () {
     
     this.bind(new ScreenModel());
     
+    class ExCell {
+        workTypeCode: string;
+        workTypeName: string;
+        workTimeCode: string;
+        workTimeName: string;
+        symbol: string;
+        startTime: any;
+        endTime: any;
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string) {
+            this.workTypeCode = workTypeCode;
+            this.workTypeName = workTypeName;
+            this.workTimeCode = workTimeCode;
+            this.workTimeName = workTimeName;
+            this.symbol = parseInt(workTypeCode) % 3 === 0 ? "通" : "◯";
+            this.startTime = "8:30";
+            this.endTime = "17:30";
+        }
+    }
     class ExItem {
         empId: string;
         empName: string;
@@ -67,12 +85,12 @@ __viewContext.ready(function () {
             for (let i = -6; i <= 31; i++) {
                 if (i <= 0) {
                     let d = 31 + i;
-                    this["__" + d] = "前";
-                } else if (i === 1) this["_" + i] = ["出勤", "8:30"];
-                else if (i === 2) this["_" + i] = ["出勤B", "16:00"];
-                else if (i === 3) this["_" + i] = ["出勤C", "20:00"];
-                else if (i === 4) this["_" + i] = ["出勤D", "19:00"];
-                else this["_" + i] = "通" + i;
+                    this["__" + d] = new ExCell("001", "出勤A", "1", "通常８ｈ");
+                } else if (i === 1) this["_" + i] = new ExCell("001", "出勤A", "1", "通常８ｈ");
+                else if (i === 2) this["_" + i] = new ExCell("002", "出勤B", "1", "通常８ｈ");
+                else if (i === 3) this["_" + i] = new ExCell("003", "出勤C", "1", "通常８ｈ");
+                else if (i === 4) this["_" + i] = new ExCell("004", "出勤D", "1", "通常８ｈ");
+                else this["_" + i] = new ExCell("00" + i, "出勤" + i, "1", "通常８ｈ");
             }
         }
     }
@@ -152,13 +170,13 @@ __viewContext.ready(function () {
         }, {
 //            key: "empName", width: "120px"
 //        }, {
-            key: "_1", width: "100px", handlerType: "Input", dataType: "text/duration", min: "9:00", max: "19:00"
+            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "9:00", max: "19:00"
         }, {
-            key: "_2", width: "100px", handlerType: "Input", dataType: "text/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
+            key: "_2", width: "100px", handlerType: "Input", dataType: "duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_3", width: "100px", handlerType: "Input", dataType: "text/time"
+            key: "_3", width: "100px", handlerType: "Input", dataType: "time/time"
         }, {
-            key: "_4", width: "100px", handlerType: "input", dataType: "text/time"
+            key: "_4", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
             key: "_5", width: "100px", handlerType: "input", dataType: "text"
         }, {
@@ -308,7 +326,19 @@ __viewContext.ready(function () {
         }, {
             name: "TimeRange",
             ranges: timeRanges
-        }]
+        }],
+        view: function(mode, obj) {
+            switch (mode) {
+                case "shortName":
+                    return [ obj.workTypeName, obj.workTimeName ];
+                case "symbol": 
+                    return obj.symbol;
+                case "time":
+                    return [ obj.startTime, obj.endTime ]; 
+            }
+        },
+        upperInput: "startTime",
+        lowerInput: "endTime"
     };
     
     let leftHorzColumns = [
@@ -374,10 +404,12 @@ __viewContext.ready(function () {
             horizontalSumBodyRowHeight: "20px",
             areaResize: true, 
             bodyHeightMode: "dynamic",
-            windowOccupation: 120,
+            windowXOccupation: 120,
+            windowYOccupation: 100,
             updateMode: "stick",
             pasteOverWrite: true,
             stickOverWrite: true,
+            viewMode: "shortName",
             determination: {
                 rows: [0],
                 columns: ["empName"]
@@ -513,13 +545,13 @@ __viewContext.ready(function () {
             $("#extable").exTable("updateTable", "horizontalSummaries", { columns: detailColumns }, { columns: detailColumns });
         });
         $("#set-sticker-multi").click(function() {
-            $("#extable").exTable("stickData", [ "MM1", "MM2", "MM3", "MM4", "MM5", "MM6", "MM7", "MM8", "MM9", "MM10" ]);
+            return;
         });
         $("#set-sticker-multi2").click(function() {
-            $("#extable").exTable("stickData", [ ["出勤MM", "1:00"], ["出勤DD", "2:00"], ["出勤CC", "3:00"] ]);
+            $("#extable").exTable("stickData", [ new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
         });
         $("#set-sticker-single").click(function() {
-            $("#extable").exTable("stickData", [ "出勤MM", "1:00" ]);
+            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
         });
         $("#stick-undo").click(function() {
             $("#extable").exTable("stickUndo");

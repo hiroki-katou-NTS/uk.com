@@ -10,6 +10,7 @@ module nts.uk.com.view.cps005.a {
     export module viewmodel {
         export class ScreenModel {
             currentData: KnockoutObservable<DataModel>;
+            isUpdate: boolean = false;
             constructor() {
                 let self = this,
                     dataModel = new DataModel(null);
@@ -20,24 +21,63 @@ module nts.uk.com.view.cps005.a {
                 let self = this,
                     dfd = $.Deferred();
                 new service.Service().getAllPerInfoCtg().done(function(data: IData) {
-                    self.currentData(new DataModel(data));
-                    if(data && data.categoryList && data.categoryList.length > 0){
+                    self.isUpdate = false;
+                    if (data && data.categoryList && data.categoryList.length > 0) {
+                        self.currentData().categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
+                        self.isUpdate = true;
                         self.currentData().perInfoCtgSelectCode(data.categoryList[0].id);
+                    } else {
+                        self.register();
                     }
                     dfd.resolve();
-                }).fail(error => { });
+                })
+                return dfd.promise();
+            }
+
+            reloadData(newCtgName?: string) {
+                let self = this,
+                    dfd = $.Deferred();
+                new service.Service().getAllPerInfoCtg().done(function(data: IData) {
+                    self.isUpdate = false;
+                    if (data && data.categoryList && data.categoryList.length > 0) {
+                        self.currentData().categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
+                        self.isUpdate = true;
+                        if (newCtgName) {
+                            let newCtg = _.find(data.categoryList, item => { return item.categoryName == newCtgName });
+                            self.currentData().perInfoCtgSelectCode(newCtg ? newCtg.id : "");
+                        }
+                    } else {
+                        self.register();
+                    }
+                    dfd.resolve();
+                })
                 return dfd.promise();
             }
 
             register() {
-
+                let self = this;
+                self.currentData().perInfoCtgSelectCode("");
+                self.currentData().currentCtgSelected(new PerInfoCtgModel(null));
+                self.isUpdate = false;
             }
 
             addUpdateData() {
-
-            }
-
-            updateData() {
+                let self = this;
+                if (self.isUpdate) {
+                    let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
+                    new service.Service().updatePerInfoCtg(updateCategory).done(() => {
+                        self.reloadData();
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError({ messageId: error.message });
+                    });
+                } else {
+                    let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
+                    new service.Service().addPerInfoCtg(newCategory).done(() => {
+                        self.reloadData(newCategory.categoryName);
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError({ messageId: error.message });
+                    });
+                }
 
             }
         }
@@ -90,7 +130,7 @@ module nts.uk.com.view.cps005.a {
         singleMulTypeSelected: KnockoutObservable<number> = ko.observable(1);
         itemNameList: KnockoutObservableArray<PerInfoItemModel> = ko.observableArray([]);
         //all visiable
-        historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(false);
+        historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(true);
         fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
         constructor(data: IPersonInfoCtg) {
             let self = this;
@@ -120,6 +160,7 @@ module nts.uk.com.view.cps005.a {
                 }
                 self.historyClassSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);
                 self.singleMulTypeSelected(data.categoryType || 1);
+                self.historyTypesDisplay(false);
                 if (self.historyClassSelected() == 1) {
                     self.historyTypesSelected(data.categoryType - 2);
                     self.singleMulTypeSelected(1);
@@ -143,6 +184,36 @@ module nts.uk.com.view.cps005.a {
         constructor(itemName: string) {
             let self = this;
             self.itemName = itemName;
+        }
+    }
+
+    export class AddPerInfoCtgModel {
+        categoryName: string;
+        categoryType: number;
+        constructor(data: PerInfoCtgModel) {
+            let self = this;
+            self.categoryName = data.perInfoCtgName();
+            if (data.historyClassSelected() == 2) {
+                self.categoryType = data.singleMulTypeSelected();
+            } else {
+                self.categoryType = data.historyTypesSelected() + 2;
+            }
+        }
+    }
+
+    export class UpdatePerInfoCtgModel {
+        id: string
+        categoryName: string;
+        categoryType: number;
+        constructor(data: PerInfoCtgModel) {
+            let self = this;
+            self.id = data.id;
+            self.categoryName = data.perInfoCtgName();
+            if (data.historyClassSelected() == 2) {
+                self.categoryType = data.singleMulTypeSelected();
+            } else {
+                self.categoryType = data.historyTypesSelected() + 2;
+            }
         }
     }
 

@@ -23,5 +23,19 @@ public class EstimatedPrice extends DomainObject{
 	
 	/** The estimated price. */
 	// 金額 
-	private EstimatedPrice estimatedPrice;
+	private EstimatePrice estimatedPrice;
+
+
+	/**
+	 * Instantiates a new estimated price.
+	 *
+	 * @param estimatedCondition the estimated condition
+	 * @param estimatedPrice the estimated price
+	 */
+	public EstimatedPrice(EstimatedCondition estimatedCondition, EstimatePrice estimatedPrice) {
+		this.estimatedCondition = estimatedCondition;
+		this.estimatedPrice = estimatedPrice;
+	}
+	
+	
 }

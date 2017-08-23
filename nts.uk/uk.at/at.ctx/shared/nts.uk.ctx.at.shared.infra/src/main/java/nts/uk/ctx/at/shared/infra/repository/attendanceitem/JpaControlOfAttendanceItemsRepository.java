@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.attendanceitem.ControlOfAttendanceItems;
 import nts.uk.ctx.at.shared.dom.attendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstControlOfAttendanceItems;
 import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstControlOfAttendanceItemsPK;
+
 @Stateless
 public class JpaControlOfAttendanceItemsRepository extends JpaRepository implements ControlOfAttendanceItemsRepository {
 
@@ -24,6 +25,19 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 		return Optional.empty();
 	}
 
+	
+
+	private ControlOfAttendanceItems toControlOfAttendanceItemsDomain(
+			KshstControlOfAttendanceItems kdwstControlOfAttendanceItems) {
+		return ControlOfAttendanceItems.createFromJavaType(
+				kdwstControlOfAttendanceItems.kshstControlOfAttendanceItemsPK.attandanceTimeId,
+				kdwstControlOfAttendanceItems.inputUnitOfTimeItem == null ? -1
+						: kdwstControlOfAttendanceItems.inputUnitOfTimeItem.intValue(),
+				kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance == null ? ""
+						: kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance,
+				kdwstControlOfAttendanceItems.nameLineFeedPosition.intValue());
+	}
+	
 	@Override
 	public void updateControlOfAttendanceItem(ControlOfAttendanceItems controlOfAttendanceItems) {
 		Optional<KshstControlOfAttendanceItems> kdwstControlOfAttendanceItemsOptional = this.queryProxy().find(
@@ -32,10 +46,11 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 		if (kdwstControlOfAttendanceItemsOptional.isPresent()) {
 			KshstControlOfAttendanceItems kdwstControlOfAttendanceItems = kdwstControlOfAttendanceItemsOptional.get();
 			kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance = controlOfAttendanceItems
-					.getHeaderBackgroundColorOfDailyPerformance().v();
+					.getHeaderBackgroundColorOfDailyPerformance() == null ? ""
+							: controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v();
 			kdwstControlOfAttendanceItems.inputUnitOfTimeItem = new BigDecimal(
-					controlOfAttendanceItems.getInputUnitOfTimeItem().value);
-			kdwstControlOfAttendanceItems.nameLineFeedPosition = new BigDecimal(controlOfAttendanceItems.getNameLineFeedPosition());
+					controlOfAttendanceItems.getInputUnitOfTimeItem() == null ? -1
+							: controlOfAttendanceItems.getInputUnitOfTimeItem().value);
 			this.commandProxy().update(kdwstControlOfAttendanceItems);
 		} else {
 			this.commandProxy().insert(this.toControlOfAttendanceItemsEntity(controlOfAttendanceItems));
@@ -43,20 +58,24 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 
 	}
 
-	private ControlOfAttendanceItems toControlOfAttendanceItemsDomain(
-			KshstControlOfAttendanceItems kdwstControlOfAttendanceItems) {
-		return ControlOfAttendanceItems.createFromJavaType(
-				kdwstControlOfAttendanceItems.kshstControlOfAttendanceItemsPK.attandanceTimeId,
-				kdwstControlOfAttendanceItems.inputUnitOfTimeItem.intValue(),
-				kdwstControlOfAttendanceItems.headerBackgroundColorOfDailyPerformance,kdwstControlOfAttendanceItems.nameLineFeedPosition.intValue()  );
-	}
-
 	private KshstControlOfAttendanceItems toControlOfAttendanceItemsEntity(
 			ControlOfAttendanceItems controlOfAttendanceItems) {
+		BigDecimal inputUnitOfTimeItem;
+		if (controlOfAttendanceItems.getInputUnitOfTimeItem() == null) {
+			inputUnitOfTimeItem = null;
+		} else {
+			inputUnitOfTimeItem = new BigDecimal(controlOfAttendanceItems.getInputUnitOfTimeItem().value);
+		}
+		String headerColor;
+		if ("".equals(controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v())) {
+			headerColor = null;
+		} else {
+			headerColor = controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v();
+		}
+
 		return new KshstControlOfAttendanceItems(
 				new KshstControlOfAttendanceItemsPK(controlOfAttendanceItems.getAttandanceTimeId()),
-				new BigDecimal(controlOfAttendanceItems.getInputUnitOfTimeItem().value),
-				controlOfAttendanceItems.getHeaderBackgroundColorOfDailyPerformance().v(),new BigDecimal(controlOfAttendanceItems.getNameLineFeedPosition()));
+				inputUnitOfTimeItem, headerColor, new BigDecimal(controlOfAttendanceItems.getNameLineFeedPosition()));
 
 	}
 

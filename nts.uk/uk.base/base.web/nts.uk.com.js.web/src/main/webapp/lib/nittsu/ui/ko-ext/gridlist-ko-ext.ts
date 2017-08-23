@@ -163,14 +163,14 @@ module nts.uk.ui.koExtentions {
                 $grid.data("ui-changed", true);
                 if (data.multiple) {
                     let selected: Array<any> = $grid.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         data.value(_.map(selected, s => s.id));
                     } else {
                         data.value([]);
                     }
                 } else {
                     let selected = $grid.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         data.value(selected.id);
                     } else {
                         data.value('');

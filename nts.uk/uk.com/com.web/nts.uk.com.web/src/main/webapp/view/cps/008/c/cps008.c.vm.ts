@@ -13,24 +13,24 @@ module cps008.c.viewmodel {
                 layout: Layout = self.layout();
 
             let _data = getShared('CPS008_PARAM');
-
             layout.id.subscribe(id => {
                 // call service for get code, name of layout
                 service.getDetails(id).done((data: any) => {
                     if (data) {
                         layout.code(data.layoutCode);
                         layout.name(data.layoutName);
+                        $("#C_INP_CODE").focus();
                     }
                 });
             });
             layout.id(_data.id);
-
-            $("#C_INP_CODE").focus();
         }
 
         coppyBtn() {
             let self = this,
                 layout: ILayout = ko.toJS(self.layout);
+            let s = 'd';
+            
 
             if (layout.newCode == '' || layout.newName == '') {
                 if (layout.newCode == '') {
@@ -45,7 +45,7 @@ module cps008.c.viewmodel {
             } else if (layout.newCode && layout.newName) {
                 setShared('CPS008C_RESPONE', { id: layout.id, code: layout.newCode, name: layout.newName, action: layout.overrideMode });
                 close();
-            } 
+            }
         }
 
         close() {

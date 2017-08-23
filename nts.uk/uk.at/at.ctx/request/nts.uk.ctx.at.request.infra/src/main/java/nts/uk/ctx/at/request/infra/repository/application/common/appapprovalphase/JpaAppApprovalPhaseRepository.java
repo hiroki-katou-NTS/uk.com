@@ -37,7 +37,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 		KrqdtAppApprovalPhase newEntity = toEntity(appApprovalPhase);
 		KrqdtAppApprovalPhase updateEntity = this.queryProxy().find(newEntity.krqdtAppApprovalPhasePK, KrqdtAppApprovalPhase.class).get();
 		updateEntity.approvalForm  = newEntity.approvalForm;
-		updateEntity.orderPhase = newEntity.orderPhase;
+		updateEntity.dispOrder = newEntity.dispOrder;
 		updateEntity.approvalATR = newEntity.approvalATR;
 		this.commandProxy().update(updateEntity);
 		
@@ -54,14 +54,14 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 				entity.krqdtAppApprovalPhasePK.appID,
 				entity.krqdtAppApprovalPhasePK.phaseID,
 				Integer.valueOf(entity.approvalForm).intValue(),
-				Integer.valueOf(entity.orderPhase).intValue(),
+				Integer.valueOf(entity.dispOrder).intValue(),
 				Integer.valueOf(entity.approvalATR).intValue());
 	}
 	private KrqdtAppApprovalPhase toEntity (AppApprovalPhase domain){
 		return new KrqdtAppApprovalPhase (
 					new KrqdtAppApprovalPhasePK(domain.getCompanyID(), domain.getAppID(), domain.getPhaseID()),
 					domain.getApprovalForm().toString(),
-					domain.getOrderPhase(),
+					domain.getDispOrder(),
 					domain.getApprovalATR().toString()
 					);
 	};

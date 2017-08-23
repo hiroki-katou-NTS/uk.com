@@ -34,13 +34,13 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 	public static WorkplaceApprovalRoot createSimpleFromJavaType(String companyId,
 			String workplaceId,
 			String historyId,
+			Integer applicationType,
 			String startDate,
 			String endDate,
 			String branchId,
 			String anyItemApplicationId,
 			int confirmationRootType,
-			int employmentRootAtr,
-			int applicationType){
+			int employmentRootAtr){
 		return new WorkplaceApprovalRoot(companyId, 
 			workplaceId,
 			historyId, 
