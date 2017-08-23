@@ -14,6 +14,8 @@ import nts.arc.layer.dom.AggregateRoot;
 public class PersonApprovalRoot extends AggregateRoot{
 	/**会社ID*/
 	private String companyId;
+	/**承認ID*/
+	public String approvalId;
 	/**社員ID*/
 	private String employeeId;
 	/**履歴ID*/
@@ -32,6 +34,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 	private EmploymentRootAtr employmentRootAtr;
 	
 	public static PersonApprovalRoot createSimpleFromJavaType(String companyId,
+			String approvalId,
 			String employeeId,
 			String historyId,
 			int applicationType,
@@ -41,7 +44,8 @@ public class PersonApprovalRoot extends AggregateRoot{
 			String anyItemApplicationId,
 			int confirmationRootType,
 			int employmentRootAtr){
-		return new PersonApprovalRoot(companyId, 
+		return new PersonApprovalRoot(companyId,
+			approvalId,
 			employeeId,
 			historyId,
 			EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
