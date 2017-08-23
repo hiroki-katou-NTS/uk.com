@@ -7,32 +7,96 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.ctx.bs.person.dom.person.role.RoleName
-			</com:ValidatorScript>
-			<com:stylefile path="cas001.a.style.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="cas001.a.start.js" />
-			<com:scriptfile path="cas001.a.service.js" />
-			<com:scriptfile path="cas001.a.vm.js" />
+			<com:stylefile path="cps006.a.style.css" />
+			<com:scriptfile path="cps006.a.service.js" />
+			<com:scriptfile path="cps006.a.start.js" />
+			<com:scriptfile path="cps006.a.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div class="container">
-					<!-- <button id="A1_001">#{i18n.getText('CAS001_2')}</button> -->
-					<button id="A1_002" class="proceed" data-bind="click:saveData">#{i18n.getText('CAS001_3')}</button>
-					<button id="A1_003"
-						data-bind="click:OpenCModal,enable:(personRoleList().length &gt; 0)">#{i18n.getText('CAS001_4')}</button>
-					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
-					<div class="float-right">
-						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">#{i18n.getText('CAS001_6')}</a>
-					</div>
+
+				<button id="register" class="proceed" tabindex="1">#{i18n.getText('CPS006_1')}</button>
+				<button id="sort" tabindex="2">#{i18n.getText('CPS006_2')}</button>
+				<div class='float-right'>
+					<a data-bind="ntsLinkButton: {  }" tabindex="3">#{i18n.getText('CPS006_49')}</a>
+					<a data-bind="ntsLinkButton: {  }" tabindex="4">#{i18n.getText('CPS006_3')}</a>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
-				<div id="content-left" class="bg-green"></div>
-				<div id="content-right"></div>
+				<div id="content-left" data-bind="ntsPanel:{width: '315px', height: '590px', direction: 'right', showIcon: false, visible: true}">
+					<div id="isAbolition" data-bind="ntsCheckBox: { checked: true }"
+						tabindex="5">#{i18n.getText('CPS006_4')}</div>
+					<div id="search" tabindex="6"
+						data-bind="ntsSearchBox: {
+						searchMode: 'filter',
+						targetKey: 'id',
+						mode: 'igGrid', 
+						comId: 'grid',
+						items: categoryList ,  
+						selectedKey: 'id',
+						fields: ['categoryName']}" />
+					<table id="category_grid"
+						data-bind="ntsGridList: {	
+						dataSource: categoryList ,
+						primaryKey: 'id' ,
+						columns: colums ,
+						multiple: false,
+						value: currentCategoryId ,
+						rows:15 }">
+					</table>
+				</div>
+				<div id="content-right">
+					<div>
+						<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
+							<label>#{i18n.getText('CPS006_8')}</label>
+						</div>
+						<label id="defaultName">AAA</label>
+					</div>
+
+					<div>
+						<div id='col1' data-bind="ntsFormLabel: {required: true}"
+							class='distane'>
+							<label>#{i18n.getText('CPS006_9')}</label>
+						</div>
+						<input id="ctgName"></input>
+						<div id="isAbolition" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('CPS006_11')}</div>
+					</div>
+
+					<div>
+						<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
+							<label>#{i18n.getText('CPS006_12')}</label>
+						</div>
+						<label id="historyType">HISTORY</label>
+					</div>
+
+					<div>
+						<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
+							<label>#{i18n.getText('CPS006_13')}</label>
+						</div>
+						<label id="continue">CONTINUE</label>
+						<button
+							data-bind="ntsHelpButton: {image: 'helpcas006.png', position: 'right+50 top', enable: true }">?</button>
+					</div>
+
+					<div style="margin-top:10px;">
+						<div id='col1' >
+							<button>#{i18n.getText('CPS006_14')} </button>
+						</div>
+					<table id="item_grid"
+						data-bind="ntsGridList: {	
+						dataSource: itemList ,
+						primaryKey: 'id' ,
+						columns: itemColums ,
+						multiple: false,
+						value: currentItemId ,
+						rows:10 }">
+					</table>						
+					</div>
+
+
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -49,4 +49,7 @@ public interface ApplicationRepository {
 	 * @param applicationID
 	 */
 	void deleteApplication(String companyID,String applicationID);
+	
+	void updateById(String companyID,String applicationID );
+	
 }

@@ -8,10 +8,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.management.RuntimeErrorException;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
@@ -45,19 +47,23 @@ public class LocalContractFormCommandHandler
 	@Override
 	protected CheckContractDto handle(CommandHandlerContext<LocalContractFormCommand> context) {
 		LocalContractFormCommand command = context.getCommand();
+		try {
+			SystemConfig systemConfig = this.getSystemConfig();
 
-		SystemConfig systemConfig = this.getSystemConfig();
-		// case Cloud
-		if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
-			if (this.isShowContract(command)) {
-				return new CheckContractDto(true);
-			} else {
+			// case Cloud
+			if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
+				if (this.isShowContract(command)) {
+					return new CheckContractDto(true);
+				} else {
+					return new CheckContractDto(false);
+				}
+			}
+			// case OnPre
+			else {
 				return new CheckContractDto(false);
 			}
-		}
-		// case OnPre
-		else {
-			return new CheckContractDto(false);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -73,7 +79,7 @@ public class LocalContractFormCommandHandler
 		String contractCode = command.getContractCode();
 		String contractPassword = command.getContractPassword();
 
-		if (contractCode.isEmpty() ||contractCode == null) {
+		if (contractCode.isEmpty() || contractCode == null) {
 			return true;
 		}
 		// get domain contract
@@ -82,7 +88,7 @@ public class LocalContractFormCommandHandler
 			return true;
 		}
 		// compare contract pass
-		if (!contract.get().getPassword().v().equals(contractPassword)) {
+		if (!PasswordHash.verifyThat(contractPassword, "salt").isEqualTo(contract.get().getPassword().v())) {
 			return true;
 		}
 		// check time limit
@@ -102,7 +108,6 @@ public class LocalContractFormCommandHandler
 		if (systemConfig.isPresent()) {
 			return systemConfig.get();
 		} else {
-			// TODO go to system error screen
 			return null;
 		}
 	}

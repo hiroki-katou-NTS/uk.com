@@ -5,6 +5,7 @@
 package nts.uk.ctx.basic.dom.company.organization.workplace;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -12,21 +13,29 @@ import nts.arc.time.GeneralDate;
  * The Interface WorkplaceRepository.
  */
 public interface WorkplaceRepository {
-	
+
 	/**
 	 * Adds the.
 	 *
 	 * @param workplace the workplace
 	 */
 	void add(Workplace workplace);
-	
+
 	/**
 	 * Update.
 	 *
 	 * @param workplace the workplace
 	 */
 	void update(Workplace workplace);
-	
+
+	/**
+	 * Find by wkp id.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the optional
+	 */
+	Optional<Workplace> findByWkpId(String workplaceId);
+
 	/**
 	 * Find all history.
 	 *
@@ -35,7 +44,7 @@ public interface WorkplaceRepository {
 	 * @return the list
 	 */
 	List<WorkPlaceHistory> findAllHistory(String companyId,GeneralDate generalDate);
-	
+
 	/**
 	 * Find all hierarchy.
 	 *
@@ -43,7 +52,7 @@ public interface WorkplaceRepository {
 	 * @return the list
 	 */
 	List<WorkPlaceHierarchy> findAllHierarchy(String historyId);
-	
+
 	/**
 	 * Find all hierarchy child.
 	 *
@@ -52,16 +61,15 @@ public interface WorkplaceRepository {
 	 * @return the list
 	 */
 	List<WorkPlaceHierarchy> findAllHierarchyChild(String companyId, String workplaceId);
-	
+
 	/**
 	 * Find all workplace.
 	 *
 	 * @param workplaceId the workplace id
 	 * @return the list
 	 */
-	List<Workplace> findAllWorkplace(String workplaceId);
-	
-	
+	List<Workplace> findByWkpIds(List<String> workplaceIds);
+
 	/**
 	 * Find all workplace of company.
 	 *

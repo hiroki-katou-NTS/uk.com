@@ -5,9 +5,6 @@ module cps008.a.viewmodel {
     import showDialog = nts.uk.ui.dialog;
     import Text = nts.uk.resource.getText;
 
-    let __viewContext: any = window['__viewContext'] || {},
-        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
-        unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
 
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
@@ -35,7 +32,6 @@ module cps008.a.viewmodel {
                     });
                 }
             });
-
         }
 
         start(code?: string) {
@@ -121,9 +117,9 @@ module cps008.a.viewmodel {
                 }
                 return;
             }
-            
+
             // call service savedata
-            block();
+
             service.saveData(command).done((_data: any) => {
 
                 showDialog.info({ messageId: "Msg_15" }).then(function() {
@@ -131,7 +127,7 @@ module cps008.a.viewmodel {
                 });
 
                 self.start(data.code);
-                unblock();
+
 
             }).fail((error: any) => {
                 if (error.message == 'Msg_3') {

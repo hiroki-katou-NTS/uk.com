@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTargetClassification;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 
 /**
  * The Class EstimateNumberOfDay.

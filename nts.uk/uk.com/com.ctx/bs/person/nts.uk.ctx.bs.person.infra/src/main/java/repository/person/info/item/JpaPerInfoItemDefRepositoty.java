@@ -111,7 +111,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private final static String SELECT_REQUIRED_ITEMS_IDS = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i"
 			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
-			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.requiredAtr = 1 AND i.abolitionAtr = 0"
+			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 AND i.abolitionAtr = 0"
 			+ " AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)";
 
 	@Override

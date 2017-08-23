@@ -112,8 +112,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 * @see nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#findBySid(java.lang.String)
 	 */
 	@Override
-	public Optional<Employee> findBySid(String employeeId) {
+	public Optional<Employee> findBySid(String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_BY_SID, KmnmtEmployee.class)
+				.setParameter("companyId", companyId)
 				.setParameter("sId", employeeId)
 				.getSingle(c -> toDomain(c));
 	}

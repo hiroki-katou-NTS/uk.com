@@ -71,7 +71,7 @@ module nts.uk.at.view.ksm003.a {
                     } else {
                         self.switchNewMode();
                     }
-                    self.clearError();
+                    //                    self.clearError();
                     dfd.resolve();
                 });
 
@@ -109,7 +109,7 @@ module nts.uk.at.view.ksm003.a {
 
                 var dfd = $.Deferred();
 
-                self.clearError();
+                //                self.clearError();
 
                 // nts.uk.ui.block.grayout();
 
@@ -217,14 +217,18 @@ module nts.uk.at.view.ksm003.a {
             //select switch New Mode
             public switchNewMode(): void {
                 let self = this;
+
                 // cretar new table
                 var dataNew: model.DailyPatternValModel[];
                 dataNew = new Array();
                 for (let i = 0; i <= 9; i++) {
                     dataNew.push(new model.DailyPatternValModel(i, "", "", null));
                 }
+                // error here
+                self.detail().patternCode("");
+                self.detail().patternName("");
+                self.detail().dailyPatternVals(dataNew);
 
-                self.detail(new model.DailyPatternDetailModel("", "", dataNew));
                 self.isEditting(false);
                 self.selectedCode(null);
                 self.resetInput();
@@ -318,6 +322,7 @@ module nts.uk.at.view.ksm003.a {
 
                     this.dailyPatternVals = ko.observable(dailyPatternVals);
                 }
+
 
                 public toDto(): DailyPatternDetailDto {
                     return new DailyPatternDetailDto(this.patternCode(), this.patternName(), this.dailyPatternVals().map((item) => {

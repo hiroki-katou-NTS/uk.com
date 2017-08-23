@@ -38,7 +38,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 * util.List)
 	 */
 	@Override
-	public List<Person> getPersonByPersonId(List<String> personIds) {
+	public List<Person> getPersonByPersonIds(List<String> personIds) {
 		
 		// check exist input
 		if(CollectionUtil.isEmpty(personIds)){

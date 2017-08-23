@@ -33,3 +33,10 @@ button.nts-switch-button {
 	margin-left: 20px;
 	vertical-align: middle;
 }
+#code-sphd{
+	vertical-align: middle;
+}
+#input-code-sphd{
+	width: 40px; 
+	margin-left: 45px;
+}

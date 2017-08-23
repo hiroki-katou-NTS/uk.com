@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.estimate.time;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
 
@@ -14,7 +13,6 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
  */
 // 年間目安時間設定
 @Getter
-@Setter
 public class YearlyEstimateTimeSetting extends DomainObject{
 	
 	/** The estimated condition. */
@@ -25,4 +23,17 @@ public class YearlyEstimateTimeSetting extends DomainObject{
 	// 時間
 	private YearlyEstimateTime time;
 
+	/**
+	 * Instantiates a new yearly estimate time setting.
+	 *
+	 * @param estimatedCondition the estimated condition
+	 * @param time the time
+	 */
+	public YearlyEstimateTimeSetting(EstimatedCondition estimatedCondition,
+			YearlyEstimateTime time) {
+		this.estimatedCondition = estimatedCondition;
+		this.time = time;
+	}
+
+	
 }

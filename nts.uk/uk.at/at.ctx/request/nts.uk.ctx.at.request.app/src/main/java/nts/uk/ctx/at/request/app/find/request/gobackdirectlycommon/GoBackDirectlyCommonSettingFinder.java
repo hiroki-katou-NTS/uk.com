@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingItem;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -31,7 +31,7 @@ public class GoBackDirectlyCommonSettingFinder {
 	 * @param domain
 	 * @return
 	 */
-	private GoBackDirectlyCommonSettingDto convertToDTo(GoBackDirectlyCommonSettingItem domain) {
+	private GoBackDirectlyCommonSettingDto convertToDTo(GoBackDirectlyCommonSetting domain) {
 		return new GoBackDirectlyCommonSettingDto(
 				domain.getCompanyID(), 
 				domain.getAppID(), 

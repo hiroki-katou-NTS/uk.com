@@ -41,20 +41,62 @@
 				<button class="proceed">#{i18n.getText('KMF004_2')}</button>
 				<button class="cancel">#{i18n.getText('KMF004_4')}</button>
 			</div>
-			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewmodelB">
+			<div id="tabpanel-b" role="tabpanel" class="screen-b"
+				data-bind="with: viewmodelB">
 				<div class="contents-area">
 					<div>
-						<div data-bind="ntsFormLabel: { required: true }" class="form-label-1 required">#{i18n.getText('KMF004_73')}</div>
+						<div data-bind="ntsFormLabel: { required: true }"
+							class="form-label-1 required">#{i18n.getText('KMF004_73')}</div>
 					</div>
-					<div id="radio" style="float" data-bind="ntsRadioBoxGroup: {
+					<div id="radio" style=""
+						data-bind="ntsRadioBoxGroup: {
 														options: itemList,
 														optionsValue: 'id',
 														optionsText: 'name',
 														value: selectedId,
 														enable: true}">
 					</div>
-					
+					<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
 				</div>
+				<span>#{i18n.getText('KMF004_79')}</span>
+				<hr />
+				<table class="contents-header">
+					<thead>
+						<tr>
+							<td rowspan="2" class="numbers"></td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_43')}</td>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<table class="contents-data">
+					<thead></thead>
+					<tbody data-bind="foreach: items">
+						<tr>
+							<td data-bind="text: $index() + 1" class="numbers"></td>
+							<td class="input-units-year">
+							<input id="year" class="year-input" data-bind="ntsNumberEditor: {
+										value: year, 
+										option: ko.mapping.fromJS({
+											unitID: 'YEARS',
+											width: '50'
+										})}" />
+							<input id="month" class="months-input" data-bind="ntsNumberEditor: {
+										value: month, 
+										option: ko.mapping.fromJS({
+											unitID: 'MONTHS',
+											width: '60'
+										})}" /></td>
+
+							<!-- <td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+										value: restedDaysInYear, 
+										option: ko.mapping.fromJS({
+											unitID: 'DAYS',
+											width: '50'
+										})}" /></td> -->
+						</tr>
+					</tbody>
+				</table>
 				<div class="contents-area-bottom"></div>
 			</div>
 			<div id="tabpanel-c" role="tabpanel" class="screen-c"

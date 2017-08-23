@@ -36,7 +36,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 		val entity = new KshstGrantRelationshipItem();
 		entity.kshstGrantRelationshipPK = new KshstGrantRelationshipPK(domain.getCompanyId(), domain.getSpecialHolidayCode(), domain.getRelationshipCode());
 		entity.grantRelationshipDay = domain.getGrantRelationshipDay().v();
-		entity.morningHour = domain.getMorningHour().v();
+		entity.morningHour = domain.getMorningHour() != null ? domain.getMorningHour().v() : null;
 		return entity;
 	}
 	/**
@@ -53,10 +53,10 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	 */
 	@Override
 	public void update(GrantRelationship grantRelationship) {
-		KshstGrantRelationshipItem entity = toEntity(grantRelationship);
-		KshstGrantRelationshipItem oldEntity = this.queryProxy().find(entity.kshstGrantRelationshipPK, KshstGrantRelationshipItem.class).get();
-		oldEntity.setGrantRelationshipDay(entity.grantRelationshipDay);
-		oldEntity.setMorningHour(entity.morningHour);
+		KshstGrantRelationshipPK kshstGrantRelationshipPK = new KshstGrantRelationshipPK(grantRelationship.getCompanyId(), grantRelationship.getSpecialHolidayCode(), grantRelationship.getRelationshipCode());
+		KshstGrantRelationshipItem oldEntity = this.queryProxy().find(kshstGrantRelationshipPK, KshstGrantRelationshipItem.class).get();
+		oldEntity.grantRelationshipDay = grantRelationship.getGrantRelationshipDay().v();
+		oldEntity.morningHour = grantRelationship.getMorningHour() != null ? grantRelationship.getMorningHour().v() : null;;
 		this.commandProxy().update(oldEntity);
 	}
 	/**

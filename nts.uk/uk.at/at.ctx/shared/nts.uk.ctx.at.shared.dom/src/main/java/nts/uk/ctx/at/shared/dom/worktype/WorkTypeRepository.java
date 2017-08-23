@@ -7,9 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktype;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrame;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
-
 /**
  * The Interface WorkTypeRepository.
  */
@@ -67,11 +64,5 @@ public interface WorkTypeRepository {
 	 * @param workTypeCd the work type cd
 	 * @return WorkType
 	 */
-	Optional<WorkType> findByPK(String companyId, String workTypeCd);	
-	
-	/**
-	 * 
-	 * @param worktype
-	 */
-	void add(WorkType worktype);
+	Optional<WorkType> findByPK(String companyId, String workTypeCd);
 }

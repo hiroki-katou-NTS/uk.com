@@ -274,9 +274,9 @@ module nts.uk.at.view.ksm005.b {
                 var dataUpdate: WorkMonthlySettingDto[] = [];
                 for (var item: WorkMonthlySettingDto of self.lstWorkMonthlySetting()) {
                     item.workTypeCode='';
-                    item.workTypeName = nts.uk.resource.getText("KSM005_43");
+                    item.workTypeName = '';
                     item.workingCode='';
-                    item.workingName = nts.uk.resource.getText("KSM005_43");
+                    item.workingName = '';
                     item.typeColor = TypeColor.HOLIDAY;
                     dataUpdate.push(item);
                 }
@@ -344,6 +344,13 @@ module nts.uk.at.view.ksm005.b {
                         dto.workTypeName = childData.selectedWorkTypeName;
                         dto.workingCode = childData.selectedWorkTimeCode;
                         dto.workingName = childData.selectedWorkTimeName;
+                        
+                        if (dto.workTypeCode && dto.workingCode) {
+                            dto.typeColor = TypeColor.ATTENDANCE;
+                        } else {
+                            dto.typeColor = TypeColor.HOLIDAY;
+                        }
+                        
                         self.updateWorkMonthlySettingClose(dto);
                     });
                 }

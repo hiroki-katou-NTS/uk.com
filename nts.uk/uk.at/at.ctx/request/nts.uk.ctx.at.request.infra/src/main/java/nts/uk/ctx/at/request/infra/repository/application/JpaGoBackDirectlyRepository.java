@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyItem;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.repository.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectly;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectlyPK;
 import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
@@ -29,8 +29,8 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	 * @param krqdtGoBackDirectly
 	 * @return
 	 */
-	private GoBackDirectlyItem toDomain(KrqdtGoBackDirectly entity) {
-		return new GoBackDirectlyItem(entity.krqdtGoBackDirectlyPK.companyID, 
+	private GoBackDirectly toDomain(KrqdtGoBackDirectly entity) {
+		return new GoBackDirectly(entity.krqdtGoBackDirectlyPK.companyID, 
 				entity.krqdtGoBackDirectlyPK.appID,
 				new WorkTypeCode(entity.workTypeCD), 
 				new SiftCode(entity.siftCD),
@@ -51,7 +51,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	 * @param domain
 	 * @return
 	 */
-	private KrqdtGoBackDirectly toEntity(GoBackDirectlyItem domain){
+	private KrqdtGoBackDirectly toEntity(GoBackDirectly domain){
 		val entity = new KrqdtGoBackDirectly();
 		entity.krqdtGoBackDirectlyPK = new KrqdtGoBackDirectlyPK();
 		entity.krqdtGoBackDirectlyPK.companyID = domain.getCompanyID();
@@ -73,7 +73,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	}
 
 	@Override
-	public Optional<GoBackDirectlyItem> findByApplicationID(String companyID, String appID) {
+	public Optional<GoBackDirectly> findByApplicationID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_WITH_APP_ID, KrqdtGoBackDirectly.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)

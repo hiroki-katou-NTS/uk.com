@@ -95,14 +95,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             return dfd.promise();
         }
         
-        openGDialog() {
-            let self = this;
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { title: '代行リスト', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
-                nts.uk.ui.block.clear();
-            });
-
-        }
         openBDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
@@ -115,6 +107,24 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.sub.modal('/view/kmf/004/b/index.xhtml', { title: '代行リスト', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
+                nts.uk.ui.block.clear();
+            });
+
+        }
+        
+        openGDialog() {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { title: '続柄に対する付与日数', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
+                nts.uk.ui.block.clear();
+            });
+
+        }                                                                                 
+
+        openHDialog() {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/h/index.xhtml', { title: '続柄の登録', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
                 nts.uk.ui.block.clear();
             });
 

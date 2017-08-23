@@ -7,7 +7,7 @@ module nts.uk.at.view.ksu006.a {
         
         export class ScreenModel {
             
-            isEnableExecute: KnockoutObservable<boolean>;
+            isModeExecute: KnockoutObservable<boolean>;
             
             externalBudgetList: KnockoutObservableArray<ExternalBudgetModel>;
             selectedExtBudgetCode: KnockoutObservable<string>;
@@ -38,7 +38,7 @@ module nts.uk.at.view.ksu006.a {
             constructor() {
                 let self = this;
                 
-                self.isEnableExecute = ko.observable(false);
+                self.isModeExecute = ko.observable(false);
                 
                 self.externalBudgetList = ko.observableArray([]);
                 self.selectedExtBudgetCode = ko.observable('');
@@ -94,7 +94,7 @@ module nts.uk.at.view.ksu006.a {
                 
                 $.when(self.loadAllExternalBudget()).done(() => {
                     if (self.externalBudgetList().length > 0) {
-                        self.isEnableExecute(true);
+                        self.isModeExecute(true);
                         self.selectedExtBudgetCode(self.externalBudgetList()[0].code);
                     }
                     $('#showDialogExternalBudget').focus();
@@ -108,6 +108,13 @@ module nts.uk.at.view.ksu006.a {
             public execute() {
                 let self = this;
                 let dfd = $.Deferred<any>();
+                
+                // valid input
+                if (!self.validInput()) {
+                    nts.uk.ui.dialog.alert("Line start not valid.");
+                    return;
+                }
+                
                 $('#comboExternalBudget').focus();
                 self.uploadFile().done(function() {
                     self.validateFile();
@@ -122,7 +129,18 @@ module nts.uk.at.view.ksu006.a {
                 nts.uk.ui.block.grayout();
                 nts.uk.ui.windows.sub.modal('/view/kdl/024/a/index.xhtml').onClosed(() => {
                     nts.uk.ui.block.clear();
-                    self.loadAllExternalBudget();
+                    self.loadAllExternalBudget().done(() => {
+                        let isEmptyExtBudgetSet: boolean = self.externalBudgetList().length <= 0;
+                        self.isModeExecute(!isEmptyExtBudgetSet);
+                        
+                        // set selected external budget code
+                        if (isEmptyExtBudgetSet) {
+                            self.selectedExtBudgetCode(null);
+                        }
+                        
+                        // update header data preview
+                        self.checkUnitAtr();
+                    });
                 });
             }
             
@@ -136,6 +154,12 @@ module nts.uk.at.view.ksu006.a {
             private checkUnitAtr(): JQueryPromise<boolean> {
                 let self = this;
                 let dfd = $.Deferred<any>();
+                
+                // list external budget is empty ==> show mode Daily.
+                if (nts.uk.text.isNullOrEmpty(self.selectedExtBudgetCode()) {
+                    self.isDataDailyUnit(true);
+                    return;
+                }
                 service.checkUnitAtr(self.selectedExtBudgetCode()).done((state: boolean) => {
                     self.isDataDailyUnit(state);
                     dfd.resolve();
@@ -149,6 +173,12 @@ module nts.uk.at.view.ksu006.a {
                 let self = this;
                 // reset value
                 self.resetDataPreview();
+                
+                // valid input
+                if (!self.validInput()) {
+                    nts.uk.ui.dialog.alert("Line start not valid.");
+                    return;
+                }
                 
                 self.uploadFile().done(function() {
                     service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
@@ -181,6 +211,13 @@ module nts.uk.at.view.ksu006.a {
                     self.nameIdTitleList.push(nts.uk.resource.getText("KSU006_" + (i + 23)));
                     self.nameIdValueList.push(nts.uk.resource.getText("KSU006_" + (i + 73)));
                 }
+            }
+            
+            private validInput(): boolean {
+                if ($('.nts-input').ntsError('hasError')) {
+                    return false;
+                }
+                return true;
             }
             
             private loadAllExternalBudget(): JQueryPromise<any> {

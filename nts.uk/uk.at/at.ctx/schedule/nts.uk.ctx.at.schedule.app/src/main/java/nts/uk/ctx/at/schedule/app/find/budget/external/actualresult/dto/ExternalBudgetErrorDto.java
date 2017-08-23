@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto;
 
-import nts.uk.ctx.at.schedule.dom.budget.external.ExtBudgetWorkplaceCode;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetAccDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetActualValue;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetErrorContent;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorSetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetAccDate;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetActualValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetErrorContent;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetWorkplaceCode;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorSetMemento;
 
 /**
  * The Class ExternalBudgetErrorDto.

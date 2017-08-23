@@ -9,6 +9,7 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentGetMemento;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -22,13 +23,18 @@ public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGe
 	/** The estimate time companys. */
 	private List<KscmtEstTimeComSet> estimateTimeCompanys;
 	
+	/** The estimate price companys. */
+	private List<KscmtEstPriceComSet> estimatePriceCompanys;
+	
 	/**
 	 * Instantiates a new jpa company establishment get memento.
 	 *
 	 * @param estimateTimeCompanys the estimate time companys
 	 */
-	public JpaCompanyEstablishmentGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys){
+	public JpaCompanyEstablishmentGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
+			List<KscmtEstPriceComSet> estimatePriceCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
+		this.estimatePriceCompanys = estimatePriceCompanys;
 	}
 
 	/*
@@ -63,7 +69,8 @@ public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGe
 	 */
 	@Override
 	public EstimateDetailSetting getAdvancedSetting() {
-		return null;
+		return new EstimateDetailSetting(new JpaEstimateDetailSettingCompanyGetMemento(
+				this.estimateTimeCompanys, this.estimatePriceCompanys));
 	}
 
 }
