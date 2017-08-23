@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.company.pub.workplace.PubWorkplaceDto;
 import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
 import nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
@@ -25,6 +26,22 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 	/** The workplace pub. */
 	@Inject
 	private WorkplacePub workplacePub;
+
+	@Override
+	public AcWorkplaceDto findByWkpId(String workplaceId) {
+
+		PubWorkplaceDto item = workplacePub.findByWkpId(workplaceId);
+
+		// Check exist
+		if (item == null) {
+			return null;
+		}
+
+		// Return
+		return new AcWorkplaceDto(item.getCompanyId(), item.getWorkplaceId(),
+				item.getWorkplaceCode(), item.getWorkplaceName(), item.getStartDate(),
+				item.getEndDate());
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -52,6 +69,22 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 			String workplaceId) {
 		return workplacePub.findAllHierarchyChild(companyId, workplaceId).stream().map(
 				item -> new AcWorkplaceHierarchyDto(item.getWorkplaceId(), item.getHierarchyCode()))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter#findByWkpIds
+	 * (java.util.List)
+	 */
+	@Override
+	public List<AcWorkplaceDto> findByWkpIds(List<String> workplaceIds) {
+		return workplacePub.findByWkpIds(workplaceIds).stream()
+				.map(item -> new AcWorkplaceDto(item.getCompanyId(), item.getWorkplaceId(),
+						item.getWorkplaceCode(), item.getWorkplaceName(), item.getStartDate(),
+						item.getEndDate()))
 				.collect(Collectors.toList());
 	}
 
