@@ -277,6 +277,7 @@ project (':at.screen:nts.uk.screen.at.app') {
 	 	compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
+	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
 	}
 }
 
@@ -285,6 +286,7 @@ project (':at.screen:nts.uk.screen.at.infra') {
 		compile project (':at.screen:nts.uk.screen.at.app')
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
+		compile project (':at.ctx:request:nts.uk.ctx.at.request.infra')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 	}
 }
