@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.dom.shift.totaltimes;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 
 /**
  * The Class TotalCondition.
@@ -14,21 +15,21 @@ import lombok.Setter;
 @Setter
 public class TotalCondition {
 
-	/** The upper limit setting atr. */
-	// 上限設定区分
-	private UseAtr upperLimitSettingAtr;
-
 	/** The lower limit setting atr. */
 	// 下限設定区分
 	private UseAtr lowerLimitSettingAtr;
 
-	/** The hresold upper limit. */
-	// 閾値上限
-	private ConditionThresholdLimit thresoldUpperLimit;
+	/** The upper limit setting atr. */
+	// 上限設定区分
+	private UseAtr upperLimitSettingAtr;
 
 	/** The thresold lower limit. */
 	// 閾値下限
 	private ConditionThresholdLimit thresoldLowerLimit;
+
+	/** The hresold upper limit. */
+	// 閾値上限
+	private ConditionThresholdLimit thresoldUpperLimit;
 
 	/**
 	 * Instantiates a new total condition.
@@ -47,6 +48,11 @@ public class TotalCondition {
 		this.lowerLimitSettingAtr = memento.getLowerLimitSettingAtr();
 		this.thresoldUpperLimit = memento.getThresoldUpperLimit();
 		this.thresoldLowerLimit = memento.getThresoldLowerLimit();
+
+		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
+				&& thresoldLowerLimit.greaterThanOrEqualTo(thresoldUpperLimit)) {
+			throw new BusinessException("Msg_210");
+		}
 	}
 
 	/**
