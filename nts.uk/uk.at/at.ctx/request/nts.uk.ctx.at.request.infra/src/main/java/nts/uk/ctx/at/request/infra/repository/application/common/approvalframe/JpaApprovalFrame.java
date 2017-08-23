@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.common.approvalframe;
 
+import java.util.List;
 import java.util.Optional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
@@ -14,7 +15,15 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.Krqdt
 public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepository {
 
 	private final String SELECT = "SELECT c FROM KrqdtApprovalFrame c";
-	private final String SELECT_SINGLE = "SELECT c FROM KrqdtApprovalFrame c WHERE c.KrqdtApprovalFramePK.companyID = :companyID AND c.KrqdtApprovalFramePK.phaseID = :phaseID AND c.KrqdtApprovalFramePK.dispOrder = :dispOrder ";
+	private final String SELECT_SINGLE = "SELECT c FROM KrqdtApprovalFrame c"
+			+ " WHERE c.KrqdtApprovalFramePK.companyID = :companyID"
+			+ " AND c.KrqdtApprovalFramePK.phaseID = :phaseID"
+			+ " AND c.KrqdtApprovalFramePK.dispOrder = :dispOrder ";
+	//get List Phase
+	private final String SELECT_BY_PHASE_ID = SELECT
+			+ " WHERE c.KrqdtApprovalFramePK.companyID = :companyID"
+			+ " AND c.KrqdtApprovalFramePK.phaseID = :phaseID";
+	
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID";
 
 	@Override
@@ -64,6 +73,17 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getPhaseID(), domain.getDispOrder()),
 				domain.getAuthorizerSID(), domain.getSubstituteSID(), domain.getApprovalATR().toString(),
 				domain.getApprovalDate(), domain.getReason().toString(), domain.getConfirmATR().toString());
+	}
+	
+	/**
+	 * get List Frame By Phase ID
+	 */
+	@Override
+	public List<ApprovalFrame> findByPhaseID(String companyID, String phaseID) {
+		return this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
+				.setParameter("companyID", companyID)
+				.setParameter("phaseID", phaseID)
+				.getList(c -> toDomain(c));
 	}
 
 }

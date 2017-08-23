@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Value
-public class GoBackDirectlyItem {
+public class GoBackDirectly {
 
 	private String companyID;
 
@@ -39,7 +39,7 @@ public class GoBackDirectlyItem {
 
 	private UseAtr backHomeAtr2;
 
-	public GoBackDirectlyItem(String companyID, String appID, WorkTypeCode workTypeCD, SiftCode siftCd,
+	public GoBackDirectly(String companyID, String appID, WorkTypeCode workTypeCD, SiftCode siftCd,
 			UseAtr workChangeAtr, WorkTimeGoBack workTimeStart1, WorkTimeGoBack workTimeEnd1, String workLocationCD1,
 			UseAtr goWorkAtr1, UseAtr backHomeAtr1, WorkTimeGoBack workTimeStart2, WorkTimeGoBack workTimeEnd2,
 			String workLocationCD2, UseAtr goWorkAtr2, UseAtr backHomeAtr2) {

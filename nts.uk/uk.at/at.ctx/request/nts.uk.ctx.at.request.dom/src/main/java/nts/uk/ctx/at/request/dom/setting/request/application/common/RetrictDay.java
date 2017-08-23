@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.request.application.primitive;
+package nts.uk.ctx.at.request.dom.setting.request.application.common;
 
 /** 申請受付制限日数 */
 public enum RetrictDay {

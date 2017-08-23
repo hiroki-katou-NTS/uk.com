@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
 
 @Value
-public class GoBackDirectlyCommonSettingItem  {
+public class GoBackDirectlyCommonSetting  {
 	private String companyID;
 
 	private String appID;
@@ -37,7 +37,7 @@ public class GoBackDirectlyCommonSettingItem  {
 
 	private CommentFontColor commentFontColor2;
 
-	public GoBackDirectlyCommonSettingItem(String companyID, String appID, WorkChangeFlg workChangeFlg,
+	public GoBackDirectlyCommonSetting(String companyID, String appID, WorkChangeFlg workChangeFlg,
 			AppDisplayAtr performanceDisplayAtr, CheckAtr contraditionCheckAtr, GoBackWorkType goBackWorkType,
 			CheckAtr lateLeaveEarlySettingAtr, CommentContent commentContent1, FontWeightFlg commentFontWeight1,
 			CommentFontColor commentFontColor1, CommentContent commentContent2, FontWeightFlg commentFontWeight2,
