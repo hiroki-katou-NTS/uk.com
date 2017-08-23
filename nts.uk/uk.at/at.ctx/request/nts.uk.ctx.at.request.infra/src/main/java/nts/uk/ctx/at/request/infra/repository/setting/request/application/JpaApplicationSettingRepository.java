@@ -100,17 +100,17 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		return entity;
 	}
 
-	@Override
-	public Optional<ApplicationSetting> getApplicationSettingByAppType(String companyID, int appType) {
-		return this.queryProxy().query(SELECT_WITH_APP_TYPE, KrqstApplicationSetting.class)
-				.setParameter("companyID", companyID).setParameter("appID", appType).getSingle(c -> toDomain(c));
-	}
-
-	@Override
-	public List<ApplicationSetting> getApplicationSettingByCompany(String companyID) {
-		return this.queryProxy().query(SELECT_WITH_CID, KrqstApplicationSetting.class)
-				.setParameter("companyID", companyID).getList(c -> toDomain(c));
-	}
+//	@Override
+//	public Optional<ApplicationSetting> getApplicationSettingByAppType(String companyID, int appType) {
+//		return this.queryProxy().query(SELECT_WITH_APP_TYPE, KrqstApplicationSetting.class)
+//				.setParameter("companyID", companyID).setParameter("appID", appType).getSingle(c -> toDomain(c));
+//	}
+//
+//	@Override
+//	public List<ApplicationSetting> getApplicationSettingByCompany(String companyID) {
+//		return this.queryProxy().query(SELECT_WITH_CID, KrqstApplicationSetting.class)
+//				.setParameter("companyID", companyID).getList(c -> toDomain(c));
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -138,5 +138,11 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		}
 		;
 		this.commandProxy().updateAll(lstEntity);
+	}
+
+	@Override
+	public Optional<ApplicationSetting> getApplicationSettingByComID(String companyID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -55,7 +55,7 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 				// 承認枠 1～5 のループ
 				for (ApprovalFrame frame : listFrame) {
 					// get 承認者ID
-					String approver = frame.getAuthorizerSID();
+					String approver = frame.getApproverSID();
 					// get 承認区分
 					int approvalAtr = frame.getApprovalATR().value;
 					// 承認者一覧に承認者がいる
