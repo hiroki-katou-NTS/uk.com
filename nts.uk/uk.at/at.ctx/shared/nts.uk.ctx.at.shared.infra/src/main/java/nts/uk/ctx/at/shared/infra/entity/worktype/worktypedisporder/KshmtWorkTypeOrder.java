@@ -15,12 +15,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="KSHMT_WORKTYPE_ORDER")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshmtWorkTypeDispOrder extends UkJpaEntity implements Serializable {
+public class KshmtWorkTypeOrder extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KshmtWorkTypeDispOrderPk  kshmtWorkTypeDispOrderPk;
+	public KshmtWorkTypeOrderPk  kshmtWorkTypeDispOrderPk;
 	
 	/*並び順*/
 	@Column(name = "DISPORDER")
