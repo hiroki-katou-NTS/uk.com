@@ -4,7 +4,7 @@ module kcp009.a.viewmodel {
     import SystemType = kcp009.viewmodel.SystemType;
     
     export class ScreenModel {
-        empList: KnockoutObservableArray<any>;
+        empList: KnockoutObservableArray<EmployeeModel>;
         systemType: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         
@@ -21,14 +21,18 @@ module kcp009.a.viewmodel {
         
         constructor() {
             var self = this;
-            self.empList = ko.observableArray([{id: '01', name: 'name1', businessName: 'BusinessName1', workplaceName: 'workplaceName1'}, 
-            {id: '02', name: 'name2', businessName: 'BusinessName2', workplaceName: 'workplaceName2'}]);
+//            self.empList = ko.observableArray([]);
+            self.empList = ko.observableArray([
+            {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店'}, 
+            {id: '02', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店'},
+            {id: '03', code: 'A000000000003', businessName: '日通　純一郎3', workplaceName: '名古屋支店'}]);
             self.systemType = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(true);
             self.selectedItem = ko.observable(null);
             self.empDisplayCode = ko.observable('empcode');
             self.empBusinessName = ko.observable("Name");
             self.selectedOrdinalNumber = ko.observable(0);
+            self.organizationDesignation = ko.observable(null);
             self.organizationName = ko.observable(null);
             self.selectedNumberOfPeople = ko.observable(null);
             self.keySearch = ko.observable(null);
@@ -37,8 +41,10 @@ module kcp009.a.viewmodel {
             self.listComponentOption = {
                 systemReference: self.systemType(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
-                employeeInputList: self.empList
+                employeeInputList: self.empList,
+                maxRows: 14
             };
+            
         }
         
         

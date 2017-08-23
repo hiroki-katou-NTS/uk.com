@@ -4,47 +4,53 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-	<div id="component-content">
-		<div id="function-panel"  style="border: 1px solid; height: 50px; width: 700px">
-			<div id="component-control-btn" style="background-color: #97D155; width: 140px; height: 40px; padding: 5px 10px; float: left">
-				<button style="width: 70px; height: 30px; background-color: #E0F59E; border-radius: 5px">#{i18n.getText('KCP009_3')}</button>				
-				<button style="width: 30px; height: 30px; background-color: #E0F59E; border-radius: 5px">
+	<div id="component-content" style="height: 500px">
+		<div id="function-panel"  style="border: 1px solid; width: 1200px;">
+			<div id="component-control-btn" style="background-color: #97D155; width: 15%; height: 45px; padding: 5px 10px; margin: 0px; float: left; border-right: 1px solid;">
+				<button style="width: 70px; height: 40px; background-color: #E0F59E; border-radius: 5px" data-bind="click: showEmpList">#{i18n.getText('KCP009_3')}</button>				
+				<button style="width: 35px; height: 35px; background-color: #E0F59E; border-radius: 5px" data-bind="click: previousEmp, enable: isActivePreviousBtn()">
 					<span class="caret-left caret-inline"></span>
 				</button>
-				<button style="width: 30px; height: 30px; background-color: #E0F59E; border-radius: 5px">
+				<button style="width: 35px; height: 35px; background-color: #E0F59E; border-radius: 5px" data-bind="click: nextEmp, enable: isActiveNextBtn()">
 					<span class="caret-right caret-inline"></span>
 				</button>
 			</div>
-			<div style="padding-top: 12px; float: left">
-				<div style="width: 100px; display: inline-block"><span data-bind="text: empDisplayCode"></span></div>
-				<div style="width: 80px; display: inline-block"><span data-bind="text: empBusinessName"></span></div>
+			<div style="padding-top: 12px; float: left; width: 55%; background-color: white; height: 40px; padding: 5px 10px; float: left">
+				<div style="width: 120px; float: left"><span data-bind="text: empDisplayCode"></span></div>
+				<div style="width: 120px; float: left"><span data-bind="text: empBusinessName"></span></div>
 				<com:ko tag="if" bind="isActivePersonalProfile">
-					<i class="icon ">Icon</i>
+					<div class="icon" id="profile-icon"></div>
 				</com:ko>
-				<div style="width: 100px; display: inline-block"><span data-bind="text: selectedNumberOfPeople()"></span></div>
-				<div style="width: 30px; display: inline-block"><span style="width: 20px">#{i18n.getText('KCP009_1')}</span></div>
-				<input style="border-radius: 5px" data-bind="ntsTextEditor: {
+				<div style="width: 120px; padding-left: 10px; float: left"><span data-bind="text: selectedNumberOfPeople"></span></div>
+				<div style="width: 50px; float: left"><span style="width: 20px">#{i18n.getText('KCP009_1')}</span></div>
+				<input style="border-radius: 5px; height: 30px; width: 110px" data-bind="ntsTextEditor: {
 								value: keySearch,
 								name: '#[KCP009_2]',
-								option: { width: '150px';
-									height: '40px' },
-								enable: true}" />
+								option: {
+								enable: true}
+								}" />
 			</div>
-			<div style="padding-top: 12px; float: left">
-				<div style="background-color: #97D155; width: 70px; display: inline-block"><span data-bind="text: Designation()"></span></div>
-				<div style="width: 100px; display: inline-block"><span data-bind="text: organizationName()"></span></div>
+			<div data-bind="if: isDisplayOrganizationName" style="padding-top: 12px; float: left; width: 22%; background-color: white; height: 40px; padding: 5px 10px">
+				<div style="float: left; background-color: #97D155; border: 1px solid; height: 100%; width: 100px;"><span style="margin-left: 20px; margin-top: 20px" data-bind="text: organizationDesignation"></span></div>
+				<div style="width:90px; float: left"><span data-bind="text: organizationName"></span></div>
 			</div>
+			<div style="clear: both;"></div>
 		</div>
+
 		<div id="items-list">
 			<table id="single-list"
-				data-bind="ntsGridList: {								
+				data-bind="ntsGridList: {
 					height: 350,
+					width: 350,
 					dataSource: empList,
+					columns: gridColumns,
 					primaryKey: 'id',
 					name: '#[KCP009_3]',
 					multiple: false,
 					value: selectedItem
 				}"></table>
 		</div>
+
+
 	</div>
 </ui:composition>
