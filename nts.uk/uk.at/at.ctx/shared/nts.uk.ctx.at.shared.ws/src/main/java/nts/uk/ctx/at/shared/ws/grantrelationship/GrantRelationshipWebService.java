@@ -10,10 +10,10 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.grantrelationship.DeleteGrantRelationshipCommand;
 import nts.uk.ctx.at.shared.app.command.grantrelationship.DeleteGrantRelationshipCommandHandler;
-import nts.uk.ctx.at.shared.app.command.grantrelationship.UpdateGrantRelationshipCommand;
-import nts.uk.ctx.at.shared.app.command.grantrelationship.UpdateGrantRelationshipCommandHandler;
-import nts.uk.ctx.at.shared.app.command.relationship.InsertRelationshipCommand;
-import nts.uk.ctx.at.shared.app.command.relationship.InsertRelationshipCommandHandler;
+import nts.uk.ctx.at.shared.app.command.grantrelationship.InsertGrantRelationshipCommand;
+import nts.uk.ctx.at.shared.app.command.grantrelationship.InsertGrantRelationshipCommandHandler;
+/*import nts.uk.ctx.at.shared.app.command.grantrelationship.UpdateGrantRelationshipCommand;
+import nts.uk.ctx.at.shared.app.command.grantrelationship.UpdateGrantRelationshipCommandHandler;*/
 import nts.uk.ctx.at.shared.app.find.grantrelationship.GrantRelationshipDto;
 import nts.uk.ctx.at.shared.app.find.grantrelationship.GrantRelationshipFinder;
 @Path("at/shared/grantrelationship")
@@ -22,9 +22,9 @@ public class GrantRelationshipWebService extends WebService{
 	@Inject
 	private GrantRelationshipFinder finder;
 	@Inject
-	private InsertRelationshipCommandHandler add;
-	@Inject
-	private UpdateGrantRelationshipCommandHandler update;
+	private InsertGrantRelationshipCommandHandler add;
+/*	@Inject
+	private UpdateGrantRelationshipCommandHandler update;*/
 	@Inject
 	private DeleteGrantRelationshipCommandHandler delete;
 	/**
@@ -42,16 +42,18 @@ public class GrantRelationshipWebService extends WebService{
 	 */
 	@POST
 	@Path("add")
-	public void insert(InsertRelationshipCommand command){
+	public void insert(InsertGrantRelationshipCommand command){
 		this.add.handle(command);
 	}
 	/**
 	 * update grant relationship name
 	 * @param command
 	 */
+/*	@POST
+	@Path("update")
 	public void update(UpdateGrantRelationshipCommand command){
 		this.update.handle(command);
-	}
+	}*/
 	/**
 	 * delete grant relationship
 	 * @param command
