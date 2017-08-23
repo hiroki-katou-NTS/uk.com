@@ -32,8 +32,11 @@ public class BPTimeItemSettingFinder {
 
 	private BPTimeItemSettingDto toBPTimeItemSettingDto(BPTimeItemSetting bpTimeItemSetting) {
 		return new BPTimeItemSettingDto(bpTimeItemSetting.getCompanyId().toString(),
-				bpTimeItemSetting.getTiemItemId().toString(), bpTimeItemSetting.getHolidayCalSettingAtr().value,
-				bpTimeItemSetting.getOvertimeCalSettingAtr().value, bpTimeItemSetting.getWorktimeCalSettingAtr().value);
+				bpTimeItemSetting.getTimeItemNo(),
+				bpTimeItemSetting.getHolidayCalSettingAtr().value,
+				bpTimeItemSetting.getOvertimeCalSettingAtr().value,
+				bpTimeItemSetting.getWorktimeCalSettingAtr().value,
+				bpTimeItemSetting.getTimeItemTypeAtr().value);
 	}
 
 }

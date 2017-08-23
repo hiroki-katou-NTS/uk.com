@@ -6,8 +6,14 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class BPTimeItemSettingUpdateCommand {
-	public String timeItemId;
+	
+	public int timeItemNo;
+	
 	public int holidayCalSettingAtr;
+	
 	public int overtimeCalSettingAtr;
+	
 	public int worktimeCalSettingAtr;
+	
+	public int timeItemTypeAtr;
 }
