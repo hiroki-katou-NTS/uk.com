@@ -13,54 +13,56 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 
 @Value
 public class ApplicationSetting {
+	/** 会社ID*/
 	private String companyID;
-
+	/** 実績修正がロック状態なら申請できない*/
 	private AppCanAtr appActLockFlg;
-
+	/** 就業確定済の場合申請できない*/
 	private AppCanAtr appEndWorkFlg;
-
+	/** 日別実績が確認済なら申請できない*/
 	private AppCanAtr appActConfirmFlg;
-
+	/** 時間外深夜の申請を利用する*/
 	private AppCanAtr appOvertimeNightFlg;
-
+	/** 月別実績が確認済なら申請できない*/
 	private AppCanAtr appActMonthConfirmFlg;
-
+	/** 申請理由が必須*/
 	private RequiredFlg requireAppReasonFlg;
-
+	/** 事前事後区分表示*/
 	private AppDisplayAtr displayPrePostFlg;
-
+	/** 就業時間帯の検索*/
 	private AppDisplayAtr displaySearchTimeFlg;
-
+	/** 申請日初期値*/
 	private RetrictDay displayInitDayFlg;
 
 	/** 承認 */
-
+	
+	/** 承認ルートの基準日 */
 	private BaseDateFlg baseDateFlg;
-
+	/** 事前申請の超過メッセージ */
 	private AppDisplayAtr advanceExcessMessDispAtr;
-
+	/** 休出の事前申請 */
 	private AppDisplayAtr hwAdvanceDispAtr;
-
+	/** 休出の実績 */
 	private AppDisplayAtr hwActualDispAtr;
-
+	/** 実績超過メッセージ */
 	private AppDisplayAtr actualExcessMessDispAtr;
-
+	/** 残業の事前申請 */
 	private AppDisplayAtr otAdvanceDispAtr;
-
+	/** 残業の実績 */
 	private AppDisplayAtr otActualDispAtr;
-
+	/** 申請対象日に対して警告表示 */
 	private NumDaysOfWeek warningDateDispAtr;
-
+	/** 申請理由 */
 	private AppDisplayAtr appReasonDispAtr;
-
+	/** 承認時に申請内容を変更できる */
 	private AppCanAtr appContentChangeFlg;
-
+	/** 本人による承認 */
 	private AprovalPersonFlg personApprovalFlg;
-
+	/** 事前申請スケジュール反映 */
 	private ReflectionFlg scheReflectFlg;
-
+	/** 反映時刻優先 */
 	private PriorityFLg priorityTimeReflectFlg;
-
+	/** 外出打刻漏れの箇所へ出勤退勤時刻を反映する */
 	private ReflectionFlg attendentTimeReflectFlg;
 
 	public ApplicationSetting(String companyID, AppCanAtr appActLockFlg, AppCanAtr appEndWorkFlg,
