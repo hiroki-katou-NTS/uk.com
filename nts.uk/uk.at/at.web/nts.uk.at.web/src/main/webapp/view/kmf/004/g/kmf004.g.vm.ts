@@ -159,6 +159,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             let count = 0;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.remove(self.grantSelected()).done(function() {
+                    self.isAlreadySet(false);
                     self.getData();
                     self.grantDay(null);
                     self.morningHour(null);

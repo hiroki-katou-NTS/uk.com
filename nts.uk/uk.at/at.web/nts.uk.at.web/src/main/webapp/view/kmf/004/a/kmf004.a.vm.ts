@@ -98,7 +98,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openGDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { title: '代行リスト', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { title: '代行リスト',  dialogClass: 'no-close' }).onClosed(function(): any {
                 nts.uk.ui.block.clear();
             });
 
