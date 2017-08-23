@@ -40,7 +40,8 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 			commandProxy().insert(new PpemtNewLayout(new PpemtNewLayoutPk(IdentifierUtil.randomUniqueId()),
 					companyId, "001", "レイアウト"));
 
-			entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class).getSingleOrNull();
+			entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
+					.setParameter("companyId", companyId).getSingleOrNull();
 		}
 
 		return Optional.of(toDomain(entity));
