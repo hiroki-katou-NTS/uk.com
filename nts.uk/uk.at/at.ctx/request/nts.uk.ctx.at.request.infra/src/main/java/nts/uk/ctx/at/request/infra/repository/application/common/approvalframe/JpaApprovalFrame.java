@@ -61,7 +61,7 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 
 	@Override
 	public List<ApprovalFrame> getAllApproverByPhaseID(String companyID, String phaseID) {
-		return this.queryProxy().query(SELECT_ALL_BY_PHASE, KrqdtApprovalFrame.class)
+		return this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
 				.setParameter("companyID", companyID)
 				.setParameter("phaseID", phaseID)
 				.getList(c -> toDomain(c));
@@ -89,6 +89,12 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 				.setParameter("companyID", companyID)
 				.setParameter("phaseID", phaseID)
 				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, String dispOrder) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
