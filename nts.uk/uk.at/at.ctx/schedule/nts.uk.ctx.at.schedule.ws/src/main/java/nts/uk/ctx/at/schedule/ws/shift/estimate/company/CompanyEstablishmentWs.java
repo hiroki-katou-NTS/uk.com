@@ -15,7 +15,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.company.CompanyEstablishmentSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.company.CompanyEstablishmentSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.CompanyEstablishmentFinder;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstablishmentDto;
 
 /**
  * The Class CompanyEstablishmentWs.
@@ -40,7 +40,7 @@ public class CompanyEstablishmentWs extends WebService{
 	 */
 	@POST
 	@Path("find/{targetYear}")
-	public CompanyEstimateTimeDto findByTargetYear(@PathParam("targetYear") Integer targetYear) {
+	public CompanyEstablishmentDto findByTargetYear(@PathParam("targetYear") Integer targetYear) {
 		return this.finder.findEstimateTime(targetYear);
 	}
 	

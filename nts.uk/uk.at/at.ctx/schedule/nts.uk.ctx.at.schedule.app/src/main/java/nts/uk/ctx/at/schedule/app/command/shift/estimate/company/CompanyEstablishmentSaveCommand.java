@@ -9,6 +9,8 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateNumberOfDayDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimatePriceDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateTimeDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingGetMemento;
@@ -26,6 +28,12 @@ public class CompanyEstablishmentSaveCommand {
 
 	/** The estimate time. */
 	private CompanyEstimateTimeDto estimateTime;
+	
+	/** The estimate price. */
+	private CompanyEstimatePriceDto estimatePrice;
+	
+	/** The estimate number of day. */
+	private CompanyEstimateNumberOfDayDto estimateNumberOfDay;
 	
 	private int targetYear;
 	
@@ -92,10 +100,11 @@ public class CompanyEstablishmentSaveCommand {
 		public EstimateDetailSetting getAdvancedSetting() {
 			return new EstimateDetailSetting(new EstimateDetailSettingGetMemento() {
 				
-				/**
-				 * Gets the estimate time.
-				 *
-				 * @return the estimate time
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.
+				 * EstimateDetailSettingGetMemento#getEstimateTime()
 				 */
 				@Override
 				public List<EstimateTimeSetting> getEstimateTime() {
@@ -104,25 +113,30 @@ public class CompanyEstablishmentSaveCommand {
 					estimateTimeSettings.addAll(command.getEstimateTime().toListMonthly());
 					return estimateTimeSettings;
 				}
-				
-				/**
-				 * Gets the estimate price.
-				 *
-				 * @return the estimate price
+
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.
+				 * EstimateDetailSettingGetMemento#getEstimatePrice()
 				 */
 				@Override
 				public List<EstimatedPriceSetting> getEstimatePrice() {
-					return new ArrayList<>();
+					return command.getEstimatePrice().toPriceSetting();
 				}
-				
-				/**
-				 * Gets the estimate number of day.
-				 *
-				 * @return the estimate number of day
+
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.
+				 * EstimateDetailSettingGetMemento#getEstimateNumberOfDay()
 				 */
 				@Override
 				public List<EstimateNumberOfDay> getEstimateNumberOfDay() {
-					return new ArrayList<>();
+					List<EstimateNumberOfDay> estimateDaysSettings = new ArrayList<>();
+					estimateDaysSettings.add(command.getEstimateNumberOfDay().toYearly());
+					estimateDaysSettings.addAll(command.getEstimateNumberOfDay().toListMonthly());
+					return estimateDaysSettings;
 				}
 			});
 		}
