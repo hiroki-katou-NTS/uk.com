@@ -7,12 +7,12 @@ package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto;
 import lombok.Builder;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTime;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExecutionTimeGetMemento;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetFileName;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionState;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExecutionTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExecutionTimeGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExtBudgetFileName;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogGetMemento;
 
 /**
  * The Class ExternalBudgetLogDto.

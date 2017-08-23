@@ -2,17 +2,17 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
+package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class ExtBudgetActualValue.
- * 外部予算実績受入値
+ * The Class ExtBudgetFileName.
+ * 外部予算実績受入ファイル名
  */
-@StringMaxLength(100)
-public class ExtBudgetActualValue extends StringPrimitiveValue<ExtBudgetActualValue> {
+@StringMaxLength(200)
+public class ExtBudgetFileName extends StringPrimitiveValue<ExtBudgetFileName> {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -22,7 +22,7 @@ public class ExtBudgetActualValue extends StringPrimitiveValue<ExtBudgetActualVa
      *
      * @param rawValue the raw value
      */
-    public ExtBudgetActualValue(String rawValue) {
+    public ExtBudgetFileName(String rawValue) {
         super(rawValue);
     }
 
