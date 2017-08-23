@@ -21,6 +21,9 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.entity.login.SgwdtContract;
 import nts.uk.ctx.sys.gateway.entity.login.SgwdtContract_;
 
+/**
+ * The Class JpaContractRepository.
+ */
 @Stateless
 public class JpaContractRepository extends JpaRepository implements ContractRepository {
 

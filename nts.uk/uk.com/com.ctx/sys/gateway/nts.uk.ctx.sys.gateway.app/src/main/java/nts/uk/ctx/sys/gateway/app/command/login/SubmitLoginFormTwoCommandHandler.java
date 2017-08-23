@@ -15,6 +15,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
@@ -22,7 +23,6 @@ import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SubmitLoginFormTwoCommandHandler.
@@ -34,7 +34,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	@Inject
 	UserRepository userRepository;
 
-	/** The employee code setting repo. */
+	/** The employee code setting adapter. */
 	@Inject
 	EmployeeCodeSettingAdapter employeeCodeSettingAdapter;
 
@@ -52,16 +52,17 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		String companyCode = command.getCompanyCode();
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
-		String companyId = AppContexts.user().contractCode() + "-" + companyCode;
+		//TODO 0 = Contract code
+		String companyId = "0" + "-" + companyCode;
 		// check validate input
 		this.checkInput(command);
 
-		// TODO edit employee code
+		// Edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
-		// TODO get domain 社員
+		// Get domain 社員
 		EmployeeDto em = this.getEmployee(companyId, employeeCode);
-		// TODO get User by associatedPersonId
-		User user = this.getUser(em.getEmployeeId().toString());// TODO
+		// Get User by associatedPersonId
+		User user = this.getUser(em.getEmployeeId().toString());
 		// check password
 		this.compareHashPassword(user, password);
 		// check time limit
@@ -76,16 +77,16 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	private void checkInput(SubmitLoginFormTwoCommand command) {
 
 		// check input company code
-		if (command.getCompanyCode() == null) {
-			throw new BusinessException("#Msg_311");
+		if (command.getCompanyCode().isEmpty()||command.getCompanyCode() == null) {
+			throw new BusinessException("Msg_311");
 		}
 		// check input employee code
-		if (command.getEmployeeCode() == null) {
-			throw new BusinessException("#Msg_312");
+		if (command.getEmployeeCode().isEmpty()||command.getEmployeeCode() == null) {
+			throw new BusinessException("Msg_312");
 		}
 		// check input password
-		if (command.getPassword() == null) {
-			throw new BusinessException("#Msg_310");
+		if (command.getPassword().isEmpty()|| command.getPassword() == null) {
+			throw new BusinessException("Msg_310");
 		}
 	}
 
@@ -106,6 +107,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 				// not edit employeeCode
 				return employeeCode;
 			} else {
+				//update employee code
 				switch (editType) {
 				case ZeroBefore:
 					employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
@@ -141,7 +143,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		if (em.isPresent()) {
 			return em.get();
 		} else {
-			throw new BusinessException("#Msg_301");
+			throw new BusinessException("Msg_301");
 		}
 	}
 
@@ -156,7 +158,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		if (user.isPresent()) {
 			return user.get();
 		} else {
-			throw new BusinessException("#Msg_301");
+			throw new BusinessException("Msg_301");
 		}
 	}
 
@@ -168,8 +170,8 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	 */
 	private void compareHashPassword(User user, String password) {
 		// TODO compare hash string here
-		if (!user.getPassword().v().equals(password)) {
-			throw new BusinessException("#Msg_302");
+		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(user.getPassword().v())) {
+			throw new BusinessException("Msg_302");
 		}
 	}
 
@@ -180,7 +182,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	 */
 	private void checkLimitTime(User user) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
-			throw new BusinessException("#Msg_316");
+			throw new BusinessException("Msg_316");
 		}
 	}
 }
