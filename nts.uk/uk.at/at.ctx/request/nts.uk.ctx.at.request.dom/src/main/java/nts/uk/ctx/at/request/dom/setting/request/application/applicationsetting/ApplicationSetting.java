@@ -5,6 +5,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AprovalPersonFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.PriorityFLg;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.ReflectionFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictDay;
@@ -33,7 +34,9 @@ public class ApplicationSetting {
 	private RetrictDay displayInitDayFlg;
 
 	/** 承認 */
-	
+
+	private BaseDateFlg baseDateFlg;
+
 	private AppDisplayAtr advanceExcessMessDispAtr;
 
 	private AppDisplayAtr hwAdvanceDispAtr;
@@ -63,12 +66,11 @@ public class ApplicationSetting {
 	public ApplicationSetting(String companyID, AppCanAtr appActLockFlg, AppCanAtr appEndWorkFlg,
 			AppCanAtr appActConfirmFlg, AppCanAtr appOvertimeNightFlg, AppCanAtr appActMonthConfirmFlg,
 			RequiredFlg requireAppReasonFlg, AppDisplayAtr displayPrePostFlg, AppDisplayAtr displaySearchTimeFlg,
-			RetrictDay displayInitDayFlg, AppDisplayAtr advanceExcessMessDispAtr, AppDisplayAtr hwAdvanceDispAtr,
-			AppDisplayAtr hwActualDispAtr, AppDisplayAtr actualExcessMessDispAtr, AppDisplayAtr otAdvanceDispAtr,
-			AppDisplayAtr otActualDispAtr, NumDaysOfWeek warningDateDispAtr, AppDisplayAtr appReasonDispAtr,
-			AppCanAtr appContentChangeFlg, AprovalPersonFlg personApprovalFlg, ReflectionFlg scheReflectFlg,
-			PriorityFLg priorityTimeReflectFlg, ReflectionFlg attendentTimeReflectFlg) {
-		super();
+			RetrictDay displayInitDayFlg, BaseDateFlg baseDateFlg, AppDisplayAtr advanceExcessMessDispAtr,
+			AppDisplayAtr hwAdvanceDispAtr, AppDisplayAtr hwActualDispAtr, AppDisplayAtr actualExcessMessDispAtr,
+			AppDisplayAtr otAdvanceDispAtr, AppDisplayAtr otActualDispAtr, NumDaysOfWeek warningDateDispAtr,
+			AppDisplayAtr appReasonDispAtr, AppCanAtr appContentChangeFlg, AprovalPersonFlg personApprovalFlg,
+			ReflectionFlg scheReflectFlg, PriorityFLg priorityTimeReflectFlg, ReflectionFlg attendentTimeReflectFlg) {
 		this.companyID = companyID;
 		this.appActLockFlg = appActLockFlg;
 		this.appEndWorkFlg = appEndWorkFlg;
@@ -79,6 +81,7 @@ public class ApplicationSetting {
 		this.displayPrePostFlg = displayPrePostFlg;
 		this.displaySearchTimeFlg = displaySearchTimeFlg;
 		this.displayInitDayFlg = displayInitDayFlg;
+		this.baseDateFlg = baseDateFlg;
 		this.advanceExcessMessDispAtr = advanceExcessMessDispAtr;
 		this.hwAdvanceDispAtr = hwAdvanceDispAtr;
 		this.hwActualDispAtr = hwActualDispAtr;

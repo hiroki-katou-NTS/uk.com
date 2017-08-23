@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AprovalPersonFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.PriorityFLg;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.ReflectionFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictDay;
@@ -49,6 +50,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.displaySearchTimeFlg,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.displayInitDayFlg,RetrictDay.class),
 				/*承認*/
+				EnumAdaptor.valueOf(entity.baseDateFlg,BaseDateFlg.class),
 				EnumAdaptor.valueOf(entity.advanceExcessMessDispAtr,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.hwAdvanceDispAtr,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.hwActualDispAtr,AppDisplayAtr.class),
@@ -82,6 +84,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		entity.displaySearchTimeFlg = domain.getDisplaySearchTimeFlg().value;
 		entity.displayInitDayFlg = domain.getDisplayInitDayFlg().value;
 		/*承認*/
+		entity.baseDateFlg = domain.getBaseDateFlg().value;
 		entity.advanceExcessMessDispAtr = domain.getAdvanceExcessMessDispAtr().value;
 		entity.hwAdvanceDispAtr = domain.getHwActualDispAtr().value;
 		entity.actualExcessMessDispAtr = domain.getActualExcessMessDispAtr().value;

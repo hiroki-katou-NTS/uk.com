@@ -46,7 +46,10 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	public int displayInitDayFlg;
 
 	/** 承認 */
-
+	
+	@Column(name = "BASE_DATE_FLG")
+	public int baseDateFlg;
+	
 	@Column(name = "ADVANCE_EXCESS_MESS_DISP_ATR")
 	public int advanceExcessMessDispAtr;
 
