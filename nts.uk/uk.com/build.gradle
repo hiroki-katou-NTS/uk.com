@@ -552,6 +552,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project(':shr:nts.uk.shr.ws')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		
+		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
 
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.ac')
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.app')
