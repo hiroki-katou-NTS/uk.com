@@ -7,10 +7,10 @@ package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 /**
  * The Enum CompletionState.
  */
-public enum Encoding {
+public enum ExtBudgetCharset {
     
     /** The Shift JIS. */
-    Shift_JIS(1, "Shift JIS", "Shift JIS");
+    Shift_JIS(3, "Shift JIS", "Shift JIS");
 
     /** The value. */
     public int value;
@@ -22,7 +22,7 @@ public enum Encoding {
     public String description;
 
     /** The Constant values. */
-    private final static Encoding[] values = Encoding.values();
+    private final static ExtBudgetCharset[] values = ExtBudgetCharset.values();
 
     /**
      * Instantiates a new nursing category.
@@ -31,7 +31,7 @@ public enum Encoding {
      * @param nameId the name id
      * @param description the description
      */
-    private Encoding(int value, String nameId, String description) {
+    private ExtBudgetCharset(int value, String nameId, String description) {
         this.value = value;
         this.nameId = nameId;
         this.description = description;
@@ -43,14 +43,14 @@ public enum Encoding {
      * @param value the value
      * @return the nursing category
      */
-    public static Encoding valueOf(Integer value) {
+    public static ExtBudgetCharset valueOf(Integer value) {
         // Invalid object.
         if (value == null) {
             return null;
         }
 
         // Find value.
-        for (Encoding val : Encoding.values) {
+        for (ExtBudgetCharset val : ExtBudgetCharset.values) {
             if (val.value == value) {
                 return val;
             }

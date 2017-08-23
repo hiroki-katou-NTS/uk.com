@@ -15,8 +15,10 @@ public interface WorkTypeRepository {
 	/**
 	 * Gets the possible work type.
 	 *
-	 * @param companyId the company id
-	 * @param lstPossible the lst possible
+	 * @param companyId
+	 *            the company id
+	 * @param lstPossible
+	 *            the lst possible
 	 * @return the possible work type
 	 */
 	List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible);
@@ -29,12 +31,12 @@ public interface WorkTypeRepository {
 	 * @return the list
 	 */
 	List<WorkType> findByCompanyId(String companyId);
-	
 
 	/**
 	 * Find not deprecated.
 	 *
-	 * @param companyId the company id
+	 * @param companyId
+	 *            the company id
 	 * @return the list
 	 */
 	List<WorkType> findNotDeprecated(String companyId);
@@ -42,8 +44,10 @@ public interface WorkTypeRepository {
 	/**
 	 * Find not deprecated by list code.
 	 *
-	 * @param companyId the company id
-	 * @param codes the codes
+	 * @param companyId
+	 *            the company id
+	 * @param codes
+	 *            the codes
 	 * @return the list
 	 */
 	List<WorkType> findNotDeprecatedByListCode(String companyId, List<String> codes);
@@ -51,8 +55,10 @@ public interface WorkTypeRepository {
 	/**
 	 * Find by companyId and displayAtr.
 	 *
-	 * @param companyId the company id
-	 * @param displayAtr the display atr
+	 * @param companyId
+	 *            the company id
+	 * @param displayAtr
+	 *            the display atr
 	 * @return List WorkType
 	 */
 	List<WorkType> findByCIdAndDisplayAtr(String companyId, int displayAtr);
@@ -60,9 +66,18 @@ public interface WorkTypeRepository {
 	/**
 	 * Find by companyId and workTypeCd.
 	 *
-	 * @param companyId the company id
-	 * @param workTypeCd the work type cd
+	 * @param companyId
+	 *            the company id
+	 * @param workTypeCd
+	 *            the work type cd
 	 * @return WorkType
 	 */
 	Optional<WorkType> findByPK(String companyId, String workTypeCd);
+
+	/**
+	 * Insert workType to DB
+	 * 
+	 * @param workType
+	 */
+	void add(WorkType workType);
 }

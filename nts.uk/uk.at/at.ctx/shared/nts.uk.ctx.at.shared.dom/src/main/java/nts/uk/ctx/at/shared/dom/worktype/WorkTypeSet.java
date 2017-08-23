@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
-import java.util.UUID;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 
 @Getter
@@ -14,7 +12,7 @@ public class WorkTypeSet {
 
 	private WorkTypeCode workTypeCd;
 	
-	private WorkTypeUnit workAtr;
+	private WorkAtr workAtr;
 	
 	private Boolean digestPublicHd;
 	
@@ -24,9 +22,9 @@ public class WorkTypeSet {
 	
 	private CloseAtr closeAtr;
 	
-	private UUID sumFrame;
+	private Integer sumFrame;
 	
-	private UUID hodidaySet;
+	private Integer hodidaySet;
 	
 	private Boolean timeLeaveWork;
 	

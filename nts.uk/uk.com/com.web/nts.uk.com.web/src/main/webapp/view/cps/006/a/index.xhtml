@@ -25,7 +25,8 @@
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
-				<div id="content-left" data-bind="ntsPanel:{width: '315px', height: '590px', direction: 'right', showIcon: false, visible: true}">
+				<div id="content-left"
+					data-bind="ntsPanel:{width: '295px', height: '500px', direction: 'right', showIcon: false, visible: true}">
 					<div id="isAbolition" data-bind="ntsCheckBox: { checked: true }"
 						tabindex="5">#{i18n.getText('CPS006_4')}</div>
 					<div id="search" tabindex="6"
@@ -47,7 +48,7 @@
 						rows:15 }">
 					</table>
 				</div>
-				<div id="content-right">
+				<div id="content-right" >
 					<div>
 						<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
 							<label>#{i18n.getText('CPS006_8')}</label>
@@ -61,7 +62,7 @@
 							<label>#{i18n.getText('CPS006_9')}</label>
 						</div>
 						<input id="ctgName"></input>
-						<div id="isAbolition" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('CPS006_11')}</div>
+						<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('CPS006_11')}</div>
 					</div>
 
 					<div>
@@ -71,28 +72,39 @@
 						<label id="historyType">HISTORY</label>
 					</div>
 
-					<div>
-						<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
-							<label>#{i18n.getText('CPS006_13')}</label>
-						</div>
-						<label id="continue">CONTINUE</label>
-						<button
-							data-bind="ntsHelpButton: {image: 'helpcas006.png', position: 'right+50 top', enable: true }">?</button>
+					<div  data-bind="with: currentCategory">	
+							<com:ko-if bind="categoryType === 2">
+								<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
+									<label>#{i18n.getText('CPS006_13')}</label>
+								</div>
+								<label id="continue">CONTINUE</label>
+								<button
+									data-bind="ntsHelpButton: {image: 'helpcas006.png', position: 'right+50 top', enable: true }">?</button>
+							</com:ko-if>
+							
+							<com:ko-if bind="(categoryType === 3)">
+								<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
+									<label>#{i18n.getText('CPS006_18')}</label>
+								</div>
+								<label id="continue">CONTINUE</label>
+								<button
+									data-bind="ntsHelpButton: {image: 'helpcps1.png', position: 'right+50 top', enable: true }">?</button>
+							</com:ko-if>
 					</div>
 
-					<div style="margin-top:10px;">
-						<div id='col1' >
-							<button>#{i18n.getText('CPS006_14')} </button>
+					<div style="margin-top: 10px;">
+						<div id='col1'>
+							<button>#{i18n.getText('CPS006_14')}</button>
 						</div>
-					<table id="item_grid"
-						data-bind="ntsGridList: {	
+						<table id="item_grid"
+							data-bind="ntsGridList: {	
 						dataSource: itemList ,
 						primaryKey: 'id' ,
 						columns: itemColums ,
 						multiple: false,
 						value: currentItemId ,
 						rows:10 }">
-					</table>						
+						</table>
 					</div>
 
 

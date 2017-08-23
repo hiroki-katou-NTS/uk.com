@@ -31,7 +31,8 @@
 	margin-top: 15px;
 }
 
-#oneday-set-1, #oneday-set-5, #oneday-set-6, #oneday-set-7, #oneday-set-8 {
+#oneday-set-1, #oneday-set-5, #oneday-set-6, #oneday-set-7,
+	#oneday-set-8 {
 	margin-left: 180px;
 	margin-top: 20px;
 }
@@ -52,4 +53,12 @@
 #oneday-set-4 {
 	margin-left: 180px;
 	margin-top: 20px;
+}
+
+#switch-language {
+	display: inline-block;
+}
+
+button.ntsSwitchLanguage {
+	height: 30px !important;
 }

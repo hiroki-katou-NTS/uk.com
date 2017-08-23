@@ -155,8 +155,6 @@ module nts.uk.at.view.ksm001.a {
                 service.findAllMonthlyEstimateTime(2017).done(function(data) {
                     self.companyTimeModel().updateData(data);
                     
-                    console.log(self.companyTimeModel());
-                    console.log(data);
                     self.isLoading(false);
                     dfd.resolve();
                 });
@@ -264,10 +262,22 @@ module nts.uk.at.view.ksm001.a {
                 dfd.resolve(dataRes);
                 return dfd.promise();
             }
+            
+            
+           /**
+            * function on click saveCompanyEstablishment action
+            */
+            public saveCompanyEstablishment(): void {
+                var self = this;
+                service.saveCompanyEstimate(2017, self.companyTimeModel().toDto()).done(function(){
+                   
+                });
+            }
 
         }
 
         export class EstimateTimeModel {
+            month: KnockoutObservable<number>;
             time1st: KnockoutObservable<number>;
             time2nd: KnockoutObservable<number>;
             time3rd: KnockoutObservable<number>;
@@ -275,6 +285,7 @@ module nts.uk.at.view.ksm001.a {
             time5th: KnockoutObservable<number>;
 
             constructor() {
+                this.month = ko.observable(1);
                 this.time1st = ko.observable(0);
                 this.time2nd = ko.observable(0);
                 this.time3rd = ko.observable(0);
@@ -283,11 +294,24 @@ module nts.uk.at.view.ksm001.a {
             }
 
             updateData(dto: EstimateTimeDto) {
+                this.month(dto.month);
                 this.time1st(dto.time1st);
                 this.time2nd(dto.time2nd);
                 this.time3rd(dto.time3rd);
                 this.time4th(dto.time4th);
                 this.time5th(dto.time5th);
+            }
+            
+            toDto(): EstimateTimeDto{
+                var dto: EstimateTimeDto = {
+                    month: this.month(),
+                    time1st: this.time1st(),
+                    time2nd: this.time2nd(),
+                    time3rd: this.time3rd(),
+                    time4th: this.time4th(),
+                    time5th: this.time5th()
+                }
+                return dto; 
             }
         }
         
@@ -308,6 +332,18 @@ module nts.uk.at.view.ksm001.a {
                     this.monthlyEstimates.push(model);
                 }
                 this.yearlyEstimate.updateData(dto.yearlyEstimate);
+            }
+            
+            toDto(): CompanyEstimateTimeDto{
+                var monthlyEstimateTime: EstimateTimeDto[] = [];
+                for (var item of this.monthlyEstimates) {
+                    monthlyEstimateTime.push(item.toDto());
+                }
+                var dto: CompanyEstimateTimeDto = {
+                    monthlyEstimates: monthlyEstimateTime,
+                    yearlyEstimate: this.yearlyEstimate.toDto()
+                };
+                return dto;
             }
         }
         
