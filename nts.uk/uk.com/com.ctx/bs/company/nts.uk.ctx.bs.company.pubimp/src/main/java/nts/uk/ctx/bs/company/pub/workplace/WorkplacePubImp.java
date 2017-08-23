@@ -5,12 +5,14 @@
 package nts.uk.ctx.bs.company.pub.workplace;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
 
 /**
@@ -51,6 +53,48 @@ public class WorkplacePubImp implements WorkplacePub {
 		return workplaceRepository.findAllHierarchyChild(companyId, workplaceId).stream()
 				.map(item -> new PubWorkplaceHierarchyDto(item.getWorkplaceId().v(),
 						item.getHierarchyCode()))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.company.pub.workplace.WorkplacePub#findByWpkId(java.lang.
+	 * String)
+	 */
+	@Override
+	public PubWorkplaceDto findByWkpId(String workplaceId) {
+		// Query
+		Optional<Workplace> optWorkplace = workplaceRepository.findByWkpId(workplaceId);
+
+		// Check exist
+		if (!optWorkplace.isPresent()) {
+			return null;
+		}
+
+		// Get item
+		Workplace item = optWorkplace.get();
+
+		// Return
+		return new PubWorkplaceDto(item.getCompanyId().v(), item.getWorkplaceId().v(),
+				item.getWorkplaceCode().v(), item.getWorkplaceName().v(),
+				item.getPeriod().getStartDate(), item.getPeriod().getEndDate());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.company.pub.workplace.WorkplacePub#findByWpkIds(java.util.
+	 * List)
+	 */
+	@Override
+	public List<PubWorkplaceDto> findByWkpIds(List<String> workplaceIds) {
+		return workplaceRepository.findByWkpIds(workplaceIds).stream()
+				.map(item -> new PubWorkplaceDto(item.getCompanyId().v(), item.getWorkplaceId().v(),
+						item.getWorkplaceCode().v(), item.getWorkplaceName().v(),
+						item.getPeriod().getStartDate(), item.getPeriod().getEndDate()))
 				.collect(Collectors.toList());
 	}
 

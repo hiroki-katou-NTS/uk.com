@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdw002.a {
     export module viewmodel {
+        import href = nts.uk.request.jump;
         import getText = nts.uk.resource.getText;
         import infor = nts.uk.ui.dialog.info;
         export class ScreenModel {
@@ -56,6 +57,12 @@ module nts.uk.at.view.kdw002.a {
                 });
 
             }
+            
+            navigateView(): void {
+                var self = this;
+                var path = "/view/kdw/006/index.xhtml";
+               href(path);
+            }
 
             submitData(): void {
                 var self = this;
@@ -65,6 +72,7 @@ module nts.uk.at.view.kdw002.a {
                 });
 
             }
+             
 
 
 

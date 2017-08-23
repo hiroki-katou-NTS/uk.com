@@ -9,19 +9,19 @@ public interface GoBackDirectlyCommonSettingRepository {
 	 * @param appID
 	 * @return
 	 */
-	public Optional<GoBackDirectlyCommonSettingItem> findByAppID(String companyID, String appID);
+	public Optional<GoBackDirectlyCommonSetting> findByAppID(String companyID, String appID);
 	/**
 	 * @param goBackDirectlyCommonSettingItem
 	 */
-	public void insert(GoBackDirectlyCommonSettingItem goBackDirectlyCommonSettingItem);
+	public void insert(GoBackDirectlyCommonSetting goBackDirectlyCommonSettingItem);
 	
 	/**
 	 * @param goBackDirectlyCommonSettingItem
 	 */
-	public void update(GoBackDirectlyCommonSettingItem goBackDirectlyCommonSettingItem);
+	public void update(GoBackDirectlyCommonSetting goBackDirectlyCommonSettingItem);
 	
 	/**
 	 * @param goBackDirectlyCommonSettingItem
 	 */
-	public void delete(GoBackDirectlyCommonSettingItem goBackDirectlyCommonSettingItem);
+	public void delete(GoBackDirectlyCommonSetting goBackDirectlyCommonSettingItem);
 }

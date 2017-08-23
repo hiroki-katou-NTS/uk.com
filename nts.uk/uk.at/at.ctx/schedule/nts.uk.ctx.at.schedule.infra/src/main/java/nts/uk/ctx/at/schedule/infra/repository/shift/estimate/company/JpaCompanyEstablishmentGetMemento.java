@@ -26,6 +26,7 @@ public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGe
 	/** The estimate price companys. */
 	private List<KscmtEstPriceComSet> estimatePriceCompanys;
 	
+	
 	/**
 	 * Instantiates a new jpa company establishment get memento.
 	 *
