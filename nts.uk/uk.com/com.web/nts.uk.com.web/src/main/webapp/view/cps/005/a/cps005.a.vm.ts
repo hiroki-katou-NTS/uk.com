@@ -10,6 +10,7 @@ module nts.uk.com.view.cps005.a {
     export module viewmodel {
         export class ScreenModel {
             currentData: KnockoutObservable<DataModel>;
+            isUpdate: boolean = false;
             constructor() {
                 let self = this,
                     dataModel = new DataModel(null);
@@ -20,31 +21,81 @@ module nts.uk.com.view.cps005.a {
                 let self = this,
                     dfd = $.Deferred();
                 new service.Service().getAllPerInfoCtg().done(function(data: IData) {
-                    self.currentData(new DataModel(data));
+                    self.isUpdate = false;
                     if (data && data.categoryList && data.categoryList.length > 0) {
+                        self.currentData().categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
+                        self.isUpdate = true;
                         self.currentData().perInfoCtgSelectCode(data.categoryList[0].id);
+                    } else {
+                        self.register();
                     }
                     dfd.resolve();
-                }).fail(error => { });
+                })
+                return dfd.promise();
+            }
+
+            reloadData(newCtgName?: string) {
+                let self = this,
+                    dfd = $.Deferred();
+                new service.Service().getAllPerInfoCtg().done(function(data: IData) {
+                    self.isUpdate = false;
+                    if (data && data.categoryList && data.categoryList.length > 0) {
+                        self.currentData().categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
+                        self.isUpdate = true;
+                        if (newCtgName) {
+                            let newCtg = _.find(data.categoryList, item => { return item.categoryName == newCtgName });
+                            self.currentData().perInfoCtgSelectCode(newCtg ? newCtg.id : "");
+                        }
+                    } else {
+                        self.register();
+                    }
+                    dfd.resolve();
+                })
                 return dfd.promise();
             }
 
             register() {
                 let self = this;
+                nts.uk.ui.errors.clearAll();
                 self.currentData().perInfoCtgSelectCode("");
                 self.currentData().currentCtgSelected(new PerInfoCtgModel(null));
+                self.isUpdate = false;
+                self.currentData().historyClassEnable(true);
+                $("#category-name-control").focus();
             }
 
             addUpdateData() {
-                let self = this,
-                    newCategory = new AddUpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
-                new service.Service().addPerInfoCtg(newCategory).done().fail(error => {
-                    nts.uk.ui.dialog.alertError({ messageId: error });
-                });
+                let self = this;
+                if (!self.currentData().currentCtgSelected().perInfoCtgName()) {
+                    return;
+                }
+                if (self.isUpdate) {
+                    let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
+                    new service.Service().updatePerInfoCtg(updateCategory).done(() => {
+                        self.reloadData();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
+                    });
+                } else {
+                    let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
+                    new service.Service().addPerInfoCtg(newCategory).done(() => {
+                        self.reloadData(newCategory.categoryName);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.dialog.confirm({ messageId: "Msg_213" }).ifYes(() => {
+                                alert("Show dialog B");
+                            }).ifNo(() => {
+                                return;
+                            })
+                        });
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
+                    });
+                }
             }
 
-            updateData() {
-
+            openDialogB() {
+                alert("open dialog B");
             }
         }
     }
@@ -65,7 +116,7 @@ module nts.uk.com.view.cps005.a {
             { value: 1, name: nts.uk.resource.getText("CPS005_55") },
             { value: 2, name: nts.uk.resource.getText("CPS005_56") },
         ];
-
+        historyClassEnable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IData) {
             let self = this;
             if (data) {
@@ -75,13 +126,14 @@ module nts.uk.com.view.cps005.a {
             //subscribe select category code
             self.perInfoCtgSelectCode.subscribe(newId => {
                 if (textUK.isNullOrEmpty(newId)) return;
+                nts.uk.ui.errors.clearAll();
                 new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
                     self.currentCtgSelected(new PerInfoCtgModel(data));
+                    self.historyClassEnable(false)
                 });
             });
         }
     }
-
 
     export class PerInfoCtgModel {
         id: string = "";
@@ -153,11 +205,27 @@ module nts.uk.com.view.cps005.a {
         }
     }
 
-    export class AddUpdatePerInfoCtgModel {
+    export class AddPerInfoCtgModel {
         categoryName: string;
         categoryType: number;
         constructor(data: PerInfoCtgModel) {
             let self = this;
+            self.categoryName = data.perInfoCtgName();
+            if (data.historyClassSelected() == 2) {
+                self.categoryType = data.singleMulTypeSelected();
+            } else {
+                self.categoryType = data.historyTypesSelected() + 2;
+            }
+        }
+    }
+
+    export class UpdatePerInfoCtgModel {
+        id: string
+        categoryName: string;
+        categoryType: number;
+        constructor(data: PerInfoCtgModel) {
+            let self = this;
+            self.id = data.id;
             self.categoryName = data.perInfoCtgName();
             if (data.historyClassSelected() == 2) {
                 self.categoryType = data.singleMulTypeSelected();

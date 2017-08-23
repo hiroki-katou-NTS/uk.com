@@ -70,7 +70,7 @@ public class JpaUserGetMemento implements UserGetMemento {
 	 */
 	@Override
 	public ContractCode getContractCode() {
-		return new ContractCode(Long.toString(this.entity.getContractCd()));
+		return new ContractCode(this.entity.getContractCd());
 	}
 
 	/*

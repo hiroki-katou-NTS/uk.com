@@ -1,28 +1,61 @@
 package nts.uk.shr.com.context;
 
-public class LoginUserContext {
-
-	public String companyCode() {
-		return "0001";
-	}
+public interface LoginUserContext {
 	
-	public String employeeCode() {
-		return "1234567890AB";
-	} 
+	public static final String KEY_SESSION_SCOPED = "LoginUserContext";
 	
-	public String personId(){
-		return "000426a2-181b-4c7f-abc8-6fff9f4f983a";
-	} 
+	public boolean hasLoggedIn();
 	
-	public String employeeId(){
-		return "000426a2-181b-4c7f-abc8-6fff9f4f983a";
-	}
+	public boolean isEmployee();
 	
-	public String contractCode() {
-		return "000000000000";
-	}
+	/**
+	 * Returns user ID.
+	 * @return user ID
+	 */
+	public String userId();
 	
-	public String companyId() {
-		return this.contractCode() + "-" + this.companyCode();
-	}
+	/**
+	 * Returns login code.
+	 * @return login code
+	 */
+	public String loginCode();
+	
+	/**
+	 * Returns person ID.
+	 * @return person ID
+	 */
+	public String personId();
+	
+	/**
+	 * Returns contract code.
+	 * @return contract code
+	 */
+	public String contractCode();
+	
+	/**
+	 * Returns company ID.
+	 * @return company ID
+	 */
+	public String companyId();
+	
+	/**
+	 * Returns company code.
+	 * @return company code
+	 */
+	public String companyCode();
+	
+	/**
+	 * Returns employee ID.
+	 * @return employee ID
+	 */
+	public String employeeId();
+	
+	/**
+	 * Returns employee code.
+	 * @return employee code
+	 */
+	public String employeeCode();
+	
+	
+	
 }

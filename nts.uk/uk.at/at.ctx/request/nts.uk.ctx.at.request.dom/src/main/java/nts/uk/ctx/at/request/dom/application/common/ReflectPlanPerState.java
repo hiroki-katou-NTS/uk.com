@@ -24,7 +24,11 @@ public enum ReflectPlanPerState {
 	/**
 	 * 反映待ち
 	 */
-	WAITREFLECTION(5);
+	WAITREFLECTION(5),
+	/**
+	 * 否認
+	 */
+	DENIAL(6);
 	
 	public int value;
 	

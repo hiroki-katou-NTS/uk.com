@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCom
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 
-@Path("request/application/common")
+@Path("at/request/application")
 @Produces("application/json")
 public class ApplicationWebservice extends WebService {
 	

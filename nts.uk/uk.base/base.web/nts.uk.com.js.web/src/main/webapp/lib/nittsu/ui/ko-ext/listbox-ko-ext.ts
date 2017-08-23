@@ -130,14 +130,14 @@ module nts.uk.ui.koExtentions {
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         itemSelected = _.map(selected, s => s.id);
                     } else {
                         itemSelected = [];
                     }
                 } else {
                     let selected = container.ntsGridList('getSelected');
-                    if (selected) {
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
                         itemSelected = selected.id;
                     } else {
                         itemSelected = ('');

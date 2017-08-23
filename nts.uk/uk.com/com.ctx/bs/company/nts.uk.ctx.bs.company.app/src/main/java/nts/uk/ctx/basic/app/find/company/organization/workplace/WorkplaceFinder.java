@@ -7,7 +7,9 @@ package nts.uk.ctx.basic.app.find.company.organization.workplace;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,7 +28,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class WorkplaceFinder {
-	
+
 	/** The repository. */
 	@Inject
 	private WorkplaceRepository repository;
@@ -51,17 +53,18 @@ public class WorkplaceFinder {
 		List<WorkPlaceHierarchy> lstHierarchy = new ArrayList<>();
 		List<Workplace> lstWorkplace = new ArrayList<>();
 		List<WorkplaceFindDto> lstReturn = new ArrayList<>();
-		//find all history by generalDate
+		// find all history by generalDate
 		List<WorkPlaceHistory> lstHistory = this.repository.findAllHistory(companyId, generalDate);
-		//find all Hierarchy by list History
-		lstHistory.stream()
-				.forEach(item -> lstHierarchy.addAll(this.repository.findAllHierarchy(item.getHistoryId().v())));
+		// find all Hierarchy by list History
+		lstHistory.stream().forEach(item -> lstHierarchy
+				.addAll(this.repository.findAllHierarchy(item.getHistoryId().v())));
 
 		Collections.sort(lstHierarchy,
 				(left, right) -> left.getHierarchyCode().compareTo(right.getHierarchyCode()));
-		//find all workplace from list hierarchy
-		lstHierarchy.stream()
-				.forEach(item -> lstWorkplace.addAll(this.repository.findAllWorkplace(item.getWorkplaceId().v())));
+
+		// find all workplace from list hierarchy
+		lstWorkplace = this.repository.findByWkpIds(lstHierarchy.stream()
+				.map(item -> item.getWorkplaceId().v()).collect(Collectors.toList()));
 
 		// map hierarchy code and work place
 		lstReturn = this.convertToTree(lstWorkplace, lstHierarchy);
@@ -71,12 +74,15 @@ public class WorkplaceFinder {
 	/**
 	 * Convert to tree.
 	 *
-	 * @param workplaces the workplaces
-	 * @param lstHierarchy the lst hierarchy
+	 * @param workplaces
+	 *            the workplaces
+	 * @param lstHierarchy
+	 *            the lst hierarchy
 	 * @return the list
 	 */
-	private List<WorkplaceFindDto> convertToTree(List<Workplace> workplaces, List<WorkPlaceHierarchy> lstHierarchy) {
-		//define convert tree function
+	private List<WorkplaceFindDto> convertToTree(List<Workplace> workplaces,
+			List<WorkPlaceHierarchy> lstHierarchy) {
+		// define convert tree function
 		Function<Workplace, WorkplaceFindDto> convertFunction = e -> {
 			WorkplaceFindDto dto = new WorkplaceFindDto();
 			e.saveToMemento(dto);
@@ -89,26 +95,31 @@ public class WorkplaceFinder {
 	/**
 	 * Creates the tree.
 	 *
-	 * @param workplaces the workplaces
-	 * @param convertFunction the convert function
-	 * @param lstHierarchy the lst hierarchy
-	 * @param lstReturn the lst return
+	 * @param workplaces
+	 *            the workplaces
+	 * @param convertFunction
+	 *            the convert function
+	 * @param lstHierarchy
+	 *            the lst hierarchy
+	 * @param lstReturn
+	 *            the lst return
 	 * @return the list
 	 */
 	private List<WorkplaceFindDto> createTree(List<Workplace> workplaces,
-			Function<Workplace, WorkplaceFindDto> convertFunction, List<WorkPlaceHierarchy> lstHierarchy,
-			List<WorkplaceFindDto> lstReturn) {
+			Function<Workplace, WorkplaceFindDto> convertFunction,
+			List<WorkPlaceHierarchy> lstHierarchy, List<WorkplaceFindDto> lstReturn) {
 		// while have workplace
 		while (!workplaces.isEmpty()) {
-			//pop 1 item
+			// pop 1 item
 			Workplace workplace = workplaces.remove(0);
-			//convert
+			// convert
 			WorkplaceFindDto dto = convertFunction.apply(workplace);
 			WorkPlaceHierarchy hierarchy = lstHierarchy.stream()
-					.filter(c -> c.getWorkplaceId().v().equals(workplace.getWorkplaceId().v())).findFirst().get();
+					.filter(c -> c.getWorkplaceId().v().equals(workplace.getWorkplaceId().v()))
+					.findFirst().get();
 			dto.setHeirarchyCode(hierarchy.getHierarchyCode());
-			//build List
-			this.pushToList(lstReturn, dto, hierarchy.getHierarchyCode(),"");
+			// build List
+			this.pushToList(lstReturn, dto, hierarchy.getHierarchyCode(), "");
 		}
 		return lstReturn;
 	}
@@ -116,16 +127,21 @@ public class WorkplaceFinder {
 	/**
 	 * Push to list.
 	 *
-	 * @param lstReturn the lst return
-	 * @param dto the dto
-	 * @param hierarchyCode the hierarchy code
-	 * @param preCode the pre code
+	 * @param lstReturn
+	 *            the lst return
+	 * @param dto
+	 *            the dto
+	 * @param hierarchyCode
+	 *            the hierarchy code
+	 * @param preCode
+	 *            the pre code
 	 */
-	private void pushToList(List<WorkplaceFindDto> lstReturn, WorkplaceFindDto dto, String hierarchyCode,String preCode) {
-		String searchCode = preCode+hierarchyCode.substring(0,3);
+	private void pushToList(List<WorkplaceFindDto> lstReturn, WorkplaceFindDto dto,
+			String hierarchyCode, String preCode) {
+		String searchCode = preCode + hierarchyCode.substring(0, 3);
 		dto.setChilds(new ArrayList<>());
 		if (hierarchyCode.length() == 3) {
-			//check duplicate code 
+			// check duplicate code
 			if (lstReturn.isEmpty()) {
 				lstReturn.add(dto);
 			} else {
@@ -137,9 +153,17 @@ public class WorkplaceFinder {
 				}
 			}
 		} else {
-			List<WorkplaceFindDto> currentItemChilds = lstReturn.stream()
-					.filter(item -> item.getHeirarchyCode().equals(searchCode)).findFirst().get().getChilds();
-			pushToList(currentItemChilds, dto, hierarchyCode.substring(3, hierarchyCode.length()),searchCode);
+			Optional<WorkplaceFindDto> optWorkplaceFindDto = lstReturn.stream()
+					.filter(item -> item.getHeirarchyCode().equals(searchCode)).findFirst();
+
+			if (!optWorkplaceFindDto.isPresent()) {
+				return;
+			}
+
+			List<WorkplaceFindDto> currentItemChilds = optWorkplaceFindDto.get().getChilds();
+
+			pushToList(currentItemChilds, dto, hierarchyCode.substring(3, hierarchyCode.length()),
+					searchCode);
 		}
 	}
 }

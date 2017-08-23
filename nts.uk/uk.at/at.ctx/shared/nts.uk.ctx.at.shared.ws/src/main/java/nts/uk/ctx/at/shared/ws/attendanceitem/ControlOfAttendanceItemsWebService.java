@@ -19,16 +19,16 @@ public class ControlOfAttendanceItemsWebService extends WebService {
 	private ControlOfAttendanceItemsFinder controlOfAttendanceItemsFinder;
 	@Inject
 	private ControlOfAttendanceItemsUpdateCommand controlOfAttendanceItemsUpdateCommand;
-
+	@POST
+	@Path("updateControlOfAttendanceItem")
+	public void updateControlOfAttendanceItem(ControlOfAttendanceItemsCommand controlOfAttendanceItemsCommand) {
+		this.controlOfAttendanceItemsUpdateCommand.handle(controlOfAttendanceItemsCommand);
+	}
 	@POST
 	@Path("getControlOfAttendanceItem/{attendanceItemId}")
 	public ControlOfAttendanceItemsDto getControlOfAttendanceItem(
 			@PathParam("attendanceItemId") int attendanceItemId) {
 		return this.controlOfAttendanceItemsFinder.getControlOfAttendanceItem(attendanceItemId);
 	}
-	@POST
-	@Path("updateControlOfAttendanceItem")
-	public void updateControlOfAttendanceItem(ControlOfAttendanceItemsCommand controlOfAttendanceItemsCommand) {
-		this.controlOfAttendanceItemsUpdateCommand.handle(controlOfAttendanceItemsCommand);
-	}
+	
 }

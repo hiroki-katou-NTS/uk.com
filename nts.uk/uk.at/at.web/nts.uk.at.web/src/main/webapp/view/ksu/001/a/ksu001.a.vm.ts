@@ -69,63 +69,6 @@ module ksu001.a.viewmodel {
                 self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
             }
 
-            // Fire event.
-            $("#multi-list").on('itemDeleted', (function(e: Event) {
-                alert("Item is deleted in multi grid is " + e["detail"]["target"]);
-            }));
-
-            //popup 1
-            $('#popup-area2').ntsPopup({
-                position: {
-                    my: 'left top',
-                    at: 'left bottom',
-                    of: $('.create')
-                }
-            });
-
-            $('.create').click(function() {
-                $('#popup-area2').toggle();
-            });
-
-            //popup 2
-            $('#popup-area3').ntsPopup({
-                position: {
-                    my: 'left top',
-                    at: 'left bottom',
-                    of: $('.check')
-                }
-            });
-
-            $('.check').click(function() {
-                $('#popup-area3').toggle();
-            });
-
-            //popup 3
-            $('#popup-area4').ntsPopup({
-                position: {
-                    my: 'left top',
-                    at: 'left bottom',
-                    of: $('.vacation')
-                }
-            });
-
-            $('.vacation').click(function() {
-                $('#popup-area4').toggle();
-            });
-
-            //popup 4
-            $('#popup-area5').ntsPopup({
-                position: {
-                    my: 'left top',
-                    at: 'left bottom',
-                    of: $('.setting')
-                }
-            });
-
-            $('.setting').click(function() {
-                $('#popup-area5').toggle();
-            });
-
             self.selectedModeDisplay.subscribe(function(newValue) {
                 if (newValue == 1) {
                     $('#oViewModel').addClass('oViewModelDisplay');
@@ -429,17 +372,7 @@ module ksu001.a.viewmodel {
                 windowOccupation: 50,
                 updateMode: "stick",
                 pasteOverWrite: true,
-                stickOverWrite: true,
-                determination: {
-                    rows: [0],
-                    columns: ["empName"]
-                },
-                heightSetter: {
-                    showBodyHeightButton: true,
-                    click: function() {
-                        alert("Show dialog");
-                    }
-                }
+                stickOverWrite: true
             })
                 .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
                 .MiddleHeader(middleHeader).MiddleContent(middleContent)
@@ -495,10 +428,10 @@ module ksu001.a.viewmodel {
                         // slice string '_YYYYMMDD' to 'YYYYMMDD'
                         date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
                         employeeId: self.listSid[arrCell[i].rowIndex],
-                        //                        workTimeCd: arrCell[i + 1].value,
-                        //                        workTypeCd: arrCell[i].value
-                        workTimeCd: 'ABC',
-                        workTypeCd: '001'
+                        //                        workTimeCode: arrCell[i + 1].value,
+                        //                        workTypeCode: arrCell[i].value
+                        workTimeCode: '001',
+                        workTypeCode: '001'
                     }));
                 }
                 service.registerData(arrObj).done(function() {
@@ -737,21 +670,21 @@ module ksu001.a.viewmodel {
     interface IBasicSchedule {
         date: string,
         employeeId: string,
-        workTimeCd: string,
-        workTypeCd: string
+        workTimeCode: string,
+        workTypeCode: string
     }
 
     class BasicSchedule {
         date: string;
         employeeId: string;
-        workTimeCd: string;
-        workTypeCd: string;
+        workTimeCode: string;
+        workTypeCode: string;
 
         constructor(params: IBasicSchedule) {
             this.date = params.date;
             this.employeeId = params.employeeId;
-            this.workTimeCd = params.workTimeCd;
-            this.workTypeCd = params.workTypeCd;
+            this.workTimeCode = params.workTimeCode;
+            this.workTypeCode = params.workTypeCode;
         }
     }
 
@@ -907,8 +840,8 @@ module ksu001.a.viewmodel {
                     this['_' + arrDay[i].yearMonthDay] = ['休日', ''];
                 } else if (obj) {
                     //get name of workType and workTime
-                    let workTypeName = _.find(listWorkType, ['workTypeCode', obj.workTypeCd]).abbreviationName;
-                    let workTimeName = _.find(listWorkTime, ['siftCd', obj.workTimeCd]).abName;
+                    let workTypeName = _.find(listWorkType, ['workTypeCode', obj.workTypeCode]).abbreviationName;
+                    let workTimeName = _.find(listWorkTime, ['siftCd', obj.workTimeCode]).abName;
                     this['_' + arrDay[i].yearMonthDay] = [workTypeName, workTimeName];
                 } else {
                     this['_' + arrDay[i].yearMonthDay] = ['', ''];

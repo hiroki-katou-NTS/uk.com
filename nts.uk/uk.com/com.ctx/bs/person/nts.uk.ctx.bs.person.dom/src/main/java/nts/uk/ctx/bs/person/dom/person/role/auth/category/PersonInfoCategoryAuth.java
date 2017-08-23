@@ -120,5 +120,30 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 				EnumAdaptor.valueOf(otherAllowAddMulti, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(otherAllowDelMulti, PersonInfoPermissionType.class));
 	}
+	
+	
+	public static PersonInfoCategoryAuth createFromDefaulValue(String roleId, String personInfoCategoryAuthId,
+			int allowPersonRef, int allowOtherRef ){
+		if(roleId.isEmpty() || personInfoCategoryAuthId.isEmpty()){
+			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+		}
+		return new PersonInfoCategoryAuth(roleId, personInfoCategoryAuthId,
+				EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(1,PersonInfoAuthType.class ),
+				EnumAdaptor.valueOf(1, PersonInfoAuthType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(1,PersonInfoAuthType.class ),
+				EnumAdaptor.valueOf(1, PersonInfoAuthType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
+				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class));
+	}
+
 
 }

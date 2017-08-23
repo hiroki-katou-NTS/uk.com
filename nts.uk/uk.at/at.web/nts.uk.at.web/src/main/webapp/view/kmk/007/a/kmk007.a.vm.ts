@@ -44,15 +44,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.selectedCode2 = ko.observable('1');
             self.selectedCode3 = ko.observable('1');
             self.selectedCode4 = ko.observable('1');
-//            self.selectedCode.subscribe(function(newCode) {
-//                if (newCode == '2') {
-//                    //$('div[id^="duty-type-set-"]').addClass("display-none");
-//                    //$('#duty-type-set-2').removeClass("display-none");
-//                    
-//                } else {
-//                    $('div[id^="duty-type-set-"]').removeClass("display-none");
-//                }
-//            });
+            //            self.selectedCode.subscribe(function(newCode) {
+            //                if (newCode == '2') {
+            //                    //$('div[id^="duty-type-set-"]').addClass("display-none");
+            //                    //$('#duty-type-set-2').removeClass("display-none");
+            //                    
+            //                } else {
+            //                    $('div[id^="duty-type-set-"]').removeClass("display-none");
+            //                }
+            //            });
 
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
@@ -61,7 +61,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 { code: '1', name: nts.uk.resource.getText('KMK007_19') },
                 { code: '2', name: nts.uk.resource.getText('KMK007_20') }
             ]);
-            
+
 
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMK007_7'), key: 'code', width: 80 },
@@ -70,11 +70,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             ]);
 
             self.currentCode = ko.observable();
-
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
+            // switch language
+            $("#switch-language").ntsSwitchMasterLanguage();
+            $("#switch-language").on("selectionChanged", function(event, arg1, arg2) {
+                alert(event.detail.languageId);
+            });
             var dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
