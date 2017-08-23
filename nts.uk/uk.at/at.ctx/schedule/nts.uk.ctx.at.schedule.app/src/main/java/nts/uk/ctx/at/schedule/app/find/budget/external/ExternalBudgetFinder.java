@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.csv.NtsCsvReader;
@@ -124,32 +122,32 @@ public class ExternalBudgetFinder {
             
             // get list record
             List<NtsCsvRecord> csvRecords = this.findRecordFile(inputStream, extractCondition.getEncoding());
-            if (CollectionUtil.isEmpty(csvRecords)) {
-                throw new BusinessException(new RawErrorMessage("File input not data."));
-            }
             
-            // calculate total record file
-            int calTotal = csvRecords.size() - lineStart + 1;
-            if (calTotal > totalRecord) {
-                totalRecord = calTotal;
-            }
-            Iterator<NtsCsvRecord> csvRecordIterator = csvRecords.iterator();
-            while(csvRecordIterator.hasNext()) {
-                NtsCsvRecord record = csvRecordIterator.next();
-                indexLine++;
-                if (indexLine < lineStart) {
-                    continue;
+            // check file empty data?
+            if (!CollectionUtil.isEmpty(csvRecords)) {
+                // calculate total record file
+                int calTotal = csvRecords.size() - lineStart + 1;
+                if (calTotal > totalRecord) {
+                    totalRecord = calTotal;
                 }
-                // check max record show client.
-                if (lstExtBudgetVal.size() < MAX_RECORD_DISP) {
-                    // get record data
-                    List<String> result = this.findDataRecord(record);
-                    
-                    // fill or split column space if number column is incorrect. 
-                    this.findListExtBudgetValue(result, externalBudget.getUnitAtr());
-                    
-                    lstExtBudgetVal.add(ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE),
-                            result.get(INDEX_DATE), result.subList(INDEX_VALUE, result.size())));
+                Iterator<NtsCsvRecord> csvRecordIterator = csvRecords.iterator();
+                while(csvRecordIterator.hasNext()) {
+                    NtsCsvRecord record = csvRecordIterator.next();
+                    indexLine++;
+                    if (indexLine < lineStart) {
+                        continue;
+                    }
+                    // check max record show client.
+                    if (lstExtBudgetVal.size() < MAX_RECORD_DISP) {
+                        // get record data
+                        List<String> result = this.findDataRecord(record);
+                        
+                        // fill or split column space if number column is incorrect. 
+                        this.findListExtBudgetValue(result, externalBudget.getUnitAtr());
+                        
+                        lstExtBudgetVal.add(ExternalBudgetValDto.newExternalBudgetVal(result.get(INDEX_CODE),
+                                result.get(INDEX_DATE), result.subList(INDEX_VALUE, result.size())));
+                    }
                 }
             }
             // close input stream
@@ -157,11 +155,11 @@ public class ExternalBudgetFinder {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-	    return ExtBudgetDataPreviewDto.builder()
-	            .isDailyUnit(externalBudget.getUnitAtr() == UnitAtr.DAILY)
-	            .data(lstExtBudgetVal)
-	            .totalRecord(totalRecord)
-	            .build();
+        return ExtBudgetDataPreviewDto.builder()
+                .isDailyUnit(externalBudget.getUnitAtr() == UnitAtr.DAILY)
+                .data(lstExtBudgetVal)
+                .totalRecord(totalRecord)
+                .build();
 	}
 	
     /**
