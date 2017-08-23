@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name="KSHMT_WORKTYPE_DISPORDER")
+@Table(name="KSHMT_WORKTYPE_ORDER")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtWorkTypeDispOrder extends UkJpaEntity implements Serializable {

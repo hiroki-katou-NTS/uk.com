@@ -98,4 +98,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("companyId", companyId).setParameter("codes", codes).getList(c -> toDomain(c));
 	}
 
+	@Override
+	public void add(WorkType worktype) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
