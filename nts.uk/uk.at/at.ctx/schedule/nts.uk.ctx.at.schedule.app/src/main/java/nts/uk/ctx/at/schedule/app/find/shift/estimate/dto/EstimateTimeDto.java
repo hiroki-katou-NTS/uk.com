@@ -21,6 +21,9 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTimeSetting;
 @Setter
 public class EstimateTimeDto implements EstimateTimeSettingSetMemento{
 	
+	/** The month. */
+	private int month;
+	
 	/** The is yearly. */
 	private boolean isYearly; 
 	
@@ -54,6 +57,7 @@ public class EstimateTimeDto implements EstimateTimeSettingSetMemento{
 		if(targetClassification.value == EstimateTargetClassification.YEARLY.value){
 			this.isYearly = true;
 		}
+		this.month = targetClassification.value;
 	}
 
 	@Override

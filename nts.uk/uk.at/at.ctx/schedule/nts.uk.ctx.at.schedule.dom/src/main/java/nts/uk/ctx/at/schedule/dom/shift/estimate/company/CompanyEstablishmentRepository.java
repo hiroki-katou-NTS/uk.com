@@ -19,4 +19,12 @@ public interface CompanyEstablishmentRepository {
 	 * @return the optional
 	 */
 	public Optional<CompanyEstablishment> findById(String companyId, int targetYear);
+	
+	
+	/**
+	 * Save company establishment.
+	 *
+	 * @param companyEstablishment the company establishment
+	 */
+	public void saveCompanyEstablishment(CompanyEstablishment companyEstablishment);
 }

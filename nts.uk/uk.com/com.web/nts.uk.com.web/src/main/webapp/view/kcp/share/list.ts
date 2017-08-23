@@ -453,7 +453,7 @@ module kcp.share.list {
         private initGridStyle(data: ComponentOption) {
             var codeColumnSize: any = 50;
             var companyColumnSize: number = 0;
-            var heightOfRow : number = data.isMultiSelect ? 24 : 21;
+            var heightOfRow : number = data.isMultiSelect ? 24 : 23;
             switch(data.listType) {
                 case ListType.EMPLOYMENT:
                     break;

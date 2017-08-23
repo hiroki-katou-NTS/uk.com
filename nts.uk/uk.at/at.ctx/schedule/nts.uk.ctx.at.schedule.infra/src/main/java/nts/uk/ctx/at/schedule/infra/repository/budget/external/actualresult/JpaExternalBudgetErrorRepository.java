@@ -16,8 +16,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetError;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetError;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetErrorPK_;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError_;
