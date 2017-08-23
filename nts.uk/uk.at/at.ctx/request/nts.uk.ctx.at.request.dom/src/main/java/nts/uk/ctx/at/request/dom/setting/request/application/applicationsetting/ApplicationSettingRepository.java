@@ -10,13 +10,7 @@ public interface ApplicationSettingRepository {
 	 * @param appType
 	 * @return
 	 */
-	public Optional<ApplicationSetting> getApplicationSettingByAppType(String companyID, int appType);
-
-	/**
-	 * @param companyID
-	 * @return
-	 */
-	public List<ApplicationSetting> getApplicationSettingByCompany(String companyID);
+	public Optional<ApplicationSetting> getApplicationSettingByComID(String companyID);
 
 	/**
 	 * @param applicationSetting

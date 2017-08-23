@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.csv.CSVFormat;
 
 import nts.gul.csv.NtsCsvReader;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.Encoding;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
 
 /**
  * The Class FileUltil.
@@ -27,7 +27,7 @@ public class FileUltil {
         Charset charset = FileUltil.getCharset(valueEncoding);
         String newLineCode = FileUltil.getNewLineCode();
         return NtsCsvReader.newReader().withNoHeader().withChartSet(charset)
-                .withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
+                .withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode)).skipEmptyLines(true);
     }
     
     /**
@@ -37,7 +37,7 @@ public class FileUltil {
      * @return the charset
      */
     private static Charset getCharset(Integer valueEncoding) {
-        Encoding encoding = Encoding.valueOf(valueEncoding);
+        ExtBudgetCharset encoding = ExtBudgetCharset.valueOf(valueEncoding);
         switch (encoding) {
             case Shift_JIS:
                 return Charset.forName("Shift_JIS");

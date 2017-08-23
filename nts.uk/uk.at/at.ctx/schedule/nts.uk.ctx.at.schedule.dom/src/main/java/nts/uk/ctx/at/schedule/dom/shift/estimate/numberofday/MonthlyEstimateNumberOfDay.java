@@ -21,5 +21,20 @@ public class MonthlyEstimateNumberOfDay extends DomainObject{
 	
 	/** The estimated condition. */
 	// 目安利用条件
-	private EstimatedCondition estimatedCondition; 
+	private EstimatedCondition estimatedCondition;
+
+	/**
+	 * Instantiates a new monthly estimate number of day.
+	 *
+	 * @param days the days
+	 * @param estimatedCondition the estimated condition
+	 */
+	public MonthlyEstimateNumberOfDay(MonthlyEstimateDays days,
+			EstimatedCondition estimatedCondition) {
+		this.days = days;
+		this.estimatedCondition = estimatedCondition;
+	} 
+	
+	
+	
 }

@@ -8,6 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.HTCalSettingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.OTCalSettingAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.WTCalSettingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
 
@@ -20,35 +21,40 @@ public class BPTimeItemSetting extends AggregateRoot {
 
 	private String companyId;
 
-	private String tiemItemId;
+	private int timeItemNo;
 
 	private HTCalSettingAtr holidayCalSettingAtr;
 
 	private OTCalSettingAtr overtimeCalSettingAtr;
 
 	private WTCalSettingAtr worktimeCalSettingAtr;
+	
+	private TimeItemTypeAtr timeItemTypeAtr;
 
 	private BPTimeItemSetting() {
 
 	}
 
-	private BPTimeItemSetting(String companyId, String tiemItemId, HTCalSettingAtr holidayCalSettingAtr,
-			OTCalSettingAtr overtimeCalSettingAtr, WTCalSettingAtr worktimeCalSettingAtr) {
+	private BPTimeItemSetting(String companyId, int tiemItemNo, HTCalSettingAtr holidayCalSettingAtr,
+			OTCalSettingAtr overtimeCalSettingAtr, WTCalSettingAtr worktimeCalSettingAtr, TimeItemTypeAtr timeItemTypeAtr) {
 		super();
 		this.companyId = companyId;
-		this.tiemItemId = tiemItemId;
+		this.timeItemNo = tiemItemNo;
 		this.holidayCalSettingAtr = holidayCalSettingAtr;
 		this.overtimeCalSettingAtr = overtimeCalSettingAtr;
 		this.worktimeCalSettingAtr = worktimeCalSettingAtr;
+		this.timeItemTypeAtr = timeItemTypeAtr;
 
 	}
 
-	public static BPTimeItemSetting createFromJavaType(String companyId, String tiemItemId, int holidayCalSettingAtr,
-			int overtimeCalSettingAtr, int worktimeCalSettingAtr) {
-		return new BPTimeItemSetting(companyId,tiemItemId,
+	public static BPTimeItemSetting createFromJavaType(String companyId, int timeItemNo, int holidayCalSettingAtr,
+			int overtimeCalSettingAtr, int worktimeCalSettingAtr, int timeItemTypeAtr) {
+		return new BPTimeItemSetting(companyId, 
+				timeItemNo,
 				EnumAdaptor.valueOf(holidayCalSettingAtr, HTCalSettingAtr.class),
 				EnumAdaptor.valueOf(overtimeCalSettingAtr, OTCalSettingAtr.class),
-				EnumAdaptor.valueOf(worktimeCalSettingAtr, WTCalSettingAtr.class));
+				EnumAdaptor.valueOf(worktimeCalSettingAtr, WTCalSettingAtr.class),
+				EnumAdaptor.valueOf(timeItemTypeAtr, TimeItemTypeAtr.class));
 	}
 
 }

@@ -39,8 +39,8 @@
 			<div style="display: inline-flex">
 				<ui:insert name="extended-222" />
 				<div tabindex="13" id="tab-panel" class="tabPanel"
-				data-bind="with: companyTimeModel, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-				<div class="tab-content-1">
+				data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+				<div class="tab-content-1" data-bind="with: companyTimeModel">
 					<div class="control-group">
 						<div class="pull-left">
 							<div data-bind="ntsFormLabel: {required: true}">
@@ -122,7 +122,7 @@
 						</table>
 					</div>
 				</div>
-				<div class="tab-content-2">
+				<div class="tab-content-2" data-bind="with: companyPriceModel">
 					<div class="control-group">
 						<div class="pull-left">
 							<div data-bind="ntsFormLabel: {required: true}">
@@ -145,28 +145,23 @@
 								<td class="bg-green">#{i18n.getText('KSM001_31')}</td>
 								<td>
 									<input tabindex="82" 
-										data-bind=" ntsTimeEditor: {value: time1st, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: price1st, required: true}" />
 								</td>
 								<td>
 									<input tabindex="83" 
-										data-bind=" ntsTimeEditor: {value: time2nd, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: price2nd, required: true}" />
 								</td>
 								<td>
 									<input tabindex="84" 
-										data-bind=" ntsTimeEditor: {value: time3rd, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: price3rd, required: true}" />
 								</td>
 								<td>
 									<input tabindex="85" 
-										data-bind=" ntsTimeEditor: {value: time4th, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: price4th, required: true}" />
 								</td>
 								<td>
 									<input tabindex="86" 
-										data-bind=" ntsTimeEditor: {value: time5th, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: price5th, required: true}" />
 								</td>
 							</tr>
 							<com:ko tag="foreach" bind="monthlyEstimates">
@@ -175,36 +170,26 @@
 										<div data-bind="text: ($index()+1)+'月度'"></div>
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 87 + $index()*5}, 
-											ntsTimeEditor: {value: time1st, inputFormat: 'time', 
-											mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 87 + $index()*5}, ntsTextEditor: {value: price1st, required: true}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 88 + $index()*5},
-											ntsTimeEditor: {value: time2nd, inputFormat: 'time', 
-											mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 88 + $index()*5}, ntsTextEditor: {value: price2nd, required: true}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 89 + $index()*5}, 
-										ntsTimeEditor: {value: time3rd, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 89 + $index()*5}, ntsTextEditor: {value: price3rd, required: true}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 90 + $index()*5}, 
-										ntsTimeEditor: {value: time4th, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 90 + $index()*5}, ntsTextEditor: {value: price4th, required: true}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 91 + $index()*5}, 
-										ntsTimeEditor: {value: time5th, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 91 + $index()*5}, ntsTextEditor: {value: price5th, required: true}" />
 									</td>
 								</tr>
 							</com:ko>
 						</table>
 					</div>
 				</div>
-				<div class="tab-content-3">
+				<div class="tab-content-3" data-bind="with: companyDaysModel">
 					<div class="control-group">
 						<div class="pull-left">
 							<div data-bind="ntsFormLabel: {required: true}">
@@ -227,28 +212,23 @@
 								<td class="bg-green">#{i18n.getText('KSM001_31')}</td>
 								<td>
 									<input tabindex="147" 
-										data-bind=" ntsTimeEditor: {value: time1st, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: days1st, required: true}" />
 								</td>
 								<td>
 									<input tabindex="148" 
-										data-bind=" ntsTimeEditor: {value: time2nd, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: days2nd, required: true}" />
 								</td>
 								<td>
 									<input tabindex="149" 
-										data-bind=" ntsTimeEditor: {value: time3rd, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: days3rd, required: true}" />
 								</td>
 								<td>
 									<input tabindex="150" 
-										data-bind=" ntsTimeEditor: {value: time4th, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: days4th, required: true}" />
 								</td>
 								<td>
 									<input tabindex="151" 
-										data-bind=" ntsTimeEditor: {value: time5th, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										data-bind=" ntsTextEditor: {value: days5th, required: true}" />
 								</td>
 							</tr>
 							<com:ko tag="foreach" bind="monthlyEstimates">
@@ -257,29 +237,19 @@
 										<div data-bind="text: ($index()+1)+'月度'"></div>
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 152 + $index()*5}, 
-											ntsTimeEditor: {value: time1st, inputFormat: 'time', 
-											mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 152 + $index()*5}, ntsTextEditor: {value: days1st, required: true}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 153 + $index()*5},
-											ntsTimeEditor: {value: time2nd, inputFormat: 'time', 
-											mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 153 + $index()*5}, ntsTextEditor: {value: days2nd, required: true}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 154 + $index()*5}, 
-										ntsTimeEditor: {value: time3rd, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 154 + $index()*5}, ntsTextEditor: {value: days3rd, required: true}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 155 + $index()*5}, 
-										ntsTimeEditor: {value: time4th, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 155 + $index()*5}, ntsTextEditor: {value: days4th, required: true}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 156 + $index()*5}, 
-										ntsTimeEditor: {value: time5th, inputFormat: 'time', 
-										mode: 'time', required: true}" />
+										<input data-bind="attr: {'tabindex': 156 + $index()*5}, ntsTextEditor: {value: days5th, required: true}" />
 									</td>
 								</tr>
 							</com:ko>

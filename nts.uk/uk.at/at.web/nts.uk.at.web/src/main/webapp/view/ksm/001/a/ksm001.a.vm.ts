@@ -2,7 +2,12 @@ module nts.uk.at.view.ksm001.a {
 
     import TargetYearDto = service.model.TargetYearDto;
     import EstimateTimeDto = service.model.EstimateTimeDto;
+    import EstimatePriceDto = service.model.EstimatePriceDto;
+    import EstimateDaysDto = service.model.EstimateDaysDto;
     import CompanyEstimateTimeDto = service.model.CompanyEstimateTimeDto;
+    import CompanyEstimatePriceDto = service.model.CompanyEstimatePriceDto;
+    import CompanyEstimateDaysDto = service.model.CompanyEstimateDaysDto;
+    import CompanyEstablishmentDto = service.model.CompanyEstablishmentDto;
 
     export module viewmodel {
 
@@ -14,6 +19,8 @@ module nts.uk.at.view.ksm001.a {
             isLoading: KnockoutObservable<boolean>;
             selectedTargetYear: KnockoutObservable<string>;
             companyTimeModel: KnockoutObservable<CompanyEstimateTimeModel>;
+            companyPriceModel: KnockoutObservable<CompanyEstimatePriceModel>;
+            companyDaysModel: KnockoutObservable<CompanyEstimateDaysModel>;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             employmentTabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
@@ -45,6 +52,8 @@ module nts.uk.at.view.ksm001.a {
                 self.selectedEmployee = ko.observableArray([]);
                 self.lstTargetYear = ko.observableArray([]);
                 self.companyTimeModel = ko.observable(new CompanyEstimateTimeModel());
+                self.companyPriceModel = ko.observable(new CompanyEstimatePriceModel());
+                self.companyDaysModel = ko.observable(new CompanyEstimateDaysModel());
                 self.isCompanySelected = ko.observable(true);
                 self.isEmploymentSelected = ko.observable(false);
                 self.isPersonSelected = ko.observable(false);
@@ -152,10 +161,15 @@ module nts.uk.at.view.ksm001.a {
                 self.isPersonSelected(false);
                 self.isCompanySelected(true);
                 self.isLoading(true);
-                service.findAllMonthlyEstimateTime(2017).done(function(data) {
-                    self.companyTimeModel().updateData(data);
-                    
+                service.findCompanyEstablishment(2017).done(function(data) {
+                    console.log(data);
+                    self.companyTimeModel().updateData(data.estimateTime);
+                    self.companyPriceModel().updateData(data.estimatePrice);
+                    self.companyDaysModel().updateData(data.estimateNumberOfDay);
                     self.isLoading(false);
+                     window.setTimeout(function() {
+                        $('#' + self.selectedTab()).removeClass('disappear');
+                    }, 100);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -170,7 +184,10 @@ module nts.uk.at.view.ksm001.a {
                 self.isPersonSelected(false);
                 self.isEmploymentSelected(true);
                 self.isLoading(false);
-                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption)
+                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption);
+                window.setTimeout(function() {
+                    $('#' + self.selectedTab()).removeClass('disappear');
+                }, 100);
             }
             /**
              * on click tab panel employment action event
@@ -181,8 +198,8 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
                 self.isLoading(true);
-                service.findAllMonthlyEstimateTime(2017).done(function(data) {
-                    self.companyTimeModel().updateData(data);
+                service.findCompanyEstablishment(2017).done(function(data) {
+                    self.companyTimeModel().updateData(data.estimateTime);
                     self.isLoading(false);
                     $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson);
                     self.selectedCode = ko.observable('');
@@ -268,8 +285,13 @@ module nts.uk.at.view.ksm001.a {
             * function on click saveCompanyEstablishment action
             */
             public saveCompanyEstablishment(): void {
-                var self = this;
-                service.saveCompanyEstimate(2017, self.companyTimeModel().toDto()).done(function(){
+                var self = this;    
+                var dto: CompanyEstablishmentDto = {
+                    estimateTime: self.companyTimeModel().toDto(),
+                    estimatePrice: self.companyPriceModel().toDto(),
+                    estimateNumberOfDay: self.companyDaysModel().toDto()
+                };
+                service.saveCompanyEstimate(2017, dto).done(function(){
                    
                 });
             }
@@ -314,6 +336,82 @@ module nts.uk.at.view.ksm001.a {
                 return dto; 
             }
         }
+        export class EstimatePriceModel {
+            month: KnockoutObservable<number>;
+            price1st: KnockoutObservable<number>;
+            price2nd: KnockoutObservable<number>;
+            price3rd: KnockoutObservable<number>;
+            price4th: KnockoutObservable<number>;
+            price5th: KnockoutObservable<number>;
+
+            constructor() {
+                this.month = ko.observable(1);
+                this.price1st = ko.observable(0);
+                this.price2nd = ko.observable(0);
+                this.price3rd = ko.observable(0);
+                this.price4th = ko.observable(0);
+                this.price5th = ko.observable(0);
+            }
+
+            updateData(dto: EstimatePriceDto) {
+                this.month(dto.month);
+                this.price1st(dto.price1st);
+                this.price2nd(dto.price2nd);
+                this.price3rd(dto.price3rd);
+                this.price4th(dto.price4th);
+                this.price5th(dto.price5th);
+            }
+            
+            toDto(): EstimatePriceDto{
+                var dto: EstimatePriceDto = {
+                    month: this.month(),
+                    price1st: this.price1st(),
+                    price2nd: this.price2nd(),
+                    price3rd: this.price3rd(),
+                    price4th: this.price4th(),
+                    price5th: this.price5th()
+                }
+                return dto; 
+            }
+        }
+        export class EstimateDaysModel {
+            month: KnockoutObservable<number>;
+            days1st: KnockoutObservable<number>;
+            days2nd: KnockoutObservable<number>;
+            days3rd: KnockoutObservable<number>;
+            days4th: KnockoutObservable<number>;
+            days5th: KnockoutObservable<number>;
+
+            constructor() {
+                this.month = ko.observable(1);
+                this.days1st = ko.observable(0);
+                this.days2nd = ko.observable(0);
+                this.days3rd = ko.observable(0);
+                this.days4th = ko.observable(0);
+                this.days5th = ko.observable(0);
+            }
+
+            updateData(dto: EstimateDaysDto) {
+                this.month(dto.month);
+                this.days1st(dto.days1st);
+                this.days2nd(dto.days2nd);
+                this.days3rd(dto.days3rd);
+                this.days4th(dto.days4th);
+                this.days5th(dto.days5th);
+            }
+            
+            toDto(): EstimateDaysDto{
+                var dto: EstimateDaysDto = {
+                    month: this.month(),
+                    days1st: this.days1st(),
+                    days2nd: this.days2nd(),
+                    days3rd: this.days3rd(),
+                    days4th: this.days4th(),
+                    days5th: this.days5th()
+                }
+                return dto; 
+            }
+        }
         
         export class CompanyEstimateTimeModel{
             monthlyEstimates: EstimateTimeModel[];
@@ -341,6 +439,69 @@ module nts.uk.at.view.ksm001.a {
                 }
                 var dto: CompanyEstimateTimeDto = {
                     monthlyEstimates: monthlyEstimateTime,
+                    yearlyEstimate: this.yearlyEstimate.toDto()
+                };
+                return dto;
+            }
+        }
+        export class CompanyEstimatePriceModel{
+            monthlyEstimates: EstimatePriceModel[];
+            yearlyEstimate: EstimatePriceModel;
+            
+            constructor(){
+                this.monthlyEstimates = [];
+                this.yearlyEstimate = new EstimatePriceModel();    
+            }
+            
+            updateData(dto: CompanyEstimatePriceDto) {
+                this.monthlyEstimates = [];
+                for (var item of dto.monthlyEstimates) {
+                    var model: EstimatePriceModel = new EstimatePriceModel();
+                    model.updateData(item);
+                    this.monthlyEstimates.push(model);
+                }
+                this.yearlyEstimate.updateData(dto.yearlyEstimate);
+            }
+            
+            toDto(): CompanyEstimatePriceDto{
+                var monthlyEstimatePrice: EstimatePriceDto[] = [];
+                for (var item of this.monthlyEstimates) {
+                    monthlyEstimatePrice.push(item.toDto());
+                }
+                var dto: CompanyEstimatePriceDto = {
+                    monthlyEstimates: monthlyEstimatePrice,
+                    yearlyEstimate: this.yearlyEstimate.toDto()
+                };
+                return dto;
+            }
+        }
+        
+        export class CompanyEstimateDaysModel{
+            monthlyEstimates: EstimateDaysModel[];
+            yearlyEstimate: EstimateDaysModel;
+            
+            constructor(){
+                this.monthlyEstimates = [];
+                this.yearlyEstimate = new EstimateDaysModel();    
+            }
+            
+            updateData(dto: CompanyEstimateDaysDto) {
+                this.monthlyEstimates = [];
+                for (var item of dto.monthlyEstimates) {
+                    var model: EstimateDaysModel = new EstimateDaysModel();
+                    model.updateData(item);
+                    this.monthlyEstimates.push(model);
+                }
+                this.yearlyEstimate.updateData(dto.yearlyEstimate);
+            }
+            
+            toDto(): CompanyEstimateDaysDto{
+                var monthlyEstimateDays: EstimateDaysDto[] = [];
+                for (var item of this.monthlyEstimates) {
+                    monthlyEstimateDays.push(item.toDto());
+                }
+                var dto: CompanyEstimateDaysDto = {
+                    monthlyEstimates: monthlyEstimateDays,
                     yearlyEstimate: this.yearlyEstimate.toDto()
                 };
                 return dto;

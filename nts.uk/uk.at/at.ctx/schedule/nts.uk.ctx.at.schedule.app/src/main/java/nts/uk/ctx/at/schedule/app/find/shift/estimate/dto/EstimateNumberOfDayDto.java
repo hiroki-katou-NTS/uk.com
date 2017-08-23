@@ -21,6 +21,9 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateNumbe
 @Setter
 public class EstimateNumberOfDayDto implements EstimateNumberOfDaySetMemento{
 	
+	/** The month. */
+	private int month;
+	
 	/** The is yearly. */
 	private boolean isYearly; 
 	
@@ -54,6 +57,8 @@ public class EstimateNumberOfDayDto implements EstimateNumberOfDaySetMemento{
 		if(targetClassification.value == EstimateTargetClassification.YEARLY.value){
 			this.isYearly = true;
 		}
+		
+		this.month = targetClassification.value;
 		
 	}
 
