@@ -8,14 +8,14 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 
 /**
  * The Class EmployeeAdapterImpl.
  */
 @Stateless
-public class EmployeeAdapterImpl implements EmployeeAdapter {
+public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 
 	/*
 	 * (non-Javadoc)

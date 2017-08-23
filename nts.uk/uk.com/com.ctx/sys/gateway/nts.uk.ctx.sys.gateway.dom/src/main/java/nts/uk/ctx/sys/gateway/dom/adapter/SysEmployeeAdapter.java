@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface EmployeeAdapter.
  */
-public interface EmployeeAdapter {
+public interface SysEmployeeAdapter {
 
 	/**
 	 * Gets the by employee code.

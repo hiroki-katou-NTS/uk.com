@@ -16,13 +16,14 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SubmitLoginFormThreeCommandHandler.
@@ -36,11 +37,11 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 
 	/** The employee code setting adapter. */
 	@Inject
-	EmployeeCodeSettingAdapter employeeCodeSettingAdapter;
+	SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
 
 	/** The employee adapter. */
 	@Inject
-	EmployeeAdapter employeeAdapter;
+	SysEmployeeAdapter employeeAdapter;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -52,8 +53,7 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 		String companyCode = command.getCompanyCode();
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
-		//TODO get contract code from session
-		String companyId = "0" + "-" + companyCode;
+		String companyId = AppContexts.user().contractCode()+"-"+companyCode;
 		// check validate input
 		this.checkInput(command);
 
