@@ -232,6 +232,7 @@ module nts.uk.at.view.ksu006.a {
             
             private resetDataPreview() {
                 let self = this;
+                self.totalRecord(0);
                 self.dataPreview([]);
                 self.firstRecord(null);
                 self.remainData([]);
