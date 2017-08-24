@@ -4,7 +4,9 @@ module nts.uk.at.view.ksm001.a {
             findCompanyEstablishment: "ctx/at/schedule/shift/estimate/company/find",
             saveCompanyEstablishment: "ctx/at/schedule/shift/estimate/company/save",
             findEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/find",
-            saveEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/save"
+            saveEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/save",
+            findPersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/find",
+            savePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/save"
         }
 
         /**
@@ -43,6 +45,26 @@ module nts.uk.at.view.ksm001.a {
                 estimateNumberOfDay: dto.estimateNumberOfDay,
                 employmentName: dto.employmentName,
                 employmentCode: dto.employmentCode,
+                targetYear: targetYear
+            });
+        }
+        
+        /**
+         * call service get all monthly estimate time of personal
+         */
+        export function findPersonalEstablishment(targetYear: number, employeeId: string): JQueryPromise<model.PersonalEstablishmentDto> {
+            return nts.uk.request.ajax('at', paths.findPersonalEstablishment + '/' + targetYear + '/' + employeeId);
+        }
+
+        /**
+        * call service save estimate personal
+        */
+        export function savePersonalEstablishment(targetYear: number, dto: model.PersonalEstablishmentDto): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.savePersonalEstablishment, {
+                estimateTime: dto.estimateTime,
+                estimatePrice: dto.estimatePrice,
+                estimateNumberOfDay: dto.estimateNumberOfDay,
+                employeeId: dto.employeeId,
                 targetYear: targetYear
             });
         }
@@ -109,6 +131,12 @@ module nts.uk.at.view.ksm001.a {
             export interface EmploymentEstablishmentDto {
                 employmentCode: string;
                 employmentName: string;
+                estimateTime: EstablishmentTimeDto;
+                estimatePrice: EstablishmentPriceDto;
+                estimateNumberOfDay: EstablishmentDaysDto;
+            }
+            export interface PersonalEstablishmentDto {
+                employeeId: string;
                 estimateTime: EstablishmentTimeDto;
                 estimatePrice: EstablishmentPriceDto;
                 estimateNumberOfDay: EstablishmentDaysDto;
