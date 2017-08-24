@@ -9,10 +9,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         itemInfoDefList: KnockoutObservableArray<ItemInfoDef> = ko.observableArray([]);
 
-        currentCode: KnockoutObservable<string> = ko.observable('');
+        currentSelectId: KnockoutObservable<string> = ko.observable('');
 
         columns: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: '', prop: 'itemCode', width: 100, hidden: true },
+            { headerText: '', prop: 'id', width: 100, hidden: true },
             { headerText: getText('CPS006_15'), prop: 'itemName', width: 150 },
             { headerText: getText('CPS006_16'), prop: 'isAbolition', width: 50, formatter: makeIcon },
         ]);
@@ -35,18 +35,33 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         currentCategory: KnockoutObservable<PerInfoCategory>;//= ko.observable(getShared('categoryRole'));
 
+        ckbDisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             let self = this;
 
-            self.currentCode.subscribe(function(newValue) {
+            self.currentSelectId.subscribe(function(newValue) {
 
-                let newItem = _.find(self.itemInfoDefList(), function(o) { return o.itemCode == newValue; });
+                service.getPerInfoItemDefById(newValue).done(function(data: IItemInfoDef) {
 
-                self.currentItem(newItem);
+                    self.currentItem(new ItemInfoDef(data));
+
+                });
+
+
+            });
+
+            self.currentItem.subscribe(function(newItem) {
 
                 self.itemNameText(newItem.itemName);
 
                 self.isRequired(newItem.isRequired);
+
+            });
+
+            self.ckbDisplayAbolition.subscribe(function(newValue) {
+
+                self.loadItemInfoDefList(self.currentCategory().id);
 
             });
         }
@@ -78,7 +93,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 if (itemInfoDefList.length > 0) {
 
-                    self.currentCode(itemInfoDefList[0].itemCode);
+                    self.currentSelectId(itemInfoDefList[0].id);
 
                 } else {
 
@@ -106,6 +121,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genDatatypeValueText() {
             let self = this;
 
+            if (self.currentItem().itemTypeState == null) {
+
+                return;
+            }
+
             switch (self.currentItem().itemTypeState.dataTypeState.dataTypeValue) {
                 case 1:
                     return getText('Enum_DataTypeValue_STRING');
@@ -125,7 +145,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         genStringItemDataTypeText() {
             let self = this;
+            if (self.currentItem().itemTypeState == null) {
 
+                return;
+            }
             switch (self.currentItem().itemTypeState.dataTypeState.stringItemDataType) {
                 case 1:
                     return getText('Enum_StringItemDataType_FIXED_LENGTH');
@@ -136,6 +159,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         genStringItemTypeText() {
             let self = this;
+
+            if (self.currentItem().itemTypeState == null) {
+
+                return;
+            }
 
             switch (self.currentItem().itemTypeState.dataTypeState.stringItemType) {
                 case 1:
@@ -154,6 +182,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genStringNumericItemMinusText() {
             let self = this;
 
+            if (self.currentItem().itemTypeState == null) {
+
+                return;
+            }
+
             switch (self.currentItem().itemTypeState.dataTypeState.numericItemMinus) {
                 case 0:
                     return getText('Enum_NumericItemMinus_NO');
@@ -161,11 +194,16 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return getText('Enum_NumericItemMinus_YES');
             }
         }
-        
+
         genDateTypeText() {
             let self = this;
 
-            switch (self.currentItem().itemTypeState.dataTypeState.numericItemMinus) {
+            if (self.currentItem().itemTypeState == null) {
+
+                return;
+            }
+
+            switch (self.currentItem().itemTypeState.dataTypeState.dateItemType) {
                 case 1:
                     return getText('Enum_DateType_YEARMONTHDAY');
                 case 2:
@@ -176,6 +214,17 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         }
 
+        dataType() {
+            let self = this;
+
+            if (self.currentItem().itemTypeState == null) {
+
+                return;
+            }
+
+            return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
+
+        }
 
 
     }
@@ -187,6 +236,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
     }
 
     export interface IItemInfoDef {
+        id: string;
         perInfoCtgId: string;
         itemCode: string;
         itemName: string;
@@ -200,6 +250,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
     }
 
     export class ItemInfoDef {
+        id: string;
         perInfoCtgId: string;
         itemCode: string;
         itemName: string;
@@ -213,6 +264,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         constructor(data: IItemInfoDef) {
 
+            this.id = data ? data.id : '';
             this.perInfoCtgId = data ? data.perInfoCtgId : '';
             this.itemCode = data ? data.itemCode : '';
             this.itemName = data ? data.itemName : '';
