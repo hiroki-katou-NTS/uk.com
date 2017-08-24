@@ -12,9 +12,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstablishmentDto;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateNumberOfDayDto;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimatePriceDto;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentNumberOfDayDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentPriceDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimateNumberOfDayDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimatePriceDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimateTimeDto;
@@ -54,11 +54,11 @@ public class CompanyEstablishmentFinder {
 		
 		CompanyEstablishmentDto dto = new CompanyEstablishmentDto();
 		
-		CompanyEstimateTimeDto estimateTime = new CompanyEstimateTimeDto();
+		EstablishmentTimeDto estimateTime = new EstablishmentTimeDto();
 		
-		CompanyEstimatePriceDto estimatePrice = new CompanyEstimatePriceDto();
+		EstablishmentPriceDto estimatePrice = new EstablishmentPriceDto();
 		
-		CompanyEstimateNumberOfDayDto estimateNumberOfDay = new CompanyEstimateNumberOfDayDto();
+		EstablishmentNumberOfDayDto estimateNumberOfDay = new EstablishmentNumberOfDayDto();
 		
 		// check exist data
 		if (companyEstablishment.isPresent()) {

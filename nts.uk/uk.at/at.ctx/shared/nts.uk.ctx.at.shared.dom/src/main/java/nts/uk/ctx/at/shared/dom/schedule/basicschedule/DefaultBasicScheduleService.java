@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
 
 import java.util.Optional;
@@ -160,16 +164,39 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		throw new RuntimeException("NOT FOUND SETUP TYPE");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService#
+	 * checkPairWorkTypeWorkTime(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void checkPairWorkTypeWorkTime(String workTypeCode, String workTimeCode) {
 		SetupType setupType = this.checkNeededOfWorkTimeSetting(workTypeCode);
-		if (setupType == SetupType.REQUIRED && StringUtil.isNullOrEmpty(workTimeCode, true)) {
+
+		// In case of Required and work time is not set.
+		if (setupType == SetupType.REQUIRED && !this.isWorkTimeValid(workTimeCode)) {
 			throw new BusinessException("Msg_435");
 		}
 
-		if (setupType == SetupType.NOT_REQUIRED && !StringUtil.isNullOrEmpty(workTimeCode, true)) {
+		// In case of Not Required and work time is set.
+		if (setupType == SetupType.NOT_REQUIRED && this.isWorkTimeValid(workTimeCode)) {
 			throw new BusinessException("Msg_434");
 		}
+	}
+
+	/**
+	 * Checks if is work time valid.
+	 *
+	 * @param workTimeCode the work time code
+	 * @return true, if is work time valid
+	 */
+	private boolean isWorkTimeValid(String workTimeCode) {
+		if (StringUtil.isNullOrEmpty(workTimeCode, true) || workTimeCode.equals("000")) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

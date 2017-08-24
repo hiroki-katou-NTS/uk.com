@@ -4,6 +4,7 @@ module nts.custombinding {
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
     import text = nts.uk.resource.getText;
+    import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
@@ -523,6 +524,22 @@ module nts.custombinding {
 
                     return opts.sortable;
                 },
+                findExist: (ids: Array<string>) => {
+                    let self = this,
+                        opts = self.options,
+                        items = opts.sortable.data();
+
+                    if (!ids || !ids.length) {
+                        return [];
+                    }
+
+                    // return items if it's exist in list
+                    return _(items)
+                        .map((x: IItemClassification) => x.listItemDf)
+                        .flatten()
+                        .filter((x: IItemDefinition) => x && ids.indexOf(x.id) > -1)
+                        .value();
+                },
                 pushItem: (data: IItemClassification) => {
                     let self = this,
                         opts = self.options,
@@ -555,69 +572,87 @@ module nts.custombinding {
                 pushItems: (defs: Array<IItemDefinition>, groupMode?: boolean) => {
                     let self = this,
                         opts = self.options,
-                        services = self.services;
-                    
-                    _.each(defs, def => {
-                        if (!def.isAbolition) {
-                            let item: IItemClassification = {
-                                layoutID: random(),
-                                dispOrder: -1,
-                                personInfoCategoryID: undefined,
-                                layoutItemType: IT_CLA_TYPE.ITEM,
-                                listItemDf: []
-                            };
-
-                            def.dispOrder = -1;
-                            item.listItemDf = [def];
-                            item.className = def.itemName;
-                            item.personInfoCategoryID = def.perInfoCtgId;
-
-                            // setitem
-                            if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
-                                services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
-                                    if (defs && defs.length) {
-                                        _(defs).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
-
-                                        if (opts.sortable.pushItem(item)) {
-                                            opts.listbox.value.removeAll();
-                                        } else {
-                                            if (!groupMode) {
-                                                // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
-                                                // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                                                alert(text('Msg_202'));
-                                            } else {
-                                                // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
-                                                // Show msg_404 if itemdefinition is exist
-                                                alert(text('Msg_204')).then(() => {
-                                                    opts.sortable
-                                                        .removeItem(item, true)
-                                                        .pushItem(item);
-                                                });
-                                            }
-                                        }
-                                    }
-                                });
-                            } else {
-                                if (opts.sortable.pushItem(item)) {
-                                    opts.listbox.value.removeAll();
-                                } else {
-                                    if (!groupMode) {
-                                        // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
-                                        // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                                        alert(text('Msg_202'));
-                                    } else {
-                                        // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
-                                        // Show msg_404 if itemdefinition is exist
-                                        alert(text('Msg_204')).then(() => {
-                                            opts.sortable
-                                                .removeItem(item, true)
-                                                .pushItem(item);
-                                        });
-                                    }
-                                }
+                        services = self.services,
+                        removeItems = (data: Array<IItemClassification>) => {
+                            if (data && data.length) {
+                                _.each(data, x => opts.sortable.removeItem(x, true));
                             }
+                        },
+                        pushItems = (defs: Array<IItemDefinition>) => {
+                            _.each(defs, def => {
+                                let item: IItemClassification = {
+                                    layoutID: random(),
+                                    dispOrder: -1,
+                                    personInfoCategoryID: undefined,
+                                    layoutItemType: IT_CLA_TYPE.ITEM,
+                                    listItemDf: []
+                                };
+
+                                def.dispOrder = -1;
+                                item.listItemDf = [def];
+                                item.className = def.itemName;
+                                item.personInfoCategoryID = def.perInfoCtgId;
+
+                                // setitem
+                                if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                    services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
+                                        if (defs && defs.length) {
+                                            _(defs).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+
+                                            opts.sortable.pushItem(item);
+                                        }
+                                    });
+                                } else {
+                                    opts.sortable.pushItem(item);
+                                }
+                            });
+                        };
+
+                    if (!defs || !defs.length) {
+                        return;
+                    }
+
+                    // remove all item if it's cancelled by user
+                    defs = _.filter(defs, x => !x.isAbolition);
+
+                    // find duplicate items
+                    let dups = opts.sortable.findExist(defs.map(x => x.id));
+
+                    if (groupMode) {
+                        if (dups && dups.length) {
+                            // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
+                            // Show Msg_204 if itemdefinition is exist
+                            info(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_204'))
+                                .then(() => {
+                                    removeItems(dups.map((x: IItemDefinition) => {
+                                        return {
+                                            layoutID: random(),
+                                            dispOrder: -1,
+                                            personInfoCategoryID: undefined,
+                                            layoutItemType: IT_CLA_TYPE.ITEM,
+                                            listItemDf: [x]
+                                        };
+                                    }));
+                                    pushItems(defs);
+                                });
+                        } else {
+                            pushItems(defs);
                         }
-                    });
+                    } else {
+                        let dupids = dups.map((x: IItemDefinition) => x.id),
+                            nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
+
+                        if (dupids && dupids.length) {
+                            // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                            // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                            alert(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_202'));
+                        }
+
+                        pushItems(nodups);
+                    }
+
+                    // remove all item selected in list box
+                    opts.listbox.value.removeAll();
                 }
             }
         };
@@ -842,7 +877,7 @@ module nts.custombinding {
                             if (idefs && idefs.length) {
                                 services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
                                     if (defs && defs.length) {
-                                        opts.sortable.pushItems(defs);
+                                        opts.sortable.pushItems(defs, false);
                                     }
                                 });
                             }

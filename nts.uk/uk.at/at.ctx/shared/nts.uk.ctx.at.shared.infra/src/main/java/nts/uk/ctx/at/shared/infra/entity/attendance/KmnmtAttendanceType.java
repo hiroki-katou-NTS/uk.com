@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.entity.attendance;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -22,6 +23,9 @@ public class KmnmtAttendanceType extends UkJpaEntity implements Serializable{
 	/*主キー*/
 	@EmbeddedId
     public KmnmtAttendanceTypePK kmnmtAttendanceTypePK;
+	
+	@Column(name = "ATTENDANCEITEM_TYPE")
+	public int attendanctType;
 
 	@Override
 	protected Object getKey() {

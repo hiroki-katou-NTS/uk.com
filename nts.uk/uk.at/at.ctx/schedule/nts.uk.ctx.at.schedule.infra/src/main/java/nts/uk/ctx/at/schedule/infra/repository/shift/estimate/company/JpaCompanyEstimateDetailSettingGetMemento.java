@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
 /**
  * The Class JpaEstimateDetailSettingCompanyGetMemento.
  */
-public class JpaEstimateDetailSettingCompanyGetMemento implements EstimateDetailSettingGetMemento{
+public class JpaCompanyEstimateDetailSettingGetMemento implements EstimateDetailSettingGetMemento{
 	
 	/** The estimate time companys. */
 	private List<KscmtEstTimeComSet> estimateTimeCompanys;
@@ -35,7 +35,7 @@ public class JpaEstimateDetailSettingCompanyGetMemento implements EstimateDetail
 	 *
 	 * @param estimateTimeCompanys the estimate time companys
 	 */
-	public JpaEstimateDetailSettingCompanyGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
+	public JpaCompanyEstimateDetailSettingGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
 			List<KscmtEstPriceComSet> estimatePriceCompanys,
 			List<KscmtEstDaysComSet> estimateDaysCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
@@ -53,7 +53,7 @@ public class JpaEstimateDetailSettingCompanyGetMemento implements EstimateDetail
 	public List<EstimateTimeSetting> getEstimateTime() {
 		return this.estimateTimeCompanys.stream()
 				.map(entity -> new EstimateTimeSetting(
-						new JpaEstimateTimeSettingCompanyGetMemento(entity)))
+						new JpaCompanyEstimateTimeSettingGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 
@@ -68,7 +68,7 @@ public class JpaEstimateDetailSettingCompanyGetMemento implements EstimateDetail
 	public List<EstimatedPriceSetting> getEstimatePrice() {
 		return this.estimatePriceCompanys.stream()
 				.map(entity -> new EstimatedPriceSetting(
-						new JpaEstimatedCompanyPriceGetMemento(entity)))
+						new JpaCompanyEstimatedPriceGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 

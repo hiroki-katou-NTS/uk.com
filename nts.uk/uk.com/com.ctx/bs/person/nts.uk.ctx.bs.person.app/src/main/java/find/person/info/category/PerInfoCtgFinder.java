@@ -8,20 +8,18 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class PerInfoCtgFinder {
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
-	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
-		List<PerInfoCtgFullDto> x=  perInfoCtgRepositoty
-				.getAllPerInfoCategory(AppContexts.user().companyId(), PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String companyId) {
+		return perInfoCtgRepositoty
+				.getAllPerInfoCategory(companyId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
 				.stream().map(p -> {
 					return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
 							p.getCategoryType().value, p.getIsFixed().value);
 				}).collect(Collectors.toList());
-		return x;
 	};
 }

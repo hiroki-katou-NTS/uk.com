@@ -6,19 +6,22 @@ package nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentNumberOfDayDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentPriceDto;
 
 @Getter
 @Setter
 public class CompanyEstablishmentDto {
 	
 	/** The estimate time. */
-	private CompanyEstimateTimeDto estimateTime;
+	private EstablishmentTimeDto estimateTime;
 	
 	/** The estimate price. */
-	private CompanyEstimatePriceDto estimatePrice;
+	private EstablishmentPriceDto estimatePrice;
 	
 	
 	/** The estimate number of day. */
-	private CompanyEstimateNumberOfDayDto estimateNumberOfDay;
+	private EstablishmentNumberOfDayDto estimateNumberOfDay;
 
 }
