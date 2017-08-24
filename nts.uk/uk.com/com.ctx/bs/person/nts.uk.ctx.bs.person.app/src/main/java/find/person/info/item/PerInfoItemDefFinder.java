@@ -43,6 +43,13 @@ public class PerInfoItemDefFinder {
 				}).collect(Collectors.toList());
 	};
 
+	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId, String isAbolition) {
+		return this.pernfoItemDefRep.getAllPerInfoItemDefByCategoryId(perInfoCtgId, isAbolition,
+				PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream().map(item -> {
+					return mappingFromDomaintoDto(item, 0);
+				}).collect(Collectors.toList());
+	};
+
 	public PerInfoItemDefDto getPerInfoItemDefById(String perInfoItemDefId) {
 		return this.pernfoItemDefRep
 				.getPerInfoItemDefById(perInfoItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(item -> {

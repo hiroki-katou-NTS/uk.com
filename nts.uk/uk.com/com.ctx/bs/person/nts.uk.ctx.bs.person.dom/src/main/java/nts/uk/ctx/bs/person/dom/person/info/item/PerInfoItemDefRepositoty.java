@@ -15,7 +15,7 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 
-	void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd,  String ctgCode);
+	void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd, String ctgCode);
 
 	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
 
@@ -26,8 +26,11 @@ public interface PerInfoItemDefRepositoty {
 	List<String> addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId);
 
 	List<PerInfoItemDefOrder> getPerInfoItemDefOrdersByCtgId(String perInfoCtgId);
-	
+
 	int getItemDispOrderBy(String perInfoCtgId, String perInfoItemDefId);
-	
+
 	List<String> getRequiredIds(String contractCd, String companyId);
+
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String isAbolition,
+			String contractCd);
 }

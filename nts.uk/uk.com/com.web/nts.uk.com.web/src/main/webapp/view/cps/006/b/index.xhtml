@@ -30,7 +30,7 @@
 					data-bind="ntsPanel:{width: '270px', height: '490px', direction: 'right', showIcon: true, visible: true}">
 
 					<div class="div_line">
-						<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('CPS006_22')}</div>
+						<div data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
 					</div>
 
 					<div class="div_line">
@@ -38,12 +38,12 @@
 							data-bind="ntsSearchBox: {
 							placeHolder:'#{i18n.getText('CPS006_15')}',
 							searchMode: 'filter',
-							targetKey: 'itemCode', 
+							targetKey: 'id', 
 							comId: 'B1_3', 
 							items: itemInfoDefList , 
-							selected: currentCode , 
-							selectedKey: 'itemCode', 
-							fields: ['itemName', 'itemCode'], 
+							selected: currentSelectId , 
+							selectedKey: 'id', 
+							fields: ['itemName'], 
 							mode: 'igGrid'}" />
 					</div>
 
@@ -52,10 +52,10 @@
 							data-bind="ntsGridList: {
 							rows : 15,
 							options: itemInfoDefList ,
-							optionsValue: 'itemCode',
+							optionsValue: 'id',
 							columns: columns ,
 							multiple: false ,
-							value: currentCode }">
+							value: currentSelectId }">
 						</table>
 					</div>
 
@@ -131,8 +131,7 @@
 							</div>
 						</div>
 
-						<com:ko-if
-							bind="currentItem().itemTypeState.dataTypeState.dataTypeValue === 1">
+						<com:ko-if bind=" dataType() === 1">
 
 							<div class="div_line">
 
@@ -170,14 +169,13 @@
 								</div>
 
 								<button class="float_left"
-									data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: 'B2_16.png', position: 'right top', enable: true }">?</button>
 
 							</div>
 
 						</com:ko-if>
 
-						<com:ko-if
-							bind="currentItem().itemTypeState.dataTypeState.dataTypeValue === 2">
+						<com:ko-if bind="dataType()  === 2">
 
 							<div class="div_line">
 
@@ -233,8 +231,7 @@
 
 						</com:ko-if>
 
-						<com:ko-if
-							bind="currentItem().itemTypeState.dataTypeState.dataTypeValue === 3">
+						<com:ko-if bind="dataType() === 3">
 
 							<div class="div_line">
 
@@ -250,8 +247,7 @@
 
 						</com:ko-if>
 
-						<com:ko-if
-							bind="currentItem().itemTypeState.dataTypeState.dataTypeValue === 4">
+						<com:ko-if bind="dataType() === 4">
 							<div class="div_line">
 
 								<div class="line_col_1">
@@ -269,13 +265,12 @@
 
 						</com:ko-if>
 
-						<com:ko-if
-							bind="currentItem().itemTypeState.dataTypeState.dataTypeValue === 5">
+						<com:ko-if bind="dataType() === 5">
 
 							<div class="div_line">
 
 								<div class="line_col_1">
-									<div id="B2_37" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_37')}</div>
+									<div id="B2_37" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_40')}</div>
 								</div>
 
 								<div class="line_col_2">
@@ -289,20 +284,19 @@
 
 						</com:ko-if>
 
-						<com:ko-if
-							bind="currentItem().itemTypeState.dataTypeState.dataTypeValue === 6">
+						<com:ko-if bind="dataType() === 6">
 
 							<div class="div_line">
 
 								<div class="line_col_1">
-									<div id="B2_41" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS001_43')}</div>
+									<div id="B2_42" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS001_43')}</div>
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_42">roleCode</span>
+									<span id="B2_43">roleCode</span>
 								</div>
 
-								<button id="B2_43">#{i18n.getText('CAS001_43')}</button>
+								<button id="B2_44">#{i18n.getText('CAS001_44')}</button>
 
 							</div>
 
