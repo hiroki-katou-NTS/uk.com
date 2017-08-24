@@ -1,6 +1,5 @@
 module nts.uk.at.view.ksm001.a {
 
-    import TargetYearDto = service.model.TargetYearDto;
     import EstimateTimeDto = service.model.EstimateTimeDto;
     import EstimatePriceDto = service.model.EstimatePriceDto;
     import EstimateDaysDto = service.model.EstimateDaysDto;
@@ -14,12 +13,12 @@ module nts.uk.at.view.ksm001.a {
     export module viewmodel {
 
         export class ScreenModel {
-            lstTargetYear: KnockoutObservableArray<TargetYearDto>;
+            lstTargetYear: KnockoutObservableArray<any>;
             isCompanySelected: KnockoutObservable<boolean>;
             isEmploymentSelected: KnockoutObservable<boolean>;
             isPersonSelected: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
-            selectedTargetYear: KnockoutObservable<string>;
+            selectedTargetYear: KnockoutObservable<number>;
             companyTimeModel: KnockoutObservable<EstablishmentTimeModel>;
             companyPriceModel: KnockoutObservable<EstablishmentPriceModel>;
             companyDaysModel: KnockoutObservable<EstablishmentDaysModel>;
@@ -66,7 +65,7 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected = ko.observable(false);
                 self.isPersonSelected = ko.observable(false);
                 self.isLoading = ko.observable(false);
-                self.selectedTargetYear = ko.observable('');
+                self.selectedTargetYear = ko.observable(null);
                 self.selectedEmploymentCode = ko.observable('');
                 self.alreadySettingList = ko.observableArray([]);
                 
@@ -142,19 +141,34 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
-                var arrTargetYear: TargetYearDto[] = [];
-                var targetOne: TargetYearDto = { code: '2017', name: 2017 };
-                var targetTwo: TargetYearDto = { code: '2018', name: 2018 };
-                arrTargetYear.push(targetOne);
-                arrTargetYear.push(targetTwo);
-                self.lstTargetYear(arrTargetYear);
-                self.selectedTargetYear('2017');
                 self.onSelectCompany().done(function(){
+                    self.setSelectableYears();
                     dfd.resolve(self);    
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
+            }
+
+            private setSelectableYears(): void {
+                let self = this;
+                let currentYear = moment();
+                self.selectedTargetYear(currentYear.year());
+
+                // Get 2 years before, 2 years after.
+                let arr = [];
+                arr.push(currentYear.subtract('years', 2).year());
+                arr.push(currentYear.add('years', 1).year());
+                arr.push(currentYear.add('years', 1).year());
+                arr.push(currentYear.add('years', 1).year());
+                arr.push(currentYear.add('years', 1).year());
+
+                // Map to model
+                let mapped = arr.map(i => {
+                    return { year: i }
+                });
+
+                self.lstTargetYear(mapped);
             }
             
             public visibleTabpanel() {
