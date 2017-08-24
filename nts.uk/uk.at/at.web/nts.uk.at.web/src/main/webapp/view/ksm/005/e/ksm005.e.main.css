@@ -1,11 +1,9 @@
 @CHARSET "UTF-8";
 
 .contents {
-	margin: 0;
+	margin-left: 20px;
+	margin-top: 20px;
 	position: absolute;
-	top: 40%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
 
 .period_labels {
@@ -32,6 +30,11 @@
 	margin-left: 20px;
 }
 
-#functions-area-bottom{
+#functions-area-bottom {
 	height: 100px;
+}
+
+#checkOverWriteSetting {
+	width: 90%;
+	height: 30px;
 }

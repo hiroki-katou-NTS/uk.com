@@ -47,7 +47,7 @@
 						<table  id="single-list" 
 							data-bind="ntsGridList:{
 								width: 330,
-								height: 230,
+								height: 255,
 								options: itemLst,
 								optionsValue: 'patternCode',
 								primaryKey: 'patternCode',
@@ -123,7 +123,7 @@
 												<div  style="width: 200px" data-bind="text: workingInfo "></div>
 											</td>
 											<td ><input tabindex="7"  class="nts-input"
-												data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: true}" style="width: 30px ;"/> #{i18n.getText('KSM003_33')} 
+												data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true, required: isSetting}" style="width: 30px ;"/> #{i18n.getText('KSM003_33')} 
 												
 											</td>
 										</tr>

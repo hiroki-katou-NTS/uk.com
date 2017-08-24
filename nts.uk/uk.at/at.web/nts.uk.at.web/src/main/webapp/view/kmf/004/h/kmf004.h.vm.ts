@@ -76,6 +76,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     self.checkDelete(false);
                 }
                 else{
+                    $("#inpPattern").focus();
                     self.selectedCode(self.lstRelationship()[0].relationshipCode);
                 }
                 

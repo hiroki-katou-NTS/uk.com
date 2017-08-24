@@ -7,7 +7,13 @@ import java.util.List;
  *
  */
 public interface AttendanceTypeRepository {
-	
-	public List<AttendanceType> getItemByType(String companyID, int type);
+	/**
+	 * get attendance Id by screen use atr
+	 * 画面で利用できる勤怠項目一覧
+	 * @param companyID
+	 * @param screenUseAtr
+	 * @return
+	 */
+	public List<AttendanceType> getItemByScreenUseAtr(String companyID, int screenUseAtr);
 	
 }
