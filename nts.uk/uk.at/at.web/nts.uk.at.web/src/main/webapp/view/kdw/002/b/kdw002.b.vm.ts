@@ -20,9 +20,9 @@ module nts.uk.at.view.kdw002.b {
 
                 self.bussinessCurrentCode = ko.observable('');
                 self.bussinessCurrentCode.subscribe(businessTypeCode => {
-            
+
                     self.bussinessCurrentCode(businessTypeCode);
-               
+
                     service.getListDailyServiceTypeControl(businessTypeCode).done(DailyServiceTypeControls => {
                         $("#grid").igGrid("dataSourceObject", _.sortBy(DailyServiceTypeControls, 'attendanceItemId')).igGrid("dataBind");
 
@@ -124,9 +124,14 @@ module nts.uk.at.view.kdw002.b {
                 }
                 var keynotExist = true;
                 for (var i = index; i < filteredData.length; i++) {
-                    var rowIndex = i + 1;
-                    var idValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemId");
-                    var nameValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemName");
+                    // var rowIndex = i + 1;
+                    //  var idValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemId");
+                    //  var nameValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemName");
+                    var rowId = filteredData[i].attendanceItemId;
+                    var nameValue = filteredData[i].attendanceItemName;
+                      var idValue = rowId.toString();
+                    //  var nameValue = $("#grid").igGrid("getCellValue", rowId, "attendanceItemName");
+
                     if (_.includes(idValue, self.txtSearch()) || _.includes(nameValue, self.txtSearch())) {
                         $('#grid').igGridSelection('selectRow', i);
                         keynotExist = false;
