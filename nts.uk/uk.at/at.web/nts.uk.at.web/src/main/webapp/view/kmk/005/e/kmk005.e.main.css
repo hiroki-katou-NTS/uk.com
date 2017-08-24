@@ -4,7 +4,9 @@
 
 #tab-1, #tab-2 {
     width: 1170px;
-    height: 550px;
+}
+#tab-1.disappear, #tab-2.disappear {
+	padding:0;
 }
 .ui-tabs-tab {
 	text-align: center;

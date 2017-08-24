@@ -4,12 +4,18 @@ module nts.uk.at.view.ksu006.a {
          *  Service paths
          */
         var servicePath: any = {
+            
+            findCharsetList: "at/schedule/budget/external/find/charsetlist",
             findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
             checkUnitAtr: "at/schedule/budget/external/validate/isDailyUnit",
             findDataPreview: "at/schedule/budget/external/find/preview",
             validateFile: "at/schedule/budget/external/import/validate",
             exportDetailError: "at/schedule/budget/external/log/export",
         };
+        
+        export function findCharsetList(): JQueryPromise<model.EnumerationModel> {
+            return nts.uk.request.ajax(servicePath.findCharsetList);
+        }
         
         export function findExternalBudgetList(): JQueryPromise<any> {
             let dfd = $.Deferred();
@@ -39,6 +45,13 @@ module nts.uk.at.view.ksu006.a {
         * Model namespace.
         */
         export module model {
+            
+            export class EnumerationModel {
+                value: number;
+                fieldName: string;
+                localizedName: string;
+            }
+            
             
             export class ExternalBudgetModel {
                 code: string;

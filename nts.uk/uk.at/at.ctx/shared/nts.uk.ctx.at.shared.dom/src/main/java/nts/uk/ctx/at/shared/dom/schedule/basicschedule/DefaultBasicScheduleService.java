@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -29,8 +28,14 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
+		WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
+
+		if (!workType.isPresent()) {
+			throw new RuntimeException("NOT FOUND WORK TYPE");
+		}
+
 		// All day
-		if (workType.isPresent() && WorkTypeUnit.OneDay == workType.get().getDailyWork().getWorkTypeUnit()) {
+		if (WorkTypeUnit.OneDay == workTypeUnit) {
 
 			WorkTypeClassification workTypeClass = workType.get().getDailyWork().getOneDay();
 
@@ -40,17 +45,16 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 					|| WorkTypeClassification.Absence == workTypeClass
 					|| WorkTypeClassification.SpecialHoliday == workTypeClass
 					|| WorkTypeClassification.TimeDigestVacation == workTypeClass) {
-				
-				this.checkRequiredOfInputType(workTypeClass);
+
+				return this.checkRequiredOfInputType(workTypeClass);
 			}
 
-			// Check QA3
 			if (WorkTypeClassification.Attendance == workTypeClass
+					|| WorkTypeClassification.HolidayWork == workTypeClass
 					|| WorkTypeClassification.Shooting == workTypeClass) {
 				return SetupType.REQUIRED;
 			}
 
-			// Check QA3
 			if (WorkTypeClassification.AnnualHoliday == workTypeClass
 					|| WorkTypeClassification.YearlyReserved == workTypeClass
 					|| WorkTypeClassification.SpecialHoliday == workTypeClass
@@ -68,24 +72,20 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		}
 
 		// Half day
-		DailyWork dailyWork = workType.get().getDailyWork();
-		//ERROR
-		if (workType.isPresent()
-				&& WorkTypeUnit.MonringAndAfternoon == dailyWork.getWorkTypeUnit()) {
-//			WorkTypeUnit workTypeUnit = this.checkWorkDay(workTypeCode);
-//			if (WorkTypeUnit.OneDay == workTypeUnit) {
-//
-//				SetupType morningWorkStyle = this.checkRequiredOfInputType(dailyWork.getMorning());
-//				SetupType afternoonWorkStyle = this.checkRequiredOfInputType(dailyWork.getAfternoon());
-//
-//				this.checkRequired(morningWorkStyle, afternoonWorkStyle);
-//
-//			} else {
-//				return SetupType.REQUIRED;
-//			}
-		}
+		if (WorkTypeUnit.MonringAndAfternoon == workTypeUnit) {
+			WorkStyle workStyle = this.checkWorkDay(workTypeCode);
+			if (WorkStyle.ONE_DAY_REST == workStyle) {
 
-		throw new RuntimeException("ERROR");
+				SetupType morningWorkStyle = this.checkRequiredOfInputType(workType.get().getDailyWork().getMorning());
+				SetupType afternoonWorkStyle = this
+						.checkRequiredOfInputType(workType.get().getDailyWork().getAfternoon());
+
+				return this.checkRequired(morningWorkStyle, afternoonWorkStyle);
+			} else {
+				return SetupType.REQUIRED;
+			}
+		}
+		throw new RuntimeException("NOT FOUND SETUP TYPE");
 	}
 
 	@Override
@@ -98,8 +98,44 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 	@Override
 	public WorkStyle checkWorkDay(String workTypeCode) {
-		// TODO Auto-generated method stub
-		return WorkStyle.ONE_DAY_REST;
+		String companyId = AppContexts.user().companyId();
+		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
+		WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
+		if (!workType.isPresent()) {
+			throw new RuntimeException("NOT FOUND WORK TYPE");
+		}
+		// All day
+		if (WorkTypeUnit.OneDay == workTypeUnit) {
+			WorkTypeClassification workTypeClass = workType.get().getDailyWork().getOneDay();
+			if (this.checkType(workTypeClass)) {
+				return WorkStyle.ONE_DAY_REST;
+			} else {
+				return WorkStyle.ONE_DAY_WORK;
+			}
+		}
+
+		// Half day
+		if (WorkTypeUnit.MonringAndAfternoon == workTypeUnit) {
+
+			WorkTypeClassification morningType = workType.get().getDailyWork().getMorning();
+			WorkTypeClassification afternoonType = workType.get().getDailyWork().getAfternoon();
+
+			if (this.checkType(morningType)) {
+				if (this.checkType(afternoonType)) {
+					return WorkStyle.ONE_DAY_REST;
+				} else {
+					return WorkStyle.AFTERNOON_WORK;
+				}
+			} else {
+				if (this.checkType(afternoonType)) {
+					return WorkStyle.MORNING_WORK;
+				} else {
+					return WorkStyle.ONE_DAY_WORK;
+				}
+			}
+		}
+
+		throw new RuntimeException("NOT FOUND WORK STYLE");
 	}
 
 	@Override
@@ -121,7 +157,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 			return SetupType.OPTIONAL;
 		}
 
-		throw new RuntimeException("ERROR");
+		throw new RuntimeException("NOT FOUND SETUP TYPE");
 	}
 
 	@Override
@@ -133,6 +169,30 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 		if (setupType == SetupType.NOT_REQUIRED && !StringUtil.isNullOrEmpty(workTimeCode, true)) {
 			throw new BusinessException("Msg_434");
+		}
+	}
+
+	/**
+	 * Check Enum WorkTypeClassification.
+	 * 
+	 * @param morningType
+	 * @return true/false
+	 */
+	public boolean checkType(WorkTypeClassification workTypeClassification) {
+		if (WorkTypeClassification.Holiday == workTypeClassification
+				|| WorkTypeClassification.Pause == workTypeClassification
+				|| WorkTypeClassification.AnnualHoliday == workTypeClassification
+				|| WorkTypeClassification.YearlyReserved == workTypeClassification
+				|| WorkTypeClassification.SpecialHoliday == workTypeClassification
+				|| WorkTypeClassification.TimeDigestVacation == workTypeClassification
+				|| WorkTypeClassification.SubstituteHoliday == workTypeClassification
+				|| WorkTypeClassification.Absence == workTypeClassification
+				|| WorkTypeClassification.ContinuousWork == workTypeClassification
+				|| WorkTypeClassification.Closure == workTypeClassification
+				|| WorkTypeClassification.LeaveOfAbsence == workTypeClassification) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

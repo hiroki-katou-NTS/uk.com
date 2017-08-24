@@ -30,8 +30,8 @@ public class WwfmtApprovalPhase extends UkJpaEntity implements Serializable{
 	@Column(name = "BROWSING_PHASE")
 	public int browsingPhase;
 	/**順序*/
-	@Column(name = "ORDER_NUMBER")
-	public int orderNumber;
+	@Column(name = "DISPORDER")
+	public int displayOrder;
 	
 	@Override
 	protected Object getKey() {

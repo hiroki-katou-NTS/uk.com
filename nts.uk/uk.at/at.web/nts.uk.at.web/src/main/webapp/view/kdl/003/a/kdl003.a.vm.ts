@@ -201,6 +201,10 @@ module nts.uk.at.view.kdl003.a {
              * Search work time.
              */
             public search(): void {
+                if ($('#inputEndTime').ntsError('hasError') ||
+                    $('#inputStartTime').ntsError('hasError')) {
+                    return;
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
 
@@ -243,6 +247,10 @@ module nts.uk.at.view.kdl003.a {
                 self.startTime(null);
                 self.endTimeOption(1);
                 self.endTime(null);
+
+                // Clear errors.
+                $('#inputEndTime').ntsError('clear');
+                $('#inputStartTime').ntsError('clear');
 
                 // Reload list work time.
                 self.loadWorkTime().always(() => {

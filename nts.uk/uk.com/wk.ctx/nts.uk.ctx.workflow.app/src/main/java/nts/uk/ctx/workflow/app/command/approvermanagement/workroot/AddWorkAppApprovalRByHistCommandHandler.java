@@ -1,15 +1,19 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkAppApprovalRootRepository;
@@ -21,153 +25,290 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<AddWorkAppApprovalRByHistCommand>{
+public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List<AddWorkAppApprovalRByHistCommand>>{
 
 	@Inject
 	private WorkAppApprovalRootRepository repo;
 	
 	@Override
-	protected void handle(CommandHandlerContext<AddWorkAppApprovalRByHistCommand> context) {
+	protected void handle(CommandHandlerContext<List<AddWorkAppApprovalRByHistCommand>> context) {
 		String companyId = AppContexts.user().companyId();
-		String historyId = UUID.randomUUID().toString();
-		String branchId = UUID.randomUUID().toString();
-		AddWorkAppApprovalRByHistCommand  addItem = context.getCommand();
-		String startDate = addItem.getStartDate();
-		GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(startDate));
-		GeneralDate eDate = sDate.addDays(-1);
-		String endDateNew = eDate.toString();
-		String endDate = "9999/12/31";
-		if(addItem.getCheck()==1){//company
-			CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
-					historyId,
-					addItem.getApplicationType(),
-					addItem.getStartDate(),
-					addItem.getEndDate(),
-					branchId,
-					addItem.getAnyItemApplicationId(),
-					addItem.getConfirmationRootType(),
-					addItem.getEmploymentRootAtr());
-			if(addItem.getCopyOrNew()==1){//copy
+		List<AddWorkAppApprovalRByHistCommand>  lstAddItem = context.getCommand();
+		for (AddWorkAppApprovalRByHistCommand addItem : lstAddItem) {
+			String historyId = UUID.randomUUID().toString();
+			String approvalId = UUID.randomUUID().toString();
+			String branchId = UUID.randomUUID().toString();
+			String startDate = addItem.getStartDate();
+			GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(startDate));
+			GeneralDate eDate = sDate.addDays(-1);
+			String endDateNew = eDate.toString();
+			String endDate = "9999/12/31";
+			//TH: company - doamin 会社別就業承認ルート
+			if(addItem.getCheck()==1){
+				CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
+						approvalId,
+						historyId,
+						addItem.getApplicationType(),
+						addItem.getStartDate(),
+						addItem.getEndDate(),
+						branchId,
+						addItem.getAnyItemApplicationId(),
+						addItem.getConfirmationRootType(),
+						addItem.getEmploymentRootAtr());
+				//find history previous
 				List<CompanyApprovalRoot> lstOld= repo.getComApprovalRootByEdate(companyId, endDate);
-				if(lstOld.isEmpty()){
+				if(lstOld.isEmpty()){// history previous is not exist
+					//copy/new
 					repo.addComApprovalRoot(comAppRoot);
-				}else{
+				}else{// history previous is exist
 					CompanyApprovalRoot com = lstOld.get(0);
-					CompanyApprovalRoot comAppRootNew = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
-							historyId,
-							addItem.getApplicationType(),
-							addItem.getStartDate(),
-							addItem.getEndDate(),
-							com.getBranchId(),
-							addItem.getAnyItemApplicationId(),
-							addItem.getConfirmationRootType(),
-							addItem.getEmploymentRootAtr());
-					repo.addComApprovalRoot(comAppRootNew);
-					//update history previous
-					CompanyApprovalRoot comPre = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
-							historyId,
-							addItem.getApplicationType(),
-							addItem.getStartDate(),
-							endDateNew,
-							com.getBranchId(),
-							addItem.getAnyItemApplicationId(),
-							addItem.getConfirmationRootType(),
-							addItem.getEmploymentRootAtr());
-					repo.updateComApprovalRoot(comPre);
+					//追加する履歴を最新の履歴の開始年月日と比較する
+					if(!checkStartDate(com.getPeriod().getStartDate().toString(),addItem.getStartDate())){
+						throw new BusinessException("Msg_153");
+					}
+					if(addItem.getCopyOrNew()==1){//copy
+						CompanyApprovalRoot comAppRootNew = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								addItem.getEndDate(),
+								com.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.addComApprovalRoot(comAppRootNew);
+						//update history previous
+						CompanyApprovalRoot comPre = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								endDateNew,
+								com.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.updateComApprovalRoot(comPre);
+						//copy data from history pre -> history new
+						//get lst APhase of history pre
+						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, com.getBranchId());
+						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
+						for (ApprovalPhase approvalPhase : lstAPhase) {
+							//get lst Approver
+							List<Approver> lstApprover = repo.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+							List<Approver> lstApproverNew = new ArrayList<Approver>();
+							for (Approver approver : lstApprover) {
+								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
+							}
+							//update lst Approver New
+							repo.addAllApprover(lstApproverNew);
+							//convert
+							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
+						}
+						//update lst APhase
+						repo.addAllApprovalPhase(lstAPhaseNew);
+					}else{//new
+						repo.addComApprovalRoot(comAppRoot);
+						//update history previous
+						CompanyApprovalRoot comPre = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								endDateNew,
+								com.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.updateComApprovalRoot(comPre);
+					}
 				}
-			}else{//new
-				repo.addComApprovalRoot(comAppRoot);
 			}
-		}
-		if(addItem.getCheck()==2){//workplace
-			WorkplaceApprovalRoot wpAppRoot = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
-					addItem.getWorkplaceId(),
-					historyId,
-					addItem.getApplicationType(),
-					addItem.getStartDate(),
-					addItem.getEndDate(),
-					branchId,
-					addItem.getAnyItemApplicationId(),
-					addItem.getConfirmationRootType(),
-					addItem.getEmploymentRootAtr());
-			if(addItem.getCopyOrNew()==1){//copy
-				List<WorkplaceApprovalRoot> lstWp = repo.getWpApprovalRootByEdate(companyId, addItem.getWorkplaceId(), endDate);
-				if(lstWp.isEmpty()){
+			//TH: workplace - domain 職場別就業承認ルート
+			if(addItem.getCheck()==2){
+				WorkplaceApprovalRoot wpAppRoot = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
+						approvalId,
+						addItem.getWorkplaceId(),
+						historyId,
+						addItem.getApplicationType(),
+						addItem.getStartDate(),
+						addItem.getEndDate(),
+						branchId,
+						addItem.getAnyItemApplicationId(),
+						addItem.getConfirmationRootType(),
+						addItem.getEmploymentRootAtr());
+				//find history previous
+				List<WorkplaceApprovalRoot> lstOld= repo.getWpApprovalRootByEdate(companyId, addItem.getWorkplaceId(), endDate);
+				if(lstOld.isEmpty()){// history previous is not exist
+					//copy/new
 					repo.addWpApprovalRoot(wpAppRoot);
-				}else{
-					WorkplaceApprovalRoot wp = lstWp.get(0);
-					WorkplaceApprovalRoot wpAppRootNew = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
-							addItem.getWorkplaceId(),
-							historyId,
-							addItem.getApplicationType(),
-							addItem.getStartDate(),
-							addItem.getEndDate(),
-							wp.getBranchId(),
-							addItem.getAnyItemApplicationId(),
-							addItem.getConfirmationRootType(),
-							addItem.getEmploymentRootAtr());
-					repo.addWpApprovalRoot(wpAppRootNew);
-					//update history previous
-					WorkplaceApprovalRoot wpAppRootPre = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
-							addItem.getWorkplaceId(),
-							historyId,
-							addItem.getApplicationType(),
-							addItem.getStartDate(),
-							endDate,
-							wp.getBranchId(),
-							addItem.getAnyItemApplicationId(),
-							addItem.getConfirmationRootType(),
-							addItem.getEmploymentRootAtr());
-					repo.updateWpApprovalRoot(wpAppRootPre);
+				}else{// history previous is exist
+					WorkplaceApprovalRoot wp = lstOld.get(0);
+					//追加する履歴を最新の履歴の開始年月日と比較する
+					if(!checkStartDate(wp.getPeriod().getStartDate().toString(),addItem.getStartDate())){
+						throw new BusinessException("Msg_153");
+					}
+					if(addItem.getCopyOrNew()==1){//copy
+						WorkplaceApprovalRoot wpAppRootNew = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								addItem.getWorkplaceId(),
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								addItem.getEndDate(),
+								wp.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.addWpApprovalRoot(wpAppRootNew);
+						//update history previous
+						WorkplaceApprovalRoot wpPre = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								addItem.getWorkplaceId(),
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								endDateNew,
+								wp.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.updateWpApprovalRoot(wpPre);
+						//copy data from history pre -> history new
+						//get lst APhase of history pre
+						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, wp.getBranchId());
+						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
+						for (ApprovalPhase approvalPhase : lstAPhase) {
+							//get lst Approver
+							List<Approver> lstApprover = repo.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+							List<Approver> lstApproverNew = new ArrayList<Approver>();
+							for (Approver approver : lstApprover) {
+								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
+							}
+							//update lst Approver New
+							repo.addAllApprover(lstApproverNew);
+							//convert
+							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
+						}
+						//update lst APhase
+						repo.addAllApprovalPhase(lstAPhaseNew);
+					}else{//new
+						repo.addWpApprovalRoot(wpAppRoot);
+						//update history previous
+						WorkplaceApprovalRoot wpPre = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								addItem.getWorkplaceId(),
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								endDateNew,
+								wp.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.updateWpApprovalRoot(wpPre);
+					}
 				}
-			}else{//new
-				repo.addWpApprovalRoot(wpAppRoot);
 			}
-		}
-		if(addItem.getCheck()==3){//person
-			PersonApprovalRoot psAppRoot = PersonApprovalRoot.createSimpleFromJavaType(companyId,
-					addItem.getEmployeeId(),
-					historyId,
-					addItem.getApplicationType(),
-					addItem.getStartDate(),
-					addItem.getEndDate(),
-					branchId,
-					addItem.getAnyItemApplicationId(),
-					addItem.getConfirmationRootType(),
-					addItem.getEmploymentRootAtr());
-			if(addItem.getCopyOrNew()==1){//copy
-				List<PersonApprovalRoot> lstPs= repo.getPsApprovalRootByEdate(companyId, addItem.getEmployeeId(), endDate);
-				if(lstPs.isEmpty()){
+			//TH: person - domain 個人別就業承認ルート
+			if(addItem.getCheck()==3){
+				PersonApprovalRoot psAppRoot = PersonApprovalRoot.createSimpleFromJavaType(companyId,
+						approvalId,
+						addItem.getEmployeeId(),
+						historyId,
+						addItem.getApplicationType(),
+						addItem.getStartDate(),
+						addItem.getEndDate(),
+						branchId,
+						addItem.getAnyItemApplicationId(),
+						addItem.getConfirmationRootType(),
+						addItem.getEmploymentRootAtr());
+				//find history previous
+				List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, addItem.getEmployeeId(), endDate);
+				if(lstOld.isEmpty()){// history previous is not exist
+					//copy/new
 					repo.addPsApprovalRoot(psAppRoot);
-				}else{
-					PersonApprovalRoot ps = lstPs.get(0);
-					PersonApprovalRoot psAppRootNew = PersonApprovalRoot.createSimpleFromJavaType(companyId,
-							addItem.getEmployeeId(),
-							historyId,
-							addItem.getApplicationType(),
-							addItem.getStartDate(),
-							addItem.getEndDate(),
-							ps.getBranchId(),
-							addItem.getAnyItemApplicationId(),
-							addItem.getConfirmationRootType(),
-							addItem.getEmploymentRootAtr());
-					repo.addPsApprovalRoot(psAppRootNew);
-					//update history previous
-					PersonApprovalRoot psAppRootPre = PersonApprovalRoot.createSimpleFromJavaType(companyId,
-							addItem.getEmployeeId(),
-							historyId,
-							addItem.getApplicationType(),
-							addItem.getStartDate(),
-							endDate,
-							ps.getBranchId(),
-							addItem.getAnyItemApplicationId(),
-							addItem.getConfirmationRootType(),
-							addItem.getEmploymentRootAtr());
-					repo.updatePsApprovalRoot(psAppRootPre);
+				}else{// history previous is exist
+					PersonApprovalRoot ps = lstOld.get(0);
+					//追加する履歴を最新の履歴の開始年月日と比較する
+					if(!checkStartDate(ps.getPeriod().getStartDate().toString(),addItem.getStartDate())){
+						throw new BusinessException("Msg_153");
+					}
+					if(addItem.getCopyOrNew()==1){//copy
+						PersonApprovalRoot psAppRootNew = PersonApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								addItem.getEmployeeId(),
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								addItem.getEndDate(),
+								ps.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.addPsApprovalRoot(psAppRootNew);
+						//update history previous
+						PersonApprovalRoot psPre = PersonApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								addItem.getEmployeeId(),
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								endDateNew,
+								ps.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.updatePsApprovalRoot(psPre);
+						//copy data from history pre -> history new
+						//get lst APhase of history pre
+						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, ps.getBranchId());
+						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
+						for (ApprovalPhase approvalPhase : lstAPhase) {
+							//get lst Approver
+							List<Approver> lstApprover = repo.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+							List<Approver> lstApproverNew = new ArrayList<Approver>();
+							for (Approver approver : lstApprover) {
+								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
+							}
+							//update lst Approver New
+							repo.addAllApprover(lstApproverNew);
+							//convert
+							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
+						}
+						//update lst APhase
+						repo.addAllApprovalPhase(lstAPhaseNew);
+					}else{//new
+						repo.addPsApprovalRoot(psAppRoot);
+						//update history previous
+						PersonApprovalRoot psPre = PersonApprovalRoot.createSimpleFromJavaType(companyId,
+								approvalId,
+								addItem.getEmployeeId(),
+								historyId,
+								addItem.getApplicationType(),
+								addItem.getStartDate(),
+								endDateNew,
+								ps.getBranchId(),
+								addItem.getAnyItemApplicationId(),
+								addItem.getConfirmationRootType(),
+								addItem.getEmploymentRootAtr());
+						repo.updatePsApprovalRoot(psPre);
+					}
 				}
-			}else{//new
-				repo.addPsApprovalRoot(psAppRoot);
 			}
 		}
+	}
+	/**
+	 * check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
+	 * @param sDatePre
+	 * @param sDateCur
+	 * @return
+	 */
+	public boolean checkStartDate(String sDatePre, String sDateCur){
+		if(sDateCur.compareTo(sDatePre)>0){
+			return true;
+		}
+		return false;
 	}
 }

@@ -76,6 +76,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static CompanyApprovalRoot toDomainComApR(WwfmtComApprovalRoot entity){
 		val domain = CompanyApprovalRoot.createSimpleFromJavaType(entity.wwfmtComApprovalRootPK.companyId,
+				entity.wwfmtComApprovalRootPK.approvalId,
 				entity.wwfmtComApprovalRootPK.historyId,
 				entity.applicationType,
 				entity.startDate.toString(),
@@ -93,6 +94,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static PersonApprovalRoot toDomainPsApR(WwfmtPsApprovalRoot entity){
 		val domain = PersonApprovalRoot.createSimpleFromJavaType(entity.wwfmtPsApprovalRootPK.companyId,
+				entity.wwfmtPsApprovalRootPK.approvalId,
 				entity.wwfmtPsApprovalRootPK.employeeId,
 				entity.wwfmtPsApprovalRootPK.historyId,
 				entity.applicationType,
@@ -111,6 +113,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static WorkplaceApprovalRoot toDomainWpApR(WwfmtWpApprovalRoot entity){
 		val domain = WorkplaceApprovalRoot.createSimpleFromJavaType(entity.wwfmtWpApprovalRootPK.companyId,
+				entity.wwfmtWpApprovalRootPK.approvalId,
 				entity.wwfmtWpApprovalRootPK.workplaceId,
 				entity.wwfmtWpApprovalRootPK.historyId,
 				entity.applicationType,
@@ -144,7 +147,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 				entity.wwfmtApprovalPhasePK.approvalPhaseId,
 				entity.approvalForm,
 				entity.browsingPhase,
-				entity.orderNumber);
+				entity.displayOrder);
 		return domain;
 	}
 	/**
@@ -158,7 +161,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 				entity.wwfmtAppoverPK.approverId,
 				entity.jobId,
 				entity.employeeId,
-				entity.orderNumber,
+				entity.displayOrder,
 				entity.approvalAtr,
 				entity.confirmPerson);
 		return domain;
@@ -170,7 +173,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static WwfmtComApprovalRoot toEntityComApR(CompanyApprovalRoot domain){
 		val entity = new WwfmtComApprovalRoot();
-		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(),domain.getHistoryId());
+		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
 		entity.applicationType = domain.getApplicationType().value;
@@ -187,7 +190,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static WwfmtPsApprovalRoot toEntityPsApR(PersonApprovalRoot domain){
 		val entity = new WwfmtPsApprovalRoot();
-		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getEmployeeId(), domain.getHistoryId());
+		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmployeeId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
 		entity.applicationType = domain.getApplicationType().value;
@@ -204,7 +207,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static WwfmtWpApprovalRoot toEntityWpApR(WorkplaceApprovalRoot domain){
 		val entity = new WwfmtWpApprovalRoot();
-		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getWorkplaceId(), domain.getHistoryId());
+		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getWorkplaceId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
 		entity.applicationType = domain.getApplicationType().value;
@@ -224,7 +227,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getCompanyId(), domain.getBranchId(), domain.getApprovalPhaseId());
 		entity.approvalForm = domain.getApprovalForm().value;
 		entity.browsingPhase = domain.getBrowsingPhase();
-		entity.orderNumber = domain.getOrderNumber();
+		entity.displayOrder = domain.getOrderNumber();
 		return entity;
 	}
 	/**
@@ -237,7 +240,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 		entity.wwfmtAppoverPK = new WwfmtAppoverPK(domain.getCompanyId(), domain.getApprovalPhaseId(), domain.getApproverId());
 		entity.jobId = domain.getJobTitleId();
 		entity.employeeId = domain.getEmployeeId();
-		entity.orderNumber = domain.getOrderNumber();
+		entity.displayOrder = domain.getOrderNumber();
 		entity.approvalAtr = domain.getApprovalAtr().value;
 		entity.confirmPerson = domain.getConfirmPerson();
 		return entity;
@@ -309,11 +312,12 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	/**
 	 * delete Company Approval Root
 	 * @param companyId
+	 * @param approvalId
 	 * @param historyId
 	 */
 	@Override
-	public void deleteComApprovalRoot(String companyId, String historyId) {
-		WwfmtComApprovalRootPK comPK = new WwfmtComApprovalRootPK(companyId,historyId);
+	public void deleteComApprovalRoot(String companyId, String approvalId, String historyId) {
+		WwfmtComApprovalRootPK comPK = new WwfmtComApprovalRootPK(companyId, approvalId, historyId);
 		this.commandProxy().remove(WwfmtComApprovalRoot.class,comPK);
 	}
 	/**
@@ -347,8 +351,8 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @param historyId
 	 */
 	@Override
-	public void deletePsApprovalRoot(String companyId, String employeeId, String historyId) {
-		WwfmtPsApprovalRootPK comPK = new WwfmtPsApprovalRootPK(companyId, employeeId, historyId);
+	public void deletePsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId) {
+		WwfmtPsApprovalRootPK comPK = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
 		this.commandProxy().remove(WwfmtPsApprovalRoot.class,comPK);
 	}
 	/**
@@ -371,8 +375,8 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @param historyId
 	 */
 	@Override
-	public void deleteWpApprovalRoot(String companyId, String workplaceId, String historyId) {
-		WwfmtWpApprovalRootPK comPK = new WwfmtWpApprovalRootPK(companyId, workplaceId, historyId);
+	public void deleteWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId) {
+		WwfmtWpApprovalRootPK comPK = new WwfmtWpApprovalRootPK(companyId, approvalId, workplaceId, historyId);
 		this.commandProxy().remove(WwfmtWpApprovalRoot.class,comPK);
 	}
 	/**

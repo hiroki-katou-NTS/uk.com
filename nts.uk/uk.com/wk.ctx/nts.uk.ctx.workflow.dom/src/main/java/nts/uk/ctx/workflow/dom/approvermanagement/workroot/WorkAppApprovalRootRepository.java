@@ -47,9 +47,10 @@ public interface WorkAppApprovalRootRepository {
 	/**
 	 * delete Company Approval Root
 	 * @param companyId
+	 * @param approvalId
 	 * @param historyId
 	 */
-	void deleteComApprovalRoot(String companyId, String historyId);
+	void deleteComApprovalRoot(String companyId, String approvalId, String historyId);
 	/**
 	 * delete All Approval Phase By Branch Id
 	 * @param companyId
@@ -68,7 +69,7 @@ public interface WorkAppApprovalRootRepository {
 	 * @param employeeId
 	 * @param historyId
 	 */
-	void deletePsApprovalRoot(String companyId, String employeeId, String historyId);
+	void deletePsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId);
 	/**
 	 * get All Workplace Approval Root
 	 * @param companyId
@@ -82,7 +83,7 @@ public interface WorkAppApprovalRootRepository {
 	 * @param workplaceId
 	 * @param historyId
 	 */
-	void deleteWpApprovalRoot(String companyId, String workplaceId, String historyId);
+	void deleteWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId);
 	/**
 	 * add Company Approval Root
 	 * @param comAppRoot

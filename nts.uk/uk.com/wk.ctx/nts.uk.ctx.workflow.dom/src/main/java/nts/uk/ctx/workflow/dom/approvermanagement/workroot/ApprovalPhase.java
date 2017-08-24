@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class ApprovalPhase extends AggregateRoot{
 	/**会社ID*/
@@ -37,5 +39,10 @@ public class ApprovalPhase extends AggregateRoot{
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
 				orderNumber);
+	}
+	public static ApprovalPhase updateBranchId(ApprovalPhase approvalPhase, String branchId){
+		ApprovalPhase approvalPhaseNew = approvalPhase;
+		approvalPhaseNew.setBranchId(branchId);
+		return approvalPhaseNew;
 	}
 }

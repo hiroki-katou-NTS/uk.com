@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,8 +26,7 @@ public class BPTimeItemAddCommandHandler extends CommandHandler<List<BPTimeItemA
 	}
 
 	private BonusPayTimeItem toBonusPayTimeItemDomain(BPTimeItemAddCommand bpTimeItemAddCommand, String companyId) {
-		return BonusPayTimeItem.createFromJavaType(companyId,
-				IdentifierUtil.randomUniqueId(), bpTimeItemAddCommand.getUseAtr(),
+		return BonusPayTimeItem.createFromJavaType(companyId, bpTimeItemAddCommand.getUseAtr(),
 				bpTimeItemAddCommand.getTimeItemName(), bpTimeItemAddCommand.getTimeItemNo(),
 				bpTimeItemAddCommand.getTimeItemTypeAtr());
 

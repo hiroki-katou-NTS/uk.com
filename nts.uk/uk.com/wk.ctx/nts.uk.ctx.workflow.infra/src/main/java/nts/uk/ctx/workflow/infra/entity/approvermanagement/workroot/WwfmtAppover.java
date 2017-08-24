@@ -32,8 +32,8 @@ public class WwfmtAppover extends UkJpaEntity implements Serializable {
 	@Column(name = "SID")
 	public String employeeId;
 	/**順序*/
-	@Column(name = "ORDER_NUMBER")
-	public int orderNumber;
+	@Column(name = "DISPORDER")
+	public int displayOrder;
 	/**区分*/
 	@Column(name = "APPROVAL_ATR")
 	public int approvalAtr;
