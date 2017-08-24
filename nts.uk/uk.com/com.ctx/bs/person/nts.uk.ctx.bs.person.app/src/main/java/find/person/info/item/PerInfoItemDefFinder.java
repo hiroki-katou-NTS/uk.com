@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
+import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -20,8 +21,11 @@ import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.bs.person.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItem;
+import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItemDataType;
+import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItemType;
 import nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,12 +39,20 @@ public class PerInfoItemDefFinder {
 	@Inject
 	IInternationalization internationalization;
 
-	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
-		return this.pernfoItemDefRep
+	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
+		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
 				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
 				.map(item -> {
-					return mappingFromDomaintoDto(item, 0);
+					return new PerInfoItemDefShowListDto(item.getPerInfoItemDefId(), item.getItemName().v());
 				}).collect(Collectors.toList());
+		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, internationalization);
+		List<EnumConstant> stringItemTypeEnum = EnumAdaptor.convertToValueNameList(StringItemType.class,
+				internationalization);
+		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
+				internationalization);
+		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, internationalization);
+		return new PerInfoItemDefFullEnumDto(dataTypeEnum, stringItemTypeEnum, stringItemDataTypeEnum, dateItemTypeEnum,
+				perInfoItemDefs);
 	};
 
 	public PerInfoItemDefDto getPerInfoItemDefById(String perInfoItemDefId) {
