@@ -174,7 +174,7 @@ module nts.uk.at.view.kdl003.a {
                 let self = this;
                 // Selected code from caller screen.
                 let selectedWorkTypeCode = self.callerParameter.selectedWorkTypeCode;
-                let isInSelectableCodes = selectedWorkTypeCode ? _.find(self.listWorkTime(), item => selectedWorkTypeCode == item.code) : false;
+                let isInSelectableCodes = selectedWorkTypeCode ? _.find(self.listWorkType(), item => selectedWorkTypeCode == item.workTypeCode) : false;
                 if (selectedWorkTypeCode && isInSelectableCodes) {
                     self.selectedWorkTypeCode(selectedWorkTypeCode);
                 } else {
