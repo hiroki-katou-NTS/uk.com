@@ -3610,11 +3610,12 @@ button.nts-switch-button[disabled]:hover {
   margin-top: -8px;
 }
 
+/* line 32, ../sass/components/_extable.scss */
 div .ex-area-line.x-stay {
-	cursor: default !important;
+  cursor: default !important;
 }
 
-/* line 32, ../sass/components/_extable.scss */
+/* line 36, ../sass/components/_extable.scss */
 .top-right-tooltip:before {
   width: 0;
   height: 0;
@@ -3629,7 +3630,7 @@ div .ex-area-line.x-stay {
   left: -14px;
 }
 
-/* line 45, ../sass/components/_extable.scss */
+/* line 49, ../sass/components/_extable.scss */
 .top-right-tooltip {
   background-color: #CACA1E;
   box-shadow: 2px 2px 2px #95A5A6;
@@ -3640,7 +3641,7 @@ div .ex-area-line.x-stay {
   padding-top: 4px;
 }
 
-/* line 55, ../sass/components/_extable.scss */
+/* line 59, ../sass/components/_extable.scss */
 .x-context-menu {
   position: absolute;
   display: inline-block;
@@ -3652,7 +3653,7 @@ div .ex-area-line.x-stay {
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
-/* line 65, ../sass/components/_extable.scss */
+/* line 69, ../sass/components/_extable.scss */
 .x-context-menu:after {
   content: '';
   display: block;
@@ -3667,7 +3668,7 @@ div .ex-area-line.x-stay {
   z-index: 1;
 }
 
-/* line 79, ../sass/components/_extable.scss */
+/* line 83, ../sass/components/_extable.scss */
 .x-context-menu li {
   position: relative;
   display: block;
@@ -3678,19 +3679,19 @@ div .ex-area-line.x-stay {
   z-index: 2;
 }
 
-/* line 88, ../sass/components/_extable.scss */
+/* line 92, ../sass/components/_extable.scss */
 .x-context-menu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
 
-/* line 91, ../sass/components/_extable.scss */
+/* line 95, ../sass/components/_extable.scss */
 .x-context-menu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
 
-/* line 96, ../sass/components/_extable.scss */
+/* line 100, ../sass/components/_extable.scss */
 .x-context-menu li .menu-icon {
   position: absolute;
   left: 7px;
@@ -3698,7 +3699,7 @@ div .ex-area-line.x-stay {
   margin-top: -8px;
 }
 
-/* line 102, ../sass/components/_extable.scss */
+/* line 106, ../sass/components/_extable.scss */
 .x-context-menu .partition {
   height: 0;
   border-top: 1px solid #ccc;
@@ -3706,7 +3707,7 @@ div .ex-area-line.x-stay {
   margin: 5px 0;
 }
 
-/* line 109, ../sass/components/_extable.scss */
+/* line 113, ../sass/components/_extable.scss */
 .x-popup-panel {
   position: absolute;
   display: block;
@@ -3718,7 +3719,7 @@ div .ex-area-line.x-stay {
   padding: 5px;
 }
 
-/* line 120, ../sass/components/_extable.scss */
+/* line 124, ../sass/components/_extable.scss */
 .x-link {
   display: inline-block;
   color: #0D86D1;
@@ -3833,13 +3834,35 @@ div .ex-area-line.x-stay {
   width: 30px;
 }
 
-/* line 1, ../sass/components/_importsettingform.scss */
-.import-setting-container {
-  height: 100%;
+/* line 3, ../sass/components/_fixedtable.scss */
+.nts-fixed-table table.fixed-table {
+  width: 100%;
+  table-layout: fixed;
 }
-/* line 4, ../sass/components/_importsettingform.scss */
-.import-setting-container .import-setting-body {
-  padding: 25px 30px;
+/* line 7, ../sass/components/_fixedtable.scss */
+.nts-fixed-table table.fixed-table > tbody > tr > td,
+.nts-fixed-table table.fixed-table > tbody > tr > th {
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* line 13, ../sass/components/_fixedtable.scss */
+.nts-fixed-table table.fixed-table > tbody > tr:hover > td,
+.nts-fixed-table table.fixed-table > tbody > tr:hover > th {
+  background-color: #C5F1F7;
+}
+/* line 20, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-header-container {
+  overflow: auto;
+}
+/* line 24, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-body-container {
+  overflow: auto;
+  float: left;
+  border: 1px solid #CCC;
+}
+/* line 30, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-body-wrapper {
+  margin: -1px 0 0 -1px;
 }
 
 /* line 1, ../sass/frame/_header.scss */
