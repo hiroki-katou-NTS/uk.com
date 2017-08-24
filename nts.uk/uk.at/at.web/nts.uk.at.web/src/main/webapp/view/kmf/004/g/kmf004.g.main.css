@@ -2,7 +2,7 @@
 	margin-left: 20px;
 }
 #table{
-	margin-left: 30px;
+	margin-left: 40px;
 	margin-top: 20px;
 }
 .row2{
@@ -21,4 +21,18 @@
     width: 20px;
     height: 20px;
     background-size: 20px 20px;
+}
+
+#content-area {
+	width: 800px !important;
+	margin-left: 20px;
+}
+
+#left-content {
+	float: left;
+	clear: right;
+}
+
+#right-content {
+	float: left;
 }

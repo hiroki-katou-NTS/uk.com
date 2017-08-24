@@ -18,6 +18,9 @@ public class WwfmtComApprovalRootPK implements Serializable{
 	/**会社ID*/
 	@Column(name = "CID")
 	public String companyId;
+	/**承認ID*/
+	@Column(name = "APPROVAL_ID")
+	public String approvalId;
 	/**履歴ID*/
 	@Column(name = "HIST_ID")
 	public String historyId;

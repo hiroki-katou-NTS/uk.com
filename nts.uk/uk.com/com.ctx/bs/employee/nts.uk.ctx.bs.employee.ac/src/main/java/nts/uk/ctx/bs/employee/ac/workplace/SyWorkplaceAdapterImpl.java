@@ -21,12 +21,19 @@ import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
  * The Class WorkplaceAdapterImpl.
  */
 @Stateless
-public class WorkplaceAdapterImpl implements WorkplaceAdapter {
+public class SyWorkplaceAdapterImpl implements WorkplaceAdapter {
 
 	/** The workplace pub. */
 	@Inject
 	private WorkplacePub workplacePub;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter#findByWkpId(
+	 * java.lang.String)
+	 */
 	@Override
 	public AcWorkplaceDto findByWkpId(String workplaceId) {
 

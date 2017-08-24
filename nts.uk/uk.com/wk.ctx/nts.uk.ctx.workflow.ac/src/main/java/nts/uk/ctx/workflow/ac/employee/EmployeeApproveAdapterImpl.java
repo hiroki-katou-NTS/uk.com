@@ -17,7 +17,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeAppr
  *
  */
 @Stateless
-public class EmployeeAdapterImpl implements EmployeeApproveAdapter{
+public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter{
 	@Inject
 	private EmployeePub employeePub;
 	/**

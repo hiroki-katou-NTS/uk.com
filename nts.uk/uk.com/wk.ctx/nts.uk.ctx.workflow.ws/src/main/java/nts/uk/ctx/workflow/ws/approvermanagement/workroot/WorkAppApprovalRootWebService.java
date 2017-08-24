@@ -29,8 +29,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	
 	@POST
 	@Path("getbycom")
-	public List<CommonApprovalRootDto> getAllByCom() {
-		return this.comFinder.getAllCommonApprovalRoot();
+	public CommonApprovalRootDto getAllByCom(int rootType, String employeeId) {
+		return this.comFinder.getAllCommonApprovalRoot(rootType, employeeId);
 	}
 	
 	@POST

@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The Interface EmployeeCodeSettingAdapter.
  */
-public interface EmployeeCodeSettingAdapter {
+public interface SysEmployeeCodeSettingAdapter {
 
 	/**
 	 * Gets the by company id.

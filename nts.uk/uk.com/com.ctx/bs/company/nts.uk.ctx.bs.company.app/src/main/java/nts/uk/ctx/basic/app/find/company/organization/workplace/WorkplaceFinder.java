@@ -7,6 +7,7 @@ package nts.uk.ctx.basic.app.find.company.organization.workplace;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -152,9 +153,15 @@ public class WorkplaceFinder {
 				}
 			}
 		} else {
-			List<WorkplaceFindDto> currentItemChilds = lstReturn.stream()
-					.filter(item -> item.getHeirarchyCode().equals(searchCode)).findFirst().get()
-					.getChilds();
+			Optional<WorkplaceFindDto> optWorkplaceFindDto = lstReturn.stream()
+					.filter(item -> item.getHeirarchyCode().equals(searchCode)).findFirst();
+
+			if (!optWorkplaceFindDto.isPresent()) {
+				return;
+			}
+
+			List<WorkplaceFindDto> currentItemChilds = optWorkplaceFindDto.get().getChilds();
+
 			pushToList(currentItemChilds, dto, hierarchyCode.substring(3, hierarchyCode.length()),
 					searchCode);
 		}

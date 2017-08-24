@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class UpdateWorkAppApprovalRByHistCommand {
 
+	/**承認ID*/
+	public String approvalId;
 	/**履歴ID*/
 	private String historyId;
 	/**履歴ID*/

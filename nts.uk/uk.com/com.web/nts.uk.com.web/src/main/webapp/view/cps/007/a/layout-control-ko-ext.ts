@@ -552,7 +552,7 @@ module nts.custombinding {
                             }
                     }
                 },
-                pushItems: (defs: Array<IItemDefinition>) => {
+                pushItems: (defs: Array<IItemDefinition>, groupMode?: boolean) => {
                     let self = this,
                         opts = self.options,
                         services = self.services;
@@ -581,9 +581,19 @@ module nts.custombinding {
                                         if (opts.sortable.pushItem(item)) {
                                             opts.listbox.value.removeAll();
                                         } else {
-                                            // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
-                                            // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                                            alert(text('Msg_202'));
+                                            if (!groupMode) {
+                                                // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                                                // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                                                alert(text('Msg_202'));
+                                            } else {
+                                                // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
+                                                // Show msg_404 if itemdefinition is exist
+                                                alert(text('Msg_204')).then(() => {
+                                                    opts.sortable
+                                                        .removeItem(item, true)
+                                                        .pushItem(item);
+                                                });
+                                            }
                                         }
                                     }
                                 });
@@ -591,9 +601,19 @@ module nts.custombinding {
                                 if (opts.sortable.pushItem(item)) {
                                     opts.listbox.value.removeAll();
                                 } else {
-                                    // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
-                                    // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                                    alert(text('Msg_202'));
+                                    if (!groupMode) {
+                                        // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                                        // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                                        alert(text('Msg_202'));
+                                    } else {
+                                        // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
+                                        // Show msg_404 if itemdefinition is exist
+                                        alert(text('Msg_204')).then(() => {
+                                            opts.sortable
+                                                .removeItem(item, true)
+                                                .pushItem(item);
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -847,7 +867,7 @@ module nts.custombinding {
 
                         // push all item to sortable when done
                         $.when.apply($, dfds).then(function() {
-                            opts.sortable.pushItems(_.flatten(arguments) as Array<IItemDefinition>);
+                            opts.sortable.pushItems(_.flatten(arguments) as Array<IItemDefinition>, true);
                         });
                     }
                 }

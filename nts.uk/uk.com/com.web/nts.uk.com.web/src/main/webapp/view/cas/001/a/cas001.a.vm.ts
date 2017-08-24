@@ -24,7 +24,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         allowPersonRef: KnockoutObservable<number> = ko.observable(1);
         allowOtherRef: KnockoutObservable<number> = ko.observable(1);
         RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
-        
+
         constructor() {
             let self = this;
             self.currentRoleId.subscribe(function(newRoleId) {
@@ -101,6 +101,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.allowOtherRef.subscribe(function(newValue) {
 
                 if (newValue == 0) {
+
+                    $("#item_role_table_body").ntsGrid("disableNtsControlAt", 1, "otherAuth", "SwitchButtons");
                     $("#item_role_table_body").ntsGrid("disableNtsControl", "otherAuth", "SwitchButtons");
                 } else {
                     $("#item_role_table_body").ntsGrid("enableNtsControl", "otherAuth", "SwitchButtons");
@@ -159,20 +161,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
         InitializationItemGrid() {
             let self = this;
 
-            if ($("#item_role_table_body").data("igGrid") !== undefined) {
-                $("#item_role_table_body").igGrid({
-                    dataSource: [],
-                    //  columns: [],
-                    features: []
-                });
-
-                $("#item_role_table_body").igGrid("destroy");
-                $("#item_role_table_body").remove();
-                $('#item_role_table_cover').append($('<table id="item_role_table_body"></table>'));
-
-            }
-
-
             $("#item_role_table_body").ntsGrid({
                 features: [{ name: 'Resizing' },
                     {
@@ -227,17 +215,19 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 ],
                 ntsControls: [
                     {
-                        name: 'SwitchButtons', 
+                        name: 'SwitchButtons',
                         options: [{ value: '1', text: getText('Enum_PersonInfoAuthTypes_HIDE') },
-                                  { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
-                                   { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
-                        optionsValue: 'value', 
-                        optionsText: 'text', controlType: 'SwitchButtons', enable: true
+                            { value: '2', text: getText('Enum_PersonInfoAuthTypes_REFERENCE') },
+                            { value: '3', text: getText('Enum_PersonInfoAuthTypes_UPDATE') }],
+                        optionsValue: 'value',
+                        optionsText: 'text',
+                        controlType: 'SwitchButtons',
+                        enable: true
                     }
                 ],
 
             });
-            //add switch to table header
+            // add switch to table header
             let switchString = "<div id=\'{0}_auth\' class=\'selected_all_auth\'"
                 + "data-bind=\"ntsSwitchButton: {options: itemListCbb"
                 + ",optionsValue:\'code\',optionsText: \'name\',value: {0},enable: {1} }\">"
