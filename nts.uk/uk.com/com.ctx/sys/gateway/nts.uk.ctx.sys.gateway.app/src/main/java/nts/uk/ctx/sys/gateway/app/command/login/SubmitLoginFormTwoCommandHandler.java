@@ -32,15 +32,15 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 
 	/** The user repository. */
 	@Inject
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	/** The employee code setting adapter. */
 	@Inject
-	SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
+	private SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
 
 	/** The employee adapter. */
 	@Inject
-	SysEmployeeAdapter employeeAdapter;
+	private SysEmployeeAdapter employeeAdapter;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -106,29 +106,27 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
 				// not edit employeeCode
 				return employeeCode;
-			} else {
-				//update employee code
-				switch (editType) {
-				case ZeroBefore:
-					employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
-					break;
-				case ZeroAfter:
-					employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit, "0");
-					break;
-				case SpaceBefore:
-					employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit);
-					break;
-				case SpaceAfter:
-					employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit);
-					break;
-				default:
-					break;
-				}
-				return employeeCode;
 			}
-		} else {
+			// update employee code
+			switch (editType) {
+			case ZeroBefore:
+				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
+				break;
+			case ZeroAfter:
+				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit, "0");
+				break;
+			case SpaceBefore:
+				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit);
+				break;
+			case SpaceAfter:
+				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit);
+				break;
+			default:
+				break;
+			}
 			return employeeCode;
 		}
+		return employeeCode;
 	}
 
 	/**

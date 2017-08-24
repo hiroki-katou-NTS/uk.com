@@ -1,6 +1,5 @@
 module nts.uk.at.view.ksm001.a {
 
-    import TargetYearDto = service.model.TargetYearDto;
     import EstimateTimeDto = service.model.EstimateTimeDto;
     import EstimatePriceDto = service.model.EstimatePriceDto;
     import EstimateDaysDto = service.model.EstimateDaysDto;
@@ -9,16 +8,17 @@ module nts.uk.at.view.ksm001.a {
     import EstablishmentDaysDto = service.model.EstablishmentDaysDto;
     import CompanyEstablishmentDto = service.model.CompanyEstablishmentDto;
     import EmploymentEstablishmentDto = service.model.EmploymentEstablishmentDto;
+    import PersonalEstablishmentDto = service.model.PersonalEstablishmentDto;
 
     export module viewmodel {
 
         export class ScreenModel {
-            lstTargetYear: KnockoutObservableArray<TargetYearDto>;
+            lstTargetYear: KnockoutObservableArray<any>;
             isCompanySelected: KnockoutObservable<boolean>;
             isEmploymentSelected: KnockoutObservable<boolean>;
             isPersonSelected: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
-            selectedTargetYear: KnockoutObservable<string>;
+            selectedTargetYear: KnockoutObservable<number>;
             companyTimeModel: KnockoutObservable<EstablishmentTimeModel>;
             companyPriceModel: KnockoutObservable<EstablishmentPriceModel>;
             companyDaysModel: KnockoutObservable<EstablishmentDaysModel>;
@@ -42,7 +42,7 @@ module nts.uk.at.view.ksm001.a {
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
             lstPersonComponentOption: any;
-            selectedCode: KnockoutObservable<string>;
+            selectedEmployeeCode: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
@@ -65,7 +65,7 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected = ko.observable(false);
                 self.isPersonSelected = ko.observable(false);
                 self.isLoading = ko.observable(false);
-                self.selectedTargetYear = ko.observable('');
+                self.selectedTargetYear = ko.observable(null);
                 self.selectedEmploymentCode = ko.observable('');
                 self.alreadySettingList = ko.observableArray([]);
                 
@@ -141,19 +141,34 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
-                var arrTargetYear: TargetYearDto[] = [];
-                var targetOne: TargetYearDto = { code: '2017', name: 2017 };
-                var targetTwo: TargetYearDto = { code: '2018', name: 2018 };
-                arrTargetYear.push(targetOne);
-                arrTargetYear.push(targetTwo);
-                self.lstTargetYear(arrTargetYear);
-                self.selectedTargetYear('2017');
                 self.onSelectCompany().done(function(){
+                    self.setSelectableYears();
                     dfd.resolve(self);    
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
+            }
+
+            private setSelectableYears(): void {
+                let self = this;
+                let currentYear = moment();
+                self.selectedTargetYear(currentYear.year());
+
+                // Get 2 years before, 2 years after.
+                let arr = [];
+                arr.push(currentYear.subtract('years', 2).year());
+                arr.push(currentYear.add('years', 1).year());
+                arr.push(currentYear.add('years', 1).year());
+                arr.push(currentYear.add('years', 1).year());
+                arr.push(currentYear.add('years', 1).year());
+
+                // Map to model
+                let mapped = arr.map(i => {
+                    return { year: i }
+                });
+
+                self.lstTargetYear(mapped);
             }
             
             public visibleTabpanel() {
@@ -224,23 +239,31 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
                 self.isLoading(true);
-                service.findCompanyEstablishment(2017).done(function(data) {
-                    self.companyTimeModel().updateData(data.estimateTime);
-                    self.isLoading(false);
-                    $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson);
-                    self.selectedCode = ko.observable('');
-                    self.alreadySettingList = ko.observableArray([]);
-                    self.isShowNoSelectRow = ko.observable(false);
-                    self.employeeList = ko.observableArray<UnitModel>([]);
-                    self.applyKCP005ContentSearch([]);
+                self.isLoading(false);
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson);
+                self.selectedEmployeeCode = ko.observable('');
+                self.alreadySettingList = ko.observableArray([]);
+                self.isShowNoSelectRow = ko.observable(false);
+                self.employeeList = ko.observableArray<UnitModel>([]);
+                self.applyKCP005ContentSearch([]);
 
-                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
-                    window.setTimeout(function() {
-                        $('#' + self.selectedTab()).removeClass('disappear');
-                    }, 100);
-                }).always(() => {
-                    nts.uk.ui.block.clear();
+                $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
+                
+                self.selectedEmployeeCode.subscribe(function(employeeCode) {
+                    if (employeeCode) {
+                        service.findPersonalEstablishment(2017, employeeCode).done(function(data) {
+                            console.log('PER');
+                            console.log(data);
+                            window.setTimeout(function() {
+                                $('#' + self.selectedTab()).removeClass('disappear');
+                            }, 100);
+                        });
+                    }
                 });
+                   
+            
+             
+                nts.uk.ui.block.clear();
             }
 
             
@@ -253,7 +276,7 @@ module nts.uk.at.view.ksm001.a {
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
-                        code: employeeSearch.employeeId,
+                        code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
                     };
@@ -262,7 +285,7 @@ module nts.uk.at.view.ksm001.a {
                 self.employeeList(employeeSearchs);
                 
                 if (dataList.length > 0) {
-                    self.selectedCode(dataList[0].employeeId);
+                    self.selectedEmployeeCode(dataList[0].employeeId);
                 }
 
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data) {
@@ -274,7 +297,7 @@ module nts.uk.at.view.ksm001.a {
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_FIRST_ITEM,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.selectedEmployeeCode,
                     isDialog: false,
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingList,
@@ -354,6 +377,25 @@ module nts.uk.at.view.ksm001.a {
                     employmentCode: self.selectedEmploymentCode()
                 };
                 service.saveEmploymentEstablishment(2017, dto).done(function(){
+                   
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+           /**
+            * function on click savePersonalEstablishment action
+            */
+            public savePersonalEstablishment(): void {
+                nts.uk.ui.block.invisible();
+                var self = this;    
+                var dto: PersonalEstablishmentDto = {
+                    estimateTime: self.employmentTimeModel().toDto(),
+                    estimatePrice: self.employmentPriceModel().toDto(),
+                    estimateNumberOfDay: self.employmentDaysModel().toDto(),
+                    employeeId: self.selectedEmployeeCode()
+                };
+                service.savePersonalEstablishment(2017, dto).done(function(){
                    
                 }).always(() => {
                     nts.uk.ui.block.clear();

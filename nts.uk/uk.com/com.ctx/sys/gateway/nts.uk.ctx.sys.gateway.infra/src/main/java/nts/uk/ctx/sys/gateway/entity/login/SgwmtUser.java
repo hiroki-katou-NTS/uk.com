@@ -11,6 +11,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,6 +51,7 @@ public class SgwmtUser extends UkJpaEntity implements Serializable {
     
     /** The expiration date. */
     @Column(name = "EXPIRATION_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expirationDate;
     
     /** The special user. */

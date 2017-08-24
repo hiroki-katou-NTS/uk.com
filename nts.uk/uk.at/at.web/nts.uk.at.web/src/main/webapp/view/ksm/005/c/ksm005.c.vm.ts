@@ -201,6 +201,7 @@ module nts.uk.at.view.ksm005.c {
                 if (employeeCode) {
                     self.employeeName((self.findByCodeEmployee(employeeCode)).name);
                     service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode)).done(function(data: MonthlyPatternSettingDto) {
+                        console.log(data);
                         if (data.setting) {
                             if (data.info && data.info.code) {
                                 self.monthlyPatternCode = data.info.code;
@@ -210,7 +211,7 @@ module nts.uk.at.view.ksm005.c {
                                 self.enableSystemChange(true);
                             }else {
                                 self.monthlyPatternCode = '';
-                                self.monthlyPatternSetting(nts.uk.resource.getText("KSM005_43"));
+                                self.monthlyPatternSetting('');
                                 self.enableSave(true);
                                 self.enableDelete(true);
                                 self.enableSystemChange(true);   

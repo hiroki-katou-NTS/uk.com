@@ -24,10 +24,10 @@ public class ApprovalFrame extends DomainObject {
 	private String phaseID ;
 	
 	/** 順序 */
-	private int dispOrder ;
+	private int dispOrder;
 	
 	/** 承認者 */
-	private String approverSID ;
+	private String approverSID;
 	
 	/** 承認区分 */
 	private ApprovalATR approvalATR;

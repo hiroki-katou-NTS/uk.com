@@ -25,7 +25,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 
 	/** The contract repository. */
 	@Inject
-	ContractRepository contractRepository;
+	private ContractRepository contractRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -63,7 +63,8 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	 * @param contract the contract
 	 */
 	private void checkTime(Optional<Contract> contract) {
-		if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today()) || contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
+		if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today())
+				|| contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_315");
 		}
 	}

@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
+import find.person.info.item.PerInfoItemDefFullEnumDto;
 
 @Path("ctx/bs/person/info/ctgItem")
 @Produces("application/json")
@@ -20,7 +21,7 @@ public class PernfoItemDefWebservice {
 
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}")
-	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId) {
+	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId) {
 		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId);
 	}
 
