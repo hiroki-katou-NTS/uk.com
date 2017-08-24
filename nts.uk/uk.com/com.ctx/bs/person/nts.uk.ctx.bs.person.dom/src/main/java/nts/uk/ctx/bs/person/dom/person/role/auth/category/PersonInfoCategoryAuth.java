@@ -6,41 +6,41 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoPermissionType;
-
+@Getter
 public class PersonInfoCategoryAuth extends AggregateRoot {
-	@Getter
+	
 	private String roleId;
-	@Getter
+	
 	private String personInfoCategoryAuthId;
-	@Getter
+	
 	private PersonInfoPermissionType allowPersonRef;
-	@Getter
+	
 	private PersonInfoPermissionType  allowOtherRef;
-	@Getter
+	
 	private PersonInfoPermissionType  allowOtherCompanyRef;
-	@Getter
+	
 	private PersonInfoAuthType selfPastHisAuth;
-	@Getter
+	
 	private PersonInfoAuthType selfFutureHisAuth;
-	@Getter
+	
 	private PersonInfoPermissionType selfAllowAddHis;
-	@Getter
+	
 	private PersonInfoPermissionType selfAllowDelHis;
-	@Getter
+	
 	private PersonInfoAuthType otherPastHisAuth;
-	@Getter
+	
 	private PersonInfoAuthType otherFutureHisAuth;
-	@Getter
+	
 	private PersonInfoPermissionType otherAllowAddHis;
-	@Getter
+	
 	private PersonInfoPermissionType otherAllowDelHis;
-	@Getter
+	
 	private PersonInfoPermissionType selfAllowAddMulti;
-	@Getter
+	
 	private PersonInfoPermissionType selfAllowDelMulti;
-	@Getter
+	
 	private PersonInfoPermissionType otherAllowAddMulti;
-	@Getter
+	
 	private PersonInfoPermissionType otherAllowDelMulti;
 	
 	/**
@@ -100,9 +100,6 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 			int otherAllowAddHis,int otherAllowDelHis, 
 			int selfAllowAddMulti,int selfAllowDelMulti, 
 			int otherAllowAddMulti,int otherAllowDelMulti ){
-		if(roleId.isEmpty() || personInfoCategoryAuthId.isEmpty()){
-			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
-		}
 		return new PersonInfoCategoryAuth(roleId, personInfoCategoryAuthId,
 				EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class),

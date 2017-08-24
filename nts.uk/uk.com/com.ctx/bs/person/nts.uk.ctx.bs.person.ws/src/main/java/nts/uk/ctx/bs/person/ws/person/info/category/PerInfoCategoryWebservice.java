@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import find.person.info.category.PerInfoCtgFinder;
 import find.person.info.category.PerInfoCtgFullDto;
 import nts.arc.layer.ws.WebService;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("ctx/bs/person/info/ctg")
 @Produces("application/json")
@@ -19,6 +20,13 @@ public class PerInfoCategoryWebservice extends WebService {
 	@POST
 	@Path("findAll")
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
-		return this.finder.getAllPerInfoCtg();
+		String companyId = AppContexts.user().companyId();
+		return this.finder.getAllPerInfoCtg(companyId);
+	}
+	
+	@POST
+	@Path("findAllByRoot")
+	public List<PerInfoCtgFullDto> getAllPerInfoCtgRoot() {
+		return this.finder.getAllPerInfoCtg("000000000000-0000");
 	}
 }
