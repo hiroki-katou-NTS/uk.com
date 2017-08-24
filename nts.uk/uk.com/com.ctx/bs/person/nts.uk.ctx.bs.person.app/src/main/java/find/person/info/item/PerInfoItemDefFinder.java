@@ -44,10 +44,21 @@ public class PerInfoItemDefFinder {
 	};
 
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId, String isAbolition) {
-		return this.pernfoItemDefRep.getAllPerInfoItemDefByCategoryId(perInfoCtgId, isAbolition,
-				PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream().map(item -> {
-					return mappingFromDomaintoDto(item, 0);
-				}).collect(Collectors.toList());
+		if (isAbolition.equals("true")) {
+			return this.pernfoItemDefRep
+					.getAllPerInfoItemDefByCategoryId(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+					.stream().map(item -> {
+						return mappingFromDomaintoDto(item, 0);
+					}).collect(Collectors.toList());
+
+		} else {
+			return this.pernfoItemDefRep.getAllPerInfoItemDefByCategoryIdWithNoAbolition(perInfoCtgId,
+					PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream().map(item -> {
+						return mappingFromDomaintoDto(item, 0);
+					}).collect(Collectors.toList());
+
+		}
+
 	};
 
 	public PerInfoItemDefDto getPerInfoItemDefById(String perInfoItemDefId) {

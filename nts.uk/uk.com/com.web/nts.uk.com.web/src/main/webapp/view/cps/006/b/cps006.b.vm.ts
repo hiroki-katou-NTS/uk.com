@@ -85,8 +85,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
         loadItemInfoDefList(categoryId): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            service.getItemInfoDefList(categoryId).done(function(itemInfoDefList: Array<IItemInfoDef>) {
-
+            service.getItemInfoDefList(categoryId, self.ckbDisplayAbolition()).done(function(itemInfoDefList: Array<IItemInfoDef>) {
+                self.itemInfoDefList([]);
                 for (let i of itemInfoDefList) {
                     self.itemInfoDefList().push(new ItemInfoDef(i));
                 }
@@ -95,12 +95,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                     self.currentSelectId(itemInfoDefList[0].id);
 
-                } else {
-
-
-
                 }
-
+                self.itemInfoDefList.valueHasMutated();
                 dfd.resolve();
 
             });

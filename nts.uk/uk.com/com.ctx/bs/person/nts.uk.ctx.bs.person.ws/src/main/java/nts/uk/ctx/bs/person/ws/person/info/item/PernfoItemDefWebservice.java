@@ -27,7 +27,7 @@ public class PernfoItemDefWebservice {
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}/{isAbolition}")
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId,
-			@PathParam("perInfoCtgId") String isAbolition) {
+			@PathParam("isAbolition") String isAbolition) {
 		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId, isAbolition);
 	}
 
