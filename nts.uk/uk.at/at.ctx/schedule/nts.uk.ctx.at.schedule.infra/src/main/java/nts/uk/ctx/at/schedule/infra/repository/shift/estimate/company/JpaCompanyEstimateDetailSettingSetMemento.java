@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
 /**
  * The Class JpaEstimateDetailSettingCompanySetMemento.
  */
-public class JpaEstimateDetailSettingCompanySetMemento implements EstimateDetailSettingSetMemento{
+public class JpaCompanyEstimateDetailSettingSetMemento implements EstimateDetailSettingSetMemento{
 	
 	/** The estimate time companys. */
 	private List<KscmtEstTimeComSet> estimateTimeCompanys;
@@ -35,7 +35,7 @@ public class JpaEstimateDetailSettingCompanySetMemento implements EstimateDetail
 	 * @param estimateTimeCompanys the estimate time companys
 	 * @param estimatePriceCompanys the estimate price companys
 	 */
-	public JpaEstimateDetailSettingCompanySetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
+	public JpaCompanyEstimateDetailSettingSetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
 			List<KscmtEstPriceComSet> estimatePriceCompanys,List<KscmtEstDaysComSet> estimateDaysCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
 		this.estimatePriceCompanys = estimatePriceCompanys;
@@ -58,7 +58,7 @@ public class JpaEstimateDetailSettingCompanySetMemento implements EstimateDetail
 				if (entity.getKscmtEstTimeComSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
-							.saveToMemento(new JpaEstimateTimeSettingCompanySetMemento(entity));
+							.saveToMemento(new JpaCompanyEstimateTimeSettingSetMemento(entity));
 				}
 			});
 		});
@@ -77,7 +77,7 @@ public class JpaEstimateDetailSettingCompanySetMemento implements EstimateDetail
 			this.estimatePriceCompanys.forEach(entity -> {
 				if (entity.getKscmtEstPriceComSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
-					estimateSetting.saveToMemento(new JpaEstimatedCompanyPriceSetMemento(entity));
+					estimateSetting.saveToMemento(new JpaCompanyEstimatedPriceSetMemento(entity));
 				}
 			});
 		});

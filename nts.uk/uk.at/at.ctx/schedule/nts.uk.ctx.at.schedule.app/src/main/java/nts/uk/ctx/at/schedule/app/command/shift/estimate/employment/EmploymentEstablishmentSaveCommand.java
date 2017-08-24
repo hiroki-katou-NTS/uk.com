@@ -2,29 +2,33 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.command.shift.estimate.company;
+package nts.uk.ctx.at.schedule.app.command.shift.estimate.employment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentNumberOfDayDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentPriceDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishment;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.employment.EmploymentEstablishment;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.employment.EmploymentEstablishmentGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Getter
 @Setter
-public class CompanyEstablishmentSaveCommand {
+public class EmploymentEstablishmentSaveCommand {
+	
+	/** The employment code. */
+	private String employmentCode;
 
 	/** The estimate time. */
 	private EstablishmentTimeDto estimateTime;
@@ -41,49 +45,42 @@ public class CompanyEstablishmentSaveCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyId the company id
-	 * @return the company establishment
+	 * @param EmploymentId the Employment id
+	 * @return the Employment establishment
 	 */
-	public CompanyEstablishment toDomain(String companyId){
-		return new CompanyEstablishment(new CompanyEstablishmentGetMementoImpl(companyId, this));
+	public EmploymentEstablishment toDomain(String EmploymentId){
+		return new EmploymentEstablishment(new EmploymentEstablishmentGetMementoImpl(EmploymentId, this));
 	}
 
 	/**
-	 * The Class CompanyEstablishmentGetMementoImpl.
+	 * The Class EmploymentEstablishmentGetMementoImpl.
 	 */
-	class CompanyEstablishmentGetMementoImpl implements CompanyEstablishmentGetMemento {
+	class EmploymentEstablishmentGetMementoImpl implements EmploymentEstablishmentGetMemento {
+		
+		/** The company id. */
 		private String companyId;
 
-		private CompanyEstablishmentSaveCommand command;
+		/** The command. */
+		private EmploymentEstablishmentSaveCommand command;
 
 		/**
-		 * Instantiates a new company establishment get memento impl.
+		 * Instantiates a new Employment establishment get memento impl.
 		 *
-		 * @param companyId the company id
+		 * @param EmploymentId the Employment id
 		 * @param command the command
 		 */
-		public CompanyEstablishmentGetMementoImpl(String companyId,
-				CompanyEstablishmentSaveCommand command) {
+		public EmploymentEstablishmentGetMementoImpl(String EmploymentId,
+				EmploymentEstablishmentSaveCommand command) {
 			this.command = command;
-			this.companyId = companyId;
+			this.companyId = EmploymentId;
 		}
+
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
-		 * CompanyEstablishmentGetMemento#getCompanyId()
-		 */
-		@Override
-		public CompanyId getCompanyId() {
-			return new CompanyId(companyId);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
-		 * CompanyEstablishmentGetMemento#getTargetYear()
+		 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.Employment.
+		 * EmploymentEstablishmentGetMemento#getTargetYear()
 		 */
 		@Override
 		public Year getTargetYear() {
@@ -93,8 +90,8 @@ public class CompanyEstablishmentSaveCommand {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
-		 * CompanyEstablishmentGetMemento#getAdvancedSetting()
+		 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.Employment.
+		 * EmploymentEstablishmentGetMemento#getAdvancedSetting()
 		 */
 		@Override
 		public EstimateDetailSetting getAdvancedSetting() {
@@ -139,6 +136,28 @@ public class CompanyEstablishmentSaveCommand {
 					return estimateDaysSettings;
 				}
 			});
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.employment.
+		 * EmploymentEstablishmentGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(companyId);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.employment.
+		 * EmploymentEstablishmentGetMemento#getEmploymentCode()
+		 */
+		@Override
+		public EmploymentCode getEmploymentCode() {
+			return new EmploymentCode(command.getEmploymentCode());
 		}
 	}
 }

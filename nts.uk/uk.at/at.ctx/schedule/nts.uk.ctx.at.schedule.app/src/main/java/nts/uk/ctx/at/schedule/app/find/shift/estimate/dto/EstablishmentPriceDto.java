@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto;
+package nts.uk.ctx.at.schedule.app.find.shift.estimate.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimatePriceDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
@@ -21,7 +20,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSettingGetM
  */
 @Getter
 @Setter
-public class CompanyEstimatePriceDto implements Serializable {
+public class EstablishmentPriceDto implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
