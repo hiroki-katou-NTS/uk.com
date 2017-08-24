@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.WorkplaceAdapter;
  * The Class WorkplaceAdapterImpl.
  */
 @Stateless
-public class WorkplaceAdapterImpl implements WorkplaceAdapter {
+public class ScWorkplaceAdapterImpl implements WorkplaceAdapter {
 
     /*
      * (non-Javadoc)

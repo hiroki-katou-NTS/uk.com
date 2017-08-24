@@ -173,8 +173,10 @@ module nts.uk.at.view.kdl003.a {
             private initWorkTypeSelection(): void {
                 let self = this;
                 // Selected code from caller screen.
-                if (self.callerParameter.selectedWorkTypeCode) {
-                    self.selectedWorkTypeCode(self.callerParameter.selectedWorkTypeCode);
+                let selectedWorkTypeCode = self.callerParameter.selectedWorkTypeCode;
+                let isInSelectableCodes = selectedWorkTypeCode ? _.find(self.listWorkType(), item => selectedWorkTypeCode == item.workTypeCode) : false;
+                if (selectedWorkTypeCode && isInSelectableCodes) {
+                    self.selectedWorkTypeCode(selectedWorkTypeCode);
                 } else {
                     // Select first item.
                     self.selectedWorkTypeCode(_.first(self.listWorkType()).workTypeCode);

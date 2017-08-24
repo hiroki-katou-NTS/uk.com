@@ -25,8 +25,8 @@ public class AttendanceTypeWebService extends WebService{
 	
 	@POST
 	@Path("getByType/{type}")
-	public List<AttendanceTypeDto> getItemByType(@PathParam("type") int type){
-		return this.attendanceTypeFinder.getItemByType(type);
+	public List<AttendanceTypeDto> getItemByScreenUseAtr(@PathParam("type") int screenUseAtr){
+		return this.attendanceTypeFinder.getItemByScreenUseAtr(screenUseAtr);
 	} 
 	
 }

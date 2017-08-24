@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.common.application;
+package nts.uk.ctx.at.request.infra.repository.application.common;
 
 import java.math.BigDecimal;
 import java.util.List;

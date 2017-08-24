@@ -5,23 +5,23 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
-
+@Getter
 public class PersonInfoRoleAuth extends AggregateRoot{
-	@Getter
+
 	private String roleId;
-	@Getter
+	
 	private String companyId;
-	@Getter
+	
 	private PersonInfoPermissionType allowMapUpload;
-	@Getter
+	
 	private PersonInfoPermissionType allowMapBrowse;
-	@Getter
+	
 	private PersonInfoPermissionType allowDocUpload;
-	@Getter
+	
 	private PersonInfoPermissionType allowDocRef;
-	@Getter
+	
 	private PersonInfoPermissionType allowAvatarUpload;
-	@Getter
+	
 	private PersonInfoPermissionType allowAvatarRef;
 	
 	/**
@@ -64,9 +64,6 @@ public class PersonInfoRoleAuth extends AggregateRoot{
 	}
 	
 	public static PersonInfoRoleAuth createFromDefaultValue(String roleId, String companyId){
-		if(roleId.isEmpty()){
-			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
-		}
 		return new PersonInfoRoleAuth(roleId, companyId,
 				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(0, PersonInfoPermissionType.class),
