@@ -4,11 +4,11 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 @IntegerRange(max = 1000, min = 1)
-public class StringItemLeng extends IntegerPrimitiveValue<StringItemLeng> {
+public class StringItemLength extends IntegerPrimitiveValue<StringItemLength> {
 
 	private static final long serialVersionUID = 1L;
 
-	public StringItemLeng(Integer rawValue) {
+	public StringItemLength(Integer rawValue) {
 		super(rawValue);
 	}
 

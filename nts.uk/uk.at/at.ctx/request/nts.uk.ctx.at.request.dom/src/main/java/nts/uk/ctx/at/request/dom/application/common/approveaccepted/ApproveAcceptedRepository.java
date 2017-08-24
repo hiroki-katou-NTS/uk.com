@@ -25,11 +25,7 @@ public interface ApproveAcceptedRepository {
 	 * @param approveAccepted
 	 */
 	void createApproverAccepted(ApproveAccepted approveAccepted);
-	/**
-	 * update approver accepted
-	 * @param approveAccepted
-	 */
-	void updateApproverAccepted(ApproveAccepted approveAccepted);
+
 	/**
 	 * delete approver accepted by code
 	 * @param companyID

@@ -25,7 +25,7 @@ module nts.uk.pr.view.ksu006.c {
                 
                 self.completionList = ko.observableArray([]);
                 
-                self.dateRange = ko.observable({startDate: new Date(), endDate: new Date()});
+                self.dateRange = ko.observable(self.initDateRange());
                 self.isIncomplete = ko.observable(true);
                 self.isInterruption = ko.observable(true);
                 self.isDone = ko.observable(true);
@@ -70,6 +70,14 @@ module nts.uk.pr.view.ksu006.c {
                     })
                 });
                 return dfd.promise();
+            }
+            
+            private initDateRange(): any {
+                let curr: Date = new Date();
+                return {
+                    startDate: new Date(curr.setMonth(curr.getMonth() - 1)),
+                    endDate: new Date()
+                }
             }
             
             public eventClick(dataLog: any) {
