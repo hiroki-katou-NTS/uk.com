@@ -34,6 +34,15 @@ public class KrqdtApprovalFrame extends UkJpaEntity implements Serializable {
 	@Column(name = "CONFIRM_ATR")
 	public String confirmATR;
 	
+	@Column(name="REPRESENTER_SID")
+	public String representerSID; 
+	
+	@Column(name="APPROVAL_DATE")
+	public String approvalDate;
+	
+	@Column(name="REASON")
+	public String reason;
+	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
