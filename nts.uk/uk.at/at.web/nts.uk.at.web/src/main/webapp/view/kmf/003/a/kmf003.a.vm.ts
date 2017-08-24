@@ -216,6 +216,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: 1,
                     conditionValue: Number(self.conditionValue01())
                 }));
+            } else {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return;
             }
             
             if(self.useCls02() && self.conditionValue02().trim() !== ""){
@@ -225,6 +228,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: self.useCls02() == true ? 1 : 0,
                     conditionValue: Number(self.conditionValue02())
                 }));
+            } else {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return;
             }
             
             if(self.useCls03() && self.conditionValue03().trim() !== ""){
@@ -234,6 +240,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: self.useCls03() == true ? 1 : 0,
                     conditionValue: Number(self.conditionValue03())
                 }));
+            } else {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return;
             }
             
             if(self.useCls04() && self.conditionValue04().trim() !== ""){
@@ -243,6 +252,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: self.useCls04() == true ? 1 : 0,
                     conditionValue: Number(self.conditionValue04())
                 }));
+            } else {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return;
             }
             
             if(self.useCls05() && self.conditionValue05().trim() !== ""){
@@ -252,6 +264,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: self.useCls05() == true ? 1 : 0,
                     conditionValue: Number(self.conditionValue05())
                 }));
+            } else {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return;
             }
             
             var data = new YearHolidayGrantDto(code, name, calMethod, standMethod, useConditionCls, grantMd, memo, grandConditions);
@@ -336,6 +351,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();      
                 });
+            }).ifNo(() => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_36" });
             });
         }
         
@@ -348,6 +365,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var optionValue = '';
             var conditionValue = '';
             var afterValue = '';
+            
+            //Call validate
+            var validateFlag = self.validateToOpenDialogB(conditionNo);
+            if(!validateFlag){
+                return false;    
+            }
             
             if(conditionNo === 1){
                 conditionValue = self.conditionValue01();
@@ -389,6 +412,37 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/kmf/003/b/index.xhtml").onClosed(() => {
                 
             });    
+        }
+        
+        /**
+         * Validate before open dialog B.
+         */
+        validateToOpenDialogB(conditionNo: number){
+            var self = this;
+            
+            if(self.useConditionCls() && self.grantDate() === ""){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_261" });
+                return false;
+            }
+            
+            if(conditionNo === 1 && self.conditionValue01() === ""){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return false;
+            } else if(conditionNo === 2 && self.useCls02() && self.conditionValue02() === ""){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return false;
+            } else if(conditionNo === 3 && self.useCls03() && self.conditionValue03() === ""){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return false;
+            } else if(conditionNo === 4 && self.useCls04() && self.conditionValue04() === ""){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return false;
+            } else if(conditionNo === 5 && self.useCls05() && self.conditionValue05() === ""){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
+                return false;
+            }
+            
+            return true;
         }
         
         /**

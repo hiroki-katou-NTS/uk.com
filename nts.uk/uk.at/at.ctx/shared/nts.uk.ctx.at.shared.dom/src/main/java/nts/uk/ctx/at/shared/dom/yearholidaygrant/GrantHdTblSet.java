@@ -59,7 +59,16 @@ public class GrantHdTblSet extends AggregateRoot {
 				}
 			}
 		}
-				
+		
+		// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
+		if(CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)){
+			for (GrantCondition grantCondition : grantConditions) {
+				if(grantCondition.getConditionValue().v() > 366){
+					throw new BusinessException("Msg_263");
+				}
+			}
+		}
+
 		for(int i=0; i<this.grantConditions.size(); i++) {
 			if (i == 0) {
 				continue;
@@ -70,13 +79,6 @@ public class GrantHdTblSet extends AggregateRoot {
 			// 利用区分がTRUEの付与条件は、選択されている計算方法の条件値が入力されていること
 			if (currentCondition.getUseConditionAtr() == UseConditionAtr.USE && currentCondition.getConditionValue() == null) {
 				throw new BusinessException("Msg_271");
-			}
-			
-			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
-			if(CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)){
-				if(currentCondition.getConditionValue().v() > 366){
-					throw new BusinessException("Msg_263");
-				}
 			}
 			
 			// 条件NO：1、条件値　>　条件NO：2、条件値　>　条件NO：3、条件値　>　条件NO：4、条件値　>　条件NO：5、条件値　		
