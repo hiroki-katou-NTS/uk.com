@@ -106,7 +106,7 @@ subprojects {
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.26'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.38'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.40.1'
 		
 	}
 }
@@ -574,6 +574,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.app')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.ac')
+		runtime project (':wk.ctx:nts.uk.ctx.workflow.pub')
+		runtime project (':wk.ctx:nts.uk.ctx.workflow.pubimp')
 		
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ac')
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')
@@ -673,6 +675,19 @@ project (':wk.ctx:nts.uk.ctx.workflow.ac') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+	}
+}
+project (':wk.ctx:nts.uk.ctx.workflow.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+project (':wk.ctx:nts.uk.ctx.workflow.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.pub')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.infra')
 	}
 }
 
