@@ -21,9 +21,16 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblPK;
 public class JpaGrantYearHolidayRepository extends JpaRepository implements GrantYearHolidayRepository {
 	
 	private final String findByCode = "SELECT a FROM KshstGrantHdTbl a "
-			+ "WHERE a.KshstGrantHdTblPK.companyId = :companyId "
-			+ "AND a.KshstGrantHdTblPK.conditionNo = :conditionNo "
-			+ "AND a.KshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
+			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
+			+ "AND a.kshstGrantHdTblPK.conditionNo = :conditionNo "
+			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
+	
+	@Override
+	public Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode,
+			int grantYearHolidayNo) {
+		return this.queryProxy().find(new KshstGrantHdTblPK(companyId, grantYearHolidayNo, conditionNo, yearHolidayCode), KshstGrantHdTbl.class)
+					.map(x -> convertToDomain(x));
+	}
 	
 	@Override
 	public List<GrantHdTbl> findByCode(String companyId, int conditionNo, String yearHolidayCode) {

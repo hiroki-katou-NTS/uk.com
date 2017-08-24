@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 
 /**
  * 年休付与テーブル
@@ -48,6 +50,8 @@ public class GrantHdTbl extends AggregateRoot {
 	
 	/* 一斉付与する */
 	private GrantSimultaneity grantSimultaneity;
+	
+	private GeneralDate grantDate;
 
 	@Override
 	public void validate() {
@@ -60,11 +64,10 @@ public class GrantHdTbl extends AggregateRoot {
 		
 		// 勤続年数、0年0ヶ月は登録不可
 		if (this.lengthOfServiceMonths.v() == 0 && this.lengthOfServiceYears.v() == 0) {
-			throw new BusinessException("268");
+			throw new BusinessException("Msg_268");
 		}
 		
 		// 利用区分がTRUEの付与条件は、選択されている計算方法の条件値が入力されていること
-		
 	}
 	
 	public GrantHdTbl(String companyId, int grantYearHolidayNo, int conditionNo, YearHolidayCode yearHolidayCode,
@@ -84,15 +87,19 @@ public class GrantHdTbl extends AggregateRoot {
 		this.grantSimultaneity = grantSimultaneity;
 	}
 	
-	public void validateInput(List<GrantHdTbl> grantHolidayList) {
+	/**
+	 * 
+	 * @param grantHolidayList
+	 */
+	public static void validateInput(List<GrantHdTbl> grantHolidayList) {
 		
 		for(int i=0; i< grantHolidayList.size(); i++) {
 			if (i == 0) {
 				continue;
 			}
 			
-			GrantHdTbl currentCondition = grantHolidayList.get(i);
-						
+			GrantHdTbl currentCondition = grantHolidayList.get(i);		
+			
 			// 勤続年数は上から昇順になっていること
 			int firstValueYear = grantHolidayList.get(i - 1).getLengthOfServiceYears().v();
 			int secondValueYear = currentCondition.getLengthOfServiceMonths().v();
@@ -112,8 +119,23 @@ public class GrantHdTbl extends AggregateRoot {
 		
 	}
 
+	/**
+	 * 
+	 * @param companyId
+	 * @param grantYearHolidayNo
+	 * @param conditionNo
+	 * @param yearHolidayCode
+	 * @param grantDays
+	 * @param limitedTimeHdDays
+	 * @param limitedHalfHdCnt
+	 * @param lengthOfServiceMonths
+	 * @param lengthOfServiceYears
+	 * @param grantReferenceDate
+	 * @param grantSimultaneity
+	 * @return
+	 */
 	public static GrantHdTbl createFromJavaType(String companyId, int grantYearHolidayNo, int conditionNo, String yearHolidayCode,
-			int grantDays, int limitedTimeHdDays, int limitedHalfHdCnt, int lengthOfServiceMonths, 
+			BigDecimal grantDays, int limitedTimeHdDays, int limitedHalfHdCnt, int lengthOfServiceMonths, 
 			int lengthOfServiceYears, int grantReferenceDate, int grantSimultaneity) {
 
 		return new GrantHdTbl(companyId, 
@@ -128,6 +150,30 @@ public class GrantHdTbl extends AggregateRoot {
 				EnumAdaptor.valueOf(grantReferenceDate, GrantReferenceDate.class),
 				EnumAdaptor.valueOf(grantSimultaneity, GrantSimultaneity.class)
 				);
+	}
+	
+	/**
+	 * 
+	 * @param grantHolidayList
+	 */
+	public void calculateGrantDate(GeneralDate referenceDate, GeneralDate simultaneousGrantDate, UseSimultaneousGrant useSimultaneousGrant) {
+		referenceDate.addMonths(lengthOfServiceMonths.v());
+		referenceDate.addYears(lengthOfServiceYears.v());
+		
+		if (UseSimultaneousGrant.USE.equals(useSimultaneousGrant)) {
+			if (GrantSimultaneity.USE.equals(this.grantSimultaneity)) {
+				// 処理名4.付与日シュミレーション計算処理について			
+				this.grantDate = simultaneousGrantDate.after(referenceDate) 
+						? referenceDate
+						: simultaneousGrantDate;
+			} else {
+				this.grantDate = referenceDate;
+			}
+			
+		} else {
+			// 処理名3.付与日シュミレーション計算処理について
+			this.grantDate = referenceDate;
+		}
 	}
 }
 

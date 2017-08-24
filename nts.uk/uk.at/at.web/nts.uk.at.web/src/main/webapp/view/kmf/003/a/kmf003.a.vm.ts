@@ -380,7 +380,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     value: conditionValue,
                     afterValue: afterValue
                 },
-                dateSelected: self.useConditionCls() ? self.grantDate() : ""
+                useCondition: self.useConditionCls(),
+                dateSelected: self.useConditionCls() ? self.grantDate() : "",
+                conditionNo: conditionNo
             };
             
             nts.uk.ui.windows.setShared("KMF003_CONDITION_NO", data);
