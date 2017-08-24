@@ -22,7 +22,7 @@ public class EmployeeDto {
 
 	//社員ID
 	/** The employee id. */
-	private Integer employeeId;
+	private String employeeId;
 
 	//社員コード
 	/** The employee code. */
@@ -34,7 +34,7 @@ public class EmployeeDto {
 	 * @param employeeId
 	 * @param employeeCode
 	 */
-	public EmployeeDto(String businessName, String personalId, Integer employeeId, String employeeCode) {
+	public EmployeeDto(String businessName, String personalId, String employeeId, String employeeCode) {
 		this.businessName = businessName;
 		this.personalId = personalId;
 		this.employeeId = employeeId;
