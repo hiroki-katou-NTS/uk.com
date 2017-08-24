@@ -11734,13 +11734,13 @@ var nts;
                         /**
                          * Update cell.
                          */
-                        function updateCell($grid, rowId, columnKey, cellValue, visibleColumnsMap) {
+                        function updateCell($grid, rowId, columnKey, cellValue, allColumnsMap) {
                             var grid = $grid.data("igGrid");
                             if (!utils.updatable($grid))
                                 return;
                             var gridUpdate = $grid.data("igGridUpdating");
                             var autoCommit = grid.options.autoCommit;
-                            var columnsMap = visibleColumnsMap || utils.getVisibleColumnsMap($grid);
+                            var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             if (!utils.isNtsControl($grid, columnKey))
@@ -11751,13 +11751,13 @@ var nts;
                         /**
                          * Update row.
                          */
-                        function updateRow($grid, rowId, updatedRowData, visibleColumnsMap, forceRender) {
+                        function updateRow($grid, rowId, updatedRowData, allColumnsMap, forceRender) {
                             var grid = $grid.data("igGrid");
                             if (!utils.updatable($grid))
                                 return;
                             var gridUpdate = $grid.data("igGridUpdating");
                             var autoCommit = grid.options.autoCommit;
-                            var columnsMap = visibleColumnsMap || utils.getVisibleColumnsMap($grid);
+                            var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                             var origData = gridUpdate._getLatestValues(rId);
                             grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
@@ -12675,7 +12675,7 @@ var nts;
                                 else {
                                     updatedRow[nextColumn.options.key] = String(res.toString().trim());
                                 }
-                                updating.updateRow($grid, $gridRow.data("id"), updatedRow, visibleColumnsMap, true);
+                                updating.updateRow($grid, $gridRow.data("id"), updatedRow, undefined, true);
                             }).fail(function (res) {
                             });
                             return true;
@@ -12862,7 +12862,7 @@ var nts;
                                             updatedRow[columnKey] = cbData;
                                         }
                                     }
-                                    updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow, visibleColumnsMap);
+                                    updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow);
                                 });
                             };
                             Processor.prototype.pasteRangeHandler = function (evt) {
@@ -12900,7 +12900,7 @@ var nts;
                                 var columnKey = columnsGroup[columnIndex].key;
                                 updateRow[columnKey] = data;
                                 var $gridRow = utils.rowAt(selectedCell);
-                                updating.updateRow(this.$grid, $gridRow.data("id"), updateRow, visibleColumnsMap);
+                                updating.updateRow(this.$grid, $gridRow.data("id"), updateRow);
                             };
                             Processor.prototype.process = function (data) {
                                 var dataRows = _.map(data.split("\n"), function (row) {
@@ -12999,7 +12999,7 @@ var nts;
                                         targetColumn = nextColumn.options;
                                         targetIndex = nextColumn.index;
                                     }
-                                    updating.updateRow(self.$grid, $gridRow.data("id"), rowData, visibleColumnsMap);
+                                    updating.updateRow(self.$grid, $gridRow.data("id"), rowData);
                                     _.forEach(comboErrors, function (combo) {
                                         setTimeout(function () {
                                             var $container = combo.cell.find(".nts-combo-container");
@@ -14187,24 +14187,24 @@ var nts;
                             return $cell.hasClass(color.Disable);
                         }
                         utils.disabled = disabled;
-                        function dataTypeOfPrimaryKey($grid, visibleColumnsMap) {
-                            if (uk.util.isNullOrUndefined(visibleColumnsMap))
+                        function dataTypeOfPrimaryKey($grid, columnsMap) {
+                            if (uk.util.isNullOrUndefined(columnsMap))
                                 return;
-                            var visibleColumns = visibleColumnsMap["undefined"];
-                            if (Object.keys(visibleColumnsMap).length > 1) {
-                                visibleColumns = _.concat(visibleColumnsMap["true"], visibleColumnsMap["undefined"]);
+                            var columns = columnsMap["undefined"];
+                            if (Object.keys(columnsMap).length > 1) {
+                                columns = _.concat(columnsMap["true"], columnsMap["undefined"]);
                             }
                             var primaryKey = $grid.igGrid("option", "primaryKey");
-                            var keyColumn = _.filter(visibleColumns, function (column) {
+                            var keyColumn = _.filter(columns, function (column) {
                                 return column.key === primaryKey;
                             });
-                            if (!uk.util.isNullOrUndefined(keyColumn))
+                            if (!uk.util.isNullOrUndefined(keyColumn) && keyColumn.length > 0)
                                 return keyColumn[0].dataType;
                             return;
                         }
                         utils.dataTypeOfPrimaryKey = dataTypeOfPrimaryKey;
-                        function parseIntIfNumber(value, $grid, visibleColumnsMap) {
-                            if (dataTypeOfPrimaryKey($grid, visibleColumnsMap) === "number") {
+                        function parseIntIfNumber(value, $grid, columnsMap) {
+                            if (dataTypeOfPrimaryKey($grid, columnsMap) === "number") {
                                 return parseInt(value);
                             }
                             return value;
@@ -14287,6 +14287,11 @@ var nts;
                                 return referGrid.igGrid("option", "columns");
                         }
                         utils.getColumns = getColumns;
+                        function getColumnsMap($grid) {
+                            var columns = getColumns($grid);
+                            return _.groupBy(columns, "fixed");
+                        }
+                        utils.getColumnsMap = getColumnsMap;
                         function getVisibleColumns($grid) {
                             return _.filter(getColumns($grid), function (column) {
                                 return column.hidden !== true;

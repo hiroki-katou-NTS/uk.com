@@ -350,12 +350,12 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Update cell.
              */
-            export function updateCell($grid: JQuery, rowId: any, columnKey: any, cellValue: any, visibleColumnsMap?: any) {
+            export function updateCell($grid: JQuery, rowId: any, columnKey: any, cellValue: any, allColumnsMap?: any) {
                 let grid: any = $grid.data("igGrid");
                 if (!utils.updatable($grid)) return;
                 let gridUpdate: any = $grid.data("igGridUpdating");
                 let autoCommit = grid.options.autoCommit;
-                let columnsMap: any = visibleColumnsMap || utils.getVisibleColumnsMap($grid);
+                let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 if (!utils.isNtsControl($grid, columnKey)) renderCell($grid, rId, columnKey);
@@ -365,12 +365,12 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Update row.
              */
-            export function updateRow($grid: JQuery, rowId: any, updatedRowData: any, visibleColumnsMap?: any, forceRender?: boolean) {
+            export function updateRow($grid: JQuery, rowId: any, updatedRowData: any, allColumnsMap?: any, forceRender?: boolean) {
                 let grid: any = $grid.data("igGrid");
                 if (!utils.updatable($grid)) return;
                 let gridUpdate: any = $grid.data("igGridUpdating");
                 let autoCommit = grid.options.autoCommit;
-                let columnsMap: any = visibleColumnsMap || utils.getVisibleColumnsMap($grid);
+                let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                 let origData = gridUpdate._getLatestValues(rId); 
                 grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
@@ -1255,7 +1255,7 @@ module nts.uk.ui.jqueryExtentions {
                     } else {
                         updatedRow[nextColumn.options.key] = String(res.toString().trim());
                     } 
-                    updating.updateRow($grid, $gridRow.data("id"), updatedRow, visibleColumnsMap, true);
+                    updating.updateRow($grid, $gridRow.data("id"), updatedRow, undefined, true);
                 }).fail(function(res: any) {
                     
                 });
@@ -1441,7 +1441,7 @@ module nts.uk.ui.jqueryExtentions {
                                 updatedRow[columnKey] = cbData;
                             }
                         }
-                        updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow, visibleColumnsMap);
+                        updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow);
                     });
                 }
                 
@@ -1480,7 +1480,7 @@ module nts.uk.ui.jqueryExtentions {
                     let columnKey = columnsGroup[columnIndex].key;
                     updateRow[columnKey] = data;
                     let $gridRow = utils.rowAt(selectedCell);
-                    updating.updateRow(this.$grid, $gridRow.data("id"), updateRow, visibleColumnsMap);
+                    updating.updateRow(this.$grid, $gridRow.data("id"), updateRow);
                 }
                 
                 private process(data: string) {
@@ -1579,7 +1579,7 @@ module nts.uk.ui.jqueryExtentions {
                             targetColumn = nextColumn.options;
                             targetIndex = nextColumn.index;
                         }
-                        updating.updateRow(self.$grid, $gridRow.data("id"), rowData, visibleColumnsMap);    
+                        updating.updateRow(self.$grid, $gridRow.data("id"), rowData);    
                         _.forEach(comboErrors, function(combo: any) {
                             setTimeout(function() {
                                 let $container = combo.cell.find(".nts-combo-container");
@@ -2756,21 +2756,21 @@ module nts.uk.ui.jqueryExtentions {
                 return $cell.hasClass(color.Disable);
             }
             
-            export function dataTypeOfPrimaryKey($grid: JQuery, visibleColumnsMap: any) : string {
-                if (util.isNullOrUndefined(visibleColumnsMap)) return;
-                let visibleColumns = visibleColumnsMap["undefined"];
-                if (Object.keys(visibleColumnsMap).length > 1) {
-                    visibleColumns = _.concat(visibleColumnsMap["true"], visibleColumnsMap["undefined"]);
+            export function dataTypeOfPrimaryKey($grid: JQuery, columnsMap: any) : string {
+                if (util.isNullOrUndefined(columnsMap)) return;
+                let columns = columnsMap["undefined"];
+                if (Object.keys(columnsMap).length > 1) {
+                    columns = _.concat(columnsMap["true"], columnsMap["undefined"]);
                 }
                 let primaryKey = $grid.igGrid("option", "primaryKey");
-                let keyColumn: Array<any> =  _.filter(visibleColumns, function(column: any) {
+                let keyColumn: Array<any> =  _.filter(columns, function(column: any) {
                     return column.key === primaryKey;
                 });
-                if (!util.isNullOrUndefined(keyColumn)) return keyColumn[0].dataType;
+                if (!util.isNullOrUndefined(keyColumn) && keyColumn.length > 0) return keyColumn[0].dataType;
                 return;
             }
-            export function parseIntIfNumber(value: any, $grid: JQuery, visibleColumnsMap: any) {
-                if (dataTypeOfPrimaryKey($grid, visibleColumnsMap) === "number") {
+            export function parseIntIfNumber(value: any, $grid: JQuery, columnsMap: any) {
+                if (dataTypeOfPrimaryKey($grid, columnsMap) === "number") {
                     return parseInt(value);
                 }
                 return value;
@@ -2842,6 +2842,10 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 let referGrid = fixedColumns.realGridOf($grid);
                 if (!util.isNullOrUndefined(referGrid)) return referGrid.igGrid("option", "columns");
+            }
+            export function getColumnsMap($grid: JQuery) {
+                let columns = getColumns($grid);
+                return _.groupBy(columns, "fixed");
             }
             export function getVisibleColumns($grid: JQuery) {
                 return _.filter(getColumns($grid), function(column: any) {
