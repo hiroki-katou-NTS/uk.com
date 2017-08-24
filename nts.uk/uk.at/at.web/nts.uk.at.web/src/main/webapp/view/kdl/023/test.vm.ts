@@ -32,7 +32,9 @@ module nts.uk.at.view.kdl023.viewmodel {
             let dfd = $.Deferred<any>();
             let self = this;
             baseService.findAllPattern().done(res => {
-                self.patternList(res);
+                if (res) {
+                    self.patternList(res);
+                }
                 dfd.resolve();
             });
             return dfd.promise();
