@@ -8,12 +8,14 @@ module nts.uk.pr.view.ccg007.c {
             employeeCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
             isSaveLoginInfo: KnockoutObservable<boolean>;
+            contractCode: KnockoutObservable<string>;
             constructor() {
                 var self = this;
                 self.companyCode = ko.observable('');
                 self.employeeCode = ko.observable('');
                 self.password = ko.observable('');
                 self.isSaveLoginInfo = ko.observable(true);
+                self.contractCode = ko.observable('');
             }
 
             start(): JQueryPromise<void> {
@@ -23,6 +25,7 @@ module nts.uk.pr.view.ccg007.c {
                 //get local contract info
                 blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
+                    self.contractCode(data?data.contractCode:"");
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(showContractData: any) {
                         if (showContractData) {
                             if (showContractData.showContract) {
@@ -83,7 +86,7 @@ module nts.uk.pr.view.ccg007.c {
             private submitLogin() {
                 var self = this;
                 blockUI.invisible();
-                service.submitLogin({ companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()) }).done(function() {
+                service.submitLogin({ companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()),contractCode: _.escape(self.contractCode()) }).done(function() {
                     nts.uk.characteristics.remove("form2LoginInfo").done(function() {
                         if (self.isSaveLoginInfo()) {
                             nts.uk.characteristics.save("form2LoginInfo", { companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {

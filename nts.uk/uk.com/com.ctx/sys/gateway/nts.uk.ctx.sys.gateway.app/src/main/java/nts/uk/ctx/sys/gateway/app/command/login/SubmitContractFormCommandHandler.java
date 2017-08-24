@@ -75,7 +75,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	 * @param password the password
 	 */
 	private void checkPassword(Optional<Contract> contract, String password) {
-		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(contract.get().getPassword().v())) {
+		if (!PasswordHash.verifyThat(password, contract.get().getContractCode().v()).isEqualTo(contract.get().getPassword().v())) {
 			throw new BusinessException("Msg_302");
 		}
 	}

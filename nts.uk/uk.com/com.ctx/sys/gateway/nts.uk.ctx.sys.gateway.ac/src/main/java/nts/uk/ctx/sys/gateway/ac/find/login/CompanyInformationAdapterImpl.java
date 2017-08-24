@@ -28,7 +28,7 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 	public List<CompanyInformationDto> findByContractCode(String contractCode) {
 		List<CompanyInformationDto> lst = new ArrayList<>();
 		CompanyInformationDto ci1 = new CompanyInformationDto("10000000-1234", "1234", "会社1");
-		CompanyInformationDto ci2 = new CompanyInformationDto("10000000-1234", "00000", "会社2");
+		CompanyInformationDto ci2 = new CompanyInformationDto("10000000-1234", "0000", "会社2");
 		lst.add(ci1);
 		lst.add(ci2);
 		return lst;
