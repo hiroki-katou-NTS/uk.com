@@ -93,7 +93,7 @@ module nts.uk.at.view.kdl003.a {
                         dfd.resolve();
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        nts.uk.ui.dialog.alertError(res);
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
@@ -228,7 +228,7 @@ module nts.uk.at.view.kdl003.a {
                         }
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        nts.uk.ui.dialog.alertError(res);
                     }).always(() => {
                         // Set focus.
                         $("[tabindex='10']").focus();
