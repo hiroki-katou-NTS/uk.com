@@ -15,7 +15,11 @@
 			<button tabindex="4" >#{i18n.getText('KSM001_3')}</button>
 		</ui:define>
 		<ui:define name="extended-222">
-			<ui:include src="data-table.xhtml"/>
+			<div data-bind="with: companyEstablishmentModel">
+				<div data-bind="ifnot: $parent.isLoading">
+					<ui:include src="data-table.xhtml" />
+				</div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

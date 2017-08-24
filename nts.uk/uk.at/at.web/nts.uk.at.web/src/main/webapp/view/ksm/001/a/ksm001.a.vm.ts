@@ -19,15 +19,13 @@ module nts.uk.at.view.ksm001.a {
             isPersonSelected: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             selectedTargetYear: KnockoutObservable<number>;
-            companyTimeModel: KnockoutObservable<EstablishmentTimeModel>;
-            companyPriceModel: KnockoutObservable<EstablishmentPriceModel>;
-            companyDaysModel: KnockoutObservable<EstablishmentDaysModel>;
-            employmentTimeModel: KnockoutObservable<EstablishmentTimeModel>;
-             employmentPriceModel: KnockoutObservable<EstablishmentPriceModel>;
-             employmentDaysModel: KnockoutObservable<EstablishmentDaysModel>;
+            companyEstablishmentModel: EstablishmentModel;
+            employmentEstablishmentModel: EstablishmentModel;
+            personalEstablishmentModel: EstablishmentModel;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
+           
             employmentTabs: KnockoutObservableArray<NtsTabPanelModel>;
-            selectedTab: KnockoutObservable<string>;
+            
             selEmploymentTab: KnockoutObservable<string>;
             
             
@@ -51,16 +49,18 @@ module nts.uk.at.view.ksm001.a {
 
             constructor() {
                 var self = this;
-                
+                this.tabs = ko.observableArray([
+                    { id: 'tab-1', title: nts.uk.resource.getText("KSM001_23"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-2', title: nts.uk.resource.getText("KSM001_24"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
+                ]);
+
                 self.baseDate = ko.observable(new Date());
                 self.selectedEmployee = ko.observableArray([]);
                 self.lstTargetYear = ko.observableArray([]);
-                self.companyTimeModel = ko.observable(new EstablishmentTimeModel());
-                self.companyPriceModel = ko.observable(new EstablishmentPriceModel());
-                self.companyDaysModel = ko.observable(new EstablishmentDaysModel());
-                self.employmentTimeModel = ko.observable(new EstablishmentTimeModel());
-                self.employmentPriceModel = ko.observable(new EstablishmentPriceModel());
-                self.employmentDaysModel = ko.observable(new EstablishmentDaysModel());
+                self.companyEstablishmentModel = new EstablishmentModel();
+                self.employmentEstablishmentModel = new EstablishmentModel();
+                self.personalEstablishmentModel = new EstablishmentModel();
                 self.isCompanySelected = ko.observable(false);
                 self.isEmploymentSelected = ko.observable(false);
                 self.isPersonSelected = ko.observable(false);
@@ -120,17 +120,12 @@ module nts.uk.at.view.ksm001.a {
                     }
 
                 }
-                self.tabs = ko.observableArray([
-                    { id: 'person-tab-1', title: nts.uk.resource.getText("KSM001_23"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'person-tab-2', title: nts.uk.resource.getText("KSM001_24"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'person-tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
-                ]);
+                
                 self.employmentTabs = ko.observableArray([
                     { id: 'emp-tab-1', title: nts.uk.resource.getText("KSM001_23"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'emp-tab-2', title: nts.uk.resource.getText("KSM001_24"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'emp-tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.selectedTab = ko.observable('person-tab-1');
                 self.selEmploymentTab = ko.observable('emp-tab-1');
                 
             }
@@ -188,14 +183,11 @@ module nts.uk.at.view.ksm001.a {
                 self.isCompanySelected(true);
                 self.isLoading(true);
                 service.findCompanyEstablishment(2017).done(function(data) {
-                    console.log(data);
-                    self.companyTimeModel().updateData(data.estimateTime);
-                    self.companyPriceModel().updateData(data.estimatePrice);
-                    self.companyDaysModel().updateData(data.estimateNumberOfDay);
+                    self.companyEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
+                    self.companyEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
+                    self.companyEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
                     self.isLoading(false);
-                     window.setTimeout(function() {
-                        $('#' + self.selectedTab()).removeClass('disappear');
-                    }, 100);
+                    self.removeClassDataSelectTabs(self.companyEstablishmentModel.selectedTab());
                     dfd.resolve();
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -204,30 +196,50 @@ module nts.uk.at.view.ksm001.a {
             }
             
             /**
+             * 
+             */
+            public removeClassDataSelectTabs(idTabs: string) {
+                window.setTimeout(function() {
+                    $('#' + idTabs).removeClass('disappear');
+                }, 1000);
+            }
+            
+           
+            /**
+             * call service load data 
+             */
+            private loadEmploymentSelected(employmentCode: string): void {
+                var self = this;
+                if (employmentCode) {
+                    
+                }
+            }
+             /**
              * on click tab panel employment action event
              */
             public onSelectEmployment(): void {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 self.isCompanySelected(false);
                 self.isPersonSelected(false);
                 self.isEmploymentSelected(true);
-                self.isLoading(false);
+                self.isLoading(true);
                 $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption);
-                self.selectedEmploymentCode.subscribe(function(employmentCode) {
-                    if (employmentCode) {
-                        service.findEmploymentEstablishment(2017, employmentCode).done(function(data) {
-                            self.employmentTimeModel().updateData(data.estimateTime);
-                            self.employmentPriceModel().updateData(data.estimatePrice);
-                            self.employmentDaysModel().updateData(data.estimateNumberOfDay);
-                            window.setTimeout(function() {
-                                $('#' + self.selectedTab()).removeClass('disappear');
-                            }, 100);
-                        });
-                   } 
-                });
+                   self.selectedEmploymentCode.valueHasMutated();
+                    self.selectedEmploymentCode.subscribe(function(employmentCode) {
+                        if (employmentCode) {
+                            service.findEmploymentEstablishment(2017, employmentCode).done(function(data) {
+                                self.employmentEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
+                                self.employmentEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
+                                self.employmentEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
+                                self.removeClassDataSelectTabs(self.employmentEstablishmentModel.selectedTab());
+                                self.isLoading(false);
+                            }).always(() => {
+                                nts.uk.ui.block.clear();
+                            });
+                        }
+                    })
                 
-                
-               
             }
             /**
              * on click tab panel employment action event
@@ -239,7 +251,6 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
                 self.isLoading(true);
-                self.isLoading(false);
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson);
                 self.selectedEmployeeCode = ko.observable('');
                 self.alreadySettingList = ko.observableArray([]);
@@ -248,21 +259,19 @@ module nts.uk.at.view.ksm001.a {
                 self.applyKCP005ContentSearch([]);
 
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
-                
+                self.selectedEmployeeCode.valueHasMutated();
                 self.selectedEmployeeCode.subscribe(function(employeeCode) {
                     if (employeeCode) {
                         service.findPersonalEstablishment(2017, employeeCode).done(function(data) {
-                            console.log('PER');
-                            console.log(data);
-                            window.setTimeout(function() {
-                                $('#' + self.selectedTab()).removeClass('disappear');
-                            }, 100);
+                            self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
+                            self.personalEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
+                            self.personalEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
+                            self.removeClassDataSelectTabs(self.personalEstablishmentModel.selectedTab());
+                            self.isLoading(false);
                         });
                     }
                 });
-                   
-            
-             
+             self.removeClassDataSelectTabs(self.personalEstablishmentModel.selectedTab());
                 nts.uk.ui.block.clear();
             }
 
@@ -331,21 +340,6 @@ module nts.uk.at.view.ksm001.a {
                 return dfd.promise();
             }
             
-            
-           /**
-            * function on click saveCompanyEstablishment action
-            */
-            public saveEstablishment(): void {
-                var self = this;
-                if (self.isCompanySelected()) {
-                    console.log("COM");
-                    self.saveCompanyEstablishment();
-                }
-                if (self.isEmploymentSelected()) {
-                    console.log("EMP");
-                    self.saveEmploymentEstablishment();
-                }
-            }
            /**
             * function on click saveCompanyEstablishment action
             */
@@ -353,9 +347,9 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: CompanyEstablishmentDto = {
-                    estimateTime: self.companyTimeModel().toDto(),
-                    estimatePrice: self.companyPriceModel().toDto(),
-                    estimateNumberOfDay: self.companyDaysModel().toDto()
+                    estimateTime: self.companyEstablishmentModel.estimateTimeModel().toDto(),
+                    estimatePrice: self.companyEstablishmentModel.estimatePriceModel().toDto(),
+                    estimateNumberOfDay: self.companyEstablishmentModel.estimateDaysModel().toDto()
                 };
                 service.saveCompanyEstablishment(2017, dto).done(function(){
                    
@@ -371,9 +365,9 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: EmploymentEstablishmentDto = {
-                    estimateTime: self.employmentTimeModel().toDto(),
-                    estimatePrice: self.employmentPriceModel().toDto(),
-                    estimateNumberOfDay: self.employmentDaysModel().toDto(),
+                    estimateTime: self.employmentEstablishmentModel.estimateTimeModel().toDto(),
+                    estimatePrice: self.employmentEstablishmentModel.estimatePriceModel().toDto(),
+                    estimateNumberOfDay: self.employmentEstablishmentModel.estimateDaysModel().toDto(),
                     employmentCode: self.selectedEmploymentCode()
                 };
                 service.saveEmploymentEstablishment(2017, dto).done(function(){
@@ -390,9 +384,9 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: PersonalEstablishmentDto = {
-                    estimateTime: self.employmentTimeModel().toDto(),
-                    estimatePrice: self.employmentPriceModel().toDto(),
-                    estimateNumberOfDay: self.employmentDaysModel().toDto(),
+                    estimateTime: self.personalEstablishmentModel.estimateTimeModel().toDto(),
+                    estimatePrice: self.personalEstablishmentModel.estimatePriceModel().toDto(),
+                    estimateNumberOfDay: self.personalEstablishmentModel.estimateDaysModel().toDto(),
                     employeeId: self.selectedEmployeeCode()
                 };
                 service.savePersonalEstablishment(2017, dto).done(function(){
@@ -611,6 +605,19 @@ module nts.uk.at.view.ksm001.a {
                     yearlyEstimate: this.yearlyEstimate.toDto()
                 };
                 return dto;
+            }
+        }
+        
+        export class EstablishmentModel {
+            estimateTimeModel: EstablishmentTimeModel;
+            estimatePriceModel: EstablishmentPriceModel;
+            estimateDaysModel: EstablishmentDaysModel;
+            selectedTab: KnockoutObservable<string>;
+            constructor() {
+                this.estimateTimeModel = new EstablishmentTimeModel();
+                this.estimatePriceModel = new EstablishmentPriceModel();
+                this.estimateDaysModel = new EstablishmentDaysModel();
+                this.selectedTab = ko.observable('tab-1');
             }
         }
         

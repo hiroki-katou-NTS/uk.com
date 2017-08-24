@@ -21,7 +21,11 @@
 		<ui:define name="extended-222">
 			<div id="ccgcomponent"></div>
 			<div id="employeeSearch" class="contentkcp005"></div>
-			<ui:include src="data-table.xhtml"/>
+			<div data-bind="with: personalEstablishmentModel">
+				<div data-bind="ifnot: $parent.isLoading">
+					<ui:include src="data-table.xhtml"/>
+				</div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
