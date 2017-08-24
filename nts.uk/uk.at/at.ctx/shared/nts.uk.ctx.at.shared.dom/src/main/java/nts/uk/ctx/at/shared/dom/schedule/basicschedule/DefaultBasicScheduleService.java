@@ -163,11 +163,12 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	@Override
 	public void checkPairWorkTypeWorkTime(String workTypeCode, String workTimeCode) {
 		SetupType setupType = this.checkNeededOfWorkTimeSetting(workTypeCode);
-		if (setupType == SetupType.REQUIRED && StringUtil.isNullOrEmpty(workTimeCode, true)) {
+		if (setupType == SetupType.REQUIRED && StringUtil.isNullOrEmpty(workTimeCode, true) || workTimeCode == "000") {
 			throw new BusinessException("Msg_435");
 		}
 
-		if (setupType == SetupType.NOT_REQUIRED && !StringUtil.isNullOrEmpty(workTimeCode, true)) {
+		if (setupType == SetupType.NOT_REQUIRED && !StringUtil.isNullOrEmpty(workTimeCode, true)
+				|| workTimeCode == "000") {
 			throw new BusinessException("Msg_434");
 		}
 	}
