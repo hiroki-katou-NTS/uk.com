@@ -16,18 +16,18 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="register" class="proceed" tabindex="1">#{i18n.getText('CPS006_1')}</button>
-				<button id="sort" tabindex="2">#{i18n.getText('CPS006_2')}</button>
+				<button id="register" class="proceed" tabindex="1" data-bind="click: registerCategoryInfo">#{i18n.getText('CPS006_1')}</button>
+				<button id="sort" tabindex="2" data-bind="click: openCDL022Modal">#{i18n.getText('CPS006_2')}</button>
 				<div class='float-right'>
-					<a data-bind="ntsLinkButton: {  }" tabindex="3">#{i18n.getText('CPS006_49')}</a>
-					<a data-bind="ntsLinkButton: {  }" tabindex="4">#{i18n.getText('CPS006_3')}</a>
+					<a class='goout' data-bind="ntsLinkButton: { jump: '/view/cps/005/a/index.xhtml'  }" tabindex="3">#{i18n.getText('CPS006_49')}</a>
+					<a class='goout' data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }" tabindex="4">#{i18n.getText('CPS006_3')}</a>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content-left"
 					data-bind="ntsPanel:{width: '295px', height: '500px',
 					direction: 'right', showIcon: false, visible: true}">
-					<div id="isAbolition" data-bind="ntsCheckBox: { checked: isUse }"
+					<div id="isAbolition" data-bind="ntsCheckBox: { checked: isAbolished }"
 						tabindex="5">#{i18n.getText('CPS006_4')}</div>
 					<div id="search" tabindex="6"
 						data-bind="ntsSearchBox: {
