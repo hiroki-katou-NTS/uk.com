@@ -1,6 +1,8 @@
 /// <reference path="reference.ts"/>
 
 module nts.uk.time {
+    
+    const MINUTES_IN_DAY = 24 * 60;
 
     var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
     var listEmpire: { [year: string]: string } = {
@@ -856,7 +858,7 @@ module nts.uk.time {
                 this.dayDivision = this.checkDayDivision(rawValue);
                 this.time = this.getTimeDuration(rawValue);
             }
-        }    
+        }
         
         getDayDivision (): DayAttr{
             return this.dayDivision;
@@ -919,5 +921,77 @@ module nts.uk.time {
         THE_PRESENT_DAY: new DayAttr(1, "当日"),
         THE_NEXT_DAY: new DayAttr(2, "翌日"), 
         TWO_DAY_LATER: new DayAttr(3, "翌々日")
+    }
+    
+    
+    export module minutesBased {
+        export interface MinutesBasedTime<T> extends Number {
+            isNegative(): boolean;
+            asMinutes();
+        }
+        
+        export interface DurationMinutesBasedTime extends MinutesBasedTime<DurationMinutesBasedTime> {
+            asHoursDouble(): number;
+            asHoursInt(): number;
+            minutePart(): number;
+        }
+        
+        export function duration(timeAsMinutes: number): DurationMinutesBasedTime;
+            util.accessor.defineInto(duration)
+                .get('asHoursDouble', () => timeAsMinutes / 60)
+                .get('asHoursInt', () => ntsNumber.trunc(duration.asHoursDouble))
+                .get('minutePart', () => Math.abs(timeAsMinutes) % 60);
+            
+            return duration;
+        }
+        
+        export interface ClockMinutesBasedTime extends MinutesBasedTime<ClockMinutesBasedTime> {
+            daysOffset(): number;
+            hourPart(): number;
+            minutePart(): number;
+        }
+        
+        export function clock(daysOffset: number, hourPart: number, minutePart: number): ClockMinutesBasedTime;
+        export function clock(minutesFromZeroOclock: number): ClockMinutesBasedTime;
+        export function clock(... args: any[]): ClockMinutesBasedTime {
+            let timeAsMinutes = parseAsClock(args);
+            let clock: any = createBaseMBT(timeAsMinutes);
+            
+            let positivizedMinutes = () => (timeAsMinutes >= 0)
+                    ? timeAsMinutes
+                    : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / MINUTES_IN_DAY)) * MINUTES_IN_DAY;
+            
+            let daysOffset = () => clock.isNegative
+                    ? (timeAsMinutes + 1) / MINUTES_IN_DAY - 1
+                    : timeAsMinutes / MINUTES_IN_DAY;
+            
+            util.accessor.defineInto(clock)
+                .get('daysOffset', () => daysOffset())
+                .get('hourPart', () => positivizedMinutes() / 60)
+                .get('minutePart', () => positivizedMinutes() % 60);
+            
+            return clock;
+        }
+        
+        function parseAsClock(args: any[]): number {
+            var result: number;
+            
+            if (types.matchArguments(args, ['number'])) {
+                result = args[0];
+            }
+            else if (types.matchArguments(args, ['number', 'number', 'number'])) {
+                result = daysOffset * MINUTES_IN_DAY + hourPart * 60 + minutePart;
+            }
+        }
+        
+        function createBaseMBT(timeAsMinutes: number): MinutesBasedTime<any> {
+            let mat: any = new Number(timeAsMinutes);
+            
+            util.accessor.defineInto(mat)
+                .get('asMinutes', () => timeAsMinutes)
+                .get('isNegative', () => timeAsMinutes < 0);
+            
+            return mat;
+        }
     }
 }
