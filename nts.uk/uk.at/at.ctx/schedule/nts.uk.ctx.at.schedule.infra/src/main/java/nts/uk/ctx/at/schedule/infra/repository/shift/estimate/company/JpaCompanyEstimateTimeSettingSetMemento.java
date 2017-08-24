@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
 /**
  * The Class JpaEstimateTimeSettingCompanyGetMemento.
  */
-public class JpaEstimateTimeSettingCompanySetMemento implements EstimateTimeSettingSetMemento{
+public class JpaCompanyEstimateTimeSettingSetMemento implements EstimateTimeSettingSetMemento{
 	
 	/** The est time company. */
 	private KscmtEstTimeComSet estTimeCompany;
@@ -26,7 +26,7 @@ public class JpaEstimateTimeSettingCompanySetMemento implements EstimateTimeSett
 	 *
 	 * @param estTimeCompany the est time company
 	 */
-	public JpaEstimateTimeSettingCompanySetMemento(KscmtEstTimeComSet estTimeCompany){
+	public JpaCompanyEstimateTimeSettingSetMemento(KscmtEstTimeComSet estTimeCompany){
 		if(estTimeCompany.getKscmtEstTimeComSetPK() == null){
 			estTimeCompany.setKscmtEstTimeComSetPK(new KscmtEstTimeComSetPK());
 		}

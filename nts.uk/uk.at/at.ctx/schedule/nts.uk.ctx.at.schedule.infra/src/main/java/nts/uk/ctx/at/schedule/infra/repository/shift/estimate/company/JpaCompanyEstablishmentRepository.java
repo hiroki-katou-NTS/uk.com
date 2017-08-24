@@ -395,7 +395,7 @@ public class JpaCompanyEstablishmentRepository extends JpaRepository
 		}
 
 		companyEstablishment.getAdvancedSetting()
-				.saveToMemento(new JpaEstimateDetailSettingCompanySetMemento(estimateTimeCompanys,
+				.saveToMemento(new JpaCompanyEstimateDetailSettingSetMemento(estimateTimeCompanys,
 						estimatePriceCompanys, estimateDaysCompanys));
 		if(isAddTime){
 			this.commandProxy().insertAll(estimateTimeCompanys);

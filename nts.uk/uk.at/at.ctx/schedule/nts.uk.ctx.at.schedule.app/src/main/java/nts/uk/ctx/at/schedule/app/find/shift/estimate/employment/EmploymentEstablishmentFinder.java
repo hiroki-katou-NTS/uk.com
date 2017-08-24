@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.find.shift.estimate.company;
+package nts.uk.ctx.at.schedule.app.find.shift.estimate.employment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,36 +11,39 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstablishmentDto;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentNumberOfDayDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentPriceDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimateNumberOfDayDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimatePriceDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimateTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.employment.dto.EmploymentEstablishmentDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishment;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentRepository;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.employment.EmploymentEstablishment;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.employment.EmploymentEstablishmentRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class CompanyEstablishmentFinder.
+ * The Class EmploymentEstablishmentFinder.
  */
 @Stateless
-public class CompanyEstablishmentFinder {
+public class EmploymentEstablishmentFinder {
 	
 	/** The repository. */
 	@Inject
-	private CompanyEstablishmentRepository repository;
+	private EmploymentEstablishmentRepository repository;
+	
+	
 	
 	/**
 	 * Find estimate time.
 	 *
 	 * @param targetYear the target year
-	 * @return the company establishment dto
+	 * @param employmentCode the employment code
+	 * @return the employment establishment dto
 	 */
-	public CompanyEstablishmentDto findEstimateTime(int targetYear) {
+	public EmploymentEstablishmentDto findEstimateTime(String employmentCode, int targetYear) {
 		
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -49,10 +52,10 @@ public class CompanyEstablishmentFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find data
-		Optional<CompanyEstablishment> companyEstablishment = this.repository.findById(companyId,
-				targetYear);
+		Optional<EmploymentEstablishment> employmentEstablishment = this.repository
+				.findById(companyId, employmentCode, targetYear);
 		
-		CompanyEstablishmentDto dto = new CompanyEstablishmentDto();
+		EmploymentEstablishmentDto dto = new EmploymentEstablishmentDto();
 		
 		EstablishmentTimeDto estimateTime = new EstablishmentTimeDto();
 		
@@ -61,11 +64,11 @@ public class CompanyEstablishmentFinder {
 		EstablishmentNumberOfDayDto estimateNumberOfDay = new EstablishmentNumberOfDayDto();
 		
 		// check exist data
-		if (companyEstablishment.isPresent()) {
+		if (employmentEstablishment.isPresent()) {
 
 			EstimateTimeDto yearlyTime = new EstimateTimeDto();
 			List<EstimateTimeDto> monthlyTimes = new ArrayList<>();
-			companyEstablishment.get().getAdvancedSetting().getEstimateTime()
+			employmentEstablishment.get().getAdvancedSetting().getEstimateTime()
 					.forEach(estimateTimeSetting -> {
 
 						// check yearly exist data
@@ -83,7 +86,7 @@ public class CompanyEstablishmentFinder {
 
 			EstimatePriceDto yearlyPrice = new EstimatePriceDto();
 			List<EstimatePriceDto> monthlyPrices = new ArrayList<>();
-			companyEstablishment.get().getAdvancedSetting().getEstimatePrice()
+			employmentEstablishment.get().getAdvancedSetting().getEstimatePrice()
 					.forEach(estimatePriceSetting -> {
 
 						// check yearly exist data
@@ -102,7 +105,7 @@ public class CompanyEstablishmentFinder {
 			
 			EstimateNumberOfDayDto yearlyDays = new EstimateNumberOfDayDto();
 			List<EstimateNumberOfDayDto> monthlyDays = new ArrayList<>();
-			companyEstablishment.get().getAdvancedSetting().getEstimateNumberOfDay()
+			employmentEstablishment.get().getAdvancedSetting().getEstimateNumberOfDay()
 			.forEach(estimateDaysSetting -> {
 				
 				// check yearly exist data

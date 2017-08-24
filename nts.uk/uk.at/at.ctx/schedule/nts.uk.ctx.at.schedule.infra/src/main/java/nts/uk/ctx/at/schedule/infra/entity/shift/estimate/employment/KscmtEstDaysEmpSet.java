@@ -37,31 +37,31 @@ public class KscmtEstDaysEmpSet extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_1ST_DAYS")
-    private short estCondition1stDays;
+    private int estCondition1stDays;
     
     /** The est condition 2 nd days. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_2ND_DAYS")
-    private short estCondition2ndDays;
+    private int estCondition2ndDays;
     
     /** The est condition 3 rd days. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_3RD_DAYS")
-    private short estCondition3rdDays;
+    private int estCondition3rdDays;
     
     /** The est condition 4 th days. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_4TH_DAYS")
-    private short estCondition4thDays;
+    private int estCondition4thDays;
     
     /** The est condition 5 th days. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EST_CONDITION_5TH_DAYS")
-    private short estCondition5thDays;
+    private int estCondition5thDays;
 
     /**
      * Instantiates a new kscmt est days emp set.
