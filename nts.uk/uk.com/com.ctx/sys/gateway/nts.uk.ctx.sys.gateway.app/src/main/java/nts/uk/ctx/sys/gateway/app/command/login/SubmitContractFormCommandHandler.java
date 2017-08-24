@@ -25,7 +25,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 
 	/** The contract repository. */
 	@Inject
-	ContractRepository contractRepository;
+	private ContractRepository contractRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)

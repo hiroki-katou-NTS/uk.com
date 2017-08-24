@@ -25,7 +25,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 
 	/** The user repository. */
 	@Inject
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
