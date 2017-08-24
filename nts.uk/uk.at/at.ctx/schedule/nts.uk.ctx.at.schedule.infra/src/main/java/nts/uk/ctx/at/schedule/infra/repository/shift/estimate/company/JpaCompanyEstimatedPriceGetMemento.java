@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceC
 /**
  * The Class JpaEstimatedCompanyPriceGetMemento.
  */
-public class JpaEstimatedCompanyPriceGetMemento implements  EstimatedPriceSettingGetMemento{
+public class JpaCompanyEstimatedPriceGetMemento implements  EstimatedPriceSettingGetMemento{
 	
 	/** The estimate price company. */
 	private KscmtEstPriceComSet estimatePriceCompany;
@@ -28,7 +28,7 @@ public class JpaEstimatedCompanyPriceGetMemento implements  EstimatedPriceSettin
 	 *
 	 * @param estimatePriceCompany the estimate price company
 	 */
-	public JpaEstimatedCompanyPriceGetMemento(KscmtEstPriceComSet estimatePriceCompany) {
+	public JpaCompanyEstimatedPriceGetMemento(KscmtEstPriceComSet estimatePriceCompany) {
 		this.estimatePriceCompany = estimatePriceCompany;
 	}
 

@@ -77,7 +77,7 @@ public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGe
 	 */
 	@Override
 	public EstimateDetailSetting getAdvancedSetting() {
-		return new EstimateDetailSetting(new JpaEstimateDetailSettingCompanyGetMemento(
+		return new EstimateDetailSetting(new JpaCompanyEstimateDetailSettingGetMemento(
 				this.estimateTimeCompanys, this.estimatePriceCompanys, this.estimateDaysCompanys));
 	}
 
