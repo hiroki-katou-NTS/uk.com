@@ -1,11 +1,22 @@
-package nts.uk.ctx.at.request.app.find.application.common.appapprovalphase;
+package nts.uk.ctx.at.request.app.find.application.common;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalATR;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
+
+/**
+ * 
+ * @author hieult
+ *
+ */
+
+/**
+ * 10-2.詳細画面解除後の処理
+ */
 @Value
-public class AppApprovalPhaseDto {
+public class AfterDetailScreenProcessDto {
+	
 	/** 会社ID */
 	private String companyID;
 
@@ -23,9 +34,9 @@ public class AppApprovalPhaseDto {
 
 	/** 承認区分 */
 	private ApprovalATR approvalATR;
-	
-	public static AppApprovalPhaseDto fromDomain (AppApprovalPhase domain){
-		return new AppApprovalPhaseDto(
+
+	public static AfterDetailScreenProcessDto fromDomain(AppApprovalPhase domain){
+		return new AfterDetailScreenProcessDto (
 				domain.getCompanyID(),
 				domain.getAppID(),
 				domain.getPhaseID(),
