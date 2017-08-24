@@ -14,7 +14,10 @@ import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppL
 
 public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppApprovalPhaseRepository{
 	private final String SELECT= "SELECT c FROM KrqdtAppApprovalPhase c";
-	private final String SELECT_SINGLE = "SELECT c FROM KrqdtAppApprovalPhase c WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID AND c.KrqdtAppApprovalPhasePK.appID = :appID AND c.KrqdtAppApprovalPhasePK.phaseID = :phaseID";
+	private final String SELECT_SINGLE = "SELECT c FROM KrqdtAppApprovalPhase c "
+			+ " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID "
+			+ " AND c.KrqdtAppApprovalPhasePK.appID = :appID "
+			+ "AND c.KrqdtAppApprovalPhasePK.phaseID = :phaseID";
 	//get List Phase by appID
 	private final String SELECT_BY_APP_ID = "SELECT c FROM KrqdtAppApprovalPhase c"
 			+ " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID"
@@ -73,13 +76,16 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 
 
 	//get List Phase by AppID
-	@Override
+	
 	public List<AppApprovalPhase> findPhaseByAppID(String companyID, String appID) {
 		return this.queryProxy()
 				.query(SELECT_BY_APP_ID, KrqdtAppApprovalPhase.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.getList(c -> toDomain(c));
-	};
-	
+	}
+
+
+
+
 }

@@ -43,7 +43,7 @@ public interface WorkplaceRepository {
 	 * @param generalDate the general date
 	 * @return the list
 	 */
-	List<WorkPlaceHistory> findAllHistory(String companyId,GeneralDate generalDate);
+	List<WorkPlaceHistory> findAllHistory(String companyId, GeneralDate generalDate);
 
 	/**
 	 * Find all hierarchy.
@@ -78,4 +78,13 @@ public interface WorkplaceRepository {
 	 * @return the list
 	 */
 	List<Workplace> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
+
+	/**
+	 * Find by wkp cd.
+	 *
+	 * @param wpkCode the wpk code
+	 * @param date the date
+	 * @return the list
+	 */
+	List<Workplace> findByWkpCd(String companyId, String wpkCode, GeneralDate baseDate);
 }

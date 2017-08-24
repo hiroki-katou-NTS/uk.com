@@ -319,6 +319,7 @@ module nts.uk.at.view.ksm003.a {
                 workingInfo: KnockoutObservable<string>;
                 workingHoursCd: KnockoutObservable<string>;
                 days: KnockoutObservable<number>;
+                isSetting: KnockoutComputed<boolean>;
 
                 constructor(dispOrder: number, workTypeSetCd: string, workingHoursCd: string, days: number) {
                     this.dispOrder = dispOrder;
@@ -327,6 +328,12 @@ module nts.uk.at.view.ksm003.a {
                     this.days = ko.observable(days);
                     this.workTypeInfo = ko.observable(workTypeSetCd);
                     this.workingInfo = ko.observable(workingHoursCd);
+                    this.isSetting = ko.computed(() => {
+                        if (this.workTypeSetCd() || this.workingHoursCd() || this.days()) {
+                            return true;
+                        }
+                        return false;
+                    });
                 }
 
                 public setWorkTypeName(workTypeName: string): void {
@@ -337,16 +344,8 @@ module nts.uk.at.view.ksm003.a {
                     this.workingInfo(this.workingHoursCd() + ' ' + workTimeName);
                 }
 
-
                 public toDto(): DailyPatternValDto {
                     return new DailyPatternValDto(this.dispOrder, this.workTypeSetCd(), this.workingHoursCd(), this.days());
-                }
-
-                public isSetting(): boolean {
-                    if (this.workTypeSetCd() || this.workingHoursCd() || this.days()) {
-                        return true;
-                    }
-                    return false;
                 }
 
                 /**
