@@ -30,11 +30,11 @@ public class LocalContractFormCommandHandler
 
 	/** The system config repository. */
 	@Inject
-	SystemConfigRepository systemConfigRepository;
+	private SystemConfigRepository systemConfigRepository;
 
 	/** The contract repository. */
 	@Inject
-	ContractRepository contractRepository;
+	private ContractRepository contractRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -53,14 +53,11 @@ public class LocalContractFormCommandHandler
 			if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
 				if (this.isShowContract(command)) {
 					return new CheckContractDto(true);
-				} else {
-					return new CheckContractDto(false);
 				}
-			}
-			// case OnPre
-			else {
 				return new CheckContractDto(false);
 			}
+			// case OnPre
+			return new CheckContractDto(false);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -106,9 +103,8 @@ public class LocalContractFormCommandHandler
 		Optional<SystemConfig> systemConfig = systemConfigRepository.getSystemConfig();
 		if (systemConfig.isPresent()) {
 			return systemConfig.get();
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**
