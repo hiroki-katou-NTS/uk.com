@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 400, height: 500 };</script>
+			<script>var dialogSize = { width: 850, height: 540 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.grantrelationship.primitives.GrantRelationshipDay
 				nts.uk.ctx.at.shared.dom.grantrelationship.primitives.MorningHour
@@ -30,8 +30,8 @@
 				<button tabindex="3" id="btn_003" class="button separate-button fix-button"  data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
 			</div>
 			<div id="content-area">
-				<div id="left-content">
-					<div style="float: left; margin: 20px" >
+				<div id="left-content" class="bg-green caret-right caret-background" style = "margin: 20px; width: 390px; height: 400px">
+					<div  style="float: left; margin: 20px">
 						<!-- H2_2: List -->
 						<table id="lstGrantRelationship" tabindex="4" data-bind="ntsGridList: {								
 						height: 362,
