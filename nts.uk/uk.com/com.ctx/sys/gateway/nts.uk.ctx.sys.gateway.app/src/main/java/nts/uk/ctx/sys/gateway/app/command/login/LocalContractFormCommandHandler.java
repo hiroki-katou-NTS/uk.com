@@ -87,7 +87,7 @@ public class LocalContractFormCommandHandler
 			return true;
 		}
 		// compare contract pass
-		if (!PasswordHash.verifyThat(contractPassword, "salt").isEqualTo(contract.get().getPassword().v())) {
+		if (!PasswordHash.verifyThat(contractPassword, contractCode).isEqualTo(contract.get().getPassword().v())) {
 			return true;
 		}
 		// check time limit
