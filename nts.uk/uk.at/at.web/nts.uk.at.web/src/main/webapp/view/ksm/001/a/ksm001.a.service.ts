@@ -71,11 +71,6 @@ module nts.uk.at.view.ksm001.a {
 
         export module model {
 
-            export interface TargetYearDto {
-                code: string;
-                name: number;
-            }
-
             export interface EstimateTimeDto {
                 month: number;
                 time1st: number;
