@@ -85,34 +85,34 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.getAllSpecialHoliday();
+//            self.getAllSpecialHoliday();
             
             dfd.resolve();
             return dfd.promise();
         }
 
-        getAllSpecialHoliday(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            service.findAllSpecialHoliday().done(function(specialHoliday_arr: Array<model.SpecialHolidayDto>) {
-                if (specialHoliday_arr && specialHoliday_arr.length) {
-                    for (var i = 0; i < specialHoliday_arr.length; i++) {
-                        self.items.push(new model.SpecialHolidayDto(
-                            specialHoliday_arr[i].companyId,
-                            specialHoliday_arr[i].specialHolidayCode,
-                            specialHoliday_arr[i].specialHolidayName,
-                            specialHoliday_arr[i].grantPeriodicCls,
-                            specialHoliday_arr[i].memo));
-                    }
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-                dfd.reject(error);
-            });
-
-            return dfd.promise();
-        }
+//        getAllSpecialHoliday(): JQueryPromise<any> {
+//            var self = this;
+//            var dfd = $.Deferred();
+//            service.findAllSpecialHoliday().done(function(specialHoliday_arr: Array<model.SpecialHolidayDto>) {
+//                if (specialHoliday_arr && specialHoliday_arr.length) {
+//                    for (var i = 0; i < specialHoliday_arr.length; i++) {
+//                        self.items.push(new model.SpecialHolidayDto(
+//                            specialHoliday_arr[i].companyId,
+//                            specialHoliday_arr[i].specialHolidayCode,
+//                            specialHoliday_arr[i].specialHolidayName,
+//                            specialHoliday_arr[i].grantPeriodicCls,
+//                            specialHoliday_arr[i].memo));
+//                    }
+//                }
+//                dfd.resolve();
+//            }).fail(function(error) {
+//                alert(error.message);
+//                dfd.reject(error);
+//            });
+//
+//            return dfd.promise();
+//        }
 
         openBDialog() {
             let self = this;
@@ -131,7 +131,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         }
 
-        openGDialog() {
+        openGDialog() {   
             let self = this;
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { title: '続柄に対する付与日数', dialogClass: 'no-close' }).onClosed(function(): any {

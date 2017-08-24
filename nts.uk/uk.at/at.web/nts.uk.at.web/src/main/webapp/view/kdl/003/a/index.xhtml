@@ -12,6 +12,11 @@
 					width : 1200,
 					height : 520
 				};
+				__viewContext.primitiveValueConstraints.TimeOfDay = {
+						valueType: 'Clock',
+						max: '71:59',
+						min: '-12:00',
+				};
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl003.a.start.js" />
@@ -69,7 +74,7 @@
 									{ prop: 'name', length: 3 },
 								]}"></span>
 									<input id="inputStartTime" tabindex="5"
-										data-bind="ntsTimeEditor: {name: '#[KDL003_12]', value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+										data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
 									<span>#{i18n.getText('KDL003_13')}</span>
 									<span tabindex="6"
 										data-bind="ntsComboBox: {
@@ -87,8 +92,8 @@
 								columns: [
 									{ prop: 'name', length: 3 },
 								]}"></span>
-									<input tabindex="7"
-										data-bind="ntsTimeEditor: {name: '#[KDL003_15]', value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+									<input id="inputEndTime" tabindex="7"
+										data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
 									<button tabindex="8" class="caret-bottom" data-bind="click: search">#{i18n.getText('KDL003_16')}</button>
 									<button tabindex="9" class="pull-right" data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
 								</div>

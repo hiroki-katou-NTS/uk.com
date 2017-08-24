@@ -24,14 +24,7 @@ public class DetailScreenCancelProcess extends CommandHandler<UpdateApplicationC
 	 
 	@Inject
 	private ApplicationRepository appRepo;
-//	/**
-//	 *  update
-//	 * @param applicationID
-//	 */
-//	public void detailScreenCancelProcess(String applicationID) {
-//		String companyID = AppContexts.user().companyId();
-//
-//	}
+
 	@Override
 	protected void handle(CommandHandlerContext<UpdateApplicationCommand> context) {
 		String companyID = AppContexts.user().companyId();

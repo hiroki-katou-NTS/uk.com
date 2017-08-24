@@ -122,19 +122,26 @@ module nts.uk.at.view.ksu006.a {
                 
                 $('#comboExternalBudget').focus();
                 self.uploadFile().done(function() {
-                    self.validateFile().done((isContinueProgress) => {
+                    self.validateFile().done(() => {
+                        self.openDialogProgress();
+                    }).fail((isContinueProgress: boolean) => {
                         if (!isContinueProgress) {
                             return;
                         }
-                        nts.uk.ui.block.grayout();
-                        nts.uk.ui.windows.setShared("ExtractCondition", extractCondition);
-                        nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml').onClosed(() => {
-                            nts.uk.ui.block.clear();
-                        });
+                        self.openDialogProgress();
                     });
                     dfd.resolve();
                 }).fail(function() {
                     nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                });
+            }
+            
+            private openDialogProgress() {
+                let self = this;
+                nts.uk.ui.block.grayout();
+                nts.uk.ui.windows.setShared("ExtractCondition", self.toJSObject());
+                nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml').onClosed(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             
@@ -195,29 +202,37 @@ module nts.uk.at.view.ksu006.a {
                 }
                 
                 self.uploadFile().done(function() {
-                    self.validateFile().done((isContinueProgress) => {
+                    self.validateFile().done(() => {
+                        self.loadDataPreview();
+                    }).fail((isContinueProgress: boolean) => {
                         if (!isContinueProgress) {
                             return;
                         }
-                        service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
-                            self.isDataDailyUnit(res.isDailyUnit);
-
-                            self.dataPreview(res.data);
-                            self.firstRecord(self.dataPreview()[0]);
-                            self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
-
-                            self.totalRecord(res.totalRecord);
-                        }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                        });
+                        self.loadDataPreview();
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
                 });  
             }
             
+            private loadDataPreview() {
+                let self = this;
+                service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
+                    self.isDataDailyUnit(res.isDailyUnit);
+
+                    self.dataPreview(res.data);
+                    self.firstRecord(self.dataPreview()[0]);
+                    self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
+
+                    self.totalRecord(res.totalRecord);
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                });
+            }
+            
             private resetDataPreview() {
                 let self = this;
+                self.totalRecord(0);
                 self.dataPreview([]);
                 self.firstRecord(null);
                 self.remainData([]);
@@ -271,15 +286,18 @@ module nts.uk.at.view.ksu006.a {
                 let self = this;
                 let dfd = $.Deferred<boolean>();
                 
-                let extractCondition: any = self.toJSObject();
-                service.validateFile(extractCondition).done(function() {
-                    nts.uk.ui.dialog.confirm({ messageId: 'Msg_161' }).ifYes(function() {
-                        dfd.resolve(true);
-                    }).ifNo(function() {
-                        dfd.resolve(false);
-                    });
+                service.validateFile(self.toJSObject()).done(function() {
+                    dfd.resolve();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                    if (res.messageId == 'Msg_161') {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_161' }).ifYes(function() {
+                            dfd.reject(true);
+                        }).ifNo(function() {
+                            dfd.reject(false);
+                        });
+                    } else {
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                    }
                 });
                 return dfd.promise();
             }

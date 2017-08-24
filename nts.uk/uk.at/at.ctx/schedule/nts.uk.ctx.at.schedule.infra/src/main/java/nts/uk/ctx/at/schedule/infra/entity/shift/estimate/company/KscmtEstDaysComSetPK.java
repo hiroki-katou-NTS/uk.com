@@ -48,5 +48,20 @@ public class KscmtEstDaysComSetPK implements Serializable {
      */
     public KscmtEstDaysComSetPK() {
     }
+
+	/**
+	 * Instantiates a new kscmt est days com set PK.
+	 *
+	 * @param cid the cid
+	 * @param targetYear the target year
+	 * @param targetCls the target cls
+	 */
+	public KscmtEstDaysComSetPK(String cid, int targetYear, int targetCls) {
+		this.cid = cid;
+		this.targetYear = targetYear;
+		this.targetCls = targetCls;
+	}
+    
+    
     
 }

@@ -10,7 +10,14 @@ import java.util.Optional;
  */
 
 public interface ApprovalFrameRepository {
-
+		
+	/**
+	 * get all approver by phase ID
+	 * @param companyID
+	 * @param phaseID
+	 * @return
+	 */
+	List<ApprovalFrame> getAllApproverByPhaseID(String companyID , String phaseID);
 	/**
 	 * Find by Code
 	 * 
@@ -29,8 +36,9 @@ public interface ApprovalFrameRepository {
 	 * @param dispOrder
 	 * @return
 	 */
-	List<ApprovalFrame> findByPhaseID(String companyID, String phaseID);
+	Optional<ApprovalFrame> findByCode(String companyID , String phaseID , int dispOrder);
 
+	List<ApprovalFrame> findByPhaseID(String companyID, String phaseID);
 	/**
 	 * Create ApprovalFrame
 	 * 
@@ -53,6 +61,6 @@ public interface ApprovalFrameRepository {
 	 * @param appID
 	 * @param phaseID
 	 */
-	void delete(String companyID, String appID, int phaseID);
+	void delete (String companyID , String phaseID , int dispOrder );
 
 }

@@ -17,7 +17,7 @@ public interface PerInfoCategoryRepositoty {
 
 	void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd);
 
-	void updatePerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd, List<String> companyIdList);
+	void updatePerInfoCtgWithListCompany(String categoryName, List<String> ctgIdList);
 
 	String getPerInfoCtgCodeLastest(String contractCd);
 
@@ -28,5 +28,4 @@ public interface PerInfoCategoryRepositoty {
 	void addDateRangeItemRoot(DateRangeItem dateRangeItem);
 
 	void addListDateRangeItem(List<DateRangeItem> dateRangeItems);
-
 }

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingSetMemento
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
 
@@ -23,6 +24,9 @@ public class JpaEstimateDetailSettingCompanySetMemento implements EstimateDetail
 	
 	/** The estimate price companys. */
 	private List<KscmtEstPriceComSet> estimatePriceCompanys;
+	
+	/** The estimate days companys. */
+	private List<KscmtEstDaysComSet> estimateDaysCompanys;
 
 	
 	/**
@@ -32,9 +36,10 @@ public class JpaEstimateDetailSettingCompanySetMemento implements EstimateDetail
 	 * @param estimatePriceCompanys the estimate price companys
 	 */
 	public JpaEstimateDetailSettingCompanySetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
-			List<KscmtEstPriceComSet> estimatePriceCompanys) {
+			List<KscmtEstPriceComSet> estimatePriceCompanys,List<KscmtEstDaysComSet> estimateDaysCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
 		this.estimatePriceCompanys = estimatePriceCompanys;
+		this.estimateDaysCompanys = estimateDaysCompanys;
 	}
 	
 
@@ -59,19 +64,43 @@ public class JpaEstimateDetailSettingCompanySetMemento implements EstimateDetail
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingSetMemento
+	 * #setEstimatePrice(java.util.List)
+	 */
 	@Override
 	public void setEstimatePrice(List<EstimatedPriceSetting> estimatePrice) {
 		estimatePrice.forEach(estimateSetting -> {
 			this.estimatePriceCompanys.forEach(entity -> {
-
+				if (entity.getKscmtEstPriceComSetPK()
+						.getTargetCls() == estimateSetting.getTargetClassification().value) {
+					estimateSetting.saveToMemento(new JpaEstimatedCompanyPriceSetMemento(entity));
+				}
 			});
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingSetMemento
+	 * #setEstimateNumberOfDay(java.util.List)
+	 */
 	@Override
 	public void setEstimateNumberOfDay(List<EstimateNumberOfDay> estimateNumberOfDay) {
-		// TODO Auto-generated method stub
+		estimateNumberOfDay.forEach(estimateSetting -> {
+			this.estimateDaysCompanys.forEach(entity -> {
+				if (entity.getKscmtEstDaysComSetPK()
+						.getTargetCls() == estimateSetting.getTargetClassification().value) {
+					estimateSetting
+							.saveToMemento(new JpaCompanyEstimateNumberOfDaySetMemento(entity));
+				}
+			});
+		});
 
 	}
-
 }

@@ -9,9 +9,9 @@ public enum WorkStyle {
 	
 	ONE_DAY_REST(0),
 
-	MORNING_BREAK(1),
+	MORNING_WORK(1),
 
-	AFTERNOON_BREAK(2),
+	AFTERNOON_WORK(2),
 
 	ONE_DAY_WORK(4);
 

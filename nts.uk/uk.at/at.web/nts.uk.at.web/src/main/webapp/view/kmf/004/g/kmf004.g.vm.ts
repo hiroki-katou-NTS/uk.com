@@ -11,14 +11,14 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         // selected code 
         selectedCode: KnockoutObservable<string>;
         // selected item in the list 
-        selectedOption: KnockoutObservable<Relationship>;
+        selectedOption: KnockoutObservable<GrantRelationship>;
         // selected item in grant relationship
         grantSelected: KnockoutObservable<GrantRelationship>
         // binding to text box name A3_3
         selectedName: KnockoutObservable<string>;
         // binding to text box code A3_2         
         codeObject: KnockoutObservable<string>;
-        // check new mode or not
+        // check new mode or not   
         check: KnockoutObservable<boolean>;
         // check update or insert
         checkUpdate: KnockoutObservable<boolean>;
@@ -62,7 +62,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             self.morningHour = ko.observable(null);
             self.selectedCode.subscribe((value) => {
                 if (value) {
-                    let foundItem = _.find(self.lstRelationship(), (item: Relationship) => {
+                    let foundItem = _.find(self.lstRelationship(), (item: GrantRelationship) => {
                         return item.relationshipCode == value;
                     });
                     self.checkUpdate(true);
