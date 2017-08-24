@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class SgwdtContract.
@@ -30,7 +31,7 @@ import lombok.Setter;
  * Instantiates a new sgwdt contract.
  */
 @NoArgsConstructor
-public class SgwdtContract implements Serializable {
+public class SgwdtContract extends UkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -87,4 +88,9 @@ public class SgwdtContract implements Serializable {
         }
         return true;
     }
+
+	@Override
+	protected Object getKey() {
+		return this.contractCd;
+	}
 }
