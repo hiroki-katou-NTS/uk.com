@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -57,6 +59,17 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	private static final String DELETE_APPROVER_BY_APHASEID = "DELETE from WwfmtAppover c "
 			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
 			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
+	private final String SELECT_COMAPR_BY_EDATE = "SELECT c FROM WwfmtComApprovalRoot c"
+			+ " WHERE c.wwfmtComApprovalRoot.companyId = :companyId"
+			+ " AND c.endDate = :endDate";
+	private final String SELECT_PSAPR_BY_EDATE = "SELECT c FROM WwfmtPsApprovalRoot c"
+			+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
+			+ " AND c.endDate = :endDate";
+	private final String SELECT_WPAPR_BY_EDATE = "SELECT c FROM WwfmtWpApprovalRoot c"
+			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
+			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
+			+ " AND c.endDate = :endDate";
 		
 	/**
 	 * convert entity WwfmtComApprovalRoot to domain CompanyApprovalRoot
@@ -64,11 +77,14 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @return
 	 */
 	private static CompanyApprovalRoot toDomainComApR(WwfmtComApprovalRoot entity){
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		val domain = CompanyApprovalRoot.createSimpleFromJavaType(entity.wwfmtComApprovalRootPK.companyId,
+				entity.wwfmtComApprovalRootPK.approvalId,
 				entity.wwfmtComApprovalRootPK.historyId,
 				entity.applicationType,
-				entity.startDate.toString(),
-				entity.endDate.toString(),
+				entity.startDate.localDate().format(formatter),
+//				GeneralDate.fromString(entity.startDate.toString(), "yyyy/M/d").toString(),
+				entity.endDate.localDate().format(formatter),
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
@@ -82,6 +98,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static PersonApprovalRoot toDomainPsApR(WwfmtPsApprovalRoot entity){
 		val domain = PersonApprovalRoot.createSimpleFromJavaType(entity.wwfmtPsApprovalRootPK.companyId,
+				entity.wwfmtPsApprovalRootPK.approvalId,
 				entity.wwfmtPsApprovalRootPK.employeeId,
 				entity.wwfmtPsApprovalRootPK.historyId,
 				entity.applicationType,
@@ -100,15 +117,16 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static WorkplaceApprovalRoot toDomainWpApR(WwfmtWpApprovalRoot entity){
 		val domain = WorkplaceApprovalRoot.createSimpleFromJavaType(entity.wwfmtWpApprovalRootPK.companyId,
+				entity.wwfmtWpApprovalRootPK.approvalId,
 				entity.wwfmtWpApprovalRootPK.workplaceId,
 				entity.wwfmtWpApprovalRootPK.historyId,
+				entity.applicationType,
 				entity.startDate.toString(),
 				entity.endDate.toString(),
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
-				entity.employmentRootAtr,
-				entity.applicationType);
+				entity.employmentRootAtr);
 		return domain;
 	}
 	/**
@@ -133,7 +151,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 				entity.wwfmtApprovalPhasePK.approvalPhaseId,
 				entity.approvalForm,
 				entity.browsingPhase,
-				entity.orderNumber);
+				entity.displayOrder);
 		return domain;
 	}
 	/**
@@ -147,7 +165,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 				entity.wwfmtAppoverPK.approverId,
 				entity.jobId,
 				entity.employeeId,
-				entity.orderNumber,
+				entity.displayOrder,
 				entity.approvalAtr,
 				entity.confirmPerson);
 		return domain;
@@ -159,7 +177,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static WwfmtComApprovalRoot toEntityComApR(CompanyApprovalRoot domain){
 		val entity = new WwfmtComApprovalRoot();
-		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(),domain.getHistoryId());
+		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
 		entity.applicationType = domain.getApplicationType().value;
@@ -176,7 +194,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static WwfmtPsApprovalRoot toEntityPsApR(PersonApprovalRoot domain){
 		val entity = new WwfmtPsApprovalRoot();
-		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getEmployeeId(), domain.getHistoryId());
+		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmployeeId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
 		entity.applicationType = domain.getApplicationType().value;
@@ -193,7 +211,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	private static WwfmtWpApprovalRoot toEntityWpApR(WorkplaceApprovalRoot domain){
 		val entity = new WwfmtWpApprovalRoot();
-		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getWorkplaceId(), domain.getHistoryId());
+		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getWorkplaceId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
 		entity.applicationType = domain.getApplicationType().value;
@@ -213,7 +231,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getCompanyId(), domain.getBranchId(), domain.getApprovalPhaseId());
 		entity.approvalForm = domain.getApprovalForm().value;
 		entity.browsingPhase = domain.getBrowsingPhase();
-		entity.orderNumber = domain.getOrderNumber();
+		entity.displayOrder = domain.getOrderNumber();
 		return entity;
 	}
 	/**
@@ -226,7 +244,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 		entity.wwfmtAppoverPK = new WwfmtAppoverPK(domain.getCompanyId(), domain.getApprovalPhaseId(), domain.getApproverId());
 		entity.jobId = domain.getJobTitleId();
 		entity.employeeId = domain.getEmployeeId();
-		entity.orderNumber = domain.getOrderNumber();
+		entity.displayOrder = domain.getOrderNumber();
 		entity.approvalAtr = domain.getApprovalAtr().value;
 		entity.confirmPerson = domain.getConfirmPerson();
 		return entity;
@@ -298,11 +316,12 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	/**
 	 * delete Company Approval Root
 	 * @param companyId
+	 * @param approvalId
 	 * @param historyId
 	 */
 	@Override
-	public void deleteComApprovalRoot(String companyId, String historyId) {
-		WwfmtComApprovalRootPK comPK = new WwfmtComApprovalRootPK(companyId,historyId);
+	public void deleteComApprovalRoot(String companyId, String approvalId, String historyId) {
+		WwfmtComApprovalRootPK comPK = new WwfmtComApprovalRootPK(companyId, approvalId, historyId);
 		this.commandProxy().remove(WwfmtComApprovalRoot.class,comPK);
 	}
 	/**
@@ -336,8 +355,8 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @param historyId
 	 */
 	@Override
-	public void deletePsApprovalRoot(String companyId, String employeeId, String historyId) {
-		WwfmtPsApprovalRootPK comPK = new WwfmtPsApprovalRootPK(companyId, employeeId, historyId);
+	public void deletePsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId) {
+		WwfmtPsApprovalRootPK comPK = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
 		this.commandProxy().remove(WwfmtPsApprovalRoot.class,comPK);
 	}
 	/**
@@ -360,8 +379,8 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @param historyId
 	 */
 	@Override
-	public void deleteWpApprovalRoot(String companyId, String workplaceId, String historyId) {
-		WwfmtWpApprovalRootPK comPK = new WwfmtWpApprovalRootPK(companyId, workplaceId, historyId);
+	public void deleteWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId) {
+		WwfmtWpApprovalRootPK comPK = new WwfmtWpApprovalRootPK(companyId, approvalId, workplaceId, historyId);
 		this.commandProxy().remove(WwfmtWpApprovalRoot.class,comPK);
 	}
 	/**
@@ -464,5 +483,88 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 		x.setConfirmationRootType(a.confirmationRootType);
 		x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
+	}
+	/**
+	 * get Company Approval Root By End date
+	 * @param companyId
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, String endDate) {
+		return this.queryProxy().query(SELECT_COMAPR_BY_EDATE, WwfmtComApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("endDate", endDate)
+				.getList(c->toDomainComApR(c));
+	}
+	/**
+	 * get Workplace Approval Root By End date
+	 * @param companyId
+	 * @param workplaceId
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, String endDate) {
+		return this.queryProxy().query(SELECT_WPAPR_BY_EDATE, WwfmtWpApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("workplaceId", workplaceId)
+				.setParameter("endDate", endDate)
+				.getList(c->toDomainWpApR(c));
+	}
+	/**
+	 * get Person Approval Root By End date
+	 * @param companyId
+	 * @param employeeId
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, String endDate) {
+		return this.queryProxy().query(SELECT_PSAPR_BY_EDATE, WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("endDate", endDate)
+				.getList(c->toDomainPsApR(c));
+	}
+	/**
+	 * get ComApprovalRoot
+	 * @param companyId
+	 * @param approvalId
+	 * @param historyId
+	 * @return
+	 */
+	@Override
+	public Optional<CompanyApprovalRoot> getComApprovalRoot(String companyId, String approvalId, String historyId) {
+		WwfmtComApprovalRootPK pk = new WwfmtComApprovalRootPK(companyId, approvalId, historyId);
+		return this.queryProxy().find(pk, WwfmtComApprovalRoot.class).map(c->toDomainComApR(c));
+	}
+	/**
+	 * get WpApprovalRoot
+	 * @param companyId
+	 * @param approvalId
+	 * @param workplaceId
+	 * @param historyId
+	 * @return
+	 */
+	@Override
+	public Optional<WorkplaceApprovalRoot> getWpApprovalRoot(String companyId, String approvalId, String workplaceId,
+			String historyId) {
+		WwfmtWpApprovalRootPK pk = new WwfmtWpApprovalRootPK(companyId, approvalId, workplaceId, historyId);
+		return this.queryProxy().find(pk, WwfmtWpApprovalRoot.class).map(c->toDomainWpApR(c));
+	}
+	/**
+	 * get PsApprovalRoot
+	 * @param companyId
+	 * @param approvalId
+	 * @param employeeId
+	 * @param historyId
+	 * @return
+	 */
+	@Override
+	public Optional<PersonApprovalRoot> getPsApprovalRoot(String companyId, String approvalId, String employeeId,
+			String historyId) {
+		WwfmtPsApprovalRootPK pk = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
+		return this.queryProxy().find(pk, WwfmtPsApprovalRoot.class).map(c->toDomainPsApR(c));
 	}
 }

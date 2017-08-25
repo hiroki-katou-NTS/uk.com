@@ -5,25 +5,25 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemDetail;
 
 @Value
 public class PersonInfoItemDetailDto {
-	String roleId;
+	private String roleId;
 	
-	String personCategoryAuthId;
+	private String personCategoryAuthId;
 	
-	String personItemDefId;
+	private String personItemDefId;
 	
-	int selfAuth;
+	private int selfAuth;
 	
-	int otherAuth;
+	private int otherAuth;
 	
-	String itemCd;
+	private String itemCd;
 	
-	String itemName;
+	private String itemName;
 	
-	int abolitionAtr;
+	private int abolitionAtr;
 	
-	int requiredAtr;
+	private int requiredAtr;
 	
-	boolean setting;
+	private boolean setting;
 
 	public static PersonInfoItemDetailDto fromDomain(PersonInfoItemDetail domain) {
 		return new PersonInfoItemDetailDto(domain.getRoleId(), domain.getPersonInfoCategoryAuthId(),

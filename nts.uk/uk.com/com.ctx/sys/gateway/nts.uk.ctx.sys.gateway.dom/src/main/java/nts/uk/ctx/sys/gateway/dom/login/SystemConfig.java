@@ -7,9 +7,7 @@ package nts.uk.ctx.sys.gateway.dom.login;
 import lombok.Getter;
 
 /**
- * Gets the install form.
- *
- * @return the install form
+ * The Class SystemConfig.
  */
 @Getter
 public class SystemConfig {

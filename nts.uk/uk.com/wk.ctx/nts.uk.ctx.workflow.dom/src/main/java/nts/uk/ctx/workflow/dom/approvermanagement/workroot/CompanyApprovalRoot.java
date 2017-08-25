@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
@@ -10,10 +11,13 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class CompanyApprovalRoot extends AggregateRoot {
 	/**会社ID*/
 	private String companyId;
+	/**承認ID*/
+	public String approvalId;
 	/**履歴ID*/
 	private String historyId;
 	/**申請種類*/
@@ -30,6 +34,7 @@ public class CompanyApprovalRoot extends AggregateRoot {
 	private EmploymentRootAtr employmentRootAtr;
 	
 	public static CompanyApprovalRoot createSimpleFromJavaType(String companyId,
+			String approvalId,
 			String historyId,
 			int applicationType,
 			String startDate,
@@ -38,7 +43,8 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			String anyItemApplicationId,
 			int confirmationRootType,
 			int employmentRootAtr){
-		return new CompanyApprovalRoot(companyId, 
+		return new CompanyApprovalRoot(companyId,
+			approvalId,
 			historyId,
 			EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 			ApprovalPeriod.createSimpleFromJavaType(startDate, endDate),
@@ -46,5 +52,11 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			anyItemApplicationId,
 			EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class));
+	}
+	public static CompanyApprovalRoot updateSdateEdate(CompanyApprovalRoot comApprovalRoot, String sDate, String eDate){
+		CompanyApprovalRoot com = comApprovalRoot;
+		ApprovalPeriod period = ApprovalPeriod.createSimpleFromJavaType(sDate, eDate);
+		com.setPeriod(period);
+		return com;
 	}
 }

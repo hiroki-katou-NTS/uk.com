@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTargetClassification;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 
 /**
  * The Class EstimateNumberOfDay.
@@ -29,4 +29,27 @@ public class EstimateNumberOfDay extends DomainObject{
 	/** The monthly estimate number of day setting. */
 	// 月間目安日数設定
 	private List<MonthlyEstimateNumberOfDay> monthlyEstimateNumberOfDaySetting;
+	
+	
+	/**
+	 * Instantiates a new estimate number of day.
+	 *
+	 * @param memento the memento
+	 */
+	public EstimateNumberOfDay(EstimateNumberOfDayGetMemento memento){
+		this.targetClassification = memento.getTargetClassification();
+		this.yearlyEstimateNumberOfDaySetting = memento.getYearlyEstimateNumberOfDaySetting();
+		this.monthlyEstimateNumberOfDaySetting = memento.getMonthlyEstimateNumberOfDaySetting();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EstimateNumberOfDaySetMemento memento){
+		memento.setTargetClassification(this.targetClassification);
+		memento.setYearlyEstimateNumberOfDaySetting(this.yearlyEstimateNumberOfDaySetting);
+		memento.setMonthlyEstimateNumberOfDaySetting(this.monthlyEstimateNumberOfDaySetting);
+	}
 }

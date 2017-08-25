@@ -14,7 +14,7 @@ public interface ContractSetMemento {
 	 *
 	 * @param password the new password
 	 */
-	public void setPassword(RawPassword password);
+	public void setPassword(HashPassword password);
 
     /**
      * Sets the contract code.

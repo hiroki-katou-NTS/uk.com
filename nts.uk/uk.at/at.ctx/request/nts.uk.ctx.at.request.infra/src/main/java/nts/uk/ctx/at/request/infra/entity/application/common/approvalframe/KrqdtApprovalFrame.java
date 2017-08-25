@@ -25,23 +25,23 @@ public class KrqdtApprovalFrame extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrqdtApprovalFramePK krqdtApprovalFramePK;
 	
-	@Column(name = "AUTHORIZER_SID")
-	public String authorizerSID;
-	
-	@Column(name = "SUBSTITUTE_SID")
-	public String substituteSID;
+	@Column(name = "APPROVER_SID")
+	public String approverSID;
 	
 	@Column(name = "APPROVAL_ATR")
 	public String approvalATR;
-	
-	@Column(name = "APPROVAL_DATE")
-	public String approvalDate;
-	
-	@Column(name = "REASON")
-	public String reason;
-	
+
 	@Column(name = "CONFIRM_ATR")
 	public String confirmATR;
+	
+	@Column(name="REPRESENTER_SID")
+	public String representerSID; 
+	
+	@Column(name="APPROVAL_DATE")
+	public String approvalDate;
+	
+	@Column(name="REASON")
+	public String reason;
 	
 	@Override
 	protected Object getKey() {

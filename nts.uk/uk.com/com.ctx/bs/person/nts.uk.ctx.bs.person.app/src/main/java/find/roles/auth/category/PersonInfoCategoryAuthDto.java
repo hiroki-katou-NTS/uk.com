@@ -5,39 +5,39 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryAuth
 
 @Value
 public class PersonInfoCategoryAuthDto {
-	String roleId;
+	private String roleId;
 
-	String personInfoCategoryAuthId;
+	private String personInfoCategoryAuthId;
 
-	int allowPersonRef;
+	private int allowPersonRef;
 
-	int allowOtherRef;
+	private int allowOtherRef;
 
-	int allowOtherCompanyRef;
+	private int allowOtherCompanyRef;
 
-	int selfPastHisAuth;
+	private int selfPastHisAuth;
 
-	int selfFutureHisAuth;
+	private int selfFutureHisAuth;
 
-	int selfAllowAddHis;
+	private int selfAllowAddHis;
 
-	int selfAllowDelHis;
+	private int selfAllowDelHis;
 
-	int otherPastHisAuth;
+	private int otherPastHisAuth;
 
-	int otherFutureHisAuth;
+	private int otherFutureHisAuth;
 
-	int otherAllowAddHis;
+	private int otherAllowAddHis;
 
-	int otherAllowDelHis;
+	private int otherAllowDelHis;
 
-	int selfAllowAddMulti;
+	private int selfAllowAddMulti;
 
-	int selfAllowDelMulti;
+	private int selfAllowDelMulti;
 
-	int otherAllowAddMulti;
+	private int otherAllowAddMulti;
 
-	int otherAllowDelMulti;
+	private int otherAllowDelMulti;
 
 	public static PersonInfoCategoryAuthDto fromDomain(PersonInfoCategoryAuth domain) {
 		return new PersonInfoCategoryAuthDto(domain.getRoleId(), domain.getPersonInfoCategoryAuthId(),

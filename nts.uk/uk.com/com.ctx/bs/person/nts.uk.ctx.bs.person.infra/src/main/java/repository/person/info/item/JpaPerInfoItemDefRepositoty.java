@@ -40,6 +40,8 @@ import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
 @Transactional
 public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInfoItemDefRepositoty {
 
+	private final static String SPECIAL_ITEM_CODE = "IO";
+
 	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
@@ -109,7 +111,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private final static String SELECT_REQUIRED_ITEMS_IDS = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i"
 			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
-			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.requiredAtr = 1 AND i.abolitionAtr = 0"
+			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 AND i.abolitionAtr = 0"
 			+ " AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)";
 
 	@Override
@@ -119,6 +121,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
 				});
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String isAbolition,
+			String contractCd) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -148,28 +157,31 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
-		this.commandProxy().insert(createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd));
+	public void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd, String ctgCode) {
+		PpemtPerInfoItemCm perInfoItemCm = createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd, ctgCode);
+		this.commandProxy().insert(perInfoItemCm);
 		this.commandProxy().insert(createPerInfoItemDefFromDomain(perInfoItemDef));
 		addOrderItemRoot(perInfoItemDef.getPerInfoItemDefId(), perInfoItemDef.getPerInfoCategoryId());
 	}
 
 	@Override
-	public List<String> addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef, List<String> perInfoCtgId) {
+	public List<String> addPerInfoItemDefByCtgIdList(PersonInfoItemDefinition perInfoItemDef,
+			List<String> perInfoCtgId) {
 		List<String> perInfoItemDefIds = new ArrayList<>();
 		this.commandProxy().insertAll(perInfoCtgId.stream().map(i -> {
 			PpemtPerInfoItem item = createPerInfoItemDefFromDomainWithCtgId(perInfoItemDef, i);
 			perInfoItemDefIds.add(item.ppemtPerInfoItemPK.perInfoItemDefId);
+			addOrderItemRoot(item.ppemtPerInfoItemPK.perInfoItemDefId, i);
 			return item;
 		}).collect(Collectors.toList()));
-		addOrderItemWithCtgIdList(perInfoItemDef.getPerInfoItemDefId(), perInfoCtgId);
 		return perInfoItemDefIds;
 	}
-	
+
 	@Override
 	public void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
-		this.commandProxy().update(createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd));
-		this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
+		// this.commandProxy().update(createPerInfoItemDefCmFromDomain(perInfoItemDef,
+		// contractCd));
+		// this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
 	}
 
 	@Override
@@ -186,11 +198,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public String getPerInfoItemCodeLastest(String contractCd, String categoryCd) {
 		List<String> itemCodeLastest = this.getEntityManager()
 				.createQuery(SELECT_GET_ITEM_CODE_LASTEST_QUERY, String.class).setParameter("contractCd", contractCd)
-				.setParameter("categoryCd", categoryCd).setMaxResults(1).getResultList();
-		if (itemCodeLastest != null && !itemCodeLastest.isEmpty()) {
-			return itemCodeLastest.get(0);
-		}
-		return null;
+				.setParameter("categoryCd", categoryCd).getResultList();
+		return itemCodeLastest.stream().filter(i -> i.contains(SPECIAL_ITEM_CODE)).findFirst().orElse(null);
 	}
 
 	@Override
@@ -220,13 +229,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private void addOrderItemRoot(String perInfoItemDefId, String perInfoCtgId) {
 		int newdisOrderLastest = getDispOrderLastestItemOfCtg(perInfoCtgId) + 1;
 		this.commandProxy().insert(createItemOrder(perInfoItemDefId, perInfoCtgId, newdisOrderLastest));
-	}
-
-	private void addOrderItemWithCtgIdList(String perInfoItemDefId, List<String> perInfoCtgId) {
-		this.commandProxy().insertAll(perInfoCtgId.stream().map(cid -> {
-			int newdisOrderLastest = getDispOrderLastestItemOfCtg(perInfoItemDefId) + 1;
-			return createItemOrder(perInfoItemDefId, cid, newdisOrderLastest);
-		}).collect(Collectors.toList()));
 	}
 
 	private int getDispOrderLastestItemOfCtg(String perInfoCtgId) {
@@ -337,9 +339,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	private PpemtPerInfoItemCm createPerInfoItemDefCmFromDomain(PersonInfoItemDefinition perInfoItemDef,
-			String contractCd) {
-		PpemtPerInfoItemCmPK perInfoItemCmPK = new PpemtPerInfoItemCmPK(contractCd,
-				perInfoItemDef.getPerInfoCategoryId(), perInfoItemDef.getItemCode().v());
+			String contractCd, String ctgCode) {
+		PpemtPerInfoItemCmPK perInfoItemCmPK = new PpemtPerInfoItemCmPK(contractCd, ctgCode,
+				perInfoItemDef.getItemCode().v());
 
 		int itemType = perInfoItemDef.getItemTypeState().getItemType().value;
 		BigDecimal dataType = null;
@@ -411,12 +413,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 			}
 		}
-		return new PpemtPerInfoItemCm(perInfoItemCmPK, perInfoItemDef.getItemParentCode().v(),
-				perInfoItemDef.getSystemRequired().value, perInfoItemDef.getRequireChangable().value,
-				perInfoItemDef.getIsFixed().value, itemType, dataType, timeItemMin, timeItemMax, timepointItemMin,
-				timepointItemMax, dateItemType, stringItemType, stringItemLength, stringItemDataType, numericItemMin,
-				numericItemMax, numericItemAmountAtr, numericItemMinusAtr, numericItemDecimalPart,
-				numericItemIntegerPart, selectionItemRefType, selectionItemRefCode);
+		String itemParentCode = (perInfoItemDef.getItemParentCode() == null
+				|| perInfoItemDef.getItemParentCode().v().isEmpty()) ? null : perInfoItemDef.getItemParentCode().v();
+		return new PpemtPerInfoItemCm(perInfoItemCmPK, itemParentCode, perInfoItemDef.getSystemRequired().value,
+				perInfoItemDef.getRequireChangable().value, perInfoItemDef.getIsFixed().value, itemType, dataType,
+				timeItemMin, timeItemMax, timepointItemMin, timepointItemMax, dateItemType, stringItemType,
+				stringItemLength, stringItemDataType, numericItemMin, numericItemMax, numericItemAmountAtr,
+				numericItemMinusAtr, numericItemDecimalPart, numericItemIntegerPart, selectionItemRefType,
+				selectionItemRefCode);
 	}
 
 	private PerInfoItemDefOrder createPerInfoItemDefOrderFromEntity(PpemtPerInfoItemOrder order) {

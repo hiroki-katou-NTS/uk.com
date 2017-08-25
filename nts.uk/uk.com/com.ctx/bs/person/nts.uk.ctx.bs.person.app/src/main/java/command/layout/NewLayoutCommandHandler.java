@@ -7,9 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
@@ -35,6 +37,9 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 	@Inject
 	PerInfoItemDefFinder itemDefFinder;
 
+	@Inject
+	IInternationalization text;
+
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {
 
@@ -51,11 +56,20 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 
 		// エラーメッセージ（#Msg_201,システム必須項目のうち配置されていない項目（カンマ区切りの文字列））を表示する
 		if (!allSaveItemIds.containsAll(requiredIds)) {
+			requiredIds = requiredIds.stream().filter(m -> allSaveItemIds.indexOf(m) == -1)
+					.collect(Collectors.toList());
+			List<PerInfoItemDefDto> dto = itemDefFinder.getPerInfoItemDefByListId(requiredIds);
+			if (!dto.isEmpty()) {
+				String alert = String.join(", ", dto.stream().map(m -> m.getItemName()).collect(Collectors.toList()));
+
+				throw new BusinessException(new RawErrorMessage(alert + " " + text.getItemName("Msg_201")));
+			}
+			
 			throw new BusinessException(new RawErrorMessage("Msg_201"));
 		}
 
 		// エラーメッセージ（#Msg_289#,２つ以上配置されている項目名）を表示する
-		for (int i = 0; i < allSaveItemIds.size() - 1; i++) {
+		for (int i = 0; i < allSaveItemIds.size() - 2; i++) {
 			if (allSaveItemIds.get(i).equals(allSaveItemIds.get(i + 1))) {
 				throw new BusinessException(new RawErrorMessage("Msg_289"));
 			}
@@ -67,7 +81,7 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 		// remove all itemdefinition relation with classification in this layout
 		clsDefRepo.removeAllByLayoutId(update.getLayoutID());
 
-		//
+		// push all classification and item definition to db
 		List<ClassificationCommand> classCommands = command.getItemsClassification();
 		if (!classCommands.isEmpty()) {
 			// add all classification on client to db

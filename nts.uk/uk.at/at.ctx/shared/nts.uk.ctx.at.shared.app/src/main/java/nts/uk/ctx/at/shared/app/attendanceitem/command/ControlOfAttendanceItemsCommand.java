@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.attendanceitem.command;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Value;
 @AllArgsConstructor

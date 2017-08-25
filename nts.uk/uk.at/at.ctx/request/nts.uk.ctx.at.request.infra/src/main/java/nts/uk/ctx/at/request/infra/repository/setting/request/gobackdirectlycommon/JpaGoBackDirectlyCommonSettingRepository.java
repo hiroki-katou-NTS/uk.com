@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentContent;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentFontColor;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingItem;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.FontWeightFlg;
@@ -35,8 +35,8 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository impl
 	 * @param entity
 	 * @return
 	 */
-	private GoBackDirectlyCommonSettingItem toDomain(KrqmtGoBackDirectSet entity) {
-		return new GoBackDirectlyCommonSettingItem(entity.krqmtGoBackDirectSetPK.companyID,
+	private GoBackDirectlyCommonSetting toDomain(KrqmtGoBackDirectSet entity) {
+		return new GoBackDirectlyCommonSetting(entity.krqmtGoBackDirectSetPK.companyID,
 				entity.krqmtGoBackDirectSetPK.appID, EnumAdaptor.valueOf(entity.workChangeFlg, WorkChangeFlg.class),
 				EnumAdaptor.valueOf(entity.perfomanceDisplayAtr, AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.contraditionCheckAtr, CheckAtr.class),
@@ -53,7 +53,7 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository impl
 	 * @param domain
 	 * @return
 	 */
-	private KrqmtGoBackDirectSet toEntity(GoBackDirectlyCommonSettingItem domain) {
+	private KrqmtGoBackDirectSet toEntity(GoBackDirectlyCommonSetting domain) {
 		val entity = new KrqmtGoBackDirectSet();
 		entity.krqmtGoBackDirectSetPK = new KrqmtGoBackDirectSetPK();
 		entity.krqmtGoBackDirectSetPK.companyID = domain.getCompanyID();
@@ -73,7 +73,7 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository impl
 	}
 
 	@Override
-	public Optional<GoBackDirectlyCommonSettingItem> findByAppID(String companyID, String appID) {
+	public Optional<GoBackDirectlyCommonSetting> findByAppID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_WITH_APP_ID, KrqmtGoBackDirectSet.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
@@ -83,21 +83,21 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository impl
 	 * 
 	 */
 	@Override
-	public void insert(GoBackDirectlyCommonSettingItem goBackDirectlyCommonSettingItem) {
+	public void insert(GoBackDirectlyCommonSetting goBackDirectlyCommonSettingItem) {
 		this.commandProxy().insert(toEntity(goBackDirectlyCommonSettingItem));
 	}
 	/**
 	 * 
 	 */
 	@Override
-	public void update(GoBackDirectlyCommonSettingItem goBackDirectlyCommonSettingItem) {
+	public void update(GoBackDirectlyCommonSetting goBackDirectlyCommonSettingItem) {
 		this.commandProxy().update(toEntity(goBackDirectlyCommonSettingItem));
 	}
 	/**
 	 * 
 	 */
 	@Override
-	public void delete(GoBackDirectlyCommonSettingItem goBackDirectlyCommonSettingItem) {
+	public void delete(GoBackDirectlyCommonSetting goBackDirectlyCommonSettingItem) {
 		this.commandProxy().remove(toEntity(goBackDirectlyCommonSettingItem));
 	}
 

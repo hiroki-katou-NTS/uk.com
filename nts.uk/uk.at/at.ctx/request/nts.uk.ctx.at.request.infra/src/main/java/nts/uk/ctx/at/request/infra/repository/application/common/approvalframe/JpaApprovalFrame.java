@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.request.infra.repository.application.common.approvalframe;
 
+import java.util.List;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
@@ -11,14 +15,23 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.Krqdt
  * @author hieult
  *
  */
+@Stateless
 public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepository {
 
 	private final String SELECT = "SELECT c FROM KrqdtApprovalFrame c";
-	private final String SELECT_SINGLE = "SELECT c FROM KrqdtApprovalFrame c WHERE c.KrqdtApprovalFramePK.companyID = :companyID AND c.KrqdtApprovalFramePK.phaseID = :phaseID AND c.KrqdtApprovalFramePK.dispOrder = :dispOrder ";
+	private final String SELECT_SINGLE = "SELECT c FROM KrqdtApprovalFrame c"
+			+ " WHERE c.KrqdtApprovalFramePK.companyID = :companyID"
+			+ " AND c.KrqdtApprovalFramePK.phaseID = :phaseID"
+			+ " AND c.KrqdtApprovalFramePK.dispOrder = :dispOrder ";
+	//get List Phase
+	private final String SELECT_BY_PHASE_ID = SELECT
+			+ " WHERE c.KrqdtApprovalFramePK.companyID = :companyID"
+			+ " AND c.KrqdtApprovalFramePK.phaseID = :phaseID";
+	
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID";
 
 	@Override
-	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, String dispOrder) {
+	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, int dispOrder) {
 		return this.queryProxy().query(SELECT_SINGLE, KrqdtApprovalFrame.class).setParameter("companyID", companyID)
 				.setParameter("phaseID", phaseID)
 				.setParameter("dispOrder", dispOrder)
@@ -36,12 +49,12 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 		KrqdtApprovalFrame newEntity = toEntity(approvalFrame);
 		KrqdtApprovalFrame updateEntity = this.queryProxy()
 				.find(newEntity.krqdtApprovalFramePK, KrqdtApprovalFrame.class).get();
-		updateEntity.authorizerSID = newEntity.authorizerSID;
-		updateEntity.substituteSID = newEntity.substituteSID;
+		updateEntity.approverSID = newEntity.approverSID;
 		updateEntity.approvalATR = newEntity.approvalATR;
+		updateEntity.confirmATR = newEntity.confirmATR;
 		updateEntity.approvalDate = newEntity.approvalDate;
 		updateEntity.reason = newEntity.reason;
-		updateEntity.confirmATR = newEntity.confirmATR;
+		updateEntity.representerSID = newEntity.representerSID;
 		this.commandProxy().update(updateEntity);
 
 	}
@@ -52,18 +65,54 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 		this.getEntityManager().flush();
 	}
 
+	@Override
+	public List<ApprovalFrame> getAllApproverByPhaseID(String companyID, String phaseID) {
+		return this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
+				.setParameter("companyID", companyID)
+				.setParameter("phaseID", phaseID)
+				.getList(c -> toDomain(c));
+	}
+
 	private ApprovalFrame toDomain(KrqdtApprovalFrame entity) {
-		return ApprovalFrame.createFromJavaType(entity.krqdtApprovalFramePK.companyID,
-				entity.krqdtApprovalFramePK.phaseID, entity.krqdtApprovalFramePK.dispOrder, entity.authorizerSID,
-				entity.substituteSID, Integer.valueOf(entity.approvalATR).intValue(), entity.approvalDate,
-				entity.reason, Integer.valueOf(entity.confirmATR).intValue());
+		return ApprovalFrame.createFromJavaType(
+				entity.krqdtApprovalFramePK.companyID,
+				entity.krqdtApprovalFramePK.phaseID, 
+				entity.krqdtApprovalFramePK.dispOrder, 
+				entity.approverSID,
+				Integer.valueOf(entity.approvalATR).intValue(), 
+				Integer.valueOf(entity.confirmATR).intValue(),
+				entity.approvalDate,
+				entity.reason,
+				entity.representerSID
+				);
 	}
 
 	private KrqdtApprovalFrame toEntity(ApprovalFrame domain) {
 		return new KrqdtApprovalFrame(
 				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getPhaseID(), domain.getDispOrder()),
-				domain.getAuthorizerSID(), domain.getSubstituteSID(), domain.getApprovalATR().toString(),
-				domain.getApprovalDate(), domain.getReason().toString(), domain.getConfirmATR().toString());
+				domain.getApproverSID(), domain.getApprovalATR().toString(),
+				domain.getConfirmATR().toString(),
+				domain.getApprovalDate(),
+				domain.getReason().v(),
+				domain.getRepresenterSID().toString());
 	}
+	
+	/**
+	 * get List Frame By Phase ID
+	 */
+	@Override
+	public List<ApprovalFrame> findByPhaseID(String companyID, String phaseID) {
+		return this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
+				.setParameter("companyID", companyID)
+				.setParameter("phaseID", phaseID)
+				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, String dispOrder) {
+		return null;
+	}
+
+
 
 }

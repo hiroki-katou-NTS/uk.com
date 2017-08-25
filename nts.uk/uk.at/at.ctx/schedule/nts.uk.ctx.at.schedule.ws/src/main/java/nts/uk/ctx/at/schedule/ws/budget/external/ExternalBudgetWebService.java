@@ -11,7 +11,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.arc.task.AsyncTaskInfo;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.external.InsertExternalBudgetCommand;
@@ -25,6 +29,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetDataPreviewDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetExtractCondition;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
 
 /**
  * The Class ExternalBudgetWebService.
@@ -98,6 +103,13 @@ public class ExternalBudgetWebService extends WebService {
 	}
 
 	
+	
+	@POST
+    @Path("find/charsetlist")
+    public List<EnumConstant> findCompletionList() {
+        return EnumAdaptor.convertToValueNameList(ExtBudgetCharset.class);
+    }
+	
 	/**
 	 * Checks if is daily unit.
 	 *
@@ -136,6 +148,13 @@ public class ExternalBudgetWebService extends WebService {
     @POST
     @Path("import/execute")
     public ExecutionInfor executeImportFile(ExecutionProcessCommand command) {
-        return this.executeProcessHandler.handle(command);
+        // GUID
+        String executeId = IdentifierUtil.randomUniqueId();
+        command.setExecuteId(executeId);
+        AsyncTaskInfo taskInfor = this.executeProcessHandler.handle(command);
+        return ExecutionInfor.builder()
+                .taskInfor(taskInfor)
+                .executeId(executeId)
+                .build();
     }
 }

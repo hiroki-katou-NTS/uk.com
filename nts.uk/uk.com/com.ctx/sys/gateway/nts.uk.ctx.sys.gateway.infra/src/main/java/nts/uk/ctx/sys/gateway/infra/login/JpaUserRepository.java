@@ -21,9 +21,15 @@ import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.ctx.sys.gateway.entity.login.SgwmtUser;
 import nts.uk.ctx.sys.gateway.entity.login.SgwmtUser_;
 
+/**
+ * The Class JpaUserRepository.
+ */
 @Stateless
 public class JpaUserRepository extends JpaRepository implements UserRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByLoginId(java.lang.String)
+	 */
 	@Override
 	public Optional<User> getByLoginId(String loginId) {
 		EntityManager em = this.getEntityManager();
@@ -39,6 +45,7 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtUser> result = em.createQuery(query).getResultList();
+		//get single user 
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {
@@ -46,6 +53,9 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByAssociatedPersonId(java.lang.String)
+	 */
 	@Override
 	public Optional<User> getByAssociatedPersonId(String associatedPersonId) {
 		EntityManager em = this.getEntityManager();
@@ -61,6 +71,7 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtUser> result = em.createQuery(query).getResultList();
+		//get single user 
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {

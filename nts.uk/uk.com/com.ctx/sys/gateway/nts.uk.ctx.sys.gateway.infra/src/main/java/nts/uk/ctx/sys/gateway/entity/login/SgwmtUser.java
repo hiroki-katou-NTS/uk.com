@@ -7,20 +7,21 @@ package nts.uk.ctx.sys.gateway.entity.login;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+/**
+ * The Class SgwmtUser.
+ */
 @Getter
 @Setter
 @Entity
@@ -28,70 +29,54 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 public class SgwmtUser extends UkJpaEntity implements Serializable {
     
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
     
+    /** The user id. */
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 1)
     @Column(name = "USER_ID")
     private String userId;
     
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 44)
+    /** The password. */
     @Column(name = "PASSWORD")
     private String password;
     
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 12)
+    /** The login id. */
     @Column(name = "LOGIN_ID")
     private String loginId;
     
-    @Basic(optional = false)
-    @NotNull
+    /** The contract cd. */
     @Column(name = "CONTRACT_CD")
-    private long contractCd;
+    private String contractCd;
     
-    @Basic(optional = false)
-    @NotNull
+    /** The expiration date. */
     @Column(name = "EXPIRATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date expirationDate;
     
-    @Basic(optional = false)
-    @NotNull
+    /** The special user. */
     @Column(name = "SPECIAL_USER")
     private short specialUser;
     
-    @Basic(optional = false)
-    @NotNull
+    /** The multi com. */
     @Column(name = "MULTI_COM")
     private short multiCom;
     
-    @Size(max = 80)
+    /** The mail add. */
     @Column(name = "MAIL_ADD")
     private String mailAdd;
     
-    @Size(max = 30)
+    /** The user name. */
     @Column(name = "USER_NAME")
     private String userName;
     
-    @Size(max = 36)
+    /** The asso sid. */
     @Column(name = "ASSO_SID")
     private String assoSid;
 
-    public SgwmtUser(String userId, int exclusVer, String password, String loginId, long contractCd, Date expirationDate, short specialUser, short multiCom) {
-        this.userId = userId;
-        this.password = password;
-        this.loginId = loginId;
-        this.contractCd = contractCd;
-        this.expirationDate = expirationDate;
-        this.specialUser = specialUser;
-        this.multiCom = multiCom;
-    }
-
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -99,9 +84,11 @@ public class SgwmtUser extends UkJpaEntity implements Serializable {
         return hash;
     }
 
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof SgwmtUser)) {
             return false;
         }
@@ -112,6 +99,9 @@ public class SgwmtUser extends UkJpaEntity implements Serializable {
         return true;
     }
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
 		return this.userId;

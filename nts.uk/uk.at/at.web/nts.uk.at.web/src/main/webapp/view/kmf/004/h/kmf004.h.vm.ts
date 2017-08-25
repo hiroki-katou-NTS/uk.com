@@ -1,7 +1,7 @@
 module nts.uk.at.view.kmf004.h.viewmodel {
     
     export class ScreenModel {
-        // list business type A2_2
+        // list relationship A2_2
         lstRelationship: KnockoutObservableArray<Relationship>;
         // column in list
         gridListColumns: KnockoutObservableArray<any>;
@@ -76,6 +76,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     self.checkDelete(false);
                 }
                 else{
+                    $("#inpPattern").focus();
                     self.selectedCode(self.lstRelationship()[0].relationshipCode);
                 }
                 

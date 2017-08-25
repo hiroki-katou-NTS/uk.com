@@ -57,6 +57,9 @@ module nts.uk.at.view.ksm005.b {
                     if (monthlyPatternCode) {
                         self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked());
                     }
+                    else {
+                        self.resetData();
+                    }
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
@@ -95,7 +98,7 @@ module nts.uk.at.view.ksm005.b {
                 nts.uk.ui.windows.setShared("yearmonth", self.yearMonthPicked());
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function() {
                     var isCancelSave: boolean = nts.uk.ui.windows.getShared("isCancelSave");
-                    if (!isCancelSave) {
+                    if (isCancelSave && !isCancelSave) {
                         self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     }
                 });
@@ -270,9 +273,9 @@ module nts.uk.at.view.ksm005.b {
                 var dataUpdate: WorkMonthlySettingDto[] = [];
                 for (var item: WorkMonthlySettingDto of self.lstWorkMonthlySetting()) {
                     item.workTypeCode='';
-                    item.workTypeName = nts.uk.resource.getText("KSM005_43");
+                    item.workTypeName = '';
                     item.workingCode='';
-                    item.workingName = nts.uk.resource.getText("KSM005_43");
+                    item.workingName = '';
                     item.typeColor = TypeColor.HOLIDAY;
                     dataUpdate.push(item);
                 }
@@ -340,6 +343,13 @@ module nts.uk.at.view.ksm005.b {
                         dto.workTypeName = childData.selectedWorkTypeName;
                         dto.workingCode = childData.selectedWorkTimeCode;
                         dto.workingName = childData.selectedWorkTimeName;
+                        
+                        if (dto.workTypeCode && dto.workingCode) {
+                            dto.typeColor = TypeColor.ATTENDANCE;
+                        } else {
+                            dto.typeColor = TypeColor.HOLIDAY;
+                        }
+                        
                         self.updateWorkMonthlySettingClose(dto);
                     });
                 }
@@ -450,10 +460,10 @@ module nts.uk.at.view.ksm005.b {
                 this.name = ko.observable('');
                 this.enableMonthlyPatternCode = ko.observable(true);
                 this.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    filldirection: "right",
+                    filldirection: "left",
                     fillcharacter: "0",
                     autofill: true,
-                    width: "50px",
+                    width: "40px",
                     textmode: "text",
                     textalign: "left"
                 }));

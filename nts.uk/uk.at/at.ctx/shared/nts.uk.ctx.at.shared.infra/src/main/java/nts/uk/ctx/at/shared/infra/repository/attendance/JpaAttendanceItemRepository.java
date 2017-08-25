@@ -18,7 +18,7 @@ public class JpaAttendanceItemRepository extends JpaRepository implements Attend
 	private final String SELECT_POSSIBLE_ITEM = SELECT_NO_WHERE
 			+ " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId"
 			+ " AND c.kmnmtAttendanceItemPK.attendanceItemId IN :listPossibleItem";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId";
+	private final String SELECT_ITEM = SELECT_NO_WHERE + " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId ORDER BY c.kmnmtAttendanceItemPK.attendanceItemId ASC";
 	private final String SELECT_ATTENDANCE_ITEM = SELECT_NO_WHERE
 			+ " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId " + " AND c.useAtr = :useAtr ";
 	private final String SELECT_ATTENDANCE_ITEM_DETAIL = SELECT_NO_WHERE
@@ -28,7 +28,7 @@ public class JpaAttendanceItemRepository extends JpaRepository implements Attend
 	private static AttendanceItem toDomain(KmnmtAttendanceItem entity) {
 		val domain = AttendanceItem.createSimpleFromJavaType(entity.kmnmtAttendanceItemPK.companyId,
 				entity.kmnmtAttendanceItemPK.attendanceItemId, entity.attendanceItemName, entity.displayNumber,
-				entity.useAtr, entity.attendanceAtr);
+				entity.useAtr, entity.attendanceAtr, entity.nameLineFeedPosition);
 		return domain;
 	}
 

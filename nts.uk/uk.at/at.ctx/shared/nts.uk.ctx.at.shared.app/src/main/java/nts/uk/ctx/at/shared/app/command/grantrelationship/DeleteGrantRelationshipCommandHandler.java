@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.command.grantrelationship;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DeleteGrantRelationshipCommandHandler extends CommandHandler<DeleteGrantRelationshipCommand>{
+	@Inject
 	private GrantRelationshipRepository grantRelaRep;
 
 	@Override

@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.find.login.dto;
 
+import lombok.Data;
+
 /**
  * The Class CheckContractDto.
  */
+@Data
 public class CheckContractDto {
 
-	public boolean showContract;
+	private boolean showContract;
 
 	/**
 	 * Instantiates a new check contract dto.

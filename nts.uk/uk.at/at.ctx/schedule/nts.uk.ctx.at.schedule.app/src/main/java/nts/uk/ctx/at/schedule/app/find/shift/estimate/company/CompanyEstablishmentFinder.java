@@ -6,20 +6,21 @@ package nts.uk.ctx.at.schedule.app.find.shift.estimate.company;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateTimeDto;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.MonthlyEstimateTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstablishmentDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentNumberOfDayDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentPriceDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimateNumberOfDayDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimatePriceDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstimateTimeDto;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishment;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentRepository;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTargetClassification;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -33,66 +34,95 @@ public class CompanyEstablishmentFinder {
 	@Inject
 	private CompanyEstablishmentRepository repository;
 	
-	/** The Constant FIRST_MONTH. */
-	public static final int FIRST_MONTH = 1;
-	
-	/** The Constant TOTAL_MONTH. */
-	public static final int TOTAL_MONTH = 12;
-
 	/**
-	 * Find all.
+	 * Find estimate time.
 	 *
-	 * @return the list
+	 * @param targetYear the target year
+	 * @return the company establishment dto
 	 */
-	public CompanyEstimateTimeDto findEstimateTime(int targetYear) {
+	public CompanyEstablishmentDto findEstimateTime(int targetYear) {
+		
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
 		String companyId = loginUserContext.companyId();
 
+		// call repository find data
 		Optional<CompanyEstablishment> companyEstablishment = this.repository.findById(companyId,
 				targetYear);
-		CompanyEstimateTimeDto dto = new CompanyEstimateTimeDto();
+		
+		CompanyEstablishmentDto dto = new CompanyEstablishmentDto();
+		
+		EstablishmentTimeDto estimateTime = new EstablishmentTimeDto();
+		
+		EstablishmentPriceDto estimatePrice = new EstablishmentPriceDto();
+		
+		EstablishmentNumberOfDayDto estimateNumberOfDay = new EstablishmentNumberOfDayDto();
+		
 		// check exist data
 		if (companyEstablishment.isPresent()) {
 
-			// get estimate time setting
-			List<EstimateTimeSetting> estimateTimeSetting = companyEstablishment.get()
-					.getAdvancedSetting().getEstimateTime();
+			EstimateTimeDto yearlyTime = new EstimateTimeDto();
+			List<EstimateTimeDto> monthlyTimes = new ArrayList<>();
+			companyEstablishment.get().getAdvancedSetting().getEstimateTime()
+					.forEach(estimateTimeSetting -> {
 
-			// convert to map
-			Map<EstimateTargetClassification, EstimateTimeSetting> mapEstimateTimeSetting = estimateTimeSetting
-					.stream().collect(Collectors.toMap((monthly) -> {
-						return monthly.getTargetClassification();
-					}, Function.identity()));
-			MonthlyEstimateTimeDto yearly = new MonthlyEstimateTimeDto();
+						// check yearly exist data
+						if (estimateTimeSetting
+								.getTargetClassification().value == EstimateTargetClassification.YEARLY.value) {
+							estimateTimeSetting.saveToMemento(yearlyTime);
+						} else {
+							EstimateTimeDto monthly = new EstimateTimeDto();
+							estimateTimeSetting.saveToMemento(monthly);
+							monthlyTimes.add(monthly);
+						}
+					});
+			estimateTime.setYearlyEstimate(yearlyTime);
+			estimateTime.setMonthlyEstimates(monthlyTimes);
 
-			// check yearly exist data
-			if (mapEstimateTimeSetting.containsKey(EstimateTargetClassification.YEARLY)) {
-				mapEstimateTimeSetting.get(EstimateTargetClassification.YEARLY)
-						.saveToMemento(yearly);
-			}
-			dto.setYearlyMonthlyEstimate(yearly);
+			EstimatePriceDto yearlyPrice = new EstimatePriceDto();
+			List<EstimatePriceDto> monthlyPrices = new ArrayList<>();
+			companyEstablishment.get().getAdvancedSetting().getEstimatePrice()
+					.forEach(estimatePriceSetting -> {
 
-			List<MonthlyEstimateTimeDto> monthlys = new ArrayList<>();
-			for (int index = FIRST_MONTH; index <= TOTAL_MONTH; index++) {
-
-				MonthlyEstimateTimeDto monthly = new MonthlyEstimateTimeDto();
-
-				// check exist data
-				if (mapEstimateTimeSetting
-						.containsKey(EstimateTargetClassification.valueOf(index))) {
-					mapEstimateTimeSetting.get(EstimateTargetClassification.valueOf(index))
-							.saveToMemento(monthly);
+						// check yearly exist data
+						if (estimatePriceSetting
+								.getTargetClassification().value == EstimateTargetClassification.YEARLY.value) {
+							estimatePriceSetting.saveToMemento(yearlyPrice);
+						} else {
+							EstimatePriceDto monthly = new EstimatePriceDto();
+							estimatePriceSetting.saveToMemento(monthly);
+							monthlyPrices.add(monthly);
+						}
+					});
+			estimatePrice.setYearlyEstimate(yearlyPrice);
+			estimatePrice.setMonthlyEstimates(monthlyPrices);
+			
+			
+			EstimateNumberOfDayDto yearlyDays = new EstimateNumberOfDayDto();
+			List<EstimateNumberOfDayDto> monthlyDays = new ArrayList<>();
+			companyEstablishment.get().getAdvancedSetting().getEstimateNumberOfDay()
+			.forEach(estimateDaysSetting -> {
+				
+				// check yearly exist data
+				if (estimateDaysSetting
+						.getTargetClassification().value == EstimateTargetClassification.YEARLY.value) {
+					estimateDaysSetting.saveToMemento(yearlyDays);
+				} else {
+					EstimateNumberOfDayDto monthly = new EstimateNumberOfDayDto();
+					estimateDaysSetting.saveToMemento(monthly);
+					monthlyDays.add(monthly);
 				}
-
-				// add to monthly s
-				monthlys.add(monthly);
-
-			}
-			dto.setMonthlyEstimates(monthlys);
+			});
+			estimateNumberOfDay.setYearlyEstimate(yearlyDays);
+			estimateNumberOfDay.setMonthlyEstimates(monthlyDays);
+			
+			
 		}
+		dto.setEstimateTime(estimateTime);
+		dto.setEstimatePrice(estimatePrice);
+		dto.setEstimateNumberOfDay(estimateNumberOfDay);
 		return dto;
 	}
 	

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface ApplicationRepository {
 	
 	/**
@@ -24,7 +26,7 @@ public interface ApplicationRepository {
 	 * @param applicationDate
 	 * @return
 	 */
-	List<Application> getAllAppByDate(String companyID,BigDecimal applicationDate);
+	List<Application> getAllAppByDate(String companyID,GeneralDate applicationDate);
 	/**
 	 * get all application by applicationType
 	 * @param companyID
@@ -49,4 +51,7 @@ public interface ApplicationRepository {
 	 * @param applicationID
 	 */
 	void deleteApplication(String companyID,String applicationID);
+	
+	void updateById(String companyID,String applicationID );
+	
 }

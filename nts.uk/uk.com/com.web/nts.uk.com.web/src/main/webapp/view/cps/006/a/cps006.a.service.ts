@@ -1,36 +1,25 @@
-module nts.uk.com.view.cas001.a.service {
+module nts.uk.com.view.cps006.a.service {
     import ajax = nts.uk.request.ajax;
-    var paths = {
-        getPersonRoleList: "/ctx/bs/person/roles/findAll",
-        getPersonRoleAuth: "/ctx/bs/person/roles/auth/find/{0}",
-        getCategoryRoleList: "/ctx/bs/person/roles/auth/category/findAllCategory/{0}",
-        getCategoryAuth: "/ctx/bs/person/roles/auth/category/find/{0}/{1}",
-        getPersonRoleItemList: "/ctx/bs/person/roles/auth/item/findAllItem/{0}/{1}",
-        savePersonRole: "/ctx/bs/person/roles/save"
+    import format = nts.uk.text.format;
+    let paths = {
+        getAllCategory: "ctx/bs/person/info/ctg/findAll",
+        getAllPerInfoItemDefByCtgId: "ctx/bs/person/info/ctgItem/findby/categoryId/{0}",
+        getAllPerInfoCtgByRoot: "ctx/bs/person/info/ctg/findAllByRoot",
+        update: "ctx/bs/person/info/ctg/update"
+    }
+    export function getAllCategory(): JQueryPromise<Array<any>> {
+        return ajax(paths.getAllCategory);
     }
 
-    export function getPersonRoleList(): JQueryPromise<any> {
-        return ajax(paths.getPersonRoleList);
+    export function getAllPerInfoItemDefByCtgId(categoryId: string): JQueryPromise<Array<any>> {
+        return ajax(format(paths.getAllPerInfoItemDefByCtgId, categoryId));
     }
 
-    export function getPersonRoleAuth(roleID): JQueryPromise<any> {
-        return ajax(nts.uk.text.format(paths.getPersonRoleAuth, roleID));
+    export function getAllPerInfoCtgByRoot(): JQueryPromise<Array<any>> {
+        return ajax(paths.getAllPerInfoCtgByRoot);
     }
-
-    export function getCategoryRoleList(roleID): JQueryPromise<any> {
-        return ajax(nts.uk.text.format(paths.getCategoryRoleList, roleID));
+    
+    export function update(category: any): JQueryPromise<any> {
+        return ajax(paths.update,category);
     }
-
-    export function getCategoryAuth(roleId, personInfoCategoryAuthId): JQueryPromise<any> {
-        return ajax(nts.uk.text.format(paths.getCategoryAuth, roleId, personInfoCategoryAuthId));
-    }
-
-    export function getPersonRoleItemList(roleId, personInfoCategoryAuthId): JQueryPromise<any> {
-        return ajax(nts.uk.text.format(paths.getPersonRoleItemList, roleId, personInfoCategoryAuthId));
-    }
-
-    export function savePersonRole(command): JQueryPromise<any> {
-        return ajax(paths.savePersonRole, command);
-    }
-
 }

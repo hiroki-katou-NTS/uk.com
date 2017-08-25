@@ -11,6 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.DeleteApplicationCommand;
@@ -20,7 +21,7 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCom
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 
-@Path("request/application/common")
+@Path("at/request/application")
 @Produces("application/json")
 public class ApplicationWebservice extends WebService {
 	
@@ -51,7 +52,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getallbydate/{applicationDate}")
-	public List<ApplicationDto> getAllAppByDate(@PathParam("applicationDate") BigDecimal applicationDate){
+	public List<ApplicationDto> getAllAppByDate(@PathParam("applicationDate") GeneralDate applicationDate){
 		return this.finderApp.getAllAppByDate(applicationDate);
 	}
 	

@@ -34,6 +34,8 @@ public class KmnmtAttendanceItem extends UkJpaEntity implements Serializable {
 	public int attendanceAtr;
 	@Column(name = "USER_CAN_SET")
 	public int userCanSet;
+	@Column(name = "LINE_BREAK_POSITION")
+	public int nameLineFeedPosition;
 
 	@Override
 	protected Object getKey() {

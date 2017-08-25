@@ -29,18 +29,18 @@
 		<ui:define name="sidebar-content">
 			<!-- COMPANY WORK TIME SETTING  START -->
 			<div id="tabpanel-1" role="tabpanel">
-				<com:ko tag="if" bind="isCompanySelected">
-					<ui:include src="a.xhtml" />
-				</com:ko>
-			</div>
-			<div id="tabpanel-2" role="tabpanel">
-				<com:ko tag="if" bind="isEmploymentSelected">
+				<com:ko tag="if" bind="isCompanySelected()">
 					<ui:include src="b.xhtml" />
 				</com:ko>
 			</div>
-			<div id="tabpanel-3" role="tabpanel">
-				<com:ko tag="if" bind="isPersonSelected">
+			<div id="tabpanel-2" role="tabpanel">
+				<com:ko tag="if" bind="isEmploymentSelected()">
 					<ui:include src="c.xhtml" />
+				</com:ko>
+			</div>
+			<div id="tabpanel-3" role="tabpanel">
+				<com:ko tag="if" bind="isPersonSelected()">
+					<ui:include src="d.xhtml" />
 				</com:ko>
 			</div>
 		</ui:define>

@@ -162,7 +162,6 @@
 }
 
 #A3_004 {
-	margin-left: 30px;
 	width: 70px;
 }
 
@@ -193,4 +192,14 @@
 
 #item_role_table_body tr>td:NTH-CHILD(2) {
 	text-align: center;
+}
+
+.line_col_1 {
+	width: 250px;
+	float: left;
+}
+
+.line_col_2 {
+	width: 200px;
+	float: left;
 }

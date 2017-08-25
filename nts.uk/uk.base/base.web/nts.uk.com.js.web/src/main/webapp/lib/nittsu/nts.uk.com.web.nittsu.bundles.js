@@ -6076,7 +6076,7 @@ var nts;
                             $grid.data("ui-changed", true);
                             if (data.multiple) {
                                 var selected = $grid.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     data.value(_.map(selected, function (s) { return s.id; }));
                                 }
                                 else {
@@ -6085,7 +6085,7 @@ var nts;
                             }
                             else {
                                 var selected = $grid.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     data.value(selected.id);
                                 }
                                 else {
@@ -6433,7 +6433,7 @@ var nts;
                             var itemSelected;
                             if (container.igGridSelection('option', 'multipleSelection')) {
                                 var selected = container.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     itemSelected = _.map(selected, function (s) { return s.id; });
                                 }
                                 else {
@@ -6442,7 +6442,7 @@ var nts;
                             }
                             else {
                                 var selected = container.ntsGridList('getSelected');
-                                if (selected) {
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
                                     itemSelected = selected.id;
                                 }
                                 else {
@@ -7001,16 +7001,8 @@ var nts;
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
                                     : component.igTreeGridSelection('option', 'multipleSelection');
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
-                                var selectedValue = void 0;
-                                if (selectedKey !== null) {
-                                    selectedValue = isMulti ? _.map(result_1.selectItems, selectedKey) :
-                                        result_1.selectItems.length > 0 ? result_1.selectItems[0][selectedKey] : undefined;
-                                }
-                                else {
-                                    selectedValue = isMulti ? [result_1.selectItems] :
-                                        result_1.selectItems.length > 0 ? result_1.selectItems[0] : undefined;
-                                }
                                 if (targetMode === 'igGrid') {
+                                    component.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
                                         $container.data("filteredSrouce", result_1.options);
                                         component.attr("filtered", true);
@@ -7023,10 +7015,10 @@ var nts;
                                         });
                                         component.igGrid("option", "dataSource", source);
                                         component.igGrid("dataBind");
+                                        if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
+                                            component.trigger("selectionchanged");
+                                        }
                                     }
-                                    else {
-                                    }
-                                    component.ntsGridList("setSelected", selectedProperties);
                                 }
                                 else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
@@ -8683,6 +8675,96 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var enums;
+        (function (enums) {
+            enums.NtsCharset = [
+                {
+                    value: 1,
+                    fieldName: "UTF8",
+                    localizedName: "UTF-8"
+                },
+                {
+                    value: 2,
+                    fieldName: "UTF8_WITH_BOM",
+                    localizedName: "UTF-8 BOM"
+                },
+                {
+                    value: 3,
+                    fieldName: "SHIFT_JIS",
+                    localizedName: "Shift-JIS"
+                },
+            ];
+        })(enums = uk.enums || (uk.enums = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_11) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsCharsetSettingBindingHandler = (function () {
+                    function NtsCharsetSettingBindingHandler() {
+                    }
+                    NtsCharsetSettingBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var value = (data.value !== undefined) ? ko.unwrap(data.value) : null;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var container = $(element);
+                        container.addClass("ntsControl nts-charset-setting");
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
+                            container.attr("tabindex", "0");
+                        }
+                        container.keypress(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                container.igCombo("openDropDown");
+                                evt.preventDefault();
+                            }
+                        });
+                        container.igCombo({
+                            dataSource: nts.uk.enums.NtsCharset,
+                            valueKey: "value",
+                            textKey: 'localizedName',
+                            mode: "dropdown",
+                            visibleItemsCount: 5,
+                            disabled: !enable,
+                            placeHolder: '',
+                            tabIndex: -1,
+                            enableClearButton: false,
+                            initialSelectedItems: [
+                                { value: value }
+                            ],
+                            selectionChanged: function (evt, ui) {
+                                if (ui.items.length > 0) {
+                                    data.value(ui.items[0].data["value"]);
+                                }
+                            }
+                        });
+                    };
+                    NtsCharsetSettingBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var value = (data.value !== undefined) ? ko.unwrap(data.value) : null;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var container = $(element);
+                        container.igCombo("option", "disabled", !enable);
+                        if (!nts.uk.util.isNullOrUndefined(value) && container.igCombo("value") != value) {
+                            container.igCombo("value", value);
+                        }
+                    };
+                    return NtsCharsetSettingBindingHandler;
+                }());
+                ko.bindingHandlers['ntsCharsetSetting'] = new NtsCharsetSettingBindingHandler();
+            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
         var ui;
         (function (ui) {
             var importSettingForm;
@@ -8764,7 +8846,8 @@ var nts;
                         var self = this;
                         if (self.isInit) {
                             self.isInit = false;
-                            self.$dialog.dialog("destroy");
+                            self.$encodeTypeCombo.igCombo("destroy");
+                            self.$dialog.dialog("destroy").remove();
                             $(self.option.selector).off("click.ImportSettingForm");
                         }
                     };
@@ -8815,7 +8898,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_11) {
+        (function (ui_12) {
             var contextmenu;
             (function (contextmenu) {
                 var ContextMenu = (function () {
@@ -8933,7 +9016,7 @@ var nts;
                     return ContextMenuItem;
                 }());
                 contextmenu.ContextMenuItem = ContextMenuItem;
-            })(contextmenu = ui_11.contextmenu || (ui_11.contextmenu = {}));
+            })(contextmenu = ui_12.contextmenu || (ui_12.contextmenu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8942,7 +9025,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_12) {
+        (function (ui_13) {
             var option;
             (function (option_2) {
                 var DialogOption = (function () {
@@ -9063,9 +9146,9 @@ var nts;
                     function ErrorDialogWithTabOption(option) {
                         _super.call(this);
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_12.errors.ErrorHeader("tab", "タブ", 90, true),
-                            new ui_12.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new ui_12.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new ui_13.errors.ErrorHeader("tab", "タブ", 90, true),
+                            new ui_13.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_13.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -9093,7 +9176,7 @@ var nts;
                     return DialogButton;
                 }());
                 option_2.DialogButton = DialogButton;
-            })(option = ui_12.option || (ui_12.option = {}));
+            })(option = ui_13.option || (ui_13.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9164,7 +9247,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_13) {
+        (function (ui_14) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsDateRangePickerBindingHandler = (function () {
@@ -9329,7 +9412,7 @@ var nts;
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
                             var isStart = $target.hasClass("ntsStartDatePicker");
-                            var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_14.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             var oldValue = value();
                             if ($target.hasClass("ntsStartDatePicker")) {
@@ -9348,7 +9431,7 @@ var nts;
                                 $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]));
                             }
                             else {
-                                var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                                var validator = new ui_14.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                                 var result = validator.validate(newText);
                                 if (!result.isValid) {
                                     $(e.target).ntsError('set', result.errorMessage);
@@ -9360,7 +9443,7 @@ var nts;
                             var newText = $target.val();
                             var isStart = $target.hasClass("ntsStartDatePicker");
                             var oldValue = value();
-                            var validator = new ui_13.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_14.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
@@ -9418,7 +9501,7 @@ var nts;
                     return NtsDateRangePickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
-            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
+            })(koExtentions = ui_14.koExtentions || (ui_14.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9503,7 +9586,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_14) {
+        (function (ui_15) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsColorPickerBindingHandler = (function () {
@@ -9643,7 +9726,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_14.koExtentions || (ui_14.koExtentions = {}));
+            })(koExtentions = ui_15.koExtentions || (ui_15.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9716,7 +9799,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_15) {
+        (function (ui_16) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGridList;
@@ -9916,7 +9999,7 @@ var nts;
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
-                                rowIndex: ui_15.ig.grid.getRowIndexFrom($(e.target))
+                                rowIndex: ui_16.ig.grid.getRowIndexFrom($(e.target))
                             };
                             dragSelectRange.push(mousePos.rowIndex);
                             var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
@@ -9930,7 +10013,7 @@ var nts;
                                 $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
                             }, 20);
                             $(window).bind('mousemove.NtsGridListDragging', function (e) {
-                                var newPointedRowIndex = ui_15.ig.grid.getRowIndexFrom($(e.target));
+                                var newPointedRowIndex = ui_16.ig.grid.getRowIndexFrom($(e.target));
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
                                 }
@@ -9993,7 +10076,7 @@ var nts;
                         $grid.unbind('iggridselectionrowselectionchanged');
                     }
                 })(ntsGridList || (ntsGridList = {}));
-            })(jqueryExtentions = ui_15.jqueryExtentions || (ui_15.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_16.jqueryExtentions || (ui_16.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10136,7 +10219,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_16) {
+        (function (ui_17) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsSideBar;
@@ -10177,10 +10260,10 @@ var nts;
                     };
                     function init(control, option) {
                         $("html").addClass("sidebar-html");
-                        control.find("div[role=tabpanel]").addClass("disappear");
+                        control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
                         var settings = $.extend({}, defaultOption, option);
-                        control.off("click", "#sidebar-area .navigator a");
-                        control.on("click", "#sidebar-area .navigator a", function (event) {
+                        control.off("click.sideBarClick", "#sidebar-area .navigator a");
+                        control.on("click.sideBarClick", "#sidebar-area .navigator a", function (event) {
                             event.preventDefault();
                             var info = {
                                 oldIndex: getCurrent(control),
@@ -10201,7 +10284,7 @@ var nts;
                     function active(control, index) {
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
-                        control.find("div[role=tabpanel]").addClass("disappear");
+                        control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
                         var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
                         if ($displayPanel.length > 0) {
                             $displayPanel.removeClass("disappear");
@@ -10211,7 +10294,7 @@ var nts;
                     }
                     function setErrorPosition($displayPanel) {
                         setTimeout(function () {
-                            if ($displayPanel.find(".sidebar-content-header") > 0) {
+                            if ($displayPanel.find(".sidebar-content-header").length > 0) {
                                 $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
                             }
                             else {
@@ -10243,7 +10326,7 @@ var nts;
                         return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_16.jqueryExtentions || (ui_16.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10422,7 +10505,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_17) {
+        (function (ui_18) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGrid;
@@ -10508,11 +10591,13 @@ var nts;
                                     if ($($gridCell.children()[0]).children().length === 0)
                                         $("." + controlCls).append(ntsControl.draw(data));
                                     ntsControl.$containedGrid = $self;
-                                    cellFormatter.style($self, {
+                                    var c = {
                                         id: rowId,
                                         columnKey: column.key,
                                         element: $gridCell[0]
-                                    });
+                                    };
+                                    cellFormatter.style($self, c);
+                                    color.rememberDisabled($self, c);
                                 }, 0);
                                 return $container.html();
                             };
@@ -10534,7 +10619,9 @@ var nts;
                             $(this).igGrid(options);
                         }
                         $(window).resize(function () {
-                            settings.setGridSize($(self));
+                            if (options.autoFitWindow) {
+                                settings.setGridSize($(self));
+                            }
                             columnSize.load($(self));
                         });
                     };
@@ -10727,13 +10814,13 @@ var nts;
                             $grid.igGridUpdating("updateRow", utils.parseIntIfNumber(rowId, $grid, visibleColumnsMap), updatedRowData);
                         }
                         updating._updateRow = _updateRow;
-                        function updateCell($grid, rowId, columnKey, cellValue, visibleColumnsMap) {
+                        function updateCell($grid, rowId, columnKey, cellValue, allColumnsMap) {
                             var grid = $grid.data("igGrid");
                             if (!utils.updatable($grid))
                                 return;
                             var gridUpdate = $grid.data("igGridUpdating");
                             var autoCommit = grid.options.autoCommit;
-                            var columnsMap = visibleColumnsMap || utils.getVisibleColumnsMap($grid);
+                            var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             if (!utils.isNtsControl($grid, columnKey))
@@ -10741,13 +10828,13 @@ var nts;
                             gridUpdate._notifyCellUpdated(rId);
                         }
                         updating.updateCell = updateCell;
-                        function updateRow($grid, rowId, updatedRowData, visibleColumnsMap, forceRender) {
+                        function updateRow($grid, rowId, updatedRowData, allColumnsMap, forceRender) {
                             var grid = $grid.data("igGrid");
                             if (!utils.updatable($grid))
                                 return;
                             var gridUpdate = $grid.data("igGridUpdating");
                             var autoCommit = grid.options.autoCommit;
-                            var columnsMap = visibleColumnsMap || utils.getVisibleColumnsMap($grid);
+                            var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                             var origData = gridUpdate._getLatestValues(rId);
                             grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
@@ -11115,9 +11202,9 @@ var nts;
                     (function (functions) {
                         functions.UPDATE_ROW = "updateRow";
                         functions.ENABLE_CONTROL = "enableNtsControlAt";
-                        functions.ENABLE_ALL_CONTROL = "enableNtsControl";
+                        functions.ENABLE_ALL_CONTROLS = "enableNtsControls";
                         functions.DISABLE_CONTROL = "disableNtsControlAt";
-                        functions.DISABLE_ALL_CONTROL = "disableNtsControl";
+                        functions.DISABLE_ALL_CONTROLS = "disableNtsControls";
                         functions.DIRECT_ENTER = "directEnter";
                         function ntsAction($grid, method, params) {
                             switch (method) {
@@ -11128,14 +11215,14 @@ var nts;
                                 case functions.ENABLE_CONTROL:
                                     enableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
-                                case functions.ENABLE_ALL_CONTROL:
-                                    enableNtsControl($grid, params[0], params[1]);
+                                case functions.ENABLE_ALL_CONTROLS:
+                                    enableNtsControls($grid, params[0], params[1]);
                                     break;
                                 case functions.DISABLE_CONTROL:
                                     disableNtsControlAt($grid, params[0], params[1], params[2]);
                                     break;
-                                case functions.DISABLE_ALL_CONTROL:
-                                    disableNtsControl($grid, params[0], params[1]);
+                                case functions.DISABLE_ALL_CONTROLS:
+                                    disableNtsControls($grid, params[0], params[1]);
                                     break;
                                 case functions.DIRECT_ENTER:
                                     var direction = $grid.data(internal.ENTER_DIRECT);
@@ -11150,12 +11237,6 @@ var nts;
                             }
                         }
                         functions.ntsAction = ntsAction;
-                        function enableNtsControl($grid, columnKey, controlType) {
-                            var datasource = $grid.igGrid("option", "dataSource");
-                            for (var i = 0; i <= datasource.length; i++) {
-                                enableNtsControlAt($grid, i, columnKey, controlType);
-                            }
-                        }
                         function updateRow($grid, rowId, object, autoCommit) {
                             updating.updateRow($grid, rowId, object, undefined, true);
                             if (!autoCommit) {
@@ -11165,10 +11246,22 @@ var nts;
                                     $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
                             }
                         }
-                        function disableNtsControl($grid, columnKey, controlType) {
-                            var datasource = $grid.igGrid("option", "dataSource");
-                            for (var i = 0; i <= datasource.length; i++) {
-                                disableNtsControlAt($grid, i, columnKey, controlType);
+                        function disableNtsControls($grid, columnKey, controlType) {
+                            var ds = $grid.igGrid("option", "dataSource");
+                            var primaryKey = $grid.igGrid("option", "primaryKey");
+                            for (var i = 0; i < ds.length; i++) {
+                                var id = ds[i][primaryKey];
+                                disableNtsControlAt($grid, id, columnKey, controlType);
+                                color.pushDisable($grid, { id: id, columnKey: columnKey });
+                            }
+                        }
+                        function enableNtsControls($grid, columnKey, controlType) {
+                            var ds = $grid.igGrid("option", "dataSource");
+                            var primaryKey = $grid.igGrid("option", "primaryKey");
+                            for (var i = 0; i < ds.length; i++) {
+                                var id = ds[i][primaryKey];
+                                enableNtsControlAt($grid, id, columnKey, controlType);
+                                color.popDisable($grid, { id: id, columnKey: columnKey });
                             }
                         }
                         function disableNtsControlAt($grid, rowId, columnKey, controlType) {
@@ -11179,6 +11272,7 @@ var nts;
                             control.disable($(cellContainer));
                             if (!$(cellContainer).hasClass(color.Disable))
                                 $(cellContainer).addClass(color.Disable);
+                            color.pushDisable($grid, { id: rowId, columnKey: columnKey });
                         }
                         function enableNtsControlAt($grid, rowId, columnKey, controlType) {
                             var cellContainer = $grid.igGrid("cellById", rowId, columnKey);
@@ -11187,6 +11281,7 @@ var nts;
                                 return;
                             control.enable($(cellContainer));
                             $(cellContainer).removeClass(color.Disable);
+                            color.popDisable($grid, { id: rowId, columnKey: columnKey });
                         }
                     })(functions || (functions = {}));
                     var ntsControls;
@@ -11324,7 +11419,7 @@ var nts;
                                 _.forEach(options, function (opt) {
                                     var value = opt[optionsValue];
                                     var text = opt[optionsText];
-                                    var btn = $('<button>').text(text)
+                                    var btn = $('<button>').text(text).css("height", "26px")
                                         .addClass('nts-switch-button')
                                         .attr('data-swbtn', value)
                                         .on('click', function () {
@@ -11645,7 +11740,7 @@ var nts;
                                 else {
                                     updatedRow[nextColumn.options.key] = String(res.toString().trim());
                                 }
-                                updating.updateRow($grid, $gridRow.data("id"), updatedRow, visibleColumnsMap, true);
+                                updating.updateRow($grid, $gridRow.data("id"), updatedRow, undefined, true);
                             }).fail(function (res) {
                             });
                             return true;
@@ -11826,7 +11921,7 @@ var nts;
                                             updatedRow[columnKey] = cbData;
                                         }
                                     }
-                                    updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow, visibleColumnsMap);
+                                    updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow);
                                 });
                             };
                             Processor.prototype.pasteRangeHandler = function (evt) {
@@ -11864,7 +11959,7 @@ var nts;
                                 var columnKey = columnsGroup[columnIndex].key;
                                 updateRow[columnKey] = data;
                                 var $gridRow = utils.rowAt(selectedCell);
-                                updating.updateRow(this.$grid, $gridRow.data("id"), updateRow, visibleColumnsMap);
+                                updating.updateRow(this.$grid, $gridRow.data("id"), updateRow);
                             };
                             Processor.prototype.process = function (data) {
                                 var dataRows = _.map(data.split("\n"), function (row) {
@@ -11957,7 +12052,7 @@ var nts;
                                         targetColumn = nextColumn.options;
                                         targetIndex = nextColumn.index;
                                     }
-                                    updating.updateRow(self.$grid, $gridRow.data("id"), rowData, visibleColumnsMap);
+                                    updating.updateRow(self.$grid, $gridRow.data("id"), rowData);
                                     _.forEach(comboErrors, function (combo) {
                                         setTimeout(function () {
                                             var $container = combo.cell.find(".nts-combo-container");
@@ -12182,7 +12277,9 @@ var nts;
                                 }
                                 errors.mark($grid);
                                 color.styleHeaders($grid, options);
-                                settings.setGridSize($grid);
+                                if (options.autoFitWindow) {
+                                    settings.setGridSize($grid);
+                                }
                                 columnSize.load($grid);
                             };
                         }
@@ -12555,6 +12652,68 @@ var nts;
                                     $(this).addClass(targetColumn.color);
                             });
                         }
+                        function rememberDisabled($grid, cell) {
+                            var settings = $grid.data(internal.SETTINGS);
+                            if (!settings)
+                                return;
+                            var disables = settings.disables;
+                            if (!disables)
+                                return;
+                            var controlType = utils.getControlType($grid, cell.columnKey);
+                            var row = disables[cell.id];
+                            if (!row)
+                                return;
+                            _.forEach(row, function (c, i) {
+                                if (c === cell.columnKey) {
+                                    $grid.ntsGrid(functions.DISABLE_CONTROL, cell.id, cell.columnKey, controlType);
+                                    $(cell.element).addClass(color.Disable);
+                                    return false;
+                                }
+                            });
+                        }
+                        color.rememberDisabled = rememberDisabled;
+                        function pushDisable($grid, cell) {
+                            var settings = $grid.data(internal.SETTINGS);
+                            if (!settings)
+                                return;
+                            var disables = settings.disables;
+                            if (!disables) {
+                                settings.disables = {};
+                            }
+                            if (!settings.disables[cell.id] || settings.disables[cell.id].length === 0) {
+                                settings.disables[cell.id] = [cell.columnKey];
+                                return;
+                            }
+                            var found = false;
+                            _.forEach(settings.disables[cell.id], function (c, i) {
+                                if (c === cell.columnKey) {
+                                    found = true;
+                                    return false;
+                                }
+                            });
+                            if (!found)
+                                settings.disables[cell.id].push(cell.columnKey);
+                        }
+                        color.pushDisable = pushDisable;
+                        function popDisable($grid, cell) {
+                            var settings = $grid.data(internal.SETTINGS);
+                            if (!settings)
+                                return;
+                            var disables = settings.disables;
+                            if (!disables || !disables[cell.id] || disables[cell.id].length === 0)
+                                return;
+                            var index = -1;
+                            _.forEach(disables[cell.id], function (c, i) {
+                                if (c === cell.columnKey) {
+                                    index = i;
+                                    return false;
+                                }
+                            });
+                            if (index !== -1) {
+                                disables[cell.id].splice(index, 1);
+                            }
+                        }
+                        color.popDisable = popDisable;
                     })(color = ntsGrid.color || (ntsGrid.color = {}));
                     var fixedColumns;
                     (function (fixedColumns) {
@@ -12910,6 +13069,8 @@ var nts;
                         function setGridSize($grid) {
                             var height = window.innerHeight;
                             var width = window.innerWidth;
+                            $grid.igGrid("option", "width", width - 240);
+                            $grid.igGrid("option", "height", height - 90);
                         }
                         settings.setGridSize = setGridSize;
                     })(settings || (settings = {}));
@@ -13011,24 +13172,24 @@ var nts;
                             return $cell.hasClass(color.Disable);
                         }
                         utils.disabled = disabled;
-                        function dataTypeOfPrimaryKey($grid, visibleColumnsMap) {
-                            if (uk.util.isNullOrUndefined(visibleColumnsMap))
+                        function dataTypeOfPrimaryKey($grid, columnsMap) {
+                            if (uk.util.isNullOrUndefined(columnsMap))
                                 return;
-                            var visibleColumns = visibleColumnsMap["undefined"];
-                            if (Object.keys(visibleColumnsMap).length > 1) {
-                                visibleColumns = _.concat(visibleColumnsMap["true"], visibleColumnsMap["undefined"]);
+                            var columns = columnsMap["undefined"];
+                            if (Object.keys(columnsMap).length > 1) {
+                                columns = _.concat(columnsMap["true"], columnsMap["undefined"]);
                             }
                             var primaryKey = $grid.igGrid("option", "primaryKey");
-                            var keyColumn = _.filter(visibleColumns, function (column) {
+                            var keyColumn = _.filter(columns, function (column) {
                                 return column.key === primaryKey;
                             });
-                            if (!uk.util.isNullOrUndefined(keyColumn))
+                            if (!uk.util.isNullOrUndefined(keyColumn) && keyColumn.length > 0)
                                 return keyColumn[0].dataType;
                             return;
                         }
                         utils.dataTypeOfPrimaryKey = dataTypeOfPrimaryKey;
-                        function parseIntIfNumber(value, $grid, visibleColumnsMap) {
-                            if (dataTypeOfPrimaryKey($grid, visibleColumnsMap) === "number") {
+                        function parseIntIfNumber(value, $grid, columnsMap) {
+                            if (dataTypeOfPrimaryKey($grid, columnsMap) === "number") {
                                 return parseInt(value);
                             }
                             return value;
@@ -13111,6 +13272,11 @@ var nts;
                                 return referGrid.igGrid("option", "columns");
                         }
                         utils.getColumns = getColumns;
+                        function getColumnsMap($grid) {
+                            var columns = getColumns($grid);
+                            return _.groupBy(columns, "fixed");
+                        }
+                        utils.getColumnsMap = getColumnsMap;
                         function getVisibleColumns($grid) {
                             return _.filter(getColumns($grid), function (column) {
                                 return column.hidden !== true;
@@ -13299,7 +13465,7 @@ var nts;
                         }
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
-            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13831,7 +13997,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_18) {
+        (function (ui_19) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsTreeDragAndDropBindingHandler = (function () {
@@ -13971,7 +14137,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_18.koExtentions || (ui_18.koExtentions = {}));
+            })(koExtentions = ui_19.koExtentions || (ui_19.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13980,7 +14146,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_19) {
+        (function (ui_20) {
             var exTable;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
@@ -14001,7 +14167,6 @@ var nts;
                 var H_BTN_HEIGHT = "24px";
                 var DYNAMIC = "dynamic";
                 var FIXED = "fixed";
-                var OCCUPY = "exoccupy";
                 var COPY_PASTE = "copyPaste";
                 var EDIT = "edit";
                 var STICK = "stick";
@@ -14009,7 +14174,8 @@ var nts;
                 var ExTable = (function () {
                     function ExTable($container, options) {
                         this.bodyHeightSetMode = DYNAMIC;
-                        this.windowOccupation = 0;
+                        this.windowXOccupation = 0;
+                        this.windowYOccupation = 0;
                         this.updateMode = EDIT;
                         this.pasteOverWrite = true;
                         this.stickOverWrite = true;
@@ -14024,19 +14190,26 @@ var nts;
                         this.areaResize = options.areaResize;
                         this.heightSetter = options.heightSetter;
                         this.bodyHeightSetMode = options.bodyHeightMode;
-                        this.windowOccupation = options.windowOccupation;
+                        this.windowXOccupation = options.windowXOccupation;
+                        this.windowYOccupation = options.windowYOccupation;
                         if (options.updateMode) {
                             this.updateMode = options.updateMode;
                         }
                         this.pasteOverWrite = options.pasteOverWrite;
                         this.stickOverWrite = options.stickOverWrite;
+                        this.viewMode = options.viewMode;
                         this.determination = options.determination;
-                        this.$container.data(OCCUPY, this.windowOccupation);
+                        this.$container.data(internal.X_OCCUPY, this.windowXOccupation);
+                        this.$container.data(internal.Y_OCCUPY, this.windowYOccupation);
                         helper.makeConnector();
                     }
                     ExTable.prototype.setUpdateMode = function (updateMode) {
                         this.updateMode = updateMode;
                         this.detailContent.updateMode = updateMode;
+                    };
+                    ExTable.prototype.setViewMode = function (mode) {
+                        this.viewMode = mode;
+                        this.detailContent.viewMode = mode;
                     };
                     ExTable.prototype.LeftmostHeader = function (leftmostHeader) {
                         this.leftmostHeader = _.cloneDeep(leftmostHeader);
@@ -14067,6 +14240,7 @@ var nts;
                         this.detailContent = _.cloneDeep(detailContent);
                         this.setBodyClass(this.detailContent, DETAIL);
                         this.detailContent.updateMode = this.updateMode;
+                        this.detailContent.viewMode = this.viewMode;
                         return this;
                     };
                     ExTable.prototype.VerticalSumHeader = function (verticalSumHeader) {
@@ -14437,7 +14611,9 @@ var nts;
                         }
                         Painter.prototype.cell = function (rData, rowIdx, key) {
                             var self = this;
-                            var data = rData[key];
+                            var cData = rData[key];
+                            var data = cData && _.isObject(cData) && cData.constructor !== Array && _.isFunction(self.options.view) ?
+                                self.options.view(self.options.viewMode, cData) : cData;
                             var column = self.columnsMap[key];
                             if (uk.util.isNullOrUndefined(column))
                                 return;
@@ -14693,20 +14869,27 @@ var nts;
                             .css(wrapperStyles(top, left, options.width, options.height));
                     }
                     render.createWrapper = createWrapper;
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore) {
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, isRestore) {
                         var $exTable = $grid.closest("." + NAMESPACE);
                         var updateMode = helper.getExTableFromGrid($grid).updateMode;
                         var $cell = selection.cellAt($grid, rowIdx, columnKey);
                         if ($cell === intan.NULL)
                             return;
                         var origDs = helper.getOrigDS($grid);
+                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
+                        var viewFn = gen.painter.options.view;
+                        var viewMode = gen.painter.options.viewMode;
+                        var value = valueObj;
+                        if (_.isFunction(viewFn)) {
+                            value = viewFn(viewMode, valueObj);
+                        }
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if ($childCells.length > 0) {
                             if (value.constructor === Array) {
                                 _.forEach(value, function (val, i) {
                                     var $c = $($childCells[i]);
                                     $c.text(val);
-                                    trace(origDs, $c, rowIdx, columnKey, i, val);
+                                    trace(origDs, $c, rowIdx, columnKey, i, valueObj);
                                     if (updateMode === EDIT) {
                                         validation.validate($exTable, $grid, $c, rowIdx, columnKey, i, val);
                                     }
@@ -14715,7 +14898,7 @@ var nts;
                             else {
                                 var $c = $($childCells[innerIdx]);
                                 $c.text(value);
-                                trace(origDs, $c, rowIdx, columnKey, innerIdx, value);
+                                trace(origDs, $c, rowIdx, columnKey, innerIdx, valueObj);
                                 if (updateMode === EDIT) {
                                     validation.validate($exTable, $grid, $c, rowIdx, columnKey, innerIdx, value);
                                 }
@@ -14723,7 +14906,7 @@ var nts;
                         }
                         else {
                             $cell.text(value);
-                            trace(origDs, $cell, rowIdx, columnKey, -1, value);
+                            trace(origDs, $cell, rowIdx, columnKey, -1, valueObj);
                             if (updateMode === EDIT) {
                                 validation.validate($exTable, $grid, $cell, rowIdx, columnKey, -1, value);
                             }
@@ -14739,20 +14922,27 @@ var nts;
                         });
                         var visibleColumns = helper.gridVisibleColumns($grid);
                         var origDs = helper.getOrigDS($grid);
+                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
+                        var viewFn = gen.painter.options.view;
+                        var viewMode = gen.painter.options.viewMode;
                         _.forEach(Object.keys(data), function (key) {
                             _.forEach(visibleColumns, function (col, index) {
                                 if (col.key === key) {
                                     var $target = $cells.eq(index);
                                     var childCells_1 = $target.find("." + render.CHILD_CELL_CLS);
                                     if (childCells_1.length > 0) {
-                                        if (data[key].constructor === Array) {
-                                            _.forEach(data[key], function (d, i) {
+                                        var cData_1 = data[key];
+                                        if (_.isFunction(viewFn)) {
+                                            cData_1 = viewFn(viewMode, data[key]);
+                                        }
+                                        if (cData_1.constructor === Array) {
+                                            _.forEach(cData_1, function (d, i) {
                                                 var $c = $(childCells_1[i]);
                                                 $c.text(d);
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
-                                                trace(origDs, $c, rowIdx, key, i, d);
+                                                trace(origDs, $c, rowIdx, key, i, cData_1);
                                             });
                                             return false;
                                         }
@@ -14763,7 +14953,7 @@ var nts;
                                         }
                                     }
                                     else {
-                                        $target.text(data[key]);
+                                        $target.text(viewFn(viewMode, data[key]));
                                         trace(origDs, $target, rowIdx, key, -1, data[key]);
                                         if (updateMode === EDIT) {
                                             validation.validate($exTable, $grid, $target, rowIdx, key, -1, data[key]);
@@ -14778,8 +14968,8 @@ var nts;
                     function trace(ds, $cell, rowIdx, key, innerIdx, value) {
                         if (!ds || ds.length === 0)
                             return;
-                        var oVal = !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1 ? ds[rowIdx][key][innerIdx] : ds[rowIdx][key];
-                        if (!uk.util.isNullOrUndefined(oVal) && value.constructor === String && oVal.trim() === value.trim()) {
+                        var oVal = ds[rowIdx][key];
+                        if (!uk.util.isNullOrUndefined(oVal) && _.isEqual(oVal, value)) {
                             $cell.removeClass(update.EDITED_CLS);
                         }
                         else {
@@ -15147,9 +15337,23 @@ var nts;
                         value = validation.formatTime(value);
                         var res = cellData($exTable, rowIdx, columnKey, innerIdx, value);
                         if (!uk.util.isNullOrUndefined(res)) {
+                            var newValObj = value;
+                            if (_.isObject(res)) {
+                                var $main = helper.getMainTable($exTable);
+                                var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
+                                var upperInput = gen.painter.options.upperInput;
+                                var lowerInput = gen.painter.options.lowerInput;
+                                newValObj = _.cloneDeep(res);
+                                if (innerIdx === 0) {
+                                    newValObj[upperInput] = value;
+                                }
+                                else if (innerIdx === 1) {
+                                    newValObj[lowerInput] = value;
+                                }
+                            }
                             pushEditHistory($body, new selection.Cell(rowIdx, columnKey, res, innerIdx));
                             helper.markCellWith(update.EDITED_CLS, $cell, innerIdx);
-                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
+                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, newValObj, innerIdx)]);
                         }
                         setText($cell, innerIdx, value);
                     }
@@ -15203,9 +15407,20 @@ var nts;
                             }
                             return null;
                         }
-                        if (currentVal[innerIdx] !== value) {
-                            oldVal = _.cloneDeep(currentVal[innerIdx]);
-                            exTable.detailContent.dataSource[rowIdx][columnKey][innerIdx] = value;
+                        var $main = helper.getMainTable($exTable);
+                        var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
+                        var upperInput = gen.painter.options.upperInput;
+                        var lowerInput = gen.painter.options.lowerInput;
+                        var field;
+                        if (innerIdx === 0) {
+                            field = upperInput;
+                        }
+                        else if (innerIdx === 1) {
+                            field = lowerInput;
+                        }
+                        if (currentVal[field] !== value) {
+                            oldVal = _.cloneDeep(currentVal);
+                            exTable.detailContent.dataSource[rowIdx][columnKey][field] = value;
                             return oldVal;
                         }
                         return null;
@@ -15325,23 +15540,8 @@ var nts;
                         var cData = gen.dataSource[rowIdx][columnKey];
                         if (!exTable.stickOverWrite && !uk.util.isNullOrEmpty(cData))
                             return;
-                        var changedData;
-                        if (cData.constructor === Array) {
-                            if (value.constructor === Array) {
-                                changedData = _.cloneDeep(cData);
-                                _.forEach(cData, function (d, i) {
-                                    gen.dataSource[rowIdx][columnKey][i] = value[i];
-                                });
-                            }
-                            else {
-                                changedData = cData[innerIdx];
-                                gen.dataSource[rowIdx][columnKey][innerIdx] = value;
-                            }
-                        }
-                        else {
-                            changedData = cData;
-                            gen.dataSource[rowIdx][columnKey] = value;
-                        }
+                        var changedData = _.cloneDeep(cData);
+                        gen.dataSource[rowIdx][columnKey] = value;
                         render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
                         pushStickHistory($grid, [new selection.Cell(rowIdx, columnKey, changedData)]);
                         events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
@@ -15479,7 +15679,7 @@ var nts;
                             var copiedData;
                             if (selectedCells.length === 1) {
                                 this.mode = Mode.SINGLE;
-                                copiedData = selectedCells[0].value;
+                                copiedData = _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
                             }
                             else {
                                 this.mode = Mode.MULTIPLE;
@@ -15515,7 +15715,7 @@ var nts;
                                 if (uk.util.isNullOrUndefined(structure[rowIndex])) {
                                     structure[rowIndex] = {};
                                 }
-                                structure[rowIndex][columnIndex] = cell.value;
+                                structure[rowIndex][columnIndex] = helper.stringValue(cell.value);
                             });
                             for (var i = minRow; i <= maxRow; i++) {
                                 for (var j = minColumn; j <= maxColumn; j++) {
@@ -15557,9 +15757,7 @@ var nts;
                         Printer.prototype.pasteSingleCell = function (evt) {
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
-                            if (cbData.indexOf(",") > 0) {
-                                cbData = cbData.split(",");
-                            }
+                            cbData = helper.getCellData(cbData);
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
@@ -15607,7 +15805,7 @@ var nts;
                                             break;
                                         continue;
                                     }
-                                    rowData[columnKey] = row[i];
+                                    rowData[columnKey] = helper.getCellData(row[i]);
                                     columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
                                     if (!columnKey)
                                         break;
@@ -15624,6 +15822,7 @@ var nts;
                             var tx = histories.pop();
                             _.forEach(tx.items, function (item) {
                                 update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                                internal.removeChange(self.$grid, item);
                             });
                         };
                         Printer.prototype.getClipboardContent = function (evt) {
@@ -15874,7 +16073,7 @@ var nts;
                 })(validation || (validation = {}));
                 var errors;
                 (function (errors_1) {
-                    errors_1.ERROR_CLS = "error";
+                    errors_1.ERROR_CLS = "x-error";
                     errors_1.ERRORS = "errors";
                     function add($grid, $cell, rowIdx, columnKey, innerIdx, value) {
                         if (any($cell, innerIdx))
@@ -16188,7 +16387,7 @@ var nts;
                     selection.getCellInRow = getCellInRow;
                     function columnIndexRange($grid, startKey, endKey) {
                         var cloud = $grid.data(internal.TANGI);
-                        var canon = $grid.data(internal.PAINTER);
+                        var canon = $grid.data(internal.CANON);
                         var visibleColumns;
                         if (!uk.util.isNullOrUndefined(cloud)) {
                             visibleColumns = cloud.painter.visibleColumns;
@@ -16260,6 +16459,7 @@ var nts;
                     resize.AREA_AGENCY = "ex-area-agency";
                     resize.RESIZE_AREA = "resize-area";
                     resize.AREA_LINE = "ex-area-line";
+                    resize.STAY_CLS = "x-stay";
                     var ColumnAdjuster = (function () {
                         function ColumnAdjuster($headerTable, $contentTable, options) {
                             this.$headerTable = $headerTable;
@@ -16401,6 +16601,8 @@ var nts;
                                 var height = $wrapper.height() + self.bodyWrappers[index].height();
                                 var left = $wrapper.outerWidth() + ($wrapper.offset().left - self.$areaAgency.offset().left);
                                 $line.css({ left: left, height: height });
+                                if ($wrapper.hasClass(HEADER_PRF + LEFTMOST))
+                                    $line.addClass(resize.STAY_CLS);
                             });
                             self.$areaAgency.on(events.MOUSE_DOWN, $.proxy(self.cursorDown, self));
                         };
@@ -16410,6 +16612,8 @@ var nts;
                                 self.cursorUp(event);
                             }
                             var $targetGrip = $(event.target);
+                            if ($targetGrip.hasClass(resize.STAY_CLS))
+                                return;
                             var gripIndex = $targetGrip.index();
                             var $leftArea = $targetGrip.data(resize.RESIZE_AREA);
                             var $rightArea = self.headerWrappers[gripIndex + 1];
@@ -16570,7 +16774,7 @@ var nts;
                         return { position: "absolute", cursor: "ew-resize", width: "4px", zIndex: 2, marginLeft: marginLeft };
                     }
                     function fitWindowHeight($container, wrappers, horzSumExists) {
-                        var height = window.innerHeight - 100;
+                        var height = window.innerHeight - parseInt($container.data(internal.Y_OCCUPY)) - 100;
                         var $horzSumHeader, $horzSumBody, decreaseAmt;
                         wrappers = wrappers || _.map($container.find("div[class*='" + BODY_PRF + "']").filter(function () {
                             return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
@@ -16603,7 +16807,7 @@ var nts;
                         var $detailBody = $container.find("." + BODY_PRF + DETAIL);
                         var width = window.innerWidth - $detailHeader.offset().left;
                         if ($vertSumHeader.length > 0 && $vertSumHeader.css("display") !== "none") {
-                            width = width - parseInt($container.data(OCCUPY)) - $vertSumContent.width();
+                            width = width - parseInt($container.data(internal.X_OCCUPY)) - $vertSumContent.width();
                             $detailHeader.width(width);
                             $detailBody.width(width);
                             $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width);
@@ -16612,7 +16816,7 @@ var nts;
                             syncDetailAreaLine($container, $detailHeader, $detailBody);
                             return;
                         }
-                        width = width - parseInt($container.data(OCCUPY));
+                        width = width - parseInt($container.data(internal.X_OCCUPY));
                         $detailHeader.width(width - helper.getScrollWidth());
                         $detailBody.width(width);
                         $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width - helper.getScrollWidth());
@@ -17214,11 +17418,12 @@ var nts;
                                 showVertSum(self);
                                 break;
                             case "updateTable":
-                                updateTable(self, params[0], params[1], params[2]);
+                                updateTable(self, params[0], params[1], params[2], params[3]);
                                 break;
                             case "updateMode":
-                                setUpdateMode(self, params[0]);
-                                break;
+                                return setUpdateMode(self, params[0]);
+                            case "viewMode":
+                                return setViewMode(self, params[0]);
                             case "pasteOverWrite":
                                 setPasteOverWrite(self, params[0]);
                                 break;
@@ -17304,7 +17509,7 @@ var nts;
                         scroll.bindVertWheel($detailBody);
                         $vertSumBody.scrollTop($detailBody.scrollTop());
                     }
-                    function updateTable($container, name, header, body) {
+                    function updateTable($container, name, header, body, keepStates) {
                         switch (name) {
                             case "leftmost":
                                 updateLeftmost($container, header, body);
@@ -17313,7 +17518,7 @@ var nts;
                                 updateMiddle($container, header, body);
                                 break;
                             case "detail":
-                                updateDetail($container, header, body);
+                                updateDetail($container, header, body, keepStates);
                                 break;
                             case "verticalSummaries":
                                 updateVertSum($container, header, body);
@@ -17356,7 +17561,7 @@ var nts;
                             render.process($body, exTable.middleContent, true);
                         }
                     }
-                    function updateDetail($container, header, body) {
+                    function updateDetail($container, header, body, keepStates) {
                         var exTable = $container.data(NAMESPACE);
                         if (header) {
                             _.assignIn(exTable.detailHeader, header);
@@ -17368,6 +17573,8 @@ var nts;
                             _.assignIn(exTable.detailContent, body);
                             var $body = $container.find("." + BODY_PRF + DETAIL);
                             $body.empty();
+                            if (!keepStates)
+                                internal.clearStates($body);
                             render.process($body, exTable.detailContent, true);
                         }
                     }
@@ -17418,6 +17625,8 @@ var nts;
                     }
                     function setUpdateMode($container, mode) {
                         var exTable = $container.data(NAMESPACE);
+                        if (!mode)
+                            return exTable.updateMode;
                         if (exTable.updateMode === mode)
                             return;
                         exTable.setUpdateMode(mode);
@@ -17430,6 +17639,16 @@ var nts;
                         }
                         selection.off($container);
                         copy.off($grid, mode);
+                    }
+                    function setViewMode($container, mode) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!mode)
+                            return exTable.viewMode;
+                        if (exTable.viewMode === mode)
+                            return;
+                        exTable.setViewMode(mode);
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
                     }
                     function setPasteOverWrite($container, overwrite) {
                         var exTable = $container.data(NAMESPACE);
@@ -17477,9 +17696,12 @@ var nts;
                     function undoStick($container) {
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         var histories = $grid.data(internal.STICK_HISTORY);
+                        if (!histories)
+                            return;
                         var items = histories.pop();
                         _.forEach(items, function (i) {
                             update.gridCell($grid, i.rowIndex, i.columnKey, -1, i.value, true);
+                            internal.removeChange($grid, i);
                         });
                     }
                     function clearHistories($container, type) {
@@ -17609,6 +17831,8 @@ var nts;
                 })(func || (func = {}));
                 var internal;
                 (function (internal) {
+                    internal.X_OCCUPY = "ex-x-occupy";
+                    internal.Y_OCCUPY = "ex-y-occupy";
                     internal.TANGI = "x-tangi";
                     internal.CANON = "x-canon";
                     internal.STICKER = "x-sticker";
@@ -17636,6 +17860,37 @@ var nts;
                         return gen.dataSource;
                     }
                     internal.getDataSource = getDataSource;
+                    function removeChange($grid, cell) {
+                        var origDs = helper.getOrigDS($grid);
+                        var exTable = helper.getExTableFromGrid($grid);
+                        if (!origDs || !exTable)
+                            return;
+                        var oVal = origDs[cell.rowIndex][cell.columnKey];
+                        var cells = exTable.modifications[cell.rowIndex];
+                        if (!cells)
+                            return;
+                        var index = -1;
+                        _.forEach(cells, function (c, i) {
+                            if (helper.areSameCells(cell, c) && cell.value === oVal) {
+                                index = i;
+                                return false;
+                            }
+                        });
+                        exTable.modifications[cell.rowIndex].splice(index, 1);
+                    }
+                    internal.removeChange = removeChange;
+                    function clearStates($grid) {
+                        $grid.data(internal.SELECTED_CELLS, null);
+                        $grid.data(internal.LAST_SELECTED, null);
+                        $grid.data(internal.COPY_HISTORY, null);
+                        $grid.data(internal.EDIT_HISTORY, null);
+                        $grid.data(internal.STICK_HISTORY, null);
+                        var exTable = helper.getExTableFromGrid($grid);
+                        if (!exTable)
+                            return;
+                        exTable.modifications = {};
+                    }
+                    internal.clearStates = clearStates;
                 })(internal || (internal = {}));
                 var helper;
                 (function (helper) {
@@ -17880,6 +18135,19 @@ var nts;
                         return values;
                     }
                     helper.valuesArray = valuesArray;
+                    function stringValue(val) {
+                        return _.isObject(val) ? JSON.stringify(val) : val;
+                    }
+                    helper.stringValue = stringValue;
+                    function getCellData(data) {
+                        try {
+                            return JSON.parse(data);
+                        }
+                        catch (e) {
+                            return data;
+                        }
+                    }
+                    helper.getCellData = getCellData;
                 })(helper || (helper = {}));
                 var widget;
                 (function (widget) {
@@ -18114,7 +18382,7 @@ var nts;
                         return css;
                     }
                 })(widget || (widget = {}));
-            })(exTable = ui_19.exTable || (ui_19.exTable = {}));
+            })(exTable = ui_20.exTable || (ui_20.exTable = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -18123,7 +18391,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
+        (function (ui_21) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsMonthDaysBindingHandler = (function () {
@@ -18217,9 +18485,6 @@ var nts;
                     NtsMonthDaysBindingHandler.getDaysInMonth = function (month) {
                         var daysInMonth = moment(month, "MM").daysInMonth();
                         if (daysInMonth !== NaN) {
-                            if (month === 2) {
-                                daysInMonth++;
-                            }
                             var days = [];
                             while (days.length < daysInMonth) {
                                 days.push({ text: days.length + 1, value: days.length + 1 });
@@ -18231,7 +18496,7 @@ var nts;
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
+            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -18372,7 +18637,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
+        (function (ui_22) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsFunctionPanelBindingHandler = (function () {
@@ -18446,7 +18711,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
+            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -18576,7 +18841,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_23) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsAccordionBindingHandler = (function () {
@@ -18652,7 +18917,69 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsFixedTable;
+                (function (ntsFixedTable_1) {
+                    $.fn.ntsFixedTable = ntsFixedTable;
+                    function ntsFixedTable(action, options) {
+                        var $controls = $(this);
+                        if (typeof arguments[0] !== 'string') {
+                            return ntsFixedTable.apply($controls, _.concat("init", action));
+                        }
+                        if (action === "init") {
+                            return init($controls, options);
+                        }
+                        else {
+                            return $controls;
+                        }
+                        ;
+                    }
+                    function init(controls, options) {
+                        controls.each(function () {
+                            var $originTable = $(this);
+                            $originTable.addClass("fixed-table");
+                            var $colgroup = $originTable.find("colgroup");
+                            var $thead = $originTable.find("thead");
+                            var width = 0;
+                            $colgroup.find("col").each(function () {
+                                width += Number($(this).attr("width").replace(/px/gi, ''));
+                            });
+                            width++;
+                            var setting = $.extend({ height: "auto" }, options);
+                            var $container = $("<div class='nts-fixed-table cf'/>");
+                            $originTable.after($container);
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").width(width);
+                            var $headerTable = $("<table class='fixed-table'></table>");
+                            $headerTable.append($colgroup.clone()).append($thead);
+                            $headerContainer.append($headerTable);
+                            $headerContainer.appendTo($container);
+                            $originTable.addClass("nts-fixed-body-table");
+                            var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
+                            var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
+                            var bodyHeight = "auto";
+                            if (setting.height !== "auto") {
+                                bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
+                            }
+                            $bodyWrapper.width(width).height(bodyHeight);
+                            $bodyWrapper.append($originTable);
+                            $bodyContainer.append($bodyWrapper);
+                            $container.append($bodyContainer);
+                        });
+                        return controls;
+                    }
+                })(ntsFixedTable || (ntsFixedTable = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
