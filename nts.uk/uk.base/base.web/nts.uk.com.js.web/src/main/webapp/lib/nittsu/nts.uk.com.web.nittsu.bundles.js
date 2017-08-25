@@ -8638,21 +8638,29 @@ var nts;
                 }
                 function showLegendPanel($legendButton, options) {
                     var legendSize = 18;
+                    var hasTemplate = !nts.uk.util.isNullOrEmpty(options.template);
                     var $panel = $('<div/>').addClass('nts-legendbutton-panel');
                     options.items.forEach(function (item) {
-                        $('<div/>').addClass('legend-item')
-                            .append($('<div/>')
-                            .addClass('legend-item-symbol')
-                            .css({
-                            'background-color': getColorCodeFromItem(item),
-                            width: legendSize + 'px',
-                            height: legendSize + 'px'
-                        })
-                            .text('　'))
-                            .append($('<div/>')
-                            .addClass('legend-item-label')
-                            .text(item.labelText))
-                            .appendTo($panel);
+                        if (hasTemplate) {
+                            $('<div/>').addClass('legend-item')
+                                .append(extractTemplate(options.template, item))
+                                .appendTo($panel);
+                        }
+                        else {
+                            $('<div/>').addClass('legend-item')
+                                .append($('<div/>')
+                                .addClass('legend-item-symbol')
+                                .css({
+                                'background-color': getColorCodeFromItem(item),
+                                width: legendSize + 'px',
+                                height: legendSize + 'px'
+                            })
+                                .text('　'))
+                                .append($('<div/>')
+                                .addClass('legend-item-label')
+                                .text(item.labelText))
+                                .appendTo($panel);
+                        }
                     });
                     $panel.appendTo('body').position({
                         my: 'left top',
@@ -8665,6 +8673,17 @@ var nts;
                             $(window).unbind('mousedown.legendpanel');
                         });
                     });
+                }
+                function extractTemplate(template, item) {
+                    var extracted = _.clone(template);
+                    var changeTextIndex = extracted.indexOf("#{");
+                    while (changeTextIndex > -1) {
+                        var closeComa = extracted.indexOf("}", changeTextIndex);
+                        var textToChange = extracted.substring(changeTextIndex, closeComa + 1);
+                        extracted = extracted.replace(new RegExp(textToChange, 'g'), item[textToChange.substring(2, textToChange.length - 1)]);
+                        changeTextIndex = extracted.indexOf("#{");
+                    }
+                    return extracted;
                 }
                 ko.bindingHandlers['ntsLegendButton'] = new NtsLegentButtonBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
@@ -18983,4 +19002,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
