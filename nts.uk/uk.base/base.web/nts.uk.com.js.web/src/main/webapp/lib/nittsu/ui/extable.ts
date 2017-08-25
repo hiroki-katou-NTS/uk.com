@@ -1912,7 +1912,7 @@ module nts.uk.ui.exTable {
     }
     
     module errors {
-        export let ERROR_CLS = "error"; 
+        export let ERROR_CLS = "x-error"; 
         export let ERRORS = "errors";
         export function add($grid: JQuery, $cell: JQuery, rowIdx: any, columnKey: any, innerIdx: any, value: any) {
             if (any($cell, innerIdx)) return;

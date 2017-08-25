@@ -15979,7 +15979,7 @@ var nts;
                 })(validation || (validation = {}));
                 var errors;
                 (function (errors_1) {
-                    errors_1.ERROR_CLS = "error";
+                    errors_1.ERROR_CLS = "x-error";
                     errors_1.ERRORS = "errors";
                     function add($grid, $cell, rowIdx, columnKey, innerIdx, value) {
                         if (any($cell, innerIdx))
