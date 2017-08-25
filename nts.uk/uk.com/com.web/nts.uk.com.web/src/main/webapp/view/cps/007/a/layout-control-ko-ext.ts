@@ -446,7 +446,7 @@ module nts.custombinding {
             },
             sortable: {
                 data: ko.observableArray([]),
-                isEnabled: ko.observable(true),
+                isEnabled: ko.observable(false),
                 beforeMove: (data, evt, ui) => {
                     let self = this,
                         opts = self.options,
@@ -659,7 +659,7 @@ module nts.custombinding {
             }
         };
 
-        constructor() {
+        _constructor() {
             let self = this,
                 opts = self.options,
                 ctrls = self.controls,
@@ -920,26 +920,6 @@ module nts.custombinding {
                 $element = $(element),
                 access = valueAccessor();
 
-            ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, function() {
-                return {};
-            }, allBindingsAccessor, viewModel, bindingContext);
-            // init radio box group
-            ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, function() {
-                return opts.radios;
-            }, allBindingsAccessor, viewModel, bindingContext);
-
-            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, function() {
-                return opts.comboxbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
-
-            ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, function() {
-                return opts.searchbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
-
-            ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, function() {
-                return opts.listbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
-
             // bindding callback function to control
             if (access.callback) {
                 $.extend(opts, {
@@ -974,6 +954,29 @@ module nts.custombinding {
                 }
             });
             opts.sortable.isEnabled.valueHasMutated();
+            
+            
+            self._constructor();
+
+            ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, function() {
+                return {};
+            }, allBindingsAccessor, viewModel, bindingContext);
+            // init radio box group
+            ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, function() {
+                return opts.radios;
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, function() {
+                return opts.comboxbox;
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, function() {
+                return opts.searchbox;
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, function() {
+                return opts.listbox;
+            }, allBindingsAccessor, viewModel, bindingContext);
 
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });

@@ -22,10 +22,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class CommonApprovalRootFinder {
 	@Inject
 	private WorkAppApprovalRootRepository repo;
-	//user contexts
-	String companyId = AppContexts.user().companyId();
 	
 	public CommonApprovalRootDto getAllCommonApprovalRoot(int rootType, String employeeId){
+		//user contexts
+		String companyId = AppContexts.user().companyId();
 		//TH: company - domain 会社別就業承認ルート
 		if(rootType == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();

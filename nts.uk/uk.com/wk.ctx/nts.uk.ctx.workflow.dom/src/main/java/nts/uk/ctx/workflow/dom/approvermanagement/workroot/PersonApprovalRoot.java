@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class PersonApprovalRoot extends AggregateRoot{
 	/**会社ID*/
@@ -54,5 +56,11 @@ public class PersonApprovalRoot extends AggregateRoot{
 			anyItemApplicationId,
 			EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class));
+	}
+	public static PersonApprovalRoot updateSdateEdate(PersonApprovalRoot psApprovalRoot, String sDate, String eDate){
+		PersonApprovalRoot ps = psApprovalRoot;
+		ApprovalPeriod period = ApprovalPeriod.createSimpleFromJavaType(sDate, eDate);
+		ps.setPeriod(period);
+		return ps;
 	}
 }
