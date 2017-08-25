@@ -292,6 +292,10 @@ module nts.uk.at.view.kdl003.a {
                 // Check pair work type & work time.
                 service.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode).done(() => {
 
+                    if (workTimeCode === '000') {
+                        workTimeCode = '';
+                    }
+
                     // Set shared data.
                     let workTypeName = self.getWorkTypeName(workTypeCode);
                     let workTimeName = self.getWorkTimeName(workTimeCode);
@@ -332,7 +336,7 @@ module nts.uk.at.view.kdl003.a {
              */
             private getWorkTimeName(workTimeCode: string): string {
                 let self = this;
-                let name = 'なし';
+                let name = '';
                 if (!nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                     let workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
                     name = workTime ? workTime.name : '';
