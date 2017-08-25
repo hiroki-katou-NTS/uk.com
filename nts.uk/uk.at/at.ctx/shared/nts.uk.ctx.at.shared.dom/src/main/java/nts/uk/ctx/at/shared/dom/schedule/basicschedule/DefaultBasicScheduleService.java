@@ -32,12 +32,12 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
+		WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
 
 		if (!workType.isPresent()) {
 			throw new RuntimeException("NOT FOUND WORK TYPE");
 		}
 
-		WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
 		// All day
 		if (WorkTypeUnit.OneDay == workTypeUnit) {
 
@@ -104,12 +104,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public WorkStyle checkWorkDay(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
-
+		WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
 		if (!workType.isPresent()) {
 			throw new RuntimeException("NOT FOUND WORK TYPE");
 		}
-
-		WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
 		// All day
 		if (WorkTypeUnit.OneDay == workTypeUnit) {
 			WorkTypeClassification workTypeClass = workType.get().getDailyWork().getOneDay();
@@ -191,8 +189,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	/**
 	 * Checks if is work time valid.
 	 *
-	 * @param workTimeCode
-	 *            the work time code
+	 * @param workTimeCode the work time code
 	 * @return true, if is work time valid
 	 */
 	private boolean isWorkTimeValid(String workTimeCode) {

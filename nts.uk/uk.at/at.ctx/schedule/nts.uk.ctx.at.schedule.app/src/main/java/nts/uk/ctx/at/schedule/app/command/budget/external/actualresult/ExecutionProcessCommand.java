@@ -15,9 +15,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.LineStart;
 @Getter
 public class ExecutionProcessCommand {
     
-    /** The execute id. */
-    private String executeId;
-    
     /** The external budget code. */
     private String externalBudgetCode;
     

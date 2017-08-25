@@ -27,14 +27,4 @@ public interface CompanyEstablishmentRepository {
 	 * @param companyEstablishment the company establishment
 	 */
 	public void saveCompanyEstablishment(CompanyEstablishment companyEstablishment);
-	
-	
-	
-	/**
-	 * Removes the company establishment.
-	 *
-	 * @param companyId the company id
-	 * @param targetYear the target year
-	 */
-	public void removeCompanyEstablishment(String companyId, int targetYear);
 }

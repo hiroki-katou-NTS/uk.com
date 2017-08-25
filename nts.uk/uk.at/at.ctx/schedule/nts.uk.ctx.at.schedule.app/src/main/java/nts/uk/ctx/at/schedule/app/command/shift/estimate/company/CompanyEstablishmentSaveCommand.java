@@ -22,9 +22,6 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
-/**
- * The Class CompanyEstablishmentSaveCommand.
- */
 @Getter
 @Setter
 public class CompanyEstablishmentSaveCommand {

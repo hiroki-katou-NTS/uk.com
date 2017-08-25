@@ -57,7 +57,7 @@ tr {
 
 .a7_7, .a7_11, .a7_15, .a7_19, .a7_23 {
 	text-align: right;
-	width: 60px !important;
+	width: 60px;
 	margin-right: 10px;
 }
 

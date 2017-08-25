@@ -1,6 +1,5 @@
 package nts.uk.shr.infra.i18n.loading;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
@@ -31,9 +29,9 @@ import nts.uk.shr.infra.i18n.SystemProperties;
 import nts.uk.shr.infra.i18n.format.DateTimeFormatProvider;
 import nts.uk.shr.infra.i18n.format.DateTimeTranscoder;
 
-@SessionScoped
+@Stateful
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class MultiLanguageResource implements IInternationalization,Serializable {
+public class MultiLanguageResource implements IInternationalization {
 
 	private String getCompanyCode() {
 		return AppContexts.user().companyCode();

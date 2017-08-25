@@ -40,7 +40,7 @@
 							<table tabindex="2" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									width: 450,
-									height: 365,
+									height: 600,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
 									columns: columns,
@@ -139,7 +139,7 @@
 							<td style="padding-left: 5px">
 								<!-- A3_11 Open dialog KDL002-->
 								<button tabindex="7"
-									data-bind="click: openKDL002Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
+									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_12: Time item name --> <input class="nts-input"
 								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
@@ -158,7 +158,7 @@
 							<td style="padding-left: 5px">
 								<!-- A3_14 Open dialog KDL001-->
 								<button tabindex="8"
-									data-bind="click: openKDL001Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
+									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_15: Time item name --> <input class="nts-input"
 								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
@@ -179,8 +179,8 @@
 									<!--A3:17 : Check error(select) -->
 									<div style="margin-bottom: 10px"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail().totalCondition().upperLimitSettingAtr,
-									enable: enableUse
+									checked: checkErrSelect,
+									enable: enableSelect
 									}">
 									</div>
 
@@ -189,7 +189,7 @@
 										style="width: 50px"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_16]',
-									value: itemTotalTimesDetail().totalCondition().thresoldUpperLimit,
+									value: alarmTime,
 									inputFormat: 'time', 
 									mode: 'time', 
 									constraint: 'Time',
@@ -206,15 +206,15 @@
 									<!-- :A3_20 Check error(select) -->
 									<div style="margin-bottom: 10px"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr,
-									enable: enableUse
+									checked: checkErrSelect,
+									enable: enableSelect
 									}">
 									</div>
 									<!-- A3_21: Error time -->
 									<input style="width: 50px"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_19]',
-									value: itemTotalTimesDetail().totalCondition().thresoldLowerLimit,
+									value: errTime,
 									inputFormat: 'time', 
 									mode: 'time', 
 									constraint: 'Time',
@@ -234,8 +234,8 @@
 									<!-- A3_24: Check error(select) -->
 									<div style="margin-bottom: 10px"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail().countAtr,
-									enable: enableUse,
+									checked: checkErrSelect,
+									enable: enableSelect,
 									text: '#{i18n.getText('KMK009_21')}'}">
 									</div>
 								</div>

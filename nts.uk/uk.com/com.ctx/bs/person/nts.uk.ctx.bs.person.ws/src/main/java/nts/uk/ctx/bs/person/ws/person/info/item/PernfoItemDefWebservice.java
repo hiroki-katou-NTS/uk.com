@@ -8,9 +8,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import command.person.info.item.UpdateItemChangeCommand;
+import command.person.info.item.UpdateItemChangeCommandHandler;
+import find.person.info.item.PerInfoItemChangeDefDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
-import find.person.info.item.PerInfoItemDefFullEnumDto;
 
 @Path("ctx/bs/person/info/ctgItem")
 @Produces("application/json")
@@ -19,16 +21,19 @@ public class PernfoItemDefWebservice {
 	@Inject
 	private PerInfoItemDefFinder itemDefFinder;
 
+	@Inject
+	private UpdateItemChangeCommandHandler updateItemChange;
+
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}")
-	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId) {
+	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId) {
 		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId);
 	}
 
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}/{isAbolition}")
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId,
-			@PathParam("perInfoCtgId") String isAbolition) {
+			@PathParam("isAbolition") String isAbolition) {
 		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId, isAbolition);
 	}
 
@@ -36,6 +41,12 @@ public class PernfoItemDefWebservice {
 	@Path("findby/itemId/{Id}")
 	public PerInfoItemDefDto getPerInfoItemDefById(@PathParam("Id") String Id) {
 		return itemDefFinder.getPerInfoItemDefById(Id);
+	}
+
+	@POST
+	@Path("findby/itemIdOfOtherCompany/{Id}")
+	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(@PathParam("Id") String Id) {
+		return itemDefFinder.getPerInfoItemDefByIdOfOtherCompany(Id);
 	}
 
 	@POST
@@ -68,5 +79,12 @@ public class PernfoItemDefWebservice {
 	@Path("layout/finditem/required")
 	public List<String> getRequiredIds() {
 		return itemDefFinder.getRequiredIds();
+	}
+
+	// service update item change
+	@POST
+	@Path("updateItemChange")
+	public void updateItemChange(UpdateItemChangeCommand command) {
+		this.updateItemChange.handle(command);
 	}
 }

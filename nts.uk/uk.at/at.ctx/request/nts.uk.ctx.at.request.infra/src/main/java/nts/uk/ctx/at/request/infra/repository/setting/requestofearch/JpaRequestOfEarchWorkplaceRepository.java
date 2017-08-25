@@ -2,15 +2,13 @@ package nts.uk.ctx.at.request.infra.repository.setting.requestofearch;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestAppDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchWorkplace;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchWorkplaceRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstWpAppConfig;
 import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstWpAppConfigDetail;
-@Stateless
+
 public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implements RequestOfEarchWorkplaceRepository{
 
 	private static final String FIND = "SELECT c "
@@ -58,16 +56,12 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 				c.useAtr,
 				c.prerequisiteForpauseFlg, 
 				c.otAppSettingFlg, 
-				c.holidayTimeAppCalFlg,
-				c.lateOrLeaveAppCancelFlg,
-				c.lateOrLeaveAppSettingFlg,
-				c.breakInputFieldDisFlg,
+				c.breakInputFieldDisFlg, 
 				c.breakTimeDisFlg, 
-				c.atworkTimeBeginDisFlg,
+				c.atworkTimeBeginDisFlg, 
 				c.goOutTimeBeginDisFlg, 
 				c.timeCalUseAtr, 
-				c.timeInputUseAtr,
-				c.requiredInstructionFlg);
+				c.timeInputUseAtr);
 	}
 
 }

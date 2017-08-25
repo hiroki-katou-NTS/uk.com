@@ -457,34 +457,5 @@ public class JpaEmploymentEstablishmentRepository extends JpaRepository
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.employment.
-	 * EmploymentEstablishmentRepository#removeEmploymentEstablishment(java.lang
-	 * .String, java.lang.String, int)
-	 */
-	@Override
-	public void removeEmploymentEstablishment(String companyId, String employmentCode,
-			int targetYear) {
-		// find by time
-		List<KscmtEstTimeEmpSet> estimateTimeEmployments = this.getEstimateTimeEmployment(companyId,
-				employmentCode, targetYear);
-
-		// find by price
-		List<KscmtEstPriceEmpSet> estimatePriceEmployments = this
-				.getEstimatePriceEmployment(companyId, employmentCode, targetYear);
-
-		// find by number of day
-		List<KscmtEstDaysEmpSet> estimateDaysEmployments = this.getEstimateDaysEmployment(companyId,
-				employmentCode, targetYear);
-
-		// remove all data
-		this.commandProxy().removeAll(estimateTimeEmployments);
-		this.commandProxy().removeAll(estimatePriceEmployments);
-		this.commandProxy().removeAll(estimateDaysEmployments);
-		
-	}
-
 
 }
