@@ -44,9 +44,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	}
 	@POST
 	@Path("getEmployeesInfo/{workplaceIds}/{baseDate}")
-	public List<EmployeeApproveDto> findByWpkIds(@PathParam("workplaceIds") List<String> workplaceIds, @PathParam("baseDate") String baseDate){
-		GeneralDate baseDateToDate = GeneralDate.fromString(baseDate, "yyyy/MM/dd");
-		return employeeInfor.findEmployeeByWpIdAndBaseDate(workplaceIds, baseDateToDate);
+	public List<EmployeeApproveDto> findByWpkIds(@PathParam("workplaceIds") List<String> workplaceIds, @PathParam("baseDate") GeneralDate baseDate){
+		return employeeInfor.findEmployeeByWpIdAndBaseDate(workplaceIds, baseDate);
 		
 	}
 	
