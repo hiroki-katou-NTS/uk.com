@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.app.find.application.common;
 import java.math.BigDecimal;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 
 @Value
@@ -27,7 +26,7 @@ public class ApplicationDto {
 	/**
 	 * 入力日
 	 */
-	private GeneralDate inputDate; 
+	private BigDecimal inputDate; 
 	
 	/**
 	 * 入力者
@@ -42,7 +41,7 @@ public class ApplicationDto {
 	/**
 	 * 申請日
 	 */
-	private GeneralDate applicationDate; 
+	private BigDecimal applicationDate; 
 	
 	/**
 	 * 申請理由

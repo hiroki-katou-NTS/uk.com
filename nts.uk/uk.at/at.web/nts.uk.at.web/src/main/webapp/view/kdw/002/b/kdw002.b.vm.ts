@@ -20,31 +20,19 @@ module nts.uk.at.view.kdw002.b {
 
                 self.bussinessCurrentCode = ko.observable('');
                 self.bussinessCurrentCode.subscribe(businessTypeCode => {
+                    service.getBusinessTypes().done(businessTypes => {
 
-                    self.bussinessCurrentCode(businessTypeCode);
-
-                    service.getListDailyServiceTypeControl(businessTypeCode).done(DailyServiceTypeControls => {
-                        $("#grid").igGrid("dataSourceObject", _.sortBy(DailyServiceTypeControls, 'attendanceItemId')).igGrid("dataBind");
-
-                        var dataSource = $('#grid').data('igGrid').dataSource;
-                        var filteredData = dataSource.transformedData('afterfilteringandpaging');
-                        for (var i = 0; i < filteredData.length; i++) {
-                            if (!filteredData[i].userCanSet || !filteredData[i].use) {
-                                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                                cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
-                                cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
-
-                                if (!filteredData[i].userCanSet) {
-                                    //  $("#grid").igGridUpdating("setCellValue", i + 1, "youCanChangeIt", false);
-                                    $("#grid").igGridUpdating("setCellValue", i + 1, "canBeChangedByOthers", false);
-                                }
-                            }
-
+                        if (!nts.uk.util.isNullOrUndefined(businessTypes)) {
+                            self.bussinessCurrentCode(businessTypeCode);
+                            service.getListDailyServiceTypeControl(businessTypeCode).done(DailyServiceTypeControls => {
+                                $("#grid").igGrid("dataSourceObject", DailyServiceTypeControls).igGrid("dataBind");
+                            });
+                            businessTypes.forEach(businessType => {
+                                self.bussinessCodeItems.push(new BusinessType(businessType));
+                            });
                         }
 
                     });
-
 
                 });
 
@@ -57,11 +45,12 @@ module nts.uk.at.view.kdw002.b {
                     if (!nts.uk.util.isNullOrUndefined(businessTypes)) {
                         var businessTypeCode = businessTypes[0].businessTypeCode;
                         self.bussinessCurrentCode(businessTypeCode);
+                        service.getListDailyServiceTypeControl(businessTypeCode).done(DailyServiceTypeControls => {
+                            $("#grid").igGrid("dataSourceObject", DailyServiceTypeControls).igGrid("dataBind");
+                        });
                         businessTypes.forEach(businessType => {
                             self.bussinessCodeItems.push(new BusinessType(businessType));
                         });
-
-
                     }
 
                 });
@@ -124,14 +113,9 @@ module nts.uk.at.view.kdw002.b {
                 }
                 var keynotExist = true;
                 for (var i = index; i < filteredData.length; i++) {
-                    // var rowIndex = i + 1;
-                    //  var idValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemId");
-                    //  var nameValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemName");
-                    var rowId = filteredData[i].attendanceItemId;
-                    var nameValue = filteredData[i].attendanceItemName;
-                      var idValue = rowId.toString();
-                    //  var nameValue = $("#grid").igGrid("getCellValue", rowId, "attendanceItemName");
-
+                    var rowIndex = i + 1;
+                    var idValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemId");
+                    var nameValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemName");
                     if (_.includes(idValue, self.txtSearch()) || _.includes(nameValue, self.txtSearch())) {
                         $('#grid').igGridSelection('selectRow', i);
                         keynotExist = false;
@@ -143,6 +127,13 @@ module nts.uk.at.view.kdw002.b {
                 }
 
 
+
+
+                // var row1 = $(".selector").igGridSelection("selectedRow");
+                // var row2 = $(".selector").get();
+                //var cell = $(".selector").igGrid("selectedCell");
+                // var rows = $(".selector").igGrid("selectedRows");
+                //var row = $(".selector").igGridSelection("activeRow");
             }
 
         }
@@ -195,23 +186,6 @@ function useChanged(element, rowId) {
         $("#grid").igGridUpdating('endEdit', true);
     }
     $("#grid").igGridUpdating("setCellValue", rowId, "use", value != true);
-
-
-    // var rowIndex = $('#grid').igGrid( "getVisibleIndexByKey","2") ;
-    // var rowIndex = $('#grid').igGrid("getVisibleIndexByKey", "attendanceItemId");
-    //  var row = $('#grid').igGrid("rowById", rowId);
-    var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
-    var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
-    if (!(value != true) && $("#grid").igGrid("getCellValue", rowId, "userCanSet")) {
-
-        cellYouCanChangeIt.addClass('readOnlyColorIsUse');
-        cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
-    } else if (value != true && $("#grid").igGrid("getCellValue", rowId, "userCanSet")) {
-        cellYouCanChangeIt.removeClass('readOnlyColorIsUse');
-        cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
-
-    }
-
 }
 
 
@@ -230,22 +204,13 @@ function canBeChangedByOthersChanged(element, rowId) {
     $("#grid").igGridUpdating("setCellValue", rowId, "canBeChangedByOthers", value != true);
 }
 
-function userCanSetChanged(element, rowId) {
-    var value = $("#grid").igGrid("getCellValue", rowId, "userCanSet");
-    if ($("#grid").igGridUpdating('isEditing')) {
-        $("#grid").igGridUpdating('endEdit', true);
-    }
-    $("#grid").igGridUpdating("setCellValue", rowId, "userCanSet", value != true);
-}
-
-
-
 function loadIgrid() {
     //load igrid
     var DailyServiceTypeControls = [];
     var useTemplate = "<input type='checkbox' {{if ${use} }} checked {{/if}} onclick='useChanged(this, ${attendanceItemId})' />";
     var youCanChangeItTemplate = "<input type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${attendanceItemId})' />";
     var canBeChangedByOthersTemplate = "<input type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${attendanceItemId})' />";
+
     $("#grid").igGrid({
         primaryKey: "attendanceItemId",
         height: 400,
@@ -254,8 +219,6 @@ function loadIgrid() {
         alternateRowStyles: false,
         dataSourceType: "json",
         autoCommit: true,
-        //        virtualization : true,
-        //        virtualizationMode : "continuous",
         columns: [
             { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number", columnCssClass: "readOnlyColor" },
             { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string", columnCssClass: "readOnlyColor" },
@@ -277,8 +240,7 @@ function loadIgrid() {
                     { columnKey: "use", readOnly: true },
                     { columnKey: "youCanChangeIt", readOnly: true },
                     { columnKey: "canBeChangedByOthers", readOnly: true },
-                    { columnKey: "userCanSet", hidden: true }
-                    //, allowHiding: false,
+                    { columnKey: "userCanSet", allowHiding: false, hidden: true }
                 ]
             },
             {
@@ -293,6 +255,19 @@ function loadIgrid() {
         ]
     });
 
+    var dataSource = $('#grid').data('igGrid').dataSource;
+    var filteredData = dataSource.transformedData('afterfilteringandpaging');
+
+    for (var i = 0; i < filteredData.length; i++) {
+        if (!filteredData[i].userCanSet) {
+            var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+            var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+            cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+            cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+            $("#grid").igGridUpdating("setCellValue", i + 1, "youCanChangeIt", false);
+            $("#grid").igGridUpdating("setCellValue", i + 1, "canBeChangedByOthers", false);
+        }
+    }
 
     //
 

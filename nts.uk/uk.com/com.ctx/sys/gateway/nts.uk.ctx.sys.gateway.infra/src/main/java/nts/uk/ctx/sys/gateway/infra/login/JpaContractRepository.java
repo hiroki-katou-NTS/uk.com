@@ -46,7 +46,6 @@ public class JpaContractRepository extends JpaRepository implements ContractRepo
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwdtContract> result = em.createQuery(query).getResultList();
-		//get contract
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {

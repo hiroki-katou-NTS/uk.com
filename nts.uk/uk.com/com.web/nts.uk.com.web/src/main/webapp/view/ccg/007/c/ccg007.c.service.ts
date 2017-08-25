@@ -10,21 +10,18 @@ module nts.uk.pr.view.ccg007.c {
         }
 
         /**
-          * Function is used to valid contract .
+          * Function is used to copy new Top Page.
           */
         export function checkContract(data: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.checkContract, data);
         }
-        
-        /**
-          * Function is used to get employee login setting
-          */
+
         export function getEmployeeLoginSetting(contractCode: string): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.getEmployeeLoginSetting+"/"+contractCode);
         }
 
         /**
-          * Function is used to submit login.
+          * Function is used to copy new Top Page.
           */
         export function submitLogin(data: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.submitLogin, data);

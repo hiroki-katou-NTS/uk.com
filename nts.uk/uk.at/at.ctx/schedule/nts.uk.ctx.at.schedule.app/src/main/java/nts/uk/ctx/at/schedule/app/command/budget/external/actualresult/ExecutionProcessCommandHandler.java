@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,21 +20,23 @@ import java.util.Optional;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.custom.IInternationalization;
-import nts.arc.layer.app.command.AsyncCommandHandler;
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.primitive.PrimitiveValueUtil;
+import nts.arc.task.AsyncTask;
+import nts.arc.task.AsyncTaskService;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetDailyDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
@@ -64,7 +67,11 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class ExecutionProcessCommandHandler.
  */
 @Stateful
-public class ExecutionProcessCommandHandler extends AsyncCommandHandler<ExecutionProcessCommand> {
+public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<ExecutionProcessCommand, ExecutionInfor> {
+    
+    /** The managed task service. */
+    @Inject
+    private AsyncTaskService managedTaskService;
     
     /** The internationalization. */
     @Inject
@@ -145,56 +152,63 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @see nts.arc.layer.app.command.CommandHandlerWithResult#handle(nts.arc.layer.app.command.CommandHandlerContext)
      */
     @Override
-    protected void handle(CommandHandlerContext<ExecutionProcessCommand> context) {
-        val asyncTask = context.asAsync();
-        TaskDataSetter setter = asyncTask.getDataSetter();
-
+    protected ExecutionInfor handle(CommandHandlerContext<ExecutionProcessCommand> context) {
         ExecutionProcessCommand command = context.getCommand();
-        String executeId = command.getExecuteId();
-
+        TaskDataSetter setter = new TaskDataSetter();
+        // GUID
+        String executeId = IdentifierUtil.randomUniqueId();
+        
         // find all message JP before import
         Map<String, String> mapStringJP = findAllStringJP();
-        // valid file format
-        this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine().v());
-
-        // get input stream by file id
-        InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
-
-        setter.setData(TOTAL_RECORD, DEFAULT_VALUE);
-        setter.setData(SUCCESS_CNT, DEFAULT_VALUE);
-        setter.setData(FAIL_CNT, DEFAULT_VALUE);
-
-        // register table LOG with status: IN_COMPLETE
-        String employeeId = AppContexts.user().employeeId();
-        GeneralDateTime dateTimeCurrent = GeneralDateTime.now();
-        ExternalBudgetLogDto extBudgetLogDto = ExternalBudgetLogDto.builder()
-                .executionId(executeId)
-                .employeeId(employeeId)
-                .startDateTime(dateTimeCurrent)
-                .endDateTime(dateTimeCurrent)
-                .extBudgetCode(command.getExternalBudgetCode())
-                .extBudgetFileName(command.getFileName())
-                .completionState(CompletionState.INCOMPLETE)
+        AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
+            // valid file format
+            this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine().v());
+            
+            // get input stream by file id
+            InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
+            
+            setter.setData(TOTAL_RECORD, DEFAULT_VALUE);
+            setter.setData(SUCCESS_CNT, DEFAULT_VALUE);
+            setter.setData(FAIL_CNT, DEFAULT_VALUE);
+            
+            // register table LOG with status: IN_COMPLETE 
+            String employeeId = AppContexts.user().employeeId();
+            GeneralDateTime dateTimeCurrent = GeneralDateTime.now();
+            ExternalBudgetLogDto extBudgetLogDto = ExternalBudgetLogDto.builder()
+                    .executionId(executeId)
+                    .employeeId(employeeId)
+                    .startDateTime(dateTimeCurrent)
+                    .endDateTime(dateTimeCurrent) // begin import, do not have end date?
+                    .extBudgetCode(command.getExternalBudgetCode())
+                    .extBudgetFileName(command.getFileName())
+                    .completionState(CompletionState.INCOMPLETE)
+                    .build();
+            this.extBudgetLogRepo.add(extBudgetLogDto.toDomain());
+            
+            String companyId = AppContexts.user().companyId();
+            Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
+                    command.getExternalBudgetCode());
+            if (!extBudgetOptional.isPresent()) {
+                throw new RuntimeException("Not external budget setting.");
+            }
+            
+            // initial import process
+            ImportProcess importProcess = new ImportProcess();
+            importProcess.executeId = executeId;
+            importProcess.inputStream = inputStream;
+            importProcess.externalBudget = extBudgetOptional.get();
+            importProcess.extractCondition = command;
+            importProcess.mapStringJP = mapStringJP;
+            
+            // begin process input file
+            this.processInput(importProcess, setter);
+        });
+        task.setDataSetter(setter);
+        this.managedTaskService.execute(task);
+        return ExecutionInfor.builder()
+                .taskId(task.getId())
+                .executeId(executeId)
                 .build();
-        this.extBudgetLogRepo.add(extBudgetLogDto.toDomain());
-
-        String companyId = AppContexts.user().companyId();
-        Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
-                command.getExternalBudgetCode());
-        if (!extBudgetOptional.isPresent()) {
-            throw new RuntimeException("Not external budget setting.");
-        }
-
-        // initial import process
-        ImportProcess importProcess = new ImportProcess();
-        importProcess.executeId = executeId;
-        importProcess.inputStream = inputStream;
-        importProcess.externalBudget = extBudgetOptional.get();
-        importProcess.extractCondition = command;
-        importProcess.mapStringJP = mapStringJP;
-
-        // begin process input file
-        this.processInput(importProcess, asyncTask);
     }
     
     /**
@@ -203,8 +217,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @param importProcess the import process
      * @param setter the setter
      */
-    private <C> void processInput(ImportProcess importProcess, AsyncCommandHandlerContext<C> asyncTask) {
-        TaskDataSetter setter = asyncTask.getDataSetter();
+    private void processInput(ImportProcess importProcess, TaskDataSetter setter) {
         try {
             NtsCsvReader csvReader = FileUltil.newCsvReader(importProcess.extractCondition.getEncoding());
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
@@ -217,15 +230,10 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
             
             Iterator<NtsCsvRecord> csvRecordIterator = csRecords.iterator();
             while(csvRecordIterator.hasNext()) {
-                /** check has interruption, if is interrupt, update table LOG status interruption (中断)
+                /** TODO: check has interruption, if is interrupt, update table LOG status interruption (中断)
                  * and end flow (stop process)
+                 * this.updateLog(importProcess.executeId, CompletionState.INTERRUPTION);
                  */
-                if (asyncTask.hasBeenRequestedToCancel()) {
-                    this.updateLog(importProcess.executeId, CompletionState.INTERRUPTION);
-                    asyncTask.finishedAsCancelled();
-                    break;
-                }
-                
                 importProcess.stopLine = false;
                 this.processLine(importProcess, csvRecordIterator.next());
                 
@@ -242,7 +250,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
             
             // close input stream
             importProcess.inputStream.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -786,14 +794,12 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     private Map<String, String> findAllStringJP() {
         Map<String, String> mapMessage = new HashMap<>();
         String nameId = "KSU006_18";
-//        Optional<String> optional = this.internationalization.getItemName(nameId);
-//        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
-        mapMessage.put(nameId, (nameId + " is not found."));
+        Optional<String> optional = this.internationalization.getItemName(nameId);
+        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
         
         List<String> lstMsgId = Arrays.asList("Msg_162", "Msg_163", "Msg_164", "Msg_167");
         for (String msgId : lstMsgId) {
-//            mapMessage.put(msgId, this.getMessageById(msgId));
-            mapMessage.put(msgId, msgId);
+            mapMessage.put(msgId, this.getMessageById(msgId));
         }
         return mapMessage;
     }

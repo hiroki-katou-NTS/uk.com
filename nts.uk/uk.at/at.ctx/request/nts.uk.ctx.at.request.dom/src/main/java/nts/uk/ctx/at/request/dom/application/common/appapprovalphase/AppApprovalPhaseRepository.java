@@ -19,8 +19,6 @@ public interface AppApprovalPhaseRepository {
 	 */
 	Optional<AppApprovalPhase> findByCode(String companyID, String appID, String phaseID);
 
-	
-	
 	// 承認情報の整理
 	/**
 	 * Find List 5 Phase

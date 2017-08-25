@@ -19,7 +19,7 @@ public class User {
 
 	//パスワード
 	/** The password. */
-	private HashPassword password;
+	private RawPassword password;
 
 	//ログインID
 	/** The login id. */

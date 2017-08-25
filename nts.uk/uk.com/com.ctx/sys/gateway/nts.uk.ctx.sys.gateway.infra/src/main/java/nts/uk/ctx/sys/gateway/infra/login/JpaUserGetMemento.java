@@ -6,7 +6,7 @@ package nts.uk.ctx.sys.gateway.infra.login;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.login.HashPassword;
+import nts.uk.ctx.sys.gateway.dom.login.RawPassword;
 import nts.uk.ctx.sys.gateway.dom.login.LoginId;
 import nts.uk.ctx.sys.gateway.dom.login.MailAddress;
 import nts.uk.ctx.sys.gateway.dom.login.UserGetMemento;
@@ -49,8 +49,8 @@ public class JpaUserGetMemento implements UserGetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.login.UserGetMemento#getPassword()
 	 */
 	@Override
-	public HashPassword getPassword() {
-		return new HashPassword(this.entity.getPassword());
+	public RawPassword getPassword() {
+		return new RawPassword(this.entity.getPassword());
 	}
 
 	/*

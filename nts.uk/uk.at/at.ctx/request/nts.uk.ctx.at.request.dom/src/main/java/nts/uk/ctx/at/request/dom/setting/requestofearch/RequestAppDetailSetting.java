@@ -38,18 +38,6 @@ public class RequestAppDetailSetting extends AggregateRoot {
 	 * 残業申請の事前必須設定
 	 */
 	public SettingFlg otAppSettingFlg;
-	/**
-	 * 時間年休申請の時刻計算を利用する
-	 */
-	public SettingFlg holidayTimeAppCalFlg;
-	/**
-	 * 遅刻早退取消申請の実績取消
-	 */
-	public SettingFlg lateOrLeaveAppCancelFlg;
-	/**
-	 * 遅刻早退取消申請の実績取消を申請時に選択
-	 */
-	public SettingFlg lateOrLeaveAppSettingFlg;
 	
 	/**
 	 *休憩入力欄を表示する
@@ -77,7 +65,6 @@ public class RequestAppDetailSetting extends AggregateRoot {
 	 */
 	public UseAtr timeInputUseAtr;
 	
-	public SettingFlg requiredInstructionFlg; 
 	
 	public static RequestAppDetailSetting createSimpleFromJavaType(String companyId,
 			int appType,
@@ -85,32 +72,24 @@ public class RequestAppDetailSetting extends AggregateRoot {
 			int useAtr,
 			int prerequisiteForpauseFlg,
 			int otAppSettingFlg,
-			int holidayTimeAppCalFlg,
-			int lateOrLeaveAppCancelFlg,
-			int lateOrLeaveAppSettingFlg,
 			int breakInputFieldDisFlg,
 			int breakTimeDisFlg,
 			int atworkTimeBeginDisFlg,
 			int goOutTimeBeginDisFlg,
 			int timeCalUseAtr,
-			int timeInputUseAtr,
-			int requiredInstructionFlg) {
+			int timeInputUseAtr) {
 				return new RequestAppDetailSetting(companyId, 
 						EnumAdaptor.valueOf(appType, ApplicationType.class),
 						new Memo(memo),
 						EnumAdaptor.valueOf(useAtr, UseAtr.class),
 						EnumAdaptor.valueOf(prerequisiteForpauseFlg, SettingFlg.class),
 						EnumAdaptor.valueOf(otAppSettingFlg, SettingFlg.class),
-						EnumAdaptor.valueOf(holidayTimeAppCalFlg, SettingFlg.class),
-						EnumAdaptor.valueOf(lateOrLeaveAppCancelFlg, SettingFlg.class),
-						EnumAdaptor.valueOf(lateOrLeaveAppSettingFlg, SettingFlg.class),
 						EnumAdaptor.valueOf(breakInputFieldDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(breakTimeDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(atworkTimeBeginDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(goOutTimeBeginDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(timeCalUseAtr, UseAtr.class),
-						EnumAdaptor.valueOf(timeInputUseAtr, UseAtr.class),
-						EnumAdaptor.valueOf(requiredInstructionFlg, SettingFlg.class));
+						EnumAdaptor.valueOf(timeInputUseAtr, UseAtr.class));
 		
 	}
 	

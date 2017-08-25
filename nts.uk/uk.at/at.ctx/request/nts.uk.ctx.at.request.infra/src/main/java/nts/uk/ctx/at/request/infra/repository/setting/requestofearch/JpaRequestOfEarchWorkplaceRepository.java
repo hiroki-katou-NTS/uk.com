@@ -56,16 +56,12 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 				c.useAtr,
 				c.prerequisiteForpauseFlg, 
 				c.otAppSettingFlg, 
-				c.holidayTimeAppCalFlg,
-				c.lateOrLeaveAppCancelFlg,
-				c.lateOrLeaveAppSettingFlg,
-				c.breakInputFieldDisFlg,
+				c.breakInputFieldDisFlg, 
 				c.breakTimeDisFlg, 
-				c.atworkTimeBeginDisFlg,
+				c.atworkTimeBeginDisFlg, 
 				c.goOutTimeBeginDisFlg, 
 				c.timeCalUseAtr, 
-				c.timeInputUseAtr,
-				c.requiredInstructionFlg);
+				c.timeInputUseAtr);
 	}
 
 }

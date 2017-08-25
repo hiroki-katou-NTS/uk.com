@@ -20,7 +20,7 @@ public class CompanyInformationFinder {
 
 	/** The company information adapter. */
 	@Inject
-	private CompanyInformationAdapter companyInformationAdapter;
+	CompanyInformationAdapter companyInformationAdapter;
 
 	/**
 	 * Find all by contract code.

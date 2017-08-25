@@ -28,12 +28,7 @@ public enum ReflectPlanPerState {
 	/**
 	 * 否認
 	 */
-	DENIAL(6),
-	/** Other */
-	OTHER(99)
-	;
-	
-	
+	DENIAL(6);
 	
 	public int value;
 	

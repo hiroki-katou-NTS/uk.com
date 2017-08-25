@@ -25,7 +25,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 
 	/** The user repository. */
 	@Inject
-	private UserRepository userRepository;
+	UserRepository userRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -75,7 +75,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 	 * @param password the password
 	 */
 	private void compareHashPassword(Optional<User> user, String password) {
-		if (!PasswordHash.verifyThat(password, user.get().getUserId()).isEqualTo(user.get().getPassword().v())) {
+		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(user.get().getPassword().v())) {
 			throw new BusinessException("Msg_302");
 		}
 	}

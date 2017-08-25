@@ -22,7 +22,4 @@ public class SubmitLoginFormThreeCommand {
 	
 	/** The password. */
 	private String password;
-	
-	/** The contract code. */
-	private String contractCode;
 }

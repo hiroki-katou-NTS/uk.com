@@ -52,17 +52,13 @@ public class JpaRequestOfEarchCompanyRepository extends JpaRepository implements
 				c.memo,
 				c.useAtr,
 				c.prerequisiteForpauseFlg,
-				c.otAppSettingFlg,
-				c.holidayTimeAppCalFlg,
-				c.lateOrLeaveAppCancelFlg,
-				c.lateOrLeaveAppSettingFlg,
+				c.otAppSettingFlg, 
 				c.breakInputFieldDisFlg,
 				c.breakTimeDisFlg, 
 				c.atworkTimeBeginDisFlg,
 				c.goOutTimeBeginDisFlg, 
 				c.timeCalUseAtr, 
-				c.timeInputUseAtr,
-				c.requiredInstructionFlg);
+				c.timeInputUseAtr);
 	}
 
 }
