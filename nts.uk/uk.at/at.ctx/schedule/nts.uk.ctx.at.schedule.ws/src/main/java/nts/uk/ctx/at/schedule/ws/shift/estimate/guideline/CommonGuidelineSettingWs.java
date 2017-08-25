@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.app.shift.estimate.guideline.dto.CommonGuidelineSe
 /**
  * The Class CommonGuidelineSettingWs.
  */
-@Path("ctx/at/schedule/shift/pattern/estimate/guideline")
+@Path("ctx/at/schedule/shift/estimate/guideline")
 @Produces("application/json")
 public class CommonGuidelineSettingWs extends WebService {
 
