@@ -36,40 +36,46 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpAppro
 @Stateless
 public class JpaWorkAppApprovalRootRepository extends JpaRepository implements WorkAppApprovalRootRepository{
 
-	private final String SELECT_FROM_COMAPR = "SELECT c FROM WwfmtComApprovalRoot c"
+	private final String FIND_COM_APR_ALL = "SELECT c FROM WwfmtComApprovalRoot c";
+	private final String SELECT_COM_APR_BY_CID = FIND_COM_APR_ALL
 			+ " WHERE c.wwfmtComApprovalRoot.companyId = :companyId";
-	private final String SELECT_FROM_PSAPR = "SELECT c FROM WwfmtPsApprovalRoot c"
+	private final String SELECT_COM_APR_BY_DATE = SELECT_COM_APR_BY_CID 
+			+ " AND c.endDate = :endDate";
+	
+	private final String FIND_PS_APR_ALL = "SELECT c FROM WwfmtPsApprovalRoot c";
+	private final String SELECT_PS_APR = FIND_PS_APR_ALL
 			+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
-	private final String SELECT_FROM_WPAPR = "SELECT c FROM WwfmtWpApprovalRoot c"
+	private final String SELECT_PS_APR_BY_ENDATE = SELECT_PS_APR
+			+ " AND c.endDate = :endDate";
+	
+	private final String FIND_WP_APR_ALL = "SELECT c FROM WwfmtWpApprovalRoot c";
+	private final String SELECT_FROM_WPAPR = FIND_WP_APR_ALL
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId";
+	private final String SELECT_WPAPR_BY_EDATE = SELECT_FROM_WPAPR
+			+ " AND c.endDate = :endDate";
+	
 	private final String SELECT_FROM_APBRANCH = "SELECT c FROM WwfmtBranch c"
 			+ " WHERE c.wwfmtBranchPK.companyId = :companyId"
 			+ " AND c.wwfmtBranchPK.branchId = :branchId";
+	
 	private final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
-	private final String SELECT_FROM_APPROVER = "SELECT c FROM WwfmtAppover c"
-			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
-			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
 	private static final String DELETE_APHASE_BY_BRANCHID = "DELETE from WwfdtApprovalPhase c "
 			+ " WHERE c.wwfdtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfdtApprovalPhasePK.branchId = :branchId";
+	
+	private final String SELECT_FROM_APPROVER = "SELECT c FROM WwfmtAppover c"
+			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
+			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
 	private static final String DELETE_APPROVER_BY_APHASEID = "DELETE from WwfmtAppover c "
 			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
 			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
-	private final String SELECT_COMAPR_BY_EDATE = "SELECT c FROM WwfmtComApprovalRoot c"
-			+ " WHERE c.wwfmtComApprovalRoot.companyId = :companyId"
-			+ " AND c.endDate = :endDate";
-	private final String SELECT_PSAPR_BY_EDATE = "SELECT c FROM WwfmtPsApprovalRoot c"
-			+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
-			+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId"
-			+ " AND c.endDate = :endDate";
-	private final String SELECT_WPAPR_BY_EDATE = "SELECT c FROM WwfmtWpApprovalRoot c"
-			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
-			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
-			+ " AND c.endDate = :endDate";
+	
+	
+	
 		
 	/**
 	 * convert entity WwfmtComApprovalRoot to domain CompanyApprovalRoot
@@ -257,7 +263,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	@Override
 	public List<PersonApprovalRoot> getAllPsApprovalRoot(String companyId, String employeeId) {
-		return this.queryProxy().query(SELECT_FROM_PSAPR, WwfmtPsApprovalRoot.class)
+		return this.queryProxy().query(SELECT_PS_APR, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.getList(c->toDomainPsApR(c));
@@ -269,7 +275,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	@Override
 	public List<CompanyApprovalRoot> getAllComApprovalRoot(String companyId) {
-		return this.queryProxy().query(SELECT_FROM_COMAPR, WwfmtComApprovalRoot.class)
+		return this.queryProxy().query(SELECT_COM_APR_BY_CID, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.getList(c->toDomainComApR(c));
 	}
@@ -492,7 +498,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	@Override
 	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, String endDate) {
-		return this.queryProxy().query(SELECT_COMAPR_BY_EDATE, WwfmtComApprovalRoot.class)
+		return this.queryProxy().query(SELECT_COM_APR_BY_DATE, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("endDate", endDate)
 				.getList(c->toDomainComApR(c));
@@ -521,7 +527,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 */
 	@Override
 	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, String endDate) {
-		return this.queryProxy().query(SELECT_PSAPR_BY_EDATE, WwfmtPsApprovalRoot.class)
+		return this.queryProxy().query(SELECT_PS_APR_BY_ENDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("endDate", endDate)
