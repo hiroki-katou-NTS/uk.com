@@ -2103,7 +2103,7 @@ var nts;
                 var inputDate = _.clone(japaneseDate);
                 var endEraSymbolIndex = -1;
                 var currentEra;
-                var eraAcceptFormats = ["YY/MM/DD", "YYMMDD"];
+                var eraAcceptFormats = ["YYMMDD", "YY/MM/DD", "YY/M/DD", "YY/MM/D", "YY/M/D", "Y/MM/DD", "Y/M/DD", "Y/MM/D", "Y/M/D"];
                 for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
                     var i = _a[_i];
                     if (inputDate.indexOf(i.name) >= 0) {
@@ -2120,7 +2120,7 @@ var nts;
                 if (endEraSymbolIndex > -1) {
                     var startEraDate = moment(currentEra.start, "YYYY-MM-DD");
                     var inputEraDate = inputDate.substring(endEraSymbolIndex);
-                    var tempEra = moment.utc(inputEraDate, eraAcceptFormats);
+                    var tempEra = moment.utc(inputEraDate, eraAcceptFormats, true);
                     if (tempEra.isValid()) {
                         return startEraDate.add(tempEra.format("YY"), "Y")
                             .set({ 'month': tempEra.month(), "date": tempEra.date() })
