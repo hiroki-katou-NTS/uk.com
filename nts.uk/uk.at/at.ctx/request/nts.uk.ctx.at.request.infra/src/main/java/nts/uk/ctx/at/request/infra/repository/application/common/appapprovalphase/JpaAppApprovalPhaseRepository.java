@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.Kr
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
+
 @Stateless
 public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppApprovalPhaseRepository{
 	private final String SELECT= "SELECT c FROM KrqdtAppApprovalPhase c";

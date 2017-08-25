@@ -80,7 +80,7 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 			if (isUserIsApprover) {
 				outputApproverSID = applicationData.getApplicantSID();
 			} else {
-				outputApproverSID = "Anamit";
+				outputApproverSID = "OTHER";
 			}
 		}
 		

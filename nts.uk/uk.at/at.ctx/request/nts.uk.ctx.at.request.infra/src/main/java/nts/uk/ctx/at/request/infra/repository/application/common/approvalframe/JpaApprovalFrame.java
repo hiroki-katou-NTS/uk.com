@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.infra.repository.application.common.approvalframe;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.Krqdt
  * @author hieult
  *
  */
+@Stateless
 public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepository {
 
 	private final String SELECT = "SELECT c FROM KrqdtApprovalFrame c";
