@@ -12,8 +12,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.shift.estimate.company.CompanyEstablishmentSaveCommand;
-import nts.uk.ctx.at.schedule.app.command.shift.estimate.company.CompanyEstablishmentSaveCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.estimate.employment.EmploymentEstablishmentDeleteCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.estimate.employment.EmploymentEstablishmentDeleteCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.estimate.employment.EmploymentEstablishmentSaveCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.estimate.employment.EmploymentEstablishmentSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.employment.EmploymentEstablishmentFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.employment.dto.EmploymentEstablishmentDto;
 
@@ -30,7 +32,11 @@ public class EmploymentEstablishmentWs extends WebService {
 
 	/** The save. */
 	@Inject
-	private CompanyEstablishmentSaveCommandHandler save;
+	private EmploymentEstablishmentSaveCommandHandler save;
+	
+	/** The delete. */
+	@Inject
+	private EmploymentEstablishmentDeleteCommandHandler delete;
 
 	/**
 	 * Find by target year.
@@ -53,7 +59,18 @@ public class EmploymentEstablishmentWs extends WebService {
 	 */
 	@POST
 	@Path("save")
-	public void saveCompanyEstimate(CompanyEstablishmentSaveCommand command) {
+	public void saveEmploymentEstimate(EmploymentEstablishmentSaveCommand command) {
 		this.save.handle(command);
+	}
+	
+	/**
+	 * Delete employment estimate.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("delete")
+	public void deleteEmploymentEstimate(EmploymentEstablishmentDeleteCommand command) {
+		this.delete.handle(command);
 	}
 }

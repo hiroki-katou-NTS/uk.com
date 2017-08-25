@@ -72,7 +72,7 @@ module nts.uk.at.view.ksm003.a {
                     } else {
                         self.switchNewMode();
                     }
-                    //                    self.clearError();
+                    self.clearError();
                     dfd.resolve();
                 });
 
@@ -205,8 +205,16 @@ module nts.uk.at.view.ksm003.a {
             //select switch New Mode
             public switchNewMode(): void {
                 let self = this;
-                // error here
-                self.detail(new model.DailyPatternDetailModel("", "", []));
+                //                  cretar new table
+                var dataNew: model.DailyPatternValModel[];
+                dataNew = new Array();
+                for (let i = 0; i <= 9; i++) {
+                    dataNew.push(new model.DailyPatternValModel(i, "", "", null));
+                }
+                self.detail().patternCode("");
+                self.detail().patternName("");
+                self.detail().dailyPatternVals(dataNew);
+
                 self.isEditting(false);
                 self.selectedCode("");
                 self.resetInput();
@@ -223,6 +231,12 @@ module nts.uk.at.view.ksm003.a {
             private clearError(): void {
                 if ($('.nts-input').ntsError("hasError")) {
                     $('.nts-input').ntsError('clear');
+                }
+                if ($('#inpCode').ntsError("hasError")) {
+                    $('#inpCode').ntsError('clear');
+                }
+                if ($('#inpPattern').ntsError("hasError")) {
+                    $('#inpPattern').ntsError('clear');
                 }
             }
 

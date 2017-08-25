@@ -27,4 +27,15 @@ public interface PersonalEstablishmentRepository {
 	 * @param personalEstablishment the personal establishment
 	 */
 	public void savePersonalEstablishment(PersonalEstablishment personalEstablishment);
+	
+	
+	
+	/**
+	 * Removes the personal establishment.
+	 *
+	 * @param employeeId the employee id
+	 * @param targetYear the target year
+	 */
+	public void removePersonalEstablishment(String employeeId, int targetYear);
 }
+
