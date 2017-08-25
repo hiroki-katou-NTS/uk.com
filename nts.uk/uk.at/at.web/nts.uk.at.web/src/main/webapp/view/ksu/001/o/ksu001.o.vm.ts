@@ -1,5 +1,6 @@
 module ksu001.o.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
+    import exCell = __viewContext.viewModel.viewA.
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<IWorkType>;
@@ -38,23 +39,35 @@ module ksu001.o.viewmodel {
 
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
-                let workTypeName, workTimeName: string;
+                let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
                 if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
                     let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
                     if (d) {
                         workTypeName = d.abbreviationName;
+                        workTypeCode = d.workTypeCode;
                     } else {
                         workTypeName = '';
+                        workTypeCode = '';
                     }
 
                     let c = _.find(self.listWorkTime(), ['siftCd', self.selectedWorkTimeCode()]);
                     if (c) {
                         workTimeName = c.abName;
+                        workTimeCode = c.siftCd;
                     } else {
                         workTimeName = '';
+                        workTimeCode = '';
                     }
                 }
-                return [workTypeName, workTimeName];
+                return new ExCell({
+                    workTypeCode: workTypeCode,
+                    workTypeName: workTypeName,
+                    workTimeCode: workTimeCode,
+                    workTimeName: workTimeName,
+                    symbol: null,
+                    startTime: null,
+                    endTime: null
+                });
             });
 
             self.nameWorkTimeType.subscribe(function(value) {
@@ -189,6 +202,35 @@ module ksu001.o.viewmodel {
             this.displayAtr = params.displayAtr;
             this.note = params.note;
             this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1  timeZone2 ' + '( ' + this.note + ' )';
+        }
+    }
+
+    interface IExCell {
+        workTypeCode: string,
+        workTypeName: string,
+        workTimeCode: string,
+        workTimeName: string,
+        symbol: string,
+        startTime: any,
+        endTime: any
+    }
+
+    class ExCell {
+        workTypeCode: string;
+        workTypeName: string;
+        workTimeCode: string;
+        workTimeName: string;
+        symbol: string;
+        startTime: any;
+        endTime: any;
+        constructor(params: IExCell) {
+            this.workTypeCode = params.workTypeCode;
+            this.workTypeName = params.workTypeName;
+            this.workTimeCode = params.workTimeCode;
+            this.workTimeName = params.workTimeName;
+            this.symbol = params.symbol;
+            this.startTime = params.startTime;
+            this.endTime = params.endTime;
         }
     }
 }
