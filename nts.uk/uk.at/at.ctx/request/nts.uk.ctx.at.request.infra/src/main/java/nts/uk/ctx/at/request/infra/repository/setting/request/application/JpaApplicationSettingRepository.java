@@ -9,16 +9,16 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AprovalPersonFlg;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.PriorityFLg;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.ReflectionFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictDay;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSetting;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSettingPK;
@@ -28,7 +28,8 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 
 	public final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c";
 
-	public final String SELECT_WITH_CID = SELECT_NO_WHERE + " WHERE c.KrqstApplicationSettingPK.companyID := companyID";
+	public final String SELECT_WITH_CID = SELECT_NO_WHERE 
+			+ " WHERE c.KrqstApplicationSettingPK.companyID := companyID";
 
 	public final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
 			+ " WHERE c.KrqstApplicationSettingPK.companyID := companyID"
@@ -48,7 +49,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.requireAppReasonFlg,RequiredFlg.class),
 				EnumAdaptor.valueOf(entity.displayPrePostFlg,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.displaySearchTimeFlg,AppDisplayAtr.class),
-				EnumAdaptor.valueOf(entity.displayInitDayFlg,RetrictDay.class),
+				EnumAdaptor.valueOf(entity.manualSendMailAtr,UseAtr.class),
 				/*承認*/
 				EnumAdaptor.valueOf(entity.baseDateFlg,BaseDateFlg.class),
 				EnumAdaptor.valueOf(entity.advanceExcessMessDispAtr,AppDisplayAtr.class),
@@ -82,7 +83,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		entity.requireAppReasonFlg = domain.getRequireAppReasonFlg().value;
 		entity.displayPrePostFlg = domain.getDisplayPrePostFlg().value;
 		entity.displaySearchTimeFlg = domain.getDisplaySearchTimeFlg().value;
-		entity.displayInitDayFlg = domain.getDisplayInitDayFlg().value;
+		entity.manualSendMailAtr = domain.getManualSendMailAtr().value;
 		/*承認*/
 		entity.baseDateFlg = domain.getBaseDateFlg().value;
 		entity.advanceExcessMessDispAtr = domain.getAdvanceExcessMessDispAtr().value;

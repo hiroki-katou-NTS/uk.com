@@ -32,11 +32,11 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 	
 	@Inject 
 	private ApprovalFrameRepository frameRepo;
-
+	
 	/**
 	 * 承認情報の整理
 	 */
-	public void OrganizationOfApprovalInfo(String appID) {
+	public void organizationOfApprovalInfo(String appID) {
 		// ドメインモデル「申請」．「承認フェーズ」1～5の順でループする(
 		// get List 5 承認 Phase
 		String companyID = AppContexts.user().companyId();
@@ -103,11 +103,6 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 					}
 				}
 				
-				
-				
-				
-				
-				
 			} else {
 			//「承認フェーズ」．承認形態が全員承認
 			//trong trường hợp nhiều người approval
@@ -118,6 +113,30 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 			}
 			
 			// ドメインモデル「承認フェーズ」．承認区分が承認済(「承認フェーズ」．承認区分 = 承認済)
+		}
+	}
+	
+	
+	
+	/**
+	 * 実績反映状態の判断
+	 */
+	public void performanceReflectedStateJudgment(String appID) {
+		// 承認フェーズ5～1の順で確認する。 - thứ tự xác nhận theo phase tu 1 toi 5
+		String companyID = AppContexts.user().companyId();
+		//
+		List<AppApprovalPhase> listPhase = approvalPhaseRepo.findPhaseByAppID(companyID, appID);
+
+		for (AppApprovalPhase phase : listPhase) {
+			//「承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済)
+			//Trong truong hop khac loai APPROVAL DONE
+			if (phase.getApprovalATR().value != 1) {
+				//ドメインモデル「承認フェーズ」の承認者一覧を取得する
+				//lấy danh sách người xác nhận
+				//LÀM Ở 8.2
+				
+					
+			}
 		}
 	}
 

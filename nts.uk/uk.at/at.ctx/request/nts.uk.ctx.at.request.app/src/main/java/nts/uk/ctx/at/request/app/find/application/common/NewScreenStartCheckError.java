@@ -28,7 +28,7 @@ public class NewScreenStartCheckError {
 	/**
 	 * 1-5.新規画面起動時のエラーチェック
 	 */
-	public void CheckError(int appType) {
+	public void checkError(int appType) {
 		String companyId = AppContexts.user().companyId();
 		Optional<RequestAppDetailSetting> requestSet = requestRepo.getRequestDetail(companyId, appType);
 		if (requestSet.isPresent()) {

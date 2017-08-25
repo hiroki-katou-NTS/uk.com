@@ -12,6 +12,7 @@ import nts.arc.layer.dom.DomainObject;
  * @author tutk
  *
  */
+
 @Value
 @EqualsAndHashCode(callSuper= false )
 public class Application extends DomainObject{
@@ -127,5 +128,13 @@ public class Application extends DomainObject{
 				reflectPerTime, 
 				EnumAdaptor.valueOf(reflectPerState,ReflectPlanPerState.class), 
 				EnumAdaptor.valueOf(reflectPerEnforce,ReflectPlanPerEnforce.class));
+	}
+	/**
+	 * 
+	 * @param reflectPlanState
+	 */
+	
+	public void changeReflectState(int reflectPlanState) {
+		this.reflectPerState.value = reflectPlanState;
 	}
 }

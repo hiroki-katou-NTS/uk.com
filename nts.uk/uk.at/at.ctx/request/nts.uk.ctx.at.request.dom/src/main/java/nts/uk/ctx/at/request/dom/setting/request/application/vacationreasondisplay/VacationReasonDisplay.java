@@ -3,7 +3,11 @@ package nts.uk.ctx.at.request.dom.setting.request.application.vacationreasondisp
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.VacationAppType;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-
+/**
+ * 
+ * @author ducpm
+ *
+ */
 @Value
 public class VacationReasonDisplay {
 	private String companyID;
