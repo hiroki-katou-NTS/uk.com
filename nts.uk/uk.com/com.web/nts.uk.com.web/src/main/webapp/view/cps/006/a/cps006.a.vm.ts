@@ -65,7 +65,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
                     }}));
                     
-                    self.currentCategory().displayIsAbolished = (_.filter(data, x =>{return x.systemRequired == false})).length > 0 ? true: false;
+                    self.currentCategory().displayIsAbolished = (_.filter(data, x =>{return x.systemRequired == 1})).length > 0 ? true: false;
                     
                 };
             });
