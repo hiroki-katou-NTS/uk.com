@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.shared.app.find.yearholidaygrant;
 
-import lombok.Value;
+import java.math.BigDecimal;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 
 /**
@@ -9,7 +13,8 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
  * @author TanLV
  *
  */
-@Value
+@Data
+@AllArgsConstructor
 public class GrantHolidayTblDto {
 	/* 会社ID */
 	private String companyId;
@@ -24,7 +29,7 @@ public class GrantHolidayTblDto {
 	private String yearHolidayCode;
 	
 	/* 年休付与日数 */
-	private int grantDays;
+	private BigDecimal grantDays;
 	
 	/* 時間年休上限日数 */
 	private int limitedTimeHdDays;
@@ -44,6 +49,8 @@ public class GrantHolidayTblDto {
 	/* 一斉付与する */
 	private int grantSimultaneity;
 	
+	private GeneralDate grantDate;
+	
 	public static GrantHolidayTblDto fromDomain(GrantHdTbl domain){
 		return new GrantHolidayTblDto(
 				domain.getCompanyId(),
@@ -56,7 +63,8 @@ public class GrantHolidayTblDto {
 				domain.getLengthOfServiceMonths().v(),
 				domain.getLengthOfServiceYears().v(),
 				domain.getGrantReferenceDate().value,
-				domain.getGrantSimultaneity().value
+				domain.getGrantSimultaneity().value,
+				domain.getGrantDate()
 		);
 	}
 }
