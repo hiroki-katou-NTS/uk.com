@@ -273,15 +273,15 @@ module nts.uk.at.view.ksm006.a {
                         keys.forEach(function(item) {
                             switch (item) {
                                 case "KSM006_6": {
-                                    $("#companyBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: "KSM006_6" });
+                                    $("#companyBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: [nts.uk.resource.getText("KSM006_6")] });
                                     break;
                                 }
                                 case "KSM006_7": {
-                                    $("#companyBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_7" });
+                                    $("#companyBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: [nts.uk.resource.getText("KSM006_7")] });
                                     break;
                                 }
                                 case "KSM006_8": {
-                                    $("#companyBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_8" });
+                                    $("#companyBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: [nts.uk.resource.getText("KSM006_8")] });
                                     break;
                                 }
                                 default: { break; }
@@ -326,15 +326,15 @@ module nts.uk.at.view.ksm006.a {
                         keys.forEach(function(item) {
                             switch (item) {
                                 case "KSM006_6": {
-                                    $("#workplaceBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: "KSM006_6" });
+                                    $("#workplaceBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: [nts.uk.resource.getText("KSM006_6")] });
                                     break;
                                 }
                                 case "KSM006_7": {
-                                    $("#workplaceBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_7" });
+                                    $("#workplaceBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: [nts.uk.resource.getText("KSM006_7")] });
                                     break;
                                 }
                                 case "KSM006_8": {
-                                    $("#workplaceBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_8" });
+                                    $("#workplaceBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: [nts.uk.resource.getText("KSM006_8")] });
                                     break;
                                 }
                                 default: { break; }
@@ -378,15 +378,15 @@ module nts.uk.at.view.ksm006.a {
                         keys.forEach(function(item) {
                             switch (item) {
                                 case "KSM006_6": {
-                                    $("#classifyBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: "KSM006_6" });
+                                    $("#classifyBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: [nts.uk.resource.getText("KSM006_6")] });
                                     break;
                                 }
                                 case "KSM006_7": {
-                                    $("#classifyBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_7" });
+                                    $("#classifyBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: [nts.uk.resource.getText("KSM006_7")] });
                                     break;
                                 }
                                 case "KSM006_8": {
-                                    $("#classifyBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_8" });
+                                    $("#classifyBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: [nts.uk.resource.getText("KSM006_8")] });
                                     break;
                                 }
                                 default: { break; }
