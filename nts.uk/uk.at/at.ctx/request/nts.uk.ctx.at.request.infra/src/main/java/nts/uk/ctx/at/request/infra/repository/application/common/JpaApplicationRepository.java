@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
@@ -33,7 +34,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	private KafdtApplication toEntity(Application domain) {
 		return new KafdtApplication(new KafdtApplicationPK(domain.getCompanyID(), domain.getApplicationID()),
-				domain.getPrePostAtr().value, domain.getInputDate(), domain.getEnteredPersonSID(),
+				domain.getPrePostAtr().value, domain.getInputDate() , domain.getEnteredPersonSID(),
 				domain.getReversionReason().v(), domain.getApplicationDate(), domain.getApplicationReason().v(),
 				domain.getApplicationType().value, domain.getApplicantSID(), domain.getReflectPlanScheReason().value,
 				domain.getReflectPlanTime(), domain.getReflectPlanState().value, domain.getReflectPlanEnforce().value,
@@ -42,7 +43,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * Get ALL application
+	 * Get ALL applicatio
 	 */
 	@Override
 	public List<Application> getAllApplication(String companyID) {
@@ -63,7 +64,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 * get all application by date
 	 */
 	@Override
-	public List<Application> getAllAppByDate(String companyID, BigDecimal applicationDate) {
+	public List<Application> getAllAppByDate(String companyID, GeneralDate applicationDate) {
 		return this.queryProxy().query(SELECT_BY_APPDATE, KafdtApplication.class).setParameter("companyID", companyID)
 				.setParameter("applicationDate", applicationDate).getList(c -> toDomain(c));
 	}

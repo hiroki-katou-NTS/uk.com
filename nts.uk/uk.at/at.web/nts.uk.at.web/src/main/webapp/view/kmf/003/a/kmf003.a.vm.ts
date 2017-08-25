@@ -291,10 +291,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         addMode(data: YearHolidayGrantDto){
             var self = this;
             
-            if (nts.uk.ui.errors.hasError()) {
-                return;    
-            }
-            
             service.addYearHolidayGrant(data).done(function() {
                 self.getData();
                 self.singleSelectedCode(data.yearHolidayCode);
@@ -528,26 +524,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             });
             
             self.conditionValue01.subscribe(function(value) {
-                var result = 0;
-                
-                if(self.A7_4SelectedRuleCode() == 0){
-                    if(Number(value) > 100){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
-                    } else {
-                        if(self.useCls02()) {
-                            result = Number(value) - 1;
-                            self.limitedValue02(result <= 0 ? "" : result.toString());
-                        }
-                    }
-                } else {
-                    if(Number(value) > 366){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_263" });
-                    } else {
-                        if(self.useCls02()) {
-                            result = Number(value) - 1;
-                            self.limitedValue02(result <= 0 ? "" : result.toString());
-                        }
-                    }
+                var result = Number(value) - 1;
+                if(self.useCls02()) {
+                    self.limitedValue02(result <= 0 ? "" : result.toString());
                 }
             });
             

@@ -76,6 +76,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     self.checkDelete(false);
                 }
                 else{
+                    $("#inpPattern").focus();
                     self.selectedCode(self.lstRelationship()[0].relationshipCode);
                 }
                 
@@ -121,9 +122,9 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             $("#inpPattern").focus();        
         } 
         //  new mode 
-        newMode(){ 
+        newMode(){               
             let self = this;
-            $("#inpCode").ntsError('clear');
+            $("#inpCode").ntsError('clear');  
             self.clearFrom();
             self.checkDelete(false);
         }
@@ -181,11 +182,8 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             $("#inpPattern").focus();
         }
         
-        close(){
-            var t0 = performance.now();                
-            var t1 = performance.now();
+        close(){               
             nts.uk.ui.windows.close();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         
     }

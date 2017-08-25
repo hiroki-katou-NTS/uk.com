@@ -9,14 +9,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCtgRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.shr.com.context.AppContexts;
-/**
- * The class UpdateNamePerInfoCtgCommandHandler 
- * @author lanlt
- *
- */
 
 @Stateless
 public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNamePerInfoCtgCommand> {
@@ -24,7 +19,7 @@ public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNam
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	@Inject
-	private PerInfoCtgByCompanyRepositoty perInfoCtgRepositoty;
+	private PerInfoCtgRepositoty perInfoCtgRepositoty;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateNamePerInfoCtgCommand> context) {
