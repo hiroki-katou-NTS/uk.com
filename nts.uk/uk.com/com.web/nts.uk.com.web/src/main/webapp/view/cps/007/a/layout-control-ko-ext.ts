@@ -398,6 +398,8 @@ module nts.custombinding {
         };
 
         options = {
+            callback: () => {
+            },
             radios: {
                 enable: ko.observable(true),
                 value: ko.observable(0),
@@ -708,7 +710,9 @@ module nts.custombinding {
                             }
                         } else {
                             // show message if hasn't any category
-                            alert(text('Msg_288'));
+                            if (ko.toJS(opts.sortable.isEnabled)) {
+                                alert(text('Msg_288')).then(opts.callback);
+                            }
                         }
                     });
                 } else { // get item by group
@@ -935,6 +939,13 @@ module nts.custombinding {
             ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, function() {
                 return opts.listbox;
             }, allBindingsAccessor, viewModel, bindingContext);
+
+            // bindding callback function to control
+            if (access.callback) {
+                $.extend(opts, {
+                    callback: access.callback
+                });
+            }
 
             // validate editAble
             if (ko.unwrap(access.editAble) != undefined) {

@@ -26,21 +26,25 @@ module nts.uk.com.view.cps006.a.viewmodel {
         ]);
         currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable((new CategoryInfoDetail({
             id: '', categoryNameDefault: '',
-            categoryName: '', categoryType: 4, isAbolition: false, itemList: []
+            categoryName: '', categoryType: 4, isAbolition: "", itemList: []
         })));
         // nếu sử dụng thì bằng true và ngược lại
-        isUse: KnockoutObservable<boolean> = ko.observable(true);
+        isAbolished: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
-            self.start();
+            self.start(undefined);
             self.currentCategory().id.subscribe(function(value) {
                 self.getDetailCategory(value);
             });
-            self.isUse.subscribe(function(value) {
+            self.isAbolished.subscribe(function(value) {
                 if (value) {
                     $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                 } else {
+                    let category = _.find(self.isUseCategoryLst(), x => { return x.id == self.currentCategory().id() });
+                    if (category === undefined) {
+                        self.currentCategory().id(self.isUseCategoryLst()[0].id);
+                    }
                     $("#category_grid").igGrid("option", "dataSource", self.isUseCategoryLst());
                 }
 
@@ -53,33 +57,39 @@ module nts.uk.com.view.cps006.a.viewmodel {
             self.itemList.removeAll();
             service.getAllPerInfoItemDefByCtgId(id).done(function(data: Array<any>) {
                 if (data.length > 0) {
-                    self.itemList(_.map(data, x => new ItemInfo({
+                    self.itemList(_.map(data, x => {return {
                         id: x.id,
                         perInfoCtgId: x.perInfoCtgId,
-                        itemCode: x.itemCode,
                         itemName: x.itemName,
+                        systemRequired: x.systemRequired,
                         isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
-                    })));
+                    }}));
+                    
+                    self.currentCategory().displayIsAbolished = (_.filter(data, x =>{return x.systemRequired == false})).length > 0 ? true: false;
+                    
                 };
             });
 
 
             let category = _.find(self.categoryList(), function(obj: any) { return obj.id === id });
-            let categoryRoot = _.find(self.categoryRootList(), function(obj: any) { return obj.categoryCode === category.categoryCode });
+            let categoryRoot = _.find(self.categoryRootList(), function(obj: any) {
+                return obj.categoryCode === category.categoryCode
+            });
             self.currentCategory().setData({
                 id: id, categoryNameDefault: categoryRoot.categoryName, categoryName: category.categoryName,
                 categoryType: category.categoryType, isAbolition: category.isAbolition, itemList: self.itemList()
             });
             self.currentCategory.valueHasMutated();
 
-
         }
 
-        start(): JQueryPromise<any> {
+        start(id: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             self.categoryList.removeAll();
             self.categoryRootList.removeAll();
+            self.isUseCategoryLst.removeAll();
+
             service.getAllPerInfoCtgByRoot().done(function(data: Array<any>) {
                 if (data.length > 0) {
                     self.categoryRootList(_.map(data, x => new CategoryInfo({
@@ -108,7 +118,12 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryType: x.categoryType,
                         isAbolition: ""
                     })));
-                    self.currentCategory().id(self.categoryList()[0].id);
+                    if (id === undefined) {
+                        self.currentCategory().id(self.categoryList()[0].id);
+                    } else {
+                        self.currentCategory().id(id);
+                    }
+
                 }
                 dfd.resolve();
             });
@@ -119,11 +134,54 @@ module nts.uk.com.view.cps006.a.viewmodel {
         openBModal() {
 
             let self = this;
-            setShared('categoryInfo', self.currentCategory);
+            setShared('categoryInfo', self.currentCategory());
+            setShared('currentItemId', self.currentItemId());
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/006/b/index.xhtml', { title: '' }).onClosed(function(): any {
+                self.start(undefined).done(() => {
+                    block.clear();
+                });
             });
         }
+
+        openCDL022Modal() {
+            let self = this,
+                cats = _.map(ko.toJS(self.categoryList), (x: any) => { return { id: x.id, name: x.categoryName }; });
+
+            setShared('CDL020_PARAMS', cats);
+            nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
+                let CTGlist: Array<any> = getShared('CDL020_VALUES'),
+                    i: number = 0,
+                    CTGsorrList = _.map(CTGlist, x => {
+                    return {
+                        id: x.id,
+                        order: i++
+                    }
+                });
+                service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>){
+                    self.start(undefined);
+                })
+            });
+        }
+
+        registerCategoryInfo() {
+            let self = this,
+                cat = ko.toJS(self.currentCategory),
+                command = {
+                    categoryId: cat.id,
+                    categoryName: cat.categoryName,
+                    isAbolition: cat.isAbolition
+
+                };
+
+            service.updateCtgInfo(command).done(function(data) {
+                dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.start(command.categoryId);
+                });
+            })
+
+        }
+
 
     }
     export interface ICategoryInfo {
@@ -148,47 +206,28 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.isAbolition = params.isAbolition;
         }
 
-        setData(params: ICategoryInfo) {
-            let self = this;
-            self.id = params.id;
-            self.categoryCode = params.categoryCode;
-            self.categoryName = params.categoryName;
-            self.categoryType = params.categoryType;
-            self.isAbolition = params.isAbolition;
-        }
-
-
     }
 
     export interface IItemInfo {
         id: string;
         perInfoCtgId: string;
-        itemCode: string;
         itemName: string;
+        systemRequired: number;
         isAbolition: string;
     }
 
     export class ItemInfo {
         id: string;
         perInfoCtgId: string;
-        itemCode: string;
         itemName: string;
+        systemRequired: number;
         isAbolition: string;
         constructor(params: IItemInfo) {
             this.id = params.id;
             this.perInfoCtgId = params.perInfoCtgId;
-            this.itemCode = params.itemCode;
             this.itemName = params.itemName;
+            this.systemRequired = params.systemRequired;
             this.isAbolition = params.isAbolition;
-        }
-
-        setData(params: IItemInfo) {
-            let self = this;
-            self.id = params.id;
-            self.perInfoCtgId = params.perInfoCtgId;
-            self.itemCode = params.itemCode;
-            self.itemName = params.itemName;
-            self.isAbolition = params.isAbolition;
         }
     }
 
@@ -197,7 +236,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryNameDefault: string;
         categoryName: string;
         categoryType: number;
-        isAbolition: boolean;
+        isAbolition: string;
         itemList?: Array<ItemInfo>;
     }
 
@@ -207,12 +246,13 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: number;
         isAbolition: KnockoutObservable<boolean>;
+        displayIsAbolished :  boolean = false;
         constructor(params: ICategoryInfoDetail) {
             this.id = ko.observable(params.id);
             this.categoryNameDefault = params.categoryNameDefault;
             this.categoryName = ko.observable(params.categoryName);
             this.categoryType = params.categoryType;
-            this.isAbolition = ko.observable(params.isAbolition);
+            this.isAbolition = ko.observable(false);
         }
 
         setData(params: ICategoryInfoDetail) {
