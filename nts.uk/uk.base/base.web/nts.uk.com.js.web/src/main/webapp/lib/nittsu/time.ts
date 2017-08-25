@@ -515,7 +515,7 @@ module nts.uk.time {
             this.msg = (msg) ? msg : "Invalid format";
             this.success = false;
         }
-        
+
         failedWithMessegeId(msgID?: string, params?: Array<string>) {
             this.msgID = msgID;
             this.params = params;
@@ -533,15 +533,15 @@ module nts.uk.time {
                 return null;
             return this.momentObject;
         }
-        
+
         systemMin() {
-            return this.min;    
+            return this.min;
         }
 
         systemMax() {
-            return this.max;    
+            return this.max;
         }
-        
+
         toNumber(outputFormat?: string) {
             var dateFormats = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "date"];
             var yearMonthFormats = ["YYYY/MM", "YYYY-MM", "YYYYMM", "yearmonth"];
@@ -554,68 +554,68 @@ module nts.uk.time {
                 return this.momentObject.year() * 100 + (this.momentObject.month() + 1);
             }
             else if (outputFormat === "time") {
-                return this.momentObject.hours()*60 + this.momentObject.minutes();
+                return this.momentObject.hours() * 60 + this.momentObject.minutes();
             } else {
                 return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
             }
         }
 
         getMsg() { return this.msg; }
-        
+
         getEmsg(name?: string) {
-            if(this.msgID === undefined){
-                return this.msg;        
+            if (this.msgID === undefined) {
+                return this.msg;
             } else {
-                if (name !== undefined){
-                    this.params.unshift(name);        
-                }    
+                if (name !== undefined) {
+                    this.params.unshift(name);
+                }
                 return nts.uk.resource.getMessage(this.msgID, this.params);
             }
         }
-        
+
         getMsgID() { return this.msgID === undefined ? "" : this.msgID; }
     }
 
 
     export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
         var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
-        var momentObject = moment.utc(datetime, inputFormats, true);  
+        var momentObject = moment.utc(datetime, inputFormats, true);
         var result = new MomentResult(momentObject, outputFormat);
         if (momentObject.isValid()) {
-            if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())){
+            if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())) {
                 let parsedFormat = momentObject.creationData().format;
-                if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0){
-                    result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")] );        
+                if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0) {
+                    result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
                 } else if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") < 0 && parsedFormat.indexOf("Y") >= 0) {
                     result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
                 } else {
                     result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
-                }            
+                }
             } else {
-                result.succeeded();    
+                result.succeeded();
             }
         } else {
             result.failed();
         }
         return result;
-    } 
-     
-    function findFormat (format: string): Array<string>{
-        if(nts.uk.util.isNullOrEmpty(format)){
-            return defaultInputFormat;        
+    }
+
+    function findFormat(format: string): Array<string> {
+        if (nts.uk.util.isNullOrEmpty(format)) {
+            return defaultInputFormat;
         }
-        if (format === "yearmonth"){
-            format = "YM";        
+        if (format === "yearmonth") {
+            format = "YM";
             format = "YM";
         }
         let uniqueFormat = _.uniq(format.split(""));
-        let formats =  _.filter(defaultInputFormat, function (dfFormat: string){
-            return _.find(uniqueFormat, function (opFormat: string){
-                return dfFormat.indexOf(opFormat) >= 0;         
-            }) !== undefined;        
-        }); 
-        return nts.uk.util.isNullOrEmpty(formats) ? defaultInputFormat : formats;     
-    } 
+        let formats = _.filter(defaultInputFormat, function(dfFormat: string) {
+            return _.find(uniqueFormat, function(opFormat: string) {
+                return dfFormat.indexOf(opFormat) >= 0;
+            }) !== undefined;
+        });
+        return nts.uk.util.isNullOrEmpty(formats) ? defaultInputFormat : formats;
+    }
 
     export function UTCDate(year?: number, month?: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): Date {
         // Return local time in UTC
@@ -641,10 +641,10 @@ module nts.uk.time {
             return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
         }
     }
-     
+
     export class DateTimeFormatter {
         shortYmdPattern = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
-        shortYmdwPattern =/^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
+        shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
         shortYmPattern = /^\d{4}\/\d{1,2}$/;
         shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
         longYmdPattern = /^\d{4}年\d{1,2}月d{1,2}日$/;
@@ -656,12 +656,12 @@ module nts.uk.time {
         timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
         timeShortHmPattern = /^\d+:\d{2}$/;
         days = ['日', '月', '火', '水', '木', '金', '土'];
-        
+
         shortYmd(date: string) {
             let d = this.dateOf(date);
             if (this.shortYmdPattern.test(d)) return this.format(d);
         }
-        
+
         shortYmdw(date: string) {
             let d = this.dateOf(date);
             if (this.shortYmdwPattern.test(d)) return d;
@@ -670,7 +670,7 @@ module nts.uk.time {
                 return this.format(d) + '(' + dayStr + ')';
             }
         }
-        
+
         shortYm(date: string) {
             let d = this.format(this.dateOf(date));
             if (this.shortYmPattern.test(d)) return d;
@@ -679,7 +679,7 @@ module nts.uk.time {
                 if (end !== -1) return d.substring(0, end);
             }
         }
-        
+
         shortMd(date: string) {
             let d = this.format(this.dateOf(date));
             if (this.shortMdPattern.test(d)) return d;
@@ -688,7 +688,7 @@ module nts.uk.time {
                 if (start !== -1) return d.substring(start + 1);
             }
         }
-        
+
         longYmd(date: string) {
             let d = this.dateOf(date);
             if (this.longYmdPattern.test(d)) return d;
@@ -697,7 +697,7 @@ module nts.uk.time {
                 return this.toLongJpDate(mDate);
             }
         }
-        
+
         longYmdw(date: string) {
             let d = this.dateOf(date);
             if (this.longYmdwPattern.test(d)) return d;
@@ -706,11 +706,11 @@ module nts.uk.time {
                 return this.toLongJpDate(mDate) + '(' + this.days[mDate.getDay()] + ')';
             }
         }
-            
+
         toLongJpDate(d: Date) {
             return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
         }
-        
+
         longF(date: string) {
             let d = this.dateOf(date);
             if (this.longFPattern.test(d)) return d;
@@ -719,23 +719,23 @@ module nts.uk.time {
                 return this.fiscalYearOf(mDate) + '年度';
             }
         }
-            
+
         longJmd(date: string) {
             let d = this.dateOf(date);
             if (this.longJmdPattern.test(d)) return d;
             return this.fullJapaneseDateOf(d);
         }
-            
+
         longJm(date: string) {
             let d = this.dateOf(date);
             if (this.longJmPattern.test(d)) return d;
             let jpDate = this.fullJapaneseDateOf(d);
-            let start = jpDate.indexOf("月"); 
+            let start = jpDate.indexOf("月");
             if (start !== -1) {
                 return jpDate.substring(0, start + 1);
             }
         }
-            
+
         fullJapaneseDateOf(date: string) {
             if (this.shortYmdPattern.test(date)) {
                 let d = new Date(date);
@@ -743,27 +743,27 @@ module nts.uk.time {
             }
             return date;
         }
-        
+
         fiscalYearOf(date: Date) {
             if (date < new Date(date.getFullYear(), 3, 1))
                 return date.getFullYear() - 1;
             return date.getFullYear();
         }
-        
+
         dateOf(dateTime: string) {
             if (this.fullDateTimeShortPattern.test(dateTime)) {
                 return dateTime.split(" ")[0];
             }
             return dateTime;
         }
-        
+
         timeOf(dateTime: string) {
             if (this.fullDateTimeShortPattern.test(dateTime)) {
                 return dateTime.split(" ")[1];
             }
             return dateTime;
         }
-    
+
         timeShortHm(time: string) {
             let t = this.timeOf(time);
             if (this.timeShortHmPattern.test(t)) return t;
@@ -771,37 +771,37 @@ module nts.uk.time {
                 return t.substring(0, t.lastIndexOf(":"));
             }
         }
-    
+
         timeShortHms(time: string) {
             let t = this.timeOf(time);
             if (this.timeShortHmsPattern.test(t)) return t;
         }
-    
+
         clockShortHm(time: string) {
             return this.timeShortHm(time);
         }
-    
+
         fullDateTimeShort(dateTime: string) {
             if (this.fullDateTimeShortPattern.test(dateTime)) return dateTime;
         }
-        
+
         format(date: string) {
             return new Date(date).toLocaleDateString("ja-JP");
         }
     }
-     
+
     export function getFormatter() {
-        switch(systemLanguage) {
+        switch (systemLanguage) {
             case 'ja':
                 return new DateTimeFormatter();
             case 'en':
-                return null;   
+                return null;
         }
     }
-    
+
     export function applyFormat(format: string, dateTime: string, formatter: DateTimeFormatter) {
         if (formatter === undefined) formatter = getFormatter();
-        switch(format) {
+        switch (format) {
             case 'Short_YMD':
                 return formatter.shortYmd(dateTime);
             case 'Short_YMDW':
@@ -830,57 +830,57 @@ module nts.uk.time {
                 return formatter.fullDateTimeShort(dateTime);
         }
     }
-     
-    export function isEndOfMonth(value: string, format: string) : boolean{
+
+    export function isEndOfMonth(value: string, format: string): boolean {
         let currentDate = moment(value, format);
-        if(currentDate.isValid()){
-            return currentDate.daysInMonth() === currentDate.date();        
+        if (currentDate.isValid()) {
+            return currentDate.daysInMonth() === currentDate.date();
         }
         return false;
     }
-    
+
     export class TimeWithDayAttr {
-        dayDivision: DayAttr; 
+        dayDivision: DayAttr;
         time: number;
         rawValue: number;
-        
+
         MAX_HOUR = 24;
         MAX_MS = 60;
-        
-        constructor (rawValue: number) {
+
+        constructor(rawValue: number) {
             this.rawValue = rawValue;
-            if (rawValue < 0){
+            if (rawValue < 0) {
                 this.dayDivision = DayDivision.THE_PREVIOUS_DAY;
-                this.time = rawValue*-1;
+                this.time = Math.abs(rawValue);
             } else {
                 this.dayDivision = this.checkDayDivision(rawValue);
                 this.time = this.getTimeDuration(rawValue);
             }
-        }    
-        
-        getDayDivision (): DayAttr{
+        }
+
+        getDayDivision(): DayAttr {
             return this.dayDivision;
         }
-        
-        getTime(): string{
+
+        getTime(): string {
             let minutes = ntsNumber.trunc(this.time % 60);
-            return ntsNumber.trunc(this.time / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes); 
+            return ntsNumber.trunc(this.time / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
         }
-        
-        getRawTime(): string{
-            let minutes = ntsNumber.trunc(this.rawValue % 60);
+
+        getRawTime(): string {
+            let minutes = Math.abs(ntsNumber.trunc(this.rawValue % 60));
             return ntsNumber.trunc(this.rawValue / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
         }
-        
-        getTimeDuration(value: number): number{
-            if(this.dayDivision.value === DayDivision.THE_PRESENT_DAY.value){
+
+        getTimeDuration(value: number): number {
+            if (this.dayDivision.value === DayDivision.THE_PRESENT_DAY.value) {
                 return value;
             }
             return value - (this.dayDivision.value - 1) * this.MAX_HOUR * this.MAX_MS;
         }
 
         checkDayDivision(value: number): DayAttr {
-            let days: number = ntsNumber.trunc(value / (this.MAX_HOUR* this.MAX_MS));
+            let days: number = ntsNumber.trunc(value / (this.MAX_HOUR * this.MAX_MS));
             switch (days) {
                 case 0:
                     return DayDivision.THE_PRESENT_DAY;
@@ -892,32 +892,32 @@ module nts.uk.time {
                     return DayDivision.NONE;
             }
         }
-        
-        static cutDayDivision(input: string): string{
-            let dayDivisions = _.forEach(_.values(DayDivision), function(dd: DayAttr){
+
+        static cutDayDivision(input: string): string {
+            let dayDivisions = _.forEach(_.values(DayDivision), function(dd: DayAttr) {
                 if (input.indexOf(dd.text) >= 0) {
-                    input = input.replace(dd.text, "").trim();        
-                }        
-            });   
-            return input;    
+                    input = input.replace(dd.text, "").trim();
+                }
+            });
+            return input;
         }
     }
-    
+
     export class DayAttr {
         value: number;
         text: string;
-        
-        constructor (value: number, text: string){
+
+        constructor(value: number, text: string) {
             this.value = value;
             this.text = text;
         }
     }
 
     let DayDivision = {
-        NONE: new DayAttr(-1, ""), 
+        NONE: new DayAttr(-1, ""),
         THE_PREVIOUS_DAY: new DayAttr(0, "前日"),
         THE_PRESENT_DAY: new DayAttr(1, "当日"),
-        THE_NEXT_DAY: new DayAttr(2, "翌日"), 
+        THE_NEXT_DAY: new DayAttr(2, "翌日"),
         TWO_DAY_LATER: new DayAttr(3, "翌々日")
     }
 }
