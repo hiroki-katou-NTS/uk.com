@@ -114,6 +114,9 @@ module nts.uk.at.view.ksm005.e {
              * find by work time code of data
              */
             public findNameWorkTimeCode(worktimeCode: string, data: WorkTimeDto[]) {
+                if(worktimeCode === '000'){
+                    return "なし";    
+                }
                 var worktype = _.find(data, function(item) {
                     return item.code == worktimeCode;
                 });
@@ -134,12 +137,22 @@ module nts.uk.at.view.ksm005.e {
             }
 
             /**
+             * function get between month start month to end month
+             */
+            private getbetweenMonth(endMonth: number, startMonth: number): number {
+                var endYear: number = Number(endMonth/100);
+                var startYear: number = Number(startMonth/100);
+                var numberMonthStart: number = startYear * 12 + startMonth % 100;
+                var numberMonthEnd: number = endYear * 12 + endMonth % 100;
+                return numberMonthEnd-numberMonthStart;
+            }
+            /**
              * function check error by click button
              */
             public checkMonthlyPatternSettingBatch(): boolean {
                 var self = this;
                 //check start month and end month
-                if (self.endYearMonth() - self.startYearMonth() > 12) {
+                if (self.getbetweenMonth(self.endYearMonth(),self.startYearMonth()) > 12) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_149" }).then(function() {
                     });
                     return true;
@@ -184,9 +197,7 @@ module nts.uk.at.view.ksm005.e {
                     });
 
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error).then(function() {
-                        nts.uk.ui.windows.close();
-                    });
+                    nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });

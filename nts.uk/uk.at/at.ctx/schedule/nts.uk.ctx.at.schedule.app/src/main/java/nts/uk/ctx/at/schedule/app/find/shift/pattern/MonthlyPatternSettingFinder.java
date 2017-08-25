@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.i18n.custom.IInternationalization;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingDto;
@@ -34,6 +35,13 @@ public class MonthlyPatternSettingFinder {
 	/** The monthly pattern repository. */
 	@Inject
 	private MonthlyPatternRepository monthlyPatternRepository;
+	
+	/** The internationalization. */
+	@Inject
+	private IInternationalization internationalization;
+	
+    /** The Constant NONE_SETTING. */
+    public static final String NONE_SETTING = "KSM005_43";
 	
 	/**
 	 * Find by id.
@@ -60,17 +68,23 @@ public class MonthlyPatternSettingFinder {
 			Optional<MonthlyPattern> monthlyPattern = this.monthlyPatternRepository
 					.findById(companyId, monthlyPatternSetting.get().getMonthlyPatternCode().v());
 
+			MonthlyPatternDto info = new MonthlyPatternDto();
+			
 			// check setting begin
 			if (!StringUtil.isNullOrEmpty(monthlyPatternSetting.get().getMonthlyPatternCode().v(),
 					true)) {
 				dto.setSetting(true);
+				info.setCode(monthlyPatternSetting.get().getMonthlyPatternCode().v());
 			}
+			
 			// setting info exist
 			if(monthlyPattern.isPresent()){
-				MonthlyPatternDto info = new MonthlyPatternDto();
 				monthlyPattern.get().saveToMemento(info);
-				dto.setInfo(info);
 			}
+			else {
+				info.setName(internationalization.getItemName(NONE_SETTING).get());
+			}
+			dto.setInfo(info);
 		}
 		return dto;
 	}

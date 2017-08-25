@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -27,7 +28,7 @@ public class UpdateApplicationCommand {
 	/**
 	 * 入力日
 	 */
-	private BigDecimal inputDate; 
+	private GeneralDate inputDate; 
 	
 	/**
 	 * 入力者
@@ -42,7 +43,7 @@ public class UpdateApplicationCommand {
 	/**
 	 * 申請日
 	 */
-	private BigDecimal applicationDate; 
+	private GeneralDate applicationDate; 
 	
 	/**
 	 * 申請理由

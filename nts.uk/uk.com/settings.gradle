@@ -46,6 +46,8 @@ include 'wk.ctx:nts.uk.ctx.workflow.dom'
 include 'wk.ctx:nts.uk.ctx.workflow.infra'
 include 'wk.ctx:nts.uk.ctx.workflow.ws'
 include 'wk.ctx:nts.uk.ctx.workflow.ac'
+include 'wk.ctx:nts.uk.ctx.workflow.pub'
+include 'wk.ctx:nts.uk.ctx.workflow.pubimp'
 
 include 'com.ctx:bs:company:nts.uk.ctx.bs.company.ac'
 include 'com.ctx:bs:company:nts.uk.ctx.bs.company.app'

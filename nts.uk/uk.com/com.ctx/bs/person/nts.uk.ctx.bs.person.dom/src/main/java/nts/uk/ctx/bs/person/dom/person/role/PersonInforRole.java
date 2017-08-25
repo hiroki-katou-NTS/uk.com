@@ -1,8 +1,6 @@
 package nts.uk.ctx.bs.person.dom.person.role;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class PersonInfoRole
@@ -38,9 +36,6 @@ public class PersonInforRole extends AggregateRoot {
 
 	public static PersonInforRole createFromJavaType(String companyId, String roleId, String roleCode,
 			String roleName) {
-		if (roleId.isEmpty()) {
-			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
-		}
 		return new PersonInforRole(roleId, companyId, new RoleCode(roleCode),
 				new RoleName(roleName));
 	}

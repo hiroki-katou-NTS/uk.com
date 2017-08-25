@@ -100,23 +100,26 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             self.allowOtherRef.subscribe(function(newValue) {
 
-                if (newValue == 0) {
-
-                    $("#item_role_table_body").ntsGrid("disableNtsControlAt", 1, "otherAuth", "SwitchButtons");
-                    $("#item_role_table_body").ntsGrid("disableNtsControl", "otherAuth", "SwitchButtons");
-                } else {
-                    $("#item_role_table_body").ntsGrid("enableNtsControl", "otherAuth", "SwitchButtons");
+                let grid = $("#item_role_table_body");
+                let ds = grid.igGrid("option", "dataSource");
+                if (ds == null) {
+                    return;
                 }
+
+                grid.ntsGrid(newValue == 0 ? "disableNtsControls" : "enableNtsControls", "otherAuth", "SwitchButtons");
+
 
             });
 
             self.allowPersonRef.subscribe(function(newValue) {
 
-                if (newValue == 0) {
-                    $("#item_role_table_body").ntsGrid("disableNtsControl", "selfAuth", "SwitchButtons");
-                } else {
-                    $("#item_role_table_body").ntsGrid("enableNtsControl", "selfAuth", "SwitchButtons");
+                let grid = $("#item_role_table_body");
+                let ds = grid.igGrid("option", "dataSource");
+                if (ds == null) {
+                    return;
                 }
+
+                grid.ntsGrid(newValue == 0 ? "disableNtsControls" : "enableNtsControls", "selfAuth", "SwitchButtons");
 
             });
         }

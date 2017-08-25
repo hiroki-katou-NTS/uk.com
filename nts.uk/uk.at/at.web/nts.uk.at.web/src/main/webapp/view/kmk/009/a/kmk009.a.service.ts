@@ -1,5 +1,14 @@
 module kmk011.a.service {
+
+
     var paths = {
+        getAllTotalTimes: "ctx/at/schedule/shift/totaltimes/getallitem",
+        getAllTotalTimesDetail: "ctx/at/schedule/shift/totaltimes/getdetail/",
+        totalclassification: "ctx/at/schedule/shift/totaltimes/find/totalclassification",
+
+
+
+
         getAllDivTime: "at/record/divergencetime/getalldivtime",
         updateDivTime: "at/record/divergencetime/updatedivtime",
         updateTimeItemId: "at/record/divergencetime/updateTimeItemId",
@@ -7,6 +16,29 @@ module kmk011.a.service {
         getItemSet: "at/record/divergencetime/getitemset/",
         getAllName: "at/share/attendanceitem/getPossibleAttendanceItem"
     }
+
+    /**
+    * get all total times
+    */
+    export function getAllTotalTimes(): JQueryPromise<Array<viewmodel.model.TotalTimes>> {
+        return nts.uk.request.ajax("at", paths.getAllTotalTimes);
+    }
+    export function getTotalClsEnum(): JQueryPromise<Array<model.Enum>> {
+        return nts.uk.request.ajax(paths.totalclassification);
+    }
+
+    export function getAllTotalTimesDetail(TotalTimesNo: number): JQueryPromise<viewmodel.model.TotalTimesDetail> {
+        return nts.uk.request.ajax("at", paths.getAllTotalTimesDetail + TotalTimesNo);
+    }
+
+
+
+
+
+
+
+
+
     /**
     * get all item selected(item da duoc chon)
     */
@@ -42,5 +74,23 @@ module kmk011.a.service {
      */
     export function updateDivTime(Object: viewmodel.model.ObjectDivergence): JQueryPromise<Array<viewmodel.model.DivergenceTimeItem>> {
         return nts.uk.request.ajax("at", paths.updateDivTime, Object);
+    }
+
+
+
+
+    export module model {
+
+        export class Enum {
+            value: number;
+            fieldName: string;
+            localizedName: string;
+
+            constructor(value: number, fieldName: string, localizedName: string) {
+                this.value = value;
+                this.fieldName = fieldName;
+                this.localizedName = localizedName;
+            }
+        }
     }
 }

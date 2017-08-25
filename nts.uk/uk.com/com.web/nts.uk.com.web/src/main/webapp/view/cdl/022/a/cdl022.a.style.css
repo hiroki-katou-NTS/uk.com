@@ -1,0 +1,12 @@
+#contents-area {
+	padding: 20px 60px 0 60px;
+}
+
+#contents-area>div:first-child {
+	padding: 0 10px;
+	margin: 10px 0 20px 0;
+}
+
+#contents-area tbody.ui-iggrid-tablebody td {
+	display: block;
+}

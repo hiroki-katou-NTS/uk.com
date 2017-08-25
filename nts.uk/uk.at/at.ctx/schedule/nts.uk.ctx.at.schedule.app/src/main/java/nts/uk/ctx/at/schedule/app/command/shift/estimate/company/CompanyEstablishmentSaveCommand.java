@@ -9,9 +9,9 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateNumberOfDayDto;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimatePriceDto;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.company.dto.CompanyEstimateTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentNumberOfDayDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentPriceDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
@@ -27,13 +27,13 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class CompanyEstablishmentSaveCommand {
 
 	/** The estimate time. */
-	private CompanyEstimateTimeDto estimateTime;
+	private EstablishmentTimeDto estimateTime;
 	
 	/** The estimate price. */
-	private CompanyEstimatePriceDto estimatePrice;
+	private EstablishmentPriceDto estimatePrice;
 	
 	/** The estimate number of day. */
-	private CompanyEstimateNumberOfDayDto estimateNumberOfDay;
+	private EstablishmentNumberOfDayDto estimateNumberOfDay;
 	
 	private int targetYear;
 	
