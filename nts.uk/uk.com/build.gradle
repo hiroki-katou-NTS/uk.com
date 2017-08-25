@@ -106,7 +106,7 @@ subprojects {
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.27'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.39'
+		compile group: 'nts.arc', name: 'nts.arc', version: 'test.0.41'
 		
 	}
 }
