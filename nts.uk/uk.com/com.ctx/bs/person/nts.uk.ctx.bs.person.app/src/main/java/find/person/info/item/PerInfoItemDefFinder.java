@@ -35,7 +35,7 @@ public class PerInfoItemDefFinder {
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	@Inject
-	IInternationalization internationalization;
+	IInternationalization internationalization; 
 
 	@Inject
 	private PerInfoCategoryFinder categoryFinder;
