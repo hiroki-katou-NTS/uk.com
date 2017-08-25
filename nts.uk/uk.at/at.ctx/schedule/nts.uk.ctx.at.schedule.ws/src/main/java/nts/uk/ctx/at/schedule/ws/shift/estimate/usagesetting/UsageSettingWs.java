@@ -23,7 +23,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UseClassification;
 /**
  * The Class UsageSettingWs.
  */
-@Path("ctx/at/schedule/shift/pattern/estimate/usagesetting")
+@Path("ctx/at/schedule/shift/estimate/usagesetting")
 @Produces("application/json")
 public class UsageSettingWs extends WebService {
 
