@@ -12,10 +12,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.find.shift.totaltimes.TotalTimesFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.totaltimes.dto.TotalTimesDetailDto;
 import nts.uk.ctx.at.schedule.app.find.shift.totaltimes.dto.TotalTimesItemDto;
+import nts.uk.ctx.at.schedule.dom.shift.totaltimes.SummaryAtr;
 
 /**
  * The Class TotalTimesWS.
@@ -42,14 +45,23 @@ public class TotalTimesWS extends WebService {
 	/**
 	 * Gets the total times detail.
 	 *
-	 * @param totalCountNo
-	 *            the total count no
+	 * @param totalCountNo the total count no
 	 * @return the total times detail
 	 */
 	@POST
 	@Path("getdetail/{totalCountNo}")
-	public TotalTimesDetailDto getTotalTimesDetail(
-			@PathParam("totalCountNo") Integer totalCountNo) {
+	public TotalTimesDetailDto getTotalTimesDetail(@PathParam("totalCountNo") Integer totalCountNo) {
 		return this.totalTimesFinder.getTotalTimesDetails(totalCountNo);
 	}
+
+	/**
+	 * Find completion list.
+	 *
+	 * @return the list
+	 */
+	@POST
+    @Path("find/totalclassification")
+    public List<EnumConstant> findCompletionList() {
+        return EnumAdaptor.convertToValueNameList(SummaryAtr.class);
+    }
 }
