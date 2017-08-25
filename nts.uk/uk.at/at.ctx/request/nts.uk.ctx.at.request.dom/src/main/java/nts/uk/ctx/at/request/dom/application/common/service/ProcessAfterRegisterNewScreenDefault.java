@@ -2,6 +2,9 @@ package nts.uk.ctx.at.request.dom.application.common.service;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
+@Stateless
 public class ProcessAfterRegisterNewScreenDefault {
 	
 	public void processAfterRegisterNewScreen(String companyID, String appID){

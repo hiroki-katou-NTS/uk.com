@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.request.ac.employee;
 
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.EmployeeAdaptor;
 
+@Stateless
 public class EmployeeAdaptorImpl implements EmployeeAdaptor {
 
 	/*@Inject

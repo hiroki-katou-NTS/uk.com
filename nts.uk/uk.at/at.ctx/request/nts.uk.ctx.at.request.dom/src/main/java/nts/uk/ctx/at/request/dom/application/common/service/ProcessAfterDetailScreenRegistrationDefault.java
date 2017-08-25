@@ -1,10 +1,26 @@
 package nts.uk.ctx.at.request.dom.application.common.service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import nts.uk.ctx.at.request.dom.application.common.Application;
+
+import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+
+@Stateless
 public class ProcessAfterDetailScreenRegistrationDefault implements ProcessAfterDetailScreenRegistrationService {
 	
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
 	public void processAfterDetailScreenRegistration(String companyID, String appID){
+		Optional<Application> application = applicationRepository.getAppById(companyID, appID);
+		if(!application.isPresent()) return;
+		
 		/*
 		Application app = Application.find(appID);
 		if(!app.isPresent) return;
@@ -45,7 +61,8 @@ public class ProcessAfterDetailScreenRegistrationDefault implements ProcessAfter
 		*/
 	}
 	
-	public ArrayList<ArrayList<String>> acquireApproverWhoApproved(String approvalPhases){
+	public ArrayList<ArrayList<String>> acquireApproverWhoApproved(List<AppApprovalPhase> appApprovalPhases){
+		
 		/*
 		approverListWhoApproved.clear(); // 承認を行った承認者一覧
 		approverList.clear(); // 承認者一覧
