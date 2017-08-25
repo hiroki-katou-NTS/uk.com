@@ -25,33 +25,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	private static final String DELETE_APHASE_BY_BRANCHID = "DELETE from WwfdtApprovalPhase c "
 			+ " WHERE c.wwfdtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfdtApprovalPhasePK.branchId = :branchId";
-	/**
-	 * convert entity WwfmtApprovalPhase to domain ApprovalPhase
-	 * @param entity
-	 * @return
-	 */
-	private static ApprovalPhase toDomainApPhase(WwfmtApprovalPhase entity){
-		val domain = ApprovalPhase.createSimpleFromJavaType(entity.wwfmtApprovalPhasePK.companyId,
-				entity.wwfmtApprovalPhasePK.branchId,
-				entity.wwfmtApprovalPhasePK.approvalPhaseId,
-				entity.approvalForm,
-				entity.browsingPhase,
-				entity.displayOrder);
-		return domain;
-	}
-	/**
-	 * convert domain ApprovalPhase to entity WwfmtApprovalPhase
-	 * @param domain
-	 * @return
-	 */
-	private static WwfmtApprovalPhase toEntityAppPhase(ApprovalPhase domain){
-		val entity = new WwfmtApprovalPhase();
-		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getCompanyId(), domain.getBranchId(), domain.getApprovalPhaseId());
-		entity.approvalForm = domain.getApprovalForm().value;
-		entity.browsingPhase = domain.getBrowsingPhase();
-		entity.displayOrder = domain.getOrderNumber();
-		return entity;
-	}
+
 	/**
 	 * get All Approval Phase by Code
 	 * @param companyId
@@ -90,4 +64,31 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		.setParameter("branchId", branchId)
 		.executeUpdate();
 	}	
+	/**
+	 * convert entity WwfmtApprovalPhase to domain ApprovalPhase
+	 * @param entity
+	 * @return
+	 */
+	private ApprovalPhase toDomainApPhase(WwfmtApprovalPhase entity){
+		val domain = ApprovalPhase.createSimpleFromJavaType(entity.wwfmtApprovalPhasePK.companyId,
+				entity.wwfmtApprovalPhasePK.branchId,
+				entity.wwfmtApprovalPhasePK.approvalPhaseId,
+				entity.approvalForm,
+				entity.browsingPhase,
+				entity.displayOrder);
+		return domain;
+	}
+	/**
+	 * convert domain ApprovalPhase to entity WwfmtApprovalPhase
+	 * @param domain
+	 * @return
+	 */
+	private WwfmtApprovalPhase toEntityAppPhase(ApprovalPhase domain){
+		val entity = new WwfmtApprovalPhase();
+		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getCompanyId(), domain.getBranchId(), domain.getApprovalPhaseId());
+		entity.approvalForm = domain.getApprovalForm().value;
+		entity.browsingPhase = domain.getBrowsingPhase();
+		entity.displayOrder = domain.getOrderNumber();
+		return entity;
+	}
 }

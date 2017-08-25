@@ -20,17 +20,7 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 	private final String SELECT_FROM_APBRANCH = "SELECT c FROM WwfmtBranch c"
 			+ " WHERE c.wwfmtBranchPK.companyId = :companyId"
 			+ " AND c.wwfmtBranchPK.branchId = :branchId";
-	/**
-	 * convert entity WwfmtBranch to domain ApprovalBranch
-	 * @param entity
-	 * @return
-	 */
-	private static ApprovalBranch toDomainBranch(WwfmtBranch entity){
-		val domain = new ApprovalBranch(entity.wwfmtBranchPK.companyId,
-				entity.wwfmtBranchPK.branchId,
-				entity.number);
-		return domain;
-	}
+
 	/**
 	 * get Approval Branch
 	 * @param companyId
@@ -44,5 +34,16 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 				.setParameter("companyId", companyId)
 				.setParameter("branchId", branchId)
 				.getSingle(c->toDomainBranch(c));
+	}
+	/**
+	 * convert entity WwfmtBranch to domain ApprovalBranch
+	 * @param entity
+	 * @return
+	 */
+	private ApprovalBranch toDomainBranch(WwfmtBranch entity){
+		val domain = new ApprovalBranch(entity.wwfmtBranchPK.companyId,
+				entity.wwfmtBranchPK.branchId,
+				entity.number);
+		return domain;
 	}
 }

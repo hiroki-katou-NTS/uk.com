@@ -21,48 +21,11 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComAppr
 @Stateless
 public class JpaCompanyApprovalRootRepository extends JpaRepository implements CompanyApprovalRootRepository{
 
-	private final String SELECT_FROM_COMAPR = "SELECT c FROM WwfmtComApprovalRoot c"
-			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId";
-	private final String SELECT_COMAPR_BY_EDATE = "SELECT c FROM WwfmtComApprovalRoot c"
-			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
-			+ " AND c.endDate = :endDate";
-	/**
-	 * convert entity WwfmtComApprovalRoot to domain CompanyApprovalRoot
-	 * @param entity
-	 * @return
-	 */
-	private static CompanyApprovalRoot toDomainComApR(WwfmtComApprovalRoot entity){
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		val domain = CompanyApprovalRoot.createSimpleFromJavaType(entity.wwfmtComApprovalRootPK.companyId,
-				entity.wwfmtComApprovalRootPK.approvalId,
-				entity.wwfmtComApprovalRootPK.historyId,
-				entity.applicationType,
-				entity.startDate.localDate().format(formatter),
-				entity.endDate.localDate().format(formatter),
-				entity.branchId,
-				entity.anyItemAppId,
-				entity.confirmationRootType,
-				entity.employmentRootAtr);
-		return domain;
-	}
-	/**
-	 * convert domain CompanyApprovalRoot to entity WwfmtComApprovalRoot
-	 * @param domain
-	 * @return
-	 */
-	private static WwfmtComApprovalRoot toEntityComApR(CompanyApprovalRoot domain){
-		val entity = new WwfmtComApprovalRoot();
-		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getHistoryId());
-		entity.startDate = domain.getPeriod().getStartDate();
-		entity.endDate = domain.getPeriod().getEndDate();
-		entity.applicationType = domain.getApplicationType().value;
-		entity.branchId = domain.getBranchId();
-		entity.anyItemAppId = domain.getAnyItemApplicationId();
-		entity.confirmationRootType = domain.getConfirmationRootType().value;
-		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
-		return entity;
-	}
-	
+	private final String FIND_COM_APR_ALL = "SELECT c FROM WwfmtComApprovalRoot c";
+	 private final String SELECT_COM_APR_BY_CID = FIND_COM_APR_ALL
+	   + " WHERE c.wwfmtComApprovalRoot.companyId = :companyId";
+	 private final String SELECT_COM_APR_BY_DATE = SELECT_COM_APR_BY_CID 
+	   + " AND c.endDate = :endDate";
 	/**
 	 * get All Company Approval Root
 	 * @param companyId
@@ -70,7 +33,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	@Override
 	public List<CompanyApprovalRoot> getAllComApprovalRoot(String companyId) {
-		return this.queryProxy().query(SELECT_FROM_COMAPR, WwfmtComApprovalRoot.class)
+		return this.queryProxy().query(SELECT_COM_APR_BY_CID, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.getList(c->toDomainComApR(c));
 	}
@@ -94,7 +57,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	@Override
 	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType) {
-		return this.queryProxy().query(SELECT_COMAPR_BY_EDATE, WwfmtComApprovalRoot.class)
+		return this.queryProxy().query(SELECT_COM_APR_BY_DATE, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("endDate", endDate)
 				.getList(c->toDomainComApR(c));
@@ -134,5 +97,41 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	public void deleteComApprovalRoot(String companyId, String approvalId, String historyId) {
 		WwfmtComApprovalRootPK comPK = new WwfmtComApprovalRootPK(companyId, approvalId, historyId);
 		this.commandProxy().remove(WwfmtComApprovalRoot.class,comPK);
+	}
+	/**
+	 * convert entity WwfmtComApprovalRoot to domain CompanyApprovalRoot
+	 * @param entity
+	 * @return
+	 */
+	private CompanyApprovalRoot toDomainComApR(WwfmtComApprovalRoot entity){
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		val domain = CompanyApprovalRoot.createSimpleFromJavaType(entity.wwfmtComApprovalRootPK.companyId,
+				entity.wwfmtComApprovalRootPK.approvalId,
+				entity.wwfmtComApprovalRootPK.historyId,
+				entity.applicationType,
+				entity.startDate.localDate().format(formatter),
+				entity.endDate.localDate().format(formatter),
+				entity.branchId,
+				entity.anyItemAppId,
+				entity.confirmationRootType,
+				entity.employmentRootAtr);
+		return domain;
+	}
+	/**
+	 * convert domain CompanyApprovalRoot to entity WwfmtComApprovalRoot
+	 * @param domain
+	 * @return
+	 */
+	private WwfmtComApprovalRoot toEntityComApR(CompanyApprovalRoot domain){
+		val entity = new WwfmtComApprovalRoot();
+		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getHistoryId());
+		entity.startDate = domain.getPeriod().getStartDate();
+		entity.endDate = domain.getPeriod().getEndDate();
+		entity.applicationType = domain.getApplicationType().value;
+		entity.branchId = domain.getBranchId();
+		entity.anyItemAppId = domain.getAnyItemApplicationId();
+		entity.confirmationRootType = domain.getConfirmationRootType().value;
+		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
+		return entity;
 	}
 }

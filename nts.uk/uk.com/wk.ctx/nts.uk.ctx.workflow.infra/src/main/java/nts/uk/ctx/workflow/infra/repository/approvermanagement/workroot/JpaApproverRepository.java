@@ -27,37 +27,6 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
 	
 	/**
-	 * convert entity WwfmtAppover to domain Approver
-	 * @param entity
-	 * @return
-	 */
-	private static Approver toDomainApprover(WwfmtAppover entity){
-		val domain = Approver.createSimpleFromJavaType(entity.wwfmtAppoverPK.companyId,
-				entity.wwfmtAppoverPK.approvalPhaseId,
-				entity.wwfmtAppoverPK.approverId,
-				entity.jobId,
-				entity.employeeId,
-				entity.displayOrder,
-				entity.approvalAtr,
-				entity.confirmPerson);
-		return domain;
-	}
-	/**
-	 * convert domain Approver to entity WwfmtAppover
-	 * @param domain
-	 * @return
-	 */
-	private static WwfmtAppover toEntityApprover(Approver domain){
-		val entity = new WwfmtAppover();
-		entity.wwfmtAppoverPK = new WwfmtAppoverPK(domain.getCompanyId(), domain.getApprovalPhaseId(), domain.getApproverId());
-		entity.jobId = domain.getJobTitleId();
-		entity.employeeId = domain.getEmployeeId();
-		entity.displayOrder = domain.getOrderNumber();
-		entity.approvalAtr = domain.getApprovalAtr().value;
-		entity.confirmPerson = domain.getConfirmPerson();
-		return entity;
-	}
-	/**
 	 * get All Approver By Code
 	 * @param companyId
 	 * @param approvalPhaseId
@@ -94,5 +63,36 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 		.setParameter("companyId", companyId)
 		.setParameter("approvalPhaseId", approvalPhaseId)
 		.executeUpdate();
+	}
+	/**
+	 * convert entity WwfmtAppover to domain Approver
+	 * @param entity
+	 * @return
+	 */
+	private Approver toDomainApprover(WwfmtAppover entity){
+		val domain = Approver.createSimpleFromJavaType(entity.wwfmtAppoverPK.companyId,
+				entity.wwfmtAppoverPK.approvalPhaseId,
+				entity.wwfmtAppoverPK.approverId,
+				entity.jobId,
+				entity.employeeId,
+				entity.displayOrder,
+				entity.approvalAtr,
+				entity.confirmPerson);
+		return domain;
+	}
+	/**
+	 * convert domain Approver to entity WwfmtAppover
+	 * @param domain
+	 * @return
+	 */
+	private WwfmtAppover toEntityApprover(Approver domain){
+		val entity = new WwfmtAppover();
+		entity.wwfmtAppoverPK = new WwfmtAppoverPK(domain.getCompanyId(), domain.getApprovalPhaseId(), domain.getApproverId());
+		entity.jobId = domain.getJobTitleId();
+		entity.employeeId = domain.getEmployeeId();
+		entity.displayOrder = domain.getOrderNumber();
+		entity.approvalAtr = domain.getApprovalAtr().value;
+		entity.confirmPerson = domain.getConfirmPerson();
+		return entity;
 	}
 }
