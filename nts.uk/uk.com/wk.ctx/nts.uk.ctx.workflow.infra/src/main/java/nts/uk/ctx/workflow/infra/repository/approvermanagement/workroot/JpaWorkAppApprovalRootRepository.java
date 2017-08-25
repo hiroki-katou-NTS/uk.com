@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -75,12 +77,14 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @return
 	 */
 	private static CompanyApprovalRoot toDomainComApR(WwfmtComApprovalRoot entity){
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		val domain = CompanyApprovalRoot.createSimpleFromJavaType(entity.wwfmtComApprovalRootPK.companyId,
 				entity.wwfmtComApprovalRootPK.approvalId,
 				entity.wwfmtComApprovalRootPK.historyId,
 				entity.applicationType,
-				entity.startDate.toString(),
-				entity.endDate.toString(),
+				entity.startDate.localDate().format(formatter),
+//				GeneralDate.fromString(entity.startDate.toString(), "yyyy/M/d").toString(),
+				entity.endDate.localDate().format(formatter),
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
@@ -522,5 +526,45 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 				.setParameter("employeeId", employeeId)
 				.setParameter("endDate", endDate)
 				.getList(c->toDomainPsApR(c));
+	}
+	/**
+	 * get ComApprovalRoot
+	 * @param companyId
+	 * @param approvalId
+	 * @param historyId
+	 * @return
+	 */
+	@Override
+	public Optional<CompanyApprovalRoot> getComApprovalRoot(String companyId, String approvalId, String historyId) {
+		WwfmtComApprovalRootPK pk = new WwfmtComApprovalRootPK(companyId, approvalId, historyId);
+		return this.queryProxy().find(pk, WwfmtComApprovalRoot.class).map(c->toDomainComApR(c));
+	}
+	/**
+	 * get WpApprovalRoot
+	 * @param companyId
+	 * @param approvalId
+	 * @param workplaceId
+	 * @param historyId
+	 * @return
+	 */
+	@Override
+	public Optional<WorkplaceApprovalRoot> getWpApprovalRoot(String companyId, String approvalId, String workplaceId,
+			String historyId) {
+		WwfmtWpApprovalRootPK pk = new WwfmtWpApprovalRootPK(companyId, approvalId, workplaceId, historyId);
+		return this.queryProxy().find(pk, WwfmtWpApprovalRoot.class).map(c->toDomainWpApR(c));
+	}
+	/**
+	 * get PsApprovalRoot
+	 * @param companyId
+	 * @param approvalId
+	 * @param employeeId
+	 * @param historyId
+	 * @return
+	 */
+	@Override
+	public Optional<PersonApprovalRoot> getPsApprovalRoot(String companyId, String approvalId, String employeeId,
+			String historyId) {
+		WwfmtPsApprovalRootPK pk = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
+		return this.queryProxy().find(pk, WwfmtPsApprovalRoot.class).map(c->toDomainPsApR(c));
 	}
 }

@@ -24,7 +24,7 @@ module cdl022.a.vm {
 
         pushData = () => {
             let self = this,
-                sorts: Array<IModel> = ko.toJS(self.items);
+                sorts: Array<IModel> = ko.unwrap(self.items);
 
             setShared('CDL020_VALUES', sorts);
             close();

@@ -7,8 +7,8 @@
 <body>
 	<ui:composition>
 		<div tabindex="13" id="tab-panel" class="tabPanel"
-				data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-				<div class="tab-content-1" data-bind="with: companyTimeModel">
+				data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
+				<div class="tab-content-1" data-bind="with: estimateTimeModel">
 					<div class="control-group">
 						<div class="pull-left">
 							<div data-bind="ntsFormLabel: {required: true}">
@@ -90,7 +90,7 @@
 						</table>
 					</div>
 				</div>
-				<div class="tab-content-2" data-bind="with: companyPriceModel">
+				<div class="tab-content-2" data-bind="with: estimatePriceModel">
 					<div class="control-group">
 						<div class="pull-left">
 							<div data-bind="ntsFormLabel: {required: true}">
@@ -157,7 +157,7 @@
 						</table>
 					</div>
 				</div>
-				<div class="tab-content-3" data-bind="with: companyDaysModel">
+				<div class="tab-content-3" data-bind="with: estimateDaysModel">
 					<div class="control-group">
 						<div class="pull-left">
 							<div data-bind="ntsFormLabel: {required: true}">
