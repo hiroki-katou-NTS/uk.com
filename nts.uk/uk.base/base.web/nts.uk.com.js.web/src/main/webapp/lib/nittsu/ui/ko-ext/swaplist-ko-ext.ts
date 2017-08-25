@@ -203,9 +203,9 @@ module nts.uk.ui.koExtentions {
 
             var $moveArea = $swap.find("#" + elementId + "-move-data")
                 .append("<button class = 'move-button move-forward ntsSwap_Component'><i class='icon icon-button-arrow-right'></i></button>")
-                .append("<button class = 'move-button move-forward-all ntsSwap_Component'><i class='icon icon-button-arrow-all-right'></i></button>")
+                .append("<button class = 'move-button move-forward-all ntsSwap_Component'><i class='img-icon icon-move-all-right'></i></button>")
                 .append("<button class = 'move-button move-back ntsSwap_Component'><i class='icon icon-button-arrow-left'></i></button>")
-                .append("<button class = 'move-button move-back-all ntsSwap_Component'><i class='icon icon-button-arrow-all-left'></i></button>");
+                .append("<button class = 'move-button move-back-all ntsSwap_Component'><i class='img-icon icon-move-all-left'></i></button>");
             
             var $moveForward = $moveArea.find(".move-forward");
             var $moveForwardAll = $moveArea.find(".move-forward-all");
