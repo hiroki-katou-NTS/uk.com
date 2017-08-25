@@ -1,4 +1,5 @@
 declare var __viewContext: ViewContext;
+declare var systemLanguage: string;
 declare var names: Names;
 declare var messages: Messages;
 
