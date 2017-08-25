@@ -136,8 +136,8 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
+                self.setSelectableYears();
                 self.onSelectCompany().done(function(){
-                    self.setSelectableYears();
                     dfd.resolve(self);    
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -170,7 +170,23 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 
             }
-            
+           /**
+            * load company establishment
+            */
+            private loadCompanyEstablishment(targetYear: number, isLoading: boolean): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                var self = this;
+                service.findCompanyEstablishment(targetYear).done(function(data) {
+                    self.companyEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
+                    self.companyEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
+                    self.companyEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
+                    if (isLoading) {
+                        self.isLoading(false);
+                    }
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
             /**
              * on click tab panel company action event
              */
@@ -182,28 +198,17 @@ module nts.uk.at.view.ksm001.a {
                 self.isPersonSelected(false);
                 self.isCompanySelected(true);
                 self.isLoading(true);
-                service.findCompanyEstablishment(2017).done(function(data) {
-                    self.companyEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
-                    self.companyEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
-                    self.companyEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
-                    self.isLoading(false);
-                    self.removeClassDataSelectTabs(self.companyEstablishmentModel.selectedTab());
+                self.loadCompanyEstablishment(self.selectedTargetYear(), true).done(function() {
+                    self.selectedTargetYear.subscribe(function(targetYear) {
+                        self.loadCompanyEstablishment(targetYear, false);
+                    });
                     dfd.resolve();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
             }
-            
-            /**
-             * 
-             */
-            public removeClassDataSelectTabs(idTabs: string) {
-                window.setTimeout(function() {
-                    $('#' + idTabs).removeClass('disappear');
-                }, 1000);
-            }
-            
+                        
            
             /**
              * call service load data 
@@ -213,6 +218,24 @@ module nts.uk.at.view.ksm001.a {
                 if (employmentCode) {
                     
                 }
+            }
+            
+             /**
+            * load company establishment
+            */
+            private loadEmploymentEstablishment(targetYear: number, employmentCode: string, isLoading: boolean): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                var self = this;
+                service.findEmploymentEstablishment(targetYear,employmentCode).done(function(data) {
+                    self.employmentEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
+                    self.employmentEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
+                    self.employmentEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
+                    if (isLoading) {
+                        self.isLoading(false);
+                    }
+                    dfd.resolve();
+                });
+                return dfd.promise();
             }
              /**
              * on click tab panel employment action event
@@ -225,20 +248,16 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(true);
                 self.isLoading(true);
                 $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption);
-                   self.selectedEmploymentCode.valueHasMutated();
-                    self.selectedEmploymentCode.subscribe(function(employmentCode) {
-                        if (employmentCode) {
-                            service.findEmploymentEstablishment(2017, employmentCode).done(function(data) {
-                                self.employmentEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
-                                self.employmentEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
-                                self.employmentEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
-                                self.removeClassDataSelectTabs(self.employmentEstablishmentModel.selectedTab());
-                                self.isLoading(false);
-                            }).always(() => {
-                                nts.uk.ui.block.clear();
-                            });
-                        }
-                    })
+                self.selectedEmploymentCode.valueHasMutated();
+                self.selectedEmploymentCode.subscribe(function(employmentCode) {
+                    if (employmentCode) {
+                        self.loadEmploymentEstablishment(self.selectedTargetYear(), employmentCode, true).done(function() {
+
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    }
+                });
                 
             }
             /**
@@ -262,20 +281,59 @@ module nts.uk.at.view.ksm001.a {
                 self.selectedEmployeeCode.valueHasMutated();
                 self.selectedEmployeeCode.subscribe(function(employeeCode) {
                     if (employeeCode) {
-                        service.findPersonalEstablishment(2017, employeeCode).done(function(data) {
+                        service.findPersonalEstablishment(2017, self.findEmployeeIdByCode(employeeCode)).done(function(data) {
                             self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
                             self.personalEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
                             self.personalEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
-                            self.removeClassDataSelectTabs(self.personalEstablishmentModel.selectedTab());
                             self.isLoading(false);
                         });
                     }
                 });
-             self.removeClassDataSelectTabs(self.personalEstablishmentModel.selectedTab());
                 nts.uk.ui.block.clear();
             }
 
+            /**
+             * update selected employee kcp005 => detail
+             */
+            public findByCodeEmployee(employeeCode: string): UnitModel {
+                var employee: UnitModel;
+                var self = this;
+                for (var employeeSelect of self.employeeList()) {
+                    if (employeeSelect.code === employeeCode) {
+                        employee = employeeSelect;
+                        break;
+                    }
+                }
+                return employee;
+            }
             
+            
+            /**
+             * find employee id in selected
+             */
+            public findEmployeeIdByCode(employeeCode: string): string{
+                var self = this;
+                var employeeId = '';
+                for (var employee of self.selectedEmployee()) {
+                    if(employee.employeeCode === employeeCode){
+                        employeeId = employee.employeeId;
+                    }
+                }
+                return employeeId;
+            }
+            /**
+             * find employee code in selected
+             */
+            public findEmployeeCodeById(employeeId: string): string{
+                var self = this;
+                var employeeCode = '';
+                for (var employee of self.selectedEmployee()) {
+                    if(employee.employeeId === employeeId){
+                        employeeCode = employee.employeeCode;
+                    }
+                }
+                return employeeCode;
+            }
             /**
              * apply ccg001 search data to kcp005
              */
@@ -294,7 +352,7 @@ module nts.uk.at.view.ksm001.a {
                 self.employeeList(employeeSearchs);
                 
                 if (dataList.length > 0) {
-                    self.selectedEmployeeCode(dataList[0].employeeId);
+                    self.selectedEmployeeCode(dataList[0].employeeCode);
                 }
 
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data) {
@@ -347,11 +405,26 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: CompanyEstablishmentDto = {
-                    estimateTime: self.companyEstablishmentModel.estimateTimeModel().toDto(),
-                    estimatePrice: self.companyEstablishmentModel.estimatePriceModel().toDto(),
-                    estimateNumberOfDay: self.companyEstablishmentModel.estimateDaysModel().toDto()
+                    estimateTime: self.companyEstablishmentModel.estimateTimeModel.toDto(),
+                    estimatePrice: self.companyEstablishmentModel.estimatePriceModel.toDto(),
+                    estimateNumberOfDay: self.companyEstablishmentModel.estimateDaysModel.toDto()
+                    
                 };
                 service.saveCompanyEstablishment(2017, dto).done(function(){
+                   
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+           /**
+            * function on click deleteCompanyEstablishment action
+            */
+            public deleteCompanyEstablishment(): void {
+                nts.uk.ui.block.invisible();
+                var self = this;    
+                
+                service.deleteCompanyEstablishment(2017).done(function(){
                    
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -365,12 +438,25 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: EmploymentEstablishmentDto = {
-                    estimateTime: self.employmentEstablishmentModel.estimateTimeModel().toDto(),
-                    estimatePrice: self.employmentEstablishmentModel.estimatePriceModel().toDto(),
-                    estimateNumberOfDay: self.employmentEstablishmentModel.estimateDaysModel().toDto(),
+                    estimateTime: self.employmentEstablishmentModel.estimateTimeModel.toDto(),
+                    estimatePrice: self.employmentEstablishmentModel.estimatePriceModel.toDto(),
+                    estimateNumberOfDay: self.employmentEstablishmentModel.estimateDaysModel.toDto(),
                     employmentCode: self.selectedEmploymentCode()
                 };
                 service.saveEmploymentEstablishment(2017, dto).done(function(){
+                   
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+           /**
+            * function on click deleteEmploymentEstablishment action
+            */
+            public deleteEmploymentEstablishment(): void {
+                nts.uk.ui.block.invisible();
+                var self = this;    
+                service.deleteEmploymentEstablishment(2017, self.selectedEmploymentCode()).done(function(){
                    
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -384,12 +470,25 @@ module nts.uk.at.view.ksm001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: PersonalEstablishmentDto = {
-                    estimateTime: self.personalEstablishmentModel.estimateTimeModel().toDto(),
-                    estimatePrice: self.personalEstablishmentModel.estimatePriceModel().toDto(),
-                    estimateNumberOfDay: self.personalEstablishmentModel.estimateDaysModel().toDto(),
-                    employeeId: self.selectedEmployeeCode()
+                    estimateTime: self.personalEstablishmentModel.estimateTimeModel.toDto(),
+                    estimatePrice: self.personalEstablishmentModel.estimatePriceModel.toDto(),
+                    estimateNumberOfDay: self.personalEstablishmentModel.estimateDaysModel.toDto(),
+                    employeeId: self.findEmployeeIdByCode(self.selectedEmployeeCode())
                 };
                 service.savePersonalEstablishment(2017, dto).done(function(){
+                   
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+           /**
+            * function on click deletePersonalEstablishment action
+            */
+            public deletePersonalEstablishment(): void {
+                nts.uk.ui.block.invisible();
+                var self = this;    
+                service.deletePersonalEstablishment(2017, self.findEmployeeIdByCode(self.selectedEmployeeCode())).done(function(){
                    
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -523,11 +622,21 @@ module nts.uk.at.view.ksm001.a {
             }
             
             updateData(dto: EstablishmentTimeDto) {
-                this.monthlyEstimates = [];
-                for (var item of dto.monthlyEstimates) {
-                    var model: EstimateTimeModel = new EstimateTimeModel();
-                    model.updateData(item);
-                    this.monthlyEstimates.push(model);
+                if (this.monthlyEstimates.length == 0) {
+                    this.monthlyEstimates = [];
+                    for (var item of dto.monthlyEstimates) {
+                        var model: EstimateTimeModel = new EstimateTimeModel();
+                        model.updateData(item);
+                        this.monthlyEstimates.push(model);
+                    }
+                } else {
+                    for (var itemDto of dto.monthlyEstimates) {
+                        for(var model of this.monthlyEstimates){
+                            if (itemDto.month == model.month()) {
+                                model.updateData(itemDto);
+                            }
+                        }
+                    }
                 }
                 this.yearlyEstimate.updateData(dto.yearlyEstimate);
             }
@@ -554,11 +663,21 @@ module nts.uk.at.view.ksm001.a {
             }
             
             updateData(dto: EstablishmentPriceDto) {
-                this.monthlyEstimates = [];
-                for (var item of dto.monthlyEstimates) {
-                    var model: EstimatePriceModel = new EstimatePriceModel();
-                    model.updateData(item);
-                    this.monthlyEstimates.push(model);
+                if (this.monthlyEstimates.length == 0) {
+                    this.monthlyEstimates = [];
+                    for (var item of dto.monthlyEstimates) {
+                        var model: EstimatePriceModel = new EstimatePriceModel();
+                        model.updateData(item);
+                        this.monthlyEstimates.push(model);
+                    }
+                } else {
+                    for(var itemDto of dto.monthlyEstimates){
+                        for(var model of this.monthlyEstimates){
+                            if(model.month() == itemDto.month){
+                                model.updateData(itemDto);    
+                            }    
+                        }    
+                    }
                 }
                 this.yearlyEstimate.updateData(dto.yearlyEstimate);
             }
@@ -586,11 +705,21 @@ module nts.uk.at.view.ksm001.a {
             }
             
             updateData(dto: EstablishmentDaysDto) {
-                this.monthlyEstimates = [];
-                for (var item of dto.monthlyEstimates) {
-                    var model: EstimateDaysModel = new EstimateDaysModel();
-                    model.updateData(item);
-                    this.monthlyEstimates.push(model);
+                if (this.monthlyEstimates.length == 0) {
+                    this.monthlyEstimates = [];
+                    for (var item of dto.monthlyEstimates) {
+                        var model: EstimateDaysModel = new EstimateDaysModel();
+                        model.updateData(item);
+                        this.monthlyEstimates.push(model);
+                    }
+                }else {
+                    for(var itemDto of dto.monthlyEstimates){
+                        for(var model of this.monthlyEstimates){
+                            if(model.month() == itemDto.month){
+                                model.updateData(itemDto);    
+                            }    
+                        }    
+                    }    
                 }
                 this.yearlyEstimate.updateData(dto.yearlyEstimate);
             }
