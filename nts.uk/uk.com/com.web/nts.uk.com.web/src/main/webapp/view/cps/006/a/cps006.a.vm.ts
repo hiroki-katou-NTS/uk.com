@@ -60,8 +60,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     self.itemList(_.map(data, x => new ItemInfo({
                         id: x.id,
                         perInfoCtgId: x.perInfoCtgId,
-                        itemCode: x.itemCode,
                         itemName: x.itemName,
+                        systemRequired: x.systemRequired,
                         isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
                     })));
                 };
@@ -147,8 +147,17 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
             setShared('CDL020_PARAMS', cats);
             nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
-                self.categoryList(getShared('CDL020_VALUES'));
-                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                let CTGlist: Array<any> = getShared('CDL020_VALUES'),
+                    i: number = 0;
+                let CTGsorrList = _.map(CTGlist, x => {
+                    return {
+                        id: x.id,
+                        order: i++
+                    }
+                });
+                service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>){
+                    self.start(undefined);
+                })
             });
         }
 
@@ -159,10 +168,10 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     id: cat.id,
                     categoryName: cat.categoryName,
                     isAbolition: cat.isAbolition
-                    
+
                 };
-            
-            service.update(command).done(function(data) {
+
+            service.updateCtgInfo(command).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.start(command.id);
                 });
@@ -199,22 +208,22 @@ module nts.uk.com.view.cps006.a.viewmodel {
     export interface IItemInfo {
         id: string;
         perInfoCtgId: string;
-        itemCode: string;
         itemName: string;
+        systemRequired: number;
         isAbolition: string;
     }
 
     export class ItemInfo {
         id: string;
         perInfoCtgId: string;
-        itemCode: string;
         itemName: string;
+        systemRequired: number;
         isAbolition: string;
         constructor(params: IItemInfo) {
             this.id = params.id;
             this.perInfoCtgId = params.perInfoCtgId;
-            this.itemCode = params.itemCode;
             this.itemName = params.itemName;
+            this.systemRequired = params.systemRequired;
             this.isAbolition = params.isAbolition;
         }
     }
