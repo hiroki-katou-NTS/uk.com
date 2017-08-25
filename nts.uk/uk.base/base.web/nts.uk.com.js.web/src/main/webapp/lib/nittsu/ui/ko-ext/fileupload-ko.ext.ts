@@ -40,7 +40,7 @@ module nts.uk.ui.koExtentions {
             $fileInput.change(function() {
                 var selectedFilePath = $(this).val();
                 if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
-                    if (container.data("file") !== null) {
+                    if (nts.uk.util.isNullOrUndefined(container.data("file"))) {
                         this.files = (container.data("file"));        
                     }
                     return;    
