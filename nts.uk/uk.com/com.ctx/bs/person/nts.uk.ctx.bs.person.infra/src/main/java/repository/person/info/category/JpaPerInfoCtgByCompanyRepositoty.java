@@ -6,16 +6,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import entity.person.info.category.PpemtPerInfoCtg;
-import entity.person.info.category.PpemtPerInfoCtgOrder;
 import entity.person.info.category.PpemtPerInfoCtgPK;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCtgRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCtgOrder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements PerInfoCtgByCompanyRepositoty {
+public class JpaPerInfoCtgRepositoty extends JpaRepository implements PerInfoCtgRepositoty {
 
 	private final static String SELECT_CATEGORY_BY_CATEGORY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
@@ -30,8 +28,6 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 "
 			+ " AND i.perInfoCtgId = :perInfoCtgId";
-	
-	private final static String DELELE_BY_COMPANY_ID = " DELETE FROM PpemtPerInfoCtgOrder c where c.cid =:cid";
 
 	private static PpemtPerInfoCtg toEntity(PersonInfoCategory domain) {
 		PpemtPerInfoCtg entity = new PpemtPerInfoCtg();
@@ -40,15 +36,6 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		entity.categoryCd = domain.getCategoryCode().v();
 		entity.categoryName= domain.getCategoryName().v();
 		entity.abolitionAtr = domain.getIsAbolition().value;
-		return entity;
-
-	}
-	
-	private static PpemtPerInfoCtgOrder toEntityCategoryOrder(PersonInfoCtgOrder domain) {
-		PpemtPerInfoCtgOrder entity = new PpemtPerInfoCtgOrder();
-		entity.ppemtPerInfoCtgPK = new PpemtPerInfoCtgPK(domain.getCategoryId());
-		entity.cid = domain.getCompanyId();
-		entity.disporder = domain.getDisorder();
 		return entity;
 
 	}
@@ -95,21 +82,6 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		return queryProxy().query(SELECT_REQUIRED_ITEMS_IDS, String.class).setParameter("contractCd", contractCd)
 				.setParameter("perInfoCtgId",categoryId)
 				.getList();
-	}
-
-	@Override
-	public void deleteByCompanyId(String companyId) {
-		this.getEntityManager().createQuery(DELELE_BY_COMPANY_ID)
-			.setParameter("cid", companyId)
-			.executeUpdate();
-		this.getEntityManager().flush();
-		
-	}
-
-	@Override
-	public void addPerCtgOrder(PersonInfoCtgOrder domain) {
-		this.commandProxy().update(toEntityCategoryOrder(domain));
-		
 	}
 
 }
