@@ -98,7 +98,7 @@ module nts.uk.at.view.ksm005.b {
                 nts.uk.ui.windows.setShared("yearmonth", self.yearMonthPicked());
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function() {
                     var isCancelSave: boolean = nts.uk.ui.windows.getShared("isCancelSave");
-                    if (isCancelSave && !isCancelSave) {
+                    if(isCancelSave!= null && isCancelSave!= undefined && !isCancelSave){
                         self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     }
                 });
