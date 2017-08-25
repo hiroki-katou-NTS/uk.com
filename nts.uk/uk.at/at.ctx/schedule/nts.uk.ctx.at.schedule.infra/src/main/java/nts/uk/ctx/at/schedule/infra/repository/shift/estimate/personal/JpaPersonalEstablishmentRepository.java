@@ -415,4 +415,32 @@ public class JpaPersonalEstablishmentRepository extends JpaRepository
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.personal.
+	 * PersonalEstablishmentRepository#removePersonalEstablishment(java.lang.
+	 * String, int)
+	 */
+	@Override
+	public void removePersonalEstablishment(String employeeId, int targetYear) {
+
+		// find by time
+		List<KscmtEstTimePerSet> estimateTimePersonals = this.getEstimateTimePersonal(employeeId,
+				targetYear);
+
+		// find by price
+		List<KscmtEstPricePerSet> estimatePricePersonals = this.getEstimatePricePersonal(employeeId,
+				targetYear);
+
+		// find by number of day
+		List<KscmtEstDaysPerSet> estimateDaysPersonals = this.getEstimateDaysPersonal(employeeId,
+				targetYear);
+
+		// remove all data
+		this.commandProxy().removeAll(estimateTimePersonals);
+		this.commandProxy().removeAll(estimatePricePersonals);
+		this.commandProxy().removeAll(estimateDaysPersonals);
+	}
+
 }

@@ -7,14 +7,14 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate.employment;
 import java.util.Optional;
 
 /**
- * The Class CompanyEstablishmentRepository.
+ * The Class EmploymentEstablishmentRepository.
  */
 public interface EmploymentEstablishmentRepository {
 
 	/**
 	 * Find by id.
 	 *
-	 * @param companyId the company id
+	 * @param companyId the Employment id
 	 * @param targetYear the target year
 	 * @param employmentCode the employment code
 	 * @return the optional
@@ -28,4 +28,15 @@ public interface EmploymentEstablishmentRepository {
 	 * @param employmentEstablishment the employment establishment
 	 */
 	public void saveEmploymentEstablishment(EmploymentEstablishment employmentEstablishment);
+	
+	
+	/**
+	 * Removes the employment establishment.
+	 *
+	 * @param companyId the company id
+	 * @param employmentCode the employment code
+	 * @param targetYear the target year
+	 */
+	public void removeEmploymentEstablishment(String companyId, String employmentCode
+			,int targetYear);
 }
