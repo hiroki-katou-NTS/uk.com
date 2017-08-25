@@ -1,7 +1,5 @@
 package nts.uk.shr.com.primitive;
 
-import org.apache.http.annotation.Obsolete;
-
 import nts.arc.primitive.TimeClockPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 import nts.gul.util.Time;
@@ -70,15 +68,6 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 		return (this.v() + MAX_MINUTES_IN_DAY) % MAX_MINUTES_IN_DAY;
 	}
 	
-	/**
-	 * OBSOLETE: use timeAsMinutes() instead.
-	 * @return value as minutes integer
-	 */
-	@Obsolete
-	public int valueAsMinutes() {
-		return this.v();
-	}
-	
 	public String getInDayTimeWithFormat(){
 		return this.hour() + ":" + this.minute();
 	}
@@ -94,8 +83,8 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 	 */
 	public TimeWithDayAttr shiftWithLimit(int minutesToShift) {
 		int newValue = this.v() + minutesToShift;
-		newValue = Math.max(newValue, THE_PREVIOUS_DAY_1200.timeAsMinutes());
-		newValue = Math.min(newValue, TWO_DAYS_LATER_2359.timeAsMinutes());
+		newValue = Math.max(newValue, THE_PREVIOUS_DAY_1200.v());
+		newValue = Math.min(newValue, TWO_DAYS_LATER_2359.v());
 		return new TimeWithDayAttr(newValue);
 	}
 }
