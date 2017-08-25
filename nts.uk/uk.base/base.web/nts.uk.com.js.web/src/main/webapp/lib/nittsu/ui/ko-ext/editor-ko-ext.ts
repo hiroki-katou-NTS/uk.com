@@ -413,7 +413,7 @@ module nts.uk.ui.koExtentions {
     }
     
     /**
-     * TimeEditor Processor
+     * TimeWithDayAttrEditor Processor
      */
     class TimeWithDayAttrEditorProcessor extends EditorProcessor {
         
