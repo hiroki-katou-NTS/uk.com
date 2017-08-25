@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
@@ -26,6 +28,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private PrivateApprovalRootFinder privateFinder;
 	@Inject
 	private EmployeeAdapterInforFinder employeeInfor;
+	@Inject
+	private UpdateWorkAppApprovalRByHistCommandHandler updateHist;
 	
 	@POST
 	@Path("getbycom")
@@ -43,5 +47,11 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public List<EmployeeApproveDto> findByWpkIds(List<String> workplaceIds, GeneralDate baseDate){
 		return employeeInfor.findEmployeeByWpIdAndBaseDate(workplaceIds, baseDate);
 		
+	}
+	
+	@POST
+	@Path("updateHistory")
+	public void updateHistory(UpdateWorkAppApprovalRByHistCommand command){
+		this.updateHist.handle(command);;
 	}
 }
