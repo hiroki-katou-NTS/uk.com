@@ -22,7 +22,7 @@ public class EmployeeLoginSettingFinder {
 
 	/** The employee login setting repository. */
 	@Inject
-	private EmployeeLoginSettingRepository employeeLoginSettingRepository;
+	EmployeeLoginSettingRepository employeeLoginSettingRepository;
 
 	/**
 	 * Find by contract code form 2.
@@ -35,14 +35,14 @@ public class EmployeeLoginSettingFinder {
 		Optional<EmployeeLoginSetting> emLogSetting = employeeLoginSettingRepository.getByContractCode(contractCode);
 		if (emLogSetting.isPresent()) {
 
-			// if have permit view form 2
 			if (emLogSetting.get().getForm2PermitAtr().value == ManageDistinct.YES.value) {
 				return new EmployeeLoginSettingDto(false);
+			} else {
+				return new EmployeeLoginSettingDto(true);
 			}
+		} else {// goto form 1
 			return new EmployeeLoginSettingDto(true);
 		}
-		// goto form 1
-		return new EmployeeLoginSettingDto(true);
 	}
 	
 	/**
@@ -55,13 +55,14 @@ public class EmployeeLoginSettingFinder {
 
 		Optional<EmployeeLoginSetting> emLogSetting = employeeLoginSettingRepository.getByContractCode(contractCode);
 		if (emLogSetting.isPresent()) {
-			//if have permit view form 3
+
 			if (emLogSetting.get().getForm3PermitAtr().value == ManageDistinct.YES.value) {
 				return new EmployeeLoginSettingDto(false);
+			} else {
+				return new EmployeeLoginSettingDto(true);
 			}
+		} else {// goto form 1
 			return new EmployeeLoginSettingDto(true);
 		}
-		// goto form 1
-		return new EmployeeLoginSettingDto(true);
 	}
 }

@@ -7,22 +7,36 @@ package nts.uk.ctx.sys.gateway.entity.login;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class SgwdtContract.
  */
+
+/**
+ * Gets the end D.
+ *
+ * @return the end D
+ */
 @Getter
+
+/**
+ * Sets the end D.
+ *
+ * @param endD the new end D
+ */
 @Setter
 @Entity
 @Table(name = "SGWDT_CONTRACT")
@@ -31,26 +45,35 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * Instantiates a new sgwdt contract.
  */
 @NoArgsConstructor
-public class SgwdtContract extends UkJpaEntity implements Serializable {
+public class SgwdtContract implements Serializable {
 	
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
    
     /** The contract cd. */
     @Id
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "CONTRACT_CD")
     private String contractCd;
     
     /** The password. */
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 66)
     @Column(name = "PASSWORD")
     private String password;
     
     /** The str D. */
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "STR_D")
     @Temporal(TemporalType.TIMESTAMP)
     private Date strD;
     
     /** The end D. */
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "END_D")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endD;
@@ -62,6 +85,22 @@ public class SgwdtContract extends UkJpaEntity implements Serializable {
      */
     public SgwdtContract(String contractCd) {
         this.contractCd = contractCd;
+    }
+
+    /**
+     * Instantiates a new sgwdt contract.
+     *
+     * @param contractCd the contract cd
+     * @param exclusVer the exclus ver
+     * @param password the password
+     * @param strD the str D
+     * @param endD the end D
+     */
+    public SgwdtContract(String contractCd, int exclusVer, String password, Date strD, Date endD) {
+        this.contractCd = contractCd;
+        this.password = password;
+        this.strD = strD;
+        this.endD = endD;
     }
 
     /* (non-Javadoc)
@@ -88,9 +127,4 @@ public class SgwdtContract extends UkJpaEntity implements Serializable {
         }
         return true;
     }
-
-	@Override
-	protected Object getKey() {
-		return this.contractCd;
-	}
 }

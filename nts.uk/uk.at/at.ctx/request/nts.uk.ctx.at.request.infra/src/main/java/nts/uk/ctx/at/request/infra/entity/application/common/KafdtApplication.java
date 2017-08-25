@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -33,7 +32,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	 * 入力日
 	 */
 	@Column(name="INPUT_DATE")
-	public GeneralDate inputDate; 
+	public BigDecimal inputDate; 
 	
 	/**
 	 * 入力者
@@ -50,7 +49,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	 * 申請日
 	 */
 	@Column(name="APP_DATE")
-	public GeneralDate applicationDate; 
+	public BigDecimal applicationDate; 
 	
 	///
 	/**

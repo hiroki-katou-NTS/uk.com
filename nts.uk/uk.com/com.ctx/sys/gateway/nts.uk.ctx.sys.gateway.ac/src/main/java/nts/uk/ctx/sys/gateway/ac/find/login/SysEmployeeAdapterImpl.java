@@ -28,7 +28,7 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 	public Optional<EmployeeDto> getByEmployeeCode(String companyId, String employeeCode) {
 		// mock data
 		if (employeeCode.equals("123000000000")) {
-			EmployeeDto em = new EmployeeDto("busiName", "personalId", "111111111111111111111111111111111111", employeeCode);
+			EmployeeDto em = new EmployeeDto("busiName", "personalId", 1111, employeeCode);
 			return Optional.of(em);
 		} else {
 			return Optional.empty();

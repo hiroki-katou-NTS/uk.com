@@ -14,17 +14,6 @@ import nts.arc.time.GeneralDate;
 public interface EmployeePub {
 
 	/**
-	 * Find wpk ids by S code.
-	 *
-	 * @param companyId the company id
-	 * @param employeeCode the employee code
-	 * @param date the date
-	 * @return the list
-	 */
-	// RequestList #65
-	List<String> findWpkIdsBySCode(String companyId, String employeeCode, GeneralDate date);
-
-	/**
 	 * Gets the workplace id.
 	 *
 	 * @param companyId the company id

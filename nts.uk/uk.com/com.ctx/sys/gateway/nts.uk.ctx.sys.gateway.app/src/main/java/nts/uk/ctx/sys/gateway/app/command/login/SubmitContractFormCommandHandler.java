@@ -25,7 +25,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 
 	/** The contract repository. */
 	@Inject
-	private ContractRepository contractRepository;
+	ContractRepository contractRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -63,8 +63,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	 * @param contract the contract
 	 */
 	private void checkTime(Optional<Contract> contract) {
-		if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today())
-				|| contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
+		if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today()) || contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_315");
 		}
 	}
@@ -76,7 +75,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	 * @param password the password
 	 */
 	private void checkPassword(Optional<Contract> contract, String password) {
-		if (!PasswordHash.verifyThat(password, contract.get().getContractCode().v()).isEqualTo(contract.get().getPassword().v())) {
+		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(contract.get().getPassword().v())) {
 			throw new BusinessException("Msg_302");
 		}
 	}

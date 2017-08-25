@@ -19,7 +19,7 @@ public interface EmployeeRepository {
 	 * @param employeeCode the employee code
 	 * @return the person id by employee code
 	 */
-	Optional<Employee> findByEmployeeCode(String companyId, String employeeCode);
+	Optional<Employee> getPersonIdByEmployeeCode(String companyId, String employeeCode);
 
 	/**
 	 * Gets the list person by list employee.
@@ -28,7 +28,7 @@ public interface EmployeeRepository {
 	 * @param employeeCode the employee code
 	 * @return the list person by list employee
 	 */
-	List<Employee> findByListEmployeeCode(String companyId, List<String> employeeCode);
+	List<Employee> getListPersonByListEmployee(String companyId, List<String> employeeCode);
 
 	/**
 	 * Gets the all employee.
@@ -36,7 +36,7 @@ public interface EmployeeRepository {
 	 * @param companyId the company id
 	 * @return the all employee
 	 */
-	List<Employee> findAll(String companyId);
+	List<Employee> getAllEmployee(String companyId);
 
 	/**
 	 * Gets the list person by list employee.
@@ -45,7 +45,7 @@ public interface EmployeeRepository {
 	 * @param employeeIds the employee ids
 	 * @return the list person by list employee
 	 */
-	List<Employee> findByListEmployeeId(String companyId, List<String> employeeIds);
+	List<Employee> getListPersonByListEmployeeId(String companyId, List<String> employeeIds);
 
 	/**
 	 * Find by sid.
