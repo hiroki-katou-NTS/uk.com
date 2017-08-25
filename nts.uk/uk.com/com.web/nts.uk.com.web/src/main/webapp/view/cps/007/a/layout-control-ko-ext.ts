@@ -446,7 +446,7 @@ module nts.custombinding {
             },
             sortable: {
                 data: ko.observableArray([]),
-                isEnabled: ko.observable(true),
+                isEnabled: ko.observable(false),
                 beforeMove: (data, evt, ui) => {
                     let self = this,
                         opts = self.options,
