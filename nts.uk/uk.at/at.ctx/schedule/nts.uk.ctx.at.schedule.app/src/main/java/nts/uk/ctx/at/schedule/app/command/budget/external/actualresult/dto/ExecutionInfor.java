@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto;
 
 import lombok.Builder;
+import nts.arc.task.AsyncTaskInfo;
 
 /**
  * The Class ExecutionInfor.
@@ -12,8 +13,8 @@ import lombok.Builder;
 @Builder
 public class ExecutionInfor {
     
-    /** The task id. */
-    public String taskId;
+    /** The task infor. */
+    public AsyncTaskInfo taskInfor;
     
     /** The execute id. */
     public String executeId;

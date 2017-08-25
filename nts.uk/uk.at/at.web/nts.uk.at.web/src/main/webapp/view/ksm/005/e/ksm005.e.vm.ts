@@ -114,6 +114,9 @@ module nts.uk.at.view.ksm005.e {
              * find by work time code of data
              */
             public findNameWorkTimeCode(worktimeCode: string, data: WorkTimeDto[]) {
+                if(worktimeCode === '000'){
+                    return "なし";    
+                }
                 var worktype = _.find(data, function(item) {
                     return item.code == worktimeCode;
                 });
@@ -194,9 +197,7 @@ module nts.uk.at.view.ksm005.e {
                     });
 
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error).then(function() {
-                        nts.uk.ui.windows.close();
-                    });
+                    nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });

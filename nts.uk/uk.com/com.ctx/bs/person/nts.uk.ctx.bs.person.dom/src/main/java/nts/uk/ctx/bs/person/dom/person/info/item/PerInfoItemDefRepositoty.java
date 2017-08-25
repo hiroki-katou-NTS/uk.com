@@ -31,10 +31,6 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getRequiredIds(String contractCd, String companyId);
 
-	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithNoAbolition(String perInfoCtgId,
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String isAbolition,
 			String contractCd);
-
-	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef);
-
-	String getItemDefaultName(String categoryCd, String itemCode);
 }

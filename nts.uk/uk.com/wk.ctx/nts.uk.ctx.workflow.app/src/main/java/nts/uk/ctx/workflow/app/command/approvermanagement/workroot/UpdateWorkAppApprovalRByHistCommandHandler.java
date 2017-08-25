@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,16 +34,15 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		List<UpdateHistoryDto> lstHist = objUpdateItem.getLstUpdate();
 		//history current
 		String startDate = objUpdateItem.getStartDate();
-		GeneralDate sDate = GeneralDate.fromString(startDate, "yyyy-MM-dd");
+		GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(startDate));
 		GeneralDate eDate = sDate.addDays(-1);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		String endDateUpdate = eDate.localDate().format(formatter);//Edate: edit
+		String endDateUpdate = eDate.toString();//Edate: edit
 		//history previous
 		String startDatePrevious = objUpdateItem.getStartDatePrevious();
 		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious));
-		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous 
-		String endDateDelete = "9999-12-31";//Edate: delete
-		//** For
+		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);
+		String endDatePrevious  = eDatePrevious.toString();//Edate to find history Previous 
+		String endDateDelete = "9999/12/31";//Edate: delete
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//TH: company - domain 会社別就業承認ルート
 			if(objUpdateItem.getCheck()==1){
@@ -55,7 +53,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				//item update
 				CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.updateSdateEdate(comAppRootDb.get(), objUpdateItem.getStartDate(), objUpdateItem.getEndDate());
 				//find history previous
-				List<CompanyApprovalRoot> lstOld= repo.getComApprovalRootByEdate(companyId, eDatePrevious, updateItem.getApplicationType());
+				List<CompanyApprovalRoot> lstOld= repo.getComApprovalRootByEdate(companyId, endDatePrevious);
 				if(lstOld.isEmpty()){// history previous is not exist
 					if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 						repo.updateComApprovalRoot(comAppRoot);
@@ -79,28 +77,32 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					if(objUpdateItem.getEditOrDelete()==1){//edit
 						//history previous 
-						String startDateUpdate = com.getPeriod().getStartDate().localDate().format(formatter);
-						CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateSdateEdate(com, startDateUpdate, endDateUpdate);
+						CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateSdateEdate(com, com.getPeriod().getStartDate().toString(), endDateUpdate);
 						//update history previous
 						repo.updateComApprovalRoot(comAppRootUpdate);
 						//update history current
 						repo.updateComApprovalRoot(comAppRoot);
 					}else{//delete 
-						String startDateUpdate = com.getPeriod().getStartDate().localDate().format(formatter);
-						CompanyApprovalRoot comAppRootUpdate = CompanyApprovalRoot.updateSdateEdate(com, startDateUpdate, endDateDelete);
+						CompanyApprovalRoot comAppRootUpdate = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
+								com.getApprovalId(),
+								com.getHistoryId(),
+								com.getApplicationType().value.intValue(),
+								com.getPeriod().getStartDate().toString(),
+								endDateDelete,
+								com.getBranchId(),
+								com.getAnyItemApplicationId(),
+								com.getConfirmationRootType().value.intValue(),
+								com.getEmploymentRootAtr().value);
 						//update history previous
 						repo.updateComApprovalRoot(comAppRootUpdate);
 						//get all  ApprovalPhase by BranchId
 						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, comAppRoot.getBranchId());
-						//check: if data(lstAPhase) > 0: delete
-						if(!lstAPhase.isEmpty()){
-							for (ApprovalPhase approvalPhase : lstAPhase) {
-								//delete All Approver By Approval Phase Id
-								repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
-							}
-							//delete All Approval Phase By Branch Id
-							repo.deleteAllAppPhaseByBranchId(companyId, comAppRoot.getBranchId());
+						for (ApprovalPhase approvalPhase : lstAPhase) {
+							//delete All Approver By Approval Phase Id
+							repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
 						}
+						//delete All Approval Phase By Branch Id
+						repo.deleteAllAppPhaseByBranchId(companyId, comAppRoot.getBranchId());
 						//delete history current
 						repo.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 					}
@@ -114,22 +116,19 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 				WorkplaceApprovalRoot wpAppRoot = WorkplaceApprovalRoot.updateSdateEdate(wpAppRootDb.get(), objUpdateItem.getStartDate(), objUpdateItem.getEndDate());
 				//find history previous
-				List<WorkplaceApprovalRoot> lstOld= repo.getWpApprovalRootByEdate(companyId, wpAppRoot.getWorkplaceId(), eDatePrevious, updateItem.getApplicationType());
+				List<WorkplaceApprovalRoot> lstOld= repo.getWpApprovalRootByEdate(companyId, wpAppRoot.getWorkplaceId(), endDatePrevious);
 				if(lstOld.isEmpty()){// history previous is not exist
 					if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 						repo.updateWpApprovalRoot(wpAppRoot);
 					}else{//TH: delete
 						//get all  ApprovalPhase by BranchId
 						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, wpAppRoot.getBranchId());
-						//check: if data(lstAPhase) > 0: delete
-						if(!lstAPhase.isEmpty()){
-							for (ApprovalPhase approvalPhase : lstAPhase) {
-								//delete All Approver By Approval Phase Id
-								repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
-							}
-							//delete All Approval Phase By Branch Id
-							repo.deleteAllAppPhaseByBranchId(companyId, wpAppRoot.getBranchId());
+						for (ApprovalPhase approvalPhase : lstAPhase) {
+							//delete All Approver By Approval Phase Id
+							repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
 						}
+						//delete All Approval Phase By Branch Id
+						repo.deleteAllAppPhaseByBranchId(companyId, wpAppRoot.getBranchId());
 						//delete WpApprovalRoot
 						repo.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
 					}
@@ -141,28 +140,23 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					if(objUpdateItem.getEditOrDelete()==1){//edit
 						//history previous 
-						String startDateUpdate = wp.getPeriod().getStartDate().localDate().format(formatter);
-						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateSdateEdate(wp, startDateUpdate, endDateUpdate);
+						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateSdateEdate(wp, wp.getPeriod().getStartDate().toString(), endDateUpdate);
 						//update history previous
 						repo.updateWpApprovalRoot(wpAppRootUpdate);
 						//update history current
 						repo.updateWpApprovalRoot(wpAppRoot);
 					}else{//delete 
-						String startDateUpdate = wp.getPeriod().getStartDate().localDate().format(formatter);
-						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateSdateEdate(wp, startDateUpdate, endDateUpdate);
+						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateSdateEdate(wp, wp.getPeriod().getStartDate().toString(), endDateUpdate);
 						//update history previous
 						repo.updateWpApprovalRoot(wpAppRootUpdate);
 						//get all  ApprovalPhase by BranchId
 						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, wpAppRoot.getBranchId());
-						//check: if data(lstAPhase) > 0: delete
-						if(!lstAPhase.isEmpty()){
-							for (ApprovalPhase approvalPhase : lstAPhase) {
-								//delete All Approver By Approval Phase Id
-								repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
-							}
-							//delete All Approval Phase By Branch Id
-							repo.deleteAllAppPhaseByBranchId(companyId, wpAppRoot.getBranchId());
+						for (ApprovalPhase approvalPhase : lstAPhase) {
+							//delete All Approver By Approval Phase Id
+							repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
 						}
+						//delete All Approval Phase By Branch Id
+						repo.deleteAllAppPhaseByBranchId(companyId, wpAppRoot.getBranchId());
 						//delete history current
 						repo.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
 					}
@@ -176,22 +170,19 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 				PersonApprovalRoot psAppRoot = PersonApprovalRoot.updateSdateEdate(psAppRootDb.get(), objUpdateItem.getStartDate(), objUpdateItem.getEndDate());
 				//find history previous
-				List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, psAppRoot.getEmployeeId(),  eDatePrevious, updateItem.getApplicationType());
+				List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, psAppRoot.getEmployeeId(),  endDatePrevious);
 				if(lstOld.isEmpty()){// history previous is not exist
 					if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 						repo.updatePsApprovalRoot(psAppRoot);
 					}else{//TH: delete
 						//get all  ApprovalPhase by BranchId
 						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, psAppRoot.getBranchId());
-						//check: if data(lstAPhase) > 0: delete
-						if(!lstAPhase.isEmpty()){
-							for (ApprovalPhase approvalPhase : lstAPhase) {
-								//delete All Approver By Approval Phase Id
-								repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
-							}
-							//delete All Approval Phase By Branch Id
-							repo.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
+						for (ApprovalPhase approvalPhase : lstAPhase) {
+							//delete All Approver By Approval Phase Id
+							repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
 						}
+						//delete All Approval Phase By Branch Id
+						repo.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
 						//delete PsApprovalRoot
 						repo.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(), updateItem.getHistoryId());
 					}
@@ -203,28 +194,23 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					if(objUpdateItem.getEditOrDelete()==1){//edit
 						//history previous 
-						String startDateUpdate = ps.getPeriod().getStartDate().localDate().format(formatter);
-						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateSdateEdate(ps, startDateUpdate, endDateUpdate);
+						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateSdateEdate(ps, ps.getPeriod().getStartDate().toString(), endDateUpdate);
 						//update history previous
 						repo.updatePsApprovalRoot(psAppRootUpdate);
 						//update history current
 						repo.updatePsApprovalRoot(psAppRoot);
 					}else{//delete 
-						String startDateUpdate = ps.getPeriod().getStartDate().localDate().format(formatter);
-						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateSdateEdate(ps, startDateUpdate, endDateUpdate);
+						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateSdateEdate(ps, ps.getPeriod().getStartDate().toString(), endDateUpdate);
 						//update history previous
 						repo.updatePsApprovalRoot(psAppRootUpdate);
 						//get all  ApprovalPhase by BranchId
 						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, psAppRoot.getBranchId());
-						//check: if data(lstAPhase) > 0: delete
-						if(!lstAPhase.isEmpty()){
-							for (ApprovalPhase approvalPhase : lstAPhase) {
-								//delete All Approver By Approval Phase Id
-								repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
-							}
-							//delete All Approval Phase By Branch Id
-							repo.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
+						for (ApprovalPhase approvalPhase : lstAPhase) {
+							//delete All Approver By Approval Phase Id
+							repo.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
 						}
+						//delete All Approval Phase By Branch Id
+						repo.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
 						//delete history current
 						repo.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getHistoryId());
 					}
