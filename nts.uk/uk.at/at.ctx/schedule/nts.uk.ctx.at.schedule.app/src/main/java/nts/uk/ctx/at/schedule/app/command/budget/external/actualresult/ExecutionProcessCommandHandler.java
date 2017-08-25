@@ -786,14 +786,12 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     private Map<String, String> findAllStringJP() {
         Map<String, String> mapMessage = new HashMap<>();
         String nameId = "KSU006_18";
-//        Optional<String> optional = this.internationalization.getItemName(nameId);
-//        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
-        mapMessage.put(nameId, (nameId + " is not found."));
+        Optional<String> optional = this.internationalization.getItemName(nameId);
+        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
         
         List<String> lstMsgId = Arrays.asList("Msg_162", "Msg_163", "Msg_164", "Msg_167");
         for (String msgId : lstMsgId) {
-//            mapMessage.put(msgId, this.getMessageById(msgId));
-            mapMessage.put(msgId, msgId);
+            mapMessage.put(msgId, this.getMessageById(msgId));
         }
         return mapMessage;
     }

@@ -129,10 +129,9 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
      *
      * @param inputStream the input stream
      */
-    @SuppressWarnings("static-access")
     private void validCharset(InputStream inputStream) {
         NtsCharset charset = CharsetDetector.detect(inputStream);
-        if (charset.SHIFT_JIS.value != ExtBudgetCharset.Shift_JIS.value) {
+        if (charset.value != ExtBudgetCharset.Shift_JIS.value) {
             throw new BusinessException("Msg_161");
         }
     }
