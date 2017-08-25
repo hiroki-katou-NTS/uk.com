@@ -225,12 +225,6 @@ module nts.uk.at.view.ksm003.a {
                 if ($('.nts-input').ntsError("hasError")) {
                     $('.nts-input').ntsError('clear');
                 }
-                if ($('#inpCode').ntsError("hasError")) {
-                    $('#inpCode').ntsError('clear');
-                }
-                if ($('#inpPattern').ntsError("hasError")) {
-                    $('#inpPattern').ntsError('clear');
-                }
             }
 
             //validate form

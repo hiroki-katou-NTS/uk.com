@@ -131,6 +131,7 @@ module nts.uk.at.view.ksm006.a {
                 var dfd = $.Deferred<void>();
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 self.findCompanyBasicWork().done(function() {
                     blockUI.clear();
                     dfd.resolve();
@@ -165,6 +166,7 @@ module nts.uk.at.view.ksm006.a {
             private findCompanyBasicWork(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                self.clearError();
                 service.findCompanyBasicWork().done(function(data: CompanyBasicWorkFindDto) {
                     if (!data) {
                         self.companyBWWorkingDay(new BasicWorkModel(null, null, null, null));
@@ -194,7 +196,7 @@ module nts.uk.at.view.ksm006.a {
                     });
                     self.companyId = data.companyId;
                     // Focus on 
-                    $('#focus-btn').focus();
+                    $('#companyBWWorkingDayBtn').focus();
                     dfd.resolve();
                     return;
                 }).fail(function(res) {
@@ -210,6 +212,7 @@ module nts.uk.at.view.ksm006.a {
             private findWorkplaceBasicWork(workplaceId: string): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                self.clearError();
                 service.findWorkplaceBasicWork(workplaceId).done(function(data: WorkplaceBasicWorkFindDto) {
                     if (!data) {
                         self.companyBWWorkingDay(new BasicWorkModel(null, null, null, null));
@@ -246,29 +249,47 @@ module nts.uk.at.view.ksm006.a {
                 return dfd.promise();
             }
 
-
-
-
+            // clear Error
+            private clearError(): void {
+                if ($('button').ntsError("hasError")) {
+                    $('button').ntsError('clear');
+                }
+            }
+            
             /**
              * Register Basic Work By Company
              */
-            registerByCompany(): void {
+            public registerByCompany(): void {
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 service.saveCompanyBasicWork(self.collectCompanyData()).done(function(data) {
-                    if (data.length > 0) {
-                        //                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
-                        var message = "";
-                        data.stream().forEach(function(item, index) {
-                            message += item + "\n";
-                        });
-                        nts.uk.ui.dialog.info(message);
-                    } else {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    if (res.messageId == "Msg_178") {
+                        let errDetails = res.supplements;
+                        let keys = Object.keys(errDetails);
+                        keys.forEach(function(item) {
+                            switch (item) {
+                                case "KSM006_6": {
+                                    $("#companyBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: "KSM006_6" });
+                                    break;
+                                }
+                                case "KSM006_7": {
+                                    $("#companyBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_7" });
+                                    break;
+                                }
+                                case "KSM006_8": {
+                                    $("#companyBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_8" });
+                                    break;
+                                }
+                                default: { break; }
+                            }
+                        });
+                    } else {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }
                     blockUI.clear();
                 });
             }
@@ -277,35 +298,51 @@ module nts.uk.at.view.ksm006.a {
             /**
              * Register Basic Work By Workplace
              */
-            registerByWorkplace(): void {
+            public registerByWorkplace(): void {
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 if (!self.selectedWorkplaceId()) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
-                  service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
-                    if (data.length > 0) {
-                        //                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
-                        var message = "";
-                        data.stream().forEach(function(item, index) {
-                            message += item + "\n";
-                        });
-                        nts.uk.ui.dialog.info(message);
-                    } else {
-                        var existItem = self.workplaceAlreadySetList().filter((item) => {
-                            return item.workplaceId == self.workplaceGrid.selectedWorkplaceId();
-                        })[0];
-                        // Set AlreadySetting
-                        if (!existItem) {
-                            self.workplaceAlreadySetList.push(new UnitAlreadySettingModel(self.selectedWorkplaceId(), true));
-                        }
+                service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
 
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    var existItem = self.workplaceAlreadySetList().filter((item) => {
+                        return item.workplaceId == self.workplaceGrid.selectedWorkplaceId();
+                    })[0];
+                    // Set AlreadySetting
+                    if (!existItem) {
+                        self.workplaceAlreadySetList.push(new UnitAlreadySettingModel(self.selectedWorkplaceId(), true));
                     }
+
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+
                     blockUI.clear();
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    if (res.messageId == "Msg_178") {
+                        let errDetails = res.supplements;
+                        let keys = Object.keys(errDetails);
+                        keys.forEach(function(item) {
+                            switch (item) {
+                                case "KSM006_6": {
+                                    $("#workplaceBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: "KSM006_6" });
+                                    break;
+                                }
+                                case "KSM006_7": {
+                                    $("#workplaceBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_7" });
+                                    break;
+                                }
+                                case "KSM006_8": {
+                                    $("#workplaceBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_8" });
+                                    break;
+                                }
+                                default: { break; }
+                            }
+                        });
+                    } else {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }
                     blockUI.clear();
                 });
             }
@@ -317,33 +354,47 @@ module nts.uk.at.view.ksm006.a {
             registerByClassification(): void {
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 if (!self.selectedClassifi()) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
                 service.saveClassifyBasicWork(self.collectClassifyData()).done(function(data) {
-                    if (data.length > 0) {
-                        //                        nts.uk.ui.dialog.info(data[0] + "\n" + data[1] + "\n" + data[2]);
-                        var message = "";
-                        data.stream().forEach(function(item, index) {
-                            message += item + "\n";
-                        });
-                        nts.uk.ui.dialog.info(message);
-                    } else {
-                        // Check if exist alreadysetting of selectedItem
-                        var existItem = self.classifiAlreadySetList().filter((item) => {
-                            return item.code == self.classificationGrid.selectedCode();
-                        })[0];
-                        // Set AlreadySetting
-                        if (!existItem) {
-                            self.classifiAlreadySetList.push({ "code": self.selectedClassifi(), "isAlreadySetting": true });
-                        }
-
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    // Check if exist alreadysetting of selectedItem
+                    var existItem = self.classifiAlreadySetList().filter((item) => {
+                        return item.code == self.classificationGrid.selectedCode();
+                    })[0];
+                    // Set AlreadySetting
+                    if (!existItem) {
+                        self.classifiAlreadySetList.push({ "code": self.selectedClassifi(), "isAlreadySetting": true });
                     }
+
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    if (res.messageId == "Msg_178") {
+                        let errDetails = res.supplements;
+                        let keys = Object.keys(errDetails);
+                        keys.forEach(function(item) {
+                            switch (item) {
+                                case "KSM006_6": {
+                                    $("#classifyBWWorkingDayBtn").ntsError('set', { messageId: "Msg_178", messageParams: "KSM006_6" });
+                                    break;
+                                }
+                                case "KSM006_7": {
+                                    $("#classifyBWNonInLawBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_7" });
+                                    break;
+                                }
+                                case "KSM006_8": {
+                                    $("#classifyBWNonExtraBtn").ntsError('set', { messageId: "Msg_179", messageParams: "KSM006_8" });
+                                    break;
+                                }
+                                default: { break; }
+                            }
+                        });
+                    } else {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }
                     blockUI.clear();
                 });
             }
@@ -354,6 +405,7 @@ module nts.uk.at.view.ksm006.a {
             removeByClassification(): void {
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.removeClassifyBasicWork(self.selectedClassifi()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
@@ -382,6 +434,7 @@ module nts.uk.at.view.ksm006.a {
             removeByWorkplace(): void {
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.removeWorkplaceBasicWork(self.selectedWorkplaceId()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
@@ -410,11 +463,12 @@ module nts.uk.at.view.ksm006.a {
             switchToCompanyTab(): void {
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 self.isShowCompanyTab(true);
                 self.isShowClassifyTab(false);
                 self.isShowWorkplaceTab(false);
                 self.findCompanyBasicWork();
-                $('#focus-btn').focus();
+                $('#companyBWWorkingDayBtn').focus();
                 blockUI.clear();
             }
 
@@ -425,6 +479,7 @@ module nts.uk.at.view.ksm006.a {
             switchToWorkplaceTab(): void {
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 self.isShowWorkplaceTab(true);
                 self.isShowCompanyTab(false);
                 self.isShowClassifyTab(false);
@@ -467,6 +522,7 @@ module nts.uk.at.view.ksm006.a {
             switchToClassTab(): void {
                 var self = this;
                 blockUI.invisible();
+                self.clearError();
                 self.isShowClassifyTab(true);
                 self.isShowCompanyTab(false);
                 self.isShowWorkplaceTab(false);
