@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.infra.repository.application.common.appapprovalpha
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
@@ -11,7 +13,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.Kr
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
-
+@Stateless
 public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppApprovalPhaseRepository{
 	private final String SELECT= "SELECT c FROM KrqdtAppApprovalPhase c";
 	private final String SELECT_SINGLE = "SELECT c FROM KrqdtAppApprovalPhase c "
