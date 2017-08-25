@@ -206,6 +206,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private <C> void processInput(ImportProcess importProcess, AsyncCommandHandlerContext<C> asyncTask) {
         TaskDataSetter setter = asyncTask.getDataSetter();
+        boolean isInterrupt = false;
         try {
             NtsCsvReader csvReader = FileUltil.newCsvReader(importProcess.extractCondition.getEncoding());
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
@@ -222,6 +223,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                  * and end flow (stop process)
                  */
                 if (asyncTask.hasBeenRequestedToCancel()) {
+                    isInterrupt = true;
                     this.updateLog(importProcess.executeId, CompletionState.INTERRUPTION);
                     asyncTask.finishedAsCancelled();
                     break;
@@ -239,7 +241,11 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     setter.updateData(FAIL_CNT, log.getNumberFail());
                 }
             }
-            this.updateLog(importProcess.executeId, CompletionState.DONE);
+            
+            // update status DONE if not interrupt
+            if (!isInterrupt) {
+                this.updateLog(importProcess.executeId, CompletionState.DONE);
+            }
             
             // close input stream
             importProcess.inputStream.close();
