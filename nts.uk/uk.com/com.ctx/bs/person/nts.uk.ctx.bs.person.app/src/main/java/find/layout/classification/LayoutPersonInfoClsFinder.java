@@ -62,7 +62,8 @@ public class LayoutPersonInfoClsFinder {
 
 						classDto.setListItemDf(listItemDefDto);
 
-						if (classDto.getLayoutItemType() == 0) {
+						if (classDto.getLayoutItemType() == 0 && !listItemDefDto.isEmpty()
+								&& listItemDefDto.get(0) != null) {
 							classDto.setClassName(listItemDefDto.get(0).getItemName());
 						}
 					}
