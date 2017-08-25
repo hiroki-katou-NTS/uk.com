@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="contents-area" data-bind="with: layout">
 				<div
-					data-bind="ntsLayoutControl: { data: itemsClassification, editAble: true }"></div>
+					data-bind="ntsLayoutControl: { data: itemsClassification, editAble: true, callback: nts.uk.ui.windows.close }"></div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed x-large" data-bind="click: pushData">#{i18n.getText('CPS008_39')}</button>
