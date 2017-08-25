@@ -33,7 +33,7 @@ public class ApplicationSetting {
 	private AppDisplayAtr displaySearchTimeFlg;
 	/** 登録時の手動メール送信の初期値 */
 	private UseAtr manualSendMailAtr;
-	
+
 	/** 承認 */
 	/** 承認ルートの基準日 */
 	private BaseDateFlg baseDateFlg;
