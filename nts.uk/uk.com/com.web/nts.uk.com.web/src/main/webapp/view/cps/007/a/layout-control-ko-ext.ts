@@ -224,14 +224,14 @@ module nts.custombinding {
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification">
                                 <div data-bind="if: $data.layoutItemType == 0">
-                                    <div data-bind="let: { item: $data.listItemDf[0], listItemDf: $data.listItemDf}" class="item-control">
-                                        <div data-bind="ntsFormLabel: {}, text: className"></div>
-                                        <div data-bind="if: item.itemTypeState.itemType == 1" class="set-items">
+                                    <div data-bind="let: { item: $data.listItemDf[0] || {}, listItemDf: $data.listItemDf}" class="item-control">
+                                        <div data-bind="ntsFormLabel: {}, text: className || '#NA'"></div>
+                                        <div data-bind="if: (item.itemTypeState || {}).itemType == 1" class="set-items">
                                             <div data-bind="foreach: _.filter(listItemDf, function(x, i) { return i != 0; })" class="set-item-list">
                                                 <div data-bind="template: { name: 'itemtemplate', data: { itemName: $data.itemName, info: $data.itemTypeState.dataTypeState } }" class="set-item"></div>
                                             </div>            
                                         </div>
-                                        <div data-bind="if: item.itemTypeState.itemType == 2" class="single-items">
+                                        <div data-bind="if: (item.itemTypeState || {}).itemType == 2" class="single-items">
                                             <div class="single-item-list">
                                                 <div data-bind="template: { name: 'itemtemplate', data: { itemName: item.itemName, info: item.itemTypeState.dataTypeState } }" class="single-item"></div>
                                             </div>
@@ -239,7 +239,7 @@ module nts.custombinding {
                                     </div>
                                 </div>
                                 <div data-bind="if: $data.layoutItemType == 1" class="item-controls">
-                                    <div data-bind="ntsFormLabel: {}, text: className"></div>
+                                    <div data-bind="ntsFormLabel: {}, text: className || '#NA'"></div>
                                     <div data-bind="let: { items: listItemDf }" class="multiple-items">
                                         <table>
                                             <thead>
@@ -398,6 +398,8 @@ module nts.custombinding {
         };
 
         options = {
+            callback: () => {
+            },
             radios: {
                 enable: ko.observable(true),
                 value: ko.observable(0),
@@ -657,7 +659,7 @@ module nts.custombinding {
             }
         };
 
-        constructor() {
+        _constructor = () => {
             let self = this,
                 opts = self.options,
                 ctrls = self.controls,
@@ -708,7 +710,9 @@ module nts.custombinding {
                             }
                         } else {
                             // show message if hasn't any category
-                            alert(text('Msg_288'));
+                            if (ko.toJS(opts.sortable.isEnabled)) {
+                                alert(text('Msg_288')).then(opts.callback);
+                            }
                         }
                     });
                 } else { // get item by group
@@ -916,25 +920,12 @@ module nts.custombinding {
                 $element = $(element),
                 access = valueAccessor();
 
-            ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, function() {
-                return {};
-            }, allBindingsAccessor, viewModel, bindingContext);
-            // init radio box group
-            ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, function() {
-                return opts.radios;
-            }, allBindingsAccessor, viewModel, bindingContext);
-
-            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, function() {
-                return opts.comboxbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
-
-            ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, function() {
-                return opts.searchbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
-
-            ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, function() {
-                return opts.listbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            // bindding callback function to control
+            if (access.callback) {
+                $.extend(opts, {
+                    callback: access.callback
+                });
+            }            
 
             // validate editAble
             if (ko.unwrap(access.editAble) != undefined) {
@@ -963,6 +954,29 @@ module nts.custombinding {
                 }
             });
             opts.sortable.isEnabled.valueHasMutated();
+            
+            // call private constructor
+            self._constructor();
+
+            ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, function() {
+                return {};
+            }, allBindingsAccessor, viewModel, bindingContext);
+            // init radio box group
+            ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, function() {
+                return opts.radios;
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, function() {
+                return opts.comboxbox;
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, function() {
+                return opts.searchbox;
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, function() {
+                return opts.listbox;
+            }, allBindingsAccessor, viewModel, bindingContext);
 
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });

@@ -79,13 +79,13 @@ public interface AgentRepository {
 	 */
 	List<Agent> findByCid(String companyId);
 	
-
 	/**
-	 * get agent by request ID
-	 * @param companyId
-	 * @param startDate
-	 * @param endDate
-	 * @return
+	 * Find all gent by condition
+	 * @param companyId company id
+	 * @param employeeId employee id
+	 * @param startDate start date
+	 * @param endDate end date
+	 * @return list of agent
 	 */
-	List<Agent> getAgentByRequestID(String companyId,String requestId, GeneralDate startDate, GeneralDate endDate);
+	List<Agent> find(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }

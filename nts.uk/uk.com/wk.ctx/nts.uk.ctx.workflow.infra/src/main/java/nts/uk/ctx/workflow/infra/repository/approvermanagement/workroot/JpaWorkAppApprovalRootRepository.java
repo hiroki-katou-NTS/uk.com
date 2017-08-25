@@ -37,7 +37,7 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpAppro
 public class JpaWorkAppApprovalRootRepository extends JpaRepository implements WorkAppApprovalRootRepository{
 
 	private final String SELECT_FROM_COMAPR = "SELECT c FROM WwfmtComApprovalRoot c"
-			+ " WHERE c.wwfmtComApprovalRoot.companyId = :companyId";
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId";
 	private final String SELECT_FROM_PSAPR = "SELECT c FROM WwfmtPsApprovalRoot c"
 			+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
@@ -60,7 +60,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 			+ " WHERE c.wwfmtAppoverPK.companyId = :companyId"
 			+ " AND c.wwfmtAppoverPK.approvalPhaseId = :approvalPhaseId";
 	private final String SELECT_COMAPR_BY_EDATE = "SELECT c FROM WwfmtComApprovalRoot c"
-			+ " WHERE c.wwfmtComApprovalRoot.companyId = :companyId"
+			+ " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId"
 			+ " AND c.endDate = :endDate";
 	private final String SELECT_PSAPR_BY_EDATE = "SELECT c FROM WwfmtPsApprovalRoot c"
 			+ " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
@@ -77,13 +77,12 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @return
 	 */
 	private static CompanyApprovalRoot toDomainComApR(WwfmtComApprovalRoot entity){
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		val domain = CompanyApprovalRoot.createSimpleFromJavaType(entity.wwfmtComApprovalRootPK.companyId,
 				entity.wwfmtComApprovalRootPK.approvalId,
 				entity.wwfmtComApprovalRootPK.historyId,
 				entity.applicationType,
 				entity.startDate.localDate().format(formatter),
-//				GeneralDate.fromString(entity.startDate.toString(), "yyyy/M/d").toString(),
 				entity.endDate.localDate().format(formatter),
 				entity.branchId,
 				entity.anyItemAppId,
@@ -491,7 +490,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @return
 	 */
 	@Override
-	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, String endDate) {
+	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType) {
 		return this.queryProxy().query(SELECT_COMAPR_BY_EDATE, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("endDate", endDate)
@@ -505,7 +504,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @return
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, String endDate) {
+	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate, Integer applicationType) {
 		return this.queryProxy().query(SELECT_WPAPR_BY_EDATE, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("workplaceId", workplaceId)
@@ -520,7 +519,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @return
 	 */
 	@Override
-	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, String endDate) {
+	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate, Integer applicationType) {
 		return this.queryProxy().query(SELECT_PSAPR_BY_EDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
@@ -548,8 +547,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @return
 	 */
 	@Override
-	public Optional<WorkplaceApprovalRoot> getWpApprovalRoot(String companyId, String approvalId, String workplaceId,
-			String historyId) {
+	public Optional<WorkplaceApprovalRoot> getWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId) {
 		WwfmtWpApprovalRootPK pk = new WwfmtWpApprovalRootPK(companyId, approvalId, workplaceId, historyId);
 		return this.queryProxy().find(pk, WwfmtWpApprovalRoot.class).map(c->toDomainWpApR(c));
 	}
@@ -562,8 +560,7 @@ public class JpaWorkAppApprovalRootRepository extends JpaRepository implements W
 	 * @return
 	 */
 	@Override
-	public Optional<PersonApprovalRoot> getPsApprovalRoot(String companyId, String approvalId, String employeeId,
-			String historyId) {
+	public Optional<PersonApprovalRoot> getPsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId) {
 		WwfmtPsApprovalRootPK pk = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
 		return this.queryProxy().find(pk, WwfmtPsApprovalRoot.class).map(c->toDomainPsApR(c));
 	}

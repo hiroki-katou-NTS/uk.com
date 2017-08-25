@@ -42,7 +42,7 @@ public class KshstGrantCondition extends UkJpaEntity {
 	@ManyToOne
 	@JoinColumns( {
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "YEAR_HOLIDAY_CD", referencedColumnName = "YEAR_HOLIDAY_CD", insertable = false, updatable = false)
+        @JoinColumn(name = "YEAR_HD_CD", referencedColumnName = "YEAR_HD_CD", insertable = false, updatable = false)
     })
 	public KshstGrantHdTblSet grantHdTblSet;
 	
@@ -52,6 +52,13 @@ public class KshstGrantCondition extends UkJpaEntity {
 	@Override
 	protected Object getKey() {
 		return kshstGrantConditionPK;
+	}
+
+	public KshstGrantCondition(KshstGrantConditionPK kshstGrantConditionPK, int conditionValue, int useConditionAtr) {
+		super();
+		this.kshstGrantConditionPK = kshstGrantConditionPK;
+		this.conditionValue = conditionValue;
+		this.useConditionAtr = useConditionAtr;
 	}
 
 }

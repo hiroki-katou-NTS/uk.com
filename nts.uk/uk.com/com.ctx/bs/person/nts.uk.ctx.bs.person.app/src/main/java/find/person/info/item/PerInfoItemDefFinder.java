@@ -37,7 +37,7 @@ public class PerInfoItemDefFinder {
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	@Inject
-	IInternationalization internationalization;
+	IInternationalization internationalization; 
 
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
 		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep

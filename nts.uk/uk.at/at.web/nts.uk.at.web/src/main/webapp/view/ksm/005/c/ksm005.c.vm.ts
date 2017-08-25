@@ -104,7 +104,7 @@ module nts.uk.at.view.ksm005.c {
                 var self = this;
                 self.employeeList([]);
                 var employeeSearchs: UnitModel[] = [];
-                for (var employeeSearch: EmployeeSearchDto of dataList) {
+                for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
@@ -145,7 +145,7 @@ module nts.uk.at.view.ksm005.c {
             public findByCodeEmployee(employeeCode: string): UnitModel {
                 var employee: UnitModel;
                 var self = this;
-                for (var employeeSelect: UnitModel of self.employeeList()) {
+                for (var employeeSelect of self.employeeList()) {
                     if (employeeSelect.code === employeeCode) {
                         employee = employeeSelect;
                         break;
@@ -160,7 +160,7 @@ module nts.uk.at.view.ksm005.c {
             public getAllEmployeeIdBySearch(): string[] {
                 var self = this;
                 var employeeIds: string[] = [];
-                for (var employeeSelect: UnitModel of self.employeeList()) {
+                for (var employeeSelect of self.employeeList()) {
                     employeeIds.push(self.findEmployeeIdByCode(employeeSelect.code));
                 }
                 return employeeIds;
@@ -172,7 +172,7 @@ module nts.uk.at.view.ksm005.c {
             public findEmployeeIdByCode(employeeCode: string): string{
                 var self = this;
                 var employeeId = '';
-                for (var employee: EmployeeSearchDto of self.selectedEmployee()) {
+                for (var employee of self.selectedEmployee()) {
                     if(employee.employeeCode === employeeCode){
                         employeeId = employee.employeeId;
                     }
@@ -185,7 +185,7 @@ module nts.uk.at.view.ksm005.c {
             public findEmployeeCodeById(employeeId: string): string{
                 var self = this;
                 var employeeCode = '';
-                for (var employee: EmployeeSearchDto of self.selectedEmployee()) {
+                for (var employee of self.selectedEmployee()) {
                     if(employee.employeeId === employeeId){
                         employeeCode = employee.employeeCode;
                     }
@@ -252,7 +252,7 @@ module nts.uk.at.view.ksm005.c {
                 var dataRes: UnitAlreadySettingModel[] = [];
                 var self = this;
                 service.findAllMonthlyPatternSetting(employeeIds).done(function(data) {
-                    for (var employeeId: string of data) {
+                    for (var employeeId of data) {
                         var setting: UnitAlreadySettingModel;
                         setting = { code: self.findEmployeeCodeById(employeeId), isAlreadySetting: true };
                         dataRes.push(setting);

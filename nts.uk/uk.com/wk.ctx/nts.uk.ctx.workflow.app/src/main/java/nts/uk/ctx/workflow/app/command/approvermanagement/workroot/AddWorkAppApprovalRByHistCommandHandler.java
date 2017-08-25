@@ -42,7 +42,8 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 			GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(startDate));
 			GeneralDate eDate = sDate.addDays(-1);
 			String endDateNew = eDate.toString();
-			String endDate = "9999/12/31";
+			String endDateS = "9999/12/31";
+			GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
 			//TH: company - doamin 会社別就業承認ルート
 			if(addItem.getCheck()==1){
 				CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
@@ -56,7 +57,7 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 						addItem.getConfirmationRootType(),
 						addItem.getEmploymentRootAtr());
 				//find history previous
-				List<CompanyApprovalRoot> lstOld= repo.getComApprovalRootByEdate(companyId, endDate);
+				List<CompanyApprovalRoot> lstOld= repo.getComApprovalRootByEdate(companyId, endDate, addItem.getApplicationType());
 				if(lstOld.isEmpty()){// history previous is not exist
 					//copy/new
 					repo.addComApprovalRoot(comAppRoot);
@@ -139,7 +140,7 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 						addItem.getConfirmationRootType(),
 						addItem.getEmploymentRootAtr());
 				//find history previous
-				List<WorkplaceApprovalRoot> lstOld= repo.getWpApprovalRootByEdate(companyId, addItem.getWorkplaceId(), endDate);
+				List<WorkplaceApprovalRoot> lstOld= repo.getWpApprovalRootByEdate(companyId, addItem.getWorkplaceId(), endDate, addItem.getApplicationType());
 				if(lstOld.isEmpty()){// history previous is not exist
 					//copy/new
 					repo.addWpApprovalRoot(wpAppRoot);
@@ -225,7 +226,7 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 						addItem.getConfirmationRootType(),
 						addItem.getEmploymentRootAtr());
 				//find history previous
-				List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, addItem.getEmployeeId(), endDate);
+				List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, addItem.getEmployeeId(), endDate, addItem.getApplicationType());
 				if(lstOld.isEmpty()){// history previous is not exist
 					//copy/new
 					repo.addPsApprovalRoot(psAppRoot);
