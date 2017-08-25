@@ -59,7 +59,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             });
 
-            self.ckbDisplayAbolition.subscribe(function(newValue) {
+            self.ckbDisplayAbolition.subscribe(function(newValue) { 
 
                 self.loadItemInfoDefList(self.currentCategory().id);
 
@@ -75,7 +75,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             self.loadItemInfoDefList(self.currentCategory().id).done(function() {
 
-                dfd.resolve();
+                dfd.resolve(); 
 
             });
 

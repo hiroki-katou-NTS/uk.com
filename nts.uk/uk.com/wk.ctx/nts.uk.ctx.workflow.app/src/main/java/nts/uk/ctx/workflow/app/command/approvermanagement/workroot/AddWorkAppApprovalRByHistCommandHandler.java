@@ -13,11 +13,15 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkAppApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -28,7 +32,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List<AddWorkAppApprovalRByHistCommand>>{
 
 	@Inject
-	private WorkAppApprovalRootRepository repo;
+	private PersonApprovalRootRepository repo;
+	@Inject
+	private CompanyApprovalRootRepository repoCom;
+	@Inject
+	private WorkplaceApprovalRootRepository repoWorkplace;
+	@Inject
+	private ApprovalPhaseRepository repoAppPhase;
+	@Inject
+	private ApproverRepository repoApprover;
 	
 	@Override
 	protected void handle(CommandHandlerContext<List<AddWorkAppApprovalRByHistCommand>> context) {
@@ -57,10 +69,10 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 						addItem.getConfirmationRootType(),
 						addItem.getEmploymentRootAtr());
 				//find history previous
-				List<CompanyApprovalRoot> lstOld= repo.getComApprovalRootByEdate(companyId, endDate, addItem.getApplicationType());
+				List<CompanyApprovalRoot> lstOld= repoCom.getComApprovalRootByEdate(companyId, endDate, addItem.getApplicationType());
 				if(lstOld.isEmpty()){// history previous is not exist
 					//copy/new
-					repo.addComApprovalRoot(comAppRoot);
+					repoCom.addComApprovalRoot(comAppRoot);
 				}else{// history previous is exist
 					CompanyApprovalRoot com = lstOld.get(0);
 					//追加する履歴を最新の履歴の開始年月日と比較する
@@ -78,7 +90,7 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 								addItem.getAnyItemApplicationId(),
 								addItem.getConfirmationRootType(),
 								addItem.getEmploymentRootAtr());
-						repo.addComApprovalRoot(comAppRootNew);
+						repoCom.addComApprovalRoot(comAppRootNew);
 						//update history previous
 						CompanyApprovalRoot comPre = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
 								approvalId,
@@ -90,27 +102,27 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 								addItem.getAnyItemApplicationId(),
 								addItem.getConfirmationRootType(),
 								addItem.getEmploymentRootAtr());
-						repo.updateComApprovalRoot(comPre);
+						repoCom.updateComApprovalRoot(comPre);
 						//copy data from history pre -> history new
 						//get lst APhase of history pre
-						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, com.getBranchId());
+						List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, com.getBranchId());
 						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//get lst Approver
-							List<Approver> lstApprover = repo.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+							List<Approver> lstApprover = repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
 							List<Approver> lstApproverNew = new ArrayList<Approver>();
 							for (Approver approver : lstApprover) {
 								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
 							}
 							//update lst Approver New
-							repo.addAllApprover(lstApproverNew);
+							repoApprover.addAllApprover(lstApproverNew);
 							//convert
 							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
 						}
 						//update lst APhase
-						repo.addAllApprovalPhase(lstAPhaseNew);
+						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);
 					}else{//new
-						repo.addComApprovalRoot(comAppRoot);
+						repoCom.addComApprovalRoot(comAppRoot);
 						//update history previous
 						CompanyApprovalRoot comPre = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
 								approvalId,
@@ -122,7 +134,7 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 								addItem.getAnyItemApplicationId(),
 								addItem.getConfirmationRootType(),
 								addItem.getEmploymentRootAtr());
-						repo.updateComApprovalRoot(comPre);
+						repoCom.updateComApprovalRoot(comPre);
 					}
 				}
 			}
@@ -140,10 +152,10 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 						addItem.getConfirmationRootType(),
 						addItem.getEmploymentRootAtr());
 				//find history previous
-				List<WorkplaceApprovalRoot> lstOld= repo.getWpApprovalRootByEdate(companyId, addItem.getWorkplaceId(), endDate, addItem.getApplicationType());
+				List<WorkplaceApprovalRoot> lstOld= repoWorkplace.getWpApprovalRootByEdate(companyId, addItem.getWorkplaceId(), endDate, addItem.getApplicationType());
 				if(lstOld.isEmpty()){// history previous is not exist
 					//copy/new
-					repo.addWpApprovalRoot(wpAppRoot);
+					repoWorkplace.addWpApprovalRoot(wpAppRoot);
 				}else{// history previous is exist
 					WorkplaceApprovalRoot wp = lstOld.get(0);
 					//追加する履歴を最新の履歴の開始年月日と比較する
@@ -162,7 +174,7 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 								addItem.getAnyItemApplicationId(),
 								addItem.getConfirmationRootType(),
 								addItem.getEmploymentRootAtr());
-						repo.addWpApprovalRoot(wpAppRootNew);
+						repoWorkplace.addWpApprovalRoot(wpAppRootNew);
 						//update history previous
 						WorkplaceApprovalRoot wpPre = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
 								approvalId,
@@ -175,27 +187,27 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 								addItem.getAnyItemApplicationId(),
 								addItem.getConfirmationRootType(),
 								addItem.getEmploymentRootAtr());
-						repo.updateWpApprovalRoot(wpPre);
+						repoWorkplace.updateWpApprovalRoot(wpPre);
 						//copy data from history pre -> history new
 						//get lst APhase of history pre
-						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, wp.getBranchId());
+						List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wp.getBranchId());
 						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//get lst Approver
-							List<Approver> lstApprover = repo.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+							List<Approver> lstApprover = repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
 							List<Approver> lstApproverNew = new ArrayList<Approver>();
 							for (Approver approver : lstApprover) {
 								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
 							}
 							//update lst Approver New
-							repo.addAllApprover(lstApproverNew);
+							repoApprover.addAllApprover(lstApproverNew);
 							//convert
 							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
 						}
 						//update lst APhase
-						repo.addAllApprovalPhase(lstAPhaseNew);
+						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);
 					}else{//new
-						repo.addWpApprovalRoot(wpAppRoot);
+						repoWorkplace.addWpApprovalRoot(wpAppRoot);
 						//update history previous
 						WorkplaceApprovalRoot wpPre = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
 								approvalId,
@@ -208,7 +220,7 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 								addItem.getAnyItemApplicationId(),
 								addItem.getConfirmationRootType(),
 								addItem.getEmploymentRootAtr());
-						repo.updateWpApprovalRoot(wpPre);
+						repoWorkplace.updateWpApprovalRoot(wpPre);
 					}
 				}
 			}
@@ -264,22 +276,22 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 						repo.updatePsApprovalRoot(psPre);
 						//copy data from history pre -> history new
 						//get lst APhase of history pre
-						List<ApprovalPhase> lstAPhase = repo.getAllApprovalPhasebyCode(companyId, ps.getBranchId());
+						List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, ps.getBranchId());
 						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//get lst Approver
-							List<Approver> lstApprover = repo.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+							List<Approver> lstApprover = repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
 							List<Approver> lstApproverNew = new ArrayList<Approver>();
 							for (Approver approver : lstApprover) {
 								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
 							}
 							//update lst Approver New
-							repo.addAllApprover(lstApproverNew);
+							repoApprover.addAllApprover(lstApproverNew);
 							//convert
 							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
 						}
 						//update lst APhase
-						repo.addAllApprovalPhase(lstAPhaseNew);
+						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);
 					}else{//new
 						repo.addPsApprovalRoot(psAppRoot);
 						//update history previous

@@ -5,14 +5,14 @@ import java.util.Date;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkAppApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 
 @Stateless
 public class ApprovalPubImpl implements ApprovalRootPub{
 	
 	@Inject
-	private WorkAppApprovalRootRepository appRootRepository;
+	private PersonApprovalRootRepository appRootRepository;
 	
 	@Override
 	public void getApprovalRootOfSubjectRequest(String cid, String sid, Date standardDate, String subjectRequest) {
