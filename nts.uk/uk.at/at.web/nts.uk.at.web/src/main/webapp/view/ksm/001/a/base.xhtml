@@ -11,7 +11,7 @@
 			<span class="action-bar">
 			<ui:insert name="extended-action-bar" />
 			<button tabindex="3" >#{i18n.getText('KSM001_50')}</button>
-			<button tabindex="4" data-bind="click: openDialogCommonSetting">#{i18n.getText('KSM001_51')}</button>
+			<button tabindex="5" data-bind="click: openDialogCommonSetting">#{i18n.getText('KSM001_51')}</button>
 			</span>
 		</div>
 		<div class="contents-area cf" data-bind="visible: true" style="display: none">
@@ -19,8 +19,9 @@
 				<div class="lableContent" data-bind="ntsFormLabel: {required: true}">
 					<label>#{i18n.getText('KSM001_4')}</label>
 				</div>
-				<div id="comboTargetYear"
+				<div tabindex="6" id="comboTargetYear"
 					data-bind="ntsComboBox: {
+				name: '#[KSM001_4]',
 				options: lstTargetYear,
 				optionsValue: 'year',
 				visibleItemsCount: 5,
