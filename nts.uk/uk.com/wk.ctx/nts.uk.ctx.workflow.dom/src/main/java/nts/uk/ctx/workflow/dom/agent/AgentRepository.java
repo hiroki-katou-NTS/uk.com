@@ -80,4 +80,12 @@ public interface AgentRepository {
 	List<Agent> findByCid(String companyId);
 	
 
+	/**
+	 * get agent by request ID
+	 * @param companyId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<Agent> getAgentByRequestID(String companyId,String requestId, GeneralDate startDate, GeneralDate endDate);
 }

@@ -52,8 +52,9 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getallbydate/{applicationDate}")
-	public List<ApplicationDto> getAllAppByDate(@PathParam("applicationDate") GeneralDate applicationDate){
-		return this.finderApp.getAllAppByDate(applicationDate);
+	public List<ApplicationDto> getAllAppByDate(@PathParam("applicationDate") String applicationDate){
+		 GeneralDate generalDate = GeneralDate.fromString(applicationDate, "YYYY/MM/DD");
+		return this.finderApp.getAllAppByDate(generalDate);
 	}
 	
 	/**
