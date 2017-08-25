@@ -61,7 +61,7 @@ module nts.uk.ui.exTable {
         stickOverWrite: boolean = true;
         viewMode: string;
         determination: any;
-        modifications: Array<any>;
+        modifications: any;
         
         constructor($container: JQuery, options: any) {
             this.$container = $container;
@@ -91,6 +91,10 @@ module nts.uk.ui.exTable {
         setUpdateMode(updateMode: any) {
             this.updateMode = updateMode;
             this.detailContent.updateMode = updateMode;
+        }
+        setViewMode(mode: any) {
+            this.viewMode = mode;
+            this.detailContent.viewMode = mode;
         }
         LeftmostHeader(leftmostHeader: any) {
             this.leftmostHeader = _.cloneDeep(leftmostHeader);
@@ -2186,7 +2190,7 @@ module nts.uk.ui.exTable {
         }
         export function columnIndexRange($grid: JQuery, startKey: any, endKey: any) {
             let cloud: intan.Cloud = $grid.data(internal.TANGI);
-            let canon: any = $grid.data(internal.PAINTER);
+            let canon: any = $grid.data(internal.CANON);
             let visibleColumns;
             if (!util.isNullOrUndefined(cloud)) {
                 visibleColumns = cloud.painter.visibleColumns;
@@ -3195,11 +3199,12 @@ module nts.uk.ui.exTable {
                     showVertSum(self);
                     break;
                 case "updateTable": 
-                    updateTable(self, params[0], params[1], params[2]);
+                    updateTable(self, params[0], params[1], params[2], params[3]);
                     break;
                 case "updateMode":
-                    setUpdateMode(self, params[0]);
-                    break;
+                    return setUpdateMode(self, params[0]);
+                case "viewMode":
+                    return setViewMode(self, params[0]);
                 case "pasteOverWrite":
                     setPasteOverWrite(self, params[0]);
                     break;
@@ -3287,7 +3292,7 @@ module nts.uk.ui.exTable {
             $vertSumBody.scrollTop($detailBody.scrollTop());
         }
         
-        function updateTable($container: JQuery, name: string, header: any, body: any) {
+        function updateTable($container: JQuery, name: string, header: any, body: any, keepStates?: boolean) {
             switch (name) {
                 case "leftmost":
                     updateLeftmost($container, header, body);
@@ -3296,7 +3301,7 @@ module nts.uk.ui.exTable {
                     updateMiddle($container, header, body);
                     break;
                 case "detail":
-                    updateDetail($container, header, body);
+                    updateDetail($container, header, body, keepStates);
                     break;
                 case "verticalSummaries":
                     updateVertSum($container, header, body); 
@@ -3340,7 +3345,7 @@ module nts.uk.ui.exTable {
                 render.process($body, exTable.middleContent, true);
             }
         }
-        function updateDetail($container: JQuery, header: any, body: any) {
+        function updateDetail($container: JQuery, header: any, body: any, keepStates: boolean) {
             let exTable: any = $container.data(NAMESPACE);
             if (header) {
                 _.assignIn(exTable.detailHeader, header);
@@ -3352,6 +3357,7 @@ module nts.uk.ui.exTable {
                 _.assignIn(exTable.detailContent, body);
                 let $body = $container.find("." + BODY_PRF + DETAIL);
                 $body.empty();
+                if (!keepStates) internal.clearStates($body);
                 render.process($body, exTable.detailContent, true);
             }
         }
@@ -3402,6 +3408,7 @@ module nts.uk.ui.exTable {
         }
         function setUpdateMode($container: JQuery, mode: string) {
             let exTable: any = $container.data(NAMESPACE);
+            if (!mode) return exTable.updateMode;
             if (exTable.updateMode === mode) return;
             exTable.setUpdateMode(mode);
             let $grid = $container.find("." + BODY_PRF + DETAIL);
@@ -3413,6 +3420,14 @@ module nts.uk.ui.exTable {
             }
             selection.off($container);
             copy.off($grid, mode);
+        }
+        function setViewMode($container: JQuery, mode: string) {
+            let exTable: any = $container.data(NAMESPACE);
+            if (!mode) return exTable.viewMode;
+            if (exTable.viewMode === mode) return;
+            exTable.setViewMode(mode);
+            let $grid = $container.find("." + BODY_PRF + DETAIL);
+            render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
         }
         function setPasteOverWrite($container: JQuery, overwrite: boolean) {
             let exTable: any = $container.data(NAMESPACE);
@@ -3623,6 +3638,17 @@ module nts.uk.ui.exTable {
                 }
             });
             exTable.modifications[cell.rowIndex].splice(index, 1);
+        }
+        
+        export function clearStates($grid: JQuery) {
+            $grid.data(SELECTED_CELLS, null);
+            $grid.data(LAST_SELECTED, null);
+            $grid.data(COPY_HISTORY, null);
+            $grid.data(EDIT_HISTORY, null);
+            $grid.data(STICK_HISTORY, null);
+            let exTable = helper.getExTableFromGrid($grid);
+            if (!exTable) return;
+            exTable.modifications = {};
         }
     }
     

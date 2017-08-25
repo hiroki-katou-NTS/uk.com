@@ -440,7 +440,7 @@ __viewContext.ready(function () {
         ];
         let updateMiddleHeader = {
             columns: updateMiddleH,
-            rowHeight: "60px",
+            rowHeight: "75px",
             features: []
         };
         let updateMiddleContent = {
@@ -537,11 +537,11 @@ __viewContext.ready(function () {
             columns: newDetailColumns
         };
         $("#show-last-week").click(function() {
-            $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+            $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent, true);
             $("#extable").exTable("updateTable", "horizontalSummaries", { columns: newDetailColumns }, { columns: newDetailColumns });
         });
         $("#hide-last-week").click(function() {
-            $("#extable").exTable("updateTable", "detail", { columns: detailColumns }, { columns: detailColumns });
+            $("#extable").exTable("updateTable", "detail", { columns: detailColumns }, { columns: detailColumns }, true);
             $("#extable").exTable("updateTable", "horizontalSummaries", { columns: detailColumns }, { columns: detailColumns });
         });
         $("#set-sticker-multi").click(function() {

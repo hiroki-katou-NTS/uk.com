@@ -14207,6 +14207,10 @@ var nts;
                         this.updateMode = updateMode;
                         this.detailContent.updateMode = updateMode;
                     };
+                    ExTable.prototype.setViewMode = function (mode) {
+                        this.viewMode = mode;
+                        this.detailContent.viewMode = mode;
+                    };
                     ExTable.prototype.LeftmostHeader = function (leftmostHeader) {
                         this.leftmostHeader = _.cloneDeep(leftmostHeader);
                         this.setHeaderClass(this.leftmostHeader, LEFTMOST);
@@ -16383,7 +16387,7 @@ var nts;
                     selection.getCellInRow = getCellInRow;
                     function columnIndexRange($grid, startKey, endKey) {
                         var cloud = $grid.data(internal.TANGI);
-                        var canon = $grid.data(internal.PAINTER);
+                        var canon = $grid.data(internal.CANON);
                         var visibleColumns;
                         if (!uk.util.isNullOrUndefined(cloud)) {
                             visibleColumns = cloud.painter.visibleColumns;
@@ -17414,11 +17418,12 @@ var nts;
                                 showVertSum(self);
                                 break;
                             case "updateTable":
-                                updateTable(self, params[0], params[1], params[2]);
+                                updateTable(self, params[0], params[1], params[2], params[3]);
                                 break;
                             case "updateMode":
-                                setUpdateMode(self, params[0]);
-                                break;
+                                return setUpdateMode(self, params[0]);
+                            case "viewMode":
+                                return setViewMode(self, params[0]);
                             case "pasteOverWrite":
                                 setPasteOverWrite(self, params[0]);
                                 break;
@@ -17504,7 +17509,7 @@ var nts;
                         scroll.bindVertWheel($detailBody);
                         $vertSumBody.scrollTop($detailBody.scrollTop());
                     }
-                    function updateTable($container, name, header, body) {
+                    function updateTable($container, name, header, body, keepStates) {
                         switch (name) {
                             case "leftmost":
                                 updateLeftmost($container, header, body);
@@ -17513,7 +17518,7 @@ var nts;
                                 updateMiddle($container, header, body);
                                 break;
                             case "detail":
-                                updateDetail($container, header, body);
+                                updateDetail($container, header, body, keepStates);
                                 break;
                             case "verticalSummaries":
                                 updateVertSum($container, header, body);
@@ -17556,7 +17561,7 @@ var nts;
                             render.process($body, exTable.middleContent, true);
                         }
                     }
-                    function updateDetail($container, header, body) {
+                    function updateDetail($container, header, body, keepStates) {
                         var exTable = $container.data(NAMESPACE);
                         if (header) {
                             _.assignIn(exTable.detailHeader, header);
@@ -17568,6 +17573,8 @@ var nts;
                             _.assignIn(exTable.detailContent, body);
                             var $body = $container.find("." + BODY_PRF + DETAIL);
                             $body.empty();
+                            if (!keepStates)
+                                internal.clearStates($body);
                             render.process($body, exTable.detailContent, true);
                         }
                     }
@@ -17618,6 +17625,8 @@ var nts;
                     }
                     function setUpdateMode($container, mode) {
                         var exTable = $container.data(NAMESPACE);
+                        if (!mode)
+                            return exTable.updateMode;
                         if (exTable.updateMode === mode)
                             return;
                         exTable.setUpdateMode(mode);
@@ -17630,6 +17639,16 @@ var nts;
                         }
                         selection.off($container);
                         copy.off($grid, mode);
+                    }
+                    function setViewMode($container, mode) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!mode)
+                            return exTable.viewMode;
+                        if (exTable.viewMode === mode)
+                            return;
+                        exTable.setViewMode(mode);
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
                     }
                     function setPasteOverWrite($container, overwrite) {
                         var exTable = $container.data(NAMESPACE);
@@ -17860,6 +17879,18 @@ var nts;
                         exTable.modifications[cell.rowIndex].splice(index, 1);
                     }
                     internal.removeChange = removeChange;
+                    function clearStates($grid) {
+                        $grid.data(internal.SELECTED_CELLS, null);
+                        $grid.data(internal.LAST_SELECTED, null);
+                        $grid.data(internal.COPY_HISTORY, null);
+                        $grid.data(internal.EDIT_HISTORY, null);
+                        $grid.data(internal.STICK_HISTORY, null);
+                        var exTable = helper.getExTableFromGrid($grid);
+                        if (!exTable)
+                            return;
+                        exTable.modifications = {};
+                    }
+                    internal.clearStates = clearStates;
                 })(internal || (internal = {}));
                 var helper;
                 (function (helper) {
