@@ -1,7 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.time.LocalDate;
-
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -36,8 +34,7 @@ public class ApprovalPeriod {
 		this.endDate = endDate;
 	}
 	public static ApprovalPeriod createSimpleFromJavaType(String startDate, String endDate){
-		return new ApprovalPeriod(GeneralDate.localDate(LocalDate.parse(startDate)), 
-									GeneralDate.localDate(LocalDate.parse(endDate)));
+		return new ApprovalPeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"),GeneralDate.fromString(endDate, "yyyy-MM-dd"));
 	}
 
 }
