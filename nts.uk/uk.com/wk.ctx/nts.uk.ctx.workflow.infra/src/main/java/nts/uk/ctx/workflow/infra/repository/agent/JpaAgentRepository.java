@@ -22,12 +22,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	
 	private static final String SELECT_AGENT_SID;
 
-	private static final String SELECT_AGENT_BY_REQUESTID = "SELECT e FROM CmmmtAgent e "
-			+ " WHERE e.cmmmtAgentPK.companyId = :companyId "
-			+ " AND e.cmmmtAgentPK.requestId = :requestId"
-			+ " AND e.startDate >= :startDate"
-			+ " AND e.endDate <= :endDate ";
-
+	private static final String SELECT_AGENT_SID_DATE;
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -59,6 +54,15 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.agentSid = :agentSid");
 		SELECT_AGENT_SID = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
+		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
+		builderString.append(" AND e.startDate <= :startDate");
+		builderString.append(" AND e.endDate => :endDate");
+		SELECT_AGENT_SID_DATE = builderString.toString();
 		
 		}
 	
@@ -131,6 +135,16 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.getList(c -> convertToDomain(c));
 	}
 
+	@Override
+	public List<Agent> find(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_AGENT_SID_DATE, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", companyId)
+				.setParameter("endDate", companyId)
+				.getList(c -> convertToDomain(c));
+	}
+	
 	/**
 	 * Add Agent
 	 */
@@ -200,17 +214,6 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.setParameter("companyId", companyId)
 				.setParameter("agentSid", agentSid)
 				.getList(c -> convertToDomain(c));
-	}
-
-	@Override
-	public List<Agent> getAgentByRequestID(String companyId, String requestId, GeneralDate startDate,
-			GeneralDate endDate) {
-		return this.queryProxy().query(SELECT_AGENT_BY_REQUESTID,CmmmtAgent.class)
-				.setParameter("companyId", companyId)
-				.setParameter("requestId", requestId)
-				.setParameter("startDate", startDate)
-				.setParameter("endDate", endDate)
-				.getList(c->convertToDomain(c));
 	}
 
 }

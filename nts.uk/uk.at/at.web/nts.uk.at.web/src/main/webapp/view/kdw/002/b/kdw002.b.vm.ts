@@ -28,7 +28,9 @@ module nts.uk.at.view.kdw002.b {
 
                         var dataSource = $('#grid').data('igGrid').dataSource;
                         var filteredData = dataSource.transformedData('afterfilteringandpaging');
-                        for (var i = 0; i < filteredData.length; i++) {
+                        var i;
+                        var l = filteredData.length;
+                        for (i = 0; i < l; i++) {
                             if (!filteredData[i].userCanSet || !filteredData[i].use) {
                                 var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
                                 var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
@@ -123,13 +125,15 @@ module nts.uk.at.view.kdw002.b {
                     }
                 }
                 var keynotExist = true;
-                for (var i = index; i < filteredData.length; i++) {
+                var i;
+                var l = filteredData.length;
+                for (i = index; i < l; i++) {
                     // var rowIndex = i + 1;
                     //  var idValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemId");
                     //  var nameValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemName");
                     var rowId = filteredData[i].attendanceItemId;
                     var nameValue = filteredData[i].attendanceItemName;
-                      var idValue = rowId.toString();
+                    var idValue = rowId.toString();
                     //  var nameValue = $("#grid").igGrid("getCellValue", rowId, "attendanceItemName");
 
                     if (_.includes(idValue, self.txtSearch()) || _.includes(nameValue, self.txtSearch())) {
