@@ -11,7 +11,7 @@
 			<span class="action-bar">
 			<ui:insert name="extended-action-bar" />
 			<button tabindex="3" >#{i18n.getText('KSM001_50')}</button>
-			<button tabindex="4" >#{i18n.getText('KSM001_51')}</button>
+			<button tabindex="4" data-bind="click: openDialogCommonSetting">#{i18n.getText('KSM001_51')}</button>
 			</span>
 		</div>
 		<div class="contents-area cf" data-bind="visible: true" style="display: none">

@@ -518,6 +518,16 @@ module nts.uk.at.view.ksm001.a {
                     self.loadUsageSettingModel();
                 });
             }
+            
+            /**
+             * open dialog CommonSetting (view model F)
+             */
+            private openDialogCommonSetting(): void {
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/ksm/001/f/index.xhtml").onClosed(function() {
+                    
+                });
+            }
 
         }
 
