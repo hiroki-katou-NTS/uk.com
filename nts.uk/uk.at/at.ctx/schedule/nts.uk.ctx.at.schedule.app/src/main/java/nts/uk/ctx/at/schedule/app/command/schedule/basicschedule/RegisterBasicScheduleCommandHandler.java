@@ -7,12 +7,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -76,22 +73,21 @@ public class RegisterBasicScheduleCommandHandler
 			}
 
 			// Check WorkTime
-			if (StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)) {
-				continue;
-			}
-			
-			workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCode());
+			// WorkTimeCode = "000" : it is day off
+			if (bSchedule.getWorkTimeCode() != "000") {
+				workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCode());
 
-			if (!workTime.isPresent()) {
-				// Set error to list
-				errList.add("Msg_437");
-				continue;
-			}
+				if (!workTime.isPresent()) {
+					// Set error to list
+					errList.add("Msg_437");
+					continue;
+				}
 
-			if (workTime.get().getDispAtr().value != DisplayAtr.DisplayAtr_Display.value) {
-				// Set error to list
-				errList.add("Msg_469");
-				continue;
+				if (workTime.get().getDispAtr().value != DisplayAtr.DisplayAtr_Display.value) {
+					// Set error to list
+					errList.add("Msg_469");
+					continue;
+				}
 			}
 
 			// Check workType-workTime

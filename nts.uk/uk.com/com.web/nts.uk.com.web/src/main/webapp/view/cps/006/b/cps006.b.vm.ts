@@ -37,6 +37,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         ckbDisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
 
+        ckbIsAbolition: KnockoutObservable<boolean> = ko.observable(false);;
+
         constructor() {
             let self = this;
 
@@ -57,11 +59,13 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 self.isRequired(newItem.isRequired);
 
+                self.ckbIsAbolition(newItem.isAbolition === 1 ? true : false);
+
             });
 
             self.ckbDisplayAbolition.subscribe(function(newValue) {
 
-                self.loadItemInfoDefList(self.currentCategory().id);
+                self.loadItemInfoDefList();
 
             });
         }
@@ -71,9 +75,15 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
-            self.currentCategory = ko.observable(new PerInfoCategory('B28E5649-0CFF-475B-AE87-52A21DBEB6D8', 'CS00004', 'Du lịch', 1, 0, 1, 0));
+            self.currentCategory = ko.observable(new PerInfoCategory('02E24D13-0558-41CC-866B-E930306AE6D4', 'CS00004', 'Du lịch', 1, 0, 1, 0));
 
-            self.loadItemInfoDefList(self.currentCategory().id).done(function() {
+            self.loadItemInfoDefList().done(function() {
+
+                if (self.itemInfoDefList().length > 0) {
+
+                    self.currentSelectId(self.itemInfoDefList()[0].id);
+
+                }
 
                 dfd.resolve();
 
@@ -82,27 +92,21 @@ module nts.uk.com.view.cps006.b.viewmodel {
             return dfd.promise();
         }
 
-        loadItemInfoDefList(categoryId): JQueryPromise<any> {
+        loadItemInfoDefList(): JQueryPromise<any> {
             let self = this,
-                dfd = $.Deferred();
-            service.getItemInfoDefList(categoryId).done(function(itemInfoDefList: Array<IItemInfoDef>) {
+                dfd = $.Deferred(),
+                categoryId = self.currentCategory().id;
 
+            block.invisible();
+
+            service.getItemInfoDefList(categoryId, self.ckbDisplayAbolition()).done(function(itemInfoDefList: Array<IItemInfoDef>) {
+                self.itemInfoDefList([]);
                 for (let i of itemInfoDefList) {
                     self.itemInfoDefList().push(new ItemInfoDef(i));
                 }
-
-                if (itemInfoDefList.length > 0) {
-
-                    self.currentSelectId(itemInfoDefList[0].id);
-
-                } else {
-
-
-
-                }
-
+                self.itemInfoDefList.valueHasMutated();
+                block.clear();
                 dfd.resolve();
-
             });
             return dfd.promise();
         }
@@ -226,6 +230,41 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         }
 
+        updateItemChange() {
+            let self = this,
+                command = {
+                    id: self.currentItem().id,
+                    itemName: self.itemNameText(),
+                    isAbolition: self.ckbIsAbolition() === true ? 1 : 0,
+                    isRequired: self.isRequired()
+                }
+            block.invisible();
+            service.updateItemChange(command).done(function() {
+
+                dialog({ messageId: "Msg_15" }).then(function() {
+
+                    self.loadItemInfoDefList().done(function() {
+
+                        block.clear();
+
+                    });
+                });
+
+
+            }).fail(function() {
+
+                dialog({ messageId: "Msg_233" });
+
+            });
+
+        }
+
+        closeDialog(): void {
+
+            nts.uk.ui.windows.close();
+
+        }
+
 
     }
 
@@ -240,6 +279,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         perInfoCtgId: string;
         itemCode: string;
         itemName: string;
+        itemNameDefault: string;
         isAbolition: number;
         isFixed: number;
         isRequired: number;
@@ -253,6 +293,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         id: string;
         perInfoCtgId: string;
         itemCode: string;
+        itemNameDefault: string;
         itemName: string;
         isAbolition: number;
         isFixed: number;
@@ -267,6 +308,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             this.id = data ? data.id : '';
             this.perInfoCtgId = data ? data.perInfoCtgId : '';
             this.itemCode = data ? data.itemCode : '';
+            this.itemNameDefault = data ? data.itemNameDefault : '';
             this.itemName = data ? data.itemName : '';
             this.isAbolition = data ? data.isAbolition : 0;
             this.isFixed = data ? data.isFixed : 0;

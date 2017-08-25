@@ -39,7 +39,7 @@ public class EmployeeFinder {
 		//get company id
 		String companyId = loginUserContext.companyId();
 		
-		return this.employeeRepository.findByEmployeeCode(companyId, employeeCode)
+		return this.employeeRepository.getPersonIdByEmployeeCode(companyId, employeeCode)
 				.map(item -> EmployeeDto.fromDomain(item));
 	}
 	
@@ -56,7 +56,7 @@ public class EmployeeFinder {
 		
 		//get company id
 		String companyId = loginUserContext.companyId();
-		return this.employeeRepository.findByListEmployeeCode(companyId, listEmployeeCode)
+		return this.employeeRepository.getListPersonByListEmployee(companyId, listEmployeeCode)
 				.stream().map(item -> EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
 	
@@ -72,7 +72,7 @@ public class EmployeeFinder {
 		
 		//get company id
 		String companyId = loginUserContext.companyId();
-		return this.employeeRepository.findAll(companyId).stream()
+		return this.employeeRepository.getAllEmployee(companyId).stream()
 				.map(item -> EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
 	

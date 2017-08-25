@@ -18,7 +18,6 @@ module nts.uk.pr.view.ksu006.b {
             listColumn: KnockoutObservableArray<NtsGridListColumn>;
             rowSelected: KnockoutObservable<string>;
             isGreaterThanTenError: KnockoutObservable<boolean>;
-            taskId: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
@@ -51,7 +50,6 @@ module nts.uk.pr.view.ksu006.b {
                 ]);
                 self.rowSelected = ko.observable('');
                 self.isGreaterThanTenError = ko.observable(false);
-                self.taskId = ko.observable('');
                 
                 // subscribe
                 self.isDone.subscribe((state) => {
@@ -71,12 +69,15 @@ module nts.uk.pr.view.ksu006.b {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                dfd.resolve();
+                self.findTaskId().done(() => {
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
             
-            public execute() {
+            private findTaskId(): JQueryPromise<any> {
                 let self = this;
+                let dfd = $.Deferred();
                 // get extract condition
                 let extractCondition: any = nts.uk.ui.windows.getShared("ExtractCondition");
                 
@@ -84,25 +85,29 @@ module nts.uk.pr.view.ksu006.b {
                 self.status(nts.uk.resource.getText("KSU006_216"));
                 
                 // find task id
-                service.executeImportFile(extractCondition).done(function(res: any) {
-                    $('#stopExecute').focus();
+                service.executeImportFile(extractCondition).then(function(res: any) {
                     self.executeId(res.executeId);
-                    self.taskId(res.taskInfor.id);
-                    self.updateState();
+                    $('#stopExecute').focus();
+                    self.updateState(res.taskId);
+                }).done(function(res: any) {
+                    dfd.resolve(res);
                 }).fail(function(res: any) {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
+                return dfd.promise();
             }
             
-            private updateState() {
+            private updateState(taskId: string) {
                 let self = this;
+                let dfd = $.Deferred();
+                
                 // start count time
                 $('.countdown').downCount();
                 
                 nts.uk.deferred.repeat(conf => conf
                 .task(() => {
-                    return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
-                        if (res.running || res.succeeded || res.cancelled) {
+                    nts.uk.request.specials.getAsyncTaskInfo(taskId).done(function(res: any) {
+                        if (res.running || res.succeeded || res.failed) {
                             _.forEach(res.taskDatas, item => {
                                 if (item.key == 'TOTAL_RECORD') {
                                     self.totalRecord(item.valueAsNumber);
@@ -115,7 +120,7 @@ module nts.uk.pr.view.ksu006.b {
                                 }
                             });
                         }
-                        if (res.succeeded || res.failed || res.cancelled) {
+                        if (res.succeeded || res.failed) {
                             self.isDone(true);
                             self.status(nts.uk.resource.getText("KSU006_217"));
                             
@@ -128,10 +133,13 @@ module nts.uk.pr.view.ksu006.b {
                                 $('#closeDialog').focus();
                             }
                         }
+                        dfd.resolve(res);
                     });
-                }).while(infor => {
-                    return infor.pending || infor.running;
-                }).pause(1000));
+                    return dfd.promise();
+                }).while(info => {
+                    return info.pending || info.running;
+                })
+                .pause(1000))
             }
             
             public downloadDetailError() {
@@ -146,12 +154,8 @@ module nts.uk.pr.view.ksu006.b {
             }
             
             public stopImporting() {
-                let self = this;
-                if (nts.uk.text.isNullOrEmpty(self.taskId())) {
-                    return;
-                }
-                // interrupt process import then close dialog
-                nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                // TODO: interrupt process import then close dialog
+                nts.uk.ui.windows.close();
             }
             
             public closeDialog() {

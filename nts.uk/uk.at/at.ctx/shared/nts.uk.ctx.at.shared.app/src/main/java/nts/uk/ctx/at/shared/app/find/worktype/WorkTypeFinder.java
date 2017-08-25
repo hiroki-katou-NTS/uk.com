@@ -14,9 +14,10 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -73,12 +74,12 @@ public class WorkTypeFinder {
 	}
 
 	/**
-	 * Find by companyId and DeprecateClassification = Deprecated (added by sonnh1)
+	 * Find by companyId and displayAtr = DISPLAY (added by sonnh1)
 	 * 
 	 * @return List WorkTypeDto
 	 */
 	public List<WorkTypeDto> findByCIdAndDisplayAtr() {
-		return this.workTypeRepo.findByCIdAndDisplayAtr(companyId, DeprecateClassification.Deprecated.value).stream()
+		return this.workTypeRepo.findByCIdAndDisplayAtr(companyId, DisplayAtr.DisplayAtr_Display.value).stream()
 				.map(c -> WorkTypeDto.fromDomain(c)).collect(Collectors.toList());
 	}
 	

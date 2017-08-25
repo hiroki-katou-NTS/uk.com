@@ -6,8 +6,7 @@ module nts.uk.at.view.kmf003.b.service {
         findByCode: "at/share/grantholidaytbl/findByCode/{0}/{1}",
         addGrantHdTbl: "at/share/grantholidaytbl/add",
         updateGrantHdTbl: "at/share/grantholidaytbl/update",
-        deleteGrantHdTbl: "at/share/grantholidaytbl/delete",
-        calculateGrantDate: "at/share/grantholidaytbl/calculateGrantDate"
+        deleteGrantHdTbl: "at/share/grantholidaytbl/delete"
     }  
     
     /**
@@ -21,33 +20,25 @@ module nts.uk.at.view.kmf003.b.service {
     /**
      *  Add data
      */
-    export function addYearHolidayGrant(data: Array<GrantHolidayTblDto>): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.addGrantHdTbl);
-        return nts.uk.request.ajax("at", path, data);
+    export function addYearHolidayGrant(data: GrantHolidayTblDto): JQueryPromise<any> {
+        var path = nts.uk.text.format(servicePath.addGrantHdTbl, data);
+        return nts.uk.request.ajax(path);
     }  
     
     /**
      *  Update data
      */
-    export function updateYearHolidayGrant(data: Array<GrantHolidayTblDto>): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.updateGrantHdTbl);
-        return nts.uk.request.ajax("at", path, data);
+    export function updateYearHolidayGrant(data: GrantHolidayTblDto): JQueryPromise<any> {
+        var path = nts.uk.text.format(servicePath.updateGrantHdTbl, data);
+        return nts.uk.request.ajax(path);
     }  
     
     /**
      *  Delete data
      */
     export function deleteYearHolidayGrant(codes: Array<Codes>): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.deleteGrantHdTbl);
-        return nts.uk.request.ajax("at", path, codes);
-    } 
-    
-    /**
-     *  Calculate grant dates
-     */
-    export function calculateGrantDate(param: DataTranfer): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.calculateGrantDate);
-        return nts.uk.request.ajax("at", path, param);
+        var path = nts.uk.text.format(servicePath.deleteGrantHdTbl, codes);
+        return nts.uk.request.ajax(path);
     } 
     
     export interface GrantHolidayTblDto {
@@ -67,12 +58,5 @@ module nts.uk.at.view.kmf003.b.service {
         grantYearHolidayNo: number,
         conditionNo: number,
         yearHolidayCode: string,
-    }
-    
-    export interface DataTranfer {
-        grantHolidayTblList: Array<GrantHolidayTblDto>,
-        useSimultaneousGrant: number, 
-        referDate: number, 
-        simultaneousGrantDate: number
     }
 }

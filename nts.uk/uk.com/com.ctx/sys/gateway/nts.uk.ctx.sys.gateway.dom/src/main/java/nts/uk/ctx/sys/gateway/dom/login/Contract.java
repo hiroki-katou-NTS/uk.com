@@ -16,7 +16,7 @@ public class Contract {
 
 	//パスワード
 	/** The password. */
-	private HashPassword password;
+	private RawPassword password;
 
 	//契約コード
 	/** The contract code. */

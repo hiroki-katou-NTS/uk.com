@@ -48,7 +48,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	}
 
 	@Override
-	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode) {
+	public Optional<Employee> getPersonIdByEmployeeCode(String companyId, String employeeCode) {
 		Optional<Employee> person = this.queryProxy().query(SELECT_BY_EMP_CODE, KmnmtEmployee.class)
 				.setParameter("companyId", companyId).setParameter("employeeCode", employeeCode)
 				.getSingle(c -> toDomain(c));
@@ -56,7 +56,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	}
 
 	@Override
-	public List<Employee> findByListEmployeeCode(String companyId,
+	public List<Employee> getListPersonByListEmployee(String companyId,
 			List<String> listEmployeeCode) {
 		
 		// fix bug empty list
@@ -79,7 +79,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 * getAllEmployee(java.lang.String)
 	 */
 	@Override
-	public List<Employee> findAll(String companyId) {
+	public List<Employee> getAllEmployee(String companyId) {
 		List<Employee> lstPerson = this.queryProxy()
 				.query(SELECT_BY_COMPANY_ID, KmnmtEmployee.class)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
@@ -94,7 +94,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 * getListPersonByListEmployeeId(java.lang.String, java.util.List)
 	 */
 	@Override
-	public List<Employee> findByListEmployeeId(String companyId,
+	public List<Employee> getListPersonByListEmployeeId(String companyId,
 			List<String> employeeIds) {
 		// fix bug empty list
 		if (CollectionUtil.isEmpty(employeeIds)) {

@@ -19,12 +19,23 @@ public class ApproveAccepted extends DomainObject {
 	/** 承認者 */
 	private String approverSID ;
 	
+	/** 代行者 */
+	private String representerSID ;
+	
+	/** 日付 */
+	private String approvalDate;
+	
+	/** 理由 */
+	private Reason reason;
 	
 	public static ApproveAccepted createFromJavaType( String companyID , String phaseID , int dispOrder , 
-			String approverSID){
+			String approverSID , String representerSID, String approvalDate ,String reason){
 		return new ApproveAccepted (companyID , 
 				phaseID , 
 				dispOrder , 
-				approverSID);
+				approverSID , 
+				representerSID  ,
+				approvalDate ,
+				new Reason(reason));
 	}	
 }

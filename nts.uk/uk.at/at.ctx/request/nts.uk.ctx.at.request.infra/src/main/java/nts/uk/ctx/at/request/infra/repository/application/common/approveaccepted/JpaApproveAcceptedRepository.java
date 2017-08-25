@@ -24,8 +24,10 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 		return ApproveAccepted.createFromJavaType(entity.kafdtApproveAcceptedPK.companyID, 
 				entity.kafdtApproveAcceptedPK.phaseID, 
 				entity.kafdtApproveAcceptedPK.dispOrder, 
-				entity.kafdtApproveAcceptedPK.approverSID
-				);
+				entity.kafdtApproveAcceptedPK.approverSID, 
+				entity.representerSID,
+				entity.approvalDate, 
+				entity.reason);
 	}
 	
 	private KafdtApproveAccepted toEntity(ApproveAccepted domain) {
@@ -34,7 +36,11 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 					domain.getCompanyID(),
 					domain.getPhaseID(),
 					domain.getDispOrder(),
-					domain.getApproverSID()));
+					domain.getApproverSID()
+						), 
+				domain.getRepresenterSID(),
+				domain.getApprovalDate(),
+				domain.getReason().v());
 	}
 	
 	/**
@@ -68,6 +74,21 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 	@Override
 	public void createApproverAccepted(ApproveAccepted approveAccepted) {
 		this.commandProxy().insert(toEntity(approveAccepted));
+	}
+	
+	/**
+	 * update approve accepted
+	 */
+	@Override
+	public void updateApproverAccepted(ApproveAccepted approveAccepted) {
+		KafdtApproveAccepted newEntity = toEntity(approveAccepted);
+		KafdtApproveAccepted updateEntity = this.queryProxy().find(newEntity.kafdtApproveAcceptedPK,
+				KafdtApproveAccepted.class).get();
+		updateEntity.representerSID = newEntity.representerSID;
+		updateEntity.approvalDate = newEntity.approvalDate;
+		updateEntity.reason = newEntity.reason;
+		this.commandProxy().update(updateEntity);
+		
 	}
 	
 	/**

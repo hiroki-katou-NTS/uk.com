@@ -418,32 +418,4 @@ public class JpaCompanyEstablishmentRepository extends JpaRepository
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
-	 * CompanyEstablishmentRepository#removeCompanyEstablishment(java.lang.
-	 * String, int)
-	 */
-	@Override
-	public void removeCompanyEstablishment(String companyId, int targetYear) {
-		
-		// find by time
-		List<KscmtEstTimeComSet> estimateTimeCompanys = this.getEstimateTimeCompany(companyId,
-				targetYear);
-		
-		// find by price
-		List<KscmtEstPriceComSet> estimatePriceCompanys = this.getEstimatePriceCompany(companyId,
-				targetYear);
-		
-		// find by number of day
-		List<KscmtEstDaysComSet> estimateDaysCompanys = this.getEstimateDaysCompany(companyId,
-				targetYear);
-		
-		// remove all data
-		this.commandProxy().removeAll(estimateTimeCompanys);
-		this.commandProxy().removeAll(estimatePriceCompanys);
-		this.commandProxy().removeAll(estimateDaysCompanys);
-	}
-
 }

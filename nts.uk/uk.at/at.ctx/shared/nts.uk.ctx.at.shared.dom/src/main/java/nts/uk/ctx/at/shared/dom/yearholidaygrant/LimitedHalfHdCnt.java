@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-@IntegerMaxValue(99)
+@StringMaxLength(2)
 public class LimitedHalfHdCnt extends IntegerPrimitiveValue<LimitedHalfHdCnt> {
 
 	/**

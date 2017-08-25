@@ -65,7 +65,7 @@ module ksu001.a.viewmodel {
             });
 
             //Grid list for pop-up
-            for (let i = 1; i <= 12; i++) { 
+            for (let i = 1; i <= 12; i++) {
                 self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
             }
 
@@ -300,19 +300,7 @@ module ksu001.a.viewmodel {
                 }, {
                         name: "TimeRange",
                         ranges: timeRanges
-                    }],
-                view: function(mode, obj) {
-                    switch (mode) {
-                        case "shortName":
-                            return [obj.workTypeName, obj.workTimeName];
-                        case "symbol":
-                            return obj.symbol;
-                        case "time":
-                            return [obj.startTime, obj.endTime];
-                    }
-                },
-                upperInput: "startTime",
-                lowerInput: "endTime"
+                    }]
             };
 
             //create VerticalSum Header and Content
@@ -377,16 +365,14 @@ module ksu001.a.viewmodel {
 
             new nts.uk.ui.exTable.ExTable($("#extable"), {
                 headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "200px",
-                horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "100px",
+                horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "200px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
                 bodyHeightMode: "dynamic",
-                windowXOccupation: 80,
-                windowYOccupation: 150,
+                windowOccupation: 50,
                 updateMode: "stick",
                 pasteOverWrite: true,
-                stickOverWrite: true,
-                viewMode: "shortName",
+                stickOverWrite: true
             })
                 .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
                 .MiddleHeader(middleHeader).MiddleContent(middleContent)
@@ -437,13 +423,15 @@ module ksu001.a.viewmodel {
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
                     lengthArrCell = arrCell.length;
 
-                for (let i = 0; i < lengthArrCell; i += 1) {
+                for (let i = 0; i < lengthArrCell; i += 2) {
                     arrObj.push(new BasicSchedule({
                         // slice string '_YYYYMMDD' to 'YYYYMMDD'
                         date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
                         employeeId: self.listSid[arrCell[i].rowIndex],
-                        workTimeCode: arrCell[i].value.workTimeCode,
-                        workTypeCode: arrCell[i].value.workTypeCode
+                        //                        workTimeCode: arrCell[i + 1].value,
+                        //                        workTypeCode: arrCell[i].value
+                        workTimeCode: '001',
+                        workTypeCode: '001'
                     }));
                 }
                 service.registerData(arrObj).done(function() {
@@ -482,7 +470,7 @@ module ksu001.a.viewmodel {
                 newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
             });
 
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 10; i++) {
                 newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
             }
 
@@ -546,7 +534,7 @@ module ksu001.a.viewmodel {
 
             //get new horzSumContentDs
             let horzSumContentDs = [];
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 10; i++) {
                 let obj = {};
                 obj["itemId"] = i.toString();
                 obj["empId"] = "";
@@ -631,14 +619,14 @@ module ksu001.a.viewmodel {
     interface ICell {
         rowIndex: string,
         columnKey: string,
-        value: ExCell,
+        value: string,
         innerIdx: number
     }
 
     class Cell {
         rowIndex: string;
         columnKey: string;
-        value: ExCell;
+        value: string;
         innerIdx: number;
 
         constructor(params: ICell) {
@@ -828,35 +816,6 @@ module ksu001.a.viewmodel {
         }
     }
 
-    interface IExCell {
-        workTypeCode: string,
-        workTypeName: string,
-        workTimeCode: string,
-        workTimeName: string,
-        symbol: string,
-        startTime: any,
-        endTime: any
-    }
-
-    class ExCell {
-        workTypeCode: string;
-        workTypeName: string;
-        workTimeCode: string;
-        workTimeName: string;
-        symbol: string;
-        startTime: any;
-        endTime: any;
-        constructor(params: IExCell) {
-            this.workTypeCode = params.workTypeCode;
-            this.workTypeName = params.workTypeName;
-            this.workTimeCode = params.workTimeCode;
-            this.workTimeName = params.workTimeName;
-            this.symbol = params.symbol;
-            this.startTime = params.startTime;
-            this.endTime = params.endTime;
-        }
-    }
-
     class ExItem {
         empId: string;
         empName: string;
@@ -871,7 +830,7 @@ module ksu001.a.viewmodel {
                 }
                 return;
             }
-            //create detailContent 
+            //create detailContent (ex: [workType, workTime] : ["出勤", "通常４ｈ "])
             for (let i = 0; i < arrDay.length; i++) {
                 let obj: BasicSchedule = _.find(dsOfSid, (x) => {
                     return moment(x.date).format('D') == arrDay[i].day;
@@ -880,45 +839,12 @@ module ksu001.a.viewmodel {
                 if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土') {
                     this['_' + arrDay[i].yearMonthDay] = ['休日', ''];
                 } else if (obj) {
-                    //get code and name of workType and workTime
-                    let workTypeCode = null, workTypeName = null, workTimeCode = null, workTimeName = null;
-                    let workType = _.find(listWorkType, ['workTypeCode', obj.workTypeCode]);
-                    if (workType) {
-                        workTypeCode = obj.workTypeCode;
-                        workTypeName = workType.abbreviationName;
-                    } else {
-                        workTypeCode = '';
-                        workTypeName = '';
-                    }
-
-                    let workTime = _.find(listWorkTime, ['siftCd', obj.workTimeCode]);
-                    if (workTime) {
-                        workTimeCode = obj.workTimeCode;
-                        workTimeName = workTime.abName;
-                    } else {
-                        workTimeCode = '';
-                        workTimeName = '';
-                    }
-
-                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
-                        workTypeCode: workTypeCode,
-                        workTypeName: workTypeName,
-                        workTimeCode: workTimeCode,
-                        workTimeName: workTimeName,
-                        symbol: null,
-                        startTime: null,
-                        endTime: null
-                    });
+                    //get name of workType and workTime
+                    let workTypeName = _.find(listWorkType, ['workTypeCode', obj.workTypeCode]).abbreviationName;
+                    let workTimeName = _.find(listWorkTime, ['siftCd', obj.workTimeCode]).abName;
+                    this['_' + arrDay[i].yearMonthDay] = [workTypeName, workTimeName];
                 } else {
-                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
-                        workTypeCode: '',
-                        workTypeName: '',
-                        workTimeCode: '',
-                        workTimeName: '',
-                        symbol: null,
-                        startTime: null,
-                        endTime: null
-                    });
+                    this['_' + arrDay[i].yearMonthDay] = ['', ''];
                 }
             }
         }

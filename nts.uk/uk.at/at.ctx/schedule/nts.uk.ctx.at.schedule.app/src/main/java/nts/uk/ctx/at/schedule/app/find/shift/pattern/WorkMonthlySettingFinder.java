@@ -68,7 +68,7 @@ public class WorkMonthlySettingFinder {
 	
 	/** The internationalization. */
 	@Inject
-	private IInternationalization internationalization;
+	IInternationalization internationalization;
 	
 	/**
 	 * Find by month.

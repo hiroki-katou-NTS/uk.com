@@ -147,30 +147,4 @@ public interface WorkAppApprovalRootRepository {
 	 * @return
 	 */
 	List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, String endDate);
-	/**
-	 * get ComApprovalRoot
-	 * @param companyId
-	 * @param approvalId
-	 * @param historyId
-	 * @return
-	 */
-	Optional<CompanyApprovalRoot> getComApprovalRoot(String companyId, String approvalId, String historyId);
-	/**
-	 * get WpApprovalRoot
-	 * @param companyId
-	 * @param approvalId
-	 * @param workplaceId
-	 * @param historyId
-	 * @return
-	 */
-	Optional<WorkplaceApprovalRoot> getWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId);
-	/**
-	 * get PsApprovalRoot
-	 * @param companyId
-	 * @param approvalId
-	 * @param employeeId
-	 * @param historyId
-	 * @return
-	 */
-	Optional<PersonApprovalRoot> getPsApprovalRoot(String companyId, String approvalId, String employeeId, String historyId);
 }

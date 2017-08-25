@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 年休付与テーブル設定
@@ -38,7 +39,7 @@ public class GrantHdTblSet extends AggregateRoot {
 	private Integer simultaneousGrandMonthDays;
 
 	/* 備考 */
-	private YearHolidayNote yearHolidayNote;
+	private Memo yearHolidayNote;
 	
 	private List<GrantCondition> grantConditions;
 	
@@ -59,16 +60,7 @@ public class GrantHdTblSet extends AggregateRoot {
 				}
 			}
 		}
-		
-		// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
-		if(CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)){
-			for (GrantCondition grantCondition : grantConditions) {
-				if(grantCondition.getConditionValue().v() > 366){
-					throw new BusinessException("Msg_263");
-				}
-			}
-		}
-
+				
 		for(int i=0; i<this.grantConditions.size(); i++) {
 			if (i == 0) {
 				continue;
@@ -81,6 +73,13 @@ public class GrantHdTblSet extends AggregateRoot {
 				throw new BusinessException("Msg_271");
 			}
 			
+			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
+			if(CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)){
+				if(currentCondition.getConditionValue().v() > 366){
+					throw new BusinessException("Msg_263");
+				}
+			}
+			
 			// 条件NO：1、条件値　>　条件NO：2、条件値　>　条件NO：3、条件値　>　条件NO：4、条件値　>　条件NO：5、条件値　		
 			int firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
 			int secondValue = currentCondition.getConditionValue().v();
@@ -91,7 +90,7 @@ public class GrantHdTblSet extends AggregateRoot {
 	}
 	
 	public GrantHdTblSet(String companyId, YearHolidayCode yearHolidayCode, YearHolidayName yearHolidayName, CalculationMethod calculationMethod,
-			StandardCalculation standardCalculation, UseSimultaneousGrant useSimultaneousGrant, int simultaneousGrandMonthDays, YearHolidayNote yearHolidayNote, List<GrantCondition> grantConditions) {
+			StandardCalculation standardCalculation, UseSimultaneousGrant useSimultaneousGrant, int simultaneousGrandMonthDays, Memo yearHolidayNote, List<GrantCondition> grantConditions) {
 
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
@@ -113,6 +112,6 @@ public class GrantHdTblSet extends AggregateRoot {
 				EnumAdaptor.valueOf(standardCalculation, StandardCalculation.class), 
 				EnumAdaptor.valueOf(useSimultaneousGrant, UseSimultaneousGrant.class), 
 				simultaneousGrandMonthDays, 
-				new YearHolidayNote(yearHolidayNote), grantConditions);
+				new Memo(yearHolidayNote), grantConditions);
 	}
 }

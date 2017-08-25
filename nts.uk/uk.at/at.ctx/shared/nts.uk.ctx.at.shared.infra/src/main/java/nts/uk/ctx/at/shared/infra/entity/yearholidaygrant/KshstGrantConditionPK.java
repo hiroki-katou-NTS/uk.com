@@ -21,7 +21,7 @@ public class KshstGrantConditionPK {
 	public String companyId;
 	
 	/* 年休付与テーブル設定コード */
-	@Column(name = "YEAR_HD_CD")
+	@Column(name = "YEAR_HOLIDAY_CD")
 	public String yearHolidayCode;
 	
 	/* 条件NO */

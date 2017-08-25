@@ -29,6 +29,9 @@ public class JpaSystemConfigRepository extends JpaRepository implements SystemCo
 	 */
 	@Override
 	public Optional<SystemConfig> getSystemConfig() {
+
+		// SgwstSystemConfig result = this.queryProxy().find(null,
+		// SgwstSystemConfig.class).get();
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

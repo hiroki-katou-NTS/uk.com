@@ -170,7 +170,10 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         }
 
         close() {
+            var t0 = performance.now();
+            var t1 = performance.now();
             nts.uk.ui.windows.close();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
 
     }

@@ -44,12 +44,11 @@ public class JpaEmployeeLoginSettingRepository extends JpaRepository implements 
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<SgwstEmployeeLoginSet> result = em.createQuery(query).getResultList();
-		//get single Employee login setting
-		if (result.isEmpty()) {
+		SgwstEmployeeLoginSet result = em.createQuery(query).getSingleResult();
+		if (result == null) {
 			return Optional.empty();
 		} else {
-			return Optional.of(new EmployeeLoginSetting(new JpaEmployeeLoginSettingGetMemento(result.get(0))));
+			return Optional.of(new EmployeeLoginSetting(new JpaEmployeeLoginSettingGetMemento(result)));
 		}
 	}
 }

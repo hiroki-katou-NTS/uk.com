@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.shared.app.find.yearholidaygrant;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.shr.com.primitive.Memo;
 
 @Value
 public class YearHolidayGrantDto {
@@ -30,15 +31,11 @@ public class YearHolidayGrantDto {
 	private int simultaneousGrandMonthDays;
 
 	/* 備考 */
-	private String yearHolidayNote;
+	private Memo yearHolidayNote;
 	
-	private List<GrantConditionDto> grantConditions;
+	private List<GrantCondition> grantConditions;
 	
 	public static YearHolidayGrantDto fromDomain(GrantHdTblSet domain){
-		List<GrantConditionDto> conditions = domain.getGrantConditions().stream()
-				.map(x-> GrantConditionDto.fromDomain(x))
-				.collect(Collectors.toList());
-		
 		return new YearHolidayGrantDto(
 			domain.getCompanyId(),
 			domain.getYearHolidayCode().v(),
@@ -47,8 +44,8 @@ public class YearHolidayGrantDto {
 			domain.getStandardCalculation().value,
 			domain.getUseSimultaneousGrant().value,
 			domain.getSimultaneousGrandMonthDays(),
-			domain.getYearHolidayNote().v(),
-			conditions
+			domain.getYearHolidayNote(),
+			domain.getGrantConditions()
 		);
 	}
 }

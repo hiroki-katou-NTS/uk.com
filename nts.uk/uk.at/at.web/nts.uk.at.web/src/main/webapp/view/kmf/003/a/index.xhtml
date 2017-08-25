@@ -7,12 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode
-				nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayName
-				nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayNote
-				nts.uk.ctx.at.shared.dom.yearholidaygrant.ConditionValue
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf003.a.vm.js" />
@@ -56,10 +50,10 @@
 					<table>
 						<tr>
 							<td width="200"><div
-									data-bind="ntsFormLabel: {required: true, constraint:['YearHolidayCode','YearHolidayName']}">#{i18n.getText('KMF003_10')}</div></td>
+									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF003_10')}</div></td>
 							<td><input class="input-code"
-								data-bind="ntsTextEditor: { value: code, enable: editmode, constraint: 'YearHolidayCode', required: true, name: '#[KMF003_11]'}, hasfocus: true" /> <input
-								class="input-name" data-bind="ntsTextEditor: {value: name, constraint: 'YearHolidayName', required: true, name: '#[KMF003_12]'}" />
+								data-bind="ntsTextEditor: { value: code, enable: editmode }, hasfocus: true" /> <input
+								class="input-name" data-bind="ntsTextEditor: {value: name}" />
 							</td>
 						</tr>
 						<tr></tr>
@@ -72,7 +66,7 @@
 									<div class="a5">
 										<label class="a5_1">#{i18n.getText('KMF003_15')}</label>
 										<div id="monthdays" class="a5_2"
-											data-bind="ntsMonthDays: {value: grantDate, enable: enableGrantDate}" />
+											data-bind="ntsMonthDays: {value: grantDate, enable: true}" />
 									</div>
 								</div>
 							</td>
@@ -113,7 +107,7 @@
 							<td width="200"></td>
 							<td width="20"></td>
 							<td width="80"><input class="a7_7"
-								data-bind="ntsTextEditor: { value: conditionValue01, constraint: 'YearHolidayCode', name: '#[KMF003_23]' }" /></td>
+								data-bind="ntsTextEditor: { value: conditionValue01 }" /></td>
 							<td width="120"><label class="a7_8"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue01"></span><span
@@ -129,7 +123,7 @@
 							<td><div class="a7_10"
 									data-bind="ntsCheckBox: { checked: useCls02, enable: true }"></div></td>
 							<td><input class="a7_11"
-								data-bind="ntsTextEditor: { value: conditionValue02, enable: conditionValue02Enable, constraint: 'YearHolidayCode', name: '#[KMF003_24]' }" /></td>
+								data-bind="ntsTextEditor: { value: conditionValue02, enable: conditionValue02Enable }" /></td>
 							<td><label class="a7_12"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue02"></span><span
@@ -145,7 +139,7 @@
 							<td><div class="a7_14"
 									data-bind="ntsCheckBox: { checked: useCls03, enable: true }"></div></td>
 							<td><input class="a7_15"
-								data-bind="ntsTextEditor: { value: conditionValue03, enable: conditionValue03Enable, constraint: 'YearHolidayCode', name: '#[KMF003_25]' }" /></td>
+								data-bind="ntsTextEditor: { value: conditionValue03, enable: conditionValue03Enable }" /></td>
 							<td><label class="a7_16"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue03"></span><span
@@ -161,7 +155,7 @@
 							<td><div class="a7_18"
 									data-bind="ntsCheckBox: { checked: useCls04, enable: true }"></div></td>
 							<td><input class="a7_19"
-								data-bind="ntsTextEditor: { value: conditionValue04, enable: conditionValue04Enable, constraint: 'YearHolidayCode', name: '#[KMF003_26]' }" /></td>
+								data-bind="ntsTextEditor: { value: conditionValue04, enable: conditionValue04Enable }" /></td>
 							<td><label class="a7_20"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue04"></span><span
@@ -177,7 +171,7 @@
 							<td><div class="a7_22"
 									data-bind="ntsCheckBox: { checked: useCls05, enable: true }"></div></td>
 							<td><input class="a7_23"
-								data-bind="ntsTextEditor: { value: conditionValue05, enable: conditionValue05Enable, constraint: 'YearHolidayCode', name: '#[KMF003_27]' }" /></td>
+								data-bind="ntsTextEditor: { value: conditionValue05, enable: conditionValue05Enable }" /></td>
 							<td><label class="a7_24"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue05"></span><span
@@ -190,9 +184,9 @@
 						<tr></tr>
 						<tr>
 							<td style="vertical-align: top;"><div
-									data-bind="ntsFormLabel: {constraint:'YearHolidayNote'}">#{i18n.getText('KMF003_30')}</div></td>
+									data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_30')}</div></td>
 							<td colspan="6"><textarea class="note-input"
-									data-bind="ntsMultilineEditor: { value: note, constraint: 'YearHolidayNote', name: '#[KMF003_30]' }" /></td>
+									data-bind="ntsMultilineEditor: { value: note }" /></td>
 						</tr>
 					</table>
 				</div>

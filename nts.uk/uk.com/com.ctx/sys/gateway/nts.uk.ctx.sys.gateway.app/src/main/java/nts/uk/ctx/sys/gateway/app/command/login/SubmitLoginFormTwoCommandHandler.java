@@ -16,13 +16,14 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
+import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SubmitLoginFormTwoCommandHandler.
@@ -32,15 +33,15 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 
 	/** The user repository. */
 	@Inject
-	private UserRepository userRepository;
+	UserRepository userRepository;
 
 	/** The employee code setting adapter. */
 	@Inject
-	private SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
+	SysEmployeeCodeSettingAdapter employeeCodeSettingAdapter;
 
 	/** The employee adapter. */
 	@Inject
-	private SysEmployeeAdapter employeeAdapter;
+	SysEmployeeAdapter employeeAdapter;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -52,8 +53,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		String companyCode = command.getCompanyCode();
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
-		String contractCode = command.getContractCode();
-		String companyId = contractCode + "-" + companyCode;
+		String companyId = AppContexts.user().contractCode() + "-" + companyCode;
 		// check validate input
 		this.checkInput(command);
 
@@ -106,27 +106,29 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
 				// not edit employeeCode
 				return employeeCode;
+			} else {
+				//update employee code
+				switch (editType) {
+				case ZeroBefore:
+					employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
+					break;
+				case ZeroAfter:
+					employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit, "0");
+					break;
+				case SpaceBefore:
+					employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit);
+					break;
+				case SpaceAfter:
+					employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit);
+					break;
+				default:
+					break;
+				}
+				return employeeCode;
 			}
-			// update employee code
-			switch (editType) {
-			case ZeroBefore:
-				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit, "0");
-				break;
-			case ZeroAfter:
-				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit, "0");
-				break;
-			case SpaceBefore:
-				employeeCode = StringUtils.leftPad(employeeCode, addNumberDigit);
-				break;
-			case SpaceAfter:
-				employeeCode = StringUtils.rightPad(employeeCode, addNumberDigit);
-				break;
-			default:
-				break;
-			}
+		} else {
 			return employeeCode;
 		}
-		return employeeCode;
 	}
 
 	/**
@@ -167,7 +169,8 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	 * @param password the password
 	 */
 	private void compareHashPassword(User user, String password) {
-		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword().v())) {
+		// TODO compare hash string here
+		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(user.getPassword().v())) {
 			throw new BusinessException("Msg_302");
 		}
 	}

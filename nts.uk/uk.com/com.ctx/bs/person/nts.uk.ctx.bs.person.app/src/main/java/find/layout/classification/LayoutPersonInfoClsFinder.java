@@ -82,6 +82,8 @@ public class LayoutPersonInfoClsFinder {
 				}
 			}
 		}
-		return listItemCls;
+		return listItemCls.stream()
+				.filter(m -> (m.getLayoutItemType() != 2 && !m.getListItemDf().isEmpty()) || m.getLayoutItemType() == 2)
+				.collect(Collectors.toList());
 	}
 }

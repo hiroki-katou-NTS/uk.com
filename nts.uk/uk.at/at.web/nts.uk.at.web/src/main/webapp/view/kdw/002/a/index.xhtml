@@ -31,7 +31,7 @@
 				<div class="leftpanel"
 					data-bind="ntsPanel:{ direction: 'right', visible: true}">
 
-					<div tabindex="3" style="width: 300px"
+					<div style="width: 300px"
 						data-bind="ntsSearchBox: {searchMode: 'filter',placeHolder:'',targetKey: 'attendanceItemId',mode:'igGrid', comId:'gridList', items: attendanceItems,selected: aICurrentCode, selectedKey: 'attendanceItemId', childField: 'childs', fields: ['attendanceItemName', 'attendanceItemId']}" />
 					<label>勤 怠 項 目</label>
 					<table id="gridList"
@@ -58,11 +58,11 @@
 				<label  data-bind="value: linebreak "></label>
 				<div class="component-area">
 					<label>#{i18n.getText('KDW002_5')}</label>
-					<div tabindex="5" class="headerColor"
+					<div class="headerColor"
 						data-bind="ntsColorPicker: {value: headerColorValue, width: 50}" />
 				</div>
 				<div class="component-area">
-					<label>#{i18n.getText('KDW002_6')}</label> <select tabindex="3"
+					<label>#{i18n.getText('KDW002_6')}</label> <select
 						class="unitRounding"
 						data-bind="options: unitRoundings , optionsText: 'timeInputName', optionsValue: 'timeInputValue' , value: timeInputCurrentCode"></select>
 				</div>
