@@ -57,13 +57,16 @@ module nts.uk.com.view.cps006.a.viewmodel {
             self.itemList.removeAll();
             service.getAllPerInfoItemDefByCtgId(id).done(function(data: Array<any>) {
                 if (data.length > 0) {
-                    self.itemList(_.map(data, x => new ItemInfo({
+                    self.itemList(_.map(data, x => {return {
                         id: x.id,
                         perInfoCtgId: x.perInfoCtgId,
-                        itemCode: x.itemCode,
                         itemName: x.itemName,
+                        systemRequired: x.systemRequired,
                         isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
-                    })));
+                    }}));
+                    
+                    self.currentCategory().displayIsAbolished = (_.filter(data, x =>{return x.systemRequired == false})).length > 0 ? true: false;
+                    
                 };
             });
 
@@ -147,8 +150,17 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
             setShared('CDL020_PARAMS', cats);
             nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
-                self.categoryList(getShared('CDL020_VALUES'));
-                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                let CTGlist: Array<any> = getShared('CDL020_VALUES'),
+                    i: number = 0,
+                    CTGsorrList = _.map(CTGlist, x => {
+                    return {
+                        id: x.id,
+                        order: i++
+                    }
+                });
+                service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>){
+                    self.start(undefined);
+                })
             });
         }
 
@@ -156,15 +168,15 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this,
                 cat = ko.toJS(self.currentCategory),
                 command = {
-                    id: cat.id,
+                    categoryId: cat.id,
                     categoryName: cat.categoryName,
                     isAbolition: cat.isAbolition
-                    
+
                 };
-            
-            service.update(command).done(function(data) {
+
+            service.updateCtgInfo(command).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.start(command.id);
+                    self.start(command.categoryId);
                 });
             })
 
@@ -199,22 +211,22 @@ module nts.uk.com.view.cps006.a.viewmodel {
     export interface IItemInfo {
         id: string;
         perInfoCtgId: string;
-        itemCode: string;
         itemName: string;
+        systemRequired: number;
         isAbolition: string;
     }
 
     export class ItemInfo {
         id: string;
         perInfoCtgId: string;
-        itemCode: string;
         itemName: string;
+        systemRequired: number;
         isAbolition: string;
         constructor(params: IItemInfo) {
             this.id = params.id;
             this.perInfoCtgId = params.perInfoCtgId;
-            this.itemCode = params.itemCode;
             this.itemName = params.itemName;
+            this.systemRequired = params.systemRequired;
             this.isAbolition = params.isAbolition;
         }
     }
@@ -234,6 +246,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: number;
         isAbolition: KnockoutObservable<boolean>;
+        displayIsAbolished :  boolean = false;
         constructor(params: ICategoryInfoDetail) {
             this.id = ko.observable(params.id);
             this.categoryNameDefault = params.categoryNameDefault;
