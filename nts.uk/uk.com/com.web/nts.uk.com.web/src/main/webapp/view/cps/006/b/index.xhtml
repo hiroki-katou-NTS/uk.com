@@ -20,9 +20,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="B_1" class="proceed">#{i18n.getText('CPS006_19')}</button>
+					<button id="B_1" class="proceed" data-bind="click:updateItemChange">#{i18n.getText('CPS006_19')}</button>
 					<button id="B_2">#{i18n.getText('CPS006_20')}</button>
-					<button id="B_3">#{i18n.getText('CPS006_21')}</button>
+					<button id="B_3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
@@ -68,7 +68,7 @@
 						</div>
 
 						<div class="line_col_2">
-							<span id="B2_2" data-bind="text:currentItem().itemName"></span>
+							<span id="B2_2" data-bind="text:currentItem().itemNameDefault"></span>
 						</div>
 
 					</div>
@@ -84,7 +84,8 @@
 						</div>
 
 
-						<div id="B2_5" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('CPS006_24')}</div>
+						<div id="B2_5"
+							data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
 
 
 					</div>
@@ -258,7 +259,7 @@
 									<span id="B2_33"
 										data-bind="text:currentItem().itemTypeState.dataTypeState.min"></span>
 									<span id="B2_34">~</span> <span id="B2_35"
-										data-bind="text:currentItem().itemTypeState.dataTypeState.max"></span>  
+										data-bind="text:currentItem().itemTypeState.dataTypeState.max"></span>
 								</div>
 
 							</div>
