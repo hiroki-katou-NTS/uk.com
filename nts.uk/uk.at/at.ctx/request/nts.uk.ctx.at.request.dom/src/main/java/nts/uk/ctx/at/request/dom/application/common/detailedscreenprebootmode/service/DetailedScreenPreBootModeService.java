@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.service;
 
-import javax.ejb.Stateless;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
