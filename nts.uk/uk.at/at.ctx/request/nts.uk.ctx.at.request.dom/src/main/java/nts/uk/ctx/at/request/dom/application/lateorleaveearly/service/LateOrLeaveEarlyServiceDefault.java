@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.lateorleaveearly.service;
 
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
+import javax.ejb.Stateless;
 
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
+@Stateless
 public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 	@Override
