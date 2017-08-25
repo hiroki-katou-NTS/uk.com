@@ -3603,7 +3603,7 @@ var nts;
                 dialog.Message = Message;
                 function getMaxZIndex() {
                     var overlayElements = parent.$(".ui-widget-overlay");
-                    var max = 120002;
+                    var max = 12000;
                     if (overlayElements.length > 0) {
                         var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
                         var temp = _.max(zIndexs);
@@ -9790,6 +9790,68 @@ var nts;
                         return $control.data(DATA_HAS_ERROR) === true;
                     }
                 })(ntsError || (ntsError = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsFixedTable;
+                (function (ntsFixedTable_1) {
+                    $.fn.ntsFixedTable = ntsFixedTable;
+                    function ntsFixedTable(action, options) {
+                        var $controls = $(this);
+                        if (typeof arguments[0] !== 'string') {
+                            return ntsFixedTable.apply($controls, _.concat("init", action));
+                        }
+                        if (action === "init") {
+                            return init($controls, options);
+                        }
+                        else {
+                            return $controls;
+                        }
+                        ;
+                    }
+                    function init(controls, options) {
+                        controls.each(function () {
+                            var $originTable = $(this);
+                            $originTable.addClass("fixed-table");
+                            var $colgroup = $originTable.find("colgroup");
+                            var $thead = $originTable.find("thead");
+                            var width = 0;
+                            $colgroup.find("col").each(function () {
+                                width += Number($(this).attr("width").replace(/px/gi, ''));
+                            });
+                            width++;
+                            var setting = $.extend({ height: "auto" }, options);
+                            var $container = $("<div class='nts-fixed-table cf'/>");
+                            $originTable.after($container);
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").width(width);
+                            var $headerTable = $("<table class='fixed-table'></table>");
+                            $headerTable.append($colgroup.clone()).append($thead);
+                            $headerContainer.append($headerTable);
+                            $headerContainer.appendTo($container);
+                            $originTable.addClass("nts-fixed-body-table");
+                            var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
+                            var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
+                            var bodyHeight = "auto";
+                            if (setting.height !== "auto") {
+                                bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
+                            }
+                            $bodyWrapper.width(width).height(bodyHeight);
+                            $bodyWrapper.append($originTable);
+                            $bodyContainer.append($bodyWrapper);
+                            $container.append($bodyContainer);
+                        });
+                        return controls;
+                    }
+                })(ntsFixedTable || (ntsFixedTable = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -18918,68 +18980,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsFixedTable;
-                (function (ntsFixedTable_1) {
-                    $.fn.ntsFixedTable = ntsFixedTable;
-                    function ntsFixedTable(action, options) {
-                        var $controls = $(this);
-                        if (typeof arguments[0] !== 'string') {
-                            return ntsFixedTable.apply($controls, _.concat("init", action));
-                        }
-                        if (action === "init") {
-                            return init($controls, options);
-                        }
-                        else {
-                            return $controls;
-                        }
-                        ;
-                    }
-                    function init(controls, options) {
-                        controls.each(function () {
-                            var $originTable = $(this);
-                            $originTable.addClass("fixed-table");
-                            var $colgroup = $originTable.find("colgroup");
-                            var $thead = $originTable.find("thead");
-                            var width = 0;
-                            $colgroup.find("col").each(function () {
-                                width += Number($(this).attr("width").replace(/px/gi, ''));
-                            });
-                            width++;
-                            var setting = $.extend({ height: "auto" }, options);
-                            var $container = $("<div class='nts-fixed-table cf'/>");
-                            $originTable.after($container);
-                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").width(width);
-                            var $headerTable = $("<table class='fixed-table'></table>");
-                            $headerTable.append($colgroup.clone()).append($thead);
-                            $headerContainer.append($headerTable);
-                            $headerContainer.appendTo($container);
-                            $originTable.addClass("nts-fixed-body-table");
-                            var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
-                            var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
-                            var bodyHeight = "auto";
-                            if (setting.height !== "auto") {
-                                bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
-                            }
-                            $bodyWrapper.width(width).height(bodyHeight);
-                            $bodyWrapper.append($originTable);
-                            $bodyContainer.append($bodyWrapper);
-                            $container.append($bodyContainer);
-                        });
-                        return controls;
-                    }
-                })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

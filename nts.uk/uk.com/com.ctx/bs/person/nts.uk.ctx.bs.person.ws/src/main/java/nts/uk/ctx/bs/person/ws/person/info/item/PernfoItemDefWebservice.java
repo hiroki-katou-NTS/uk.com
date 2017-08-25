@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import command.person.info.item.AddItemCommand;
+import command.person.info.item.AddItemCommandHandler;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import find.person.info.item.PerInfoItemDefFullEnumDto;
@@ -18,7 +20,10 @@ public class PernfoItemDefWebservice {
 
 	@Inject
 	private PerInfoItemDefFinder itemDefFinder;
-
+	
+	@Inject
+	private AddItemCommandHandler addItemCm;
+	
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}")
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId) {
@@ -68,5 +73,17 @@ public class PernfoItemDefWebservice {
 	@Path("layout/finditem/required")
 	public List<String> getRequiredIds() {
 		return itemDefFinder.getRequiredIds();
+	}
+	
+	@POST
+	@Path("add")
+	public void addItemDef(AddItemCommand addItemCommand) {
+		addItemCm.handle(addItemCommand);
+	}
+	
+	@POST
+	@Path("update")
+	public void updateItemDef() {
+		//return itemDefFinder.getRequiredIds();
 	}
 }
