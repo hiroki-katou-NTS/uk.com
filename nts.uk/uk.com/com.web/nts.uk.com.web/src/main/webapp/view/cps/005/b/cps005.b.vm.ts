@@ -3,13 +3,12 @@ module nts.uk.com.view.cps005.b {
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
-
     export module viewmodel {
         export class ScreenModel {
             currentItemData: KnockoutObservable<ItemDataModel>;
+            isUpdate: boolean = false;
             constructor() {
                 let self = this,
                     dataItemModel = new ItemDataModel(null);
@@ -20,28 +19,54 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     dfd = $.Deferred();
                 let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
-                new service.Service().getAllPerInfoItemDefByCtgId(categoryId).done(function(data: IItemData) { 
-                    self.currentItemData(new ItemDataModel(data)); 
-                    self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");  
-//                    if(!data) return;
-//                    self.currentItemData(data);            
-//                    self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
-//                    self.currentItemData().dataTypeEnum = data.dataTypeEnum || new Array();
-//                    self.currentItemData().stringItemTypeEnum = data.stringItemTypeEnum || new Array();
-//                    self.currentItemData().stringItemDataTypeEnum = data.stringItemDataTypeEnum || new Array();
-//                    self.currentItemData().dateItemTypeEnum = data.dateItemTypeEnum || new Array();
-//                    self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
+                new service.Service().getAllPerInfoItemDefByCtgId(categoryId).done(function(data: IItemData) {
+                    if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
+                        self.currentItemData(new ItemDataModel(data));
+                        self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
+                        self.isUpdate = true;
+                    } else {
+                        self.register();
+                    }
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
-
+            
+            reloadData(newItemName: string, itemId: string): JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
+                let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
+                new service.Service().getAllPerInfoItemDefByCtgId(categoryId).done(function(data: IItemData) {
+                    if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
+                        self.currentItemData(new ItemDataModel(data));
+                        if (newItemName) {
+                            let newItem = _.find(data.personInfoItemList, item => { return item.itemName == newItemName });
+                            self.currentItemData().perInfoItemSelectCode(newItem ? newItem.id : "");
+                        }
+                        if(itemId){
+                            self.currentItemData().perInfoItemSelectCode("");
+                            self.currentItemData().perInfoItemSelectCode(itemId);
+                        }
+                        self.isUpdate = true;
+                    } else {
+                        self.register();
+                    }
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
             register() {
-
+                let self = this;
+                nts.uk.ui.errors.clearAll();
+                self.currentItemData().perInfoItemSelectCode("");
+                self.currentItemData().currentItemSelected(new PersonInfoItem(null));
+                self.isUpdate = false;
+                $("#item-name-control").focus();
             }
 
             addUpdateData() {
-
+            
             }
 
             removeData() {
@@ -58,26 +83,10 @@ module nts.uk.com.view.cps005.b {
         personInfoItemList: KnockoutObservableArray<PersonInfoItemShowListModel> = ko.observableArray([]);
         perInfoItemSelectCode: KnockoutObservable<string> = ko.observable("");
         currentItemSelected: KnockoutObservable<PersonInfoItem> = ko.observable(new PersonInfoItem(null));
-        dataTypeEnum: Array<any> = [
-            { value: 1, localizedName: "文字列(String)" },
-            { value: 2, localizedName: "数値(Numeric)" },
-            { value: 3, localizedName: "日付(Date)" },
-            { value: 4, localizedName: "時間(Time)" },
-            { value: 5, localizedName: "時刻(TimePoint)" },
-            { value: 6, localizedName: "選択(Selection)" },
-        ];
+        dataTypeEnum: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 1 - 文字列(String)
-        stringItemTypeEnum: Array<any> = [
-            { value: 1, localizedName: "すべての文字(any)" },
-            { value: 2, localizedName: "全ての半角文字(AnyHalfWidth)" },
-            { value: 3, localizedName: "半角英数字(AlphaNumeric)" },
-            { value: 4, localizedName: "半角数字(Numeric)" },
-            { value: 5, localizedName: "全角カタカナ(Kana)" },
-        ];
-        stringItemDataTypeEnum: Array<any> = [
-            { value: 2, localizedName: "可変長(VariableLength)" },
-            { value: 1, localizedName: "固定長(FixedLength)" },
-        ];
+        stringItemTypeEnum: Array<any> = new Array();
+        stringItemDataTypeEnum: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 2 - 数値(Numeric)
         numericItemAmountAtrEnum: Array<any> = [
             { code: 1, name: nts.uk.resource.getText("CPS005_50") },
@@ -88,84 +97,99 @@ module nts.uk.com.view.cps005.b {
             { code: 0, name: nts.uk.resource.getText("CPS005_47") },
         ];
         //Enum : dataTypeEnum is selected value 3 -日付(Date)
-        dateItemTypeEnum: Array<any> = [
-            { value: 1, localizedName: "年月日 (YearMonthDay)" },
-            { value: 2, localizedName: "年月 (YearMonth)" },
-            { value: 3, localizedName: "年 (Year)" },
+        dateItemTypeEnum: Array<any> = new Array();
+        //Enum : dataTypeEnum is selected value 6 -選択(Selection)
+        referenceTypeEnum: Array<any> = [
+            { value: 1, localizedName: "等級区分 1" },
+            { value: 2, localizedName: "等級区分 2" },
+            { value: 3, localizedName: "等級区分 3" },
         ];
         constructor(data: IItemData) {
             let self = this;
-            if (!data) return;
-            self.personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
-            self.dataTypeEnum = data.dataTypeEnum || new Array();
-            self.stringItemTypeEnum = data.stringItemTypeEnum || new Array();
-            self.stringItemDataTypeEnum = data.stringItemDataTypeEnum || new Array();
-            self.dateItemTypeEnum = data.dateItemTypeEnum || new Array();
-            //subscribe select category code
-            self.perInfoItemSelectCode.subscribe(newItemId => {
-                if (textUK.isNullOrEmpty(newItemId)) return;
-                nts.uk.ui.errors.clearAll();
-                new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
-                    self.currentItemSelected(new PersonInfoItem(data));
+            if (data) {
+                self.personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
+                self.dataTypeEnum = data.dataTypeEnum || new Array();
+                self.stringItemTypeEnum = data.stringItemTypeEnum || new Array();
+                self.stringItemDataTypeEnum = data.stringItemDataTypeEnum || new Array();
+                self.stringItemDataTypeEnum.reverse();
+                self.dateItemTypeEnum = data.dateItemTypeEnum || new Array();
+                //subscribe select category code
+                self.perInfoItemSelectCode.subscribe(newItemId => {
+                    if (textUK.isNullOrEmpty(newItemId)) return;
+                    nts.uk.ui.errors.clearAll();
+                    new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
+                        self.currentItemSelected(new PersonInfoItem(data));
+                        self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
+                        self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
+                        self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
+                        self.currentItemSelected().numericItem().numericItemAmountText(_.find(self.numericItemAmountAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemAmount(); }).name);
+                        self.currentItemSelected().numericItem().numericItemMinusText(_.find(self.numericItemMinusAtrEnum, function(o) { return o.code == self.currentItemSelected().numericItem().numericItemMinus(); }).name);
+                        self.currentItemSelected().dateItem().dateItemTypeText(_.find(self.dateItemTypeEnum, function(o) { return o.value == self.currentItemSelected().dateItem().dateItemType(); }).localizedName);
+                        self.currentItemSelected().selectionItem().selectionItemRefTypeText(_.find(self.referenceTypeEnum, function(o) { return o.value == self.currentItemSelected().selectionItem().selectionItemRefType(); }).localizedName);
+
+                    });
                 });
-            });
+            }
         }
     }
 
     export class PersonInfoItem {
         id: string = "";
         itemName: KnockoutObservable<string> = ko.observable("");
-        fixedAtr: boolean;
-        dataType: KnockoutObservable<number> = ko.observable(1)
+        fixedAtr: KnockoutObservable<number> = ko.observable(0);
+        itemType: KnockoutObservable<number> = ko.observable(2);
+        dataType: KnockoutObservable<number> = ko.observable(1);
         stringItem: KnockoutObservable<StringItemModel> = ko.observable(new StringItemModel(null));
         numericItem: KnockoutObservable<NumericItemModel> = ko.observable(new NumericItemModel(null));
         dateItem: KnockoutObservable<DateItemModel> = ko.observable(new DateItemModel(null));
         timeItem: KnockoutObservable<TimeItemModel> = ko.observable(new TimeItemModel(null));
         timePointItem: KnockoutObservable<TimePointItemModel> = ko.observable(new TimePointItemModel(null));
         selectionItem: KnockoutObservable<SelectionItemModel> = ko.observable(new SelectionItemModel(null));
-
-        historyClassificationSelected: KnockoutObservable<number> = ko.observable(1);
-        historyTypesSelected: KnockoutObservable<number> = ko.observable(1);
-        singleMultipleTypeSelected: KnockoutObservable<number> = ko.observable(1);
-        //all visiable
-        historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(false);
-        fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
+        dataTypeText: KnockoutObservable<string> = ko.observable("");
         constructor(data: IPersonInfoItem) {
             let self = this;
-            if (!data) return;
-            self.id = data.id || "";
-            self.itemName(data.itemName || "");
-            self.fixedAtr = data.fixedAtr == 1 ? true : false;
-            //self.dataType(data.dataType || 1);
-            self.dataType(2);
-            switch (self.dataType()) {
-                case 1:
-                    self.stringItem(new StringItemModel(data.stringItem));
-                    break;
-                case 2:
-                    self.numericItem(new NumericItemModel(data.numericItem));
-                    break;
-                case 3:
-                    self.dateItem(new DateItemModel(data.dateItem));
-                    break;
-                case 4:
-                    self.timeItem(new TimeItemModel(data.timeItem));
-                    break;
-                case 5:
-                    self.timePointItem(new TimePointItemModel(data.timePointItem));
-                    break;
-                case 6:
-                    self.selectionItem(new SelectionItemModel(data.selectionItem));
-                    break;
+            if (data) {
+                self.id = data.id || "";
+                self.itemName(data.itemName || "");
+                self.fixedAtr(data.isFixed || 0);
+                if (!data.itemTypeState) return;
+                self.itemType(data.itemTypeState.itemType || 2);
+                let dataTypeState = data.itemTypeState.dataTypeState;
+                if (!dataTypeState) return;
+                if (self.itemType() == 2) {
+                    self.dataType(dataTypeState.dataTypeValue || 1);
+                    switch (self.dataType()) {
+                        case 1:
+                            self.stringItem(new StringItemModel(dataTypeState));
+                            break;
+                        case 2:
+                            self.numericItem(new NumericItemModel(dataTypeState));
+                            break;
+                        case 3:
+                            self.dateItem(new DateItemModel(dataTypeState));
+                            break;
+                        case 4:
+                            self.timeItem(new TimeItemModel(dataTypeState));
+                            break;
+                        case 5:
+                            self.timePointItem(new TimePointItemModel(dataTypeState));
+                            break;
+                        case 6:
+                            self.selectionItem(new SelectionItemModel(dataTypeState));
+                            break;
+                    }
+                }
             }
-            self.fixedIsSelected(self.fixedAtr);
+
         }
     }
 
     export class StringItemModel {
         stringItemType: KnockoutObservable<number> = ko.observable(4);
+        stringItemTypeText: KnockoutObservable<string> = ko.observable("");
         stringItemLength: KnockoutObservable<number> = ko.observable(null);
         stringItemDataType: KnockoutObservable<number> = ko.observable(2);
+        stringItemDataTypeText: KnockoutObservable<string> = ko.observable("");
         constructor(data: IStringItem) {
             let self = this;
             if (!data) return;
@@ -178,7 +202,9 @@ module nts.uk.com.view.cps005.b {
         numericItemMin: KnockoutObservable<number> = ko.observable(null);
         numericItemMax: KnockoutObservable<number> = ko.observable(null);
         numericItemAmount: KnockoutObservable<number> = ko.observable(1);
+        numericItemAmountText: KnockoutObservable<string> = ko.observable("");
         numericItemMinus: KnockoutObservable<number> = ko.observable(1);
+        numericItemMinusText: KnockoutObservable<string> = ko.observable("");
         decimalPart: KnockoutObservable<number> = ko.observable(0);
         integerPart: KnockoutObservable<number> = ko.observable(0);
         constructor(data: INumericItem) {
@@ -214,6 +240,7 @@ module nts.uk.com.view.cps005.b {
     }
     export class DateItemModel {
         dateItemType: KnockoutObservable<number> = ko.observable(1);
+        dateItemTypeText: KnockoutObservable<string> = ko.observable("");
         constructor(data: IDateItem) {
             let self = this;
             if (!data) return;
@@ -222,6 +249,7 @@ module nts.uk.com.view.cps005.b {
     }
     export class SelectionItemModel {
         selectionItemRefType: KnockoutObservable<number> = ko.observable(null);
+        selectionItemRefTypeText: KnockoutObservable<string> = ko.observable("");
         selectionItemRefCode: KnockoutObservable<number> = ko.observable(null);
         constructor(data: ISelectionItem) {
             let self = this;
@@ -252,26 +280,26 @@ module nts.uk.com.view.cps005.b {
         id: string;
         itemName: string;
     }
-
     interface IPersonInfoItem {
         id: string;
         itemName: string;
-        fixedAtr: number;
-        itemType?: number;
-        dataType?: number;
-        dateItem?: IDateItem;
-        stringItem?: IStringItem;
-        numericItem?: INumericItem;
-        timeItem?: ITimeItem;
-        timePointItem?: ITimePointItem;
-        selectionItem?: ISelectionItem;
+        isFixed: number;
+        itemTypeState: IItemTypeState;
     }
+
+    interface IItemTypeState {
+        itemType: number;
+        dataTypeState: any;
+    }
+
     interface IStringItem {
+        dataTypeValue: number;
         stringItemType: number;
         stringItemLength: number;
         stringItemDataType: number;
     }
     interface INumericItem {
+        dataTypeValue: number;
         NumericItemMin: number;
         NumericItemMax: number;
         numericItemAmount: number;
@@ -280,17 +308,21 @@ module nts.uk.com.view.cps005.b {
         integerPart: number;
     }
     interface ITimeItem {
+        dataTypeValue: number;
         min: number;
         max: number;
     }
     interface ITimePointItem {
+        dataTypeValue: number;
         timePointItemMin: number;
         timePointItemMax: number;
     }
     interface IDateItem {
+        dataTypeValue: number;
         dateItemType: number;
     }
     interface ISelectionItem {
+        dataTypeValue: number;
         selectionItemRefType: number;
         selectionItemRefCode: number;
     }
