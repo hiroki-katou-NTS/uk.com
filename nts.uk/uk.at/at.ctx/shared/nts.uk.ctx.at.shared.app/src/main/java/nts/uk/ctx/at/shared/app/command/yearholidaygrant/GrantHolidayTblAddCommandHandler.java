@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.yearholidaygrant;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,34 +15,31 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Transactional
 @Stateless
-public class GrantHolidayTblAddCommandHandler extends CommandHandler<List<GrantHolidayTblCommand>> {
+public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolidayTblCommand> {
 	@Inject
 	private GrantYearHolidayRepository grantYearHolidayRepo;
 	
 	@Override
-	protected void handle(CommandHandlerContext<List<GrantHolidayTblCommand>> context) {
-		List<GrantHolidayTblCommand> command = context.getCommand();
+	protected void handle(CommandHandlerContext<GrantHolidayTblCommand> context) {
+		GrantHolidayTblCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
-		List<GrantHdTbl> grantHolidays = command.stream()
+		List<GrantHdTbl> grantHolidays = command.getGrantHolidayList().stream()
 				.filter(x -> (x.getLengthOfServiceYears() != null && x.getLengthOfServiceYears() != 0) 
 						|| (x.getLengthOfServiceMonths() != null && x.getLengthOfServiceMonths() != 0) 
 						|| (x.getGrantDays() != null))
 				.map(x->x.toDomain(companyId)).collect(Collectors.toList());
 		GrantHdTbl.validateInput(grantHolidays);
 		
+		// remove all
+		grantYearHolidayRepo.remove(companyId, command.getConditionNo(), command.getYearHolidayCode());
+		
 		for (GrantHdTbl item : grantHolidays) {
 			// validate
 			item.validate();		
 					
-			Optional<GrantHdTbl> garntHd = grantYearHolidayRepo.find(companyId, item.getConditionNo(), item.getYearHolidayCode().v(), item.getGrantYearHolidayNo());
-			if (garntHd.isPresent()) {
-				// update
-				grantYearHolidayRepo.update(item);
-			} else {
-				// add to db		
-				grantYearHolidayRepo.add(item);
-			}
+			// add to db		
+			grantYearHolidayRepo.add(item);
 		}
 	}
 }

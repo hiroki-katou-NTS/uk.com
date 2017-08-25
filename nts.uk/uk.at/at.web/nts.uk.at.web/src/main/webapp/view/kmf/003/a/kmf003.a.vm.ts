@@ -12,6 +12,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         name: KnockoutObservable<string>;
         useConditionCls: KnockoutObservable<boolean>;  
         grantDate: KnockoutObservable<string>;
+        enableGrantDate: KnockoutObservable<boolean>;  
         A6_2Data: KnockoutObservableArray<any>;
         A6_2SelectedRuleCode: any;
         A7_4Data: KnockoutObservableArray<any>;
@@ -57,6 +58,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.singleSelectedCode = ko.observable("");
             self.currentCode = ko.observable();
             
+            //Controls display
+            self.controlsDisplay();
+            
+            //Enable or disable for setting form
+            self.conditionSettingForm();
+            
             //Bind data to from when user select item on grid
             self.singleSelectedCode.subscribe(function(value) {
                 // clear all error
@@ -85,13 +92,15 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                           
                     });
                 }
-            });        
+            });    
             
-            //Controls display
-            self.controlsDisplay();
-            
-            //Enable or disable for setting form
-            self.conditionSettingForm();
+            self.useConditionCls.subscribe(function(value) {
+                if(!value){
+                    self.enableGrantDate(false);
+                } else {
+                    self.enableGrantDate(true);
+                }
+            });  
         }
 
         /**
@@ -111,7 +120,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             }).fail(function(res) {
                 dfd.reject(res);    
             });
-            
+
             return dfd.promise();
         }
         
@@ -228,7 +237,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: self.useCls02() == true ? 1 : 0,
                     conditionValue: Number(self.conditionValue02())
                 }));
-            } else {
+            } else if(self.useCls02() && self.conditionValue02().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return;
             }
@@ -240,7 +249,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: self.useCls03() == true ? 1 : 0,
                     conditionValue: Number(self.conditionValue03())
                 }));
-            } else {
+            } else if(self.useCls03() && self.conditionValue03().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return;
             }
@@ -252,7 +261,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: self.useCls04() == true ? 1 : 0,
                     conditionValue: Number(self.conditionValue04())
                 }));
-            } else {
+            } else if(self.useCls04() && self.conditionValue04().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return;
             }
@@ -264,7 +273,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     useConditionAtr: self.useCls05() == true ? 1 : 0,
                     conditionValue: Number(self.conditionValue05())
                 }));
-            } else {
+            } else if(self.useCls05() && self.conditionValue05().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return;
             }
@@ -456,7 +465,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.editmode = ko.observable(true);  
             self.name = ko.observable("");              
             self.useConditionCls = ko.observable(false);            
-            self.grantDate = ko.observable("");            
+            self.grantDate = ko.observable("");   
+            self.enableGrantDate = ko.observable(true);           
             self.A6_2Data = ko.observableArray([
                 { code: '0', name: nts.uk.resource.getText("KMF003_17") },
                 { code: '1', name: nts.uk.resource.getText("KMF003_18") }

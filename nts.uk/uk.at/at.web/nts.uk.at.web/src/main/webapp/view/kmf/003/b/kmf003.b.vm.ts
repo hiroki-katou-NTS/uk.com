@@ -69,7 +69,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         bindData(data: any){
             var self = this;
+            
             self.items.removeAll();
+            
             //Update case
             for(var i = 0; i < data.length; i++){
                 var item : IItem = {
@@ -134,6 +136,51 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     }
                 });
                 
+                //勤続年数、0年0ヶ月は登録不可
+                for(var i = 0; i < grantHolidayTblList.length; i++) {
+                    if(Number(grantHolidayTblList[i].lengthOfServiceYears) == 0 && Number(grantHolidayTblList[i].lengthOfServiceMonths) == 0){
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_268" });
+                        return;
+                    }
+                }   
+                
+                //重複した勤続年数の登録不可
+                var valueArr = grantHolidayTblList.map(function(item){ return item.lengthOfServiceYears });
+                var isDuplicate = valueArr.some(function(item, idx){ 
+                    return valueArr.indexOf(item) != idx 
+                });
+                
+                if(isDuplicate){
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_266" });
+                }
+                
+                //勤続年数は上から昇順になっていること
+                for(var i = 0; i < grantHolidayTblList.length; i++) {
+                    if(grantHolidayTblList[i + 1] != undefined){
+                        if(grantHolidayTblList[i].lengthOfServiceYears > grantHolidayTblList[i + 1].lengthOfServiceYears){
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_269" });
+                            return;
+                        }
+                    }
+                }   
+                
+                //勤続年数が入力されている場合、付与日数を入力すること
+                //付与日数が入力されている場合、勤続年数を入力すること
+                for(var i = 0; i < grantHolidayTblList.length; i++) {
+                    var item = grantHolidayTblList[i];
+                    // 勤続年数が入力されている場合、付与日数を入力すること
+                    if ((item.lengthOfServiceMonths != "" || item.lengthOfServiceYears != "") 
+                            && (item.grantDays == "")) {
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_270" });
+                            return;
+                    }
+                    // 付与日数が入力されている場合、勤続年数を入力すること
+                    if ((item.lengthOfServiceMonths == "" && item.lengthOfServiceYears == "") && (item.grantDays != "")) {
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_270" });
+                            return;
+                    }
+                }   
+                    
                 var dataTranfer: service.DataTranfer = {
                     grantHolidayTblList: grantHolidayTblList,
                     useSimultaneousGrant: self.conditionData.useCondition ? 1 : 0, 
@@ -157,7 +204,31 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         submit() {
             var self = this;
             
-            service.addYearHolidayGrant(ko.toJSON(self.items())).done(function(){
+            var grantHolidayTblList = [];
+            _.forEach(self.items(), function(item) {
+                if (item.lengthOfServiceYears() != null && item.lengthOfServiceMonths() != null) {
+                    grantHolidayTblList.push({
+                        grantYearHolidayNo: item.grantYearHolidayNo(),
+                        conditionNo: item.conditionNo(),
+                        yearHolidayCode: item.yearHolidayCode(),
+                        lengthOfServiceYears: item.lengthOfServiceYears(),
+                        lengthOfServiceMonths: item.lengthOfServiceMonths(),
+                        grantDays: item.grantDays(),
+                        limitedTimeHdDays: item.limitedTimeHdDays(),
+                        limitedHalfHdCnt: item.limitedHalfHdCnt(),
+                        grantReferenceDate: item.grantReferenceDate(),
+                        grantSimultaneity: item.grantSimultaneity() ? 1 : 0
+                    });
+                }
+            });
+            
+            var dataTranfer = {
+                conditionNo: self.conditionData.conditionNo,
+                yearHolidayCode: self.code(), 
+                grantHolidayList: grantHolidayTblList, 
+            }
+        
+            service.addYearHolidayGrant(dataTranfer).done(function(){
                 nts.uk.ui.windows.close();
             }).fail(function(error){
                 nts.uk.ui.dialog.alertError(error.message);    
