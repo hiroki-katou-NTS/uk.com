@@ -55,16 +55,46 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     @Override
     public void validFileFormat(String fileId, Integer encoding, Integer startLine) {
         InputStream inputStream = this.findContentFile(fileId);
-        
+
         this.validFileExtension(fileId);
         this.validLimitRecord(inputStream, encoding, startLine);
         this.validCharset(inputStream);
+
+        // close input stream
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.
+     * ExtBudgetFileCheckService#validFileIgnoreCharset(java.lang.String,
+     * java.lang.Integer, java.lang.Integer)
+     */
+    @Override
+    public void validFileIgnoreCharset(String fileId, Integer encoding, Integer startLine) {
+        InputStream inputStream = this.findContentFile(fileId);
+
+        this.validFileExtension(fileId);
+        this.validLimitRecord(inputStream, encoding, startLine);
+
+        // close input stream
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Find content file.
      *
-     * @param fileId the file id
+     * @param fileId
+     *            the file id
      * @return the input stream
      */
     private InputStream findContentFile(String fileId) {
@@ -83,31 +113,22 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     /**
      * Valid file extension.
      *
-     * @param fileId the file id
+     * @param fileId
+     *            the file id
      */
     private void validFileExtension(String fileId) {
-        Optional<StoredFileInfo> optional = this.fileInfoRepository.find(fileId);
-        if (!optional.isPresent()) {
-            throw new RuntimeException("stored file info is not found.");
-        }
-        StoredFileInfo storagedFileInfor = optional.get();
-        
-        
-        // TODO: check file extension
-//        String extensionFile = storagedFileInfor.getMimeType().toLowerCase();
-//        for (String item : FILE_EXTENSION_ARR) {
-//            if (!extensionFile.contains(item)) {
-//                throw new BusinessException("Msg_159");
-//            }
-//        }
+        // TODO: check extension file, if not support, throw new BusinessException("Msg_159");
     }
 
     /**
      * Valid limit record.
      *
-     * @param inputStream the input stream
-     * @param encoding the encoding
-     * @param startLine the start line
+     * @param inputStream
+     *            the input stream
+     * @param encoding
+     *            the encoding
+     * @param startLine
+     *            the start line
      */
     private void validLimitRecord(InputStream inputStream, Integer encoding, Integer startLine) {
         NtsCsvReader csvReader = FileUltil.newCsvReader(encoding);
@@ -123,11 +144,12 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Valid charset.
      *
-     * @param inputStream the input stream
+     * @param inputStream
+     *            the input stream
      */
     private void validCharset(InputStream inputStream) {
         NtsCharset charset = CharsetDetector.detect(inputStream);

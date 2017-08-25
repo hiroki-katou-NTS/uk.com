@@ -155,7 +155,8 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         // find all message JP before import
         Map<String, String> mapStringJP = findAllStringJP();
         // valid file format
-        this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), command.getStartLine().v());
+        this.fileCheckService.validFileIgnoreCharset(command.getFileId(), command.getEncoding(),
+                command.getStartLine().v());
 
         // get input stream by file id
         InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
