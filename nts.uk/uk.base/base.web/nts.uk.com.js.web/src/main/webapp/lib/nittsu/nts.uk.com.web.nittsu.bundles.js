@@ -2099,6 +2099,37 @@ var nts;
                 return false;
             }
             time_1.isEndOfMonth = isEndOfMonth;
+            function convertJapaneseDateToGlobal(japaneseDate) {
+                var inputDate = _.clone(japaneseDate);
+                var endEraSymbolIndex = -1;
+                var currentEra;
+                var eraAcceptFormats = ["YY/MM/DD", "YYMMDD"];
+                for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
+                    var i = _a[_i];
+                    if (inputDate.indexOf(i.name) >= 0) {
+                        endEraSymbolIndex = inputDate.indexOf(i.name) + i.name.length;
+                        currentEra = i;
+                        break;
+                    }
+                    else if (inputDate.indexOf(i.symbol) >= 0) {
+                        endEraSymbolIndex = inputDate.indexOf(i.symbol) + i.symbol.length;
+                        currentEra = i;
+                        break;
+                    }
+                }
+                if (endEraSymbolIndex > -1) {
+                    var startEraDate = moment(currentEra.start, "YYYY-MM-DD");
+                    var inputEraDate = inputDate.substring(endEraSymbolIndex);
+                    var tempEra = moment.utc(inputEraDate, eraAcceptFormats);
+                    if (tempEra.isValid()) {
+                        return startEraDate.add(tempEra.format("YY"), "Y")
+                            .set({ 'month': tempEra.month(), "date": tempEra.date() })
+                            .format("YYYY/MM/DD");
+                    }
+                }
+                return japaneseDate;
+            }
+            time_1.convertJapaneseDateToGlobal = convertJapaneseDateToGlobal;
             var TimeWithDayAttr = (function () {
                 function TimeWithDayAttr(rawValue) {
                     this.MAX_HOUR = 24;
@@ -2961,6 +2992,7 @@ var nts;
                         this.required = (option && option.required) ? option.required : false;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                         this.mode = (option && option.mode) ? option.mode : "";
+                        this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : false;
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
@@ -2973,6 +3005,9 @@ var nts;
                                 result.success("");
                                 return result;
                             }
+                        }
+                        if (this.acceptJapaneseCalendar) {
+                            inputText = uk.time.convertJapaneseDateToGlobal(inputText);
                         }
                         var maxStr, minStr;
                         if (this.mode === "time") {
@@ -4491,6 +4526,7 @@ var nts;
                         var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
                         var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
                         var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
+                        var acceptJapaneseCalendar = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : false;
                         var valueType = typeof value();
                         if (valueType === "string") {
                             valueFormat = (valueFormat) ? valueFormat : uk.text.getISOFormat("ISO");
@@ -4558,7 +4594,7 @@ var nts;
                             .setDefaultCss(data.defaultClass || ""));
                         name = nts.uk.resource.getControlName(name);
                         var validator = new ui.validation.TimeValidator(name, constraintName, { required: required,
-                            outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType });
+                            outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
                         $input.on("change", function (e) {
                             var newText = $input.val();
                             var result = validator.validate(newText);
@@ -4583,6 +4619,15 @@ var nts;
                             if (!result.isValid) {
                                 $input.ntsError('set', result.errorMessage, result.errorCode);
                             }
+                            else if (acceptJapaneseCalendar) {
+                                if (hasDayofWeek) {
+                                    if (uk.util.isNullOrEmpty(result.parsedValue))
+                                        $label.text("");
+                                    else
+                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                                }
+                                $input.val(moment(result.parsedValue).format(ISOFormat));
+                            }
                         });
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
@@ -4590,6 +4635,15 @@ var nts;
                             $input.ntsError('clear');
                             if (!result.isValid) {
                                 $input.ntsError('set', result.errorMessage, result.errorCode);
+                            }
+                            else if (acceptJapaneseCalendar) {
+                                if (hasDayofWeek) {
+                                    if (uk.util.isNullOrEmpty(result.parsedValue))
+                                        $label.text("");
+                                    else
+                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                                }
+                                $input.val(moment(result.parsedValue).format(ISOFormat));
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
@@ -18983,4 +19037,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

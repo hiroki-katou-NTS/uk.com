@@ -28,6 +28,7 @@ module nts.uk.ui.koExtentions {
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
             var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
+            let acceptJapaneseCalendar: boolean = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : false;
             var valueType:string = typeof value();
             if (valueType === "string") {
                 valueFormat = (valueFormat) ? valueFormat : text.getISOFormat("ISO");
@@ -102,7 +103,7 @@ module nts.uk.ui.koExtentions {
 
             name = nts.uk.resource.getControlName(name);
             var validator = new validation.TimeValidator(name, constraintName, {required: required, 
-                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType});
+                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
             $input.on("change", (e) => {
                 var newText = $input.val();
                 var result = validator.validate(newText);
@@ -128,6 +129,16 @@ module nts.uk.ui.koExtentions {
                 var result = validator.validate(newText);
                 if (!result.isValid) {
                     $input.ntsError('set', result.errorMessage, result.errorCode);
+                } else if (acceptJapaneseCalendar){
+                    // Day of Week
+                    if (hasDayofWeek) {
+                        if (util.isNullOrEmpty(result.parsedValue))
+                            $label.text("");
+                        else
+                            $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                    }
+                    
+                    $input.val(moment(result.parsedValue).format(ISOFormat));
                 }
             });
 
@@ -138,6 +149,16 @@ module nts.uk.ui.koExtentions {
                 $input.ntsError('clear');
                 if (!result.isValid) {
                     $input.ntsError('set', result.errorMessage, result.errorCode);
+                } else if (acceptJapaneseCalendar){
+                    // Day of Week
+                    if (hasDayofWeek) {
+                        if (util.isNullOrEmpty(result.parsedValue))
+                            $label.text("");
+                        else
+                            $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                    }
+                    
+                    $input.val(moment(result.parsedValue).format(ISOFormat));
                 }
             }));
             

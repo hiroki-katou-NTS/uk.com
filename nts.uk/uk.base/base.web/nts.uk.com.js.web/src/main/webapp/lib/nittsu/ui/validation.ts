@@ -394,6 +394,7 @@ module nts.uk.ui.validation {
         required: boolean; 
         valueType: string;
         mode: string;
+        acceptJapaneseCalendar: boolean;
         constructor(name: string, primitiveValueName: string, option?: any) {
             this.name = name;
             this.constraint = getConstraint(primitiveValueName);
@@ -401,6 +402,7 @@ module nts.uk.ui.validation {
             this.required = (option && option.required) ? option.required : false;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
             this.mode = (option && option.mode) ? option.mode : "";
+            this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : false;
         }
 
         validate(inputText: string): any {
@@ -415,6 +417,10 @@ module nts.uk.ui.validation {
                     result.success("");
                     return result;
                 }
+            }
+            
+            if(this.acceptJapaneseCalendar){
+                inputText = time.convertJapaneseDateToGlobal(inputText);            
             }
             
             let maxStr, minStr;
