@@ -49,7 +49,7 @@ public class KshstGrantHdTblSet extends UkJpaEntity {
 	public int simultaneousGrandMonthDays;
 
 	/* 備考 */
-	@Column(name = "YEAR_HOLIDAY_NOTE")
+	@Column(name = "YEAR_HD_NOTE")
 	public String yearHolidayNote;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantHdTblSet", orphanRemoval = true)

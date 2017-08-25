@@ -217,7 +217,13 @@ module nts.uk.at.view.ksm003.a {
             //reset Input
             private resetInput(): void {
                 let self = this;
-                self.detail(new model.DailyPatternDetailModel("", "", []));
+                //cretar new table
+                var dataNew: model.DailyPatternValModel[];
+                dataNew = new Array();
+                for (let i = 0; i <= 9; i++) {
+                    dataNew.push(new model.DailyPatternValModel(i, "", "", null));
+                }
+                self.detail().dailyPatternVals(dataNew);
             }
 
             // clear Error

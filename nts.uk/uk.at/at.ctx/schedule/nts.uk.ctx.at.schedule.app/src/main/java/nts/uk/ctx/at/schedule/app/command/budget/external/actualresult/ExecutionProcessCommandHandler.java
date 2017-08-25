@@ -206,6 +206,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private <C> void processInput(ImportProcess importProcess, AsyncCommandHandlerContext<C> asyncTask) {
         TaskDataSetter setter = asyncTask.getDataSetter();
+        boolean isInterrupt = false;
         try {
             NtsCsvReader csvReader = FileUltil.newCsvReader(importProcess.extractCondition.getEncoding());
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
@@ -222,6 +223,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                  * and end flow (stop process)
                  */
                 if (asyncTask.hasBeenRequestedToCancel()) {
+                    isInterrupt = true;
                     this.updateLog(importProcess.executeId, CompletionState.INTERRUPTION);
                     asyncTask.finishedAsCancelled();
                     break;
@@ -239,7 +241,11 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     setter.updateData(FAIL_CNT, log.getNumberFail());
                 }
             }
-            this.updateLog(importProcess.executeId, CompletionState.DONE);
+            
+            // update status DONE if not interrupt
+            if (!isInterrupt) {
+                this.updateLog(importProcess.executeId, CompletionState.DONE);
+            }
             
             // close input stream
             importProcess.inputStream.close();
@@ -787,12 +793,14 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     private Map<String, String> findAllStringJP() {
         Map<String, String> mapMessage = new HashMap<>();
         String nameId = "KSU006_18";
-        Optional<String> optional = this.internationalization.getItemName(nameId);
-        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
+//        Optional<String> optional = this.internationalization.getItemName(nameId);
+//        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
+        mapMessage.put(nameId, nameId + " is not found.");
         
         List<String> lstMsgId = Arrays.asList("Msg_162", "Msg_163", "Msg_164", "Msg_167");
         for (String msgId : lstMsgId) {
-            mapMessage.put(msgId, this.getMessageById(msgId));
+//            mapMessage.put(msgId, this.getMessageById(msgId));
+            mapMessage.put(msgId, msgId + " is not found.");
         }
         return mapMessage;
     }
