@@ -31,7 +31,7 @@ module nts.uk.com.view.cps005.b {
                 });
                 return dfd.promise();
             }
-            
+
             reloadData(newItemName: string, itemId: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
@@ -43,7 +43,7 @@ module nts.uk.com.view.cps005.b {
                             let newItem = _.find(data.personInfoItemList, item => { return item.itemName == newItemName });
                             self.currentItemData().perInfoItemSelectCode(newItem ? newItem.id : "");
                         }
-                        if(itemId){
+                        if (itemId) {
                             self.currentItemData().perInfoItemSelectCode("");
                             self.currentItemData().perInfoItemSelectCode(itemId);
                         }
@@ -55,7 +55,7 @@ module nts.uk.com.view.cps005.b {
                 });
                 return dfd.promise();
             }
-            
+
             register() {
                 let self = this;
                 nts.uk.ui.errors.clearAll();
@@ -66,7 +66,7 @@ module nts.uk.com.view.cps005.b {
             }
 
             addUpdateData() {
-            
+
             }
 
             removeData() {
@@ -250,7 +250,7 @@ module nts.uk.com.view.cps005.b {
     export class SelectionItemModel {
         selectionItemRefType: KnockoutObservable<number> = ko.observable(null);
         selectionItemRefTypeText: KnockoutObservable<string> = ko.observable("");
-        selectionItemRefCode: KnockoutObservable<number> = ko.observable(null);
+        selectionItemRefCode: KnockoutObservable<string> = ko.observable(null);
         constructor(data: ISelectionItem) {
             let self = this;
             if (!data) return;
@@ -258,7 +258,6 @@ module nts.uk.com.view.cps005.b {
             self.selectionItemRefCode(data.selectionItemRefCode || null);
         }
     }
-
     export class PersonInfoItemShowListModel {
         id: string;
         itemName: string;
@@ -269,6 +268,80 @@ module nts.uk.com.view.cps005.b {
             self.itemName = data.itemName || null;
         }
     }
+    export class AddItemModel {
+        perInfoCtgId: string;
+        itemName: string;
+        itemType: number;
+        singleItem: SingleItemAddModel;
+        constructor(data: PersonInfoItem) {
+            let self = this;
+            if (!data) return;
+            self.perInfoCtgId = data.id;
+            self.itemName = data.itemName();
+            self.itemType = data.itemType();
+            self.singleItem = new SingleItemAddModel(data);
+        }
+    }
+
+    export class SingleItemAddModel {
+        dataType: number = -1;
+        // StringItem property
+        stringItemLength: number = 0;
+        stringItemType: number = 0;
+        stringItemDataType: number = 0;
+        // NumericItem property
+        numericItemMinus: number = 0;
+        numericItemAmount: number = 0;
+        integerPart: number = 0;
+        decimalPart: number = 0;
+        numericItemMin: number = 0;
+        numericItemMax: number = 0;
+        // DateItem property
+        dateItemType: number = 0;
+        // TimeItem property
+        timeItemMax: number = 0;
+        timeItemMin: number = 0;
+        // TimePointItem property
+        timePointItemMin: number = 0;
+        timePointItemMax: number = 0;
+        // SelectionItem property
+        referenceType: number = 0;
+        referenceCode: string = "";
+        constructor(data: PersonInfoItem) {
+            let self = this;
+            if (!data) return;
+            self.dataType = data.dataType();
+            if (data.stringItem()) {
+                self.stringItemLength = data.stringItem().stringItemLength();
+                self.stringItemType = data.stringItem().stringItemType();
+                self.stringItemDataType = data.stringItem().stringItemDataType();
+            }
+            if (data.numericItem()) {
+                self.numericItemMinus = data.numericItem().numericItemMinus();
+                self.numericItemAmount = data.numericItem().numericItemAmount();
+                self.integerPart = data.numericItem().integerPart();
+                self.decimalPart = data.numericItem().decimalPart();
+                self.numericItemMin = data.numericItem().numericItemMin();
+                self.numericItemMax = data.numericItem().numericItemMax();
+            }
+            if (data.dateItem()) {
+                self.dateItemType = data.dateItem().dateItemType();
+            }
+            if (data.timeItem()) {
+                self.timeItemMax = data.timeItem().timeItemMax();
+                self.timeItemMin = data.timeItem().timeItemMin();
+            }
+            if (data.timePointItem()) {
+                self.timePointItemMin = data.timePointItem().timePointItemMin();
+                self.timePointItemMax = data.timePointItem().timePointItemMax();
+            }
+            if (data.selectionItem()) {
+                self.referenceType = data.selectionItem().selectionItemRefType();
+                self.referenceCode = data.selectionItem().selectionItemRefCode();
+            }
+        }
+    }
+
     interface IItemData {
         dataTypeEnum: any;
         stringItemTypeEnum: any;
