@@ -1359,8 +1359,7 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
-            var HOURS_IN_DAY = 24 * 60;
-            var MINUTES_IN_DAY = HOURS_IN_DAY * 60;
+            var MINUTES_IN_DAY = 24 * 60;
             var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
             var listEmpire = {
                 "明治": "1868/01/01",
@@ -2205,12 +2204,7 @@ var nts;
             };
             var minutesBased;
             (function (minutesBased) {
-                function duration() {
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
-                    }
-                    var timeAsMinutes = parseAsDuration(args);
+                function duration(timeAsMinutes) {
                     var duration = createBaseMBT(timeAsMinutes);
                     uk.util.accessor.defineInto(duration)
                         .get('asHoursDouble', function () { return timeAsMinutes / 60; })
@@ -2219,40 +2213,23 @@ var nts;
                     return duration;
                 }
                 minutesBased.duration = duration;
-                function parseAsDuration(args) {
-                    var result;
-                    if (uk.types.matchArguments(args, ['number'])) {
-                        result = args[0];
-                    }
-                    else if (uk.types.matchArguments(args, ['string'])) {
-                        result = parseTimeStringAsDuration(args[0]);
-                    }
-                    if (!isFinite(result)) {
-                        throw new Error('can not parse: ' + args);
-                    }
-                    return result;
-                }
-                function parseTimeStringAsDuration(timeString) {
-                    var isNegative = timeString.indexOf('-') === 0;
-                    var timeParts = timeString.slice(isNegative ? 1 : 0).split(':');
-                    if (timeParts.length === 1) {
-                        var value = parseInt(timeParts[0], 10);
-                        var hourPart = Math.floor(value / 100);
-                        var minutePart = value % 100;
-                        return calculateTimeAsMinutes(isNegative, hourPart, minutePart);
-                    }
-                    if (timeParts.length === 2) {
-                        var hourPart = parseInt(timeParts[0], 10);
-                        var minutePart = parseInt(timeParts[1], 10);
-                        return calculateTimeAsMinutes(isNegative, hourPart, minutePart);
-                    }
-                    return undefined;
-                }
                 function clock() {
                     var args = [];
                     for (var _i = 0; _i < arguments.length; _i++) {
                         args[_i - 0] = arguments[_i];
                     }
+                    var timeAsMinutes = parseAsClock(args);
+                    var clock = createBaseMBT(timeAsMinutes);
+                    var positivizedMinutes = function () { return (timeAsMinutes >= 0)
+                        ? timeAsMinutes
+                        : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / MINUTES_IN_DAY)) * MINUTES_IN_DAY; };
+                    var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / MINUTES_IN_DAY - 1
+                        : timeAsMinutes / MINUTES_IN_DAY); };
+                    uk.util.accessor.defineInto(clock)
+                        .get('daysOffset', function () { return daysOffset(); })
+                        .get('hourPart', function () { return Math.floor(positivizedMinutes() / 60); })
+                        .get('minutePart', function () { return positivizedMinutes() % 60; });
+                    return clock;
                 }
                 minutesBased.clock = clock;
                 function parseAsClock(args) {
@@ -2261,21 +2238,17 @@ var nts;
                         result = args[0];
                     }
                     else if (uk.types.matchArguments(args, ['number', 'number', 'number'])) {
-                        result = parseTimePartsAsClock(args[0], args[1], args[2]);
+                        var daysOffset = args[0];
+                        var hourPart = args[1];
+                        var minutePart = args[2];
+                        result = daysOffset * MINUTES_IN_DAY + hourPart * 60 + minutePart;
                     }
-                }
-                function parseTimePartsAsClock(daysOffset, hourPart, minutePart) {
-                    if (daysOffset >= 0) {
-                        return daysOffset *
-                        ;
-                    }
-                }
-                function calculateTimeAsMinutes(isNegative, hourPart, minutePart) {
-                    return (isNegative ? -1 : 1) * (hourPart * 60 + minutePart);
+                    return result;
                 }
                 function createBaseMBT(timeAsMinutes) {
                     var mat = new Number(timeAsMinutes);
                     uk.util.accessor.defineInto(mat)
+                        .get('asMinutes', function () { return timeAsMinutes; })
                         .get('isNegative', function () { return timeAsMinutes < 0; });
                     return mat;
                 }

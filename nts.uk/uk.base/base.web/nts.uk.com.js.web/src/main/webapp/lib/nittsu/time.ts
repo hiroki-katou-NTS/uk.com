@@ -936,7 +936,9 @@ module nts.uk.time {
             minutePart(): number;
         }
         
-        export function duration(timeAsMinutes: number): DurationMinutesBasedTime;
+        export function duration(timeAsMinutes: number): DurationMinutesBasedTime {
+            let duration: any = createBaseMBT(timeAsMinutes);
+            
             util.accessor.defineInto(duration)
                 .get('asHoursDouble', () => timeAsMinutes / 60)
                 .get('asHoursInt', () => ntsNumber.trunc(duration.asHoursDouble))
@@ -961,13 +963,13 @@ module nts.uk.time {
                     ? timeAsMinutes
                     : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / MINUTES_IN_DAY)) * MINUTES_IN_DAY;
             
-            let daysOffset = () => clock.isNegative
-                    ? (timeAsMinutes + 1) / MINUTES_IN_DAY - 1
-                    : timeAsMinutes / MINUTES_IN_DAY;
+            let daysOffset = () => ntsNumber.trunc(
+                    clock.isNegative ? (timeAsMinutes + 1) / MINUTES_IN_DAY - 1
+                            : timeAsMinutes / MINUTES_IN_DAY);
             
             util.accessor.defineInto(clock)
                 .get('daysOffset', () => daysOffset())
-                .get('hourPart', () => positivizedMinutes() / 60)
+                .get('hourPart', () => Math.floor(positivizedMinutes() / 60))
                 .get('minutePart', () => positivizedMinutes() % 60);
             
             return clock;
@@ -980,8 +982,13 @@ module nts.uk.time {
                 result = args[0];
             }
             else if (types.matchArguments(args, ['number', 'number', 'number'])) {
+                let daysOffset: number = args[0];
+                let hourPart: number = args[1];
+                let minutePart: number = args[2];
                 result = daysOffset * MINUTES_IN_DAY + hourPart * 60 + minutePart;
             }
+            
+            return result;
         }
         
         function createBaseMBT(timeAsMinutes: number): MinutesBasedTime<any> {
