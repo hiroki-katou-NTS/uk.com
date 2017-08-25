@@ -3,19 +3,21 @@ package nts.uk.ctx.at.request.dom.application.common.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.ClosureAdaptor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.EmployeeAdaptor;
 
+@Stateless
 public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService {
 	
 	@Inject
 	private EmployeeAdaptor employeeAdaptor;
 	
-	@Inject
-	private ClosureAdaptor closureAdaptor;
+	/*@Inject
+	private ClosureAdaptor closureAdaptor;*/
 	
 	public List<GeneralDate> employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -28,7 +30,7 @@ public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService 
 		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
 		Object<String: tightenID, String: currentMonth> obj1 = Tighten.find(companyID, employeeCD); // obj1 <=> (締めID,当月)
 		*/
-		String closure = closureAdaptor.findById(companyID, employeeCD);
+		//String closure = closureAdaptor.findById(companyID, employeeCD);
 		
 		/*
 		当月の期間を算出する(tính period của tháng hiện tại)

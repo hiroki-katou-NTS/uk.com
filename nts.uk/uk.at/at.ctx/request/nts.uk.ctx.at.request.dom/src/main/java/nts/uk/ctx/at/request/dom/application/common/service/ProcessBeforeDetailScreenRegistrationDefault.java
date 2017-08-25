@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service;
 
+import javax.ejb.Stateless;
+
+@Stateless
 public class ProcessBeforeDetailScreenRegistrationDefault {
 	
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, String appDate, int employeeRouteAtr, String targetApp, int postAtr ){
