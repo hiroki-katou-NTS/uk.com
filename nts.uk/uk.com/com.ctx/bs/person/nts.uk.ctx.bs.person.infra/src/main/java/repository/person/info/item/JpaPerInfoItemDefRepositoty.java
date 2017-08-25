@@ -127,6 +127,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 AND i.abolitionAtr = 0"
 			+ " AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)";
+	private final static String SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE = "SELECT pi.itemName"
+			+ " FROM PpemtPerInfoItem pi" + " INNER JOIN PpemtPerInfoCtg pc"
+			+ " ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " WHERE pc.categoryCd = :categoryCd"
+			+ " AND pi.itemCd = :itemCd" + " AND pc.cid= '000000000000-0000'";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -199,6 +203,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		// this.commandProxy().update(createPerInfoItemDefCmFromDomain(perInfoItemDef,
 		// contractCd));
 		// this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
+	}
+
+	@Override
+	public void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef) {
+		this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
 	}
 
 	@Override
@@ -443,6 +452,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private PerInfoItemDefOrder createPerInfoItemDefOrderFromEntity(PpemtPerInfoItemOrder order) {
 		return PerInfoItemDefOrder.createFromJavaType(order.ppemtPerInfoItemPK.perInfoItemDefId, order.perInfoCtgId,
 				order.disporder);
+	}
+
+	@Override
+	public String getItemDefaultName(String categoryCd, String itemCd) {
+		return queryProxy().query(SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE, String.class)
+				.setParameter("categoryCd", categoryCd)
+				.setParameter("itemCd", itemCd)
+				.getSingleOrNull();
 	}
 
 }
