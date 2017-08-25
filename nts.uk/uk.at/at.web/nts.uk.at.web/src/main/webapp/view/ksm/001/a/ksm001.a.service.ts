@@ -3,10 +3,13 @@ module nts.uk.at.view.ksm001.a {
         var paths = {
             findCompanyEstablishment: "ctx/at/schedule/shift/estimate/company/find",
             saveCompanyEstablishment: "ctx/at/schedule/shift/estimate/company/save",
+            deleteCompanyEstablishment: "ctx/at/schedule/shift/estimate/company/delete",
             findEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/find",
             saveEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/save",
+            deleteEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/delete",
             findPersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/find",
-            savePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/save"
+            savePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/save",
+            deletePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/delete"
         }
 
         /**
@@ -24,6 +27,15 @@ module nts.uk.at.view.ksm001.a {
                 estimateTime: dto.estimateTime,
                 estimatePrice: dto.estimatePrice,
                 estimateNumberOfDay: dto.estimateNumberOfDay,
+                targetYear: targetYear
+            });
+        }
+        
+        /**
+        * call service delete estimate company
+        */
+        export function deleteCompanyEstablishment(targetYear: number): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.deleteCompanyEstablishment, {
                 targetYear: targetYear
             });
         }
@@ -48,6 +60,15 @@ module nts.uk.at.view.ksm001.a {
                 targetYear: targetYear
             });
         }
+        /**
+        * call service delete estimate employment
+        */
+        export function deleteEmploymentEstablishment(targetYear: number, employmentCode: string): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.deleteEmploymentEstablishment, {
+                targetYear: targetYear,
+                employmentCode: employmentCode
+            });
+        }
         
         /**
          * call service get all monthly estimate time of personal
@@ -65,6 +86,16 @@ module nts.uk.at.view.ksm001.a {
                 estimatePrice: dto.estimatePrice,
                 estimateNumberOfDay: dto.estimateNumberOfDay,
                 employeeId: dto.employeeId,
+                targetYear: targetYear
+            });
+        }
+        
+        /**
+        * call service delete estimate personal
+        */
+        export function deletePersonalEstablishment(targetYear: number, employeeId: string): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.deletePersonalEstablishment, {
+                employeeId: employeeId,
                 targetYear: targetYear
             });
         }
@@ -139,6 +170,7 @@ module nts.uk.at.view.ksm001.a {
 
         }
     }
+    
 
 
 }

@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.infra.repository.application.common.approvalframe;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.Krqdt
  * @author hieult
  *
  */
+@Stateless
 public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepository {
 
 	private final String SELECT = "SELECT c FROM KrqdtApprovalFrame c";
@@ -49,6 +52,9 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 		updateEntity.approverSID = newEntity.approverSID;
 		updateEntity.approvalATR = newEntity.approvalATR;
 		updateEntity.confirmATR = newEntity.confirmATR;
+		updateEntity.approvalDate = newEntity.approvalDate;
+		updateEntity.reason = newEntity.reason;
+		updateEntity.representerSID = newEntity.representerSID;
 		this.commandProxy().update(updateEntity);
 
 	}
@@ -68,16 +74,27 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	}
 
 	private ApprovalFrame toDomain(KrqdtApprovalFrame entity) {
-		return ApprovalFrame.createFromJavaType(entity.krqdtApprovalFramePK.companyID,
-				entity.krqdtApprovalFramePK.phaseID, entity.krqdtApprovalFramePK.dispOrder, entity.approverSID,
-				Integer.valueOf(entity.approvalATR).intValue(), Integer.valueOf(entity.confirmATR).intValue());
+		return ApprovalFrame.createFromJavaType(
+				entity.krqdtApprovalFramePK.companyID,
+				entity.krqdtApprovalFramePK.phaseID, 
+				entity.krqdtApprovalFramePK.dispOrder, 
+				entity.approverSID,
+				Integer.valueOf(entity.approvalATR).intValue(), 
+				Integer.valueOf(entity.confirmATR).intValue(),
+				entity.approvalDate,
+				entity.reason,
+				entity.representerSID
+				);
 	}
 
 	private KrqdtApprovalFrame toEntity(ApprovalFrame domain) {
 		return new KrqdtApprovalFrame(
 				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getPhaseID(), domain.getDispOrder()),
 				domain.getApproverSID(), domain.getApprovalATR().toString(),
-				domain.getConfirmATR().toString());
+				domain.getConfirmATR().toString(),
+				domain.getApprovalDate(),
+				domain.getReason().v(),
+				domain.getRepresenterSID().toString());
 	}
 	
 	/**
@@ -93,7 +110,6 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 
 	@Override
 	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, String dispOrder) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

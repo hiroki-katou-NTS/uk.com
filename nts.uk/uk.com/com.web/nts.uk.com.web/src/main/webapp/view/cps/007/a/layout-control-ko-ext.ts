@@ -708,7 +708,9 @@ module nts.custombinding {
                             }
                         } else {
                             // show message if hasn't any category
-                            alert(text('Msg_288'));
+                            if (ko.toJS(opts.sortable.isEnabled)) {
+                                alert(text('Msg_288'));
+                            }
                         }
                     });
                 } else { // get item by group

@@ -52,8 +52,8 @@ public class KrqstComAppConfigDetail extends UkJpaEntity implements Serializable
 	/**
 	 * 遅刻早退取消申請の実績取消を申請時に選択
 	 */
-	@Column(name = "LATE_OR_LEAVE_APP_CANCEL_FLG")	
-	public int lateOrLeaveAppSettingFlg;
+	@Column(name = "LATE_OR_LEAVE_APP_SETTING_FLG")	
+	public int lateOrLeaveAppSettingFlg; 
 		
 	/**
 	 * 休憩入力欄を表示する

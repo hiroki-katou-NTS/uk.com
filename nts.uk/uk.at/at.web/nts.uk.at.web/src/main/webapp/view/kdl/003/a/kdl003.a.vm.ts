@@ -291,7 +291,7 @@ module nts.uk.at.view.kdl003.a {
                         selectedWorkTimeCode: workTimeCode,
                         selectedWorkTimeName: workTimeName
                     };
-                    nts.uk.ui.windows.setShared("childData", returnedData, true);
+                    nts.uk.ui.windows.setShared("childData", returnedData, false);
 
                     // Close dialog.
                     self.closeDialog();

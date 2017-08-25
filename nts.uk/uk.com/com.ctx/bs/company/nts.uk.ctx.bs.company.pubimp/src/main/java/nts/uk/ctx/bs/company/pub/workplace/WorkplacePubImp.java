@@ -98,4 +98,18 @@ public class WorkplacePubImp implements WorkplacePub {
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.company.pub.workplace.WorkplacePub#findWpkIds(java.lang.
+	 * String, java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<String> findWpkIdsByWkpCode(String companyId, String wpkCode,
+			GeneralDate baseDate) {
+		return workplaceRepository.findByWkpCd(companyId, wpkCode, baseDate).stream()
+				.map(item -> item.getWorkplaceId().v()).collect(Collectors.toList());
+	}
+
 }
