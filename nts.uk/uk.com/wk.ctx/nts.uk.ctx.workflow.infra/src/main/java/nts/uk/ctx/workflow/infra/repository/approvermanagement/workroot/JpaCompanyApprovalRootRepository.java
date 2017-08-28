@@ -23,9 +23,13 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 
 	private final String FIND_COM_APR_ALL = "SELECT c FROM WwfmtComApprovalRoot c";
 	 private final String SELECT_COM_APR_BY_CID = FIND_COM_APR_ALL
-	   + " WHERE c.wwfmtComApprovalRoot.companyId = :companyId";
+	   + " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId";
 	 private final String SELECT_COM_APR_BY_DATE = SELECT_COM_APR_BY_CID 
-	   + " AND c.endDate = :endDate";
+	   + " AND c.endDate = :endDate"
+	   + " AND c.applicationType = :applicationType";
+	 private final String SELECT_COM_APR_BY_DATE_APP_NULL = SELECT_COM_APR_BY_CID 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.applicationType IS NULL";
 	/**
 	 * get All Company Approval Root
 	 * @param companyId
@@ -57,9 +61,18 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	@Override
 	public List<CompanyApprovalRoot> getComApprovalRootByEdate(String companyId, GeneralDate endDate, Integer applicationType) {
+		//common
+		if(applicationType == null){
+			return this.queryProxy().query(SELECT_COM_APR_BY_DATE_APP_NULL, WwfmtComApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("endDate", endDate)
+					.getList(c->toDomainComApR(c));
+		}
+		//15 app type
 		return this.queryProxy().query(SELECT_COM_APR_BY_DATE, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("endDate", endDate)
+				.setParameter("applicationType", applicationType)
 				.getList(c->toDomainComApR(c));
 	}
 	/**
@@ -127,10 +140,10 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
-		entity.applicationType = domain.getApplicationType().value;
+		entity.applicationType = (domain.getApplicationType() == null ? null : domain.getApplicationType().value);
 		entity.branchId = domain.getBranchId();
 		entity.anyItemAppId = domain.getAnyItemApplicationId();
-		entity.confirmationRootType = domain.getConfirmationRootType().value;
+		entity.confirmationRootType = (domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value);
 		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
 		return entity;
 	}

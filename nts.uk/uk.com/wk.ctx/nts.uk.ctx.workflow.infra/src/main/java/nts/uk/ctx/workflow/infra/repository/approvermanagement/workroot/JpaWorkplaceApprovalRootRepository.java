@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,11 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	   + " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 	   + " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId";
 	 private final String SELECT_WPAPR_BY_EDATE = SELECT_FROM_WPAPR
-	   + " AND c.endDate = :endDate";
+	   + " AND c.endDate = :endDate"
+	   + " AND c.applicationType = :applicationType";
+	 private final String SELECT_WPAPR_BY_EDATE_APP_NULL = SELECT_FROM_WPAPR
+			   + " AND c.endDate = :endDate"
+			   + " AND c.applicationType IS NULL";
 	/**
 	 * get All Workplace Approval Root
 	 * @param companyId
@@ -61,10 +66,20 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 */
 	@Override
 	public List<WorkplaceApprovalRoot> getWpApprovalRootByEdate(String companyId, String workplaceId, GeneralDate endDate, Integer applicationType) {
+		//common
+		if(applicationType == null){
+			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_APP_NULL, WwfmtWpApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("workplaceId", workplaceId)
+					.setParameter("endDate", endDate)
+					.getList(c->toDomainWpApR(c));
+		}
+		//15 app type
 		return this.queryProxy().query(SELECT_WPAPR_BY_EDATE, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("endDate", endDate)
+				.setParameter("applicationType", applicationType)
 				.getList(c->toDomainWpApR(c));
 	}
 	/**
@@ -110,13 +125,14 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return
 	 */
 	private WorkplaceApprovalRoot toDomainWpApR(WwfmtWpApprovalRoot entity){
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		val domain = WorkplaceApprovalRoot.createSimpleFromJavaType(entity.wwfmtWpApprovalRootPK.companyId,
 				entity.wwfmtWpApprovalRootPK.approvalId,
 				entity.wwfmtWpApprovalRootPK.workplaceId,
 				entity.wwfmtWpApprovalRootPK.historyId,
 				entity.applicationType,
-				entity.startDate.toString(),
-				entity.endDate.toString(),
+				entity.startDate.localDate().format(formatter),
+				entity.endDate.localDate().format(formatter),
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
@@ -133,10 +149,10 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getWorkplaceId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
-		entity.applicationType = domain.getApplicationType().value;
+		entity.applicationType = (domain.getApplicationType() == null ? null : domain.getApplicationType().value);
 		entity.branchId = domain.getBranchId();
 		entity.anyItemAppId = domain.getAnyItemApplicationId();
-		entity.confirmationRootType = domain.getConfirmationRootType().value;
+		entity.confirmationRootType = (domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value);
 		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
 		return entity;
 	}
