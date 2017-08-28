@@ -56,7 +56,7 @@ module nts.uk.at.view.ksm001.f {
             /**
              * Event on click cancel button.
              */
-            public cancelCommonGuidelineSetting(): void {
+            public cancelSaveCommonGuidelineSetting(): void {
                 nts.uk.ui.windows.close();
             }
 

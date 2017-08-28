@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalATR;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.CanBeApprovedOutput;
@@ -42,7 +42,7 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 		String outputApproverSID = "";
 		ReflectPlanPerState outputStatus  = null;
 		Boolean outputAuthorizableFlags = null;
-		ApprovalATR outputApprovalATR  = null;
+		ApprovalAtr outputApprovalATR  = null;
 		Boolean outputAlternateExpiration = null;
 		
 		List<GeneralDate> listDate = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, baseDate);

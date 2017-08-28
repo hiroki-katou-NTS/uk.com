@@ -67,10 +67,11 @@
 					
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_26')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="7" id="comboYearlyCon"
 							data-bind="ntsComboBox: {
 							options: lstEstimateCondition,
 							optionsValue: 'code',
+							name:'#[KSM001_53]',
 							visibleItemsCount: 5,
 							value: yearlyDisplayCondition,
 							optionsText: 'name',
@@ -83,8 +84,9 @@
 					</div>
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_27')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="8"  id="comboYearlyCon"
 							data-bind="ntsComboBox: {
+							name:'#[KSM001_54]',
 							options: lstEstimateCondition,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
@@ -99,9 +101,10 @@
 					</div>
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_28')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="9"  id="comboYearlyCon"
 							data-bind="ntsComboBox: {
 							options: lstEstimateCondition,
+							name:'#[KSM001_55]',
 							optionsValue: 'code',
 							visibleItemsCount: 5,
 							value: alarmCheckCondition,
@@ -122,10 +125,11 @@
 				
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_26')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="10"  id="comboYearlyCon"
 							data-bind="ntsComboBox: {
 							options: lstEstimateCondition,
 							optionsValue: 'code',
+							name:'#[KSM001_56]',
 							visibleItemsCount: 5,
 							value: yearlyDisplayCondition,
 							optionsText: 'name',
@@ -138,11 +142,12 @@
 					</div>
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_27')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="11" id="comboYearlyCon"
 							data-bind="ntsComboBox: {
 							options: lstEstimateCondition,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
+							name:'#[KSM001_57]',
 							value: monthlyDisplayCondition,
 							optionsText: 'name',
 							editable: false,
@@ -154,10 +159,11 @@
 					</div>
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_28')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="12" id="comboYearlyCon"
 							data-bind="ntsComboBox: {
 							options: lstEstimateCondition,
 							optionsValue: 'code',
+							name:'#[KSM001_58]',
 							visibleItemsCount: 5,
 							value: alarmCheckCondition,
 							optionsText: 'name',
@@ -176,10 +182,11 @@
 					</div>
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_26')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="13" id="comboYearlyCon"
 							data-bind="ntsComboBox: {
 							options: lstEstimateCondition,
 							optionsValue: 'code',
+							name:'#[KSM001_59]',
 							visibleItemsCount: 5,
 							value: yearlyDisplayCondition,
 							optionsText: 'name',
@@ -192,9 +199,10 @@
 					</div>
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_27')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="14"  id="comboYearlyCon"
 							data-bind="ntsComboBox: {
 							options: lstEstimateCondition,
+							name:'#[KSM001_60]',
 							optionsValue: 'code',
 							visibleItemsCount: 5,
 							value: monthlyDisplayCondition,
@@ -208,11 +216,12 @@
 					</div>
 					<div class="settingTime pull-left">
 						<span class="lableData">#{i18n.getText('KSM001_28')}</span>
-						<div id="comboYearlyCon"
+						<div tabindex="15"  id="comboYearlyCon"
 							data-bind="ntsComboBox: {
 							options: lstEstimateCondition,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
+							name:'#[KSM001_61]',
 							value: alarmCheckCondition,
 							optionsText: 'name',
 							editable: false,
@@ -225,8 +234,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="-1" class="proceed x-large" data-bind="click: saveCommonGuidelineSetting">#{i18n.getText('KSM001_48')}</button>
-				<button tabindex="-1" class="large" data-bind="click: cancelCommonGuidelineSetting">#{i18n.getText('KSM001_49')}</button>
+				<button tabindex="16" class="proceed x-large" data-bind="click: saveCommonGuidelineSetting">#{i18n.getText('KSM001_48')}</button>
+				<button tabindex="17" class="large" data-bind="click: cancelSaveCommonGuidelineSetting">#{i18n.getText('KSM001_49')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

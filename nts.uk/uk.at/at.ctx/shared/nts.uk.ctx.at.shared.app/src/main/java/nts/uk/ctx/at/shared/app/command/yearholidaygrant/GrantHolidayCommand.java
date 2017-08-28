@@ -2,11 +2,13 @@ package nts.uk.ctx.at.shared.app.command.yearholidaygrant;
 
 import lombok.Value;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @Value
-public class GrantHolidayCommand {
-	/* 会社ID */
-	private String companyId;
-	
+public class GrantHolidayCommand {	
 	/* 年休付与NO */
 	private int grantYearHolidayNo;
 	

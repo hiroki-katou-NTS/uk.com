@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentContent;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentFontColor;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
@@ -37,14 +38,17 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository impl
 	 */
 	private GoBackDirectlyCommonSetting toDomain(KrqmtGoBackDirectSet entity) {
 		return new GoBackDirectlyCommonSetting(entity.krqmtGoBackDirectSetPK.companyID,
-				entity.krqmtGoBackDirectSetPK.appID, EnumAdaptor.valueOf(entity.workChangeFlg, WorkChangeFlg.class),
+				entity.krqmtGoBackDirectSetPK.appID, 
+				EnumAdaptor.valueOf(entity.workChangeFlg, WorkChangeFlg.class),
+				EnumAdaptor.valueOf(entity.workChangeTimeAtr, UseAtr.class),
 				EnumAdaptor.valueOf(entity.perfomanceDisplayAtr, AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.contraditionCheckAtr, CheckAtr.class),
 				EnumAdaptor.valueOf(entity.workType, GoBackWorkType.class),
 				EnumAdaptor.valueOf(entity.lateLeaveEarlySettingAtr, CheckAtr.class),
 				new CommentContent(entity.commentContent1),
 				EnumAdaptor.valueOf(entity.commentFontWeight1, FontWeightFlg.class),
-				new CommentFontColor(entity.commentFontColor2), new CommentContent(entity.commentContent2),
+				new CommentFontColor(entity.commentFontColor1),
+				new CommentContent(entity.commentContent2),
 				EnumAdaptor.valueOf(entity.commentFontWeight2, FontWeightFlg.class),
 				new CommentFontColor(entity.commentFontColor2));
 	}
