@@ -8,11 +8,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.GetApprovalRootService;
 
 @Stateless
 public class GetApprovalRootServiceImpl implements GetApprovalRootService {
 
+	@Inject
+	private ApprovalRootAdaptor approvalRootAdaptorDto;
+	
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する
 	 * 
@@ -28,11 +33,11 @@ public class GetApprovalRootServiceImpl implements GetApprovalRootService {
 			String subjectRequest,Date standardDate) {
 		
 		// get 個人別就業承認ルート from workflow
-		List<String> sample = new ArrayList<String>();
-		if (CollectionUtil.isEmpty(sample)) {
+		List<ApprovalRootAdaptorDto> appRoots = this.approvalRootAdaptorDto.findByBaseDate(cid, sid, standardDate, subjectRequest);
+		if (CollectionUtil.isEmpty(appRoots)) {
 			// get 個人別就業承認ルート from workflow by other conditions
-			List<String> sample2 = new ArrayList<String>();
-			if (CollectionUtil.isEmpty(sample2)) {
+			List<ApprovalRootAdaptorDto> appRootsOfCommon = this.approvalRootAdaptorDto.findByBaseDateOfCommon(cid, sid, standardDate);
+			if (CollectionUtil.isEmpty(appRootsOfCommon)) {
 				
 				// 所属職場を含む上位職場を取得
 				
