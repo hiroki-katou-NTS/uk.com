@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdaptor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootAdaptorDto;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 
+@Stateless
 public class ApprovalRootAdaptorImpl implements ApprovalRootAdaptor
 {
 

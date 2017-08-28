@@ -51,7 +51,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDai
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZone;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.WorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionState;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
@@ -100,7 +100,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     
     /** The workplace adapter. */
     @Inject
-    private WorkplaceAdapter workplaceAdapter;
+    private ScWorkplaceAdapter workplaceAdapter;
     
     /** The format dates. */
     private final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");

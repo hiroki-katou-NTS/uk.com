@@ -27,7 +27,7 @@
 			<div id="functions-area">
 				<button id="A_BTN_001" data-bind="click: cleanForm">#{i18n.getText('KMF003_3')}</button>
 				<button id="A_BTN_002" class="proceed"
-					data-bind="click: addFunction">#{i18n.getText('KMF003_4')}</button>
+					data-bind="click: addFunction, enable: $root.errors.isEmpty">#{i18n.getText('KMF003_4')}</button>
 				<button id="A_BTN_003" data-bind="click: deleteFunction"
 					class="danger">#{i18n.getText('KMF003_6')}</button>
 			</div>
@@ -113,7 +113,7 @@
 							<td width="200"></td>
 							<td width="20"></td>
 							<td width="80"><input class="a7_7"
-								data-bind="ntsTextEditor: { value: conditionValue01, constraint: 'YearHolidayCode', name: '#[KMF003_23]' }" /></td>
+								data-bind="ntsNumberEditor: { value: conditionValue01, constraint: 'ConditionValue', name: '#[KMF003_23]' }" /></td>
 							<td width="120"><label class="a7_8"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue01"></span><span
@@ -129,7 +129,7 @@
 							<td><div class="a7_10"
 									data-bind="ntsCheckBox: { checked: useCls02, enable: true }"></div></td>
 							<td><input class="a7_11"
-								data-bind="ntsTextEditor: { value: conditionValue02, enable: conditionValue02Enable, constraint: 'YearHolidayCode', name: '#[KMF003_24]' }" /></td>
+								data-bind="ntsNumberEditor: { value: conditionValue02, enable: conditionValue02Enable, constraint: 'ConditionValue', name: '#[KMF003_24]' }" /></td>
 							<td><label class="a7_12"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue02"></span><span
@@ -145,7 +145,7 @@
 							<td><div class="a7_14"
 									data-bind="ntsCheckBox: { checked: useCls03, enable: true }"></div></td>
 							<td><input class="a7_15"
-								data-bind="ntsTextEditor: { value: conditionValue03, enable: conditionValue03Enable, constraint: 'YearHolidayCode', name: '#[KMF003_25]' }" /></td>
+								data-bind="ntsNumberEditor: { value: conditionValue03, enable: conditionValue03Enable, constraint: 'ConditionValue', name: '#[KMF003_25]' }" /></td>
 							<td><label class="a7_16"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue03"></span><span
@@ -161,7 +161,7 @@
 							<td><div class="a7_18"
 									data-bind="ntsCheckBox: { checked: useCls04, enable: true }"></div></td>
 							<td><input class="a7_19"
-								data-bind="ntsTextEditor: { value: conditionValue04, enable: conditionValue04Enable, constraint: 'YearHolidayCode', name: '#[KMF003_26]' }" /></td>
+								data-bind="ntsNumberEditor: { value: conditionValue04, enable: conditionValue04Enable, constraint: 'ConditionValue', name: '#[KMF003_26]' }" /></td>
 							<td><label class="a7_20"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue04"></span><span
@@ -177,7 +177,7 @@
 							<td><div class="a7_22"
 									data-bind="ntsCheckBox: { checked: useCls05, enable: true }"></div></td>
 							<td><input class="a7_23"
-								data-bind="ntsTextEditor: { value: conditionValue05, enable: conditionValue05Enable, constraint: 'YearHolidayCode', name: '#[KMF003_27]' }" /></td>
+								data-bind="ntsNumberEditor: { value: conditionValue05, enable: conditionValue05Enable, constraint: 'ConditionValue', name: '#[KMF003_27]' }" /></td>
 							<td><label class="a7_24"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue05"></span><span

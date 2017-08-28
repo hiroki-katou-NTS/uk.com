@@ -43,14 +43,11 @@ public enum EstimatedCondition {
 	private final static EstimatedCondition[] values = EstimatedCondition.values();
 
 	/**
-	 * Instantiates a new estimate term of use.
+	 * Instantiates a new estimated condition.
 	 *
-	 * @param value
-	 *            the value
-	 * @param nameId
-	 *            the name id
-	 * @param description
-	 *            the description
+	 * @param value the value
+	 * @param nameId the name id
+	 * @param description the description
 	 */
 	private EstimatedCondition(int value, String nameId, String description) {
 		this.value = value;

@@ -1,8 +1,11 @@
 module nts.uk.at.view.ksm001.f {
+    
+    import UsageSettingDto = nts.uk.at.view.ksm001.a.service.model.UsageSettingDto;
+    
     export module service {
         var paths = {
             findCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/find",
-            save: "ctx/at/schedule/shift/pattern/estimate/usagesetting/save"
+            saveCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/save"
         }
 
         /**
@@ -12,13 +15,10 @@ module nts.uk.at.view.ksm001.f {
             return nts.uk.request.ajax('at', paths.findCommonGuidelineSetting);
         }
 
-        export function saveUsageSetting(command: model.UsageSettingDto): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.save, command);
+        export function saveCommonGuidelineSetting(command: model.CommonGuidelineSettingDto): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.saveCommonGuidelineSetting, command);
         }
         
-        export function getUseClsEnum(): JQueryPromise<Array<model.Enum>> {
-            return nts.uk.request.ajax(paths.useclassification);
-        }
 
         export module model {
             
@@ -48,26 +48,10 @@ module nts.uk.at.view.ksm001.f {
                 estimateNumberOfDays: ReferenceConditionDto;
             }
             
-            export class UsageSettingDto {
-                employmentSetting: number;
-                personalSetting: number;
             
-                constructor(employmentSetting: number, personalSetting: number) {
-                    this.employmentSetting = employmentSetting;
-                    this.personalSetting = personalSetting;
-                }
-            }
-            
-            export class Enum {
-                value: number;
-                fieldName: string;
-                localizedName: string;
-    
-                constructor(value: number, fieldName: string, localizedName: string) {
-                    this.value = value;
-                    this.fieldName = fieldName;
-                    this.localizedName = localizedName;
-                }
+            export interface EstimatedConditionDto {
+                code: number;
+                name: string;
             }
         }
     }

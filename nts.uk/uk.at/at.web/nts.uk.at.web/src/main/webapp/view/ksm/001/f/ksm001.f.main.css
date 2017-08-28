@@ -4,6 +4,13 @@
 	margin-left: 20px;
 	width: 110px;
 	margin-top: 10px;
+	vertical-align: super;
+}
+
+.lableDataFull {
+	margin-left: 20px;
+	width: 96%;
+	margin-top: 10px;
 }
 
 .settingColor {
@@ -17,10 +24,24 @@
 	padding-bottom: 3px;
 	padding-right: 5px;
 	padding-left: 5px;
-	min-width: 80px;
+	min-width: 85px;
 	max-width: 100px;
 }
 
 .bg-dark-green {
 	background-color: #C7F391;
+}
+
+.detailSetting {
+	margin-top: 25px;
+	height: 60px;
+}
+
+.settingTime {
+	margin-left: 20px;
+}
+
+#comboYearlyCon {
+	width: 100px;
+	margin-left: 10px;
 }
