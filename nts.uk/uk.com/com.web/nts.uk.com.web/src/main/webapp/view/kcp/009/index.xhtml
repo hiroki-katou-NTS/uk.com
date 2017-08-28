@@ -27,6 +27,23 @@
 						<h2>(Employment Feeds)</h2>
 						<h2>Overview</h2>
 						<hr></hr>
+						<div style="margin-left: 10px; padding-top: 10px">
+							<div data-bind="ntsCheckBox:{checked: isDisplayOrganizationName}">Display Organization Name</div>
+							
+						</div><br></br>
+						<div style="margin-left: 10px; padding-top: 10px">
+							<p>
+								<b>System Reference Type:</b>
+							</p>
+							<br></br>
+							<div id="selection-type" data-bind="ntsRadioBoxGroup: {
+											options: systemReferenceList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedSystem,
+											enable: true}"></div>
+											
+						</div>
 					</div>
 					<div style="margin-left: 40px">
 						<div id="emp-list"></div>
