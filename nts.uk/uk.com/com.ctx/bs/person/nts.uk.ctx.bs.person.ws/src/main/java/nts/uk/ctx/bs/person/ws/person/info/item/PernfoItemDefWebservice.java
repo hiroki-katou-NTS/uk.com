@@ -10,20 +10,32 @@ import javax.ws.rs.Produces;
 
 import command.person.info.item.AddItemCommand;
 import command.person.info.item.AddItemCommandHandler;
+import command.person.info.item.UpdateItemChangeCommand;
+import command.person.info.item.UpdateItemChangeCommandHandler;
+import command.person.info.item.UpdateOrderItemChangeCommand;
+import command.person.info.item.UpdateOrderItemChangeCommandHandler;
+import find.person.info.item.PerInfoItemChangeDefDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import find.person.info.item.PerInfoItemDefFullEnumDto;
+import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/ctgItem")
 @Produces("application/json")
-public class PernfoItemDefWebservice {
+public class PernfoItemDefWebservice extends WebService{
 
 	@Inject
 	private PerInfoItemDefFinder itemDefFinder;
-	
+
 	@Inject
 	private AddItemCommandHandler addItemCm;
-	
+
+	@Inject
+	private UpdateItemChangeCommandHandler updateItemChange;
+
+	@Inject
+	private UpdateOrderItemChangeCommandHandler updateOrderItemChange;
+
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}")
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId) {
@@ -33,8 +45,14 @@ public class PernfoItemDefWebservice {
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}/{isAbolition}")
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId,
-			@PathParam("perInfoCtgId") String isAbolition) {
+			@PathParam("isAbolition") String isAbolition) {
 		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId, isAbolition);
+	}
+
+	@POST
+	@Path("findby/itemIdOfOtherCompany/{Id}")
+	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(@PathParam("Id") String Id) {
+		return itemDefFinder.getPerInfoItemDefByIdOfOtherCompany(Id);
 	}
 
 	@POST
@@ -74,16 +92,29 @@ public class PernfoItemDefWebservice {
 	public List<String> getRequiredIds() {
 		return itemDefFinder.getRequiredIds();
 	}
-	
+
 	@POST
 	@Path("add")
 	public void addItemDef(AddItemCommand addItemCommand) {
 		addItemCm.handle(addItemCommand);
 	}
-	
+
 	@POST
 	@Path("update")
 	public void updateItemDef() {
-		//return itemDefFinder.getRequiredIds();
+		// return itemDefFinder.getRequiredIds();
+	}
+
+	// service update item change
+	@POST
+	@Path("updateItemChange")
+	public void updateItemChange(UpdateItemChangeCommand command) {
+		this.updateItemChange.handle(command);
+	}
+
+	@POST
+	@Path("updateItemChange")
+	public void updateItemChange(UpdateOrderItemChangeCommand command) {
+		this.updateOrderItemChange.handle(command);
 	}
 }

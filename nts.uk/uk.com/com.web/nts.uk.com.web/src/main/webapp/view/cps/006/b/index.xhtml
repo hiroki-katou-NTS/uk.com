@@ -21,7 +21,7 @@
 			<div id="functions-area">
 				<div class="container">
 					<button id="B_1" class="proceed" data-bind="click:updateItemChange">#{i18n.getText('CPS006_19')}</button>
-					<button id="B_2">#{i18n.getText('CPS006_20')}</button>
+					<button id="B_2" data-bind="click:OpenCDL022Modal">#{i18n.getText('CPS006_20')}</button>
 					<button id="B_3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
 				</div>
 			</div>
@@ -68,7 +68,7 @@
 						</div>
 
 						<div class="line_col_2">
-							<span id="B2_2" data-bind="text:currentItem().itemNameDefault"></span>
+							<span id="B2_2" data-bind="text:currentItem().itemDefaultName"></span>
 						</div>
 
 					</div>
