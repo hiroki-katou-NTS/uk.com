@@ -2,12 +2,8 @@ package command.person.info.item;
 
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class SingleItemCommand {
 	private int dataType;
@@ -22,8 +18,8 @@ public class SingleItemCommand {
 	private int numericItemAmount;
 	private int integerPart;
 	private int decimalPart;
-	private BigDecimal NumericItemMin;
-	private BigDecimal NumericItemMax;
+	private BigDecimal numericItemMin;
+	private BigDecimal numericItemMax;
 
 	// DateItem property
 	private int dateItemType;

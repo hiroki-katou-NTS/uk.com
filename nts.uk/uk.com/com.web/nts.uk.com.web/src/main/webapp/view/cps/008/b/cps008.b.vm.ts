@@ -25,17 +25,31 @@ module cps008.b.vm {
             // lấy list items classification ra theo layoutid của maintainece layout truyền từ màn a lên
             // Không có thì gọi service dưới lấy list items classification của new layout rồi truyền vào layout ở view model
             service.getListCls(dto.id).done((x: any) => {
+                let initData = (arr: Array<any>) => {
+                    // remove all sibling sperators
+                    let maps = _(arr)
+                        .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                        .filter(x => x != -1).value();
+
+                    _.each(maps, (t, i) => {
+                        if (maps[i + 1] == t + 1) {
+                            _.remove(arr, (m: IItemClassification) => {
+                                let item: IItemClassification = ko.unwrap(arr)[maps[i + 1]];
+                                return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                            });
+                        }
+                    });
+                    return arr;
+                };
+
                 if (x.listItemClsDto && x.listItemClsDto.length) {
-                    layout.itemsClassification(x.listItemClsDto);
+                    layout.itemsClassification(initData(x.listItemClsDto));
                 } else {
                     service.getData().done((x: ILayout) => {
-                        layout.itemsClassification(x.itemsClassification);
-
+                        layout.itemsClassification(initData(x.itemsClassification));
                     });
                 }
-
             });
-
         }
 
         pushData() {
