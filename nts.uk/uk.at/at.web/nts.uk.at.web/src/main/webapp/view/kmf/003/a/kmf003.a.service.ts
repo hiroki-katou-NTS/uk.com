@@ -29,24 +29,22 @@ module nts.uk.at.view.kmf003.a.service {
      *  Add data
      */
     export function addYearHolidayGrant(data: YearHolidayGrantDto): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.addYearHolidayGrant, data);
-        return nts.uk.request.ajax(path);
+        return nts.uk.request.ajax(servicePath.addYearHolidayGrant, data);
     }  
     
     /**
      *  Update data
      */
     export function updateYearHolidayGrant(data: YearHolidayGrantDto): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.updateYearHolidayGrant, data);
-        return nts.uk.request.ajax(path);
+        return nts.uk.request.ajax(servicePath.updateYearHolidayGrant, data);
     }  
     
     /**
      *  Delete data
      */
     export function deleteYearHolidayGrant(yearHolidayCode: string): JQueryPromise<any> {
-        var path = nts.uk.text.format(servicePath.deleteYearHolidayGrant, {yearHolidayCode: yearHolidayCode});
-        return nts.uk.request.ajax(path);
+        var path = nts.uk.text.format(servicePath.deleteYearHolidayGrant);
+        return nts.uk.request.ajax(path, {yearHolidayCode: yearHolidayCode});
     } 
     
     export interface YearHolidayGrantDto {

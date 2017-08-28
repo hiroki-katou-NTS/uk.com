@@ -15,9 +15,10 @@ import lombok.Data;
 public class EstimatedAlarmColorDto {
 
 	/** The guideline condition. */
-	private Integer guidelineCondition;
+	private int guidelineCondition;
 
 	/** The color. */
 	private String color;
 
+	
 }

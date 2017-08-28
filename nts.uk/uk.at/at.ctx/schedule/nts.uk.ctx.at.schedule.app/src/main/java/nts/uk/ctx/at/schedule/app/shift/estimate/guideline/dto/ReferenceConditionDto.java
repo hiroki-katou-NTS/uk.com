@@ -13,12 +13,12 @@ import lombok.Data;
 public class ReferenceConditionDto {
 
 	/** The yearly display condition. */
-	private Integer yearlyDisplayCondition;
+	private int yearlyDisplayCondition;
 
 	/** The monthly display condition. */
-	private Integer monthlyDisplayCondition;
+	private int monthlyDisplayCondition;
 
 	/** The alarm check condition. */
-	private Integer alarmCheckCondition;
+	private int alarmCheckCondition;
 
 }

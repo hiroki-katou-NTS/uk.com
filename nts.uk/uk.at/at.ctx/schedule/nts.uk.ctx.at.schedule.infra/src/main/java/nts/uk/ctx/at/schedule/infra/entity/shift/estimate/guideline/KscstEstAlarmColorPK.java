@@ -27,9 +27,9 @@ public class KscstEstAlarmColorPK implements Serializable {
 	@Column(name = "CID")
 	private String cid;
 
-	/** The guide condition. */
-	@Column(name = "GUIDE_CONDITION")
-	private Integer guideCondition;
+	/** The estimate condition. */
+	@Column(name = "EST_CONDITION")
+	private int estimateCondition;
 
 	/**
 	 * Instantiates a new kscst est alarm color PK.
@@ -41,47 +41,12 @@ public class KscstEstAlarmColorPK implements Serializable {
 	/**
 	 * Instantiates a new kscst est alarm color PK.
 	 *
-	 * @param cid
-	 *            the cid
-	 * @param guideCondition
-	 *            the guide condition
+	 * @param cid the cid
+	 * @param guideCondition the guide condition
 	 */
 	public KscstEstAlarmColorPK(String cid, Integer guideCondition) {
 		this.cid = cid;
-		this.guideCondition = guideCondition;
+		this.estimateCondition = guideCondition;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (int) guideCondition;
-		return hash;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KscstEstAlarmColorPK)) {
-			return false;
-		}
-		KscstEstAlarmColorPK other = (KscstEstAlarmColorPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
-			return false;
-		}
-		if (this.guideCondition != other.guideCondition) {
-			return false;
-		}
-		return true;
-	}
 }

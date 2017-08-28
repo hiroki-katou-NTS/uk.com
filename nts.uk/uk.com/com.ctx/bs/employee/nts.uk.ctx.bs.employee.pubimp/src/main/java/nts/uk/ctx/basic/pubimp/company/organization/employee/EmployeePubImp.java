@@ -5,10 +5,8 @@
 package nts.uk.ctx.basic.pubimp.company.organization.employee;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -144,20 +142,10 @@ public class EmployeePubImp implements EmployeePub {
 	 * lang.String, java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<String> findWpkIdsBySCode(String companyId, String employeeCode,
-			GeneralDate baseDate) {
-		// Get employee
-		Optional<Employee> optEmployee = employeeRepository.findByEmployeeCode(companyId,
-				employeeCode);
-
-		// Check exist
-		if (!optEmployee.isPresent()) {
-			return Collections.emptyList();
-		}
-
+	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate baseDate) {
 		// Query
 		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository
-				.searchWorkplaceHistoryByEmployee(optEmployee.get().getSId(), baseDate);
+				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
 
 		// Return
 		return affWorkplaceHistories.stream().map(item -> {

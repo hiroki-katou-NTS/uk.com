@@ -1,37 +1,25 @@
 @CHARSET "UTF-8";
 
-.contents {
-	margin: 0;
-	position: absolute;
-	top: 40%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-
-.period_labels {
-	width: 300px;
-}
-
-.employee_labels {
+.description-top {
 	margin-top: 20px;
-	width: 350px;
+	white-space: pre-line;
+	text-align: center;
 }
 
-.workday_labels {
-	width: 385px;
-	margin-left: 20px;
-	margin-top: 20px;
+.companyInfo {
+	margin-left: 80px;
+	margin-top: 50px;
 }
 
-.lableData {
-	width: 135px;
+.checkSetting {
+	margin-top: 10px;
+	margin-left: 45px;
 }
 
-.contentDetail {
-	width: 150px;
-	margin-left: 20px;
-}
-
-#functions-area-bottom{
-	height: 100px;
+.imageSettings {
+	float: right;
+	margin-right: 10%;
+	margin-top: 15px;
+	text-align: center;
+	position: initial;
 }

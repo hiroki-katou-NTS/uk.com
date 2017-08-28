@@ -1,17 +1,19 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLength;
+import java.math.BigDecimal;
 
-@StringMaxLength(3)
-public class GrantDays extends IntegerPrimitiveValue<GrantDays> {
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMaxValue;
+
+@DecimalMaxValue("999")
+public class GrantDays extends DecimalPrimitiveValue<GrantDays> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public GrantDays(Integer rawValue) {
+	public GrantDays(BigDecimal rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
