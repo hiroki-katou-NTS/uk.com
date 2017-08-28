@@ -8,16 +8,16 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * The Interface WorkplaceAdapter.
+ * The Interface ScWorkplaceAdapter.
  */
-public interface WorkplaceAdapter {
+public interface ScWorkplaceAdapter {
     
     /**
      * Find wpk id list.
      *
      * @param companyId the company id
      * @param wpkCode the wpk code
-     * @param baseDate the bas date
+     * @param baseDate the base date
      * @return the list
      */
     List<String> findWpkIdList(String companyId, String wpkCode, Date baseDate);
