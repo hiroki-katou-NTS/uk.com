@@ -74,7 +74,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
-            self.currentCategory = ko.observable(new PerInfoCategory('02E24D13-0558-41CC-866B-E930306AE6D4', 'CS00004', 'Du lịch', 1, 0, 1, 0));
+            self.currentCategory = ko.observable(new PerInfoCategory('AF3714DE-507B-4E9D-BA61-4B16948A5872', 'CS00004', 'Du lịch', 1, 0, 1, 0));
 
             self.loadDataForGrid().done(function() {
 
@@ -351,16 +351,17 @@ module nts.uk.com.view.cps006.b.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 command = {
-                    
+                    categoryId: self.currentCategory().id,
                     orderItemList: getShared('CDL020_VALUES')
-                    
                 }
 
                 service.SetOrder(command).done(function() {
+
                     self.loadDataForGrid().done(function() {
 
                         block.clear();
                     });
+
                 });
 
 

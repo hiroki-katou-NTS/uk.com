@@ -42,4 +42,6 @@ public interface PerInfoItemDefRepositoty {
 	String getItemDefaultName(String categoryCd, String itemCode);
 
 	Optional<PerInfoItemDefOrder> getPerInfoItemDefOrdersByItemId(String perInfoItemDefId);
+
+	void UpdateOrderItemRoot(PerInfoItemDefOrder itemOrder);
 }
