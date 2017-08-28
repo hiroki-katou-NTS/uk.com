@@ -20,49 +20,12 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpAppro
 @Stateless
 public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements WorkplaceApprovalRootRepository{
 
-	private final String SELECT_FROM_WPAPR = "SELECT c FROM WwfmtWpApprovalRoot c"
-			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
-			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId";
-	private final String SELECT_WPAPR_BY_EDATE = "SELECT c FROM WwfmtWpApprovalRoot c"
-			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
-			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
-			+ " AND c.endDate = :endDate";
-	/**
-	 * convert entity WwfmtWpApprovalRoot to domain WorkplaceApprovalRoot
-	 * @param entity
-	 * @return
-	 */
-	private static WorkplaceApprovalRoot toDomainWpApR(WwfmtWpApprovalRoot entity){
-		val domain = WorkplaceApprovalRoot.createSimpleFromJavaType(entity.wwfmtWpApprovalRootPK.companyId,
-				entity.wwfmtWpApprovalRootPK.approvalId,
-				entity.wwfmtWpApprovalRootPK.workplaceId,
-				entity.wwfmtWpApprovalRootPK.historyId,
-				entity.applicationType,
-				entity.startDate.toString(),
-				entity.endDate.toString(),
-				entity.branchId,
-				entity.anyItemAppId,
-				entity.confirmationRootType,
-				entity.employmentRootAtr);
-		return domain;
-	}
-	/**
-	 * convert domain WorkplaceApprovalRoot to entity WwfmtWpApprovalRoot
-	 * @param domain
-	 * @return
-	 */
-	private static WwfmtWpApprovalRoot toEntityWpApR(WorkplaceApprovalRoot domain){
-		val entity = new WwfmtWpApprovalRoot();
-		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getWorkplaceId(), domain.getHistoryId());
-		entity.startDate = domain.getPeriod().getStartDate();
-		entity.endDate = domain.getPeriod().getEndDate();
-		entity.applicationType = domain.getApplicationType().value;
-		entity.branchId = domain.getBranchId();
-		entity.anyItemAppId = domain.getAnyItemApplicationId();
-		entity.confirmationRootType = domain.getConfirmationRootType().value;
-		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
-		return entity;
-	}
+	private final String FIND_WP_APR_ALL = "SELECT c FROM WwfmtWpApprovalRoot c";
+	 private final String SELECT_FROM_WPAPR = FIND_WP_APR_ALL
+	   + " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
+	   + " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId";
+	 private final String SELECT_WPAPR_BY_EDATE = SELECT_FROM_WPAPR
+	   + " AND c.endDate = :endDate";
 	/**
 	 * get All Workplace Approval Root
 	 * @param companyId
@@ -140,5 +103,41 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	public void deleteWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId) {
 		WwfmtWpApprovalRootPK comPK = new WwfmtWpApprovalRootPK(companyId, approvalId, workplaceId, historyId);
 		this.commandProxy().remove(WwfmtWpApprovalRoot.class,comPK);
+	}
+	/**
+	 * convert entity WwfmtWpApprovalRoot to domain WorkplaceApprovalRoot
+	 * @param entity
+	 * @return
+	 */
+	private WorkplaceApprovalRoot toDomainWpApR(WwfmtWpApprovalRoot entity){
+		val domain = WorkplaceApprovalRoot.createSimpleFromJavaType(entity.wwfmtWpApprovalRootPK.companyId,
+				entity.wwfmtWpApprovalRootPK.approvalId,
+				entity.wwfmtWpApprovalRootPK.workplaceId,
+				entity.wwfmtWpApprovalRootPK.historyId,
+				entity.applicationType,
+				entity.startDate.toString(),
+				entity.endDate.toString(),
+				entity.branchId,
+				entity.anyItemAppId,
+				entity.confirmationRootType,
+				entity.employmentRootAtr);
+		return domain;
+	}
+	/**
+	 * convert domain WorkplaceApprovalRoot to entity WwfmtWpApprovalRoot
+	 * @param domain
+	 * @return
+	 */
+	private WwfmtWpApprovalRoot toEntityWpApR(WorkplaceApprovalRoot domain){
+		val entity = new WwfmtWpApprovalRoot();
+		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getWorkplaceId(), domain.getHistoryId());
+		entity.startDate = domain.getPeriod().getStartDate();
+		entity.endDate = domain.getPeriod().getEndDate();
+		entity.applicationType = domain.getApplicationType().value;
+		entity.branchId = domain.getBranchId();
+		entity.anyItemAppId = domain.getAnyItemApplicationId();
+		entity.confirmationRootType = domain.getConfirmationRootType().value;
+		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
+		return entity;
 	}
 }
