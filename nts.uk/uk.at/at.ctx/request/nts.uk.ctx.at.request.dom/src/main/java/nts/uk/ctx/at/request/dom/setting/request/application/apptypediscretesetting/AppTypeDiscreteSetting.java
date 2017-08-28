@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting;
 
+import javax.enterprise.inject.Model;
+
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictPreTi
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
+@Model
 @Value
 public class AppTypeDiscreteSetting {
 	/**

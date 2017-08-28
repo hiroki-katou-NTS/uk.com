@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalATR;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service.DetailedScreenAfterApprovalProcessDefault;
+import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service.DetailedScreenAfterApprovalProcessService;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -27,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DetailedScreenAfterDenialProcessDefault implements DetailedScreenAfterDenialProcessService {
 
 	@Inject
-	private DetailedScreenAfterApprovalProcessDefault afterApprovalProcess;
+	private DetailedScreenAfterApprovalProcessService afterApprovalProcess;
 
 	@Inject
 	private ApprovalFrameRepository frameRepo;

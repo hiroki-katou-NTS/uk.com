@@ -29,11 +29,11 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 	public final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c";
 
 	public final String SELECT_WITH_CID = SELECT_NO_WHERE 
-			+ " WHERE c.KrqstApplicationSettingPK.companyID := companyID";
+			+ " WHERE c.krqstApplicationSettingPK.companyID := companyID";
 
 	public final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
-			+ " WHERE c.KrqstApplicationSettingPK.companyID := companyID"
-			+ " AND c.KrqstApplicationSettingPK.appType := appType ";
+			+ " WHERE c.krqstApplicationSettingPK.companyID := companyID"
+			+ " AND c.krqstApplicationSettingPK.appType := appType ";
 
 	/**
 	 * @param entity
