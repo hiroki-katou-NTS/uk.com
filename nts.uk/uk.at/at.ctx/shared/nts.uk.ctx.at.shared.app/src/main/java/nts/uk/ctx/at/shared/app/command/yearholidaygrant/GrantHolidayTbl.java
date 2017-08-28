@@ -6,6 +6,11 @@ import lombok.Value;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @Value
 public class GrantHolidayTbl {
 	/* 年休付与NO */

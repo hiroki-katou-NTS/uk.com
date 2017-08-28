@@ -8,7 +8,6 @@ public class AddItemCommand {
 	private String itemCode;
 	private String itemParentCode;
 	private String itemName;
-	private int itemType;
 	private SingleItemCommand singleItem;
 	
 }

@@ -23,10 +23,12 @@ module nts.uk.com.view.cps005.b {
             };
             
             addItemDef(newItemDef: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.addItemDef);
+                console.log(ko.toJS(newItemDef));
+                return nts.uk.request.ajax("com", this.paths.addItemDef, newItemDef);
             };
+            
             updateItemDef(newItemDef: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.updateItemDef);
+                return nts.uk.request.ajax("com", this.paths.updateItemDef, newItemDef);
             };
         }
     }

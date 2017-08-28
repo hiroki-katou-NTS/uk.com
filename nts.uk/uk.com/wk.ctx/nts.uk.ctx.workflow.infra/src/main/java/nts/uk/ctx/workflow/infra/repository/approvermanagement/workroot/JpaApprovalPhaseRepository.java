@@ -22,9 +22,9 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	private final String SELECT_FROM_APPHASE = "SELECT c FROM WwfmtApprovalPhase c"
 			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
 			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
-	private static final String DELETE_APHASE_BY_BRANCHID = "DELETE from WwfdtApprovalPhase c "
-			+ " WHERE c.wwfdtApprovalPhasePK.companyId = :companyId"
-			+ " AND c.wwfdtApprovalPhasePK.branchId = :branchId";
+	private static final String DELETE_APHASE_BY_BRANCHID = "DELETE from WwfmtApprovalPhase c "
+			+ " WHERE c.wwfmtApprovalPhasePK.companyId = :companyId"
+			+ " AND c.wwfmtApprovalPhasePK.branchId = :branchId";
 
 	/**
 	 * get All Approval Phase by Code
