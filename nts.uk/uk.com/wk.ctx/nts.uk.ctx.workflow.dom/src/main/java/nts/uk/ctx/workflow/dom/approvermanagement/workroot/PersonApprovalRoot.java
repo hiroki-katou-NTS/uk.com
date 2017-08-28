@@ -39,22 +39,22 @@ public class PersonApprovalRoot extends AggregateRoot{
 			String approvalId,
 			String employeeId,
 			String historyId,
-			int applicationType,
+			Integer applicationType,
 			String startDate,
 			String endDate,
 			String branchId,
 			String anyItemApplicationId,
-			int confirmationRootType,
+			Integer confirmationRootType,
 			int employmentRootAtr){
 		return new PersonApprovalRoot(companyId,
 			approvalId,
 			employeeId,
 			historyId,
-			EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
+			applicationType == null ? null: EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 			ApprovalPeriod.createSimpleFromJavaType(startDate, endDate),
 			branchId,
 			anyItemApplicationId,
-			EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
+			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class));
 	}
 	public static PersonApprovalRoot updateSdateEdate(PersonApprovalRoot psApprovalRoot, String sDate, String eDate){
