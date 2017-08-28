@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.pub.approvalroot;
 
 import java.util.Date;
+import java.util.List;
 
 public interface ApprovalRootPub {
 	/**
@@ -11,10 +12,7 @@ public interface ApprovalRootPub {
 	 * @param employmentRootAtr 就業ルート区分
 	 * @param subjectRequest 対象申請
 	 * @param standardDate 基準日
+	 * @return ApprovalRootDtos
 	 */
-	void getApprovalRootOfSubjectRequest(
-			String cid, 
-			String sid, 
-			Date standardDate,
-			String subjectRequest);
+	List<ApprovalRootDto> findByBaseDate(String cid, String sid, Date standardDate, String appType);
 }

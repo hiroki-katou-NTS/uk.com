@@ -156,6 +156,11 @@ public class ProgramsManager {
 	public static final Program CCG031C = new Program(WebAppId.COM, ProgramIdConsts.CCG031C, "PgName_CCG031C",
 			"/view/ccg/031/c/index.xhtml");
 	/**
+	 * CDL022A
+	 */
+	public static final Program CDL022A = new Program(WebAppId.COM, ProgramIdConsts.CDL022A, "PgName_CDL022A",
+			"/view/cdl/022/a/index.xhtml");
+	/**
 	 * CPS007B
 	 */
 	public static final Program CPS007B = new Program(WebAppId.COM, ProgramIdConsts.CPS007B, "PgName_CPS007B",
