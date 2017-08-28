@@ -11,10 +11,11 @@ import javax.ws.rs.Produces;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import find.person.info.item.PerInfoItemDefFullEnumDto;
+import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/ctgItem")
 @Produces("application/json")
-public class PernfoItemDefWebservice {
+public class PernfoItemDefWebservice extends WebService{
 
 	@Inject
 	private PerInfoItemDefFinder itemDefFinder;
