@@ -43,6 +43,14 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemNo = :timeItemNo "
 			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 "
 			+ " ORDER BY c.kbpstBonusPayTimeItemPK.timeItemNo ASC ";
+	private final String SELECT_BP_TIME_ITEM_NAME = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId"
+			+ " AND c.kbpstBonusPayTimeItemPK.timeItemNo IN :timeItemNos "
+			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 0 ";
+	private final String SELECT_SPEC_BP_TIME_ITEM_NAME = "SELECT c " + " FROM KbpstBonusPayTimeItem c "
+			+ " WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId"
+			+ " AND c.kbpstBonusPayTimeItemPK.timeItemNo IN :timeItemNos "
+			+ " AND c.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 ";
 
 	@Override
 	public List<BonusPayTimeItem> getListBonusPayTimeItem(String companyId) {
@@ -139,6 +147,20 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 	public List<BonusPayTimeItem> getListSpecialBonusPayTimeItemInUse(String companyId) {
 		return this.queryProxy().query(SELECT_SPEC_BPTIMEITEM_INUSE_BY_COMPANYID, KbpstBonusPayTimeItem.class)
 				.setParameter("companyId", companyId).getList(x -> this.toBonusPayTimeItemDomain(x));
+	}
+
+	@Override
+	public List<BonusPayTimeItem> getListBonusPayTimeItemName(String companyId, List<Integer> timeItemNos) {
+		return this.queryProxy().query(SELECT_BP_TIME_ITEM_NAME, KbpstBonusPayTimeItem.class)
+				.setParameter("companyId", companyId).setParameter("timeItemNos", timeItemNos)
+				.getList(f -> toBonusPayTimeItemDomain(f));
+	}
+
+	@Override
+	public List<BonusPayTimeItem> getListSpecialBonusPayTimeItemName(String companyId, List<Integer> timeItemNos) {
+		return this.queryProxy().query(SELECT_SPEC_BP_TIME_ITEM_NAME, KbpstBonusPayTimeItem.class)
+				.setParameter("companyId", companyId).setParameter("timeItemNos", timeItemNos)
+				.getList(f -> toBonusPayTimeItemDomain(f));
 	}
 
 }
