@@ -32,16 +32,9 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
 @Stateless
 public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService {
 
-    /** The file info repository. */
-    @Inject
-    private StoredFileInfoRepository fileInfoRepository;
-
     /** The file stream service. */
     @Inject
     private StoredFileStreamService fileStreamService;
-
-    /** The file extension arr. */
-    private final List<String> FILE_EXTENSION_ARR = Arrays.asList("txt", "csv");
 
     /** The max record. */
     private final int MAX_RECORD = 999;
@@ -58,7 +51,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
 
         this.validFileExtension(fileId);
         this.validLimitRecord(inputStream, encoding, startLine);
-        this.validCharset(inputStream);
+//        this.validCharset(inputStream);
 
         // close input stream
         try {

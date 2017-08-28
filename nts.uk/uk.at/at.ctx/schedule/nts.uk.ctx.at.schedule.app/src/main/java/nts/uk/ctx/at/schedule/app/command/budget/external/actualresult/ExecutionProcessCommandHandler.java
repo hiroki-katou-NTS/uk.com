@@ -602,8 +602,9 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         if (importProcess.stopLine) {
             return;
         }
+        String companyId = AppContexts.user().companyId();
         String workplaceCode = result.get(INDEX_COLUMN_CODE);
-        List<String> lstWpkId = this.workplaceAdapter.findWpkIdList(workplaceCode, importProcess.actualDate);
+        List<String> lstWpkId = this.workplaceAdapter.findWpkIdList(companyId, workplaceCode, importProcess.actualDate);
         if (!CollectionUtil.isEmpty(lstWpkId)) {
             importProcess.workplaceId = lstWpkId.get(DEFAULT_VALUE);
             return;
