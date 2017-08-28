@@ -35,30 +35,44 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this;
             self.start(undefined);
             self.currentCategory().id.subscribe(function(value) {
-                debugger;
                 self.getDetailCategory(value);
-            });
-
-            self.itemList.subscribe(function(value) {
-                if (value.length > 0) {
-                    let x: number = _.filter(value, x => { return x.systemRequired == 1 }).length > 0 ? 1 : 0;
-                    self.currentCategory().displayIsAbolished = x;
-                    console.log(ko.toJS(self.currentCategory()));
-                } else {
-                    self.currentCategory().displayIsAbolished = 0;
-                }
-
-
             });
             self.isAbolished.subscribe(function(value) {
                 if (value) {
+                    self.categoryList.removeAll();
+                    service.getAllCategory().done(function(data: Array<any>) {
+                        if (data.length > 0) {
+                            self.categoryList(_.map(data, x => new CategoryInfo({
+                                id: x.id,
+                                categoryCode: x.categoryCode,
+                                categoryName: x.categoryName,
+                                categoryType: x.categoryType,
+                                isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
+                            })));
+                        }
+                    });
+
+
                     $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                 } else {
-                    let category = _.find(self.isUseCategoryLst(), x => { return x.id == self.currentCategory().id() });
-                    if (category === undefined) {
-                        self.currentCategory().id(self.isUseCategoryLst()[0].id);
-                    }
-                    $("#category_grid").igGrid("option", "dataSource", self.isUseCategoryLst());
+
+                    service.getAllCategory().done(function(data: Array<any>) {
+                        if (data.length > 0) {
+                            self.categoryList(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
+                                id: x.id,
+                                categoryCode: x.categoryCode,
+                                categoryName: x.categoryName,
+                                categoryType: x.categoryType,
+                                isAbolition: ""
+                            })));
+                            let category = _.find(self.categoryList(), x => { return x.id == self.currentCategory().id() });
+                            if (category === undefined) {
+                                self.currentCategory().id(self.categoryList()[0].id);
+                            }
+                            $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                        }
+                    });
+
                 }
 
             });
@@ -68,6 +82,11 @@ module nts.uk.com.view.cps006.a.viewmodel {
         getDetailCategory(id: string) {
             let self = this;
             self.itemList.removeAll();
+            let category = _.find(self.categoryList(), function(obj: any) { return obj.id === id }),
+                categoryRoot = _.find(self.categoryRootList(), function(obj: any) {
+                    return obj.categoryCode === category.categoryCode
+                });
+
             service.getAllPerInfoItemDefByCtgId(id).done(function(data: Array<any>) {
                 if (data.length > 0) {
                     self.itemList(_.map(data, x => {
@@ -79,20 +98,24 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
                         }
                     }));
-                };
+
+                    let x: number = _.filter(self.itemList(), x => { return x.systemRequired == 1 }).length > 0 ? 1 : 0;
+                    self.currentCategory().setData({
+                        id: id, categoryNameDefault: categoryRoot.categoryName, categoryName: category.categoryName,
+                        categoryType: category.categoryType, isAbolition: category.isAbolition, itemList: self.itemList()
+                    }, x);
+                    self.currentCategory.valueHasMutated();
+
+                } else {
+
+                    self.currentCategory().setData({
+                        id: id, categoryNameDefault: categoryRoot.categoryName, categoryName: category.categoryName,
+                        categoryType: category.categoryType, isAbolition: category.isAbolition, itemList: []
+                    }, 0);
+                    self.currentCategory.valueHasMutated();
+                }
             });
 
-            let category = _.find(self.categoryList(), function(obj: any) { return obj.id === id });
-            let categoryRoot = _.find(self.categoryRootList(), function(obj: any) {
-                return obj.categoryCode === category.categoryCode
-            });
-            self.currentCategory().setData({
-                id: id, categoryNameDefault: categoryRoot.categoryName, categoryName: category.categoryName,
-                categoryType: category.categoryType, isAbolition: category.isAbolition, itemList: self.itemList()
-            });
-
-
-            self.currentCategory.valueHasMutated();
 
         }
 
@@ -122,14 +145,6 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryName: x.categoryName,
                         categoryType: x.categoryType,
                         isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
-                    })));
-
-                    self.isUseCategoryLst(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
-                        id: x.id,
-                        categoryCode: x.categoryCode,
-                        categoryName: x.categoryName,
-                        categoryType: x.categoryType,
-                        isAbolition: ""
                     })));
                     if (id === undefined) {
                         self.currentCategory().id(self.categoryList()[0].id);
@@ -191,6 +206,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.start(command.categoryId);
                 });
+            }).fail(function(res: any) {
+                dialog.alert(res.message);
             })
 
         }
@@ -268,16 +285,13 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.isAbolition = ko.observable(false);
         }
 
-        setData(params: ICategoryInfoDetail) {
+        setData(params: ICategoryInfoDetail, displayIsAbolished: number) {
             this.id(params.id);
             this.categoryNameDefault = params.categoryNameDefault;
             this.categoryName(params.categoryName);
             this.categoryType = params.categoryType;
             this.isAbolition(params.isAbolition != '' ? true : false);
+            this.displayIsAbolished = displayIsAbolished;
         }
     }
-
-
-
-
 }
