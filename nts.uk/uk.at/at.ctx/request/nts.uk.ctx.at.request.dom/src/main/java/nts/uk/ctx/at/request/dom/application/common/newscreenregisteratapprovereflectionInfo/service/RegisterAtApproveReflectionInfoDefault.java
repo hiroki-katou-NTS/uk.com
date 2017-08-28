@@ -22,8 +22,8 @@ import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalp
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class NewScreenRegisterAtApproveReflectionInfoDefault
-		implements NewScreenRegisterAtApproveReflectionInfoService {
+public class RegisterAtApproveReflectionInfoDefault
+		implements RegisterAtApproveReflectionInfoService {
 
 	@Inject
 	private ApplicationRepository appRepo;

@@ -21,5 +21,4 @@ public class KrqstAppTypeDiscretePK implements Serializable {
 	/** 申請種類 */
 	@Column(name = "APP_TYPE")
 	public int appType;
-
 }
