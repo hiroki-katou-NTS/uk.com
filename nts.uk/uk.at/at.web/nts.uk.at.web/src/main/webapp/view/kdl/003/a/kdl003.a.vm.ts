@@ -206,12 +206,16 @@ module nts.uk.at.view.kdl003.a {
              * Search work time.
              */
             public search(): void {
+                var self = this;
+                if (!self.startTime() && !self.endTime()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+                    return;
+                }
                 if ($('#inputEndTime').ntsError('hasError') ||
                     $('#inputStartTime').ntsError('hasError')) {
                     return;
                 }
                 nts.uk.ui.block.invisible();
-                var self = this;
 
                 // Search command.
                 let command = {

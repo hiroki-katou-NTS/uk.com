@@ -44,10 +44,12 @@ module nts.uk.at.view.ksm001.a {
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
+            employmentName: KnockoutObservable<string>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
 
+            employmentList: KnockoutObservableArray<UnitModel>;
 
             constructor() {
                 var self = this;
@@ -257,20 +259,27 @@ module nts.uk.at.view.ksm001.a {
             public onSelectEmployment(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
+                self.employmentName = ko.observable('');
                 self.isCompanySelected(false);
                 self.isPersonSelected(false);
                 self.isEmploymentSelected(true);
                 self.isLoading(true);
-                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption);
-                self.selectedEmploymentCode.valueHasMutated();
-                self.selectedEmploymentCode.subscribe(function(employmentCode) {
-                    if (employmentCode) {
-                        self.loadEmploymentEstablishment(self.selectedTargetYear(), employmentCode, true).done(function() {
 
-                        }).always(() => {
-                            nts.uk.ui.block.clear();
-                        });
-                    }
+                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(() => {
+                    self.employmentList = ko.observableArray($('#employmentSetting').getDataList());
+                    self.selectedEmploymentCode.valueHasMutated();
+                    self.selectedEmploymentCode.subscribe(function(employmentCode) {
+                        if (!employmentCode) {
+                            self.employmentEstablishmentModel.disableInput();
+                        }
+                        if (employmentCode) {
+                            self.employmentName(self.findEmploymentByCode(employmentCode).name);
+                            self.employmentEstablishmentModel.enableInput();
+                            self.loadEmploymentEstablishment(self.selectedTargetYear(), employmentCode, true);
+                        }
+                    });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 
             }
@@ -280,6 +289,7 @@ module nts.uk.at.view.ksm001.a {
             public onSelectPerson(): void {
                 var self = this;
                 nts.uk.ui.block.invisible();
+                self.employeeName = ko.observable('');
                 self.isCompanySelected(false);
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
@@ -294,7 +304,12 @@ module nts.uk.at.view.ksm001.a {
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
                 self.selectedEmployeeCode.valueHasMutated();
                 self.selectedEmployeeCode.subscribe(function(employeeCode) {
+                    if (!employeeCode) {
+                        self.personalEstablishmentModel.disableInput();
+                    }
                     if (employeeCode) {
+                        self.employeeName(self.findByCodeEmployee(employeeCode).name);
+                        self.personalEstablishmentModel.enableInput();
                         service.findPersonalEstablishment(2017, self.findEmployeeIdByCode(employeeCode)).done(function(data) {
                             self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
                             self.personalEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
@@ -319,6 +334,15 @@ module nts.uk.at.view.ksm001.a {
                     }
                 }
                 return employee;
+            }
+            /**
+             * Find employment by code.
+             */
+            public findEmploymentByCode(employmentCode: string): UnitModel {
+                var employment: UnitModel;
+                var self = this;
+                employment =_.find(self.employmentList(), item => item.code === employmentCode);
+                return employment;
             }
             
             
@@ -416,6 +440,9 @@ module nts.uk.at.view.ksm001.a {
             * function on click saveCompanyEstablishment action
             */
             public saveCompanyEstablishment(): void {
+                if( $('.nts-editor').ntsError('hasError')) {
+                    return;
+                };
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: CompanyEstablishmentDto = {
@@ -449,6 +476,9 @@ module nts.uk.at.view.ksm001.a {
             * function on click saveEmploymentEstablishment action
             */
             public saveEmploymentEstablishment(): void {
+                if( $('.nts-editor').ntsError('hasError')) {
+                    return;
+                };
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: EmploymentEstablishmentDto = {
@@ -481,6 +511,9 @@ module nts.uk.at.view.ksm001.a {
             * function on click savePersonalEstablishment action
             */
             public savePersonalEstablishment(): void {
+                if( $('.nts-editor').ntsError('hasError')) {
+                    return;
+                };
                 nts.uk.ui.block.invisible();
                 var self = this;    
                 var dto: PersonalEstablishmentDto = {
@@ -776,11 +809,20 @@ module nts.uk.at.view.ksm001.a {
             estimatePriceModel: EstablishmentPriceModel;
             estimateDaysModel: EstablishmentDaysModel;
             selectedTab: KnockoutObservable<string>;
+            isEditable: KnockoutObservable<boolean>;
             constructor() {
                 this.estimateTimeModel = new EstablishmentTimeModel();
                 this.estimatePriceModel = new EstablishmentPriceModel();
                 this.estimateDaysModel = new EstablishmentDaysModel();
                 this.selectedTab = ko.observable('tab-1');
+                this.isEditable = ko.observable(true);
+            }
+
+            enableInput(): void {
+                this.isEditable(true);
+            }
+            disableInput(): void {
+                this.isEditable(false);
             }
         }
         
