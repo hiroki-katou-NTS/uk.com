@@ -115,6 +115,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY = "SELECT o FROM PpemtPerInfoItemOrder o"
 			+ " WHERE o.perInfoCtgId = :perInfoCtgId";
 
+	private final static String SELECT_ITEM_ORDER_BY_ITEM_ID_QUERY = "SELECT o FROM PpemtPerInfoItemOrder o"
+			+ " WHERE o.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoItemDefId";
+
 	private final static String SELECT_ITEM_DISPORDER_BY_KEY_QUERY = "SELECT o.disporder FROM PpemtPerInfoItemOrder o"
 			+ " WHERE o.perInfoCtgId = :perInfoCtgId AND o.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoItemDefId";
 
@@ -239,6 +242,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
+	public Optional<PerInfoItemDefOrder> getPerInfoItemDefOrdersByItemId(String perInfoItemDefId) {
+		return this.queryProxy().query(SELECT_ITEM_ORDER_BY_ITEM_ID_QUERY, PpemtPerInfoItemOrder.class)
+				.setParameter("perInfoItemDefId", perInfoItemDefId)
+				.getSingle(o -> createPerInfoItemDefOrderFromEntity(o));
+	}
+
+	@Override
 	public int getItemDispOrderBy(String perInfoCtgId, String perInfoItemDefId) {
 		return this.queryProxy().query(SELECT_ITEM_DISPORDER_BY_KEY_QUERY, Integer.class)
 				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("perInfoItemDefId", perInfoItemDefId)
@@ -273,7 +283,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private PpemtPerInfoItemOrder createItemOrder(String perInfoItemDefId, String perInfoCtgId, int dispOrder) {
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDefId);
-		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder);
+		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder, dispOrder);
 	}
 
 	private PersonInfoItemDefinition createDomainFromEntity(Object[] i, List<String> items) {
@@ -455,7 +465,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private PerInfoItemDefOrder createPerInfoItemDefOrderFromEntity(PpemtPerInfoItemOrder order) {
 		return PerInfoItemDefOrder.createFromJavaType(order.ppemtPerInfoItemPK.perInfoItemDefId, order.perInfoCtgId,
-				order.disporder);
+				order.disporder, order.displayOrder);
 	}
 
 	@Override

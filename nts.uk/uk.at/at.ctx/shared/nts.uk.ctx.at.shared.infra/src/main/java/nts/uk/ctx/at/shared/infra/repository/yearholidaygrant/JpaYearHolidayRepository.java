@@ -78,8 +78,9 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	}
 	
 	/**
+	 * Convert to domain
 	 * 
-	 * @param x
+	 * @param KshstGrantHdTblSet
 	 * @return
 	 */
 	private GrantHdTblSet convertToDomainYearHoliday(KshstGrantHdTblSet x) {
@@ -102,6 +103,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	}
 
 	/**
+	 * Convert to entity
 	 * 
 	 * @param yearHoliday
 	 * @return

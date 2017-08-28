@@ -81,6 +81,12 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 			.executeUpdate();
 	}
 		
+	/**
+	 * Convert to domain
+	 * 
+	 * @param KshstGrantHdTbl
+	 * @return
+	 */
 	private GrantHdTbl convertToDomain(KshstGrantHdTbl x) {
 		return GrantHdTbl.createFromJavaType(x.kshstGrantHdTblPK.companyId, 
 				x.kshstGrantHdTblPK.grantYearHolidayNo, 
@@ -95,6 +101,12 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 				x.grantSimultaneity);
 	}
 	
+	/**
+	 * Convert to entity
+	 * 
+	 * @param holidayGrant
+	 * @return
+	 */
 	private KshstGrantHdTbl toEntity(GrantHdTbl holidayGrant) {
 		return new KshstGrantHdTbl(
 				new KshstGrantHdTblPK(holidayGrant.getCompanyId(), holidayGrant.getGrantYearHolidayNo(), holidayGrant.getConditionNo(), holidayGrant.getYearHolidayCode().v()),
