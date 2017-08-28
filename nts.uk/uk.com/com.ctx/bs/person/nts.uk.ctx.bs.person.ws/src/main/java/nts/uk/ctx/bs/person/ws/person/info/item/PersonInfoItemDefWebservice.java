@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import find.person.info.item.PersonInfoItemDefDto;
 import find.person.info.item.PersonInfoItemDefFinder;
+import nts.arc.layer.ws.WebService;
 /**
  * The class PersonInfoItemDefWebservice 
  * @author lanlt 
@@ -17,7 +18,7 @@ import find.person.info.item.PersonInfoItemDefFinder;
  */
 @Path("ctx/bs/person/info/item")
 @Produces("application/json")
-public class PersonInfoItemDefWebservice {
+public class PersonInfoItemDefWebservice extends WebService{
 
 	@Inject
 	private PersonInfoItemDefFinder itemDefFinder;

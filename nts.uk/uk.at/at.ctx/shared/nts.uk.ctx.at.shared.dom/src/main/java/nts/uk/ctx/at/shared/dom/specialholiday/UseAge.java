@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum UseAge {
-	/* 利用しない */
-	DoNotUse(0),
-	/* 利用する */
-	Use(1);
+	/* 許可する */
+	Allow(0),
+	/* 許可しない */
+	NotAllow(1);
 
 	public final int value;
 }

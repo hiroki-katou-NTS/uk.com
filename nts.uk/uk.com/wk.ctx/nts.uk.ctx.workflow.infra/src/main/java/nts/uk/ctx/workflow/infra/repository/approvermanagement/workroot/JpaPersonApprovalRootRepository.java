@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,16 +23,27 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtPsAppro
 public class JpaPersonApprovalRootRepository extends JpaRepository implements PersonApprovalRootRepository{
 
 
-	private final String FIND_PS_APR_ALL = "SELECT c FROM WwfmtPsApprovalRoot c";
-	 private final String SELECT_PS_APR = FIND_PS_APR_ALL
+	 private final String FIND_ALL = "SELECT c FROM WwfmtPsApprovalRoot c";
+	 private final String FIN_BY_EMP = FIND_ALL
 	   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 	   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
-	 private final String SELECT_PS_APR_BY_ENDATE = SELECT_PS_APR
+	 private final String SELECT_PS_APR_BY_ENDATE = FIN_BY_EMP
 	   + " AND c.endDate = :endDate"
 	   + " AND c.applicationType = :applicationType";
-	 private final String SELECT_PS_APR_BY_ENDATE_APP_NULL = SELECT_PS_APR 
+	 private final String SELECT_PS_APR_BY_ENDATE_APP_NULL = FIN_BY_EMP 
 			   + " AND c.endDate = :endDate"
 			   + " AND c.applicationType IS NULL";
+	 private final String FIND_BY_DATE = FIN_BY_EMP
+	   + " AND c.endDate = :endDate";
+	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
+			   + " AND c.stardDate <= :baseDate"
+			   + " AND c.endDate => :baseDate"
+			   + " AND c.employmentRootAtr IN (1,2,3)" 
+			   + " AND c.applicationType = :appType";
+	 private final String FIND_BY_BASEDATE_OF_COM = FIN_BY_EMP
+			   + " AND c.stardDate <= :baseDate"
+			   + " AND c.endDate => :baseDate"
+			   + " AND c.employmentRootAtr = 0";
 	/**
 	 * get all Person Approval Root
 	 * @param companyId
@@ -40,7 +52,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	@Override
 	public List<PersonApprovalRoot> getAllPsApprovalRoot(String companyId, String employeeId) {
-		return this.queryProxy().query(SELECT_PS_APR, WwfmtPsApprovalRoot.class)
+		return this.queryProxy().query(FIN_BY_EMP, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.getList(c->toDomainPsApR(c));
@@ -119,6 +131,43 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		WwfmtPsApprovalRootPK pk = new WwfmtPsApprovalRootPK(companyId, approvalId, employeeId, historyId);
 		return this.queryProxy().find(pk, WwfmtPsApprovalRoot.class).map(c->toDomainPsApR(c));
 	}
+	
+	/**
+	 * 個人別就業承認ルート」を取得する
+	 * 就業ルート区分(申請か、確認か、任意項目か)
+	 * @param cid
+	 * @param sid
+	 * @param baseDate
+	 * @param appType
+	 */
+	@Override
+	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date baseDate, String appType) {
+		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("baseDate", baseDate)
+				.setParameter("appType", appType)
+				.getList(c->toDomainPsApR(c));
+	}
+	
+	/**
+	 * 個人別就業承認ルート」を取得する
+	 * 就業ルート区分(共通)
+	 * @param cid
+	 * @param sid
+	 * @param baseDate
+	 * @param appType
+	 */
+	@Override
+	public List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, Date baseDate) {
+		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("baseDate", baseDate)
+				.getList(c->toDomainPsApR(c));
+	}
+	
+	
 	/**
 	 * convert entity WwfmtPsApprovalRoot to domain PersonApprovalRoot
 	 * @param entity
