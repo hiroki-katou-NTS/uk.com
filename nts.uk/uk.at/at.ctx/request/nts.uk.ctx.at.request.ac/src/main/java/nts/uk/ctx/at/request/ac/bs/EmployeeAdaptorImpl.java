@@ -1,10 +1,12 @@
-package nts.uk.ctx.at.request.ac.employee;
+package nts.uk.ctx.at.request.ac.bs;
+
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeePub;
 
 @Stateless
@@ -23,6 +25,12 @@ public class EmployeeAdaptorImpl implements EmployeeAdaptor {
 	public String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate){
 		/*return employeePub.getEmploymentCode(companyId, employeeId, baseDate);*/
 		return null;
+	}
+
+	@Override
+	public List<String> getListWorkplaceID(String companyId, String employeeId, GeneralDate baseDate) {
+		
+		return employeePub.findWpkIdsBySCode(companyId, employeeId, baseDate);
 	}
 	
 }

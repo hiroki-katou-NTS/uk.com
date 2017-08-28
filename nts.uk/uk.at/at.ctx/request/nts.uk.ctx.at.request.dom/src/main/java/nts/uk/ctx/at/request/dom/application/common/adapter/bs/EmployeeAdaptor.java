@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.request.dom.application.common.adapter;
+package nts.uk.ctx.at.request.dom.application.common.adapter.bs;
+
+import java.util.List;
 
 import nts.arc.time.GeneralDate;
 
@@ -11,4 +13,6 @@ public interface EmployeeAdaptor {
 	 * @return　雇用コード
 	 */
 	String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate);
+	
+	List<String> getListWorkplaceID(String companyId, String employeeId, GeneralDate baseDate);
 }
