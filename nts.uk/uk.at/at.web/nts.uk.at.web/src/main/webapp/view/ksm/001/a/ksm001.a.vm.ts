@@ -9,10 +9,12 @@ module nts.uk.at.view.ksm001.a {
     import CompanyEstablishmentDto = service.model.CompanyEstablishmentDto;
     import EmploymentEstablishmentDto = service.model.EmploymentEstablishmentDto;
     import PersonalEstablishmentDto = service.model.PersonalEstablishmentDto;
+    import UsageSettingDto = service.model.UsageSettingDto;
 
     export module viewmodel {
 
         export class ScreenModel {
+            usageSettingModel: UsageSettingModel;
             lstTargetYear: KnockoutObservableArray<any>;
             isCompanySelected: KnockoutObservable<boolean>;
             isEmploymentSelected: KnockoutObservable<boolean>;
@@ -49,6 +51,7 @@ module nts.uk.at.view.ksm001.a {
 
             constructor() {
                 var self = this;
+                self.usageSettingModel = new UsageSettingModel();
                 this.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KSM001_23"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: nts.uk.resource.getText("KSM001_24"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -129,6 +132,16 @@ module nts.uk.at.view.ksm001.a {
                 self.selEmploymentTab = ko.observable('emp-tab-1');
                 
             }
+            
+            /**
+             * call service load UsageSettingModel
+             */
+            private loadUsageSettingModel(): void {
+                var self = this;
+                service.findCompanySettingEstimate().done(function(data) {
+                    self.usageSettingModel.updateData(data);
+                });
+            }
             /**
             * start page data 
             */
@@ -137,6 +150,7 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 var dfd = $.Deferred();
                 self.setSelectableYears();
+                self.loadUsageSettingModel();
                 self.onSelectCompany().done(function(){
                     dfd.resolve(self);    
                 }).always(() => {
@@ -494,6 +508,26 @@ module nts.uk.at.view.ksm001.a {
                     nts.uk.ui.block.clear();
                 });
             }
+            
+            /**
+             * open dialog UsageSettingModel (view model E)
+             */
+            private openDialogUsageSettingModel(): void {
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/ksm/001/e/index.xhtml").onClosed(function() {
+                    self.loadUsageSettingModel();
+                });
+            }
+            
+            /**
+             * open dialog CommonSetting (view model F)
+             */
+            private openDialogCommonSetting(): void {
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/ksm/001/f/index.xhtml").onClosed(function() {
+                    
+                });
+            }
 
         }
 
@@ -747,6 +781,28 @@ module nts.uk.at.view.ksm001.a {
                 this.estimatePriceModel = new EstablishmentPriceModel();
                 this.estimateDaysModel = new EstablishmentDaysModel();
                 this.selectedTab = ko.observable('tab-1');
+            }
+        }
+        
+        
+        export class UsageSettingModel {
+            settingEmployment: KnockoutObservable<boolean>;
+            settingPersonal: KnockoutObservable<boolean>;
+            constructor() {
+                this.settingEmployment = ko.observable(true);
+                this.settingPersonal = ko.observable(true);
+            }
+            updateData(dto: UsageSettingDto){
+                this.settingEmployment(dto.employmentSetting);    
+                this.settingPersonal(dto.personalSetting);    
+            }
+            
+            toDto(): UsageSettingDto {
+                var dto: UsageSettingDto = {
+                    employmentSetting: this.settingEmployment(),
+                    personalSetting: this.settingPersonal()
+                };
+                return dto;
             }
         }
         

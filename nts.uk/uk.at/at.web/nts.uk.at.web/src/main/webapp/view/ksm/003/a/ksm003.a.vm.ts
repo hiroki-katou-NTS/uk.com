@@ -49,7 +49,9 @@ module nts.uk.at.view.ksm003.a {
                     if (codeChanged) {
                         self.getPatternValByPatternCd(codeChanged);
                     } else {
-                        self.switchNewMode();
+                        self.isEditting(false);
+                        self.resetInput();
+                        self.clearError();
                     }
                 });
 
@@ -205,38 +207,29 @@ module nts.uk.at.view.ksm003.a {
             //select switch New Mode
             public switchNewMode(): void {
                 let self = this;
-                //                  cretar new table
+                self.isEditting(false);
+                self.selectedCode("");
+                self.resetInput();
+                self.clearError();
+                $("#inpCode").focus();
+            }
+
+            //reset Input
+            private resetInput(): void {
+                let self = this;
+                //cretar new table
                 var dataNew: model.DailyPatternValModel[];
                 dataNew = new Array();
                 for (let i = 0; i <= 9; i++) {
                     dataNew.push(new model.DailyPatternValModel(i, "", "", null));
                 }
-                self.detail().patternCode("");
-                self.detail().patternName("");
                 self.detail().dailyPatternVals(dataNew);
-
-                self.isEditting(false);
-                self.selectedCode("");
-                self.resetInput();
-                $("#inpCode").focus();
-                self.clearError();
-            }
-
-            //reset Input
-            private resetInput(): void {
-                $('.nts-input').val("");
             }
 
             // clear Error
             private clearError(): void {
                 if ($('.nts-input').ntsError("hasError")) {
                     $('.nts-input').ntsError('clear');
-                }
-                if ($('#inpCode').ntsError("hasError")) {
-                    $('#inpCode').ntsError('clear');
-                }
-                if ($('#inpPattern').ntsError("hasError")) {
-                    $('#inpPattern').ntsError('clear');
                 }
             }
 

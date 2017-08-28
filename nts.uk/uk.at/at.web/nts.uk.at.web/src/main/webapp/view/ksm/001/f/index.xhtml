@@ -9,30 +9,52 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 350,
+					width : 750,
 					height : 450
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="ksm001.e.start.js" />
-			<com:scriptfile path="ksm001.e.service.js" />
-			<com:scriptfile path="ksm001.e.vm.js" />
+			<com:stylefile path="ksm001.f.main.css" />
+			<com:scriptfile path="ksm001.f.start.js" />
+			<com:scriptfile path="ksm001.f.service.js" />
+			<com:scriptfile path="ksm001.f.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area " data-bind="with: detail">
-				<div>
-					<div>
-						<label>#{i18n.getText('KSM001_45')}</label>
+			<div id="contents-area">
+				<div class="settingColor">
+					<div class="lableData pull-left" data-name="#{i18n.getText('KSM001_52')}"
+						data-bind="ntsFormLabel: {required: true}">
+						<label>#{i18n.getText('KSM001_52')}</label>
 					</div>
-				</div>
-				<div>
-					<div style="width: 40%;">
-						<div>#{i18n.getText('Com_Company')}</div>
-						<div tabindex="1" data-bind="ntsCheckBox: { checked: empSet }">#{i18n.getText('Com_Employment')}</div>
-						<div tabindex="2" data-bind="ntsCheckBox: { checked: perSet }">#{i18n.getText('Com_Person')}</div>
-					</div>
-					<div style="width: 60%;">
-						<img src="img001.png" style="width: 20px;"></img>
+					<div class="detailSettingColor">
+						<table class="border-all">
+								<tr class="bg-dark-green">
+									<td>#{i18n.getText('KSM001_30')}</td>
+									<td>#{i18n.getText('KSM001_11')}</td>
+									<td>#{i18n.getText('KSM001_12')}</td>
+									<td>#{i18n.getText('KSM001_13')}</td>
+									<td>#{i18n.getText('KSM001_14')}</td>
+									<td>#{i18n.getText('KSM001_15')}</td>
+								</tr>
+								<tr>
+									<td class="bg-green">#{i18n.getText('KSM001_10')}</td>
+									<td>
+										<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: true, width: 50, name:'#[KSM005_16]' }"/>
+									</td>
+									<td>
+										<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: true, width: 50, name:'#[KSM001_17]' }"/>
+									</td>
+									<td>
+										<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: true, width: 50, name:'#[KSM001_18]'}"/>
+									</td>
+									<td>
+										<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: true, width: 50, name:'#[KSM001_19]'}"/>
+									</td>
+									<td>
+										<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: true, width: 50, name:'#[KSM001_20]'}"/>
+									</td>
+								</tr>
+							</table>
 					</div>
 				</div>
 			</div>

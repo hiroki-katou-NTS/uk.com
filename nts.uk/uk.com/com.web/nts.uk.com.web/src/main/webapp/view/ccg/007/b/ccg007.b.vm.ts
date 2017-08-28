@@ -65,7 +65,7 @@ module nts.uk.pr.view.ccg007.b {
                 var self = this;
                 blockUI.invisible();
                 if (!nts.uk.ui.errors.hasError()) {
-                    service.submitLogin({ loginId: _.escape(self.loginId()), password: _.escape(self.password()) }).done(function() {
+                    service.submitLogin({ loginId: nts.uk.text.padRight(_.escape(self.loginId())," ",12), password: _.escape(self.password()) }).done(function() {
                         nts.uk.characteristics.remove("form1LoginInfo").done(function() {
                             if (self.isSaveLoginInfo()) {
                                 nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
