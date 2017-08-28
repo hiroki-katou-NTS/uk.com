@@ -5,6 +5,11 @@ import java.util.List;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @Value
 public class CalculateGrantHdTblParam {
 	List<GrantHolidayTblDto> grantHolidayTblList;

@@ -5,6 +5,7 @@ module nts.uk.com.view.cps005.b {
     import modal = nts.uk.ui.windows.sub.modal;
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
+    import alertError = nts.uk.ui.dialog.alertError;
     export module viewmodel {
         export class ScreenModel {
             currentItemData: KnockoutObservable<ItemDataModel>;
@@ -32,7 +33,7 @@ module nts.uk.com.view.cps005.b {
                 return dfd.promise();
             }
 
-            reloadData(newItemName: string, itemId: string): JQueryPromise<any> {
+            reloadData(newItemName: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
                 let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
@@ -42,10 +43,6 @@ module nts.uk.com.view.cps005.b {
                         if (newItemName) {
                             let newItem = _.find(data.personInfoItemList, item => { return item.itemName == newItemName });
                             self.currentItemData().perInfoItemSelectCode(newItem ? newItem.id : "");
-                        }
-                        if (itemId) {
-                            self.currentItemData().perInfoItemSelectCode("");
-                            self.currentItemData().perInfoItemSelectCode(itemId);
                         }
                         self.isUpdate = true;
                     } else {
@@ -66,7 +63,20 @@ module nts.uk.com.view.cps005.b {
             }
 
             addUpdateData() {
-
+                let self = this,
+                    newItemDef = new AddItemModel(self.currentItemData().currentItemSelected());
+                let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
+                newItemDef.perInfoCtgId = categoryId;
+                newItemDef.singleItem.referenceCode = "Hard Code";
+                if (self.isUpdate == true) {
+                    new service.Service().updateItemDef(newItemDef).done().fail(error => {
+                        alertError(error);
+                    });
+                } else {
+                    new service.Service().addItemDef(newItemDef).done().fail(error => {
+                        alertError(error);
+                    });
+                }
             }
 
             removeData() {
@@ -270,15 +280,15 @@ module nts.uk.com.view.cps005.b {
     }
     export class AddItemModel {
         perInfoCtgId: string;
+        itemCode: string;
+        itemParentCode: string;
         itemName: string;
-        itemType: number;
         singleItem: SingleItemAddModel;
         constructor(data: PersonInfoItem) {
             let self = this;
             if (!data) return;
             self.perInfoCtgId = data.id;
             self.itemName = data.itemName();
-            self.itemType = data.itemType();
             self.singleItem = new SingleItemAddModel(data);
         }
     }
