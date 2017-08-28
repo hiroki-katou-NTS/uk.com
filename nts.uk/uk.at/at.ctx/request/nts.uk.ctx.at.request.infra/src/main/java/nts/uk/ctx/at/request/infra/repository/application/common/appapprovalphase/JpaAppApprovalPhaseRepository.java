@@ -10,8 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhasePK;
-import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
-import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
+
 
 
 @Stateless
@@ -26,6 +25,8 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 			+ " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID"
 			+ " AND c.KrqdtAppApprovalPhasePK.appID = :appID";
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID";
+	
+	
 	@Override
 	public Optional<AppApprovalPhase> findByCode(String companyID, String appID, String phaseID) {
 		return this.queryProxy()
@@ -55,7 +56,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 	}
 	@Override
 	public void delete(String companyID, String appID, String phaseID) {
-		this.commandProxy().remove(KrqdtAppLateOrLeave.class, new KrqdtAppLateOrLeavePK(companyID, appID));
+		this.commandProxy().remove(KrqdtAppApprovalPhase.class, new KrqdtAppApprovalPhasePK(companyID, appID,phaseID));
 		this.getEntityManager().flush();
 		
 	}
@@ -87,6 +88,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 				.setParameter("appID", appID)
 				.getList(c -> toDomain(c));
 	}
+
 
 
 

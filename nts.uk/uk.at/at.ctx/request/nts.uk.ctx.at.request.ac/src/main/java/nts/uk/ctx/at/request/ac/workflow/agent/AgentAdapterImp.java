@@ -28,11 +28,17 @@ public class AgentAdapterImp implements AgentRequestAdaptor{
 			agentDto.setRequestId(agentPubDto.getRequestId());
 			agentDto.setStartDate(agentPubDto.getStartDate());
 			agentDto.setEndDate(agentPubDto.getEndDate());
-			agentDto.setEmployeeId(agentPubDto.getEmployeeId());
-			agentDto.setEmployeeId(agentPubDto.getEmployeeId());
-			
+			agentDto.setAgentSid1(agentPubDto.getAgentSid1());
+			agentDto.setAgentAppType1(agentPubDto.getAgentAppType1());
+			agentDto.setAgentSid2(agentPubDto.getAgentSid2());
+			agentDto.setAgentAppType2(agentPubDto.getAgentAppType2());
+			agentDto.setAgentSid3(agentPubDto.getAgentSid3());
+			agentDto.setAgentAppType3(agentPubDto.getAgentAppType3());
+			agentDto.setAgentSid4(agentPubDto.getAgentSid4());
+			agentDto.setAgentAppType4(agentPubDto.getAgentAppType4());
+			lstEmployees.add(agentDto);
 		}
 		
-		return null;
+		return lstEmployees;
 	}
 }

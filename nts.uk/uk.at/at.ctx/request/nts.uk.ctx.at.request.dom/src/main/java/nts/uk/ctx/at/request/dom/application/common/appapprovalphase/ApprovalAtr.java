@@ -4,7 +4,7 @@ package nts.uk.ctx.at.request.dom.application.common.appapprovalphase;
  * @author hieult
  *
  */
-public enum ApprovalATR {
+public enum ApprovalAtr {
 
 	/** 0:未承認 */
 	UNAPPROVED(0),
@@ -17,7 +17,7 @@ public enum ApprovalATR {
 
 	public int value;
 
-	ApprovalATR(int type) {
+	ApprovalAtr(int type) {
 		this.value = type;
 	}
 }

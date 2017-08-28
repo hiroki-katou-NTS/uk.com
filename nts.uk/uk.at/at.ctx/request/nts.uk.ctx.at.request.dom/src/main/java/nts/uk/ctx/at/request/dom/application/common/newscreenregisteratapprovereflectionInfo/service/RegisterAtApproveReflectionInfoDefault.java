@@ -13,17 +13,17 @@ import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalATR;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmATR;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service.DetailedScreenAfterApprovalProcessDefault;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class NewScreenRegisterAtApproveReflectionInfoDefault
-		implements NewScreenRegisterAtApproveReflectionInfoService {
+public class RegisterAtApproveReflectionInfoDefault
+		implements RegisterAtApproveReflectionInfoService {
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -102,9 +102,9 @@ public class NewScreenRegisterAtApproveReflectionInfoDefault
 				// if文：「承認枠」1．確定区分 == true OR 「承認枠」2．確定区分 == true OR...「承認枠」5．確定区分 == true
 				for (ApprovalFrame frame : listFrame) {
 					// if文がtrue ==>> 確定者が承認済かチェックする(
-					if (frame.getConfirmATR() == ConfirmATR.USEATR_USE) {
+					if (frame.getConfirmATR() == ConfirmAtr.USEATR_USE) {
 						// 確定者が承認済かチェックする
-						if (frame.getApprovalATR() == ApprovalATR.APPROVED) {
+						if (frame.getApprovalATR() == ApprovalAtr.APPROVED) {
 							flgApprovalDone = true;
 						} else {
 							// goi XU LI 3.1 ==>> lay thang dai dien xac nhan
@@ -115,12 +115,12 @@ public class NewScreenRegisterAtApproveReflectionInfoDefault
 						}
 					} else {
 						// if文がfalse ==> 承認済の承認枠があるかチェックする
-						if (frame.getApprovalATR() == ApprovalATR.APPROVED) {
+						if (frame.getApprovalATR() == ApprovalAtr.APPROVED) {
 							flgApprovalDone = true;
 						} else {
 							// 「承認者一覧を取得する」を実行する
 							List<String> listApproved = approvalProcess.actualReflectionStateDecision(appID,
-									appPhase.getPhaseID(), ApprovalATR.APPROVED);
+									appPhase.getPhaseID(), ApprovalAtr.APPROVED);
 							// GOI HAM 3.1 Lay thang DAI DIEN xac nhan
 							// tra ve CO allApprovalFlg
 							/*
@@ -140,10 +140,10 @@ public class NewScreenRegisterAtApproveReflectionInfoDefault
 					// if文： 「承認枠」1．承認者リストに承認者がいる の「承認枠」1．承認区分 == 承認済 AND 「承認枠」2．承認者リストに承認者がいる
 					// の「承認枠」2．承認区分 == 承認済 AND ... 「承認枠」5．承認者リストに承認者がいる の「承認枠」5．承認区分 == 承認済
 					// ====>>>> if文がfalse
-					if (frame.getApprovalATR() != ApprovalATR.APPROVED) {
+					if (frame.getApprovalATR() != ApprovalAtr.APPROVED) {
 						// 未承認の承認者一覧を取得する」を実行する
 						List<String> listUnApproved = approvalProcess.actualReflectionStateDecision(appID,
-								appPhase.getPhaseID(), ApprovalATR.UNAPPROVED);
+								appPhase.getPhaseID(), ApprovalAtr.UNAPPROVED);
 						// GOi HAM 3.1
 						// ==>> tra ve FLG allApprovalFlg
 						/*
@@ -177,10 +177,10 @@ public class NewScreenRegisterAtApproveReflectionInfoDefault
 		for (AppApprovalPhase phase : listPhase) {
 			// 「承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済)
 			// Trong truong hop khac loai APPROVAL DONE
-			if (phase.getApprovalATR() != ApprovalATR.APPROVED) {
+			if (phase.getApprovalATR() != ApprovalAtr.APPROVED) {
 				// Lay danh sach nguoi xac nhan TU
 				List<String> listApprover = approvalProcess.actualReflectionStateDecision(appID, phase.getPhaseID(),
-						ApprovalATR.APPROVED);
+						ApprovalAtr.APPROVED);
 				// Thuc hien lay danh sach nguoi xac nhan dai dien, PATH setting
 				// GOI HAM 3.1 ===>> tra ve list Representer
 				List<String> listRepresenter = new ArrayList<>();

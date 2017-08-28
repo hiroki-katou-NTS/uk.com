@@ -5,7 +5,7 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 /**
  * 2-2.新規画面登録時承認反映情報の整理
  */
-public interface NewScreenRegisterAtApproveReflectionInfoService {
+public interface RegisterAtApproveReflectionInfoService {
 	/**
 	 * 新規画面登録時承認反映情報の整理
 	 * @param empID

@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.UseAtr;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
@@ -31,23 +31,22 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 			+ " WHERE c.krqstAppTypeDiscretePK.companyID := companyID"
 			+ " AND c.krqstAppTypeDiscretePK.appType := appType ";
 
-//	private AppTypeDiscreteSetting toDomain(KrqstAppTypeDiscrete entity) {
-//		return new AppTypeDiscreteSetting(
-//				entity.krqstAppTypeDiscretePK.companyID, 
-//				EnumAdaptor.valueOf(entity.krqstAppTypeDiscretePK.appType,ApplicationType.class),
-//				EnumAdaptor.valueOf(entity.prePostInitAtr,InitValueAtr.class),
-//				EnumAdaptor.valueOf(entity.prePostCanChangeFlg, AppCanAtr.class),
-//				EnumAdaptor.valueOf(entity.typicalReasonDisplayFlg, AppDisplayAtr.class),
-//				EnumAdaptor.valueOf(entity.sendMailWhenApprovalFlg,AppCanAtr.class), 
-//				EnumAdaptor.valueOf(entity.sendMailWhenRegisterlFlg, AppCanAtr.class),
-//				EnumAdaptor.valueOf(entity.displayReasonFlg, AppDisplayAtr.class),
-//				EnumAdaptor.valueOf(entity.retrictPreMethodFlg, CheckMethod.class),
-//				EnumAdaptor.valueOf(entity.retrictPreUseFlg, UseAtr.class),
-//				EnumAdaptor.valueOf(entity.retrictPreDay, RetrictDay.class),
-//				EnumAdaptor.valueOf(entity.retrictPreTimeDay, RetrictPreTimeDay.class),
-//				EnumAdaptor.valueOf(entity.retrictPreCanAcceptFlg, PossibleAtr.class),
-//				EnumAdaptor.valueOf(entity.retrictPostAllowFutureFlg,AllowAtr.class);
-//	}
+	private AppTypeDiscreteSetting toDomain(KrqstAppTypeDiscrete entity) {
+		return new AppTypeDiscreteSetting(entity.krqstAppTypeDiscretePK.companyID,
+				EnumAdaptor.valueOf(entity.krqstAppTypeDiscretePK.appType, ApplicationType.class),
+				EnumAdaptor.valueOf(entity.prePostInitAtr, InitValueAtr.class),
+				EnumAdaptor.valueOf(entity.prePostCanChangeFlg, AppCanAtr.class),
+				EnumAdaptor.valueOf(entity.typicalReasonDisplayFlg, AppDisplayAtr.class),
+				EnumAdaptor.valueOf(entity.sendMailWhenApprovalFlg, AppCanAtr.class),
+				EnumAdaptor.valueOf(entity.sendMailWhenRegisterlFlg, AppCanAtr.class),
+				EnumAdaptor.valueOf(entity.displayReasonFlg, AppDisplayAtr.class),
+				EnumAdaptor.valueOf(entity.retrictPreMethodFlg, CheckMethod.class),
+				EnumAdaptor.valueOf(entity.retrictPreUseFlg, UseAtr.class),
+				EnumAdaptor.valueOf(entity.retrictPreDay, RetrictDay.class),
+				EnumAdaptor.valueOf(entity.retrictPreTimeDay, RetrictPreTimeDay.class),
+				EnumAdaptor.valueOf(entity.retrictPreCanAcceptFlg, PossibleAtr.class),
+				EnumAdaptor.valueOf(entity.retrictPostAllowFutureFlg, AllowAtr.class));
+	}
 
 	@Override
 	public Optional<AppTypeDiscreteSetting> getAppTypeDiscreteSettingByAppType(String companyID, int appType) {

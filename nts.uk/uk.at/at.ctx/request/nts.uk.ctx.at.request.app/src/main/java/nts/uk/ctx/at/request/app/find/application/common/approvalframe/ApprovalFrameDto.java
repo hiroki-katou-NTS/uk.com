@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.request.app.find.application.common.approvalframe;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalATR;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmATR;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 
 /**
  * 
@@ -24,10 +24,10 @@ public class ApprovalFrameDto {
 	private String approverSID ;
 	
 	/** 承認区分 */
-	private ApprovalATR approvalATR;
+	private ApprovalAtr approvalATR;
 	
 	/** 確定区分 */
-	private ConfirmATR confirmATR;
+	private ConfirmAtr confirmATR;
 	
 	public static ApprovalFrameDto fromDomain (ApprovalFrame domain){
 		

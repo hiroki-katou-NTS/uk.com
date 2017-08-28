@@ -4,7 +4,7 @@ package nts.uk.ctx.at.request.dom.application.common.approvalframe;
  * @author hieult
  *
  */
-public enum ConfirmATR {
+public enum ConfirmAtr {
 
 	/** 0: 使用しない */
 	USEATR_NOTUSE(0),
@@ -13,7 +13,7 @@ public enum ConfirmATR {
 
 	public int value;
 
-	ConfirmATR(int type) {
+	ConfirmAtr(int type) {
 		this.value = type;
 	}
 }
