@@ -25,7 +25,7 @@ public class GrantDateCom {
 	
 	private List<GrantDateSet> grantDateSets;
 	
-	public static GrantDateCom createFromJavaType(String companyId, String specialHolidayCode, int grantDateAtr,
+	public static GrantDateCom createFromJavaType(String companyId, int specialHolidayCode, int grantDateAtr,
 			int grantDate ,List<GrantDateSet> grantDateSets) {
 		return new GrantDateCom(companyId,
 				new SpecialHolidayCode(specialHolidayCode),

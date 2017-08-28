@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_REG_RELATIONSHIP")
+@Table(name = "KSHST_RELATIONSHIP")
 /**
  * @author yennth
  */

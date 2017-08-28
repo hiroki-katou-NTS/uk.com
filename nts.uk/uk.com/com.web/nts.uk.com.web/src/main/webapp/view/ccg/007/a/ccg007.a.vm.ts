@@ -1,6 +1,7 @@
 module nts.uk.pr.view.ccg007.a {
     export module viewmodel {
         import ContractDto = service.ContractDto;
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             contractCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
@@ -17,6 +18,7 @@ module nts.uk.pr.view.ccg007.a {
             }
             private AuthContract() {
                 var self = this;
+                blockUI.invisible();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.submitForm({ contractCode: _.escape(self.contractCode()), password: _.escape(self.password()) }).done(function() {
                         nts.uk.characteristics.remove("contractInfo");
@@ -25,7 +27,9 @@ module nts.uk.pr.view.ccg007.a {
                         nts.uk.ui.windows.close();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                    });
+                        }).always(() => {
+                            blockUI.clear();
+                        });
                 }
             }
         }

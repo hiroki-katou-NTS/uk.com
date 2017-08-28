@@ -17,10 +17,10 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class UsageSettingCommand {
 
 	/** The employment setting. */
-	private Integer employmentSetting;
+	private boolean employmentSetting;
 
 	/** The personal setting. */
-	private Integer personalSetting;
+	private boolean personalSetting;
 
 	/**
 	 * To domain.
@@ -76,7 +76,10 @@ public class UsageSettingCommand {
 		 */
 		@Override
 		public UseClassification getEmploymentSetting() {
-			return UseClassification.valueOf(this.command.getEmploymentSetting());
+			if (this.command.isEmploymentSetting()) {
+				return UseClassification.USE;
+			}
+			return UseClassification.NOT_USE;
 		}
 
 		/*
@@ -87,7 +90,11 @@ public class UsageSettingCommand {
 		 */
 		@Override
 		public UseClassification getPersonalSetting() {
-			return UseClassification.valueOf(this.command.getPersonalSetting());
+			
+			if (this.command.isPersonalSetting()) {
+				return UseClassification.USE;
+			}
+			return UseClassification.NOT_USE;
 		}
 
 	}

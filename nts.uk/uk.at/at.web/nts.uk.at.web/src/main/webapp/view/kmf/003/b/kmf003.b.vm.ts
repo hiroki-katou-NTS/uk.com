@@ -204,6 +204,10 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         submit() {
             var self = this;
             
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
+
             var grantHolidayTblList = [];
             _.forEach(self.items(), function(item) {
                 if (item.lengthOfServiceYears() != null && item.lengthOfServiceMonths() != null) {

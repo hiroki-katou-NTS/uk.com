@@ -77,6 +77,9 @@ module nts.uk.at.view.kdl003.a {
                             if (nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                                 return;
                             }
+                            if (!code) {
+                                return;
+                            }
                             service.isWorkTimeSettingNeeded(code).done(val => {
                                 switch (val) {
                                     case SetupType.NOT_REQUIRED:
@@ -267,20 +270,31 @@ module nts.uk.at.view.kdl003.a {
              * Submit.
              */
             public submit() {
-                nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred<void>();
 
                 let workTypeCode = self.selectedWorkTypeCode();
                 let workTimeCode = self.selectedWorkTimeCode();
 
+                if (!workTypeCode) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_10" });
+                    return;
+                }
+
+                // Loading, block ui.
+                nts.uk.ui.block.invisible();
+
                 // Set work time = なし if list work time is empty.
-                if (nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
+                if (!workTimeCode || nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                     workTimeCode = '000';
                 }
 
                 // Check pair work type & work time.
                 service.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode).done(() => {
+
+                    if (workTimeCode === '000') {
+                        workTimeCode = '';
+                    }
 
                     // Set shared data.
                     let workTypeName = self.getWorkTypeName(workTypeCode);
@@ -322,7 +336,7 @@ module nts.uk.at.view.kdl003.a {
              */
             private getWorkTimeName(workTimeCode: string): string {
                 let self = this;
-                let name = 'なし';
+                let name = '';
                 if (!nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                     let workTime = _.find(self.listWorkTime(), workTime => workTime.code == workTimeCode);
                     name = workTime ? workTime.name : '';

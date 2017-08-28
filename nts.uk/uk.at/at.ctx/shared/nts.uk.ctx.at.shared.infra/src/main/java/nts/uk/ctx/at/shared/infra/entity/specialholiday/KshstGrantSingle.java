@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_GRANT_DAY_SINGLE")
+@Table(name = "KSHST_GRANT_SINGLE")
 public class KshstGrantSingle extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 		/* 主キー */

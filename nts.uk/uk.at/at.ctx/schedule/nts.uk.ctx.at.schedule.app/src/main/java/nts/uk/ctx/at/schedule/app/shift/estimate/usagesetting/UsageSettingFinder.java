@@ -36,11 +36,11 @@ public class UsageSettingFinder {
 		Optional<UsageSetting> optUsageSetting = this.commonGuidelineSettingRepo
 				.findByCompanyId(companyId);
 
+		UsageSettingDto commonGuidelineSettingDto = new UsageSettingDto();
 		if (!optUsageSetting.isPresent()) {
-			return null;
+			return commonGuidelineSettingDto;
 		}
 
-		UsageSettingDto commonGuidelineSettingDto = new UsageSettingDto();
 
 		optUsageSetting.get().saveToMemento(commonGuidelineSettingDto);
 

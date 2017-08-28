@@ -16,11 +16,11 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSettin
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class SaveCommonGuidelineSettingCommandHandler.
+ * The Class CommonGuidelineSettingSaveCommandHandler.
  */
 @Stateless
-public class SaveCommonGuidelineSettingCommandHandler
-		extends CommandHandler<CommonGuidelineSettingCommand> {
+public class CommonGuidelineSettingSaveCommandHandler
+		extends CommandHandler<CommonGuidelineSettingSaveCommand> {
 
 	/** The common guideline setting repo. */
 	@Inject
@@ -34,19 +34,20 @@ public class SaveCommonGuidelineSettingCommandHandler
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<CommonGuidelineSettingCommand> context) {
+	protected void handle(CommandHandlerContext<CommonGuidelineSettingSaveCommand> context) {
 		// Get the current company id.
 		String companyId = AppContexts.user().companyId();
 
 		// Get command.
-		CommonGuidelineSettingCommand command = context.getCommand();
+		CommonGuidelineSettingSaveCommand command = context.getCommand();
+
+		// Convert data.
+		CommonGuidelineSetting commonGuidelineSetting = command.toDomain(companyId);
 
 		// Find exist setting.
 		Optional<CommonGuidelineSetting> result = this.commonGuidelineSettingRepo
 				.findByCompanyId(companyId);
 
-		// Convert data.
-		CommonGuidelineSetting commonGuidelineSetting = command.toDomain(companyId);
 
 		// check add or update
 		if (!result.isPresent()) {

@@ -58,8 +58,7 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 
 		command.getDailyPatternVals().stream().filter(Objects::nonNull).forEach(t -> {
 			// check pair work days
-			if (!StringUtil.isNullOrEmpty(t.getWorkTypeSetCd(), true)
-					&& !StringUtil.isNullOrEmpty(t.getWorkingHoursCd(), true)) {
+			if (!StringUtil.isNullOrEmpty(t.getWorkTypeSetCd(), true)) {
 				basicScheduleService.checkPairWorkTypeWorkTime(t.getWorkTypeSetCd(),
 						t.getWorkingHoursCd());
 			}
