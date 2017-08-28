@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 /**
  * 会社別就業承認ルート
  * @author hoatt
@@ -48,6 +49,26 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			historyId,
 			applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 			ApprovalPeriod.createSimpleFromJavaType(startDate, endDate),
+			branchId,
+			anyItemApplicationId,
+			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
+			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class));
+	}
+	public static CompanyApprovalRoot convert(String companyId,
+			String approvalId,
+			String historyId,
+			Integer applicationType,
+			GeneralDate startDate,
+			GeneralDate endDate,
+			String branchId,
+			String anyItemApplicationId,
+			Integer confirmationRootType,
+			int employmentRootAtr){
+		return new CompanyApprovalRoot(companyId,
+			approvalId,
+			historyId,
+			applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
+			new ApprovalPeriod(startDate, endDate),
 			branchId,
 			anyItemApplicationId,
 			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),

@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,14 +124,13 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return
 	 */
 	private WorkplaceApprovalRoot toDomainWpApR(WwfmtWpApprovalRoot entity){
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		val domain = WorkplaceApprovalRoot.createSimpleFromJavaType(entity.wwfmtWpApprovalRootPK.companyId,
+		val domain = WorkplaceApprovalRoot.convert(entity.wwfmtWpApprovalRootPK.companyId,
 				entity.wwfmtWpApprovalRootPK.approvalId,
 				entity.wwfmtWpApprovalRootPK.workplaceId,
 				entity.wwfmtWpApprovalRootPK.historyId,
 				entity.applicationType,
-				entity.startDate.localDate().format(formatter),
-				entity.endDate.localDate().format(formatter),
+				entity.startDate,
+				entity.endDate,
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
