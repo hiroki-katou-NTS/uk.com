@@ -56,6 +56,20 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL"
 			+ " ORDER BY io.disporder";
 
+	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY_WITH_NO_ABOLITION = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
+			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
+			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
+			+ " ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,"
+			+ " ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,"
+			+ " ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,"
+			+ " ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId"
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
+			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io"
+			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL AND i.abolitionAtr = 0"
+			+ " ORDER BY io.disporder";
+
 	private final static String SELECT_ITEM_BY_ITEM_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
@@ -114,6 +128,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 AND i.abolitionAtr = 0"
 			+ " AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)";
 
+	private final static String SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE = "SELECT pi.itemName"
+			+ " FROM PpemtPerInfoItem pi" + " INNER JOIN PpemtPerInfoCtg pc"
+			+ " ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " WHERE pc.categoryCd = :categoryCd"
+			+ " AND pi.itemCd = :itemCd" + " AND pc.cid= '000000000000-0000'";
+
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -137,6 +156,17 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
 				});
+	}
+
+	@Override
+	public String getItemDefaultName(String categoryCd, String itemCd) {
+		return queryProxy().query(SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE, String.class)
+				.setParameter("categoryCd", categoryCd).setParameter("itemCd", itemCd).getSingleOrNull();
+	}
+
+	@Override
+	public void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef) {
+		this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
 	}
 
 	@Override
@@ -426,6 +456,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private PerInfoItemDefOrder createPerInfoItemDefOrderFromEntity(PpemtPerInfoItemOrder order) {
 		return PerInfoItemDefOrder.createFromJavaType(order.ppemtPerInfoItemPK.perInfoItemDefId, order.perInfoCtgId,
 				order.disporder);
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithNoAbolition(String perInfoCtgId,
+			String contractCd) {
+		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY_WITH_NO_ABOLITION, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCtgId).getList(i -> {
+					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));
+					return createDomainFromEntity(i, items);
+				});
 	}
 
 }
