@@ -17,7 +17,7 @@ public interface SpecialHolidayRepository {
 	 * @param companyId
 	 * @param specialHolidayCode
 	 */
-	void delete(String companyId, String specialHolidayCode);
+	void delete(String companyId, int specialHolidayCode);
 
 	/**
 	 * Add Special Holiday
