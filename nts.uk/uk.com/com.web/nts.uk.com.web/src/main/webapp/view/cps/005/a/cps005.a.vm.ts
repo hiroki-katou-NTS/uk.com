@@ -4,7 +4,6 @@ module nts.uk.com.view.cps005.a {
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
 
     export module viewmodel {

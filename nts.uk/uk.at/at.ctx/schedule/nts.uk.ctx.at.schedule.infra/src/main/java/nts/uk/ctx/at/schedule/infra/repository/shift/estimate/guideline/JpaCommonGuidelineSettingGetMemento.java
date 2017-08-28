@@ -55,7 +55,7 @@ public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSetti
 		return this.entity.getKscstEstAlarmColors().stream()
 				.map(item -> new EstimatedAlarmColor(
 						EstimatedCondition
-								.valueOf(item.getKscstEstAlarmColorPK().getGuideCondition()),
+								.valueOf(item.getKscstEstAlarmColorPK().getEstimateCondition()),
 						new ColorCode(item.getColorCd())))
 				.collect(Collectors.toList());
 	}

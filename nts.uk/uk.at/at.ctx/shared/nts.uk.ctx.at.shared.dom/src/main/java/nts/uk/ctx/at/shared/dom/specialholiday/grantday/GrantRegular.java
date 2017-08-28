@@ -2,10 +2,13 @@ package nts.uk.ctx.at.shared.dom.specialholiday.grantday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class GrantRegular {
 
@@ -16,7 +19,7 @@ public class GrantRegular {
 	private SpecialHolidayCode specialHolidayCode;
 	
 	/*付与開始日*/
-	private String grantStartDate;
+	private GeneralDate grantStartDate;
 	
 	/*月数*/
 	private Months months;
@@ -28,8 +31,8 @@ public class GrantRegular {
 	private GrantRegularMethod grantRegularMethod;
 
 	public static GrantRegular createFromJavaType(String companyId,
-			String specialHolidayCode,
-			String grantStartDate,
+			int specialHolidayCode,
+			GeneralDate grantStartDate,
 			int months,
 			int years,
 			int grantRegularMethod){
@@ -39,5 +42,5 @@ public class GrantRegular {
 							new Months(months),
 							new Years(years),
 							EnumAdaptor.valueOf(grantRegularMethod, GrantRegularMethod.class));
-	}
+	}	
 }

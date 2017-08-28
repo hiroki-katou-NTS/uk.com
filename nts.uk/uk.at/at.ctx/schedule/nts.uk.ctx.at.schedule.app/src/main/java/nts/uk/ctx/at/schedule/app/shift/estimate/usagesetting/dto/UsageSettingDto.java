@@ -16,10 +16,10 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class UsageSettingDto implements UsageSettingSetMemento {
 
 	/** The employment setting. */
-	private Integer employmentSetting;
+	private boolean employmentSetting;
 
 	/** The personal setting. */
-	private Integer personalSetting;
+	private boolean personalSetting;
 
 	/*
 	 * (non-Javadoc)
@@ -42,7 +42,7 @@ public class UsageSettingDto implements UsageSettingSetMemento {
 	 */
 	@Override
 	public void setEmploymentSetting(UseClassification employmentSetting) {
-		this.employmentSetting = employmentSetting.value;
+		this.employmentSetting = (employmentSetting.value == UseClassification.USE.value);
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class UsageSettingDto implements UsageSettingSetMemento {
 	 */
 	@Override
 	public void setPersonalSetting(UseClassification personalSetting) {
-		this.personalSetting = personalSetting.value;
+		this.personalSetting = (personalSetting.value == UseClassification.USE.value);
 	}
 
 }

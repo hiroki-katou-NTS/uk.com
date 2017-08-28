@@ -38,4 +38,10 @@ public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService 
 		*/
 		return new ArrayList<GeneralDate>();
 	}
+
+	@Override
+	public void getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
+		// TODO Auto-generated method stub
+		
+	}
 }

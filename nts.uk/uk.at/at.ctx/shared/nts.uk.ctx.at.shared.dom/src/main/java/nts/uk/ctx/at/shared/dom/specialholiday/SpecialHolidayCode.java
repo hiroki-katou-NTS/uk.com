@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLength;
-import nts.uk.shr.com.primitive.CodePrimitiveValue;
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.PrimitiveValue;
+import nts.arc.primitive.constraint.IntegerMaxValue;
 
-@StringCharType(CharType.ALPHA_NUMERIC)
-@StringMaxLength(2)
-public class SpecialHolidayCode extends CodePrimitiveValue<SpecialHolidayCode> {
+
+@IntegerMaxValue(2)
+public class SpecialHolidayCode extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public SpecialHolidayCode(String rawValue) {
+	public SpecialHolidayCode(int rawValue) {
 		super(rawValue);
 	}
 }

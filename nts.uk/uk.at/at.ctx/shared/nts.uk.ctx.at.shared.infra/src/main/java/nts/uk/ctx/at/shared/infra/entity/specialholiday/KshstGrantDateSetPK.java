@@ -20,7 +20,7 @@ public class KshstGrantDateSetPK implements Serializable {
 
 	/* 特別休暇コード */
 	@Column(name = "SPHD_CD")
-	public String specialHolidayCode;
+	public int specialHolidayCode;
 
 	/* 付与日の種類 */
 	@Column(name = "GRANT_DATE_TYPE")
