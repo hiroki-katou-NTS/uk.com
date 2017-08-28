@@ -117,6 +117,6 @@ public class LocalContractFormCommandHandler
 	private boolean contractPeriodInvalid(Contract contract) {
 		Period period = contract.getContractPeriod();
 		GeneralDate currentDate = GeneralDate.today();
-		return !(period.getStartDate().before(currentDate) && period.getEndDate().after(currentDate));
+		return !(period.getStartDate().beforeOrEquals(currentDate) && period.getEndDate().afterOrEquals(currentDate));
 	}
 }

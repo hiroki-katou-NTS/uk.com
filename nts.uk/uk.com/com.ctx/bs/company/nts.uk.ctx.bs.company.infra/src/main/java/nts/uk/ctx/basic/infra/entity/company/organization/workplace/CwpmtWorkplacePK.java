@@ -6,12 +6,10 @@ package nts.uk.ctx.basic.infra.entity.company.organization.workplace;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,40 +22,57 @@ import nts.arc.time.GeneralDate;
 @Setter
 @Embeddable
 public class CwpmtWorkplacePK implements Serializable {
-    
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Basic(optional = false)
-    @NotNull
-    @Column(name = "CID")
-    private String cid;
-    
-	@Basic(optional = false)
-    @NotNull
-    @Column(name = "WKPID")
-    private String wkpid;
-	
-	@NotNull
+	/** The cid. */
+	@Column(name = "CID")
+	private String cid;
+
+	/** The wkpid. */
+	@Column(name = "WKPID")
+	private String wkpid;
+
+	/** The str D. */
 	@Column(name = "STR_D")
 	@Temporal(TemporalType.TIMESTAMP)
 	private GeneralDate strD;
-	
-	@NotNull
+
+	/** The end D. */
 	@Column(name = "END_D")
 	@Temporal(TemporalType.TIMESTAMP)
 	private GeneralDate endD;
 
-    public CwpmtWorkplacePK() {
-    }
+	/**
+	 * Instantiates a new cwpmt workplace PK.
+	 */
+	public CwpmtWorkplacePK() {
+		super();
+	}
 
-    public CwpmtWorkplacePK(String cid, String wkpid,GeneralDate strD,GeneralDate endD) {
-        this.cid = cid;
-        this.wkpid = wkpid;
-        this.strD = strD;
-        this.endD = endD;
-    }
+	/**
+	 * Instantiates a new cwpmt workplace PK.
+	 *
+	 * @param cid
+	 *            the cid
+	 * @param wkpid
+	 *            the wkpid
+	 * @param strD
+	 *            the str D
+	 * @param endD
+	 *            the end D
+	 */
+	public CwpmtWorkplacePK(String cid, String wkpid, GeneralDate strD, GeneralDate endD) {
+		this.cid = cid;
+		this.wkpid = wkpid;
+		this.strD = strD;
+		this.endD = endD;
+	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -71,7 +86,9 @@ public class CwpmtWorkplacePK implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -106,5 +123,4 @@ public class CwpmtWorkplacePK implements Serializable {
 		return true;
 	}
 
-    
 }

@@ -82,6 +82,8 @@ module nts.uk.pr.view.ccg007.c {
                     title: nts.uk.resource.getText("CCG007_9"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {
+                    var contractCode = nts.uk.ui.windows.getShared('contractCode');
+                    self.contractCode(contractCode);
                 });
             }
 
