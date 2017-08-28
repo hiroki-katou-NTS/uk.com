@@ -17,18 +17,17 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KSHST_YEAR_SERVICE_COM")
 public class KshstYearServiceCom extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-		/* 主キー */
-		@EmbeddedId
-		public KshstYearServiceComPK kshstYearServiceComPK;
-		
-		/* 付与日数 */
-		@Column(name = "SERVICE_GRANT_DAY")
-		public int grantDateAtr;
-		
-		/* 勤続年数 */
-		@Column(name = "LENGTH_SERVICE_YEAR_ATR")
-		public int grantDate;
-	
+	/* 主キー */
+	@EmbeddedId
+	public KshstYearServiceComPK kshstYearServiceComPK;
+
+	/* 付与日数 */
+	@Column(name = "SERVICE_GRANT_DAY")
+	public int grantDateAtr;
+
+	/* 勤続年数 */
+	@Column(name = "LENGTH_SERVICE_YEAR_ATR")
+	public int grantDate;
 
 	@Override
 	protected Object getKey() {
