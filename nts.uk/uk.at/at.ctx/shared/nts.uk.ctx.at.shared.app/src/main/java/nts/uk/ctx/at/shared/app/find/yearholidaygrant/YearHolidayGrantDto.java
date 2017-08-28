@@ -6,6 +6,11 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @Value
 public class YearHolidayGrantDto {
 	/* 会社ID */

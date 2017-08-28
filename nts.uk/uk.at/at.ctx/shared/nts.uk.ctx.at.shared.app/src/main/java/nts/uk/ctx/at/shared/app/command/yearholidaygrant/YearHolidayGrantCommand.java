@@ -12,11 +12,13 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseConditionAtr;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @Value
 public class YearHolidayGrantCommand {
-	/* 会社ID */
-	private String companyId;
-
 	/* コード */
 	private String yearHolidayCode;
 
