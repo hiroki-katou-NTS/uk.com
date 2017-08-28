@@ -10,15 +10,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.CommonGuidelineSettingCommand;
-import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.SaveCommonGuidelineSettingCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.CommonGuidelineSettingSaveCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.CommonGuidelineSettingSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.shift.estimate.guideline.CommonGuidelineSettingFinder;
 import nts.uk.ctx.at.schedule.app.shift.estimate.guideline.dto.CommonGuidelineSettingDto;
 
 /**
  * The Class CommonGuidelineSettingWs.
  */
-@Path("ctx/at/schedule/shift/pattern/estimate/guideline")
+@Path("ctx/at/schedule/shift/estimate/guideline")
 @Produces("application/json")
 public class CommonGuidelineSettingWs extends WebService {
 
@@ -28,7 +28,7 @@ public class CommonGuidelineSettingWs extends WebService {
 
 	/** The save command handler. */
 	@Inject
-	private SaveCommonGuidelineSettingCommandHandler saveCommandHandler;
+	private CommonGuidelineSettingSaveCommandHandler saveCommandHandler;
 
 	/**
 	 * Save.
@@ -38,7 +38,7 @@ public class CommonGuidelineSettingWs extends WebService {
 	 */
 	@POST
 	@Path("save")
-	public void save(CommonGuidelineSettingCommand command) {
+	public void save(CommonGuidelineSettingSaveCommand command) {
 		this.saveCommandHandler.handle(command);
 	}
 
@@ -52,5 +52,6 @@ public class CommonGuidelineSettingWs extends WebService {
 	public CommonGuidelineSettingDto getByCompanyId() {
 		return this.commonGuidelineSettingFinder.findByCompanyId();
 	}
+	
 
 }

@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateCom;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateSet;
@@ -14,11 +16,11 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantDateSet;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantDateSetPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegular;
 
+@Stateless
 public class JpaGrantRegularRepository extends JpaRepository implements GrantRegularRepository {
 	private static final String SELECT_ALL;
 
 	private static final String SELECT_ALL_COM;
-
 
 	static {
 
@@ -58,7 +60,8 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	 * @return
 	 */
 	private GrantDateCom convertToDomainCom(KshstGrantDateCom kshstGrantDateCom) {
-		List<GrantDateSet> grantDateSets = kshstGrantDateCom.grantDateSets.stream().map(x-> convertToDomainSet(x)).collect(Collectors.toList());
+		List<GrantDateSet> grantDateSets = kshstGrantDateCom.grantDateSets.stream().map(x -> convertToDomainSet(x))
+				.collect(Collectors.toList());
 		GrantDateCom grantDateCom = GrantDateCom.createFromJavaType(kshstGrantDateCom.kshstGrantDateComPK.companyId,
 				kshstGrantDateCom.kshstGrantDateComPK.specialHolidayCode, kshstGrantDateCom.grantDateAtr,
 				kshstGrantDateCom.grantDate, grantDateSets);
@@ -109,7 +112,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	private KshstGrantDateSet convertToDbTypeSet(GrantDateSet grantDateSet) {
 		KshstGrantDateSet kshstGrantDateSet = new KshstGrantDateSet();
 		KshstGrantDateSetPK kshstGrantDateSetPK = new KshstGrantDateSetPK(grantDateSet.getCompanyId(),
-				grantDateSet.getSpecialHolidayCode().toString(), grantDateSet.getGrantDateType().value);
+				grantDateSet.getSpecialHolidayCode().v(), grantDateSet.getGrantDateType().value);
 		kshstGrantDateSet.grantDateM = grantDateSet.getGrantDateMonth().v();
 		kshstGrantDateSet.grantDateY = grantDateSet.getGrantDateYear().v();
 		kshstGrantDateSet.kshstGrantDateSetPK = kshstGrantDateSetPK;
