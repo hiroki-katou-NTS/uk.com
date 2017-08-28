@@ -21,8 +21,8 @@ module nts.uk.com.view.cps005.a {
                     dfd = $.Deferred();
                 new service.Service().getAllPerInfoCtg().done(function(data: IData) {
                     self.isUpdate = false;
+                    self.currentData(new DataModel(data));
                     if (data && data.categoryList && data.categoryList.length > 0) {
-                        self.currentData().categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
                         self.isUpdate = true;
                         self.currentData().perInfoCtgSelectCode(data.categoryList[0].id);
                     } else {

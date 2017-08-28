@@ -405,8 +405,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 			case 2:
 				NumericItem numericItem = (NumericItem) dataTypeState;
-				numericItemMin = numericItem.getNumericItemMin().v();
-				numericItemMax = numericItem.getNumericItemMax().v();
+				numericItemMin = numericItem.getNumericItemMin() != null ? numericItem.getNumericItemMin().v() : null;
+				numericItemMax = numericItem.getNumericItemMax() != null ? numericItem.getNumericItemMax().v() : null;
 				numericItemAmountAtr = new BigDecimal(numericItem.getNumericItemAmount().value);
 				numericItemMinusAtr = new BigDecimal(numericItem.getNumericItemMinus().value);
 				numericItemDecimalPart = new BigDecimal(numericItem.getDecimalPart().v());
