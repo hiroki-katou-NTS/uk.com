@@ -141,7 +141,7 @@ module nts.uk.at.view.ksm005.e {
                 var startYear: number = Number(startMonth/100);
                 var numberMonthStart: number = startYear * 12 + startMonth % 100;
                 var numberMonthEnd: number = endYear * 12 + endMonth % 100;
-                return numberMonthEnd-numberMonthStart;
+                return numberMonthEnd - numberMonthStart + 1;
             }
             /**
              * function check error by click button

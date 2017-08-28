@@ -3,6 +3,11 @@ package nts.uk.ctx.at.shared.app.find.yearholidaygrant;
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @Value
 public class GrantConditionDto {
 	/* 会社ID */

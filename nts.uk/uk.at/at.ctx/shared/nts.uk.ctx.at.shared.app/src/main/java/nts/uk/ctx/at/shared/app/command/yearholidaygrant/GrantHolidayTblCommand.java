@@ -4,6 +4,11 @@ import java.util.List;
 
 import lombok.Value;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @Value
 public class GrantHolidayTblCommand {
 		
