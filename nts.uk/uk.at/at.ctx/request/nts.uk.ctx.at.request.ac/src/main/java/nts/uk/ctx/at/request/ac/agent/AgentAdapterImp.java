@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.AgentAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.adapter.AgentRequestAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentRequestAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentAdaptorDto;
 import nts.uk.ctx.workflow.pub.agent.AgentPub;
 import nts.uk.ctx.workflow.pub.agent.AgentPubDto;
 
