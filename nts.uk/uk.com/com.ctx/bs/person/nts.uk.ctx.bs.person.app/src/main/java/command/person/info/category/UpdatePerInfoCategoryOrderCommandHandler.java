@@ -22,8 +22,6 @@ public class UpdatePerInfoCategoryOrderCommandHandler extends CommandHandler<Lis
 	@Inject
 	private PerInfoCtgByCompanyRepositoty perInfoCtgRepo;
 
-
-
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdatePerInfoCategoryOrderCommand>> context) {
 	

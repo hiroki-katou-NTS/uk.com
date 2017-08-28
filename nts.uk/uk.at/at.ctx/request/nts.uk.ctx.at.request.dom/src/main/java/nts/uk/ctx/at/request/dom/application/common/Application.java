@@ -135,4 +135,12 @@ public class Application extends DomainObject{
 				EnumAdaptor.valueOf(reflectPerState,ReflectPlanPerState.class), 
 				EnumAdaptor.valueOf(reflectPerEnforce,ReflectPlanPerEnforce.class));
 	}
+	
+	/**
+	  * change value of RelectState
+	  * @param reflectPerState
+	  */
+	 public void changeReflectState(int reflectPerState) {
+	  this.reflectPerState = reflectPlanState;
+	 }
 }

@@ -9,5 +9,5 @@ public class RemoveSpecialHolidayCommand {
 	private String companyId;
 
 	/*特別休暇コード*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 }

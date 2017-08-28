@@ -28,7 +28,7 @@ public class GrantSingle {
 	private HolidayExclusionAtr holidayExclusionAtr;
 	
 	public static GrantSingle createSimpleFromJavaType(String companyId,
-			String specialHolidayCode,
+			int specialHolidayCode,
 			int grantDaySingleType,
 			int fixNumberDays,
 			int makeInvitation,
@@ -39,6 +39,10 @@ public class GrantSingle {
 							new FixNumberDays(fixNumberDays),
 							EnumAdaptor.valueOf(makeInvitation, MakeInvitation.class),
 							EnumAdaptor.valueOf(holidayExclusionAtr, HolidayExclusionAtr.class));
+	}
+
+	public GrantSingle() {
+		// TODO Auto-generated constructor stub
 	}
 
 }

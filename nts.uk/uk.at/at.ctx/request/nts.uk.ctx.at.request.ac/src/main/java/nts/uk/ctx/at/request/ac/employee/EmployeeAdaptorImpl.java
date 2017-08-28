@@ -1,15 +1,17 @@
 package nts.uk.ctx.at.request.ac.employee;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.EmployeeAdaptor;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeePub;
 
 @Stateless
 public class EmployeeAdaptorImpl implements EmployeeAdaptor {
 
-	/*@Inject
-	private EmployeePub employeePub;*/
+	@Inject
+	private EmployeePub employeePub;
 	
 	/**
 	 * get employment code by companyID, employeeID and base date
@@ -22,5 +24,5 @@ public class EmployeeAdaptorImpl implements EmployeeAdaptor {
 		/*return employeePub.getEmploymentCode(companyId, employeeId, baseDate);*/
 		return null;
 	}
-
+	
 }
