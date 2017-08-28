@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.application.common;
+package nts.uk.ctx.at.request.dom.application.common.newscreenregisteratapprovereflectionInfo.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +18,12 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalFor
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmATR;
+import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service.DetailedScreenAfterApprovalProcessDefault;
 import nts.uk.shr.com.context.AppContexts;
 
-/**
- * 2-2.新規画面登録時承認反映情報の整理
- * 
- * @author ducpm
- *
- */
 @Stateless
-public class NewScreenRegisterAtApproveReflectionInfo {
+public class NewScreenRegisterAtApproveReflectionInfoDefault
+		implements NewScreenRegisterAtApproveReflectionInfoService {
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -38,12 +34,17 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 	@Inject
 	private ApprovalFrameRepository frameRepo;
 
-	@Inject
-	private DetailedScreenAfterApprovalProcess approvalProcess;
+	// @Inject
+	private DetailedScreenAfterApprovalProcessDefault approvalProcess;
 
-	/**
-	 * 承認情報の整理
-	 */
+	@Override
+	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
+		String appID = application.getApplicationID();
+		this.organizationOfApprovalInfo(appID);
+		this.performanceReflectedStateJudgment(appID);
+	}
+
+	@Override
 	public void organizationOfApprovalInfo(String appID) {
 		// ドメインモデル「申請」．「承認フェーズ」1～5の順でループする(
 		// get List 5 承認 Phase
@@ -130,7 +131,7 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 					}
 				}
 			} else {
-				//TRUONG HOP NHIEU NGUOI APPROVAL
+				// TRUONG HOP NHIEU NGUOI APPROVAL
 				// aprovalForm == ApprovalForm.EVERYONEAPPROVED
 				// 承認完了フラグ = true（初期化）
 				flgApprovalDone = true;
@@ -166,11 +167,10 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 			// ドメインモデル「承認フェーズ」．承認区分が承認済(「承認フェーズ」．承認区分 = 承認済)
 			// KHONG LAM GI CA
 		}
+
 	}
 
-	/**
-	 * 実績反映状態の判断
-	 */
+	@Override
 	public void performanceReflectedStateJudgment(String appID) {
 		String companyID = AppContexts.user().companyId();
 		List<AppApprovalPhase> listPhase = approvalPhaseRepo.findPhaseByAppID(companyID, appID);
@@ -196,6 +196,7 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 				appRepo.updateApplication(currentApplication.get());
 			}
 		}
+
 	}
 
 }

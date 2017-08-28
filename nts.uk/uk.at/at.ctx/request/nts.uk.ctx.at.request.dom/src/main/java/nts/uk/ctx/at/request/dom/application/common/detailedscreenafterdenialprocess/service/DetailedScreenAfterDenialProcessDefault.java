@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.application.common;
+package nts.uk.ctx.at.request.dom.application.common.detailedscreenafterdenialprocess.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,22 +17,23 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalATR;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service.DetailedScreenAfterApprovalProcessDefault;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
-/**
- * 
- * @author ducpm 会社ID 申請ID 申請データの内容
- */
 @Stateless
-public class DetailedScreenAfterDenialProcess {
+public class DetailedScreenAfterDenialProcessDefault implements DetailedScreenAfterDenialProcessService {
+
 	@Inject
-	private AppApprovalPhaseRepository approvalPhaseRepo;
+	private DetailedScreenAfterApprovalProcessDefault afterApprovalProcess;
 
 	@Inject
 	private ApprovalFrameRepository frameRepo;
+
+	@Inject
+	private AppApprovalPhaseRepository approvalPhaseRepo;
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -40,13 +41,47 @@ public class DetailedScreenAfterDenialProcess {
 	@Inject
 	private AppTypeDiscreteSettingRepository discreteRepo;
 
-	@Inject
-	private DetailedScreenAfterApprovalProcess afterApprovalProcess;
+	@Override
+	public boolean canDeniedCheck(String companyID, String appID, int startOrderNum, List<AppApprovalPhase> listPhase) {
+		boolean canDeniedCheck = true;
+		if (startOrderNum > 0) {
+			// アルゴリズム「承認者一覧を取得する」を実行する
+			for (AppApprovalPhase phase : listPhase) {
+				List<String> listApprover = afterApprovalProcess.actualReflectionStateDecision(appID,
+						phase.getPhaseID(), ApprovalATR.APPROVED);
+				// ループ中の承認フェーズに承認者がいる
+				if (phase.getApprovalATR() == ApprovalATR.APPROVED) {
+					List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(),
+							phase.getPhaseID());
+					for (ApprovalFrame frame : listFrame) {
+						if (frame.getApprovalATR() == ApprovalATR.APPROVED) {
+							// ログイン者が確定者として承認を行ったかチェックする
+							if (frame.getApproverSID().contains(AppContexts.user().employeeId())) {
+								canDeniedCheck = false;
+							} else {
+								canDeniedCheck = true;
+							}
+						} else {
+							// 承認を行ったのはログイン者かチェックする
+							// TODO: Check thang dai dien la thang Dang nhap
+							// CHECK DIEU KIEN : DAI DIEN LA NGUOI DANG NHAP
+							if (frame.getApproverSID().contains(AppContexts.user().employeeId())) {
+								canDeniedCheck = false;
+							} else {
+								canDeniedCheck = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return canDeniedCheck;
+	}
 
-	public void mainProcess(String appID) {
+	@Override
+	public void detailedScreenAfterDenialProcess(String companyID, String appID) {
 		// 否認できるフラグ
 		boolean canDeniedFlg = false;
-		String companyID = AppContexts.user().companyId();
 		List<AppApprovalPhase> listPhase = approvalPhaseRepo.findPhaseByAppID(companyID, appID);
 		for (AppApprovalPhase phase : listPhase) {
 			// get list Approver
@@ -95,7 +130,8 @@ public class DetailedScreenAfterDenialProcess {
 		// lấy domain 申請種類別設定
 		ApplicationType appType = currentApplication.get().getApplicationType();
 		// get DiscreteSetting
-		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
+		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID,
+				appType.value);
 		// get flag check auto send mail
 		// 承認処理時に自動でメールを送信するが trueの場合
 		AppCanAtr sendMailWhenApprovalFlg = discreteSetting.get().getSendMailWhenApprovalFlg();
@@ -108,45 +144,6 @@ public class DetailedScreenAfterDenialProcess {
 		throw new BusinessException("Msg_222");
 		// 送信先リストに項目がいる
 
-	}
-
-	/**
-	 * 否認できるかチェックする true：否認できる false：否認できない
-	 */
-	public boolean canDeniedCheck(String companyID, String appID, int startOrderNum, List<AppApprovalPhase> listPhase) {
-		boolean canDeniedCheck = true;
-		if (startOrderNum > 0) {
-			// アルゴリズム「承認者一覧を取得する」を実行する
-			for (AppApprovalPhase phase : listPhase) {
-				List<String> listApprover = afterApprovalProcess.actualReflectionStateDecision(appID,
-						phase.getPhaseID(), ApprovalATR.APPROVED);
-				// ループ中の承認フェーズに承認者がいる
-				if (phase.getApprovalATR() == ApprovalATR.APPROVED) {
-					List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(),
-							phase.getPhaseID());
-					for (ApprovalFrame frame : listFrame) {
-						if (frame.getApprovalATR() == ApprovalATR.APPROVED) {
-							// ログイン者が確定者として承認を行ったかチェックする
-							if (frame.getApproverSID().contains(AppContexts.user().employeeId())) {
-								canDeniedCheck = false;
-							} else {
-								canDeniedCheck = true;
-							}
-						} else {
-							// 承認を行ったのはログイン者かチェックする
-							// TODO: Check thang dai dien la thang Dang nhap
-							// CHECK DIEU KIEN : DAI DIEN LA NGUOI DANG NHAP
-							if (frame.getApproverSID().contains(AppContexts.user().employeeId())) {
-								canDeniedCheck = false;
-							} else {
-								canDeniedCheck = true;
-							}
-						}
-					}
-				}
-			}
-		}
-		return canDeniedCheck;
 	}
 
 }
