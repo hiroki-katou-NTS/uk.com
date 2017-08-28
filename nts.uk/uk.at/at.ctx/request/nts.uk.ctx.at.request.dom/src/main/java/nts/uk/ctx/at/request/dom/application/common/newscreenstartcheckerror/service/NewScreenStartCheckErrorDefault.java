@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.application.common;
+package nts.uk.ctx.at.request.dom.application.common.newscreenstartcheckerror.service;
 
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchCompanyRep
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class NewScreenStartCheckError {
+public class NewScreenStartCheckErrorDefault implements NewScreenStartCheckErrorService {
 	/**
 	 * 申請詳細設定
 	 */
@@ -25,30 +25,24 @@ public class NewScreenStartCheckError {
 	@Inject
 	private ApplicationSettingRepository appSettingRepo;
 
-	/**
-	 * 1-5.新規画面起動時のエラーチェック
-	 */
-	public void CheckError(int appType) {
+	@Override
+	public void checkErorr(int appType) {
 		String companyId = AppContexts.user().companyId();
 		Optional<RequestAppDetailSetting> requestSet = requestRepo.getRequestDetail(companyId, appType);
 		if (requestSet.isPresent()) {
 			if (requestSet.map(c -> c.userAtr).get().value == 0) {
-				//利用区分が利用しない
+				// 利用区分が利用しない
 				throw new BusinessException("Msg_323");
 			} else {
-				//利用区分が利用する
+				// 利用区分が利用する
 				Optional<ApplicationSetting> appSet = appSettingRepo.getApplicationSettingByComID(companyId);
 				// 「申請設定」．承認ルートの基準日がシステム日付時点の場合
 				if (appSet.map(x -> x.getBaseDateFlg()).get().value == 0) {
-					//chưa biết lấy 承認ルート
-					
-					
-					
+					// chưa biết lấy 承認ルート
 				} else {
 					// 「申請設定」．承認ルートの基準日が申請対象日時点の場合
 				}
 			}
 		}
 	}
-
 }
