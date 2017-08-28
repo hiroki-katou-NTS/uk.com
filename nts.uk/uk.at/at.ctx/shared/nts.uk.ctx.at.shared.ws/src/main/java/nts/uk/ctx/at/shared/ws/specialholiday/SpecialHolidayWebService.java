@@ -37,8 +37,14 @@ public class SpecialHolidayWebService extends WebService{
 	@POST
 	public List<SpecialHolidayDto> findByCid() {
 		return specialHolidayFinder.findAllSpecialHoliday();
-
 	}
+	
+	@Path("findRagular")
+	@POST
+	public List<SpecialHolidayDto> findRagular() {
+		return specialHolidayFinder.findAllSpecialHoliday();
+	}
+	
 	@Path("add")
 	@POST
 	public void add(AddSpecialHolidayCommand command) {

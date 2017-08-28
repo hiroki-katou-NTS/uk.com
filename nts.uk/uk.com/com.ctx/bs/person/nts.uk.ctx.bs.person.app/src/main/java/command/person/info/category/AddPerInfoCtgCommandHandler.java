@@ -18,7 +18,6 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.daterangeitem.DateRangeItem;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCommand> {
@@ -40,7 +39,8 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 				perInfoCtgCommand.getCategoryName())) {
 			throw new BusinessException(new RawErrorMessage("Msg_215"));
 		}
-		String contractCd = AppContexts.user().contractCode();
+		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
+		
 		String newCtgCode = createNewCode(this.perInfoCtgRep.getPerInfoCtgCodeLastest(contractCd), SPECIAL_CTG_CODE);
 		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 		AddItemCommand addItemCommand = null;
@@ -60,7 +60,7 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		// mapping and Add with PersonInfoItemDefinition root is Period type
 		// default.
 		String newItemCodeForPeriod = createNewCode(null, SPECIAL_ITEM_CODE);
-		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeForPeriod, null, null, 0,
+		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeForPeriod, null, null,
 				null);
 		PersonInfoItemDefinition itemPeriod = MappingDtoToDomain.mappingFromDomaintoDtoForPeriod(addItemCommand);
 		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemPeriod, contractCd, newCtgCode);
@@ -68,14 +68,14 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		// default.
 		String newItemCodeStartDate = createNewCode(newItemCodeForPeriod, SPECIAL_ITEM_CODE);
 		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeStartDate,
-				newItemCodeForPeriod, null, 0, null);
+				newItemCodeForPeriod, null, null);
 		PersonInfoItemDefinition itemStartDate = MappingDtoToDomain.mappingFromDomaintoDtoForStartDate(addItemCommand);
 		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemStartDate, contractCd, newCtgCode);
 		// mapping and Add with PersonInfoItemDefinition root is EndDate type
 		// default.
 		String newItemCodeEndDate = createNewCode(newItemCodeStartDate, SPECIAL_ITEM_CODE);
 		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeEndDate,
-				newItemCodeForPeriod, null, 0, null);
+				newItemCodeForPeriod, null, null);
 		PersonInfoItemDefinition itemEndDate = MappingDtoToDomain.mappingFromDomaintoDtoForEndtDate(addItemCommand);
 		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemEndDate, contractCd, newCtgCode);
 		// add DateRangeItem root.

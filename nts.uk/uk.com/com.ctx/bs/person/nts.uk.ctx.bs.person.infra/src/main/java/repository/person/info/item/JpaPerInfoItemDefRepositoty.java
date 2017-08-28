@@ -273,7 +273,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private PpemtPerInfoItemOrder createItemOrder(String perInfoItemDefId, String perInfoCtgId, int dispOrder) {
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDefId);
-		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder);
+		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder, dispOrder);
 	}
 
 	private PersonInfoItemDefinition createDomainFromEntity(Object[] i, List<String> items) {
@@ -455,7 +455,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private PerInfoItemDefOrder createPerInfoItemDefOrderFromEntity(PpemtPerInfoItemOrder order) {
 		return PerInfoItemDefOrder.createFromJavaType(order.ppemtPerInfoItemPK.perInfoItemDefId, order.perInfoCtgId,
-				order.disporder);
+				order.disporder, order.displayOrder);
 	}
 
 	@Override
