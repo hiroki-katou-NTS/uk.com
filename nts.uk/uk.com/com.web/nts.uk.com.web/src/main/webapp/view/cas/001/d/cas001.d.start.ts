@@ -27,16 +27,16 @@ function InitIggrid() {
         columns: [
             { headerText: "Id", key: "categoryId", dataType: "string", width: "100px", height: "40px", hidden: true },
             {
-                headerText: text('CAS001_30')+"</br><input class='selfAuth' type='checkbox'  tabindex='2' ></input>",
+                headerText: text('CAS001_30')+"</br><input class='otherAuth' type='checkbox'  tabindex='2' ></input>",
                 key: 'selfAuth',width: "35px", height: "40px",
                 template: "<input style='width:30px, height:40px' class='checkRow selfAuth' type='checkbox'"
-                +" data-checked='${selfAuth}' data-id='${categoryId}' tabindex='4'/>"
+                +" data-checked='${otherAuth}' data-id='${categoryId}' tabindex='4'/>"
             },
             {
-                headerText: text('CAS001_31')+"</br><input class='otherAuth' type='checkbox'  tabindex='3'></input>",
+                headerText: text('CAS001_31')+"</br><input class='selfAuth' type='checkbox'  tabindex='3'></input>",
                 key: 'otherAuth',width: "35px", height: "40px",
                 template: "<input style='width:30px, height:40px'  class='checkRow otherAuth' type='checkbox'"
-                +" data-checked='${otherAuth}' data-id='${categoryId}' tabindex='4'/>"
+                +" data-checked='${selfAuth}' data-id='${categoryId}' tabindex='4'/>"
             },
             { headerText: text('CAS001_21'), key: "categoryName", dataType: "string", width: "100px", height: "40px" }
 
