@@ -286,6 +286,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder, dispOrder);
 	}
 
+	private PpemtPerInfoItemOrder createItemOrder(String perInfoItemDefId, String perInfoCtgId, int dispOrder,
+			int displayOrder) {
+		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDefId);
+		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder, displayOrder);
+	}
+
 	private PersonInfoItemDefinition createDomainFromEntity(Object[] i, List<String> items) {
 		String perInfoItemDefId = String.valueOf(i[0]);
 		String itemCode = String.valueOf(i[1]);
@@ -476,6 +482,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					List<String> items = getChildIds(contractCd, perInfoCtgId, String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
 				});
+	}
+
+	@Override
+	public void UpdateOrderItemRoot(PerInfoItemDefOrder itemOrder) {
+		this.commandProxy().update(createItemOrder(itemOrder.getPerInfoItemDefId(), itemOrder.getPerInfoCtgId(),
+				itemOrder.getDispOrder().v(), itemOrder.getDisplayOrder().v()));
 	}
 
 }
