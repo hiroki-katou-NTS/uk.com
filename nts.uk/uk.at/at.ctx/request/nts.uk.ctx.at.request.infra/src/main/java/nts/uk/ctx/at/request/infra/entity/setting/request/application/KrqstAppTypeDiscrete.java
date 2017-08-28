@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrqstAppTypeDiscrete extends UkJpaEntity{
 	
 	@EmbeddedId
-	private KrqstAppTypeDiscretePK krqstAppTypeDiscretePK;
+	public KrqstAppTypeDiscretePK krqstAppTypeDiscretePK;
 	
 	@Column(name = "PRE_POST_INIT_ATR")
 	public int prePostInitAtr;

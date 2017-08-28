@@ -1,14 +1,14 @@
 package nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalATR;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 
 @Value
 public class CanBeApprovedOutput {
 	
 	Boolean authorizableFlags;
 	
-	ApprovalATR approvalATR;
+	ApprovalAtr approvalATR;
 	
 	Boolean alternateExpiration;
 	

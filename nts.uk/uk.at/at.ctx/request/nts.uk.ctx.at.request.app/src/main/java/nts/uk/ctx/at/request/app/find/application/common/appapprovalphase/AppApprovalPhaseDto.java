@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.common.appapprovalphase;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalATR;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
 @Value
 public class AppApprovalPhaseDto {
@@ -22,7 +22,7 @@ public class AppApprovalPhaseDto {
 	private int dispOrder;
 
 	/** 承認区分 */
-	private ApprovalATR approvalATR;
+	private ApprovalAtr approvalATR;
 	
 	public static AppApprovalPhaseDto fromDomain (AppApprovalPhase domain){
 		return new AppApprovalPhaseDto(
