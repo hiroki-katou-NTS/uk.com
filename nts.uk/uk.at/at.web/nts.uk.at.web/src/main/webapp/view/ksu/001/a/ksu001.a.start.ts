@@ -7,7 +7,7 @@ module ksu001.a {
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
         __viewContext.bind(__viewContext.viewModel);
-        this.initEvent();
+        initEvent();
     });
 
     function initEvent(): void {

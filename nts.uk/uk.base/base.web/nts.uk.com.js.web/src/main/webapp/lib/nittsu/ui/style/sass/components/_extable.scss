@@ -6,20 +6,20 @@
 .extable td.edit-cell {
 	padding: 0px;
 }
-.extable div.highlight, td.highlight, .xheader td.highlight {
+.extable div.highlight, .extable td.highlight, .xheader td.highlight {
 	background-color: aqua;
 }
-.extable div.xdet, td.xdet {
+.extable div.xdet, .extable td.xdet {
 	background-color: #D2B4DE;
 }
-.extable div.edited, td.edited {
+.extable div.edited, .extable td.edited {
 	background-color: #FAD7A0;
 }
-.extable div.selected, td.selected {
+.extable div.selected, .extable td.selected {
 	background-color: #3498DB;
 	color: #FFF;
 }
-.extable td.error, div.error {
+.extable td.x-error, .extable div.x-error {
 	border: solid 1px #FF6666 !important;
 }
 .extable td .column-icon {

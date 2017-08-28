@@ -32,6 +32,21 @@ public class KrqstWpAppConfigDetail  extends UkJpaEntity implements Serializable
 	@Column(name = "OT_APP_SETTING_FLG")
 	public int otAppSettingFlg;
 	/**
+	 * 時間年休申請の時刻計算を利用する
+	 */
+	@Column(name = "HOLIDAY_TIME_APP_CAL_FLG")
+	public int holidayTimeAppCalFlg;
+	/**
+	 * 遅刻早退取消申請の実績取消
+	 */
+	@Column(name = "LATE_OR_LEAVE_APP_CANCEL_FLG")
+	public int lateOrLeaveAppCancelFlg;
+	/**
+	 * 遅刻早退取消申請の実績取消を申請時に選択
+	 */
+	@Column(name = "LATE_OR_LEAVE_APP_SETTING_FLG")	
+	public int lateOrLeaveAppSettingFlg;
+	/**
 	 * 休憩入力欄を表示する
 	 */
 	@Column(name = "BREAK_INPUTFIELD_DIS_FLG")
@@ -56,11 +71,18 @@ public class KrqstWpAppConfigDetail  extends UkJpaEntity implements Serializable
 	 */
 	@Column(name = "TIME_CAL_USE_ATR")
 	public int timeCalUseAtr;
+	
 	/**
 	 * 時間入力利用区分
 	 */
 	@Column(name = "TIME_INPUT_USE_ATR")
 	public int timeInputUseAtr;
+	
+	/**
+	 * 指示が必須
+	 */
+	@Column(name = "REQUIRED_INSTRUCTION_FLG")
+	public int requiredInstructionFlg;
 	
 	/**
 	 * 

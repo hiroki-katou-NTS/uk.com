@@ -93,7 +93,7 @@ module nts.uk.at.view.kdl003.a {
                         dfd.resolve();
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        nts.uk.ui.dialog.alertError(res);
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
@@ -173,8 +173,10 @@ module nts.uk.at.view.kdl003.a {
             private initWorkTypeSelection(): void {
                 let self = this;
                 // Selected code from caller screen.
-                if (self.callerParameter.selectedWorkTypeCode) {
-                    self.selectedWorkTypeCode(self.callerParameter.selectedWorkTypeCode);
+                let selectedWorkTypeCode = self.callerParameter.selectedWorkTypeCode;
+                let isInSelectableCodes = selectedWorkTypeCode ? _.find(self.listWorkType(), item => selectedWorkTypeCode == item.workTypeCode) : false;
+                if (selectedWorkTypeCode && isInSelectableCodes) {
+                    self.selectedWorkTypeCode(selectedWorkTypeCode);
                 } else {
                     // Select first item.
                     self.selectedWorkTypeCode(_.first(self.listWorkType()).workTypeCode);
@@ -201,6 +203,10 @@ module nts.uk.at.view.kdl003.a {
              * Search work time.
              */
             public search(): void {
+                if ($('#inputEndTime').ntsError('hasError') ||
+                    $('#inputStartTime').ntsError('hasError')) {
+                    return;
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
 
@@ -222,7 +228,7 @@ module nts.uk.at.view.kdl003.a {
                         }
                     })
                     .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        nts.uk.ui.dialog.alertError(res);
                     }).always(() => {
                         // Set focus.
                         $("[tabindex='10']").focus();
@@ -243,6 +249,10 @@ module nts.uk.at.view.kdl003.a {
                 self.startTime(null);
                 self.endTimeOption(1);
                 self.endTime(null);
+
+                // Clear errors.
+                $('#inputEndTime').ntsError('clear');
+                $('#inputStartTime').ntsError('clear');
 
                 // Reload list work time.
                 self.loadWorkTime().always(() => {
@@ -281,7 +291,7 @@ module nts.uk.at.view.kdl003.a {
                         selectedWorkTimeCode: workTimeCode,
                         selectedWorkTimeName: workTimeName
                     };
-                    nts.uk.ui.windows.setShared("childData", returnedData, true);
+                    nts.uk.ui.windows.setShared("childData", returnedData, false);
 
                     // Close dialog.
                     self.closeDialog();

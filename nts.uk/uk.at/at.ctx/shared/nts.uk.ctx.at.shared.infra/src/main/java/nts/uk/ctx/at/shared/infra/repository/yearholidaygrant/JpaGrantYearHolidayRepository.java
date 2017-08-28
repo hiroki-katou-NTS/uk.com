@@ -21,9 +21,21 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblPK;
 public class JpaGrantYearHolidayRepository extends JpaRepository implements GrantYearHolidayRepository {
 	
 	private final String findByCode = "SELECT a FROM KshstGrantHdTbl a "
-			+ "WHERE a.KshstGrantHdTblPK.companyId = :companyId "
-			+ "AND a.KshstGrantHdTblPK.conditionNo = :conditionNo "
-			+ "AND a.KshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
+			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
+			+ "AND a.kshstGrantHdTblPK.conditionNo = :conditionNo "
+			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
+	
+	private final String DELETE_ALL = "DELETE FROM KshstGrantHdTbl a "
+			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
+			+ "AND a.kshstGrantHdTblPK.conditionNo = :conditionNo "
+			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
+	
+	@Override
+	public Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode,
+			int grantYearHolidayNo) {
+		return this.queryProxy().find(new KshstGrantHdTblPK(companyId, grantYearHolidayNo, conditionNo, yearHolidayCode), KshstGrantHdTbl.class)
+					.map(x -> convertToDomain(x));
+	}
 	
 	@Override
 	public List<GrantHdTbl> findByCode(String companyId, int conditionNo, String yearHolidayCode) {
@@ -58,6 +70,15 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 	@Override
 	public void remove(String companyId, int grantYearHolidayNo, int conditionNo, String yearHolidayCode) {
 		this.commandProxy().remove(KshstGrantHdTbl.class, new KshstGrantHdTblPK(companyId, grantYearHolidayNo, conditionNo, yearHolidayCode));
+	}
+	
+	@Override
+	public void remove(String companyId, int conditionNo, String yearHolidayCode) {
+		this.getEntityManager().createQuery(DELETE_ALL)
+			.setParameter("companyId", companyId)
+			.setParameter("conditionNo", conditionNo)
+			.setParameter("yearHolidayCode", yearHolidayCode)
+			.executeUpdate();
 	}
 		
 	private GrantHdTbl convertToDomain(KshstGrantHdTbl x) {

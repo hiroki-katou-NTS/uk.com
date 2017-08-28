@@ -13,6 +13,13 @@ import java.util.Optional;
 public interface TotalTimesRepository {
 
 	/**
+	 * Update.
+	 *
+	 * @param totalTimes the total times
+	 */
+    void update(TotalTimes totalTimes);
+
+	/**
 	 * Gets the total times detail.
 	 *
 	 * @param companyId the company id

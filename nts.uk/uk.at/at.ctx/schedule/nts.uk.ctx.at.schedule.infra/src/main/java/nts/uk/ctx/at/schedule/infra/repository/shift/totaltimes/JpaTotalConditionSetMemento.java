@@ -8,6 +8,7 @@ import nts.uk.ctx.at.schedule.dom.shift.totaltimes.ConditionThresholdLimit;
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalConditionSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.UseAtr;
 import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalCondition;
+import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalConditionPK;
 
 /**
  * The Class JpaTotalConditionSetMemento.
@@ -23,8 +24,15 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 * @param totalTimes
 	 *            the total times
 	 */
-	public JpaTotalConditionSetMemento(KshstTotalCondition totalTimes) {
-		this.entity = totalTimes;
+	public JpaTotalConditionSetMemento(String cid, Integer totalTimesNo,
+			KshstTotalCondition entity) {
+		if (entity.getKshstTotalConditionPK() == null) {
+			KshstTotalConditionPK pk = new KshstTotalConditionPK();
+			pk.setCid(cid);
+			pk.setTotalTimesNo(totalTimesNo);
+			entity.setKshstTotalConditionPK(pk);
+		}
+		this.entity = entity;
 	}
 
 	/*
@@ -37,7 +45,7 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 */
 	@Override
 	public void setUpperLimitSettingAtr(UseAtr setUpperLimitSettingAtr) {
-
+		this.entity.setUpperLimitSetAtr(setUpperLimitSettingAtr.value);
 	}
 
 	/*
@@ -50,8 +58,7 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 */
 	@Override
 	public void setLowerLimitSettingAtr(UseAtr setLowerLimitSettingAtr) {
-		// TODO Auto-generated method stub
-
+		this.entity.setLowerLimitSetAtr(setLowerLimitSettingAtr.value);
 	}
 
 	/*
@@ -64,8 +71,7 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 */
 	@Override
 	public void setThresoldUpperLimit(ConditionThresholdLimit setThresoldUpperLimit) {
-		// TODO Auto-generated method stub
-
+		this.entity.setThresoldUpperLimit(setThresoldUpperLimit.v());
 	}
 
 	/*
@@ -78,7 +84,6 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 */
 	@Override
 	public void setThresoldLowerLimit(ConditionThresholdLimit setThresoldLowerLimit) {
-		// TODO Auto-generated method stub
-
+		this.entity.setThresoldLowerLimit(setThresoldLowerLimit.v());
 	}
 }

@@ -1,7 +1,10 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 /**
  * 承認者
@@ -9,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class Approver {
 	/**会社ID*/
@@ -45,4 +49,11 @@ public class Approver {
 				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),
 				confirmPerson);
 	}
+	public static Approver updateApprovalPhaseId(Approver approver){
+		String approvalPhaseId = UUID.randomUUID().toString();
+		Approver approverNew = approver;
+		approverNew.setApprovalPhaseId(approvalPhaseId);
+		return approverNew;
+	}
+	
 }

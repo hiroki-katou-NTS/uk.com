@@ -2,19 +2,22 @@ package nts.uk.ctx.at.request.dom.application.common;
 
 import java.math.BigDecimal;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 
 /**
  * domain : 申請 (application)
  * @author tutk
  *
  */
-
-@Value
-@EqualsAndHashCode(callSuper= false )
+@Getter
+@AllArgsConstructor
 public class Application extends DomainObject{
 	/**
 	 * 会社ID
@@ -31,10 +34,11 @@ public class Application extends DomainObject{
 	/**
 	 * 入力日
 	 */
-	private BigDecimal inputDate;
+	private GeneralDate inputDate;
 	/**
-	 *  入力者
+	 * 入力者
 	 */
+	@Setter
 	private String enteredPersonSID;
 	/**
 	 * 差戻し理由
@@ -43,7 +47,7 @@ public class Application extends DomainObject{
 	/**
 	 * 申請日
 	 */
-	private BigDecimal applicationDate;
+	private GeneralDate applicationDate;
 	
 	/**
 	 * 申請理由
@@ -56,7 +60,8 @@ public class Application extends DomainObject{
 	/**
 	 * 申請者
 	 */
-	private String  applicantSID;
+	@Setter
+	private String applicantSID;
 	/**
 	 * 予定反映不可理由
 	 */
@@ -68,6 +73,7 @@ public class Application extends DomainObject{
 	/**
 	 * 予定反映状態
 	 */
+	@Setter
 	private ReflectPlanPerState reflectPlanState;
 	/**
 	 * 予定強制反映
@@ -94,10 +100,10 @@ public class Application extends DomainObject{
 			String companyID,
 			String applicationID,
 			int prePostAtr,
-			BigDecimal inputDate, 
+			GeneralDate inputDate, 
 			String enteredPersonSID, 
 			String reversionReason, 
-			BigDecimal applicationDate,
+			GeneralDate applicationDate,
 			String applicationReason, 
 			int applicationType, 
 			String applicantSID,
@@ -128,13 +134,5 @@ public class Application extends DomainObject{
 				reflectPerTime, 
 				EnumAdaptor.valueOf(reflectPerState,ReflectPlanPerState.class), 
 				EnumAdaptor.valueOf(reflectPerEnforce,ReflectPlanPerEnforce.class));
-	}
-	/**
-	 * 
-	 * @param reflectPlanState
-	 */
-	
-	public void changeReflectState(int reflectPlanState) {
-		this.reflectPerState.value = reflectPlanState;
 	}
 }

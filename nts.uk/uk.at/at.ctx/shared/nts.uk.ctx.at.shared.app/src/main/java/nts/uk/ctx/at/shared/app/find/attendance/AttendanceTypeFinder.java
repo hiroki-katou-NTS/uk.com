@@ -20,10 +20,14 @@ public class AttendanceTypeFinder {
 	
 	@Inject
 	private AttendanceTypeRepository attendanceTypeRepository;
-	
-	public List<AttendanceTypeDto> getItemByType(int type){
+	/**
+	 * get attendance infor by screen use atr
+	 * @param screenUseAtr
+	 * @return
+	 */
+	public List<AttendanceTypeDto> getItemByScreenUseAtr(int screenUseAtr){
 		String companyID = AppContexts.user().companyId();
-		return this.attendanceTypeRepository.getItemByType(companyID, type).stream()
+		return this.attendanceTypeRepository.getItemByScreenUseAtr(companyID, screenUseAtr).stream()
 			.map(x -> new AttendanceTypeDto(x.getCompanyId(), x.getAttendanceItemId(), x.getAttendanceItemType().value))
 			.collect(Collectors.toList());
 	}

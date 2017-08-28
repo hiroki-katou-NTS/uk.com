@@ -35,7 +35,6 @@ module nts.uk.pr.view.ccg007.b {
                             }
                         }
                         else {
-                            //TODO システムエラー画面へ遷移する
                         }
                         blockUI.clear();
                         dfd.resolve();
@@ -67,17 +66,15 @@ module nts.uk.pr.view.ccg007.b {
                 blockUI.invisible();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.submitLogin({ loginId: _.escape(self.loginId()), password: _.escape(self.password()) }).done(function() {
-                        nts.uk.characteristics.remove("form1LoginInfo");
-                        if (self.isSaveLoginInfo()) {
-                            nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                        nts.uk.characteristics.remove("form1LoginInfo").done(function() {
+                            if (self.isSaveLoginInfo()) {
+                                nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
+                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                                });
+                            } else {
                                 nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                            });
-                        } else {
-                            //TODO confirm kiban team promise for remove
-                            setTimeout(function() {
-                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                            }, 1000);
-                        }
+                            }
+                        });
                         blockUI.clear();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });

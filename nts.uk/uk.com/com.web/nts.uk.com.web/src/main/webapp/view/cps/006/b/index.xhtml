@@ -20,9 +20,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="B_1" class="proceed">#{i18n.getText('CPS006_19')}</button>
+					<button id="B_1" class="proceed" data-bind="click:updateItemChange">#{i18n.getText('CPS006_19')}</button>
 					<button id="B_2">#{i18n.getText('CPS006_20')}</button>
-					<button id="B_3">#{i18n.getText('CPS006_21')}</button>
+					<button id="B_3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
@@ -30,7 +30,7 @@
 					data-bind="ntsPanel:{width: '270px', height: '490px', direction: 'right', showIcon: true, visible: true}">
 
 					<div class="div_line">
-						<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('CPS006_22')}</div>
+						<div data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
 					</div>
 
 					<div class="div_line">
@@ -38,12 +38,12 @@
 							data-bind="ntsSearchBox: {
 							placeHolder:'#{i18n.getText('CPS006_15')}',
 							searchMode: 'filter',
-							targetKey: 'itemCode', 
+							targetKey: 'id', 
 							comId: 'B1_3', 
-							items: items, 
-							selected: currentCode , 
-							selectedKey: 'itemCode', 
-							fields: ['itemName', 'itemCode'], 
+							items: itemInfoDefList , 
+							selected: currentSelectId , 
+							selectedKey: 'id', 
+							fields: ['itemName'], 
 							mode: 'igGrid'}" />
 					</div>
 
@@ -51,11 +51,11 @@
 						<table id="B1_3"
 							data-bind="ntsGridList: {
 							rows : 15,
-							options: items,
-							optionsValue: 'itemCode',
+							options: itemInfoDefList ,
+							optionsValue: 'id',
 							columns: columns ,
 							multiple: false ,
-							value: currentCode }">
+							value: currentSelectId }">
 						</table>
 					</div>
 
@@ -68,7 +68,7 @@
 						</div>
 
 						<div class="line_col_2">
-							<span id="B2_2">roleCode</span>
+							<span id="B2_2" data-bind="text:currentItem().itemNameDefault"></span>
 						</div>
 
 					</div>
@@ -80,41 +80,46 @@
 						</div>
 
 						<div class="line_col_2">
-							<input data-bind="ntsTextEditor: {value: simpleValue }" />
+							<input data-bind="ntsTextEditor: {value: itemNameText }" />
 						</div>
 
-						<div id="B2_5" class="float_left"
-							data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('CPS006_24')}</div>
+
+						<div id="B2_5"
+							data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
+
 
 					</div>
 
 
 					<div class="div_line">
+						<com:ko-if bind="currentItem().requireChangable === 1">
+							<div class="line_col_1">
+								<div id="B2_6" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS006_25')}</div>
+							</div>
 
-						<div class="line_col_1">
-							<div id="B2_6" data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CPS006_25')}</div>
-						</div>
-
-						<div class="line_col_2">
-
-							<com:ko-if bind="categoryType === 0">
+							<div class="line_col_2">
 								<div class="cf"
 									data-bind="ntsSwitchButton: {
 									options: roundingRules,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedRuleCode,
-									enable: enable }">
+									value: isRequired ,
+									enable: true }">
 								</div>
-							</com:ko-if>
 
-							<com:ko-if bind="categoryType === 1">
+							</div>
+						</com:ko-if>
+						<com:ko-if bind="currentItem().requireChangable === 0">
 
-								<span id="B2_18">roleCode</span>
+							<div class="line_col_1">
+								<div id="B2_17" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CPS006_25')}</div>
+							</div>
 
-							</com:ko-if>
+							<div class="line_col_2">
+								<span id="B2_18" data-bind="text:genRequiredText()"></span>
+							</div>
+						</com:ko-if>
 
-						</div>
 
 						<div class="div_line">
 
@@ -123,11 +128,11 @@
 							</div>
 
 							<div class="line_col_2">
-								<span id="B2_9">roleCode</span>
+								<span id="B2_9" data-bind="text:genDatatypeValueText()"></span>
 							</div>
 						</div>
 
-						<com:ko-if bind="selectedRuleCode === 0 || selectedRuleCode === 1">
+						<com:ko-if bind=" dataType() === 1">
 
 							<div class="div_line">
 
@@ -136,7 +141,7 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_11">roleCode</span>
+									<span id="B2_11" data-bind="text:genStringItemTypeText()">roleCode</span>
 								</div>
 
 							</div>
@@ -148,7 +153,8 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_13">roleCode</span>
+									<span id="B2_13"
+										data-bind="text:currentItem().itemTypeState.dataTypeState.stringItemLength">roleCode</span>
 								</div>
 
 							</div>
@@ -160,17 +166,17 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_15">roleCode</span>
+									<span id="B2_15" data-bind="text: genStringItemDataTypeText ()"></span>
 								</div>
 
 								<button class="float_left"
-									data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: enable }">?</button>
+									data-bind="ntsHelpButton: {image: 'B2_16.png', position: 'right top', enable: true }">?</button>
 
 							</div>
 
 						</com:ko-if>
 
-						<com:ko-if bind="selectedRuleCode === 2">
+						<com:ko-if bind="dataType()  === 2">
 
 							<div class="div_line">
 
@@ -179,7 +185,8 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_21">roleCode</span>
+									<span id="B2_21"
+										data-bind="currentItem().itemTypeState.dataTypeState.numericItemAmount"></span>
 								</div>
 
 							</div>
@@ -191,7 +198,8 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_23">roleCode</span>
+									<span id="B2_23"
+										data-bind="text:genStringNumericItemMinusText()">roleCode</span>
 								</div>
 
 							</div>
@@ -203,7 +211,8 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_25">roleCode</span>
+									<span id="B2_25"
+										data-bind="currentItem().itemTypeState.dataTypeState.integerPart"></span>
 								</div>
 
 							</div>
@@ -215,14 +224,15 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_27">roleCode</span>
+									<span id="B2_27"
+										data-bind="currentItem().itemTypeState.dataTypeState.decimalPart"></span>
 								</div>
 
 							</div>
 
 						</com:ko-if>
 
-						<com:ko-if bind="selectedRuleCode === 3">
+						<com:ko-if bind="dataType() === 3">
 
 							<div class="div_line">
 
@@ -231,15 +241,14 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_30">roleCode</span>
+									<span id="B2_30" data-bind="text:genDateTypeText()"></span>
 								</div>
 
 							</div>
 
 						</com:ko-if>
 
-						<com:ko-if bind="selectedRuleCode === 4">
-
+						<com:ko-if bind="dataType() === 4">
 							<div class="div_line">
 
 								<div class="line_col_1">
@@ -247,42 +256,48 @@
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_33">roleCode</span>
+									<span id="B2_33"
+										data-bind="text:currentItem().itemTypeState.dataTypeState.min"></span>
+									<span id="B2_34">~</span> <span id="B2_35"
+										data-bind="text:currentItem().itemTypeState.dataTypeState.max"></span>
 								</div>
 
 							</div>
 
 						</com:ko-if>
 
-						<com:ko-if bind="selectedRuleCode === 5">
+						<com:ko-if bind="dataType() === 5">
 
 							<div class="div_line">
 
 								<div class="line_col_1">
-									<div id="B2_34" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_37')}</div>
+									<div id="B2_37" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_40')}</div>
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_35">roleCode</span>
+									<span id="B2_38"
+										data-bind="text:currentItem().itemTypeState.dataTypeState.timePointItemMin"></span>
+									<span id="B2_39">~</span> <span id="B2_40"
+										data-bind="text:currentItem().itemTypeState.dataTypeState.timePointItemMax"></span>
 								</div>
 
 							</div>
 
 						</com:ko-if>
 
-						<com:ko-if bind="selectedRuleCode === 6">
+						<com:ko-if bind="dataType() === 6">
 
 							<div class="div_line">
 
 								<div class="line_col_1">
-									<div id="B2_41" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS001_43')}</div>
+									<div id="B2_42" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS001_43')}</div>
 								</div>
 
 								<div class="line_col_2">
-									<span id="B2_42">roleCode</span>
+									<span id="B2_43">roleCode</span>
 								</div>
 
-								<button id="B2_43">#{i18n.getText('CAS001_43')}</button>
+								<button id="B2_44">#{i18n.getText('CAS001_44')}</button>
 
 							</div>
 

@@ -1,7 +1,7 @@
 module nts.uk.at.view.ksu006.a {
     export module viewmodel {
         
-        import EnumerationModel = servicew.model.EnumerationModel;
+        import EnumerationModel = service.model.EnumerationModel;
         import ExternalBudgetModel = service.model.ExternalBudgetModel; 
         import ExternalBudgetValueModel = service.model.ExternalBudgetValueModel;
         import DataPreviewModel = service.model.DataPreviewModel;
@@ -59,7 +59,7 @@ module nts.uk.at.view.ksu006.a {
                     return nts.uk.resource.getText("KSU006_123", [self.totalRecord()]);
                 });
                 
-                self.enableDataPreview = ko.observable(false);;
+                self.enableDataPreview = ko.observable(true);
                 self.isDataDailyUnit = ko.observable(true);
                 self.dataPreview = ko.observableArray([]);
                 self.firstRecord = ko.observable(null);
@@ -232,6 +232,7 @@ module nts.uk.at.view.ksu006.a {
             
             private resetDataPreview() {
                 let self = this;
+                self.totalRecord(0);
                 self.dataPreview([]);
                 self.firstRecord(null);
                 self.remainData([]);

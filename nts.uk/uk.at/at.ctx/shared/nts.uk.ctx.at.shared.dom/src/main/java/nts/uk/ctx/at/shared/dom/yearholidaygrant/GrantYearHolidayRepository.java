@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 
@@ -8,6 +9,17 @@ import java.util.List;
  *
  */
 public interface GrantYearHolidayRepository {
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param conditionNo
+	 * @param yearHolidayCode
+	 * @param grantYearHolidayNo
+	 * @return
+	 */
+	Optional<GrantHdTbl> find(String companyId, int conditionNo, String yearHolidayCode, int grantYearHolidayNo);
+	
 	/**
 	 * Gets the year holiday grant by code.
 	 *
@@ -40,5 +52,7 @@ public interface GrantYearHolidayRepository {
 	 * @return the holiday grant by codes
 	 */
 	void remove(String companyId, int grantYearHolidayNo, int conditionNo, String yearHolidayCode);
+	
+	void remove(String companyId, int conditionNo, String yearHolidayCode);
 	
 }

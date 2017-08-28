@@ -8,6 +8,7 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalSubjectsSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.WorkTypeAtr;
 import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalSubjects;
+import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalSubjectsPK;
 
 /**
  * The Class JpaTotalSubjectsSetMemento.
@@ -23,7 +24,13 @@ public class JpaTotalSubjectsSetMemento implements TotalSubjectsSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaTotalSubjectsSetMemento(KshstTotalSubjects entity) {
+	public JpaTotalSubjectsSetMemento(String cid, Integer totalTimesNo, KshstTotalSubjects entity) {
+		if (entity.getKshstTotalSubjectsPK() == null) {
+			KshstTotalSubjectsPK pk = new KshstTotalSubjectsPK();
+			pk.setCid(cid);
+			pk.setTotalTimesNo(totalTimesNo);
+			entity.setKshstTotalSubjectsPK(pk);
+		}
 		this.entity = entity;
 	}
 
@@ -35,8 +42,7 @@ public class JpaTotalSubjectsSetMemento implements TotalSubjectsSetMemento {
 	 */
 	@Override
 	public void setWorkTypeCode(WorkTypeCode setWorkTypeCode) {
-		// TODO Auto-generated method stub
-
+		this.entity.setWorkTypeCd(setWorkTypeCode.v());
 	}
 
 	/*
@@ -47,8 +53,9 @@ public class JpaTotalSubjectsSetMemento implements TotalSubjectsSetMemento {
 	 */
 	@Override
 	public void setWorkTypeAtr(WorkTypeAtr setWorkTypeAtr) {
-		// TODO Auto-generated method stub
-
+		KshstTotalSubjectsPK pk = this.entity.getKshstTotalSubjectsPK();
+		pk.setWorkTypeAtr(setWorkTypeAtr.value);
+		this.entity.setKshstTotalSubjectsPK(pk);
 	}
 
 }

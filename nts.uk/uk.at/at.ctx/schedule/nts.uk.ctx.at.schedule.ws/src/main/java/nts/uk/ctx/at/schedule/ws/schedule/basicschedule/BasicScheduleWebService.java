@@ -69,9 +69,6 @@ public class BasicScheduleWebService extends WebService {
 	@Path("checkPairWorkTypeWorkTime/{workTypeCode}/{workTimeCode}")
 	public void checkPairWorkTypeWorkTime(@PathParam("workTypeCode") String workTypeCode,
 			@PathParam("workTimeCode") String workTimeCode) {
-		if (workTimeCode.equalsIgnoreCase("000")) {
-			workTimeCode = "";
-		}
 		this.basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode);
 	}
 }
