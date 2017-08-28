@@ -52,4 +52,6 @@ public class UsageSettingWs extends WebService {
 	public UsageSettingDto getDetailByCompanyId() {
 		return this.usageSettingFinder.findByCompanyId();
 	}
+	
+
 }

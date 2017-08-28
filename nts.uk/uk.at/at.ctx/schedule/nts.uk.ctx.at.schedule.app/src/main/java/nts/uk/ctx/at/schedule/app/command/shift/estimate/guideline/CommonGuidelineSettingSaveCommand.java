@@ -19,10 +19,10 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 
 /**
- * The Class CommonGuidelineSettingCommand.
+ * The Class CommonGuidelineSettingSaveCommand.
  */
 @Data
-public class CommonGuidelineSettingCommand {
+public class CommonGuidelineSettingSaveCommand {
 
 	/** The alarm colors. */
 	private List<EstimatedAlarmColorDto> alarmColors;
@@ -51,7 +51,7 @@ public class CommonGuidelineSettingCommand {
 	private class JpaGetMemento implements CommonGuidelineSettingGetMemento {
 
 		/** The command. */
-		private CommonGuidelineSettingCommand command;
+		private CommonGuidelineSettingSaveCommand command;
 
 		/** The company id. */
 		private String companyId;
@@ -62,7 +62,7 @@ public class CommonGuidelineSettingCommand {
 		 * @param command
 		 *            the command
 		 */
-		public JpaGetMemento(String companyId, CommonGuidelineSettingCommand command) {
+		public JpaGetMemento(String companyId, CommonGuidelineSettingSaveCommand command) {
 			this.command = command;
 			this.companyId = companyId;
 		}

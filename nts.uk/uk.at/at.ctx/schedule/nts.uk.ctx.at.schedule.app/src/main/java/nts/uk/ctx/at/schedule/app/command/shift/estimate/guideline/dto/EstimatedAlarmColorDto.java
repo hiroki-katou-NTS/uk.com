@@ -20,4 +20,5 @@ public class EstimatedAlarmColorDto {
 	/** The color. */
 	private String color;
 
+	
 }
