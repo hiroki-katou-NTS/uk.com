@@ -40,4 +40,6 @@ public interface PerInfoItemDefRepositoty {
 	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef);
 
 	String getItemDefaultName(String categoryCd, String itemCode);
+
+	Optional<PerInfoItemDefOrder> getPerInfoItemDefOrdersByItemId(String perInfoItemDefId);
 }
