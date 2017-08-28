@@ -34,5 +34,23 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 						x.getEmploymentRootAtr().value
 			    )).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<ApprovalRootDto> findByBaseDateOfCommon(String cid, String sid, Date standardDate) {
+		return this.appRootRepository.findByBaseDateOfCommon(cid, sid, standardDate).stream()
+				.map(x -> new ApprovalRootDto(
+						x.getCompanyId(),
+						x.getApprovalId(),
+						x.getEmployeeId(),
+						x.getHistoryId(),
+						x.getApplicationType().value,
+						x.getPeriod().getStartDate(),
+						x.getPeriod().getEndDate(),
+						x.getBranchId(),
+						x.getAnyItemApplicationId(),
+						x.getConfirmationRootType().value,
+						x.getEmploymentRootAtr().value
+			    )).collect(Collectors.toList());
+	}
 	
 }
