@@ -23,3 +23,8 @@
 .line_col_2>span {
 	line-height: 37px;
 }
+
+#content_main {
+	width: 950px;
+	height: 550px;
+}

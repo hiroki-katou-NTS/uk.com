@@ -350,6 +350,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
 
+                if (!getShared('CDL020_VALUES')) {
+                    block.clear();
+                    return;
+                }
+
                 command = {
                     categoryId: self.currentCategory().id,
                     orderItemList: getShared('CDL020_VALUES')
