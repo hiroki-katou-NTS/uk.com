@@ -16,19 +16,23 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="register" class="proceed" tabindex="1" data-bind="click: registerCategoryInfo">#{i18n.getText('CPS006_1')}</button>
+				<button id="register" class="proceed" tabindex="1"
+					data-bind="click: registerCategoryInfo">#{i18n.getText('CPS006_1')}</button>
 				<button id="sort" tabindex="2" data-bind="click: openCDL022Modal">#{i18n.getText('CPS006_2')}</button>
 				<div class='float-right'>
-					<a class='goout' data-bind="ntsLinkButton: { jump: '/view/cps/005/a/index.xhtml'  }" tabindex="3">#{i18n.getText('CPS006_49')}</a>
-					<a class='goout' data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }" tabindex="4">#{i18n.getText('CPS006_3')}</a>
+					<a class='goout'
+						data-bind="ntsLinkButton: { jump: '/view/cps/005/a/index.xhtml'  }"
+						tabindex="3">#{i18n.getText('CPS006_49')}</a> <a class='goout'
+						data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }"
+						tabindex="4">#{i18n.getText('CPS006_3')}</a>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content-left"
 					data-bind="ntsPanel:{width: '295px', height: '500px',
 					direction: 'right', showIcon: false, visible: true}">
-					<div id="isAbolition" data-bind="ntsCheckBox: { checked: isAbolished }"
-						tabindex="5">#{i18n.getText('CPS006_4')}</div>
+					<div id="isAbolition"
+						data-bind="ntsCheckBox: { checked: isAbolished }" tabindex="5">#{i18n.getText('CPS006_4')}</div>
 					<div id="search" tabindex="6"
 						data-bind="ntsSearchBox: {
 						searchMode: 'filter',
@@ -49,7 +53,7 @@
 					</table>
 				</div>
 				<div id="content-right">
-					<div  data-bind="with: currentCategory">
+					<div data-bind="with: currentCategory">
 						<div>
 							<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
 								<label>#{i18n.getText('CPS006_8')}</label>
@@ -64,13 +68,18 @@
 							</div>
 							<input id="ctgName"
 								data-bind="ntsTextEditor: {
-							value: categoryName ,
-							enable: true,
-							immediate: false}"></input>
-							<div data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('CPS006_11')}</div>
+								value: categoryName ,
+								enable: true,
+								immediate: false}"></input>
+							<com:ko-if bind="displayIsAbolished == 1">
+								<div>#{i18n.getText('CPS006_11')}</div>
+							</com:ko-if>
+							<com:ko-if bind="displayIsAbolished == 0">
+								<div>ahahhaha</div>
+							</com:ko-if>
 						</div>
-						
-						<div >
+
+						<div>
 							<com:ko-if bind="categoryType === 1 || categoryType === 2  ">
 								<div>
 									<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
@@ -89,7 +98,9 @@
 									<label id="continue">#{i18n.getText('CPS006_48')}</label>
 								</com:ko-if>
 								<button
-									data-bind="ntsHelpButton: {image: 'helpcas006.png', position: 'right+50 top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: 'helpcas006.png', 
+									position: 'right+50 top',
+									enable: true }">?</button>
 							</com:ko-if>
 
 							<com:ko-if

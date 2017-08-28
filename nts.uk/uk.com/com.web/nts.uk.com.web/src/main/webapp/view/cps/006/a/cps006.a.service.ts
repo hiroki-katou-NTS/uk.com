@@ -8,19 +8,19 @@ module nts.uk.com.view.cps006.a.service {
         updateCtgInfo: "ctx/bs/person/info/ctg/updateCtgInfo",
         updateCategoryOrder: "ctx/bs/person/info/ctg/updateCtgOrder"
     }
-    export function getAllCategory(): JQueryPromise<Array<any>> {
+    export function getAllCategory(){
         return ajax(paths.getAllCategory);
     }
 
-    export function getAllPerInfoItemDefByCtgId(categoryId: string): JQueryPromise<Array<any>> {
+    export function getAllPerInfoItemDefByCtgId(categoryId: string){
         return ajax(format(paths.getAllPerInfoItemDefByCtgId, categoryId));
     }
 
-    export function getAllPerInfoCtgByRoot(): JQueryPromise<Array<any>> {
+    export function getAllPerInfoCtgByRoot() {
         return ajax(paths.getAllPerInfoCtgByRoot);
     }
 
-    export function updateCtgInfo(category: any): JQueryPromise<any> {
+    export function updateCtgInfo(category: any){
         return ajax(paths.updateCtgInfo, category);
     }
     
