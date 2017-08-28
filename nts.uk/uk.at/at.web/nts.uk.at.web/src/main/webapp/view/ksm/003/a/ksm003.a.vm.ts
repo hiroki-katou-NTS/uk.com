@@ -224,6 +224,8 @@ module nts.uk.at.view.ksm003.a {
                     dataNew.push(new model.DailyPatternValModel(i, "", "", null));
                 }
                 self.detail().dailyPatternVals(dataNew);
+                self.detail().patternCode("");
+                self.detail().patternName("");
             }
 
             // clear Error
