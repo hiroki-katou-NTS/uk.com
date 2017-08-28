@@ -48,7 +48,9 @@
 						<tr></tr>
 						<tr>
 							<td>基準日</td>
-							<td style="text-align: right"><input class="cal-value" data-bind="ntsTextEditor: {value: standardDate}" /></td>
+							<td style="text-align: right">
+								<div class="cal-value" data-bind="ntsDatePicker: {value: referenceDate, dateFormat: 'YYYY/MM/DD'}, hasfocus: true"></div>
+							</td>
 							<td></td>
 						</tr>
 						<tr></tr>
@@ -88,46 +90,46 @@
 						<tr>
 							<td data-bind="text: $index() + 1" class="numbers"></td>
 							<td class="input-units"><input class="year-input" data-bind="ntsNumberEditor: {
-										value: year, 
+										value: lengthOfServiceYears, 
 										option: ko.mapping.fromJS({
 											unitID: 'YEARS',
 											width: '50'
 										})}" /></td>
 							<td class="input-units"><input class="months-input" data-bind="ntsNumberEditor: {
-										value: month, 
+										value: lengthOfServiceMonths, 
 										option: ko.mapping.fromJS({
 											unitID: 'MONTHS',
 											width: '60'
 										})}" /></td>
 							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
-										value: restedDaysInYear, 
+										value: grantDays, 
 										option: ko.mapping.fromJS({
 											unitID: 'DAYS',
 											width: '50'
 										})}" /></td>
 							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
-										value: numberOfDays, 
+										value: limitedTimeHdDays, 
 										option: ko.mapping.fromJS({
 											unitID: 'DAYS',
 											width: '50'
 										})}" /></td>										
 							<td class="input-units"><input class="times-input" data-bind="ntsNumberEditor: {
-										value: limitedTimes, 
+										value: limitedHalfHdCnt, 
 										option: ko.mapping.fromJS({
 											unitID: 'TIMES',
 											width: '50'
 										})}" /></td>
 							<td class="base-date"><div class="base-date-options" id="combo-box" data-bind="ntsComboBox: {
- 										options: $parent.baseDateOptions,
+ 										options: $parent.grantReferenceDateOptions,
  										optionsValue: 'code',
- 										value: $data.baseDate,
+ 										value: $data.grantReferenceDate,
  										optionsText: 'name',
  										columns: [
  											{ prop: 'name', length: 10 }
  										],
  										enable: true}"></div></td>
-							<td class="allow-pay"><div data-bind="ntsCheckBox: { checked: allowPay }"></div></td>
-							<td class="pay-day-cal"><span data-bind="text: $parent.payDayCalculate"></span></td>
+							<td class="allow-pay"><div data-bind="ntsCheckBox: { checked: grantSimultaneity }"></div></td>
+							<td class="pay-day-cal"><span data-bind="text: grantDate"></span></td>
 						</tr>
 					</tbody>
 				</table>

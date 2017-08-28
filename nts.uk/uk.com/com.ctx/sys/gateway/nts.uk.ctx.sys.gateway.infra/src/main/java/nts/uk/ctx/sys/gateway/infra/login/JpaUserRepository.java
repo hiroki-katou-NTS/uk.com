@@ -45,6 +45,7 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtUser> result = em.createQuery(query).getResultList();
+		//get single user 
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {
@@ -70,6 +71,7 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtUser> result = em.createQuery(query).getResultList();
+		//get single user 
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {

@@ -35,8 +35,7 @@ public class JpaTotalSubjectsGetMemento implements TotalSubjectsGetMemento {
 	 */
 	@Override
 	public WorkTypeCode getWorkTypeCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTypeCode(this.entity.getWorkTypeCd());
 	}
 
 	/*
@@ -47,7 +46,6 @@ public class JpaTotalSubjectsGetMemento implements TotalSubjectsGetMemento {
 	 */
 	@Override
 	public WorkTypeAtr getWorkTypeAtr() {
-		// TODO Auto-generated method stub
-		return null;
+		return WorkTypeAtr.valueOf(this.entity.getKshstTotalSubjectsPK().getWorkTypeAtr());
 	}
 }

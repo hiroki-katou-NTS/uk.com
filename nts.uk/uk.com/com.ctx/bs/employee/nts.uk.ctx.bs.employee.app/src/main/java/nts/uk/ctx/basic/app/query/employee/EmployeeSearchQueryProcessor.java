@@ -89,7 +89,7 @@ public class EmployeeSearchQueryProcessor {
 			String companyId) {
 
 		// get employee list
-		List<Employee> employees = this.employeeRepository.getListPersonByListEmployeeId(companyId,
+		List<Employee> employees = this.employeeRepository.findByListEmployeeId(companyId,
 				employeeIds);
 
 		// check exist employee
@@ -176,7 +176,7 @@ public class EmployeeSearchQueryProcessor {
 		String companyId = loginUserContext.companyId();
 
 		// get all employee of company id
-		List<Employee> employees = this.employeeRepository.getAllEmployee(companyId);
+		List<Employee> employees = this.employeeRepository.findAll(companyId);
 
 		return toEmployee(baseDate,
 				employees.stream().map(employee -> employee.getSId()).collect(Collectors.toList()),
@@ -249,7 +249,7 @@ public class EmployeeSearchQueryProcessor {
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getWorkplaceCodes());
 		// to employees
-		List<Employee> employees = this.employeeRepository.getListPersonByListEmployeeId(companyId,
+		List<Employee> employees = this.employeeRepository.findByListEmployeeId(companyId,
 				workplaceHistory.stream().map(workplace -> workplace.getEmployeeId())
 						.collect(Collectors.toList()));
 
@@ -394,7 +394,7 @@ public class EmployeeSearchQueryProcessor {
 		String companyId = loginUserContext.companyId();
 
 		// get employee list
-		List<Employee> employees = this.employeeRepository.getListPersonByListEmployeeId(companyId,
+		List<Employee> employees = this.employeeRepository.findByListEmployeeId(companyId,
 				query.getEmployeeIds());
 
 		// get map person

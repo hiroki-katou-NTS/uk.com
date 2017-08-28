@@ -7,7 +7,9 @@ package nts.uk.ctx.at.schedule.dom.shift.totaltimes;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -63,6 +65,21 @@ public class TotalTimes extends AggregateRoot {
 		this.summaryAtr = memento.getSummaryAtr();
 		this.totalCondition = memento.getTotalCondition();
 		this.totalSubjects = memento.getTotalSubjects();
+
+		// Validate
+		if (CollectionUtil.isEmpty(this.totalSubjects)) {
+			throw new BusinessException("Msg_216", "KMK009_8");
+		} else {
+			if (!this.totalSubjects.stream()
+					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))) {
+				throw new BusinessException("Msg_216", "KMK009_8");
+			}
+
+			if (!this.totalSubjects.stream()
+					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))) {
+				throw new BusinessException("Msg_216", "KMK009_9");
+			}
+		}
 	}
 
 	/**

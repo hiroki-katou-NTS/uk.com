@@ -29,7 +29,7 @@ public class KshstTotalConditionPK implements Serializable {
 
 	/** The total times no. */
 	@Column(name = "TOTAL_TIMES_NO")
-	private short totalTimesNo;
+	private Integer totalTimesNo;
 
 	/**
 	 * Instantiates a new kshst total condition PK.
@@ -46,7 +46,7 @@ public class KshstTotalConditionPK implements Serializable {
 	 * @param totalTimesNo
 	 *            the total times no
 	 */
-	public KshstTotalConditionPK(String cid, short totalTimesNo) {
+	public KshstTotalConditionPK(String cid, Integer totalTimesNo) {
 		this.cid = cid;
 		this.totalTimesNo = totalTimesNo;
 	}

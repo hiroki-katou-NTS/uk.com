@@ -11,6 +11,12 @@
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeName
 				nts.uk.ctx.at.record.dom.divergencetime.Time
+				
+				
+				nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesName
+				nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesABName
+				nts.uk.ctx.at.schedule.dom.shift.totaltimes.ConditionThresholdLimit
+				nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk009.a.main.css" />
@@ -23,7 +29,8 @@
 				<!-- A1_1: Button Registration -->
 				<button id="btnSave"
 					class="button proceed separate-button fix-button"
-					data-bind="click: Registration,enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KMK009_1')}</button>
+					data-bind="click: Registration,enable: $root.errors.isEmpty"
+					tabindex="1">#{i18n.getText('KMK009_1')}</button>
 			</div>
 
 			<div id="content-area">
@@ -33,18 +40,18 @@
 							<table tabindex="2" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									width: 450,
-									height: 600,
-									options: dataSource,								
-									optionsValue: 'divTimeId',
+									height: 365,
+									options: itemTotalTimes,								
+									optionsValue: 'totalCountNo',
 									columns: columns,
 									multiple: false,
 									value: currentCode,
-									enable: true}" >
+									enable: true}">
 							</table>
 						</div>
 					</div>
 				</div>
-				<div id="right-content">
+				<div id="right-content" >
 					<table>
 						<colgroup>
 							<col width="135px" />
@@ -57,7 +64,7 @@
 							</td>
 							<td>
 								<!-- A3_2 , A3_3 ,A3_4: Setting Use -->
-								<div tabindex="3" style = "padding-left: 5px"
+								<div tabindex="3" style="padding-left: 5px"
 									data-bind="ntsSwitchButton: {
 									options: useSet,
 									optionsValue: 'code',
@@ -70,36 +77,34 @@
 						<tr class="row">
 							<td>
 								<!--A3_5 -->
-								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK009_6')}</div>
+								<div
+									data-bind="ntsFormLabel: {required: true,constraint: 'TotalTimesName' }">#{i18n.getText('KMK009_6')}</div>
 							</td>
-							<td style = "padding-left: 5px">
-								<!-- A3_6: Divergence Time Name -->
+							<td style="padding-left: 5px">
+								<!-- A3_6: Divergence Time Name --> 
 								<input tabindex="4"
-								class="nts-input" id="itemname"  
-								style="width: 100px"
+								class="nts-input" id="itemname" style="width: 100px"
 								data-bind="ntsTextEditor:{
 										 name: '#[KMK009_6]',
-                                         value: divTimeName,
+                                         value: itemTotalTimesDetail().totalTimesName,
                                          required: true,
-                                        
                                          enable: enableUse}" />
-                                         <!-- constraint: 'DivergenceTimeName', -->
+								<!-- constraint: 'DivergenceTimeName', -->
 							</td>
 						</tr>
-						
+
 						<tr class="row">
 							<td>
 								<!--A3_25 -->
-								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK009_22')}</div>
+								<div
+									data-bind="ntsFormLabel: {required: true,constraint: 'TotalTimesABName' }">#{i18n.getText('KMK009_22')}</div>
 							</td>
-							<td style = "padding-left: 5px">
-								<!-- A3_26: Divergence Time Name -->
-								 <input tabindex="5"
-								class="nts-input" id="itemname" 
-								style="width: 60px"
+							<td style="padding-left: 5px">
+								<!-- A3_26: Divergence Time Name --> <input tabindex="5"
+								class="nts-input" id="itemname" style="width: 60px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK009_22]',
-                                         value: divTimeName,
+                                         value: itemTotalTimesDetail().totalTimesABName,
                                          required: true,
                                          enable: enableUse}" />
 							</td>
@@ -107,18 +112,23 @@
 						<tr class="row">
 							<td>
 								<!--A3_7 -->
-								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK009_14')}</div>
+								<div
+									data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK009_14')}</div>
 							</td>
-							<td style = "padding-left: 5px">
+							<td style="padding-left: 5px">
 								<!-- A3_8: Divergence Time Name -->
-								 <input tabindex="6"
-								class="nts-input" id="itemname" 
-								style="width: 80px"
-								data-bind="ntsTextEditor:{
-										name: '#[KMK009_14]',
-                                         value: divTimeName,
-                                         required: true,
-                                         enable: enableUse}" />v
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
+									options: totalClsEnums,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+									value: valueEnum,
+									enable: enableUse,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+								</div>
 							</td>
 						</tr>
 						<tr class="row">
@@ -126,13 +136,12 @@
 								<!-- A3_10 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_8')}</div>
 							</td>
-							<td style = "padding-left: 5px">
+							<td style="padding-left: 5px">
 								<!-- A3_11 Open dialog KDL002-->
 								<button tabindex="7"
-									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
-								<!-- A3_12: Time item name --> 
-								<input class="nts-input" id = "inpName"
-								style="width: 350px"
+									data-bind="click: openKDL002Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
+								<!-- A3_12: Time item name --> <input class="nts-input"
+								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: timeItemName,
@@ -146,13 +155,12 @@
 								<!-- A3_13 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_9')}</div>
 							</td>
-							<td style = "padding-left: 5px">
+							<td style="padding-left: 5px">
 								<!-- A3_14 Open dialog KDL001-->
 								<button tabindex="8"
-									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
-								<!-- A3_15: Time item name --> 
-								<input class="nts-input" id = "inpName"
-								style="width: 350px"
+									data-bind="click: openKDL001Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
+								<!-- A3_15: Time item name --> <input class="nts-input"
+								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: timeItemName,
@@ -166,53 +174,53 @@
 								<!-- A3_16: Label -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_10')}</div>
 							</td>
-							<td style = "padding-left: 5px">
+							<td style="padding-left: 5px">
 								<div tabindex="9">
-								<!--A3:17 : Check error(select) -->
-								<div  style="margin-bottom: 10px"
-									data-bind="ntsCheckBox:{
-									checked: checkErrSelect,
-									enable: enableSelect
+									<!--A3:17 : Check error(select) -->
+									<div style="margin-bottom: 10px"
+										data-bind="ntsCheckBox:{
+									checked: itemTotalTimesDetail().totalCondition().upperLimitSettingAtr,
+									enable: enableUse
 									}">
-								</div>
-								
-								<!-- A3_18: Alarm time -->  
-								<input  class="nts-validate" id="inpAlarmTime" style="width: 50px"
-								data-bind="ntsTimeEditor: {
+									</div>
+
+									<!-- A3_18: Alarm time -->
+									<input class="nts-validate" id="inpAlarmTime"
+										style="width: 50px"
+										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_16]',
-									value: alarmTime,
+									value: itemTotalTimesDetail().totalCondition().thresoldUpperLimit,
 									inputFormat: 'time', 
 									mode: 'time', 
 									constraint: 'Time',
 									enable: enableUse}" />
-								<!-- A3_19 -->	
-								#{i18n.getText('KMK009_17')}	
+									<!-- A3_19 -->
+									#{i18n.getText('KMK009_17')}
 								</div>
 							</td>
 						</tr>
 						<tr class="row">
-							<td>
-							</td>
-							<td style = "padding-left: 5px">
+							<td></td>
+							<td style="padding-left: 5px">
 								<div tabindex="10">
-								<!-- :A3_20 Check error(select) -->
-								<div  style="margin-bottom: 10px"
-									data-bind="ntsCheckBox:{
-									checked: checkErrSelect,
-									enable: enableSelect
+									<!-- :A3_20 Check error(select) -->
+									<div style="margin-bottom: 10px"
+										data-bind="ntsCheckBox:{
+									checked: itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr,
+									enable: enableUse
 									}">
-								</div>
-								<!-- A3_21: Error time --> 
-                                <input  style="width: 50px"
-                                 data-bind="ntsTimeEditor: {
+									</div>
+									<!-- A3_21: Error time -->
+									<input style="width: 50px"
+										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_19]',
-									value: errTime,
+									value: itemTotalTimesDetail().totalCondition().thresoldLowerLimit,
 									inputFormat: 'time', 
 									mode: 'time', 
 									constraint: 'Time',
 									enable: enableUse}" />
-								<!-- A3_22 -->	
-								#{i18n.getText('KMK009_20')}	
+									<!-- A3_22 -->
+									#{i18n.getText('KMK009_20')}
 								</div>
 							</td>
 						</tr>
@@ -221,15 +229,15 @@
 								<!-- A3_23 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_11')}</div>
 							</td>
-							<td style = "padding-left: 5px">
+							<td style="padding-left: 5px">
 								<div tabindex="11">
-								<!-- A3_24: Check error(select) -->
-								<div  style="margin-bottom: 10px"
-									data-bind="ntsCheckBox:{
-									checked: checkErrSelect,
-									enable: enableSelect,
+									<!-- A3_24: Check error(select) -->
+									<div style="margin-bottom: 10px"
+										data-bind="ntsCheckBox:{
+									checked: itemTotalTimesDetail().countAtr,
+									enable: enableUse,
 									text: '#{i18n.getText('KMK009_21')}'}">
-								</div>
+									</div>
 								</div>
 							</td>
 						</tr>

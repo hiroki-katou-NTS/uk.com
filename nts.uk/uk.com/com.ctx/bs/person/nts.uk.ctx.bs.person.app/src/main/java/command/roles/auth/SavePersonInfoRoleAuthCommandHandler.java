@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import command.roles.auth.category.SavePersonInfoCategoryAuthCommand;
 import command.roles.auth.item.PersonInfoItemAuthCommand;
@@ -20,7 +19,6 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.item.PersonInfoItemAuthReposito
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-@Transactional
 public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePersonInfoRoleAuthCommand> {
 	@Inject
 	private PersonInfoRoleAuthRepository pRoleAuthRepo;

@@ -13,11 +13,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshstTotalCondition.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSHST_TOTAL_CONDITION")
 public class KshstTotalCondition extends UkJpaEntity implements Serializable {
@@ -33,25 +37,25 @@ public class KshstTotalCondition extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "UPPER_LIMIT_SET_ATR")
-	private short upperLimitSetAtr;
+	private int upperLimitSetAtr;
 
 	/** The lower limit set atr. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "LOWER_LIMIT_SET_ATR")
-	private short lowerLimitSetAtr;
+	private int lowerLimitSetAtr;
 
 	/** The thresold upper limit. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "THRESOLD_UPPER_LIMIT")
-	private short thresoldUpperLimit;
+	private long thresoldUpperLimit;
 
 	/** The thresold lower limit. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "THRESOLD_LOWER_LIMIT")
-	private short thresoldLowerLimit;
+	private long thresoldLowerLimit;
 
 	/**
 	 * Instantiates a new kshst total condition.

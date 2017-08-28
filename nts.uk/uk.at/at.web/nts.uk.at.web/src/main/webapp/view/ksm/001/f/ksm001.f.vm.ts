@@ -1,37 +1,37 @@
 module nts.uk.at.view.ksm001.f {
 
-    import UsageSettingDto = service.model.UsageSettingDto;
+    import CommonGuidelineSettingDto = service.model.CommonGuidelineSettingDto;
     import Enum = service.model.Enum;
 
     export module viewmodel {
 
         export class ScreenModel {
             detail: KnockoutObservable<UsageSettingModel>;
+            value: KnockoutObservable<string>;
             useClsEnums: Array<Enum>;
 
             constructor() {
                 var self = this;
                 self.detail = ko.observable(new UsageSettingModel(0, 0));
+                self.value = ko.observable('red');
             }
 
             /**
             * start page data 
             */
-            public startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<void> {
                 var self = this;
                 
                 var dfd = $.Deferred();
 
                 nts.uk.ui.block.invisible();
 
-                self.loadUseClsEnum().done(function() {
-                    self.loadUsageSetting.done(function(dataRes: UsageSettingDto) {
-                        dfd.resolve();
-                    })
+                service.findCommonGuidelineSetting().done(function(){
+                    
+                    dfd.resolve();
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
-
-                dfd.resolve(self);
-                
                 return dfd.promise();
             }
             

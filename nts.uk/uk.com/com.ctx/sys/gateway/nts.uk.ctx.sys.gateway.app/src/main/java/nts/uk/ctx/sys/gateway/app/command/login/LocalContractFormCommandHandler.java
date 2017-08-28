@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.management.RuntimeErrorException;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -31,11 +30,11 @@ public class LocalContractFormCommandHandler
 
 	/** The system config repository. */
 	@Inject
-	SystemConfigRepository systemConfigRepository;
+	private SystemConfigRepository systemConfigRepository;
 
 	/** The contract repository. */
 	@Inject
-	ContractRepository contractRepository;
+	private ContractRepository contractRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -54,14 +53,11 @@ public class LocalContractFormCommandHandler
 			if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
 				if (this.isShowContract(command)) {
 					return new CheckContractDto(true);
-				} else {
-					return new CheckContractDto(false);
 				}
-			}
-			// case OnPre
-			else {
 				return new CheckContractDto(false);
 			}
+			// case OnPre
+			return new CheckContractDto(false);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -88,7 +84,7 @@ public class LocalContractFormCommandHandler
 			return true;
 		}
 		// compare contract pass
-		if (!PasswordHash.verifyThat(contractPassword, "salt").isEqualTo(contract.get().getPassword().v())) {
+		if (!PasswordHash.verifyThat(contractPassword, contractCode).isEqualTo(contract.get().getPassword().v())) {
 			return true;
 		}
 		// check time limit
@@ -107,9 +103,8 @@ public class LocalContractFormCommandHandler
 		Optional<SystemConfig> systemConfig = systemConfigRepository.getSystemConfig();
 		if (systemConfig.isPresent()) {
 			return systemConfig.get();
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**

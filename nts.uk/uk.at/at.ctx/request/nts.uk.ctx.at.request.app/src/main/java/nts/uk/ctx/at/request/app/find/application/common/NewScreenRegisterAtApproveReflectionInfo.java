@@ -46,20 +46,21 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 		List<String> list5PhaseID = listPhase.stream().map(c->c.getAppID()).collect(Collectors.toList());
 		//LOOP PHASE
 		for (AppApprovalPhase appPhase : listPhase) {
+			// get List 5 FRAME by phase ID
+			String phaseID = appPhase.getPhaseID();
+			List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(companyID, phaseID);
 			// ドメインモデル「承認フェーズ」．承認区分が承認済じゃない(「承認フェーズ」．承認区分 ≠ 承認済)
 			if (appPhase.getApprovalATR().value != 1) {
-				// get List 5 FRAME by phase ID
-				String phaseID = appPhase.getPhaseID();
-				List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(companyID, phaseID);
 				/// LOOP FRAME
 				// 承認枠 1～5 のループ
 				for (ApprovalFrame frame : listFrame) {
 					// get 承認者ID
-					String approver = frame.getAuthorizerSID();
+					String approver = frame.getApproverSID();
 					// get 承認区分
 					int approvalAtr = frame.getApprovalATR().value;
 					// 承認者一覧に承認者がいる
 					// KIỂM TRA NGƯỜI ĐẠI DIỆN
+					// trả về người đại diện, có phải là người login hay không ? hay để trống
 					if (approvalAtr != 1) {
 						// ログイン者が承認者かチェックする	
 						// if文がfalse
@@ -83,12 +84,24 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 			
 			
 			///CỤM THỨ 2
+			// TÍNH XEM ĐÃ xác nhận hết chưa
+			
 			int intAppForm =  appPhase.getApprovalForm().value;
 			//「承認フェーズ」．承認形態が誰か一人
 			//承認フラグ
 			boolean flgApprovalDone = true;
+			//Trường hợp chỉ có một người approval
 			if(intAppForm == 2) {
 				flgApprovalDone = false;
+				//Check xem trong Frame đã xác nhận hay chưa 
+				// 承認枠 1～5 のループ
+				for (ApprovalFrame frame : listFrame) {
+					int intConfirm = frame.getConfirmATR().value;
+					//Trường hợp chưa confirm
+					if(intConfirm ==0) {
+						
+					}
+				}
 				
 				
 				
@@ -97,8 +110,9 @@ public class NewScreenRegisterAtApproveReflectionInfo {
 				
 			} else {
 			//「承認フェーズ」．承認形態が全員承認
+			//trong trường hợp nhiều người approval
 			//intAppForm == 1	
-				
+			//LIÊN QUAN TỚI PHẦN 8.2
 				
 				
 			}

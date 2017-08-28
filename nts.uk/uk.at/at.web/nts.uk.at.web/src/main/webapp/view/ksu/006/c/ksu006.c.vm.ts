@@ -25,7 +25,7 @@ module nts.uk.pr.view.ksu006.c {
                 
                 self.completionList = ko.observableArray([]);
                 
-                self.dateRange = ko.observable({startDate: new Date(), endDate: new Date()});
+                self.dateRange = ko.observable(self.initDateRange());
                 self.isIncomplete = ko.observable(true);
                 self.isInterruption = ko.observable(true);
                 self.isDone = ko.observable(true);
@@ -72,6 +72,14 @@ module nts.uk.pr.view.ksu006.c {
                 return dfd.promise();
             }
             
+            private initDateRange(): any {
+                let curr: Date = new Date();
+                return {
+                    startDate: new Date(curr.setMonth(curr.getMonth() - 1)),
+                    endDate: new Date()
+                }
+            }
+            
             public eventClick(dataLog: any) {
                 let self = this;
                 let dfd = $.Deferred<void>();
@@ -80,9 +88,9 @@ module nts.uk.pr.view.ksu006.c {
                         nts.uk.ui.block.grayout();
                         service.downloadDetailError(item.executeId).done(function() {
                             dfd.resolve();
-                        }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError(res.message);
-                        }).always(function(res) {
+                        }).fail(function(res: any) {
+                            self.showMessageError(res);
+                        }).always(function() {
                             nts.uk.ui.block.clear();
                         });
                   });
@@ -106,7 +114,7 @@ module nts.uk.pr.view.ksu006.c {
                     listState.push(2);
                 }
                 if (listState.length <= 0) {
-                    nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_166"));
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_166'});
                     return;
                 }
                 self.loadDataLog(true, listState).done(() => {
@@ -129,7 +137,7 @@ module nts.uk.pr.view.ksu006.c {
                     query.listState = [0, 1, 2];
                 } else {
                     let objStartDate: any = self.getComponentDate(self.dateRange().startDate);
-                    let objEndDate: any = self.getComponentDate(self.dateRange().startDate);
+                    let objEndDate: any = self.getComponentDate(self.dateRange().endDate);
                     
                     query.startDate = new Date(Date.UTC(objStartDate.year, objStartDate.month, objStartDate.day));
                     query.endDate = new Date(Date.UTC(objEndDate.year, objEndDate.month, objEndDate.day));
@@ -138,8 +146,8 @@ module nts.uk.pr.view.ksu006.c {
                 service.findAllExternalBudgetLog(query).done(function(res: Array<ExternalBudgetLogModel>) {
                     self.dataLog(res);
                     dfd.resolve();
-                }).fail(function(res) {
-                   nts.uk.ui.dialog.alertError(res.message);
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
                 });
                 return dfd.promise();
             }
@@ -151,7 +159,7 @@ module nts.uk.pr.view.ksu006.c {
                     self.completionList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                   nts.uk.ui.dialog.alertError(res.message);
+                   self.showMessageError(res);
                 });
                 return dfd.promise();
             }
@@ -162,6 +170,14 @@ module nts.uk.pr.view.ksu006.c {
                     year: parseInt(lstComponent[0]),
                     month: parseInt(lstComponent[1]) - 1,
                     day: parseInt(lstComponent[2]),
+                }
+            }
+            
+            private showMessageError(res: any) {
+                if (res.businessException) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                } else {
+                    nts.uk.ui.dialog.alertError(res.message);
                 }
             }
         }

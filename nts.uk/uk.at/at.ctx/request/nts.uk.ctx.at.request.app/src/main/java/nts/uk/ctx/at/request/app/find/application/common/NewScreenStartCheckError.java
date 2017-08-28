@@ -37,7 +37,7 @@ public class NewScreenStartCheckError {
 				throw new BusinessException("Msg_323");
 			} else {
 				//利用区分が利用する
-				Optional<ApplicationSetting> appSet = appSettingRepo.getApplicationSettingByAppType(companyId, appType);
+				Optional<ApplicationSetting> appSet = appSettingRepo.getApplicationSettingByComID(companyId);
 				// 「申請設定」．承認ルートの基準日がシステム日付時点の場合
 				if (appSet.map(x -> x.getBaseDateFlg()).get().value == 0) {
 					//chưa biết lấy 承認ルート

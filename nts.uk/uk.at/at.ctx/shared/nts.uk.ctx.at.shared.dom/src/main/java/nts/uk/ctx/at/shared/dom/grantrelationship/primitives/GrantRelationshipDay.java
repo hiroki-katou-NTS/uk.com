@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author yennth
  *
  */
-@IntegerRange(max=999, min=0)
+@IntegerRange(max=366, min=0)
 public class GrantRelationshipDay extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	private static final long serialVersionUID = 1L;
 	public GrantRelationshipDay(Integer rawValue) {

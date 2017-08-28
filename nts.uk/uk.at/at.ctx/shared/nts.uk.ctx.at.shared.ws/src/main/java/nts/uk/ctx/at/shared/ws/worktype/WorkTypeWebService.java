@@ -37,8 +37,8 @@ public class WorkTypeWebService extends WebService {
 	@Inject 
 	private BasicScheduleService basicSchedule;
 	
-	private static final List<Integer> workstyleList = Arrays.asList(WorkStyle.AFTERNOON_BREAK.value,
-			WorkStyle.MORNING_BREAK.value, WorkStyle.ONE_DAY_REST.value, WorkStyle.ONE_DAY_WORK.value);
+	private static final List<Integer> workstyleList = Arrays.asList(WorkStyle.AFTERNOON_WORK.value,
+			WorkStyle.MORNING_WORK.value, WorkStyle.ONE_DAY_REST.value, WorkStyle.ONE_DAY_WORK.value);
 	
 
 	/**
