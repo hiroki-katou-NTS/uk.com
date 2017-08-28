@@ -101,7 +101,8 @@ public class ExternalBudgetFinder {
     public ExtBudgetDataPreviewDto findDataPreview(ExtBudgetExtractCondition extractCondition) {
         int lineStart = extractCondition.getStartLine().v();
         // Check valid format file.
-        this.fileCheckService.validFileFormat(extractCondition.getFileId(), extractCondition.getEncoding(), lineStart);
+        this.fileCheckService.validFileIgnoreCharset(extractCondition.getFileId(), extractCondition.getEncoding(),
+                lineStart);
         
         String companyId = AppContexts.user().companyId();
         

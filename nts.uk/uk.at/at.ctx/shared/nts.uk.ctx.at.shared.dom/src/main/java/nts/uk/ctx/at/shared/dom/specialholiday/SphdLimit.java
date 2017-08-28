@@ -6,7 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
 @Getter
-public class SpecialVacation {
+public class SphdLimit {
 	
 	/*会社ID*/
 	private String companyId;
@@ -29,15 +29,15 @@ public class SpecialVacation {
 	/*特別休暇の期限方法*/
 	private SpecialVacationMethod specialVacationMethod; 
 
-	public static SpecialVacation createSimpleFromJavaType(
+	public static SphdLimit createFromJavaType(
 			String companyId,
-			String specialHolidayCode,
+			int specialHolidayCode,
 			int specialVacationMonths,
 			int specialVacationYears,
 			int grantCarryForward,
 			int limitCarryoverDays,
 			int specialVacationMethod){
-					return new SpecialVacation(companyId, 
+					return new SphdLimit(companyId, 
 					new SpecialHolidayCode(specialHolidayCode),
 					new SpecialVacationMonths(specialVacationMonths),
 					new SpecialVacationYears(specialVacationYears),
@@ -45,4 +45,8 @@ public class SpecialVacation {
 					new LimitCarryoverDays(limitCarryoverDays),
 					EnumAdaptor.valueOf(specialVacationMethod, SpecialVacationMethod.class));
 }
+
+	public SphdLimit() {
+		// TODO Auto-generated constructor stub
+	}
 }

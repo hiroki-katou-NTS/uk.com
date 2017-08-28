@@ -1,37 +1,26 @@
 @CHARSET "UTF-8";
 
-.contents {
-	margin: 0;
-	position: absolute;
-	top: 40%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-
-.period_labels {
-	width: 300px;
-}
-
-.employee_labels {
-	margin-top: 20px;
-	width: 350px;
-}
-
-.workday_labels {
-	width: 385px;
-	margin-left: 20px;
-	margin-top: 20px;
-}
-
 .lableData {
-	width: 135px;
-}
-
-.contentDetail {
-	width: 150px;
 	margin-left: 20px;
+	width: 110px;
+	margin-top: 10px;
 }
 
-#functions-area-bottom{
-	height: 100px;
+.settingColor {
+	margin-top: 25px;
+}
+
+.border-all td {
+	border: solid grey 1px;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 5px;
+	padding-left: 5px;
+	min-width: 80px;
+	max-width: 100px;
+}
+
+.bg-dark-green {
+	background-color: #C7F391;
 }

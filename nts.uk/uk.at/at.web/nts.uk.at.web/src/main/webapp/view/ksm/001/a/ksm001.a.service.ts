@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksm001.a {
     export module service {
         var paths = {
+            findCompanySettingEstimate: "ctx/at/schedule/shift/estimate/usagesetting/find",
             findCompanyEstablishment: "ctx/at/schedule/shift/estimate/company/find",
             saveCompanyEstablishment: "ctx/at/schedule/shift/estimate/company/save",
             deleteCompanyEstablishment: "ctx/at/schedule/shift/estimate/company/delete",
@@ -99,8 +100,20 @@ module nts.uk.at.view.ksm001.a {
                 targetYear: targetYear
             });
         }
+        
+        /**
+         * call service find setting estimate 
+         */
+        export function findCompanySettingEstimate(): JQueryPromise<model.UsageSettingDto> {
+            return nts.uk.request.ajax('at', paths.findCompanySettingEstimate);
+        }
 
         export module model {
+            
+            export interface UsageSettingDto {
+                employmentSetting: boolean;
+                personalSetting: boolean;
+            }
 
             export interface EstimateTimeDto {
                 month: number;

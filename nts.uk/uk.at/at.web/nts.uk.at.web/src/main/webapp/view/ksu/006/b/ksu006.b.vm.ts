@@ -90,7 +90,7 @@ module nts.uk.pr.view.ksu006.b {
                     self.taskId(res.taskInfor.id);
                     self.updateState();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    self.showMessageError(res);
                 });
             }
             
@@ -122,7 +122,7 @@ module nts.uk.pr.view.ksu006.b {
                             // end count time
                             $('.countdown').stopCountDown();
                             if (res.error) {
-                                nts.uk.ui.dialog.alertError(res.error.message);
+                                self.showMessageError(res.error);
                             }
                             if (res.succeeded) {
                                 $('#closeDialog').focus();
@@ -138,9 +138,9 @@ module nts.uk.pr.view.ksu006.b {
                 let self = this;
                 nts.uk.ui.block.grayout();
                 service.downloadDetailError(self.executeId()).done(function() {
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                }).always(function(res) {
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
+                }).always(function() {
                     nts.uk.ui.block.clear();
                 });
             }
@@ -174,9 +174,17 @@ module nts.uk.pr.view.ksu006.b {
                     }
                     dfd.resolve();
                 }).fail((res: any) => {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    self.showMessageError(res);
                 });
                 return dfd.promise();
+            }
+            
+            private showMessageError(res: any) {
+                if (res.businessException) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                } else {
+                    nts.uk.ui.dialog.alertError(res.message);
+                }
             }
         }
     }
