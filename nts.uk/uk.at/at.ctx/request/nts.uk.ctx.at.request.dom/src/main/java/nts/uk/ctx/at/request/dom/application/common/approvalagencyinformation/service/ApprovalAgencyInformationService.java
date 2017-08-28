@@ -2,8 +2,6 @@ package nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.s
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.agentadapter.AgentAdapterDto;
 import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.ApprovalAgencyInformationOutput;
 
 /**
@@ -13,7 +11,5 @@ import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.Ap
  */
 public interface ApprovalAgencyInformationService {
 	public ApprovalAgencyInformationOutput getApprovalAgencyInformation(String companyID,List<String> approver);
-	
-	public List<AgentAdapterDto>  getAgentInfor(String requestId, GeneralDate startDate, GeneralDate endDate);
-	
+
 }
