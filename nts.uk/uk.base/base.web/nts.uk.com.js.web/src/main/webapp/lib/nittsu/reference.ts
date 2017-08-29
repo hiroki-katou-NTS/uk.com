@@ -1,3 +1,13 @@
+/// <reference path="generic.d.ts/jquery.d.ts"/>
+/// <reference path="generic.d.ts/jquery.steps.d.ts"/>
+/// <reference path="generic.d.ts/igniteui.d.ts"/>
+/// <reference path="generic.d.ts/jqueryui.d.ts"/>
+/// <reference path="generic.d.ts/knockout.d.ts"/>
+/// <reference path="generic.d.ts/knockout.mapping.d.ts"/>
+/// <reference path="generic.d.ts/lodash.d.ts"/>
+/// <reference path="generic.d.ts/moment.d.ts"/>
+/// <reference path="generic.d.ts/require.d.ts"/>
+
 /// <reference path="ui/viewcontext.d.ts"/>
 /// <reference path="util.ts"/>
 /// <reference path="text.ts"/>
