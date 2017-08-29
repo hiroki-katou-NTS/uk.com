@@ -151,7 +151,11 @@ module nts.uk.at.view.ksm003.a {
                     self.selectedCode(nts.uk.text.padLeft(self.detail().patternCode(), '0', 2));
                     self.isEditting(true);
                 }).fail(function(res) {
-                    alert(res.message);
+                    if (res.messageId == "Msg_3") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_3" });
+                    } else {
+                        alert(res.message);
+                    }
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
@@ -241,6 +245,11 @@ module nts.uk.at.view.ksm003.a {
                 let self = this;
                 $('#inpCode').ntsEditor('validate');
                 $('#inpPattern').ntsEditor('validate');
+
+                if (nts.uk.util.isNullOrEmpty(self.detail().dailyPatternVals())) {
+                    $('#days1').ntsError('set', { messageId: "Msg_31" });
+                }
+
                 self.detail().dailyPatternVals().forEach((item) => {
                     if (item.isSetting()) {
                         $('#days' + item.dispOrder).ntsEditor('validate');
@@ -250,6 +259,7 @@ module nts.uk.at.view.ksm003.a {
                         $('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_22" });
                     }
                 });
+
                 return $('.nts-input').ntsError('hasError');
             }
 
@@ -374,8 +384,8 @@ module nts.uk.at.view.ksm003.a {
                         self.workingHoursCd(childData.selectedWorkTimeCode);
                         self.setWorkTypeName(childData.selectedWorkTypeName);
                         self.setWorkTimeName(childData.selectedWorkTimeName);
-//                        $('#days' + self.dispOrder).ntsError('clear');
-//                        $('#days' + self.dispOrder).ntsEditor('validate');
+                        //                        $('#days' + self.dispOrder).ntsError('clear');
+                        //                        $('#days' + self.dispOrder).ntsEditor('validate');
                     });
 
                 }
