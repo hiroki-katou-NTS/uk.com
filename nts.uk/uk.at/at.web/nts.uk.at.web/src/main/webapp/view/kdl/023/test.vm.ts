@@ -53,7 +53,7 @@ module nts.uk.at.view.kdl023.viewmodel {
             }
 
             let range = moment.duration(endDate.diff(startDate));
-            if (range.asDays() >= 31) {
+            if (range.asDays() > 31) {
                 return true;
             }
 
