@@ -64,19 +64,19 @@ public class JpaCompanyEstimateTimeSettingSetMemento implements EstimateTimeSett
 			yearlyEstimateTimeSetting.forEach(yearly->{
 				switch (yearly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					this.estTimeCompany.setEstCondition1stTime(new Double(yearly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition1stTime(new Double(yearly.getTime().minutes()).intValue());
 					break;
 				case CONDITION_2ND:
-					this.estTimeCompany.setEstCondition2ndTime(new Double(yearly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition2ndTime(new Double(yearly.getTime().minutes()).intValue());
 					break;
 				case CONDITION_3RD:
-					this.estTimeCompany.setEstCondition3rdTime(new Double(yearly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition3rdTime(new Double(yearly.getTime().minutes()).intValue());
 					break;
 				case CONDITION_4TH:
-					this.estTimeCompany.setEstCondition4thTime(new Double(yearly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition4thTime(new Double(yearly.getTime().minutes()).intValue());
 					break;
 				case CONDITION_5TH:
-					this.estTimeCompany.setEstCondition5thTime(new Double(yearly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition5thTime(new Double(yearly.getTime().minutes()).intValue());
 					break;
 
 				default:
@@ -106,19 +106,19 @@ public class JpaCompanyEstimateTimeSettingSetMemento implements EstimateTimeSett
 			monthlyEstimateTimeSetting.forEach(monthly->{
 				switch (monthly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					this.estTimeCompany.setEstCondition1stTime(new Double(monthly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition1stTime(new Double(monthly.getTime().minutes()).intValue());
 					break;
 				case CONDITION_2ND:
-					this.estTimeCompany.setEstCondition2ndTime(new Double(monthly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition2ndTime(new Double(monthly.getTime().minutes()).intValue());
 					break;
 				case CONDITION_3RD:
-					this.estTimeCompany.setEstCondition3rdTime(new Double(monthly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition3rdTime(new Double(monthly.getTime().minutes()).intValue());
 					break;
 				case CONDITION_4TH:
-					this.estTimeCompany.setEstCondition4thTime(new Double(monthly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition4thTime(new Double(monthly.getTime().minutes()).intValue());
 					break;
 				case CONDITION_5TH:
-					this.estTimeCompany.setEstCondition5thTime(new Double(monthly.getTime().v()).intValue());
+					this.estTimeCompany.setEstCondition5thTime(new Double(monthly.getTime().minutes()).intValue());
 					break;
 
 				default:
