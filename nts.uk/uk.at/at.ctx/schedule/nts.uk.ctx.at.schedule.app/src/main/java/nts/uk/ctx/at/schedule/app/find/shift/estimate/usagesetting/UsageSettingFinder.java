@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.shift.estimate.usagesetting;
+package nts.uk.ctx.at.schedule.app.find.shift.estimate.usagesetting;
 
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.app.shift.estimate.usagesetting.dto.UsageSettingDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.usagesetting.dto.UsageSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,20 +30,22 @@ public class UsageSettingFinder {
 	 * @return the common guideline setting dto
 	 */
 	public UsageSettingDto findByCompanyId() {
-
+		// Get the company id
 		String companyId = AppContexts.user().companyId();
 
+		// Find setting
 		Optional<UsageSetting> optUsageSetting = this.commonGuidelineSettingRepo
 				.findByCompanyId(companyId);
 
+		// Create dto
 		UsageSettingDto commonGuidelineSettingDto = new UsageSettingDto();
-		if (!optUsageSetting.isPresent()) {
-			return commonGuidelineSettingDto;
+
+		// Check exist
+		if (optUsageSetting.isPresent()) {
+			optUsageSetting.get().saveToMemento(commonGuidelineSettingDto);
 		}
 
-
-		optUsageSetting.get().saveToMemento(commonGuidelineSettingDto);
-
+		// Return
 		return commonGuidelineSettingDto;
 	}
 

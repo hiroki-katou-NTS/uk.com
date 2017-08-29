@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.shift.estimate.usagesetting.dto;
+package nts.uk.ctx.at.schedule.app.find.shift.estimate.usagesetting.dto;
 
 import lombok.Data;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageSettingSetMemento;

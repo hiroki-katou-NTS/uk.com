@@ -12,8 +12,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.usagesetting.SaveUsageSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.usagesetting.UsageSettingCommand;
-import nts.uk.ctx.at.schedule.app.shift.estimate.usagesetting.UsageSettingFinder;
-import nts.uk.ctx.at.schedule.app.shift.estimate.usagesetting.dto.UsageSettingDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.usagesetting.UsageSettingFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.usagesetting.dto.UsageSettingDto;
 
 /**
  * The Class UsageSettingWs.
