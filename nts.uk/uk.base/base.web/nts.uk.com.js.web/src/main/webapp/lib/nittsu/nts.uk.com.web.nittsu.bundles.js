@@ -7253,15 +7253,25 @@ var nts;
                         $grid2.ntsGridList('setupSelecting');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
                             .append("<button class = 'move-button move-forward ntsSwap_Component'><i class='icon icon-button-arrow-right'></i></button>")
-                            .append("<button class = 'move-button move-back ntsSwap_Component'><i class='icon icon-button-arrow-left'></i></button>");
+                            .append("<button class = 'move-button move-forward-all ntsSwap_Component'><i class='img-icon icon-move-all-right'></i></button>")
+                            .append("<button class = 'move-button move-back ntsSwap_Component'><i class='icon icon-button-arrow-left'></i></button>")
+                            .append("<button class = 'move-button move-back-all ntsSwap_Component'><i class='img-icon icon-move-all-left'></i></button>");
                         var $moveForward = $moveArea.find(".move-forward");
+                        var $moveForwardAll = $moveArea.find(".move-forward-all");
                         var $moveBack = $moveArea.find(".move-back");
+                        var $moveBackAll = $moveArea.find(".move-back-all");
                         var swapper = this.swapper;
                         $moveForward.click(function () {
-                            swapper.Model.move(true, data.value);
+                            swapper.Model.move(true, data.value, false);
                         });
                         $moveBack.click(function () {
-                            swapper.Model.move(false, data.value);
+                            swapper.Model.move(false, data.value, false);
+                        });
+                        $moveForwardAll.click(function () {
+                            swapper.Model.move(true, data.value, true);
+                        });
+                        $moveBackAll.click(function () {
+                            swapper.Model.move(false, data.value, true);
                         });
                         $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
                     };
@@ -7696,22 +7706,30 @@ var nts;
                             });
                         }
                     };
-                    GridSwapList.prototype.move = function (forward, value) {
+                    GridSwapList.prototype.move = function (forward, value, moveAll) {
+                        var primaryKey = this.transportBuilder.primaryKey;
                         var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
                         var sourceList = forward === true ? this.swapParts[0].dataSource : this.swapParts[1].dataSource;
                         var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
                         var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
-                        var selectedRows = $source.igGrid("selectedRows");
-                        if (nts.uk.util.isNullOrEmpty(selectedRows)) {
-                            return;
+                        if (moveAll) {
+                            var selectedIds = sourceList.map(function (row) { return row[primaryKey]; });
+                            this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
+                                .toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);
                         }
-                        selectedRows.sort(function (one, two) {
-                            return one.index - two.index;
-                        });
-                        var firstSelected = selectedRows[0];
-                        var selectedIds = selectedRows.map(function (row) { return row.id; });
-                        this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
-                            .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
+                        else {
+                            var selectedRows = $source.igGrid("selectedRows");
+                            if (nts.uk.util.isNullOrEmpty(selectedRows)) {
+                                return;
+                            }
+                            selectedRows.sort(function (one, two) {
+                                return one.index - two.index;
+                            });
+                            var firstSelected = selectedRows[0];
+                            var selectedIds = selectedRows.map(function (row) { return row.id; });
+                            this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
+                                .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);
+                        }
                         var firstSource = this.transportBuilder.getFirst();
                         var secondSource = this.transportBuilder.getSecond();
                         this.swapParts[0].bindData(firstSource);
@@ -7719,7 +7737,6 @@ var nts;
                         value(secondSource);
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
-                        var primaryKey = this.transportBuilder.primaryKey;
                         if (forward) {
                             var selectIndex = firstSource.length === 0 ? -1
                                 : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index);
@@ -7788,7 +7805,15 @@ var nts;
                         var _this = this;
                         return _.findIndex(list, function (elm) { return elm[_this.primaryKey].toString() === targetId.toString(); });
                     };
-                    ListItemTransporter.prototype.move = function (src, dest) {
+                    ListItemTransporter.prototype.move = function (src, dest, moveAll) {
+                        if (moveAll) {
+                            this.moveAllItems(src, dest);
+                        }
+                        else {
+                            this.moveNormal(src, dest);
+                        }
+                    };
+                    ListItemTransporter.prototype.moveNormal = function (src, dest) {
                         for (var i = 0; i < this.targetIds.length; i++) {
                             this.outcomeIndex = this.indexOf(src, this.targetIds[i]);
                             if (this.outcomeIndex === -1)
@@ -7806,6 +7831,10 @@ var nts;
                             dest.splice(this.incomeIndex + i, 0, target[0]);
                         }
                     };
+                    ListItemTransporter.prototype.moveAllItems = function (src, dest) {
+                        dest.push.apply(dest, src);
+                        _.remove(src);
+                    };
                     ListItemTransporter.prototype.determineDirection = function () {
                         if (this.startAt.toLowerCase() !== this.direction.toLowerCase()
                             && this.direction.toLowerCase() === "second") {
@@ -7822,19 +7851,19 @@ var nts;
                         else
                             return "insideSecond";
                     };
-                    ListItemTransporter.prototype.update = function () {
+                    ListItemTransporter.prototype.update = function (moveAll) {
                         switch (this.determineDirection()) {
                             case "firstToSecond":
-                                this.move(this.firstList, this.secondList);
+                                this.move(this.firstList, this.secondList, moveAll);
                                 break;
                             case "secondToFirst":
-                                this.move(this.secondList, this.firstList);
+                                this.move(this.secondList, this.firstList, moveAll);
                                 break;
                             case "insideFirst":
-                                this.move(this.firstList, this.firstList);
+                                this.move(this.firstList, this.firstList, moveAll);
                                 break;
                             case "insideSecond":
-                                this.move(this.secondList, this.secondList);
+                                this.move(this.secondList, this.secondList, moveAll);
                                 break;
                         }
                     };
@@ -19016,4 +19045,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
