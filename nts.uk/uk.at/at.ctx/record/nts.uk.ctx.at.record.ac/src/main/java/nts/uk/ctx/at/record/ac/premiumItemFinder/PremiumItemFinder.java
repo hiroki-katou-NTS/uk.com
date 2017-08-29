@@ -3,12 +3,14 @@ package nts.uk.ctx.at.record.ac.premiumItemFinder;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemAdapter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemDto;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PremiumItemPub;
 
+@Stateless
 public class PremiumItemFinder implements PremiumItemAdapter {
 	
 	@Inject
