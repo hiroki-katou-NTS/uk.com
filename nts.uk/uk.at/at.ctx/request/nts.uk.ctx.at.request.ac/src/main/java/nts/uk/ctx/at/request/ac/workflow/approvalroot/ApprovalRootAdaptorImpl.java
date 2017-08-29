@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseAdaptorDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.CompanyAppRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonAppRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpAppRootAdaptorDto;
@@ -123,6 +125,29 @@ public class ApprovalRootAdaptorImpl implements ApprovalRootAdaptor
 						x.getAnyItemApplicationId(),
 						x.getConfirmationRootType(),
 						x.getEmploymentRootAtr()
+			    )).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ApprovalPhaseAdaptorDto> findApprovalPhaseByBranchId(String cid, String branchId) {
+		return this.approvalRootPub.findApprovalPhaseByBranchId(cid, branchId).stream()
+				.map(x -> new ApprovalPhaseAdaptorDto(
+						x.getCompanyId(),
+						x.getBranchId(),
+						x.getApprovalPhaseId(),
+						x.getApprovalForm(),
+						x.getBrowsingPhase(),
+						x.getOrderNumber(),
+						x.getApproverDtos().stream().map(a -> new ApproverAdaptorDto(
+								a.getCompanyId(), 
+								a.getApprovalPhaseId(), 
+								a.getApproverId(), 
+								a.getJobTitleId(), 
+								a.getEmployeeId(), 
+								a.getOrderNumber(), 
+								a.getApprovalAtr(), 
+								a.getConfirmPerson()))
+						.collect(Collectors.toList())
 			    )).collect(Collectors.toList());
 	}
 }

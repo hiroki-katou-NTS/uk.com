@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +29,9 @@ public class ApprovalPhase extends AggregateRoot{
 	/**順序*/
 	private int orderNumber;
 	
+	/**承認者*/
+	private List<Approver>  approvers;
+	
 	public static ApprovalPhase createSimpleFromJavaType(String companyId,
 			String branchId,
 			String approvalPhaseId,
@@ -38,7 +43,7 @@ public class ApprovalPhase extends AggregateRoot{
 				approvalPhaseId,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
-				orderNumber);
+				orderNumber, null);
 	}
 	public static ApprovalPhase updateBranchId(ApprovalPhase approvalPhase, String branchId){
 		ApprovalPhase approvalPhaseNew = approvalPhase;
