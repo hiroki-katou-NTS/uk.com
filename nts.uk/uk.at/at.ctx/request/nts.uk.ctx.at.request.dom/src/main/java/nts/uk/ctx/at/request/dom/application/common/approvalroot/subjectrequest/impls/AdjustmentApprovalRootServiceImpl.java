@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverAdaptorDto;
+import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.service.ApprovalAgencyInformationService;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.AdjustmentApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.JobtitleToApproverService;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApproverInfo;
@@ -26,6 +27,12 @@ public class AdjustmentApprovalRootServiceImpl implements AdjustmentApprovalRoot
 	@Inject
 	private JobtitleToApproverService jobtitleToAppService;
 
+	/**
+	 * 3-1.承認代行情報の取得処理
+	 */
+	@Inject
+	private ApprovalAgencyInformationService appAgencyInfoService;
+	
 	@Override
 	public void adjustmentApprovalRootData(String cid, String sid, GeneralDate baseDate,
 			List<ApprovalPhaseAdaptorDto> appPhases) {
@@ -45,7 +52,10 @@ public class AdjustmentApprovalRootServiceImpl implements AdjustmentApprovalRoot
 					}
 				});
 				
-				if (CollectionUtil.isEmpty(approversResult)) {
+				// 承認者IDリストに承認者がいるかチェックする
+				if (!CollectionUtil.isEmpty(approversResult)) {
+					// 3-1.承認代行情報の取得処理
+//					this.appAgencyInfoService.getApprovalAgencyInformation(cid, approversResult);
 					
 				}
 			}
