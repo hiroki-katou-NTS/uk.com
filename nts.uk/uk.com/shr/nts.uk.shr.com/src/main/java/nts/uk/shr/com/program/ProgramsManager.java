@@ -158,23 +158,23 @@ public class ProgramsManager {
 	/**
 	 * CDL022A
 	 */
-	public static final Program CDL022A = new Program(WebAppId.COM, ProgramIdConsts.CDL022A, "PgName_CDL022A",
+	public static final Program CDL022A = new Program(WebAppId.COM, ProgramIdConsts.CDL022A, "CDL022_1",
 			"/view/cdl/022/a/index.xhtml");
 	/**
 	 * CPS007B
 	 */
-	public static final Program CPS007B = new Program(WebAppId.COM, ProgramIdConsts.CPS007B, "PgName_CPS007B",
+	public static final Program CPS007B = new Program(WebAppId.COM, ProgramIdConsts.CPS007B, "CPS007_2",
 			"/view/cps/007/b/index.xhtml");
 	/**
 	 * CPS008D
 	 */
-	public static final Program CPS008D = new Program(WebAppId.COM, ProgramIdConsts.CPS008D, "PgName_CPS008D",
-			"/view/cps/007/b/index.xhtml");
+	public static final Program CPS008D = new Program(WebAppId.COM, ProgramIdConsts.CPS008D, "CPS008_41",
+			"/view/cps/008/b/index.xhtml");
 	/**
 	 * CPS008C
 	 */
-	public static final Program CPS008C = new Program(WebAppId.COM, ProgramIdConsts.CPS008C, "PgName_CPS008C",
-			"/view/cps/007/b/index.xhtml");
+	public static final Program CPS008C = new Program(WebAppId.COM, ProgramIdConsts.CPS008C, "CPS008_38",
+			"/view/cps/008/c/index.xhtml");
 	/**
 	 * CMM044A
 	 */
