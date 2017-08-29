@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service;
+package nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service;
 
 import java.util.List;
 

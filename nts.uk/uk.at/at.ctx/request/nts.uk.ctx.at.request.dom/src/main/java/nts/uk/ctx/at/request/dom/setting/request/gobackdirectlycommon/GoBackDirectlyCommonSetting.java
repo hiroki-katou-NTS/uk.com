@@ -9,7 +9,10 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.FontWeightFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.GoBackWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
-
+/**
+ * 直行直帰申請共通設定
+ *
+ */
 @Value
 public class GoBackDirectlyCommonSetting {
 	/**

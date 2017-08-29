@@ -13,12 +13,12 @@ import nts.arc.error.BusinessException;
 @Stateless
 public class DetailScreenProcessBeforeReturnDefault implements DetailScreenProcessBeforeReturnService {
 	
-	@Inject
-	private ProcessBeforeDetailScreenRegistrationService repo;
+//	@Inject
+//	private ProcessBeforeDetailScreenRegistrationService repo;
 
 	@Override
 	public boolean detailScreenProcessBeforeReturn() {
-		repo.exclusiveCheck();
+		//repo.exclusiveCheck();
 		boolean check = true;
 		
 		if(!check)

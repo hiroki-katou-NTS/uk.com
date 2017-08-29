@@ -10,12 +10,12 @@ import javax.inject.Inject;
  */
 @Stateless
 public class DetailedScreenProcessBeforeDenialDefault implements DetailedScreenProcessBeforeDenialService {
-	@Inject
-	private ProcessBeforeDetailScreenRegistrationService repo; 
+//	@Inject
+//	private ProcessBeforeDetailScreenRegistrationService repo; 
 
 	@Override
 	public void detailedScreenProcessBeforeDenial() {
-		repo.exclusiveCheck();
+		//repo.exclusiveCheck();
 		
 	}
 }

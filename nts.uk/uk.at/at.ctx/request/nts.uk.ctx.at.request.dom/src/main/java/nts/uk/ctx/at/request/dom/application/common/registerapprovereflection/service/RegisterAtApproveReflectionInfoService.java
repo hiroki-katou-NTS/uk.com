@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.newscreenregisteratapprovereflectionInfo.service;
+package nts.uk.ctx.at.request.dom.application.common.registerapprovereflection.service;
 
 import nts.uk.ctx.at.request.dom.application.common.Application;
 

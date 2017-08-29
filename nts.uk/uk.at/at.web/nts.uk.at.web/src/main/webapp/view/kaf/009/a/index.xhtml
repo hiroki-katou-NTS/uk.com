@@ -7,34 +7,125 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
-			<com:stylefile path="kaf009.a.style.css" />
-			<com:scriptfile path="kaf009.a.start.js" />
-			<com:scriptfile path="kaf009.a.service.js" />
-			<com:scriptfile path="kaf009.a.vm.js" />
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kaf009.b.style.css" />
+			<com:scriptfile path="kaf009.b.start.js" />
+			<com:scriptfile path="kaf009.b.service.js" />
+			<com:scriptfile path="kaf009.b.vm.js" />
 		</ui:define>
-
 		<ui:define name="content">
-			<div id="functions-area"></div>
+			<div id="functions-area">
+				<button class="proceed" data-bind="" tabindex="1">#{i18n.getText('KAF009_3')}</button>
+				<button id="btnSpecSetting" data-bind="" tabindex="2">#{i18n.getText('KAF009_4')}</button>
+				<button data-bind="" tabindex="3">#{i18n.getText('KAF009_5')}</button>
+				<div
+					data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF009_6')}' }"></div>
+			</div>
 			<div id="contents-area">
-				<button >#{i18n.getText('KAF009_1')}</button>
-				<label class="block">#{i18n.getText('KAF009_2')}</label>
-				<div class="valign-center  control-group">
-					<button data-bind = "click : openBDialog">#{i18n.getText('KAF009_3')}</button>
-					<span class="caret-right caret-inline"></span>
+				<!--LEFT CONTENTS -->
+				<div class="left-contents">
+					<div class="valign-center control-group">
+						<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_7')}</div>
+						<label class="lblShainName"></label>
+					</div>
+					<!--事前事後区分 -->
+					<div class="valign-center control-group ">
+						<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
+						<div class="cf"
+							data-bind="ntsSwitchButton: {
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedRuleCode,
+								enable: true }">
+						</div>
+					</div>
+					<div class="valign-center control-group">
+						<!--申請日付 -->
+						<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_11')}</div>
+						<input id="inputdate"
+							data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+					</div>
+					<!--勤務時間 １１１１１１１１１１１１１-->
+					<div class="valign-center control-group">
+						<!--LINE　１ -->
+						<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
+						<input class="inpStartTime1"
+							data-bind="ntsTimeEditor: {value: time, inputFormat: 'time'}" />
+						<label>#{i18n.getText('KAF009_14')}</label> <input
+							class="inpEndTime1"
+							data-bind="ntsTimeEditor: {value: time, inputFormat: 'time'}" />
+						<!--選択場所　Button-->
+						<button data-bind="">#{i18n.getText('KAF009_15')}</button>
+						<label>場所名前</label> <br />
+						<!--LINE　２ -->
+						<div class="cf valign-center control-group switch"
+							data-bind="ntsSwitchButton: {
+								options: goWorkAtr,
+								optionsValue: 'goCode',
+								optionsText: 'goName',
+								value: selectedGo,
+								enable: true }">
+						</div>
+						<div class="cf"
+							data-bind="ntsSwitchButton: {
+								options: backHomeAtr,
+								optionsValue: 'backCode',
+								optionsText: 'backName',
+								value: selectedBack,
+								enable: true }">
+						</div>
+						<label id="comment1"></label>
+					</div>
+					<!--勤務時間 　２２２２２２２２２２２２２２２-->
+					<div class="valign-center control-group">
+						<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
+						<input class="inpStartTime2"
+							data-bind="ntsTimeEditor: {value: time, inputFormat: 'time'}" />
+						<label>#{i18n.getText('KAF009_14')}</label> 
+						<input
+							data-bind="ntsTimeEditor: {value: time, inputFormat: 'time'}" />
+						<button class="inpEndTime2" data-bind="">#{i18n.getText('KAF009_15')}</button>
+						<label>場所名前</label> <br />
+						<!--line 2 -->
+						<div class="cf valign-center control-group switch"
+							data-bind="ntsSwitchButton: {
+								options: goWorkAtr,
+								optionsValue: 'goCode',
+								optionsText: 'goName',
+								value: selectedGo2,
+								enable: true }">
+						</div>
+						<div class="cf"
+							data-bind="ntsSwitchButton: {
+								options: backHomeAtr,
+								optionsValue: 'backCode',
+								optionsText: 'backName',
+								value: selectedBack2,
+								enable: true }">
+						</div>
+						<label id="comment2"></label>
+					</div>
+					<!--直帰する -->
+					<div class="valign-center control-group">
+						<div class="lblTitle" data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF009_18')}</div>
+						<div id="multiline" data-bind="with: multilineeditor">
+							<textarea
+								data-bind="ntsMultilineEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									}" />
+						</div>
+					</div>
 				</div>
-				<div class="valign-center  control-group">
-					<button data-bind = "click : openCDialog">#{i18n.getText('KAF009_4')}</button>
-					<span class="caret-right caret-inline"></span>
+				<!--RIGHT CONTENT -->
+				<div class="right-contents">
+					<div class="panel panel-gray-bg">背景色も枠線もなし</div>
 				</div>
-				<div class="valign-center  control-group">
-					<button  data-bind = "click : openDDialog">#{i18n.getText('KAF009_6')}</button>
-					<span class="caret-right caret-inline"></span>
-				</div>
-
 			</div>
 		</ui:define>
 	</ui:composition>

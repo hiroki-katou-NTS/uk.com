@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.newscreenregisteratapprovereflectionInfo.service;
+package nts.uk.ctx.at.request.dom.application.common.registerapprovereflection.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalFor
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
-import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service.DetailedScreenAfterApprovalProcessDefault;
+import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.DetailedScreenAfterApprovalProcessDefault;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
