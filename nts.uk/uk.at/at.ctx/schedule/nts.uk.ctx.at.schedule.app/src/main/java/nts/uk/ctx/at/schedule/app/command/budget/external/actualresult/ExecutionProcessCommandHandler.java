@@ -610,10 +610,11 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
             return;
         }
         // insert error
+        int idxColReal = INDEX_COLUMN_CODE + 1;
         ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
-                .columnNo(INDEX_COLUMN_CODE)
+                .columnNo(idxColReal)
                 .workplaceCode(workplaceCode)
                 .errorContent(importProcess.mapStringJP.get("Msg_164"))
                 .build();
@@ -794,6 +795,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     private Map<String, String> findAllStringJP() {
         Map<String, String> mapMessage = new HashMap<>();
         String nameId = "KSU006_18";
+        // TODO: wait for fixing of Kiban team?
 //        Optional<String> optional = this.internationalization.getItemName(nameId);
 //        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
         mapMessage.put(nameId, nameId + " is not found.");

@@ -8,6 +8,7 @@ module nts.uk.at.view.ksm001.a {
             findEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/find",
             saveEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/save",
             deleteEmploymentEstablishment: "ctx/at/schedule/shift/estimate/employment/delete",
+            findAllEmploymentSetting: "ctx/at/schedule/shift/estimate/employment/findAll",
             findPersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/find",
             savePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/save",
             deletePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/delete"
@@ -108,6 +109,12 @@ module nts.uk.at.view.ksm001.a {
             return nts.uk.request.ajax('at', paths.findCompanySettingEstimate);
         }
 
+        /**
+         * call service find all setting employment
+         */
+        export function findAllEmploymentSetting(targetYear: number): JQueryPromise<model.EmploymentEstablishmentDto[]>{
+            return nts.uk.request.ajax('at', paths.findAllEmploymentSetting+'/'+targetYear);
+        }
         export module model {
             
             export interface UsageSettingDto {
