@@ -12,7 +12,7 @@ module cdl022.a.vm {
 
         constructor() {
             let self = this,
-                params: Array<IModel> = getShared('CDL020_PARAMS') || [{ id: 1, name: 'name 1' }, { id: 2, name: 'name 2' }, { id: 3, name: 'name 3' }];
+                params: Array<IModel> = getShared('CDL020_PARAMS') || [];
 
             if (!params || !params.length) {
                 self.close();

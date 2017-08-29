@@ -125,6 +125,11 @@ module nts.uk.at.view.ksm001.a {
                     }
 
                 }
+                self.employmentName = ko.observable('');
+                self.employmentList = ko.observableArray([]);
+                self.employmentList.subscribe(function() {
+                    self.employmentName(self.findEmploymentByCode(self.selectedEmploymentCode()).name);
+                });
                 
                 self.employmentTabs = ko.observableArray([
                     { id: 'emp-tab-1', title: nts.uk.resource.getText("KSM001_23"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -207,6 +212,7 @@ module nts.uk.at.view.ksm001.a {
              * on click tab panel company action event
              */
             public onSelectCompany(): JQueryPromise<void> {
+                $('.nts-input').ntsError('clear');
                 var self = this;
                 nts.uk.ui.block.invisible();
                 var dfd = $.Deferred<void>();
@@ -257,36 +263,40 @@ module nts.uk.at.view.ksm001.a {
              * on click tab panel employment action event
              */
             public onSelectEmployment(): void {
+                $('.nts-input').ntsError('clear');
                 nts.uk.ui.block.invisible();
                 var self = this;
-                self.employmentName = ko.observable('');
                 self.isCompanySelected(false);
                 self.isPersonSelected(false);
                 self.isEmploymentSelected(true);
                 self.isLoading(true);
 
-                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(() => {
-                    self.employmentList = ko.observableArray($('#employmentSetting').getDataList());
-                    self.selectedEmploymentCode.valueHasMutated();
-                    self.selectedEmploymentCode.subscribe(function(employmentCode) {
-                        if (!employmentCode) {
-                            self.employmentEstablishmentModel.disableInput();
-                        }
-                        if (employmentCode) {
-                            self.employmentName(self.findEmploymentByCode(employmentCode).name);
-                            self.employmentEstablishmentModel.enableInput();
-                            self.loadEmploymentEstablishment(self.selectedTargetYear(), employmentCode, true);
-                        }
-                    });
-                }).always(() => {
-                    nts.uk.ui.block.clear();
+                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(function() {
+                    self.employmentList($('#employmentSetting').getDataList());
                 });
+                
+                self.selectedEmploymentCode.valueHasMutated();
+                self.selectedEmploymentCode.subscribe(function(employmentCode) {
+                    if (!employmentCode) {
+                        self.employmentEstablishmentModel.disableInput();
+                    }
+                    if (employmentCode) {
+                        var employment: UnitModel = self.findEmploymentByCode(employmentCode);
+                        if (employment) {
+                            self.employmentName(employment.name);
+                        }
+                        self.employmentEstablishmentModel.enableInput();
+                        self.loadEmploymentEstablishment(self.selectedTargetYear(), employmentCode, true);
+                    }
+                });
+                nts.uk.ui.block.clear();
                 
             }
             /**
              * on click tab panel employment action event
              */
             public onSelectPerson(): void {
+                $('.nts-input').ntsError('clear');
                 var self = this;
                 nts.uk.ui.block.invisible();
                 self.employeeName = ko.observable('');
@@ -300,6 +310,7 @@ module nts.uk.at.view.ksm001.a {
                 self.isShowNoSelectRow = ko.observable(false);
                 self.employeeList = ko.observableArray<UnitModel>([]);
                 self.applyKCP005ContentSearch([]);
+                self.viewDefaultPersonal();
 
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
                 self.selectedEmployeeCode.valueHasMutated();
@@ -308,7 +319,10 @@ module nts.uk.at.view.ksm001.a {
                         self.personalEstablishmentModel.disableInput();
                     }
                     if (employeeCode) {
-                        self.employeeName(self.findByCodeEmployee(employeeCode).name);
+                        var employment: UnitModel = self.findByCodeEmployee(employeeCode);
+                        if (employment) {
+                            self.employeeName(employment.name);
+                        }
                         self.personalEstablishmentModel.enableInput();
                         service.findPersonalEstablishment(2017, self.findEmployeeIdByCode(employeeCode)).done(function(data) {
                             self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
@@ -319,6 +333,19 @@ module nts.uk.at.view.ksm001.a {
                     }
                 });
                 nts.uk.ui.block.clear();
+            }
+            /**
+             * Default personal data
+             */
+            private viewDefaultPersonal(): void {
+                var self = this;
+                var employeeDefault: string ="01";
+                service.findPersonalEstablishment(self.selectedTargetYear(), employeeDefault).done(function(data) {
+                    self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
+                    self.personalEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
+                    self.personalEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
+                    self.isLoading(false);
+                });
             }
 
             /**
@@ -440,7 +467,7 @@ module nts.uk.at.view.ksm001.a {
             * function on click saveCompanyEstablishment action
             */
             public saveCompanyEstablishment(): void {
-                if( $('.nts-editor').ntsError('hasError')) {
+                if( $('.nts-input').ntsError('hasError')) {
                     return;
                 };
                 nts.uk.ui.block.invisible();
@@ -476,7 +503,7 @@ module nts.uk.at.view.ksm001.a {
             * function on click saveEmploymentEstablishment action
             */
             public saveEmploymentEstablishment(): void {
-                if( $('.nts-editor').ntsError('hasError')) {
+                if( $('.nts-input').ntsError('hasError')) {
                     return;
                 };
                 nts.uk.ui.block.invisible();
@@ -511,7 +538,7 @@ module nts.uk.at.view.ksm001.a {
             * function on click savePersonalEstablishment action
             */
             public savePersonalEstablishment(): void {
-                if( $('.nts-editor').ntsError('hasError')) {
+                if( $('.nts-input').ntsError('hasError')) {
                     return;
                 };
                 nts.uk.ui.block.invisible();

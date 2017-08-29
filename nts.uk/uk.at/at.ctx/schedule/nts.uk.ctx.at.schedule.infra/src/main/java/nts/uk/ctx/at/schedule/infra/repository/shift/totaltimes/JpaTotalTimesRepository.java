@@ -97,7 +97,13 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	 */
 	@Override
 	public void update(TotalTimes totalTimes) {
-		KshstTotalTimes entity = new KshstTotalTimes();
+		Optional<KshstTotalTimes> optional = this.queryProxy().find(new KshstTotalTimesPK(totalTimes.getCompanyId().v(), totalTimes.getTotalCountNo()), KshstTotalTimes.class);
+		
+		if (!optional.isPresent()) {
+			throw new RuntimeException("Total times not existed.");
+		}
+		
+		KshstTotalTimes entity = optional.get();
 		totalTimes.saveToMemento(new JpaTotalTimesSetMemento(entity));
 		this.commandProxy().update(entity);
 	}

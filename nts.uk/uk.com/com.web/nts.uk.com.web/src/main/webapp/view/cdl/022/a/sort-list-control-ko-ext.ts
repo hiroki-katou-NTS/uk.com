@@ -6,7 +6,7 @@ module nts.custombinding {
                 key = data.optionsValue,
                 value = ko.observableArray([]),
                 options = ko.observableArray(data.options),
-                sortOptions: KnockoutObservableArray<any> = data.sortOptions,
+                optionsSorted: KnockoutObservableArray<any> = data.optionsSorted,
                 sources: Array<any> = ko.toJS(data.options);
 
             $.extend(data, {
@@ -18,13 +18,13 @@ module nts.custombinding {
 
             $(element).find('tbody.ui-iggrid-tablebody').sortable({
                 update: function(event, ui) {
-                    sortOptions.removeAll();
+                    optionsSorted.removeAll();
                     _($(event.target).find('tr'))
                         .map((x: Element) => x.attributes['data-id'])
                         .filter(x => !!x)
                         .map(x => x.value)
                         .value().forEach(x => {
-                            sortOptions.push(_.find(sources, item => item && item[key] == x));
+                            optionsSorted.push(_.find(sources, item => item && item[key] == x));
                         });
                 }
             });
