@@ -29,17 +29,18 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getRequiredIds(String contractCd, String companyId);
 
-	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String isAbolition,
-			String contractCd);
+	// Sonnlb Code
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithNoAbolition(String perInfoCtgId,
 			String contractCd);
 
-	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef);
+	void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef);
 
 	String getItemDefaultName(String categoryCd, String itemCode);
 
 	Optional<PerInfoItemDefOrder> getPerInfoItemDefOrdersByItemId(String perInfoItemDefId);
 
-	void UpdateOrderItemRoot(PerInfoItemDefOrder itemOrder);
+	void UpdateOrderItem(PerInfoItemDefOrder itemOrder);
+	
+	// Sonnlb Code
 }

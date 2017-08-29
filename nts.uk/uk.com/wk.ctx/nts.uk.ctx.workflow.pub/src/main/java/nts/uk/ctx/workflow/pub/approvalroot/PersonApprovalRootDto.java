@@ -1,6 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
-
-import java.util.Date;
+package nts.uk.ctx.workflow.pub.approvalroot;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
-public class ApprovalRootAdaptorDto {
+public class PersonApprovalRootDto {
 
 	/** 会社ID */
 	private String companyId;

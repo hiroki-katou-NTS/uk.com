@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 @Data

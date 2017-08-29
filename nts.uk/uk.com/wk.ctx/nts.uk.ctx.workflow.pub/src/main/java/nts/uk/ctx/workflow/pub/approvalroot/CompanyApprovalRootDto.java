@@ -1,21 +1,17 @@
 package nts.uk.ctx.workflow.pub.approvalroot;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
-public class ApprovalRootDto {
+public class CompanyApprovalRootDto {
 
 	/** 会社ID */
 	private String companyId;
 	/** 承認ID */
 	public String approvalId;
-	/** 社員ID */
-	private String employeeId;
 	/** 履歴ID */
 	private String historyId;
 	/** 申請種類 */
