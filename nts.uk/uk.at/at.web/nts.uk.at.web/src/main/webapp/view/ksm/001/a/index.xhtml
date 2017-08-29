@@ -8,6 +8,11 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTime
+				nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTime
+				nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatePrice
+   			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>

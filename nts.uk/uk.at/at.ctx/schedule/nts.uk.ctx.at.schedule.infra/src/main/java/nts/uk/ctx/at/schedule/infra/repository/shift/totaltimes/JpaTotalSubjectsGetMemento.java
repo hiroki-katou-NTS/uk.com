@@ -35,7 +35,7 @@ public class JpaTotalSubjectsGetMemento implements TotalSubjectsGetMemento {
 	 */
 	@Override
 	public WorkTypeCode getWorkTypeCode() {
-		return new WorkTypeCode(this.entity.getWorkTypeCd());
+		return new WorkTypeCode(this.entity.getKshstTotalSubjectsPK().getWorkTypeCd());
 	}
 
 	/*

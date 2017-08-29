@@ -15,6 +15,8 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.schedule.app.command.shift.totaltimes.SaveTotalTimesCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.shift.totaltimes.TotalTimesCommand;
 import nts.uk.ctx.at.schedule.app.find.shift.totaltimes.TotalTimesFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.totaltimes.dto.TotalTimesDetailDto;
 import nts.uk.ctx.at.schedule.app.find.shift.totaltimes.dto.TotalTimesItemDto;
@@ -30,6 +32,10 @@ public class TotalTimesWS extends WebService {
 	/** The total times finder. */
 	@Inject
 	private TotalTimesFinder totalTimesFinder;
+	
+	/** The save total times command handler. */
+	@Inject
+	private SaveTotalTimesCommandHandler saveTotalTimesCommandHandler;
 
 	/**
 	 * Gets the all total times.
@@ -64,4 +70,16 @@ public class TotalTimesWS extends WebService {
     public List<EnumConstant> findCompletionList() {
         return EnumAdaptor.convertToValueNameList(SummaryAtr.class);
     }
+	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("save")
+	public void save(TotalTimesCommand command) {
+		this.saveTotalTimesCommandHandler.handle(command);
+	}
+	
 }
