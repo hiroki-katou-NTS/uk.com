@@ -87,7 +87,7 @@ module cps007.a.vm {
             block();
             service.saveData(command).done(() => {
                 self.start();
-                info(text("Msg_15")).then(function() {
+                info({ messageId: "Msg_15" }).then(function() {
                     unblock();
                 });
             }).fail((mes) => {

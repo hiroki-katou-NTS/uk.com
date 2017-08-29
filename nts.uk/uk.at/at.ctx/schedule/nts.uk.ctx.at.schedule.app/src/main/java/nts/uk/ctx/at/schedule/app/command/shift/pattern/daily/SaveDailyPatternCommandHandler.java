@@ -48,8 +48,6 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 
 		Optional<DailyPattern> result = this.dailyPatternRepo.findByCode(companyId, patternCd);
 
-		DailyPattern dailyPattern = command.toDomain(companyId);
-
 		// Check duplicate code in new mode.
 		if (!command.getIsEditting() && result.isPresent()) {
 			// validate eap and find messegeId.
@@ -63,6 +61,8 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 						t.getWorkingHoursCd());
 			}
 		});
+		
+		DailyPattern dailyPattern = command.toDomain(companyId);
 
 		// check add or update
 		if (!result.isPresent()) {

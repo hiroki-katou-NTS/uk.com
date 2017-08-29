@@ -6,5 +6,5 @@ import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.AttendanceItemLi
 
 public interface AttendanceItemLinkingRepository {
 	
-	List<AttendanceItemLinking> getByAttendanceId(String attendanceItemId);
+	List<AttendanceItemLinking> getByAttendanceId(List<Integer> attendanceItemIds);
 }

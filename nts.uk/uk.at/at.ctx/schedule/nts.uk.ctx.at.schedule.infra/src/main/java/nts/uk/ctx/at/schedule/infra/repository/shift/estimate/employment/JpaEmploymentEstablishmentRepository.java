@@ -5,8 +5,11 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.employment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -484,6 +487,73 @@ public class JpaEmploymentEstablishmentRepository extends JpaRepository
 		this.commandProxy().removeAll(estimatePriceEmployments);
 		this.commandProxy().removeAll(estimateDaysEmployments);
 		
+	}	
+
+	/**
+	 * Gets the estimate time.
+	 *
+	 * @param companyId the company id
+	 * @param targetYear the target year
+	 * @return the estimate time
+	 */
+	private List<KscmtEstTimeEmpSet> getEstimateTime(String companyId, int targetYear) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KSCMT_EST_TIME_COM_SET (KscmtEstTimeEmpSet SQL)
+		CriteriaQuery<KscmtEstTimeEmpSet> cq = criteriaBuilder
+				.createQuery(KscmtEstTimeEmpSet.class);
+
+		// root data
+		Root<KscmtEstTimeEmpSet> root = cq.from(KscmtEstTimeEmpSet.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscmtEstTimeEmpSet_.kscmtEstTimeEmpSetPK).get(KscmtEstTimeEmpSetPK_.cid),
+				companyId));
+		
+		// equal target year
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KscmtEstTimeEmpSet_.kscmtEstTimeEmpSetPK)
+						.get(KscmtEstTimeEmpSetPK_.targetYear), targetYear));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KscmtEstTimeEmpSet> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.employment.
+	 * EmploymentEstablishmentRepository#findAllEmploymentSetting(java.lang.
+	 * String, int)
+	 */
+	@Override
+	public List<String> findAllEmploymentSetting(String companyId, int targetYear) {
+		List<KscmtEstTimeEmpSet> estimateTime = this.getEstimateTime(companyId, targetYear);
+		Map<String, KscmtEstTimeEmpSet> mapEstimateTime = new HashMap<>();
+		estimateTime.forEach(estimate -> {
+			if (!mapEstimateTime.containsKey(estimate.getKscmtEstTimeEmpSetPK().getEmpcd())) {
+				mapEstimateTime.put(estimate.getKscmtEstTimeEmpSetPK().getEmpcd(), estimate);
+			}
+		});
+
+		return mapEstimateTime.values().stream()
+				.map(estimate -> estimate.getKscmtEstTimeEmpSetPK().getEmpcd())
+				.collect(Collectors.toList());
 	}
 
 

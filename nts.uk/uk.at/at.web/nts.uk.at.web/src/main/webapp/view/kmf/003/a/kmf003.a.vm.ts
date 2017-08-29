@@ -52,7 +52,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KMF003_8"), prop: 'code', width: 50 },
-                { headerText: nts.uk.resource.getText("KMF003_9"), prop: 'name', width: 200 }
+                { headerText: nts.uk.resource.getText("KMF003_9"), prop: 'name', width: 200, formatter: _.escape }
             ]);
             
             self.singleSelectedCode = ko.observable("");
@@ -93,6 +93,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     });
                 }
             });    
+            
+            if(self.useConditionCls() == true){
+                self.enableGrantDate(true);
+            } else {
+                self.enableGrantDate(false);
+            }
             
             self.useConditionCls.subscribe(function(value) {
                 if(!value){

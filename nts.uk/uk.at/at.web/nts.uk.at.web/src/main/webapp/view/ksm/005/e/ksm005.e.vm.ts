@@ -141,7 +141,7 @@ module nts.uk.at.view.ksm005.e {
                 var startYear: number = Number(startMonth/100);
                 var numberMonthStart: number = startYear * 12 + startMonth % 100;
                 var numberMonthEnd: number = endYear * 12 + endMonth % 100;
-                return numberMonthEnd-numberMonthStart;
+                return numberMonthEnd - numberMonthStart + 1;
             }
             /**
              * function check error by click button
@@ -273,17 +273,18 @@ module nts.uk.at.view.ksm005.e {
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    
-                    self.monthlyPatternSettingBatchWorkDays().workTypeCode = childData.selectedWorkTypeCode;
-                    if (childData.selectedWorkTypeCode) {
-                        self.worktypeInfoWorkDays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
-                    }
-                    self.monthlyPatternSettingBatchWorkDays().workingCode = childData.selectedWorkTimeCode;
-                    
-                    if (childData.selectedWorkTimeCode) {
-                        self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
-                    }else {
-                        self.worktimeInfoWorkDays('');    
+                    if (childData) {
+                        self.monthlyPatternSettingBatchWorkDays().workTypeCode = childData.selectedWorkTypeCode;
+                        if (childData.selectedWorkTypeCode) {
+                            self.worktypeInfoWorkDays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                        }
+                        self.monthlyPatternSettingBatchWorkDays().workingCode = childData.selectedWorkTimeCode;
+
+                        if (childData.selectedWorkTimeCode) {
+                            self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                        } else {
+                            self.worktimeInfoWorkDays('');
+                        }
                     }  
                 });
             }
@@ -300,16 +301,18 @@ module nts.uk.at.view.ksm005.e {
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = childData.selectedWorkTypeCode;
-                    if (childData.selectedWorkTypeCode) {
-                        self.worktypeInfoStatutoryHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                    if(childData){
+                        self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = childData.selectedWorkTypeCode;
+                        if (childData.selectedWorkTypeCode) {
+                            self.worktypeInfoStatutoryHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                        }
+                        self.monthlyPatternSettingBatchStatutoryHolidays().workingCode = childData.selectedWorkTimeCode;
+                        if (childData.selectedWorkTimeCode) {
+                            self.worktimeInfoStatutoryHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                        } else {
+                            self.worktimeInfoStatutoryHolidays('');
+                        }
                     }
-                    self.monthlyPatternSettingBatchStatutoryHolidays().workingCode = childData.selectedWorkTimeCode;
-                    if (childData.selectedWorkTimeCode) {
-                        self.worktimeInfoStatutoryHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
-                    } else {
-                        self.worktimeInfoStatutoryHolidays('');
-                    } 
                 });
             }
              /**
@@ -324,19 +327,21 @@ module nts.uk.at.view.ksm005.e {
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = childData.selectedWorkTypeCode;
-                    
-                    if (childData.selectedWorkTypeCode) {
-                        self.worktypeInfoNoneStatutoryHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                    if (childData) {
+                        self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = childData.selectedWorkTypeCode;
+
+                        if (childData.selectedWorkTypeCode) {
+                            self.worktypeInfoNoneStatutoryHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                        }
+
+                        self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode = childData.selectedWorkTimeCode;
+
+                        if (childData.selectedWorkTimeCode) {
+                            self.worktimeInfoNoneStatutoryHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                        } else {
+                            self.worktimeInfoNoneStatutoryHolidays('');
+                        }
                     }
-                    
-                    self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode = childData.selectedWorkTimeCode;
-                    
-                    if (childData.selectedWorkTimeCode) {
-                        self.worktimeInfoNoneStatutoryHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
-                    } else {
-                        self.worktimeInfoNoneStatutoryHolidays('');
-                    } 
                 });
             }
              /**
@@ -351,17 +356,19 @@ module nts.uk.at.view.ksm005.e {
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = childData.selectedWorkTypeCode;
-                    
-                    if (childData.selectedWorkTypeCode) {
-                        self.worktypeInfoPublicHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                    if (childData) {
+                        self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = childData.selectedWorkTypeCode;
+
+                        if (childData.selectedWorkTypeCode) {
+                            self.worktypeInfoPublicHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                        }
+                        self.monthlyPatternSettingBatchPublicHolidays().workingCode = childData.selectedWorkTimeCode;
+                        if (childData.selectedWorkTimeCode) {
+                            self.worktimeInfoPublicHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                        } else {
+                            self.worktimeInfoPublicHolidays('');
+                        }
                     }
-                    self.monthlyPatternSettingBatchPublicHolidays().workingCode = childData.selectedWorkTimeCode;
-                    if (childData.selectedWorkTimeCode) {
-                        self.worktimeInfoPublicHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
-                    } else {
-                        self.worktimeInfoPublicHolidays('');
-                    } 
                 });
             }
         }

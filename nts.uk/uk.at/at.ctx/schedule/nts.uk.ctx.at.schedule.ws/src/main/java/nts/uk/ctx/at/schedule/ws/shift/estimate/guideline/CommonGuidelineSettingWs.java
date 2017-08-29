@@ -12,8 +12,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.CommonGuidelineSettingSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.CommonGuidelineSettingSaveCommandHandler;
-import nts.uk.ctx.at.schedule.app.shift.estimate.guideline.CommonGuidelineSettingFinder;
-import nts.uk.ctx.at.schedule.app.shift.estimate.guideline.dto.CommonGuidelineSettingDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.guideline.CommonGuidelineSettingFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.guideline.dto.CommonGuidelineSettingDto;
 
 /**
  * The Class CommonGuidelineSettingWs.
