@@ -109,9 +109,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_GET_DISPORDER_ITEM_QUERY = "SELECT od.disporder FROM PpemtPerInfoItemOrder od"
 			+ " WHERE od.perInfoCtgId = :perInfoCtgId ORDER BY od.disporder DESC";
 
-	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
-			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName";
-
 	private final static String SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY = "SELECT o FROM PpemtPerInfoItemOrder o"
 			+ " WHERE o.perInfoCtgId = :perInfoCtgId";
 
@@ -215,16 +212,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		// this.commandProxy().update(createPerInfoItemDefCmFromDomain(perInfoItemDef,
 		// contractCd));
 		// this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
-	}
-
-	@Override
-	public boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName) {
-		List<String> itemNames = this.queryProxy().query(SELECT_CHECK_ITEM_NAME_QUERY, String.class)
-				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("itemName", newItemName).getList();
-		if (itemNames == null || itemNames.isEmpty()) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override
