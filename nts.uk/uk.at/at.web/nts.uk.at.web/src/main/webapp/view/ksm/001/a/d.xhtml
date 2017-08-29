@@ -11,7 +11,7 @@
 		</ui:define>
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed" data-bind="enable: personalEstablishmentModel.isEditable, click: savePersonalEstablishment">#{i18n.getText('KSM001_1')}</button>
-			<button tabindex="2" class="danger" data-bind="enable: personalEstablishmentModel.isEditable, click: deletePersonalEstablishment">#{i18n.getText('KSM001_2')}</button>
+			<button tabindex="2" class="danger" data-bind="enable: personalEstablishmentModel.isEnableDelete, click: deletePersonalEstablishment">#{i18n.getText('KSM001_2')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div tabindex="6" id="comboTargetYear"
