@@ -2204,6 +2204,36 @@ var nts;
             };
             var minutesBased;
             (function (minutesBased) {
+                var parse;
+                (function (parse) {
+                    function durationString(source) {
+                        var isNegative = source.indexOf('-') === 0;
+                        var hourPart;
+                        var minutePart;
+                        if (source.indexOf(':') !== -1) {
+                            var parts = source.split(':');
+                            if (parts.length !== 2) {
+                                return NaN;
+                            }
+                            hourPart = Math.abs(parseInt(parts[0], 10));
+                            minutePart = parseInt(parts[1], 10);
+                        }
+                        else {
+                            var integerized = parseInt(source, 10);
+                            if (isNaN(integerized)) {
+                                return NaN;
+                            }
+                            var regularized = Math.abs(integerized);
+                            hourPart = Math.floor(regularized / 100);
+                            minutePart = regularized % 100;
+                        }
+                        if (minutePart >= 60) {
+                            return NaN;
+                        }
+                        return (isNegative ? -1 : 1) * (hourPart * 60 + minutePart);
+                    }
+                    parse.durationString = durationString;
+                })(parse = minutesBased.parse || (minutesBased.parse = {}));
                 function duration(timeAsMinutes) {
                     var duration = createBaseMBT(timeAsMinutes);
                     uk.util.accessor.defineInto(duration)
@@ -5816,7 +5846,8 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     TimeEditorProcessor.prototype.update = function ($input, data) {
-                        _super.prototype.update.call(this, $input, data);
+                        $input.
+                            super.update($input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var width = option.width;
                         var $parent = $input.parent();

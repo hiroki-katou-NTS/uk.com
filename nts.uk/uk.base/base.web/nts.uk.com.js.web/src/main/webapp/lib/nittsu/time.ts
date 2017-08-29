@@ -925,6 +925,41 @@ module nts.uk.time {
     
     
     export module minutesBased {
+        
+        export module parse {
+            export function durationString(source: string): number {
+                var isNegative = source.indexOf('-') === 0;
+                var hourPart: number;
+                var minutePart: number;
+                
+                if (source.indexOf(':') !== -1) {
+                    let parts = source.split(':');
+                    if (parts.length !== 2) {
+                        return NaN;
+                    }
+                    
+                    hourPart = Math.abs(parseInt(parts[0], 10));
+                    minutePart = parseInt(parts[1], 10);
+                } else {
+                    let integerized = parseInt(source, 10);
+                    if (isNaN(integerized)) {
+                        return NaN;
+                    }
+                    
+                    let regularized = Math.abs(integerized);
+                    hourPart = Math.floor(regularized / 100);
+                    minutePart = regularized % 100;
+                }
+                
+                if (minutePart >= 60) {
+                    return NaN;
+                }
+                
+                return (isNegative ? -1 : 1) * (hourPart * 60 + minutePart);
+            }
+        }
+        
+        
         export interface MinutesBasedTime<T> extends Number {
             isNegative(): boolean;
             asMinutes();
