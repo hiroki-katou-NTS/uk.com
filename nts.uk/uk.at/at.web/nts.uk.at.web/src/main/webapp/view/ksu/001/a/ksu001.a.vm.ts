@@ -47,8 +47,10 @@ module ksu001.a.viewmodel {
         selectedModeDisplayObject: KnockoutObservable<number> = ko.observable(1);
 
         arrDay: Time[] = [];
-        listSid: string[] = [];
+        listSid: KnockoutObservableArray<string> = ko.observableArray([]);
+        lengthListSid: any;
         isClickNextBackMonth: boolean = false;
+        workPlaceNameDisplay: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -65,7 +67,7 @@ module ksu001.a.viewmodel {
             });
 
             //Grid list for pop-up
-            for (let i = 1; i <= 12; i++) { 
+            for (let i = 1; i <= 12; i++) {
                 self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
             }
 
@@ -77,14 +79,15 @@ module ksu001.a.viewmodel {
                 }
             });
 
+            //display for A3_2
+            self.lengthListSid = ko.pureComputed(() => {
+                return nts.uk.resource.getText('KSU001_54', [self.listSid().length.toString()]);
+            });
+
             //start
             self.selectedModeDisplay(1);
             self.initCCG001();
             self.initExTable();
-
-            //            _.delay(() => {
-            //                $('#hor-scroll-button-hide').click();
-            //            }, 300);
         }
 
         /**
@@ -94,7 +97,7 @@ module ksu001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred(),
                 obj = {
-                    sId: self.listSid,
+                    sId: self.listSid(),
                     startDate: self.dtPrev(),
                     endDate: self.dtAft()
                 };
@@ -109,6 +112,10 @@ module ksu001.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * CCG001 return listEmployee
+         * When listEmployee changed, call function updateExtable() to refresh data of exTable
+         */
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             let self = this;
             self.empItems.removeAll();
@@ -122,19 +129,24 @@ module ksu001.a.viewmodel {
                     workplaceName: item.workplaceName,
                 }));
             });
-            //
-            self.listSid = [];
+            //get workPlaceName to display A3-1
+            self.workPlaceNameDisplay(self.empItems()[0].workplaceName);
+
+            self.listSid([]);
+            let arrSid: string[] = [];
             _.each(self.empItems(), (x) => {
-                self.listSid.push(x.empId);
+                arrSid.push(x.empId);
             });
+            self.listSid(arrSid);
             //get data basicSchedule
             self.getDataBasicSchedule().done(function() {
                 self.updateExTable();
             });
-
-
         }
 
+        /**
+         * init CCG001
+         */
         initCCG001() {
             let self = this;
             self.ccgcomponent = {
@@ -149,7 +161,6 @@ module ksu001.a.viewmodel {
                 isMutipleCheck: true,
                 isSelectAllEmployee: true,
 
-                //Event options
                 /**
                 * @param dataList: list employee returned from component.
                 * Define how to use this list employee by yourself in the function's body.
@@ -174,7 +185,6 @@ module ksu001.a.viewmodel {
                     self.searchEmployee(dataEmployee);
                 }
             }
-
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         }
 
@@ -188,7 +198,7 @@ module ksu001.a.viewmodel {
                 currentDay = new Date(self.dtPrev().toString());
 
             while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay.toString()));
+                self.arrDay.push(new Time(currentDay));
                 currentDay.setDate(currentDay.getDate() + 1);
             }
 
@@ -402,30 +412,34 @@ module ksu001.a.viewmodel {
              * next a month
              */
             $("#nextMonth").click(function() {
-                //Recalculate the time period
-                let dtMoment = moment(self.dtAft());
-                dtMoment.add(1, 'days');
-                self.dtPrev(dtMoment.toDate());
-                dtMoment = dtMoment.add(1, 'months');
-                dtMoment.subtract(1, 'days');
-                self.dtAft(dtMoment.toDate());
-                self.isClickNextBackMonth = true;
-                self.updateDetailHozrSum(self.isClickNextBackMonth);
+                if (self.selectedTimePeriod() == 1) {
+                    //Recalculate the time period
+                    let dtMoment = moment(self.dtAft());
+                    dtMoment.add(1, 'days');
+                    self.dtPrev(dtMoment.toDate());
+                    dtMoment = dtMoment.add(1, 'months');
+                    dtMoment.subtract(1, 'days');
+                    self.dtAft(dtMoment.toDate());
+                    self.isClickNextBackMonth = true;
+                    self.updateDetailAndHorzSum(self.isClickNextBackMonth);
+                }
             });
 
             /**
              * come back a month
              */
             $("#prevMonth").click(function() {
-                //Recalculate the time period
-                let dtMoment = moment(self.dtPrev());
-                dtMoment.subtract(1, 'days');
-                self.dtAft(dtMoment.toDate());
-                dtMoment = dtMoment.subtract(1, 'months');
-                dtMoment.add(1, 'days');
-                self.dtPrev(dtMoment.toDate());
-                self.isClickNextBackMonth = true;
-                self.updateDetailHozrSum(self.isClickNextBackMonth);
+                if (self.selectedTimePeriod() == 1) {
+                    //Recalculate the time period
+                    let dtMoment = moment(self.dtPrev());
+                    dtMoment.subtract(1, 'days');
+                    self.dtAft(dtMoment.toDate());
+                    dtMoment = dtMoment.subtract(1, 'months');
+                    dtMoment.add(1, 'days');
+                    self.dtPrev(dtMoment.toDate());
+                    self.isClickNextBackMonth = true;
+                    self.updateDetailAndHorzSum(self.isClickNextBackMonth);
+                }
             });
 
             /**
@@ -436,23 +450,83 @@ module ksu001.a.viewmodel {
                     arrObj: BasicSchedule[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
                     lengthArrCell = arrCell.length;
-
+                if (lengthArrCell == 0) {
+                    return;
+                }
                 for (let i = 0; i < lengthArrCell; i += 1) {
                     arrObj.push(new BasicSchedule({
                         // slice string '_YYYYMMDD' to 'YYYYMMDD'
                         date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
-                        employeeId: self.listSid[arrCell[i].rowIndex],
+                        employeeId: self.listSid()[arrCell[i].rowIndex],
                         workTimeCode: arrCell[i].value.workTimeCode,
                         workTypeCode: arrCell[i].value.workTypeCode
                     }));
                 }
-                service.registerData(arrObj).done(function() {
+                //Msg_436
+                arrObj.push(new BasicSchedule({
+                    date: "2017-01-09T00:00:00.000Z",
+                    workTypeCode: "231",
+                    workTimeCode: "001",
+                    employeeId: "00000000-0000-0000-0000-000000000001"
+                }));
+                //Msg_468
+                arrObj.push(new BasicSchedule({
+                    date: "2017-01-10T00:00:00.000Z",
+                    workTypeCode: "007",
+                    workTimeCode: "001",
+                    employeeId: "00000000-0000-0000-0000-000000000001"
+                }));
+                //workTimeCode == NULL or empty
+                arrObj.push(new BasicSchedule({
+                    date: "2017-01-11T00:00:00.000Z",
+                    workTypeCode: "001",
+                    workTimeCode: null,
+                    employeeId: "00000000-0000-0000-0000-000000000001"
+                }));
+                //Msg_437
+                arrObj.push(new BasicSchedule({
+                    date: "2017-01-12T00:00:00.000Z",
+                    workTypeCode: "001",
+                    workTimeCode: "231",
+                    employeeId: "00000000-0000-0000-0000-000000000001"
+                }));
+                //Msg_469
+                arrObj.push(new BasicSchedule({
+                    date: "2017-01-12T00:00:00.000Z",
+                    workTypeCode: "001",
+                    workTimeCode: "010",
+                    employeeId: "00000000-0000-0000-0000-000000000001"
+                }));
+
+                //Msg_435
+                arrObj.push(new BasicSchedule({
+                    date: "2017-01-12T00:00:00.000Z",
+                    workTypeCode: "001",
+                    workTimeCode: "000",
+                    employeeId: "00000000-0000-0000-0000-000000000001"
+                }));
+
+                //Msg_434
+                arrObj.push(new BasicSchedule({
+                    date: "2017-01-12T00:00:00.000Z",
+                    workTypeCode: "002",
+                    workTimeCode: "001",
+                    employeeId: "00000000-0000-0000-0000-000000000001"
+                }));
+
+                service.registerData(arrObj).done(function(error: any) {
                     //get data and update extable
                     self.getDataBasicSchedule().done(function() {
                         self.updateExTable();
                     });
+                    //                    if (error) {
+                    //                        alert('Has error!');
+                    //                    } else {
+                    alert(nts.uk.resource.getMessage("Msg_15"));
+                    //                    }
                     dfd.resolve();
-                }).fail(function() {
+                }).fail(function(error: any) {
+
                     dfd.reject();
                 });
                 return dfd.promise();
@@ -469,19 +543,16 @@ module ksu001.a.viewmodel {
 
             let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
 
-            _.each(self.listSid, (x) => {
+            _.each(self.listSid(), (x) => {
                 //newLeftMost dataSource
                 let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
                 newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
                 //newMiddle dataSource
                 newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
-                //newDetail dataSource
-                let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
-                newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                //vertSumContent dataSource
+                //newVertSumContent dataSource
                 newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
             });
-
+            //newLeftHorzSContent dataSource
             for (let i = 0; i < 5; i++) {
                 newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
             }
@@ -492,10 +563,6 @@ module ksu001.a.viewmodel {
 
             let updateMiddleContent = {
                 dataSource: newMiddleDs,
-            };
-
-            let updateDetailContent = {
-                dataSource: newDetailContentDs,
             };
 
             let updateVertSumContent = {
@@ -512,13 +579,13 @@ module ksu001.a.viewmodel {
             $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
 
             self.isClickNextBackMonth = false;
-            self.updateDetailHozrSum(self.isClickNextBackMonth);
+            self.updateDetailAndHorzSum(self.isClickNextBackMonth);
         }
 
         /**
          * update new data of header and content of detail and horizSum
          */
-        updateDetailHozrSum(isClickNextBackMonth: boolean): void {
+        updateDetailAndHorzSum(isClickNextBackMonth: boolean): void {
             let self = this;
 
             //Get dates in time period
@@ -526,7 +593,7 @@ module ksu001.a.viewmodel {
             self.arrDay = [];
             let newDetailColumns = [], newObjDetailHeaderDs = [], newDetailHeaderDs = [], newDetailContentDs = [];
             while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay.toString()));
+                self.arrDay.push(new Time(currentDay));
                 currentDay.setDate(currentDay.getDate() + 1);
             }
 
@@ -574,8 +641,8 @@ module ksu001.a.viewmodel {
                 $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, {});
             } else {
                 self.getDataBasicSchedule().done(() => {
-                    //dataSource
-                    _.each(self.listSid, (x) => {
+                    //dataSour of detail
+                    _.each(self.listSid(), (x) => {
                         let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
                         newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
                     });
@@ -617,7 +684,7 @@ module ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "text-align-center"));
                 }
                 //Set color for detailContent
-                _.each(self.listSid, (empId) => {
+                _.each(self.listSid(), (empId) => {
                     if (self.arrDay[i].weekDay == '土' || self.arrDay[i].weekDay == '日') {
                         detailContentDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, empId, "text-color-red"));
                     } else {
@@ -751,14 +818,14 @@ module ksu001.a.viewmodel {
     }
 
     class Time {
-        ymd: string;
+        ymd: Date;
         year: string;
         month: string;
         day: string;
         weekDay: string;
         yearMonthDay: string;
 
-        constructor(ymd: string) {
+        constructor(ymd: Date) {
             this.ymd = ymd;
             this.year = moment(this.ymd).format('YYYY');
             this.month = moment(this.ymd).format('M');
@@ -874,7 +941,7 @@ module ksu001.a.viewmodel {
             //create detailContent 
             for (let i = 0; i < arrDay.length; i++) {
                 let obj: BasicSchedule = _.find(dsOfSid, (x) => {
-                    return moment(x.date).format('D') == arrDay[i].day;
+                    return moment(new Date(x.date)).format('D') == arrDay[i].day;
                 });
                 //holiday
                 if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土') {

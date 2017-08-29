@@ -11,13 +11,13 @@ package nts.uk.ctx.at.schedule.dom.shift.totaltimes;
 public enum SummaryAtr {
 
 	/** The dutytype. */
-	DUTYTYPE(0, "Enum_SummaryAtr_DutyType", "勤務種類"),
+	DUTYTYPE(0, "勤務種類" ,"Enum_SummaryAtr_DutyType" ),
 
 	/** The workingtime. */
-	WORKINGTIME(1, "Enum_SummaryAtr_WorkingTime", "就業時間帯"),
+	WORKINGTIME(1,  "就業時間帯", "Enum_SummaryAtr_WorkingTime"),
 
 	/** The combination. */
-	COMBINATION(2, "Enum_SummaryAtr_Combination", "組合せ");
+	COMBINATION(2, "組合せ" ,"Enum_SummaryAtr_Combination");
 
 	/** The value. */
 	public final int value;

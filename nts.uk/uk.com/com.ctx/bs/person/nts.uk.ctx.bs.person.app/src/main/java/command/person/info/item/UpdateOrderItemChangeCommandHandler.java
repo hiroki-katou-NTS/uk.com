@@ -43,7 +43,7 @@ public class UpdateOrderItemChangeCommandHandler extends CommandHandler<UpdateOr
 					perInfoCategory.getIsFixed().equals(IsFixed.FIXED) ? itemDefOrderOpt.getDisplayOrder().v()
 							: itemIndex);
 
-			this.perinfoItemDefRep.UpdateOrderItemRoot(itemDefOrderDomain);
+			this.perinfoItemDefRep.UpdateOrderItem(itemDefOrderDomain);
 
 		}
 

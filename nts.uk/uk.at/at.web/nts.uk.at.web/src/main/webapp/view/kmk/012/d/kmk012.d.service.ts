@@ -1,10 +1,10 @@
 module nts.uk.at.view.kmk012.d {
     export module service {
         var paths = {
-            findByMasterClosureHistory: "ctx/at/record/workrecord/closure/findByMaster",
-            getDayMonth: "ctx/at/record/workrecord/closure/getday",
-            getDayMonthChange: "ctx/at/record/workrecord/closure/getdaychange",
-            addClosureHistory: "ctx/at/record/workrecord/closure/history/add"
+            findByMasterClosureHistory: "ctx/at/shared/workrule/closure/findByMaster",
+            getDayMonth: "ctx/at/shared/workrule/closure/getday",
+            getDayMonthChange: "ctx/at/shared/workrule/closure/getdaychange",
+            addClosureHistory: "ctx/at/shared/workrule/closure/history/add"
         }
         /**
          * find by master data closure history call service
