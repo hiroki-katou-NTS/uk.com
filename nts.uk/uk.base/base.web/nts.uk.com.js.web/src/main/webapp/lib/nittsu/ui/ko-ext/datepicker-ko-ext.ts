@@ -28,7 +28,7 @@ module nts.uk.ui.koExtentions {
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
             var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
-            let acceptJapaneseCalendar: boolean = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : false;
+            let acceptJapaneseCalendar: boolean = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : true;
             var valueType:string = typeof value();
             if (valueType === "string") {
                 valueFormat = (valueFormat) ? valueFormat : text.getISOFormat("ISO");

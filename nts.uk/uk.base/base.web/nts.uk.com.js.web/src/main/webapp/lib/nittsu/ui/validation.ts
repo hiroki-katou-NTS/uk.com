@@ -402,7 +402,7 @@ module nts.uk.ui.validation {
             this.required = (option && option.required) ? option.required : false;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
             this.mode = (option && option.mode) ? option.mode : "";
-            this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : false;
+            this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
         }
 
         validate(inputText: string): any {
