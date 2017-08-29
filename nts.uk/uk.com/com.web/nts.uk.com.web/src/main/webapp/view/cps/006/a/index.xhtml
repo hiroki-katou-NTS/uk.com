@@ -137,11 +137,11 @@
 						</div>
 						<table id="item_grid"
 							data-bind="ntsGridList: {	
-						dataSource: itemList ,
+						dataSource: currentCategory().itemList ,
 						primaryKey: 'id' ,
-						columns: itemColums ,
+						columns: currentCategory().itemColums ,
 						multiple: false,
-						value: currentItemId ,
+						value: currentCategory().currentItemId ,
 						rows:10 }">
 						</table>
 					</div>

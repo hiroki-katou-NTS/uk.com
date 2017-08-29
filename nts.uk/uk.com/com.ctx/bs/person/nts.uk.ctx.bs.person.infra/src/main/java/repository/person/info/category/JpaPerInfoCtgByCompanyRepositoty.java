@@ -17,14 +17,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements PerInfoCtgByCompanyRepositoty {
 
-	private final static String SELECT_CATEGORY_BY_CATEGORY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId" + " AND ca.cid =:cid";
 
-	private final static String SELECT_REQUIRED_ITEMS_IDS = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i"
+	private final static String SELECT_REQUIRED_ITEMS_IDS = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoCtg a"
+			+ " INNER JOIN PpemtPerInfoItem i"
+			+ " ON a.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId "
 			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 "
 			+ " AND i.perInfoCtgId = :perInfoCtgId";
@@ -33,6 +35,9 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 
 	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName";
+
+	private final static String SELECT_CTG_NAME_BY_CTG_CD_QUERY = "SELECT c.categoryName"
+			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :cid AND c.categoryCd = :categoryCd";
 
 	private static PpemtPerInfoCtg toEntity(PersonInfoCategory domain) {
 		PpemtPerInfoCtg entity = new PpemtPerInfoCtg();
@@ -87,8 +92,9 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	 */
 	@Override
 	public Optional<PersonInfoCategory> getDetailCategoryInfo(String companyId, String categoryId, String contractCd) {
-		return this.queryProxy().query(SELECT_CATEGORY_BY_CATEGORY_ID_QUERY, Object[].class)
-				.setParameter("cid", companyId).setParameter("contractCd", contractCd)
+		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_QUERY, Object[].class)
+				.setParameter("cid", companyId)
+				.setParameter("contractCd", contractCd)
 				.setParameter("perInfoCtgId", categoryId).getSingle(c -> {
 					return createDomainFromEntity(c);
 				});
@@ -96,13 +102,17 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 
 	@Override
 	public List<String> getItemInfoId(String categoryId, String contractCd) {
-		return queryProxy().query(SELECT_REQUIRED_ITEMS_IDS, String.class).setParameter("contractCd", contractCd)
-				.setParameter("perInfoCtgId", categoryId).getList();
+		return queryProxy().query(SELECT_REQUIRED_ITEMS_IDS, String.class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("perInfoCtgId", categoryId)
+				.getList();
 	}
 
 	@Override
 	public void deleteByCompanyId(String companyId) {
-		this.getEntityManager().createQuery(DELELE_BY_COMPANY_ID).setParameter("cid", companyId).executeUpdate();
+		this.getEntityManager().createQuery(DELELE_BY_COMPANY_ID)
+			.setParameter("cid", companyId)
+			.executeUpdate();
 		this.getEntityManager().flush();
 
 	}
@@ -116,7 +126,17 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	@Override
 	public List<String> checkCtgNameIsUnique(String companyId, String newCtgName) {
 		return this.queryProxy().query(SELECT_CHECK_CTG_NAME_QUERY, String.class)
-				.setParameter("companyId", companyId).setParameter("categoryName", newCtgName).getList();
+				.setParameter("companyId", companyId)
+				.setParameter("categoryName", newCtgName)
+				.getList();
+	}
+
+	@Override
+	public String getNameCategoryInfo(String companyId, String categoryCd) {
+		return this.queryProxy().query(SELECT_CTG_NAME_BY_CTG_CD_QUERY, String.class)
+				.setParameter("cid", companyId)
+				.setParameter("categoryCd", categoryCd)
+				.getSingle().orElse("null");
 	}
 
 }

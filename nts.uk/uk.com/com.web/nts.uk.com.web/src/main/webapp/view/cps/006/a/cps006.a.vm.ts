@@ -9,27 +9,17 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
     export class ScreenModel {
         categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
-        isUseCategoryLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        categoryRootList: KnockoutObservableArray<any> = ko.observableArray([]);
-        itemList: KnockoutObservableArray<any> = ko.observableArray([]);
-        currentCategoryId: KnockoutObservable<any> = ko.observable("");
-        currentItemId: KnockoutObservable<any> = ko.observable("");
         colums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
             { headerText: text('CPS006_6'), key: 'categoryName', width: 230 },
-            { headerText: text('CPS006_7'), key: 'isAbolition', width: 50 }
-        ]);
-        itemColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS006_16'), key: 'itemName', width: 250 },
-            { headerText: text('CPS006_17'), key: 'isAbolition', width: 50 }
+            { headerText: text('CPS006_7'), key: 'isAbolition', width: 50, formatter: makeIcon }
         ]);
         currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable((new CategoryInfoDetail({
             id: '', categoryNameDefault: '',
             categoryName: '', categoryType: 4, isAbolition: "", itemList: []
         })));
         // nếu sử dụng thì bằng true và ngược lại
-        isAbolished: KnockoutObservable<boolean> = ko.observable(true);
+        isAbolished: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -81,62 +71,26 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
         getDetailCategory(id: string) {
             let self = this;
-            self.itemList.removeAll();
-            let category = _.find(self.categoryList(), function(obj: any) { return obj.id === id }),
-                categoryRoot = _.find(self.categoryRootList(), function(obj: any) {
-                    return obj.categoryCode === category.categoryCode
-                });
-
-            service.getAllPerInfoItemDefByCtgId(id).done(function(data: Array<any>) {
-                if (data.length > 0) {
-                    self.itemList(_.map(data, x => {
-                        return {
-                            id: x.id,
-                            perInfoCtgId: x.perInfoCtgId,
-                            itemName: x.itemName,
-                            systemRequired: x.systemRequired,
-                            isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
-                        }
-                    }));
-
-                    let x: number = _.filter(self.itemList(), x => { return x.systemRequired == 1 }).length > 0 ? 1 : 0;
+            service.getDetailCtgInfo(id).done(function(data: any) {
+                if (data) {
                     self.currentCategory().setData({
-                        id: id, categoryNameDefault: categoryRoot.categoryName, categoryName: category.categoryName,
-                        categoryType: category.categoryType, isAbolition: category.isAbolition, itemList: self.itemList()
-                    }, x);
-                    self.currentCategory.valueHasMutated();
-
-                } else {
-
-                    self.currentCategory().setData({
-                        id: id, categoryNameDefault: categoryRoot.categoryName, categoryName: category.categoryName,
-                        categoryType: category.categoryType, isAbolition: category.isAbolition, itemList: []
-                    }, 0);
+                        categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
+                        categoryType: data.categoryType, isAbolition: data.isAbolition, itemList: data.itemLst
+                    }, data.systemRequired);
+                    if (data.itemLst.length > 0) {
+                        self.currentCategory().currentItemId(data.itemLst[0].id);
+                    } else {
+                        self.currentCategory().currentItemId('');
+                    }
                     self.currentCategory.valueHasMutated();
                 }
             });
-
-
         }
 
         start(id: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             self.categoryList.removeAll();
-            self.categoryRootList.removeAll();
-            self.isUseCategoryLst.removeAll();
-
-            service.getAllPerInfoCtgByRoot().done(function(data: Array<any>) {
-                if (data.length > 0) {
-                    self.categoryRootList(_.map(data, x => new CategoryInfo({
-                        id: x.id,
-                        categoryCode: x.categoryCode,
-                        categoryName: x.categoryName,
-                        categoryType: x.categoryType,
-                        isAbolition: ""
-                    })));
-                }
-            });
             service.getAllCategory().done(function(data: Array<any>) {
                 if (data.length > 0) {
                     self.categoryList(_.map(data, x => new CategoryInfo({
@@ -144,7 +98,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryCode: x.categoryCode,
                         categoryName: x.categoryName,
                         categoryType: x.categoryType,
-                        isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
+                        isAbolition: x.isAbolition
                     })));
                     if (id === undefined) {
                         self.currentCategory().id(self.categoryList()[0].id);
@@ -163,7 +117,6 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
             let self = this;
             setShared('categoryInfo', self.currentCategory());
-            setShared('currentItemId', self.currentItemId());
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/006/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 self.start(undefined).done(() => {
@@ -267,7 +220,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: string;
         categoryType: number;
         isAbolition: string;
-        itemList?: Array<ItemInfo>;
+        itemList?: Array<any>;
     }
 
     export class CategoryInfoDetail {
@@ -277,21 +230,34 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryType: number;
         isAbolition: KnockoutObservable<boolean>;
         displayIsAbolished: number = 0;
+        itemList: KnockoutObservableArray<any>;
+        currentItemId: KnockoutObservable<string> = ko.observable('');
+        itemColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: 'id', key: 'id', width: 100, hidden: true },
+            { headerText: text('CPS006_16'), key: 'itemName', width: 250 },
+            { headerText: text('CPS006_17'), key: 'isAbolition', width: 50, formatter: makeIcon }
+        ]);
         constructor(params: ICategoryInfoDetail) {
-            this.id = ko.observable(params.id);
+            this.id = ko.observable("");
             this.categoryNameDefault = params.categoryNameDefault;
             this.categoryName = ko.observable(params.categoryName);
             this.categoryType = params.categoryType;
             this.isAbolition = ko.observable(false);
+            this.itemList = ko.observableArray(params.itemList || []);
         }
 
-        setData(params: ICategoryInfoDetail, displayIsAbolished: number) {
-            this.id(params.id);
+        setData(params: any, displayIsAbolished: number) {
             this.categoryNameDefault = params.categoryNameDefault;
             this.categoryName(params.categoryName);
             this.categoryType = params.categoryType;
             this.isAbolition(params.isAbolition != '' ? true : false);
             this.displayIsAbolished = displayIsAbolished;
+            this.itemList(params.itemList);
         }
+    }
+    function makeIcon(value, row) {
+        if (value == '1')
+            return "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>";
+        return '';
     }
 }
