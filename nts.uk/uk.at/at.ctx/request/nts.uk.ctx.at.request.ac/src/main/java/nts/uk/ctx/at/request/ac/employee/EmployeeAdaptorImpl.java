@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ac.employee;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -24,5 +26,9 @@ public class EmployeeAdaptorImpl implements EmployeeAdaptor {
 		/*return employeePub.getEmploymentCode(companyId, employeeId, baseDate);*/
 		return null;
 	}
-	
+
+	@Override
+	public List<String> findWpkIdsBySCode(String companyId, String sid, GeneralDate date) {
+		return this.employeePub.findWpkIdsBySCode(companyId, sid, date);
+	}
 }

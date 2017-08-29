@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 
 public interface EmployeeAdaptor {
@@ -11,4 +13,16 @@ public interface EmployeeAdaptor {
 	 * @return　雇用コード
 	 */
 	String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate);
+	
+	
+	/**
+	 * 所属職場を含む上位職場を取得
+	 *
+	 * @param companyId the company id
+	 * @param employeeCode the employee code
+	 * @param date the date
+	 * @return the list
+	 */
+	// RequestList #65
+	List<String> findWpkIdsBySCode(String companyId, String employeeCode, GeneralDate date);
 }

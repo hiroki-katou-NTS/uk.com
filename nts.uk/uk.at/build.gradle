@@ -298,7 +298,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
-		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.2.1')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.2.3')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.4.1')
 	}
 }
@@ -444,8 +444,8 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pubimp', version: '0.4.1')
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.ac', version: '0.4')
 		
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.2.1')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.2.1')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.2.3')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.2.3')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.1')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.1')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.2')
