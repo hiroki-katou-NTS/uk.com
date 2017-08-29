@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import command.person.info.category.GetListCompanyOfContract;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -28,6 +30,9 @@ public class AddItemCommandHandler extends CommandHandler<AddItemCommand> {
 	@Override
 	protected void handle(CommandHandlerContext<AddItemCommand> context) {
 		AddItemCommand addItemCommand = context.getCommand();
+		if (!this.pernfoItemDefRep.checkItemNameIsUnique(addItemCommand.getPerInfoCtgId(), addItemCommand.getItemName())) {
+			throw new BusinessException(new RawErrorMessage("Msg_215"));
+		}
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
 		PersonInfoCategory perInfoCtg = this.perInfoCtgRep
 				.getPerInfoCategory(addItemCommand.getPerInfoCtgId(), contractCd).orElse(null);

@@ -26,6 +26,12 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 private final String FIN_BY_EMP = FIND_ALL
 	   + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
 	   + " AND c.wwfmtPsApprovalRootPK.employeeId = :employeeId";
+	 private final String SELECT_PS_APR_BY_ENDATE = FIN_BY_EMP
+	   + " AND c.endDate = :endDate"
+	   + " AND c.applicationType = :applicationType";
+	 private final String SELECT_PS_APR_BY_ENDATE_APP_NULL = FIN_BY_EMP 
+			   + " AND c.endDate = :endDate"
+			   + " AND c.applicationType IS NULL";
 	 private final String FIND_BY_DATE = FIN_BY_EMP
 	   + " AND c.endDate = :endDate";
 	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
@@ -95,10 +101,20 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	@Override
 	public List<PersonApprovalRoot> getPsApprovalRootByEdate(String companyId, String employeeId, GeneralDate endDate, Integer applicationType) {
-		return this.queryProxy().query(FIND_BY_DATE, WwfmtPsApprovalRoot.class)
+		//common
+		if(applicationType == null){
+			return this.queryProxy().query(SELECT_PS_APR_BY_ENDATE_APP_NULL, WwfmtPsApprovalRoot.class)
+					.setParameter("companyId", companyId)
+					.setParameter("employeeId", employeeId)
+					.setParameter("endDate", endDate)
+					.getList(c->toDomainPsApR(c));
+		}
+		//15 app type
+		return this.queryProxy().query(SELECT_PS_APR_BY_ENDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("endDate", endDate)
+				.setParameter("applicationType", applicationType)
 				.getList(c->toDomainPsApR(c));
 	}
 	/**
@@ -124,7 +140,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date baseDate, String appType) {
+	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date baseDate, int appType) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("employeeId", sid)
@@ -157,13 +173,13 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @return
 	 */
 	private PersonApprovalRoot toDomainPsApR(WwfmtPsApprovalRoot entity){
-		val domain = PersonApprovalRoot.createSimpleFromJavaType(entity.wwfmtPsApprovalRootPK.companyId,
+		val domain = PersonApprovalRoot.convert(entity.wwfmtPsApprovalRootPK.companyId,
 				entity.wwfmtPsApprovalRootPK.approvalId,
 				entity.wwfmtPsApprovalRootPK.employeeId,
 				entity.wwfmtPsApprovalRootPK.historyId,
 				entity.applicationType,
-				entity.startDate.toString(),
-				entity.endDate.toString(),
+				entity.startDate,
+				entity.endDate,
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
@@ -180,10 +196,10 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmployeeId(), domain.getHistoryId());
 		entity.startDate = domain.getPeriod().getStartDate();
 		entity.endDate = domain.getPeriod().getEndDate();
-		entity.applicationType = domain.getApplicationType().value;
+		entity.applicationType = (domain.getApplicationType() == null ? null : domain.getApplicationType().value);
 		entity.branchId = domain.getBranchId();
 		entity.anyItemAppId = domain.getAnyItemApplicationId();
-		entity.confirmationRootType = domain.getConfirmationRootType().value;
+		entity.confirmationRootType = (domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value);
 		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
 		return entity;
 	}

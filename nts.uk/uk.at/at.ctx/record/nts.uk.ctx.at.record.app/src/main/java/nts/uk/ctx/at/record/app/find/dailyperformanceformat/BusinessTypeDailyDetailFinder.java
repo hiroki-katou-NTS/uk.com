@@ -42,11 +42,6 @@ public class BusinessTypeDailyDetailFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		//
-		// String sheetName =
-		// businessFormatSheetRepository.getSheetInformation(companyId, new
-		// BusinessTypeCode(businessTypeCode), sheetNo).get().getSheetName();
-
 		List<BusinessTypeFormatDaily> businessTypeFormatDailies = workTypeFormatDailyRepository
 				.getBusinessTypeFormatDailyDetail(companyId, businessTypeCode, sheetNo);
 

@@ -1,21 +1,25 @@
 package nts.uk.ctx.at.request.dom.application.common.service;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.time.GeneralDate;
 
 @Stateless
-public class ProcessBeforeDetailScreenRegistrationDefault {
+public class ProcessBeforeDetailScreenRegistrationDefault implements ProcessBeforeDetailScreenRegistrationService {
 	
-	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, String appDate, int employeeRouteAtr, String targetApp, int postAtr ){
-		/*
+	@Inject
+	private OtherCommonAlgorithmService otherCommonAlgorithmService;
+	
+	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String targetApp, int postAtr ){
+
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
-		selectedWorkTypeConflictCheck();
+		// selectedWorkTypeConflictCheck();
 		
 		// アルゴリズム「確定チェック」を実施する(thực hiện xử lý 「確定チェック」)
-		OtherCommonAlgorithm.employeePeriodCurrentMonthCalculate();
+		otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, appDate);
 		
-		アルゴリズム「排他チェック」を実行する(thực hiện xử lý 「排他チェック」)
 		exclusiveCheck();
-		 */
 	}
 	
 	public void exclusiveCheck(){

@@ -15,12 +15,11 @@ public class CwpmtWorkplace_ {
 
 	/** The cwpmt workplace PK. */
 	public static volatile SingularAttribute<CwpmtWorkplace, CwpmtWorkplacePK> cwpmtWorkplacePK;
-	
+
 	/** The wkpcd. */
 	public static volatile SingularAttribute<CwpmtWorkplace, String> wkpcd;
-		
+
 	/** The wkpname. */
 	public static volatile SingularAttribute<CwpmtWorkplace, String> wkpname;
-	
 
 }
