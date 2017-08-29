@@ -31,9 +31,7 @@ public class KshstTotalSubjects extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	protected KshstTotalSubjectsPK kshstTotalSubjectsPK;
 
-	/** The work type cd. */
-	@Column(name = "WORK_TYPE_CD")
-	private String workTypeCd;
+
 
 	/**
 	 * Instantiates a new kshst total subjects.

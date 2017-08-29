@@ -212,6 +212,7 @@ module nts.uk.at.view.ksm001.a {
              * on click tab panel company action event
              */
             public onSelectCompany(): JQueryPromise<void> {
+                $('.nts-input').ntsError('clear');
                 var self = this;
                 nts.uk.ui.block.invisible();
                 var dfd = $.Deferred<void>();
@@ -262,6 +263,7 @@ module nts.uk.at.view.ksm001.a {
              * on click tab panel employment action event
              */
             public onSelectEmployment(): void {
+                $('.nts-input').ntsError('clear');
                 nts.uk.ui.block.invisible();
                 var self = this;
                 self.isCompanySelected(false);
@@ -294,6 +296,7 @@ module nts.uk.at.view.ksm001.a {
              * on click tab panel employment action event
              */
             public onSelectPerson(): void {
+                $('.nts-input').ntsError('clear');
                 var self = this;
                 nts.uk.ui.block.invisible();
                 self.employeeName = ko.observable('');
@@ -464,7 +467,7 @@ module nts.uk.at.view.ksm001.a {
             * function on click saveCompanyEstablishment action
             */
             public saveCompanyEstablishment(): void {
-                if( $('.nts-editor').ntsError('hasError')) {
+                if( $('.nts-input').ntsError('hasError')) {
                     return;
                 };
                 nts.uk.ui.block.invisible();
@@ -500,7 +503,7 @@ module nts.uk.at.view.ksm001.a {
             * function on click saveEmploymentEstablishment action
             */
             public saveEmploymentEstablishment(): void {
-                if( $('.nts-editor').ntsError('hasError')) {
+                if( $('.nts-input').ntsError('hasError')) {
                     return;
                 };
                 nts.uk.ui.block.invisible();
@@ -535,7 +538,7 @@ module nts.uk.at.view.ksm001.a {
             * function on click savePersonalEstablishment action
             */
             public savePersonalEstablishment(): void {
-                if( $('.nts-editor').ntsError('hasError')) {
+                if( $('.nts-input').ntsError('hasError')) {
                     return;
                 };
                 nts.uk.ui.block.invisible();
