@@ -15,99 +15,93 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantSingle;
 @AllArgsConstructor
 public class AddSpecialHolidayCommand {
 
-	/*会社ID*/
+	/* 会社ID */
 	private String companyId;
 
-	/*特別休暇コード*/
+	/* 特別休暇コード */
 	private int specialHolidayCode;
 
-	/*特別休暇名称*/
+	/* 特別休暇名称 */
 	private String specialHolidayName;
 
-	/*定期付与*/
+	/* 定期付与 */
 	private int grantPeriodicCls;
 
-	/*メモ*/
+	/* メモ */
 	private String memo;
-	
+
+	/**/
 	private List<String> workTypeList;
-	
+
+	/**/
 	private GrantRegularCommand regularCommand;
-	
+
+	/**/
 	private GrantPeriodicCommand periodicCommant;
-	
+
+	/**/
 	private SphdLimitCommand limitCommand;
-	
+
+	/**/
 	private SubConditionCommand conditionCommand;
-	
+
+	/**/
 	private GrantSingleCommand singleCommand;
-	
+
 	public SpecialHoliday toDomain(String companyId) {
-		return SpecialHoliday.createFromJavaType(
-				companyId, 
-				this.specialHolidayCode,
-				this.specialHolidayName, 
-				this.grantPeriodicCls,
-				this.memo,
-				this.workTypeList,
-				this.toDomainGrantRegular(companyId),
-				this.toDomainGrantPeriodic(companyId),
-				this.toDomainSphdLimit(companyId),
-				this.toDomainSubCondition(companyId),
-				this.toDomainGrantSingle(companyId));
+		return SpecialHoliday.createFromJavaType(companyId, this.specialHolidayCode, this.specialHolidayName,
+				this.grantPeriodicCls, this.memo, this.workTypeList, this.toDomainGrantRegular(companyId),
+				this.toDomainGrantPeriodic(companyId), this.toDomainSphdLimit(companyId),
+				this.toDomainSubCondition(companyId), this.toDomainGrantSingle(companyId));
 	}
-	
+
 	private GrantRegular toDomainGrantRegular(String companyId) {
-		return GrantRegular.createFromJavaType(
-				companyId, 
-				specialHolidayCode, 
-				this.regularCommand.getGrantStartDate(), 
-				this.regularCommand.getMonths(), 
-				this.regularCommand.getYears(), 
+		if (this.regularCommand == null) {
+			return null;
+		}
+
+		return GrantRegular.createFromJavaType(companyId, specialHolidayCode, this.regularCommand.getGrantStartDate(),
+				this.regularCommand.getMonths(), this.regularCommand.getYears(),
 				this.regularCommand.getGrantRegularMethod());
 	}
-	
-	private GrantPeriodic toDomainGrantPeriodic(String companyId){
-		return GrantPeriodic.createFromJavaType(
-				companyId,
-				specialHolidayCode,
-				this.periodicCommant.getGrantDay(), 
-				this.periodicCommant.getSplitAcquisition(), 
-				this.periodicCommant.getGrantPeriodicMethod());
+
+	private GrantPeriodic toDomainGrantPeriodic(String companyId) {
+		if (this.periodicCommant == null) {
+			return null;
+		}
+
+		return GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, this.periodicCommant.getGrantDay(),
+				this.periodicCommant.getSplitAcquisition(), this.periodicCommant.getGrantPeriodicMethod());
 	}
-	
-	private SphdLimit toDomainSphdLimit(String companyId){
-		return SphdLimit.createFromJavaType( 
-				companyId,
-				specialHolidayCode,
-				this.limitCommand.getSpecialVacationMonths(), 
-				this.limitCommand.getSpecialVacationYears(), 
-				this.limitCommand.getGrantCarryForward(), 
-				this.limitCommand.getLimitCarryoverDays(), 
-				this.limitCommand.getSpecialVacationMethod());
+
+	private SphdLimit toDomainSphdLimit(String companyId) {
+		if (this.limitCommand == null) {
+			return null;
+		}
+		return SphdLimit.createFromJavaType(companyId, specialHolidayCode, this.limitCommand.getSpecialVacationMonths(),
+				this.limitCommand.getSpecialVacationYears(), this.limitCommand.getGrantCarryForward(),
+				this.limitCommand.getLimitCarryoverDays(), this.limitCommand.getSpecialVacationMethod());
 	}
-	
-	private SubCondition toDomainSubCondition(String companyId){
-		return SubCondition.createFromJavaType(companyId,
-				specialHolidayCode,
-				this.conditionCommand.getUseGender(),
-				this.conditionCommand.getUseEmployee(), 
-				this.conditionCommand.getUseCls(), 
-				this.conditionCommand.getUseAge(), 
-				this.conditionCommand.getGenderAtr(), 
-				this.conditionCommand.getLimitAgeFrom(), 
-				this.conditionCommand.getLimitAgeTo(), 
-				this.conditionCommand.getAgeCriteriaAtr(), 
-				this.conditionCommand.getAgeBaseYearAtr(),
+
+	private SubCondition toDomainSubCondition(String companyId) {
+		if (this.conditionCommand == null) {
+			return null;
+		}
+
+		return SubCondition.createFromJavaType(companyId, specialHolidayCode, this.conditionCommand.getUseGender(),
+				this.conditionCommand.getUseEmployee(), this.conditionCommand.getUseCls(),
+				this.conditionCommand.getUseAge(), this.conditionCommand.getGenderAtr(),
+				this.conditionCommand.getLimitAgeFrom(), this.conditionCommand.getLimitAgeTo(),
+				this.conditionCommand.getAgeCriteriaAtr(), this.conditionCommand.getAgeBaseYearAtr(),
 				this.conditionCommand.getAgeBaseDates());
 	}
-	
-	private GrantSingle toDomainGrantSingle(String companyId){
-		return GrantSingle.createSimpleFromJavaType(companyId,
-				specialHolidayCode,
-				this.singleCommand.getGrantDaySingleType(), 
-				this.singleCommand.getFixNumberDays(), 
-				this.singleCommand.getMakeInvitation(), 
-				this.singleCommand.getHolidayExclusionAtr());
+
+	private GrantSingle toDomainGrantSingle(String companyId) {
+		if (this.singleCommand == null) {
+			return null;
+		}
+		return GrantSingle.createSimpleFromJavaType(companyId, specialHolidayCode,
+				this.singleCommand.getGrantDaySingleType(), this.singleCommand.getFixNumberDays(),
+				this.singleCommand.getMakeInvitation(), this.singleCommand.getHolidayExclusionAtr());
 	}
 }

@@ -25,7 +25,8 @@ public class GrantPeriodic {
 	/* 付与日数定期方法 */
 	private GrantPeriodicMethod grantPeriodicMethod;
 
-	public static GrantPeriodic createFromJavaType(String companyId,
+	public static GrantPeriodic createFromJavaType(
+			String companyId,
 			int specialHolidayCode,
 			int grantDay,
 			int fixedDayGrant,

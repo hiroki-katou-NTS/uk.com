@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmf004.a.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<model.SpecialHolidayDto>;
+        sphdList: KnockoutObservableArray<any>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
 
@@ -9,10 +10,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         selectedTab: KnockoutObservable<string>;
         selectedValue: KnockoutObservable<any>;
         enable: KnockoutObservable<boolean>;
-        
-        //Tab
+
+        //Tab Regular
         option1: KnockoutObservable<any>;
         option2: KnockoutObservable<any>;
+
+        //
         date: KnockoutObservable<string>;
         roundingRules1: KnockoutObservableArray<any>;
         roundingRules2: KnockoutObservableArray<any>;
@@ -23,14 +26,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         selectedRuleCode: any;
-        
-        //Input
-        inp_specialHolidayCode: KnockoutObservable<string>;
-        inp_specialHolidayName: KnockoutObservable<string>;
-        sel_grantPeriodicCls: KnockoutObservable<number>;
+
+        //Input Screen
         roundingRules: KnockoutObservableArray<any>;
-        inp_memo: KnockoutObservable<string>;
-        inp_workTypeList: KnockoutObservable<string>;
         workTypeList: KnockoutObservableArray<any>;
         workTypeNames: KnockoutObservable<string>;
         isEnableCode: KnockoutObservable<boolean>;
@@ -38,21 +36,17 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
 
             self.items = ko.observableArray([]);
+            self.sphdList = ko.observableArray([]);
             self.enable = ko.observable(true);
-
 
             self.date = ko.observable('');
             self.selectedCode = ko.observable('0002')
             self.isEnable = ko.observable(true);
             self.isEnableCode = ko.observable(false);
             self.isEditable = ko.observable(true);
-            self.inp_specialHolidayCode = ko.observable(null);
-            self.inp_specialHolidayName = ko.observable(null);
-            self.sel_grantPeriodicCls = ko.observable(1);
-            self.inp_memo = ko.observable(null);
-            self.currentItem = ko.observable(null);
+            
+            self.currentItem = ko.observable(new model.SpecialHolidayDto({}));
             self.workTypeList = ko.observableArray([]);
-            self.inp_workTypeList = ko.observable(null);
             self.workTypeNames = ko.observable("");
             self.itemList = ko.observableArray([
                 new ItemModel('基本給1', '基本給'),
@@ -68,7 +62,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.roundingRules.subscribe(function(newValue) {
                 if (self.selectedRuleCode(0)) {
                     $('.tab-content').hide();
-             
+
                 }
             });
             self.columns = ko.observableArray([
@@ -125,7 +119,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             $.when(self.getAllSpecialHoliday(), self.getWorkTypeList()).done(function() {
-                self.currentCode(self.items()[0].specialHolidayCode);
+                if (self.items().length > 0) {
+                    self.currentCode(self.items()[0].specialHolidayCode());
+                } else {
+                    self.initSpecialHoliday();    
+                }
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -138,7 +136,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             self.items.removeAll();
-            service.findAllSpecialHoliday().done(function(specialHoliday_arr: Array<model.SpecialHolidayDto>) {
+            //self.sphdList.removeAll();
+            service.findAllSpecialHoliday().done(function(specialHoliday_arr: Array<model.ISpecialHolidayDto>) {
+                self.sphdList(specialHoliday_arr);
                 for (var i = 0; i < specialHoliday_arr.length; i++) {
                     var specialHoliday: model.ISpecialHolidayDto = {
                         specialHolidayCode: specialHoliday_arr[i].specialHolidayCode,
@@ -147,8 +147,31 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         memo: specialHoliday_arr[i].memo,
                         workTypeList: specialHoliday_arr[i].workTypeList
                     };
+
+                    if (specialHoliday_arr[i].grantRegular) {
+                        var regularCommand = new model.GrantRegularDto({
+                            specialHolidayCode: specialHoliday_arr[i].grantRegular.specialHolidayCode,
+                            grantStartDate: new Date(specialHoliday_arr[i].grantRegular.grantStartDate),
+                            months: specialHoliday_arr[i].grantRegular.months,
+                            years: specialHoliday_arr[i].grantRegular.years,
+                            grantRegularMethod: specialHoliday_arr[i].grantRegular.grantRegularMethod
+                        });
+
+                        specialHoliday.regularCommand = regularCommand;
+                    } else {
+                        var regularCommand = new model.GrantRegularDto({
+                            specialHolidayCode: null,
+                            grantStartDate: new Date(),
+                            months: null,
+                            years: null,
+                            grantRegularMethod: 0
+                        });
+                        specialHoliday.regularCommand = regularCommand;
+                    }
+
                     self.items.push(new model.SpecialHolidayDto(specialHoliday));
                 }
+
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
@@ -163,24 +186,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-
-            var workTypeCodes = _.map(self.inp_workTypeList(), function(item: any) { return item.code });
-            var specialholiday = new model.SpecialHolidayDto({
-                specialHolidayCode: self.inp_specialHolidayCode(),
-                specialHolidayName: self.inp_specialHolidayName(),
-                grantPeriodicCls: self.sel_grantPeriodicCls(),
-                memo: self.inp_memo(),
-                workTypeList: workTypeCodes
-            });
-
+                        
             if (self.isEnableCode()) {
-                service.addSpecialHoliday(specialholiday).done(function(res) {
+                service.addSpecialHoliday(ko.toJSON(self.currentItem())).done(function(res) {
                     var resObj = ko.toJS(res);
                     if (self.currentCode) {
                         self.getAllSpecialHoliday();
-
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
-                        self.currentCode(specialholiday.specialHolidayCode);
+                        self.currentCode(self.currentItem().specialHolidayCode());
                         self.isEnableCode(false);
                     }
                 }).fail(function(res) {
@@ -190,7 +203,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 })
             }
             else {
-                service.updateSpecialHoliday(specialholiday).done(function(res) {
+                service.updateSpecialHoliday(ko.toJSON(self.currentItem())).done(function(res) {
                     self.getAllSpecialHoliday();
                     self.currentCode(specialholiday.specialHolidayCode);
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
@@ -221,6 +234,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
             return dfd.promise();
         }
+
         deleteSpecialHoliday() {
             let self = this;
             var index_of_itemDelete = _.findIndex(self.items(), ['specialHolidayCode', self.currentCode()]);
@@ -249,12 +263,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }).ifNo(function() {
             });
         }
+
         initSpecialHoliday(): void {
             let self = this;
-            self.inp_specialHolidayCode("");
-            self.inp_specialHolidayName("");
-            self.sel_grantPeriodicCls(0);
-            self.inp_memo("");
+            var emptyObject: model.ISpecialHolidayDto = {};
+            self.currentItem(new model.SpecialHolidayDto(emptyObject))
             self.currentCode("");
             self.workTypeNames("");
             nts.uk.ui.errors.clearAll();
@@ -266,22 +279,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.currentItem(self.findSpecialHoliday(value));
 
             if (self.currentItem() != null) {
-                self.inp_specialHolidayCode(self.currentItem().specialHolidayCode);
-                self.inp_specialHolidayName(self.currentItem().specialHolidayName);
-                self.sel_grantPeriodicCls(self.currentItem().grantPeriodicCls);
-                self.inp_memo(self.currentItem().memo);
-
                 var names = self.getNames(self.workTypeList(), self.currentItem().workTypeList);
                 self.workTypeNames(names);
+
             }
         }
 
         findSpecialHoliday(value: string): any {
             let self = this;
             var result = _.find(self.items(), function(obj: model.SpecialHolidayDto) {
-                return obj.specialHolidayCode === value;
+                return obj.specialHolidayCode() === value;
             });
-            return (result) ? result : null;
+            return (result) ? result : new model.SpecialHolidayDto({});
         }
 
         openKDL002Dialog() {
@@ -301,7 +310,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     name.push(item.name);
                 });
                 self.workTypeNames(name.join(" + "));
-                self.inp_workTypeList(data);
+                
+                var workTypeCodes = _.map(data, function(item: model.IWorkTypeModal) { return item.code; });
+                self.currentItem().workTypeList(workTypeCodes);
             });
 
         }
@@ -355,9 +366,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
     }
 
     class ItemModelSpecialHoliday {
-        specialHolidayCode: string;
+        specialHolidayCode: number;
         specialHolidayName: string;
-        constructor(specialHolidayCode: string, specialHolidayName: string) {
+        constructor(specialHolidayCode: number, specialHolidayName: string) {
             this.specialHolidayCode = specialHolidayCode;
             this.specialHolidayName = specialHolidayName;
         }
@@ -371,46 +382,190 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             this.name = name;
         }
     }
-
-    export module model {
-        export interface ISpecialHolidayDto {
-            specialHolidayCode: string;
-            specialHolidayName: string;
-            grantPeriodicCls: number;
-            memo: string;
-            workTypeList: Array<string>;
-        }
-        export class SpecialHolidayDto {
-            specialHolidayCode: string;
-            specialHolidayName: string;
-            grantPeriodicCls: number;
-            memo: string;
-            workTypeList: Array<string>;
-            constructor(param: ISpecialHolidayDto) {
-                this.specialHolidayCode = param.specialHolidayCode;
-                this.specialHolidayName = param.specialHolidayName;
-                this.grantPeriodicCls = param.grantPeriodicCls;
-                this.memo = param.memo;
-                this.workTypeList = param.workTypeList;
-            }
-        }
-
-        export class WorkTypeModal {
-            workTypeCode: string;
-            name: string;
-            memo: string;
-            constructor(param: IWorkTypeModal) {
-                this.workTypeCode = param.workTypeCode;
-                this.name = param.name;
-                this.memo = param.memo;
-            }
-        }
-
-        export interface IWorkTypeModal {
-            workTypeCode: string;
-            name: string;
-            memo: string;
+    
+    export class WorkTypeModal {
+        workTypeCode: string;
+        name: string;
+        memo: string;
+        constructor(param: IWorkTypeModal) {
+            this.workTypeCode = param.workTypeCode;
+            this.name = param.name;
+            this.memo = param.memo;
         }
     }
 
+    export interface IWorkTypeModal {
+        workTypeCode: string;
+        name: string;
+        memo: string;
+    }
+
+    export module model {
+        export interface ISpecialHolidayDto {
+            specialHolidayCode?: any;
+            specialHolidayName?: string;
+            grantPeriodicCls?: number;
+            memo?: string;
+            workTypeList?: Array<string>;
+            regularCommand?: IGrantRegularDto;
+            periodicCommant?: IGrantPeriodic;
+            limitCommand?: ISphdLimitDto;
+            conditionCommand?: ISubConditionDto;
+            singleCommand?: IGrantSingleDto;
+        }
+        export class SpecialHolidayDto {
+            specialHolidayCode: KnockoutObservable<any>;
+            specialHolidayName: KnockoutObservable<string>;
+            grantPeriodicCls: KnockoutObservable<number>;
+            memo: KnockoutObservable<string>;
+            workTypeList: KnockoutObservableArray<any>;
+            regularCommand: KnockoutObservable<IGrantRegularDto>;
+            periodicCommant: KnockoutObservable<IGrantPeriodic>;
+            limitCommand: KnockoutObservable<ISphdLimitDto>;
+            conditionCommand: KnockoutObservable<ISubConditionDto>;
+            singleCommand: KnockoutObservable<IGrantSingleDto>;
+
+            constructor(param: ISpecialHolidayDto) {
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || null);
+                this.specialHolidayName = ko.observable(param.specialHolidayName || '');
+                this.grantPeriodicCls = ko.observable(param.grantPeriodicCls || 0);
+                this.memo = ko.observable(param.memo || '');
+                this.workTypeList = ko.observable(param.workTypeList || null);
+                this.regularCommand = ko.observable(param.regularCommand || new GrantRegularDto({}));
+                this.periodicCommant = ko.observable(param.periodicCommant ||  new GrantPeriodicDto({}));
+                this.limitCommand = ko.observable(param.limitCommand ||  new SphdLimitDto({}));
+                this.conditionCommand = ko.observable(param.conditionCommand ||  new SubConditionDto({}));
+                this.singleCommand = ko.observable(param.singleCommand ||  new GrantSingleDto({}));
+            }
+        }
+
+        export interface IGrantRegularDto {
+            specialHolidayCode?: any;
+            grantStartDate?: Date;
+            months?: number;
+            years?: number;
+            grantRegularMethod?: number;
+        }
+        export class GrantRegularDto {
+            specialHolidayCode: KnockoutObservable<any>;
+            grantStartDate: KnockoutObservable<Date>;
+            months: KnockoutObservable<number>;
+            years: KnockoutObservable<number>;
+            grantRegularMethod: KnockoutObservable<number>;
+            constructor(param: IGrantRegularDto) {
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
+                this.grantStartDate = ko.observable(param.grantStartDate || new Date());
+                this.months = ko.observable(param.months || null);
+                this.years = ko.observable(param.years || null);
+                this.grantRegularMethod = ko.observable(param.grantRegularMethod || 0);
+            }
+        }
+
+        export interface IGrantPeriodic {
+            specialHolidayCode?: any;
+            grantDay?: number;
+            splitAcquisition?: number;
+            grantPeriodicMethod?: number;
+        }
+        export class GrantPeriodicDto {
+            specialHolidayCode: KnockoutObservable<any>;
+            grantDay: KnockoutObservable<number>;
+            splitAcquisition: KnockoutObservable<number>;
+            grantPeriodicMethod: KnockoutObservable<number>;
+            constructor(param: IGrantPeriodic) {
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode || null);
+                this.grantDay = ko.observable(param.grantDay || null);
+                this.splitAcquisition = ko.observable(param.splitAcquisition || 0);
+                this.grantPeriodicMethod = ko.observable(param.grantPeriodicMethod || 0);
+            }
+        }
+
+        export interface ISphdLimitDto {
+            specialHolidayCode?: number;
+            specialVacationMonths?: number;
+            specialVacationYears?: number;
+            grantCarryForward?: number;
+            limitCarryoverDays?: number;
+            specialVacationMethod?: number;
+        }
+        export class SphdLimitDto {
+            specialHolidayCode: KnockoutObservable<number>;
+            specialVacationMonths: KnockoutObservable<number>;
+            specialVacationYears: KnockoutObservable<number>;
+            grantCarryForward: KnockoutObservable<number>;
+            limitCarryoverDays: KnockoutObservable<number>;
+            specialVacationMethod: KnockoutObservable<number>;
+            constructor(param: ISphdLimitDto) {
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode|| null);
+                this.specialVacationMonths = ko.observable(param.specialVacationMonths|| null);
+                this.specialVacationYears = ko.observable(param.specialVacationYears|| null);
+                this.grantCarryForward = ko.observable(param.grantCarryForward|| 0);
+                this.limitCarryoverDays = ko.observable(param.limitCarryoverDays|| null);
+                this.specialVacationMethod = ko.observable(param.specialVacationMethod|| 0);
+            }
+        }
+
+        export interface ISubConditionDto {
+            specialHolidayCode?: number;
+            useGender?: number;
+            useEmployee?: number;
+            useCls?: number;
+            useAge?: number;
+            genderAtr?: number;
+            limitAgeFrom?: number;
+            limitAgeTo?: number;
+            ageCriteriaAtr?: number;
+            ageBaseYearAtr?: number;
+            ageBaseDates?: number;
+        }
+        export class SubConditionDto {
+            specialHolidayCode: KnockoutObservable<number>;
+            useGender: KnockoutObservable<number>;
+            useEmployee: KnockoutObservable<number>;
+            useCls: KnockoutObservable<number>;
+            useAge: KnockoutObservable<number>;
+            genderAtr: KnockoutObservable<number>;
+            limitAgeFrom: KnockoutObservable<number>;
+            limitAgeTo: KnockoutObservable<number>;
+            ageCriteriaAtr: KnockoutObservable<number>;
+            ageBaseYearAtr: KnockoutObservable<number>;
+            ageBaseDates: KnockoutObservable<number>;
+            constructor(param: ISubConditionDto) {
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode|| null);
+                this.useGender = ko.observable(param.useGender|| null);
+                this.useEmployee = ko.observable(param.useEmployee|| null);
+                this.useCls = ko.observable(param.useCls|| 0);
+                this.useAge = ko.observable(param.useAge|| 0);
+                this.genderAtr = ko.observable(param.genderAtr|| 0);
+                this.limitAgeFrom = ko.observable(param.limitAgeFrom|| null);
+                this.limitAgeTo = ko.observable(param.limitAgeTo|| null);
+                this.ageCriteriaAtr = ko.observable(param.ageCriteriaAtr|| 0);
+                this.ageBaseYearAtr = ko.observable(param.ageBaseYearAtr|| 0);
+                this.ageBaseDates = ko.observable(param.ageBaseDates|| null);
+            }
+        }
+
+        export interface IGrantSingleDto {
+            specialHolidayCode?: number;
+            grantDaySingleType?: number;
+            fixNumberDays?: number;
+            makeInvitation?: number;
+            holidayExclusionAtr?: number;
+        }
+        export class GrantSingleDto {
+            specialHolidayCode: KnockoutObservable<number>;
+            grantDaySingleType: KnockoutObservable<number>;
+            fixNumberDays: KnockoutObservable<number>;
+            makeInvitation: KnockoutObservable<number>;
+            holidayExclusionAtr: KnockoutObservable<number>;
+            constructor(param: IGrantSingleDto) {
+                this.specialHolidayCode = ko.observable(param.specialHolidayCode|| null);
+                this.grantDaySingleType = ko.observable(param.grantDaySingleType|| 0);
+                this.fixNumberDays = ko.observable(param.fixNumberDays|| null);
+                this.makeInvitation = ko.observable(param.makeInvitation|| 0);
+                this.holidayExclusionAtr = ko.observable(param.holidayExclusionAtr|| 0);
+            }
+        }
+    }
 }
+

@@ -13,8 +13,18 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SubCondition;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantSingle;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantPeriodic;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantPeriodicPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegular;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegularPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSingle;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSinglePK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubCondition;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubConditionPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHoliday;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHolidayPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimit;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimitPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkType;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkTypePK;
 
@@ -40,27 +50,20 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	 * @return
 	 */
 	private SpecialHoliday convertToDomain(KshstSpecialHoliday kshstSpecialHoliday) {
-		List<String> workTypeList = kshstSpecialHoliday.sphdWorkTypes.stream().map(x -> x.kshstSphdWorkTypePK.workTypeCode)
-				.collect(Collectors.toList());
-		
-		GrantRegular grantRegular = new GrantRegular();
-		GrantPeriodic grantPeriodic = new GrantPeriodic();
-		SphdLimit sphdLimit = new SphdLimit();
-		SubCondition subCondition = new SubCondition();
-		GrantSingle grantSingle = new GrantSingle();
-		
+		List<String> workTypeList = kshstSpecialHoliday.sphdWorkTypes.stream()
+				.map(x -> x.kshstSphdWorkTypePK.workTypeCode).collect(Collectors.toList());
+
+		GrantRegular grantRegular = convertToDomainRegular(kshstSpecialHoliday.grantRegular);
+		GrantPeriodic grantPeriodic = convertToDomainPeriodic(kshstSpecialHoliday.grantPeriodic);
+		SphdLimit sphdLimit = convertToDomainLimit(kshstSpecialHoliday.sphdLimit);
+		SubCondition subCondition = convertToDomainSubCondition(kshstSpecialHoliday.subCondition);
+		GrantSingle grantSingle = convertToDomainGrantSingle(kshstSpecialHoliday.grantSingle);
+
 		SpecialHoliday specialHoliday = SpecialHoliday.createFromJavaType(
 				kshstSpecialHoliday.kshstSpecialHolidayPK.companyId,
-				kshstSpecialHoliday.kshstSpecialHolidayPK.specialHolidayCode, 
-				kshstSpecialHoliday.specialHolidayName,
-				kshstSpecialHoliday.grantMethod, 
-				kshstSpecialHoliday.memo,
-				workTypeList,
-				grantRegular,
-				grantPeriodic,
-				sphdLimit,
-				subCondition,
-				grantSingle);
+				kshstSpecialHoliday.kshstSpecialHolidayPK.specialHolidayCode, kshstSpecialHoliday.specialHolidayName,
+				kshstSpecialHoliday.grantMethod, kshstSpecialHoliday.memo, workTypeList, grantRegular, grantPeriodic,
+				sphdLimit, subCondition, grantSingle);
 		return specialHoliday;
 	}
 
@@ -76,17 +79,162 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		KshstSpecialHolidayPK kshstSpecialHolidayPK = new KshstSpecialHolidayPK(specialHoliday.getCompanyId(),
 				specialHoliday.getSpecialHolidayCode().v());
 		kshstSpecialHoliday.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
-		kshstSpecialHoliday.grantMethod = specialHoliday.getGrantPeriodicCls().value;
+		kshstSpecialHoliday.grantMethod = specialHoliday.getGrantMethod().value;
 		kshstSpecialHoliday.memo = specialHoliday.getMemo().v();
 		// Add list KDL 002
 		List<KshstSphdWorkType> workTypes = specialHoliday.getWorkTypeList().stream().map(x -> {
-			KshstSphdWorkTypePK key = new KshstSphdWorkTypePK(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v(), x);
+			KshstSphdWorkTypePK key = new KshstSphdWorkTypePK(specialHoliday.getCompanyId(),
+					specialHoliday.getSpecialHolidayCode().v(), x);
 			return new KshstSphdWorkType(key);
 		}).collect(Collectors.toList());
-		
+
 		kshstSpecialHoliday.sphdWorkTypes = workTypes;
 		kshstSpecialHoliday.kshstSpecialHolidayPK = kshstSpecialHolidayPK;
+
+		kshstSpecialHoliday.grantRegular = convertToDbTypeRegular(specialHoliday.getGrantRegular());
+		kshstSpecialHoliday.grantPeriodic = convertToDbTypePeriodic(specialHoliday.getGrantPeriodic());
+		kshstSpecialHoliday.sphdLimit = convertToDbTypeSphdLimit(specialHoliday.getSphdLimit());
+		kshstSpecialHoliday.subCondition = convertToDbTypeSubCondition(specialHoliday.getSubCondition());
+		kshstSpecialHoliday.grantSingle = convertToDbTypeGrantSingle(specialHoliday.getGrantSingle());
 		return kshstSpecialHoliday;
+	}
+
+
+	private KshstGrantRegular convertToDbTypeRegular(GrantRegular grantRegular) {
+
+		KshstGrantRegular kshstGrantRegular = new KshstGrantRegular();
+		KshstGrantRegularPK kshstGrantRegularPK = new KshstGrantRegularPK(grantRegular.getCompanyId(),
+				grantRegular.getSpecialHolidayCode().v());
+
+		kshstGrantRegular.grantStartDate = grantRegular.getGrantStartDate();
+		kshstGrantRegular.months = grantRegular.getMonths().v();
+		kshstGrantRegular.years = grantRegular.getYears().v();
+		kshstGrantRegular.grantRegularMethod = grantRegular.getGrantRegularMethod().value;
+		kshstGrantRegular.kshstGrantRegularPK = kshstGrantRegularPK;
+		return kshstGrantRegular;
+	}
+
+	private KshstGrantPeriodic convertToDbTypePeriodic(GrantPeriodic grantPeriodic) {
+
+		KshstGrantPeriodic kshstGrantPeriodic = new KshstGrantPeriodic();
+		KshstGrantPeriodicPK kshstGrantPeriodicPK = new KshstGrantPeriodicPK(grantPeriodic.getCompanyId(),
+				grantPeriodic.getSpecialHolidayCode().v());
+		kshstGrantPeriodic.kshstGrantPeriodicPK = kshstGrantPeriodicPK;
+		
+		return kshstGrantPeriodic;
+	}
+
+	private KshstSphdLimit convertToDbTypeSphdLimit(SphdLimit sphdLimit) {
+
+		KshstSphdLimit kshstSphdLimit = new KshstSphdLimit();
+		KshstSphdLimitPK kshstSphdLimitPK = new KshstSphdLimitPK(sphdLimit.getCompanyId(),
+				sphdLimit.getSpecialHolidayCode().v());
+		kshstSphdLimit.kshstSphdLimitPK = kshstSphdLimitPK;
+		return kshstSphdLimit;
+	}
+
+	private KshstSphdSubCondition convertToDbTypeSubCondition(SubCondition subCondition) {
+
+		KshstSphdSubCondition kshstSphdSubCondition = new KshstSphdSubCondition();
+		KshstSphdSubConditionPK kshstSphdSubConditionPK = new KshstSphdSubConditionPK(subCondition.getCompanyId(),
+				subCondition.getSpecialHolidayCode().v());
+		kshstSphdSubCondition.kshstSphdSubConditionPK = kshstSphdSubConditionPK;
+		return kshstSphdSubCondition;
+	}
+
+	private KshstGrantSingle convertToDbTypeGrantSingle(GrantSingle grantSingle) {
+
+		KshstGrantSingle kshstGrantSingle = new KshstGrantSingle();
+		KshstGrantSinglePK kshstGrantSinglePK = new KshstGrantSinglePK(grantSingle.getCompanyId(),
+				grantSingle.getSpecialHolidayCode().v());
+		kshstGrantSingle.kshstGrantSinglePK = kshstGrantSinglePK;
+		return kshstGrantSingle;
+	}
+
+	/**
+	 * 
+	 * @param kshstGrantRegular
+	 * @return
+	 */
+	private GrantRegular convertToDomainRegular(KshstGrantRegular kshstGrantRegular) {
+		if (kshstGrantRegular == null) {
+			return null;
+		}
+		GrantRegular grantRegular = GrantRegular.createFromJavaType(kshstGrantRegular.kshstGrantRegularPK.companyId,
+				kshstGrantRegular.kshstGrantRegularPK.specialHolidayCode, kshstGrantRegular.grantStartDate,
+				kshstGrantRegular.months, kshstGrantRegular.years, kshstGrantRegular.grantRegularMethod);
+
+		return grantRegular;
+	}
+
+	/**
+	 * 
+	 * @param kshstgrantPeriodic
+	 * @return
+	 */
+	private GrantPeriodic convertToDomainPeriodic(KshstGrantPeriodic kshstgrantPeriodic) {
+		if (kshstgrantPeriodic == null) {
+			return null;
+		}
+		GrantPeriodic grantPeriodic = GrantPeriodic.createFromJavaType(
+				kshstgrantPeriodic.kshstGrantPeriodicPK.companyId,
+				kshstgrantPeriodic.kshstGrantPeriodicPK.specialHolidayCode, kshstgrantPeriodic.grantDay,
+				kshstgrantPeriodic.splitAcquisition, kshstgrantPeriodic.grantPerioricMethod);
+
+		return grantPeriodic;
+	}
+
+	/**
+	 * 
+	 * @param kshstLimitSphd
+	 * @return
+	 */
+	private SphdLimit convertToDomainLimit(KshstSphdLimit kshstLimitSphd) {
+		if (kshstLimitSphd == null) {
+			return null;
+		}
+		SphdLimit sphdLimit = SphdLimit.createFromJavaType(kshstLimitSphd.kshstSphdLimitPK.companyId,
+				kshstLimitSphd.kshstSphdLimitPK.specialHolidayCode, kshstLimitSphd.specialVacationMonths,
+				kshstLimitSphd.specialVacationYears, kshstLimitSphd.grantCarryForward,
+				kshstLimitSphd.limitCarryoverDays, kshstLimitSphd.specialVacationMethod);
+
+		return sphdLimit;
+	}
+
+	/**
+	 * 
+	 * @param kshstSphdSubCondition
+	 * @return
+	 */
+	private SubCondition convertToDomainSubCondition(KshstSphdSubCondition kshstSphdSubCondition) {
+		if (kshstSphdSubCondition == null) {
+			return null;
+		}
+		SubCondition subCondition = SubCondition.createFromJavaType(
+				kshstSphdSubCondition.kshstSphdSubConditionPK.companyId,
+				kshstSphdSubCondition.kshstSphdSubConditionPK.specialHolidayCode, kshstSphdSubCondition.useGender,
+				kshstSphdSubCondition.useEmployee, kshstSphdSubCondition.useCls, kshstSphdSubCondition.useAge,
+				kshstSphdSubCondition.genderAtr, kshstSphdSubCondition.limitAgeFrom, kshstSphdSubCondition.limitAgeTo,
+				kshstSphdSubCondition.ageCriteriaAtr, kshstSphdSubCondition.ageBaseYearAtr,
+				kshstSphdSubCondition.ageBaseDates);
+
+		return subCondition;
+	}
+
+	/**
+	 * 
+	 * @param kshstGrantSingle
+	 * @return
+	 */
+	private GrantSingle convertToDomainGrantSingle(KshstGrantSingle kshstGrantSingle) {
+		if (kshstGrantSingle == null) {
+			return null;
+		}
+		GrantSingle grantSingle = GrantSingle.createSimpleFromJavaType(kshstGrantSingle.kshstGrantSinglePK.companyId,
+				kshstGrantSingle.kshstGrantSinglePK.specialHolidayCode, kshstGrantSingle.grantDaySingleType,
+				kshstGrantSingle.fixNumberDays, kshstGrantSingle.makeInvitation, kshstGrantSingle.holidayExcusionAtr);
+
+		return grantSingle;
 	}
 
 	/**
@@ -115,13 +263,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				specialHoliday.getSpecialHolidayCode().v());
 		KshstSpecialHoliday entity = this.queryProxy().find(primaryKey, KshstSpecialHoliday.class).get();
 		entity.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
-		entity.grantMethod = specialHoliday.getGrantPeriodicCls().value;
+		entity.grantMethod = specialHoliday.getGrantMethod().value;
 		entity.memo = specialHoliday.getMemo().v();
 		List<KshstSphdWorkType> workTypes = specialHoliday.getWorkTypeList().stream().map(x -> {
-			KshstSphdWorkTypePK key = new KshstSphdWorkTypePK(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v(), x);
+			KshstSphdWorkTypePK key = new KshstSphdWorkTypePK(specialHoliday.getCompanyId(),
+					specialHoliday.getSpecialHolidayCode().v(), x);
 			return new KshstSphdWorkType(key);
 		}).collect(Collectors.toList());
-		
+
 		entity.sphdWorkTypes = workTypes;
 		entity.kshstSpecialHolidayPK = primaryKey;
 		this.commandProxy().update(entity);
