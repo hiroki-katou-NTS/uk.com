@@ -33,13 +33,21 @@ module nts.uk.ui.koExtentions {
             $fileuploadContainer.append($fileInput);
             $fileuploadContainer.appendTo(container);
             $fileBrowserButton.click(function() {
-                $fileInput.val(null);
-                fileName("");
+//                $fileInput.val(null);
+//                fileName("");
                 $fileInput.click();
             });
             $fileInput.change(function() {
                 var selectedFilePath = $(this).val();
+                if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
+                    if (!nts.uk.util.isNullOrUndefined(container.data("file"))) {
+                        this.files = (container.data("file"));        
+                    }
+                    return;    
+                }
+                container.data("file", this.files);
                 var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
+                container.data("file-name", getSelectedFileName);
                 fileName(getSelectedFileName);
                 onchange(getSelectedFileName);
             });
@@ -62,8 +70,14 @@ module nts.uk.ui.koExtentions {
             container.find("input[type='file']").attr("accept", accept.toString());
             
             let $fileNameLable = container.find(".filenamelabel");
-            $fileNameLable.text(fileName);
-            
+            if (container.data("file-name") !== fileName) {
+                container.data( "file-name", "" );
+                $fileNameLable.text("");
+                container.find("input[type='file']").val(null);
+                data.filename("");
+            } else {
+                $fileNameLable.text(fileName);    
+            }   
             if (asLink == true) {
                 $fileNameLable.addClass("hyperlink");
                 $fileNameLable.removeClass("standard-file-name");
