@@ -28,6 +28,9 @@
 						<h2>Overview</h2>
 						<hr></hr>
 						<div style="margin-left: 10px; padding-top: 10px">
+							<p>
+								<b>Display Organization Name:</b>
+							</p><br></br>
 							<div data-bind="ntsCheckBox:{checked: isDisplayOrganizationName}">Display Organization Name</div>
 							
 						</div><br></br>
@@ -91,6 +94,7 @@
         
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
+        tabindex: number;
         constructor() {
             let self = this;
             self.employeeInputList = ko.observableArray([
@@ -110,14 +114,15 @@
             self.isDisplayOrganizationName = ko.observable(true);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.selectedItem = ko.observable(null);
-            
+            self.tabindex = 1;
             // Initial listComponentOption
             self.listComponentOption = {
                 systemReference: self.systemReference(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
                 employeeInputList: self.employeeInputList,
                 targetBtnText: self.targetBtnText,
-                selectedItem: self.selectedItem
+                selectedItem: self.selectedItem,
+                tabIndex: self.tabindex
             };
         }
     }
@@ -127,6 +132,7 @@
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
+        tabIndex: number;
     }
     export interface EmployeeModel {
         id: string;
@@ -201,7 +207,13 @@
 												<label>Selected Employee in the List</label>
 											</td>
 										</tr>
-									
+										<tr>
+											<td>tabIndex</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<label>Set TabIndex to Component Elements</label>
+											</td>
+										</tr>
 									</table>
 								</div><!-- END VIEWMODEL TAB-->
 								
