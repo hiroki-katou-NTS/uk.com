@@ -20,7 +20,6 @@ module nts.uk.at.view.ksm001.a {
             isEmploymentSelected: KnockoutObservable<boolean>;
             isPersonSelected: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
-            selectedTargetYear: KnockoutObservable<number>;
             companyEstablishmentModel: EstablishmentModel;
             employmentEstablishmentModel: EstablishmentModel;
             personalEstablishmentModel: EstablishmentModel;
@@ -69,7 +68,6 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected = ko.observable(false);
                 self.isPersonSelected = ko.observable(false);
                 self.isLoading = ko.observable(false);
-                self.selectedTargetYear = ko.observable(null);
                 self.selectedEmploymentCode = ko.observable('');
                 self.alreadySettingEmployment = ko.observableArray([]);
                 
@@ -136,6 +134,17 @@ module nts.uk.at.view.ksm001.a {
                     { id: 'emp-tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selEmploymentTab = ko.observable('emp-tab-1');
+
+                // Selected year subscription.
+                self.companyEstablishmentModel.selectedYear.subscribe(year => {
+                    self.loadCompanyEstablishment(year, false);
+                });
+                self.employmentEstablishmentModel.selectedYear.subscribe(year => {
+                    self.loadEmploymentEstablishment(year, self.selectedEmploymentCode(), false);
+                });
+                self.personalEstablishmentModel.selectedYear.subscribe(year => {
+                    self.loadCompanyEstablishment(year, false);
+                });
                 
             }
             
@@ -168,7 +177,6 @@ module nts.uk.at.view.ksm001.a {
             private setSelectableYears(): void {
                 let self = this;
                 let currentYear = moment();
-                self.selectedTargetYear(currentYear.year());
 
                 // Get 2 years before, 2 years after.
                 let arr = [];
@@ -220,29 +228,18 @@ module nts.uk.at.view.ksm001.a {
                 self.isPersonSelected(false);
                 self.isCompanySelected(true);
                 self.isLoading(true);
-                self.loadCompanyEstablishment(self.selectedTargetYear(), true).done(function() {
-                    self.selectedTargetYear.subscribe(function(targetYear) {
-                        self.loadCompanyEstablishment(targetYear, false);
-                    });
+
+                let currentYear = self.companyEstablishmentModel.selectedYear() ?
+                    self.companyEstablishmentModel.selectedYear() : moment().year();
+
+                self.loadCompanyEstablishment(currentYear, true).done(function() {
                     dfd.resolve();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
             }
-                        
            
-            /**
-             * call service load data 
-             */
-            private loadEmploymentSelected(employmentCode: string): void {
-                var self = this;
-                if (employmentCode) {
-                    
-                }
-            }
-           
-            
             /**
              * find all employment setting to view
              */
@@ -317,7 +314,11 @@ module nts.uk.at.view.ksm001.a {
                             self.employmentName(employment.name);
                         }
                         self.employmentEstablishmentModel.enableInput();
-                        self.loadEmploymentEstablishment(self.selectedTargetYear(), employmentCode, true);
+
+                        let currentYear = self.employmentEstablishmentModel.selectedYear() ?
+                            self.employmentEstablishmentModel.selectedYear() : moment().year();
+
+                        self.loadEmploymentEstablishment(currentYear, employmentCode, true);
                     }
                 });
                 nts.uk.ui.block.clear();
@@ -371,7 +372,7 @@ module nts.uk.at.view.ksm001.a {
             private viewDefaultPersonal(): void {
                 var self = this;
                 var employeeDefault: string ="01";
-                service.findPersonalEstablishment(self.selectedTargetYear(), employeeDefault).done(function(data) {
+                service.findPersonalEstablishment(moment().year(), employeeDefault).done(function(data) {
                     self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
                     self.personalEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
                     self.personalEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
@@ -880,12 +881,14 @@ module nts.uk.at.view.ksm001.a {
             estimateDaysModel: EstablishmentDaysModel;
             selectedTab: KnockoutObservable<string>;
             isEditable: KnockoutObservable<boolean>;
+            selectedYear: KnockoutObservable<number>;
             constructor() {
                 this.estimateTimeModel = new EstablishmentTimeModel();
                 this.estimatePriceModel = new EstablishmentPriceModel();
                 this.estimateDaysModel = new EstablishmentDaysModel();
                 this.selectedTab = ko.observable('tab-1');
                 this.isEditable = ko.observable(true);
+                this.selectedYear = ko.observable(moment().year());
             }
 
             enableInput(): void {

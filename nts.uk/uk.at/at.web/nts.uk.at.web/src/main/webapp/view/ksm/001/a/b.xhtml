@@ -14,6 +14,21 @@
 			<button tabindex="2" class="danger" data-bind="click: deleteCompanyEstablishment">#{i18n.getText('KSM001_2')}</button>
 			<button tabindex="4" data-bind="click: openDialogUsageSettingModel">#{i18n.getText('KSM001_3')}</button>
 		</ui:define>
+		<ui:define name="extended-111">
+			<div tabindex="6" id="comboTargetYear"
+					data-bind="ntsComboBox: {
+				name: '#[KSM001_4]',
+				options: lstTargetYear,
+				optionsValue: 'year',
+				visibleItemsCount: 5,
+				value: companyEstablishmentModel.selectedYear,
+				optionsText: 'year',
+				editable: false,
+				enable: true,
+				columns: [
+					{ prop: 'year', length: 6 }
+				]}"></div>
+		</ui:define>
 		<ui:define name="extended-222">
 			<div data-bind="with: companyEstablishmentModel">
 				<div data-bind="ifnot: $parent.isLoading">
