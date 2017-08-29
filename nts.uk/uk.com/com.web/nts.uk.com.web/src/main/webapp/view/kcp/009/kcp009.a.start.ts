@@ -3,6 +3,6 @@ module kcp009.a {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
         // Load listComponent
-            $('#emp-list').ntsListComponent(screenModel.listComponentOption);
+            $('#emp-list').ntsLoadListComponent(screenModel.listComponentOption);
     });
 }

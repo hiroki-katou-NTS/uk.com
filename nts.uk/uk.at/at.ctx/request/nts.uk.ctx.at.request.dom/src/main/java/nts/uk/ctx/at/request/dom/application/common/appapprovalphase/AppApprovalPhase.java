@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.appapprovalphase;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+
+import lombok.AllArgsConstructor;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 /**
@@ -8,8 +12,8 @@ import nts.arc.layer.dom.DomainObject;
  * @author hieult
  *
  */
-@Value
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@AllArgsConstructor
 public class AppApprovalPhase extends DomainObject {
 
 	/** 会社ID */
@@ -22,18 +26,20 @@ public class AppApprovalPhase extends DomainObject {
 	private String phaseID;
 
 	/** 承認形態 */
+	@Setter
 	private ApprovalForm approvalForm;
 
 	/** 順序 */
 	private int dispOrder;
 
 	/** 承認区分 */
-	private ApprovalATR approvalATR;
+	@Setter
+	private ApprovalAtr approvalATR;
 
 	public static AppApprovalPhase createFromJavaType(String companyID , String appID , String phaseID , int approvalForm , int dispOrder , int approvalATR ) 
 							{return new AppApprovalPhase (companyID , appID , phaseID ,
 															EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 															dispOrder,
-															EnumAdaptor.valueOf(approvalATR, ApprovalATR.class)) ; 
+															EnumAdaptor.valueOf(approvalATR, ApprovalAtr.class)) ; 
 								}									
 }

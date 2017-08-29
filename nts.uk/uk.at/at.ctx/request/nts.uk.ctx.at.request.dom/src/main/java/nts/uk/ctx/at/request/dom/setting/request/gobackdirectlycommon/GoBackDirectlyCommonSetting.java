@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon;
 
 import lombok.Value;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentContent;
@@ -10,42 +11,74 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
 
 @Value
-public class GoBackDirectlyCommonSetting  {
+public class GoBackDirectlyCommonSetting {
+	/**
+	 * 会社ID
+	 */
 	private String companyID;
-
+	/**
+	 * 申請ID
+	 */
 	private String appID;
-
+	/**
+	 * 勤務変更
+	 */
 	private WorkChangeFlg workChangeFlg;
-
+	/**
+	 * 勤務の変更申請時
+	 */
+	private UseAtr workChangeTimeAtr;
+	/**
+	 * 実績を表示する
+	 */
 	private AppDisplayAtr performanceDisplayAtr;
-
+	/**
+	 * 申請対象の矛盾チェック
+	 */
 	private CheckAtr contraditionCheckAtr;
-
+	/**
+	 * 直行直帰申請の勤務種類
+	 */
 	private GoBackWorkType goBackWorkType;
-
+	/**
+	 * 遅刻早退設定
+	 */
 	private CheckAtr lateLeaveEarlySettingAtr;
-
+	/**
+	 * コメント
+	 */
 	private CommentContent commentContent1;
-
+	/**
+	 * 太字
+	 */
 	private FontWeightFlg commentFontWeight1;
-
+	/**
+	 * 文字色
+	 */
 	private CommentFontColor commentFontColor1;
-
+	/**
+	 * コメント
+	 */
 	private CommentContent commentContent2;
-
+	/**
+	 * 太字
+	 */
 	private FontWeightFlg commentFontWeight2;
-
+	/**
+	 * 文字色
+	 */
 	private CommentFontColor commentFontColor2;
 
 	public GoBackDirectlyCommonSetting(String companyID, String appID, WorkChangeFlg workChangeFlg,
-			AppDisplayAtr performanceDisplayAtr, CheckAtr contraditionCheckAtr, GoBackWorkType goBackWorkType,
-			CheckAtr lateLeaveEarlySettingAtr, CommentContent commentContent1, FontWeightFlg commentFontWeight1,
-			CommentFontColor commentFontColor1, CommentContent commentContent2, FontWeightFlg commentFontWeight2,
-			CommentFontColor commentFontColor2) {
+			UseAtr workChangeTimeAtr, AppDisplayAtr performanceDisplayAtr, CheckAtr contraditionCheckAtr,
+			GoBackWorkType goBackWorkType, CheckAtr lateLeaveEarlySettingAtr, CommentContent commentContent1,
+			FontWeightFlg commentFontWeight1, CommentFontColor commentFontColor1, CommentContent commentContent2,
+			FontWeightFlg commentFontWeight2, CommentFontColor commentFontColor2) {
 		super();
 		this.companyID = companyID;
 		this.appID = appID;
 		this.workChangeFlg = workChangeFlg;
+		this.workChangeTimeAtr = workChangeTimeAtr;
 		this.performanceDisplayAtr = performanceDisplayAtr;
 		this.contraditionCheckAtr = contraditionCheckAtr;
 		this.goBackWorkType = goBackWorkType;

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +8,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentRequestAdaptor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.agentadapter.AgentAdapterDto;
-import nts.uk.ctx.at.request.dom.application.common.agentadapter.AgentAppType;
 import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.ObjApproverRepresenter;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author tutk
+ *
+ */
 @Stateless
 public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformationService {
 
@@ -29,7 +31,7 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 	
 	@Override
 	public ApprovalAgencyInformationOutput getApprovalAgencyInformation(String companyID, List<String> approver) {
-		String companyId = AppContexts.user().companyId();
+		//String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		GeneralDate generalDate = GeneralDate.today(); 
 		
@@ -42,16 +44,15 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 			return new ApprovalAgencyInformationOutput(outputListApproverAndRepresenterSID, outputListRepresenterSID, outputFlag);
 		}
 		List<AgentAdaptorDto> listAgenta = agentRequestAdaptor.find(companyID, employeeId, generalDate,generalDate );
-		//listAgent lấy từ domain Agent 
-		List<AgentAdapterDto> listAgent = new ArrayList<>();
+		
 		//duyệt list người xác nhận
 		for(String approveItem : approver ) {
 			//duyệt list lấy được trong domain Agent
-			for(AgentAdapterDto agentAdapterDto : listAgent) {
+			for(AgentAdaptorDto agentAdapterDto : listAgenta) {
 				//nếu người xác nhận có trong list Agent
 				if(approveItem == agentAdapterDto.getEmployeeId()) {
 					//ktra xem AgentAppType = No_Settings hay k
-					if(agentAdapterDto.getAgentAppType1() == AgentAppType.NO_SETTINGS ) {
+					if(agentAdapterDto.getAgentAppType1() == 2 ) {
 						outputFlag = false;
 						// add nguoi xac nhan vao 
 						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,"Empty");
@@ -59,13 +60,13 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 						
 					}
 					//ktra xem AgentAppType = PATH hay k
-					if(agentAdapterDto.getAgentAppType1() == AgentAppType.PATH) {
+					if(agentAdapterDto.getAgentAppType1() == 1) {
 						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,"Pass");
 						outputListApproverAndRepresenterSID.add(obj);
 					}
 					
 					//ktra xem AgentAppType = SUBSTITUTE_DESIGNATION hay k
-					if(agentAdapterDto.getAgentAppType1() == AgentAppType.SUBSTITUTE_DESIGNATION) {
+					if(agentAdapterDto.getAgentAppType1() == 0) {
 						outputFlag = false;
 						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,agentAdapterDto.getAgentSid1());
 						outputListApproverAndRepresenterSID.add(obj);
@@ -80,10 +81,5 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 		return new ApprovalAgencyInformationOutput(outputListApproverAndRepresenterSID, outputListRepresenterSID, outputFlag);
 	}
 
-	@Override
-	public List<AgentAdapterDto> getAgentInfor(String requestId, GeneralDate startDate, GeneralDate endDate) {
-		List<AgentAdapterDto> lstAgent =  new ArrayList<>();
-		return lstAgent;
-	}
 
 }

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 
 /**
@@ -32,5 +33,9 @@ public interface BPTimeItemRepository {
 	void addListBonusPayTimeItem(List<BonusPayTimeItem> lstTimeItem);
 
 	void updateListBonusPayTimeItem(List<BonusPayTimeItem> lstTimeItem);
+	
+	List<BonusPayTimeItem> getListBonusPayTimeItemName(String companyId, List<Integer> timeItemNos);
+	
+	List<BonusPayTimeItem> getListSpecialBonusPayTimeItemName(String companyId, List<Integer> timeItemNos);
 
 }

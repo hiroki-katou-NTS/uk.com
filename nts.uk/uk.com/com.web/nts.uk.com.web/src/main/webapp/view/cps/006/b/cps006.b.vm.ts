@@ -24,7 +24,6 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
 
-
         categoryType: KnockoutObservable<number> = ko.observable(1);
 
         isRequired: KnockoutObservable<number> = ko.observable(1);
@@ -33,14 +32,20 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         itemNameText: KnockoutObservable<string> = ko.observable('');
 
-        currentCategory: KnockoutObservable<PerInfoCategory>;//= ko.observable(getShared('categoryRole'));
+        currentCategory: PerInfoCategory;
 
         ckbDisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
+
+        ckbIsAbolition: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
 
             self.currentSelectId.subscribe(function(newValue) {
+                if (!newValue) {
+
+                    return;
+                }
 
                 service.getPerInfoItemDefById(newValue).done(function(data: IItemInfoDef) {
 
@@ -57,11 +62,13 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 self.isRequired(newItem.isRequired);
 
+                self.ckbIsAbolition(newItem.isAbolition === 1 ? true : false);
+
             });
 
-            self.ckbDisplayAbolition.subscribe(function(newValue) { 
+            self.ckbDisplayAbolition.subscribe(function(newValue) {
 
-                self.loadItemInfoDefList(self.currentCategory().id);
+                self.loadDataForGrid();
 
             });
         }
@@ -71,31 +78,86 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
-            self.currentCategory = ko.observable(new PerInfoCategory('B28E5649-0CFF-475B-AE87-52A21DBEB6D8', 'CS00004', 'Du lịch', 1, 0, 1, 0));
+            self.currentCategory = new PerInfoCategory(getShared('categoryInfo'));
 
-            self.loadItemInfoDefList(self.currentCategory().id).done(function() {
+            self.loadDataForGrid().done(function() {
 
-                dfd.resolve(); 
+                dfd.resolve();
 
             });
 
             return dfd.promise();
         }
 
-        loadItemInfoDefList(categoryId): JQueryPromise<any> {
+        loadDataForGrid(): JQueryPromise<any> {
+
             let self = this,
-                dfd = $.Deferred();
-            service.getItemInfoDefList(categoryId).done(function(itemInfoDefList: Array<IItemInfoDef>) {
+                dfd = $.Deferred(),
+                lastSelectedIndex = self.itemInfoDefList().indexOf(_.find(self.itemInfoDefList(), function(i) { return i.id == self.currentSelectId() })),
+                selectedId;
+
+            self.loadItemInfoDefList().done(function() {
+
+                //set selected item for gridlist
+                if (self.itemInfoDefList().length > 0) {
+
+                    if (lastSelectedIndex != -1) {
+
+                        let selectItem = _.find(self.itemInfoDefList(), function(i) { return i.id == self.currentSelectId() });
+
+                        if (selectItem) {
+
+                            selectedId = self.currentSelectId();
+
+                        } else {
+
+                            if (self.itemInfoDefList().length == 0) {
+
+                                selectedId = '';
+
+                            } else {
+
+                                if (self.itemInfoDefList().length <= lastSelectedIndex) {
+
+                                    selectedId = self.itemInfoDefList()[self.itemInfoDefList().length - 1].id;
+
+                                } else {
+
+                                    selectedId = self.itemInfoDefList()[lastSelectedIndex == 0 ? 0 : lastSelectedIndex].id;
+
+                                }
+                            }
+                        }
+                    } else {
+
+                        selectedId = self.itemInfoDefList()[0].id;
+                    }
+                }
+                self.currentSelectId(selectedId);
+
+                dfd.resolve();
+
+            });
+            return dfd.promise();
+        }
+
+        loadItemInfoDefList(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                categoryId = self.currentCategory.id;
+            service.getItemInfoDefList(categoryId, self.ckbDisplayAbolition()).done(function(itemInfoDefList: Array<IItemInfoDef>) {
+
+                self.itemInfoDefList([]);
 
                 for (let i of itemInfoDefList) {
+
                     self.itemInfoDefList().push(new ItemInfoDef(i));
+
                 }
 
-                if (itemInfoDefList.length > 0) {
+                self.itemInfoDefList.valueHasMutated();
 
-                    self.currentSelectId(itemInfoDefList[0].id);
-
-                } else {
+                if (self.itemInfoDefList().length < 0) {
 
 
 
@@ -105,6 +167,44 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             });
             return dfd.promise();
+        }
+
+        updateItemChange() {
+
+            let self = this,
+
+                command = {
+                    id: self.currentItem().id,
+                    itemName: self.itemNameText(),
+                    isAbolition: self.ckbIsAbolition() === true ? 1 : 0,
+                    isRequired: self.isRequired()
+                }
+
+            block.invisible();
+
+            service.updateItemChange(command)
+                .done(function() {
+
+                    dialog({ messageId: "Msg_15" }).then(function() {
+
+                        self.loadDataForGrid().done(function() {
+
+                            block.clear();
+
+                        });
+                    });
+                }).fail(function() {
+
+                    dialog({ messageId: "Msg_233" });
+
+                });
+
+        }
+
+        closeDialog(): void {
+
+            nts.uk.ui.windows.close();
+
         }
 
         genRequiredText() {
@@ -226,6 +326,58 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         }
 
+        genParamDisplayOrder() {
+            let self = this,
+                disPlayOrderArray = [];
+
+            for (let i of self.itemInfoDefList()) {
+
+                var item = {
+                    id: i.id,
+                    name: i.itemName
+                }
+
+                disPlayOrderArray.push(item);
+
+            }
+
+            return disPlayOrderArray;
+        }
+
+        OpenCDL022Modal() {
+
+            let self = this,
+                command;
+
+            setShared('CDL020_PARAMS', self.genParamDisplayOrder());
+
+            block.invisible();
+
+            nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                if (!getShared('CDL020_VALUES')) {
+                    block.clear();
+                    return;
+                }
+
+                command = {
+                    categoryId: self.currentCategory.id,
+                    orderItemList: getShared('CDL020_VALUES')
+                }
+
+                service.SetOrder(command).done(function() {
+
+                    self.loadDataForGrid().done(function() {
+
+                        block.clear();
+                    });
+
+                });
+
+
+            });
+        }
+
 
     }
 
@@ -240,6 +392,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         perInfoCtgId: string;
         itemCode: string;
         itemName: string;
+        itemDefaultName: string;
         isAbolition: number;
         isFixed: number;
         isRequired: number;
@@ -254,6 +407,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         perInfoCtgId: string;
         itemCode: string;
         itemName: string;
+        itemDefaultName: string;
         isAbolition: number;
         isFixed: number;
         isRequired: number;
@@ -268,6 +422,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             this.perInfoCtgId = data ? data.perInfoCtgId : '';
             this.itemCode = data ? data.itemCode : '';
             this.itemName = data ? data.itemName : '';
+            this.itemDefaultName = data ? data.itemDefaultName : '';
             this.isAbolition = data ? data.isAbolition : 0;
             this.isFixed = data ? data.isFixed : 0;
             this.isRequired = data ? data.isRequired : 0;
@@ -281,46 +436,16 @@ module nts.uk.com.view.cps006.b.viewmodel {
     }
 
     export class PerInfoCategory {
+
         id: string;
-        categoryCode: string;
-        categoryName: string;
-        personEmployeeType: number;
-        isAbolition: number;
-        categoryType: number;
-        isFixed: number;
 
-        constructor(
-            id: string,
-            categoryCode: string,
-            categoryName: string,
-            personEmployeeType: number,
-            isAbolition: number,
-            categoryType: number,
-            isFixed: number) {
-            this.id = id;
-            this.categoryCode = categoryCode;
-            this.categoryName = categoryName;
-            this.personEmployeeType = personEmployeeType;
-            this.isAbolition = isAbolition;
-            this.categoryType = categoryType;
-            this.isFixed = isFixed
+        constructor(param) {
+            this.id = param.id();
         }
 
     }
 
-    export class CategoryRole {
-        categoryId: string;
-        itemCode: string;
-        itemIsSetting: boolean;
-        constructor(categoryId: string,
-            itemCode: string,
-            itemIsSetting: boolean) {
-            this.categoryId = categoryId;
-            this.itemCode = itemCode;
-            this.itemIsSetting = itemIsSetting;
 
-        }
-    }
 
 }
 

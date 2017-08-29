@@ -138,13 +138,12 @@ public class LoginWs extends WebService {
 	/**
 	 * Gets the all company.
 	 *
-	 * @param contractCode the contract code
 	 * @return the all company
 	 */
 	@POST
-	@Path("getcompany/{contractCode}")
-	public List<CompanyInformationDto> getAllCompany(@PathParam("contractCode") String contractCode) {
-		return companyInformationFinder.findAllByContractCode(contractCode);
+	@Path("getcompany")
+	public List<CompanyInformationDto> getAllCompany() {
+		return companyInformationFinder.findAll();
 	}
 
 	/**

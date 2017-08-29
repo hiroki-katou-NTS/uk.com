@@ -35,7 +35,20 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this;
             self.start(undefined);
             self.currentCategory().id.subscribe(function(value) {
+                debugger;
                 self.getDetailCategory(value);
+            });
+
+            self.itemList.subscribe(function(value) {
+                if (value.length > 0) {
+                    let x: number = _.filter(value, x => { return x.systemRequired == 1 }).length > 0 ? 1 : 0;
+                    self.currentCategory().displayIsAbolished = x;
+                    console.log(ko.toJS(self.currentCategory()));
+                } else {
+                    self.currentCategory().displayIsAbolished = 0;
+                }
+
+
             });
             self.isAbolished.subscribe(function(value) {
                 if (value) {
@@ -57,19 +70,17 @@ module nts.uk.com.view.cps006.a.viewmodel {
             self.itemList.removeAll();
             service.getAllPerInfoItemDefByCtgId(id).done(function(data: Array<any>) {
                 if (data.length > 0) {
-                    self.itemList(_.map(data, x => {return {
-                        id: x.id,
-                        perInfoCtgId: x.perInfoCtgId,
-                        itemName: x.itemName,
-                        systemRequired: x.systemRequired,
-                        isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
-                    }}));
-                    
-                    self.currentCategory().displayIsAbolished = (_.filter(data, x =>{return x.systemRequired == 1})).length > 0 ? true: false;
-                    
+                    self.itemList(_.map(data, x => {
+                        return {
+                            id: x.id,
+                            perInfoCtgId: x.perInfoCtgId,
+                            itemName: x.itemName,
+                            systemRequired: x.systemRequired,
+                            isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
+                        }
+                    }));
                 };
             });
-
 
             let category = _.find(self.categoryList(), function(obj: any) { return obj.id === id });
             let categoryRoot = _.find(self.categoryRootList(), function(obj: any) {
@@ -79,6 +90,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 id: id, categoryNameDefault: categoryRoot.categoryName, categoryName: category.categoryName,
                 categoryType: category.categoryType, isAbolition: category.isAbolition, itemList: self.itemList()
             });
+
+
             self.currentCategory.valueHasMutated();
 
         }
@@ -153,12 +166,12 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 let CTGlist: Array<any> = getShared('CDL020_VALUES'),
                     i: number = 0,
                     CTGsorrList = _.map(CTGlist, x => {
-                    return {
-                        id: x.id,
-                        order: i++
-                    }
-                });
-                service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>){
+                        return {
+                            id: x.id,
+                            order: i++
+                        }
+                    });
+                service.updateCtgOrder(CTGsorrList).done(function(data: Array<any>) {
                     self.start(undefined);
                 })
             });
@@ -246,7 +259,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: number;
         isAbolition: KnockoutObservable<boolean>;
-        displayIsAbolished :  boolean = false;
+        displayIsAbolished: number = 0;
         constructor(params: ICategoryInfoDetail) {
             this.id = ko.observable(params.id);
             this.categoryNameDefault = params.categoryNameDefault;

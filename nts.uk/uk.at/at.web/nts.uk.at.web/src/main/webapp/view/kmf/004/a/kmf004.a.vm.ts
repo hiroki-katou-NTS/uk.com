@@ -9,6 +9,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         selectedTab: KnockoutObservable<string>;
         selectedValue: KnockoutObservable<any>;
         enable: KnockoutObservable<boolean>;
+        
+        //Tab
         option1: KnockoutObservable<any>;
         option2: KnockoutObservable<any>;
         date: KnockoutObservable<string>;
@@ -21,7 +23,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         selectedRuleCode: any;
-
+        
+        //Input
         inp_specialHolidayCode: KnockoutObservable<string>;
         inp_specialHolidayName: KnockoutObservable<string>;
         sel_grantPeriodicCls: KnockoutObservable<number>;
@@ -36,9 +39,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.items = ko.observableArray([]);
             self.enable = ko.observable(true);
-            self.selectedValue = ko.observable(false);
-            self.option1 = ko.observable({ value: 0, text: nts.uk.resource.getText('KMF004_23') });
-            self.option2 = ko.observable({ value: 1, text: nts.uk.resource.getText('KMF004_24') });
+
+
             self.date = ko.observable('');
             self.selectedCode = ko.observable('0002')
             self.isEnable = ko.observable(true);
@@ -63,12 +65,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 { code: '1', name: nts.uk.resource.getText('KMF004_14') },
             ]);
             self.selectedRuleCode = ko.observable(0);
-            self.roundingRules.subscribe(function(newValue){
-                if(self.selectedRuleCode(0)){
-                $('.tab-content-1').hide();
-                $('.tab-content-2').hide();
-                $('.tab-content-3').hide();
-                $('.tab-content-4').hide();            
+            self.roundingRules.subscribe(function(newValue) {
+                if (self.selectedRuleCode(0)) {
+                    $('.tab-content').hide();
+             
                 }
             });
             self.columns = ko.observableArray([
@@ -96,7 +96,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 { code: '2', name: nts.uk.resource.getText('KMF004_62') }
             ]);
 
-            
+            //Tab1
+            self.selectedValue = ko.observable(false);
+            self.option1 = ko.observable({ value: 0, text: nts.uk.resource.getText('KMF004_23') });
+
+            //Tab2
+            self.option2 = ko.observable({ value: 1, text: nts.uk.resource.getText('KMF004_24') });
 
             self.currentCode = ko.observable();
             self.currentCode.subscribe(function(codeChanged) {

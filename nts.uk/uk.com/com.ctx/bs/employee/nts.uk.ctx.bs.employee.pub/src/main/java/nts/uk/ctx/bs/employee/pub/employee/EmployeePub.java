@@ -17,12 +17,12 @@ public interface EmployeePub {
 	 * Find wpk ids by S code.
 	 *
 	 * @param companyId the company id
-	 * @param employeeCode the employee code
+	 * @param employeeId the employee code
 	 * @param date the date
 	 * @return the list
 	 */
 	// RequestList #65
-	List<String> findWpkIdsBySCode(String companyId, String employeeCode, GeneralDate date);
+	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
 
 	/**
 	 * Gets the workplace id.

@@ -1,11 +1,14 @@
 package find.person.info.item;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import find.person.info.category.PerInfoCategoryFinder;
+import find.person.info.category.PerInfoCtgFullDto;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.i18n.custom.IInternationalization;
@@ -37,7 +40,10 @@ public class PerInfoItemDefFinder {
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	@Inject
-	IInternationalization internationalization; 
+	IInternationalization internationalization;
+
+	@Inject
+	private PerInfoCategoryFinder categoryFinder;
 
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
 		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
@@ -56,11 +62,48 @@ public class PerInfoItemDefFinder {
 	};
 
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId, String isAbolition) {
-		return this.pernfoItemDefRep.getAllPerInfoItemDefByCategoryId(perInfoCtgId, isAbolition,
-				PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream().map(item -> {
+		if (isAbolition.equals("true")) {
+			return this.pernfoItemDefRep
+					.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
+					.map(item -> {
+						return mappingFromDomaintoDto(item, 0);
+					}).collect(Collectors.toList());
+
+		} else {
+			return this.pernfoItemDefRep
+					.getAllPerInfoItemDefByCategoryIdWithNoAbolition(perInfoCtgId, AppContexts.user().contractCode())
+					.stream().map(item -> {
+						return mappingFromDomaintoDto(item, 0);
+					}).collect(Collectors.toList());
+
+		}
+
+	}
+
+	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(String perInfoItemDefId) {
+
+		PerInfoItemDefDto itemDefDto = this.pernfoItemDefRep
+				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).map(item -> {
 					return mappingFromDomaintoDto(item, 0);
-				}).collect(Collectors.toList());
+				}).orElse(null);
+
+		PerInfoCtgFullDto ctgDto = this.categoryFinder.getPerInfoCtg(itemDefDto.getPerInfoCtgId());
+
+		String itemDefaultName = this.pernfoItemDefRep.getItemDefaultName(ctgDto.getCategoryCode(),
+				itemDefDto.getItemCode());
+
+		return mappingFromDomaintoChangeDto(itemDefDto, itemDefaultName, 0);
 	};
+
+	private PerInfoItemChangeDefDto mappingFromDomaintoChangeDto(PerInfoItemDefDto itemDefDto, String defaultName,
+			int dispOrder) {
+		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
+				internationalization);
+		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(), itemDefDto.getItemCode(),
+				itemDefDto.getItemName(), defaultName, itemDefDto.getIsAbolition(), itemDefDto.getIsFixed(),
+				itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(), itemDefDto.getRequireChangable(), dispOrder,
+				itemDefDto.getItemTypeState(), selectionItemRefTypes);
+	}
 
 	public PerInfoItemDefDto getPerInfoItemDefById(String perInfoItemDefId) {
 		return this.pernfoItemDefRep
@@ -159,9 +202,11 @@ public class PerInfoItemDefFinder {
 					strItem.getStringItemType().value, strItem.getStringItemDataType().value);
 		case 2:
 			NumericItem numItem = (NumericItem) dataTypeState;
+			BigDecimal numericItemMin = numItem.getNumericItemMin() != null ? numItem.getNumericItemMin().v() : null;
+			BigDecimal numericItemMax = numItem.getNumericItemMax() != null ? numItem.getNumericItemMax().v() : null;
 			return DataTypeStateDto.createNumericItemDto(numItem.getNumericItemMinus().value,
 					numItem.getNumericItemAmount().value, numItem.getIntegerPart().v(), numItem.getDecimalPart().v(),
-					numItem.getNumericItemMin().v(), numItem.getNumericItemMax().v());
+					numericItemMin, numericItemMax);
 		case 3:
 			DateItem dItem = (DateItem) dataTypeState;
 			return DataTypeStateDto.createDateItemDto(dItem.getDateItemType().value);
