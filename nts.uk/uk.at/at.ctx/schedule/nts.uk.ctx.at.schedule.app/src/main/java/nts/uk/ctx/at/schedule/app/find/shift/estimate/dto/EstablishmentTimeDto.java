@@ -55,19 +55,19 @@ public class EstablishmentTimeDto implements Serializable {
 				List<YearlyEstimateTimeSetting> yearlyEstimateTimeSetting = new ArrayList<>();
 				yearlyEstimateTimeSetting
 						.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_1ST,
-								new YearlyEstimateTime(yearlyEstimate.getTime1st())));
+								YearlyEstimateTime.ofMinutes(yearlyEstimate.getTime1st())));
 				yearlyEstimateTimeSetting
 				.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_2ND,
-						new YearlyEstimateTime(yearlyEstimate.getTime2nd())));
+						YearlyEstimateTime.ofMinutes(yearlyEstimate.getTime2nd())));
 				yearlyEstimateTimeSetting
 				.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_3RD,
-						new YearlyEstimateTime(yearlyEstimate.getTime3rd())));
+						YearlyEstimateTime.ofMinutes(yearlyEstimate.getTime3rd())));
 				yearlyEstimateTimeSetting
 				.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_4TH,
-						new YearlyEstimateTime(yearlyEstimate.getTime4th())));
+						YearlyEstimateTime.ofMinutes(yearlyEstimate.getTime4th())));
 				yearlyEstimateTimeSetting
 				.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_5TH,
-						new YearlyEstimateTime(yearlyEstimate.getTime5th())));
+						YearlyEstimateTime.ofMinutes(yearlyEstimate.getTime5th())));
 				return yearlyEstimateTimeSetting;
 			}
 
@@ -130,19 +130,19 @@ public class EstablishmentTimeDto implements Serializable {
 				public List<MonthlyEstimateTimeSetting> getMonthlyEstimateTimeSetting() {
 					List<MonthlyEstimateTimeSetting> monthlyEstimateTimeSetting = new ArrayList<>();
 					monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-							new MonthlyEstimateTime(monthly.getTime1st()),
+							MonthlyEstimateTime.ofMinutes(monthly.getTime1st()),
 							(EstimatedCondition.CONDITION_1ST)));
 					monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-							new MonthlyEstimateTime(monthly.getTime2nd()),
+							MonthlyEstimateTime.ofMinutes(monthly.getTime2nd()),
 							(EstimatedCondition.CONDITION_2ND)));
 					monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-							new MonthlyEstimateTime(monthly.getTime3rd()),
+							MonthlyEstimateTime.ofMinutes(monthly.getTime3rd()),
 							(EstimatedCondition.CONDITION_3RD)));
 					monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-							new MonthlyEstimateTime(monthly.getTime4th()),
+							MonthlyEstimateTime.ofMinutes(monthly.getTime4th()),
 							(EstimatedCondition.CONDITION_4TH)));
 					monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-							new MonthlyEstimateTime(monthly.getTime5th()),
+							MonthlyEstimateTime.ofMinutes(monthly.getTime5th()),
 							(EstimatedCondition.CONDITION_5TH)));
 					return monthlyEstimateTimeSetting;
 				}
