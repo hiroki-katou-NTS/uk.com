@@ -2106,7 +2106,7 @@ var nts;
                     this.rawValue = rawValue;
                     if (rawValue < 0) {
                         this.dayDivision = DayDivision.THE_PREVIOUS_DAY;
-                        this.time = rawValue * -1;
+                        this.time = Math.abs(rawValue);
                     }
                     else {
                         this.dayDivision = this.checkDayDivision(rawValue);
@@ -2121,7 +2121,7 @@ var nts;
                     return uk.ntsNumber.trunc(this.time / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
                 };
                 TimeWithDayAttr.prototype.getRawTime = function () {
-                    var minutes = uk.ntsNumber.trunc(this.rawValue % 60);
+                    var minutes = Math.abs(uk.ntsNumber.trunc(this.rawValue % 60));
                     return uk.ntsNumber.trunc(this.rawValue / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
                 };
                 TimeWithDayAttr.prototype.getTimeDuration = function (value) {
