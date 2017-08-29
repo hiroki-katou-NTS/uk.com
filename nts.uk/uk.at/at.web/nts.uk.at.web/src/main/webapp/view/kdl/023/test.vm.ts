@@ -43,6 +43,23 @@ module nts.uk.at.view.kdl023.viewmodel {
             return dfd.promise();
         }
 
+        private isInvalidDate(): boolean {
+            let self = this;
+            let startDate = moment(self.start());
+            let endDate = moment(self.end());
+
+            if (startDate.isAfter(endDate)) {
+                return true;
+            }
+
+            let range = moment.duration(endDate.diff(startDate));
+            if (range.asDays() >= 31) {
+                return true;
+            }
+
+            return false;
+        }
+
         public gotoA(): void {
             let self = this;
             nts.uk.ui.windows.setShared('patternCode', self.selectedPatternCode());
@@ -52,6 +69,12 @@ module nts.uk.at.view.kdl023.viewmodel {
         }
         public gotoB(): void {
             let self = this;
+
+            if (self.isInvalidDate()) {
+                nts.uk.ui.dialog.alertError('- Start date must be before end date \n - Date range must be less than or equal 31 days.');
+                return;
+            }
+
             nts.uk.ui.windows.setShared('patternCode', self.selectedPatternCode());
             nts.uk.ui.windows.setShared('startDate', self.start());
             nts.uk.ui.windows.setShared('endDate', self.end());
