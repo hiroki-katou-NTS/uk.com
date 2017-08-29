@@ -29,6 +29,7 @@ public class UpdateItemCommandHandler extends CommandHandler<UpdateItemCommand> 
 		if (!checkQuantityItemData()) {
 			newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand, oldItem);
 		}
+		//this.pernfoItemDefRep.updatePerInfoItemDefRoot(perInfoItemDef, contractCd);
 
 	}
 
