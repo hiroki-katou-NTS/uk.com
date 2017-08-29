@@ -27,7 +27,7 @@
 			</div>
 
 			<div id="contents-area">
-				<table>
+				<table style="width: 1019px;">
 				  	<col width="180"></col>
 					<col width="260"></col>
 					<col width="200"></col>
@@ -128,14 +128,14 @@
 							<thead>
 								<tr class="bgIgCol">
 									<td rowspan="2" class="dataPreview firstCol">#{i18n.getText('KSU006_12')}</td>
-									<td class="dataPreview">#{i18n.getText('KSU006_13')}</td>
-									<td class="dataPreview">#{i18n.getText('KSU006_14')}</td>
-									<td class="dataPreview">#{i18n.getText('KSU006_15')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_13')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_14')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_15')}</td>
 								</tr>
 								<tr class="bgIgCol">
-									<td class="dataPreview">#{i18n.getText('KSU006_16')}</td>
-									<td class="dataPreview">#{i18n.getText('KSU006_17')}</td>
-									<td class="dataPreview">#{i18n.getText('KSU006_18')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_16')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_17')}</td>
+									<td class="dataPreview header">#{i18n.getText('KSU006_18')}</td>
 								</tr>
 							</thead><!-- END HEADER -->
 							
@@ -165,12 +165,12 @@
 									<thead>
 										<tr class="bgIgCol">
 											<td rowspan="2" class="dataPreview firstCol">#{i18n.getText('KSU006_20')}</td>
-											<td class="dataPreview">#{i18n.getText('KSU006_21')}</td>
-											<td class="dataPreview">#{i18n.getText('KSU006_22')}</td>
+											<td class="dataPreview header">#{i18n.getText('KSU006_21')}</td>
+											<td class="dataPreview header">#{i18n.getText('KSU006_22')}</td>
 										</tr>
 										<tr class="bgIgCol">
-											<td class="dataPreview">#{i18n.getText('KSU006_71')}</td>
-											<td class="dataPreview">#{i18n.getText('KSU006_72')}</td>
+											<td class="dataPreview header">#{i18n.getText('KSU006_71')}</td>
+											<td class="dataPreview header">#{i18n.getText('KSU006_72')}</td>
 										</tr>
 									</thead><!-- END HEADER -->
 									
@@ -196,12 +196,12 @@
 									<thead>
 										<tr class="bgIgCol">
 											<com:ko-foreach bind="nameIdTitleList">
-												<td class="dataPreview"><div data-bind="text: $data"></div></td>
+												<td class="dataPreview header"><div data-bind="text: $data"></div></td>
 											</com:ko-foreach>
 										</tr>
 										<tr class="bgIgCol">
 											<com:ko-foreach bind="nameIdValueList">
-												<td class="dataPreview"><div data-bind="text: $data"></div></td>
+												<td class="dataPreview header"><div data-bind="text: $data"></div></td>
 											</com:ko-foreach>
 										</tr>
 									</thead><!-- END HEADER -->
